@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Own the reusable **analyse → challenge → combine → converge** loop that stages bind with parameters. Agent-resolvable concerns are driven to convergence inside this group; residual stakeholder judgements surface at activity-level interview/batch checkpoints gated on `{residue_flag}`.
+Parameterized analyse–challenge–combine loop that drives agent-resolvable concerns to convergence; residue surfaces at activity level.
 
 ## Inputs
 
@@ -46,6 +46,7 @@ Bound residue variable — true iff irreducible opens remain for activity-level 
 ### residue_collection
 
 *(optional)* Residual open items after combine, when a collection name was supplied.
+
 
 ## Rules
 

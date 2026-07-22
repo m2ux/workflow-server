@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Load research guidance, search the knowledge base, and perform web research to gather best practices, patterns, and resources relevant to the work package.
+Best practices, patterns, and resources gathered from the knowledge base and the web.
 
 ## Inputs
 
@@ -50,6 +50,7 @@ Best practices, documentation, and resources gathered from web research, each ca
 - Search authoritative sources first: official documentation sites, established technical blogs, GitHub repositories/discussions, Stack Overflow accepted answers; include version numbers when relevant, add the current year for recent information, and use site-specific searches (e.g. `site:docs.rust-lang.org`)
 - Validate each finding per [source-validation](#source-validation) before it enters `{web_findings}`
 - Cross-reference `{web_findings}` with `{kb_findings}`: do external sources confirm internal patterns? Note contradictions for resolution, any additional context, and each source's publication date and freshness
+
 
 ## Rules
 

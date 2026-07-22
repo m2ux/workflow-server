@@ -21,7 +21,7 @@ Optional `--features` flags (empty string when none).
 
 ### check_status
 
-`{ check_id: 'check', passed: boolean, diagnostics }` — `passed` is true when the type-check exits cleanly; `diagnostics` is the rustc output emitted. This is the shape [run-suite](./run-suite.md) folds into its `validation_results` envelope.
+`{ check_id: 'check', passed: boolean, diagnostics }` — `passed` is true when the type-check exits cleanly; `diagnostics` is the rustc output emitted.
 
 ## Protocol
 

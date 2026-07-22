@@ -21,7 +21,7 @@ Optional `--features` flags (empty string when none).
 
 ### clippy_status
 
-`{ check_id: 'clippy', passed: boolean, diagnostics }` — `passed` is true when no denied warnings emitted; `diagnostics` is `{lint_diagnostics}`. This is the shape [run-suite](./run-suite.md) folds into its `validation_results` envelope.
+`{ check_id: 'clippy', passed: boolean, diagnostics }` — `passed` is true when no denied warnings emitted; `diagnostics` is `{lint_diagnostics}`.
 
 ### lint_diagnostics
 

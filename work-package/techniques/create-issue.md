@@ -29,7 +29,7 @@ Target submodule for the work package (e.g., midnight-node, midnight-ledger)
 
 ### needs_issue_creation
 
-Boolean gate — `false` when step 1 verified an existing issue, otherwise `true` (a new issue must be created). Gates steps 2 and 3.
+Boolean gate — `false` when step 1 verified an existing issue, otherwise `true` (a new issue must be created).
 
 ### created_issue
 

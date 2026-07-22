@@ -126,9 +126,9 @@ steps:
   - kind: technique
     id: verify-planning-readme
     technique:
-      name: work-package::manage-artifacts::verify-readme-conforms
+      name: workflow-engine::verify-readme-conforms
       inputs:
-        readme_template: workflow-design/design-context-readme
+        seed_profile: workflow-design/readme-seed
     condition:
       type: simple
       variable: operation_type

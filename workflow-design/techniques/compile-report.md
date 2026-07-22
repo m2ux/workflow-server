@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Assemble findings from every review-mode audit pass into a rolled-up compliance report: severity-rated finding tables, with detail left in satellite finding files.
+Rolled-up compliance report from every review-mode audit pass.
 
 ## Inputs
 

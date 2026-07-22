@@ -17,7 +17,7 @@ The diff's changed files, scoping which public/exported APIs are enumerated for 
 
 ### documented_apis
 
-The public/exported APIs in the diff, each verified to carry inline documentation — missing doc comments added in place. The enumerated `public_api_symbols` define the work list this op brings to full doc-comment coverage.
+The public/exported APIs in the diff, each carrying inline documentation (doc comments).
 
 ## Protocol
 

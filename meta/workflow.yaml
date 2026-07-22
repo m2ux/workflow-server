@@ -15,15 +15,16 @@ techniques:
     - workflow-engine::start-session
     - workflow-engine::handle-sub-workflow
     - workflow-engine::dispatch-activity
+    - workflow-engine::workflow-orchestrator
     - agent-conduct::orchestrator
   activity:
     - variable-binding
+    - workflow-engine::activity-worker
 initialActivity: discover-session
 rules:
   workflow:
     - "This workflow is the entrypoint for all workflow operations — bootstrap protocol enters here directly via start_session({ workflow_id: 'meta' })"
     - Techniques in this workflow are universal and resolve for any client workflow via the loader's universal-technique fallback
-    - Meta does not perform domain work — every activity exists to identify, create, resume, dispatch, or close out a client session. Client activities always run via dispatch-activity (disposable workers).
 variables:
   - name: target_workflow_id
     type: string

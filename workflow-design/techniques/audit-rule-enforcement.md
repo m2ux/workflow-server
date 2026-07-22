@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Audit every `rules[]` entry for structural backing by applying `structure-backed-constraints`, and persist text-only critical rules with recommended enforcement mechanisms when any exist.
+Structure-backed-constraint audit of every `rules[]` entry for text-only critical rules.
 
 ## Outputs
 

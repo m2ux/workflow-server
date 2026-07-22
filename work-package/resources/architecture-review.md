@@ -168,5 +168,4 @@ Historical context, links to discussions/RFCs, caveats, future considerations no
 
 ## Writing Style
 
-- Clear, technical language; be specific about trade-offs; include measurable criteria; focus on the "why", not just the "what"; keep to 1-2 pages; describe the paths not taken explicitly.
-- No vague language ("might be better", "could help"); don't hide negative consequences; no implementation details; don't confuse requirements with implementation; link planning artifacts instead of inlining their content (single-source-and-link); no process attribution ("per user request", "AI suggested").
+Keep to 1–2 pages; be specific about trade-offs and measurable criteria; describe paths not taken. Tone and attribution: [agent-conduct](../../meta/techniques/agent-conduct.md). Artifact prose discipline: [manage-artifacts](../techniques/manage-artifacts/TECHNIQUE.md) (`plain-technical-language`, `single-source-and-link`).

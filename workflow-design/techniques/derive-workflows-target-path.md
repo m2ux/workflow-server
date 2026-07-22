@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Derive the dedicated workflows edit-root path `{target_path}` from the planning folder basename — `~/projects/work/workflows/{planning-slug}/` — without binding work-package issue-shaped naming conventions.
+Dedicated workflows edit-root path from the planning folder basename.
 
 ## Inputs
 
@@ -28,6 +28,7 @@ Filesystem path of the dedicated workflows worktree for this session: `~/project
 ### 2. Compose Target Path
 
 - Set `{target_path}` to `~/projects/work/workflows/{$planning_slug}/` (expand `~` to the user's home directory when materialising)
+- Do not bind work-package issue-shaped naming conventions — the planning-folder basename is the sole path segment
 
 ### 3. Path Separation
 

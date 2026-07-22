@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Targeted investigation of a selected codebase area: trace data flows, examine implementation detail and edge cases, and append the findings to the comprehension artifact following the artifact structure. Serves both the mandatory initial deep-dive and each user-selected deep-dive iteration (area selection + targeted analysis).
+Targeted investigation of a selected codebase area into the comprehension artifact.
 
 ## Inputs
 
@@ -34,6 +34,7 @@ Updated comprehension artifact — written as `{codebase_area}.md` in `{comprehe
 #### deep_dives
 
 Targeted exploration subsections appended for the selected area: traced data flows, implementation details, and edge cases.
+
 
 ## Protocol
 

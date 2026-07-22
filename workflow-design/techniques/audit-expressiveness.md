@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Audit drafted content for schema expressiveness: walk prose against the schema construct inventory, flag substitutions for formal constructs, and persist before/after rewrites when findings exist.
+Schema-expressiveness audit of drafted content against formal schema constructs.
 
 ## Outputs
 

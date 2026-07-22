@@ -15,7 +15,7 @@ Tear down a worktree created earlier in the work package.
 
 ### worktree_created
 
-Boolean — whether a worktree exists at `{target_path}`. Must be true to proceed; if false, this operation is a no-op
+Boolean — whether a worktree exists at `{target_path}`.
 
 ## Outputs
 

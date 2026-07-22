@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Detect whether the user supplied an issue reference and, when one is present, determine the platform from the key format and parse the issue id. A `#N` or bare number is GitHub; a `PROJ-N` key is Jira.
+Whether the user supplied an issue reference, with platform and id when present (`#N` GitHub, `PROJ-N` Jira).
 
 ## Inputs
 
@@ -26,6 +26,7 @@ Boolean — true when the user supplied an issue reference, false otherwise.
 ### issue_number
 
 The parsed issue id (GitHub `#N` / bare number, or Jira `PROJ-N` key).
+
 
 ## Protocol
 

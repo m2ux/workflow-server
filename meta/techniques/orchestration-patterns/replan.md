@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Revise `{execution_plan}` in light of `{replan_reason}` and `{prior_step_results}`, producing a new plan for remaining work.
+Revise the execution plan in light of the replan reason and prior step results, producing a new plan for remaining work.
 
 ## Inputs
 
@@ -19,7 +19,7 @@ Plan that failed or surprised during execution.
 
 ### prior_step_results
 
-Results already obtained (keep successful work; do not redo without cause).
+Results already obtained from executing `{execution_plan}` before the replan trigger.
 
 ### replan_reason
 
@@ -33,7 +33,7 @@ Replacement plan for remaining work (may include completed steps as already-done
 
 ### plan_needs_replan
 
-Set `false` after a successful replan emit.
+Replan-needed flag.
 
 ## Protocol
 

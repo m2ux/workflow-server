@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Obtain the `{cloudId}` for the target Atlassian site.
+Obtain the Atlassian cloud id for the target site.
 
 ## Outputs
 

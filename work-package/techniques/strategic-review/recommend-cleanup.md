@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-In review mode, record the cleanup actions that *would* remove the identified investigation artifacts and over-engineering as recommendations in the strategic review document, without mutating the source — the reviewer decides whether to apply them.
+Review-mode cleanup recommendations in the strategic review document — advisory only; source unchanged.
 
 ## Inputs
 
@@ -18,6 +18,7 @@ The strategic review document holding the identified artifacts; read to enumerat
 ### strategic_review_doc
 
 The same strategic review document, extended with a cleanup recommendation per identified artifact (investigation artifacts, over-engineering, orphaned infrastructure). Source is NOT mutated in review mode.
+
 
 ## Protocol
 

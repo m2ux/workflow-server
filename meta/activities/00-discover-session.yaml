@@ -1,5 +1,5 @@
 id: discover-session
-version: 7.1.0
+version: 7.2.1
 name: Discover Session
 description: Identify the target workflow and search for an existing client session to resume.
 required: true

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Define the complete scope and structure: verify the dedicated edit worktree at `{target_path}`, enumerate every file to create/modify/remove, note structural shape and drafting order briefly, and persist a lean scope manifest for activity-layer review.
+Complete scope and structure definition as a lean scope manifest.
 
 ## Outputs
 

@@ -11,7 +11,7 @@ Operations for common Jira and Confluence tasks via the Atlassian MCP server —
 
 ### cloudId
 
-UUID of the target Atlassian cloud site. (Produced by resolve-cloud-id; consumed by every product-specific operation.)
+UUID of the target Atlassian cloud site. Required by every product-specific operation.
 
 ## Rules
 

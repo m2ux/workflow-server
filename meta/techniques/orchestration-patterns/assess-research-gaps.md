@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Judge whether `{synthesis}` (and `{gathered_results}`) leave material gaps against `{goal}`, and optionally emit follow-up `{work_units}`.
+Judge whether synthesis (and gathered results) leave material gaps against the goal, and optionally emit follow-up work units.
 
 ## Inputs
 

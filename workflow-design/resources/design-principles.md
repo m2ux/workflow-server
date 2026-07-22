@@ -1,6 +1,6 @@
 ---
 name: design-principles
-description: Positive design-time prefer/before stance for workflow authoring. Detect/Fix lives in anti-patterns.
+description: Positive design-time prefer/before stance for workflow authoring.
 metadata:
   order: 0
   legacy_id: 0
@@ -8,9 +8,9 @@ metadata:
 
 # Overview
 
-Positive framing for workflow design-time authoring. Each principle states a *prefer / before / only after* stance — what to author toward. A principle is broader than any one defect: it is the stance that avoids a family of smells (and related failures not yet catalogued).
+Fundamental design principles for workflow design-time authoring. Each principle states a *prefer / before / only after* stance — what to author toward. A principle is broader than any one defect: it is the stance that avoids a family of smells (and related failures not yet catalogued).
 
-Principles do **not** carry Detect / Do not flag / Fix. Specific bad instances are catalogued in [anti-patterns](./anti-patterns.md). Together with that catalog and the schema construct inventory, these are the **workflow-design canon** for design-time authoring.
+Specific bad instances are catalogued in [anti-patterns](./anti-patterns.md). Together with that catalog and the schema construct inventory, these are the **workflow-design canon** for design-time authoring.
 
 ---
 
@@ -36,7 +36,7 @@ Prefer the most specific formal construct the schema provides. Prose is only for
 
 ## 6. One Authoritative Home
 
-Operative criteria, reusable facts, and fill/consult content have exactly one home. Resources hold fill/consult (templates, vocabularies, criteria); does (protocol, behavioural rules) lives outside resources. Other layers cite or walk the home — they do not re-author Detect, duplicate guidance, or invent pass inventories that drift from activity bind sites.
+Operative criteria, reusable facts, and fill/consult content have exactly one home. Resources hold fill/consult (templates, vocabularies, criteria, policy tables); does (protocol, behavioural rules) lives outside resources — “does” means operational cadence and HOW, not normative criteria / vocabulary / policy matrices (those remain resource consult even when a technique Applies them). Other layers cite or walk the home — they do not re-author Detect, duplicate guidance, or invent pass inventories that drift from activity bind sites.
 
 ## 7. Convention Over Invention
 
@@ -64,7 +64,7 @@ Design artifact contracts and checkpoints for the reader who must act on them �
 
 ## 13. Separate Contract from Procedure
 
-On techniques, Outputs declare *what* each bindable value is — including derivation and recognition criteria. Protocol orders *when* and *how* those values are produced and references `{id}`; it does not restate identity tables or host trailing "Set …" phases for pure projections of another output.
+On techniques, Inputs and Outputs are **bind contracts** — each declares *what* the bound value is (meaning, shape, allowed values; Outputs may include derivation/recognition criteria). Protocol orders *when* and *how* work runs and references `{id}`; it does not restate identity tables, and I/O descriptions do not carry HOW. Any how associated with an input or output — constraints, sequencing, fallbacks, side duties — migrates to a dedicated Protocol step (or a true cross-cutting Rule), not the I/O entry. Protocol also does not host trailing "Set …" phases for pure projections of another output.
 
 ## 14. Single Source of Truth
 
@@ -125,3 +125,7 @@ Capability on a container `TECHNIQUE.md` (workflow-root or group) names what sha
 ## 28. Creation Guide for Generated Documents
 
 Every planning artifact a workflow persists has an associated creation-guide resource with a `## Template` section (and operative `## Rules` for how to fill it). Persist techniques cite that template; they do not invent layout in protocol prose. Shared shapes may share one guide; every bare filename still maps to a guide.
+
+## 29. Cite Resource Policy; Do Not Restate It
+
+Resources own vocabularies, criteria/policy, and how fields are represented or matched on consult surfaces. Technique Protocol operates on **semantic fields** and cites those sections in house style — e.g. `per [Section Title](../resources/example.md#section-title)` (link text is the section title; the URL includes the `#` anchor) — it does not re-author the vocabulary, policy matrix, or representation/matching rules. **Separation test:** representation or layout of a consult surface may change without Protocol change when the underlying fields are unchanged. This is the cite-don't-restate half of technique↔resource policy; it complements [One Authoritative Home](#6-one-authoritative-home) and [Creation Guide for Generated Documents](#28-creation-guide-for-generated-documents) without replacing either.

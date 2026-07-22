@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Create the completion summary for the design session — delivery, links to design decisions elsewhere, scope outcome, and known limitations — recorded in the planning folder.
+Design-session completion summary in the planning folder.
 
 ## Inputs
 

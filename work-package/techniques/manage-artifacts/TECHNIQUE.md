@@ -5,7 +5,8 @@ metadata:
 
 ## Capability
 
-Manage planning artifacts in `.engineering/artifacts/planning/` — create folders, enforce artifact prefixing, organize documents, and enforce the output-discipline rules below on every artifact written.
+Shared contract for planning-folder artifacts under `.engineering/artifacts/planning/` — prefixing, organization, and output discipline.
+
 
 ## Rules
 

@@ -20,7 +20,7 @@ Maps informal patterns (what agents tend to write as prose) to their formal sche
 | Condition | `schemas/condition.schema.json` | `schemas/README.md — Condition Schema` |
 | State | `schemas/state.schema.json` | `schemas/README.md — State Schema` |
 
-The MCP resource `workflow-server://schemas` returns all five schemas as a single JSON object. The `schemas/README.md` file (45KB) contains the full ontology with entity relationships, field tables, examples, and validation guidance.
+URI `workflow-server://schemas` aggregates the five schemas. Full ontology, field tables, examples, and validation guidance: `schemas/README.md`.
 
 ---
 

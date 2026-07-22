@@ -1,11 +1,8 @@
 id: dispatch-client-workflow
-version: 5.4.0
+version: 5.5.2
 name: Dispatch Client Workflow
 description: Drive the client workflow's activity loop by dispatching a disposable worker per activity.
 required: true
-rules:
-  - Authenticate every tool call inside the loop with client_session_index. The meta session_index is used only at activity boundaries (commit-and-persist's engineering commit) and at end-workflow.
-  - Always use workflow-engine::dispatch-activity (spawn a disposable worker). Meta MUST NOT execute client activity steps in its own context.
 steps:
   - kind: action
     id: verify-preconditions
@@ -37,7 +34,7 @@ steps:
           inputs:
             activity_id: current_activity
             session_index: client_session_index
-            prompt_template: meta/activity-worker-prompt
+            agent_technique: workflow-engine::activity-worker
             state: variables
       - kind: technique
         id: present-yielded-checkpoint
@@ -61,16 +58,13 @@ steps:
           name: workflow-engine::commit-and-persist
           inputs:
             activity_id: current_activity
-      - kind: technique
+      - kind: action
         id: advance-activity
         when: worker_yielded_checkpoint == false
-        technique:
-          name: workflow-engine::evaluate-transition
-          inputs:
-            current_activity: completed_activity
-            state: variables
-          outputs:
-            next_activity_id: current_activity
+        actions:
+          - action: set
+            target: current_activity
+            value: "{worker_result.next_activity_id}"
 transitions:
   - to: end-workflow
     condition:

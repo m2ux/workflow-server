@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Independently verify each High-tier audit finding before it drives remediation: re-derive the finding from the cited construct without relying on the originating pass's reasoning, refute by default, recalibrate severity, confirm which Highs are real, run a lighter confirmation pass over surviving Medium findings, and persist the verified set.
+Independent High-tier audit-finding verification before remediation.
 
 ## Outputs
 
 ### verified_findings
 
-The recalibrated finding set after verification — each High finding marked confirmed, downgraded, or withdrawn with its re-derivation evidence, and each surviving Medium finding spot-confirmed. This is the finding set that drives classification and remediation.
+The recalibrated finding set after verification — each High finding marked confirmed, downgraded, or withdrawn with its re-derivation evidence, and each surviving Medium finding spot-confirmed.
 
 ### verified_findings_path
 

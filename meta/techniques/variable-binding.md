@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Bind a step's operation to the workflow-scoped variable bag: resolve the operation's declared inputs by name, apply any call-site deviations, invoke the operation, and land its declared outputs back into the bag under their declared names. The single source of truth for what a step consumes and produces is the bound operation's declared `inputs[]`/`outputs[]` signature; downstream steps and conditions read those outputs by name or dotted path.
+Maps a step's bound operation onto the workflow variable bag by the operation's declared `inputs[]`/`outputs[]` signature.
 
 ## Protocol
 

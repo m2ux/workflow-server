@@ -36,7 +36,7 @@ Definition: [`02-resolve-target.yaml`](./02-resolve-target.yaml)
 
 ### 03. Dispatch Client Workflow
 
-Drives the client workflow end to end inline. The orchestrator dispatches each client activity to a worker, mediates any yielded checkpoint with the user, commits and persists completed-activity artifacts, and evaluates transitions to advance — looping until the client workflow has no further activities. Every tool call inside the loop authenticates with `client_session_index`; the meta `session_index` is used only at activity boundaries and at close-out. The user retains control at every decision point. Leads to [End Workflow](#04-end-workflow) when the client workflow is exhausted.
+Drives the client workflow end to end inline via [`03-dispatch-client-workflow.yaml`](./03-dispatch-client-workflow.yaml) (dispatch → present/respond on yield → commit-and-persist → advance). Role and auth boundaries: [agent-conduct](../techniques/agent-conduct.md) + [dispatch-activity](../techniques/workflow-engine/dispatch-activity.md). Leads to [End Workflow](#04-end-workflow) when the client workflow is exhausted.
 
 Definition: [`03-dispatch-client-workflow.yaml`](./03-dispatch-client-workflow.yaml)
 

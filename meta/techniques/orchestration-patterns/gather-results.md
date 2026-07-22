@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Build an ordered keyed `{gathered_results}` collection from dispatched worker outputs and a completeness manifest against the expected work-unit (or brief) ids.
+Build an ordered keyed collection from dispatched worker outputs and a completeness manifest against the expected work-unit (or brief) ids.
 
 ## Inputs
 
 ### dispatched_results
 
-Array of `{ id, result }` from [dispatch-workers](./dispatch-workers.md) (or equivalent), in input order.
+Array of `{ id, result }` from the prior dispatch step (or equivalent), in input order.
 
 ### expected_ids
 

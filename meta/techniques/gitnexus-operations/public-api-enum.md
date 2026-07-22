@@ -11,11 +11,11 @@ Enumerate exactly the public/exported APIs in the diff that need doc comments â€
 
 ### repo_name
 
-Name of the indexed repository whose graph the operations query (the `{name}` in `gitnexus://repo/{name}/context`). Index freshness is confirmed via this name before the first operation.
+Name of the indexed repository whose graph the operations query (the `{name}` in `gitnexus://repo/{name}/context`).
 
 ### diff
 
-The working-tree / branch diff under review, consumed by [detect-changes](./detect-changes.md) to obtain the changed-symbol set.
+The working-tree / branch diff under review â€” source for obtaining the changed-symbol set.
 
 ## Outputs
 

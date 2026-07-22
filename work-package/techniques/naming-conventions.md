@@ -31,7 +31,7 @@ The server's canonical planning folder for this work package. Its basename is th
 
 ### is_review_mode
 
-*(optional)* When `true`, the branch name is already captured from the PR reference, so branch derivation is skipped and the work-package slug is derived from the PR title or branch name.
+*(optional)* Whether this work package is in review mode, where the branch name is already captured from the PR reference.
 
 ## Outputs
 

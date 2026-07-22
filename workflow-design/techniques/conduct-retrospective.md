@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Conduct a session retrospective: analyse the non-checkpoint user interactions to surface friction points and produce a prioritized list of workflow improvements, written into the session's close-out document.
+Session retrospective surfacing friction points and prioritized workflow improvements for the close-out document.
 
 ## Outputs
 

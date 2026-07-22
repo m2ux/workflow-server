@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Build an ordered collection by accumulating one scalar output per work unit — in input/iteration order, optionally keyed by an iteration variable — then delegate a combine operation to aggregate the collection. Work units are dispatched in one of two scatter modes: sequential (the bound operation invoked inside a `forEach` loop, one output accumulated per iteration) or parallel ([harness-compat](./harness-compat/TECHNIQUE.md)::[spawn-concurrent](./harness-compat/spawn-concurrent.md) fan-out across N instances). Both modes yield the same ordered keyed collection and feed the same combine. Sequential mode is the `concurrency = 1` case of parallel mode; parallel mode adds concurrency and per-instance isolation, and nothing else differs.
+Scatter work units (sequential or parallel), gather an ordered keyed collection, then combine — one primitive, two scatter modes.
 
 ## Protocol
 

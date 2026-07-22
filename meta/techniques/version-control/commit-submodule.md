@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Two-step submodule commit: commit + push inside the submodule, then update the parent's submodule pointer.
+Commit and push inside a submodule and sync the parent's submodule pointer.
 
 ## Inputs
 

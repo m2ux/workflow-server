@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Resolve the target component of a submodule monorepo without user input when the choice is unambiguous, and flag when it is not.
+Identify the unambiguous target component in a submodule monorepo, or flag ambiguity.
 
 ## Inputs
 

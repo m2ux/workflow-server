@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Maintain the target repository's `changes/` changelog fragment for this work package — create one matching sibling fragments and referencing the GitHub issue only when the repo uses a `changes/` folder and no fragment yet ties to this work.
+Target repository `changes/` changelog fragment for this work package when the repo uses that convention.
 
 ## Inputs
 
@@ -29,7 +29,8 @@ The full issue URL, used as the reference form when sibling fragments use that s
 
 ### changes_fragment
 
-The `changes/` changelog fragment for this work package, written under the `{target_path}` repository's `changes/` folder. Created only when the repo uses a `changes/` folder and no fragment yet ties to this work; matches sibling fragments' filename convention and section structure and contains a CI-conformant GitHub issue reference.
+The `changes/` changelog fragment for this work package, written under the `{target_path}` repository's `changes/` folder (absent when the repo does not use that convention) — matching sibling fragments' filename convention and section structure, and containing a CI-conformant GitHub issue reference.
+
 
 ## Protocol
 

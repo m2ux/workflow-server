@@ -11,7 +11,7 @@ Shared Inputs, Outputs, Rules, and Errors for every technique in this set.
 
 ### planning_folder_path
 
-Path to this work package's planning folder under `.engineering/artifacts/planning/` — where techniques that persist planning artifacts read prior artifacts and write their own (the server-provided `artifactPrefix` is applied to the filename); not every technique produces one.
+Path to this work package's planning folder under `.engineering/artifacts/planning/` — where techniques that persist planning artifacts read and write (filename numbering: artifact-prefix); not every technique produces one.
 
 ### requirements
 

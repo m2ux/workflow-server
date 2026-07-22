@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Fetch and rebase/merge from the default branch to keep the feature branch current.
+Feature branch kept current with the default branch.
 
 ## Inputs
 
 ### target_path
 
-Path to the edit-side checkout the fetch and rebase/merge run in (per the [manage-git](./TECHNIQUE.md) group's directory-scope rule, edit-side git operations run inside `{target_path}`).
+Path to the edit-side checkout the fetch and rebase/merge run in (per the manage-git group's directory-scope rule, edit-side git operations run inside `{target_path}`).
 
 ### branch_name
 
@@ -26,6 +26,7 @@ The default branch (typically `main`) fetched and rebased/merged into `{branch_n
 ### synced_branch
 
 `{branch_name}` updated to include the latest default-branch commits, with any conflicts resolved. A side-effect op; the current feature branch is its product.
+
 
 ## Protocol
 

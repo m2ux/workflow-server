@@ -1,17 +1,17 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Render the PR body from the selected template and apply it to the `{pr_number}` PR description, drawing the implementation summary from the planning artifacts.
+PR description body from the selected template, sourced from planning artifacts.
 
 ## Inputs
 
 ### pr_template_variant
 
-Which PR body template to render — `initial` (ADR-only, before implementation) or `final` (after implementation).
+Which PR body template to render — `initial` or `final`.
 
 ### is_review_mode
 
@@ -37,11 +37,15 @@ The PR number whose description is updated.
 
 ### rendered_pr_body
 
-The PR description applied to the `{pr_number}` PR: the body composed from the selected template, with the implementation summary, test-coverage summary, and key decisions/trade-offs filled in, and the engineering and target link URLs resolved from git remotes. The op's effect is that the live `{pr_number}` PR description now holds this rendered body.
+The rendered PR description body now live on the `{pr_number}` PR — composed from the selected template, including the implementation summary, test-coverage summary, key decisions/trade-offs, and the engineering/target link URLs.
+
 
 ## Protocol
 
-1. Select the template per [template-selection](./TECHNIQUE.md): the [Template (Initial)](../../resources/pr-description.md#template-initial) when `{pr_template_variant}` is `initial`, the [Template (Final)](../../resources/pr-description.md#template-final) when `{pr_template_variant}` is `final`, or the [Consolidated Review Format](../../resources/review-mode.md#consolidated-review-format) when `{is_review_mode}` is true.
+1. Select the template:
+   - If `{is_review_mode}` is true → [Consolidated Review Format](../../resources/review-mode.md#consolidated-review-format)
+   - Else if `{pr_template_variant}` is `initial` → [Template (Initial)](../../resources/pr-description.md#template-initial)
+   - Else if `{pr_template_variant}` is `final` → [Template (Final)](../../resources/pr-description.md#template-final); apply [lifecycle tense](../../resources/pr-description.md#lifecycle-tense) so lingering Initial “coming next” / future-tense checklist wording is replaced
 2. Compose the body using the implementation summary drawn from `{planning_folder_path}`, including the test coverage summary and key decisions and trade-offs.
 3. Resolve link URLs from git remotes — NEVER guess or infer repository URLs, issue numbers, or branch names:
    - `{$target_repo_url}`: `git -C {target_path} remote get-url origin`, strip the `.git` suffix, convert SSH form to HTTPS (`git@github.com:org/repo.git` → `https://github.com/org/repo`).

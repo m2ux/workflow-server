@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Extract structural and content patterns from comparable existing workflows for reuse in the target, and persist a lean alignment / divergence table.
+Structural and content pattern extraction from comparable workflows for target alignment.
 
 ## Outputs
 

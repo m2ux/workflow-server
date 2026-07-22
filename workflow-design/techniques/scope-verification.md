@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Verify `{scope_manifest}` is fully addressed: check every manifest item for file presence, performed action, and content match against the reviewed draft, flagging any unaddressed item.
+Scope-manifest completeness check against the reviewed draft.
 
 ## Outputs
 

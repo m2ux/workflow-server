@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-In review mode, establish the baseline against which a PR is evaluated: check out the base branch (the PR target), capture its commit SHA, document the changes that SHOULD be made to fulfil the requirements, then return to the PR branch and record the base↔PR diff for later comparison.
+Review-mode baseline for PR evaluation — expected changes against requirements and the base↔PR authored surface.
 
 ## Inputs
 
@@ -64,6 +64,7 @@ The base↔PR diff (fresh three-dot `{base_branch}...HEAD`), noted for later com
 ### 4. Merge-In Guard
 
 - When HEAD is a merge commit or the branch contains merges of `{base_branch}`, recompute the three-dot set against a freshly resolved merge-base and **log** the merge-in.
+
 
 ## Rules
 

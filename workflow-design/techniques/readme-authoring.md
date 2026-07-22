@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Generate a workflow README in create mode, or update it in update mode: a root README with the workflow title, description, activity sequence table, mode descriptions, usage instructions, and resource links, reflecting any structural changes when updating.
+Root `README.md` that orients readers to the workflow's purpose, structure, and links.
 
 ## Inputs
 
@@ -17,7 +17,7 @@ The classified operation. When `update`, the README is updated in place to refle
 
 ### workflow_readme
 
-The workflow's root README with title, description, activity sequence table, mode descriptions, usage instructions, and resource links — generated in create mode or updated to reflect structural changes in update mode
+The workflow root README (create: generate; update: revise for structural changes)
 
 #### artifact
 
@@ -27,6 +27,5 @@ The workflow's root README with title, description, activity sequence table, mod
 
 ### 1. Generate Or Update README
 
-- In create mode, generate the README fresh with the workflow title, description, activity sequence table, mode descriptions, usage instructions, and resource links
-- In update mode, update the existing README to reflect structural changes such as new activities, modified activity descriptions, or changed modes
-- Orient with purpose, value, structure, and links; do not transcribe YAML; use positive declarative present tense
+- Create: write `{workflow_readme}` fresh. Update: revise the existing README for structural changes (activities, modes, links).
+- Orientation stance: [design-principles](../resources/design-principles.md) §11 and `readme-orients-not-transcribes` — do not transcribe YAML.

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Drive structured elicitation across the question domains, then surface the resulting assumptions to stakeholders for review before the requirements document is finalized.
+Structured requirements elicitation across question domains, with stakeholder review of resulting assumptions.
 
 ## Inputs
 
@@ -15,11 +15,11 @@ The question domains to iterate one question at a time (per the [requirements-el
 
 ### issue_platform
 
-Platform where the issue lives (github or jira) — gates whether assumptions are posted to Jira.
+Issue host platform: `github` or `jira`.
 
 ### issue_number
 
-Issue identifier for the assumptions comment (GitHub #N or Jira KEY-N) — the ticket posted to via `addCommentToJiraIssue`.
+Issue identifier on `{issue_platform}` (GitHub `#N` or Jira `KEY-N`).
 
 ## Outputs
 
@@ -39,6 +39,7 @@ In/out scope definitions captured during elicitation.
 
 Record of the questions asked and the responses given across the domain iteration.
 
+
 ## Protocol
 
 ### 1. Iterate Domains
@@ -51,10 +52,10 @@ Record of the questions asked and the responses given across the domain iteratio
 
 ### 2. Post Assumptions Jira
 
-- Prepare assumptions as Jira comment for stakeholder review
-- Post to the ticket identified by `{issue_number}` using `addCommentToJiraIssue` (only when `{issue_platform}` is jira)
+- When `{issue_platform}` is `jira`, prepare assumptions as a Jira comment for stakeholder review and post to the ticket identified by `{issue_number}` using `addCommentToJiraIssue`
+- When `{issue_platform}` is `github`, skip the Jira assumptions post
 
 ### 3. Await Feedback
 
-- Await stakeholder response on Jira comment
-- Incorporate feedback into requirements document
+- Await stakeholder response on the posted assumptions comment when one was posted
+- Incorporate feedback into the requirements document

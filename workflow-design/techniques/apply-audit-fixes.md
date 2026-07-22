@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Record the selected audit findings as `{fixes_applied}` — per finding, the file edited, the change made, and the post-edit schema-validation result.
+Applied-fix record for selected audit findings with post-edit schema-validation results.
 
 ## Inputs
 

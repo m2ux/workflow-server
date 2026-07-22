@@ -5,17 +5,17 @@ metadata:
 
 ## Capability
 
-Determine whether the working directory is a regular repo or a submodule monorepo, excluding infrastructure submodules per [version-control](./TECHNIQUE.md)::infrastructure-submodule-paths.
+Determine whether the working directory is a regular repo or a submodule monorepo, excluding infrastructure submodules.
 
 ## Outputs
 
 ### is_monorepo
 
-true when `.gitmodules` declares at least one non-infrastructure submodule (per [version-control](./TECHNIQUE.md)::infrastructure-submodule-paths); false otherwise.
+true when `.gitmodules` declares at least one non-infrastructure submodule; false otherwise.
 
 ### target_path
 
-`.` when the repo is regular — set here so no confirmation step is needed. Left for submodule selection to resolve when `is_monorepo` is true.
+`.` when the repo is regular. Left for submodule selection to resolve when `is_monorepo` is true.
 
 ## Protocol
 

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Create the design philosophy artifact, recording the problem statement, classification, complexity, and workflow path rationale.
+Design philosophy artifact — problem statement, classification, complexity, and workflow-path rationale.
 
 ## Inputs
 
@@ -38,6 +38,7 @@ The design philosophy [artifact](../../resources/design-framework.md#design-phil
 #### artifact
 
 `design-philosophy.md`
+
 
 ## Protocol
 

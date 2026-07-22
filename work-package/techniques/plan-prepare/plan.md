@@ -5,17 +5,17 @@ metadata:
 
 ## Capability
 
-Apply the design framework to the inputs and write the work package plan artifact — task breakdown, dependencies, ordering, and documented design decisions and assumptions.
+Work-package plan artifact — task breakdown, dependencies, ordering, and recorded design decisions.
 
 ## Inputs
 
 ### design_philosophy
 
-Design philosophy artifact with problem classification and workflow path. Verified present and applied to structure the implementation approach.
+Design philosophy artifact with problem classification and workflow path.
 
 ### requirements
 
-Work package requirements; verified present and reviewed to drive the task breakdown and success-criteria alignment.
+Work package requirements, driving the task breakdown and success-criteria alignment.
 
 ### analysis_findings
 
@@ -42,6 +42,7 @@ Work package plan artifact with task breakdown and dependencies. Written to `{pl
 #### tasks
 
 Atomic tasks with explicit dependencies and ordering — each implementable, testable, and committable independently. Ordered by dependency depth (leaves before callers) when target symbols are knowable.
+
 
 ## Protocol
 

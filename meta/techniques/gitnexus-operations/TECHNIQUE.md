@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Operations for codebase queries via the GitNexus knowledge graph — index management (verify, analyze), structural queries (query, context, impact, detect-changes), graph operations (cypher, rename), and resource reads (process, cluster traces).
+Codebase intelligence via the GitNexus knowledge graph — indexing, structural queries, and graph operations.
 
 ## Rules
 

@@ -29,7 +29,7 @@ Boolean gate — whether to skip optional discovery work.
 
 ### needs_comprehension
 
-Always `true` — codebase comprehension is mandatory before planning, on every path.
+Always `true` — codebase comprehension is mandatory on every path.
 
 ### path_rationale
 

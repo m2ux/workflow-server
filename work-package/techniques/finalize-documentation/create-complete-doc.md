@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Create the close-out document — the work package's single terminal artifact — summarizing delivered work, test coverage, and known limitations. There is no separate retrospective, session-summary, or close-out-summary artifact: the retrospective is written into this document by conduct-retrospective, and everything else is a link to its canonical artifact.
+Work package's single terminal close-out artifact — delivered work, coverage, and limitations; retrospective inlined by conduct-retrospective, else link-only to canonical homes.
 
 ## Inputs
 
@@ -23,9 +23,10 @@ Path to the planning folder where the completion document is created.
 
 `COMPLETE.md`
 
+
 ## Protocol
 
-1. Create the `{completion_document}` at the `{planning_folder_path}` following the close-out template in [complete-wp](../../resources/complete-wp.md).
+1. Create the `{completion_document}` at the `{planning_folder_path}` following the close-out template in [complete-wp](../../resources/complete-wp.md) — single terminal artifact; do not create separate session-summary, close-out-summary, or retrospective files (retrospective is inlined later by conduct-retrospective, or omitted per that group's skip rule).
 2. Summarize what was delivered (2-3 sentences) and link the plan — do not restate its task list.
 3. Record known limitations — this document is their canonical home. Deferred items live in the [deferred-items register](../../resources/deferred-items.md); the Deferred Items section is one line linking the register (omit it when no register exists).
 4. Link the validation artifact for test results and the change-block index for files changed — link, don't copy the tables.

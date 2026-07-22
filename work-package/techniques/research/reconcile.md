@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Iteratively close research-reconcilable candidates through targeted knowledge-base and web research until only irreconcilable candidates remain, re-triaging after each pass so the loop gate reflects the current inventory. Runs autonomously — the user is presented only the converged result, at the convergence checkpoint.
+Research-reconcilable candidates closed until only irreconcilable residue remains.
 
 ## Inputs
 
@@ -60,6 +60,7 @@ The research [artifact](../../resources/knowledge-base-research.md#planning-arti
 - If any open candidate is research-reconcilable (including newly surfaced ones), signal another pass is needed — set `{has_reconcilable_research}` true
 - If no open candidate is research-reconcilable, convergence is reached per the [convergence-definition](#convergence-definition) — set `{has_reconcilable_research}` false; the remaining open set is irreducible through research
 - Present the [scorecard](../../resources/research-reconciliation.md#scorecard) in the session after each pass; do not persist count tables in the artifact — the candidate rows are the record
+
 
 ## Rules
 

@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Read and parse `.gitmodules` to enumerate the target-component submodules, excluding infrastructure submodules per [version-control](./TECHNIQUE.md)::infrastructure-submodule-paths.
+Enumerate target-component submodules from `.gitmodules`, excluding infrastructure paths.
 
 ## Outputs
 
 ### submodules
 
-Array of `{ path, name, url }` entries, one per target-component submodule. Infrastructure submodules (per [version-control](./TECHNIQUE.md)::infrastructure-submodule-paths) are omitted.
+Array of `{ path, name, url }` entries, one per target-component submodule. Infrastructure submodules are omitted.
 
 ## Protocol
 

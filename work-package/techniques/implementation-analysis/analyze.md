@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Locate the current implementation, evaluate its effectiveness, establish quantitative baseline metrics, and identify gaps against the work package success criteria.
+Effectiveness, baseline metrics, and gaps of the current implementation against success criteria.
 
 ## Inputs
 
@@ -33,11 +33,12 @@ Assessment of current effectiveness and pain points, drawn from logs, metrics, t
 
 ### baseline_metrics
 
-Quantitative baseline metrics (performance, quality, usage, reliability) with how each was measured for reproducibility and current values recorded before any changes, linked to success criteria from `{requirements}`.
+Quantitative baseline metrics (performance, quality, usage, reliability), each with its current value and how it was measured for reproducibility, linked to success criteria from `{requirements}`.
 
 ### gaps_identified
 
 Gaps linked to measurable success criteria from `{requirements}`, with documented assumptions about current behavior.
+
 
 ## Protocol
 

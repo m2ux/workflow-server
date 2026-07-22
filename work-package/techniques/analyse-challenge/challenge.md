@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Fan out adversarial challenge perspectives against the current concern set in parallel, gather ordered findings, and return them for [combine](./combine.md). Uses scatter-gather (isolation-then-combine) — does not mutate shared convergence or residue flags.
+Parallel adversarial challenge perspectives over the current concern set for the combine step.
 
 ## Inputs
 
@@ -53,6 +53,7 @@ Ordered collection of per-perspective findings (keyed by perspective name): conc
 
 - Assemble `{challenge_findings}` in input-perspective order
 - Return the collection to [combine](./combine.md); do not merge into the log here
+
 
 ## Rules
 

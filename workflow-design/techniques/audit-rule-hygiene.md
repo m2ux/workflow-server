@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Audit `rules[]` across the workflow, activities, and techniques against the Rule Hygiene section of the anti-pattern catalog, and persist findings when any exist.
+Rule-hygiene audit of `rules[]` across workflow, activities, and techniques against the anti-pattern catalog.
 
 ## Outputs
 

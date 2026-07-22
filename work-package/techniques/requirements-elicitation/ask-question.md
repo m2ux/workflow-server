@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Ask a single question within the current domain, record the response, and adapt the follow-up — the per-iteration unit of the domain-iteration loop.
+Single-question unit of the domain-iteration elicitation loop.
 
 ## Inputs
 
@@ -22,6 +22,7 @@ The record of questions asked and responses given, with this iteration's questio
 ### elicitation_complete
 
 Boolean signal — set true when the user signals completion; otherwise elicitation continues (answered or skipped).
+
 
 ## Protocol
 

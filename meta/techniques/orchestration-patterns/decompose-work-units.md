@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Analyse `{goal}` (and optional `{context}`) and produce an ordered `{work_units}` list whose shape depends on the input — the runtime decomposition half of orchestrator-workers.
+Analyse the goal (and optional context) into an ordered work-units list — the runtime decomposition half of orchestrator-workers.
 
 ## Inputs
 

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Resolve the reference checkout used for comprehension, GitNexus indexing, and read-only investigation: determine whether the path the user pointed at is a standalone repository or a submodule inside a monorepo, and set the reference path and component name accordingly. Edits never happen here — they happen in a worktree created later.
+Reference checkout for comprehension and read-only investigation — standalone repo vs monorepo submodule.
 
 ## Inputs
 
@@ -22,6 +22,7 @@ The reference checkout root: the monorepo root when the discovered path is a sub
 ### component_name
 
 Basename of the discovered path (e.g. `midnight-node`).
+
 
 ## Protocol
 

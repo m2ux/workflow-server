@@ -19,7 +19,7 @@ Summary, description, and context from the linked issue, used to infer the probl
 
 ### target
 
-*(optional)* Preliminary target symbol(s) inferred from the issue, passed to the [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[complexity-signal](../../../meta/techniques/gitnexus-operations/complexity-signal.md) op for an objective complexity signal.
+*(optional)* Preliminary target symbol(s) inferred from the issue, used for an objective complexity signal.
 
 ## Outputs
 

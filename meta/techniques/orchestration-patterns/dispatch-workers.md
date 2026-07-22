@@ -5,23 +5,23 @@ metadata:
 
 ## Capability
 
-Dispatch an ordered set of worker briefs sequentially or concurrently and return harness results in input order.
+Dispatch an ordered set of worker briefs and return harness results in input order.
 
 ## Inputs
 
 ### worker_briefs
 
-Ordered array of `{ id, description, prompt }` (and optionally bare `{ description, prompt }` for [spawn-concurrent](../harness-compat/spawn-concurrent.md)).
+Ordered array of `{ id, description, prompt }` (and optionally bare `{ description, prompt }` for spawn-concurrent).
 
 ### concurrency
 
-*(optional)* Positive integer. Default `1`. `1` = sequential [spawn-agent](../harness-compat/spawn-agent.md) per brief; greater than `1` = one [spawn-concurrent](../harness-compat/spawn-concurrent.md) batch.
+*(optional)* Positive integer. Default `1`. `1` = sequential spawn-agent per brief; greater than `1` = one spawn-concurrent batch.
 
 ## Outputs
 
 ### dispatched_results
 
-Array of `{ id, result }` in `{worker_briefs}` order. `result` is the harness agent output text (or structured payload when the worker returned one). Completeness counts live on [gather-results](./gather-results.md).
+Array of `{ id, result }` in `{worker_briefs}` order. `result` is the harness agent output text (or structured payload when the worker returned one). Completeness counts live on gather-results.
 
 ## Protocol
 

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Compose the workflow-design PR `{title}` and `{body}` from bound planning artifacts.
+Workflow-design PR title and body composed from bound planning artifacts.
 
 ## Outputs
 

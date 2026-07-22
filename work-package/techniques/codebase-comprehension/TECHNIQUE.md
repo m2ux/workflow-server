@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Build or augment codebase comprehension through progressive analysis and persistent knowledge artifacts. The group splits the comprehension protocol into ops: [survey](./survey.md) (broad architecture pass), [deep-dive](./deep-dive.md) (targeted area investigation), and [revise-questions](./revise-questions.md) (Open Questions maintenance).
+Progressive codebase comprehension with persistent knowledge artifacts.
 
 ## Inputs
 
@@ -50,6 +50,7 @@ Mapping of domain terms to technical constructs
 #### deep_dives
 
 Targeted exploration sections added during user-driven loop
+
 
 ## Rules
 

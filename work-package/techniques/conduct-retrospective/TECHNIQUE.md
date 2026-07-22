@@ -11,7 +11,7 @@ Conduct workflow retrospective to capture lessons learned and prepare for next w
 
 ### pr_number
 
-The PR number for this work package — its merge gates the status update and the final outcome record
+The PR number for this work package
 
 ### planning_folder_path
 
@@ -19,7 +19,7 @@ Path to the planning folder where the final outcome and retrospective are record
 
 ### trace_tokens
 
-*(optional)* Opaque HMAC-signed trace-token collection accumulated across the run. When present and non-empty, resolve once at close-out; when absent or empty, skip the mechanical session-trace path.
+*(optional)* Opaque HMAC-signed trace-token collection accumulated across the run.
 
 ## Outputs
 

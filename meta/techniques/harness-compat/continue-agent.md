@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -29,10 +29,17 @@ The resumed agent's next yield or final output
 
 ## Protocol
 
-1. Select the harness-specific invocation by `{harness_kind}` and dispatch it as foreground (blocking):
-   - `claude-code` or `cursor` — `Task(resume={agent_id})`. Preserves the agent's context window. Include `{session_index}` in the prompt. Never set `run_in_background`. Same primitive across CLI, IDE extensions, and the web app; Cursor wraps the same Claude Code Task primitive.
-   - `generic` — apply [spawn-agent](./spawn-agent.md) with the `{session_index}` prepended to the `{composed_prompt}`. Full workflow state is read from `session.json` by the server on every authenticated call; the agent rebuilds context from artifacts and tool calls.
-2. Block until the agent yields or completes; capture the output as `{agent_result}`.
+### 1. Resolve harness operation
+
+- Apply [resolve-harness-operation](./resolve-harness-operation.md) with `{harness_kind}` and `operation_kind: resume` → `{harness_technique}`, `{harness_operation}`.
+
+### 2. Resume
+
+- Resume by applying `{harness_technique}`'s `{harness_operation}` Rules section with `{agent_id}`, `{session_index}`, and `{composed_prompt}`, under [foreground-always](./TECHNIQUE.md#foreground-always).
+
+### 3. Await result
+
+- Wait until the agent yields or completes (blocking-equivalent); capture the output as `{agent_result}`.
 
 ## Rules
 

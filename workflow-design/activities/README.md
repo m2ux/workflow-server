@@ -6,7 +6,7 @@ Nine activities that guide an agent from free-form description to validated, com
 
 Heading numbers below match on-disk `NN-` file prefixes (gaps at 02/07 are intentional).
 
-This file is an orientation map. The authoritative definition of each activity — its steps, checkpoints, decisions, loops, and transitions — lives in the per-activity YAML linked from each section below and is served by `get_activity`.
+This file is an orientation map. Authoritative definitions live in the per-activity YAML linked from each section below.
 
 ---
 

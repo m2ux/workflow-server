@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Perform comprehensive Rust/Substrate code review following established patterns, examining all implementation changes for architecture adherence, error handling, safety, and Substrate-specific patterns
+Rust/Substrate code review of implementation changes for architecture, error handling, safety, and Substrate patterns.
 
 ## Inputs
 
@@ -25,7 +25,7 @@ Folder where the code review report is written
 
 ### code_review_report
 
-Code review [report](../resources/rust-substrate-code-review.md#report-template) documenting findings by severity. The single [canonical home](./manage-artifacts/TECHNIQUE.md#canonical-home-map) for the change's review findings: the manual diff review ([review-diff](./review-diff.md)), structural analysis (prism), and lean-coding audit (ponytail) each write their findings into a dedicated section of this artifact.
+Code review [report](../resources/rust-substrate-code-review.md#report-template) documenting findings by severity. The single canonical home for the change's review findings — manual diff review, structural analysis, and lean-coding sections each land in a dedicated section of this artifact.
 
 #### artifact
 
@@ -35,8 +35,7 @@ Code review [report](../resources/rust-substrate-code-review.md#report-template)
 
 ### 1. Load Guidance
 
-- Use attached [rust-substrate-code-review](../resources/rust-substrate-code-review.md) for full review criteria
-  - If the code review resource is missing, check the resources folder for `16-rust-substrate-code-review.md`.
+- Use attached [rust-substrate-code-review](../resources/rust-substrate-code-review.md) for full review criteria ([resource-loading-via-tool](../../meta/techniques/workflow-engine/TECHNIQUE.md#resource-loading-via-tool) — never read workflow resources from disk).
 - Consume the canonical `{changed_files}` authored surface when it is established (review mode, produced by `review-baseline-state`). In create mode (no PR baseline), derive it from the local working-tree diff against the base branch.
   - If `{changed_files}` is empty, verify the correct branch and commit range.
 
@@ -66,6 +65,7 @@ When the diff changes a `Config` impl, an associated type, or any trait-implemen
 - Document each finding with severity (critical, high, medium, low, informational)
 - Create the `{code_review_report}` in `{planning_folder_path}` — or update it in place when an earlier review (manual diff, structural analysis, lean-coding) already created it; each contributing review owns its `##` section and this review writes the code-review sections
 - Emit a brief summary of critical and high findings as part of the bindable report output for the binding activity to surface
+
 
 ## Rules
 

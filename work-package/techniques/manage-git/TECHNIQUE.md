@@ -5,13 +5,14 @@ metadata:
 
 ## Capability
 
-Manage git operations — branching, worktree lifecycle, PR lifecycle, branch synchronization, reference-repo submodule maintenance, and pre-push verification of the configured push remote (privacy and signature checks for stealth-mode consumers).
+Git operations supporting work-package delivery — worktrees, path restore from a base ref, edit-side commits, branch sync, and pre-push destination/signature checks.
 
 ## Inputs
 
 ### reference_path
 
 Path to the reference checkout (the engineering / parent repo where planning artifacts and submodule references live)
+
 
 ## Rules
 

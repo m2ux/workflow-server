@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Research knowledge base and external sources to discover best practices, patterns, and resources, synthesize them against the work package requirements, and document the findings.
+Knowledge-base and external research synthesized against work-package requirements.
 
 ## Outputs
 
@@ -16,6 +16,7 @@ Knowledge base and web research [synthesis](../../resources/knowledge-base-resea
 #### research_artifact
 
 `kb-research.md`
+
 
 ## Rules
 

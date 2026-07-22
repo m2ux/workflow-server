@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Classify `{goal}` against a fixed `{lane_roster}` and select exactly one `{lane_id}` — the routing half of supervisor.
+Classify the goal against a fixed lane roster and select exactly one lane — the routing half of supervisor.
 
 ## Inputs
 

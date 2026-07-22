@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Analyze the reviewer comments received on a pull request and recommend a review outcome — approved, minor changes addressable inline, or significant changes — producing the recommended outcome and a concise comments summary.
+Recommended PR review outcome from received comments — approve, minor inline fixes, or significant changes.
 
 ## Inputs
 
@@ -40,6 +40,7 @@ A concise multi-line summary of the reviewer comments — one line per comment, 
 
 - Build `{review_comments_summary}` as a multi-line block — a severity tag and a one-line description per comment.
 - Keep `{review_comments_summary}` concise — one severity-tagged line per comment.
+
 
 ## Rules
 

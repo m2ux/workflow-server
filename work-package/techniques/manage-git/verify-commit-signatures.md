@@ -5,13 +5,14 @@ metadata:
 
 ## Capability
 
-Before pushing, check every commit on the feature branch for a valid GPG signature and re-sign any that lack one.
+Feature-branch GPG signature hygiene before push — every commit signed.
 
 ## Outputs
 
 ### commits_signed
 
 Boolean — `true` when every commit on `{branch_name}` carries a valid GPG signature.
+
 
 ## Protocol
 

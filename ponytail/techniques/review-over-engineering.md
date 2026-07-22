@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -32,6 +32,7 @@ The tagged findings for the change — one line per finding, each carrying a [ta
 ### 1. Scan against the taxonomy
 
 - Read the change under review — `{lean_change}` when present, otherwise the change read from `{target_path}` within the chosen `{pass_scope}`. For each construct, ask whether one of the [taxonomy](../resources/review-taxonomy.md#tags) tags applies: a deletion, a standard-library replacement, a language-native replacement, a YAGNI abstraction, or a shrinkable block.
+- **Comment proportionality (hard trim):** Flag comment / doc blocks whose bulk is not proportional to the surrounding code they annotate — why-rationale does not excuse a comment larger than the code beneath it. Prefer `delete` (restating or disposable) or `shrink` (keep a short why). See [taxonomy — comment proportionality](../resources/review-taxonomy.md#comment-proportionality).
 - A higher `{lazy_intensity}` lowers the bar for flagging — `ultra` flags any construct a lazier rung could replace; `lite` flags only the clear wins.
 
 ### 2. Record one line per finding

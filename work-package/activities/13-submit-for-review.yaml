@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.11.1
+version: 1.13.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 required: true
@@ -280,6 +280,73 @@ steps:
           Note: GitHub web UI squash merge is not GPG-signed. Use the local flow above for a verified commit.
 
           If squash merge is not available on this repo, branch commits land as-is — no signing required.
+  - kind: checkpoint
+    id: build-artifact-check
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
+    message: Do any build-dependent artifacts need user-owned regeneration (e.g. .scale / node metadata)?
+    blocking: true
+    options:
+      - id: none-needed
+        label: None needed
+        description: No build-dependent regen is owed; proceed to mark-ready
+        effect:
+          setVariable:
+            build_dependent_artifacts_pending: false
+      - id: regen-needed
+        label: Regen needed — hand off
+        description: User must regenerate build-dependent artifacts; continue to the hand-off gate
+        effect:
+          setVariable:
+            build_dependent_artifacts_pending: true
+  - kind: checkpoint
+    id: build-artifact-handoff
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: build_dependent_artifacts_pending
+          operator: ==
+          value: true
+    message: |-
+      Build-dependent artifacts need regeneration.
+
+      Commands / ownership notes:
+      {build_dependent_artifact_commands}
+
+      Regenerate locally (or accept ownership) before CI is the first signal.
+    blocking: true
+    options:
+      - id: user-regenerated
+        label: Regenerated — continue
+        description: User regenerated the artifacts; clear the pending flag
+        effect:
+          setVariable:
+            build_dependent_artifacts_pending: false
+      - id: user-owns-regen
+        label: User owns regen — continue
+        description: Record that the user owns regeneration; clear the gate and proceed
+        effect:
+          setVariable:
+            build_dependent_artifacts_pending: false
+            build_artifact_user_owned: true
   - kind: technique
     id: mark-ready
     technique: update-pr::mark-ready
@@ -432,5 +499,6 @@ transitions:
       value: true
 outcome:
   - PR pushed and marked ready for review
+  - Build-dependent artifacts flagged and handed to the user when regen is owed (create / non-stealth, before mark-ready)
   - Review comments received and addressed
   - Review outcome determined (proceed or rework)

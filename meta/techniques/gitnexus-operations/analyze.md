@@ -11,7 +11,7 @@ metadata:
 
 ### repo_path
 
-Filesystem path to the repository to index. For monorepos, pass the monorepo ROOT — gitnexus walks the working tree from there and indexes every source file it encounters, including content that physically lives inside submodule directories. The result is a single unified index keyed under the monorepo's name. Do NOT analyze each submodule separately when the monorepo root has already been (or will be) analyzed — that produces duplicate, harder-to-reason-about indexes. For standalone repos, pass the repo root.
+Filesystem path to the repository to index. For monorepos, pass the monorepo ROOT — gitnexus walks the working tree from there and indexes every source file it encounters, including content that physically lives inside submodule directories, producing a single unified index keyed under the monorepo's name. For standalone repos, pass the repo root.
 
 ### force_rebuild
 
@@ -40,3 +40,9 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 
 - On success, `touch {repo_path}/.git/.workflow-gitnexus-refresh` so subsequent invocations see the freshness signal. Release the lock. On a fresh repo with no prior index, the first analyze can take minutes — do not retry until exit. Subsequent incremental runs are seconds.
 - After exit, optionally apply [verify-index](./verify-index.md) to confirm freshness — useful when chained immediately into a downstream comprehension or impact step.
+
+## Rules
+
+### no-per-submodule-analyze
+
+Do NOT analyze each submodule separately when the monorepo root has already been (or will be) analyzed — that produces duplicate, harder-to-reason-about indexes.

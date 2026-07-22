@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Assemble the update-mode design specification from the settled change request — compliance report when present, otherwise `{change_category}` / `{user_description}` and `{structural_inventory}` — emitting only dimensions that change.
+Update-mode design specification covering only dimensions that change.
 
 ## Inputs
 
 ### operation_type
 
-Must be `update` for this technique to apply.
+The classified operation type (`update`).
 
 ### change_category
 
@@ -40,6 +40,12 @@ The assembled update specification covering **changed** members of the update di
 
 ### 2. Assemble Changed Dimensions Only
 
-- From the update dimension set in [elicitation-guide](../resources/elicitation-guide.md) `## Mode Dimension Sets` (purpose, activity list, checkpoints, artifacts, rules), emit only dimensions that change relative to the baseline and change request
+- From the update dimension set in [elicitation-guide](../resources/elicitation-guide.md) `## Mode Dimension Sets`, emit only dimensions that change relative to the baseline and change request
 - Omit unchanged dimensions from `{accumulated_design}` — do not assemble the full five every update
 - Derive each included dimension from the change sources and baseline; prefer additive edits named by findings or the change request; do not invent unrelated structural changes
+
+## Rules
+
+### update-mode-only
+
+This technique applies only when `{operation_type}` is `update`.

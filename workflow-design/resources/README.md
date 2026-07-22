@@ -15,7 +15,7 @@ Markdown resources for design principles, construct inventories, anti-pattern ca
 | `02` | [Anti-Patterns](anti-patterns.md) | Specific smell instances — Detect/Do not flag/Fix |
 | `03` | [Update Mode Guide](update-mode-guide.md) | Change-request category vocabulary for update mode |
 | `04` | [Compliance Report](compliance-report.md) | Creation guide: `compliance-review.md` / `post-update-review.md` |
-| `05` | [Design Context README](design-context-readme.md) | Creation guide: planning-folder `README.md` |
+| `05` | [README Seed](readme-seed.md) | Work-package-tailored Progress inventory + mode map for planning-folder `README.md` |
 | `06` | [Completion Artifact](completion-artifact.md) | Creation guide: `COMPLETE.md` |
 | `07` | [Design Assumptions](design-assumptions.md) | Creation guide: `assumptions-log.md` |
 | `08` | [Design Assumption Reconciliation](design-assumption-reconciliation.md) | Audit vs open resolvability vocabulary |
@@ -40,7 +40,7 @@ Markdown resources for design principles, construct inventories, anti-pattern ca
 
 | Bare filename | Guide |
 |---------------|-------|
-| `README.md` | [design-context-readme](design-context-readme.md) |
+| `README.md` | [planning-readme](../../meta/resources/planning-readme.md) Template + [readme-seed](readme-seed.md) |
 | `COMPLETE.md` | [completion-artifact](completion-artifact.md) |
 | `assumptions-log.md` | [design-assumptions](design-assumptions.md) |
 | `structural-inventory.md` | [structural-inventory](structural-inventory.md) |
@@ -65,7 +65,7 @@ Each creation guide has a **Template** section and **Rules** for lean, decision-
 
 ### 00 — Design Principles
 
-*Prefer / before / only after* stance — broader than any one defect; avoids families of smells. No Detect triad here; specific bad instances live in the anti-pattern catalog. Includes **§1 Workflows Ossify Patterns** (why workflows exist — reuse of fixed patterns vs on-the-fly novelty), **§26 Atomic Techniques; Compose at Activities**, and **§28 Creation Guide for Generated Documents** (every persisted planning artifact maps to a Template+Rules guide).
+*Prefer / before / only after* stance — broader than any one defect; avoids families of smells. No Detect triad here; specific bad instances live in the anti-pattern catalog. Includes **§1 Workflows Ossify Patterns** (why workflows exist — reuse of fixed patterns vs on-the-fly novelty), **§26 Atomic Techniques; Compose at Activities**, **§28 Creation Guide for Generated Documents** (every persisted planning artifact maps to a Template+Rules guide), and **§29 Cite Resource Policy; Do Not Restate It** (technique Protocol cites resource policy; does not re-author the matrix).
 
 ### 01 — Schema Construct Inventory
 

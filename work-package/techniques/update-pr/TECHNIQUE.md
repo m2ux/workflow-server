@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 2.3.0
+  version: 2.5.0
 ---
 
 ## Capability
 
-Update a PR with final implementation details and mark it ready for review, or post consolidated review comments when operating in review mode. Operations cover rendering the body from a template, verifying body conformance, pushing commits, marking ready, and posting the review summary as a `gh pr review` comment.
+PR finalization for review — body update and ready mark, or consolidated review-mode commentary.
 
 ## Inputs
 
@@ -35,7 +35,7 @@ Path to the target checkout (where the PR lives), from which the target repo URL
 
 ### pr_template_variant
 
-*(optional, enum: `initial` | `final`, default `final`)* Which PR body template to render — `initial` before implementation (ADR-only), `final` after implementation
+*(optional, enum: `initial` | `final`, default `final`)* Which PR body template to render
 
 ## Outputs
 
@@ -47,12 +47,20 @@ True once the rendered body passes every rule in `rules.pr-body-conformance`; fa
 
 List of `{ rule_id, detail }` entries, one per failed conformance rule; empty when the body conforms
 
-## Rules
+## Protocol
 
 ### template-selection
 
-- review-mode-template: In review mode, use the [Consolidated Review Format](../../resources/review-mode.md#consolidated-review-format) for the consolidated PR review comment template. The review comment structure (sections, tables, Finding Details dropdowns, linked headings, reviewer agents) is defined there.
-- initial-template: When `{pr_template_variant}` is `initial` (creating a PR before implementation, ADR-only), use the [Template (Initial)](../../resources/pr-description.md#template-initial). When `{pr_template_variant}` is `final` (updating after implementation), use the [Template (Final)](../../resources/pr-description.md#template-final).
+Callers bind `{pr_template_variant}` at the step. Selection for [render](./render.md):
+
+1. If `{is_review_mode}` → [Consolidated Review Format](../../resources/review-mode.md#consolidated-review-format)
+2. If `{pr_template_variant}` is `initial` → [Template (Initial)](../../resources/pr-description.md#template-initial)
+3. If `{pr_template_variant}` is `final` → [Template (Final)](../../resources/pr-description.md#template-final); apply [lifecycle tense](../../resources/pr-description.md#lifecycle-tense)
+
+Typical binds: `plan-prepare` → `initial`; `strategic-review` and `submit-for-review` → `final`.
+
+
+## Rules
 
 ### body-composition
 

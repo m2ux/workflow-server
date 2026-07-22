@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.34.0
+version: 3.35.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -22,8 +22,6 @@ rules:
     - leanness-reported-honestly - The net-lines scoreboard and gain figures are reported honestly - the harvested debt ledger is the source of the real per-change count; aggregate or benchmark figures never overstate the gain.
     - complementary-not-duplicative-with-strategic-review - The lean-coding audit applies the over-engineering and leanness lens; it does not re-adjudicate scope-vs-issue fit, which remains strategic-review's concern. The two stages stay complementary.
     - "review-mode-headless-auto-advance - Once is_review_mode == true the run is headless. Every review-reachable checkpoint that carries defaultOption + autoAdvanceMs is resolved by calling respond_checkpoint with auto_advance:true (which applies the default option's full side effects unchanged) and surfacing the outcome as a plain message — never as an AskUserQuestion dialog. A checkpoint gated is_review_mode != true is cleared with respond_checkpoint condition_not_met. Interactive in review mode only when their gap conditions fire — review-mode-detection (when review_mode_ambiguous) and review-pr-reference (when review_pr_missing). review-summary-approval remains always interactive in review mode."
-  activity:
-    - On completing each activity, update the planning-folder README.md progress tracker — mark this activity's artifacts as ✅ Complete and set the work-package Status to reflect the current milestone.
 fragments:
   rules:
     interaction-discipline:
@@ -153,6 +151,26 @@ variables:
   - name: validation_results
     type: object
     description: Aggregate validation envelope — { check_status, clippy_status, test_status, fmt_status, validation_passed }.
+  - name: run_local_validation
+    type: boolean
+    description: True when the user permits the agent to run the project validation suite locally; set at the local-validation-permission checkpoint.
+    defaultValue: false
+  - name: mark_progress_na
+    type: boolean
+    description: When true at activity_complete, commit-and-persist Applies Progress cancelled/N/A for the completed activity instead of complete, then clears this flag. Validate sets it when local validation is unavailable.
+    defaultValue: false
+  - name: build_dependent_artifacts_pending
+    type: boolean
+    description: True when regen of build-only artifacts (e.g. .scale / node metadata) is required and the agent cannot produce them; gates the build-artifact hand-off in submit-for-review before mark-ready.
+    defaultValue: false
+  - name: build_dependent_artifact_commands
+    type: string
+    description: Human-readable command list / ownership notes for regenerating build-dependent artifacts; shown at the submit-for-review build-artifact hand-off gate.
+    defaultValue: ""
+  - name: build_artifact_user_owned
+    type: boolean
+    description: True when the user accepted ownership of build-dependent artifact regeneration at the submit-for-review hand-off gate.
+    defaultValue: false
   - name: review_passed
     type: boolean
     description: Whether strategic review passed
