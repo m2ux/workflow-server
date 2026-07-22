@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Assess the impact of proposed changes against an existing workflow: enumerate its files, classify each file's impact, verify transition-chain, reference, and variable integrity, and record a diff-style inventory of material being removed.
+Impact assessment of proposed changes against an existing workflow.
 
 ## Outputs
 

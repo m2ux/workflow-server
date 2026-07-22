@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Merge `{challenge_findings}` into the concern set, update the authoritative log or open-questions table, and set the bound `{convergence_flag}` and `{residue_flag}` so [run-loop](./run-loop.md) can decide whether another iteration is needed.
+Challenge findings folded into the concern set with convergence/residue flags for the run-loop.
 
 ## Inputs
 
 ### challenge_findings
 
-Ordered per-perspective findings from [challenge](./challenge.md).
+Ordered per-perspective findings from the challenge pass.
 
 ### concern_kind
 
@@ -45,7 +45,7 @@ Bag name of the boolean set true iff irreducible opens remain after this combine
 
 ### comprehension_artifact
 
-*(when applicable)* Artifact with Open Questions updated from challenge outcomes.
+*(when applicable)* Artifact with Open Questions updated from the challenge-pass outcomes.
 
 ### convergence_flag
 
@@ -96,6 +96,7 @@ Bound flag: true iff irreducible opens remain for activity-level residual interv
 ### 3. Authority
 
 - The log (or Open Questions table) remains the single source of truth — do not restate concern bodies elsewhere
+
 
 ## Rules
 

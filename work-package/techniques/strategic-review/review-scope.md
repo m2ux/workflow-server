@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Examine all changes on the feature branch and assess them for scope discipline, orphaned symbols, investigation artifacts, over-engineering, solution minimality, commit-signature hygiene, and PR-body conformance — the combined diff-review and artifact-identification pass that surfaces every finding for the review document.
+Scope-discipline and artifact-hygiene findings across the feature-branch diff for the strategic review document.
 
 ## Inputs
 
@@ -23,13 +23,13 @@ List of files changed in the work package, passed to the orphan scan.
 
 ### pr_number
 
-*(optional)* PR identifier, used to discover the base branch and read the live PR body for conformance verification. Absent when no PR exists (stealth mode) — base discovery and body conformance then follow their no-PR paths.
+*(optional)* PR identifier for the PR under review. Absent when no PR exists (stealth mode).
 
 ## Outputs
 
 ### strategic_review_doc
 
-The strategic review document this pass populates with categorized findings — scope creep, orphaned symbols, investigation artifacts, over-engineering, and PR-body conformance entries. Same artifact the group root declares; this op writes the findings into it.
+The strategic review document holding categorized findings — scope creep, orphaned symbols, investigation artifacts, over-engineering, and PR-body conformance entries. Same artifact the group root declares.
 
 ### unsigned_commits_in_pr
 
@@ -89,6 +89,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 - Read the live PR body via `gh pr view {pr_number} --json body --jq .body`.
 - Run [update-pr](../update-pr/TECHNIQUE.md)::[verify-body](../update-pr/verify-body.md) against the live body.
 - If `body_conforms == false`, record each `body_findings` entry in the `{strategic_review_doc}` under 'PR body conformance'.
+
 
 ## Rules
 

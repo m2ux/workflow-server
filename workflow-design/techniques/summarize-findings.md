@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Compile a severity-rated summary of post-update audit findings — a clean pass when there are none, per-finding file/location/severity/fix when there are — including pass/fail counts by severity and any new findings introduced by the update.
+Severity-rated summary of post-update audit findings.
 
 ## Outputs
 

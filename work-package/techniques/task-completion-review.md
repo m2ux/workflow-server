@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Self-review of a completed implementation task: verify that every symbol introduced or referenced has provenance (populating `{uncertain_symbols}` and setting `{has_uncertain_symbols}`), then run code, test, and documentation quality checks. Catches fabricated symbols and quality regressions early.
+Post-task self-review for symbol provenance and code/test/documentation quality — catches fabricated symbols early.
 
 ## Inputs
 
@@ -53,6 +53,7 @@ Multi-line list of uncertain symbols (one per line: symbol name + the file/line 
 - Code quality: follows existing patterns and architecture; type-safe (compiler checks pass); error handling implemented; no hardcoded values where constants or configuration belong; documentation comments on public APIs; no debug prints in production code; no TODO comments without issue references.
 - Test quality: unit tests written for new code; edge cases covered; error conditions tested; all tests passing (unit, integration, e2e).
 - Documentation quality: all symbols in docs exist in code (per the provenance verification above); change file accurately describes the actual changes; no fabricated or speculative content; commit messages follow conventional commits.
+
 
 ## Rules
 

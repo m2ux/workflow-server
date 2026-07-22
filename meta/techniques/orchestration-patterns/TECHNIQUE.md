@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Shared Inputs, Outputs, and domain invariants for mid-phase multi-agent orchestration: work-unit decomposition, specialist routing, worker brief composition, dispatch, ordered gather with completeness, synthesis, plan-and-execute, research fan-out, and opaque agent-as-tool invocation. Session-level orchestrator/worker dispatch remains [workflow-engine](../workflow-engine/TECHNIQUE.md)::[dispatch-activity](../workflow-engine/dispatch-activity.md); fan-out primitives remain [scatter-gather](../scatter-gather.md) and [harness-compat](../harness-compat/TECHNIQUE.md).
+Shared Inputs, Outputs, and domain invariants for mid-phase multi-agent orchestration patterns. Session-level dispatch and fan-out primitives remain in workflow-engine, scatter-gather, and harness-compat.
 
 ## Inputs
 
@@ -15,11 +15,11 @@ The caller-facing goal or request text the pattern operates on.
 
 ### concurrency
 
-*(optional)* Positive integer. Default `1`. `1` = sequential dispatch; greater than `1` = parallel fan-out via [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-concurrent](../harness-compat/spawn-concurrent.md).
+*(optional)* Positive integer. Default `1`. `1` = sequential dispatch; greater than `1` = parallel fan-out.
 
 ### isolation_mode
 
-*(optional)* Default `context`. `context` — each worker gets an isolated context window and must not write sibling workspaces. `worktree` — each worker also receives its own git worktree (or equivalent sandbox) under `{planning_folder_path}` before mutating files.
+*(optional)* Default `context`. `context` — each worker gets an isolated context window. `worktree` — each worker also receives its own git worktree (or equivalent sandbox) under `{planning_folder_path}`.
 
 ### effort_cap
 
@@ -51,11 +51,15 @@ Single combined result produced from `{gathered_results}` under caller-supplied 
 
 ### isolation-then-combine
 
-Parallel worker outputs stay isolated until a gather + synthesise path merges them. Never auto-bind per-instance scalar outputs into the parent bag by name.
+Honor [scatter-gather](../scatter-gather.md)::isolation-then-combine for parallel fan-out.
+
+### isolation-mode-write-boundary
+
+Under `context` isolation, workers must not write sibling workspaces. Under `worktree` isolation, workers must create/use their worktree before mutating files.
 
 ### parallelism-is-optimisation
 
-Sequential dispatch (`concurrency = 1`) is always valid for correctness. Parallel mode adds concurrency and isolation only.
+Honor [scatter-gather](../scatter-gather.md)::parallelism-is-optimisation (`concurrency = 1` remains correct).
 
 ### workers-see-briefs-only
 
@@ -63,7 +67,7 @@ Worker prompts carry the assigned brief, output contract, and tools — not the 
 
 ### no-nested-orchestrators
 
-Dispatch uses [harness-compat](../harness-compat/TECHNIQUE.md) depth-1 only. Hierarchical depth uses [workflow-engine](../workflow-engine/TECHNIQUE.md)::[handle-sub-workflow](../workflow-engine/handle-sub-workflow.md) / `dispatch_child`, not nested Task orchestrators.
+Honor [spawn-agent](../harness-compat/spawn-agent.md)::depth-1-only. Hierarchical depth uses [handle-sub-workflow](../workflow-engine/handle-sub-workflow.md) / `dispatch_child`, not nested Task orchestrators.
 
 ### prefer-activity-composition
 

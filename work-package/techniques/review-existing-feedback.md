@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Ingest and triage every prior comment and review on the PR under review — human and bot, top-level and inline — before any independent analysis begins, so the verdict accounts for signal others have already raised. Each prior finding is dispositioned Confirmed, Refuted, or Superseded with reasoning, and an unaddressed external blocker-class comment caps the Overall Rating so the review cannot conclude "Comment Only / no blocker" while a blocker stands.
+Prior PR feedback accounted for in the review verdict — dispositions and blocker-class rating caps.
 
 ## Inputs
 
@@ -25,7 +25,7 @@ The triage table: one row per prior comment or review thread, each marked Confir
 
 ### rating_cap
 
-The ceiling the Overall Rating may not exceed, derived from the triage. When any prior comment is a blocker-class concern left unaddressed by the PR, the cap is the request-changes tier; otherwise the cap is unset and the rating is governed solely by the review's own findings. The summary applies this cap so an unaddressed external blocker cannot be rated away.
+The ceiling the Overall Rating may not exceed, derived from the triage. When any prior comment is a blocker-class concern left unaddressed by the PR, the cap is the request-changes tier; otherwise the cap is unset and the rating is governed solely by the review's own findings.
 
 ## Protocol
 
@@ -52,6 +52,7 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
 ### 4. Create the Triage
 
 - Create the `{prior_feedback_triage}` artifact in `{planning_folder_path}` so the consolidated summary renders the triage section and applies the cap.
+
 
 ## Rules
 

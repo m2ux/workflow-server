@@ -11,13 +11,13 @@ Prompt the user for the stakeholder discussion transcript before agent-led elici
 
 ### stakeholder_transcript
 
-*(optional)* Transcript or summary from the user's discussion with key stakeholders, prompted for here before elicitation; a skip path with a noted limitation is offered when none is provided.
+*(optional)* Transcript or summary from the user's discussion with key stakeholders.
 
 ## Outputs
 
 ### stakeholder_transcript
 
-The transcript or summary captured from the user, or absent when the user skips — in which case the limitation is noted and agent-led elicitation proceeds.
+The transcript or summary captured from the user, or absent when the user skips.
 
 ### has_stakeholder_input
 

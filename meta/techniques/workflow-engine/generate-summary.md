@@ -21,7 +21,7 @@ Completed activities, checkpoint decisions, artifacts produced
 
 ### completion_summary
 
-[Markdown string](../../resources/session-summary-template.md#session-summary-template) ready to present to the user.
+[Markdown string](../../resources/session-summary-template.md#session-summary-template) summarizing the completed session.
 
 ## Protocol
 

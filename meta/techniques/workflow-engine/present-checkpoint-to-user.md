@@ -27,13 +27,9 @@ Load the active checkpoint's details and present them to the user.
 
 ## Rules
 
-### no-auto-resolution
-
-NEVER auto-resolve a checkpoint without first presenting it. `auto_advance: true` is only valid after `AskQuestion` has been shown to the user and the `autoAdvanceMs` timer has elapsed without a response. Skipping `AskQuestion` and going straight to a sleep + `auto_advance` is a protocol violation, even when the default option seems obvious from prior context or prior user input on a different checkpoint.
-
 ### present-before-any-resolution
 
-`present_checkpoint` returning data is not the same as presenting to the user. Every checkpoint resolution path — `option_id`, `auto_advance`, or `condition_not_met` — MUST be preceded by an `AskQuestion` that displays the checkpoint's message and options. All checkpoints block; `autoAdvanceMs` is a fallback for when the user does not respond, not a license to skip the prompt.
+`present_checkpoint` returning data is not presentation. Every resolution path — `option_id`, `auto_advance`, or `condition_not_met` — MUST be preceded by an `AskQuestion` that displays the checkpoint's message and options. Never skip `AskQuestion` for a sleep + `auto_advance`, even when the default seems obvious. `auto_advance: true` is valid only after `AskQuestion` was shown and `autoAdvanceMs` elapsed without a response.
 
 ### apply-effects-immediately
 

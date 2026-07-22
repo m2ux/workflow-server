@@ -5,19 +5,20 @@ metadata:
 
 ## Capability
 
-Refresh the monorepo reference's submodules to their tracked remote HEADs, with locking and skip-if-recent semantics to coordinate concurrent invocations from sibling work packages.
+Monorepo reference submodules refreshed to tracked remote HEADs, with locking and skip-if-recent coordination.
 
 ## Inputs
 
 ### reference_path
 
-Path to the reference checkout (the engineering / parent monorepo whose submodules are refreshed); the gate, lock, freshness sentinel, and `git submodule update` all operate inside it. The op is a no-op when this is empty or the reference is a standalone repo with no `.gitmodules`.
+Path to the reference checkout (the engineering / parent monorepo whose submodules are refreshed).
 
 ## Outputs
 
 ### refreshed_submodules
 
-The reference's submodules advanced to their tracked branches' remote HEADs (or a silent skip when gated out / skip-if-recent), with the `.workflow-submodule-refresh` freshness sentinel touched on success. Pointer changes are NOT committed. A side-effect op; reference-side freshness is its product.
+The reference's submodules advanced to their tracked branches' remote HEADs, or unchanged when the refresh was skipped or gated out.
+
 
 ## Protocol
 

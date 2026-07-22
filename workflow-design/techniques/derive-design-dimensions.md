@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Derive the ordered set of design dimensions to elicit for the current operation from the mode dimension sets in the [elicitation-guide](../resources/elicitation-guide.md).
+Ordered design-dimension set for the current operation from the elicitation-guide mode dimension sets.
 
 ## Inputs
 

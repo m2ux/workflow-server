@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Write assumption outcomes (resolved/deferred) and the user's responses back into the assumptions log, producing the `{assumptions_log}`.
+Assumption outcomes and stakeholder responses recorded in the assumptions log.
 
 ## Inputs
 
@@ -29,7 +29,8 @@ The assumptions [log](../../resources/assumptions-review.md#assumptions-log-temp
 
 ### has_deferred_assumptions
 
-Boolean gate — true iff any assumption was marked deferred (needs-discussion); consumed downstream to decide whether a resolution summary is posted to the issue tracker.
+Boolean gate — true iff any assumption was marked deferred (needs-discussion).
+
 
 ## Protocol
 

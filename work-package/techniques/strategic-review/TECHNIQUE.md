@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Review implementation to ensure changes are minimal, focused, scope-disciplined, and free of investigation artifacts, produce review findings, maintain the changes-folder fragment, and commit the changes-folder fragment and strategic artifacts. This group decomposes the review into ordered operations: [review-scope](./review-scope.md), [changes-folder](./changes-folder.md), [verify-fragment](./verify-fragment.md), [document-findings](./document-findings.md), [recommend-cleanup](./recommend-cleanup.md), and [apply-cleanup](./apply-cleanup.md).
+Scope-disciplined strategic review of the implementation — findings, changes-folder hygiene, and cleanup of investigation artifacts.
 
 ## Inputs
 
@@ -50,6 +50,7 @@ Architecture [summary](../../resources/architecture-summary.md#architecture-summ
 #### architecture_summary_artifact
 
 `architecture-summary.md`
+
 
 ## Rules
 

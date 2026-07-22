@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Validate every YAML file in a workflow against its JSON schema and verify every reference resolves through the loader, recording per-file pass/fail with the validator's message and resolving failures.
+JSON-schema and loader reference-resolution validation across a workflow's YAML files.
 
 ## Outputs
 

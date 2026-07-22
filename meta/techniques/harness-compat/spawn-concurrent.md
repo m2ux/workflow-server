@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -21,13 +21,20 @@ Array of agent results, one per dispatched agent
 
 ## Protocol
 
-1. Select the harness-specific invocation by `{harness_kind}` and dispatch all agents at once:
-   - `claude-code` or `cursor` — emit multiple `Task` calls in a single response turn; the harness executes them in parallel. Same across CLI, IDE extensions, and the web app; Cursor wraps the same primitive.
-   - `generic` — issue parallel invocations when the harness supports concurrent dispatch; fall back to sequential [spawn-agent](./spawn-agent.md) calls otherwise.
-2. Block until all agents yield or complete; collect each agent's final output into `{results}` in input order.
+### 1. Resolve harness operation
+
+- Apply [resolve-harness-operation](./resolve-harness-operation.md) with `{harness_kind}` and `operation_kind: concurrent` → `{harness_technique}`, `{harness_operation}`.
+
+### 2. Dispatch batch
+
+- Dispatch all agents by applying `{harness_technique}`'s `{harness_operation}` Rules section under [foreground-always](./TECHNIQUE.md#foreground-always).
+
+### 3. Await results
+
+- Wait until every agent yields or completes (blocking-equivalent); collect each agent's final output into `{results}` in input order.
 
 ## Rules
 
 ### parallelism-is-optimisation
 
-Concurrent dispatch reduces wall-clock time. Not required for correctness — sequential fallback via [spawn-agent](./spawn-agent.md) is always valid.
+Honor [scatter-gather](../scatter-gather.md)::parallelism-is-optimisation — sequential fallback via [spawn-agent](./spawn-agent.md) remains valid.

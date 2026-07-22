@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Analyze and respond to PR review comments systematically — categorizing comments, prioritizing by impact, implementing changes, and posting responses
+Systematic response to PR review comments — analysis through posted replies.
 
 ## Inputs
 
@@ -84,6 +84,7 @@ Whether the changes are significant enough to require substantial rework
 - Determine if re-review is needed (significant changes) or minor fixes suffice
 - Capture the categorized dispositions, changes made, and re-review decision as the `{review_analysis}` document
 
+
 ## Rules
 
 ### respond-to-all
@@ -96,7 +97,7 @@ Address required changes before suggestions and nits
 
 ### measured-response-language
 
-Measured technical language per [manage-artifacts](./manage-artifacts/TECHNIQUE.md#plain-technical-language) — no hyperbole or superlatives ("excellent", "amazing", "perfect"). Address the specific concern raised, with concrete examples and implementation details where relevant; consider trade-offs and alternatives.
+Tone per [agent-conduct](../../meta/techniques/agent-conduct.md) `communication-*` rules. Address the specific concern with concrete examples and trade-offs where relevant.
 
 ### blockquote-paste-format
 

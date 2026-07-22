@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Ensure a dedicated workflows edit worktree exists at `{target_path}` on feature branch `{workflow_branch}` — composing [work-package create-worktree](../../work-package/techniques/manage-git/create-worktree.md) with design defaults (`component_name=workflows`).
+Dedicated workflows edit worktree at the target path on the workflow feature branch.
 
 ## Inputs
 
@@ -19,7 +19,7 @@ Workflow id used to name the feature branch (`workflow/{workflow_id}`, with an i
 
 ### operation_type
 
-Create or update (review mode skips this ensure). Used only to decide whether an update intent suffix is needed when `workflow/{workflow_id}` already exists.
+Create or update.
 
 ### reference_path
 
@@ -39,6 +39,7 @@ True when the worktree at `{target_path}` on `{workflow_branch}` was created or 
 
 ### 1. Derive Branch Name
 
+- Skip this technique entirely when `{operation_type}` is `review` (no worktree ensure needed)
 - Set `{$branch_name}` to `workflow/{workflow_id}`
 - When `{operation_type}` is `update` and that branch already exists for a prior change, suffix a short change-intent slug so the session has a distinct branch
 

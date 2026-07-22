@@ -11,11 +11,11 @@ Drive test-coverage review from the actual changed-symbol set rather than projec
 
 ### repo_name
 
-Name of the indexed repository whose graph the operations query (the `{name}` in `gitnexus://repo/{name}/context`). Index freshness is confirmed via this name before the first operation.
+Name of the indexed repository whose graph the operations query (the `{name}` in `gitnexus://repo/{name}/context`).
 
 ### diff
 
-The working-tree / branch diff under review, consumed by [detect-changes](./detect-changes.md) to enumerate the changed-symbol set.
+The working-tree / branch diff under review — source for enumerating the changed-symbol set.
 
 ## Outputs
 

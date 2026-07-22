@@ -24,5 +24,4 @@ The identified next work package (when applicable) together with the context pre
 ### 1. Select Next
 
 - Identify next work package if applicable.
-- Prepare context for transition.
-  > When carried context depends on the session's own record (variables, completed activities, checkpoint decisions), read it through the `inspect_session` tool (`view: summary`, or a narrower view) rather than reading `session.json` directly.
+- Prepare context for transition. When carried context depends on session record, use `inspect_session` per [generate-summary](../../../meta/techniques/workflow-engine/generate-summary.md) / [verify-outcomes](../../../meta/techniques/workflow-engine/verify-outcomes.md).

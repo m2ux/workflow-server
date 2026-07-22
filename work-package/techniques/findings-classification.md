@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Severity-classify a set of review or validation findings on a single scale (Critical / Major / Minor / Nit / Informational) and set the routing flags that gate downstream fix cycles. Generic over the source of the findings — code-review findings, test-suite-review findings, and validation diagnostics (test/build/lint failures) are all classified the same way, with failures mapped onto the same severity scale.
+Single-scale severity classification for review or validation findings, with routing flags for downstream fix cycles.
 
 ## Inputs
 
@@ -68,6 +68,7 @@ A finding that is correct on the code-correctness axis but lands on any impact a
 
 - Leave Nit and Informational findings unflagged — they are documented in their review reports for the user to triage at their discretion, never auto-fixed.
 - A run with only Nit/Informational findings, and a clean run with no findings, both leave the routing flags false so the work proceeds without a fix cycle.
+
 
 ## Rules
 

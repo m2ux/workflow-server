@@ -1,13 +1,32 @@
 id: validate
-version: 3.2.0
+version: 3.6.0
 name: Verify & Validate Design
-description: Validate the implementation against tests, build, format, and lint checks.
+description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
 required: true
 steps:
+  - kind: checkpoint
+    id: local-validation-permission
+    message: Is the local environment suitable to run the project's validation suite?
+    blocking: true
+    options:
+      - id: run-locally
+        label: Yes — run validation locally
+        description: Agent executes the project suite in-process
+        effect:
+          setVariable:
+            run_local_validation: true
+            mark_progress_na: false
+      - id: validation-unavailable
+        label: No — mark validation N/A
+        description: Skip the local suite; Progress Validation recorded as cancelled/N/A
+        effect:
+          setVariable:
+            run_local_validation: false
+            mark_progress_na: true
   - kind: technique
     id: preflight
     technique: cargo-operations::preflight
-    when: project_type == 'rust-substrate'
+    when: project_type == 'rust-substrate' && run_local_validation == true
     actions:
       - action: validate
         target: missing_prerequisites.length == 0
@@ -18,7 +37,7 @@ steps:
       name: cargo-operations::run-suite
       inputs:
         build_scope: --workspace
-    when: project_type == 'rust-substrate'
+    when: project_type == 'rust-substrate' && run_local_validation == true
   - kind: technique
     id: document-failures
     technique: findings-classification
@@ -53,6 +72,10 @@ steps:
           operator: "!="
           value: true
         - type: simple
+          variable: run_local_validation
+          operator: ==
+          value: true
+        - type: simple
           variable: validation_results.validation_passed
           operator: ==
           value: false
@@ -62,10 +85,16 @@ steps:
     name: Fix and Revalidate Cycle
     loopType: doWhile
     condition:
-      type: simple
-      variable: validation_results.validation_passed
-      operator: ==
-      value: false
+      type: and
+      conditions:
+        - type: simple
+          variable: run_local_validation
+          operator: ==
+          value: true
+        - type: simple
+          variable: validation_results.validation_passed
+          operator: ==
+          value: false
     maxIterations: 10
     steps:
       - kind: technique
@@ -91,5 +120,5 @@ transitions:
   - to: strategic-review
     isDefault: true
 outcome:
-  - All tests passing
-  - Build successful
+  - All tests passing when the suite ran locally, or Progress Validation marked cancelled/N/A when local validation was unavailable
+  - Build successful when the agent ran the suite

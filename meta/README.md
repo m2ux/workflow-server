@@ -11,9 +11,9 @@ The meta workflow is the structural home for the orchestration logic that used t
 **Key characteristics:**
 
 - Excluded from `list_workflows` — not a user-facing workflow.
-- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: schema fetch → `start_session` → `get_workflow`. Ongoing delivery policy lives in the operations bundle (`workflow-engine::start-session` and related rules). There is no separate START / RESUME branching in bootstrap — `discover-session` owns target identification and saved-session matching.
+- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: schema fetch → `start_session` → `get_workflow`. Ongoing delivery policy lives in the operations bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)). There is no separate START / RESUME branching in bootstrap — `discover-session` owns target identification and saved-session matching.
 - Universal techniques resolve for any session via the loader's workflow-local → `meta` fallback chain.
-- State persistence is server-managed. Every authenticated tool call atomically writes `session.json` + `.session-token` (seal) into the planning folder, so there are no agent-side persist or restore steps.
+- State persistence is server-managed (no agent-side persist/restore); on-disk shape: [`docs/state_management_model.md`](../../docs/state_management_model.md).
 
 | # | Activity | Role |
 |---|----------|------|
@@ -49,40 +49,7 @@ graph TD
 
 ## Hierarchical Orchestration Model
 
-The workflow-server implements a hierarchical orchestration model. Meta runs as the meta-orchestrator (user-facing); the client session is created as a child of the meta session. During `dispatch-client-workflow`, the meta-orchestrator drives the client workflow's activity loop **inline** — it dispatches each activity-worker directly via `dispatch-activity` using the `client_session_index`, rather than spawning a separate persistent client orchestrator. The activity-worker runs with the same `session_index` as the client session. The server snapshots parent context recursively under the child session's `parentSession` field on creation.
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Meta as meta-orchestrator<br/>(meta session)
-    participant Worker as activity-worker<br/>(client_session_index)
-
-    User->>Meta: "start work-package on issue 42"
-    Note over Meta: Bootstrap → start_session(workflow_id: meta, agent_id: orchestrator)
-    Meta->>Meta: 00 discover-session<br/>(list-workflows, match-target, scan-saved-sessions, match-saved-session)
-    Meta->>Meta: 01 initialize-session<br/>(initialize-folder → create-session(parent_session_index, workflow_id, planning_slug))
-    Meta->>Meta: 02 resolve-target<br/>(detect-repo-type, list-submodules)
-
-    Note over Meta: 03 dispatch-client-workflow — prime-initial-activity, then client-activity-loop (while current_activity != null)
-    loop client-activity-loop
-        Meta->>Worker: dispatch-activity(activity_id, client_session_index, activity-worker-prompt)
-        alt worker yielded a checkpoint
-            Worker-->>Meta: checkpoint_pending
-            Meta->>Meta: present-checkpoint-to-user(client_session_index)
-            Meta->>User: AskQuestion (presents checkpoint)
-            User->>Meta: selects option
-            Meta->>Meta: respond-checkpoint(client_session_index, user_selection)
-        else activity complete
-            Worker-->>Meta: activity_complete
-            Meta->>Meta: commit-and-persist(activity_id, planning_folder_path, target_path)
-            Meta->>Meta: evaluate-transition → next current_activity
-        end
-    end
-    Note over Meta: current_activity == null → exit loop
-
-    Meta->>Meta: 04 end-workflow<br/>(verify-outcomes, generate-summary)
-    Meta->>User: completion checkpoint
-```
+Meta is the user-facing orchestrator; the client session is a child driven inline by [`03-dispatch-client-workflow`](./activities/03-dispatch-client-workflow.yaml). Dispatch, checkpoint mediation, and role boundaries live in [workflow-engine](./techniques/workflow-engine/TECHNIQUE.md) ([dispatch-activity](./techniques/workflow-engine/dispatch-activity.md), [workflow-orchestrator](./techniques/workflow-engine/workflow-orchestrator.md), [activity-worker](./techniques/workflow-engine/activity-worker.md)) and [agent-conduct](./techniques/agent-conduct.md) — do not restate that HOW here.
 
 ---
 
@@ -110,7 +77,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 
 | Technique | Capability |
 |-----------|------------|
-| [`workflow-engine`](techniques/workflow-engine/TECHNIQUE.md) | Operations and rules for workflow execution — session lifecycle, activity dispatch (including opaque `trace_token` accumulation into `trace_tokens[]`), transition evaluation, checkpoint protocol. Server-managed state (no agent-side persist/restore). Client close-out paths resolve accumulated tokens once via `get_trace`. |
+| [`workflow-engine`](techniques/workflow-engine/TECHNIQUE.md) | Operations and rules for executing a workflow's structured flow — session lifecycle, activity dispatch, agent entry, transitions, planning Progress, and the checkpoint protocol. |
 | [`agent-conduct`](techniques/agent-conduct.md) | Cross-cutting behavioural boundaries — single source of truth for file sensitivity, communication tone, attribution, code commentary, operational discipline, checkpoint discipline (worker / workflow-orchestrator / meta-orchestrator role split), and orchestrator discipline (`no-domain-work`, `no-inline-on-resume`, `target-path-scope`, `automatic-transitions`, `no-ad-hoc-interaction`) |
 | [`version-control`](techniques/version-control/TECHNIQUE.md) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
 | [`github-cli-protocol`](techniques/github-cli-protocol/TECHNIQUE.md) | GitHub CLI usage with GraphQL-deprecation workarounds — REST API for mutations |
@@ -118,7 +85,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | [`atlassian-operations`](techniques/atlassian-operations/TECHNIQUE.md) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
 | [`gitnexus-operations`](techniques/gitnexus-operations/TECHNIQUE.md) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |
 | [`cargo-operations`](techniques/cargo-operations/TECHNIQUE.md) | Resource-constrained cargo subcommands (build, check, clippy, test, fmt, doc, preflight) with an inline resource budget |
-| [`harness-compat`](techniques/harness-compat/TECHNIQUE.md) | Harness-independent operations (`spawn-agent`, `continue-agent`, `spawn-concurrent`) abstracting cross-tool dispatch |
+| [`harness-compat`](techniques/harness-compat/TECHNIQUE.md) | Harness-independent operations (`spawn-agent`, `continue-agent`, `spawn-concurrent`, `resolve-harness-operation`) abstracting cross-tool dispatch |
 
 > Cross-cutting rules live in `agent-conduct`. Capability techniques (`workflow-engine`, `version-control`, etc.) reference but do not restate them. This is the single-source-of-truth boundary anti-pattern 27 calls for.
 
@@ -129,9 +96,10 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | Resource ID | Resource | Purpose |
 |-------------|----------|---------|
 | `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session stub served by `discover` — schema fetch, `start_session`, `get_workflow`. Ongoing delivery policy is in the operations bundle. |
-| `activity-worker-prompt` | [Activity Worker Prompt](./resources/activity-worker-prompt.md) | Template prompt for spawning an activity-worker sub-agent (substitutes `session_index`). |
-| `workflow-orchestrator-prompt` | [Workflow Orchestrator Prompt](./resources/workflow-orchestrator-prompt.md) | Template prompt for spawning a workflow-orchestrator sub-agent (substitutes `session_index`). |
 | `session-summary-template` | [Session Summary Template](./resources/session-summary-template.md) | Skeleton for the markdown session summary composed by `generate-summary` at workflow close. |
+| `planning-readme` | [Planning Folder README Guide](./resources/planning-readme.md) | Universal Template + Progress Status policy for planning-folder `README.md`. |
+
+Agent entry Protocol: [`workflow-engine::activity-worker`](./techniques/workflow-engine/activity-worker.md) and [`workflow-engine::workflow-orchestrator`](./techniques/workflow-engine/workflow-orchestrator.md); spawn stubs from [`compose-prompt`](./techniques/workflow-engine/compose-prompt.md).
 
 > The on-disk session-state shape is defined by [`schemas/session-file.schema.json`](../../schemas/session-file.schema.json); see [`docs/state_management_model.md`](../../docs/state_management_model.md) for the persistence model.
 
@@ -180,9 +148,7 @@ workflows/meta/
 └── resources/
     ├── README.md                            # Resource index
     ├── bootstrap-protocol.md                # Pre-session stub (discover)
-    ├── activity-worker-prompt.md
-    ├── workflow-orchestrator-prompt.md
     ├── session-summary-template.md
-    ├── workflow-canonical.md                # Ontology / section conventions
-    └── gitnexus-reference.md
+    ├── planning-readme.md                   # Universal planning README Template + Progress policy
+    └── workflow-canonical.md                # Ontology / section conventions
 ```

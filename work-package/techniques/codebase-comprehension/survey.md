@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Broad comprehension pass: discover existing artifacts, establish the GitNexus posture, then survey architecture, abstractions, design rationale, and domain mapping to form the initial mental model of the codebase area.
+Initial mental model of the codebase area — architecture, abstractions, design rationale, and domain mapping.
 
 ## Inputs
 
 ### comprehension_dir
 
-Directory holding codebase-comprehension artifacts. Listed to discover and match existing artifacts before fresh analysis.
+Directory holding codebase-comprehension artifacts.
 
 ### project_type
 
@@ -46,6 +46,7 @@ Inferred rationale for significant design choices and their trade-offs, framed a
 ### domain_glossary
 
 Mapping of domain-specific terms to the technical modules/constructs that implement them, connected to the problem statement.
+
 
 ## Protocol
 

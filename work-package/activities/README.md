@@ -350,18 +350,20 @@ graph TD
 
 ### 11. Validate
 
-Validates the implementation against tests, build, format, and lint checks, fixing and re-running until everything passes. In review mode it documents failures as findings and assesses coverage rather than fixing. Leads to strategic-review.
+Validates the implementation against tests, build, format, and lint checks when the local environment can run them. When it cannot, Progress for this activity is marked cancelled/N/A and the suite is skipped (no user-reported pass/fail hand-off). In review mode it documents failures as findings and assesses coverage rather than fixing. Suite-only — build-dependent artifact hand-off lives in submit-for-review. Leads to strategic-review.
 
 Definition: [`11-validate.yaml`](./11-validate.yaml)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> preflight["Toolchain preflight"]
+    entryNode(["Entry"]) --> localGate{"Local validation available?"}
+    localGate -->|"no"| exitNode(["strategic-review"])
+    localGate -->|"yes"| preflight["Toolchain preflight"]
     preflight --> runSuite["Run validation suite (check + clippy + test + fmt-check)"]
     runSuite --> reviewMode{"Review mode?"}
     reviewMode -->|"yes"| documentFailures["Document failures as findings"]
     documentFailures --> assessCoverage["Assess test coverage"]
-    assessCoverage --> exitNode(["strategic-review"])
+    assessCoverage --> exitNode
     reviewMode -->|"no"| fixBranch{"validation_results.validation_passed == false?"}
     fixBranch -->|"no"| exitNode
     fixBranch -->|"yes"| analyzeFailure["Analyze failure root cause"]
@@ -403,7 +405,7 @@ graph TD
 
 ### 13. Submit for Review
 
-Gates submission on a human DCO sign-off, then pushes the branch, finalizes the PR description, marks the PR ready, and handles reviewer feedback. In review mode it instead consolidates all findings, posts structured PR review comments, and ends the workflow. In stealth mode the PR lifecycle is gated out entirely: the push is preceded by private-remote verification, a final isolation confirmation, and a commit-signature check, and the push targets the consumer's private `push_remote`. Significant requested changes loop back to plan-prepare; otherwise leads to complete.
+Gates submission on a human DCO sign-off, then pushes the branch, finalizes the PR description, hands off build-dependent artifact regen when the agent cannot produce it, marks the PR ready, and handles reviewer feedback. In review mode it instead consolidates all findings, posts structured PR review comments, and ends the workflow. In stealth mode the PR lifecycle is gated out entirely: the push is preceded by private-remote verification, a final isolation confirmation, and a commit-signature check, and the push targets the consumer's private `push_remote`. Significant requested changes loop back to plan-prepare; otherwise leads to complete.
 
 Definition: [`13-submit-for-review.yaml`](./13-submit-for-review.yaml)
 
@@ -425,7 +427,10 @@ graph TD
     stealthExit -->|"yes"| exitComplete
     stealthExit -->|"no"| updateDesc["Update PR description"]
     updateDesc --> mergeGuidance["Merge-strategy guidance (informational message)"]
-    mergeGuidance --> markReady["Mark PR ready for review"]
+    mergeGuidance --> buildArt{"Build-artifact check"}
+    buildArt -->|"regen needed"| userHandoff["Build-artifact hand-off"]
+    buildArt -->|"none needed"| markReady
+    userHandoff --> markReady["Mark PR ready for review"]
     markReady --> awaitReview["Await manual review"]
 
     awaitReview --> cpReceived{"review-received checkpoint"}

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Verify a commit on the session edit worktree at `{target_path}` landed and no files were missed.
+Verification that a commit on the session edit worktree landed completely.
 
 ## Protocol
 

@@ -11,7 +11,7 @@ Push local commits on the feature branch to the configured push remote.
 
 ### target_path
 
-Path to the edit-side checkout the push runs in (per the [manage-git](./TECHNIQUE.md) group's directory-scope rule, edit-side git operations run inside `{target_path}`).
+Path to the edit-side checkout the push runs in (per the manage-git group's directory-scope rule, edit-side git operations run inside `{target_path}`).
 
 ### branch_name
 

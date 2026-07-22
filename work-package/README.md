@@ -88,52 +88,7 @@ graph TD
 ---
 ## Orchestration Model
 
-This workflow uses an **orchestrator/worker two-agent pattern**.
-
-```mermaid
-sequenceDiagram
-    participant User
-    participant Caller as CallingAgent
-    participant Orch as Orchestrator
-    participant Worker as Worker
-
-    User->>Caller: "start work package for midnight-node"
-    Caller->>Orch: "spawn-agent(orchestrate-workflow)"
-
-    Note over Orch: get_workflow -> schema preamble + definition
-    Note over Orch: Initialize state, detect mode
-
-    Orch->>Worker: "spawn-agent(activity: start-work-package, state)"
-    Worker->>User: Checkpoints
-    User->>Worker: Responses
-    Worker-->>Orch: Result + variable changes
-
-    Note over Orch: Evaluate transitions
-
-    Orch->>Worker: "continue-agent(activity: design-philosophy, state)"
-    Worker->>User: Checkpoints
-    User->>Worker: Responses
-    Worker-->>Orch: Result + variable changes
-
-    Note over Orch: Continue for all activities...
-```
-
-**Orchestrator** (role: `workflow-orchestrator`):
-- Loads the workflow definition (including the schema preamble with all five JSON Schemas)
-- Initializes state variables (review mode is set by an early detection step that flips the `is_review_mode` variable)
-- Dispatches activities to the worker one at a time
-- Evaluates transition conditions between activities
-- Manages rework loops (transitions back to earlier activities)
-
-**Worker** (role: `activity-worker`):
-- Self-bootstraps into the assigned activity and its bound techniques
-- Executes activity steps sequentially using the technique protocol
-- Handles all checkpoints and user interaction directly
-- Produces artifacts with `artifactPrefix` convention
-- Reports structured results (variable changes, checkpoints, artifacts, steps completed)
-- **Persists across activities** via harness-compat::continue-agent — preserves codebase understanding, file locations, and implementation decisions
-
-This separation prevents context saturation in the orchestrator (which stays lean managing flow) while the worker accumulates rich domain context across the entire workflow.
+Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](../meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](../meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](../meta/techniques/workflow-engine/dispatch-activity.md). Work-package-specific mode behaviour is below (`is_review_mode`); do not restate engine dispatch/checkpoint HOW here.
 
 ---
 

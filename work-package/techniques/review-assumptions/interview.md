@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Assemble judgement-augmentation context for residual open (stakeholder-dependent) assumptions — decision space, trade-offs, and technical context — as bindable `{assumption_review_presentation}`. Used **outside** [analyse-challenge](../analyse-challenge/TECHNIQUE.md) when `{has_open_assumptions}` is true. Default assembly is **batch**; per-item interview mode is for optional individual drill-down.
+Judgement-augmentation context for residual stakeholder-dependent assumptions, ready for residual interview/batch presentation.
 
 ## Inputs
 
 ### open_assumptions
 
-The residual open assumptions to assemble. Empty set → skip presentation and emit a one-line “all resolved” summary. In interview mode the current one is bound as `current_assumption`; in batch mode (default) the whole list is assembled together.
+The residual open assumptions to assemble; empty when all assumptions were already resolved. In interview mode the current one is bound as `current_assumption`; in batch mode (default) the whole list is assembled together.
 
 ### assumptions_log
 
@@ -25,7 +25,8 @@ The assumptions [log](../../resources/assumptions-review.md#assumptions-log-temp
 
 ### assumption_review_presentation
 
-Structured judgement-augmentation context for decision. For each open assumption it contains the decision space (alternatives + trade-offs), non-resolvability rationale, technical context, the agent's current position, a reversibility flag, and a link to the assumptions log. Produces no new stored variable — the user's decision is captured and written back by [record](./record.md).
+Structured judgement-augmentation context for decision, shaped like the [Open Assumptions](../../resources/assumptions-review.md#open-assumptions) entry fields (decision space, non-resolvability rationale, technical context, agent's position, reversibility) plus a link to the assumptions log.
+
 
 ## Protocol
 

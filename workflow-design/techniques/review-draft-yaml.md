@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Review the drafted workflow files as a block-indexed table — one row per drafted construct (activity, technique, resource, workflow metadata) — recording each block's rationale and capturing a draft attestation.
+Block-indexed draft review of workflow files with per-construct rationale and draft attestation.
 
 ## Inputs
 
@@ -15,7 +15,7 @@ The set of files just drafted for this workflow — the entries of `{scope_manif
 
 ### operation_type
 
-The classified operation. When `update`, each block is marked added / modified / unchanged against the committed target; when `create`, every block is new.
+The classified operation — `create` or `update`.
 
 ## Outputs
 
@@ -40,7 +40,7 @@ Absolute path to the written draft-attestation artifact (includes the block-inde
 ### 1. Index Blocks
 
 - Build `{reviewed_blocks}` from `{drafted_files}` following the [Draft Attestation Guide](../resources/draft-attestation.md#template)
-- When `{operation_type}` is `update`, mark each block added / modified / unchanged by comparing against the committed `{target_workflow_id}`
+- When `{operation_type}` is `update`, mark each block added / modified / unchanged by comparing against the committed `{target_workflow_id}`; when `create`, mark every block new
 
 ### 2. Persist Reviewed Blocks
 

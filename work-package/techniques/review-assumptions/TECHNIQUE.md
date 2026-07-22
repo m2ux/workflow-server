@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Own the human-facing assumption lifecycle — collect and classify assumptions, record decisions in the assumptions log, and present **residual** opens for interview/batch after [analyse-challenge](../analyse-challenge/TECHNIQUE.md) converges. The analyse → challenge → combine loop lives in analyse-challenge; this group supplies collect, reconcile (as `{analyse}`), interview (residue UX), and record.
+Human-facing assumption lifecycle — collection, residual interview/batch after analyse-challenge converges, and log of decisions.
 
 ## Inputs
 
@@ -30,6 +30,7 @@ Assumptions [log](../../resources/assumptions-review.md#assumptions-log-template
 #### assumptions_log_artifact
 
 `assumptions-log.md`
+
 
 ## Rules
 

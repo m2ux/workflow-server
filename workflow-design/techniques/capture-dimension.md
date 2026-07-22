@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Record the user's answers for a single design dimension at the capture depth the [elicitation-guide](../resources/elicitation-guide.md) defines, and fold them into the running accumulated design specification.
+User answers for a single design dimension at the elicitation-guide capture depth, folded into the running design specification.
 
 ## Inputs
 
@@ -15,7 +15,7 @@ The design dimension just elicited — one of the dimensions listed in the [elic
 
 ### dimension_questions
 
-The questions that were surfaced for this dimension (from [prepare-dimension](prepare-dimension.md)).
+The questions that were surfaced for this dimension — anchor questions and capture depth from the [elicitation-guide](../resources/elicitation-guide.md#dimensions) for `{current_dimension}`.
 
 ## Outputs
 

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Capture the operation type — create, update, or review — establish the corresponding target, derive intent-gap flags, derive start-time `{headless_mode}` (default true; false on interactive opt-out), load the existing workflow definition and structural inventory as a baseline (update/review), categorize the requested change (update), summarize design intent (create), and persist the structural inventory for activity-layer review.
+Operation-type classification and design-intent baseline for create, update, or review.
 
 ## Outputs
 
@@ -31,7 +31,7 @@ Composite boolean — true when any of: `{operation_type_ambiguous}`; update wit
 
 ### headless_mode
 
-Boolean — default **true** so soft mid-flow gates auto-resolve. Set **false** only when `{user_description}` (or early intent) explicitly requests interactive soft-gate behavior (signals include "interactive", "not headless", "with checkpoints"). Blocking commit attestation and safety gaps stay interactive regardless.
+Boolean — default **true** (soft mid-flow gates auto-resolve); false only when `{user_description}` (or early intent) explicitly requests interactive soft-gate behavior (signals include "interactive", "not headless", "with checkpoints").
 
 ### workflow_id
 
@@ -78,7 +78,7 @@ When `{operation_type}` is `update`, the categorized change request derived from
 
 ### 3. Load Target Definitions
 
-- When `{operation_type}` is `update` or `review`, load the committed workflow catalog via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) and source each target's definition from the workflow-server context the orchestrator supplies — workers do not load full workflow definitions directly
+- When `{operation_type}` is `update` or `review`, load targets via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) from orchestrator-supplied definitions ([orchestrator-no-domain-work](../../meta/techniques/agent-conduct.md#orchestrator-no-domain-work))
 
 ### 4. Build Structural Inventory
 
@@ -102,3 +102,7 @@ When `{operation_type}` is `update`, the categorized change request derived from
 ### derive-before-ask
 
 Classify mode, clarity, and `{headless_mode}` from the request. Emit `{intent_needs_confirmation}` as the sole gap signal for downstream gating.
+
+### headless-scope-limit
+
+Blocking commit attestation and safety gaps stay interactive regardless of `{headless_mode}`.

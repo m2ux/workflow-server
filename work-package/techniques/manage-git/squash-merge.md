@@ -23,7 +23,7 @@ One-line description for the merge commit message
 
 ### target_path
 
-Path to the edit-side checkout the merge runs in (per the [manage-git](./TECHNIQUE.md) group's directory-scope rule, edit-side git operations run inside `{target_path}`).
+Path to the edit-side checkout the merge runs in (per the manage-git group's directory-scope rule, edit-side git operations run inside `{target_path}`).
 
 ### branch_name
 

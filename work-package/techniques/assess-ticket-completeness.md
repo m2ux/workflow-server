@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Assess a tracker ticket across five issue-quality dimensions — problem statement, goal, scope, acceptance criteria, and user stories — document the gaps found, and offer to refactor the ticket to close them.
+Tracker-ticket quality across problem, goal, scope, acceptance criteria, and user stories — gaps and optional refactor.
 
 ## Inputs
 
@@ -26,6 +26,7 @@ True once any identified gaps have been recorded (in the assumptions log) so the
 ### ticket_refactor_needed
 
 True when the user elects to refactor the ticket to address the identified gaps; false when they choose to proceed with gaps noted or the ticket is complete.
+
 
 ## Protocol
 

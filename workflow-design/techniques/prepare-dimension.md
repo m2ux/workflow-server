@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Prepare the elicitation questions for a single design dimension from the [elicitation-guide](../resources/elicitation-guide.md), as a markdown-ready prompt the activity can surface.
+Markdown-ready elicitation prompt for a single design dimension from the elicitation guide.
 
 ## Inputs
 

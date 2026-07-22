@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Confirm the configured push remote exists inside the target checkout and points at a private repository, so an upcoming push has a verified non-public destination.
+Configured push remote confirmed private before an upcoming push.
 
 ## Inputs
 
@@ -15,7 +15,7 @@ The git remote to verify (e.g. `security`).
 
 ### private_fork_url
 
-*(optional)* Expected URL of the private repository backing `{push_remote}`. When supplied, the remote URL must resolve to it exactly; when absent, the remote's repository visibility must still verify as private.
+*(optional)* Expected URL of the private repository backing `{push_remote}`.
 
 ## Outputs
 
@@ -26,6 +26,7 @@ Boolean — `true` when `{push_remote}` inside `{target_path}` resolves to a pri
 ### push_remote_url
 
 The URL `{push_remote}` resolves to, surfaced for the user-facing isolation confirmation.
+
 
 ## Protocol
 

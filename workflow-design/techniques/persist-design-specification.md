@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Persist the accumulated design specification elicited across the design dimensions into the planning folder as a durable review surface — own facts only; link non-home content.
+Durable planning-folder review surface for the accumulated design specification.
 
 ## Outputs
 

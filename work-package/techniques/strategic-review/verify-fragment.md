@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Locate the change fragment for this work package under the `{target_path}` repository's `changes/` folder and determine whether its body references the work-package issue.
+Whether the work-package change fragment under the target path references the issue.
 
 ## Inputs
 
@@ -26,6 +26,7 @@ The work-package issue number, surfaced in the remediation guidance (`Closes: #{
 ### fragment_references_issue
 
 `true` when the located fragment body contains `{issue_url}` verbatim; `false` when it does not; `null` when no `changes/` directory exists at the `{target_path}` root (skip).
+
 
 ## Protocol
 

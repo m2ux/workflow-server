@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Turn a research `{goal}` into parallel research questions as `{work_units}` — the plan half of lead-researcher.
+Turn a research goal into parallel research questions as work units — the plan half of lead-researcher.
 
 ## Inputs
 

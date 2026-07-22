@@ -21,7 +21,7 @@ The PR being updated.
 
 ### pushed_branch
 
-The remote `{branch_name}` after a verified push: all local commits present on the remote, with any rejected push resolved by pull-and-rebase before retrying.
+The remote `{branch_name}` after a verified push — all local commits present on the remote.
 
 ## Protocol
 

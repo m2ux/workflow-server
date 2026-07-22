@@ -1,5 +1,5 @@
 id: resolve-target
-version: 4.2.0
+version: 4.3.0
 name: Resolve Target
 description: Detect the target repository structure (regular directory vs. submodule monorepo) and resolve target_path — headlessly, prompting only when a monorepo has more than one target-component submodule.
 required: true
@@ -36,11 +36,26 @@ steps:
           variable: component_selection_needed
           operator: ==
           value: true
-    message: This monorepo has more than one component submodule. Select the target submodule; target_path is set to the chosen submodule path.
+    message: This monorepo has more than one component submodule. Select the target submodule; target_path is set to the chosen submodule path. Or cancel to re-list components.
     options:
       - id: submodule-chosen
         label: Submodule selected
         description: Proceed with the chosen submodule as target_path
+        effect:
+          setVariable:
+            component_selection_needed: false
+      - id: re-list
+        label: Re-list components
+        description: Cancel this selection and re-run component listing so a different submodule can be chosen
+        effect:
+          setVariable:
+            component_selection_needed: true
+          transitionTo: resolve-target
+  - kind: action
+    id: validate-git-tree
+    actions:
+      - action: validate
+        message: Confirm `{target_path}` resolves to a directory containing a working git tree (`.git` file or directory present) before dispatching the client workflow
 transitions:
   - to: dispatch-client-workflow
     isDefault: true

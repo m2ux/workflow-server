@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Resolve code-analyzable assumptions through targeted codebase analysis until only stakeholder-dependent assumptions remain. Callable as the `{analyse}` parameter of [analyse-challenge::run-loop](../analyse-challenge/run-loop.md); residual interview is activity-level and gated on `{has_open_assumptions}`.
+Code-analyzable assumptions closed via targeted analysis; callable as the analyse bind for the analyse-challenge run-loop.
 
 ## Inputs
 
@@ -19,7 +19,7 @@ Path to the reference codebase root within which code-resolvable assumptions are
 
 ### comprehension_artifact
 
-*(optional)* Existing comprehension [artifact](../../resources/codebase-comprehension.md#artifact-template) to augment with findings. If absent, findings are recorded only in the assumptions log.
+*(optional)* Existing comprehension [artifact](../../resources/codebase-comprehension.md#artifact-template) to augment with findings.
 
 ## Outputs
 
@@ -33,7 +33,7 @@ Boolean gate driving the reconciliation loop — true while open code-resolvable
 
 ### has_open_assumptions
 
-Boolean gate — true iff stakeholder-dependent assumptions remain open after convergence; gates whether the interview step is entered.
+Boolean gate — true iff stakeholder-dependent assumptions remain open after convergence.
 
 ## Protocol
 
@@ -72,6 +72,7 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 - If a `{comprehension_artifact}` was provided, append findings to it as a numbered deep-dive section (e.g., 'Deep-Dive N: Assumption Reconciliation')
 - Update the Open Questions table in the `{comprehension_artifact}` with any questions resolved or surfaced during reconciliation
 - If no `{comprehension_artifact}` was provided, skip this phase — findings are preserved in the assumptions log
+
 
 ## Rules
 

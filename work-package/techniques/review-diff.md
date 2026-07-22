@@ -37,7 +37,7 @@ Per-block descriptive paragraphs explaining intent, context, and non-obvious des
 
 ### manual_diff_review_report
 
-Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-review-section-template) from user-flagged blocks, written as the `## Manual Diff Review` section of `code-review.md` (the review findings' [canonical home](./manage-artifacts/TECHNIQUE.md#canonical-home-map)) — created here when this review runs first, updated in place by [review-code](./review-code.md)
+Manual diff review [findings](../resources/manual-diff-review.md#manual-diff-review-section-template) from user-flagged blocks, written as the `## Manual Diff Review` section of the code-review [report](../resources/rust-substrate-code-review.md#report-template) (the review findings' canonical home) — created here when this review runs first, updated in place when the full code-review report is written.
 
 #### block_findings
 

@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Combine `{gathered_results}` into a single `{synthesis}` under caller-supplied criteria — the consolidate half of orchestrator-workers / lead-researcher / supervisor aggregate.
+Combine gathered results into a single synthesis under caller-supplied criteria — the consolidate half of orchestrator-workers / lead-researcher / supervisor aggregate.
 
 ## Inputs
 
 ### gathered_results
 
-Ordered keyed collection from [gather-results](./gather-results.md) (at least `items`).
+Ordered keyed collection of per-unit worker outputs (at least `items`).
 
 ### synthesis_criteria
 

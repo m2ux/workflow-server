@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Write the strategic review document, categorizing every finding from the review-scope pass by type — or recording a clean review result when all changes are justified.
+Strategic review document with findings typed from the review-scope pass, or a clean-review result.
 
 ## Inputs
 
@@ -17,11 +17,12 @@ Folder where the strategic review document is written.
 
 ### strategic_review_doc
 
-The strategic review [document](../../resources/strategic-review.md#strategic-review-artifact-template), written under `{planning_folder_path}` as `strategic-review-{n}.md` (the activity's `artifactPrefix` is prepended at write time; n increments on successive reviews), with every finding categorized by type (investigation artifacts, over-engineering, orphaned infrastructure) — or a clean review result when all changes are justified.
+The strategic review [document](../../resources/strategic-review.md#strategic-review-artifact-template), written under `{planning_folder_path}` as bare `strategic-review-{n}.md` (artifact-prefix; n increments on successive reviews), with every finding categorized by type (investigation artifacts, over-engineering, orphaned infrastructure) — or a clean review result when all changes are justified.
 
 #### artifact
 
 `strategic-review-{n}.md`
+
 
 ## Protocol
 

@@ -13,4 +13,4 @@ The planning folder entry point is now `README.md` (previously `START-HERE.md`).
 
 The `README.md` file serves as both the executive summary and the artifact index for the planning folder — there is no longer a separate navigation document.
 
-See [readme](./readme.md) for the complete guideline and template.
+See [readme](./readme.md) and [readme-seed](./readme-seed.md). Layout: [planning-readme](../../meta/resources/planning-readme.md).

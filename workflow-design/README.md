@@ -22,7 +22,7 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 
 **Detailed documentation:**
 
-- **Activities:** See [activities/README.md](./activities/README.md) for the per-activity orientation map (purpose, value, and how each activity connects in the flow), with links to the authoritative activity YAML files. The full step/checkpoint/transition definitions are served by `get_activity`.
+- **Activities:** See [activities/README.md](./activities/README.md) for the per-activity orientation map, with links to the authoritative activity YAML files.
 - **Techniques:** See [techniques/](techniques/) for the full technique library (workflow-local standalone techniques plus the shared `TECHNIQUE.md` base contract) with protocol flows and rules.
 - **Resources:** See [resources/README.md](./resources/README.md) for the resource index (23 resources) with usage context and cross-workflow access.
 
@@ -74,9 +74,7 @@ graph TD
 
 ## Orchestration Model
 
-Like the other workflows in this library, workflow-design runs under the **orchestrator/worker two-agent pattern** defined in the `meta` layer. An orchestrator loads the definition, initializes state, and dispatches one activity at a time to a worker, which executes the activity's steps, handles its checkpoints, and reports variable changes back; the orchestrator then evaluates transitions and dispatches the next activity. The worker persists across activities, carrying the accumulated design context (schemas internalized, patterns adopted, scope manifest, drafted files) rather than re-deriving it each step.
-
-The roles, the dispatch protocol, and the checkpoint protocol are defined once in the `meta` layer — the [workflow-orchestrator-prompt](../meta/resources/workflow-orchestrator-prompt.md) and [activity-worker-prompt](../meta/resources/activity-worker-prompt.md) resources and the [workflow-engine](../meta/techniques/workflow-engine/TECHNIQUE.md) technique — and workflow-design inherits them unchanged.
+Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](../meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](../meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](../meta/techniques/workflow-engine/dispatch-activity.md) (spawn stubs via [compose-prompt](../meta/techniques/workflow-engine/compose-prompt.md)). Do not restate engine dispatch/checkpoint HOW here.
 
 ---
 
@@ -88,44 +86,13 @@ Review mode audits one or more existing workflows (`target_workflow_ids`, with e
 
 ## Design Principles
 
-Positive design-time framing principles — see [design-principles](./resources/design-principles.md). Stance only; Detect stays in the anti-pattern catalog. Structural gates live in activity YAML.
-
-| # | Principle |
-|---|-----------|
-| 1 | Workflows ossify patterns |
-| 2 | Internalize before producing |
-| 3 | Define complete scope before execution |
-| 4 | Clarify before assuming |
-| 5 | Maximize schema expressiveness |
-| 6 | One authoritative home |
-| 7 | Convention over invention |
-| 8 | Confirm before irreversible changes |
-| 9 | Encode constraints as structure |
-| 10 | Non-destructive updates |
-| 11 | Complete documentation structure |
-| 12 | Output economy |
-| 13 | Separate contract from procedure |
-| 14 | Single source of truth |
-| 15 | Phase by sequenced outcome |
-| 16 | Distinguish designators from parameters |
-| 17 | Document in positive present |
-| 18 | Prefer shared capability |
-| 19 | Name symbols affirmatively |
-| 20 | Keep orchestration in structure |
-| 21 | Match the harness surface |
-| 22 | Modular over inline |
-| 23 | Close the loop |
-| 24 | Keep session interaction in activities |
-| 25 | Bind sibling operations as steps |
-| 26 | Atomic techniques; compose at activities |
-| 27 | State contract contribution |
-| 28 | Creation guide for generated documents |
+Positive design-time framing — see [design-principles](./resources/design-principles.md). Stance only; Detect stays in the anti-pattern catalog. Structural gates live in activity YAML.
 
 ---
 
 ## Techniques
 
-The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) holding shared Inputs, Outputs, and Rules for every technique here. Each activity step binds exactly one operation via `step.technique`. The cross-cutting meta [`variable-binding`](../meta/techniques/variable-binding.md) strategy technique is declared once at `workflow.techniques.activity` and inherited by every activity (injected into every `get_activity`), and commits go through meta [`version-control::commit-regular-files`](../meta/techniques/version-control/commit-regular-files.md). Planning-folder artifacts are managed cross-workflow through [`work-package::manage-artifacts`](../work-package/techniques/manage-artifacts/TECHNIQUE.md) — `create-readme` (seed the planning README at intake), `write-artifact` (numbered report artifacts), and `verify-readme-conforms` (drift check before commit). The design-assumption lifecycle reuses [`work-package::review-assumptions`](../work-package/techniques/review-assumptions/TECHNIQUE.md) cross-workflow (`collect`, `record`), with a workflow-local `reconcile-design-assumptions` (audit-backed while-loop via `has_resolvable_assumptions`) in place of work-package's code-analysis reconcile; open judgements batch into Gate 2 rather than a mid-flow interview parade. A workflow-local `conduct-retrospective` covers the session retrospective.
+The `techniques/` directory is a flat library of workflow-local standalone techniques (no group folders), plus a [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) holding shared Inputs, Outputs, and Rules for every technique here. Each activity step binds exactly one operation via `step.technique`. Cross-cutting meta [`variable-binding`](../meta/techniques/variable-binding.md) is declared at `workflow.techniques.activity` and inherited by every activity. Commits go through meta [`version-control::commit-regular-files`](../meta/techniques/version-control/commit-regular-files.md). Planning-folder report artifacts use [`work-package::manage-artifacts::write-artifact`](../work-package/techniques/manage-artifacts/write-artifact.md); the planning-folder `README.md` is seeded and verified via meta [`workflow-engine::create-readme`](../meta/techniques/workflow-engine/create-readme.md) / [`verify-readme-conforms`](../meta/techniques/workflow-engine/verify-readme-conforms.md) (universal [planning-readme](../meta/resources/planning-readme.md) Template + [readme-seed](./resources/readme-seed.md)). The design-assumption lifecycle reuses [`work-package::review-assumptions`](../work-package/techniques/review-assumptions/TECHNIQUE.md) (`collect`, `record`), with workflow-local `reconcile-design-assumptions` (while-loop via `has_resolvable_assumptions`); open judgements batch into Gate 2. A workflow-local `conduct-retrospective` covers the session retrospective.
 
 | Technique | Capability | Bound by |
 |-----------|------------|----------|
@@ -178,7 +145,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | 02 | [Anti-Patterns](./resources/anti-patterns.md) | Prohibited-pattern catalog (AP-XX + name) by category |
 | 03 | [Update Mode Guide](./resources/update-mode-guide.md) | Update change-request category vocabulary |
 | 04 | [Compliance Report](./resources/compliance-report.md) | Creation guide: compliance / post-update review |
-| 05 | [Design Context README](./resources/design-context-readme.md) | Creation guide: planning-folder README |
+| 05 | [README Seed](./resources/readme-seed.md) | Progress inventory + mode map for planning-folder README |
 | 06 | [Completion Artifact](./resources/completion-artifact.md) | Creation guide: `COMPLETE.md` |
 | 07 | [Design Assumptions](./resources/design-assumptions.md) | Creation guide: `assumptions-log.md` |
 | 08 | [Design Assumption Reconciliation](./resources/design-assumption-reconciliation.md) | Audit vs open resolvability + while-loop / Gate 2 handoff |
@@ -190,7 +157,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 
 ## Outputs
 
-In create and update modes the workflow seeds and maintains a **planning folder** under `.engineering/artifacts/planning/`: a `README.md` (from the [design-context-readme](./resources/design-context-readme.md) template) whose progress tracker is updated on completing each activity. In all modes, report artifacts are written into the planning folder as numbered files via [`work-package::manage-artifacts::write-artifact`](../work-package/techniques/manage-artifacts/write-artifact.md).
+In create and update modes the workflow seeds and maintains a **planning folder** under `.engineering/artifacts/planning/`: a `README.md` from the universal [planning-readme](../meta/resources/planning-readme.md) Template plus this workflow's [readme-seed](./resources/readme-seed.md) profile, whose progress tracker is updated on completing each activity. In all modes, report artifacts are written into the planning folder as numbered files via [`work-package::manage-artifacts::write-artifact`](../work-package/techniques/manage-artifacts/write-artifact.md).
 
 **Create mode:** A complete workflow file set committed on a feature branch in the workflows repo, with a pull request opened against the `workflows` branch, plus a planning folder.
 
@@ -264,7 +231,7 @@ workflows/workflow-design/
     ├── anti-patterns.md                  # anti-pattern catalog (AP-XX + names)
     ├── update-mode-guide.md              # Update mode guide
     ├── compliance-report.md              # Creation guide: compliance / post-update
-    ├── design-context-readme.md          # Creation guide: planning README
+    ├── readme-seed.md                    # Progress inventory + mode map for planning README
     ├── completion-artifact.md            # Creation guide: COMPLETE.md
     ├── design-assumptions.md             # Creation guide: assumptions-log.md
     ├── design-assumption-reconciliation.md  # Audit-based reconciliation guide

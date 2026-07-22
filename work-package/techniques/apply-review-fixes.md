@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Implement the code-review findings and/or test improvements selected by the user, then commit the resulting changes. The commit is this technique's final phase — the fixes and their commit form one atomic step, so no separate commit step is needed.
+User-selected code-review findings and/or test improvements implemented and committed as one atomic step.
 
 ## Inputs
 
 ### review_findings
 
-The review findings to fix — the code-review findings (when `{needs_code_fixes}`) and/or the test-suite findings (when `{needs_test_improvements}`) the user selected for this fix cycle.
+The user-selected review findings in scope for this fix cycle (code-review and/or test-suite findings).
 
 ### needs_code_fixes
 
@@ -23,17 +23,17 @@ Whether test improvements are in scope for this cycle.
 
 ### target_path
 
-Path to the target repository where the code changes are applied and committed.
+Path to the target repository.
 
 ### branch_name
 
-The feature branch the fixes are committed to.
+The feature branch that receives the fix commits.
 
 ## Outputs
 
 ### applied_fixes
 
-The committed fix changes: the selected `{review_findings}` implemented in `{target_path}` (code-review findings when `{needs_code_fixes}`, test improvements when `{needs_test_improvements}`), verified to compile with affected tests passing, then staged and committed on `{branch_name}` via [manage-git](./manage-git/TECHNIQUE.md)::[artifact-commits](./manage-git/artifact-commits.md). The commit is the technique's final phase, so the effect is one or more fix commits on the feature branch — no separate commit step follows.
+One or more fix commits on `{branch_name}` that apply the selected `{review_findings}` in `{target_path}` (empty when nothing was committed).
 
 ## Protocol
 
@@ -51,7 +51,8 @@ The committed fix changes: the selected `{review_findings}` implemented in `{tar
 
 ### 3. Commit Changes
 
-- Apply [manage-git](./manage-git/TECHNIQUE.md)::[artifact-commits](./manage-git/artifact-commits.md) to stage and commit the fix changes on `{branch_name}`. This is the technique's final phase; no separate commit step follows.
+- Apply [manage-git](./manage-git/TECHNIQUE.md)::[commit-paths](./manage-git/commit-paths.md) with `{target_path}`, `{branch_name}`, the fixed source paths, and a Conventional Commits message for the fix cycle. Capture `{commit_sha}` from that Apply and emit `{applied_fixes}` as the resulting fix commit(s) on `{branch_name}` (empty when there was nothing to commit). This is the technique's final phase; no separate source commit step follows. Do not use [artifact-commits](./manage-git/artifact-commits.md) here — that op is planning-folder / engineering-repo only.
+
 
 ## Rules
 

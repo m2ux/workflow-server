@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Audit drafted content for convention conformance against reference workflows — apply the convention-conformance checklist (naming, field order, structure), flag each divergence with justified/bring-into-conformance disposition, and persist findings when any exist. Definition prose voice is out of scope for this pass.
+Convention-conformance audit of drafted workflow content against sibling reference workflows.
 
 ## Outputs
 
@@ -34,12 +34,13 @@ Absolute path to the persisted findings artifact when `{conformance_finding_coun
 
 ### 2. Survey Reference Workflows
 
-- Survey reference workflows of similar type (via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) / orchestrator-supplied definitions) as the live pattern baseline
+- Survey similar-type reference workflows via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) (orchestrator-supplied definitions — [orchestrator-no-domain-work](../../meta/techniques/agent-conduct.md#orchestrator-no-domain-work))
 
 ### 3. Audit Conformance
 
 - Compare drafted `workflow.yaml`, activities, techniques, resources, and READMEs against the reference baseline using every concern in convention-conformance
 - For each divergence: record file, construct, reference convention, and disposition (justified vs bring into conformance) into `{conformance_findings}`
+- Definition prose voice is out of scope for this pass
 
 ### 4. Persist Findings
 

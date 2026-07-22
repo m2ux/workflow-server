@@ -71,7 +71,7 @@ The report header links back to this guide so readers know the methodology used.
 
 ## Review Stance (consult)
 
-Tone: measured, technical, professional; no hyperbole; factual observations; constructive feedback on technical merit. Prefer tooling (`rustfmt`, `clippy`) for style/formatting. Implementation comments explain what code does and why — never reference the review process.
+Tone / attribution: [agent-conduct](../../meta/techniques/agent-conduct.md). Prefer tooling (`rustfmt`, `clippy`) for style/formatting. Implementation comments explain why — never the review process.
 
 ## Review Criteria
 

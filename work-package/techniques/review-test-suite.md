@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Review test suite quality and coverage — assessing coverage gaps, assertion quality, and test isolation, and identifying anti-patterns such as flaky tests and over-mocking
+Test-suite quality and coverage review — gaps, assertion quality, isolation, and anti-patterns.
 
 ## Inputs
 
@@ -78,6 +78,7 @@ When `{prior_feedback_triage}` is present, every entry tagged as a reported runt
 - Document findings with severity and recommendations
 - Create the `{test_suite_review_report}` in `{planning_folder_path}`
 - Emit a brief summary of coverage gaps and critical issues as part of the bindable report output for the binding activity to surface
+
 
 ## Rules
 

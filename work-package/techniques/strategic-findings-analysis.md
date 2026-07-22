@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Assess the severity of strategic-review findings — scope issues, over-engineering, and investigation artifacts — and recommend an outcome (fix the findings now versus accept and proceed), producing a recommended option and a concise findings summary.
+Severity and go/no-go recommendation for strategic-review findings (fix now vs accept and proceed).
 
 ## Inputs
 
@@ -29,7 +29,7 @@ A concise multi-line summary of the strategic-review findings — one line per f
 
 ### review_passed
 
-*(boolean)* Set to `true` on the finding-free / minor path — the value that signals the review may proceed. Left unset when significant findings exist, so the outcome is decided by explicit user choice rather than this recommendation.
+*(boolean)* Whether the review may proceed without fixes — `true` on the finding-free / minor path; unset when significant findings exist, leaving the outcome to explicit user choice.
 
 ## Protocol
 
@@ -52,6 +52,7 @@ A concise multi-line summary of the strategic-review findings — one line per f
 
 - Set `{review_passed}` to `true` when the review is finding-free or minor — `{strategic_findings_summary}` is empty (`""`) or `{recommended_strategic_option}` is `acceptable`.
 - Leave `{review_passed}` unset when significant findings are present, so the outcome rests on explicit user choice rather than this recommendation.
+
 
 ## Rules
 

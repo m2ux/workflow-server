@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Detect whether a request is a review of an existing pull request (review mode) rather than new implementation, and when it is, capture the PR reference and the branch and tracker ticket it carries — derive-first, with gap flags when mode or PR identity cannot be settled from the request alone.
+Whether the request is review of an existing PR, with PR/branch/ticket identity when so.
 
 ## Inputs
 
@@ -15,13 +15,13 @@ The originating user request and any context gathered so far — the signal sour
 
 ### pr_reference
 
-*(optional)* A pull-request number or URL supplied by the user. When absent in review mode and no reference can be parsed from `{user_request}`, set `review_pr_missing` so the activity can prompt.
+*(optional)* A pull-request number or URL supplied by the user.
 
 ## Outputs
 
 ### is_review_mode
 
-`true` when the request is a clear review of an existing PR, `false` for clear new implementation. Leave unset when `review_mode_ambiguous` is `true` until the binding activity resolves the gap.
+`true` when the request is a clear review of an existing PR, `false` for clear new implementation; unset when `review_mode_ambiguous` is `true`.
 
 ### review_mode_ambiguous
 
@@ -46,6 +46,7 @@ The originating user request and any context gathered so far — the signal sour
 ### review_ticket_ref
 
 *(optional)* The tracker ticket (Jira key or GitHub issue) extracted from the PR body or commits, when present.
+
 
 ## Protocol
 

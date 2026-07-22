@@ -23,7 +23,7 @@ workflows/                        # Worktree checkout
 │   │       ├── TECHNIQUE.md      #     container technique / base contract
 │   │       └── {sub}.md          #     one file per nested technique, addressed {group}::{sub}
 │   └── resources/                # Markdown resources
-│       └── {slug}.md             #   bootstrap-protocol, activity-worker-prompt, workflow-canonical, ...
+│       └── {slug}.md             #   bootstrap-protocol, planning-readme, workflow-canonical, ...
 ├── {workflow-id}/                # Each workflow folder
 │   ├── README.md                 # Workflow documentation with Mermaid diagrams
 │   ├── workflow.yaml             # Workflow definition

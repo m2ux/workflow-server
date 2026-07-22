@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Derive the canonical planning slug for a work package. The planning FOLDER itself is owned and created by the server: when the session is dispatched ([create-session](../workflow-engine/create-session.md)), the server materialises `<workspace>/.engineering/artifacts/planning/<slug>/` under its OWN workspace root (the `.engineering` root supplied at init) and returns the absolute `planning_folder_path`. This operation only computes the slug that names that folder; it does NOT create a folder relative to the CWD or the target component repo.
+Derive the canonical planning slug (date plus kebab-case initiative name) for a work package. Folder materialisation and the authoritative planning-folder path belong to session create/start — this op only composes the slug.
 
 ## Inputs
 
@@ -22,4 +22,4 @@ The slug naming the work package's planning folder: `YYYY-MM-DD-{initiative_name
 ## Protocol
 
 1. Compose the slug: `YYYY-MM-DD-{initiative_name}` (today's date, then the kebab-case initiative name).
-2. Return it as `{planning_slug}`. No filesystem write happens here — the server creates the folder under its workspace root during dispatch and hands back the canonical `{planning_folder_path}`, which is authoritative for all subsequent artifact writes.
+2. Return `{planning_slug}` — no filesystem write.

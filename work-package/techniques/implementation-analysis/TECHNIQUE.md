@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Analyze current implementation to understand effectiveness, establish quantitative baseline metrics, and identify improvement opportunities, then document the analysis.
+Current-implementation effectiveness analysis — baseline metrics, gaps, and documented opportunities.
 
 ## Inputs
 
@@ -22,6 +22,7 @@ Current implementation [analysis](../../resources/implementation-analysis.md#doc
 #### analysis_artifact
 
 `implementation-analysis.md`
+
 
 ## Rules
 

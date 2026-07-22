@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Assemble a lean per-file drafting plan — the delta for this file only — and persist it for linked review. Drafting and per-file schema validation are out of scope for this technique (see [yaml-authoring](yaml-authoring.md)).
+Lean per-file drafting plan — the delta for this file only.
 
 ## Inputs
 
@@ -37,6 +37,7 @@ Absolute path to the persisted drafting-plan artifact for the current file.
 
 - Assemble `{drafting_plan}` for `{current_file}` following the [Drafting Plan Guide](../resources/drafting-plan.md#template)
 - When `{operation_type}` is `update`, frame against existing content
+- Drafting and per-file schema validation are out of scope (see [yaml-authoring](yaml-authoring.md))
 
 ### 2. Persist Drafting Plan
 

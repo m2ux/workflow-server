@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Drive the parameterized analyse → challenge → combine loop until the bound `{convergence_flag}` is false. Each iteration deepens agent-resolvable concerns; the loop exits when only irreducible residue remains (or the open set is empty).
+Parameterized analyse–challenge–combine iterations until agent-resolvable concerns converge.
 
 ## Inputs
 
@@ -19,7 +19,7 @@ Technique path to invoke for the analyse phase each iteration (supplied via `ste
 
 ### challenge_perspectives
 
-Perspectives (or lens names) passed to [challenge](./challenge.md) for the parallel adversarial pass.
+Perspectives (or lens names) passed to challenge for the parallel adversarial pass.
 
 ### convergence_flag
 
@@ -57,7 +57,7 @@ The bound convergence variable after exit — always false when the loop complet
 
 ### residue_flag
 
-The bound residue variable after [combine](./combine.md).
+The bound residue variable after combine.
 
 ### residue_collection
 
@@ -82,6 +82,7 @@ The bound residue variable after [combine](./combine.md).
 ### 3. Hand Off Residue
 
 - Emit the bound flag values for the activity. Residual interview/batch is **not** performed here — the activity gates those steps on `{residue_flag}`.
+
 
 ## Rules
 

@@ -17,7 +17,7 @@ Canonical formatting check; matches CI exactly. Does not compile, so does not ne
 
 ### fmt_status
 
-`{ check_id: 'fmt-check', passed: boolean, diagnostics }` — `passed` is true when no formatting diffs; `diagnostics` is `{fmt_diff_summary}`. This is the shape [run-suite](./run-suite.md) folds into its `validation_results` envelope.
+`{ check_id: 'fmt-check', passed: boolean, diagnostics }` — `passed` is true when no formatting diffs; `diagnostics` is `{fmt_diff_summary}`.
 
 ### fmt_diff_summary
 

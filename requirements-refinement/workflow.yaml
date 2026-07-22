@@ -18,7 +18,6 @@ rules:
     - All artifacts — analysis report, working specifications, validation reports, final specification, and failure report — are written to the planning folder; the workflow performs no git operations and never edits the canonical document in place.
     - When the target document exists, preserve its existing section structure; when it does not, instantiate the full specification protocol structure.
     - "Validation includes a source-coverage check: every normative statement in the source document maps to at least one requirement; an uncovered statement is a correctable finding routed through the correction loop."
-    - On completing each activity, update the planning-folder README.md progress tracker — mark this activity's artifacts as ✅ Complete.
   universal:
     - Newly added requirements are created with status pending; changing a requirement's status requires explicit user confirmation.
     - Confirm the requirements analysis with the user before applying any changes to the specification.

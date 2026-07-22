@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -25,14 +25,20 @@ The sub-agent's final output (text, including any `<checkpoint_yield>` block) �
 
 ## Protocol
 
-1. Select the harness-specific invocation by `{harness_kind}` and dispatch it as foreground (blocking):
-   - `claude-code` or `cursor` — `Task(subagent_type=<type>, description={description}, prompt={composed_prompt})`. Same primitive across CLI, IDE extensions (Cursor, VSCode), and the web app. Omit `run_in_background` or set it to false. Cursor wraps the same Claude Code Task primitive. Spawned sub-agents do not inherit Task (depth-1-only — see Rules).
-   - `cline` — `use_subagents { prompt_1: {composed_prompt} }`.
-   - `generic` — any harness mechanism that starts a new agent with the given `{composed_prompt}` and blocks until the agent yields or completes.
-2. Block until the agent yields a checkpoint or returns; capture its final output as `{agent_result}`.
+### 1. Resolve harness operation
+
+- Apply [resolve-harness-operation](./resolve-harness-operation.md) with `{harness_kind}` and `operation_kind: spawn` → `{harness_technique}`, `{harness_operation}`.
+
+### 2. Dispatch
+
+- Dispatch by applying `{harness_technique}`'s `{harness_operation}` Rules section with `{composed_prompt}` and `{description}`, under [foreground-always](./TECHNIQUE.md#foreground-always).
+
+### 3. Await result
+
+- Wait until the agent yields a checkpoint or returns (blocking-equivalent); capture its final output as `{agent_result}`.
 
 ## Rules
 
 ### depth-1-only
 
-spawn-agent operates depth-1 only. The Task primitive is a harness-level session-control gate; spawned sub-agents do not inherit it. Workflows MUST NOT design around nested orchestrator agents — one orchestrator agent drives all orchestrator-level work across all session levels.
+spawn-agent operates depth-1 only. Spawned sub-agents do not inherit the orchestrator's dispatch primitive. Workflows MUST NOT design around nested orchestrator agents — one orchestrator agent drives all orchestrator-level work across all session levels. Harness-specific nesting limits are documented in the harness technique files.

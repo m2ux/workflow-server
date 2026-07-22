@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Compose an ordered `{worker_briefs}` array from `{work_units}` — the same brief rules as [compose-worker-brief](./compose-worker-brief.md), applied per unit in input order.
+Compose an ordered worker-briefs array from work units — one brief per unit under the same brief rules as the single-unit compose op.
 
 ## Inputs
 

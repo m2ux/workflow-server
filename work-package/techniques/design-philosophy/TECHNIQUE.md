@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Apply structured design framework to classify problems, assess complexity, and determine workflow path.
+Structured design framework — problem classification, complexity, and workflow-path choice.
 
 ## Inputs
 
@@ -38,6 +38,7 @@ Specific problem or inventive goal
 #### problem_complexity
 
 simple, moderate, or complex
+
 
 ## Rules
 

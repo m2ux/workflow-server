@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Mark the PR ready for review once its description is finalized — via meta [mark-ready](../../../meta/techniques/github-cli-protocol/mark-ready.md).
+Mark the PR ready for review once its description is finalized.
 
 ## Inputs
 

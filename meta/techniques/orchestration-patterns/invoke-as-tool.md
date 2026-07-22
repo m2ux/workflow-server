@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Run one bounded sub-agent behind a function-shaped boundary: the caller supplies a task and receives only `{tool_result}` — never the sub-agent's intermediate turns (agent-as-tool embedding).
+Run one bounded sub-agent behind a function-shaped boundary and return only the tool result (agent-as-tool).
 
 ## Inputs
 
@@ -23,13 +23,13 @@ Self-contained task string for the sub-agent.
 
 ### session_index
 
-*(optional)* Include when the sub-agent must authenticate to workflow-server.
+*(optional)* Session index for the sub-agent to authenticate to workflow-server.
 
 ## Outputs
 
 ### tool_result
 
-Structured or textual return value only. Intermediate tool calls and reasoning from the sub-agent do not land in the parent bag.
+Structured or textual return value only.
 
 ## Protocol
 

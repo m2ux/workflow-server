@@ -31,7 +31,8 @@ These operations are referenced cross-workflow (resolved directly from the named
 
 | Reference | Used for |
 |-----------|----------|
-| [`work-package::manage-artifacts`](../../work-package/techniques/manage-artifacts/TECHNIQUE.md) | `create-readme` (seed the planning README), `write-artifact` (numbered artifacts), `verify-readme-conforms` (drift check) |
+| [`work-package::manage-artifacts`](../../work-package/techniques/manage-artifacts/TECHNIQUE.md) | `write-artifact` (numbered artifacts) |
+| [`workflow-engine::create-readme`](../../meta/techniques/workflow-engine/create-readme.md) / [`verify-readme-conforms`](../../meta/techniques/workflow-engine/verify-readme-conforms.md) | Seed and drift-check planning-folder `README.md` |
 | [`work-package::manage-git`](../../work-package/techniques/manage-git/TECHNIQUE.md) | `create-worktree` (via prepare-workflow-branch ensure), `remove-worktree` (optional retrospective teardown) |
 | [`work-package::stakeholder-overview`](../../work-package/techniques/stakeholder-overview.md) | Plain-language Problem Overview (intake) and Solution Overview (scope-and-draft) sections of the planning README |
 | [`work-package::review-assumptions`](../../work-package/techniques/review-assumptions/TECHNIQUE.md) | `collect`, `interview`, `record` for the design-assumption lifecycle |

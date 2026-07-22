@@ -695,7 +695,7 @@ Prose prescribes a harness/MCP tool-call recipe.
 
 **Detect:** Capability, Protocol, Rules, or non-engine resource prose prescribes how to invoke a harness/MCP tool — call name + "via"/"call"/"after", argument/param shape, or sequencing of tool calls (`get_resource`, `get_technique`, `get_activity`, `get_workflow`, `start_session`, `next_activity`, `list_workflows`, …). Agents already have independent tool/bootstrap guidance; restating it in techniques duplicates and drifts (`no-duplicated-guidance`).
 
-**Do not flag:** `meta` workflow-engine / harness-compat / agent-conduct / bootstrap and orchestrator/worker prompt resources whose domain IS tool usage; an operation that wraps a raw tool may name that tool (`canonical-technique-reference` carve-out). Naming WHAT to consult via a markdown/`::` hyperlink without a tool recipe is correct.
+**Do not flag:** `meta` workflow-engine / harness-compat / agent-conduct / bootstrap and agent-entry techniques ([activity-worker](../../meta/techniques/workflow-engine/activity-worker.md), [workflow-orchestrator](../../meta/techniques/workflow-engine/workflow-orchestrator.md), [compose-prompt](../../meta/techniques/workflow-engine/compose-prompt.md)) whose domain IS tool usage; an operation that wraps a raw tool may name that tool (`canonical-technique-reference` carve-out). Naming WHAT to consult via a markdown/`::` hyperlink without a tool recipe is correct.
 
 **Fix:** Delete the tool recipe; keep the imperative and the canonical hyperlink or `{id}` ("Load [anti-patterns](path)"; "Apply the bound step's technique"). Role boundaries stay as role prose ("workers source definitions from orchestrator-provided context") — not as "do not call `get_workflow`".
 
@@ -1519,9 +1519,105 @@ A leaf Rule (or a Protocol phase whose only job is the same restatement) re-enco
 
 **Detect:** A technique, activity, or workflow `## Rules` / `rules[]` entry — or a Protocol phase that only restates bag/envelope/binding/dispatch HOW — repeats a contract owned by meta workflow-engine, variable-binding, finalize-activity, or schema composition (e.g. declared outputs land via `variables_changed`; mutations use the sanctioned channel; loops and conditions are structural, not prose rules) without adding a domain invariant those homes do not already encode.
 
-**Do not flag:** Novel domain constraints the engine does not already enforce; engine/conduct/bootstrap surfaces whose domain IS that contract; activity `set` that duplicates a technique output (`no-set-of-technique-output`); tool/delivery recipes (`no-tool-usage-prescription`, `no-delivery-mechanism-narration`); a rule that restates its own technique's Protocol without claiming engine HOW (`no-rule-protocol-restatement`).
+**Do not flag:** Novel domain constraints the engine does not already enforce; engine/conduct surfaces whose domain IS that contract; activity `set` that duplicates a technique output (`no-set-of-technique-output`); tool/delivery recipes (`no-tool-usage-prescription`, `no-delivery-mechanism-narration`); a rule that restates its own technique's Protocol without claiming engine HOW (`no-rule-protocol-restatement`). Worker/orchestrator prompts that only sequence entry tools and cite homes — restating owned HOW in those prompts is `prompt-restates-owned-mechanics`.
 
-**Fix:** Delete the leaf restatement. Keep declared Outputs and rely on variable-binding / finalize-activity (or the authoritative engine home). If that home is incomplete, fix it once there — do not copy the contract onto producer leaves. See also `no-one-step-rules`, `platform-semantics-in-capability`.
+**Fix:** Delete the leaf restatement. Keep declared Outputs and rely on variable-binding / finalize-activity (or the authoritative engine home). If that home is incomplete, fix it once there — do not copy the contract onto producer leaves. See also `no-one-step-rules`, `platform-semantics-in-capability`, `prompt-restates-owned-mechanics`.
+
+### AP-118. no-bind-mechanics-as-prose
+
+"When unbound, use `{worker_result.artifacts_produced}` from the orchestrator bag after dispatch."
+
+Prose substitutes for a bind decision that structure already owns.
+
+**Detect:** Authored definition prose (I/O descriptions, Capability, Protocol asides, Rules, README orientation, option/action text — anywhere outside the authoritative bind home) tells the agent how to obtain, satisfy, fall back, remap, or otherwise resolve a declared input/output — quasi bind-mechanic instructions that belong in [variable-binding](../../meta/techniques/variable-binding.md) and call-site `step.technique.inputs` / `outputs` deviations (or a declared signature `default`). Test: if deleting the sentence would leave a binding gap that structure should close — or the sentence only teaches *how to get the value into the op* — flag it.
+
+**Do not flag:** The variable-binding technique and other surfaces whose domain *is* bind resolution; declared signature `default` / optional/required markers; meaning/shape/allowed values; Protocol that consumes an already-bound `{id}`; engine HOW restated as Rules (`no-engine-mechanics-as-rules`); naming a specific producer/consumer (`io-agnostic-contract`).
+
+**Fix:** Delete the quasi-bind prose. Close the gap with same-name bag presence, a declared `default`, or a call-site input/output deviation. Delete unused I/O. If structure cannot express the needed resolution, extend variable-binding / the schema once — do not encode the gap in leaf prose. See also `io-agnostic-contract`.
+
+### AP-119. procedure-in-io-contract
+
+"`applied_fixes` — the selected findings implemented in `{target_path}`, verified to compile with tests passing, then staged and committed on `{branch_name}` — final phase, no separate commit step follows" / "Branch to push to (typically the current branch — do NOT create a new branch in the parent repo)" / "`needs_issue_creation` — false when step 1 verified an existing issue; Gates steps 2 and 3"
+
+An Input or Output description holds HOW instead of the bind contract — Inputs and Outputs are bind points, not Protocol. Prose must state what the value *is* (meaning, shape, allowed values, emptiness). How it is populated, sequenced, verified, committed, gated, derived, recovered, or what the agent should do with/around it belongs in Protocol (or a cross-cutting Rule).
+
+**Detect:** A technique `## Inputs` or `## Outputs` entry description contains procedural instruction — imperatives, do/don't constraints, multi-step population (implement → verify → stage → commit), sequencing ("final phase", "no separate step", "gates steps N"), conditional duties ("when absent, then…", "when non-empty, resolve once…"), checkpoint/confirm duties, recovery recipes, or other HOW around the value — rather than the value's meaning, shape, or allowed values (Outputs may still state derivation/recognition identity). Test: if the sentence answers *how is this value produced or what should the agent do with/around it?* rather than *what is this value?*, flag it. Applies symmetrically to Inputs and Outputs.
+
+**Do not flag:** Meaning/shape/allowed-value identity (including brief shape examples); Output derivation/recognition criteria that define the value without narrating work steps; declared `default` / optional/required; bind-resolution prose (`no-bind-mechanics-as-prose`); Protocol steps or cross-cutting Rules that correctly own the HOW; Protocol that wrongly holds identity criteria (`contract-not-procedure` — inverse); naming a specific producer/consumer without a duty (`io-agnostic-contract`); technique hyperlinks in I/O (`technique-ref-in-io-contract`).
+
+**Fix:** Rewrite the I/O entry as the bind contract only. Migrate every associated HOW into a dedicated Protocol step that references `{id}` (prefer a numbered phase per [Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome)); use a Rule only when the constraint is truly cross-cutting for the technique. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure) and [Maximize Schema Expressiveness](./design-principles.md#5-maximize-schema-expressiveness) (portable I/O).
+
+### AP-120. procedure-in-capability
+
+"Create README.md … populating its header fields … applying mode-aware Progress Status … (seed-time exclusion uses the cancelled/N/A value)" / "via meta [create-pr](…)" / "Applied-fix record (`{fixes_applied}`)"
+
+`## Capability` holds instructions (HOW), outbound hyperlinks, or brace-declared ids instead of a brief self-contained insight (what the technique contributes).
+
+**Detect:** A technique's Capability section (a) contains procedural instruction — imperatives beyond naming the product, sequencing, populate/apply/write HOW, mode branches, seed/fallback recipes, or other work steps — or (b) contains markdown hyperlinks (`[text](path)`) to techniques, resources, or other files — or (c) contains brace-declared designators (`{fixes_applied}`, `{target_path}`, `{goal}`, …) that belong on Inputs/Outputs. Capability must be a short insight into what durable product or capability the op contributes, readable without following links or resolving the bind contract. Test: if the sentence answers *how do I perform this?*, *where else must I look?*, or *which bag id is this?*, rather than *what is this op for / what does it yield?*, flag it.
+
+**Do not flag:** A compact product/purpose statement with no hyperlinks and no `{id}` designators (bare technique/resource names as plain words are fine when they name the product); container Capability naming shared contract contribution (`platform-semantics-in-capability`); Protocol/Rules/I/O that correctly own HOW, `{id}` designators, and authoritative cites; bind-resolution prose (`procedure-in-io-contract` / `no-bind-mechanics-as-prose` / `brace-declared-ids`).
+
+**Fix:** Rewrite Capability as insight only — no hyperlinks, no `{id}` braces; migrate HOW, designators, and authoritative cites into Protocol, Rules, or I/O. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); also `procedure-in-io-contract`, `brace-declared-ids`.
+
+### AP-121. rule-as-protocol-step
+
+"4. Follow the rules in the operations bundle throughout — agent-conduct, workflow-engine…"
+
+A standalone / cross-cutting rule is encoded as a numbered Protocol (or bootstrap-instruction) step instead of living under `## Rules`.
+
+**Detect:** A Protocol phase, bootstrap-instruction bullet, or similarly sequenced HOW list states only a standing invariant, prohibition, or “follow X rules throughout” duty — no distinct produce/transform/persist outcome for that step. Test: if removing the step leaves the work sequence intact and the sentence still belongs as a durable constraint on the whole op/session, flag it. Inverse of `no-one-step-rules` (rule that only applies to one step → Protocol).
+
+**Do not flag:** Work phases that *cite* a Rule or resource policy while doing work (`Apply … per [Status transition policy]`); step-local `>` caveats (`constraint-as-blockquote`); true one-step guidance wrongly filed as a Rule (`no-one-step-rules`); Rules that restate Protocol (`no-rule-protocol-restatement`).
+
+**Fix:** Move the invariant into `## Rules` (technique, prompt resource, or container TECHNIQUE.md as appropriate). Keep Protocol as sequenced work outcomes only. Prompt/bootstrap surfaces: standing duties belong under that resource’s Rules, not the numbered bootstrap sequence.
+
+### AP-122. prompt-restates-owned-mechanics
+
+"Exception — inlined `step_techniques`: … EMIT a one-line `▶ step <step_id>` begin-beat… Resource bodies are never nested inside…"
+
+A worker/orchestrator spawn stub or agent-entry technique restates delivery, bind, checkpoint, or engine HOW that already has an authoritative home.
+
+**Detect:** Stub or agent-entry prose explains bundling budget / begin-beat / `step_techniques` engagement, sibling `resources` map reuse, bind precedence, yield/replay branching, or other contracts already owned by a technique Protocol/Rules ([variable-binding](../../meta/techniques/variable-binding.md), [yield-checkpoint](../../meta/techniques/workflow-engine/yield-checkpoint.md), [workflow-engine](../../meta/techniques/workflow-engine/TECHNIQUE.md) Rules) or by the tool response itself (`step_techniques_note`, `resources_note`, reference-mode notes). Test: if deleting the paragraph and leaving a cite to that home preserves fidelity, flag it.
+
+**Do not flag:** Minimal [compose-prompt](../../meta/techniques/workflow-engine/compose-prompt.md) stub (entry tools + Apply `{agent_technique}`); novel duties with no other home (hoist into engine/conduct once, then cite); one-line cites to the home; role-boundary Rules (`never call next_activity` / `get_workflow`).
+
+**Fix:** Delete the restatement. Keep the imperative entry sequence and cite the home. Hoist any unique duty that still has no home into workflow-engine / the owning technique once. See also `no-delivery-mechanism-narration`, `no-engine-mechanics-as-rules`, `no-duplicated-guidance`.
+
+### AP-123. capability-as-op-inventory
+
+"Operations and rules for executing a workflow's structured flow — session lifecycle (list/match/scan/create/start), activity dispatch (dispatch-activity), agent entry techniques (activity-worker, workflow-orchestrator) composed via compose-prompt, …"
+
+`## Capability` (especially a container `TECHNIQUE.md`) enumerates nested ops, facets, or folder contents instead of stating a succinct contribution overview.
+
+**Detect:** Capability is a comma/em-dash inventory of child techniques, protocol facets, or folder ops (often with hyperlinks to each) rather than a short insight into what the contract/group contributes. Test: if the sentence must be edited whenever a nested op is added/renamed/removed, and a reader could get the same list from the folder or index, flag it.
+
+**Do not flag:** A one- or two-clause purpose statement that names the domain without listing children (`harness-compat`, `cargo-operations`); leaf Capability that names the single product (`procedure-in-capability` for HOW); container contribution statements for shared I/O/rules (`platform-semantics-in-capability`); README orientation that points at an index table without restating every op (`readme-orients-not-transcribes`).
+
+**Fix:** Rewrite Capability as a succinct overview of the shared domain. Leave the op catalogue to the folder / techniques index / YAML binds. See [State Contract Contribution](./design-principles.md#27-state-contract-contribution); also `platform-semantics-in-capability`, `procedure-in-capability`.
+
+### AP-124. alternate-ops-as-protocol-sequence
+
+"### 1. Spawn … ### 2. Resume … ### 3. Concurrent" (or unnumbered `### spawn` / `### resume` / `### concurrent` under `## Protocol`)
+
+Mutually exclusive operation variants — or standing host-invoke policy — are encoded as Protocol phases as if they were a sequenced procedure.
+
+**Detect:** A technique `## Protocol` lists alternate modes of the same op surface that a caller selects exactly one of (e.g. spawn vs resume vs concurrent; create vs update) and never walks in order; or Protocol bullets whose only job is standing host policy (blocking-equivalent wait, depth-1, index-in-prompt, prefer/omit flags) with no distinct produce/transform/persist outcome for that step. Test: if renumbering the phases would not change runtime behavior because only one phase applies per call, flag it.
+
+**Do not flag:** True sequential phases ([Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome) / `numbered-protocol-phases`); a single Protocol phase whose bullets are mode branches of one invoke; Rules catalogues for host/compat files (agent-conduct pattern); generic ops whose Protocol is resolve → dispatch → await ([spawn-agent](../../meta/techniques/harness-compat/spawn-agent.md)).
+
+**Fix:** Move alternate op slices and standing host policy into `## Rules` (name slices by `operation_kind` when a resolver selects them). Keep `## Protocol` only for ordered outcomes. Callers Apply the selected rule section via the resolve map — they do not walk Protocol. See also `rule-as-protocol-step`, `no-one-step-rules`.
+
+### AP-125. technique-ref-in-io-contract
+
+"`challenge_findings` — Ordered per-perspective findings from [challenge](./challenge.md)" / "`applied_fixes` … via [manage-git](…)::[commit-paths](…)" / "`concurrency` … parallel fan-out via [spawn-concurrent](…)"
+
+An Input or Output description hyperlinks or otherwise associates the bind slot with a **technique** (sibling op, group, or cross-workflow technique), as if the agent should Apply or consult that technique to understand the value.
+
+**Detect:** A technique `## Inputs` or `## Outputs` entry description contains a markdown hyperlink to a technique file (`**/techniques/**/*.md`, group `TECHNIQUE.md`, or equivalent `::` technique citation), or prose that names another technique as the producer/consumer/executor of the value ("from [challenge]", "via [commit-paths]", "ready for [dispatch-workers]", "folded by [run-suite]"). Inputs/Outputs are bind contracts — what the value *is* — not an invitation to execute another op. Test: if following the link would take the agent into another technique's Protocol/Rules to interpret the slot, flag it.
+
+**Do not flag:** Resource hyperlinks (templates, guides, policy sections under `**/resources/**`) that clarify value shape or vocabulary — e.g. "one question is posed from it per [requirements-elicitation](…/resources/requirements-elicitation.md)"; bare technique *id strings* when the slot's value *is* a technique id (`agent_technique`, `harness_technique`) without a navigable technique hyperlink; Protocol/Rules that correctly Apply or cite techniques; I/O HOW without a technique association (`procedure-in-io-contract`).
+
+**Fix:** Rewrite the I/O description as bind-contract meaning/shape only (no technique hyperlink). Move producer/consumer/Apply relationships into Protocol (or activity `steps[]` binds). See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); also `procedure-in-io-contract`, `io-agnostic-contract`, `canonical-technique-reference` (Protocol-side).
 
 ## Authoring Guidance (MR)
 

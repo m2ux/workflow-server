@@ -158,10 +158,11 @@ steps:
   - kind: technique
     id: initialize-planning-folder
     technique:
-      name: work-package::manage-artifacts::create-readme
+      name: workflow-engine::create-readme
       inputs:
         entity_context: "entity_title={workflow_id}; entity_type={operation_type}; status=Planning"
-        readme_template: workflow-design/design-context-readme
+        seed_profile: workflow-design/readme-seed
+        operation_type: "{operation_type}"
     condition:
       type: simple
       variable: operation_type

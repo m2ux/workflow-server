@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Audit a workflow's adherence to the design principles, classifying each principle as compliant, partially compliant, or violating with file/field/line citations, and persist the findings.
+Design-principles adherence audit of a workflow with compliance classification and citations.
 
 ## Outputs
 

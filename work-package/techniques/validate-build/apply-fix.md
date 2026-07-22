@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Apply the chosen fix strategy and prepare for re-validation.
+Concrete fix for a failed validation check, ready for re-validation.
 
 ## Inputs
 
@@ -22,6 +22,7 @@ Concrete fix approach to execute (file edit, `fmt-fix` invocation, dependency in
 ### fix_applied
 
 Boolean — true if the fix was applied; false if the fix requires user input or external action
+
 
 ## Protocol
 

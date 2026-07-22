@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Design the implementation approach and create a work package plan with task breakdown, dependencies, and ordering, then break the plan into actionable TODO tasks.
+Implementation planning — design approach, work-package plan, and actionable TODO tasks.
 
 ## Inputs
 
@@ -34,6 +34,7 @@ Work package [plan](../../resources/wp-plan.md#template) with task breakdown and
 #### tasks
 
 Atomic tasks with explicit dependencies and ordering
+
 
 ## Rules
 

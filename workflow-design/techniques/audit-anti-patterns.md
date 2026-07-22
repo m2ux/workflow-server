@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Audit a workflow's authored content against the anti-pattern catalog: load the catalog, apply each entry's detect / do-not-flag / fix guidance to the target files (and, for Tool-Technique-Doc Consistency entries, against the actual harness tool surface and authoritative bootstrap resources), and persist findings with file, content, and recommended fix.
+Anti-pattern catalog audit of authored workflow content, including harness-tool and bootstrap-resource consistency entries.
 
 ## Outputs
 

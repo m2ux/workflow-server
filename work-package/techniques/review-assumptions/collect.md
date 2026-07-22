@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Collect and classify the assumptions made during the work against `{assumption_categories}`, appending them to the assumptions log.
+Assumptions from the work classified against the bound assumption categories in the assumptions log.
 
 ## Inputs
 
@@ -19,7 +19,7 @@ The list of categories used to classify each assumption (supplied via `step.tech
 
 ### assumptions_log
 
-*(optional)* The existing assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) to append to; a fresh log is started when none exists.
+*(optional)* The existing assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) to append to.
 
 ## Outputs
 
@@ -33,7 +33,8 @@ The collected assumptions classified as open (stakeholder-dependent, non-code-re
 
 ### has_open_assumptions
 
-Boolean gate — true iff `{open_assumptions}` is non-empty; gates whether the interview step is entered.
+Boolean gate — true iff `{open_assumptions}` is non-empty.
+
 
 ## Protocol
 

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Append the DCO attestation section to `provenance-log.md`, recording the human's certification. Runs once per work package.
+Human DCO attestation recorded once per work package in `provenance-log.md`.
 
 ## Inputs
 
@@ -34,6 +34,7 @@ One of: `certify` | `flag-legal` — the human's DCO certification selection
 ### provenance_log
 
 The updated provenance log, with the attestation section appended
+
 
 ## Protocol
 

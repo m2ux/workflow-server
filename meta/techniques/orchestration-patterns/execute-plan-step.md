@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Execute one `{current_step}` from an `{execution_plan}` and record its result, signalling whether the plan still holds.
+Execute one current step from an execution plan and record its result, signalling whether the plan still holds.
 
 ## Inputs
 
@@ -29,7 +29,7 @@ Object `{ id, outcome, evidence? }` for `{current_step.id}`.
 
 ### prior_step_results
 
-`{prior_step_results}` with `{step_result}` appended — the accumulated per-step history landed back into the bag for the next iteration and for [replan](./replan.md) to read.
+`{prior_step_results}` with `{step_result}` appended — the accumulated per-step history landed back into the bag for the next iteration and for replan to read.
 
 ### plan_needs_replan
 

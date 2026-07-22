@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Author syntactically valid YAML files that pass schema validation
+Schema-valid workflow YAML files.
 
 ## Inputs
 
@@ -28,7 +28,6 @@ A syntactically valid YAML file that passes schema validation
 ### 1. Read Reference File
 
 - Read the `{reference_file}` if one was supplied, otherwise read at least one existing valid YAML file matching the `{schema_type}`
-- Note syntax patterns: block mappings (`key: value`), block sequences (`-` list items), nested indentation, scalar quoting, and block scalars for multi-line text
 
 ### 2. Read Schema Field Tables
 
@@ -37,16 +36,12 @@ A syntactically valid YAML file that passes schema validation
 ### 3. Plan Content
 
 - Identify which schema fields will be used by consulting the JSON schema definition (`schemas/{schema_type}.schema.json`)
-- Map each piece of content to the appropriate field and determine the correct YAML representation — prefer formal constructs from [schema-construct-inventory](../resources/schema-construct-inventory.md) over prose
-- Cross-check required vs optional properties — id, version, name are required for activities; id, version, capability are required for techniques
+- Map content to fields using formal constructs from [schema-construct-inventory](../resources/schema-construct-inventory.md); cross-check required vs optional properties for the `{schema_type}`
 
 ### 4. Draft Content
 
-- Write the `{yaml_file}` following YAML syntax rules exactly, using two-space indentation for each nesting level
-- Represent arrays as a key followed by `-`-prefixed items on indented lines (a block sequence) — there is no count suffix
-- Quote any scalar that contains a `: ` (colon-space), begins with a special character, or could be misread as a number or boolean
-- Use a block scalar (`|` literal or `>` folded) for any multi-line string
-- Write `description` / `outcome` / `message` / option prose in positive declarative present tense; do not bury procedure, rationale, or sequence in those fields
+- Write `{yaml_file}` per Rules below (block arrays/mappings, scalar quoting, multi-line scalars, field ordering, version format)
+- Description hygiene for prose fields: [design-principles](../resources/design-principles.md) §17 and Description Hygiene anti-patterns — do not bury procedure in `description` / `outcome` / `message` / option text
 
 ### 5. Validate Against Schema
 
@@ -82,11 +77,11 @@ Use a YAML block scalar (`|` to preserve newlines, `>` to fold) for multi-line t
 
 ### version-format
 
-Always use semantic versioning X.Y.Z (e.g., 1.0.0)
+Semantic versioning X.Y.Z — see also [convention-conformance](../resources/convention-conformance.md) for cross-workflow norms.
 
 ### field-ordering
 
-Follow the field ordering from existing files of the same type — typically id, version, name (or capability) and description first
+Follow field ordering from existing files of the same type ([convention-conformance](../resources/convention-conformance.md)).
 
 ### schema-reference
 

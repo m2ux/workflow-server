@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Verify every planning artifact in the folder against the output-discipline rules of this group — canonical-home sections not duplicated, link-only slots not restated, null sections omitted, per-template line budgets respected — and fix violations in place. The sibling of [verify-readme-conforms](./verify-readme-conforms.md), covering the artifact set rather than the README.
+Conformance of planning artifacts to this group's output-discipline rules (artifact set, not the planning README).
 
 ## Outputs
 
@@ -20,6 +20,7 @@ true iff the `violations` array is empty after fixes are applied.
 #### violations
 
 array of `{ file, rule, detail, fixed }` entries — one per detected violation, where `rule` names the output-discipline rule breached (`single-source-and-link`, `state-once-per-artifact`, `omit-null-sections`, `exception-only-reporting`, or `line-budget`) and `fixed` records whether the in-place fix was applied.
+
 
 ## Protocol
 

@@ -2,7 +2,7 @@
 name: pr-description
 description: PR description templates and link-row rendering forms.
 metadata:
-  version: 1.5.0
+  version: 1.6.0
   order: 12
   legacy_id: 12
 ---
@@ -11,6 +11,12 @@ metadata:
 # Pull Request Description Guide
 
 Apply this guide to all PRs that introduce features, fix bugs, refactor, make architectural changes, or update dependencies with breaking changes. Simplified descriptions are acceptable for documentation-only changes, typo fixes, non-breaking dependency bumps, and automated/generated changes.
+
+## Lifecycle tense
+
+- **Initial** (`pr_template_variant: initial`) — used at plan-prepare before implementation. Future-tense checklist language and an **Implementation (coming next)** Changes block are correct only in this phase.
+- **Final** (`pr_template_variant: final`) — used once implementation has landed (strategic-review refresh and submit-for-review). The Changes section describes what **was** implemented in present/past tense; do not leave “coming next”, unchecked “Ready for review” theatre, or plan-only checklist state after code exists.
+- Re-render with Final as soon as implementation lands (strategic-review binds `update-pr::render` with `final`) so mid-flow review does not read a stale Initial body.
 
 ## Templates
 
@@ -36,7 +42,7 @@ Optional sections (add when applicable): `## Migration Notes` (required steps fo
 
 ## Changes
 
-**Implementation (coming next):**
+**Implementation (pending):**
 - [Task 1 description]
 - [Task 2 description]
 
@@ -56,8 +62,8 @@ Optional sections (add when applicable): `## Migration Notes` (required steps fo
 
 ## 🔱 Fork Strategy
 
-- [ ] Node Runtime Update
-- [ ] Node Client Update
+- [ ] Runtime Update
+- [ ] Client Update
 - [ ] Other
 - [ ] N/A
 
@@ -117,8 +123,8 @@ Optional sections (add when applicable): `## Migration Notes` (required steps fo
 
 ## 🔱 Fork Strategy
 
-- [x] Node Runtime Update
-- [ ] Node Client Update
+- [x] Runtime Update
+- [ ] Client Update
 - [ ] Other
 - [ ] N/A
 

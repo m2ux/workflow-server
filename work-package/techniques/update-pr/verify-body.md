@@ -5,23 +5,24 @@ metadata:
 
 ## Capability
 
-Evaluate the rendered PR body against `pr-body-conformance` and report the verdict as `{body_conforms}` with per-rule `{body_findings}`.
+PR-body-conformance verdict for the rendered PR description (conforms flag and findings).
 
 ## Inputs
 
 ### rendered_pr_body
 
-The Final-template PR body to evaluate, read from the rendered output at `/tmp/pr-body.md`.
+Final-template PR body markdown ([Template (Final)](../../resources/pr-description.md#template-final)).
 
 ## Outputs
 
 ### body_conforms
 
-True when the rendered body passes every rule in `pr-body-conformance`; false otherwise (declared in the [update-pr](./TECHNIQUE.md) group root).
+True when the rendered body passes every rule in `pr-body-conformance` against the [Final template](../../resources/pr-description.md#template-final) mandated sections and link row; false otherwise.
 
 ### body_findings
 
-List of `{ rule_id, detail }` entries, one per failed conformance rule, in rule-evaluation order; empty when the body conforms (declared in the [update-pr](./TECHNIQUE.md) group root).
+List of `{ rule_id, detail }` entries, one per failed conformance rule, in rule-evaluation order; empty when the body conforms.
+
 
 ## Protocol
 

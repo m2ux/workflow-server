@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Produce an inspectable ordered `{execution_plan}` of steps for `{goal}` — the plan half of plan-and-execute.
+Produce an inspectable ordered execution plan of steps for the goal — the plan half of plan-and-execute.
 
 ## Inputs
 
@@ -25,7 +25,7 @@ Object with `steps`: ordered array of `{ id, instruction, depends_on? }` and opt
 
 ### plan_needs_replan
 
-Boolean, default `false`. Set `true` only when planning itself detects the world is too unstable to execute (rare); normally `false` until [replan](./replan.md) or [execute-plan-step](./execute-plan-step.md) surfaces surprise.
+Boolean, default `false`. Set `true` only when planning itself detects the world is too unstable to execute (rare); normally `false` until replan or execute-plan-step surfaces surprise.
 
 ## Protocol
 

@@ -19,7 +19,7 @@ A single atomic task to implement (description, affected files, dependencies)
 
 ### target_symbol
 
-The primary edit target — the function, class, or method this task changes — derived from `{current_task}` in Protocol §1 and read by the impact/context checks in §2.
+The primary edit target — the function, class, or method this task changes.
 
 ## Outputs
 

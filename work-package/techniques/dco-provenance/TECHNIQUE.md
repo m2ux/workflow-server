@@ -5,4 +5,4 @@ metadata:
 
 ## Capability
 
-Developer Certificate of Origin (DCO) compliance and AI provenance tracking — provenance log row appends and attestation recording.
+DCO compliance and AI provenance tracking for the work package.

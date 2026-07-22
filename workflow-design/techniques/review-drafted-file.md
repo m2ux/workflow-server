@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Assemble a lean review note for a drafted file — the delta delivered and (on update) removals versus committed content — and persist it for activity-layer review.
+Lean review note for a drafted file — delivered delta and (on update) removals.
 
 ## Inputs
 
@@ -15,7 +15,7 @@ The scope-manifest entry just drafted — its path, action, type, and one-line d
 
 ### operation_type
 
-The classified operation. When `update`, the review compares the drafted content against the file's existing committed content and records removals.
+The classified operation — `create` or `update`.
 
 ## Outputs
 

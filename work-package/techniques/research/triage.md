@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Enumerate the open research candidates left after synthesis and classify each as reconcilable-by-research or irreconcilable, seeding the candidate inventory and the loop gate before reconciliation begins. Runs autonomously — the user is not consulted during triage.
+Open research candidates classified as reconcilable-by-research or irreconcilable for the reconcile loop.
 
 ## Inputs
 
@@ -56,6 +56,7 @@ Boolean gate driving the reconciliation loop — true when at least one candidat
 
 - Write the candidates to `{research_candidates}` and into the research artifact's Open Research Candidates section per the [integration shape](../../resources/research-reconciliation.md#integration-with-research-artifact)
 - Set `{has_reconcilable_research}` true if any candidate is reconcilable-by-research, false otherwise
+
 
 ## Rules
 

@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.9.0
+version: 2.10.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 required: true
@@ -7,6 +7,23 @@ steps:
   - kind: technique
     id: review-strategy
     technique: review-scope
+  - kind: technique
+    id: refresh-pr-body
+    technique:
+      name: update-pr::render
+      inputs:
+        pr_template_variant: final
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: stealth_mode
+          operator: "!="
+          value: true
   - kind: checkpoint
     id: unsigned-commits-prompt
     condition:
@@ -39,7 +56,10 @@ steps:
       value: true
   - kind: technique
     id: verify-readme
-    technique: manage-artifacts::verify-readme-conforms
+    technique:
+      name: workflow-engine::verify-readme-conforms
+      inputs:
+        seed_profile: work-package/readme-seed
   - kind: technique
     id: verify-artifact-conformance
     technique: manage-artifacts::verify-artifact-conforms

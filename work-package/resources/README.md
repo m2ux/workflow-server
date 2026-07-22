@@ -6,7 +6,8 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 
 | Resource ID | Title | Purpose |
 |-------------|-------|---------|
-| `readme` | README Guide | Entry point and artifact index template for planning folders |
+| `readme` | README pointer | Points at meta planning-readme Template + work-package readme-seed |
+| `readme-seed` | README Seed | Progress inventory, classifier, mode-exclusion map for create-readme |
 | `readme-deprecated-notice` | README Guide redirect | Redirect stub that points loaders at `readme` for planning-folder work |
 | `github-issue-creation` | GitHub Issue Creation | Guide for creating well-structured GitHub issues |
 | `jira-issue-creation` | Jira Issue Creation | Guide for creating Jira issues with proper field mapping |

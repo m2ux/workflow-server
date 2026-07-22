@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Rebase the feature branch onto its merge base and re-sign every commit so each carries a valid GPG signature, then verify no unsigned commit remains.
+Feature-branch commits re-signed so every commit carries a valid GPG signature.
 
 ## Inputs
 
@@ -28,6 +28,7 @@ Boolean — set to `false` once the re-sign pass has completed.
 ### review_findings
 
 Findings produced by the scope and artifact review; a re-sign failure is appended as an additional finding.
+
 
 ## Protocol
 

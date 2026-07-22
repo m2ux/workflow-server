@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Dispatch a fresh client workflow as a child of the meta session via `dispatch_child`. For the top-level `start_session` tool (parent/meta entry), see [start-session](./start-session.md).
+Fresh client workflow session as a child of the meta session. Top-level entry is start-session.
 
 ## Inputs
 
@@ -33,6 +33,6 @@ The canonical absolute path of the planning folder, as resolved by the server un
 
 ## Protocol
 
-1. Call `dispatch_child { session_index: {parent_session_index}, workflow_id: {workflow_id}, agent_id: 'orchestrator', planning_slug: {client_planning_slug} }`; capture the returned `{session_index}` for use in all subsequent calls inside the child workflow, and the returned `{planning_folder_path}` (the server-resolved absolute folder under its workspace) as the single artifact location. The server appends the child under `parent.triggeredWorkflows[N].state` and embeds the full child SessionFile inline; the agent does not deal with separate child folders, and does not compose the folder path itself.
+1. Call `dispatch_child { session_index: {parent_session_index}, workflow_id: {workflow_id}, agent_id: 'orchestrator', planning_slug: {client_planning_slug} }`; capture `{session_index}` and `{planning_folder_path}` (server-resolved; do not compose the path). Child session embed under the parent follows the `dispatch_child` response / [handle-sub-workflow](./handle-sub-workflow.md).
 
-   Omit `context_mode` (or pass `"fresh"`). Client activities are executed by disposable per-activity workers via [dispatch-activity](./dispatch-activity.md); do not pass `context_mode: "persistent"` on the child session.
+   Omit `context_mode` (or `"fresh"`) per [dispatch-topology](./TECHNIQUE.md#dispatch-topology) / [workers-need-full-delivery](./dispatch-activity.md#workers-need-full-delivery).

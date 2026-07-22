@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Open a draft PR linked to the issue, assigned to the current GitHub user — composing work-package-specific title/body, then creating via meta [create-pr](../../../meta/techniques/github-cli-protocol/create-pr.md).
+Draft PR linked to the issue and assigned to the current GitHub user.
 
 ## Inputs
 
@@ -27,12 +27,13 @@ PR number
 
 URL to the PR
 
+
 ## Protocol
 
 ### 1. Prepare PR Inputs
 
-- BEFORE creating the PR: commit and push `{planning_folder_path}` to the parent (engineering) repo so the 📐 Engineering link resolves. Verify the URL will return 200 by confirming the commit is on the remote.
-- Compose the PR title and body using the [Template (Initial)](../../resources/pr-description.md#template-initial) from pr-description. Reference `{issue_number}` in the PR title and body, formatting the issue link according to `{issue_platform}` (GitHub `#N` vs Jira `KEY-N`).
+- BEFORE creating the PR: honor [push-before-linking](../manage-artifacts/TECHNIQUE.md#push-before-linking) / [committed-to-parent](../manage-artifacts/TECHNIQUE.md#committed-to-parent) for `{planning_folder_path}`.
+- Compose the PR title and body using the [Template (Initial)](../../resources/pr-description.md#template-initial). Reference `{issue_number}` per `{issue_platform}` (GitHub `#N` vs Jira `KEY-N`).
 
 ### 2. Create Draft PR
 

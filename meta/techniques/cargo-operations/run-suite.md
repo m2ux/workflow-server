@@ -25,19 +25,19 @@ The aggregate validation envelope from the four concurrent ops. Each per-check s
 
 #### check_status
 
-status of the [check](./check.md) op: `{ check_id: 'check', passed: boolean, diagnostics }`, where `diagnostics` is the rustc output the op emitted.
+status of the check op: `{ check_id: 'check', passed: boolean, diagnostics }`, where `diagnostics` is the rustc output the op emitted.
 
 #### clippy_status
 
-status of the [clippy](./clippy.md) op: `{ check_id: 'clippy', passed: boolean, diagnostics }`, where `diagnostics` is the op's `lint_diagnostics`.
+status of the clippy op: `{ check_id: 'clippy', passed: boolean, diagnostics }`, where `diagnostics` is the op's `lint_diagnostics`.
 
 #### test_status
 
-status of the [test](./test.md) op: `{ check_id: 'test', passed: boolean, diagnostics }`, where `diagnostics` is the op's per-test `failures` detail.
+status of the test op: `{ check_id: 'test', passed: boolean, diagnostics }`, where `diagnostics` is the op's per-test `failures` detail.
 
 #### fmt_status
 
-status of the [fmt-check](./fmt-check.md) op: `{ check_id: 'fmt-check', passed: boolean, diagnostics }`, where `diagnostics` is the op's `fmt_diff_summary`.
+status of the fmt-check op: `{ check_id: 'fmt-check', passed: boolean, diagnostics }`, where `diagnostics` is the op's `fmt_diff_summary`.
 
 #### failed_checks
 

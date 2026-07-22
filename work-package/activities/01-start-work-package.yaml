@@ -489,7 +489,11 @@ steps:
         message: Server-resolved canonical absolute planning folder from the get_workflow summary. Write location for ALL of this work package's artifacts.
   - kind: technique
     id: initialize-planning-folder
-    technique: manage-artifacts::create-readme
+    technique:
+      name: workflow-engine::create-readme
+      inputs:
+        seed_profile: work-package/readme-seed
+        is_review_mode: "{is_review_mode}"
   - kind: technique
     id: present-problem-overview
     technique:
