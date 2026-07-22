@@ -1,7 +1,7 @@
 id: complete
-version: 1.6.1
+version: 1.6.3
 name: Complete Work Package
-description: Wrap up the work package after PR merge.
+description: Wrap up the work package after PR merge (or after review-mode close-out).
 required: true
 steps:
   - kind: technique

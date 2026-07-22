@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Summarize the honest gain from the lazy pass, appended to the foot of the debt ledger. Cite the aggregate [benchmark medians](../resources/honesty-boundary.md#medians) — lines of code, cost, and speed — point at the ledger for the only real per-repo count, and never fabricate a per-repo savings number. This is the workflow's adaptation of the source's read-only display: it appends a summary to the ledger and mutates no source code.
+Summarize the honest gain from the lazy pass, appended to the foot of the debt ledger. Cite the aggregate [benchmark medians](ponytail/honesty-boundary#medians) — lines of code, cost, and speed — point at the ledger for the only real per-repo count, and never fabricate a per-repo savings number. This is the workflow's adaptation of the source's read-only display: it appends a summary to the ledger and mutates no source code.
 
 ## Inputs
 
 ### debt_ledger
 
-The harvested debt [ledger](../resources/ponytail-marker-convention.md#convention) whose foot the gain scoreboard is appended to — its row count is the only genuine per-repo figure cited.
+The harvested debt [ledger](ponytail/ponytail-marker-convention#convention) whose foot the gain scoreboard is appended to — its row count is the only genuine per-repo figure cited.
 
 ## Outputs
 
@@ -27,7 +27,7 @@ The honesty-bounded gain summary appended to the foot of the debt ledger — the
 
 ### 2. Cite benchmark medians
 
-- Cite the published aggregate [benchmark medians](../resources/honesty-boundary.md#medians) — lines of code, cost, and speed. Frame them as medians measured over the fixed benchmark suite, never as this repo's measured savings.
+- Cite the published aggregate [benchmark medians](ponytail/honesty-boundary#medians) — lines of code, cost, and speed. Frame them as medians measured over the fixed benchmark suite, never as this repo's measured savings.
 
 ### 3. Append the scoreboard
 
@@ -37,4 +37,4 @@ The honesty-bounded gain summary appended to the foot of the debt ledger — the
 
 ### honesty-boundary-on-reporting
 
-Never fabricate a per-repo savings number. The only genuine per-repo figure is the [debt-ledger](../resources/ponytail-marker-convention.md#convention) row count; everything else is a published aggregate [benchmark median](../resources/honesty-boundary.md#medians) and must be labelled as such.
+Never fabricate a per-repo savings number. The only genuine per-repo figure is the [debt-ledger](ponytail/ponytail-marker-convention#convention) row count; everything else is a published aggregate [benchmark median](ponytail/honesty-boundary#medians) and must be labelled as such.

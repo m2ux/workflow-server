@@ -19,7 +19,7 @@ NEVER skip hooks (`--no-verify`, `--no-gpg-sign`) unless the user explicitly req
 
 ### explicit-commit
 
-NEVER commit changes unless the user explicitly asks. Verify the request before executing.
+NEVER commit changes unless the user explicitly asks. Verify the request before executing. Scope: ad-hoc commits outside the orchestrator post-activity hook — distinct from [commit-after-activity](../workflow-engine/commit-and-persist.md#commit-after-activity), which mandates commit+push after each completed activity.
 
 ### read-agents-md
 

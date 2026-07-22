@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.4.1
 ---
 
 ## Capability
@@ -28,6 +28,7 @@ Path to the target submodule where source-side changes live (typically the appli
 ## Protocol
 
 1. **README Progress:** Resolve the Progress moment from [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites): if `{mark_progress_na}` is true, use path-skip / cancel / mark N/A; otherwise use `activity_complete`. Apply [sync-progress-status](./sync-progress-status.md) with `activity_id={activity_id}`, `planning_folder_path={planning_folder_path}`, and that moment's `{target_status}` / overwrite defaults ([Status transition policy](../../resources/planning-readme.md#status-transition-policy)); record `{rows_updated}` from that Apply. Do not restate [Status vocabulary](../../resources/planning-readme.md#status-vocabulary). When `{mark_progress_na}` was true, set it false after the Apply.
+   - Apply [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile) when `inspect_session` path/state for `{planning_folder_path}` or related critical variables disagrees with the just-completed worker's `activity_complete` envelope.
 2. Set the header-line `**Status:**` to the current lifecycle milestone for that workflow (text — distinct from Progress Status; see [Progress table](../../resources/planning-readme.md#progress-table)).
 3. If the README already matches after steps 1–2, leave content equivalent — still include the file in the engineering commit below so a prior local-only edit is pushed.
 4. If `{target_path}` has uncommitted changes (`git status --porcelain` non-empty), apply [version-control](../version-control/TECHNIQUE.md)::[commit-submodule](../version-control/commit-submodule.md) with `paths=changed files`, `submodule_message='<type>(<workflow-id>): <activity-id> source changes'` (pick the Conventional Commits type that fits the activity — feat for implement, fix for post-impl-review fixes, refactor for cleanup, etc.), and `parent_branch=current parent branch`. Skip when the working tree is clean.
@@ -38,7 +39,7 @@ Path to the target submodule where source-side changes live (typically the appli
 
 ### commit-after-activity
 
-After every completed activity, BOTH source-side changes (under `{target_path}`, via [commit-submodule](../version-control/commit-submodule.md)) AND engineering artifacts (under `.engineering/artifacts/`, via [commit-regular-files](../version-control/commit-regular-files.md)) MUST be committed and **pushed** before evaluating transitions to the next activity. Skipping either scope leaves a dirty or remote-stale tree that breaks resume, Engineering links, and downstream activities. The submodule commit may be skipped only when `{target_path}`'s working tree is clean. The engineering commit may be skipped only when the planning folder has no local changes **and** README Progress Status for `{activity_id}` already shows the intended post-activity status on the remote (complete, or cancelled/N/A when `{mark_progress_na}` applied) per [Status vocabulary](../../resources/planning-readme.md#status-vocabulary) — otherwise Apply sync-progress-status (step 1) then commit and push.
+After every completed activity, BOTH source-side changes (under `{target_path}`, via [commit-submodule](../version-control/commit-submodule.md)) AND engineering artifacts (under `.engineering/artifacts/`, via [commit-regular-files](../version-control/commit-regular-files.md)) MUST be committed and **pushed** before evaluating transitions to the next activity. Skipping either scope leaves a dirty or remote-stale tree that breaks resume, Engineering links, and downstream activities. The submodule commit may be skipped only when `{target_path}`'s working tree is clean. The engineering commit may be skipped only when the planning folder has no local changes **and** README Progress Status for `{activity_id}` already shows the intended post-activity status on the remote (complete, or cancelled/N/A when `{mark_progress_na}` applied) per [Status vocabulary](../../resources/planning-readme.md#status-vocabulary) — otherwise Apply sync-progress-status (step 1) then commit and push. Scope: this orchestrator post-activity hook only — distinct from [explicit-commit](../version-control/TECHNIQUE.md#explicit-commit), which governs ad-hoc commits outside this hook.
 
 ### readme-progress-before-persist
 

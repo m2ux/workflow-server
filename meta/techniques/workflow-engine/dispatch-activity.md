@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.8.1
 ---
 
 ## Capability
@@ -46,10 +46,15 @@ Opaque HMAC-signed trace token from the `next_activity` response `_meta.trace_to
 4. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await the worker's envelope and return it unchanged as `{worker_result}`.
    - If the worker does not return within the expected time, apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) if it is still running; otherwise dispatch a fresh worker for the same `{activity_id}`.
 5. On `activity_complete`, read `{worker_result.next_activity_id}` (and optionally `{worker_result.evaluated_condition}`) as the authoritative next-activity routing — the worker evaluated transitions via [finalize-activity](./finalize-activity.md).
+   - Before an orchestrator decision depends on a critical routing or path variable, apply [distrust-then-reconcile](#distrust-then-reconcile) (same stance as [worker-bag-takes-precedence](#worker-bag-takes-precedence)).
    - When the orchestrator observes **blocked** (worker/harness signal), apply [sync-progress-status](./sync-progress-status.md) for the blocked moment in [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites) for `{activity_id}` before surfacing or retrying.
    - When the path **skips / cancels** an activity without running it, apply [sync-progress-status](./sync-progress-status.md) for the path-skip / cancel moment in [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites) for that activity's activity-prefix field.
 
 ## Rules
+
+### distrust-then-reconcile
+
+Critical routing/path state read from `inspect_session` is cross-checked against the worker's own `activity_complete` envelope (`variables_changed` and related fields) and, when still uncertain, planning-folder evidence, before an orchestrator decision depends on it. On disagreement, the envelope governs; log the discrepancy.
 
 ### resolve-trace-at-close-out
 
