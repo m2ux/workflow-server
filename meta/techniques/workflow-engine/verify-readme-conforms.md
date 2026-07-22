@@ -21,7 +21,7 @@ The conformance envelope — three drift arrays plus the aggregate verdict:
 
 #### conforms
 
-true iff `{missing_sections}`, `{extra_top_level_headings}`, and `{header_block_drift}` are all empty.
+true iff the envelope's three drift arrays are all empty.
 
 #### missing_sections
 
@@ -37,7 +37,7 @@ array of header-block fields missing or renamed relative to [Template](../../res
 
 ## Protocol
 
-1. Read `{planning_folder_path}/README.md`. If absent, re-apply [create-readme](./create-readme.md) with the bound `{seed_profile}` (required when re-seeding) before continuing.
+1. Read `{planning_folder_path}/README.md`. If absent, re-apply [create-readme](./create-readme.md) with the bound `{seed_profile}` (required when re-seeding) before continuing; confirm the returned `{created_readme}` path exists.
 2. Load [Template](../../resources/planning-readme.md#template). When `{seed_profile}` is bound, load that profile and union any declared append H2 titles into the required section set.
 3. Extract H1/H2 sections from the README. Compare H2s against the required set (Template H2s plus seed appends). Compare the header blockquote against Template header fields (classifier · Created · **Status:**).
-4. Compose `{readme_conformance}`: `{missing_sections}`, `{extra_top_level_headings}`, `{header_block_drift}`; `{conforms}` is true iff all three arrays are empty.
+4. Compose `{readme_conformance}` as one object: populate its three drift arrays from the comparison, then set its `conforms` field true iff all three arrays are empty.

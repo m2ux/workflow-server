@@ -38,7 +38,7 @@ Orchestrator agent identity for this session.
 
 - Apply [dispatch-activity](./dispatch-activity.md) from the bundle
 - On `checkpoint_pending`, bubble the yield and resume the worker with resolved effects
-- After each `activity_complete`, apply [commit-and-persist](./commit-and-persist.md) before the next dispatch (Applies [sync-progress-status](./sync-progress-status.md) per [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites)). Blocked and path-skip moments stay [dispatch-activity](./dispatch-activity.md) Protocol duties.
+- After each `activity_complete`, apply [commit-and-persist](./commit-and-persist.md) before the next dispatch (Applies [sync-progress-status](./sync-progress-status.md) per [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites)). When a planning README drift check ran, require `{readme_conformance}.conforms` before treating Progress as durable. Blocked and path-skip moments stay [dispatch-activity](./dispatch-activity.md) Protocol duties.
 - Route from `{worker_result.next_activity_id}` ([finalize-activity](./finalize-activity.md))
 
 ## Rules

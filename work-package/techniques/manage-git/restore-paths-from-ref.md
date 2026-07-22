@@ -37,7 +37,7 @@ Paths successfully restored from `{base_ref}` and staged in `{target_path}`. Emp
 
 ### 1. Validate
 
-- From `{target_path}`, confirm `{base_ref}` resolves (`git rev-parse --verify {base_ref}^{commit}`).
+- From `{target_path}`, confirm `{base_ref}` resolves to a commit (`git rev-parse --verify` with the git peel-to-commit suffix on `{base_ref}`).
 - When `{paths}` is empty, set `{restored_paths}` empty and return.
 
 ### 2. Restore

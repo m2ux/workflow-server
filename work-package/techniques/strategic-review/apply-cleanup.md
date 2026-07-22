@@ -37,7 +37,7 @@ SHA of the feature-branch commit carrying the applied cleanup (identified artifa
 
 - Apply cleanup (removing identified artifacts) when the user approves.
 - Use the edit tool for targeted in-place cleanup modifications.
-- When whole files or hunks should match the base again, resolve `{base_ref}` (bound value, else the PR base / default branch as in [review-scope](./review-scope.md)) and Apply [manage-git](../manage-git/TECHNIQUE.md)::[restore-paths-from-ref](../manage-git/restore-paths-from-ref.md) with `{target_path}`, `{base_ref}`, the paths to restore, and `{interactive}` true only when hunk-selective restore is required.
+- When whole files or hunks should match the base again, resolve `{base_ref}` (bound value, else the PR base / default branch as in [review-scope](./review-scope.md)) and Apply [manage-git](../manage-git/TECHNIQUE.md)::[restore-paths-from-ref](../manage-git/restore-paths-from-ref.md) with `{target_path}`, `{base_ref}`, the paths to restore, and `{interactive}` true only when hunk-selective restore is required; keep `{restored_paths}` for the commit phase.
 
 ### 2. Commit Changes
 

@@ -11,7 +11,9 @@ Planning-folder `README.md` from the universal planning Template under the bound
 
 ### entity_context
 
-`{ entity_title, entity_url, entity_type, current_date, status }`.
+*(optional)* `{ entity_title, entity_url, entity_type, current_date, status }` for header/Links population. When unbound, seed profile defaults alone fill those slots.
+
+`default: {}`
 
 ### seed_profile
 
@@ -30,6 +32,10 @@ Resource id of the workflow's readme-seed profile (Progress inventory, classifie
 ### created_readme
 
 Full path to the created `README.md`
+
+#### artifact
+
+name: README.md
 
 ## Protocol
 
