@@ -2,7 +2,7 @@
 
 **Workflow:** Work Package Implementation Workflow
 **ID:** `work-package`
-**Version:** 3.34.0
+**Version:** 3.35.0
 **Initial activity:** `start-work-package`
 **Catalog source:** committed workflow catalog (`list_workflows`)
 **Mode:** update
@@ -16,7 +16,7 @@
 | Technique leaf files (`.md`, excl. containers/README) | 91 |
 | Technique container `TECHNIQUE.md` files | 17 |
 | Resource files (excl. README) | 30 |
-| Total files under workflow tree | 159 |
+| Total files under workflow tree | 160 |
 
 ## Entity counts
 
@@ -25,18 +25,18 @@
 | Activities | 15 |
 | Techniques (leaf) | 91 |
 | Resources | 30 |
-| Checkpoints (incl. nested in loops) | 41 |
+| Checkpoints (incl. nested in loops) | 44 |
 | Transitions | 27 |
 | Decisions | 2 |
-| Workflow variables | 113 |
-| Workflow rules (activity partition) | 1 |
+| Workflow variables | 118 |
+| Workflow rules (activity partition) | 0 |
 
 ## Step kinds (across activities)
 
 | Kind | Count |
 |------|------:|
-| technique | 162 |
-| checkpoint | 41 |
+| technique | 163 |
+| checkpoint | 44 |
 | action | 27 |
 | loop | 15 |
 
@@ -60,25 +60,32 @@
 | 14 | `complete` |
 | 15 | `codebase-comprehension` |
 
+## Baseline delta vs the #272 pass
+
+This planning folder previously carried a completed #272 pass ([COMPLETE.md](COMPLETE.md), PR [#273](https://github.com/m2ux/workflow-server/pull/273)). The counts above are a fresh read of the current committed tip, not a copy of the #272-era baseline (`v3.34.0`). Observed deltas confirm several #272 deliverables are live on `work-package`:
+
+| Metric | #272 baseline | Current | Note |
+|---|---:|---:|---|
+| Version | 3.34.0 | 3.35.0 | Post-#272 bump |
+| Checkpoints | 41 | 44 | `submodule-selection` ≥2-option fix and related additions landed |
+| Workflow variables | 113 | 118 | Hand-off / Progress N/A vars landed |
+| Workflow rules (activity partition) | 1 | 0 | Duplicate worker-side README-progress rule removed ([F-1](follow-ups.md)) |
+
 ## Update scope
 
-Address the nine workflow-server-owned friction points from [issue #272](https://github.com/m2ux/workflow-server/issues/272) (environment/harness context is out of scope except where it informs design):
+Address the still-open, workflow-server-owned friction points from [issue #271](https://github.com/m2ux/workflow-server/issues/271) — a retrospective on a **review-mode** run of `work-package` against midnight-node PR #1900. Scope boundaries for this pass:
 
-1. **meta `discover-session` vs worker `list_workflows` ban** — reconcile `list-available-workflows` step binding with activity-worker rules.
-2. **Orchestrator next-activity without transition table** — return resolved next-activity / evaluated condition in `activity_complete`, or expose transition table to orchestrator (`no-get-activity-from-orchestrator`).
-3. **`validate` unavailable path** — when local suite cannot run, Progress Validation marked cancelled/N/A (`⊘` via `{mark_progress_na}`); no user-reported suite results.
-4. **Build-dependent artifacts** — flag and route to user from `validate` / `submit-for-review` (e.g. `.scale` metadata regen).
-5. **Single-option checkpoints** — guarantee ≥2 options or handle single-option presentation (`submodule-selection` / AskQuestion).
-6. **`foreground-always` vs async dispatch** — harness-compat acknowledges async dispatch + notification as blocking-equivalent.
-7. **`lean-coding-audit` comment over-verbosity** — proportionality to surrounding code as a hard trim bar.
-8. **Single-logical-artifact at write time** — enforce in `manage-artifacts::write-artifact` (no minted duplicates).
-9. **PR template tense** — refresh future-tense placeholders / checklist when implementation lands.
+- **Excluded — companion #270**: template / links / commit-ordering friction is tracked and addressed under [issue #270](https://github.com/m2ux/workflow-server/issues/270); not restated here.
+- **Excluded — already-delivered #272 items**: the nine friction points from [issue #272](https://github.com/m2ux/workflow-server/issues/272) landed on PR #273 (see delta table above and [COMPLETE.md](COMPLETE.md)); any #271 finding that duplicates a #272 item is remediated, not redrafted.
+- **In scope**: the remaining #271 surface — friction specific to the **review-mode** path through `work-package` (as opposed to the create/implement path #272 centered on) — once confirmed against current tip in [design-specification.md](03-design-specification.md).
 
-**Primary target:** `work-package` (items 3, 4, 7, 8, 9 and related activities/techniques).
+Per [operational-discipline-bundled-tools-only](../../../../workflows/meta/techniques/agent-conduct.md), the issue #271 text itself is not fetched from this activity — retrieval and per-finding categorization (already-remediated vs. still-open) is a bundled-tool step in a later activity (requirements-refinement / design-specification), grounded against the current-state baseline captured here.
 
-**Coupled targets (same change request):**
+**Primary target:** `work-package` (review-mode path: `strategic-review`, `submit-for-review`, and any shared checkpoint/orchestrator surfaces exercised during a review-mode run).
 
-- `meta` — discover-session / list_workflows reconciliation; orchestrator transition reporting; checkpoint presentation; `foreground-always` / harness-compat (`meta/techniques/harness-compat/`).
-- Possibly schema/envelope shape if `activity_complete` gains next-activity fields (server + workflow rules) — confirm in impact analysis; prefer workflow/technique updates first.
+**Coupled targets (same change request, pending confirmation once #271 detail is retrieved):**
 
-**Change categories:** Activity, Technique, Resource, Structural refactor (multi-item).
+- `meta` — orchestrator/dispatch and checkpoint-presentation surfaces shared with the #272 coupling.
+- Possibly `workflow-design` — this session's own workflow, if a review-mode-specific finding traces back to workflow-design conventions rather than work-package itself.
+
+**Change categories:** Technique, Resource, Activity (exact per-finding mix confirmed once issue #271 content is retrieved; likely a subset of these three, based on the #272 precedent).
