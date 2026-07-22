@@ -47,7 +47,8 @@ See [03-design-specification.md](03-design-specification.md). File breakdown: [0
 | 08 | [Enforcement findings](08-enforcement-findings.md) | Text-only rules (1 fixed · 3 deferred) | — | ✅ |
 | — | Quality review | Conformance / expressiveness audits | 45-90m | ✅ |
 | — | Validate and commit | Attest and commit workflow changes | 30-60m | ✅ |
-| — | Post-update review | Optional follow-up review | 20-40m | ⬚ |
+| 10 | [Post-update review](10-post-update-review.md) | Post-commit compliance snapshot | 20-40m | ✅ |
+| — | Post-update review | Optional follow-up review | 20-40m | ✅ |
 | — | Retrospective | Session close-out | 15-30m | ⬚ |
 | — | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, decisions, limitations | 10-20m | ⬚ |
 
