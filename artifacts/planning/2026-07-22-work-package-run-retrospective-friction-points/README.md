@@ -1,6 +1,6 @@
 # Work-Package Run Retrospective Friction Points — July 2026
 
-> Update · Created 2026-07-22 · **Status:** Drafting
+> Update · Created 2026-07-22 · **Status:** Planning
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -43,7 +43,7 @@ Nine first-class paths in `work-package` + coupled `meta` / harness-compat: reco
 | 03 | [Assumptions log](03-assumptions-log.md) | Design assumptions; 4 audit / 6 open | 20-40m | ✅ Complete |
 | — | Requirements refinement | Dimension deltas; assumptions | 30-60m | ✅ Complete |
 | — | Pattern analysis | Reference patterns for friction fixes | 30-60m | ⬚ Pending |
-| — | Impact analysis | Blast radius across meta/WP | 30-60m | ⬚ Pending |
+| 05 | [Impact analysis](05-impact-analysis.md) | Blast radius across meta/WP | 30-60m | ✅ Complete |
 | — | Scope and draft | Manifest + draft YAML/techniques | 1-2h | ⬚ Pending |
 | — | Quality review | Conformance / expressiveness audits | 45-90m | ⬚ Pending |
 | — | Validate and commit | Attest and commit workflow changes | 30-60m | ⬚ Pending |
