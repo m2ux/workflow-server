@@ -1,6 +1,6 @@
 # Work-Package Run Retrospective Friction Points — July 2026
 
-> Update · Created 2026-07-22 · **Status:** Planning
+> Update · Created 2026-07-22 · **Status:** Reviewing
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -10,46 +10,48 @@ This session designs updates to `work-package`, `meta`, and related harness/tech
 
 ## Problem Overview
 
-A recent end-to-end work-package run hit nine gaps that the workflow definitions themselves own: workers are told to call tools they are forbidden to use, the orchestrator must guess the next activity from ambiguous worker reports, validation and build-artifact regen have no supported “hand this to the user” path, single-option checkpoints cannot be shown, foreground-dispatch rules disagree with how the host actually spawns agents, lean-coding audit misses comment bloat, artifact writes can mint duplicates, and PR text stays stuck in future tense after implementation.
-
-Those gaps force improvisation, lost transitions, and late CI surprises. Fixing them in `work-package`, `meta`, and harness-compat (rather than only filing harness bugs) should make the same kind of run finish with clearer routing, explicit user hand-offs, and fewer hand reconciliations.
+See [03-design-specification.md](03-design-specification.md).
 
 ## Solution Overview
 
-Nine first-class paths in `work-package` + coupled `meta` / harness-compat: reconcile discover/list_workflows with worker rules; report resolved next activity in `activity_complete`; externalize validation and build-artifact regen to the user; fix single-option presentation; treat async+notify as blocking-equivalent; hard-trim comment over-verbosity; enforce single-logical-artifact writes; refresh PR tense after implementation. Detail → [03-design-specification.md](03-design-specification.md) · file breakdown → scope-manifest (pending).
+See [03-design-specification.md](03-design-specification.md). File breakdown: [06-scope-manifest.md](06-scope-manifest.md).
 
 ## Design Decisions
 
 - Purpose / dimension deltas → [03-design-specification.md](03-design-specification.md)
 - Assumptions and outcomes → [03-assumptions-log.md](03-assumptions-log.md) (6 open → Gate 2)
 
-## Compliance Findings
-
-| Severity | Finding | Location | Fix |
-|----------|---------|----------|-----|
-| — | *None yet* | — | — |
-
 ## Scope Manifest
 
-*Link/pointer to the scope-manifest artifact once confirmed.*
+[06-scope-manifest.md](06-scope-manifest.md)
 
 ## 📊 Progress
 
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
-| 01 | [Structural inventory](01-structural-inventory.md) | Baseline inventory + #272 update scope | 15-30m | ✅ Complete |
-| — | Intake and context | Classify update; schema literacy | 20-40m | ✅ Complete |
-| 03 | [Design specification](03-design-specification.md) | Dimension deltas for #272 friction fixes | 30-60m | ✅ Complete |
-| 03 | [Assumptions log](03-assumptions-log.md) | Design assumptions; 4 audit / 6 open | 20-40m | ✅ Complete |
-| — | Requirements refinement | Dimension deltas; assumptions | 30-60m | ✅ Complete |
-| — | Pattern analysis | Reference patterns for friction fixes | 30-60m | ⬚ Pending |
-| 05 | [Impact analysis](05-impact-analysis.md) | Blast radius across meta/WP | 30-60m | ✅ Complete |
-| — | Scope and draft | Manifest + draft YAML/techniques | 1-2h | ⬚ Pending |
-| — | Quality review | Conformance / expressiveness audits | 45-90m | ⬚ Pending |
-| — | Validate and commit | Attest and commit workflow changes | 30-60m | ⬚ Pending |
-| — | Post-update review | Optional follow-up review | 20-40m | ⬚ Pending |
-| — | Retrospective | Session close-out | 15-30m | ⬚ Pending |
-| — | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, decisions, limitations | 10-20m | ⬚ Pending |
+| 01 | [Structural inventory](01-structural-inventory.md) | Baseline inventory + #272 update scope | 15-30m | ✅ |
+| — | Intake and context | Classify update; schema literacy | 20-40m | ✅ |
+| 03 | [Design specification](03-design-specification.md) | Dimension deltas for #272 friction fixes | 30-60m | ✅ |
+| 03 | [Assumptions log](03-assumptions-log.md) | Design assumptions; 4 audit / 6 open | 20-40m | ✅ |
+| — | Requirements refinement | Dimension deltas; assumptions | 30-60m | ✅ |
+| — | Pattern analysis | Reference patterns for friction fixes | 30-60m | ⬚ |
+| 05 | [Impact analysis](05-impact-analysis.md) | Blast radius across meta/WP | 30-60m | ✅ |
+| 06 | [Scope manifest](06-scope-manifest.md) | File manifest + drafting order (22 files) | 30-45m | ✅ |
+| 06 | [Drafting plan](06-drafting-plan.md) | Per-file drafting approaches (batch) | 15-30m | ✅ |
+| 06 | [File review note](06-file-review-note.md) | Draft deltas + removal check | 15-30m | ✅ |
+| 06 | [Draft attestation](06-draft-attestation.md) | Block-indexed review of 22 files | 15-30m | ✅ |
+| — | Scope and draft | Manifest + draft YAML/techniques | 1-2h | ✅ |
+| 08 | [Verified findings](08-verified-findings.md) | Quality-review audit + fix cycle | 45-90m | ✅ |
+| 08 | [Conformance findings](08-conformance-findings.md) | Convention conformance (re-audit 0) | — | ✅ |
+| 08 | [Rule hygiene findings](08-rule-hygiene-findings.md) | Rule hygiene (re-audit 0) | — | ✅ |
+| 08 | [Enforcement findings](08-enforcement-findings.md) | Text-only rules (1 fixed · 3 deferred) | — | ✅ |
+| — | Quality review | Conformance / expressiveness audits | 45-90m | ✅ |
+| — | Validate and commit | Attest and commit workflow changes | 30-60m | ✅ |
+| — | Post-update review | Optional follow-up review | 20-40m | ⬚ |
+| — | Retrospective | Session close-out | 15-30m | ⬚ |
+| — | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, decisions, limitations | 10-20m | ⬚ |
+
+**Status:** ⬚ pending · ◐ in progress · ✅ complete · ❌ blocked · ⊘ cancelled
 
 ## 🔗 Links
 

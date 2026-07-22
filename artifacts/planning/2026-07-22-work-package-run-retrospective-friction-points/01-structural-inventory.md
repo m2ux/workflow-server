@@ -66,7 +66,7 @@ Address the nine workflow-server-owned friction points from [issue #272](https:/
 
 1. **meta `discover-session` vs worker `list_workflows` ban** — reconcile `list-available-workflows` step binding with activity-worker rules.
 2. **Orchestrator next-activity without transition table** — return resolved next-activity / evaluated condition in `activity_complete`, or expose transition table to orchestrator (`no-get-activity-from-orchestrator`).
-3. **`validate` externalized path** — first-class user-run / `validation_skipped_by_user` when the agent cannot compile.
+3. **`validate` unavailable path** — when local suite cannot run, Progress Validation marked cancelled/N/A (`⊘` via `{mark_progress_na}`); no user-reported suite results.
 4. **Build-dependent artifacts** — flag and route to user from `validate` / `submit-for-review` (e.g. `.scale` metadata regen).
 5. **Single-option checkpoints** — guarantee ≥2 options or handle single-option presentation (`submodule-selection` / AskQuestion).
 6. **`foreground-always` vs async dispatch** — harness-compat acknowledges async dispatch + notification as blocking-equivalent.
