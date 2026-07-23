@@ -1,6 +1,9 @@
 # Setup
 
-Get a running workflow server and connect your IDE. Default path: **GHCR image** (no source checkout).
+Get a running workflow server and connect your IDE.
+
+Default below: **GHCR image over HTTP** (no source checkout).  
+Alternative: local **stdio** — IDE spawns the process — see [README Quick Start](README.md#-quick-start).
 
 ## 1. Install
 
@@ -34,7 +37,7 @@ curl -fsS http://127.0.0.1:3000/health
 
 ## 4. Update workflows
 
-Pull the latest `workflows` branch into the install checkout:
+Pull the latest `workflows` branch.
 
 ```bash
 ~/.local/share/workflow-server/update-workflows.sh
@@ -50,7 +53,7 @@ Export the endpoint (Cursor reads `${env:…}` from the process environment):
 export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp
 ```
 
-Project config (`[.cursor/mcp.json](.cursor/mcp.json)`):
+Project config ([`.cursor/mcp.json`](.cursor/mcp.json)):
 
 ```json
 {
@@ -78,12 +81,12 @@ Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent 
 
 | Topic                                | Where                                                                                                                                                                    |
 | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Install / run / update scripts       | `[scripts/install-docker.sh](scripts/install-docker.sh)`, `[scripts/run-docker.sh](scripts/run-docker.sh)`, `[scripts/update-workflows.sh](scripts/update-workflows.sh)` |
-| Develop from source                  | [docs/development.md](docs/development.md)                                                                                                                               |
-| HTTP API / endpoints                 | [docs/api-reference.md](docs/api-reference.md#http-endpoints)                                                                                                            |
-| Server env vars                      | [docs/development.md](docs/development.md) / `src/config.ts`                                                                                                             |
-| Compose / container binds            | `[docker-compose.yml](docker-compose.yml)`                                                                                                                               |
-| Deploy `.engineering` into a project | `[scripts/deploy.sh](scripts/deploy.sh)`                                                                                                                                 |
-| Architecture & fidelity              | [docs/architecture.md](docs/architecture.md), [docs/workflow-fidelity.md](docs/workflow-fidelity.md)                                                                     |
+| Install / run / update scripts       | [`scripts/install-docker.sh`](scripts/install-docker.sh), [`scripts/run-docker.sh`](scripts/run-docker.sh), [`scripts/update-workflows.sh`](scripts/update-workflows.sh) |
+| Stdio / develop from source          | [README Quick Start](README.md#-quick-start), [docs/development.md](docs/development.md) |
+| HTTP API / endpoints                 | [docs/api-reference.md](docs/api-reference.md#http-endpoints) |
+| Server env vars                      | [docs/development.md](docs/development.md) / `src/config.ts` |
+| Compose / container binds            | [`docker-compose.yml`](docker-compose.yml) |
+| Deploy `.engineering` into a project | [`scripts/deploy.sh`](scripts/deploy.sh) |
+| Architecture & fidelity              | [docs/architecture.md](docs/architecture.md), [docs/workflow-fidelity.md](docs/workflow-fidelity.md) |
 
 
