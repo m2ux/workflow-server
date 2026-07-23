@@ -100,18 +100,22 @@ OPTIONAL
     run-docker.sh /work /wf -d -- --restart=unless-stopped
 
 EXAMPLES
-  # bare paths only
+  # no server repo — script + workflows branch only
+  curl -fsSL -o run-ws.sh \
+    https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/run-docker.sh
+  chmod +x run-ws.sh
+  git clone -b workflows --single-branch \
+    https://github.com/m2ux/workflow-server.git \
+    ./workflows
+  mkdir -p ./worktrees
+  ./run-ws.sh ./worktrees ./workflows -d
+
+  # bare paths only (workflows already on disk)
   ./run-docker.sh ~/projects/work ~/workflows -d
 
   # private GHCR
   docker login ghcr.io
   ./run-docker.sh /var/worktrees /opt/workflows --tag=v1.2.0 -d
-
-  # curl install (after merge to main)
-  curl -fsSL -o run-ws.sh \
-    https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/run-docker.sh
-  chmod +x run-ws.sh
-  ./run-ws.sh /path/to/worktrees /path/to/workflows -d
 
 MCP client URL after start:  http://127.0.0.1:<host-port>/mcp
 EOF
