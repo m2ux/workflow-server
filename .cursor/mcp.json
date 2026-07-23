@@ -1,15 +1,12 @@
 {
-    "mcpServers": {
-      "workflow-server": {
-        "command": "node",
-        "args": [
-          "/home/mike1/projects/main/workflow-server/dist/index.js",
-          "--workspace=/home/mike1/projects/main/workflow-server"
-        ],
-        "env": {
-          "WORKFLOW_DIR": "/home/mike1/projects/main/workflow-server/workflows"
-        }
-      }
+  "mcpServers": {
+    "workflow-server": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "${env:WORKFLOW_SERVER_MCP_URL}"
+      ]
     }
   }
-  
+}
