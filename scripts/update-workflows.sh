@@ -159,4 +159,4 @@ fi
 
 echo
 echo "If the server is running, restart it to reload definitions:"
-echo "  ${INSTALL_DIR}/run-workflow-server.sh -d"
+echo "  ${INSTALL_DIR}/start.sh -d"
