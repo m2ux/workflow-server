@@ -21,13 +21,6 @@ Needs git and curl. Fetches helper scripts, clones the `workflows` branch into t
 curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh | bash
 ```
 
-Custom worktree root (persisted to `$INSTALL/env`):
-
-```bash
-bash <(curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh) \
-  --worktree-root=~/projects/work
-```
-
 > Options: `…/install-docker.sh` (`--help`, `--install-dir`, `--worktree-root`, …)  
 
 
@@ -56,12 +49,8 @@ Reads `$INSTALL/env` automatically (worktree root, workflows dir, port, containe
 
 Defaults when `env` is missing:
 
-- Worktree root: `~/worktrees` (created if missing)
-- Workflows: `~/.local/share/workflow-server/workflows`
 - Image: `ghcr.io/m2ux/workflow-server:main`
 - Publish: `http://127.0.0.1:3000`
-
-To change the worktree root later, re-run install with `--worktree-root=…` (rewrites `env`), or edit `env` and restart.
 
 > Full options: `~/.local/share/workflow-server/start.sh --help`  
 > Script: [`scripts/run-docker.sh`](scripts/run-docker.sh)
