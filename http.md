@@ -2,77 +2,79 @@
 
 Run a Dockerised workflow server and connect your IDE over HTTP.
 
-For a local **stdio** checkout (IDE spawns the process), see [stdio.md](stdio.md).
-
 ## Layout
 
 Two separate host paths:
 
 | Path | Default | Purpose |
 |------|---------|---------|
-| **Install dir** | `~/.local/share/workflow-server` | Server data only: runner, updater, `workflows/` clone |
-| **Worktree root** | `~/worktrees` | Shared with the agent (session checkouts / planning binds). **Not** under the install dir |
+| **Install dir** | `~/.local/share/workflow-server` | Server data |
+| **Worktree root** | `~/worktrees` | Workspace (shared with the agent) |
 
-On run, the container mounts:
 
-- `~/worktrees` → `/worktrees` (RW)
-- `$INSTALL/workflows` → `/app/workflows` (RO)
-- image schemas → `/app/schemas` (or `$INSTALL/schemas` if present)
-
-Override install dir with `--install-dir` / `WORKFLOW_SERVER_INSTALL_DIR`.  
-Override worktree root with `--worktree-root` / `HOST_WORKTREE_ROOT` / `WORKFLOW_WORKSPACE`.
 
 ## 1. Install
 
-Needs git and curl. Fetches helper scripts, clones the `workflows` branch into the install dir, and creates `~/worktrees` if it does not exist. Does **not** start the container.
+Needs git and curl. Fetches helper scripts, clones the `workflows` branch into the install dir, creates `~/worktrees` if missing, and writes a persistent `env` file so `start.sh` needs no path args.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh | bash
 ```
 
-> Options: `bash <(curl -fsSL …/install-docker.sh) --help` (`--install-dir`, …)  
-> Script: [`scripts/install-docker.sh`](scripts/install-docker.sh)
+Custom worktree root (persisted to `$INSTALL/env`):
+
+```bash
+bash <(curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh) \
+  --worktree-root=~/projects/work
+```
+
+> Options: `…/install-docker.sh` (`--help`, `--install-dir`, `--worktree-root`, …)  
+
 
 After install you have:
 
 ```text
 ~/.local/share/workflow-server/
-  run-workflow-server.sh    # from scripts/run-docker.sh
+  start.sh                  # from scripts/run-docker.sh
+  stop.sh                   # from scripts/stop-docker.sh
   update-workflows.sh       # from scripts/update-workflows.sh
+  env                       # paths / port / container name for start + stop
   workflows/                # git clone -b workflows
 
 ~/worktrees/                # agent-shared worktree root (created if missing)
 ```
 
-## 2. Run the server
+## 2. Start the server
 
 Needs [Docker](https://docs.docker.com/get-docker/).
 
 ```bash
-~/.local/share/workflow-server/run-workflow-server.sh -d
+~/.local/share/workflow-server/start.sh -d
 ```
 
-Defaults (no path args required after install):
+Reads `$INSTALL/env` automatically (worktree root, workflows dir, port, container name). No path flags required.
 
-- Worktree root: `~/worktrees` (created if missing — also on install)
+Defaults when `env` is missing:
+
+- Worktree root: `~/worktrees` (created if missing)
 - Workflows: `~/.local/share/workflow-server/workflows`
 - Image: `ghcr.io/m2ux/workflow-server:main`
 - Publish: `http://127.0.0.1:3000`
 
-Examples:
+To change the worktree root later, re-run install with `--worktree-root=…` (rewrites `env`), or edit `env` and restart.
 
-```bash
-# Custom agent worktree root
-~/.local/share/workflow-server/run-workflow-server.sh --worktree-root=~/projects/work -d
-
-# Custom install dir (workflows still under that dir unless overridden)
-~/.local/share/workflow-server/run-workflow-server.sh --install-dir=/opt/workflow-server -d
-```
-
-> Full options: `~/.local/share/workflow-server/run-workflow-server.sh --help`  
+> Full options: `~/.local/share/workflow-server/start.sh --help`  
 > Script: [`scripts/run-docker.sh`](scripts/run-docker.sh)
 
-## 3. Check health
+## 3. Stop the server
+
+```bash
+~/.local/share/workflow-server/stop.sh
+```
+
+> Script: [`scripts/stop-docker.sh`](scripts/stop-docker.sh)
+
+## 4. Check health
 
 ```bash
 curl -fsS http://127.0.0.1:3000/health
@@ -80,7 +82,7 @@ curl -fsS http://127.0.0.1:3000/health
 
 Expect `{"status":"ok"}`.
 
-## 4. Update workflows
+## 5. Update workflows
 
 Pull the latest `workflows` branch into the install dir (not the agent worktree root).
 
@@ -91,7 +93,7 @@ Pull the latest `workflows` branch into the install dir (not the agent worktree 
 > Restart the server afterward if it is already running.  
 > Script: [`scripts/update-workflows.sh`](scripts/update-workflows.sh)
 
-## 5. Connect the MCP client
+## 6. Connect the MCP client
 
 Export the endpoint (Cursor reads `${env:…}` from the process environment):
 
@@ -114,7 +116,7 @@ Project config ([`.cursor/mcp.json`](.cursor/mcp.json)):
 
 Restart the IDE, then ask it to list available workflows.
 
-## 6. IDE bootstrap rule
+## 7. IDE bootstrap rule
 
 Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
 
@@ -125,7 +127,8 @@ Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent 
 | Topic | Where |
 |-------|--------|
 | Install script | [`scripts/install-docker.sh`](scripts/install-docker.sh) |
-| Run script (GHCR) | [`scripts/run-docker.sh`](scripts/run-docker.sh) |
+| Start (GHCR) | [`scripts/run-docker.sh`](scripts/run-docker.sh) → `start.sh` |
+| Stop | [`scripts/stop-docker.sh`](scripts/stop-docker.sh) → `stop.sh` |
 | Update workflows | [`scripts/update-workflows.sh`](scripts/update-workflows.sh) |
 | Compose / binds | [`docker-compose.yml`](docker-compose.yml) (host worktree default: `~/worktrees`) |
 | Local `.env` helper | [`scripts/init-local-env.sh`](scripts/init-local-env.sh), [`.env.example`](.env.example) |
