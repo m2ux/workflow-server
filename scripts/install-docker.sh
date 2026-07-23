@@ -1,14 +1,15 @@
 #!/usr/bin/env bash
-# workflow-server — one-shot GHCR install + run (no server checkout)
+# workflow-server — install GHCR layout only (does not start the container)
 #
 #   curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh | bash
 #
-# Or download and run with options:
-#   curl -fsSL -o install-workflow-server.sh \
-#     https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh
-#   bash install-workflow-server.sh --install-dir=/opt/workflow-server
+# Then start separately:
+#   ~/.local/share/workflow-server/run-workflow-server.sh -d
 #
-# Needs: docker, git, curl
+# Options:
+#   bash <(curl -fsSL …/install-docker.sh) --install-dir=/opt/workflow-server
+#
+# Needs: curl, git
 set -euo pipefail
 
 DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
@@ -21,28 +22,20 @@ INSTALL_DIR="${WORKFLOW_SERVER_INSTALL_DIR:-$DEFAULT_INSTALL_DIR}"
 REPO_URL="${WORKFLOW_SERVER_REPO_URL:-$DEFAULT_REPO_URL}"
 RAW_BASE="${WORKFLOW_SERVER_RAW_BASE:-$DEFAULT_RAW_BASE}"
 REF="${WORKFLOW_SERVER_REF:-$DEFAULT_REF}"
-START=1
-DETACH=1
-RUNNER_ARGS=()
 
 usage() {
   cat <<EOF
-Install workflow-server under a local data dir, fetch the runner, clone
-workflows data, and start the container.
+Install workflow-server under a local data dir: fetch the runner and clone
+workflows data. Does not start Docker — run the runner as a separate step.
 
 USAGE
-  install-docker.sh [options] [-- runner-args...]
+  install-docker.sh [options]
 
 OPTIONS
   --install-dir=PATH   Install root (default: ${DEFAULT_INSTALL_DIR})
   --repo-url=URL       Git remote for workflows branch (default: GitHub m2ux)
   --ref=REF            Branch/tag for runner script raw URL (default: ${DEFAULT_REF})
-  --no-start           Install only; do not run the container
-  --foreground         Start attached (default: detached -d)
   -h, --help
-
-  Extra args after -- are passed to the runner, e.g.:
-    install-docker.sh -- --tag=latest --host-port=3001
 
 LAYOUT
   \$INSTALL/
@@ -51,6 +44,7 @@ LAYOUT
     worktrees/     # created on first run
 
 AFTER INSTALL
+  \$INSTALL/${DEFAULT_RUNNER_NAME} -d
   export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp
   curl -fsS http://127.0.0.1:3000/health
 EOF
@@ -104,19 +98,6 @@ while [[ $# -gt 0 ]]; do
       REF="${2:?}"
       shift 2
       ;;
-    --no-start)
-      START=0
-      shift
-      ;;
-    --foreground)
-      DETACH=0
-      shift
-      ;;
-    --)
-      shift
-      RUNNER_ARGS+=("$@")
-      break
-      ;;
     *)
       die "unknown option: $1 (see --help)"
       ;;
@@ -125,7 +106,6 @@ done
 
 need curl
 need git
-need docker
 
 INSTALL_DIR=$(abs_path "$INSTALL_DIR")
 RUNNER_PATH="${INSTALL_DIR}/${DEFAULT_RUNNER_NAME}"
@@ -148,19 +128,10 @@ else
   git clone -b workflows --single-branch "$REPO_URL" "$WORKFLOWS_DIR"
 fi
 
-if [[ "$START" -eq 0 ]]; then
-  echo "Install complete (not started). Run:"
-  echo "  ${RUNNER_PATH} -d"
-  exit 0
-fi
-
-CMD=("$RUNNER_PATH" --install-dir="$INSTALL_DIR")
-if [[ "$DETACH" -eq 1 ]]; then
-  CMD+=(-d)
-fi
-if [[ ${#RUNNER_ARGS[@]} -gt 0 ]]; then
-  CMD+=("${RUNNER_ARGS[@]}")
-fi
-
-echo "Starting: ${CMD[*]}"
-exec "${CMD[@]}"
+echo
+echo "Install complete. Start the server with:"
+echo "  ${RUNNER_PATH} -d"
+echo
+echo "Then:"
+echo "  export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp"
+echo "  curl -fsS http://127.0.0.1:3000/health"

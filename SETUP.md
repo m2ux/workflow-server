@@ -2,22 +2,29 @@
 
 Get a running workflow server and connect your IDE. Default path: **GHCR image** (no source checkout).
 
-## 1. Run the server
+## 1. Install
 
-Needs Docker and git.
+Needs git and curl. Installs under `~/.local/share/workflow-server` (runner + `workflows` clone). Does **not** start the container.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh | bash
 ```
 
-This installs under `~/.local/share/workflow-server`, clones the `workflows` branch, and starts the container detached.
+Options: `bash <(curl -fsSL …/install-docker.sh) --help` (`--install-dir`, …)
+
+## 2. Run the server
+
+Needs Docker.
+
+```bash
+~/.local/share/workflow-server/run-workflow-server.sh -d
+```
 
 Check: `curl -fsS http://127.0.0.1:3000/health`
 
-Options: `bash <(curl -fsSL …/install-docker.sh) --help`  
-(`--install-dir`, `--no-start`, extra runner flags after `--`)
+Runner options: `~/.local/share/workflow-server/run-workflow-server.sh --help`
 
-## 2. Connect the MCP client
+## 3. Connect the MCP client
 
 Export the endpoint (Cursor reads `${env:…}` from the process environment):
 
@@ -44,7 +51,7 @@ Claude Desktop: same `npx mcp-remote` entry in
 
 Restart the IDE, then ask it to list available workflows.
 
-## 3. IDE bootstrap rule
+## 4. IDE bootstrap rule
 
 Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
 

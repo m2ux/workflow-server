@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 # workflow-server — standalone GHCR runner (no repo checkout required)
 #
-# Preferred first-time install (layout + workflows clone + start):
+# Install (layout + workflows clone only):
 #   curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh | bash
 #
-# This file is the day-2 runner (already under the install dir):
+# Then run (this script, already under the install dir):
 #   ~/.local/share/workflow-server/run-workflow-server.sh -d
 #
 # Override install root / binds:
@@ -105,11 +105,11 @@ OPTIONS
     run-docker.sh -d -- --restart=unless-stopped
 
 EXAMPLES
-  # First install (preferred):
+  # Install then run (separate steps):
   curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh | bash
+  ~/.local/share/workflow-server/run-workflow-server.sh -d
 
-  # Day-2 / custom binds:
-  ./run-docker.sh -d
+  # Custom binds:
   ./run-docker.sh --install-dir=/opt/workflow-server -d
   ./run-docker.sh --worktree-root=~/projects/work --workflows-dir=~/wf -d
 
