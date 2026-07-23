@@ -17,8 +17,8 @@
     "concept-rag": {
       "command": "node",
       "args": [
-        "/home/mike1/projects/main/concept-rag/dist/conceptual_index.js",
-        "/home/mike1/.concept_rag"
+        "${env:CONCEPT_RAG_ENTRY}",
+        "${env:CONCEPT_RAG_INDEX}"
       ]
     },
     "atlassian": {
@@ -31,10 +31,11 @@
     },
     "workflow-server": {
       "command": "node",
-      "args": ["/home/mike1/projects/main/workflow-server/dist/index.js"],
-      "env": {
-        "WORKFLOW_WORKSPACE": "/home/mike1/projects/main/workflow-server"
-      }
+      "args": [
+        "${workspaceFolder}/dist/index.js",
+        "--transport=stdio"
+      ],
+      "envFile": "${workspaceFolder}/.env"
     },
     "gitnexus": {
       "command": "/usr/local/bin/gitnexus",

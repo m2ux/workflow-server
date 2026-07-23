@@ -27,26 +27,53 @@ npm run build
 
 ## MCP Client Configuration
 
+Paths are **not** hardcoded in the repo MCP configs. Project files [`.cursor/mcp.json`](.cursor/mcp.json) and [`.mcp.json`](.mcp.json) start the server via stdio and load a local `.env` (`envFile`). Create that file once per machine:
+
+```bash
+# From the workflow-server checkout
+cp .env.example .env          # optional; init script seeds if missing
+./scripts/init-local-env.sh  # fills absolute paths for this checkout
+# optional: ./scripts/init-local-env.sh --workspace=/path/to/worktree-root
+npm run build
+```
+
+Then restart the MCP client so it reloads `envFile`.
+
+| Variable | Required | Role |
+|----------|----------|------|
+| `WORKFLOW_WORKSPACE` | yes* | Worktree / workspace root (`WORKTREE_ROOT` is an accepted alias) |
+| `WORKFLOW_DIR` | no | Workflows directory (default `./workflows` under the install root) |
+| `SCHEMAS_DIR` | no | Schemas directory (default `./schemas`) |
+| `CONCEPT_RAG_ENTRY` / `CONCEPT_RAG_INDEX` | only if using concept-rag in `.mcp.json` | Paths passed as concept-rag `args` |
+
+\* One of `WORKFLOW_WORKSPACE`, `WORKTREE_ROOT`, or CLI `--workspace` is required.
+
 ### Cursor
 
-Edit `~/.cursor/mcp.json`:
+Prefer the project config (checked in):
+
+- [`.cursor/mcp.json`](.cursor/mcp.json) — uses `${workspaceFolder}/dist/index.js` and `envFile: ${workspaceFolder}/.env`
+
+Global override (optional) at `~/.cursor/mcp.json`:
 
 ```json
 {
   "mcpServers": {
     "workflow-server": {
       "command": "node",
-      "args": [
-        "/path/to/workflow-server/dist/index.js",
-        "--workspace=/path/to/worktree-root",
-        "--workflow-dir=/path/to/workflow-server/workflows"
-      ]
+      "args": ["${env:WORKFLOW_SERVER_ENTRY}"],
+      "env": {
+        "WORKFLOW_WORKSPACE": "${env:WORKFLOW_WORKSPACE}",
+        "WORKFLOW_DIR": "${env:WORKFLOW_DIR}"
+      }
     }
   }
 }
 ```
 
-IDE MCP clients use the default **stdio** transport. For HTTP, see [HTTP transport](#http-transport) below.
+Set those shell env vars in your profile (or export them before launching Cursor from a terminal). Cursor expands `${env:NAME}` and supports `envFile` for stdio servers.
+
+IDE MCP clients use the default **stdio** transport. For HTTP (e.g. `mcp-remote` → `http://127.0.0.1:3000/mcp`), start the server separately with the same `.env` / compose layout; see [HTTP transport](#http-transport) below.
 
 ### Claude Desktop
 
@@ -54,16 +81,18 @@ IDE MCP clients use the default **stdio** transport. For HTTP, see [HTTP transpo
 
 **Windows**: Edit `%APPDATA%\Claude\claude_desktop_config.json`
 
+Claude Desktop does not always support `envFile` / `${workspaceFolder}`. Point at the built entry and pass the same values from your shell environment (or hardcode absolute paths only in the local desktop config, not in the repo):
+
 ```json
 {
   "mcpServers": {
     "workflow-server": {
       "command": "node",
-      "args": [
-        "/path/to/workflow-server/dist/index.js",
-        "--workspace=/path/to/worktree-root",
-        "--workflow-dir=/path/to/workflow-server/workflows"
-      ]
+      "args": ["/path/to/workflow-server/dist/index.js"],
+      "env": {
+        "WORKFLOW_WORKSPACE": "/path/to/worktree-root",
+        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
+      }
     }
   }
 }
@@ -147,7 +176,7 @@ Typical sequence:
 
 Container layout: see [`Dockerfile`](Dockerfile) and [`docker-compose.yml`](docker-compose.yml). Bind the host worktree root RW to `WORKTREE_ROOT` (default `/worktrees`). Planning paths derive under that root. Align container UID/GID with the host user that creates worktrees.
 
-Compose bind sources and in-container paths are environment variables (defaults preserve the previous layout). Copy [`.env.example`](.env.example) to `.env` or export the vars before `docker compose up`:
+Compose bind sources and in-container paths are environment variables (defaults preserve the previous layout). Use the same local `.env` as MCP (`./scripts/init-local-env.sh`) or export the vars before `docker compose up`:
 
 | Variable | Default | Role |
 |----------|---------|------|
@@ -155,12 +184,12 @@ Compose bind sources and in-container paths are environment variables (defaults 
 | `HOST_WORKFLOWS_DIR` | `./workflows` | Host path bound RO for workflow definitions |
 | `HOST_SCHEMAS_DIR` | `./schemas` | Host path bound RO for JSON schemas |
 | `HOST_PORT` | `3000` | Host port published to the container |
-| `WORKTREE_ROOT` | `/worktrees` | In-container worktree root (volume target + server env) |
-| `WORKFLOW_DIR` | `/app/workflows` | In-container workflows path (volume target + server env) |
-| `SCHEMAS_DIR` | `/app/schemas` | In-container schemas path (volume target + server env) |
+| `CONTAINER_WORKTREE_ROOT` | `/worktrees` | In-container worktree root (volume target + server `WORKTREE_ROOT`) |
+| `CONTAINER_WORKFLOW_DIR` | `/app/workflows` | In-container workflows path (volume target + server `WORKFLOW_DIR`) |
+| `CONTAINER_SCHEMAS_DIR` | `/app/schemas` | In-container schemas path (volume target + server `SCHEMAS_DIR`) |
 | `PORT` / `HOST` / `TRANSPORT` | `3000` / `0.0.0.0` / `http` | Server listen settings inside the container |
 
-Keep each `HOST_*` source paired with the matching in-container target (`WORKTREE_ROOT`, `WORKFLOW_DIR`, `SCHEMAS_DIR`) so binds and server env stay aligned.
+Host MCP vars (`WORKFLOW_WORKSPACE`, `WORKFLOW_DIR`, `SCHEMAS_DIR`) are separate from `CONTAINER_*` so one `.env` can drive both stdio MCP and compose without path clashes. Keep each `HOST_*` source paired with the matching `CONTAINER_*` target.
 
 Operator migration checklist:
 

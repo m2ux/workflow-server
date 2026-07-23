@@ -4,6 +4,9 @@
 # Paths are overridable via environment variables or a local `.env` file
 # (see `.env.example`). Defaults match the previous fixed layout.
 #
+# Host-side MCP vars (WORKFLOW_WORKSPACE, WORKFLOW_DIR, …) are separate from
+# CONTAINER_* paths so a shared `.env` can drive both stdio MCP and compose.
+#
 # UID/GID: run the container as the same user that owns host worktrees
 # (user: "${UID}:${GID}") so writes into the RW bind succeed.
 services:
@@ -12,25 +15,25 @@ services:
     ports:
       - "${HOST_PORT:-3000}:${PORT:-3000}"
     environment:
-      WORKTREE_ROOT: ${WORKTREE_ROOT:-/worktrees}
+      WORKTREE_ROOT: ${CONTAINER_WORKTREE_ROOT:-/worktrees}
       # Optional: override default .engineering/artifacts/planning
       # PLANNING_SLUG: .engineering/planning
-      WORKFLOW_DIR: ${WORKFLOW_DIR:-/app/workflows}
-      SCHEMAS_DIR: ${SCHEMAS_DIR:-/app/schemas}
+      WORKFLOW_DIR: ${CONTAINER_WORKFLOW_DIR:-/app/workflows}
+      SCHEMAS_DIR: ${CONTAINER_SCHEMAS_DIR:-/app/schemas}
       TRANSPORT: ${TRANSPORT:-http}
       HOST: ${HOST:-0.0.0.0}
       PORT: ${PORT:-3000}
     volumes:
       - type: bind
         source: ${HOST_WORKFLOWS_DIR:-./workflows}
-        target: ${WORKFLOW_DIR:-/app/workflows}
+        target: ${CONTAINER_WORKFLOW_DIR:-/app/workflows}
         read_only: true
       - type: bind
         source: ${HOST_SCHEMAS_DIR:-./schemas}
-        target: ${SCHEMAS_DIR:-/app/schemas}
+        target: ${CONTAINER_SCHEMAS_DIR:-/app/schemas}
         read_only: true
       # Worktree root: agent creates worktrees here on the host
       - type: bind
         source: ${HOST_WORKTREE_ROOT:-/var/worktrees}
-        target: ${WORKTREE_ROOT:-/worktrees}
+        target: ${CONTAINER_WORKTREE_ROOT:-/worktrees}
         read_only: false
