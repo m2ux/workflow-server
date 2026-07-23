@@ -28,7 +28,7 @@ See [design specification](03-design-specification.md) for change goals and dime
 
 | # | @ | Item | Description | Estimate | Status |
 |---|---|------|-------------|----------|--------|
-| 1 | 01 | Intake and context | Target, mode, planning folder | 15-30m | ✅ |
+| 1 | 01 | Intake and context | Target, mode, planning folder | 15-30m | ◐ |
 | 2 | 01 | [Format conventions](format-conventions.md) | Authoring literacy notes | 5-10m | ⊘ |
 | 3 | 03 | [Design specification](03-design-specification.md) | Change goals and constraints | 20-40m | ✅ |
 | 4 | 03 | [Assumptions log](03-assumptions-log.md) | Open and settled assumptions | 10-15m | ✅ |
