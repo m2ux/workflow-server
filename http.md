@@ -23,20 +23,6 @@ curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/i
 
 > Options: `…/install-docker.sh` (`--help`, `--install-dir`, `--worktree-root`, …)  
 
-
-After install you have:
-
-```text
-~/.local/share/workflow-server/
-  start.sh                  # scripts/start.sh
-  stop.sh                   # scripts/stop.sh
-  update-workflows.sh       # scripts/update-workflows.sh
-  env                       # paths / port / container name for start + stop
-  workflows/                # git clone -b workflows
-
-~/worktrees/                # agent-shared worktree root (created if missing)
-```
-
 ## 2. Start the server
 
 Needs [Docker](https://docs.docker.com/get-docker/).
@@ -45,25 +31,18 @@ Needs [Docker](https://docs.docker.com/get-docker/).
 ~/.local/share/workflow-server/start.sh -d
 ```
 
-Reads `$INSTALL/env` automatically (worktree root, workflows dir, port, container name). No path flags required.
-
-Defaults when `env` is missing:
+Defaults:
 
 - Image: `ghcr.io/m2ux/workflow-server:main`
 - Publish: `http://127.0.0.1:3000`
 
-> Full options: `~/.local/share/workflow-server/start.sh --help`  
-> Script: [`scripts/start.sh`](scripts/start.sh)
-
-## 3. Stop the server
+Conversely to stop the server: 
 
 ```bash
 ~/.local/share/workflow-server/stop.sh
 ```
 
-> Script: [`scripts/stop.sh`](scripts/stop.sh)
-
-## 4. Check health
+## 3. Check health
 
 ```bash
 curl -fsS http://127.0.0.1:3000/health
@@ -71,7 +50,7 @@ curl -fsS http://127.0.0.1:3000/health
 
 Expect `{"status":"ok"}`.
 
-## 5. Update workflows
+## 4. Update workflows
 
 Pull the latest `workflows` branch into the install dir (not the agent worktree root).
 
@@ -80,9 +59,8 @@ Pull the latest `workflows` branch into the install dir (not the agent worktree 
 ```
 
 > Restart the server afterward if it is already running.  
-> Script: [`scripts/update-workflows.sh`](scripts/update-workflows.sh)
 
-## 6. Connect the MCP client
+## 5. Connect the MCP client
 
 Export the endpoint (Cursor reads `${env:…}` from the process environment):
 
@@ -105,7 +83,7 @@ Project config ([`.cursor/mcp.json`](.cursor/mcp.json)):
 
 Restart the IDE, then ask it to list available workflows.
 
-## 7. IDE bootstrap rule
+## 6. IDE bootstrap rule
 
 Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
 
