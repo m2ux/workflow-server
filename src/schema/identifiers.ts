@@ -37,6 +37,9 @@ export const EXEMPT_DATA_IDS = [
   'body', 'query', 'repo', 'owner', 'number', 'title', 'branch', 'diff', 'limit',
   'name', 'sha', 'url', 'head', 'base', 'ref', 'labels', 'path', 'cursor',
   'cql', 'jql', 'description', 'assignee', 'depth', 'direction', 'summary', 'state',
+  // `gh pr create --draft` flag name; `remote` — git CLI positional (`git push <remote> <branch>`),
+  // same vocabulary-mirror reasoning as `branch` above
+  'draft', 'remote',
   // (b') cross-workflow dispatch-contract names
   'target',
   // domain acronym carried as an artifact concept (Architecture Decision Record)
