@@ -1,9 +1,8 @@
 # Setup
 
-Get a running workflow server and connect your IDE.
+Run a Dockerised workflow server and connect your IDE over HTTP.
 
-Default below: **GHCR image over HTTP** (no source checkout).  
-Alternative: local **stdio** — IDE spawns the process — see [README Quick Start](README.md#-quick-start).
+For an alternative local **stdio** setup, see [README Quick Start](README.md#-quick-start).
 
 ## 1. Install
 
