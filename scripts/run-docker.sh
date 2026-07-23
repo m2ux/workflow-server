@@ -1,23 +1,14 @@
 #!/usr/bin/env bash
 # workflow-server — standalone GHCR runner (no repo checkout required)
 #
-# One file. Copy it anywhere, or:
-#   curl -fsSL -o run-workflow-server.sh \
-#     https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/run-docker.sh
-#   chmod +x run-workflow-server.sh
+# Preferred first-time install (layout + workflows clone + start):
+#   curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh | bash
 #
-# Default install layout (path args not required once set up):
-#   ${XDG_DATA_HOME:-$HOME/.local/share}/workflow-server/
-#     run-workflow-server.sh
-#     workflows/               # git clone -b workflows ...
-#     worktrees/               # created on first run if missing
+# This file is the day-2 runner (already under the install dir):
+#   ~/.local/share/workflow-server/run-workflow-server.sh -d
 #
-#   ./run-workflow-server.sh -d
-#
-# Override install root:
+# Override install root / binds:
 #   ./run-workflow-server.sh --install-dir=/opt/workflow-server -d
-#
-# Override individual binds:
 #   ./run-workflow-server.sh --worktree-root=... --workflows-dir=... -d
 #
 # Needs: docker (public image: ghcr.io/m2ux/workflow-server)
@@ -114,16 +105,11 @@ OPTIONS
     run-docker.sh -d -- --restart=unless-stopped
 
 EXAMPLES
-  INSTALL=\${XDG_DATA_HOME:-\$HOME/.local/share}/workflow-server
-  mkdir -p "\$INSTALL"
-  curl -fsSL -o "\$INSTALL/run-workflow-server.sh" \\
-    https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/run-docker.sh
-  chmod +x "\$INSTALL/run-workflow-server.sh"
-  git clone -b workflows --single-branch \\
-    https://github.com/m2ux/workflow-server.git \\
-    "\$INSTALL/workflows"
-  "\$INSTALL/run-workflow-server.sh" -d
+  # First install (preferred):
+  curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh | bash
 
+  # Day-2 / custom binds:
+  ./run-docker.sh -d
   ./run-docker.sh --install-dir=/opt/workflow-server -d
   ./run-docker.sh --worktree-root=~/projects/work --workflows-dir=~/wf -d
 

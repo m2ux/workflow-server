@@ -4,22 +4,18 @@ Get a running workflow server and connect your IDE. Default path: **GHCR image**
 
 ## 1. Run the server
 
-Needs Docker.
+Needs Docker and git.
 
 ```bash
-INSTALL=~/.local/share/workflow-server
-mkdir -p "$INSTALL"
-curl -fsSL -o "$INSTALL/run-workflow-server.sh" \
-  https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/run-docker.sh
-chmod +x "$INSTALL/run-workflow-server.sh"
-git clone -b workflows --single-branch \
-  https://github.com/m2ux/workflow-server.git "$INSTALL/workflows"
-"$INSTALL/run-workflow-server.sh" -d
+curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh | bash
 ```
+
+This installs under `~/.local/share/workflow-server`, clones the `workflows` branch, and starts the container detached.
 
 Check: `curl -fsS http://127.0.0.1:3000/health`
 
-Options (`--install-dir`, binds, tags): `"$INSTALL/run-workflow-server.sh" --help`
+Options: `bash <(curl -fsSL …/install-docker.sh) --help`  
+(`--install-dir`, `--no-start`, extra runner flags after `--`)
 
 ## 2. Connect the MCP client
 
@@ -58,9 +54,10 @@ Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent 
 
 | Topic | Where |
 |-------|--------|
+| Install / runner scripts | [`scripts/install-docker.sh`](scripts/install-docker.sh), [`scripts/run-docker.sh`](scripts/run-docker.sh) |
 | Develop from source | [docs/development.md](docs/development.md) |
 | HTTP API / endpoints | [docs/api-reference.md](docs/api-reference.md#http-endpoints) |
 | Server env vars | [docs/development.md](docs/development.md) / `src/config.ts` |
-| Compose / container binds | [`docker-compose.yml`](docker-compose.yml), [`scripts/run-docker.sh`](scripts/run-docker.sh) `--help` |
+| Compose / container binds | [`docker-compose.yml`](docker-compose.yml) |
 | Deploy `.engineering` into a project | [`scripts/deploy.sh`](scripts/deploy.sh) |
 | Architecture & fidelity | [docs/architecture.md](docs/architecture.md), [docs/workflow-fidelity.md](docs/workflow-fidelity.md) |
