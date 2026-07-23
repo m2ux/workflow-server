@@ -59,20 +59,20 @@ Pick a setup path:
 | **Docker / HTTP** (GHCR image, no server checkout) | [http.md](http.md) |
 | **stdio** (local checkout; IDE spawns the process) | [stdio.md](stdio.md) |
 
-Then add the bootstrap rule from [`docs/ide-setup.md`](docs/ide-setup.md).
+### Initialise a target project
 
-### Deploy engineering layout (optional)
+From the **root of the project repo** you want the workflow server to operate on (not this server repo), run:
 
 ```bash
 curl -O https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/deploy.sh
 chmod +x deploy.sh && ./deploy.sh
 ```
 
-Creates `.engineering/` with workflows and artifact directories. See [`scripts/deploy.sh`](scripts/deploy.sh) `--help`.
+That creates `.engineering/` in that project (planning artifacts, history, scripts, and workflow data) so sessions can bind a workspace and write run output. Options: [`scripts/deploy.sh`](scripts/deploy.sh) `--help`.
 
 ### Execute a workflow
 
-Tell the agent what you want in natural language, for example:
+With the server connected and a target project initialised, tell the agent what you want in natural language, for example:
 
 ```
 Start a new work-package workflow for implementing user authentication
@@ -85,16 +85,6 @@ End the current work-package workflow
 ```
 
 The agent matches the request to the appropriate activity and guides you through the structured phases.
-
-## Engineering layout
-
-The `.engineering/` directory holds engineering artifacts and workflow-related assets.
-
-### Directory structure
-
-- `artifacts/planning/` — Work package plans and specifications
-- `history/` — Project history and change logs
-- `scripts/` — Utility scripts
 
 ## 📜 License
 
