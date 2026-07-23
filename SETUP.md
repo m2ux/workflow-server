@@ -147,6 +147,21 @@ Typical sequence:
 
 Container layout: see [`Dockerfile`](Dockerfile) and [`docker-compose.yml`](docker-compose.yml). Bind the host worktree root RW to `WORKTREE_ROOT` (default `/worktrees`). Planning paths derive under that root. Align container UID/GID with the host user that creates worktrees.
 
+Compose bind sources and in-container paths are environment variables (defaults preserve the previous layout). Copy [`.env.example`](.env.example) to `.env` or export the vars before `docker compose up`:
+
+| Variable | Default | Role |
+|----------|---------|------|
+| `HOST_WORKTREE_ROOT` | `/var/worktrees` | Host path bound RW as the worktree root |
+| `HOST_WORKFLOWS_DIR` | `./workflows` | Host path bound RO for workflow definitions |
+| `HOST_SCHEMAS_DIR` | `./schemas` | Host path bound RO for JSON schemas |
+| `HOST_PORT` | `3000` | Host port published to the container |
+| `WORKTREE_ROOT` | `/worktrees` | In-container worktree root (volume target + server env) |
+| `WORKFLOW_DIR` | `/app/workflows` | In-container workflows path (volume target + server env) |
+| `SCHEMAS_DIR` | `/app/schemas` | In-container schemas path (volume target + server env) |
+| `PORT` / `HOST` / `TRANSPORT` | `3000` / `0.0.0.0` / `http` | Server listen settings inside the container |
+
+Keep each `HOST_*` source paired with the matching in-container target (`WORKTREE_ROOT`, `WORKFLOW_DIR`, `SCHEMAS_DIR`) so binds and server env stay aligned.
+
 Operator migration checklist:
 
 - Supply a required root via `--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT`.
