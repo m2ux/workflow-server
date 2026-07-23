@@ -112,7 +112,8 @@ jobs:
           platforms: linux/amd64
 
       - name: Scan image for vulnerabilities
-        uses: aquasecurity/trivy-action@master
+        # Pinned to v0.35.0 (SHA 57a97c7) — mitigation for CVE-2026-33634 / Trivy supply-chain compromise
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1
         if: github.event_name != 'pull_request'
         with:
           image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:phase1-${{ github.sha }}
