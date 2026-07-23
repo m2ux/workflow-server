@@ -41,7 +41,7 @@ The reporting constraint. `#rule` states that gain reporting cites benchmark med
 
 ## Cross-Workflow Access
 
-Any workflow can load a ponytail resource without depending on the workflow's activities:
+Any workflow can load a ponytail resource without depending on the workflow's activities. Callers **must** use the owning-workflow qualifier — bare ids and relative `../resources/…` paths resolve only inside a native `ponytail` session, not when techniques are dispatched from `work-package` or another foreign context:
 
 ```
 get_resource({ session_index, resource_id: "ponytail/the-ladder" })                 # The ladder + safety floor
@@ -50,4 +50,4 @@ get_resource({ session_index, resource_id: "ponytail/ponytail-marker-convention"
 get_resource({ session_index, resource_id: "ponytail/honesty-boundary" })            # Gain-reporting rule
 ```
 
-A `#section` suffix narrows the load to one anchor, e.g. `ponytail/the-ladder#rungs`.
+A `#section` suffix narrows the load to one anchor, e.g. `ponytail/the-ladder#rungs`. Technique markdown links that agents follow for `get_resource` use the same `ponytail/<id>#section` form.

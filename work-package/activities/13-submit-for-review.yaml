@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.13.0
+version: 1.14.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 required: true
@@ -40,14 +40,29 @@ steps:
       variable: is_review_mode
       operator: ==
       value: true
-    message: Here is the consolidated review summary. Select whether to post it to the PR, refine it, or keep it local.
+    message: Here is the consolidated review summary. Select a review type to post, refine the summary, or keep it local.
     options:
-      - id: post-review
-        label: Post review to PR
-        description: Post the review summary as a PR comment
+      - id: post-approve
+        label: Post review — Approve
+        description: Post the summary as an approving PR review
         effect:
           setVariable:
             review_posted: true
+            review_type: approve
+      - id: post-request-changes
+        label: Post review — Request changes
+        description: Post the summary as a request-changes PR review
+        effect:
+          setVariable:
+            review_posted: true
+            review_type: request-changes
+      - id: post-comment
+        label: Post review — Comment only
+        description: Post the summary as a comment-only PR review
+        effect:
+          setVariable:
+            review_posted: true
+            review_type: comment
       - id: refine
         label: Refine summary
         description: Adjust the review summary before posting
@@ -58,13 +73,68 @@ steps:
           setVariable:
             review_posted: false
   - kind: technique
+    id: persist-review-summary
+    technique:
+      name: manage-artifacts::write-artifact
+      inputs:
+        bare_filename: review-summary.md
+        artifact_content: review_summary
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: review_posted
+          operator: ==
+          value: true
+  - kind: technique
+    id: publish-review-artifacts
+    technique: publish-review-artifacts
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: review_posted
+          operator: ==
+          value: true
+  - kind: technique
+    id: refresh-review-summary-links
+    technique:
+      name: review-summary
+      inputs:
+        artifact_publish_ref: artifact_publish_ref
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: review_posted
+          operator: ==
+          value: true
+  - kind: technique
     id: post-pr-review
     technique: update-pr::post-review-comment
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: review_posted
+          operator: ==
+          value: true
   - kind: technique
     id: dco-sign-off
     technique: dco-provenance::record-attestation

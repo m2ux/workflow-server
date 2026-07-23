@@ -11,7 +11,7 @@ Hunt over-engineering across the whole tree at `{target_path}`, biggest-cut-firs
 
 ### audit_findings
 
-The repo-wide findings ranked biggest-cut-first — each written as `<tag> <what to cut>. <replacement>. [path]` carrying a [taxonomy](../resources/review-taxonomy.md#tags) tag, the path locator, the simpler alternative, and the lines and dependencies it would remove — closing with a `net: -N lines, -M deps possible.` scoreboard, or `Lean already. Ship.` when nothing is cuttable.
+The repo-wide findings ranked biggest-cut-first — each written as `<tag> <what to cut>. <replacement>. [path]` carrying a [taxonomy](ponytail/review-taxonomy#tags) tag, the path locator, the simpler alternative, and the lines and dependencies it would remove — closing with a `net: -N lines, -M deps possible.` scoreboard, or `Lean already. Ship.` when nothing is cuttable.
 
 #### artifact
 
@@ -22,7 +22,7 @@ The repo-wide findings ranked biggest-cut-first — each written as `<tag> <what
 ### 1. Hunt the whole tree
 
 - Scan `{target_path}` for the repo-wide over-engineering patterns: removable dependencies, interfaces with a single implementation, factories that build one product, wrappers that only delegate, files exporting one thing, feature flags no path reads, and hand-rolled reimplementations of the standard library.
-- Classify each against the [taxonomy](../resources/review-taxonomy.md#tags).
+- Classify each against the [taxonomy](ponytail/review-taxonomy#tags).
 
 ### 2. Rank biggest-cut-first
 
