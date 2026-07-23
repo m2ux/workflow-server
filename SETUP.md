@@ -24,7 +24,17 @@ Check: `curl -fsS http://127.0.0.1:3000/health`
 
 Runner options: `~/.local/share/workflow-server/run-workflow-server.sh --help`
 
-## 3. Connect the MCP client
+## 3. Update workflows
+
+Pull the latest `workflows` branch into the install checkout:
+
+```bash
+~/.local/share/workflow-server/update-workflows.sh
+```
+
+Restart the server afterward if it is already running. Use `--force` only to discard local edits in that checkout.
+
+## 4. Connect the MCP client
 
 Export the endpoint (Cursor reads `${env:…}` from the process environment):
 
@@ -51,7 +61,7 @@ Claude Desktop: same `npx mcp-remote` entry in
 
 Restart the IDE, then ask it to list available workflows.
 
-## 4. IDE bootstrap rule
+## 5. IDE bootstrap rule
 
 Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
 
@@ -61,7 +71,7 @@ Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent 
 
 | Topic | Where |
 |-------|--------|
-| Install / runner scripts | [`scripts/install-docker.sh`](scripts/install-docker.sh), [`scripts/run-docker.sh`](scripts/run-docker.sh) |
+| Install / run / update scripts | [`scripts/install-docker.sh`](scripts/install-docker.sh), [`scripts/run-docker.sh`](scripts/run-docker.sh), [`scripts/update-workflows.sh`](scripts/update-workflows.sh) |
 | Develop from source | [docs/development.md](docs/development.md) |
 | HTTP API / endpoints | [docs/api-reference.md](docs/api-reference.md#http-endpoints) |
 | Server env vars | [docs/development.md](docs/development.md) / `src/config.ts` |

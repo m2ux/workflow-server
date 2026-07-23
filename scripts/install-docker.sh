@@ -17,6 +17,7 @@ DEFAULT_REPO_URL="https://github.com/m2ux/workflow-server.git"
 DEFAULT_RAW_BASE="https://raw.githubusercontent.com/m2ux/workflow-server"
 DEFAULT_REF="main"
 DEFAULT_RUNNER_NAME="run-workflow-server.sh"
+DEFAULT_UPDATE_NAME="update-workflows.sh"
 
 INSTALL_DIR="${WORKFLOW_SERVER_INSTALL_DIR:-$DEFAULT_INSTALL_DIR}"
 REPO_URL="${WORKFLOW_SERVER_REPO_URL:-$DEFAULT_REPO_URL}"
@@ -25,7 +26,7 @@ REF="${WORKFLOW_SERVER_REF:-$DEFAULT_REF}"
 
 usage() {
   cat <<EOF
-Install workflow-server under a local data dir: fetch the runner and clone
+Install workflow-server under a local data dir: fetch helper scripts and clone
 workflows data. Does not start Docker — run the runner as a separate step.
 
 USAGE
@@ -34,17 +35,19 @@ USAGE
 OPTIONS
   --install-dir=PATH   Install root (default: ${DEFAULT_INSTALL_DIR})
   --repo-url=URL       Git remote for workflows branch (default: GitHub m2ux)
-  --ref=REF            Branch/tag for runner script raw URL (default: ${DEFAULT_REF})
+  --ref=REF            Branch/tag for helper scripts raw URL (default: ${DEFAULT_REF})
   -h, --help
 
 LAYOUT
   \$INSTALL/
     ${DEFAULT_RUNNER_NAME}
+    ${DEFAULT_UPDATE_NAME}
     workflows/     # git clone -b workflows
     worktrees/     # created on first run
 
 AFTER INSTALL
   \$INSTALL/${DEFAULT_RUNNER_NAME} -d
+  \$INSTALL/${DEFAULT_UPDATE_NAME}   # later: pull latest workflows branch
   export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp
   curl -fsS http://127.0.0.1:3000/health
 EOF
@@ -109,8 +112,10 @@ need git
 
 INSTALL_DIR=$(abs_path "$INSTALL_DIR")
 RUNNER_PATH="${INSTALL_DIR}/${DEFAULT_RUNNER_NAME}"
+UPDATE_PATH="${INSTALL_DIR}/${DEFAULT_UPDATE_NAME}"
 WORKFLOWS_DIR="${INSTALL_DIR}/workflows"
 RUNNER_URL="${RAW_BASE}/${REF}/scripts/run-docker.sh"
+UPDATE_URL="${RAW_BASE}/${REF}/scripts/update-workflows.sh"
 
 echo "Install dir: ${INSTALL_DIR}"
 mkdir -p "$INSTALL_DIR"
@@ -118,6 +123,10 @@ mkdir -p "$INSTALL_DIR"
 echo "Fetching runner → ${RUNNER_PATH}"
 curl -fsSL -o "$RUNNER_PATH" "$RUNNER_URL"
 chmod +x "$RUNNER_PATH"
+
+echo "Fetching update-workflows → ${UPDATE_PATH}"
+curl -fsSL -o "$UPDATE_PATH" "$UPDATE_URL"
+chmod +x "$UPDATE_PATH"
 
 if [[ -d "${WORKFLOWS_DIR}/.git" ]]; then
   echo "Workflows already present: ${WORKFLOWS_DIR}"
@@ -131,6 +140,9 @@ fi
 echo
 echo "Install complete. Start the server with:"
 echo "  ${RUNNER_PATH} -d"
+echo
+echo "Update workflows later with:"
+echo "  ${UPDATE_PATH}"
 echo
 echo "Then:"
 echo "  export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp"
