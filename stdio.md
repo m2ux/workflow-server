@@ -43,7 +43,7 @@ Point the client at the built entry point. The IDE starts the server; you do not
 
 | Arg | Env | Notes |
 |-----|-----|--------|
-| `--workspace=PATH` | `WORKFLOW_WORKSPACE` or `WORKTREE_ROOT` | Required worktree root |
+| `--workspace=PATH` | `WORKFLOW_WORKSPACE` or `WORKTREE_ROOT` | Required worktree root shared with the agent (recommend `~/worktrees`, same default as [http.md](http.md)) |
 | `--workflow-dir=PATH` | `WORKFLOW_DIR` | Workflows directory (default `./workflows`) |
 | `--transport=stdio` | `TRANSPORT` | Default; omit for stdio |
 

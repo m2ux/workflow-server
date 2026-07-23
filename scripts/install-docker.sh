@@ -3,8 +3,12 @@
 #
 #   curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh | bash
 #
+# Installs under ~/.local/share/workflow-server (runner + workflows clone).
+# Agent worktrees default to ~/worktrees on run — not under the install dir.
+#
 # Then start separately:
 #   ~/.local/share/workflow-server/run-workflow-server.sh -d
+#   ~/.local/share/workflow-server/run-workflow-server.sh --worktree-root=PATH -d
 #
 # Options:
 #   bash <(curl -fsSL …/install-docker.sh) --install-dir=/opt/workflow-server
@@ -140,8 +144,16 @@ else
 fi
 
 echo
-echo "Install complete. Start the server with:"
+echo "Install complete."
+echo "  Install dir : ${INSTALL_DIR}"
+echo "  Workflows   : ${WORKFLOWS_DIR}"
+echo "  Worktrees   : ~/worktrees  (default on run; shared with the agent — not under install dir)"
+echo
+echo "Start the server:"
 echo "  ${RUNNER_PATH} -d"
+echo
+echo "Override worktree root if needed:"
+echo "  ${RUNNER_PATH} --worktree-root=PATH -d"
 echo
 echo "Update workflows later with:"
 echo "  ${UPDATE_PATH}"

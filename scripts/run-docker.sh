@@ -7,9 +7,14 @@
 # Then run (this script, already under the install dir):
 #   ~/.local/share/workflow-server/run-workflow-server.sh -d
 #
+# Defaults on run:
+#   worktree root  ~/worktrees          (agent-shared; --worktree-root to override)
+#   workflows      $INSTALL/workflows
+#   install dir    ~/.local/share/workflow-server
+#
 # Override install root / binds:
 #   ./run-workflow-server.sh --install-dir=/opt/workflow-server -d
-#   ./run-workflow-server.sh --worktree-root=... --workflows-dir=... -d
+#   ./run-workflow-server.sh --worktree-root=~/worktrees --workflows-dir=... -d
 #
 # Needs: docker (public image: ghcr.io/m2ux/workflow-server)
 set -euo pipefail
