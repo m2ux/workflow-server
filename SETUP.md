@@ -42,28 +42,13 @@ Project MCP configs keep the **HTTP + mcp-remote** client shape. Paths and the e
 }
 ```
 
-### One-time local init
+Cursor expands `${env:NAME}` from the IDE process environment. Export the MCP endpoint before launching the client (profile, desktop env, or a shell that starts Cursor):
 
 ```bash
-# From the workflow-server checkout
-./scripts/init-local-env.sh
-# optional: ./scripts/init-local-env.sh --workspace=/path/to/worktree-root
-
-# Cursor expands ${env:NAME} from the IDE process environment — export before launch:
-set -a && source .env && set +a
-# then start Cursor from that shell, or put the same exports in your profile / desktop env
+export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp
 ```
 
-| Variable | Required | Role |
-|----------|----------|------|
-| `WORKFLOW_SERVER_MCP_URL` | yes (for MCP client) | HTTP MCP endpoint, default `http://127.0.0.1:3000/mcp` |
-| `WORKFLOW_WORKSPACE` | yes* (for the **server** process) | Worktree / workspace root (`WORKTREE_ROOT` alias ok) |
-| `WORKFLOW_DIR` / `SCHEMAS_DIR` | no | Host paths for workflows/schemas when starting the server |
-| `CONCEPT_RAG_ENTRY` / `CONCEPT_RAG_INDEX` | only if using concept-rag in `.mcp.json` | Paths passed as concept-rag `args` |
-
-\* Required by the workflow-server process (compose or `npm run start:http`), not by `mcp-remote` itself.
-
-Start the HTTP server (compose, [`scripts/run-docker.sh`](scripts/run-docker.sh), or local) before the IDE connects — see [HTTP transport](#http-transport) and the compose env table below.
+Start the HTTP server ([`scripts/run-docker.sh`](scripts/run-docker.sh), compose, or local) before the IDE connects — see [Run from GHCR](#run-from-ghcr-no-server-checkout) and [HTTP transport](#http-transport).
 
 ### Run from GHCR (no server checkout)
 
@@ -111,7 +96,7 @@ Needs Docker and pull access to `ghcr.io/m2ux/workflow-server` (`docker login gh
 
 **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
-Same `npx mcp-remote` args with `${env:WORKFLOW_SERVER_MCP_URL}` if the client expands env vars; otherwise paste the absolute URL from your `.env`.
+Same `npx mcp-remote` args with `${env:WORKFLOW_SERVER_MCP_URL}` if the client expands env vars; otherwise paste the absolute URL (default `http://127.0.0.1:3000/mcp`).
 
 ## IDE Rules Setup
 
@@ -191,7 +176,7 @@ Typical sequence:
 
 Container layout: see [`Dockerfile`](Dockerfile) and [`docker-compose.yml`](docker-compose.yml). Bind the host worktree root RW to `WORKTREE_ROOT` (default `/worktrees`). Planning paths derive under that root. Align container UID/GID with the host user that creates worktrees.
 
-Compose bind sources and in-container paths are environment variables (defaults preserve the previous layout). Use the same local `.env` as MCP (`./scripts/init-local-env.sh`) or export the vars before `docker compose up`:
+Compose bind sources and in-container paths are environment variables (defaults preserve the previous layout). Export them or use a compose `.env` before `docker compose up`. For a checkout-free install, prefer [`scripts/run-docker.sh`](scripts/run-docker.sh) instead.
 
 | Variable | Default | Role |
 |----------|---------|------|
@@ -204,7 +189,7 @@ Compose bind sources and in-container paths are environment variables (defaults 
 | `CONTAINER_SCHEMAS_DIR` | `/app/schemas` | In-container schemas path (volume target + server `SCHEMAS_DIR`) |
 | `PORT` / `HOST` / `TRANSPORT` | `3000` / `0.0.0.0` / `http` | Server listen settings inside the container |
 
-Host MCP vars (`WORKFLOW_WORKSPACE`, `WORKFLOW_DIR`, `SCHEMAS_DIR`) are separate from `CONTAINER_*` so one `.env` can drive both stdio MCP and compose without path clashes. Keep each `HOST_*` source paired with the matching `CONTAINER_*` target.
+Keep each `HOST_*` source paired with the matching `CONTAINER_*` target.
 
 Operator migration checklist:
 
