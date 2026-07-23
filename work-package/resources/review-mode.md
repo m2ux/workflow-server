@@ -2,7 +2,7 @@
 name: review-mode
 description: Guidelines for using the work-package workflow in review mode to conduct structured PR reviews. Covers detection, adapted workflow behavior, and output generation.
 metadata:
-  version: 1.7.0
+  version: 1.7.1
   order: 24
   legacy_id: 24
 ---
@@ -48,8 +48,10 @@ The final review comment combines findings from all review stages.
 **Reports list:** The header includes a `Reports` field listing the engineering artifact reports with hyperlinks. Construct links using the engineering artifacts base URL:
 
 ```
-https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/main/.engineering/artifacts/planning/{PLANNING_FOLDER}/
+https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/{ARTIFACT_PUBLISH_REF}/.engineering/artifacts/planning/{PLANNING_FOLDER}/
 ```
+
+`{ARTIFACT_PUBLISH_REF}` is the git ref the linked artifacts are published on — the commit SHA from `publish-review-artifacts` (preferred, immutable permalink) or the current parent branch when the SHA is not yet available. Resolve `{ENG_REPO_OWNER}` and `{ENG_REPO_NAME}` from the parent repo remote (`reference_path`); never hardcode `main`.
 
 | Report Name | Artifact |
 |-------------|----------|
@@ -239,3 +241,5 @@ Review mode creates the same planning artifacts as standard mode, but with revie
 | `expected_changes` | string | Expected implementation per requirements |
 | `review_summary` | string | Consolidated review comment text |
 | `review_posted` | boolean | Whether review was posted to PR |
+| `review_type` | string | `gh pr review` flag (`approve` \| `request-changes` \| `comment`) chosen at `review-summary-approval` |
+| `artifact_publish_ref` | string | Git ref for engineering-artifact hyperlinks — publish commit SHA (preferred) or current parent branch |

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.1
+  version: 1.4.2
 ---
 
 ## Capability
@@ -40,6 +40,10 @@ Path to the target submodule where source-side changes live (typically the appli
 ### commit-after-activity
 
 After every completed activity, BOTH source-side changes (under `{target_path}`, via [commit-submodule](../version-control/commit-submodule.md)) AND engineering artifacts (under `.engineering/artifacts/`, via [commit-regular-files](../version-control/commit-regular-files.md)) MUST be committed and **pushed** before evaluating transitions to the next activity. Skipping either scope leaves a dirty or remote-stale tree that breaks resume, Engineering links, and downstream activities. The submodule commit may be skipped only when `{target_path}`'s working tree is clean. The engineering commit may be skipped only when the planning folder has no local changes **and** README Progress Status for `{activity_id}` already shows the intended post-activity status on the remote (complete, or cancelled/N/A when `{mark_progress_na}` applied) per [Status vocabulary](../../resources/planning-readme.md#status-vocabulary) — otherwise Apply sync-progress-status (step 1) then commit and push. Scope: this orchestrator post-activity hook only — distinct from [explicit-commit](../version-control/TECHNIQUE.md#explicit-commit), which governs ad-hoc commits outside this hook.
+
+### submit-for-review-in-activity-publish
+
+For `submit-for-review` in review mode, review-linked engineering artifacts (`Reports`, plan `README.md`, `review-summary.md`) are committed and pushed **inside** the activity by `publish-review-artifacts` before `post-pr-review`, so `Plan`/`Reports` hyperlinks resolve at post time. The post-activity hook still runs for README Progress, session files, and any remaining dirty state; it does not delay or contradict that in-activity publish and may skip the engineering commit when the planning folder is already clean on the remote after publish.
 
 ### readme-progress-before-persist
 
