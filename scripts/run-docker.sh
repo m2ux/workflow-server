@@ -20,8 +20,7 @@
 # Override individual binds:
 #   ./run-workflow-server.sh --worktree-root=... --workflows-dir=... -d
 #
-# Needs: docker, pull access to ghcr.io/m2ux/workflow-server
-#   (private package: docker login ghcr.io)
+# Needs: docker (public image: ghcr.io/m2ux/workflow-server)
 set -euo pipefail
 
 DEFAULT_IMAGE_REPO="ghcr.io/m2ux/workflow-server"
@@ -302,8 +301,7 @@ if [[ "$PULL" -eq 1 ]]; then
   echo "Pulling ${FULL_IMAGE} ..."
   if ! run docker pull "$FULL_IMAGE"; then
     die "pull failed for ${FULL_IMAGE}
-  If the package is private:  docker login ghcr.io
-  If unpublished: build from a checkout or wait for CI publish."
+  Check network access to ghcr.io, or build from a checkout if the tag is unpublished."
   fi
 fi
 

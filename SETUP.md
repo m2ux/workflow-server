@@ -4,7 +4,7 @@ Get a running workflow server and connect your IDE. Default path: **GHCR image**
 
 ## 1. Run the server
 
-Needs Docker (and `docker login ghcr.io` if the package is private).
+Needs Docker.
 
 ```bash
 INSTALL=~/.local/share/workflow-server
