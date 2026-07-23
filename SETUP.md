@@ -67,31 +67,43 @@ Start the HTTP server (compose, [`scripts/run-docker.sh`](scripts/run-docker.sh)
 
 ### Run from GHCR (no server checkout)
 
-[`scripts/run-docker.sh`](scripts/run-docker.sh) is a **standalone** runner: one bash file, no repo clone. Fetch it, pass host paths, everything else defaults.
+[`scripts/run-docker.sh`](scripts/run-docker.sh) is a **standalone** runner: one bash file, no TypeScript checkout.
 
-```bash
-# install the script only
-curl -fsSL -o run-workflow-server.sh \
-  https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/run-docker.sh
-chmod +x run-workflow-server.sh
+**Default install dir:** `${XDG_DATA_HOME:-$HOME/.local/share}/workflow-server`  
+Override with `--install-dir=PATH` (or `WORKFLOW_SERVER_INSTALL_DIR`).
 
-# workflows data only (orphan branch — not the full server checkout)
-git clone -b workflows --single-branch \
-  https://github.com/m2ux/workflow-server.git \
-  ./workflows
-
-# worktree root for agent-created trees (create if missing)
-mkdir -p ./worktrees
-
-# required: worktree root + workflows dir (bare paths)
-./run-workflow-server.sh ./worktrees ./workflows -d
-
-# optional third path = host schemas (else image schemas)
-# ./run-workflow-server.sh ./worktrees ./workflows ./schemas -d
-# optional: --tag=main --host-port=3000 --image=ghcr.io/m2ux/workflow-server:main
+```text
+~/.local/share/workflow-server/
+  run-workflow-server.sh
+  workflows/          # git clone -b workflows (required)
+  worktrees/          # created on first run if missing
+  schemas/            # optional; else image schemas
 ```
 
-Needs Docker and pull access to `ghcr.io/m2ux/workflow-server` (`docker login ghcr.io` if private). You need the **workflows** orphan branch on disk (command above); you do not need the TypeScript server checkout. MCP: `WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp`.
+```bash
+INSTALL="${XDG_DATA_HOME:-$HOME/.local/share}/workflow-server"
+mkdir -p "$INSTALL"
+
+# install the script
+curl -fsSL -o "$INSTALL/run-workflow-server.sh" \
+  https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/run-docker.sh
+chmod +x "$INSTALL/run-workflow-server.sh"
+
+# workflows data only (orphan branch)
+git clone -b workflows --single-branch \
+  https://github.com/m2ux/workflow-server.git \
+  "$INSTALL/workflows"
+
+# no path args — uses $INSTALL/worktrees and $INSTALL/workflows
+"$INSTALL/run-workflow-server.sh" -d
+
+# override install root
+# ./run-workflow-server.sh --install-dir=/opt/workflow-server -d
+# override single binds still works:
+# ./run-workflow-server.sh --worktree-root=~/projects/work --workflows-dir=... -d
+```
+
+Needs Docker and pull access to `ghcr.io/m2ux/workflow-server` (`docker login ghcr.io` if private). MCP: `WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp`.
 
 ### Claude Desktop
 

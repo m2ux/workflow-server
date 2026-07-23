@@ -6,20 +6,24 @@
 #     https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/run-docker.sh
 #   chmod +x run-workflow-server.sh
 #
-# Minimal:
-#   ./run-workflow-server.sh /path/to/worktrees /path/to/workflows
+# Default install layout (path args not required once set up):
+#   ${XDG_DATA_HOME:-$HOME/.local/share}/workflow-server/
+#     run-workflow-server.sh
+#     workflows/               # git clone -b workflows ...
+#     worktrees/               # created on first run if missing
 #
-# With options:
-#   ./run-workflow-server.sh /path/to/worktrees /path/to/workflows -d
-#   ./run-workflow-server.sh --worktree-root=... --workflows-dir=... --detach
+#   ./run-workflow-server.sh -d
 #
-# Needs: docker, and pull access to ghcr.io/m2ux/workflow-server
+# Override install root:
+#   ./run-workflow-server.sh --install-dir=/opt/workflow-server -d
+#
+# Override individual binds:
+#   ./run-workflow-server.sh --worktree-root=... --workflows-dir=... -d
+#
+# Needs: docker, pull access to ghcr.io/m2ux/workflow-server
 #   (private package: docker login ghcr.io)
 set -euo pipefail
 
-# ---------------------------------------------------------------------------
-# Defaults (override via flags or env; paths are the only required inputs)
-# ---------------------------------------------------------------------------
 DEFAULT_IMAGE_REPO="ghcr.io/m2ux/workflow-server"
 DEFAULT_TAG="main"
 DEFAULT_NAME="workflow-server"
@@ -30,18 +34,23 @@ DEFAULT_WORKFLOWS_TARGET="/app/workflows"
 DEFAULT_SCHEMAS_TARGET="/app/schemas"
 DEFAULT_TRANSPORT="http"
 DEFAULT_BIND_HOST="0.0.0.0"
+DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
 
 IMAGE_REPO="${WORKFLOW_SERVER_IMAGE:-$DEFAULT_IMAGE_REPO}"
 TAG="${WORKFLOW_SERVER_TAG:-$DEFAULT_TAG}"
-IMAGE_REF="" # full ref from --image=repo:tag
-
+IMAGE_REF=""
 NAME="${WORKFLOW_SERVER_CONTAINER_NAME:-$DEFAULT_NAME}"
 HOST_PORT="${HOST_PORT:-$DEFAULT_HOST_PORT}"
 CONTAINER_PORT="${PORT:-$DEFAULT_CONTAINER_PORT}"
 
-HOST_WORKTREE_ROOT="${HOST_WORKTREE_ROOT:-${WORKFLOW_WORKSPACE:-}}"
-HOST_WORKFLOWS_DIR="${HOST_WORKFLOWS_DIR:-${WORKFLOW_DIR:-}}"
-HOST_SCHEMAS_DIR="${HOST_SCHEMAS_DIR:-${SCHEMAS_DIR:-}}"
+INSTALL_DIR=""
+INSTALL_DIR_SET=0
+HOST_WORKTREE_ROOT=""
+HOST_WORKFLOWS_DIR=""
+HOST_SCHEMAS_DIR=""
+WORKTREE_SET=0
+WORKFLOWS_SET=0
+SCHEMAS_SET=0
 
 CONTAINER_WORKTREE_ROOT="${CONTAINER_WORKTREE_ROOT:-$DEFAULT_WORKTREE_TARGET}"
 CONTAINER_WORKFLOW_DIR="${CONTAINER_WORKFLOW_DIR:-$DEFAULT_WORKFLOWS_TARGET}"
@@ -62,87 +71,105 @@ DOCKER_ARGS=()
 POSITIONAL=()
 
 usage() {
-  cat <<'EOF'
+  cat <<EOF
 workflow-server standalone runner — pull GHCR image and run with host binds.
 
 USAGE
-  run-docker.sh <worktree-root> <workflows-dir> [schemas-dir] [options]
-  run-docker.sh --worktree-root=PATH --workflows-dir=PATH [options]
+  run-docker.sh [options]
+  run-docker.sh [options] <worktree-root> <workflows-dir> [schemas-dir]
 
-REQUIRED (positional or flags; env aliases also work)
-  worktree-root     Host directory bound RW  → /worktrees
-                    env: HOST_WORKTREE_ROOT | WORKFLOW_WORKSPACE
-  workflows-dir     Host directory bound RO  → /app/workflows
-                    env: HOST_WORKFLOWS_DIR | WORKFLOW_DIR
+DEFAULT INSTALL DIR
+  ${DEFAULT_INSTALL_DIR}
+  Override: --install-dir=PATH  or  env WORKFLOW_SERVER_INSTALL_DIR
 
-OPTIONAL
-  schemas-dir       Host directory bound RO  → /app/schemas
-                    If omitted, schemas baked into the image are used.
-                    env: HOST_SCHEMAS_DIR | SCHEMAS_DIR
+  Layout:
+    workflows/    RO → /app/workflows   (required; clone workflows branch)
+    worktrees/    RW → /worktrees       (created if missing)
+    schemas/      RO → /app/schemas     (optional; else image schemas)
 
-  --image=REF       Full image (default: ghcr.io/m2ux/workflow-server:main)
-  --tag=TAG         Tag for default repo (default: main)
-  --host-port=N     Publish host port (default: 3000)
-  --port=N          Container PORT env (default: 3000)
-  --name=NAME       Container name (default: workflow-server)
-  --planning-slug=S PLANNING_SLUG inside container
-  --env KEY=VAL     Extra -e (repeatable)
-  --env-file=PATH   docker --env-file
-  --user=UID:GID    Container user (default: current uid:gid)
-  --pull            Pull image first (default)
-  --no-pull         Do not pull
-  -d, --detach      Background
-  --rm / --no-rm    Remove on exit (default: rm unless -d)
-  --dry-run         Print docker commands only
+  After setup, no path args are required:
+    run-docker.sh -d
+
+OPTIONS
+  --install-dir=PATH     Install root (default above). Fills worktrees/ and
+                         workflows/ unless overridden by other path flags.
+  --worktree-root=PATH   Host worktree root (RW)
+  --workflows-dir=PATH   Host workflows directory (RO)
+  --schemas-dir=PATH     Host schemas directory (RO); optional
+  --image=REF            Full image (default: ${DEFAULT_IMAGE_REPO}:${DEFAULT_TAG})
+  --tag=TAG              Tag for default repo (default: ${DEFAULT_TAG})
+  --host-port=N          Host port (default: ${DEFAULT_HOST_PORT})
+  --port=N               Container PORT (default: ${DEFAULT_CONTAINER_PORT})
+  --name=NAME            Container name (default: ${DEFAULT_NAME})
+  --planning-slug=S      PLANNING_SLUG inside container
+  --env KEY=VAL          Extra -e (repeatable)
+  --env-file=PATH        docker --env-file
+  --user=UID:GID         Container user (default: current uid:gid)
+  --pull / --no-pull     Pull image first (default: pull)
+  -d, --detach           Background
+  --rm / --no-rm         Remove on exit (default: rm unless -d)
+  --dry-run              Print docker commands only
   -h, --help
 
-  Extra docker run flags after -- :
-    run-docker.sh /work /wf -d -- --restart=unless-stopped
+  Extra docker flags after -- :
+    run-docker.sh -d -- --restart=unless-stopped
 
 EXAMPLES
-  # no server repo — script + workflows branch only
-  curl -fsSL -o run-ws.sh \
+  INSTALL=\${XDG_DATA_HOME:-\$HOME/.local/share}/workflow-server
+  mkdir -p "\$INSTALL"
+  curl -fsSL -o "\$INSTALL/run-workflow-server.sh" \\
     https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/run-docker.sh
-  chmod +x run-ws.sh
-  git clone -b workflows --single-branch \
-    https://github.com/m2ux/workflow-server.git \
-    ./workflows
-  mkdir -p ./worktrees
-  ./run-ws.sh ./worktrees ./workflows -d
+  chmod +x "\$INSTALL/run-workflow-server.sh"
+  git clone -b workflows --single-branch \\
+    https://github.com/m2ux/workflow-server.git \\
+    "\$INSTALL/workflows"
+  "\$INSTALL/run-workflow-server.sh" -d
 
-  # bare paths only (workflows already on disk)
-  ./run-docker.sh ~/projects/work ~/workflows -d
+  ./run-docker.sh --install-dir=/opt/workflow-server -d
+  ./run-docker.sh --worktree-root=~/projects/work --workflows-dir=~/wf -d
 
-  # private GHCR
-  docker login ghcr.io
-  ./run-docker.sh /var/worktrees /opt/workflows --tag=v1.2.0 -d
-
-MCP client URL after start:  http://127.0.0.1:<host-port>/mcp
+MCP URL: http://127.0.0.1:<host-port>/mcp
 EOF
 }
 
 die() { echo "error: $*" >&2; exit 1; }
 
-abs_dir() {
+abs_path() {
   local p="$1"
   [[ -n "$p" ]] || return 1
-  [[ -d "$p" ]] || die "not a directory: $p"
+  [[ "$p" == ~* ]] && p="${p/#\~/$HOME}"
   if command -v realpath >/dev/null 2>&1; then
-    realpath "$p"
-  else
+    realpath -m "$p" 2>/dev/null || realpath "$p"
+  elif [[ -d "$p" ]]; then
     (cd "$p" && pwd)
+  else
+    local parent base
+    parent="$(cd "$(dirname "$p")" && pwd)"
+    base="$(basename "$p")"
+    printf '%s/%s\n' "$parent" "$base"
   fi
+}
+
+abs_dir() {
+  local p
+  p="$(abs_path "$1")"
+  [[ -d "$p" ]] || die "not a directory: $p"
+  printf '%s\n' "$p"
 }
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help) usage; exit 0 ;;
-    --worktree-root=*) HOST_WORKTREE_ROOT="${1#*=}"; shift ;;
-    --worktree-root) HOST_WORKTREE_ROOT="${2:?}"; shift 2 ;;
-    --workflows-dir=*) HOST_WORKFLOWS_DIR="${1#*=}"; shift ;;
-    --workflows-dir) HOST_WORKFLOWS_DIR="${2:?}"; shift 2 ;;
-    --schemas-dir=*) HOST_SCHEMAS_DIR="${1#*=}"; shift ;;
-    --schemas-dir) HOST_SCHEMAS_DIR="${2:?}"; shift 2 ;;
+    --install-dir=*) INSTALL_DIR="${1#*=}"; INSTALL_DIR_SET=1; shift ;;
+    --install-dir) INSTALL_DIR="${2:?}"; INSTALL_DIR_SET=1; shift 2 ;;
+    --data-dir=*) INSTALL_DIR="${1#*=}"; INSTALL_DIR_SET=1; shift ;;
+    --data-dir) INSTALL_DIR="${2:?}"; INSTALL_DIR_SET=1; shift 2 ;;
+    --worktree-root=*) HOST_WORKTREE_ROOT="${1#*=}"; WORKTREE_SET=1; shift ;;
+    --worktree-root) HOST_WORKTREE_ROOT="${2:?}"; WORKTREE_SET=1; shift 2 ;;
+    --workflows-dir=*) HOST_WORKFLOWS_DIR="${1#*=}"; WORKFLOWS_SET=1; shift ;;
+    --workflows-dir) HOST_WORKFLOWS_DIR="${2:?}"; WORKFLOWS_SET=1; shift 2 ;;
+    --schemas-dir=*) HOST_SCHEMAS_DIR="${1#*=}"; SCHEMAS_SET=1; shift ;;
+    --schemas-dir) HOST_SCHEMAS_DIR="${2:?}"; SCHEMAS_SET=1; shift 2 ;;
     --image=*) IMAGE_REF="${1#*=}"; shift ;;
     --image) IMAGE_REF="${2:?}"; shift 2 ;;
     --tag=*) TAG="${1#*=}"; shift ;;
@@ -168,34 +195,86 @@ while [[ $# -gt 0 ]]; do
     --no-rm) RM=0; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --) shift; DOCKER_ARGS+=("$@"); break ;;
-    -*)
-      die "unknown option: $1 (see --help)"
-      ;;
-    *)
-      POSITIONAL+=("$1")
-      shift
-      ;;
+    -*) die "unknown option: $1 (see --help)" ;;
+    *) POSITIONAL+=("$1"); shift ;;
   esac
 done
 
-# Positional: worktree workflows [schemas]
 if [[ ${#POSITIONAL[@]} -ge 1 ]]; then
   HOST_WORKTREE_ROOT="${POSITIONAL[0]}"
+  WORKTREE_SET=1
 fi
 if [[ ${#POSITIONAL[@]} -ge 2 ]]; then
   HOST_WORKFLOWS_DIR="${POSITIONAL[1]}"
+  WORKFLOWS_SET=1
 fi
 if [[ ${#POSITIONAL[@]} -ge 3 ]]; then
   HOST_SCHEMAS_DIR="${POSITIONAL[2]}"
+  SCHEMAS_SET=1
 fi
 if [[ ${#POSITIONAL[@]} -gt 3 ]]; then
-  die "too many positional args (expected: worktree workflows [schemas])"
+  die "too many positional args (expected: [worktree workflows [schemas]])"
+fi
+
+if [[ "$INSTALL_DIR_SET" -eq 0 && -n "${WORKFLOW_SERVER_INSTALL_DIR:-}" ]]; then
+  INSTALL_DIR="$WORKFLOW_SERVER_INSTALL_DIR"
+  INSTALL_DIR_SET=1
+fi
+
+INSTALL_DIR="$(abs_path "${INSTALL_DIR:-$DEFAULT_INSTALL_DIR}")"
+
+# Path resolution:
+#   1. CLI flag / positional (*_SET=1)
+#   2. Explicit --install-dir → $INSTALL/{worktrees,workflows}
+#   3. Env HOST_* / WORKFLOW_* (only when install-dir not explicit)
+#   4. Default install layout
+if [[ "$WORKTREE_SET" -eq 0 ]]; then
+  if [[ "$INSTALL_DIR_SET" -eq 1 ]]; then
+    HOST_WORKTREE_ROOT="${INSTALL_DIR}/worktrees"
+  else
+    HOST_WORKTREE_ROOT="$(printenv HOST_WORKTREE_ROOT 2>/dev/null || true)"
+    [[ -z "$HOST_WORKTREE_ROOT" ]] && HOST_WORKTREE_ROOT="$(printenv WORKFLOW_WORKSPACE 2>/dev/null || true)"
+    [[ -z "$HOST_WORKTREE_ROOT" ]] && HOST_WORKTREE_ROOT="${INSTALL_DIR}/worktrees"
+  fi
+fi
+
+if [[ "$WORKFLOWS_SET" -eq 0 ]]; then
+  if [[ "$INSTALL_DIR_SET" -eq 1 ]]; then
+    HOST_WORKFLOWS_DIR="${INSTALL_DIR}/workflows"
+  else
+    HOST_WORKFLOWS_DIR="$(printenv HOST_WORKFLOWS_DIR 2>/dev/null || true)"
+    [[ -z "$HOST_WORKFLOWS_DIR" ]] && HOST_WORKFLOWS_DIR="$(printenv WORKFLOW_DIR 2>/dev/null || true)"
+    [[ -z "$HOST_WORKFLOWS_DIR" ]] && HOST_WORKFLOWS_DIR="${INSTALL_DIR}/workflows"
+  fi
+fi
+
+if [[ "$SCHEMAS_SET" -eq 0 ]]; then
+  if [[ "$INSTALL_DIR_SET" -eq 1 ]]; then
+    [[ -d "${INSTALL_DIR}/schemas" ]] && HOST_SCHEMAS_DIR="${INSTALL_DIR}/schemas"
+  else
+    HOST_SCHEMAS_DIR="$(printenv HOST_SCHEMAS_DIR 2>/dev/null || true)"
+    [[ -z "$HOST_SCHEMAS_DIR" ]] && HOST_SCHEMAS_DIR="$(printenv SCHEMAS_DIR 2>/dev/null || true)"
+    [[ -z "$HOST_SCHEMAS_DIR" && -d "${INSTALL_DIR}/schemas" ]] && HOST_SCHEMAS_DIR="${INSTALL_DIR}/schemas"
+  fi
 fi
 
 command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
 
-[[ -n "$HOST_WORKTREE_ROOT" ]] || die "required: worktree-root path (positional or --worktree-root=)"
-[[ -n "$HOST_WORKFLOWS_DIR" ]] || die "required: workflows-dir path (positional or --workflows-dir=)"
+if [[ ! -d "$HOST_WORKTREE_ROOT" ]]; then
+  echo "Creating worktree root: ${HOST_WORKTREE_ROOT}"
+  mkdir -p "$HOST_WORKTREE_ROOT"
+fi
+
+if [[ ! -d "$HOST_WORKFLOWS_DIR" ]]; then
+  die "workflows directory not found: ${HOST_WORKFLOWS_DIR}
+
+Clone the workflows orphan branch into the install dir, for example:
+  git clone -b workflows --single-branch \\
+    https://github.com/m2ux/workflow-server.git \\
+    ${INSTALL_DIR}/workflows
+
+Or pass --workflows-dir=PATH / --install-dir=PATH."
+fi
 
 HOST_WORKTREE_ROOT="$(abs_dir "$HOST_WORKTREE_ROOT")"
 HOST_WORKFLOWS_DIR="$(abs_dir "$HOST_WORKFLOWS_DIR")"
@@ -273,6 +352,7 @@ fi
 DOCKER_RUN+=("${DOCKER_ARGS[@]+"${DOCKER_ARGS[@]}"}")
 DOCKER_RUN+=("$FULL_IMAGE")
 
+echo "Install  : ${INSTALL_DIR}"
 echo "Starting ${FULL_IMAGE}"
 echo "  worktree : ${HOST_WORKTREE_ROOT} → ${CONTAINER_WORKTREE_ROOT} (rw)"
 echo "  workflows: ${HOST_WORKFLOWS_DIR} → ${CONTAINER_WORKFLOW_DIR} (ro)"
