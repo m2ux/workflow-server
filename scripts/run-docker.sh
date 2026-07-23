@@ -257,10 +257,13 @@ fi
 
 command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
 
+# Resolve + create worktree root before bind-mount (must exist for docker -v).
+HOST_WORKTREE_ROOT="$(abs_path "$HOST_WORKTREE_ROOT")"
 if [[ ! -d "$HOST_WORKTREE_ROOT" ]]; then
   echo "Creating worktree root: ${HOST_WORKTREE_ROOT}"
-  mkdir -p "$HOST_WORKTREE_ROOT"
+  mkdir -p "$HOST_WORKTREE_ROOT" || die "failed to create worktree root: ${HOST_WORKTREE_ROOT}"
 fi
+[[ -d "$HOST_WORKTREE_ROOT" ]] || die "worktree root is not a directory: ${HOST_WORKTREE_ROOT}"
 
 if [[ ! -d "$HOST_WORKFLOWS_DIR" ]]; then
   die "workflows directory not found: ${HOST_WORKFLOWS_DIR}

@@ -17,6 +17,7 @@
 set -euo pipefail
 
 DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
+DEFAULT_HOST_WORKTREE_ROOT="${HOME}/worktrees"
 DEFAULT_REPO_URL="https://github.com/m2ux/workflow-server.git"
 DEFAULT_RAW_BASE="https://raw.githubusercontent.com/m2ux/workflow-server"
 DEFAULT_REF="main"
@@ -48,8 +49,8 @@ LAYOUT
     ${DEFAULT_UPDATE_NAME}
     workflows/     # git clone -b workflows
 
-  Worktree root defaults to ~/worktrees on first run (shared with the agent;
-  override with run --worktree-root=PATH). Not stored under \$INSTALL.
+  Also ensures the agent worktree root exists (default ${DEFAULT_HOST_WORKTREE_ROOT};
+  not under \$INSTALL). Override on run with --worktree-root=PATH.
 
 AFTER INSTALL
   \$INSTALL/${DEFAULT_RUNNER_NAME} -d
@@ -70,6 +71,7 @@ need() {
 
 abs_path() {
   local p="$1"
+  [[ "$p" == ~* ]] && p="${p/#\~/$HOME}"
   if command -v realpath >/dev/null 2>&1; then
     realpath -m "$p"
   else
@@ -126,6 +128,14 @@ UPDATE_URL="${RAW_BASE}/${REF}/scripts/update-workflows.sh"
 echo "Install dir: ${INSTALL_DIR}"
 mkdir -p "$INSTALL_DIR"
 
+WORKTREE_ROOT="$(abs_path "$DEFAULT_HOST_WORKTREE_ROOT")"
+if [[ ! -d "$WORKTREE_ROOT" ]]; then
+  echo "Creating worktree root → ${WORKTREE_ROOT}"
+  mkdir -p "$WORKTREE_ROOT" || die "failed to create worktree root: ${WORKTREE_ROOT}"
+else
+  echo "Worktree root already present: ${WORKTREE_ROOT}"
+fi
+
 echo "Fetching runner → ${RUNNER_PATH}"
 curl -fsSL -o "$RUNNER_PATH" "$RUNNER_URL"
 chmod +x "$RUNNER_PATH"
@@ -147,7 +157,7 @@ echo
 echo "Install complete."
 echo "  Install dir : ${INSTALL_DIR}"
 echo "  Workflows   : ${WORKFLOWS_DIR}"
-echo "  Worktrees   : ~/worktrees  (default on run; shared with the agent — not under install dir)"
+echo "  Worktrees   : ${WORKTREE_ROOT}  (shared with the agent — not under install dir)"
 echo
 echo "Start the server:"
 echo "  ${RUNNER_PATH} -d"

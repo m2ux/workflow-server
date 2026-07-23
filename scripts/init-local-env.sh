@@ -68,6 +68,12 @@ upsert() {
 
 WORKFLOWS_ABS="${ROOT}/workflows"
 SCHEMAS_ABS="${ROOT}/schemas"
+# Expand ~ and create the agent-shared worktree root if missing.
+WORKSPACE_DEFAULT="${WORKSPACE_DEFAULT/#\~/$HOME}"
+if [[ ! -d "${WORKSPACE_DEFAULT}" ]]; then
+  echo "Creating worktree root: ${WORKSPACE_DEFAULT}"
+  mkdir -p "${WORKSPACE_DEFAULT}"
+fi
 WORKSPACE_ABS="$(cd "${WORKSPACE_DEFAULT}" && pwd)"
 
 upsert WORKFLOW_SERVER_MCP_URL "http://127.0.0.1:3000/mcp"

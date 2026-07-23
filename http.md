@@ -24,7 +24,7 @@ Override worktree root with `--worktree-root` / `HOST_WORKTREE_ROOT` / `WORKFLOW
 
 ## 1. Install
 
-Needs git and curl. Fetches helper scripts and clones the `workflows` branch into the install dir. Does **not** start the container and does **not** create `~/worktrees` (the runner creates that on first start).
+Needs git and curl. Fetches helper scripts, clones the `workflows` branch into the install dir, and creates `~/worktrees` if it does not exist. Does **not** start the container.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh | bash
@@ -40,6 +40,8 @@ After install you have:
   run-workflow-server.sh    # from scripts/run-docker.sh
   update-workflows.sh       # from scripts/update-workflows.sh
   workflows/                # git clone -b workflows
+
+~/worktrees/                # agent-shared worktree root (created if missing)
 ```
 
 ## 2. Run the server
@@ -52,7 +54,7 @@ Needs [Docker](https://docs.docker.com/get-docker/).
 
 Defaults (no path args required after install):
 
-- Worktree root: `~/worktrees` (created if missing)
+- Worktree root: `~/worktrees` (created if missing — also on install)
 - Workflows: `~/.local/share/workflow-server/workflows`
 - Image: `ghcr.io/m2ux/workflow-server:main`
 - Publish: `http://127.0.0.1:3000`
