@@ -1,32 +1,26 @@
 #!/usr/bin/env bash
-# Pull the published workflow-server image from GHCR and run it with host binds.
+# workflow-server — standalone GHCR runner (no repo checkout required)
 #
-# Required (flags or env):
-#   --worktree-root / HOST_WORKTREE_ROOT   host dir bound RW as the worktree root
-#   --workflows-dir / HOST_WORKFLOWS_DIR   host dir of workflow definitions (RO)
+# One file. Copy it anywhere, or:
+#   curl -fsSL -o run-workflow-server.sh \
+#     https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/run-docker.sh
+#   chmod +x run-workflow-server.sh
 #
-# Optional:
-#   --schemas-dir     host schemas dir (RO); omit to use schemas baked into the image
-#   --image / --tag   image ref (default ghcr.io/m2ux/workflow-server:main)
-#   --host-port       published host port (default 3000)
-#   --name            container name (default workflow-server)
-#   --env KEY=VAL     extra -e for the container (repeatable)
-#   --env-file PATH   docker --env-file (in addition to script-set vars)
-#   --pull / --no-pull
-#   --detach / -d     run in background
-#   --rm              remove container on exit (default on when not --detach)
-#   --user UID:GID    run as user (default: current host uid:gid)
-#   --dry-run         print docker commands only
+# Minimal:
+#   ./run-workflow-server.sh /path/to/worktrees /path/to/workflows
 #
-# Examples:
-#   ./scripts/run-docker.sh \
-#     --worktree-root=/home/mike1/projects/work \
-#     --workflows-dir=/home/mike1/projects/main/workflow-server/workflows
+# With options:
+#   ./run-workflow-server.sh /path/to/worktrees /path/to/workflows -d
+#   ./run-workflow-server.sh --worktree-root=... --workflows-dir=... --detach
 #
-#   HOST_WORKTREE_ROOT=... HOST_WORKFLOWS_DIR=... ./scripts/run-docker.sh --detach
+# Needs: docker, and pull access to ghcr.io/m2ux/workflow-server
+#   (private package: docker login ghcr.io)
 set -euo pipefail
 
-DEFAULT_IMAGE="ghcr.io/m2ux/workflow-server"
+# ---------------------------------------------------------------------------
+# Defaults (override via flags or env; paths are the only required inputs)
+# ---------------------------------------------------------------------------
+DEFAULT_IMAGE_REPO="ghcr.io/m2ux/workflow-server"
 DEFAULT_TAG="main"
 DEFAULT_NAME="workflow-server"
 DEFAULT_HOST_PORT="3000"
@@ -34,11 +28,12 @@ DEFAULT_CONTAINER_PORT="3000"
 DEFAULT_WORKTREE_TARGET="/worktrees"
 DEFAULT_WORKFLOWS_TARGET="/app/workflows"
 DEFAULT_SCHEMAS_TARGET="/app/schemas"
+DEFAULT_TRANSPORT="http"
+DEFAULT_BIND_HOST="0.0.0.0"
 
-IMAGE="${WORKFLOW_SERVER_IMAGE:-$DEFAULT_IMAGE}"
+IMAGE_REPO="${WORKFLOW_SERVER_IMAGE:-$DEFAULT_IMAGE_REPO}"
 TAG="${WORKFLOW_SERVER_TAG:-$DEFAULT_TAG}"
-# Full ref overrides image+tag when set via --image=repo:tag
-IMAGE_REF=""
+IMAGE_REF="" # full ref from --image=repo:tag
 
 NAME="${WORKFLOW_SERVER_CONTAINER_NAME:-$DEFAULT_NAME}"
 HOST_PORT="${HOST_PORT:-$DEFAULT_HOST_PORT}"
@@ -53,8 +48,8 @@ CONTAINER_WORKFLOW_DIR="${CONTAINER_WORKFLOW_DIR:-$DEFAULT_WORKFLOWS_TARGET}"
 CONTAINER_SCHEMAS_DIR="${CONTAINER_SCHEMAS_DIR:-$DEFAULT_SCHEMAS_TARGET}"
 
 PLANNING_SLUG="${PLANNING_SLUG:-}"
-TRANSPORT="${TRANSPORT:-http}"
-BIND_HOST="${HOST:-0.0.0.0}"
+TRANSPORT="${TRANSPORT:-$DEFAULT_TRANSPORT}"
+BIND_HOST="${HOST:-$DEFAULT_BIND_HOST}"
 
 PULL=1
 DETACH=0
@@ -64,38 +59,61 @@ USER_SPEC="${DOCKER_USER:-$(id -u):$(id -g)}"
 ENV_FILE=""
 EXTRA_ENVS=()
 DOCKER_ARGS=()
+POSITIONAL=()
 
 usage() {
   cat <<'EOF'
-Usage: run-docker.sh --worktree-root=PATH --workflows-dir=PATH [options]
+workflow-server standalone runner — pull GHCR image and run with host binds.
 
-Required:
-  --worktree-root=PATH   Host worktree root (RW bind → CONTAINER_WORKTREE_ROOT)
-  --workflows-dir=PATH   Host workflows directory (RO bind → CONTAINER_WORKFLOW_DIR)
+USAGE
+  run-docker.sh <worktree-root> <workflows-dir> [schemas-dir] [options]
+  run-docker.sh --worktree-root=PATH --workflows-dir=PATH [options]
 
-  Env aliases: HOST_WORKTREE_ROOT / WORKFLOW_WORKSPACE,
-               HOST_WORKFLOWS_DIR / WORKFLOW_DIR
+REQUIRED (positional or flags; env aliases also work)
+  worktree-root     Host directory bound RW  → /worktrees
+                    env: HOST_WORKTREE_ROOT | WORKFLOW_WORKSPACE
+  workflows-dir     Host directory bound RO  → /app/workflows
+                    env: HOST_WORKFLOWS_DIR | WORKFLOW_DIR
 
-Options:
-  --schemas-dir=PATH     Host schemas directory (RO). If omitted, image schemas are used.
-  --image=REF            Full image ref (e.g. ghcr.io/m2ux/workflow-server:main)
-  --tag=TAG              Tag when using default image repo (default: main)
-  --host-port=N          Host port (default: 3000)
-  --port=N               In-container listen port / PORT env (default: 3000)
-  --name=NAME            Container name (default: workflow-server)
-  --planning-slug=PATH   PLANNING_SLUG inside the container
-  --env KEY=VAL          Extra container env (repeatable)
-  --env-file=PATH        Passed to docker run --env-file
-  --user=UID:GID         Container user (default: current uid:gid)
-  --pull                 docker pull before run (default)
-  --no-pull              Skip pull
-  --detach, -d           Run detached
-  --rm / --no-rm         Remove container on exit (default: rm unless -d)
-  --dry-run              Print commands only
-  -h, --help             Show help
+OPTIONAL
+  schemas-dir       Host directory bound RO  → /app/schemas
+                    If omitted, schemas baked into the image are used.
+                    env: HOST_SCHEMAS_DIR | SCHEMAS_DIR
 
-Also accepts passthrough docker flags after -- :
-  ./scripts/run-docker.sh --worktree-root=... --workflows-dir=... -- --network=host
+  --image=REF       Full image (default: ghcr.io/m2ux/workflow-server:main)
+  --tag=TAG         Tag for default repo (default: main)
+  --host-port=N     Publish host port (default: 3000)
+  --port=N          Container PORT env (default: 3000)
+  --name=NAME       Container name (default: workflow-server)
+  --planning-slug=S PLANNING_SLUG inside container
+  --env KEY=VAL     Extra -e (repeatable)
+  --env-file=PATH   docker --env-file
+  --user=UID:GID    Container user (default: current uid:gid)
+  --pull            Pull image first (default)
+  --no-pull         Do not pull
+  -d, --detach      Background
+  --rm / --no-rm    Remove on exit (default: rm unless -d)
+  --dry-run         Print docker commands only
+  -h, --help
+
+  Extra docker run flags after -- :
+    run-docker.sh /work /wf -d -- --restart=unless-stopped
+
+EXAMPLES
+  # bare paths only
+  ./run-docker.sh ~/projects/work ~/workflows -d
+
+  # private GHCR
+  docker login ghcr.io
+  ./run-docker.sh /var/worktrees /opt/workflows --tag=v1.2.0 -d
+
+  # curl install (after merge to main)
+  curl -fsSL -o run-ws.sh \
+    https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/run-docker.sh
+  chmod +x run-ws.sh
+  ./run-ws.sh /path/to/worktrees /path/to/workflows -d
+
+MCP client URL after start:  http://127.0.0.1:<host-port>/mcp
 EOF
 }
 
@@ -105,7 +123,6 @@ abs_dir() {
   local p="$1"
   [[ -n "$p" ]] || return 1
   [[ -d "$p" ]] || die "not a directory: $p"
-  # realpath if available; else cd
   if command -v realpath >/dev/null 2>&1; then
     realpath "$p"
   else
@@ -147,14 +164,34 @@ while [[ $# -gt 0 ]]; do
     --no-rm) RM=0; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --) shift; DOCKER_ARGS+=("$@"); break ;;
-    *) die "unknown option: $1 (see --help)" ;;
+    -*)
+      die "unknown option: $1 (see --help)"
+      ;;
+    *)
+      POSITIONAL+=("$1")
+      shift
+      ;;
   esac
 done
 
+# Positional: worktree workflows [schemas]
+if [[ ${#POSITIONAL[@]} -ge 1 ]]; then
+  HOST_WORKTREE_ROOT="${POSITIONAL[0]}"
+fi
+if [[ ${#POSITIONAL[@]} -ge 2 ]]; then
+  HOST_WORKFLOWS_DIR="${POSITIONAL[1]}"
+fi
+if [[ ${#POSITIONAL[@]} -ge 3 ]]; then
+  HOST_SCHEMAS_DIR="${POSITIONAL[2]}"
+fi
+if [[ ${#POSITIONAL[@]} -gt 3 ]]; then
+  die "too many positional args (expected: worktree workflows [schemas])"
+fi
+
 command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
 
-[[ -n "$HOST_WORKTREE_ROOT" ]] || die "required: --worktree-root=PATH (or HOST_WORKTREE_ROOT / WORKFLOW_WORKSPACE)"
-[[ -n "$HOST_WORKFLOWS_DIR" ]] || die "required: --workflows-dir=PATH (or HOST_WORKFLOWS_DIR / WORKFLOW_DIR)"
+[[ -n "$HOST_WORKTREE_ROOT" ]] || die "required: worktree-root path (positional or --worktree-root=)"
+[[ -n "$HOST_WORKFLOWS_DIR" ]] || die "required: workflows-dir path (positional or --workflows-dir=)"
 
 HOST_WORKTREE_ROOT="$(abs_dir "$HOST_WORKTREE_ROOT")"
 HOST_WORKFLOWS_DIR="$(abs_dir "$HOST_WORKFLOWS_DIR")"
@@ -165,7 +202,7 @@ fi
 if [[ -n "$IMAGE_REF" ]]; then
   FULL_IMAGE="$IMAGE_REF"
 else
-  FULL_IMAGE="${IMAGE}:${TAG}"
+  FULL_IMAGE="${IMAGE_REPO}:${TAG}"
 fi
 
 run() {
@@ -180,10 +217,13 @@ run() {
 
 if [[ "$PULL" -eq 1 ]]; then
   echo "Pulling ${FULL_IMAGE} ..."
-  run docker pull "$FULL_IMAGE"
+  if ! run docker pull "$FULL_IMAGE"; then
+    die "pull failed for ${FULL_IMAGE}
+  If the package is private:  docker login ghcr.io
+  If unpublished: build from a checkout or wait for CI publish."
+  fi
 fi
 
-# Replace existing container with the same name when re-running.
 if [[ "$DRY_RUN" -eq 0 ]] && docker container inspect "$NAME" >/dev/null 2>&1; then
   echo "Removing existing container '${NAME}' ..."
   docker rm -f "$NAME" >/dev/null
@@ -192,7 +232,11 @@ elif [[ "$DRY_RUN" -eq 1 ]]; then
 fi
 
 DOCKER_RUN=(docker run)
-[[ "$DETACH" -eq 1 ]] && DOCKER_RUN+=(-d) || DOCKER_RUN+=(-it)
+if [[ "$DETACH" -eq 1 ]]; then
+  DOCKER_RUN+=(-d)
+else
+  DOCKER_RUN+=(-it)
+fi
 [[ "$RM" -eq 1 ]] && DOCKER_RUN+=(--rm)
 DOCKER_RUN+=(--name "$NAME")
 DOCKER_RUN+=(-p "${HOST_PORT}:${CONTAINER_PORT}")
