@@ -56,7 +56,8 @@ curl -O https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/depl
 chmod +x deploy.sh && ./deploy.sh
 ```
 
-That creates `.engineering/` in that project (planning artifacts, history, scripts, and workflow data) so sessions can bind a workspace and write run output. Options: [`scripts/deploy.sh`](scripts/deploy.sh) `--help`.
+That creates `.engineering/` in that project (planning artifacts, history, scripts, and workflow data) so sessions can bind a workspace and write run output. 
+> Options: [`scripts/deploy.sh`](scripts/deploy.sh) `--help`.
 
 ### Execute a workflow
 
