@@ -8,23 +8,16 @@ ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 ENV_FILE="${ROOT}/.env"
 EXAMPLE="${ROOT}/.env.example"
 
-# Default worktree root: parent of the repo if it looks like a work area,
-# otherwise the repo itself. Override with --workspace=PATH.
-WORKSPACE_DEFAULT="${WORKFLOW_WORKSPACE:-}"
-if [[ -z "${WORKSPACE_DEFAULT}" ]]; then
-  parent="$(dirname "${ROOT}")"
-  if [[ "$(basename "${parent}")" == "main" ]] && [[ -d "$(dirname "${parent}")/work" ]]; then
-    WORKSPACE_DEFAULT="$(cd "$(dirname "${parent}")/work" && pwd)"
-  else
-    WORKSPACE_DEFAULT="${ROOT}"
-  fi
-fi
+# Default worktree root is shared with the agent (~/worktrees), not the server
+# checkout. Override with --workspace=PATH or WORKFLOW_WORKSPACE.
+WORKSPACE_DEFAULT="${WORKFLOW_WORKSPACE:-${HOME}/worktrees}"
 
 usage() {
   cat <<EOF
 Usage: $(basename "$0") [options]
 
-  --workspace=PATH   Worktree / workspace root (WORKFLOW_WORKSPACE / HOST_WORKTREE_ROOT)
+  --workspace=PATH   Worktree / workspace root (default: ~/worktrees)
+                     Sets WORKFLOW_WORKSPACE / HOST_WORKTREE_ROOT
   --force            Overwrite an existing .env from .env.example first
   -h, --help         Show this help
 

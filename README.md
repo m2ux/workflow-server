@@ -20,7 +20,7 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 ### How It Works
 
 1. **Discover** — The agent learns which workflows exist and how to begin
-2. **Start session** — A session is opened for a chosen workflow and the agent receives its structure and starting point
+2. **Start** — A session is started for the matched workflow
 3. **Navigate** — The agent moves through activities in order, loading each phase’s steps and guidance as needed
 4. **Execute** — Work proceeds activity by activity, pausing at checkpoints for user decisions and following transitions between phases
 
@@ -30,10 +30,10 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 User Goal → Workflow → Activities → Techniques → Tools
 ```
 
-- **Workflows** define the overall process (e.g., implement a feature from issue to merged PR)
-- **Activities** are phases within a workflow (e.g., plan, implement, review, validate)
-- **Techniques** are markdown definitions of a capability, with optional rules
-- **Tools** are the operations the agent invokes
+- **Workflows** — define the overall process (e.g., implement a feature from issue to merged PR)
+- **Activities** — are phases within a workflow (e.g., plan, implement, review, validate)
+- **Techniques** — are markdown definitions of a capability, with optional rules
+- **Tools** — are the operations the agent invokes
 
 
 ## 🚀 Quick Start

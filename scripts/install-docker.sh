@@ -43,7 +43,9 @@ LAYOUT
     ${DEFAULT_RUNNER_NAME}
     ${DEFAULT_UPDATE_NAME}
     workflows/     # git clone -b workflows
-    worktrees/     # created on first run
+
+  Worktree root defaults to ~/worktrees on first run (shared with the agent;
+  override with run --worktree-root=PATH). Not stored under \$INSTALL.
 
 AFTER INSTALL
   \$INSTALL/${DEFAULT_RUNNER_NAME} -d

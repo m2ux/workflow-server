@@ -22,6 +22,8 @@ Needs [Docker](https://docs.docker.com/get-docker/).
 ~/.local/share/workflow-server/run-workflow-server.sh -d
 ```
 
+Binds agent worktrees from `~/worktrees` by default (created if missing). Override with `--worktree-root=PATH`.
+
 > Runner options: `~/.local/share/workflow-server/run-workflow-server.sh --help`
 
 ## 3. Check Health

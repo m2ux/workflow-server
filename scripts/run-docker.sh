@@ -25,6 +25,8 @@ DEFAULT_SCHEMAS_TARGET="/app/schemas"
 DEFAULT_TRANSPORT="http"
 DEFAULT_BIND_HOST="0.0.0.0"
 DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
+# Host path shared with the agent (not under the server install dir).
+DEFAULT_HOST_WORKTREE_ROOT="${HOME}/worktrees"
 
 IMAGE_REPO="${WORKFLOW_SERVER_IMAGE:-$DEFAULT_IMAGE_REPO}"
 TAG="${WORKFLOW_SERVER_TAG:-$DEFAULT_TAG}"
@@ -68,22 +70,26 @@ USAGE
   run-docker.sh [options]
   run-docker.sh [options] <worktree-root> <workflows-dir> [schemas-dir]
 
-DEFAULT INSTALL DIR
+DEFAULT INSTALL DIR (server data only — runner + workflows clone)
   ${DEFAULT_INSTALL_DIR}
   Override: --install-dir=PATH  or  env WORKFLOW_SERVER_INSTALL_DIR
 
-  Layout:
+  Layout under install dir:
     workflows/    RO → /app/workflows   (required; clone workflows branch)
-    worktrees/    RW → /worktrees       (created if missing)
     schemas/      RO → /app/schemas     (optional; else image schemas)
+
+DEFAULT WORKTREE ROOT (shared with the agent — not under install dir)
+  ${DEFAULT_HOST_WORKTREE_ROOT}
+  Override: --worktree-root=PATH  or  env HOST_WORKTREE_ROOT / WORKFLOW_WORKSPACE
+  Created if missing. Mounted RW → /worktrees inside the container.
 
   After setup, no path args are required:
     run-docker.sh -d
 
 OPTIONS
-  --install-dir=PATH     Install root (default above). Fills worktrees/ and
-                         workflows/ unless overridden by other path flags.
-  --worktree-root=PATH   Host worktree root (RW)
+  --install-dir=PATH     Install root (default above). Fills workflows/
+                         (and schemas/ if present) unless overridden.
+  --worktree-root=PATH   Host worktree root (RW; default: ~/worktrees)
   --workflows-dir=PATH   Host workflows directory (RO)
   --schemas-dir=PATH     Host schemas directory (RO); optional
   --image=REF            Full image (default: ${DEFAULT_IMAGE_REPO}:${DEFAULT_TAG})
@@ -111,7 +117,7 @@ EXAMPLES
 
   # Custom binds:
   ./run-docker.sh --install-dir=/opt/workflow-server -d
-  ./run-docker.sh --worktree-root=~/projects/work --workflows-dir=~/wf -d
+  ./run-docker.sh --worktree-root=~/worktrees --workflows-dir=~/wf -d
 
 MCP URL: http://127.0.0.1:<host-port>/mcp
 EOF
@@ -209,18 +215,19 @@ fi
 INSTALL_DIR="$(abs_path "${INSTALL_DIR:-$DEFAULT_INSTALL_DIR}")"
 
 # Path resolution:
-#   1. CLI flag / positional (*_SET=1)
-#   2. Explicit --install-dir → $INSTALL/{worktrees,workflows}
-#   3. Env HOST_* / WORKFLOW_* (only when install-dir not explicit)
-#   4. Default install layout
+#   worktree (agent-shared, never under install dir by default):
+#     1. CLI flag / positional
+#     2. Env HOST_WORKTREE_ROOT / WORKFLOW_WORKSPACE
+#     3. ~/worktrees
+#   workflows / schemas (server data):
+#     1. CLI flag / positional
+#     2. Explicit --install-dir → $INSTALL/{workflows,schemas}
+#     3. Env HOST_* / WORKFLOW_* / SCHEMAS_DIR (when install-dir not explicit)
+#     4. Default install layout
 if [[ "$WORKTREE_SET" -eq 0 ]]; then
-  if [[ "$INSTALL_DIR_SET" -eq 1 ]]; then
-    HOST_WORKTREE_ROOT="${INSTALL_DIR}/worktrees"
-  else
-    HOST_WORKTREE_ROOT="$(printenv HOST_WORKTREE_ROOT 2>/dev/null || true)"
-    [[ -z "$HOST_WORKTREE_ROOT" ]] && HOST_WORKTREE_ROOT="$(printenv WORKFLOW_WORKSPACE 2>/dev/null || true)"
-    [[ -z "$HOST_WORKTREE_ROOT" ]] && HOST_WORKTREE_ROOT="${INSTALL_DIR}/worktrees"
-  fi
+  HOST_WORKTREE_ROOT="$(printenv HOST_WORKTREE_ROOT 2>/dev/null || true)"
+  [[ -z "$HOST_WORKTREE_ROOT" ]] && HOST_WORKTREE_ROOT="$(printenv WORKFLOW_WORKSPACE 2>/dev/null || true)"
+  [[ -z "$HOST_WORKTREE_ROOT" ]] && HOST_WORKTREE_ROOT="$DEFAULT_HOST_WORKTREE_ROOT"
 fi
 
 if [[ "$WORKFLOWS_SET" -eq 0 ]]; then

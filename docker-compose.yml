@@ -32,8 +32,8 @@ services:
         source: ${HOST_SCHEMAS_DIR:-./schemas}
         target: ${CONTAINER_SCHEMAS_DIR:-/app/schemas}
         read_only: true
-      # Worktree root: agent creates worktrees here on the host
+      # Worktree root: shared with the agent (default ~/worktrees, not under install dir)
       - type: bind
-        source: ${HOST_WORKTREE_ROOT:-/var/worktrees}
+        source: ${HOST_WORKTREE_ROOT:-${HOME}/worktrees}
         target: ${CONTAINER_WORKTREE_ROOT:-/worktrees}
         read_only: false
