@@ -20,11 +20,15 @@ Needs [Docker](https://docs.docker.com/get-docker/).
 ~/.local/share/workflow-server/run-workflow-server.sh -d
 ```
 
-Check: `curl -fsS http://127.0.0.1:3000/health`
-
 Runner options: `~/.local/share/workflow-server/run-workflow-server.sh --help`
 
-## 3. Update workflows
+## 3. Check
+
+```bash
+curl -fsS http://127.0.0.1:3000/health
+```
+
+## 4. Update workflows
 
 Pull the latest `workflows` branch into the install checkout:
 
@@ -34,7 +38,7 @@ Pull the latest `workflows` branch into the install checkout:
 
 Restart the server afterward if it is already running. Use `--force` only to discard local edits in that checkout.
 
-## 4. Connect the MCP client
+## 5. Connect the MCP client
 
 Export the endpoint (Cursor reads `${env:…}` from the process environment):
 
@@ -61,7 +65,7 @@ Claude Desktop: same `npx mcp-remote` entry in
 
 Restart the IDE, then ask it to list available workflows.
 
-## 5. IDE bootstrap rule
+## 6. IDE bootstrap rule
 
 Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
 
