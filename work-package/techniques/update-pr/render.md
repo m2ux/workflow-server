@@ -15,7 +15,7 @@ Which PR body template to render — `initial` or `final`.
 
 ### is_review_mode
 
-True when the body is the consolidated review-mode comment rather than an implementation update; selects the [Consolidated Review Format](../../resources/review-mode.md#consolidated-review-format).
+True when the body is the consolidated review-mode comment rather than an implementation update; selects the [Review Comment Template](../../resources/review-mode.md#review-comment-template).
 
 ### planning_folder_path
 
@@ -43,7 +43,7 @@ The rendered PR description body now live on the `{pr_number}` PR — composed f
 ## Protocol
 
 1. Select the template:
-   - If `{is_review_mode}` is true → [Consolidated Review Format](../../resources/review-mode.md#consolidated-review-format)
+   - If `{is_review_mode}` is true → [Review Comment Template](../../resources/review-mode.md#review-comment-template)
    - Else if `{pr_template_variant}` is `initial` → [Template (Initial)](../../resources/pr-description.md#template-initial)
    - Else if `{pr_template_variant}` is `final` → [Template (Final)](../../resources/pr-description.md#template-final); apply [lifecycle tense](../../resources/pr-description.md#lifecycle-tense) so lingering Initial “coming next” / future-tense checklist wording is replaced
 2. Compose the body using the implementation summary drawn from `{planning_folder_path}`, including the test coverage summary and key decisions and trade-offs.

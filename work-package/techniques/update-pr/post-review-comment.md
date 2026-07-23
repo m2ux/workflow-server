@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.0.2
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Confirmed consolidated review summary posted verbatim to the PR as a `gh pr revi
 
 ### review_summary
 
-The rendered consolidated review summary text, authored to the [Consolidated Review Format](../../resources/review-mode.md#consolidated-review-format).
+The rendered consolidated review summary text, authored to the [Review Comment Template](../../resources/review-mode.md#review-comment-template).
 
 ### pr_number
 
