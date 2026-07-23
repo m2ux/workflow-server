@@ -25,8 +25,12 @@ DEFAULT_UPDATE_NAME="update-workflows.sh"
 DEFAULT_ENV_NAME="env"
 DEFAULT_CONTAINER_NAME="workflow-server"
 DEFAULT_HOST_PORT="3000"
-# Legacy install name from earlier releases — removed on upgrade when present.
-LEGACY_RUNNER_NAME="run-workflow-server.sh"
+# Legacy names from earlier releases — removed on upgrade when present.
+LEGACY_NAMES=(
+  "run-workflow-server.sh"
+  "run-docker.sh"
+  "stop-docker.sh"
+)
 
 INSTALL_DIR="${WORKFLOW_SERVER_INSTALL_DIR:-$DEFAULT_INSTALL_DIR}"
 HOST_WORKTREE_ROOT="${HOST_WORKTREE_ROOT:-${WORKFLOW_WORKSPACE:-$DEFAULT_HOST_WORKTREE_ROOT}}"
@@ -56,8 +60,8 @@ OPTIONS
 
 LAYOUT
   \$INSTALL/
-    ${DEFAULT_START_NAME}           # from scripts/run-docker.sh
-    ${DEFAULT_STOP_NAME}            # from scripts/stop-docker.sh
+    ${DEFAULT_START_NAME}
+    ${DEFAULT_STOP_NAME}
     ${DEFAULT_UPDATE_NAME}
     ${DEFAULT_ENV_NAME}             # persistent paths / ports for start + stop
     workflows/             # git clone -b workflows
@@ -169,10 +173,9 @@ START_PATH="${INSTALL_DIR}/${DEFAULT_START_NAME}"
 STOP_PATH="${INSTALL_DIR}/${DEFAULT_STOP_NAME}"
 UPDATE_PATH="${INSTALL_DIR}/${DEFAULT_UPDATE_NAME}"
 ENV_PATH="${INSTALL_DIR}/${DEFAULT_ENV_NAME}"
-LEGACY_PATH="${INSTALL_DIR}/${LEGACY_RUNNER_NAME}"
 WORKFLOWS_DIR="${INSTALL_DIR}/workflows"
-START_URL="${RAW_BASE}/${REF}/scripts/run-docker.sh"
-STOP_URL="${RAW_BASE}/${REF}/scripts/stop-docker.sh"
+START_URL="${RAW_BASE}/${REF}/scripts/start.sh"
+STOP_URL="${RAW_BASE}/${REF}/scripts/stop.sh"
 UPDATE_URL="${RAW_BASE}/${REF}/scripts/update-workflows.sh"
 
 echo "Install dir: ${INSTALL_DIR}"
@@ -189,10 +192,13 @@ fetch_script "$START_PATH" "$START_URL" "start"
 fetch_script "$STOP_PATH" "$STOP_URL" "stop"
 fetch_script "$UPDATE_PATH" "$UPDATE_URL" "update-workflows"
 
-if [[ -e "$LEGACY_PATH" ]]; then
-  echo "Removing legacy runner → ${LEGACY_PATH}"
-  rm -f "$LEGACY_PATH"
-fi
+for legacy in "${LEGACY_NAMES[@]}"; do
+  legacy_path="${INSTALL_DIR}/${legacy}"
+  if [[ -e "$legacy_path" ]]; then
+    echo "Removing legacy script → ${legacy_path}"
+    rm -f "$legacy_path"
+  fi
+done
 
 if [[ -d "${WORKFLOWS_DIR}/.git" ]]; then
   echo "Workflows already present: ${WORKFLOWS_DIR}"

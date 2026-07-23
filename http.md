@@ -28,9 +28,9 @@ After install you have:
 
 ```text
 ~/.local/share/workflow-server/
-  start.sh                  # from scripts/run-docker.sh
-  stop.sh                   # from scripts/stop-docker.sh
-  update-workflows.sh       # from scripts/update-workflows.sh
+  start.sh                  # scripts/start.sh
+  stop.sh                   # scripts/stop.sh
+  update-workflows.sh       # scripts/update-workflows.sh
   env                       # paths / port / container name for start + stop
   workflows/                # git clone -b workflows
 
@@ -53,7 +53,7 @@ Defaults when `env` is missing:
 - Publish: `http://127.0.0.1:3000`
 
 > Full options: `~/.local/share/workflow-server/start.sh --help`  
-> Script: [`scripts/run-docker.sh`](scripts/run-docker.sh)
+> Script: [`scripts/start.sh`](scripts/start.sh)
 
 ## 3. Stop the server
 
@@ -61,7 +61,7 @@ Defaults when `env` is missing:
 ~/.local/share/workflow-server/stop.sh
 ```
 
-> Script: [`scripts/stop-docker.sh`](scripts/stop-docker.sh)
+> Script: [`scripts/stop.sh`](scripts/stop.sh)
 
 ## 4. Check health
 
@@ -116,8 +116,8 @@ Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent 
 | Topic | Where |
 |-------|--------|
 | Install script | [`scripts/install-docker.sh`](scripts/install-docker.sh) |
-| Start (GHCR) | [`scripts/run-docker.sh`](scripts/run-docker.sh) → `start.sh` |
-| Stop | [`scripts/stop-docker.sh`](scripts/stop-docker.sh) → `stop.sh` |
+| Start | [`scripts/start.sh`](scripts/start.sh) |
+| Stop | [`scripts/stop.sh`](scripts/stop.sh) |
 | Update workflows | [`scripts/update-workflows.sh`](scripts/update-workflows.sh) |
 | Compose / binds | [`docker-compose.yml`](docker-compose.yml) (host worktree default: `~/worktrees`) |
 | Local `.env` helper | [`scripts/init-local-env.sh`](scripts/init-local-env.sh), [`.env.example`](.env.example) |
