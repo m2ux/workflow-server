@@ -14,7 +14,7 @@ Options: `bash <(curl -fsSL …/install-docker.sh) --help` (`--install-dir`, …
 
 ## 2. Run the server
 
-Needs Docker.
+Needs [Docker](https://docs.docker.com/get-docker/).
 
 ```bash
 ~/.local/share/workflow-server/run-workflow-server.sh -d
