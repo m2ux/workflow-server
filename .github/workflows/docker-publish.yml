@@ -26,9 +26,11 @@ jobs:
 
     steps:
       - name: Checkout repository
+        # No submodules: .engineering nests a private ai-metadata repo that CI
+        # cannot clone, and the Docker image only needs src/schemas/package files.
         uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          submodules: recursive
+          submodules: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
