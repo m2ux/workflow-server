@@ -75,15 +75,23 @@ curl -fsSL -o run-workflow-server.sh \
   https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/run-docker.sh
 chmod +x run-workflow-server.sh
 
+# workflows data only (orphan branch — not the full server checkout)
+git clone -b workflows --single-branch \
+  https://github.com/m2ux/workflow-server.git \
+  ./workflows
+
+# worktree root for agent-created trees (create if missing)
+mkdir -p ./worktrees
+
 # required: worktree root + workflows dir (bare paths)
-./run-workflow-server.sh /path/to/worktrees /path/to/workflows -d
+./run-workflow-server.sh ./worktrees ./workflows -d
 
 # optional third path = host schemas (else image schemas)
-# ./run-workflow-server.sh /worktrees /workflows /schemas -d
+# ./run-workflow-server.sh ./worktrees ./workflows ./schemas -d
 # optional: --tag=main --host-port=3000 --image=ghcr.io/m2ux/workflow-server:main
 ```
 
-Needs Docker and pull access to `ghcr.io/m2ux/workflow-server` (`docker login ghcr.io` if private). You still need a **workflows** tree on disk (orphan-branch clone or copy); you do not need the TypeScript server checkout. MCP: `WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp`.
+Needs Docker and pull access to `ghcr.io/m2ux/workflow-server` (`docker login ghcr.io` if private). You need the **workflows** orphan branch on disk (command above); you do not need the TypeScript server checkout. MCP: `WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp`.
 
 ### Claude Desktop
 
