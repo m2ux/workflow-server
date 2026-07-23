@@ -30,12 +30,12 @@
       ]
     },
     "workflow-server": {
-      "command": "node",
+      "command": "npx",
       "args": [
-        "${workspaceFolder}/dist/index.js",
-        "--transport=stdio"
-      ],
-      "envFile": "${workspaceFolder}/.env"
+        "-y",
+        "mcp-remote",
+        "${env:WORKFLOW_SERVER_MCP_URL}"
+      ]
     },
     "gitnexus": {
       "command": "/usr/local/bin/gitnexus",

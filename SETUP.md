@@ -27,76 +27,51 @@ npm run build
 
 ## MCP Client Configuration
 
-Paths are **not** hardcoded in the repo MCP configs. Project files [`.cursor/mcp.json`](.cursor/mcp.json) and [`.mcp.json`](.mcp.json) start the server via stdio and load a local `.env` (`envFile`). Create that file once per machine:
+Project MCP configs keep the **HTTP + mcp-remote** client shape. Paths and the endpoint URL come from environment variables (`${env:NAME}`), not hardcoded machine paths.
+
+[`.cursor/mcp.json`](.cursor/mcp.json) / [`.mcp.json`](.mcp.json):
+
+```json
+{
+  "mcpServers": {
+    "workflow-server": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "${env:WORKFLOW_SERVER_MCP_URL}"]
+    }
+  }
+}
+```
+
+### One-time local init
 
 ```bash
 # From the workflow-server checkout
-cp .env.example .env          # optional; init script seeds if missing
-./scripts/init-local-env.sh  # fills absolute paths for this checkout
+./scripts/init-local-env.sh
 # optional: ./scripts/init-local-env.sh --workspace=/path/to/worktree-root
-npm run build
-```
 
-Then restart the MCP client so it reloads `envFile`.
+# Cursor expands ${env:NAME} from the IDE process environment — export before launch:
+set -a && source .env && set +a
+# then start Cursor from that shell, or put the same exports in your profile / desktop env
+```
 
 | Variable | Required | Role |
 |----------|----------|------|
-| `WORKFLOW_WORKSPACE` | yes* | Worktree / workspace root (`WORKTREE_ROOT` is an accepted alias) |
-| `WORKFLOW_DIR` | no | Workflows directory (default `./workflows` under the install root) |
-| `SCHEMAS_DIR` | no | Schemas directory (default `./schemas`) |
+| `WORKFLOW_SERVER_MCP_URL` | yes (for MCP client) | HTTP MCP endpoint, default `http://127.0.0.1:3000/mcp` |
+| `WORKFLOW_WORKSPACE` | yes* (for the **server** process) | Worktree / workspace root (`WORKTREE_ROOT` alias ok) |
+| `WORKFLOW_DIR` / `SCHEMAS_DIR` | no | Host paths for workflows/schemas when starting the server |
 | `CONCEPT_RAG_ENTRY` / `CONCEPT_RAG_INDEX` | only if using concept-rag in `.mcp.json` | Paths passed as concept-rag `args` |
 
-\* One of `WORKFLOW_WORKSPACE`, `WORKTREE_ROOT`, or CLI `--workspace` is required.
+\* Required by the workflow-server process (compose or `npm run start:http`), not by `mcp-remote` itself.
 
-### Cursor
-
-Prefer the project config (checked in):
-
-- [`.cursor/mcp.json`](.cursor/mcp.json) — uses `${workspaceFolder}/dist/index.js` and `envFile: ${workspaceFolder}/.env`
-
-Global override (optional) at `~/.cursor/mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "workflow-server": {
-      "command": "node",
-      "args": ["${env:WORKFLOW_SERVER_ENTRY}"],
-      "env": {
-        "WORKFLOW_WORKSPACE": "${env:WORKFLOW_WORKSPACE}",
-        "WORKFLOW_DIR": "${env:WORKFLOW_DIR}"
-      }
-    }
-  }
-}
-```
-
-Set those shell env vars in your profile (or export them before launching Cursor from a terminal). Cursor expands `${env:NAME}` and supports `envFile` for stdio servers.
-
-IDE MCP clients use the default **stdio** transport. For HTTP (e.g. `mcp-remote` → `http://127.0.0.1:3000/mcp`), start the server separately with the same `.env` / compose layout; see [HTTP transport](#http-transport) below.
+Start the HTTP server (compose or local) before the IDE connects — see [HTTP transport](#http-transport) and the compose env table below.
 
 ### Claude Desktop
 
-**macOS**: Edit `~/Library/Application Support/Claude/claude_desktop_config.json`
+**macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
 
-**Windows**: Edit `%APPDATA%\Claude\claude_desktop_config.json`
+**Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
 
-Claude Desktop does not always support `envFile` / `${workspaceFolder}`. Point at the built entry and pass the same values from your shell environment (or hardcode absolute paths only in the local desktop config, not in the repo):
-
-```json
-{
-  "mcpServers": {
-    "workflow-server": {
-      "command": "node",
-      "args": ["/path/to/workflow-server/dist/index.js"],
-      "env": {
-        "WORKFLOW_WORKSPACE": "/path/to/worktree-root",
-        "WORKFLOW_DIR": "/path/to/workflow-server/workflows"
-      }
-    }
-  }
-}
-```
+Same `npx mcp-remote` args with `${env:WORKFLOW_SERVER_MCP_URL}` if the client expands env vars; otherwise paste the absolute URL from your `.env`.
 
 ## IDE Rules Setup
 

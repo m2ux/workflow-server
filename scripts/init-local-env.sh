@@ -28,7 +28,7 @@ Usage: $(basename "$0") [options]
   --force            Overwrite an existing .env from .env.example first
   -h, --help         Show this help
 
-Writes ${ENV_FILE} with absolute paths for MCP stdio and docker compose.
+Writes ${ENV_FILE} with absolute paths for the HTTP server, mcp-remote URL, and docker compose.
 EOF
 }
 
@@ -77,6 +77,7 @@ WORKFLOWS_ABS="${ROOT}/workflows"
 SCHEMAS_ABS="${ROOT}/schemas"
 WORKSPACE_ABS="$(cd "${WORKSPACE_DEFAULT}" && pwd)"
 
+upsert WORKFLOW_SERVER_MCP_URL "http://127.0.0.1:3000/mcp"
 upsert WORKFLOW_WORKSPACE "${WORKSPACE_ABS}"
 upsert WORKFLOW_DIR "${WORKFLOWS_ABS}"
 upsert SCHEMAS_DIR "${SCHEMAS_ABS}"
@@ -100,13 +101,14 @@ if [[ -z "${CONCEPT_RAG_INDEX:-}" && -d "${HOME}/.concept_rag" ]]; then
 fi
 
 echo "Wrote local env → ${ENV_FILE}"
+echo "  WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp"
 echo "  WORKFLOW_WORKSPACE=${WORKSPACE_ABS}"
 echo "  WORKFLOW_DIR=${WORKFLOWS_ABS}"
 echo "  SCHEMAS_DIR=${SCHEMAS_ABS}"
 echo "  HOST_WORKTREE_ROOT=${WORKSPACE_ABS}"
 echo
 echo "Next:"
-echo "  1. npm run build"
-echo "  2. Restart Cursor / Claude so MCP reloads envFile"
-echo "  3. (optional) docker compose up --build"
+echo "  1. set -a && source .env && set +a   # export into shell / Cursor launch env"
+echo "  2. Start HTTP server: docker compose up --build   # or npm run start:http"
+echo "  3. Restart Cursor so \${env:WORKFLOW_SERVER_MCP_URL} resolves"
 echo "  4. Ask the agent to list available workflows"
