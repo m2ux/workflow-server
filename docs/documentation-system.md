@@ -17,7 +17,7 @@ Two site sections have no markdown counterpart because their canonical source is
 | Source | Purpose | Audience |
 |--------|---------|----------|
 | [`README.md`](../README.md) | Project overview, quick start, the workflow model at a glance | Everyone — first contact |
-| [`SETUP.md`](../SETUP.md) | Full installation, MCP client configuration, deploying the engineering-branch pattern to projects | Integrators |
+| [`http.md`](../http.md) / [`stdio.md`](../stdio.md) | Installation and MCP client configuration (Docker/HTTP vs local stdio) | Integrators |
 | [`docs/ide-setup.md`](ide-setup.md) | The always-applied bootstrap rule and connection verification | Integrators configuring an agent |
 | [`docs/api-reference.md`](api-reference.md) | Catalog of MCP tools and HTTP routes (brief; links out for depth) | Integrators |
 | [`docs/architecture.md`](architecture.md) | Hub for the six architecture models | Contributors |
@@ -36,7 +36,7 @@ Workflow definitions themselves (the `workflows` branch, checked out as a worktr
 
 ## Where new documentation belongs
 
-- **A user-facing how-to** (installing, configuring, running) → the relevant root guide (`README.md` for first contact, `SETUP.md` for installation detail, `docs/ide-setup.md` for agent wiring), plus a page under `site/guide/` if it warrants the illustrated treatment.
+- **A user-facing how-to** (installing, configuring, running) → the relevant root guide (`README.md` for first contact, `http.md` / `stdio.md` for installation detail, `docs/ide-setup.md` for agent wiring), plus a page under `site/guide/` if it warrants the illustrated treatment.
 - **A new architecture model or a change to one** → a `docs/*_model.md` document, linked from the [`docs/architecture.md`](architecture.md) hub, with a matching page under `site/specs/`.
 - **Tool or schema surface changes** → the code and Zod schemas are the source; regenerate `schemas/` (`npm run build:schemas`) and the site's API pages (`npm run build:site`). Keep [`docs/api-reference.md`](api-reference.md) as a short index (update one-line descriptions and links); put behavioral depth in the relevant architecture model.
 - **Workflow-authoring contracts** → the normative specifications ([`technique-protocol-specification.md`](technique-protocol-specification.md), [`orchestra-specification.md`](orchestra-specification.md)) and [`schemas/README.md`](../schemas/README.md).

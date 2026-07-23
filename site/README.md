@@ -2,7 +2,7 @@
 
 Hand-authored static HTML documentation for the workflow-server: semantic HTML pages, one shared stylesheet ([style.css](style.css)), and inline SVG diagrams. No client-side JavaScript.
 
-The markdown files in the repository (`README.md`, `SETUP.md`, `docs/`, `schemas/README.md`) are the **canonical documentation source** for editing. The HTML site is the **browsable view** for reading: shorter prose, diagrams, and direct links to every page.
+The markdown files in the repository (`README.md`, `http.md`, `stdio.md`, `docs/`, `schemas/README.md`) are the **canonical documentation source** for editing. The HTML site is the **browsable view** for reading: shorter prose, diagrams, and direct links to every page.
 
 ## Navigation
 

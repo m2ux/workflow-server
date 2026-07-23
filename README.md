@@ -19,10 +19,10 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 
 ### How It Works
 
-1. **Discover** — The agent calls `discover` to learn available workflows and the bootstrap procedure
-2. **Start session** — `start_session` returns a session token; `get_workflow` returns the workflow structure, the workflow's `techniques.workflow` bundled under `techniques` and `rules`, and the `initialActivity` ID
-3. **Navigate** — `next_activity` advances the session to the next activity; `get_activity` returns the activity's full definition (steps, checkpoints, transitions) along with the activity's bundled techniques — the workflow's inherited `techniques.activity` plus the activity's own `techniques[]` — under `techniques` and `rules`. `get_resource` lazy-loads reference material referenced by a technique
-4. **Execute** — The agent works through activities, with checkpoints for user decisions and transitions governing the flow between activities
+1. **Discover** — The agent learns which workflows exist and how to begin
+2. **Start** — A session is started for the matched workflow
+3. **Navigate** — The agent moves through activities in order, loading each phase’s steps and guidance as needed
+4. **Execute** — Work proceeds activity by activity, pausing at checkpoints for user decisions and following transitions between phases
 
 ### Architecture
 
@@ -30,143 +30,51 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 User Goal → Workflow → Activities → Techniques → Tools
 ```
 
-- **Workflows** define the overall process (e.g., implement a feature from issue to merged PR)
-- **Activities** are phases within a workflow (e.g., plan, implement, review, validate)
-- **Techniques** are markdown definitions of a capability, with optional rules
-- **Tools** are the operations the agent invokes
+- **Workflows** — define the overall process (e.g., implement a feature from issue to merged PR)
+- **Activities** — are phases within a workflow (e.g., plan, implement, review, validate)
+- **Techniques** — are markdown definitions of a capability, with optional rules
+- **Tools** — are the operations the agent invokes
 
-### MCP Tools at a Glance
-
-The server registers 17 MCP tools across five concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
-
-| Concern | Tools |
-|---------|-------|
-| Bootstrap (no session token) | `discover`, `list_workflows`, `health_check` |
-| Session | `start_session`, `get_workflow_status`, `inspect_session`, `dispatch_child` |
-| Workflow / activity navigation | `get_workflow`, `next_activity`, `get_activity` |
-| Checkpoint flow | `yield_checkpoint`, `resume_checkpoint`, `present_checkpoint`, `respond_checkpoint` |
-| Techniques, resources | `get_technique`, `get_resource` |
-| Trace | `get_trace` |
-
----
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### Initialise Workflow Server
 
-- Node.js 18+
-- MCP Client (Cursor or Claude Desktop)
+Pick a setup path:
 
-### Installation
+| Path | Guide |
+|------|--------|
+| **Docker / HTTP** (GHCR image, no server checkout) | [http.md](http.md) |
+| **stdio** (local checkout; IDE spawns the process) | [stdio.md](stdio.md) |
 
-```bash
-# Clone and build
-git clone https://github.com/m2ux/workflow-server.git
-cd workflow-server
-npm install
+### Initialise target project
 
-# Set up workflow data (worktree for orphan branch)
-git worktree add ./workflows workflows
-
-# Build the server
-npm run build
-```
-
-### Configure MCP Client
-
-Full IDE setup: [SETUP.md](SETUP.md).
-
-```json
-{
-  "mcpServers": {
-    "workflow-server": {
-      "command": "node",
-      "args": [
-        "/path/to/workflow-server/dist/index.js",
-        "--workspace=/path/to/worktree-root",
-        "--workflow-dir=/path/to/workflows"
-      ]
-    }
-  }
-}
-```
-
-Startup args (one line each):
-
-- `--workspace=PATH` — required worktree root (env: `WORKFLOW_WORKSPACE` or `WORKTREE_ROOT`)
-- `--workflow-dir=PATH` — workflows directory (env: `WORKFLOW_DIR`; default `./workflows`)
-- `--transport=stdio|http` — transport (env: `TRANSPORT`; default `stdio`)
-- `--port=N` / `--host=HOST` — HTTP only (env: `PORT` / `HOST`)
-
-The default transport is **stdio** (what IDE MCP clients use). To run over HTTP instead:
-
-```bash
-npm run start:http
-# or: node dist/index.js --workspace=/path/to/worktree-root --workflow-dir=/path/to/workflows --transport=http --port=3000
-```
-
-| Endpoint | Purpose |
-|----------|---------|
-| `GET /health` | Liveness |
-| `GET /ready` | Readiness (workflow/schemas/workspace paths) |
-| `POST /mcp` | MCP Streamable HTTP |
-
-HTTP is opt-in. Place it behind network access control or a reverse proxy; the server does not implement application-level authentication. See [SETUP.md](SETUP.md#http-transport) and [docs/development.md](docs/development.md) for `TRANSPORT` / `PORT` / `HOST`.
-
-### Deploy to Your Project
-
-To set up the engineering branch pattern in your own project:
+From the **root of the project repo** you want the workflow server to operate on (not this server repo), run:
 
 ```bash
 curl -O https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/deploy.sh
 chmod +x deploy.sh && ./deploy.sh
 ```
 
-This creates a `.engineering/` folder with workflows and artifact directories. See [SETUP.md](SETUP.md#deploying-to-projects) for options and details.
+That creates `.engineering/` in that project (planning artifacts, history, scripts, and workflow data) so sessions can bind a workspace and write run output. 
+> Options: [`scripts/deploy.sh`](scripts/deploy.sh) `--help`.
 
-### Setup IDE Rule
+### Execute a workflow
 
-Add the bootstrap rule from [`docs/ide-setup.md`](docs/ide-setup.md) to your IDE's 'always-applied' rule set. The rule tells the agent to call `discover` on every workflow request so the bootstrap procedure stays in sync with the server.
+With the server connected and target project initialised, tell the agent in your chat session what you want to do, for example:
 
-### Execute a Workflow
-
-Tell the agent what you want to do using natural language:
-
-**Start a workflow:**
 ```
-Start a new work-package workflow for implementing user authentication
+Start a new work-package workflow for Issue #1000
 ```
 ```
-Begin a work-package workflow for issue #42
+Resume the work-package workflow for PR #1000
 ```
 
-**Resume a workflow:**
-```
-Resume the work-package workflow we were working on
-```
-```
-Continue the authentication work package from where we left off
-```
+The agent matches the request to the appropriate activity and guides you through the structured phases.
 
-**End a workflow:**
-```
-End the current work-package workflow
-```
-```
-Complete the work package and clean up
-```
+### MCP Tools
 
-The agent matches your request to the appropriate activity and guides you through the structured phases.
-
-## Engineering layout
-
-The `.engineering/` directory holds engineering artifacts and workflow-related assets.
-
-### Directory structure
-
-- `artifacts/planning/` — Work package plans and specifications
-- `history/` — Project history and change logs
-- `scripts/` — Utility scripts
+The server registers 17 MCP tools across five concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
 
 ## 📜 License
 

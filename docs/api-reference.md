@@ -12,7 +12,7 @@ When the server starts with `--transport=http` (or `TRANSPORT=http` / `npm run s
 | `GET /ready` | Readiness — workflow, schemas, and workspace directories resolve |
 | `POST /mcp` | MCP Streamable HTTP |
 
-Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. See [SETUP.md](../SETUP.md#http-transport) and [development.md](development.md).
+Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. See [http.md](../http.md) (Docker/HTTP), [stdio.md](../stdio.md), and [development.md](development.md).
 
 ## MCP Tools
 
