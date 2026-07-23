@@ -65,20 +65,25 @@ set -a && source .env && set +a
 
 Start the HTTP server (compose, [`scripts/run-docker.sh`](scripts/run-docker.sh), or local) before the IDE connects — see [HTTP transport](#http-transport) and the compose env table below.
 
-### Run from GHCR (no server checkout build)
+### Run from GHCR (no server checkout)
 
-Pull and run the published image with required host binds:
+[`scripts/run-docker.sh`](scripts/run-docker.sh) is a **standalone** runner: one bash file, no repo clone. Fetch it, pass host paths, everything else defaults.
 
 ```bash
-./scripts/run-docker.sh \
-  --worktree-root=/path/to/worktree-root \
-  --workflows-dir=/path/to/workflows \
-  --detach
-# optional: --schemas-dir=...  --tag=main  --host-port=3000  --image=ghcr.io/m2ux/workflow-server:main
-# optional: --env KEY=VAL  --env-file=.env  --no-pull  --dry-run
+# install the script only
+curl -fsSL -o run-workflow-server.sh \
+  https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/run-docker.sh
+chmod +x run-workflow-server.sh
+
+# required: worktree root + workflows dir (bare paths)
+./run-workflow-server.sh /path/to/worktrees /path/to/workflows -d
+
+# optional third path = host schemas (else image schemas)
+# ./run-workflow-server.sh /worktrees /workflows /schemas -d
+# optional: --tag=main --host-port=3000 --image=ghcr.io/m2ux/workflow-server:main
 ```
 
-Requires Docker and pull access to `ghcr.io/m2ux/workflow-server` (private packages need `docker login ghcr.io`). Defaults match compose container paths (`/worktrees`, `/app/workflows`, `/app/schemas`). MCP clients should set `WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:<host-port>/mcp`.
+Needs Docker and pull access to `ghcr.io/m2ux/workflow-server` (`docker login ghcr.io` if private). You still need a **workflows** tree on disk (orphan-branch clone or copy); you do not need the TypeScript server checkout. MCP: `WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp`.
 
 ### Claude Desktop
 
