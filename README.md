@@ -35,22 +35,10 @@ User Goal → Workflow → Activities → Techniques → Tools
 - **Techniques** are markdown definitions of a capability, with optional rules
 - **Tools** are the operations the agent invokes
 
-### MCP Tools at a Glance
-
-The server registers 17 MCP tools across five concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
-
-| Concern | Tools |
-|---------|-------|
-| Bootstrap (no session token) | `discover`, `list_workflows`, `health_check` |
-| Session | `start_session`, `get_workflow_status`, `inspect_session`, `dispatch_child` |
-| Workflow / activity navigation | `get_workflow`, `next_activity`, `get_activity` |
-| Checkpoint flow | `yield_checkpoint`, `resume_checkpoint`, `present_checkpoint`, `respond_checkpoint` |
-| Techniques, resources | `get_technique`, `get_resource` |
-| Trace | `get_trace` |
-
----
 
 ## 🚀 Quick Start
+
+### Initialise Workflow Server
 
 Pick a setup path:
 
@@ -59,7 +47,7 @@ Pick a setup path:
 | **Docker / HTTP** (GHCR image, no server checkout) | [http.md](http.md) |
 | **stdio** (local checkout; IDE spawns the process) | [stdio.md](stdio.md) |
 
-### Initialise a target project
+### Initialise target project
 
 From the **root of the project repo** you want the workflow server to operate on (not this server repo), run:
 
@@ -72,19 +60,20 @@ That creates `.engineering/` in that project (planning artifacts, history, scrip
 
 ### Execute a workflow
 
-With the server connected and a target project initialised, tell the agent what you want in natural language, for example:
+With the server connected and target project initialised, tell the agent in your chat session what you want to do, for example:
 
 ```
-Start a new work-package workflow for implementing user authentication
+Start a new work-package workflow for Issue #1000
 ```
 ```
-Resume the work-package workflow we were working on
-```
-```
-End the current work-package workflow
+Resume the work-package workflow for PR #1000
 ```
 
 The agent matches the request to the appropriate activity and guides you through the structured phases.
+
+### MCP Tools
+
+The server registers 17 MCP tools across five concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
 
 ## 📜 License
 
