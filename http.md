@@ -63,7 +63,7 @@ Examples:
 
 ```bash
 # Custom agent worktree root
-~/.local/share/workflow-server/run-workflow-server.sh --worktree-root=/path/to/worktrees -d
+~/.local/share/workflow-server/run-workflow-server.sh --worktree-root=~/projects/work -d
 
 # Custom install dir (workflows still under that dir unless overridden)
 ~/.local/share/workflow-server/run-workflow-server.sh --install-dir=/opt/workflow-server -d
