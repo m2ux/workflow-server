@@ -63,7 +63,22 @@ set -a && source .env && set +a
 
 \* Required by the workflow-server process (compose or `npm run start:http`), not by `mcp-remote` itself.
 
-Start the HTTP server (compose or local) before the IDE connects — see [HTTP transport](#http-transport) and the compose env table below.
+Start the HTTP server (compose, [`scripts/run-docker.sh`](scripts/run-docker.sh), or local) before the IDE connects — see [HTTP transport](#http-transport) and the compose env table below.
+
+### Run from GHCR (no server checkout build)
+
+Pull and run the published image with required host binds:
+
+```bash
+./scripts/run-docker.sh \
+  --worktree-root=/path/to/worktree-root \
+  --workflows-dir=/path/to/workflows \
+  --detach
+# optional: --schemas-dir=...  --tag=main  --host-port=3000  --image=ghcr.io/m2ux/workflow-server:main
+# optional: --env KEY=VAL  --env-file=.env  --no-pull  --dry-run
+```
+
+Requires Docker and pull access to `ghcr.io/m2ux/workflow-server` (private packages need `docker login ghcr.io`). Defaults match compose container paths (`/worktrees`, `/app/workflows`, `/app/schemas`). MCP clients should set `WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:<host-port>/mcp`.
 
 ### Claude Desktop
 
