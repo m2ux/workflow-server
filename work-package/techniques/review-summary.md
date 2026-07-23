@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ The findings gathered and classified across code review, test review, validation
 
 ### review_mode_resource
 
-The attached [review-mode](../resources/review-mode.md) resource, whose [Consolidated Review Format](../resources/review-mode.md#consolidated-review-format) defines the summary structure.
+The attached [review-mode](../resources/review-mode.md) resource. Read the whole-document skeleton from [Review Comment Template](../resources/review-mode.md#review-comment-template) and each category's findings fragment from that category's own section (e.g. [#code-review](../resources/review-mode.md#code-review), [#test-review](../resources/review-mode.md#test-review)).
 
 ### prior_feedback_triage
 
@@ -41,14 +41,14 @@ Path to the parent repo containing `.engineering/` — used to resolve `{ENG_REP
 
 ### review_summary
 
-The structured consolidated review summary text, organized per the Consolidated Review Format — executive summary, per-category findings, action items, and severity definitions — verbatim source for the posting step.
+The structured consolidated review summary text, organized per the Review Comment Template — executive summary, per-category findings, action items, and severity definitions — verbatim source for the posting step.
 
 
 ## Protocol
 
 ### 1. Load the Format
 
-- Read the [Consolidated Review Format](../resources/review-mode.md#consolidated-review-format) from the attached `{review_mode_resource}`.
+- Read the whole-document skeleton from [Review Comment Template](../resources/review-mode.md#review-comment-template) in the attached `{review_mode_resource}`. Read each category's findings fragment from that category's own section as it is populated (e.g. [#prior-feedback-triage](../resources/review-mode.md#prior-feedback-triage), [#code-review](../resources/review-mode.md#code-review), [#test-review](../resources/review-mode.md#test-review), [#documentation-review](../resources/review-mode.md#documentation-review), [#validation](../resources/review-mode.md#validation), [#branch-hygiene](../resources/review-mode.md#branch-hygiene)).
 
 ### 2. Resolve the Publish Ref
 
@@ -60,7 +60,8 @@ The structured consolidated review summary text, organized per the Consolidated 
 - Populate the template from `{consolidated_findings}`: executive summary, per-category findings (code, test, documentation, validation, branch hygiene), action items, and severity definitions.
 - Reference, don't restate: each finding renders as its item designator, one-line title, `Source`, severity, and disposition only. The designator links to that finding's section in its associated report (the artifact named in the `Reports` header) when one exists, else it renders as plain text; the `Source` column links the pertinent file (with line or line range), test, document, CI run, or commit. Descriptions, evidence, and suggestions stay in the linked report artifacts per the format's reference-don't-restate rule.
 - Render the header fields in order — `PR`, then `Plan` on its own line immediately after `PR` (linking the planning folder's `README.md`, the work package's canonical home, via the engineering-artifacts base URL with `{ARTIFACT_PUBLISH_REF}`), then `Reviewers`, `Reports`, and `Date`. Every `Plan`, `Reports`, and reviewer hyperlink is mandatory — the posting step posts them verbatim.
-- Render the Reviewers field: list each contributing review *activity* once and hyperlink it to its section in the activities README, using the base URL from the Consolidated Review Format — never link a reviewer to a technique file or to an activity's raw `.yaml`, and never split one activity into per-technique entries. Post-Implementation Review → `activities/README.md#10-post-implementation-review` (covers both code review and test-suite review), Validate → `activities/README.md#11-validate`, Strategic Review → `activities/README.md#12-strategic-review`.
+- Render the `Reports` field — one hyperlinked entry per report this run produced, each linking the report name to its artifact under the engineering-artifacts base URL with `{ARTIFACT_PUBLISH_REF}`. Include an entry only for a report actually produced this run; omit categories with no report. Each report's concrete artifact filename and content are owned by the technique that produced it — this step iterates over whatever reports were produced, it does not enumerate them.
+- Render the Reviewers field: list each contributing review *activity* once and hyperlink it to its section in the activities README, using the base URL from the [Header Fields](../../resources/review-mode.md#header-fields) sub-section of the Review Comment Template — never link a reviewer to a technique file or to an activity's raw `.yaml`, and never split one activity into per-technique entries. The activity-to-anchor mapping is supplied by the rendering step at runtime (e.g. Post-Implementation Review → `#10-post-implementation-review`, Validate → `#11-validate`, Strategic Review → `#12-strategic-review`).
 - Render the Prior Feedback Triage section from `{prior_feedback_triage}`: one row per prior comment with its Confirmed / Refuted / Superseded disposition, and carry each Confirmed blocker-class entry into the Action Items as a blocking item.
 - Apply `{rating_cap}` to the Overall Rating per the rating-cap carve-in below.
 - Render the attribution footer that closes the format template — resolving `{user}` and `{sha}` per the format's instruction — so `{review_summary}` carries it and the posted comment reaches the PR with it intact.

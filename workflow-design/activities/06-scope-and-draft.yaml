@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.10.0
+version: 1.11.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file, then planning-artifact conformance verify.
 required: true
@@ -216,6 +216,138 @@ steps:
   - kind: technique
     id: verify-artifact-conforms
     technique: verify-artifact-conforms
+  - kind: technique
+    id: pre-attestation-audit-principles
+    technique: audit-principles
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "=="
+      value: update
+  - kind: technique
+    id: pre-attestation-audit-anti-patterns
+    technique: audit-anti-patterns
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "=="
+      value: update
+  - kind: action
+    id: classify-pre-attestation-findings
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "=="
+      value: update
+    actions:
+      - action: set
+        target: needs_audit_fixes
+        message: Set true iff any of `principle_finding_count` or `anti_pattern_finding_count` is greater than 0; false when both are 0.
+      - action: set
+        target: has_critical_finding
+        message: Set true iff any verified pre-attestation finding (from `audit-principles` or `audit-anti-patterns`) is Critical severity — a schema-invalid or structurally broken construct that must not be committed.
+  - kind: loop
+    id: pre-attestation-fix-cycle
+    name: Pre-Attestation Fix Cycle
+    loopType: while
+    condition:
+      type: simple
+      variable: needs_audit_fixes
+      operator: "=="
+      value: true
+    maxIterations: 2
+    steps:
+      - kind: technique
+        id: apply-pre-attestation-fixes
+        technique: apply-audit-fixes
+      - kind: technique
+        id: re-audit-principles
+        technique: audit-principles
+      - kind: technique
+        id: re-audit-anti-patterns
+        technique: audit-anti-patterns
+      - kind: action
+        id: reassess-pre-attestation-findings
+        actions:
+          - action: set
+            target: needs_audit_fixes
+            message: After re-running the pre-attestation audits, set true iff any of `principle_finding_count` or `anti_pattern_finding_count` is still greater than 0; false when both are 0.
+          - action: set
+            target: has_critical_finding
+            message: After re-running the pre-attestation audits, set true iff any remaining finding is Critical severity.
+  - kind: action
+    id: pre-attestation-findings-remain
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "=="
+          value: update
+        - type: simple
+          variable: needs_audit_fixes
+          operator: "=="
+          value: true
+    actions:
+      - action: message
+        message: "Pre-attestation audit: {principle_finding_count} principle + {anti_pattern_finding_count} anti-pattern findings remain after fix cycle. These require manual design review and must be fixed before attestation."
+  decisions:
+    - id: pre-attestation-blocker-gate
+      name: Critical Blocker Gate
+      branches:
+        - id: has-blocker
+          label: Critical finding remains — return to drafting
+          condition:
+            type: simple
+            variable: has_critical_finding
+            operator: "=="
+            value: true
+          transitionTo: scope-and-draft
+        - id: no-blocker
+          label: No critical findings — proceed to attestation
+          isDefault: true
+  - kind: checkpoint
+    id: draft-attestation
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "!="
+      value: update
+    message: "Drafted-content review ([draft attestation]({draft_attestation_path}))."
+    blocking: false
+    defaultOption: attested
+    autoAdvanceMs: 30000
+    options:
+      - id: attested
+        label: Attest — drafted content is understood and intentional
+        description: Every drafted block is reviewed and approved as presented
+      - id: revise-block
+        label: Revise a flagged block
+        description: One or more drafted blocks require targeted revision before the audit passes.
+  - kind: checkpoint
+    id: batch-review-attested
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "=="
+      value: update
+    message: "All {file_count} files modified ([draft attestation]({draft_attestation_path}))."
+    blocking: false
+    defaultOption: attested
+    autoAdvanceMs: 30000
+    options:
+      - id: attested
+        label: Attest — all changes understood and intentional
+        description: Full modification set and every drafted block are approved
+      - id: revise-specific
+        label: Revise a specific file
+        description: One particular file requires further modification.
+      - id: revise-block
+        label: Revise a flagged block
+        description: One or more drafted blocks require targeted revision before the audit passes.
+      - id: redraft-all
+        label: Redraft all changes
+        description: Entire drafting pass requires restart from scratch.
 transitions:
   - to: quality-review
     isDefault: true
@@ -225,3 +357,4 @@ outcome:
   - The full workflow is drafted with create-mode per-file review or a single update-mode batch attestation, giving the user a known-good body of content rather than an unreviewed dump
   - Every YAML file is schema-valid, so downstream loading and validation start from clean, conformant content
   - Planning artifacts conform to the design canonical-home map and template line budgets before quality-review audits
+  - In update mode, anti-pattern and design-principle audits run before attestation, so no content is batch-reviewed without first passing the canon
