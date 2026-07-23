@@ -6,51 +6,12 @@ This guide covers two scenarios:
 
 ## Prerequisites
 
-- Node.js 18+
-- npm or yarn
+- Docker (for GHCR run) or Node.js 18+ and npm (for source build)
 - MCP Client (Cursor, Claude Desktop, or compatible client)
 
-## Installation
+## Run the server
 
-```bash
-# Clone and install
-git clone https://github.com/m2ux/workflow-server.git
-cd workflow-server
-npm install
-
-# Set up workflow data (worktree for orphan branch)
-git worktree add ./workflows workflows
-
-# Build the server
-npm run build
-```
-
-## MCP Client Configuration
-
-Project MCP configs keep the **HTTP + mcp-remote** client shape. Paths and the endpoint URL come from environment variables (`${env:NAME}`), not hardcoded machine paths.
-
-[`.cursor/mcp.json`](.cursor/mcp.json) / [`.mcp.json`](.mcp.json):
-
-```json
-{
-  "mcpServers": {
-    "workflow-server": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote", "${env:WORKFLOW_SERVER_MCP_URL}"]
-    }
-  }
-}
-```
-
-Cursor expands `${env:NAME}` from the IDE process environment. Export the MCP endpoint before launching the client (profile, desktop env, or a shell that starts Cursor):
-
-```bash
-export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp
-```
-
-Start the HTTP server ([`scripts/run-docker.sh`](scripts/run-docker.sh), compose, or local) before the IDE connects — see [Run from GHCR](#run-from-ghcr-no-server-checkout) and [HTTP transport](#http-transport).
-
-### Run from GHCR (no server checkout)
+### From GHCR (no checkout)
 
 Standalone runner ([`scripts/run-docker.sh`](scripts/run-docker.sh)). Defaults to `~/.local/share/workflow-server` (`--install-dir` to override).
 
@@ -65,7 +26,41 @@ git clone -b workflows --single-branch \
 "$INSTALL/run-workflow-server.sh" -d
 ```
 
-Requires Docker and GHCR access (`docker login ghcr.io` if private). MCP: `export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp`.
+Requires Docker and GHCR access (`docker login ghcr.io` if private).
+
+### From source (development)
+
+```bash
+git clone https://github.com/m2ux/workflow-server.git
+cd workflow-server
+npm install
+git worktree add ./workflows workflows
+npm run build
+npm run start:http
+```
+
+See [HTTP transport](#http-transport) and [Environment Variables](#environment-variables) for local options. Compose: [`docker-compose.yml`](docker-compose.yml).
+
+## MCP Client Configuration
+
+With the HTTP server running, point the IDE at it via **mcp-remote**. Project configs: [`.cursor/mcp.json`](.cursor/mcp.json) / [`.mcp.json`](.mcp.json).
+
+```json
+{
+  "mcpServers": {
+    "workflow-server": {
+      "command": "npx",
+      "args": ["-y", "mcp-remote", "${env:WORKFLOW_SERVER_MCP_URL}"]
+    }
+  }
+}
+```
+
+Export the endpoint before launching the client (Cursor expands `${env:NAME}` from the process environment):
+
+```bash
+export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp
+```
 
 ### Claude Desktop
 
