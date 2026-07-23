@@ -1,0 +1,130 @@
+name: Build and Publish Docker Image
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+concurrency:
+  group: docker-${{ github.ref }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+      security-events: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          submodules: recursive
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build TypeScript
+        run: npm run build
+
+      - name: Typecheck server source
+        run: npm run typecheck
+
+      - name: Test stdio transport
+        env:
+          WORKTREE_ROOT: ${{ github.workspace }}
+        run: |
+          timeout 5s node dist/index.js --transport=stdio || EXIT=$?
+          # 0 = clean exit on stdin EOF; 124 = timeout killed a waiting server.
+          if [ -n "${EXIT:-}" ] && [ "$EXIT" -ne 124 ]; then
+            echo "Unexpected stdio transport exit: $EXIT"
+            exit 1
+          fi
+
+      - name: Test HTTP transport
+        env:
+          WORKTREE_ROOT: ${{ github.workspace }}
+        run: |
+          node dist/index.js --transport=http &
+          SERVER_PID=$!
+          READY=false
+          for i in {1..15}; do
+            sleep 1
+            if curl -fs http://localhost:3000/health >/dev/null && curl -fs http://localhost:3000/ready >/dev/null; then
+              READY=true
+              break
+            fi
+          done
+          kill -TERM $SERVER_PID || true
+          wait $SERVER_PID || true
+          if [ "$READY" != "true" ]; then
+            echo "HTTP transport health/readiness checks failed"
+            exit 1
+          fi
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@8d2750c68a42422c14e847fe6c8ac0403b4cbd6f
+
+      - name: Log in to GHCR
+        if: github.event_name != 'pull_request'
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@c299e40c65443455700f0fdfc63efafe5b349051
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,prefix=sha-,format=short
+
+      - name: Build and push Docker image
+        id: build
+        uses: docker/build-push-action@ca052bb54ab0790a636c9b5f226502c73d547a25
+        with:
+          context: .
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+
+      - name: Scan image for vulnerabilities
+        # Pinned SHA — mitigation for Trivy supply-chain issues
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1
+        if: github.event_name != 'pull_request'
+        with:
+          # Prefer digest from the build step (stable regardless of tag format).
+          image-ref: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}@${{ steps.build.outputs.digest }}
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+
+      - name: Upload scan results
+        uses: github/codeql-action/upload-sarif@8dca8a82e2fa1a2c8908956f711300f9c4a4f4f6
+        if: github.event_name != 'pull_request' && always()
+        continue-on-error: true
+        with:
+          sarif_file: 'trivy-results.sarif'
