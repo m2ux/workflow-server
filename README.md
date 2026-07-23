@@ -52,111 +52,39 @@ The server registers 17 MCP tools across five concerns. See [docs/api-reference.
 
 ## 🚀 Quick Start
 
-### Prerequisites
+Pick a setup path:
 
-- Node.js 18+
-- MCP Client (Cursor or Claude Desktop)
+| Path | Guide |
+|------|--------|
+| **Docker / HTTP** (GHCR image, no server checkout) | [http.md](http.md) |
+| **stdio** (local checkout; IDE spawns the process) | [stdio.md](stdio.md) |
 
-### Installation
+Then add the bootstrap rule from [`docs/ide-setup.md`](docs/ide-setup.md).
 
-```bash
-# Clone and build
-git clone https://github.com/m2ux/workflow-server.git
-cd workflow-server
-npm install
-
-# Set up workflow data (worktree for orphan branch)
-git worktree add ./workflows workflows
-
-# Build the server
-npm run build
-```
-
-### Configure MCP Client
-
-Full IDE setup: [SETUP.md](SETUP.md).
-
-```json
-{
-  "mcpServers": {
-    "workflow-server": {
-      "command": "node",
-      "args": [
-        "/path/to/workflow-server/dist/index.js",
-        "--workspace=/path/to/worktree-root",
-        "--workflow-dir=/path/to/workflows"
-      ]
-    }
-  }
-}
-```
-
-Startup args (one line each):
-
-- `--workspace=PATH` — required worktree root (env: `WORKFLOW_WORKSPACE` or `WORKTREE_ROOT`)
-- `--workflow-dir=PATH` — workflows directory (env: `WORKFLOW_DIR`; default `./workflows`)
-- `--transport=stdio|http` — transport (env: `TRANSPORT`; default `stdio`)
-- `--port=N` / `--host=HOST` — HTTP only (env: `PORT` / `HOST`)
-
-The default transport is **stdio** (what IDE MCP clients use). To run over HTTP instead:
-
-```bash
-npm run start:http
-# or: node dist/index.js --workspace=/path/to/worktree-root --workflow-dir=/path/to/workflows --transport=http --port=3000
-```
-
-| Endpoint | Purpose |
-|----------|---------|
-| `GET /health` | Liveness |
-| `GET /ready` | Readiness (workflow/schemas/workspace paths) |
-| `POST /mcp` | MCP Streamable HTTP |
-
-HTTP is opt-in. Place it behind network access control or a reverse proxy; the server does not implement application-level authentication. See [SETUP.md](SETUP.md#http-transport) and [docs/development.md](docs/development.md) for `TRANSPORT` / `PORT` / `HOST`.
-
-### Deploy to Your Project
-
-To set up the engineering branch pattern in your own project:
+### Deploy engineering layout (optional)
 
 ```bash
 curl -O https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/deploy.sh
 chmod +x deploy.sh && ./deploy.sh
 ```
 
-This creates a `.engineering/` folder with workflows and artifact directories. See [SETUP.md](SETUP.md#deploying-to-projects) for options and details.
+Creates `.engineering/` with workflows and artifact directories. See [`scripts/deploy.sh`](scripts/deploy.sh) `--help`.
 
-### Setup IDE Rule
+### Execute a workflow
 
-Add the bootstrap rule from [`docs/ide-setup.md`](docs/ide-setup.md) to your IDE's 'always-applied' rule set. The rule tells the agent to call `discover` on every workflow request so the bootstrap procedure stays in sync with the server.
+Tell the agent what you want in natural language, for example:
 
-### Execute a Workflow
-
-Tell the agent what you want to do using natural language:
-
-**Start a workflow:**
 ```
 Start a new work-package workflow for implementing user authentication
 ```
 ```
-Begin a work-package workflow for issue #42
-```
-
-**Resume a workflow:**
-```
 Resume the work-package workflow we were working on
 ```
 ```
-Continue the authentication work package from where we left off
-```
-
-**End a workflow:**
-```
 End the current work-package workflow
 ```
-```
-Complete the work package and clean up
-```
 
-The agent matches your request to the appropriate activity and guides you through the structured phases.
+The agent matches the request to the appropriate activity and guides you through the structured phases.
 
 ## Engineering layout
 
