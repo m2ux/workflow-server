@@ -31,10 +31,11 @@
     },
     "workflow-server": {
       "command": "node",
-      "args": ["/home/mike1/projects/main/workflow-server/dist/index.js"],
-      "env": {
-        "WORKFLOW_WORKSPACE": "/home/mike1/projects/main/workflow-server"
-      }
+      "args": [
+        "/home/mike1/projects/main/workflow-server/dist/index.js",
+        "--workspace=/home/mike1/projects/work",
+        "--workflow-dir=/home/mike1/projects/main/workflow-server/workflows"
+      ]
     },
     "gitnexus": {
       "command": "/usr/local/bin/gitnexus",
