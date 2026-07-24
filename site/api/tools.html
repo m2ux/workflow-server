@@ -134,6 +134,7 @@
           <tbody>
           <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>no</td><td>Workflow id to run or dispatch (for example, <code>work-package</code>).</td></tr>
           <tr><td><code>planning_folder</code></td><td><code>string</code></td><td>no</td><td>Absolute path whose basename is the planning slug. The server resolves the slug under its own workspace — the directory prefix is only a hint.</td></tr>
+          <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Optional. Target owner/repo (or github URL). Required on install multi-root when creating a non-transient session; also accepted from planning_folder under engineering/&lt;owner&gt;/&lt;repo&gt;/….</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace. Default: <code>&quot;orchestrator&quot;</code></td></tr>
           <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td><code>persistent</code>: reuse earlier deliveries when one agent keeps full context. <code>fresh</code> (default): always return full content.</td></tr>
           </tbody>
