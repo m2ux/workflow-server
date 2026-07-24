@@ -1,8 +1,7 @@
-# Setup (stdio)
+# Setup — stdio
 
-Run the workflow server from a local checkout. The IDE spawns the process over **stdio** (default transport).
-
-For the Docker / GHCR HTTP path (no source checkout), see [http.md](http.md).
+Transport-specific steps for a **local checkout** where the IDE spawns the server over stdio (default transport).  
+Shared layout, repo init, root binding, IDE rule, and verify: **[setup.md](setup.md)** (start there, then return here for §1–2).
 
 ## Prerequisites
 
@@ -10,7 +9,7 @@ For the Docker / GHCR HTTP path (no source checkout), see [http.md](http.md).
 - Git
 - MCP client (Cursor, Claude Desktop, or compatible)
 
-## 1. Install
+## 1. Build from source
 
 ```bash
 git clone https://github.com/m2ux/workflow-server.git
@@ -20,18 +19,19 @@ git worktree add ./workflows workflows
 npm run build
 ```
 
-Optional host layout (same as Docker install, without starting a container):
+Optional: same host layout as Docker (without starting a container):
 
 ```bash
 ./scripts/install.sh --install-dir=~/.local/share/workflow-server
-./scripts/init-repo.sh owner/repo
 ```
 
-## 2. Configure the MCP client
+Then continue with [setup.md](setup.md) **§3** (`init-repo.sh`) if you use the install-root layout.
 
-Point the client at the built entry point. The IDE starts the server; you do not run it separately.
+## 2. MCP client (stdio)
 
-### Option A — explicit workspace (legacy single-root)
+The IDE starts the process; you do not run a long-lived server yourself. Point the client at `dist/index.js` and pass root-binding flags (see [setup.md §4](setup.md#4-root-binding-how-the-server-finds-paths)).
+
+### Explicit workspace (legacy single-root)
 
 ```json
 {
@@ -50,7 +50,7 @@ Point the client at the built entry point. The IDE starts the server; you do not
 
 Planning defaults to `<workspace>/.engineering/artifacts/planning/`.
 
-### Option B — per-repo install layout
+### Per-repo install layout
 
 ```json
 {
@@ -68,40 +68,15 @@ Planning defaults to `<workspace>/.engineering/artifacts/planning/`.
 }
 ```
 
-Resolves:
+`--transport=stdio` is the default (omit, or set `TRANSPORT=stdio`).
 
-- `workspaceDir` → `$INSTALL/workspace/<owner>/<repo>`
-- `engineeringDir` → `$INSTALL/engineering/<owner>/<repo>`
-- planning → `<engineering>/artifacts/planning/` (override with `PLANNING_SLUG`)
+Continue with [setup.md](setup.md) **§5** (connect / restart) through **§8**.
 
-### Startup args
-
-| Arg | Env | Notes |
-|-----|-----|--------|
-| `--workspace=PATH` | `WORKFLOW_WORKSPACE` or `WORKTREE_ROOT` | Explicit workspace / worktree root (takes precedence over `--repo`) |
-| `--repo=owner/repo` | `WORKFLOW_SERVER_REPO` | Bind `$INSTALL/{workspace,engineering}/owner/repo` |
-| `--install-dir=PATH` | `WORKFLOW_SERVER_INSTALL_DIR` | Install root (default `~/.local/share/workflow-server`) |
-| — | `WORKFLOW_SERVER_ENGINEERING_DIR` | Override engineering root when using `--workspace` |
-| `--workflow-dir=PATH` | `WORKFLOW_DIR` | Workflows directory (default `./workflows`) |
-| `--transport=stdio` | `TRANSPORT` | Default; omit for stdio |
-
-Full env table: [docs/development.md](docs/development.md#environment-variables).
-
-## 3. IDE bootstrap rule
-
-Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
-
-## 4. Verify
-
-Restart the IDE, then ask it to list available workflows.
-
-## More detail
+## stdio-only references
 
 | Topic | Where |
 |-------|--------|
 | Dev commands / HTTP from source | [docs/development.md](docs/development.md) |
-| Server env vars / `--repo` | [docs/development.md](docs/development.md#environment-variables) / `src/config.ts` |
-| HTTP API endpoints | [docs/api-reference.md](docs/api-reference.md#http-endpoints) |
-| Docker / GHCR HTTP setup | [http.md](http.md) (`scripts/install.sh`) |
-| Per-repo engineering checkout | [`scripts/init-repo.sh`](scripts/init-repo.sh) |
-| Deploy `.engineering` into a project | [`scripts/deploy.sh`](scripts/deploy.sh) |
+| Env vars & flags | [docs/development.md](docs/development.md#environment-variables) / `src/config.ts` |
+| Shared setup | [setup.md](setup.md) |
+| Docker / HTTP transport | [http.md](http.md) |

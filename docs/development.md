@@ -159,7 +159,7 @@ node dist/index.js --repo=m2ux/workflow-server --transport=http
 npm run start:http   # or: node dist/index.js --transport=http --port=3000 --host=localhost
 ```
 
-See also [http.md](../http.md) (`scripts/install.sh`) and [stdio.md](../stdio.md).
+See also [setup.md](../setup.md), [http.md](../http.md), and [stdio.md](../stdio.md).
 
 ## Testing
 

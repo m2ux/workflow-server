@@ -14,7 +14,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 - **Run (HTTP):** `npm run start:http` or `npm run dev:http`
 - **Tests:** `npm test`
 - **Typecheck:** `npm run typecheck`
-- **Workflow data:** `git worktree add ./workflows workflows` (see [README.md](README.md), [stdio.md](stdio.md), [http.md](http.md)).
+- **Workflow data:** `git worktree add ./workflows workflows` (see [README.md](README.md), [setup.md](setup.md), [stdio.md](stdio.md), [http.md](http.md)).
 
 ## Code and doc style
 
@@ -41,7 +41,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 ## Where to look
 
 - **Quick start, schema, API:** [README.md](README.md), [schemas/README.md](schemas/README.md), [docs/api-reference.md](docs/api-reference.md)
-- **IDE/MCP setup:** [docs/ide-setup.md](docs/ide-setup.md), [stdio.md](stdio.md), [http.md](http.md)
+- **IDE/MCP setup:** [docs/ide-setup.md](docs/ide-setup.md), [setup.md](setup.md), [stdio.md](stdio.md), [http.md](http.md)
 - **Work in `.engineering/` (artifacts, planning):** [.engineering/AGENTS.md](.engineering/AGENTS.md)
 
 <!-- gitnexus:start -->

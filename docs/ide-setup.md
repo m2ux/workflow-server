@@ -48,8 +48,9 @@ If the agent skips `discover`, your rule has not been picked up — re-check the
 ## Related
 
 - [README.md](../README.md) — project overview and quick-start.
-- [http.md](../http.md) — Docker / HTTP install (`scripts/install.sh`), engineering + workspace layout, MCP client configuration.
-- [stdio.md](../stdio.md) — local checkout over stdio (`--workspace` or `--repo`).
+- [setup.md](../setup.md) — shared install sequence (layout, init-repo, binding, verify).
+- [http.md](../http.md) — Docker / HTTP transport only.
+- [stdio.md](../stdio.md) — local checkout / stdio transport only.
 - [Development Guide](development.md) — env vars, `--repo` / install-dir binding.
 - [API Reference](api-reference.md) — tool catalog (links out for depth).
 - [Site API](../site/api/tools.html) — wire descriptions generated from source.

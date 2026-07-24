@@ -40,36 +40,19 @@ User Goal → Workflow → Activities → Techniques → Tools
 
 ### Initialise Workflow Server
 
-Pick a setup path:
+Full sequence (layout, init repo, binding, IDE rule, verify): **[setup.md](setup.md)**.
 
-| Path | Guide |
-|------|--------|
-| **Docker / HTTP** (GHCR image, no server checkout) | [http.md](http.md) — `scripts/install.sh` |
-| **stdio** (local checkout; IDE spawns the process) | [stdio.md](stdio.md) |
+| Transport | When | Guide |
+|-----------|------|--------|
+| **Docker / HTTP** | GHCR image; no server checkout | [http.md](http.md) |
+| **stdio** | Local checkout; IDE spawns the process | [stdio.md](stdio.md) |
 
-HTTP one-liner (creates `$INSTALL/{engineering,workspace,workflows}`, helper scripts, and `env`):
+HTTP one-liner:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
 ~/.local/share/workflow-server/start.sh -d
 ```
-
-### Initialise a target repo
-
-Prefer the install-root layout (engineering + workspace under `~/.local/share/workflow-server`):
-
-```bash
-~/.local/share/workflow-server/init-repo.sh owner/repo
-```
-
-That materialises:
-
-- `$INSTALL/engineering/<owner>/<repo>/` — engineering checkout (planning / session state)
-- `$INSTALL/workspace/<owner>/<repo>/` — feature worktrees
-
-Bind the server with `--repo=owner/repo` (or `WORKFLOW_SERVER_REPO`). See [docs/development.md](docs/development.md#environment-variables).
-
-Alternatively, from the **root of a project repo**, [`scripts/deploy.sh`](scripts/deploy.sh) can still create an in-tree `.engineering/` for the legacy single-root layout (`--workspace` pointing at that project).
 
 ### Execute a workflow
 

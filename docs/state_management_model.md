@@ -93,4 +93,4 @@ The `session_index` is deterministically derived from the planning slug (a singl
 
 This enables the session to be safely paused, terminated, or resumed at any point without losing its place in the state machine. Resume is a single call: `start_session({ agent_id, planning_folder })` — the server loads `session.json`, verifies the seal, and returns the same `session_index`. Because state lives in `session.json` (not in the token), server restarts are transparent and there is no "adoption" or "recovery" step for the agent to handle.
 
-Host layout for the Docker/HTTP install is created by [`scripts/install.sh`](../scripts/install.sh) and per-repo checkouts by [`scripts/init-repo.sh`](../scripts/init-repo.sh); see [http.md](../http.md).
+Host layout is created by [`scripts/install.sh`](../scripts/install.sh) and per-repo checkouts by [`scripts/init-repo.sh`](../scripts/init-repo.sh); see [setup.md](../setup.md).
