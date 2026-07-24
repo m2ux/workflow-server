@@ -41,23 +41,9 @@ Alternatively, from a **project repo root**, [`scripts/deploy.sh`](scripts/deplo
 
 Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
 
-## 4. Day-two operations
+## 4. Update Workflows
 
-| Task | Command / note |
-|------|----------------|
-| Update workflows | `$INSTALL/update-workflows.sh` (restart HTTP server afterward) |
-| Stop HTTP server | `$INSTALL/stop.sh` |
-| Init / refresh a repo | `$INSTALL/init-repo.sh owner/repo` |
+If the workflows are updated remotely, they can be refreshed locally using the following command:
 
-## More detail
+`$INSTALL/update-workflows.sh` (restart HTTP server afterward) |
 
-| Topic | Where |
-|-------|--------|
-| HTTP / Docker only | [http.md](http.md) |
-| stdio / local checkout only | [stdio.md](stdio.md) |
-| Install script | [`scripts/install.sh`](scripts/install.sh) |
-| Init repo | [`scripts/init-repo.sh`](scripts/init-repo.sh) |
-| Env vars & flags (dev) | [docs/development.md](docs/development.md#environment-variables) |
-| IDE rule | [docs/ide-setup.md](docs/ide-setup.md) |
-| HTTP API routes | [docs/api-reference.md](docs/api-reference.md#http-endpoints) |
-| Architecture & fidelity | [docs/architecture.md](docs/architecture.md), [docs/workflow-fidelity.md](docs/workflow-fidelity.md) |
