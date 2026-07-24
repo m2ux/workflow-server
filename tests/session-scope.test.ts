@@ -95,6 +95,19 @@ describe('session scope (multi-root)', () => {
     expect(root.repo).toBe('acme/app');
     expect(root.engineeringDir).toBe(resolve('/tmp/inst/engineering/acme/app'));
   });
+
+  it('resolveSessionRoot error text tells agents to pass repo from AGENTS.md', () => {
+    const scope = buildSessionScope({
+      workflowDir: '/w',
+      schemasDir: '/s',
+      workspaceDir: '/tmp/inst/workspace',
+      engineeringDir: '/tmp/inst/engineering',
+      installDir: '/tmp/inst',
+      serverName: 't',
+      serverVersion: '1',
+    });
+    expect(() => resolveSessionRoot(scope, {})).toThrow(/AGENTS\.md/);
+  });
 });
 
 describe('session multi-root FS search', () => {

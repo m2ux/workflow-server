@@ -271,13 +271,20 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     };
   }
 
-  server.tool('discover', 'Entry point — call before other tools. Returns server info and the bootstrap procedure. No session_index required.', {},
+  server.tool('discover', 'Entry point — call before other tools. Returns server info, session_scope (single|multi), and the bootstrap procedure. No session_index required. When session_scope is multi, pass repo on start_session.', {},
     withAuditLog('discover', async () => {
       const bootstrapResult = await readResourceRaw(config.workflowDir, 'meta', 'bootstrap-protocol');
+      const scope = buildSessionScope(config);
       const lines = [
         `server: ${config.serverName}`,
         `version: ${config.serverVersion}`,
+        `session_scope: ${scope.mode}`,
       ];
+      if (scope.mode === 'multi') {
+        lines.push(
+          'repo_binding: required — pass repo: "owner/repo" on start_session (from user or workspace AGENTS.md)',
+        );
+      }
       if (bootstrapResult.success) {
         lines.push('', bootstrapResult.value.content);
       }
@@ -1291,14 +1298,23 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts ? { ...traceOpts, excludeFromTrace: true } : undefined));
 
-  server.tool('health_check', 'Server health: status, name, version, workflow count, uptime. No session_index required.', {},
+  server.tool('health_check', 'Server health: status, name, version, workflow count, uptime, session_scope. No session_index required. session_scope multi means pass repo on start_session.', {},
     withAuditLog('health_check', async () => {
       const workflows = await listWorkflows(config.workflowDir);
+      const scope = buildSessionScope(config);
+      const payload: Record<string, unknown> = {
+        status: 'healthy',
+        server: config.serverName,
+        version: config.serverVersion,
+        workflows_available: workflows.length,
+        uptime_seconds: Math.floor(process.uptime()),
+        session_scope: scope.mode,
+      };
+      if (scope.mode === 'multi') {
+        payload['repo_binding'] = 'required_on_start_session';
+      }
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({
-          status: 'healthy', server: config.serverName, version: config.serverVersion,
-          workflows_available: workflows.length, uptime_seconds: Math.floor(process.uptime()),
-        }, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify(payload, null, 2) }],
       };
     }));
 

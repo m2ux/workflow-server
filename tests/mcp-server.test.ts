@@ -170,10 +170,12 @@ describe('mcp-server integration', () => {
       const guide = parseToolResponse(result);
       expect(guide.server).toBeDefined();
       expect(guide.version).toBeDefined();
+      expect(guide.session_scope).toBe('single');
       expect(guide._body).toBeDefined();
       expect(typeof guide._body).toBe('string');
       expect(guide._body).toContain('start_session');
       expect(guide._body).toContain('get_workflow');
+      expect(guide._body).toMatch(/repo/i);
       expect(guide.available_workflows).toBeUndefined();
     });
   });
@@ -428,6 +430,7 @@ describe('mcp-server integration', () => {
       const health = parseToolResponse(result);
       expect(health.status).toBe('healthy');
       expect(health.workflows_available).toBeGreaterThanOrEqual(2);
+      expect(health.session_scope).toBe('single');
     });
   });
 
@@ -1483,6 +1486,8 @@ describe('mcp-server integration', () => {
       expect(response.workflow.id).toBe('meta');
       expect(response.session_index).toMatch(/^[A-Z2-7]{6}$/);
       expect(response.planning_slug).toBeDefined();
+      expect(response.session_scope).toBe('single');
+      expect(response.promotion_requires_repo).toBeUndefined();
     });
 
     it('accepts workflow_id for non-meta workflow', async () => {
