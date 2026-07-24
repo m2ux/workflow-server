@@ -48,8 +48,9 @@ If the agent skips `discover`, your rule has not been picked up — re-check the
 ## Related
 
 - [README.md](../README.md) — project overview and quick-start.
-- [http.md](../http.md) — Docker / HTTP (GHCR) install and MCP client configuration.
-- [stdio.md](../stdio.md) — local checkout over stdio.
+- [http.md](../http.md) — Docker / HTTP install (`scripts/install.sh`), engineering + workspace layout, MCP client configuration.
+- [stdio.md](../stdio.md) — local checkout over stdio (`--workspace` or `--repo`).
+- [Development Guide](development.md) — env vars, `--repo` / install-dir binding.
 - [API Reference](api-reference.md) — tool catalog (links out for depth).
 - [Site API](../site/api/tools.html) — wire descriptions generated from source.
 - [Workflow Fidelity](workflow-fidelity.md) — enforcement layers and what the bootstrap procedure protects against.
