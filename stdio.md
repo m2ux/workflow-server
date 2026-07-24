@@ -25,11 +25,16 @@ Optional: same host layout as Docker (without starting a container):
 ./scripts/install.sh --install-dir=~/.local/share/workflow-server
 ```
 
-Then continue with [setup.md §2](setup.md#2-init-a-target-repo) to init each target repo.
+Then continue with [setup.md §2](setup.md#2-init-a-target-repo) to init each target repo (`init-repo.sh owner/repo`).
 
 ## 2. MCP client (stdio)
 
-The IDE starts the process; you do not run a long-lived server yourself. Point the client at the built entry and the install root:
+The IDE starts the process; you do not run a long-lived server yourself.
+
+**Required:** either `--repo=owner/repo` (init-repo layout under the install root) **or** `--workspace=PATH` (and optional engineering root via env).  
+`--install-dir` alone is not enough — the process exits without a workspace or repo binding.
+
+### Recommended: bind a target repo (matches Docker + init-repo)
 
 ```json
 {
@@ -39,12 +44,37 @@ The IDE starts the process; you do not run a long-lived server yourself. Point t
       "args": [
         "/path/to/workflow-server/dist/index.js",
         "--install-dir=/home/you/.local/share/workflow-server",
+        "--repo=owner/your-project",
         "--workflow-dir=/path/to/workflows"
       ]
     }
   }
 }
 ```
+
+Planning lands under  
+`$INSTALL/engineering/owner/your-project/artifacts/planning/`.
+
+### Alternative: explicit workspace (legacy single-root)
+
+```json
+{
+  "mcpServers": {
+    "workflow-server": {
+      "command": "node",
+      "args": [
+        "/path/to/workflow-server/dist/index.js",
+        "--workspace=/path/to/your/checkout",
+        "--workflow-dir=/path/to/workflows"
+      ]
+    }
+  }
+}
+```
+
+For a split engineering tree, also set env  
+`WORKFLOW_SERVER_ENGINEERING_DIR=/path/to/engineering/checkout`  
+(planning then uses `artifacts/planning` under that root).
 
 `--transport=stdio` is the default (omit, or set `TRANSPORT=stdio`).
 
@@ -57,11 +87,11 @@ There is no HTTP listener under stdio — the IDE owns the process.
 | Check | How |
 |-------|-----|
 | Build | `npm run typecheck` (and `npm run build` if `dist/` is stale) |
-| Paths | `--install-dir` / `--workflow-dir` exist and are readable |
+| Paths | `--repo` + `--install-dir`, or `--workspace`, plus readable `--workflow-dir` |
 | MCP load | Restart the IDE (or reload MCP servers); the workflow-server entry shows as connected with no spawn error |
-| Tools | In the IDE: list available workflows (`list_workflows`) |
+| Smoke | `discover`, then `start_session` (`list_workflows` alone is not enough) |
 
-If the server fails to start, check the MCP client log for the `node …/dist/index.js` stderr (missing workspace/install root, bad `WORKFLOW_DIR`, etc.).
+If the server fails to start, check the MCP client log for the `node …/dist/index.js` stderr (missing workspace/repo, bad `WORKFLOW_DIR`, etc.).
 
 Then finish shared steps in [setup.md](setup.md) (**§2** init-repo if needed, **§3** IDE rule, **§4** day-two).
 

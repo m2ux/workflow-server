@@ -36,6 +36,14 @@ Defaults:
   - host `$INSTALL/state` → `/var/lib/workflow-server/state` (HMAC signing key)
 - Container env: `WORKTREE_ROOT` / `WORKFLOW_WORKSPACE`, `WORKFLOW_SERVER_ENGINEERING_DIR`,
   `WORKFLOW_SERVER_INSTALL_DIR`, `WORKFLOW_SERVER_KEY_DIR` (see `start.sh`)
+- Optional target repo (after `init-repo.sh owner/repo`):
+
+  ```bash
+  ~/.local/share/workflow-server/start.sh -d --repo=owner/repo
+  ```
+
+  Planning then uses `$INSTALL/engineering/owner/repo/artifacts/planning/`
+  (not `$INSTALL/engineering/artifacts/planning/`).
 - Runs as your host uid:gid; key path does **not** depend on `HOME` (non-root
   containers often have `HOME=/`)
 

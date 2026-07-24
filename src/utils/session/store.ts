@@ -43,11 +43,13 @@ export const SESSION_FILE_NAME = 'session.json';
 export const SEAL_FILE_NAME = '.session-token';
 
 /**
- * Default subdirectory under the worktree / workspace root that holds planning
- * folders. Every session lives at `<workspaceDir>/<activeRelativeDir>/<slug>/`.
- * The active relative segment defaults to this constant and may be overridden
- * once at startup via `setPlanningRelativeDir` (from `PLANNING_SLUG` / config).
- * `planningRoot(workspaceDir)` keeps its one-argument call-site signature.
+ * Default subdirectory under the **engineering** root that holds planning
+ * folders (legacy single-root: engineering root === workspace root).
+ * Every session lives at `<engineeringDir>/<activeRelativeDir>/<slug>/`
+ * (call sites pass `resolveEngineeringDir(config)` into `planningRoot`).
+ * Repo / split-root mode uses `artifacts/planning` instead (see
+ * `REPO_PLANNING_RELATIVE_DIR` in config). Override once at startup via
+ * `setPlanningRelativeDir` (from `PLANNING_SLUG` / config).
  */
 export const PLANNING_RELATIVE_DIR = '.engineering/artifacts/planning';
 

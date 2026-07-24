@@ -94,6 +94,9 @@ CONTAINER_WORKFLOW_DIR="${CONTAINER_WORKFLOW_DIR:-$DEFAULT_WORKFLOWS_TARGET}"
 CONTAINER_SCHEMAS_DIR="${CONTAINER_SCHEMAS_DIR:-$DEFAULT_SCHEMAS_TARGET}"
 
 PLANNING_SLUG="${PLANNING_SLUG:-}"
+# Optional owner/repo — when set, server resolves planning under
+# $INSTALL/engineering/<owner>/<repo>/artifacts/planning (init-repo layout).
+REPO="${WORKFLOW_SERVER_REPO:-}"
 TRANSPORT="${TRANSPORT:-$DEFAULT_TRANSPORT}"
 BIND_HOST="${HOST:-$DEFAULT_BIND_HOST}"
 
@@ -113,10 +116,12 @@ workflow-server start — pull GHCR image and run with host binds.
 
 USAGE
   start.sh -d
+  start.sh -d --repo=owner/repo
   start.sh [options]
 
 Paths normally come from install-time \$INSTALL/env (written by install.sh).
 After install you only need:  start.sh -d
+With a target repo (init-repo.sh):  start.sh -d --repo=owner/repo
 
 DEFAULT INSTALL DIR
   ${DEFAULT_INSTALL_DIR}
@@ -140,6 +145,7 @@ OPTIONS (optional overrides — prefer re-running install to change paths)
   --port=N                  Container PORT (default: ${DEFAULT_CONTAINER_PORT})
   --name=NAME               Container name (default: ${DEFAULT_NAME})
   --planning-slug=S         PLANNING_SLUG inside container
+  --repo=owner/repo         WORKFLOW_SERVER_REPO (init-repo per-repo planning)
   --env KEY=VAL             Extra -e (repeatable)
   --env-file=PATH           docker --env-file
   --user=UID:GID            Container user (default: current uid:gid)
@@ -158,6 +164,7 @@ EXAMPLES
   ~/.local/share/workflow-server/start.sh -d
   ~/.local/share/workflow-server/stop.sh
   ~/.local/share/workflow-server/init-repo.sh owner/repo
+  ~/.local/share/workflow-server/start.sh -d --repo=owner/repo
 
 MCP URL: http://127.0.0.1:<host-port>/mcp
 EOF
@@ -215,6 +222,8 @@ while [[ $# -gt 0 ]]; do
     --name) NAME="${2:?}"; shift 2 ;;
     --planning-slug=*) PLANNING_SLUG="${1#*=}"; shift ;;
     --planning-slug) PLANNING_SLUG="${2:?}"; shift 2 ;;
+    --repo=*) REPO="${1#*=}"; shift ;;
+    --repo) REPO="${2:?}"; shift 2 ;;
     --env=*) EXTRA_ENVS+=("${1#*=}"); shift ;;
     --env) EXTRA_ENVS+=("${2:?}"); shift 2 ;;
     --env-file=*) ENV_FILE="${1#*=}"; shift ;;
@@ -392,6 +401,9 @@ DOCKER_RUN+=(-e "TRANSPORT=${TRANSPORT}")
 DOCKER_RUN+=(-e "HOST=${BIND_HOST}")
 DOCKER_RUN+=(-e "PORT=${CONTAINER_PORT}")
 [[ -n "$PLANNING_SLUG" ]] && DOCKER_RUN+=(-e "PLANNING_SLUG=${PLANNING_SLUG}")
+# When set, server resolves $INSTALL/{workspace,engineering}/<owner>/<repo>
+# even though WORKTREE_ROOT is the install multi-root (see config resolveRoots).
+[[ -n "$REPO" ]] && DOCKER_RUN+=(-e "WORKFLOW_SERVER_REPO=${REPO}")
 
 for kv in "${EXTRA_ENVS[@]+"${EXTRA_ENVS[@]}"}"; do
   [[ "$kv" == *=* ]] || die "--env expects KEY=VAL, got: $kv"
@@ -427,6 +439,9 @@ else
   echo "  schemas    : (image default at ${CONTAINER_SCHEMAS_DIR})"
 fi
 echo "  state      : ${HOST_STATE_DIR} → ${CONTAINER_STATE_DIR} (rw, HMAC key)"
+if [[ -n "$REPO" ]]; then
+  echo "  repo       : ${REPO}  (planning under engineering/${REPO}/artifacts/planning)"
+fi
 echo "  publish    : ${HOST_PORT} → ${CONTAINER_PORT}"
 echo "  MCP URL    : http://127.0.0.1:${HOST_PORT}/mcp"
 

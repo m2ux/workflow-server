@@ -258,15 +258,17 @@ interface ResolvedRoots {
  * Resolve workspace + engineering roots.
  *
  * Precedence:
- *   1. `--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` (explicit path)
- *   2. `--repo` / `WORKFLOW_SERVER_REPO` (owner/repo under the install root)
+ *   1. `--repo` / `WORKFLOW_SERVER_REPO` when the explicit workspace (if any) is
+ *      absent **or** is the install multi-root (`$INSTALL/workspace`). Docker
+ *      `start.sh` binds install-level roots and sets WORKTREE_ROOT to that
+ *      multi-root; with WORKFLOW_SERVER_REPO it must resolve to
+ *      `$INSTALL/{workspace,engineering}/<owner>/<repo>` (init-repo layout).
+ *   2. `--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` (explicit path)
+ *      — legacy single-root unless `WORKFLOW_SERVER_ENGINEERING_DIR` splits eng.
+ *   3. Error if neither repo nor workspace can be resolved.
  *
- * Explicit workspace keeps the legacy single-root model (engineeringDir =
- * workspaceDir, planning under `.engineering/artifacts/planning`) unless
- * `WORKFLOW_SERVER_ENGINEERING_DIR` overrides the engineering path.
- *
- * Repo binding uses the init-repo layout and defaults planning to
- * `artifacts/planning` under the engineering checkout.
+ * Repo binding defaults planning to `artifacts/planning` under the engineering
+ * checkout. Legacy single-root defaults to `.engineering/artifacts/planning`.
  */
 function resolveRoots(argv: readonly string[]): ResolvedRoots {
   const fromWorkspaceCli = parseFlag(argv, 'workspace');
@@ -277,6 +279,40 @@ function resolveRoots(argv: readonly string[]): ResolvedRoots {
   const fromRepoCli = parseFlag(argv, 'repo');
   const fromRepoEnv = process.env['WORKFLOW_SERVER_REPO']?.trim();
   const repoRaw = fromRepoCli || fromRepoEnv;
+
+  if (repoRaw) {
+    const installDir = resolveInstallDir(argv);
+    const multiRootWorkspace = resolve(installDir, 'workspace');
+    const multiRootEngineering = resolve(installDir, 'engineering');
+    // Prefer per-repo paths when workspace is unset, or is the install multi-root
+    // (Docker start.sh / compose default), or matches the derived repo workspace.
+    const useRepoLayout =
+      !explicitWorkspace ||
+      resolve(explicitWorkspace) === multiRootWorkspace ||
+      resolve(explicitWorkspace) === resolve(installDir, 'workspace', normalizeRepoPath(repoRaw));
+    if (useRepoLayout) {
+      const paths = resolveRepoPaths(repoRaw, installDir);
+      // Optional eng override only if it is still the multi-root or the repo eng path.
+      const engOverride = process.env['WORKFLOW_SERVER_ENGINEERING_DIR']?.trim();
+      let engineeringDir = paths.engineeringDir;
+      if (engOverride) {
+        const eng = resolve(engOverride);
+        if (eng === multiRootEngineering || eng === paths.engineeringDir) {
+          engineeringDir = paths.engineeringDir;
+        } else {
+          // Explicit eng that is neither multi-root nor the repo path wins (tests / special binds).
+          engineeringDir = eng;
+        }
+      }
+      return {
+        workspaceDir: paths.workspaceDir,
+        engineeringDir,
+        repo: paths.repo,
+        installDir: paths.installDir,
+        planningFallback: REPO_PLANNING_RELATIVE_DIR,
+      };
+    }
+  }
 
   if (explicitWorkspace) {
     const workspaceDir = resolve(explicitWorkspace);
@@ -291,18 +327,6 @@ function resolveRoots(argv: readonly string[]): ResolvedRoots {
     if (repoRaw) result.repo = normalizeRepoPath(repoRaw);
     if (installDirEnv) result.installDir = resolve(installDirEnv);
     return result;
-  }
-
-  if (repoRaw) {
-    const installDir = resolveInstallDir(argv);
-    const paths = resolveRepoPaths(repoRaw, installDir);
-    return {
-      workspaceDir: paths.workspaceDir,
-      engineeringDir: paths.engineeringDir,
-      repo: paths.repo,
-      installDir: paths.installDir,
-      planningFallback: REPO_PLANNING_RELATIVE_DIR,
-    };
   }
 
   throw new WorkspaceConfigError(

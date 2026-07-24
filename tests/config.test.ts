@@ -271,7 +271,7 @@ describe('loadConfig — --repo binding', () => {
     );
   });
 
-  it('prefers --workspace over --repo when both are set', () => {
+  it('prefers an explicit non-install workspace over --repo', () => {
     const config = loadConfig([
       '--workspace=/tmp/explicit-ws',
       '--repo=m2ux/workflow-server',
@@ -281,6 +281,42 @@ describe('loadConfig — --repo binding', () => {
     expect(config.engineeringDir).toBe(resolve('/tmp/explicit-ws'));
     expect(config.repo).toBe('m2ux/workflow-server');
     expect(config.planningRelativeDir).toBe(PLANNING_RELATIVE_DIR);
+  });
+
+  it('Docker multi-root WORKTREE_ROOT + WORKFLOW_SERVER_REPO resolves per-repo paths', () => {
+    // start.sh / compose bind $INSTALL/workspace and set WORKTREE_ROOT to that
+    // multi-root; with --repo the server must still land under owner/repo.
+    process.env['WORKTREE_ROOT'] = '/tmp/wf-install/workspace';
+    process.env['WORKFLOW_WORKSPACE'] = '/tmp/wf-install/workspace';
+    process.env['WORKFLOW_SERVER_ENGINEERING_DIR'] = '/tmp/wf-install/engineering';
+    process.env['WORKFLOW_SERVER_INSTALL_DIR'] = '/tmp/wf-install';
+    process.env['WORKFLOW_SERVER_REPO'] = 'm2ux/workflow-server';
+    const config = loadConfig([]);
+    expect(config.installDir).toBe(resolve('/tmp/wf-install'));
+    expect(config.repo).toBe('m2ux/workflow-server');
+    expect(config.workspaceDir).toBe(
+      resolve('/tmp/wf-install/workspace/m2ux/workflow-server'),
+    );
+    expect(config.engineeringDir).toBe(
+      resolve('/tmp/wf-install/engineering/m2ux/workflow-server'),
+    );
+    expect(config.planningRelativeDir).toBe(REPO_PLANNING_RELATIVE_DIR);
+    expect(planningRoot(config.engineeringDir!)).toBe(
+      join(config.engineeringDir!, REPO_PLANNING_RELATIVE_DIR),
+    );
+  });
+
+  it('CLI --workspace at install multi-root + --repo still uses per-repo layout', () => {
+    const config = loadConfig([
+      '--workspace=/tmp/wf-install/workspace',
+      '--repo=acme/app',
+      '--install-dir=/tmp/wf-install',
+    ]);
+    expect(config.workspaceDir).toBe(resolve('/tmp/wf-install/workspace/acme/app'));
+    expect(config.engineeringDir).toBe(
+      resolve('/tmp/wf-install/engineering/acme/app'),
+    );
+    expect(config.planningRelativeDir).toBe(REPO_PLANNING_RELATIVE_DIR);
   });
 
   it('defaults install dir to ~/.local/share/workflow-server', () => {
