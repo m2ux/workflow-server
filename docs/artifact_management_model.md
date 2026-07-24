@@ -11,7 +11,7 @@ Agents are explicitly instructed to respect distinct directory scopes:
    - **Repo layout** (`--repo` / `init-repo.sh`): `$INSTALL/projects/<owner>/<repo>/.engineering/` (eng submodule or materialised tree inside the main checkout).
    - **Legacy single-root** (`--workspace` only): the same path as the workspace, with planning under a nested `.engineering/` tree.
 3. **Workflow definitions:** Served from `WORKFLOW_DIR` / `$INSTALL/workflows` (the `workflows` orphan branch), not from the engineering checkout.
-4. **Source / reference checkout:** `$INSTALL/projects/<owner>/<repo>/` — main/default-branch clone used as `reference_path` for `git worktree add`.
+4. **Source / repo root:** `$INSTALL/projects/<owner>/<repo>/` — main/default-branch clone used as `repo_root` for `git worktree add`.
 
 Install layout (HTTP/Docker): [`scripts/install.sh`](../scripts/install.sh) creates `$INSTALL/{engineering,workspace,workflows}` and writes `$INSTALL/env`. Per-repo materialisation: [`scripts/init-repo.sh`](../scripts/init-repo.sh).
 

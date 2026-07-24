@@ -26,7 +26,7 @@ $INSTALL/   # default: ~/.local/share/workflow-server
 
 | Path | Role |
 |------|------|
-| `$INSTALL/projects/<o>/<r>/` | `reference_path` — primary checkout; base for `git worktree add` |
+| `$INSTALL/projects/<o>/<r>/` | `repo_root` — primary checkout; base for `git worktree add` |
 | `$INSTALL/projects/<o>/<r>/.engineering/` | Session / planning root (`artifacts/planning/…`) |
 | `$INSTALL/worktrees/<o>/<r>/<slug>/` | Feature edit worktrees |
 | `$INSTALL/workflows/` | Workflow YAML library for the server (not per-product) |
@@ -79,7 +79,7 @@ $INSTALL/   # default: ~/.local/share/workflow-server
 
 | Variable | Value |
 |----------|--------|
-| `reference_path` | `$INSTALL/projects/<o>/<r>` |
+| `repo_root` | `$INSTALL/projects/<o>/<r>` |
 | Planning | via server under `…/.engineering/artifacts/planning/` |
 | `target_path` | `$INSTALL/worktrees/<o>/<r>/<wp-slug>/` |
 
