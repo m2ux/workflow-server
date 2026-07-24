@@ -117,7 +117,7 @@ WORKFLOWS_DIR=$(abs_path "$WORKFLOWS_DIR")
 
 [[ -d "$WORKFLOWS_DIR" ]] || die "workflows dir not found: ${WORKFLOWS_DIR}
   Run install first:
-    curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh | bash"
+    curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash"
 
 [[ -d "${WORKFLOWS_DIR}/.git" ]] || die "not a git checkout: ${WORKFLOWS_DIR}"
 

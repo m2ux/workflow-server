@@ -75,13 +75,22 @@ A workflow varies its path through ordinary state. A boolean **activation variab
 
 **State persistence is server-managed.** The server owns the canonical session state and writes it to disk atomically on every authenticated tool call. Agents do not read or write session state themselves — they only pass a 6-character `session_index` on every call.
 
-For each session, the server maintains two files under the planning folder (`<workspace>/.engineering/artifacts/planning/<slug>/`):
+For each session, the server maintains two files under the planning folder. Planning lives under the **engineering root** (`ServerConfig.engineeringDir`), not under the feature-worktree root:
+
+| Binding | Engineering root | Default planning path |
+|---------|------------------|------------------------|
+| `--workspace=PATH` (legacy single-root) | same as workspace | `<root>/.engineering/artifacts/planning/<slug>/` |
+| `--repo=owner/repo` (or explicit engineering dir) | `$INSTALL/engineering/<owner>/<repo>` | `<engineering>/artifacts/planning/<slug>/` |
+
+(`PLANNING_SLUG` overrides the relative segment.)
 
 * **`session.json`** — Plaintext, JSON-Schema-validated session state (`schemas/session-file.schema.json`). Contains `sessionIndex`, `workflowId`, `workflowVersion`, `agentId`, `seq`, `currentActivity`, `currentTechnique`, `condition`, `activeCheckpoint`, `variables`, `completedActivities`, `skippedActivities`, `checkpointResponses`, `history`, `triggeredWorkflows`, and (for child workflows) a snapshot of the parent under `parentSession`. The file is human-inspectable and reproducible from the workflow definition.
-* **`.session-token`** — A sealed, HMAC-signed envelope binding the `session.json` contents to the workspace + server signing key. Verified on every read; any mismatch between `session.json` and `.session-token` raises a hard `SealMismatchError`.
+* **`.session-token`** — A sealed, HMAC-signed envelope binding the `session.json` contents to the engineering root + server signing key. Verified on every read; any mismatch between `session.json` and `.session-token` raises a hard `SealMismatchError`.
 
 Writes are atomic (write-temp + rename) and ordered: `session.json` first, then `.session-token`. Reads verify the seal before returning state.
 
-The `session_index` is deterministically derived from the planning slug (a single-segment slug for the planning folder under `<workspace>/.engineering/artifacts/planning/<slug>/`). For the full file shape, see the JSON Schema (`schemas/session-file.schema.json`).
+The `session_index` is deterministically derived from the planning slug (a single-segment slug for the planning folder under the engineering planning root). For the full file shape, see the JSON Schema (`schemas/session-file.schema.json`).
 
-This enables the session to be safely paused, terminated, or resumed at any point without losing its place in the state machine. Resume is a single call: `start_session({ agent_id, planning_slug })` — the server loads `session.json`, verifies the seal, and returns the same `session_index`. Because state lives in `session.json` (not in the token), server restarts are transparent and there is no "adoption" or "recovery" step for the agent to handle.
+This enables the session to be safely paused, terminated, or resumed at any point without losing its place in the state machine. Resume is a single call: `start_session({ agent_id, planning_folder })` — the server loads `session.json`, verifies the seal, and returns the same `session_index`. Because state lives in `session.json` (not in the token), server restarts are transparent and there is no "adoption" or "recovery" step for the agent to handle.
+
+Host layout is created by [`scripts/install.sh`](../scripts/install.sh) and per-repo checkouts by [`scripts/init-repo.sh`](../scripts/init-repo.sh); see [setup.md](../setup.md).

@@ -17,8 +17,8 @@ let keyPromise: Promise<Buffer> | null = null;
  * 2. `WORKFLOW_SERVER_STATE_DIR` (install/state root; key at `<dir>/secret`)
  * 3. `~/.workflow-server` via `os.homedir()`
  *
- * Docker `start.sh` sets `WORKFLOW_SERVER_KEY_DIR=/var/lib/workflow-server` and
- * bind-mounts `$INSTALL/state` there so non-root `--user` (HOME=/) still works.
+ * Docker `start.sh` sets `WORKFLOW_SERVER_KEY_DIR=/var/lib/workflow-server/state`
+ * and bind-mounts `$INSTALL/state` there so non-root `--user` (HOME=/) still works.
  */
 export function resolveKeyDir(): string {
   const explicit = process.env['WORKFLOW_SERVER_KEY_DIR']?.trim();
@@ -65,7 +65,7 @@ function formatKeyAccessError(err: unknown, operation: string): Error {
       `Key directory: '${keyDir}'. ` +
       `Fix: set WORKFLOW_SERVER_KEY_DIR (or WORKFLOW_SERVER_STATE_DIR) to a writable path, ` +
       `or ensure HOME points at a writable directory (Docker non-root often has HOME=/). ` +
-      `Documented Docker layout mounts $INSTALL/state → /var/lib/workflow-server via start.sh.`,
+      `Documented Docker layout mounts $INSTALL/state → /var/lib/workflow-server/state via start.sh.`,
   );
 }
 

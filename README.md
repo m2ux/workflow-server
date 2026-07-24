@@ -9,7 +9,7 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI
 
 ---
 
-**[Docs Site](https://m2ux.github.io/workflow-server/)** • **[Quick Start](#-quick-start)** • **[Architecture](docs/architecture.md)** • **[Schemas](schemas/README.md)** • **[API](docs/api-reference.md)** • **[Workflow Fidelity](docs/workflow-fidelity.md)** • **[Development](docs/development.md)** • **[Docs Map](docs/documentation-system.md)** • **[Workflows](https://github.com/m2ux/workflow-server/tree/workflows)** • **[Engineering](https://github.com/m2ux/workflow-server/tree/engineering)**
+**[Docs Site](https://m2ux.github.io/workflow-server/)** • **[Architecture](docs/architecture.md)** • **[Schemas](schemas/README.md)** • **[API](docs/api-reference.md)** • **[Workflow Fidelity](docs/workflow-fidelity.md)** • **[Development](docs/development.md)** • **[Workflows](https://github.com/m2ux/workflow-server/tree/workflows)** • **[Engineering](docs/engineering-storage.md)**
 
 ---
 
@@ -38,26 +38,8 @@ User Goal → Workflow → Activities → Techniques → Tools
 
 ## 🚀 Quick Start
 
-### Initialise Workflow Server
-
-Pick a setup path:
-
-| Path | Guide |
-|------|--------|
-| **Docker / HTTP** (GHCR image, no server checkout) | [http.md](http.md) |
-| **stdio** (local checkout; IDE spawns the process) | [stdio.md](stdio.md) |
-
-### Initialise target project
-
-From the **root of the project repo** you want the workflow server to operate on (not this server repo), run:
-
-```bash
-curl -O https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/deploy.sh
-chmod +x deploy.sh && ./deploy.sh
-```
-
-That creates `.engineering/` in that project (planning artifacts, history, scripts, and workflow data) so sessions can bind a workspace and write run output. 
-> Options: [`scripts/deploy.sh`](scripts/deploy.sh) `--help`.
+### Setup
+See: **[setup.md](setup.md)**.
 
 ### Execute a workflow
 
