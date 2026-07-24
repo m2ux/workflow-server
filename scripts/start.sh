@@ -65,8 +65,11 @@ CONTAINER_PORT="${PORT:-$DEFAULT_CONTAINER_PORT}"
 
 INSTALL_DIR=""
 INSTALL_DIR_SET=0
-# Keep values already set by install env (do not blank after source).
-HOST_WORKTREE_ROOT="${HOST_WORKTREE_ROOT:-}"
+# Values from install env / process env (do not blank after source).
+# Canonical install keys: HOST_WORKTREE_ROOT, HOST_PORT, WORKFLOW_SERVER_CONTAINER_NAME
+# Optional overrides: HOST_WORKFLOWS_DIR, HOST_SCHEMAS_DIR, WORKFLOW_SERVER_INSTALL_DIR
+# Legacy aliases still accepted: WORKFLOW_WORKSPACE, WORKFLOW_DIR, SCHEMAS_DIR
+HOST_WORKTREE_ROOT="${HOST_WORKTREE_ROOT:-${WORKFLOW_WORKSPACE:-}}"
 HOST_WORKFLOWS_DIR="${HOST_WORKFLOWS_DIR:-${WORKFLOW_DIR:-}}"
 HOST_SCHEMAS_DIR="${HOST_SCHEMAS_DIR:-${SCHEMAS_DIR:-}}"
 WORKTREE_SET=0
@@ -254,17 +257,14 @@ fi
 
 # Path resolution (CLI > install/process env already in shell > defaults):
 if [[ "$WORKTREE_SET" -eq 0 ]]; then
-  [[ -z "$HOST_WORKTREE_ROOT" ]] && HOST_WORKTREE_ROOT="${WORKFLOW_WORKSPACE:-}"
   [[ -z "$HOST_WORKTREE_ROOT" ]] && HOST_WORKTREE_ROOT="$DEFAULT_HOST_WORKTREE_ROOT"
 fi
 
 if [[ "$WORKFLOWS_SET" -eq 0 ]]; then
-  [[ -z "$HOST_WORKFLOWS_DIR" ]] && HOST_WORKFLOWS_DIR="${WORKFLOW_DIR:-}"
   [[ -z "$HOST_WORKFLOWS_DIR" ]] && HOST_WORKFLOWS_DIR="${INSTALL_DIR}/workflows"
 fi
 
 if [[ "$SCHEMAS_SET" -eq 0 ]]; then
-  [[ -z "$HOST_SCHEMAS_DIR" ]] && HOST_SCHEMAS_DIR="${SCHEMAS_DIR:-}"
   [[ -z "$HOST_SCHEMAS_DIR" && -d "${INSTALL_DIR}/schemas" ]] && HOST_SCHEMAS_DIR="${INSTALL_DIR}/schemas"
 fi
 
