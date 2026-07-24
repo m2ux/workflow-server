@@ -1,7 +1,7 @@
 # Setup — Docker / HTTP
 
 Transport-specific steps for running the **GHCR image** over HTTP.  
-Shared sequence (layout, operator init-repo, agent repo inference): **[setup.md](setup.md)** (start there, then return here for §1–3).
+Shared sequence: **[setup.md](setup.md)** (start there, then return here for §1–3).
 
 ## Prerequisites
 
@@ -59,7 +59,7 @@ Project config (e.g. [`.cursor/mcp.json`](.cursor/mcp.json)):
 }
 ```
 
-Continue with [setup.md](setup.md) **§2** (init repo — you) through **§7**. Health: `curl -fsS http://127.0.0.1:3000/health`.
+Continue with [setup.md](setup.md) **§2** through **§6**. Health: `curl -fsS http://127.0.0.1:3000/health`.
 
 ## HTTP-only references
 

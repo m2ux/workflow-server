@@ -25,11 +25,11 @@ Optional: same host layout as Docker (without starting a container):
 ./scripts/install.sh --install-dir=~/.local/share/workflow-server
 ```
 
-Then continue with [setup.md §2](setup.md#2-init-a-target-repo) to init each target repo (`init-repo.sh` — operator).
+Then continue with [setup.md §2](setup.md#2-init-a-target-repo) to init each target repo.
 
 ## 2. MCP client (stdio)
 
-The IDE starts the process; you do not run a long-lived server yourself. Point the client at the built entry and the **install root** (not a per-chat repo path). The agent picks `owner/repo` from each request ([setup.md §3](setup.md#3-which-repo-is-this-request-for-agent)).
+The IDE starts the process; you do not run a long-lived server yourself. Point the client at the built entry and the install root:
 
 ```json
 {
@@ -48,9 +48,9 @@ The IDE starts the process; you do not run a long-lived server yourself. Point t
 
 `--transport=stdio` is the default (omit, or set `TRANSPORT=stdio`).
 
-Developer-only single-root overrides (`--workspace`, etc.): [docs/development.md](docs/development.md#environment-variables).
+Developer-only process flags: [docs/development.md](docs/development.md#environment-variables).
 
-Continue with [setup.md](setup.md) **§4** (connect) through **§7**.
+Continue with [setup.md](setup.md) **§3** (connect) through **§6**.
 
 ## stdio-only references
 
