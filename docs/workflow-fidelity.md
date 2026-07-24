@@ -316,12 +316,12 @@ Trace tokens use compressed field names and HMAC-signed opaque encoding. A 10-ac
 
 State persistence is **server-managed**. The server owns the canonical session state and writes it to disk atomically on every authenticated tool call. Agents pass only a 6-character `session_index` (base32, deterministically derived from the planning slug); they do not read or write session state themselves.
 
-For each session the server maintains two files under the planning folder:
+For each session the server maintains two files under the planning folder (under the **engineering root** — see [State Management](state_management_model.md#5-persistence)):
 
 * **`session.json`** — Plaintext, JSON-Schema-validated state (`schemas/session-file.schema.json`).
-* **`.session-token`** — A sealed, HMAC-signed envelope binding `session.json` to the workspace + server signing key. Mismatch between the two raises a hard `SealMismatchError`.
+* **`.session-token`** — A sealed, HMAC-signed envelope binding `session.json` to the engineering root + server signing key. Mismatch between the two raises a hard `SealMismatchError`.
 
-Resume is a single call: `start_session({ agent_id, planning_slug })`. The server loads `session.json`, verifies the seal, and returns the same `session_index`. Because state lives in `session.json` rather than in an agent-held token, server restarts are transparent — there is no separate adoption, re-signing, or recovery step the agent has to handle. See [State Management & Deterministic Transitions](state_management_model.md#5-persistence) for the full file layout.
+Resume is a single call: `start_session({ agent_id, planning_folder })`. The server loads `session.json`, verifies the seal, and returns the same `session_index`. Because state lives in `session.json` rather than in an agent-held token, server restarts are transparent — there is no separate adoption, re-signing, or recovery step the agent has to handle. See [State Management & Deterministic Transitions](state_management_model.md#5-persistence) for the full file layout.
 
 ## Limitations
 
