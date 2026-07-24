@@ -431,7 +431,7 @@
   },
   {
     "check": "dead-output",
-    "site": "work-package/techniques/manage-git/update-reference-submodules.md",
+    "site": "work-package/techniques/manage-git/update-repo-submodules.md",
     "detail": "output 'refreshed_submodules' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
   {
