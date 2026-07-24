@@ -9,10 +9,12 @@ When the server starts with `--transport=http` (or `TRANSPORT=http` / `npm run s
 | Method / path | Purpose |
 |---------------|---------|
 | `GET /health` | Liveness — process is up |
-| `GET /ready` | Readiness — `workflowDir`, `schemasDir`, and `workspaceDir` exist; also `engineeringDir` when it is split from workspace (`--repo` layout) |
+| `GET /ready` | Readiness — `workflowDir`, `schemasDir`, and `workspaceDir` exist; `engineeringDir` when split from workspace (`--repo` layout); and `sessionKeyWritable` (HMAC key directory is usable) |
 | `POST /mcp` | MCP Streamable HTTP |
 
-Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. See [setup.md](../setup.md), [http.md](../http.md) / [stdio.md](../stdio.md) (transports), and [development.md](development.md) for process env (developers).
+`/ready` returns 503 when any check is false. A green `/health` alone does **not** mean `start_session` can run — verify `sessionKeyWritable: true` (Docker non-root with `HOME=/` historically failed here; see [http.md](../http.md) and `WORKFLOW_SERVER_KEY_DIR`).
+
+Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. Local `mcp-remote` clients may probe OAuth well-known URLs and receive 404s; that is expected without auth. See [setup.md](../setup.md), [http.md](../http.md) / [stdio.md](../stdio.md) (transports), and [development.md](development.md) for process env (developers).
 
 ## MCP Tools
 

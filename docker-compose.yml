@@ -13,6 +13,8 @@
 services:
   workflow-server:
     build: .
+    # Match start.sh: same UID/GID as host binds (workspace/engineering/state).
+    user: "${UID:-1000}:${GID:-1000}"
     ports:
       - "${HOST_PORT:-3000}:${PORT:-3000}"
     environment:
@@ -20,13 +22,18 @@ services:
       WORKFLOW_WORKSPACE: ${CONTAINER_WORKTREE_ROOT:-/var/lib/workflow-server/workspace}
       WORKFLOW_SERVER_ENGINEERING_DIR: ${CONTAINER_ENGINEERING_ROOT:-/var/lib/workflow-server/engineering}
       WORKFLOW_SERVER_INSTALL_DIR: ${CONTAINER_INSTALL_DIR:-/var/lib/workflow-server}
-      # Optional: override default planning slug (repo mode defaults to artifacts/planning)
+      # Optional: override default planning slug (multi-root uses artifacts/planning per repo)
       # PLANNING_SLUG: artifacts/planning
       WORKFLOW_DIR: ${CONTAINER_WORKFLOW_DIR:-/app/workflows}
       SCHEMAS_DIR: ${CONTAINER_SCHEMAS_DIR:-/app/schemas}
+      # HMAC key dir — do not rely on HOME (Docker --user without passwd → HOME=/)
+      WORKFLOW_SERVER_KEY_DIR: ${CONTAINER_STATE_DIR:-/var/lib/workflow-server/state}
+      HOME: ${CONTAINER_STATE_DIR:-/var/lib/workflow-server/state}
       TRANSPORT: ${TRANSPORT:-http}
       HOST: ${HOST:-0.0.0.0}
       PORT: ${PORT:-3000}
+      # Repo is selected at start_session (not process start). Optional process pin:
+      # WORKFLOW_SERVER_REPO: m2ux/my-project
     volumes:
       - type: bind
         source: ${HOST_WORKFLOWS_DIR:-./workflows}
@@ -45,4 +52,9 @@ services:
       - type: bind
         source: ${HOST_ENGINEERING_ROOT:-${HOME}/.local/share/workflow-server/engineering}
         target: ${CONTAINER_ENGINEERING_ROOT:-/var/lib/workflow-server/engineering}
+        read_only: false
+      # Durable server state (HMAC secret)
+      - type: bind
+        source: ${HOST_STATE_DIR:-${HOME}/.local/share/workflow-server/state}
+        target: ${CONTAINER_STATE_DIR:-/var/lib/workflow-server/state}
         read_only: false

@@ -12,6 +12,7 @@ import { logInfo, logWarn } from '../logging.js';
 import { requestId } from '../middleware/request-id.js';
 import { requestLogging } from '../middleware/logging.js';
 import { errorHandler } from '../middleware/error-handler.js';
+import { probeSessionKeyWritable } from '../utils/session/crypto.js';
 
 /**
  * How long to wait for in-flight requests to drain on SIGTERM/SIGINT before
@@ -72,17 +73,20 @@ function registerHealthRoutes(app: Express, config: ServerConfig): void {
     res.status(200).json({ status: 'ok' });
   });
 
-  // Readiness: the directories every tool call depends on are resolvable.
+  // Readiness: directories every tool call depends on resolve, and the session
+  // HMAC key directory is writable (start_session fails hard otherwise).
   // `checks.workspaceDir` is the configured worktree / workspace root
   // (`--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` / `--repo`);
   // the JSON key stays `workspaceDir` for existing HTTP consumers.
   // `engineeringDir` is included when split from workspace (repo binding).
-  app.get('/ready', (_req, res) => {
+  app.get('/ready', async (_req, res) => {
     const engineeringDir = config.engineeringDir ?? config.workspaceDir;
+    const sessionKeyWritable = await probeSessionKeyWritable();
     const checks: Record<string, boolean> = {
       workflowDir: existsSync(config.workflowDir),
       schemasDir: existsSync(config.schemasDir),
       workspaceDir: existsSync(config.workspaceDir),
+      sessionKeyWritable,
     };
     if (engineeringDir !== config.workspaceDir) {
       checks['engineeringDir'] = existsSync(engineeringDir);

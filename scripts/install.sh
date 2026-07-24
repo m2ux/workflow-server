@@ -77,6 +77,7 @@ LAYOUT
     workflows/               # git clone -b workflows
     engineering/             # per-repo engineering checkouts (init-repo.sh)
     workspace/               # per-repo feature worktrees (init-repo.sh)
+    state/                   # durable HMAC key (mounted by start.sh)
 
   Defaults place workspace + engineering under \$INSTALL. Override with
   --worktree-root / --engineering-root when you want them elsewhere.
@@ -88,6 +89,7 @@ AFTER INSTALL
   \$INSTALL/${DEFAULT_INIT_REPO_NAME} owner/repo
   export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:${DEFAULT_HOST_PORT}/mcp
   curl -fsS http://127.0.0.1:${DEFAULT_HOST_PORT}/health
+  curl -fsS http://127.0.0.1:${DEFAULT_HOST_PORT}/ready   # sessionKeyWritable: true
 EOF
 }
 
@@ -221,6 +223,8 @@ INIT_REPO_URL="${RAW_BASE}/${REF}/scripts/init-repo.sh"
 
 echo "Install dir: ${INSTALL_DIR}"
 mkdir -p "$INSTALL_DIR"
+STATE_DIR="${INSTALL_DIR}/state"
+ensure_dir "$STATE_DIR" "state dir (HMAC key)"
 
 ensure_dir "$HOST_WORKTREE_ROOT" "workspace root"
 ensure_dir "$HOST_ENGINEERING_ROOT" "engineering root"
@@ -271,6 +275,7 @@ echo "  Install dir  : ${INSTALL_DIR}"
 echo "  Workflows    : ${WORKFLOWS_DIR}"
 echo "  Workspace    : ${HOST_WORKTREE_ROOT}"
 echo "  Engineering  : ${HOST_ENGINEERING_ROOT}"
+echo "  State        : ${STATE_DIR}  (HMAC key; mounted by start.sh)"
 echo "  Env          : ${ENV_PATH}"
 echo
 echo "Start / stop (paths come from env — no flags required):"
@@ -286,3 +291,4 @@ echo
 echo "Then:"
 echo "  export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:${HOST_PORT}/mcp"
 echo "  curl -fsS http://127.0.0.1:${HOST_PORT}/health"
+echo "  curl -fsS http://127.0.0.1:${HOST_PORT}/ready   # must include sessionKeyWritable: true"

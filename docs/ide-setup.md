@@ -49,6 +49,7 @@ If the agent skips `discover`, your rule has not been picked up — re-check the
 
 - [README.md](../README.md) — project overview and quick-start.
 - [setup.md](../setup.md) — install sequence (transport, init-repo, IDE rule, day-two).
+- [examples/cursor-workspace/](../examples/cursor-workspace/) — copyable Cursor multi-root workspace.
 - [http.md](../http.md) — Docker / HTTP transport only.
 - [stdio.md](../stdio.md) — local checkout / stdio transport only.
 - [Development Guide](development.md) — env vars and process flags (developers).

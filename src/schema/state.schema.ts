@@ -89,8 +89,10 @@ export const TriggeredWorkflowRefSchema = z.object({
   /**
    * Slug of the child's planning folder. Required for server-managed state —
    * the parent or any other caller resumes the child by calling
-   * `start_session({ planning_folder: "<workspace>/.engineering/artifacts/planning/<slug>" })`
-   * (long-form path; the server derives the slug from `basename(path)`).
+   * `start_session({ planning_folder: "<planning-root>/<slug>" })` where
+   * planning-root is `<engineering>/artifacts/planning` (repo / Docker split)
+   * or `<workspace>/.engineering/artifacts/planning` (legacy single-root).
+   * Long-form path; the server derives the slug from `basename(path)`.
    * Optional in the legacy `workflow-state.json` migration path where the
    * field didn't exist.
    */

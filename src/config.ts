@@ -258,15 +258,17 @@ interface ResolvedRoots {
  * Resolve workspace + engineering roots.
  *
  * Precedence:
- *   1. `--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` (explicit path)
- *   2. `--repo` / `WORKFLOW_SERVER_REPO` (owner/repo under the install root)
+ *   1. `--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` (explicit path).
+ *      Docker start.sh binds install multi-roots (`$INSTALL/workspace` +
+ *      `$INSTALL/engineering`). Repo is chosen at `start_session` time, not
+ *      process start.
+ *   2. Optional `--repo` / `WORKFLOW_SERVER_REPO` pins a single owner/repo under
+ *      the install root (stdio single-tenant). Prefer session-time `repo` when
+ *      serving multiple init-repo checkouts from one process.
+ *   3. Error if neither workspace nor repo can be resolved.
  *
- * Explicit workspace keeps the legacy single-root model (engineeringDir =
- * workspaceDir, planning under `.engineering/artifacts/planning`) unless
- * `WORKFLOW_SERVER_ENGINEERING_DIR` overrides the engineering path.
- *
- * Repo binding uses the init-repo layout and defaults planning to
- * `artifacts/planning` under the engineering checkout.
+ * Split engineering root defaults planning to `artifacts/planning`.
+ * Legacy single-root defaults to `.engineering/artifacts/planning`.
  */
 function resolveRoots(argv: readonly string[]): ResolvedRoots {
   const fromWorkspaceCli = parseFlag(argv, 'workspace');
@@ -283,13 +285,37 @@ function resolveRoots(argv: readonly string[]): ResolvedRoots {
     const engOverride = process.env['WORKFLOW_SERVER_ENGINEERING_DIR']?.trim();
     const engineeringDir = engOverride ? resolve(engOverride) : workspaceDir;
     const installDirEnv = process.env['WORKFLOW_SERVER_INSTALL_DIR']?.trim();
+    const installDir = installDirEnv
+      ? resolve(installDirEnv)
+      : resolveInstallDir(argv);
+    // Optional process pin: only when workspace is NOT the install multi-root
+    // (or is already the per-repo workspace). Multi-root Docker keeps multi-root
+    // so start_session can select owner/repo dynamically.
+    const multiRootWorkspace = resolve(installDir, 'workspace');
+    const isMultiRootWorkspace = workspaceDir === multiRootWorkspace;
+    if (repoRaw && !isMultiRootWorkspace) {
+      const paths = resolveRepoPaths(repoRaw, installDir);
+      // Explicit workspace that already is the per-repo path, or arbitrary pin.
+      if (workspaceDir === paths.workspaceDir) {
+        return {
+          workspaceDir: paths.workspaceDir,
+          engineeringDir: engOverride ? engineeringDir : paths.engineeringDir,
+          repo: paths.repo,
+          installDir: paths.installDir,
+          planningFallback: REPO_PLANNING_RELATIVE_DIR,
+        };
+      }
+    }
     const result: ResolvedRoots = {
       workspaceDir,
       engineeringDir,
       planningFallback: engOverride ? REPO_PLANNING_RELATIVE_DIR : PLANNING_RELATIVE_DIR,
     };
-    if (repoRaw) result.repo = normalizeRepoPath(repoRaw);
-    if (installDirEnv) result.installDir = resolve(installDirEnv);
+    // Record repo only when it pins a single checkout (not multi-root Docker).
+    if (repoRaw && !isMultiRootWorkspace) {
+      result.repo = normalizeRepoPath(repoRaw);
+    }
+    result.installDir = installDir;
     return result;
   }
 
@@ -306,7 +332,7 @@ function resolveRoots(argv: readonly string[]): ResolvedRoots {
   }
 
   throw new WorkspaceConfigError(
-    'Workspace / worktree root is required. Pass --repo=owner/repo (uses $INSTALL/{engineering,workspace}/owner/repo), or --workspace=PATH, or set WORKFLOW_SERVER_REPO, WORKFLOW_WORKSPACE, or WORKTREE_ROOT. The resolved worktree path is ServerConfig.workspaceDir; planning lives under ServerConfig.engineeringDir.',
+    'Workspace / worktree root is required. Pass --workspace=PATH, WORKFLOW_WORKSPACE, or WORKTREE_ROOT (Docker multi-root), or --repo=owner/repo for a single pinned checkout under $INSTALL. Repo for multi-root is selected at start_session.',
   );
 }
 

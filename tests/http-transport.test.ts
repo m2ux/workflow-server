@@ -47,7 +47,12 @@ describe('HTTP transport', () => {
       const res = await request(app).get('/ready');
       expect(res.status).toBe(200);
       expect(res.body.status).toBe('ready');
-      expect(res.body.checks).toEqual({ workflowDir: true, schemasDir: true, workspaceDir: true });
+      expect(res.body.checks).toEqual({
+        workflowDir: true,
+        schemasDir: true,
+        workspaceDir: true,
+        sessionKeyWritable: true,
+      });
     });
 
     it('GET /ready returns 503 with status not-ready when workspaceDir is missing', async () => {
@@ -57,6 +62,21 @@ describe('HTTP transport', () => {
       expect(res.status).toBe(503);
       expect(res.body.status).toBe('not-ready');
       expect(res.body.checks.workspaceDir).toBe(false);
+    });
+
+    it('GET /ready returns 503 when session key directory is not writable', async () => {
+      const prev = process.env['WORKFLOW_SERVER_KEY_DIR'];
+      // Root-owned path non-root tests cannot create (typical Docker HOME=/ failure mode).
+      process.env['WORKFLOW_SERVER_KEY_DIR'] = '/.workflow-server-unwritable-probe';
+      try {
+        const res = await request(app).get('/ready');
+        expect(res.status).toBe(503);
+        expect(res.body.status).toBe('not-ready');
+        expect(res.body.checks.sessionKeyWritable).toBe(false);
+      } finally {
+        if (prev === undefined) delete process.env['WORKFLOW_SERVER_KEY_DIR'];
+        else process.env['WORKFLOW_SERVER_KEY_DIR'] = prev;
+      }
     });
 
     it('GET /ready returns 200 when root was resolved from WORKTREE_ROOT alone (PR267-TC-11)', async () => {

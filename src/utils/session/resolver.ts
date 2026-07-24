@@ -138,8 +138,9 @@ export interface LoadedSession {
 export async function loadSessionForTool(
   workspaceDir: string,
   sessionIndex: string,
+  options?: { planningRelativeDir?: string; searchRoots?: readonly string[] },
 ): Promise<LoadedSession> {
-  const { folder, jsonPath } = await resolveSessionLocation(workspaceDir, sessionIndex);
+  const { folder, jsonPath } = await resolveSessionLocation(workspaceDir, sessionIndex, options);
   const { state: rawTopState, bytes } = await verifySeal(folder);
   const parsed = safeValidateSessionFile(rawTopState);
   if (!parsed.success) {
@@ -214,11 +215,11 @@ export function describeSessionStoreError(err: unknown): string {
     case 'NOT_FOUND':
       return `${err.message}. Call start_session to create or resume a planning folder; the session_index is only valid against folders the server has previously sealed.`;
     case 'COLLISION':
-      return `${err.message}. Two planning folders hashed to the same session_index — recreate the colliding session(s) or remove a stale folder under .engineering/artifacts/planning/.`;
+      return `${err.message}. Two planning folders hashed to the same session_index — recreate the colliding session(s) or remove a stale folder under the active planning root (legacy: .engineering/artifacts/planning/; repo mode: artifacts/planning/ under the engineering checkout).`;
     case 'SEAL_MISMATCH':
       return `${err.message}. The session.json (or its parsed contents) does not match the seal recorded in .session-token — restore the folder from the most recent commit before retrying.`;
     case 'WORKSPACE_INVALID':
-      return `${err.message}. Restart the server with a valid --repo=owner/repo, --workspace=PATH, or WORKFLOW_WORKSPACE / WORKFLOW_SERVER_REPO.`;
+      return `${err.message}. Restart the server with a valid --workspace=PATH (or WORKFLOW_WORKSPACE / WORKTREE_ROOT), or pass repo on start_session when using an install multi-root.`;
     default:
       return err.message;
   }

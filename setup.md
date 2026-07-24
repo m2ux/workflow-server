@@ -56,6 +56,12 @@ That creates:
 
 Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
 
+### Example Cursor workspace
+
+A ready-to-copy multi-root Cursor workspace (MCP config, always-on rules, `AGENTS.md` repo hint, and `.code-workspace` mounts for install-root engineering + workspace) lives at:
+
+**[examples/cursor-workspace/](examples/cursor-workspace/)** — layout and copy steps in [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md).
+
 ## 4. Update Workflows
 
 If the workflows are updated remotely, they can be refreshed locally using the following command:
@@ -78,5 +84,6 @@ Restart the HTTP server afterward if it is running.
 | Init install paths | [`scripts/init-repo.sh`](scripts/init-repo.sh) |
 | Env vars & flags (dev) | [docs/development.md](docs/development.md#environment-variables) |
 | IDE rule | [docs/ide-setup.md](docs/ide-setup.md) |
+| Example Cursor workspace | [examples/cursor-workspace/](examples/cursor-workspace/) |
 | HTTP API routes | [docs/api-reference.md](docs/api-reference.md#http-endpoints) |
 | Architecture & fidelity | [docs/architecture.md](docs/architecture.md), [docs/workflow-fidelity.md](docs/workflow-fidelity.md) |

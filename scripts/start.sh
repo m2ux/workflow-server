@@ -20,8 +20,8 @@ DEFAULT_TAG="main"
 DEFAULT_NAME="workflow-server"
 DEFAULT_HOST_PORT="3000"
 DEFAULT_CONTAINER_PORT="3000"
-# Inside the container the install root is fixed so --repo=owner/repo resolves to
-# $CONTAINER_INSTALL/{workspace,engineering}/owner/repo matching the host layout.
+# Inside the container the install root is fixed so start_session({ repo })
+# resolves under $CONTAINER_INSTALL/engineering/<owner>/<repo> (init-repo layout).
 DEFAULT_CONTAINER_INSTALL="/var/lib/workflow-server"
 DEFAULT_WORKTREE_TARGET="${DEFAULT_CONTAINER_INSTALL}/workspace"
 DEFAULT_ENGINEERING_TARGET="${DEFAULT_CONTAINER_INSTALL}/engineering"
@@ -88,6 +88,8 @@ SCHEMAS_SET=0
 CONTAINER_INSTALL_DIR="${CONTAINER_INSTALL_DIR:-$DEFAULT_CONTAINER_INSTALL}"
 CONTAINER_WORKTREE_ROOT="${CONTAINER_WORKTREE_ROOT:-${CONTAINER_INSTALL_DIR}/workspace}"
 CONTAINER_ENGINEERING_ROOT="${CONTAINER_ENGINEERING_ROOT:-${CONTAINER_INSTALL_DIR}/engineering}"
+# Durable HMAC key — under install root, not HOME (Docker --user often has HOME=/)
+CONTAINER_STATE_DIR="${CONTAINER_STATE_DIR:-${CONTAINER_INSTALL_DIR}/state}"
 CONTAINER_WORKFLOW_DIR="${CONTAINER_WORKFLOW_DIR:-$DEFAULT_WORKFLOWS_TARGET}"
 CONTAINER_SCHEMAS_DIR="${CONTAINER_SCHEMAS_DIR:-$DEFAULT_SCHEMAS_TARGET}"
 
@@ -115,6 +117,7 @@ USAGE
 
 Paths normally come from install-time \$INSTALL/env (written by install.sh).
 After install you only need:  start.sh -d
+Per-repo planning is selected at start_session (repo: owner/repo), not here.
 
 DEFAULT INSTALL DIR
   ${DEFAULT_INSTALL_DIR}
@@ -290,6 +293,9 @@ if [[ "$SCHEMAS_SET" -eq 0 ]]; then
   [[ -z "$HOST_SCHEMAS_DIR" && -d "${INSTALL_DIR}/schemas" ]] && HOST_SCHEMAS_DIR="${INSTALL_DIR}/schemas"
 fi
 
+# Durable server state (HMAC secret). Lives under install dir, not HOME.
+HOST_STATE_DIR="${HOST_STATE_DIR:-${INSTALL_DIR}/state}"
+
 command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
 
 # Resolve + create roots before bind-mount (must exist for docker -v).
@@ -324,6 +330,13 @@ HOST_WORKFLOWS_DIR="$(abs_dir "$HOST_WORKFLOWS_DIR")"
 if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
   HOST_SCHEMAS_DIR="$(abs_dir "$HOST_SCHEMAS_DIR")"
 fi
+
+HOST_STATE_DIR="$(abs_path "$HOST_STATE_DIR")"
+if [[ ! -d "$HOST_STATE_DIR" ]]; then
+  echo "Creating server state dir: ${HOST_STATE_DIR}"
+  mkdir -p "$HOST_STATE_DIR" || die "failed to create state dir: ${HOST_STATE_DIR}"
+fi
+HOST_STATE_DIR="$(abs_dir "$HOST_STATE_DIR")"
 
 if [[ -n "$IMAGE_REF" ]]; then
   FULL_IMAGE="$IMAGE_REF"
@@ -373,6 +386,9 @@ DOCKER_RUN+=(-e "WORKFLOW_SERVER_ENGINEERING_DIR=${CONTAINER_ENGINEERING_ROOT}")
 DOCKER_RUN+=(-e "WORKFLOW_SERVER_INSTALL_DIR=${CONTAINER_INSTALL_DIR}")
 DOCKER_RUN+=(-e "WORKFLOW_DIR=${CONTAINER_WORKFLOW_DIR}")
 DOCKER_RUN+=(-e "SCHEMAS_DIR=${CONTAINER_SCHEMAS_DIR}")
+# Session HMAC key path — independent of HOME (Docker --user without passwd → HOME=/)
+DOCKER_RUN+=(-e "WORKFLOW_SERVER_KEY_DIR=${CONTAINER_STATE_DIR}")
+DOCKER_RUN+=(-e "HOME=${CONTAINER_STATE_DIR}")
 DOCKER_RUN+=(-e "TRANSPORT=${TRANSPORT}")
 DOCKER_RUN+=(-e "HOST=${BIND_HOST}")
 DOCKER_RUN+=(-e "PORT=${CONTAINER_PORT}")
@@ -394,6 +410,8 @@ DOCKER_RUN+=(-v "${HOST_WORKFLOWS_DIR}:${CONTAINER_WORKFLOW_DIR}:ro")
 if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
   DOCKER_RUN+=(-v "${HOST_SCHEMAS_DIR}:${CONTAINER_SCHEMAS_DIR}:ro")
 fi
+# Persist signing key across container recreate (install dir, not worktree root).
+DOCKER_RUN+=(-v "${HOST_STATE_DIR}:${CONTAINER_STATE_DIR}")
 
 DOCKER_RUN+=("${DOCKER_ARGS[@]+"${DOCKER_ARGS[@]}"}")
 DOCKER_RUN+=("$FULL_IMAGE")
@@ -409,6 +427,7 @@ if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
 else
   echo "  schemas    : (image default at ${CONTAINER_SCHEMAS_DIR})"
 fi
+echo "  state      : ${HOST_STATE_DIR} → ${CONTAINER_STATE_DIR} (rw, HMAC key)"
 echo "  publish    : ${HOST_PORT} → ${CONTAINER_PORT}"
 echo "  MCP URL    : http://127.0.0.1:${HOST_PORT}/mcp"
 
@@ -418,4 +437,5 @@ if [[ "$DETACH" -eq 1 && "$DRY_RUN" -eq 0 ]]; then
   echo "Detached as '${NAME}'. Logs: docker logs -f ${NAME}"
   echo "Health:  curl -fsS http://127.0.0.1:${HOST_PORT}/health"
   echo "Ready:   curl -fsS http://127.0.0.1:${HOST_PORT}/ready"
+  echo "Smoke:   ready must show sessionKeyWritable=true before start_session"
 fi
