@@ -1,9 +1,5 @@
 # Install layout: projects + worktrees
 
-**Status:** Implementation  
-**Date:** 2026-07-24  
-**Branch:** `feat/install-source-worktrees`
-
 ## Goal
 
 Every managed product repo under the workflow-server install root gets a **main/default-branch checkout** used as the git reference for feature worktrees. Engineering planning lives in that checkout’s **`.engineering` submodule** (initialized on init). Feature worktrees stay in a **sibling** install tree. Global workflow **definitions** remain a separate install clone.
@@ -30,12 +26,6 @@ $INSTALL/   # default: ~/.local/share/workflow-server
 | `$INSTALL/projects/<o>/<r>/.engineering/` | Session / planning root (`artifacts/planning/…`) |
 | `$INSTALL/worktrees/<o>/<r>/<slug>/` | Feature edit worktrees |
 | `$INSTALL/workflows/` | Workflow YAML library for the server (not per-product) |
-
-## Non-goals
-
-- Do **not** init product `workflows` submodules under `projects/` by default (server uses global `$INSTALL/workflows`).
-- Do **not** put feature worktrees inside `projects/` (branch/worktree isolation).
-- Do **not** require a developer `~/projects/main/…` checkout for worktree creation.
 
 ## Lifecycle
 
