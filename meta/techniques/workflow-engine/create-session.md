@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -21,6 +21,10 @@ Target client workflow id (e.g., `work-package`).
 
 The work-package planning slug — `YYYY-MM-DD-{initiative_name}`. Names the planning folder the server materialises under its workspace `.engineering` root. Omit when no slug has been derived; the server then falls back to `YYYY-MM-DD-<workflow_id>`.
 
+### repo
+
+Target `owner/repo` when the server is on install multi-root. Prefer the value already in worker prior-state / dispatch prompt (e.g. `Target Github repo`) or workspace `AGENTS.md`. Required for promotion if meta `start_session` did not bind `repo`.
+
 ## Outputs
 
 ### session_index
@@ -33,6 +37,20 @@ The canonical absolute path of the planning folder, as resolved by the server un
 
 ## Protocol
 
-1. Call `dispatch_child { session_index: {parent_session_index}, workflow_id: {workflow_id}, agent_id: 'orchestrator', planning_slug: {client_planning_slug} }`; capture the returned `{session_index}` for use in all subsequent calls inside the child workflow, and the returned `{planning_folder_path}` (the server-resolved absolute folder under its workspace) as the single artifact location. The server appends the child under `parent.triggeredWorkflows[N].state` and embeds the full child SessionFile inline; the agent does not deal with separate child folders, and does not compose the folder path itself.
+1. Call `dispatch_child` with:
+
+   - `session_index: {parent_session_index}`
+   - `workflow_id: {workflow_id}`
+   - `agent_id: 'orchestrator'`
+   - `planning_slug: {client_planning_slug}` when known
+   - `repo: {owner/repo}` when multi-root (from prior-state / prompt / `AGENTS.md`)
+
+   Capture the returned `{session_index}` for use in all subsequent calls inside the child workflow, and the returned `{planning_folder_path}` (the server-resolved absolute folder under its workspace) as the single artifact location. The server appends the child under `parent.triggeredWorkflows[N].state` and embeds the full child SessionFile inline; the agent does not deal with separate child folders, and does not compose the folder path itself.
 
    Omit `context_mode` (or pass `"fresh"`). Client activities are executed by disposable per-activity workers via [dispatch-activity](./dispatch-activity.md); do not pass `context_mode: "persistent"` on the child session.
+
+## Rules
+
+### multi-root-repo-on-dispatch
+
+On install multi-root, if meta was started without `repo`, you MUST pass `repo` on this `dispatch_child`. The server promotes the transient parent into `engineering/<owner>/<repo>/artifacts/planning/<slug>/`. Do not retry without `repo` after a promote error.
