@@ -26,7 +26,7 @@ Two steps per project: the first (a) touches the **repo** to make it workflow-se
 
 ### 2a. Deploy engineering into the project (required first)
 
-From the **root of the target project repo** (not the workflow-server checkout), run [`scripts/deploy.sh`](scripts/deploy.sh). This is the initial step that sets the repo up for workflow-server compatibility (`.engineering/` layout, engineering branch/submodule, planning structure).
+From the **root of the target project repo** (not the workflow-server checkout), run [`scripts/deploy.sh`](scripts/deploy.sh). This sets the repo up for workflow-server compatibility (`.engineering/` layout, engineering branch/submodule, planning structure).
 
 ```bash
 # inside the target project
@@ -35,25 +35,7 @@ curl -fsSL -o deploy.sh \
 chmod +x deploy.sh && ./deploy.sh
 ```
 
-#### Engineering storage patterns
-
-`deploy.sh` supports three layouts. Pick one per project (or per org convention):
-
-| Pattern | Command | Where engineering history lives |
-|---------|---------|----------------------------------|
-| **Same-repo orphan** (default) | `./deploy.sh` or `./deploy.sh --orphan` | Orphan branch `engineering` on **this** app remote; app tracks it via a `.engineering` submodule |
-| **Shared engineering monorepo** | `./deploy.sh --orphan <engineering-remote-url>` | **External** engineering remote; one **project-named branch** per app (branch name = project directory basename). Many product repos share one engineering remote; each keeps planning/ADRs on its own branch |
-| **In-branch** | `./deploy.sh --in-branch` | `.engineering/` as ordinary files on the current app branch (no orphan/submodule) |
-
-**Shared engineering monorepo** (multi-app / monorepo org):
-
-- One private (or internal) git remote holds engineering for several product repos.
-- Deploy with the external URL: `./deploy.sh --orphan git@host:org/shared-engineering.git` (URL is yours; not a fixed public repo).
-- The script creates or uses branch `<project-name>` on that remote and wires the app’s `.engineering` submodule to it.
-- Sibling apps repeat deploy with the **same** engineering remote; each gets its own branch. History stays out of product default branches.
-- Optional history submodule can use the same project-named branch convention (`--history-repo`, `--skip-history`).
-
-> Full flags: `./deploy.sh --help`.
+Layouts (same-repo orphan, shared engineering monorepo, in-branch): [docs/engineering-storage.md](docs/engineering-storage.md). Flags: `./deploy.sh --help`.
 
 ### 2b. Materialise install-root paths
 
@@ -63,14 +45,12 @@ After the project has been deployed, register it under the workflow-server insta
 ~/.local/share/workflow-server/init-repo.sh owner/repo
 ```
 
-`init-repo.sh` resolves engineering from the app’s default branch (`.engineering` submodule URL/branch, in-repo `engineering` branch, or in-tree `.engineering/`), including **external** submodule remotes used by the shared-engineering monorepo pattern.
-
 That creates:
 
 - `$INSTALL/engineering/<owner>/<repo>/` — engineering checkout (planning / session state)
 - `$INSTALL/workspace/<owner>/<repo>/` — feature worktrees
 
-Repeat **2a → 2b** for each product repo you care about.
+`init-repo.sh` follows the app’s engineering source (submodule, branch, or in-tree), including external remotes. Repeat **2a → 2b** for each product repo.
 
 ## 3. IDE bootstrap rule
 
@@ -94,6 +74,7 @@ Restart the HTTP server afterward if it is running.
 | stdio / local checkout only | [stdio.md](stdio.md) |
 | Install script | [`scripts/install.sh`](scripts/install.sh) |
 | Deploy into a project | [`scripts/deploy.sh`](scripts/deploy.sh) |
+| Engineering storage patterns | [docs/engineering-storage.md](docs/engineering-storage.md) |
 | Init install paths | [`scripts/init-repo.sh`](scripts/init-repo.sh) |
 | Env vars & flags (dev) | [docs/development.md](docs/development.md#environment-variables) |
 | IDE rule | [docs/ide-setup.md](docs/ide-setup.md) |

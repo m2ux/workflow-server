@@ -49,12 +49,7 @@ These artifacts are written strictly into the planning folder, separating planni
 
 ## 4. Git & Submodule Protocol
 
-Engineering content is version-controlled independently from domain commits. Common layouts (see also [setup.md §2a](../setup.md#2a-deploy-engineering-into-the-project-required-first)):
-
-- **Same-repo orphan** — app remote branch `engineering`; app default branch holds a `.engineering` submodule gitlink.
-- **Shared engineering monorepo** — one external engineering remote shared by many product repos; each app uses a **project-named branch** on that remote (via `deploy.sh --orphan <url>`). `init-repo.sh` follows the app’s `.engineering` submodule URL/branch pin.
-- **In-tree `.engineering/`** on the app default branch — materialised into the engineering root the same way.
-- **Workflow definitions** — separate `workflows` orphan branch under `$INSTALL/workflows` (or a checkout worktree).
+Engineering content is version-controlled independently from domain commits. Common layouts are documented in [engineering-storage.md](engineering-storage.md) (same-repo orphan, shared engineering monorepo, in-branch). Workflow definitions live on a separate `workflows` orphan branch under `$INSTALL/workflows` (or a checkout worktree).
 
 When the Workflow Orchestrator hits its `commit-artifacts` phase (after an activity is fully complete), it must:
 1. `cd` into the engineering checkout (or nested submodule/worktree as applicable).
