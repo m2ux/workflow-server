@@ -1,31 +1,25 @@
-# Setup (Docker / HTTP)
+# Setup — Docker / HTTP
 
-Run a Dockerised workflow server and connect your IDE over HTTP.
+Transport-specific steps for running the **GHCR image** over HTTP.  
+Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, day-two).
 
-## Layout
+## Prerequisites
 
-Two separate host paths:
+- [Docker](https://docs.docker.com/get-docker/)
+- `curl`, `git` (for `install.sh`)
 
-| Path | Default | Purpose |
-|------|---------|---------|
-| **Install dir** | `~/.local/share/workflow-server` | Server data |
-| **Worktree root** | `~/worktrees` | Workspace (shared with the agent) |
+## 1. Install host layout
 
-
-
-## 1. Install
-
-Needs git and curl. Fetches helper scripts, clones the `workflows` branch into the install dir, creates `~/worktrees` if missing, and writes a persistent `env` file so `start.sh` needs no path args.
+Fetches helper scripts, clones the `workflows` branch, creates `engineering/` + `workspace/`, writes `$INSTALL/env`:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh | bash
+curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
 ```
 
-> Options: `…/install-docker.sh` (`--help`, `--install-dir`, `--worktree-root`, …)  
+> Options: `install.sh --help` (`--install-dir`, `--worktree-root`, `--engineering-root`, …).  
+> Legacy URL `…/install-docker.sh` still works (forwards to `install.sh`).
 
 ## 2. Start the server
-
-Needs [Docker](https://docs.docker.com/get-docker/).
 
 ```bash
 ~/.local/share/workflow-server/start.sh -d
@@ -35,40 +29,24 @@ Defaults:
 
 - Image: `ghcr.io/m2ux/workflow-server:main`
 - Publish: `http://127.0.0.1:3000`
+- Binds: host `$INSTALL/workspace` → `/var/lib/workflow-server/workspace`, host `$INSTALL/engineering` → `/var/lib/workflow-server/engineering`
+- Container env: `WORKTREE_ROOT` / `WORKFLOW_WORKSPACE`, `WORKFLOW_SERVER_ENGINEERING_DIR`, `WORKFLOW_SERVER_INSTALL_DIR` (see `start.sh`)
 
-Conversely to stop the server: 
+Stop:
 
 ```bash
 ~/.local/share/workflow-server/stop.sh
 ```
 
-## 3. Check health
+Compose alternative: [`docker-compose.yml`](docker-compose.yml) (same bind names as `.env.example`).
 
-```bash
-curl -fsS http://127.0.0.1:3000/health
-```
-
-Expect `{"status":"ok"}`.
-
-## 4. Update workflows
-
-Pull the latest `workflows` branch into the install dir (not the agent worktree root).
-
-```bash
-~/.local/share/workflow-server/update-workflows.sh
-```
-
-> Restart the server afterward if it is already running.  
-
-## 5. Connect the MCP client
-
-Export the endpoint (Cursor reads `${env:…}` from the process environment):
+## 3. MCP client (HTTP)
 
 ```bash
 export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp
 ```
 
-Project config ([`.cursor/mcp.json`](.cursor/mcp.json)):
+Project config (e.g. [`.cursor/mcp.json`](.cursor/mcp.json)):
 
 ```json
 {
@@ -81,27 +59,29 @@ Project config ([`.cursor/mcp.json`](.cursor/mcp.json)):
 }
 ```
 
-Restart the IDE, then ask it to list available workflows.
+Restart the IDE (or reload MCP servers) after setting the env var and config.
 
-## 6. IDE bootstrap rule
+## 4. Verify
 
-Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
+| Check | How |
+|-------|-----|
+| Liveness | `curl -fsS http://127.0.0.1:3000/health` → `{"status":"ok"}` |
+| Readiness | `curl -fsS http://127.0.0.1:3000/ready` → `status: ready` (workflow, schemas, workspace, and engineering dirs when split) |
+| Container | `docker logs -f workflow-server` (default name; no crash loop) |
+| MCP | In the IDE: list available workflows |
 
----
+Adjust host/port if you changed `--host-port`. Routes: [docs/api-reference.md](docs/api-reference.md#http-endpoints).
 
-## More detail
+Then finish shared steps in [setup.md](setup.md) (**§2** init-repo, **§3** IDE rule, **§4** day-two).
+
+## HTTP-only references
 
 | Topic | Where |
 |-------|--------|
-| Install script | [`scripts/install-docker.sh`](scripts/install-docker.sh) |
-| Start | [`scripts/start.sh`](scripts/start.sh) |
-| Stop | [`scripts/stop.sh`](scripts/stop.sh) |
+| Start / stop / binds | [`scripts/start.sh`](scripts/start.sh), [`scripts/stop.sh`](scripts/stop.sh) |
 | Update workflows | [`scripts/update-workflows.sh`](scripts/update-workflows.sh) |
-| Compose / binds | [`docker-compose.yml`](docker-compose.yml) (host worktree default: `~/worktrees`) |
+| Compose | [`docker-compose.yml`](docker-compose.yml) |
 | Local `.env` helper | [`scripts/init-local-env.sh`](scripts/init-local-env.sh), [`.env.example`](.env.example) |
-| Stdio / local checkout | [stdio.md](stdio.md) |
-| Develop from source | [docs/development.md](docs/development.md) |
-| HTTP API / endpoints | [docs/api-reference.md](docs/api-reference.md#http-endpoints) |
-| Server env vars | [docs/development.md](docs/development.md) / `src/config.ts` |
-| Deploy `.engineering` into a project | [`scripts/deploy.sh`](scripts/deploy.sh) |
-| Architecture & fidelity | [docs/architecture.md](docs/architecture.md), [docs/workflow-fidelity.md](docs/workflow-fidelity.md) |
+| HTTP routes | [docs/api-reference.md](docs/api-reference.md#http-endpoints) |
+| Shared setup | [setup.md](setup.md) |
+| stdio transport | [stdio.md](stdio.md) |

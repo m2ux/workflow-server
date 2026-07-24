@@ -49,7 +49,7 @@ workflow-server/
 ├── src/
 │   ├── index.ts              # Entry point: config → dispatch to the transport it selects
 │   ├── server.ts             # MCP server creation and tool/resource registration (shared by every transport)
-│   ├── config.ts             # ServerConfig: workflowDir, schemasDir, schemaPreamble, traceStore, minCheckpointResponseSeconds, transport, port, host
+│   ├── config.ts             # ServerConfig: workflowDir, schemasDir, workspaceDir, engineeringDir, repo, installDir, planningRelativeDir, transport, port, host, …
 │   ├── transports/           # One module per transport, each owning that transport's connect/listen/shutdown lifecycle
 │   │   ├── stdio.ts          # Default transport — unchanged behavior from before dual-transport support
 │   │   └── http.ts           # Opt-in transport: Express app, /health + /ready, /mcp (StreamableHTTPServerTransport), graceful shutdown
@@ -98,7 +98,11 @@ workflow-server/
 │   ├── technique.schema.json
 │   ├── condition.schema.json
 │   └── state.schema.json
-├── scripts/                  # Build, corpus guards, benchmarks
+├── scripts/                  # Build, corpus guards, install helpers, benchmarks
+│   ├── install.sh            # Local install layout (helpers, workflows, engineering/, workspace/, env)
+│   ├── init-repo.sh          # Per-repo engineering + workspace under $INSTALL
+│   ├── start.sh / stop.sh    # GHCR container runner (loads $INSTALL/env)
+│   ├── update-workflows.sh
 │   ├── generate-schemas.ts
 │   ├── validate-workflow-yaml.ts
 │   └── run-token-benchmark.ts
@@ -118,16 +122,44 @@ workflow-server/
 
 ## Environment Variables
 
+Root binding (one of workspace path **or** `--repo` is required at startup):
+
+| Variable / flag | Default | Description |
+|-----------------|---------|-------------|
+| `--workspace=PATH` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` | — | Explicit workspace / worktree root (legacy single-root: planning under this path) |
+| `--repo=owner/repo` / `WORKFLOW_SERVER_REPO` | — | Bind `$INSTALL/workspace/<owner>/<repo>` and `$INSTALL/engineering/<owner>/<repo>` |
+| `--install-dir=PATH` / `WORKFLOW_SERVER_INSTALL_DIR` | `~/.local/share/workflow-server` (or `$XDG_DATA_HOME/workflow-server`) | Install root used with `--repo` |
+| `WORKFLOW_SERVER_ENGINEERING_DIR` | equals workspace when unbound; else `$INSTALL/engineering/...` | Engineering checkout used for planning / session files |
+| `PLANNING_SLUG` | `.engineering/artifacts/planning` (legacy) or `artifacts/planning` (repo / engineering-root mode) | Relative planning dir under the engineering root |
+
+Other process config:
+
 | Variable | Default | Description |
 |----------|---------|-------------|
-| `WORKFLOW_DIR` | `./workflows` | Path to workflow directories |
+| `WORKFLOW_DIR` | `./workflows` | Path to workflow directories (`--workflow-dir` takes precedence) |
+| `SCHEMAS_DIR` | `./schemas` | Path to JSON Schema files |
 | `SERVER_NAME` | `workflow-server` | Server name in health check |
-| `SERVER_VERSION` | `1.0.0` | Server version in health check |
+| `SERVER_VERSION` | `2.1.0` | Server version in health check |
 | `TRANSPORT` | `stdio` | Transport to start (`stdio` or `http`); `--transport` takes precedence |
 | `PORT` | `3000` | Port the HTTP transport listens on; ignored under stdio; `--port` takes precedence |
 | `HOST` | `localhost` | Host the HTTP transport binds to; ignored under stdio; `--host` takes precedence |
+| `BUNDLE_HEADROOM_FRACTION` | `0.8` | Eager step-technique bundling headroom on `get_activity` |
+| `BUNDLE_CHARS_PER_TOKEN` | `4` | Token→character factor for bundling budget |
 
-Equivalently, `node dist/index.js --transport=http --port=3000 --host=localhost` (or `npm run start:http` / `npm run dev:http` for the defaults).
+Examples:
+
+```bash
+# Legacy single-root (workspace == engineering for planning)
+node dist/index.js --workspace=~/work --workflow-dir=./workflows
+
+# Per-repo layout (after scripts/install.sh + scripts/init-repo.sh owner/repo)
+node dist/index.js --repo=m2ux/workflow-server --transport=http
+
+# HTTP defaults from npm
+npm run start:http   # or: node dist/index.js --transport=http --port=3000 --host=localhost
+```
+
+See also [setup.md](../setup.md), [http.md](../http.md), and [stdio.md](../stdio.md).
 
 ## Testing
 

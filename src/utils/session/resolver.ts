@@ -218,7 +218,7 @@ export function describeSessionStoreError(err: unknown): string {
     case 'SEAL_MISMATCH':
       return `${err.message}. The session.json (or its parsed contents) does not match the seal recorded in .session-token — restore the folder from the most recent commit before retrying.`;
     case 'WORKSPACE_INVALID':
-      return `${err.message}. Restart the server with a valid --workspace=PATH or WORKFLOW_WORKSPACE pointing at the repository root.`;
+      return `${err.message}. Restart the server with a valid --repo=owner/repo, --workspace=PATH, or WORKFLOW_WORKSPACE / WORKFLOW_SERVER_REPO.`;
     default:
       return err.message;
   }

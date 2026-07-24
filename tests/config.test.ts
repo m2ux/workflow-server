@@ -1,8 +1,12 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { homedir } from 'node:os';
 import { join, resolve } from 'node:path';
 import {
   loadConfig,
+  normalizeRepoPath,
   resolvePlanningRelativeDir,
+  resolveRepoPaths,
+  REPO_PLANNING_RELATIVE_DIR,
   WorkspaceConfigError,
 } from '../src/config.js';
 import {
@@ -11,23 +15,42 @@ import {
   setPlanningRelativeDir,
 } from '../src/utils/session/store.js';
 
+const REPO_ENV_KEYS = [
+  'WORKFLOW_WORKSPACE',
+  'WORKTREE_ROOT',
+  'WORKFLOW_SERVER_REPO',
+  'WORKFLOW_SERVER_INSTALL_DIR',
+  'WORKFLOW_SERVER_ENGINEERING_DIR',
+  'XDG_DATA_HOME',
+  'PLANNING_SLUG',
+] as const;
+
+function clearRepoEnv(): Record<string, string | undefined> {
+  const before: Record<string, string | undefined> = {};
+  for (const k of REPO_ENV_KEYS) {
+    before[k] = process.env[k];
+    delete process.env[k];
+  }
+  return before;
+}
+
+function restoreRepoEnv(before: Record<string, string | undefined>): void {
+  for (const k of REPO_ENV_KEYS) {
+    if (before[k] === undefined) delete process.env[k];
+    else process.env[k] = before[k];
+  }
+  setPlanningRelativeDir(PLANNING_RELATIVE_DIR);
+}
+
 describe('loadConfig — workspace argument', () => {
-  let envBefore: string | undefined;
-  let worktreeRootBefore: string | undefined;
+  let envBefore: Record<string, string | undefined>;
 
   beforeEach(() => {
-    envBefore = process.env['WORKFLOW_WORKSPACE'];
-    worktreeRootBefore = process.env['WORKTREE_ROOT'];
-    delete process.env['WORKFLOW_WORKSPACE'];
-    delete process.env['WORKTREE_ROOT'];
+    envBefore = clearRepoEnv();
   });
 
   afterEach(() => {
-    if (envBefore === undefined) delete process.env['WORKFLOW_WORKSPACE'];
-    else process.env['WORKFLOW_WORKSPACE'] = envBefore;
-    if (worktreeRootBefore === undefined) delete process.env['WORKTREE_ROOT'];
-    else process.env['WORKTREE_ROOT'] = worktreeRootBefore;
-    setPlanningRelativeDir(PLANNING_RELATIVE_DIR);
+    restoreRepoEnv(envBefore);
   });
 
   describe('--workspace=PATH CLI flag', () => {
@@ -116,11 +139,12 @@ describe('loadConfig — workspace argument', () => {
       expect(() => loadConfig([])).toThrow(WorkspaceConfigError);
     });
 
-    it('throws an actionable message naming --workspace, WORKFLOW_WORKSPACE, and WORKTREE_ROOT (PR267-TC-01)', () => {
+    it('throws an actionable message naming --repo, --workspace, and env vars', () => {
+      expect(() => loadConfig([])).toThrow(/--repo/);
       expect(() => loadConfig([])).toThrow(/--workspace/);
       expect(() => loadConfig([])).toThrow(/WORKFLOW_WORKSPACE/);
       expect(() => loadConfig([])).toThrow(/WORKTREE_ROOT/);
-      expect(() => loadConfig([])).toThrow(/worktree root/i);
+      expect(() => loadConfig([])).toThrow(/worktree/i);
     });
 
     it('treats whitespace-only WORKFLOW_WORKSPACE as absent', () => {
@@ -131,6 +155,22 @@ describe('loadConfig — workspace argument', () => {
     it('treats whitespace-only WORKTREE_ROOT as absent', () => {
       process.env['WORKTREE_ROOT'] = '   ';
       expect(() => loadConfig([])).toThrow(WorkspaceConfigError);
+    });
+  });
+
+  describe('legacy single-root layout', () => {
+    it('sets engineeringDir equal to workspaceDir when no engineering override', () => {
+      const config = loadConfig(['--workspace=/tmp/ws']);
+      expect(config.engineeringDir).toBe(resolve('/tmp/ws'));
+      expect(config.workspaceDir).toBe(resolve('/tmp/ws'));
+    });
+
+    it('honours WORKFLOW_SERVER_ENGINEERING_DIR override', () => {
+      process.env['WORKFLOW_SERVER_ENGINEERING_DIR'] = '/tmp/eng-only';
+      const config = loadConfig(['--workspace=/tmp/ws']);
+      expect(config.workspaceDir).toBe(resolve('/tmp/ws'));
+      expect(config.engineeringDir).toBe(resolve('/tmp/eng-only'));
+      expect(config.planningRelativeDir).toBe(REPO_PLANNING_RELATIVE_DIR);
     });
   });
 
@@ -150,6 +190,111 @@ describe('loadConfig — workspace argument', () => {
       expect(config.bundleHeadroomFraction).toBe(0.8);
       expect(config.bundleCharsPerToken).toBe(4);
     });
+  });
+});
+
+describe('normalizeRepoPath / resolveRepoPaths', () => {
+  it('accepts owner/repo', () => {
+    expect(normalizeRepoPath('m2ux/workflow-server')).toBe('m2ux/workflow-server');
+  });
+
+  it('accepts https and ssh URLs', () => {
+    expect(normalizeRepoPath('https://github.com/m2ux/workflow-server.git')).toBe(
+      'm2ux/workflow-server',
+    );
+    expect(normalizeRepoPath('git@github.com:acme/app.git')).toBe('acme/app');
+  });
+
+  it('rejects bare names and empty input', () => {
+    expect(() => normalizeRepoPath('workflow-server')).toThrow(WorkspaceConfigError);
+    expect(() => normalizeRepoPath('  ')).toThrow(WorkspaceConfigError);
+  });
+
+  it('derives engineering and workspace under the install root', () => {
+    const paths = resolveRepoPaths('m2ux/workflow-server', '/data/workflow-server');
+    expect(paths.repo).toBe('m2ux/workflow-server');
+    expect(paths.installDir).toBe(resolve('/data/workflow-server'));
+    expect(paths.engineeringDir).toBe(
+      resolve('/data/workflow-server/engineering/m2ux/workflow-server'),
+    );
+    expect(paths.workspaceDir).toBe(
+      resolve('/data/workflow-server/workspace/m2ux/workflow-server'),
+    );
+  });
+});
+
+describe('loadConfig — --repo binding', () => {
+  let envBefore: Record<string, string | undefined>;
+
+  beforeEach(() => {
+    envBefore = clearRepoEnv();
+  });
+
+  afterEach(() => {
+    restoreRepoEnv(envBefore);
+  });
+
+  it('resolves workspace and engineering from --repo=owner/repo', () => {
+    const config = loadConfig([
+      '--repo=m2ux/workflow-server',
+      '--install-dir=/tmp/wf-install',
+    ]);
+    expect(config.repo).toBe('m2ux/workflow-server');
+    expect(config.installDir).toBe(resolve('/tmp/wf-install'));
+    expect(config.workspaceDir).toBe(
+      resolve('/tmp/wf-install/workspace/m2ux/workflow-server'),
+    );
+    expect(config.engineeringDir).toBe(
+      resolve('/tmp/wf-install/engineering/m2ux/workflow-server'),
+    );
+    expect(config.planningRelativeDir).toBe(REPO_PLANNING_RELATIVE_DIR);
+    expect(planningRoot(config.engineeringDir!)).toBe(
+      join(config.engineeringDir!, REPO_PLANNING_RELATIVE_DIR),
+    );
+  });
+
+  it('accepts space-separated --repo and WORKFLOW_SERVER_REPO env', () => {
+    const fromCli = loadConfig([
+      '--repo',
+      'acme/app',
+      '--install-dir=/tmp/inst',
+    ]);
+    expect(fromCli.repo).toBe('acme/app');
+    expect(fromCli.workspaceDir).toBe(resolve('/tmp/inst/workspace/acme/app'));
+
+    process.env['WORKFLOW_SERVER_REPO'] = 'acme/from-env';
+    process.env['WORKFLOW_SERVER_INSTALL_DIR'] = '/tmp/inst-env';
+    const fromEnv = loadConfig([]);
+    expect(fromEnv.repo).toBe('acme/from-env');
+    expect(fromEnv.engineeringDir).toBe(
+      resolve('/tmp/inst-env/engineering/acme/from-env'),
+    );
+  });
+
+  it('prefers --workspace over --repo when both are set', () => {
+    const config = loadConfig([
+      '--workspace=/tmp/explicit-ws',
+      '--repo=m2ux/workflow-server',
+      '--install-dir=/tmp/ignored',
+    ]);
+    expect(config.workspaceDir).toBe(resolve('/tmp/explicit-ws'));
+    expect(config.engineeringDir).toBe(resolve('/tmp/explicit-ws'));
+    expect(config.repo).toBe('m2ux/workflow-server');
+    expect(config.planningRelativeDir).toBe(PLANNING_RELATIVE_DIR);
+  });
+
+  it('defaults install dir to ~/.local/share/workflow-server', () => {
+    const config = loadConfig(['--repo=m2ux/workflow-server']);
+    expect(config.installDir).toBe(
+      resolve(homedir(), '.local/share/workflow-server'),
+    );
+    expect(config.workspaceDir).toBe(
+      resolve(homedir(), '.local/share/workflow-server/workspace/m2ux/workflow-server'),
+    );
+  });
+
+  it('throws on invalid --repo', () => {
+    expect(() => loadConfig(['--repo=not-a-path'])).toThrow(WorkspaceConfigError);
   });
 });
 
@@ -228,24 +373,14 @@ describe('loadConfig — transport selection', () => {
 });
 
 describe('loadConfig — PLANNING_SLUG', () => {
-  let slugBefore: string | undefined;
-  let workspaceBefore: string | undefined;
+  let envBefore: Record<string, string | undefined>;
 
   beforeEach(() => {
-    slugBefore = process.env['PLANNING_SLUG'];
-    workspaceBefore = process.env['WORKFLOW_WORKSPACE'];
-    delete process.env['PLANNING_SLUG'];
-    delete process.env['WORKFLOW_WORKSPACE'];
-    delete process.env['WORKTREE_ROOT'];
-    setPlanningRelativeDir(PLANNING_RELATIVE_DIR);
+    envBefore = clearRepoEnv();
   });
 
   afterEach(() => {
-    if (slugBefore === undefined) delete process.env['PLANNING_SLUG'];
-    else process.env['PLANNING_SLUG'] = slugBefore;
-    if (workspaceBefore === undefined) delete process.env['WORKFLOW_WORKSPACE'];
-    else process.env['WORKFLOW_WORKSPACE'] = workspaceBefore;
-    setPlanningRelativeDir(PLANNING_RELATIVE_DIR);
+    restoreRepoEnv(envBefore);
   });
 
   it('defaults planningRelativeDir to .engineering/artifacts/planning (PR267-TC-04)', () => {
@@ -271,21 +406,18 @@ describe('loadConfig — PLANNING_SLUG', () => {
 
 describe('loadConfig — workflowDir', () => {
   let workflowDirBefore: string | undefined;
-  let workspaceBefore: string | undefined;
+  let envBefore: Record<string, string | undefined>;
 
   beforeEach(() => {
     workflowDirBefore = process.env['WORKFLOW_DIR'];
-    workspaceBefore = process.env['WORKFLOW_WORKSPACE'];
+    envBefore = clearRepoEnv();
     delete process.env['WORKFLOW_DIR'];
-    delete process.env['WORKFLOW_WORKSPACE'];
-    delete process.env['WORKTREE_ROOT'];
   });
 
   afterEach(() => {
     if (workflowDirBefore === undefined) delete process.env['WORKFLOW_DIR'];
     else process.env['WORKFLOW_DIR'] = workflowDirBefore;
-    if (workspaceBefore === undefined) delete process.env['WORKFLOW_WORKSPACE'];
-    else process.env['WORKFLOW_WORKSPACE'] = workspaceBefore;
+    restoreRepoEnv(envBefore);
   });
 
   it('defaults workflowDir to ./workflows under the install root', () => {

@@ -1,8 +1,7 @@
-# Setup (stdio)
+# Setup — stdio
 
-Run the workflow server from a local checkout. The IDE spawns the process over **stdio** (default transport).
-
-For the Docker / GHCR HTTP path (no source checkout), see [http.md](http.md).
+Transport-specific steps for a **local checkout** where the IDE spawns the server over stdio (default transport).  
+Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, day-two).
 
 ## Prerequisites
 
@@ -10,7 +9,7 @@ For the Docker / GHCR HTTP path (no source checkout), see [http.md](http.md).
 - Git
 - MCP client (Cursor, Claude Desktop, or compatible)
 
-## 1. Install
+## 1. Build from source
 
 ```bash
 git clone https://github.com/m2ux/workflow-server.git
@@ -20,9 +19,17 @@ git worktree add ./workflows workflows
 npm run build
 ```
 
-## 2. Configure the MCP client
+Optional: same host layout as Docker (without starting a container):
 
-Point the client at the built entry point. The IDE starts the server; you do not run it separately.
+```bash
+./scripts/install.sh --install-dir=~/.local/share/workflow-server
+```
+
+Then continue with [setup.md §2](setup.md#2-init-a-target-repo) to init each target repo.
+
+## 2. MCP client (stdio)
+
+The IDE starts the process; you do not run a long-lived server yourself. Point the client at the built entry and the install root:
 
 ```json
 {
@@ -31,7 +38,7 @@ Point the client at the built entry point. The IDE starts the server; you do not
       "command": "node",
       "args": [
         "/path/to/workflow-server/dist/index.js",
-        "--workspace=/path/to/worktree-root",
+        "--install-dir=/home/you/.local/share/workflow-server",
         "--workflow-dir=/path/to/workflows"
       ]
     }
@@ -39,28 +46,30 @@ Point the client at the built entry point. The IDE starts the server; you do not
 }
 ```
 
-### Startup args
+`--transport=stdio` is the default (omit, or set `TRANSPORT=stdio`).
 
-| Arg | Env | Notes |
-|-----|-----|--------|
-| `--workspace=PATH` | `WORKFLOW_WORKSPACE` or `WORKTREE_ROOT` | Required worktree root shared with the agent (recommend `~/worktrees`, same default as [http.md](http.md)) |
-| `--workflow-dir=PATH` | `WORKFLOW_DIR` | Workflows directory (default `./workflows`) |
-| `--transport=stdio` | `TRANSPORT` | Default; omit for stdio |
+Developer-only process flags: [docs/development.md](docs/development.md#environment-variables).
 
-## 3. IDE bootstrap rule
+## 3. Verify
 
-Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
+There is no HTTP listener under stdio — the IDE owns the process.
 
-## 4. Verify
+| Check | How |
+|-------|-----|
+| Build | `npm run typecheck` (and `npm run build` if `dist/` is stale) |
+| Paths | `--install-dir` / `--workflow-dir` exist and are readable |
+| MCP load | Restart the IDE (or reload MCP servers); the workflow-server entry shows as connected with no spawn error |
+| Tools | In the IDE: list available workflows (`list_workflows`) |
 
-Restart the IDE, then ask it to list available workflows.
+If the server fails to start, check the MCP client log for the `node …/dist/index.js` stderr (missing workspace/install root, bad `WORKFLOW_DIR`, etc.).
 
-## More detail
+Then finish shared steps in [setup.md](setup.md) (**§2** init-repo if needed, **§3** IDE rule, **§4** day-two).
+
+## stdio-only references
 
 | Topic | Where |
 |-------|--------|
 | Dev commands / HTTP from source | [docs/development.md](docs/development.md) |
-| Server env vars | [docs/development.md](docs/development.md) / `src/config.ts` |
-| HTTP API endpoints | [docs/api-reference.md](docs/api-reference.md#http-endpoints) |
-| Docker / GHCR HTTP setup | [http.md](http.md) |
-| Deploy `.engineering` into a project | [`scripts/deploy.sh`](scripts/deploy.sh) |
+| Env vars & flags (dev) | [docs/development.md](docs/development.md#environment-variables) / `src/config.ts` |
+| Shared setup | [setup.md](setup.md) |
+| Docker / HTTP transport | [http.md](http.md) |

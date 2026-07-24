@@ -9,10 +9,10 @@ When the server starts with `--transport=http` (or `TRANSPORT=http` / `npm run s
 | Method / path | Purpose |
 |---------------|---------|
 | `GET /health` | Liveness — process is up |
-| `GET /ready` | Readiness — workflow, schemas, and workspace directories resolve |
+| `GET /ready` | Readiness — `workflowDir`, `schemasDir`, and `workspaceDir` exist; also `engineeringDir` when it is split from workspace (`--repo` layout) |
 | `POST /mcp` | MCP Streamable HTTP |
 
-Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. See [http.md](../http.md) (Docker/HTTP), [stdio.md](../stdio.md), and [development.md](development.md).
+Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. See [setup.md](../setup.md), [http.md](../http.md) / [stdio.md](../stdio.md) (transports), and [development.md](development.md) for process env (developers).
 
 ## MCP Tools
 
