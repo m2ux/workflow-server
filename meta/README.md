@@ -11,7 +11,7 @@ The meta workflow is the structural home for the orchestration logic that used t
 **Key characteristics:**
 
 - Excluded from `list_workflows` — not a user-facing workflow.
-- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: schema fetch → `start_session` → `get_workflow`. Ongoing delivery policy lives in the operations bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)). There is no separate START / RESUME branching in bootstrap — `discover-session` owns target identification and saved-session matching.
+- Bootstrap (resource [`bootstrap-protocol`](./resources/bootstrap-protocol.md)) is the pre-session stub served by `discover`: schema fetch → resolve `owner/repo` → `start_session` (with `repo`) → bag `{meta_session_index}` / `{target_repo}` → `get_workflow`. Ongoing delivery policy lives in the operations bundle ([workflow-engine](./techniques/workflow-engine/TECHNIQUE.md)). There is no separate START / RESUME branching in bootstrap — `discover-session` owns target identification and saved-session matching.
 - Universal techniques resolve for any session via the loader's workflow-local → `meta` fallback chain.
 - State persistence is server-managed (no agent-side persist/restore); on-disk shape: [`docs/state_management_model.md`](../../docs/state_management_model.md).
 
@@ -95,7 +95,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 
 | Resource ID | Resource | Purpose |
 |-------------|----------|---------|
-| `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session stub served by `discover` — schema fetch, `start_session`, `get_workflow`. Ongoing delivery policy is in the operations bundle. |
+| `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session stub served by `discover` — schema fetch, bind `repo` on `start_session`, bag `{target_repo}`, `get_workflow`. Ongoing delivery policy is in the operations bundle. |
 | `session-summary-template` | [Session Summary Template](./resources/session-summary-template.md) | Skeleton for the markdown session summary composed by `generate-summary` at workflow close. |
 | `planning-readme` | [Planning Folder README Guide](./resources/planning-readme.md) | Universal Template + Progress Status policy for planning-folder `README.md`. |
 
