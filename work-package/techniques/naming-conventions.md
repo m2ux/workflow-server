@@ -55,15 +55,7 @@ When the install layout is not in use, operators may still use a personal path s
 3. Slugify `{issue_title}` (lowercase, dashes, max ~40 chars) for the description segment.
 4. Set `{branch_name}` to `{type}/{issue_number}-{slugified-title}` per the convention `type/issue-number-short-description`.
 5. Determine the work-package slug as the basename of `{planning_folder_path}` (the planning slug `YYYY-MM-DD-{initiative-name}`), so the worktree name stays aligned with the server's planning folder. In review mode, derive the slug from the PR title or branch name instead.
-6. Set `{target_path}` to the feature worktree path. Prefer the install layout
-   `$INSTALL/worktrees/{owner}/{repo}/{wp-slug}/` when the server was initialised
-   with `init-repo.sh` (see install-source-worktrees layout). Otherwise use the
-   operator convention (e.g. `~/projects/work/{component_name}/{wp-slug}/`).
-   From this point on, "inside `{target_path}`" refers to this worktree (not the
-   component's checkout inside the monorepo / source tree). It is distinct from
-   `{planning_folder_path}`, which lives under the engineering root
-   (`$INSTALL/source/{owner}/{repo}/.engineering/artifacts/planning/…` in the
-   install layout), and from `{reference_path}` (`$INSTALL/source/{owner}/{repo}/`).
+6. Set `{target_path}` to the feature worktree path. It is distinct from `{planning_folder_path}`, which lives under the engineering root (`$INSTALL/source/{owner}/{repo}/.engineering/artifacts/planning/…` in the install layout), and from `{reference_path}` (`$INSTALL/source/{owner}/{repo}/`).
 
 ## Rules
 
