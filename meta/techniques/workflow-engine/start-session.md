@@ -49,12 +49,12 @@ Echoed when a target repository was bound for this session.
 
 ### promotion_requires_repo
 
-Present and `true` only when the session is transient under multi-root **without** a repo binding. Re-call `start_session` with `repo` before `dispatch_child`.
+Present and `true` only when the session is transient under multi-root **without** `session.repo`. Bind `repo` on `start_session` or pass it on the first `dispatch_child` (bind-if-missing).
 
 ## Protocol
 
 1. Call `start_session` with `{workflow_id}`, `{agent_id}`, optional `{planning_folder}`, and `{repo}` when multi-root requires it, per the [bootstrap protocol](../../resources/bootstrap-protocol.md). Omit `context_mode` (or pass `"fresh"`).
-2. Save `{session_index}`, `{planning_folder_path}`, and `{repo}` from the response. Do not compose or reconcile the planning path yourself.
+2. Save `{session_index}`, `{planning_folder_path}`, and `{repo}` from the response. Do not compose or reconcile the planning path yourself. The durable binding lives in `session.json#repo`.
 3. Call `get_workflow { session_index }` and follow the returned operations bundle. After summarization, re-fetch with the escapes in `workflow-engine.force-full-after-summarization`.
 
 ## Rules
@@ -65,4 +65,4 @@ When targeting a planning folder, `planning_folder` MUST be an absolute path; on
 
 ### multi-root-repo-binding
 
-When `discover` / `health_check` report `session_scope: multi` (install multi-root), pass `repo: "owner/repo"` on meta `start_session` even when omitting `planning_folder`. The server stashes the binding and uses it when `dispatch_child` promotes the transient parent into `engineering/<owner>/<repo>/artifacts/planning/<slug>/`. Omitting `repo` on multi-root leaves `promotion_requires_repo: true` and causes `dispatch_child` to fail until a bound session exists.
+When `discover` / `health_check` report `session_scope: multi` (install multi-root), pass `repo: "owner/repo"` on meta `start_session` even when omitting `planning_folder`. The server writes the binding to `session.json#repo` and uses that field alone when `dispatch_child` promotes the transient parent into `engineering/<owner>/<repo>/artifacts/planning/<slug>/`. Omitting `repo` on multi-root leaves `promotion_requires_repo: true`; promotion still succeeds if the worker binds via `dispatch_child.repo`.

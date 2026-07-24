@@ -23,7 +23,7 @@ The work-package planning slug — `YYYY-MM-DD-{initiative_name}`. Names the pla
 
 ### repo
 
-Target `owner/repo` when the server is on install multi-root. Prefer the value already in worker prior-state / dispatch prompt (e.g. `Target Github repo`) or workspace `AGENTS.md`. Required for promotion if meta `start_session` did not bind `repo`.
+Optional. Bind `owner/repo` onto the **parent** session when `session.json#repo` is missing (must match if already set). Prefer worker prior-state / dispatch prompt (e.g. `Target Github repo`) or workspace `AGENTS.md`. Required for multi-root promotion only when meta `start_session` did not already bind `session.repo`.
 
 ## Outputs
 
@@ -43,9 +43,9 @@ The canonical absolute path of the planning folder, as resolved by the server un
    - `workflow_id: {workflow_id}`
    - `agent_id: 'orchestrator'`
    - `planning_slug: {client_planning_slug}` when known
-   - `repo: {owner/repo}` when multi-root (from prior-state / prompt / `AGENTS.md`)
+   - `repo: {owner/repo}` when multi-root and parent `session.repo` is unbound (from prior-state / prompt / `AGENTS.md`)
 
-   Capture the returned `{session_index}` for use in all subsequent calls inside the child workflow, and the returned `{planning_folder_path}` (the server-resolved absolute folder under its workspace) as the single artifact location. The server appends the child under `parent.triggeredWorkflows[N].state` and embeds the full child SessionFile inline; the agent does not deal with separate child folders, and does not compose the folder path itself.
+   Capture the returned `{session_index}` for use in all subsequent calls inside the child workflow, and the returned `{planning_folder_path}` (the server-resolved absolute folder under its workspace) as the single artifact location. The server appends the child under `parent.triggeredWorkflows[N].state` and embeds the full child SessionFile inline; the agent does not deal with separate child folders, and does not compose the folder path itself. Promotion reads only `session.json#repo` (after any bind-if-missing from this call).
 
    Omit `context_mode` (or pass `"fresh"`). Client activities are executed by disposable per-activity workers via [dispatch-activity](./dispatch-activity.md); do not pass `context_mode: "persistent"` on the child session.
 
@@ -53,4 +53,4 @@ The canonical absolute path of the planning folder, as resolved by the server un
 
 ### multi-root-repo-on-dispatch
 
-On install multi-root, if meta was started without `repo`, you MUST pass `repo` on this `dispatch_child`. The server promotes the transient parent into `engineering/<owner>/<repo>/artifacts/planning/<slug>/`. Do not retry without `repo` after a promote error.
+On install multi-root, if the parent session has no `repo` field yet, you MUST pass `repo` on this `dispatch_child`. That binds `session.json#repo` and promotes the transient parent into `engineering/<owner>/<repo>/artifacts/planning/<slug>/`. Do not pass a conflicting `repo` when the parent is already bound.
