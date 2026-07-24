@@ -17,7 +17,7 @@ The path the user originally pointed at — the value resolved by start-workflow
 
 ### reference_path
 
-The reference checkout root: the monorepo root when the discovered path is a submodule, otherwise the discovered path itself. Used for comprehension, GitNexus, read-only investigation, and as the git directory for `git worktree add`. Under the install layout this is typically the app clone at `<install-root>/source/<owner>/<repo>` (created by `init-repo.sh`).
+The reference checkout root: the monorepo root when the discovered path is a submodule, otherwise the discovered path itself. Used for comprehension, GitNexus, read-only investigation, and as the git directory for `git worktree add`. Under the install layout this is typically the app clone at `<install-root>/projects/<owner>/<repo>` (created by `init-repo.sh`).
 
 ### component_name
 

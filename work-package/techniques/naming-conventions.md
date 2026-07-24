@@ -43,7 +43,7 @@ Derived feature branch name `{type}/{issue_number}-{slugified-title}`. In review
 
 Canonical feature-worktree path, distinct from `{planning_folder_path}` and from `{reference_path}`:
 
-- **Install layout** — when `{planning_folder_path}` sits under `source/<owner>/<repo>/.engineering/artifacts/planning/<slug>` (or legacy `engineering/<owner>/<repo>/artifacts/planning/<slug>`):  
+- **Install layout** — when `{planning_folder_path}` sits under `projects/<owner>/<repo>/.engineering/artifacts/planning/<slug>`:  
   `<install-root>/worktrees/<owner>/<repo>/<slug>/`
 - **Personal layout** (fallback):  
   `~/projects/work/{component_name}/<slug>/`
@@ -56,7 +56,7 @@ Canonical feature-worktree path, distinct from `{planning_folder_path}` and from
 4. Set `{branch_name}` to `{type}/{issue_number}-{slugified-title}` per the convention `type/issue-number-short-description`.
 5. Determine the work-package slug `{$wp_slug}` as the basename of `{planning_folder_path}` (the planning slug `YYYY-MM-DD-{initiative-name}`), so the worktree name stays aligned with the server's planning folder. In review mode, derive `{$wp_slug}` from the PR title or branch name instead.
 6. Set `{target_path}` from `{planning_folder_path}`:
-   - When `{planning_folder_path}` matches `…/source/<owner>/<repo>/.engineering/artifacts/planning/{$wp_slug}` (or legacy `…/engineering/<owner>/<repo>/artifacts/planning/{$wp_slug}`), take the install root as the ancestor above `source/` (or `engineering/`) and set `{target_path}` to `<install-root>/worktrees/<owner>/<repo>/{$wp_slug}/`.
+   - When `{planning_folder_path}` matches `…/projects/<owner>/<repo>/.engineering/artifacts/planning/{$wp_slug}`, take the install root as the ancestor above `projects/` and set `{target_path}` to `<install-root>/worktrees/<owner>/<repo>/{$wp_slug}/`.
    - Otherwise set `{target_path}` to `~/projects/work/{component_name}/{$wp_slug}/`.
    From this point on, "inside `{target_path}`" refers to this worktree (not the component checkout used as the reference). Never place `{target_path}` under `{planning_folder_path}` or under `{reference_path}`.
 

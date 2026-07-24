@@ -73,7 +73,7 @@ variables:
     description: Path to the working directory where edits, branch creation, builds, and PR operations occur. A dedicated git worktree of the component repo — not the reference checkout. Under the install layout this is <install-root>/worktrees/<owner>/<repo>/<wp-slug>/; otherwise a personal path such as ~/projects/work/<component_name>/<wp-slug>/. Set by start-work-package's compute-canonical-target-path step after the work-package slug is known. Downstream activities operate on this path.
   - name: reference_path
     type: string
-    description: Path to the reference checkout used for codebase comprehension, GitNexus indexing, code-resolvable assumption analysis, and git worktree add. When the component is a submodule of a monorepo, this is the monorepo root; when standalone, the component's primary checkout. Under the install layout this is typically <install-root>/source/<owner>/<repo>. NOT used for edits — edits happen in target_path. Resolved by start-work-package's resolve-target step from the path the user originally pointed at. No default — absence drives the start-work-package exists gate on reference-dependent steps.
+    description: Path to the reference checkout used for codebase comprehension, GitNexus indexing, code-resolvable assumption analysis, and git worktree add. When the component is a submodule of a monorepo, this is the monorepo root; when standalone, the component's primary checkout. Under the install layout this is typically <install-root>/projects/<owner>/<repo>. NOT used for edits — edits happen in target_path. Resolved by start-work-package's resolve-target step from the path the user originally pointed at. No default — absence drives the start-work-package exists gate on reference-dependent steps.
   - name: component_name
     type: string
     description: Basename of the component being worked on (e.g., 'midnight-node'). When the reference is a monorepo, this is the submodule directory name; when standalone, the basename of reference_path. Used in the personal-layout worktree path formula when the install layout is not detected from planning_folder_path.
@@ -84,7 +84,7 @@ variables:
     defaultValue: false
   - name: planning_folder_path
     type: string
-    description: "Path to planning folder under the engineering root (install layout: <install-root>/source/<owner>/<repo>/.engineering/artifacts/planning/YYYY-MM-DD-{work-package-name})."
+    description: "Path to planning folder under the engineering root (install layout: <install-root>/projects/<owner>/<repo>/.engineering/artifacts/planning/YYYY-MM-DD-{work-package-name})."
   - name: provenance_log_path
     type: string
     description: Absolute path to the AI-assistance provenance log (provenance-log.md), created under the planning folder during implementation. Read by the submit-for-review DCO checkpoint to show the log location.
