@@ -125,7 +125,9 @@ jobs:
           output: 'trivy-results.sarif'
 
       - name: Upload scan results
-        uses: github/codeql-action/upload-sarif@8dca8a82e2fa1a2c8908956f711300f9c4a4f4f6
+        # Pinned to codeql-action v3.37.3 (v1/v2 upload-sarif are deprecated).
+        # Moving pin: refs/tags/v3 → 4187e74 (2026-07-22).
+        uses: github/codeql-action/upload-sarif@4187e74d05793876e9989daffde9c3e66b4acd07 # v3.37.3
         if: github.event_name != 'pull_request' && always()
         continue-on-error: true
         with:
