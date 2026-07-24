@@ -34,7 +34,7 @@ The IDE starts the process; you do not run a long-lived server yourself.
 **Required:** either `--repo=owner/repo` (init-repo layout under the install root) **or** `--workspace=PATH` (and optional engineering root via env).  
 `--install-dir` alone is not enough — the process exits without a workspace or repo binding.
 
-### Recommended: bind a target repo (matches Docker + init-repo)
+### Recommended: install multi-root (matches Docker + init-repo)
 
 ```json
 {
@@ -44,16 +44,22 @@ The IDE starts the process; you do not run a long-lived server yourself.
       "args": [
         "/path/to/workflow-server/dist/index.js",
         "--install-dir=/home/you/.local/share/workflow-server",
-        "--repo=owner/your-project",
+        "--workspace=/home/you/.local/share/workflow-server/workspace",
         "--workflow-dir=/path/to/workflows"
-      ]
+      ],
+      "env": {
+        "WORKFLOW_SERVER_ENGINEERING_DIR": "/home/you/.local/share/workflow-server/engineering",
+        "WORKFLOW_SERVER_INSTALL_DIR": "/home/you/.local/share/workflow-server"
+      }
     }
   }
 }
 ```
 
-Planning lands under  
+Pass `repo: "owner/your-project"` on `start_session`. Planning lands under  
 `$INSTALL/engineering/owner/your-project/artifacts/planning/`.
+
+Optional: pin one repo for the whole process with `--repo=owner/your-project` instead of multi-root.
 
 ### Alternative: explicit workspace (legacy single-root)
 

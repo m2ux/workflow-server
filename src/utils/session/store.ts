@@ -399,8 +399,15 @@ export async function verifySeal(
  * `.engineering/artifacts/planning`). Signature is intentionally one argument
  * — configure the relative segment via `setPlanningRelativeDir` at startup.
  */
-export function planningRoot(workspaceDir: string): string {
-  return join(workspaceDir, activePlanningRelativeDir);
+/**
+ * Planning directory under an engineering (or legacy workspace) root.
+ * Optional `relativeDir` overrides the process-global slug for this call —
+ * used when multi-root sessions always use `artifacts/planning` under each
+ * repo checkout while legacy single-root keeps `.engineering/artifacts/planning`.
+ */
+export function planningRoot(workspaceDir: string, relativeDir?: string): string {
+  const rel = relativeDir?.trim() || activePlanningRelativeDir;
+  return join(workspaceDir, rel);
 }
 
 /**
@@ -423,50 +430,28 @@ export interface SessionLocation {
  *
  * Transient (in-memory) sessions resolve via the registry first.
  */
-export async function resolveSessionLocation(
-  workspaceDir: string,
+/**
+ * Search one engineering root for a session_index. Returns all matches
+ * (caller aggregates across multi-root checkouts).
+ */
+async function findSessionsInEngineeringRoot(
+  engineeringDir: string,
   sessionIndex: string,
-): Promise<SessionLocation> {
-  if (!isAbsolute(workspaceDir)) {
-    throw new SessionStoreError(
-      `resolveSessionLocation: workspaceDir must be absolute, got ${workspaceDir}`,
-      'WORKSPACE_INVALID',
-      { workspaceDir },
-    );
-  }
-  if (!/^[A-Z2-7]{6}$/.test(sessionIndex)) {
-    throw new SessionStoreError(
-      `resolveSessionLocation: session_index must be 6 uppercase RFC 4648 base32 characters (A-Z, 2-7), got '${sessionIndex}'`,
-      'INVALID_INDEX',
-      { sessionIndex },
-    );
-  }
-
-  // Transient (meta-bootstrap) sessions live under os.tmpdir() and never
-  // appear in the workspace enumeration. They are always at the root of
-  // their tmp folder (no embedded children for transients).
-  const transient = transientFolderByIndex.get(sessionIndex);
-  if (transient) return { folder: transient, jsonPath: [] };
-
-  const root = planningRoot(workspaceDir);
+  planningRelativeDir?: string,
+): Promise<SessionLocation[]> {
+  const root = planningRoot(engineeringDir, planningRelativeDir);
   let topEntries: Array<{ name: string; isDirectory: () => boolean; isSymbolicLink: () => boolean }>;
   try {
     topEntries = await readdir(root, { withFileTypes: true });
   } catch (err: unknown) {
     if (err instanceof Error && 'code' in err && (err as NodeJS.ErrnoException).code === 'ENOENT') {
-      throw new SessionStoreError(
-        `resolveSessionLocation: planning root ${root} does not exist`,
-        'NOT_FOUND',
-        { workspaceDir, root, sessionIndex },
-      );
+      return [];
     }
     throw err;
   }
 
   const matches: SessionLocation[] = [];
 
-  // Walk the embedded triggeredWorkflows[i].state tree of `topState`,
-  // matching against each embedded SessionFile's stored sessionIndex.
   function walkEmbedded(topState: unknown, folder: string, prefix: SessionJsonPath): void {
     if (!topState || typeof topState !== 'object') return;
     const tw = (topState as { triggeredWorkflows?: unknown }).triggeredWorkflows;
@@ -485,10 +470,6 @@ export async function resolveSessionLocation(
     }
   }
 
-  // Walk every directory under the planning root. For each folder with a
-  // session.json, match its stored root sessionIndex and recurse into the
-  // embedded triggeredWorkflows tree. Folders without session.json are
-  // descended into for the legacy nested-folder layout.
   async function walkFolders(dirPath: string): Promise<void> {
     let dirEntries: typeof topEntries;
     try {
@@ -510,8 +491,7 @@ export async function resolveSessionLocation(
           }
           walkEmbedded(state, folderPath, []);
         } catch {
-          // No session.json here, or unreadable — keep recursing in case
-          // nested folders have one (transitional separate-folder layout).
+          /* keep recursing */
         }
       } catch {
         continue;
@@ -542,11 +522,50 @@ export async function resolveSessionLocation(
     await walkFolders(folderPath);
   }
 
+  return matches;
+}
+
+export async function resolveSessionLocation(
+  workspaceDir: string,
+  sessionIndex: string,
+  options?: { planningRelativeDir?: string; searchRoots?: readonly string[] },
+): Promise<SessionLocation> {
+  if (!isAbsolute(workspaceDir)) {
+    throw new SessionStoreError(
+      `resolveSessionLocation: workspaceDir must be absolute, got ${workspaceDir}`,
+      'WORKSPACE_INVALID',
+      { workspaceDir },
+    );
+  }
+  if (!/^[A-Z2-7]{6}$/.test(sessionIndex)) {
+    throw new SessionStoreError(
+      `resolveSessionLocation: session_index must be 6 uppercase RFC 4648 base32 characters (A-Z, 2-7), got '${sessionIndex}'`,
+      'INVALID_INDEX',
+      { sessionIndex },
+    );
+  }
+
+  // Transient (meta-bootstrap) sessions live under os.tmpdir() and never
+  // appear in the workspace enumeration. They are always at the root of
+  // their tmp folder (no embedded children for transients).
+  const transient = transientFolderByIndex.get(sessionIndex);
+  if (transient) return { folder: transient, jsonPath: [] };
+
+  const roots = options?.searchRoots?.length
+    ? [...options.searchRoots]
+    : [workspaceDir];
+  const planningRel = options?.planningRelativeDir;
+  const matches: SessionLocation[] = [];
+  for (const eng of roots) {
+    const found = await findSessionsInEngineeringRoot(eng, sessionIndex, planningRel);
+    matches.push(...found);
+  }
+
   if (matches.length === 0) {
     throw new SessionStoreError(
-      `resolveSessionLocation: no session under ${root} has session_index '${sessionIndex}'`,
+      `resolveSessionLocation: no session under ${roots.join(', ')} has session_index '${sessionIndex}'`,
       'NOT_FOUND',
-      { workspaceDir, root, sessionIndex },
+      { workspaceDir, roots, sessionIndex },
     );
   }
   if (matches.length > 1) {
@@ -583,9 +602,13 @@ function assertValidSlug(slug: string): void {
 export async function findPlanningFolderBySlug(
   workspaceDir: string,
   slug: string,
+  options?: { planningRelativeDir?: string; searchRoots?: readonly string[] },
 ): Promise<string | undefined> {
   assertValidSlug(slug);
-  const root = planningRoot(workspaceDir);
+  const roots = options?.searchRoots?.length
+    ? [...options.searchRoots]
+    : [workspaceDir];
+  const planningRel = options?.planningRelativeDir;
   const matches: string[] = [];
 
   async function walk(dir: string): Promise<void> {
@@ -611,11 +634,15 @@ export async function findPlanningFolderBySlug(
     }
   }
 
-  try {
-    await walk(root);
-  } catch {
-    return undefined;
+  for (const eng of roots) {
+    const root = planningRoot(eng, planningRel);
+    try {
+      await walk(root);
+    } catch {
+      /* skip missing root */
+    }
   }
+
   if (matches.length === 0) return undefined;
   if (matches.length === 1) return matches[0];
   const sorted = [...matches].sort();
@@ -635,11 +662,12 @@ export async function findPlanningFolderBySlug(
 export async function ensurePlanningFolder(
   workspaceDir: string,
   slug: string,
+  options?: { planningRelativeDir?: string },
 ): Promise<string> {
   assertValidSlug(slug);
   const absoluteWorkspace = resolve(workspaceDir);
-  const root = planningRoot(absoluteWorkspace);
-  // Assert derived paths stay inside the worktree root before mkdir.
+  const root = planningRoot(absoluteWorkspace, options?.planningRelativeDir);
+  // Assert derived paths stay inside the engineering/worktree root before mkdir.
   assertPathInsideRoot(absoluteWorkspace, root);
   const folder = resolve(root, slug);
   assertPathInsideRoot(absoluteWorkspace, folder);
@@ -664,6 +692,8 @@ export async function ensurePlanningFolder(
 const TRANSIENT_DIR_PREFIX = 'workflow-server-transient-';
 const transientFolderByIndex = new Map<string, string>();
 const transientFolderBySlug = new Map<string, string>();
+/** Optional owner/repo attached at start_session for multi-root promotion. */
+const transientRepoByFolder = new Map<string, string>();
 
 /** Create a fresh transient planning folder under `os.tmpdir()`. */
 export async function createTransientFolder(): Promise<string> {
@@ -673,9 +703,20 @@ export async function createTransientFolder(): Promise<string> {
 }
 
 /** Register a transient folder so `resolveSessionLocation` and slug-lookup find it. */
-export function registerTransient(sessionIndex: string, folder: string, slug?: string): void {
+export function registerTransient(
+  sessionIndex: string,
+  folder: string,
+  slug?: string,
+  repo?: string,
+): void {
   transientFolderByIndex.set(sessionIndex, folder);
   if (slug) transientFolderBySlug.set(slug, folder);
+  if (repo) transientRepoByFolder.set(folder, repo);
+}
+
+/** Repo hint recorded for a transient folder at start_session (multi-root). */
+export function lookupTransientRepoByFolder(folder: string): string | undefined {
+  return transientRepoByFolder.get(folder);
 }
 
 /** Look up a transient folder by the slug it was registered under. */
@@ -719,6 +760,9 @@ export async function redirectTransientToWorkspace(
   for (const [slug, f] of transientFolderBySlug.entries()) {
     if (f === oldFolder) transientFolderBySlug.delete(slug);
   }
+  const repo = transientRepoByFolder.get(oldFolder);
+  transientRepoByFolder.delete(oldFolder);
+  if (repo) transientRepoByFolder.set(newFolder, repo);
   try {
     await rm(oldFolder, { recursive: true, force: true });
   } catch {

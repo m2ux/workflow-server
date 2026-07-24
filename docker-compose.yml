@@ -22,9 +22,7 @@ services:
       WORKFLOW_WORKSPACE: ${CONTAINER_WORKTREE_ROOT:-/var/lib/workflow-server/workspace}
       WORKFLOW_SERVER_ENGINEERING_DIR: ${CONTAINER_ENGINEERING_ROOT:-/var/lib/workflow-server/engineering}
       WORKFLOW_SERVER_INSTALL_DIR: ${CONTAINER_INSTALL_DIR:-/var/lib/workflow-server}
-      # Optional: bind a single init-repo target (owner/repo under workspace+engineering).
-      # WORKFLOW_SERVER_REPO: m2ux/my-project
-      # Optional: override default planning slug (repo mode defaults to artifacts/planning)
+      # Optional: override default planning slug (multi-root uses artifacts/planning per repo)
       # PLANNING_SLUG: artifacts/planning
       WORKFLOW_DIR: ${CONTAINER_WORKFLOW_DIR:-/app/workflows}
       SCHEMAS_DIR: ${CONTAINER_SCHEMAS_DIR:-/app/schemas}
@@ -34,7 +32,7 @@ services:
       TRANSPORT: ${TRANSPORT:-http}
       HOST: ${HOST:-0.0.0.0}
       PORT: ${PORT:-3000}
-      # Set in .env when using a single init-repo target:
+      # Repo is selected at start_session (not process start). Optional process pin:
       # WORKFLOW_SERVER_REPO: m2ux/my-project
     volumes:
       - type: bind

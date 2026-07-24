@@ -26,6 +26,8 @@ import {
   navigatePath,
   describeSessionStoreError,
   SessionStoreError,
+  buildSessionScope,
+  listSessionSearchRoots,
 } from '../utils/session/index.js';
 import type { SessionFile } from '../schema/session.schema.js';
 import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTechniqueFetches, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
@@ -258,9 +260,16 @@ export function projectSessionView(
 
 export function registerWorkflowTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
-  // Planning / session state lives under the engineering checkout when split
-  // from the feature-worktree root (`--repo` layout).
-  const planningRootDir = config.engineeringDir ?? config.workspaceDir;
+  const sessionScope = buildSessionScope(config);
+  const planningRootDir = sessionScope.engineeringDir;
+
+  async function sessionLoadOpts() {
+    const searchRoots = await listSessionSearchRoots(sessionScope);
+    return {
+      planningRelativeDir: sessionScope.planningRelativeDir,
+      searchRoots,
+    };
+  }
 
   server.tool('discover', 'Entry point — call before other tools. Returns server info and the bootstrap procedure. No session_index required.', {},
     withAuditLog('discover', async () => {
@@ -288,7 +297,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ...sessionIndexParam,
     },
     withAuditLog('get_workflow', withSessionStoreErrors(async ({ session_index }) => {
-      const loaded = await loadSessionForTool(planningRootDir, session_index);
+      const loadOpts = await sessionLoadOpts();
+      const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
       assertNoActiveCheckpoint(state);
       const workflow_id = state.workflowId;
@@ -384,7 +394,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       activity_manifest: activityManifestSchema,
     },
     withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest }) => {
-      const loaded = await loadSessionForTool(planningRootDir, session_index);
+      const loadOpts = await sessionLoadOpts();
+      const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
 
       const workflow_id = state.workflowId;
@@ -468,7 +479,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if ((activity_id === 'complete' || isTerminal) && state.parentSession?.sessionIndex) {
         const parentIdx = state.parentSession.sessionIndex;
         try {
-          const parentLoaded = await loadSessionForTool(planningRootDir, parentIdx);
+          const loadOpts = await sessionLoadOpts();
+          const parentLoaded = await loadSessionForTool(planningRootDir, parentIdx, loadOpts);
           const completedAt = new Date().toISOString();
           const parentNext = advanceSession(parentLoaded.state, (draft) => {
             const ref = draft.triggeredWorkflows.find((t) => t.sessionIndex === state.sessionIndex);
@@ -532,7 +544,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       bundle: z.enum(['reference', 'full']).optional().describe('Optional. "reference" collapses already-delivered bundle content (solo only). "full" forces full delivery. Defaults from context_mode.'),
     },
     withAuditLog('get_activity', withSessionStoreErrors(async ({ session_index, context_tokens, bundle }) => {
-      const loaded = await loadSessionForTool(planningRootDir, session_index);
+      const loadOpts = await sessionLoadOpts();
+      const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
       assertNoActiveCheckpoint(state);
 
@@ -845,7 +858,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // store is last-writer-wins over the whole file, and composition awaits dozens of FS reads —
       // saving the pre-composition snapshot would silently revert any concurrent write (sibling
       // worker save, orchestrator checkpoint resolution) that landed in that window.
-      const reloaded = await loadSessionForTool(planningRootDir, session_index);
+      const reloadOpts = await sessionLoadOpts();
+      const reloaded = await loadSessionForTool(planningRootDir, session_index, reloadOpts);
       const next = advanceSession(reloaded.state, (draft) => {
         recordDeliveries(draft, reloaded.state.agentId, newDeliveries);
         // Fidelity observability for bundled deliveries (#166 B11): one technique_bundled
@@ -890,7 +904,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       checkpoint_id: z.string().describe('Checkpoint id being yielded.'),
     },
     withAuditLog('yield_checkpoint', withSessionStoreErrors(async ({ session_index, checkpoint_id }) => {
-      const loaded = await loadSessionForTool(planningRootDir, session_index);
+      const loadOpts = await sessionLoadOpts();
+      const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
 
       if (state.activeCheckpoint) {
@@ -988,7 +1003,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ...sessionIndexParam,
     },
     withAuditLog('resume_checkpoint', withSessionStoreErrors(async ({ session_index }) => {
-      const loaded = await loadSessionForTool(planningRootDir, session_index);
+      const loadOpts = await sessionLoadOpts();
+      const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
 
       if (state.activeCheckpoint) {
@@ -1016,7 +1032,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ...sessionIndexParam,
     },
     withAuditLog('present_checkpoint', withSessionStoreErrors(async ({ session_index }) => {
-      const loaded = await loadSessionForTool(planningRootDir, session_index);
+      const loadOpts = await sessionLoadOpts();
+      const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
 
       const active = state.activeCheckpoint;
@@ -1055,7 +1072,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       condition_not_met: z.boolean().optional().describe('Dismiss a conditional checkpoint whose condition was not met.'),
     },
     withAuditLog('respond_checkpoint', withSessionStoreErrors(async ({ session_index, option_id, auto_advance, condition_not_met }) => {
-      const loaded = await loadSessionForTool(planningRootDir, session_index);
+      const loadOpts = await sessionLoadOpts();
+      const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
       const active = state.activeCheckpoint;
       if (!active) {
@@ -1233,7 +1251,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       trace_tokens: z.array(z.string()).optional().describe('Optional. Trace tokens from next_activity `_meta.trace_token`; omit for the full in-memory session trace.'),
     },
     withAuditLog('get_trace', withSessionStoreErrors(async ({ session_index, trace_tokens }) => {
-      const loaded = await loadSessionForTool(planningRootDir, session_index);
+      const loadOpts = await sessionLoadOpts();
+      const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
       assertNoActiveCheckpoint(state);
       const next = advanceSession(state);
@@ -1289,7 +1308,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ...sessionIndexParam,
     },
     withAuditLog('get_workflow_status', withSessionStoreErrors(async ({ session_index }) => {
-      const loaded = await loadSessionForTool(planningRootDir, session_index);
+      const loadOpts = await sessionLoadOpts();
+      const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
       const clientWf = state.workflowId;
       const clientAct = state.currentActivity;
@@ -1375,7 +1395,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         .describe('Optional. With view=variables, return a single variable by name.'),
     },
     withAuditLog('inspect_session', withSessionStoreErrors(async ({ session_index, view, child_index, variable }) => {
-      const loaded = await loadSessionForTool(planningRootDir, session_index);
+      const loadOpts = await sessionLoadOpts();
+      const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       // Positional one-level descent into the addressed session's children, matching the
       // reference script's `--child N`. navigatePath throws SessionStoreError(NOT_FOUND) for an
       // out-of-range index, which withSessionStoreErrors renders as an actionable message.
