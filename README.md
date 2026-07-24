@@ -40,7 +40,7 @@ User Goal → Workflow → Activities → Techniques → Tools
 
 ### Setup
 
-Full sequence (layout, init repo, binding, IDE rule, verify): **[setup.md](setup.md)**.
+Full sequence (layout, init repo, agent repo inference, IDE rule, verify): **[setup.md](setup.md)**.
 
 ### Execute a workflow
 

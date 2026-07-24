@@ -12,7 +12,7 @@ When the server starts with `--transport=http` (or `TRANSPORT=http` / `npm run s
 | `GET /ready` | Readiness — `workflowDir`, `schemasDir`, and `workspaceDir` exist; also `engineeringDir` when it is split from workspace (`--repo` layout) |
 | `POST /mcp` | MCP Streamable HTTP |
 
-Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. See [setup.md](../setup.md) (shared binding), [http.md](../http.md) / [stdio.md](../stdio.md) (transports), and [development.md](development.md) for the full env table.
+Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. See [setup.md](../setup.md), [http.md](../http.md) / [stdio.md](../stdio.md) (transports), and [development.md](development.md) for process env (developers).
 
 ## MCP Tools
 

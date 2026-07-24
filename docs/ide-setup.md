@@ -7,12 +7,18 @@ This guide explains how to configure your IDE so that the agent connects to the 
 Add the following to your IDE's "always-applied" rule set (Cursor rule, Claude Code project rule, etc.):
 
 ```
-For any start workflow, create work package, or resume work package request, call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure. Complete the procedure before any other action.
+For any start workflow, create work package, or resume work package request:
 
-If the user provides a `session_token`, pass it to subsequent workflow-server calls per their instructions.
+1. Infer the target GitHub repo as owner/repo from the user's request (explicit name, issue/PR URL, open workspace, git remote). If more than one repo is plausible or none is clear, ask one clarifying question — do not guess.
+2. Use that repo's paths under the workflow-server install layout
+   ($INSTALL/engineering/<owner>/<repo> and $INSTALL/workspace/<owner>/<repo>).
+   If that repo was never initialised by the operator (init-repo.sh), tell the user — do not invent another root.
+3. Call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure. Complete the procedure before any other action.
+
+If the user provides a `session_token` or `session_index`, pass it to subsequent workflow-server calls per their instructions.
 ```
 
-The rule wires natural-language requests ("start a work package", "resume the workflow", "begin a workflow") into the server's bootstrap procedure. The agent always calls `discover` first — which returns the server name, version, and the full bootstrap sequence — before doing anything else.
+The rule wires natural-language requests ("start a work package for acme/app", "resume the workflow on PR #12") into **repo inference** and the server's bootstrap procedure. The operator runs [`init-repo.sh`](../scripts/init-repo.sh) when adding a repo (see [setup.md §2](../setup.md#2-init-a-target-repo)). The agent does **not** ask the user for path flags; it infers `owner/repo` from the ask and clarifies when ambiguous ([setup.md §3](../setup.md#3-which-repo-is-this-request-for-agent)).
 
 ## What the Bootstrap Returns
 
@@ -21,7 +27,7 @@ The rule wires natural-language requests ("start a work package", "resume the wo
 - **Server name and version** — confirms which workflow server the agent is talking to.
 - **Bootstrap procedure** — the pre-session stub the agent must follow: fetch `workflow-server://schemas/workflow`, call `start_session`, then `get_workflow` and follow the returned operations bundle. Activity dispatch (`next_activity` / `get_activity`) and checkpoint discipline come from that bundle, not from the stub itself. `list_workflows` is available without a session and is typically used during meta `discover-session`, not as a required bootstrap step.
 
-Because `discover` is the entry point, the procedure stays in sync with the server. You do not need to maintain a separate copy of the protocol in your IDE rules — the rule above only has to enforce "call `discover` first." Ongoing delivery policy (worker-fresh, resource `#section` vs whole file, force-full escapes) is authoritative in techniques delivered with the operations bundle after `get_workflow`.
+Because `discover` is the entry point, the procedure stays in sync with the server. You do not need to maintain a separate copy of the protocol in your IDE rules — the rule above only has to enforce "resolve the repo, then call `discover`." Ongoing delivery policy (worker-fresh, resource `#section` vs whole file, force-full escapes) is authoritative in techniques delivered with the operations bundle after `get_workflow`.
 
 ## Delivery Context and Worker Parameters
 
@@ -41,17 +47,17 @@ After configuring the rule:
 
 1. Restart your MCP client.
 2. Ask the agent to `list available workflows`. It should call `list_workflows` (no session token required) and return the workflow inventory.
-3. Ask the agent to `start a work-package workflow`. It should first call `discover`, then complete the returned bootstrap (schema fetch → `start_session` → `get_workflow`).
+3. Ask the agent to `start a work-package workflow for <owner/repo>`. It should resolve the repo (or ask if ambiguous), then call `discover` and complete the returned bootstrap (schema fetch → `start_session` → `get_workflow`).
 
 If the agent skips `discover`, your rule has not been picked up — re-check the IDE's rule configuration.
 
 ## Related
 
 - [README.md](../README.md) — project overview and quick-start.
-- [setup.md](../setup.md) — shared install sequence (layout, init-repo, binding, verify).
+- [setup.md](../setup.md) — shared install sequence (layout, operator init-repo, agent repo inference, verify).
 - [http.md](../http.md) — Docker / HTTP transport only.
 - [stdio.md](../stdio.md) — local checkout / stdio transport only.
-- [Development Guide](development.md) — env vars, `--repo` / install-dir binding.
+- [Development Guide](development.md) — env vars and process flags (developers).
 - [API Reference](api-reference.md) — tool catalog (links out for depth).
 - [Site API](../site/api/tools.html) — wire descriptions generated from source.
 - [Workflow Fidelity](workflow-fidelity.md) — enforcement layers and what the bootstrap procedure protects against.

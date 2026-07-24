@@ -17,7 +17,7 @@ Two site sections have no markdown counterpart because their canonical source is
 | Source | Purpose | Audience |
 |--------|---------|----------|
 | [`README.md`](../README.md) | Project overview, quick start, the workflow model at a glance | Everyone — first contact |
-| [`setup.md`](../setup.md) | Shared install sequence: layout, init-repo, root binding, IDE rule, verify | Integrators |
+| [`setup.md`](../setup.md) | Shared install sequence: layout, operator init-repo, agent repo inference, IDE rule, verify | Integrators |
 | [`http.md`](../http.md) / [`stdio.md`](../stdio.md) | Transport-only differences (Docker/HTTP vs local stdio MCP config) | Integrators |
 | [`docs/ide-setup.md`](ide-setup.md) | The always-applied bootstrap rule and connection verification | Integrators configuring an agent |
 | [`docs/api-reference.md`](api-reference.md) | Catalog of MCP tools and HTTP routes (brief; links out for depth) | Integrators |
