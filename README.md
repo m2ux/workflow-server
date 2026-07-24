@@ -39,8 +39,7 @@ User Goal → Workflow → Activities → Techniques → Tools
 ## 🚀 Quick Start
 
 ### Setup
-
-Full sequence: **[setup.md](setup.md)**.
+See: **[setup.md](setup.md)**.
 
 ### Execute a workflow
 
