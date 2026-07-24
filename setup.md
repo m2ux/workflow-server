@@ -20,8 +20,6 @@ Install root
 | **Engineering** | `$INSTALL/engineering` | Per-repo engineering checkouts (planning / sessions) |
 | **Workflows** | `$INSTALL/workflows` | Workflow definitions (`workflows` branch) |
 
-> Default: `~/.local/share/workflow-server`, or `$XDG_DATA_HOME/workflow-server`
-
 Created by [`scripts/install.sh`](scripts/install.sh). Override roots with `--install-dir`, `--worktree-root`, `--engineering-root` (see `install.sh --help`).
 
 Legacy single-root: bind one path with `--workspace` / `WORKFLOW_WORKSPACE` and keep planning under `<workspace>/.engineering/…` (no split engineering dir).
