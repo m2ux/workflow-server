@@ -11,7 +11,7 @@ Connect an MCP client (Cursor, Claude Desktop, or compatible) to workflow-server
 
 ## 2. Layout (defaults)
 
-Install root (default `~/.local/share/workflow-server`, or `$XDG_DATA_HOME/workflow-server`):
+Install root
 
 | Path | Default | Purpose |
 |------|---------|---------|
@@ -19,6 +19,8 @@ Install root (default `~/.local/share/workflow-server`, or `$XDG_DATA_HOME/workf
 | **Workspace** | `$INSTALL/workspace` | Per-repo feature worktrees |
 | **Engineering** | `$INSTALL/engineering` | Per-repo engineering checkouts (planning / sessions) |
 | **Workflows** | `$INSTALL/workflows` | Workflow definitions (`workflows` branch) |
+
+> Default: `~/.local/share/workflow-server`, or `$XDG_DATA_HOME/workflow-server`
 
 Created by [`scripts/install.sh`](scripts/install.sh). Override roots with `--install-dir`, `--worktree-root`, `--engineering-root` (see `install.sh --help`).
 
