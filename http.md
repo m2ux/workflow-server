@@ -4,24 +4,25 @@ Run a Dockerised workflow server and connect your IDE over HTTP.
 
 ## Layout
 
-Two separate host paths:
+Host paths under the install root (defaults):
 
 | Path | Default | Purpose |
 |------|---------|---------|
-| **Install dir** | `~/.local/share/workflow-server` | Server data |
-| **Worktree root** | `~/worktrees` | Workspace (shared with the agent) |
-
-
+| **Install dir** | `~/.local/share/workflow-server` | Server data, helper scripts, `env` |
+| **Workspace** | `$INSTALL/workspace` | Per-repo feature worktrees (`init-repo.sh`) |
+| **Engineering** | `$INSTALL/engineering` | Per-repo engineering checkouts (`init-repo.sh`) |
+| **Workflows** | `$INSTALL/workflows` | Workflow definitions (`workflows` branch) |
 
 ## 1. Install
 
-Needs git and curl. Fetches helper scripts, clones the `workflows` branch into the install dir, creates `~/worktrees` if missing, and writes a persistent `env` file so `start.sh` needs no path args.
+Needs git and curl. Fetches helper scripts, clones the `workflows` branch into the install dir, creates `engineering/` and `workspace/`, and writes a persistent `env` file so `start.sh` needs no path args.
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install-docker.sh | bash
+curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
 ```
 
-> Options: `…/install-docker.sh` (`--help`, `--install-dir`, `--worktree-root`, …)  
+> Options: `…/install.sh` (`--help`, `--install-dir`, `--worktree-root`, `--engineering-root`, …)  
+> Legacy URL `…/install-docker.sh` still works (forwards to `install.sh`).
 
 ## 2. Start the server
 
@@ -35,14 +36,23 @@ Defaults:
 
 - Image: `ghcr.io/m2ux/workflow-server:main`
 - Publish: `http://127.0.0.1:3000`
+- Binds: host `workspace/` → container `/var/lib/workflow-server/workspace`, host `engineering/` → `/var/lib/workflow-server/engineering`
 
-Conversely to stop the server: 
+Conversely to stop the server:
 
 ```bash
 ~/.local/share/workflow-server/stop.sh
 ```
 
-## 3. Check health
+## 3. Init a repo (optional)
+
+Materialise per-repo engineering + workspace paths under the install root:
+
+```bash
+~/.local/share/workflow-server/init-repo.sh owner/repo
+```
+
+## 4. Check health
 
 ```bash
 curl -fsS http://127.0.0.1:3000/health
@@ -50,17 +60,17 @@ curl -fsS http://127.0.0.1:3000/health
 
 Expect `{"status":"ok"}`.
 
-## 4. Update workflows
+## 5. Update workflows
 
-Pull the latest `workflows` branch into the install dir (not the agent worktree root).
+Pull the latest `workflows` branch into the install dir.
 
 ```bash
 ~/.local/share/workflow-server/update-workflows.sh
 ```
 
-> Restart the server afterward if it is already running.  
+> Restart the server afterward if it is already running.
 
-## 5. Connect the MCP client
+## 6. Connect the MCP client
 
 Export the endpoint (Cursor reads `${env:…}` from the process environment):
 
@@ -83,7 +93,7 @@ Project config ([`.cursor/mcp.json`](.cursor/mcp.json)):
 
 Restart the IDE, then ask it to list available workflows.
 
-## 6. IDE bootstrap rule
+## 7. IDE bootstrap rule
 
 Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
 
@@ -93,11 +103,12 @@ Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent 
 
 | Topic | Where |
 |-------|--------|
-| Install script | [`scripts/install-docker.sh`](scripts/install-docker.sh) |
+| Install script | [`scripts/install.sh`](scripts/install.sh) |
+| Init repo | [`scripts/init-repo.sh`](scripts/init-repo.sh) |
 | Start | [`scripts/start.sh`](scripts/start.sh) |
 | Stop | [`scripts/stop.sh`](scripts/stop.sh) |
 | Update workflows | [`scripts/update-workflows.sh`](scripts/update-workflows.sh) |
-| Compose / binds | [`docker-compose.yml`](docker-compose.yml) (host worktree default: `~/worktrees`) |
+| Compose / binds | [`docker-compose.yml`](docker-compose.yml) |
 | Local `.env` helper | [`scripts/init-local-env.sh`](scripts/init-local-env.sh), [`.env.example`](.env.example) |
 | Stdio / local checkout | [stdio.md](stdio.md) |
 | Develop from source | [docs/development.md](docs/development.md) |

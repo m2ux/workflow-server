@@ -2,8 +2,8 @@
 # workflow-server — standalone GHCR runner (no repo checkout required)
 #
 # Install once (writes $INSTALL/env with paths):
-#   curl -fsSL …/install-docker.sh | bash
-#   bash <(curl -fsSL …/install-docker.sh) --worktree-root=~/projects/work
+#   curl -fsSL …/install.sh | bash
+#   bash <(curl -fsSL …/install.sh) --worktree-root=~/projects/work
 #
 # Then start / stop with no path args:
 #   ~/.local/share/workflow-server/start.sh -d
@@ -20,13 +20,18 @@ DEFAULT_TAG="main"
 DEFAULT_NAME="workflow-server"
 DEFAULT_HOST_PORT="3000"
 DEFAULT_CONTAINER_PORT="3000"
-DEFAULT_WORKTREE_TARGET="/worktrees"
+# Inside the container the install root is fixed so --repo=owner/repo resolves to
+# $CONTAINER_INSTALL/{workspace,engineering}/owner/repo matching the host layout.
+DEFAULT_CONTAINER_INSTALL="/var/lib/workflow-server"
+DEFAULT_WORKTREE_TARGET="${DEFAULT_CONTAINER_INSTALL}/workspace"
+DEFAULT_ENGINEERING_TARGET="${DEFAULT_CONTAINER_INSTALL}/engineering"
 DEFAULT_WORKFLOWS_TARGET="/app/workflows"
 DEFAULT_SCHEMAS_TARGET="/app/schemas"
 DEFAULT_TRANSPORT="http"
 DEFAULT_BIND_HOST="0.0.0.0"
 DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
-DEFAULT_HOST_WORKTREE_ROOT="${HOME}/worktrees"
+DEFAULT_HOST_WORKTREE_ROOT="${DEFAULT_INSTALL_DIR}/workspace"
+DEFAULT_HOST_ENGINEERING_ROOT="${DEFAULT_INSTALL_DIR}/engineering"
 DEFAULT_ENV_NAME="env"
 
 # Directory containing this script (install dir when installed as start.sh).
@@ -66,17 +71,23 @@ CONTAINER_PORT="${PORT:-$DEFAULT_CONTAINER_PORT}"
 INSTALL_DIR=""
 INSTALL_DIR_SET=0
 # Values from install env / process env (do not blank after source).
-# Canonical install keys: HOST_WORKTREE_ROOT, HOST_PORT, WORKFLOW_SERVER_CONTAINER_NAME
+# Canonical install keys: HOST_WORKTREE_ROOT, HOST_ENGINEERING_ROOT, HOST_PORT,
+# WORKFLOW_SERVER_CONTAINER_NAME
 # Optional overrides: HOST_WORKFLOWS_DIR, HOST_SCHEMAS_DIR, WORKFLOW_SERVER_INSTALL_DIR
-# Legacy aliases still accepted: WORKFLOW_WORKSPACE, WORKFLOW_DIR, SCHEMAS_DIR
+# Legacy aliases still accepted: WORKFLOW_WORKSPACE, WORKFLOW_DIR, SCHEMAS_DIR,
+# WORKFLOW_SERVER_ENGINEERING_DIR
 HOST_WORKTREE_ROOT="${HOST_WORKTREE_ROOT:-${WORKFLOW_WORKSPACE:-}}"
+HOST_ENGINEERING_ROOT="${HOST_ENGINEERING_ROOT:-${WORKFLOW_SERVER_ENGINEERING_DIR:-}}"
 HOST_WORKFLOWS_DIR="${HOST_WORKFLOWS_DIR:-${WORKFLOW_DIR:-}}"
 HOST_SCHEMAS_DIR="${HOST_SCHEMAS_DIR:-${SCHEMAS_DIR:-}}"
 WORKTREE_SET=0
+ENGINEERING_SET=0
 WORKFLOWS_SET=0
 SCHEMAS_SET=0
 
-CONTAINER_WORKTREE_ROOT="${CONTAINER_WORKTREE_ROOT:-$DEFAULT_WORKTREE_TARGET}"
+CONTAINER_INSTALL_DIR="${CONTAINER_INSTALL_DIR:-$DEFAULT_CONTAINER_INSTALL}"
+CONTAINER_WORKTREE_ROOT="${CONTAINER_WORKTREE_ROOT:-${CONTAINER_INSTALL_DIR}/workspace}"
+CONTAINER_ENGINEERING_ROOT="${CONTAINER_ENGINEERING_ROOT:-${CONTAINER_INSTALL_DIR}/engineering}"
 CONTAINER_WORKFLOW_DIR="${CONTAINER_WORKFLOW_DIR:-$DEFAULT_WORKFLOWS_TARGET}"
 CONTAINER_SCHEMAS_DIR="${CONTAINER_SCHEMAS_DIR:-$DEFAULT_SCHEMAS_TARGET}"
 
@@ -102,44 +113,49 @@ USAGE
   start.sh -d
   start.sh [options]
 
-Paths normally come from install-time \$INSTALL/env (written by install-docker.sh).
+Paths normally come from install-time \$INSTALL/env (written by install.sh).
 After install you only need:  start.sh -d
 
 DEFAULT INSTALL DIR
   ${DEFAULT_INSTALL_DIR}
   (or directory containing this script when installed as start.sh)
 
-DEFAULT WORKTREE ROOT
+DEFAULT WORKSPACE ROOT
   ${DEFAULT_HOST_WORKTREE_ROOT}  (set at install with --worktree-root; persisted in env)
 
+DEFAULT ENGINEERING ROOT
+  ${DEFAULT_HOST_ENGINEERING_ROOT}  (set at install with --engineering-root; persisted in env)
+
 OPTIONS (optional overrides — prefer re-running install to change paths)
-  --install-dir=PATH     Install root (workflows under \$INSTALL/workflows)
-  --worktree-root=PATH   One-off host worktree root (RW)
-  --workflows-dir=PATH   One-off host workflows directory (RO)
-  --schemas-dir=PATH     Host schemas directory (RO); optional
-  --image=REF            Full image (default: ${DEFAULT_IMAGE_REPO}:${DEFAULT_TAG})
-  --tag=TAG              Tag for default repo (default: ${DEFAULT_TAG})
-  --host-port=N          Host port (default: ${DEFAULT_HOST_PORT})
-  --port=N               Container PORT (default: ${DEFAULT_CONTAINER_PORT})
-  --name=NAME            Container name (default: ${DEFAULT_NAME})
-  --planning-slug=S      PLANNING_SLUG inside container
-  --env KEY=VAL          Extra -e (repeatable)
-  --env-file=PATH        docker --env-file
-  --user=UID:GID         Container user (default: current uid:gid)
-  --pull / --no-pull     Pull image first (default: pull)
-  -d, --detach           Background
-  --rm / --no-rm         Remove on exit (default: rm unless -d)
-  --dry-run              Print docker commands only
+  --install-dir=PATH        Install root (workflows under \$INSTALL/workflows)
+  --worktree-root=PATH      One-off host workspace / worktree root (RW)
+  --engineering-root=PATH   One-off host engineering root (RW)
+  --workflows-dir=PATH      One-off host workflows directory (RO)
+  --schemas-dir=PATH        Host schemas directory (RO); optional
+  --image=REF               Full image (default: ${DEFAULT_IMAGE_REPO}:${DEFAULT_TAG})
+  --tag=TAG                 Tag for default repo (default: ${DEFAULT_TAG})
+  --host-port=N             Host port (default: ${DEFAULT_HOST_PORT})
+  --port=N                  Container PORT (default: ${DEFAULT_CONTAINER_PORT})
+  --name=NAME               Container name (default: ${DEFAULT_NAME})
+  --planning-slug=S         PLANNING_SLUG inside container
+  --env KEY=VAL             Extra -e (repeatable)
+  --env-file=PATH           docker --env-file
+  --user=UID:GID            Container user (default: current uid:gid)
+  --pull / --no-pull        Pull image first (default: pull)
+  -d, --detach              Background
+  --rm / --no-rm            Remove on exit (default: rm unless -d)
+  --dry-run                 Print docker commands only
   -h, --help
 
   Extra docker flags after -- :
     start.sh -d -- --restart=unless-stopped
 
 EXAMPLES
-  curl -fsSL …/install-docker.sh | bash
-  bash <(curl -fsSL …/install-docker.sh) --worktree-root=~/projects/work
+  curl -fsSL …/install.sh | bash
+  bash <(curl -fsSL …/install.sh) --worktree-root=~/projects/work
   ~/.local/share/workflow-server/start.sh -d
   ~/.local/share/workflow-server/stop.sh
+  ~/.local/share/workflow-server/init-repo.sh owner/repo
 
 MCP URL: http://127.0.0.1:<host-port>/mcp
 EOF
@@ -179,6 +195,8 @@ while [[ $# -gt 0 ]]; do
     --data-dir) INSTALL_DIR="${2:?}"; INSTALL_DIR_SET=1; shift 2 ;;
     --worktree-root=*) HOST_WORKTREE_ROOT="${1#*=}"; WORKTREE_SET=1; shift ;;
     --worktree-root) HOST_WORKTREE_ROOT="${2:?}"; WORKTREE_SET=1; shift 2 ;;
+    --engineering-root=*) HOST_ENGINEERING_ROOT="${1#*=}"; ENGINEERING_SET=1; shift ;;
+    --engineering-root) HOST_ENGINEERING_ROOT="${2:?}"; ENGINEERING_SET=1; shift 2 ;;
     --workflows-dir=*) HOST_WORKFLOWS_DIR="${1#*=}"; WORKFLOWS_SET=1; shift ;;
     --workflows-dir) HOST_WORKFLOWS_DIR="${2:?}"; WORKFLOWS_SET=1; shift 2 ;;
     --schemas-dir=*) HOST_SCHEMAS_DIR="${1#*=}"; SCHEMAS_SET=1; shift ;;
@@ -257,7 +275,11 @@ fi
 
 # Path resolution (CLI > install/process env already in shell > defaults):
 if [[ "$WORKTREE_SET" -eq 0 ]]; then
-  [[ -z "$HOST_WORKTREE_ROOT" ]] && HOST_WORKTREE_ROOT="$DEFAULT_HOST_WORKTREE_ROOT"
+  [[ -z "$HOST_WORKTREE_ROOT" ]] && HOST_WORKTREE_ROOT="${INSTALL_DIR}/workspace"
+fi
+
+if [[ "$ENGINEERING_SET" -eq 0 ]]; then
+  [[ -z "$HOST_ENGINEERING_ROOT" ]] && HOST_ENGINEERING_ROOT="${INSTALL_DIR}/engineering"
 fi
 
 if [[ "$WORKFLOWS_SET" -eq 0 ]]; then
@@ -270,13 +292,20 @@ fi
 
 command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
 
-# Resolve + create worktree root before bind-mount (must exist for docker -v).
+# Resolve + create roots before bind-mount (must exist for docker -v).
 HOST_WORKTREE_ROOT="$(abs_path "$HOST_WORKTREE_ROOT")"
 if [[ ! -d "$HOST_WORKTREE_ROOT" ]]; then
-  echo "Creating worktree root: ${HOST_WORKTREE_ROOT}"
-  mkdir -p "$HOST_WORKTREE_ROOT" || die "failed to create worktree root: ${HOST_WORKTREE_ROOT}"
+  echo "Creating workspace root: ${HOST_WORKTREE_ROOT}"
+  mkdir -p "$HOST_WORKTREE_ROOT" || die "failed to create workspace root: ${HOST_WORKTREE_ROOT}"
 fi
-[[ -d "$HOST_WORKTREE_ROOT" ]] || die "worktree root is not a directory: ${HOST_WORKTREE_ROOT}"
+[[ -d "$HOST_WORKTREE_ROOT" ]] || die "workspace root is not a directory: ${HOST_WORKTREE_ROOT}"
+
+HOST_ENGINEERING_ROOT="$(abs_path "$HOST_ENGINEERING_ROOT")"
+if [[ ! -d "$HOST_ENGINEERING_ROOT" ]]; then
+  echo "Creating engineering root: ${HOST_ENGINEERING_ROOT}"
+  mkdir -p "$HOST_ENGINEERING_ROOT" || die "failed to create engineering root: ${HOST_ENGINEERING_ROOT}"
+fi
+[[ -d "$HOST_ENGINEERING_ROOT" ]] || die "engineering root is not a directory: ${HOST_ENGINEERING_ROOT}"
 
 if [[ ! -d "$HOST_WORKFLOWS_DIR" ]]; then
   die "workflows directory not found: ${HOST_WORKFLOWS_DIR}
@@ -286,10 +315,11 @@ Clone the workflows orphan branch into the install dir, for example:
     https://github.com/m2ux/workflow-server.git \\
     ${INSTALL_DIR}/workflows
 
-Or pass --workflows-dir=PATH / --install-dir=PATH."
+Or run install.sh / pass --workflows-dir=PATH / --install-dir=PATH."
 fi
 
 HOST_WORKTREE_ROOT="$(abs_dir "$HOST_WORKTREE_ROOT")"
+HOST_ENGINEERING_ROOT="$(abs_dir "$HOST_ENGINEERING_ROOT")"
 HOST_WORKFLOWS_DIR="$(abs_dir "$HOST_WORKFLOWS_DIR")"
 if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
   HOST_SCHEMAS_DIR="$(abs_dir "$HOST_SCHEMAS_DIR")"
@@ -338,6 +368,9 @@ DOCKER_RUN+=(-p "${HOST_PORT}:${CONTAINER_PORT}")
 [[ -n "$USER_SPEC" ]] && DOCKER_RUN+=(--user "$USER_SPEC")
 
 DOCKER_RUN+=(-e "WORKTREE_ROOT=${CONTAINER_WORKTREE_ROOT}")
+DOCKER_RUN+=(-e "WORKFLOW_WORKSPACE=${CONTAINER_WORKTREE_ROOT}")
+DOCKER_RUN+=(-e "WORKFLOW_SERVER_ENGINEERING_DIR=${CONTAINER_ENGINEERING_ROOT}")
+DOCKER_RUN+=(-e "WORKFLOW_SERVER_INSTALL_DIR=${CONTAINER_INSTALL_DIR}")
 DOCKER_RUN+=(-e "WORKFLOW_DIR=${CONTAINER_WORKFLOW_DIR}")
 DOCKER_RUN+=(-e "SCHEMAS_DIR=${CONTAINER_SCHEMAS_DIR}")
 DOCKER_RUN+=(-e "TRANSPORT=${TRANSPORT}")
@@ -356,6 +389,7 @@ if [[ -n "$ENV_FILE" ]]; then
 fi
 
 DOCKER_RUN+=(-v "${HOST_WORKTREE_ROOT}:${CONTAINER_WORKTREE_ROOT}")
+DOCKER_RUN+=(-v "${HOST_ENGINEERING_ROOT}:${CONTAINER_ENGINEERING_ROOT}")
 DOCKER_RUN+=(-v "${HOST_WORKFLOWS_DIR}:${CONTAINER_WORKFLOW_DIR}:ro")
 if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
   DOCKER_RUN+=(-v "${HOST_SCHEMAS_DIR}:${CONTAINER_SCHEMAS_DIR}:ro")
@@ -367,15 +401,16 @@ DOCKER_RUN+=("$FULL_IMAGE")
 echo "Install  : ${INSTALL_DIR}"
 [[ -n "$LOADED_ENV_FILE" ]] && echo "Env file : ${LOADED_ENV_FILE}"
 echo "Starting ${FULL_IMAGE}"
-echo "  worktree : ${HOST_WORKTREE_ROOT} → ${CONTAINER_WORKTREE_ROOT} (rw)"
-echo "  workflows: ${HOST_WORKFLOWS_DIR} → ${CONTAINER_WORKFLOW_DIR} (ro)"
+echo "  workspace  : ${HOST_WORKTREE_ROOT} → ${CONTAINER_WORKTREE_ROOT} (rw)"
+echo "  engineering: ${HOST_ENGINEERING_ROOT} → ${CONTAINER_ENGINEERING_ROOT} (rw)"
+echo "  workflows  : ${HOST_WORKFLOWS_DIR} → ${CONTAINER_WORKFLOW_DIR} (ro)"
 if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
-  echo "  schemas  : ${HOST_SCHEMAS_DIR} → ${CONTAINER_SCHEMAS_DIR} (ro)"
+  echo "  schemas    : ${HOST_SCHEMAS_DIR} → ${CONTAINER_SCHEMAS_DIR} (ro)"
 else
-  echo "  schemas  : (image default at ${CONTAINER_SCHEMAS_DIR})"
+  echo "  schemas    : (image default at ${CONTAINER_SCHEMAS_DIR})"
 fi
-echo "  publish  : ${HOST_PORT} → ${CONTAINER_PORT}"
-echo "  MCP URL  : http://127.0.0.1:${HOST_PORT}/mcp"
+echo "  publish    : ${HOST_PORT} → ${CONTAINER_PORT}"
+echo "  MCP URL    : http://127.0.0.1:${HOST_PORT}/mcp"
 
 run "${DOCKER_RUN[@]}"
 
