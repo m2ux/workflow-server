@@ -14,16 +14,18 @@ export interface ServerConfig {
   workflowDir: string;
   schemasDir: string;
   /**
-   * Absolute path to the worktree / workspace root the server is bound to.
+   * Absolute path to the feature-worktree root the server is bound to.
    * Feature worktrees live under this path. With `--repo=owner/repo`, this is
-   * `$INSTALL/workspace/<owner>/<repo>`.
+   * `$INSTALL/worktrees/<owner>/<repo>` (legacy alias: `$INSTALL/workspace/…`).
    */
   workspaceDir: string;
   /**
    * Absolute path to the engineering checkout used for planning artifacts.
    * Optional on literals (tests/scripts): `createServer` / callers treat a
    * missing value as `workspaceDir` (legacy single-root layout).
-   * With `--repo=owner/repo`, this is `$INSTALL/engineering/<owner>/<repo>`.
+   * With `--repo=owner/repo`, this is
+   * `$INSTALL/source/<owner>/<repo>/.engineering`
+   * (legacy: `$INSTALL/engineering/<owner>/<repo>`).
    */
   engineeringDir?: string;
   /**
@@ -217,14 +219,36 @@ export function resolveInstallDir(
 export interface RepoPaths {
   repo: string;
   installDir: string;
+  /** App main/default-branch checkout: `$INSTALL/source/<owner>/<repo>`. */
+  sourceDir: string;
+  /**
+   * Planning engineering root:
+   * `$INSTALL/source/<owner>/<repo>/.engineering` (canonical),
+   * or legacy `$INSTALL/engineering/<owner>/<repo>`.
+   */
   engineeringDir: string;
+  /** Feature worktree parent: `$INSTALL/worktrees/<owner>/<repo>`. */
   workspaceDir: string;
 }
 
+/** Directory name for feature worktree parents under the install root. */
+export const INSTALL_WORKTREES_DIR = 'worktrees';
+/** Legacy feature-worktree parent name (pre worktrees rename). */
+export const INSTALL_WORKSPACE_DIR_LEGACY = 'workspace';
+/** Directory name for per-repo main checkouts under the install root. */
+export const INSTALL_SOURCE_DIR = 'source';
+/** Legacy multi-root eng parent (sibling of source; pre eng-in-source). */
+export const INSTALL_ENGINEERING_DIR_LEGACY = 'engineering';
+
 /**
  * Derive the canonical per-repo paths under the install root:
- *   $INSTALL/engineering/<owner>/<repo>
- *   $INSTALL/workspace/<owner>/<repo>
+ *   $INSTALL/source/<owner>/<repo>                 # main checkout (reference)
+ *   $INSTALL/source/<owner>/<repo>/.engineering    # planning (submodule)
+ *   $INSTALL/worktrees/<owner>/<repo>              # feature worktree parent
+ *
+ * When `$INSTALL/engineering/<owner>/<repo>` exists and the source eng path
+ * does not, engineeringDir falls back to the legacy sibling tree so one-release
+ * migrations keep resolving sessions.
  */
 export function resolveRepoPaths(
   repoRaw: string,
@@ -232,12 +256,27 @@ export function resolveRepoPaths(
 ): RepoPaths {
   const repo = normalizeRepoPath(repoRaw);
   const root = resolve(installDir);
+  const sourceDir = resolve(root, INSTALL_SOURCE_DIR, repo);
   return {
     repo,
     installDir: root,
-    engineeringDir: resolve(root, 'engineering', repo),
-    workspaceDir: resolve(root, 'workspace', repo),
+    sourceDir,
+    engineeringDir: resolve(sourceDir, '.engineering'),
+    workspaceDir: resolve(root, INSTALL_WORKTREES_DIR, repo),
   };
+}
+
+/**
+ * True when `workspaceDir` is the install multi-root for feature worktrees
+ * (`$INSTALL/worktrees` or legacy `$INSTALL/workspace`).
+ */
+export function isWorktreeMultiRoot(workspaceDir: string, installDir: string): boolean {
+  const ws = resolve(workspaceDir);
+  const root = resolve(installDir);
+  return (
+    ws === resolve(root, INSTALL_WORKTREES_DIR) ||
+    ws === resolve(root, INSTALL_WORKSPACE_DIR_LEGACY)
+  );
 }
 
 /** Engineering root used for planning: explicit field or workspace fallback. */
@@ -255,12 +294,12 @@ interface ResolvedRoots {
 }
 
 /**
- * Resolve workspace + engineering roots.
+ * Resolve feature-worktree + engineering roots.
  *
  * Precedence:
  *   1. `--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` (explicit path).
- *      Docker start.sh binds install multi-roots (`$INSTALL/workspace` +
- *      `$INSTALL/engineering`). Repo is chosen at `start_session` time, not
+ *      Docker start.sh binds install multi-roots (`$INSTALL/worktrees` +
+ *      `$INSTALL/source`). Repo is chosen at `start_session` time, not
  *      process start.
  *   2. Optional `--repo` / `WORKFLOW_SERVER_REPO` pins a single owner/repo under
  *      the install root (stdio single-tenant). Prefer session-time `repo` when
@@ -289,16 +328,18 @@ function resolveRoots(argv: readonly string[]): ResolvedRoots {
       ? resolve(installDirEnv)
       : resolveInstallDir(argv);
     // Optional process pin: only when workspace is NOT the install multi-root
-    // (or is already the per-repo workspace). Multi-root Docker keeps multi-root
-    // so start_session can select owner/repo dynamically.
-    const multiRootWorkspace = resolve(installDir, 'workspace');
-    const isMultiRootWorkspace = workspaceDir === multiRootWorkspace;
+    // (or is already the per-repo worktrees path). Multi-root Docker keeps
+    // multi-root so start_session can select owner/repo dynamically.
+    const isMultiRootWorkspace = isWorktreeMultiRoot(workspaceDir, installDir);
     if (repoRaw && !isMultiRootWorkspace) {
       const paths = resolveRepoPaths(repoRaw, installDir);
       // Explicit workspace that already is the per-repo path, or arbitrary pin.
-      if (workspaceDir === paths.workspaceDir) {
+      if (
+        workspaceDir === paths.workspaceDir ||
+        workspaceDir === resolve(installDir, INSTALL_WORKSPACE_DIR_LEGACY, paths.repo)
+      ) {
         return {
-          workspaceDir: paths.workspaceDir,
+          workspaceDir,
           engineeringDir: engOverride ? engineeringDir : paths.engineeringDir,
           repo: paths.repo,
           installDir: paths.installDir,
@@ -387,8 +428,8 @@ function resolveHost(argv: readonly string[]): string {
  *
  * Root binding: `--workspace` / env paths take precedence over `--repo` /
  * `WORKFLOW_SERVER_REPO`. Repo mode derives:
- *   workspaceDir    = $INSTALL/workspace/<owner>/<repo>
- *   engineeringDir  = $INSTALL/engineering/<owner>/<repo>
+ *   workspaceDir    = $INSTALL/worktrees/<owner>/<repo>
+ *   engineeringDir  = $INSTALL/source/<owner>/<repo>/.engineering
  */
 export function loadConfig(argv: readonly string[] = process.argv.slice(2)): ServerConfig {
   const roots = resolveRoots(argv);

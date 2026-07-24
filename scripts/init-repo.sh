@@ -1,25 +1,22 @@
 #!/usr/bin/env bash
 # workflow-server — initialize a managed repo under the install root
 #
-# Accepts a full GitHub-style path (owner/repo), creates engineering + workspace
-# directories, and checks out that repo's engineering content.
+# Accepts a full GitHub-style path (owner/repo), creates:
+#   source/<owner>/<repo>/              # app main/default-branch checkout
+#   source/<owner>/<repo>/.engineering/ # eng submodule or materialised eng
+#   worktrees/<owner>/<repo>/           # parent for feature worktrees
 #
-# Engineering resolution order:
+# Engineering resolution (into source/.../.engineering):
 #   1. Explicit --engineering-url / --engineering-branch overrides
-#   2. App default branch: .engineering git submodule (url + branch from
-#      .gitmodules) — covers external engineering remotes
-#   3. App remote branch named "engineering" (or --branch)
-#   4. App default branch: in-tree .engineering/ directory
+#   2. App checkout: git submodule update --init -- .engineering
+#   3. App remote branch named "engineering" (or --branch) cloned into .engineering
+#   4. App default branch: in-tree .engineering/ directory materialised
+#
+# Does NOT init other product submodules (e.g. workflows) by default.
 #
 #   ~/.local/share/workflow-server/init-repo.sh m2ux/workflow-server
 #   ./scripts/init-repo.sh m2ux/workflow-server
 #   ./scripts/init-repo.sh --url=git@github.com:acme/app.git acme/app
-#
-# Layout (default root = $XDG_DATA_HOME/workflow-server or ~/.local/share/workflow-server):
-#
-#   $ROOT/
-#     engineering/<owner>/<repo>/    # engineering content checkout
-#     workspace/<owner>/<repo>/      # host root for feature worktrees
 #
 # Needs: git
 set -euo pipefail
@@ -45,7 +42,8 @@ ENG_SOURCE_PIN=""
 
 usage() {
   cat <<EOF
-Initialize engineering + workspace paths for a repo under the workflow-server install root.
+Initialize source + engineering + worktrees paths for a repo under the
+workflow-server install root.
 
 USAGE
   $(basename "$0") [options] <owner/repo>
@@ -59,22 +57,22 @@ OPTIONS
   --url=URL              App repo git remote (default: https://github.com/<owner/repo>.git)
   --branch=NAME          Fallback engineering branch when not taken from
                          .gitmodules (default: ${DEFAULT_BRANCH})
-  --engineering-url=URL  Force engineering remote (skip app-repo probe)
+  --engineering-url=URL  Force engineering remote (skip submodule init)
   --engineering-branch=NAME
                          Force engineering branch (with --engineering-url, or
                          override the branch from .gitmodules)
   --no-fetch             Skip fetch when checkout already exists
-  --force                Recreate engineering checkout if path exists but is invalid
+  --force                Recreate paths if invalid / discard dirty trees
   -h, --help
 
 LAYOUT
-  \$ROOT/engineering/<owner>/<repo>/
-  \$ROOT/workspace/<owner>/<repo>/
+  \$ROOT/source/<owner>/<repo>/                 # main/default-branch checkout
+  \$ROOT/source/<owner>/<repo>/.engineering/    # planning eng root
+  \$ROOT/worktrees/<owner>/<repo>/              # feature worktree parent
 
 RESOLUTION
-  Probe the app repo for .engineering as a submodule (external URL + branch),
-  else clone branch "${DEFAULT_BRANCH}" from the app repo, else extract an
-  in-tree .engineering/ directory from the app default branch.
+  Clone the app into source/, then prefer submodule init for .engineering,
+  else clone branch "${DEFAULT_BRANCH}", else extract in-tree .engineering/.
 EOF
 }
 
@@ -169,8 +167,6 @@ read_gitmodules_entry() {
   [[ -f "$gitmodules" ]] || return 1
 
   local key path name url branch
-  # Lines look like: submodule.<name>.path <path>
-  # Do not use `IFS= read` — that disables splitting and swallows the value.
   while read -r key path; do
     [[ -n "$key" && -n "$path" ]] || continue
     [[ "$path" == "$want_path" ]] || continue
@@ -186,17 +182,111 @@ read_gitmodules_entry() {
   return 1
 }
 
-# Shallow-probe the app repo default branch into $1 (empty/new dir).
-probe_app_repo() {
+is_git_checkout() {
   local dest="$1"
-  local url="$2"
-  echo "Probing app repo → ${url}"
-  if git clone --depth 1 --filter=blob:none --single-branch "$url" "$dest" >/dev/null 2>&1; then
+  { [[ -d "${dest}/.git" ]] || [[ -f "${dest}/.git" ]]; } \
+    && git -C "${dest}" rev-parse --is-inside-work-tree >/dev/null 2>&1
+}
+
+default_branch_for() {
+  local dest="$1"
+  local ref
+  ref="$(git -C "$dest" symbolic-ref --quiet refs/remotes/origin/HEAD 2>/dev/null || true)"
+  if [[ -n "$ref" ]]; then
+    printf '%s\n' "${ref#refs/remotes/origin/}"
     return 0
   fi
-  rm -rf "$dest"
-  mkdir -p "$dest"
-  git clone --depth 1 --single-branch "$url" "$dest" >/dev/null 2>&1
+  if git -C "$dest" show-ref --verify --quiet refs/remotes/origin/main; then
+    echo main
+    return 0
+  fi
+  if git -C "$dest" show-ref --verify --quiet refs/remotes/origin/master; then
+    echo master
+    return 0
+  fi
+  echo main
+}
+
+# Clone or update the app main checkout at SOURCE_DIR (no bulk submodule init).
+ensure_source_checkout() {
+  local dest="$1"
+  local url="$2"
+
+  if is_git_checkout "$dest" && [[ "${FORCE}" -eq 0 ]]; then
+    echo "Source checkout already present → ${dest}"
+    if [[ "${FETCH}" -eq 1 ]]; then
+      echo "Updating source checkout"
+      git -C "${dest}" remote set-url origin "${url}" 2>/dev/null \
+        || git -C "${dest}" remote add origin "${url}"
+      git -C "${dest}" fetch --prune origin
+      local def_br
+      def_br="$(default_branch_for "$dest")"
+      if ! git -C "${dest}" diff --quiet || ! git -C "${dest}" diff --cached --quiet; then
+        die "local changes in source ${dest}
+  Commit/stash them, or re-run with --force"
+      fi
+      local cur
+      cur="$(git -C "${dest}" rev-parse --abbrev-ref HEAD 2>/dev/null || echo HEAD)"
+      if [[ "$cur" != "$def_br" ]]; then
+        git -C "${dest}" checkout -B "$def_br" "origin/${def_br}"
+      else
+        git -C "${dest}" merge --ff-only "origin/${def_br}" \
+          || git -C "${dest}" reset --hard "origin/${def_br}"
+      fi
+    fi
+    return 0
+  fi
+
+  if [[ -e "${dest}" ]]; then
+    if [[ "${FORCE}" -eq 1 ]]; then
+      echo "Removing existing path ( --force ) → ${dest}"
+      rm -rf "${dest}"
+    else
+      die "path exists but is not a git checkout: ${dest} (use --force)"
+    fi
+  fi
+
+  mkdir -p "$(dirname "$dest")"
+  echo "Cloning app source → ${url} → ${dest}"
+  git clone --single-branch "${url}" "${dest}" \
+    || die "failed to clone ${url}"
+  local def_br
+  def_br="$(default_branch_for "$dest")"
+  git -C "${dest}" checkout -B "$def_br" "origin/${def_br}" 2>/dev/null \
+    || git -C "${dest}" checkout "$def_br" 2>/dev/null \
+    || true
+}
+
+# Try submodule init for .engineering only. Returns 0 on success.
+try_init_engineering_submodule() {
+  local source_dir="$1"
+  local eng_path="$DEFAULT_ENG_PATH"
+
+  [[ -f "${source_dir}/.gitmodules" ]] || return 1
+  read_gitmodules_entry "${source_dir}/.gitmodules" "$eng_path" >/dev/null || return 1
+
+  echo "Initializing engineering submodule → ${source_dir}/${eng_path}"
+  if git -C "${source_dir}" submodule update --init -- "${eng_path}"; then
+    # Prefer tracking branch from .gitmodules when present
+    local entry sub_branch
+    if entry="$(read_gitmodules_entry "${source_dir}/.gitmodules" "$eng_path")"; then
+      sub_branch="${entry#*$'\t'}"
+      [[ "$sub_branch" == "$entry" ]] && sub_branch=""
+      if [[ -n "$ENG_BRANCH_OVERRIDE" ]]; then
+        sub_branch="$ENG_BRANCH_OVERRIDE"
+      fi
+      if [[ -n "$sub_branch" ]] && is_git_checkout "${source_dir}/${eng_path}"; then
+        git -C "${source_dir}/${eng_path}" fetch origin 2>/dev/null || true
+        git -C "${source_dir}/${eng_path}" checkout -B "$sub_branch" "origin/${sub_branch}" 2>/dev/null \
+          || git -C "${source_dir}/${eng_path}" checkout "$sub_branch" 2>/dev/null \
+          || true
+      fi
+    fi
+    ENG_SOURCE_MODE="submodule"
+    return 0
+  fi
+  echo "warning: submodule init for ${eng_path} failed; trying alternate eng resolution" >&2
+  return 1
 }
 
 remote_has_branch() {
@@ -205,10 +295,11 @@ remote_has_branch() {
   git ls-remote --heads "$url" "refs/heads/${branch}" 2>/dev/null | grep -q .
 }
 
-# Decide engineering source. Sets ENG_SOURCE_* globals.
-resolve_engineering_source() {
+# Decide engineering source when submodule init is unavailable. Sets ENG_SOURCE_*.
+resolve_engineering_source_fallback() {
   local app_url="$1"
-  local fallback_branch="$2"
+  local source_dir="$2"
+  local fallback_branch="$3"
 
   ENG_SOURCE_URL=""
   ENG_SOURCE_BRANCH=""
@@ -223,63 +314,36 @@ resolve_engineering_source() {
     return 0
   fi
 
-  local probe
-  probe="$(mktemp -d "${TMPDIR:-/tmp}/wf-init-probe.XXXXXX")"
-  cleanup_probe() { rm -rf "$probe"; }
-  # shellcheck disable=SC2064
-  trap cleanup_probe EXIT
-
-  if ! probe_app_repo "$probe" "$app_url"; then
-    cleanup_probe
-    trap - EXIT
-    echo "warning: could not probe app repo; falling back to branch '${fallback_branch}' on app remote" >&2
-    ENG_SOURCE_URL="$app_url"
-    ENG_SOURCE_BRANCH="${ENG_BRANCH_OVERRIDE:-$fallback_branch}"
+  # Prefer reading .gitmodules from the live source checkout
+  local entry sub_url sub_branch
+  if entry="$(read_gitmodules_entry "${source_dir}/.gitmodules" "$DEFAULT_ENG_PATH")"; then
+    sub_url="${entry%%$'\t'*}"
+    sub_branch="${entry#*$'\t'}"
+    [[ "$sub_branch" == "$sub_url" ]] && sub_branch=""
+    ENG_SOURCE_URL="$(resolve_submodule_url "$app_url" "$sub_url")"
+    if [[ -n "$ENG_BRANCH_OVERRIDE" ]]; then
+      ENG_SOURCE_BRANCH="$ENG_BRANCH_OVERRIDE"
+    elif [[ -n "$sub_branch" ]]; then
+      ENG_SOURCE_BRANCH="$sub_branch"
+    else
+      ENG_SOURCE_BRANCH="$fallback_branch"
+    fi
     ENG_SOURCE_MODE="remote"
+    echo "Engineering source (gitmodules remote): ${ENG_SOURCE_URL} @ ${ENG_SOURCE_BRANCH}"
     return 0
   fi
 
-  local mode_line mode_type entry sub_url sub_branch pin try_branch
-  mode_line="$(git -C "$probe" ls-tree HEAD -- "$DEFAULT_ENG_PATH" 2>/dev/null || true)"
-  mode_type="$(printf '%s\n' "$mode_line" | awk '{print $1" "$2}')"
-
-  if [[ "$mode_type" == "160000 commit" ]]; then
-    if entry="$(read_gitmodules_entry "${probe}/.gitmodules" "$DEFAULT_ENG_PATH")"; then
-      sub_url="${entry%%$'\t'*}"
-      sub_branch="${entry#*$'\t'}"
-      # When entry has no tab-branch, sub_branch equals full entry — clear it.
-      [[ "$sub_branch" == "$sub_url" ]] && sub_branch=""
-      ENG_SOURCE_URL="$(resolve_submodule_url "$app_url" "$sub_url")"
-      pin="$(printf '%s\n' "$mode_line" | awk '{print $3}')"
-      ENG_SOURCE_PIN="${pin:-}"
-      if [[ -n "$ENG_BRANCH_OVERRIDE" ]]; then
-        ENG_SOURCE_BRANCH="$ENG_BRANCH_OVERRIDE"
-      elif [[ -n "$sub_branch" ]]; then
-        ENG_SOURCE_BRANCH="$sub_branch"
-      else
-        ENG_SOURCE_BRANCH=""
-      fi
-      ENG_SOURCE_MODE="remote"
-      cleanup_probe
-      trap - EXIT
-      echo "Engineering source (submodule): ${ENG_SOURCE_URL}${ENG_SOURCE_BRANCH:+ @ ${ENG_SOURCE_BRANCH}}${ENG_SOURCE_PIN:+ (pin ${ENG_SOURCE_PIN})}"
+  # In-tree .engineering on current source HEAD
+  if [[ -d "${source_dir}/${DEFAULT_ENG_PATH}" ]] && ! is_git_checkout "${source_dir}/${DEFAULT_ENG_PATH}"; then
+    # Already present as plain tree — treat as ready
+    if [[ -d "${source_dir}/${DEFAULT_ENG_PATH}/artifacts" ]] || [[ -f "${source_dir}/${DEFAULT_ENG_PATH}/README.md" ]]; then
+      ENG_SOURCE_MODE="intree-present"
+      echo "Engineering source (in-tree present at ${source_dir}/${DEFAULT_ENG_PATH})"
       return 0
     fi
-    echo "warning: .engineering is a submodule but .gitmodules entry is missing; falling back" >&2
-  elif [[ "$mode_type" == "040000 tree" ]]; then
-    ENG_SOURCE_URL="$app_url"
-    ENG_SOURCE_BRANCH="$(git -C "$probe" rev-parse --abbrev-ref HEAD)"
-    ENG_SOURCE_MODE="intree"
-    cleanup_probe
-    trap - EXIT
-    echo "Engineering source (in-tree .engineering/ on ${ENG_SOURCE_BRANCH})"
-    return 0
   fi
 
-  try_branch="${ENG_BRANCH_OVERRIDE:-$fallback_branch}"
-  cleanup_probe
-  trap - EXIT
-
+  local try_branch="${ENG_BRANCH_OVERRIDE:-$fallback_branch}"
   if remote_has_branch "$app_url" "$try_branch"; then
     ENG_SOURCE_URL="$app_url"
     ENG_SOURCE_BRANCH="$try_branch"
@@ -288,18 +352,21 @@ resolve_engineering_source() {
     return 0
   fi
 
+  # Last resort: materialise from default branch tree if path exists as tree blob
+  if git -C "$source_dir" ls-tree HEAD -- "$DEFAULT_ENG_PATH" 2>/dev/null | grep -q '040000 tree'; then
+    ENG_SOURCE_URL="$app_url"
+    ENG_SOURCE_BRANCH="$(git -C "$source_dir" rev-parse --abbrev-ref HEAD)"
+    ENG_SOURCE_MODE="intree"
+    echo "Engineering source (in-tree extract from ${ENG_SOURCE_BRANCH})"
+    return 0
+  fi
+
   die "could not resolve engineering content for ${app_url}
 hint: expected one of:
-  - .engineering submodule on the default branch (external or same-repo)
+  - .engineering submodule on the default branch
   - branch '${try_branch}' on the app remote
   - in-tree .engineering/ on the default branch
 create with scripts/deploy.sh in that repo, then re-run init-repo.sh"
-}
-
-is_git_checkout() {
-  local dest="$1"
-  { [[ -d "${dest}/.git" ]] || [[ -f "${dest}/.git" ]]; } \
-    && git -C "${dest}" rev-parse --is-inside-work-tree >/dev/null 2>&1
 }
 
 clone_or_update_remote() {
@@ -309,9 +376,9 @@ clone_or_update_remote() {
   local pin="${4:-}"
 
   if is_git_checkout "$dest" && [[ "${FORCE}" -eq 0 ]]; then
-    echo "Engineering checkout already present"
+    echo "Engineering checkout already present → ${dest}"
     if [[ "${FETCH}" -eq 1 ]]; then
-      echo "Updating engineering checkout → ${dest}"
+      echo "Updating engineering checkout"
       git -C "${dest}" remote set-url origin "${url}" 2>/dev/null \
         || git -C "${dest}" remote add origin "${url}"
       git -C "${dest}" fetch --prune origin
@@ -333,10 +400,11 @@ clone_or_update_remote() {
       echo "Removing existing path ( --force ) → ${dest}"
       rm -rf "${dest}"
     else
-      die "path exists but is not a git checkout: ${dest} (use --force)"
+      die "path exists but is not a usable engineering checkout: ${dest} (use --force)"
     fi
   fi
 
+  mkdir -p "$(dirname "$dest")"
   if [[ -n "$branch" ]]; then
     echo "Cloning ${url} (${branch}) → ${dest}"
     if ! git clone --branch "${branch}" --single-branch "${url}" "${dest}"; then
@@ -350,60 +418,37 @@ clone_or_update_remote() {
   fi
 
   if [[ -n "$pin" ]]; then
-    echo "Checking out submodule pin ${pin}"
+    echo "Checking out pin ${pin}"
     git -C "${dest}" fetch origin "$pin" 2>/dev/null || true
     git -C "${dest}" checkout --detach "$pin" \
       || die "failed to checkout pin ${pin} in ${dest}"
   fi
 }
 
-# Materialise in-tree .engineering/ from the app default branch into dest.
 clone_intree_engineering() {
   local dest="$1"
-  local app_url="$2"
-  local app_branch="$3"
-  local tmp
+  local source_dir="$2"
 
+  if [[ -e "${dest}" ]] && [[ "${FORCE}" -eq 0 ]]; then
+    echo "Engineering path already present (in-tree)"
+    return 0
+  fi
   if [[ -e "${dest}" ]]; then
-    if [[ "${FORCE}" -eq 0 && "${FETCH}" -eq 0 ]]; then
-      echo "Engineering path already present (in-tree materialisation)"
-      return 0
-    fi
-    echo "Removing existing path → ${dest}"
     rm -rf "${dest}"
   fi
 
-  tmp="$(mktemp -d "${TMPDIR:-/tmp}/wf-init-intree.XXXXXX")"
-  cleanup_intree() { rm -rf "$tmp"; }
-  # shellcheck disable=SC2064
-  trap cleanup_intree EXIT
-
-  echo "Cloning app branch for in-tree .engineering/ → ${app_url} (${app_branch})"
-  if ! git clone --depth 1 --branch "${app_branch}" --single-branch --filter=blob:none \
-      "${app_url}" "${tmp}" >/dev/null 2>&1; then
-    rm -rf "${tmp}"
-    mkdir -p "${tmp}"
-    git clone --depth 1 --branch "${app_branch}" --single-branch \
-      "${app_url}" "${tmp}" >/dev/null \
-      || { cleanup_intree; trap - EXIT; die "failed to clone ${app_url} (${app_branch})"; }
-  fi
-
-  [[ -d "${tmp}/${DEFAULT_ENG_PATH}" ]] \
-    || { cleanup_intree; trap - EXIT; die "no ${DEFAULT_ENG_PATH}/ on ${app_url} (${app_branch})"; }
+  [[ -d "${source_dir}/${DEFAULT_ENG_PATH}" ]] \
+    || die "no ${DEFAULT_ENG_PATH}/ in ${source_dir}"
 
   mkdir -p "${dest}"
-  tar -C "${tmp}/${DEFAULT_ENG_PATH}" --exclude='.git' -cf - . \
+  tar -C "${source_dir}/${DEFAULT_ENG_PATH}" --exclude='.git' -cf - . \
     | tar -C "${dest}" -xf -
 
   cat >"${dest}/.workflow-server-source" <<EOF
 mode=intree
-app_url=${app_url}
-app_branch=${app_branch}
+source_dir=${source_dir}
 path=${DEFAULT_ENG_PATH}
 EOF
-
-  cleanup_intree
-  trap - EXIT
   echo "Materialised in-tree engineering → ${dest}"
 }
 
@@ -458,56 +503,84 @@ if [[ -z "$REPO_URL" ]]; then
 fi
 
 ROOT="$(abs_path "$ROOT")"
-ENG_DIR="${ROOT}/engineering/${OWNER}/${NAME}"
-WS_DIR="${ROOT}/workspace/${OWNER}/${NAME}"
+SOURCE_DIR="${ROOT}/source/${OWNER}/${NAME}"
+ENG_DIR="${SOURCE_DIR}/${DEFAULT_ENG_PATH}"
+WT_DIR="${ROOT}/worktrees/${OWNER}/${NAME}"
+# Legacy sibling eng (migration notice only)
+LEGACY_ENG_DIR="${ROOT}/engineering/${OWNER}/${NAME}"
 
 echo "Repo        : ${REPO_PATH}"
 echo "App URL     : ${REPO_URL}"
 echo "Root        : ${ROOT}"
+echo "Source      : ${SOURCE_DIR}"
 echo "Engineering : ${ENG_DIR}"
-echo "Workspace   : ${WS_DIR}"
+echo "Worktrees   : ${WT_DIR}"
 echo
 
-mkdir -p "${ROOT}/engineering/${OWNER}" \
-  "${ROOT}/workspace/${OWNER}"
+mkdir -p "${ROOT}/source/${OWNER}" \
+  "${ROOT}/worktrees/${OWNER}"
 
-resolve_engineering_source "$REPO_URL" "$BRANCH"
+ensure_source_checkout "$SOURCE_DIR" "$REPO_URL"
 
-case "$ENG_SOURCE_MODE" in
-  remote)
-    clone_or_update_remote "$ENG_DIR" "$ENG_SOURCE_URL" "$ENG_SOURCE_BRANCH" "$ENG_SOURCE_PIN"
+# Engineering into source/.../.engineering
+if [[ -n "$ENG_URL_OVERRIDE" ]]; then
+  ENG_SOURCE_MODE="remote"
+  ENG_SOURCE_URL="$ENG_URL_OVERRIDE"
+  ENG_SOURCE_BRANCH="${ENG_BRANCH_OVERRIDE:-$BRANCH}"
+  clone_or_update_remote "$ENG_DIR" "$ENG_SOURCE_URL" "$ENG_SOURCE_BRANCH" ""
+  if is_git_checkout "$ENG_DIR"; then
     init_nested_submodules "$ENG_DIR"
-    ;;
-  intree)
-    clone_intree_engineering "$ENG_DIR" "$ENG_SOURCE_URL" "$ENG_SOURCE_BRANCH"
-    if is_git_checkout "$ENG_DIR"; then
-      init_nested_submodules "$ENG_DIR"
-    fi
-    ;;
-  *)
-    die "internal: unknown engineering source mode '${ENG_SOURCE_MODE}'"
-    ;;
-esac
-
-if [[ ! -d "${WS_DIR}" ]]; then
-  echo "Creating workspace root → ${WS_DIR}"
-  mkdir -p "${WS_DIR}"
+  fi
+elif try_init_engineering_submodule "$SOURCE_DIR"; then
+  :
 else
-  echo "Workspace root already present"
+  resolve_engineering_source_fallback "$REPO_URL" "$SOURCE_DIR" "$BRANCH"
+  case "$ENG_SOURCE_MODE" in
+    remote)
+      clone_or_update_remote "$ENG_DIR" "$ENG_SOURCE_URL" "$ENG_SOURCE_BRANCH" "$ENG_SOURCE_PIN"
+      if is_git_checkout "$ENG_DIR"; then
+        init_nested_submodules "$ENG_DIR"
+      fi
+      ;;
+    intree)
+      clone_intree_engineering "$ENG_DIR" "$SOURCE_DIR"
+      ;;
+    intree-present)
+      echo "Using existing in-tree engineering at ${ENG_DIR}"
+      ;;
+    submodule)
+      ;;
+    *)
+      die "internal: unknown engineering source mode '${ENG_SOURCE_MODE}'"
+      ;;
+  esac
+fi
+
+[[ -d "$ENG_DIR" ]] || die "engineering path missing after init: ${ENG_DIR}"
+
+if [[ ! -d "${WT_DIR}" ]]; then
+  echo "Creating worktrees parent → ${WT_DIR}"
+  mkdir -p "${WT_DIR}"
+else
+  echo "Worktrees parent already present"
+fi
+
+if [[ -d "$LEGACY_ENG_DIR" && "$LEGACY_ENG_DIR" != "$ENG_DIR" ]]; then
+  echo
+  echo "note: legacy engineering path still exists: ${LEGACY_ENG_DIR}"
+  echo "      canonical planning root is now: ${ENG_DIR}"
 fi
 
 echo
 echo "Init complete."
 echo "  Repo path    : ${REPO_PATH}"
+echo "  Source       : ${SOURCE_DIR}"
 echo "  Engineering  : ${ENG_DIR}"
-echo "  Workspace    : ${WS_DIR}"
-echo "  Source mode  : ${ENG_SOURCE_MODE}"
-if [[ "$ENG_SOURCE_MODE" == "remote" ]]; then
-  echo "  Source URL   : ${ENG_SOURCE_URL}"
-  if [[ -n "$ENG_SOURCE_BRANCH" ]]; then
-    echo "  Source branch: ${ENG_SOURCE_BRANCH}"
-  fi
-  if [[ -n "$ENG_SOURCE_PIN" ]]; then
-    echo "  Source pin   : ${ENG_SOURCE_PIN}"
-  fi
+echo "  Worktrees    : ${WT_DIR}"
+echo "  Eng mode     : ${ENG_SOURCE_MODE:-unknown}"
+if [[ -n "${ENG_SOURCE_URL:-}" ]]; then
+  echo "  Eng URL      : ${ENG_SOURCE_URL}"
+fi
+if [[ -n "${ENG_SOURCE_BRANCH:-}" ]]; then
+  echo "  Eng branch   : ${ENG_SOURCE_BRANCH}"
 fi

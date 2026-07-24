@@ -5,7 +5,7 @@ workflow-server sessions against a target `owner/repo`.
 
 It mirrors a typical layout under `~/.local/share/cursor/workspaces/<name>/`:
 agent rules, MCP client config, and a `.code-workspace` that mounts the
-install-root **engineering** and **workspace** trees next to this folder.
+install-root **source** and **worktrees** trees next to this folder.
 
 ## Prerequisites
 
@@ -22,7 +22,7 @@ examples/cursor-workspace/
 ├── README.md                         # this file
 ├── AGENTS.md                         # target owner/repo hint for start_session
 ├── CLAUDE.md -> AGENTS.md            # Claude Code reads the same hint
-├── workflow-server.code-workspace    # multi-root: this dir + eng + sessions
+├── workflow-server.code-workspace    # multi-root: this dir + source + worktrees
 ├── .cursor/
 │   ├── mcp.json                      # mcp-remote → workflow-server HTTP
 │   └── rules/
@@ -37,8 +37,8 @@ examples/cursor-workspace/
 
 | Path | Role |
 |------|------|
-| `AGENTS.md` | Declares the target `owner/repo`. Pass that value as `repo` on `start_session` when the server uses install multi-root. |
-| `workflow-server.code-workspace` | Opens three roots: this folder, `$INSTALL/engineering/<owner>/<repo>`, and `$INSTALL/workspace/<owner>/<repo>`. |
+| `AGENTS.md` | Declares the target `owner/repo`. Always pass that value as `repo` on `start_session`. |
+| `workflow-server.code-workspace` | Opens three roots: this folder, `$INSTALL/source/<owner>/<repo>`, and `$INSTALL/worktrees/<owner>/<repo>`. |
 | `.cursor/mcp.json` | Connects Cursor to the running HTTP server via `npx mcp-remote`. |
 | `.cursor/rules/*.mdc` | Always-applied IDE rules (bootstrap + optional concept-rag). |
 | `.claude/rules/*` | Same rules for Claude Code. |
@@ -61,7 +61,7 @@ cd ~/.local/share/cursor/workspaces/my-project
 #    Defaults assume:
 #      this folder  → ~/.local/share/cursor/workspaces/<name>/
 #      install dir  → ~/.local/share/workflow-server/
-#    so relative paths ../../../.local/share/workflow-server/{engineering,workspace}/owner/repo
+#    so relative paths ../../../.local/share/workflow-server/{source,worktrees}/owner/repo
 #    resolve correctly. Replace owner/repo with your slug.
 
 # 4. Open in Cursor
@@ -79,8 +79,12 @@ Relative folder paths in `workflow-server.code-workspace` are written for:
 | Root | Default absolute path |
 |------|------------------------|
 | This workspace | `~/.local/share/cursor/workspaces/<name>/` |
-| Engineering | `~/.local/share/workflow-server/engineering/<owner>/<repo>/` |
-| Feature worktrees (“sessions”) | `~/.local/share/workflow-server/workspace/<owner>/<repo>/` |
+| Source (reference + `.engineering`) | `~/.local/share/workflow-server/source/<owner>/<repo>/` |
+| Feature worktrees | `~/.local/share/workflow-server/worktrees/<owner>/<repo>/` |
+
+Planning sessions live under `source/<owner>/<repo>/.engineering/artifacts/planning/`.
+Feature branches are created as git worktrees under `worktrees/<owner>/<repo>/<slug>/`,
+based off the source checkout.
 
 If your install dir or cursor share path differs, edit the two non-`./` folder
 entries (or use absolute paths).
@@ -88,6 +92,7 @@ entries (or use absolute paths).
 ## Related
 
 - [setup.md](../../setup.md) — install, init-repo, IDE rule
+- [docs/install-source-worktrees.md](../../docs/install-source-worktrees.md) — layout plan
 - [docs/ide-setup.md](../../docs/ide-setup.md) — bootstrap rule text
 - [http.md](../../http.md) — Docker / HTTP MCP URL
 - [stdio.md](../../stdio.md) — local stdio MCP alternative

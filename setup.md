@@ -14,15 +14,17 @@ Install workflow-server and prepare a target repo. Transport install, MCP client
 | Path | Default | Purpose |
 |------|---------|---------|
 | **Install dir** | `~/.local/share/workflow-server` | Helper scripts, `env`, workflows clone |
-| **Workspace** | `$INSTALL/workspace` | Per-repo feature worktrees |
-| **Engineering** | `$INSTALL/engineering` | Per-repo engineering checkouts (planning / sessions) |
+| **Source** | `$INSTALL/source` | Per-repo main/default-branch checkouts (`source/<owner>/<repo>/`) |
+| **Engineering** | `$INSTALL/source/<owner>/<repo>/.engineering` | Planning / sessions (submodule or materialised eng) |
+| **Worktrees** | `$INSTALL/worktrees` | Per-repo feature worktree parents |
 | **Workflows** | `$INSTALL/workflows` | Workflow definitions (`workflows` branch) |
 
-> Override roots with `--install-dir`, `--worktree-root`, `--engineering-root` (see `install.sh --help`).
+> Full layout and migration notes: [docs/install-source-worktrees.md](docs/install-source-worktrees.md).  
+> Override roots with `--install-dir`, `--worktree-root`, `--source-root` (see `install.sh --help`).
 
 ## 2. Init a target repo
 
-Two steps per project: the first (a) touches the **repo** to make it workflow-server-compatible. The second (b) initialises the *local* workflow-server workspace for operating on that repo.
+Two steps per project: the first (a) touches the **repo** to make it workflow-server-compatible. The second (b) initialises the *local* workflow-server paths for operating on that repo.
 
 ### 2a. Deploy engineering into the project (required first)
 
@@ -47,10 +49,11 @@ After the project has been deployed, register it under the workflow-server insta
 
 That creates:
 
-- `$INSTALL/engineering/<owner>/<repo>/` — engineering checkout (planning / session state)
-- `$INSTALL/workspace/<owner>/<repo>/` — feature worktrees
+- `$INSTALL/source/<owner>/<repo>/` — app checkout on the default branch (reference for `git worktree add`)
+- `$INSTALL/source/<owner>/<repo>/.engineering/` — engineering submodule or materialised planning tree
+- `$INSTALL/worktrees/<owner>/<repo>/` — parent directory for feature worktrees
 
-`init-repo.sh` follows the app’s engineering source (submodule, branch, or in-tree), including external remotes. Repeat **2a → 2b** for each product repo.
+`init-repo.sh` does **not** init product `workflows` submodules by default (server defs live in `$INSTALL/workflows`). Repeat **2a → 2b** for each product repo.
 
 ## 3. IDE bootstrap rule
 
@@ -58,24 +61,25 @@ Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent 
 
 ### Example Cursor workspace
 
-A ready-to-copy multi-root Cursor workspace (MCP config, always-on rules, `AGENTS.md` repo hint, and `.code-workspace` mounts for install-root engineering + workspace) lives at:
+A ready-to-copy multi-root Cursor workspace (MCP config, always-on rules, `AGENTS.md` repo hint, and `.code-workspace` mounts for install-root source + worktrees) lives at:
 
 **[examples/cursor-workspace/](examples/cursor-workspace/)** — layout and copy steps in [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md).
 
 ## 4. Update Workflows
 
-If the workflows are updated remotely, they can be refreshed locally using the following command:
+If the workflows definitions or managed source checkouts are updated remotely, refresh locally:
 
 ```bash
 $INSTALL/update-workflows.sh
 ```
 
-Restart the HTTP server afterward if it is running.
+This ff-updates `$INSTALL/workflows` and every `$INSTALL/source/<owner>/<repo>` (plus `.engineering` when it is a git checkout). Restart the HTTP server afterward if it is running.
 
 ## More detail
 
 | Topic | Where |
 |-------|--------|
+| Install layout plan | [docs/install-source-worktrees.md](docs/install-source-worktrees.md) |
 | HTTP / Docker only | [http.md](http.md) |
 | stdio / local checkout only | [stdio.md](stdio.md) |
 | Install script | [`scripts/install.sh`](scripts/install.sh) |

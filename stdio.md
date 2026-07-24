@@ -57,7 +57,7 @@ The IDE starts the process; you do not run a long-lived server yourself.
 ```
 
 Pass `repo: "owner/your-project"` on `start_session`. Planning lands under  
-`$INSTALL/engineering/owner/your-project/artifacts/planning/`.
+`$INSTALL/source/owner/your-project/.engineering/artifacts/planning/`.
 
 Optional: pin one repo for the whole process with `--repo=owner/your-project` instead of multi-root.
 

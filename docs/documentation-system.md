@@ -32,7 +32,7 @@ Two site sections have no markdown counterpart because their canonical source is
 | `schemas/*.schema.json` | JSON Schemas generated from the Zod sources (`npm run build:schemas`) | Authoring-time validation and tooling |
 | [`site/`](../site/) | The rendered documentation site: user guide, technical specs, API reference, server internals, design rationale | Readers in a browser |
 | `AGENTS.md`, `CLAUDE.md`, `.claude/rules/` | Instructions for AI agents working in this repository | AI agents |
-| Engineering root (`.engineering/` or `$INSTALL/engineering/<owner>/<repo>`) | Planning artifacts, work packages, ADRs — engineering process, not product documentation | Project engineering |
+| Engineering root (`.engineering/` or `$INSTALL/source/<owner>/<repo>/.engineering`) | Planning artifacts, work packages, ADRs — engineering process, not product documentation | Project engineering |
 
 Workflow definitions themselves (the `workflows` branch, checked out as a worktree) carry their own documentation inside each workflow's `techniques/` and `resources/` folders.
 
