@@ -294,6 +294,11 @@
         "planningFolderPath": {
           "type": "string"
         },
+        "repo": {
+          "type": "string",
+          "minLength": 1,
+          "description": "Target owner/repo bound on this session (install multi-root single source of truth for promotion)."
+        },
         "contextMode": {
           "type": "string",
           "enum": [
