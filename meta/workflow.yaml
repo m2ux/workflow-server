@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 5.7.0
+version: 5.8.0
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -32,6 +32,9 @@ variables:
   - name: meta_session_index
     type: string
     description: 6-character base32 session_index of the meta session itself — read by initialize-session and passed as parent_session_index when create-session creates the client session
+  - name: target_repo
+    type: string
+    description: Target GitHub owner/repo for this run (from user or workspace AGENTS.md)
   - name: target_workflow_outcomes
     type: string
     description: The client workflow's declared outcomes, read by verify-outcomes during end-workflow close-out

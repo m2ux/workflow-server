@@ -1,5 +1,5 @@
 id: initialize-session
-version: 6.2.0
+version: 6.3.0
 name: Initialize Session
 description: Derive the client planning slug, then dispatch the client workflow as a child of the meta session.
 required: true
@@ -19,6 +19,7 @@ steps:
         parent_session_index: meta_session_index
         workflow_id: target_workflow_id
         planning_slug: client_planning_slug
+        repo: target_repo
       outputs:
         session_index: client_session_index
 transitions:
