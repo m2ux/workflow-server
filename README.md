@@ -42,13 +42,6 @@ User Goal → Workflow → Activities → Techniques → Tools
 
 Full sequence (layout, init repo, binding, IDE rule, verify): **[setup.md](setup.md)**.
 
-HTTP one-liner:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
-~/.local/share/workflow-server/start.sh -d
-```
-
 ### Execute a workflow
 
 With the server connected and target project initialised, tell the agent in your chat session what you want to do, for example:
