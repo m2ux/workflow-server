@@ -19,7 +19,8 @@ The rule wires natural-language requests ("start a work package", "resume the wo
 `discover` returns:
 
 - **Server name and version** — confirms which workflow server the agent is talking to.
-- **Bootstrap procedure** — the pre-session stub the agent must follow: fetch `workflow-server://schemas/workflow`, call `start_session`, then `get_workflow` and follow the returned operations bundle. Activity dispatch (`next_activity` / `get_activity`) and checkpoint discipline come from that bundle, not from the stub itself. `list_workflows` is available without a session and is typically used during meta `discover-session`, not as a required bootstrap step.
+- **`session_scope`** — `single` or `multi`. When `multi` (install multi-root), the agent must pass `repo: "owner/repo"` on `start_session` (from the user or workspace `AGENTS.md` / `CLAUDE.md`) so transient meta can promote under `engineering/<owner>/<repo>/`.
+- **Bootstrap procedure** — the pre-session stub the agent must follow: fetch `workflow-server://schemas/workflow`, bind `repo` when multi-root, call `start_session`, then `get_workflow` and follow the returned operations bundle. Activity dispatch (`next_activity` / `get_activity`) and checkpoint discipline come from that bundle, not from the stub itself. `list_workflows` is available without a session and is typically used during meta `discover-session`, not as a required bootstrap step.
 
 Because `discover` is the entry point, the procedure stays in sync with the server. You do not need to maintain a separate copy of the protocol in your IDE rules — the rule above only has to enforce "call `discover` first." Ongoing delivery policy (worker-fresh, resource `#section` vs whole file, force-full escapes) is authoritative in techniques delivered with the operations bundle after `get_workflow`.
 
@@ -41,7 +42,7 @@ After configuring the rule:
 
 1. Restart your MCP client.
 2. Ask the agent to `list available workflows`. It should call `list_workflows` (no session token required) and return the workflow inventory.
-3. Ask the agent to `start a work-package workflow`. It should first call `discover`, then complete the returned bootstrap (schema fetch → `start_session` → `get_workflow`).
+3. Ask the agent to `start a work-package workflow`. It should first call `discover`, then complete the returned bootstrap (schema fetch → multi-root `repo` if needed → `start_session` → `get_workflow`).
 
 If the agent skips `discover`, your rule has not been picked up — re-check the IDE's rule configuration.
 

@@ -347,9 +347,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         },
         session_index: sessionIndex,
         planning_slug: slug,
+        session_scope: sessionScope.mode,
       };
       if (state.planningFolderPath) response['planning_folder_path'] = state.planningFolderPath;
       if (sessionRoot.repo) response['repo'] = sessionRoot.repo;
+      // Fail-soft signal: multi-root transient without repo still boots, but
+      // dispatch_child promotion will fail until start_session is re-called with repo.
+      if (sessionScope.mode === 'multi' && isTransientSession && !sessionRoot.repo) {
+        response['promotion_requires_repo'] = true;
+      }
       if (state.contextMode) response['context_mode'] = state.contextMode;
       if (migrationResult.migrated) {
         response['migrated'] = true;
