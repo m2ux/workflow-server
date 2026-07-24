@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ The work-package planning slug — `YYYY-MM-DD-{initiative_name}`. Names the pla
 
 ### repo
 
-Target `owner/repo`. **Required on this call** for initialize-session workers: take it from prior-state `Target Github repo` / `{target_repo}` in the worker prompt. Do not invent owner/repo pairs. Do not wait for a durable parent `session.json` — promotion writes the bind from this argument.
+Target `owner/repo`. Bound from the variable bag (`target_repo`). Always pass on `dispatch_child` — the parent may still be transient with no durable planning `session.json` yet. Do not invent owner/repo pairs.
 
 ## Outputs
 
@@ -43,7 +43,7 @@ The canonical absolute path of the planning folder, as resolved by the server un
    - `workflow_id: {workflow_id}`
    - `agent_id: 'orchestrator'`
    - `planning_slug: {client_planning_slug}` when known
-   - `repo: {repo}` — always, from prior-state / `{target_repo}` (see rule below)
+   - `repo: {repo}` (from bag `target_repo`)
 
    Capture the returned `{session_index}` for use in all subsequent calls inside the child workflow, and the returned `{planning_folder_path}` (the server-resolved absolute folder under its workspace) as the single artifact location. The server appends the child under `parent.triggeredWorkflows[N].state` and embeds the full child SessionFile inline; the agent does not deal with separate child folders, and does not compose the folder path itself.
 
@@ -51,6 +51,6 @@ The canonical absolute path of the planning folder, as resolved by the server un
 
 ## Rules
 
-### repo-from-prior-state
+### repo-from-bag
 
-Always pass `repo` on `dispatch_child` using the value from the worker prompt prior-state (`Target Github repo` / `{target_repo}`). That is the authoritative source for initialize-session: the parent may still be a transient meta session with no durable planning `session.json` yet. The server bind-if-missings onto the parent and uses it for promotion. Do not skip `repo` hoping the parent already has it. Do not pass a conflicting owner/repo.
+Always pass `repo` on `dispatch_child` from the bound bag value (`target_repo`). The server bind-if-missings onto the parent and uses it for promotion. Do not skip `repo`; do not pass a conflicting owner/repo.

@@ -33,7 +33,7 @@ variables:
     description: 6-character base32 session_index of the meta session itself — read by initialize-session and passed as parent_session_index when create-session creates the client session
   - name: target_repo
     type: string
-    description: Target GitHub owner/repo for this run (from user or workspace AGENTS.md). Bound on start_session and always included in activity-worker prior-state so initialize-session can pass repo on dispatch_child before a durable planning session.json exists
+    description: Target GitHub owner/repo for this run (from user or workspace AGENTS.md). Set at start_session; initialize-session binds create-session.repo from this bag field so dispatch_child can promote before a durable parent planning session.json exists
   - name: target_workflow_outcomes
     type: string
     description: The client workflow's declared outcomes, read by verify-outcomes during end-workflow close-out

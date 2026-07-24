@@ -1,7 +1,7 @@
 id: initialize-session
 version: 6.3.0
 name: Initialize Session
-description: Derive the client planning slug, then dispatch the client workflow as a child of the meta session (repo from worker prior-state Target Github repo / target_repo).
+description: Derive the client planning slug, then dispatch the client workflow as a child of the meta session (create-session.repo bound from bag target_repo).
 required: true
 steps:
   - kind: technique

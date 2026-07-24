@@ -59,7 +59,7 @@ sequenceDiagram
     User->>Meta: "start work-package on issue 42"
     Note over Meta: Bootstrap → start_session(workflow_id: meta, agent_id: orchestrator)
     Meta->>Meta: 00 discover-session<br/>(list-workflows, match-target, scan-saved-sessions, match-saved-session)
-        Meta->>Meta: 01 initialize-session<br/>(initialize-folder → create-session(parent, workflow_id, planning_slug, repo from prior-state))
+        Meta->>Meta: 01 initialize-session<br/>(initialize-folder → create-session(parent, workflow_id, planning_slug, repo from bag target_repo))
     Meta->>Meta: 02 resolve-target<br/>(detect-repo-type, list-submodules)
 
     Note over Meta: 03 dispatch-client-workflow — prime-initial-activity, then client-activity-loop (while current_activity != null)

@@ -15,15 +15,15 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
 2. Resolve the target repository:
 
    - Read the workspace `AGENTS.md` (or `CLAUDE.md`) for an `owner/repo` line, or take `owner/repo` from the user.
-   - Always pass that value as `repo` on the next step, and keep it as the run's `{target_repo}` for every activity-worker prior-state. Do not invent owner/repo pairs.
+   - Always pass that value as `repo` on the next step and keep it in the variable bag as `{target_repo}`. Do not invent owner/repo pairs.
 
-3. `start_session { workflow_id: "meta", agent_id: "orchestrator", repo }`. Save the returned `session_index` as `{meta_session_index}` (6-character base32). Save `repo` (response echo or the value you passed) as `{target_repo}`.
+3. `start_session { workflow_id: "meta", agent_id: "orchestrator", repo }`. Save the returned `session_index` as bag `{meta_session_index}`. Save `repo` (response echo or the value you passed) as bag `{target_repo}`.
 
    - Always include `repo: "owner/repo"` (from step 2).
    - Target a planning folder: pass `planning_folder` as an **absolute** path (basename = slug); bare/relative paths are rejected. Read `planning_folder_path` from the response. A path under `…/<owner>/<repo>/…` can also supply the repo binding.
    - Omit `planning_folder` when the slug is unknown (transient session until `dispatch_child` promotes it). Do **not** invent a planning path for a slug that does not exist yet.
    - Omit `context_mode` (or pass `"fresh"`). Client walks use per-activity disposable workers.
-   - When dispatching activity workers, put `{target_repo}` in the prompt prior-state as **Target Github repo** so initialize-session can pass `repo` on `dispatch_child` even before a durable planning `session.json` exists.
+   - Downstream steps bind `repo` from bag `{target_repo}` (e.g. initialize-session → create-session). Do not maintain a second copy of owner/repo in the worker prompt.
 
 4. `get_workflow { session_index }`. The response carries the workflow's resolved operations bundle ahead of the workflow definition (separated by `\n\n---\n\n`). Follow the operations and rules in the bundle — ongoing delivery policy (worker-fresh, resource `#section` vs whole file, force-full escapes) lives there.
 

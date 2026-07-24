@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ Optional. Absolute path whose basename is the planning slug. Omit for a transien
 
 ### repo
 
-Target `owner/repo` (or GitHub URL). Always pass it — the server stores the binding on `session.json#repo` when the session file exists. Source from the user or the workspace `AGENTS.md` / `CLAUDE.md`; do not invent owner/repo pairs. Also accepted implicitly when `planning_folder` already sits under `…/<owner>/<repo>/…`.
+Target `owner/repo` (or GitHub URL). Always pass it. Source from the user or the workspace `AGENTS.md` / `CLAUDE.md`; do not invent owner/repo pairs. Also accepted implicitly when `planning_folder` already sits under `…/<owner>/<repo>/…`.
 
 ### agent_id
 
@@ -33,7 +33,7 @@ Optional. Omit or pass `"fresh"`. Client sessions use per-activity disposable wo
 
 ### session_index
 
-Stable 6-character base32 index for every subsequent authenticated tool call. Also land as variable `{meta_session_index}` for meta.
+Stable 6-character base32 index for every subsequent authenticated tool call. Land as bag `{meta_session_index}` for meta.
 
 ### planning_folder_path
 
@@ -41,12 +41,12 @@ Canonical absolute planning folder path as resolved by the server (omitted for p
 
 ### repo
 
-Echo of the bound repo. Also land as variable `{target_repo}` so every activity-worker prior-state carries **Target Github repo** for initialize-session / `dispatch_child`.
+Echo of the bound repo. Land as bag `{target_repo}` so initialize-session's `create-session` binding can resolve `repo` from the bag.
 
 ## Protocol
 
 1. Call `start_session` with `{workflow_id}`, `{agent_id}`, `{repo}`, and optional `{planning_folder}`, per the [bootstrap protocol](../../resources/bootstrap-protocol.md). Omit `context_mode` (or pass `"fresh"`).
-2. Save `{session_index}` → `{meta_session_index}`, and `{repo}` → `{target_repo}` (from the response echo, else the value you passed). Keep `{target_repo}` in the variable bag for the whole meta run so disposable workers receive it in their prompt prior-state. Do not compose or reconcile the planning path yourself.
+2. Save `{session_index}` → bag `{meta_session_index}`, and `{repo}` → bag `{target_repo}` (response echo, else the value you passed). The bag is the single channel for downstream technique bindings — do not also stuff repo into the worker prompt by hand. Do not compose or reconcile the planning path yourself.
 3. Call `get_workflow { session_index }` and follow the returned operations bundle. After summarization, re-fetch with the escapes in `workflow-engine.force-full-after-summarization`.
 
 ## Rules
@@ -57,4 +57,4 @@ When targeting a planning folder, `planning_folder` MUST be an absolute path; on
 
 ### always-bind-repo
 
-Always pass `repo: "owner/repo"` on meta `start_session` (even when omitting `planning_folder`) and record it as `{target_repo}`. Downstream workers must not need to rediscover owner/repo from disk.
+Always pass `repo: "owner/repo"` on meta `start_session` (even when omitting `planning_folder`) and record it as bag `{target_repo}`.
