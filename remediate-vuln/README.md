@@ -13,7 +13,7 @@ A highly isolated workflow for remediating security vulnerabilities without publ
 
 | # | Activity | Source | Purpose |
 |---|----------|--------|---------|
-| 01 | start | own ([01-start.yaml](activities/01-start.yaml)) | Advisory inputs, private `security` remote, isolation checks, security branch, project-type + reference resolution, signing preflight |
+| 01 | start | own ([01-start.yaml](activities/01-start.yaml)) | Advisory inputs, private `security` remote, isolation checks, security branch, project-type + repo-root resolution, signing preflight |
 | 02 | design-philosophy | work-package | Problem classification and workflow path |
 | 03 | requirements-elicitation | work-package | Optional requirements discovery |
 | 04 | research | work-package | Optional research (constrained by the private-research rule) |

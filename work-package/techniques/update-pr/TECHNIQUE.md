@@ -23,7 +23,7 @@ Path to the planning folder holding the implementation summary and artifacts the
 
 ### repo_root
 
-Path to the repo root (monorepo or standalone checkout containing `.engineering/`), from which the engineering link URL is resolved
+Path to the repo root; used with `.engineering/` (in-tree or submodule) to resolve the engineering link URL
 
 ### target_path
 

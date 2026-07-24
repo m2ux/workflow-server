@@ -15,7 +15,7 @@ The running [log](../../resources/assumption-reconciliation.md#integration-with-
 
 ### target_path
 
-Path to the reference codebase root within which code-resolvable assumptions are investigated.
+Path to the working checkout within which code-resolvable assumptions are investigated (`{target_path}`).
 
 ### comprehension_artifact
 
