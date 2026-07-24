@@ -605,7 +605,8 @@ An I/O id or description names a specific caller.
 
 ### AP-43. canonical-artifact-ids
 
-49. **"Examine target_path" / "for synthesis pass (index 23)" / "`repo_root`" / "`<files>`"** (a Protocol references a declared input/output, or a value of one, without the brace designator) — Every `## Protocol` reference to one of the technique's declared inputs/outputs (or a protocol variable) uses the brace designator — `{input_id}` / `{output_id}` / `{output_id}.field` / `{$local}` — and the spelling matches the DECLARED id exactly (`### problem_statement` ⇒ `{problem_statement}`). THREE failure modes: (a) a **bare reference** — `target_path`, `problem_statement` written as plain words — which the agent cannot distinguish from ordinary prose; (b) an **orphan value** — a bare value of an enumerated input, classically a numeric index ("index 23", "the synthesis pass (23)") — which nothing ties to the input it belongs to (here `{declared_id}` is 23); (c) a **disguised reference** — the id given backticks or angle-brackets but NO braces (`` `repo_root` ``, `<files>`), which looks marked but, lacking braces, is not a designator and does not resolve (backticks are themselves now standard on every reference per AP-59 — here it is the missing BRACES, not the backticks, that defeats resolution). The disguise is the most dangerous because it slips past a casual scan precisely by looking intentional — it is how a real defect survived an earlier resolvability audit. All three leave the data reference unanchored to the I/O contract. Fix: brace the reference as `{declared_id}`; for an orphan value, name the input ("when `{declared_id}` is 23"); for a disguised reference, replace the backtick/angle wrapper with braces. CAVEAT (avoid over-bracing): brace a token ONLY when it matches a declared id AND is used as a reference to that value; an ordinary English word that merely coincides with an id (`changes`, `target`, `findings`, `summary` as a common noun) stays bare, and a backticked literal — a shell command, filename, tool-method name, or external-tool parameter that is NOT a declared id — stays code.
+"Read all open assumptions from `assumptions-log.md`"
+
 Protocol cites a filename/path instead of a canonical I/O id.
 
 **Detect:** Protocol references data via literal artifact filename/path, or I/O ids are path-flavored proxies (`assumptions-log-path` vs `assumptions-log`).
@@ -622,9 +623,10 @@ A filename lives in Protocol instead of the I/O declaration.
 
 **Detect:** Protocol prose names a concrete artifact filename (literal, or ad-hoc path) instead of a canonical Input/Output id. Fixed names belong as `#### artifact` literals; dynamic names as token-templates (`{package_name}-plan.md`); conditional names as discriminator-keyed notes on the I/O declaration.
 
-58. **"`git -C {$component_git_dir} …` with no step that binds it" / "`Maintain {$resolution_counts}`" never read** (a protocol variable consumed without a binding, or bound without a consumer) — A protocol variable obeys declare-once (spec §3.3): the sigil form `{$name}` appears at EXACTLY the binding — the step that produces the value — and every read is bare `{name}`. Two failure modes break the produce/consume balance: (a) an **unbound local** — a bare `{name}` read (that is NOT a declared input/output) with no `{$name}` binding anywhere in the protocol, so the agent has no value to resolve; the classic cause is a producing step that computes the value in prose but forgets to NAME it ("Identify the component git directory: `{repo_root}/{component_name}`…" then later `git -C {component_git_dir}` — the directory was described but never bound). (b) a **dead binding** — a `{$name}` bound but never read as `{name}`, so the produced value is consumed only in prose or not at all (a signal that the intended consumer should reference it, or the binding is vestigial). Fix (a): name the value at its producing step — "Determine the component git directory `{$component_git_dir}`" — the sigil IS the binding, so do not narrate the mechanism ("and bind it to …", which merely restates what the `$` already means); let the name sit inline as an appositive or fall out of the producing verb ("Capture `{$name}` from …", "Count … as `{$name}`"). (Like every reference, the binding is backticked — `` `{$name}` `` (AP-59) — and must be placed before every read.) Fix (b): make the intended consumer read `{name}`, or drop the binding if genuinely unused. CAVEATS: a value bound in mutually-exclusive branches carries `{$name}` in EACH producing branch (it is bound on exactly one runtime path — not a double-bind defect); and a `{name}` that resolves to a declared input/output — including ambient workflow inputs delivered by the activity (`{target_path}`, `{branch_name}`, `{requirements}`) — is NOT unbound, it is an interface reference, so if it was wearing a `$` it was merely mis-marked as a local (strip the `$`, do not add a binding).
+**Do not flag:** Protocol references that already use `{canonical_id}` only. Opaque multi-file path arrays — see `no-opaque-artifact-path-array`.
 
-59. **"`set worktree_created = true`" / "run 'git -C … remote get-url origin'" / "fetch concept-rag://activities to /tmp/pr-body.md"** (a code-like token not wrapped in backticks) — Every LITERAL CODE-LIKE TOKEN in rendered prose is wrapped in backticks, so code reads as code and never as a prose word. This covers: (1) **designator references** — input/output `{id}` / `{id}.field`, protocol variable `{$name}` / `{name}`, and a rule's dotted symbol address `technique.rule-name`; (2) **CLI/shell commands** and fragments (`git -C {repo_root} remote get-url origin`, `gh pr ready`, `cargo fmt`) — INCLUDING ones written in 'single quotes', which become backticks; (3) **MCP tool calls** (`get_workflow('work-package')`, `next_activity`, `get_resource`); (4) **MCP resource URIs** (`concept-rag://activities`, `workflow-server://schemas`); (5) **literal filesystem paths** (`/tmp/pr-body.md`, `.engineering/artifacts/planning/`) and **filenames** (`START-HERE.md`, `session.json`). Backticking every code token makes slots and commands unmistakable on sight and, as a bonus, retires the `$`-escape (AP-54) — a sigil inside a code span is math-exempt, so `{\$name}` is never needed; write `` `{$name}` ``. (This is the presentation companion to AP-49, which governs that a designator is BRACED and resolves: AP-49 is about the braces, this is about the backticks.) CAVEATS: (a) a token ALREADY inside a larger code span is not re-wrapped (no nesting). (b) a code token that CONTAINS a designator is wrapped as ONE span with the braces inside it — `` `git -C {repo_root} remote get-url origin` ``, `` `portfolio-{lens_name}.md` `` — NEVER fragmented into adjacent spans (`` `git -C` `{repo_root}` `…` ``) and never with a designator's backticks butting a literal with no separator (CommonMark mis-parses adjacent spans). (c) markdown hyperlinks (`[text](path)`) and `::`-invocation link targets are their own markup — leave them; backtick only an invocation's argument VALUES. (d) do NOT backtick descriptive prose nouns ("the planning folder", "the parent repo") — only literal verbatim tokens. (e) backticks are formatting, not braces — a backticked token WITHOUT braces (`` `repo_root` ``) is still an unanchored reference (AP-49 mode c). Fix: wrap each bare code token in backticks; convert 'single-quoted' commands; merge a designator-containing token into one span; de-escape any `{\$name}` to `` `{$name}` ``.
+**Fix:** Move the filename (literal, token-template, or discriminator-keyed note) into the I/O declaration; reference identifiers only in Protocol.
+
 ### AP-45. no-opaque-artifact-path-array
 
 "`all-artifact-paths` / `*-paths` input holding many files"
@@ -711,7 +713,7 @@ A raw harness tool name is used where a wrapping op exists.
 
 ### AP-52. brace-declared-ids
 
-"Examine target_path" / "for synthesis pass (index 23)" / "`reference_path`" / "`<files>`"
+"Examine target_path" / "for synthesis pass (index 23)" / "`repo_root`" / "`<files>`"
 
 A declared id is used unbraced where a designator is required.
 
@@ -1660,3 +1662,14 @@ A second how-to (README section, resource, or technique Protocol) that duplicate
 **Do not flag:** Workflow-specific orientation that links to SETUP; deltas unique to this workflow that SETUP does not cover.
 
 **Fix:** Link to SETUP once; keep only the workflow-specific delta here.
+
+### AP-126. variable-description-one-line
+
+**Rule:** A workflow `variables[].description` is a single line defining what the value *is* (optional short enum or shape hint).
+
+**Detect:** `description` is more than one sentence, essay-length multi-clause prose, or includes producer/consumer/gate/layout tails ("Set by…", "Drives…", "Read by…", "Gates…", "Interpolated into…", install-path catalogs, loop/checkpoint wiring, restatement of `defaultValue`).
+
+**Do not flag:** A single short phrase or one sentence with a compact enum/shape (`simple|moderate|complex`, `{ id, statement }`). Longer contracts belong on the producing technique's `## Outputs`.
+
+**Fix:** Rewrite to one line naming the value; delete producer, consumer, gate, and layout tails.
+

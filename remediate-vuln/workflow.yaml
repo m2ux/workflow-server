@@ -26,69 +26,69 @@ techniques:
 variables:
   - name: target_path
     type: string
-    description: Path to the private checkout where edits, branch creation, builds, and pushes happen. All git operations run inside this directory; every push targets the 'security' remote. Resolved during start.
+    description: Private checkout for edits, builds, and pushes to the security remote.
   - name: repo_root
     type: string
-    description: "Path used for codebase comprehension and code-resolvable assumption analysis. In this workflow equal to target_path (private checkout is both edit and investigation root)."
+    description: Investigation root; equals target_path in this workflow.
   - name: component_name
     type: string
-    description: "Basename of the component under remediation."
+    description: Basename of the component under remediation.
     defaultValue: ""
   - name: planning_folder_path
     type: string
-    description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}"
+    description: Path to this work package planning folder.
   - name: provenance_log_path
     type: string
-    description: Absolute path to the AI-assistance provenance log (provenance-log.md) under the planning folder, appended to during implement and read by submit's DCO attestation.
+    description: Absolute path to provenance-log.md under the planning folder.
     defaultValue: ""
   - name: branch_name
     type: string
-    description: Security feature branch name (e.g. vuln/remediate-{short_id}), created off the private fork.
+    description: Security feature branch name (e.g. vuln/remediate-{short_id}).
   - name: project_type
     type: string
-    description: Detected project type (e.g. rust-substrate); produced by start's detect-project-type step and gates the rust-substrate validation suite in validate.
+    description: Detected project type (e.g. rust-substrate|other).
   - name: stealth_mode
     type: boolean
-    description: Structural no-disclosure gate consumed by shared work-package activities — suppresses PR rendering/creation and issue-tracker posting. Always true for this workflow (seeded at session creation and re-asserted by start's set-security-mode step).
+    description: No-disclosure gate for shared activities; always true here.
     defaultValue: true
   - name: sec_vuln_url
     type: string
-    description: URL of the vulnerability advisory to remediate, behind restricted access.
+    description: URL of the restricted vulnerability advisory.
   - name: private_fork_url
     type: string
-    description: URL of the private fork that backs the 'security' git remote.
+    description: URL of the private fork backing the security remote.
   - name: short_id
     type: string
-    description: Short slug identifying the advisory, used to form the security branch name.
+    description: Short advisory slug used in the security branch name.
   - name: is_review_mode
     type: boolean
-    description: Always false for this workflow — the shared work-package activities' review-mode steps and checkpoints gate out.
+    description: Always false; review-mode shared steps gate out.
     defaultValue: false
   - name: needs_elicitation
     type: boolean
-    description: Whether requirements elicitation is needed. Set by design-philosophy's path checkpoint.
+    description: Whether requirements elicitation is needed.
     defaultValue: false
   - name: needs_research
     type: boolean
-    description: Whether the research phase is needed. Set by design-philosophy's path checkpoint.
+    description: Whether the research phase is needed.
     defaultValue: false
   - name: skip_optional_activities
     type: boolean
-    description: Whether to skip optional discovery activities (elicitation and research). Set by design-philosophy's path checkpoint.
+    description: Whether to skip optional discovery (elicitation and research).
     defaultValue: false
   - name: needs_comprehension
     type: boolean
-    description: Whether codebase comprehension is needed. Always true after design-philosophy; may be re-set by assumptions-review when stakeholder feedback requires deeper understanding.
+    description: Whether codebase comprehension is needed.
     defaultValue: true
   - name: problem_complexity
     type: string
-    description: Problem complexity assessed during design-philosophy (simple|moderate|complex).
+    description: Problem complexity (simple|moderate|complex).
   - name: problem_type
     type: string
-    description: Problem classification set during design-philosophy (e.g. defect, inventive-improvement); interpolated into its path-confirmation checkpoint message.
+    description: Problem classification (e.g. defect|inventive-improvement).
   - name: path_gating_complexity
     type: string
-    description: Path-gating mirror of problem_complexity, set by design-philosophy's skip-optional checkpoint effect.
+    description: Path-gating mirror of problem_complexity.
     defaultValue: ""
   - name: elicitation_complete
     type: boolean
@@ -96,65 +96,65 @@ variables:
     defaultValue: false
   - name: question_domains
     type: array
-    description: Question domains iterated by the requirements-elicitation loop.
+    description: Question domains for requirements elicitation.
   - name: current_domain
     type: string
-    description: Current question domain during the elicitation loop (from question_domains).
+    description: Current question domain in the elicitation loop.
   - name: research_candidates
     type: array
-    description: "Inventory of open research gaps surfaced after synthesis, each triaged as reconcilable-by-research or irreconcilable. Drives the research reconciliation loop. Sub-shape per entry: { id, statement, status, rationale, handoff }."
+    description: Open research gaps ({ id, statement, status, rationale, handoff }).
   - name: has_reconcilable_research
     type: boolean
-    description: Whether open research-reconcilable candidates remain; drives the research reconciliation loop.
+    description: Whether research-reconcilable gaps remain open.
     defaultValue: false
   - name: context_scope
     type: string
-    description: "Provenance scope of AI-generated code (repo-only|web-retrieval|mixed), set during research and recorded in the provenance log. Web retrieval is additionally constrained by the PRIVATE RESEARCH ONLY rule."
+    description: AI provenance scope (repo-only|web-retrieval|mixed).
     defaultValue: repo-only
   - name: has_open_questions
     type: boolean
-    description: Whether unresolved open questions remain after the codebase comprehension deep-dive.
+    description: Whether unresolved open questions remain after comprehension.
     defaultValue: false
   - name: comprehension_artifact
     type: string
-    description: Absolute path to the comprehension artifact for the current codebase area.
+    description: Absolute path to the current comprehension artifact.
     defaultValue: ""
   - name: artifact_name
     type: string
-    description: Filename of the comprehension artifact (basename only) used in user-facing messages.
+    description: Basename of the comprehension artifact (no path).
     defaultValue: ""
   - name: task_assumptions
     type: array
-    description: Assumptions collected during the current task for review iteration.
+    description: Assumptions collected during the current implement task.
   - name: has_resolvable_assumptions
     type: boolean
-    description: Whether code-resolvable assumptions exist that targeted analysis can validate; drives the assumption reconciliation loops in shared activities.
+    description: Whether code-resolvable assumptions remain for analysis.
     defaultValue: false
   - name: has_open_assumptions
     type: boolean
-    description: Whether unresolved assumptions remain after reconciliation that require user input; gates the assumption interview.
+    description: Whether unresolved assumptions still need user input.
     defaultValue: false
   - name: open_assumptions
     type: array
-    description: Open assumptions iterated by the assumption interview loops.
+    description: Open assumptions for interview loop iteration.
   - name: current_assumption
     type: object
-    description: "Current assumption during the interview loop (from open_assumptions). Sub-shape: { id, statement }."
+    description: Current assumption in the interview loop ({ id, statement }).
   - name: assumption_resolved_inline
     type: boolean
-    description: Whether the current assumption was resolved inline at the interview checkpoint.
+    description: Whether the current assumption was resolved inline at interview.
     defaultValue: false
   - name: assumption_deferred
     type: boolean
-    description: Whether the current assumption was deferred at the interview checkpoint.
+    description: Whether the current assumption was deferred at interview.
     defaultValue: false
   - name: has_deferred_assumptions
     type: boolean
-    description: Whether any assumptions were deferred during review. Issue-tracker posting of deferred summaries is disclosure-gated off by stealth_mode; deferred items stay in the local assumptions log.
+    description: Whether any assumptions were deferred during review.
     defaultValue: false
   - name: needs_plan_revision
     type: boolean
-    description: Whether assumption feedback requires returning to plan-prepare for approach revision.
+    description: Whether feedback requires returning to plan-prepare.
     defaultValue: false
   - name: needs_further_discussion
     type: boolean
@@ -162,7 +162,7 @@ variables:
     defaultValue: false
   - name: has_stakeholder_input
     type: boolean
-    description: Whether stakeholder discussion transcript was provided.
+    description: Whether a stakeholder discussion transcript was provided.
     defaultValue: false
   - name: stakeholder_review_complete
     type: boolean
@@ -170,78 +170,78 @@ variables:
     defaultValue: false
   - name: post_jira_comment
     type: boolean
-    description: Whether to post an assumptions comment to Jira. Kept false — the posting steps are additionally stealth-gated; declared so shared checkpoint effects write a declared variable.
+    description: Whether to post an assumptions comment to Jira (kept false).
     defaultValue: false
   - name: ticket_refactor_needed
     type: boolean
-    description: Review-mode-only flag from design-philosophy's ticket-completeness checkpoint; inert here (is_review_mode is always false). Declared so the shared checkpoint's effects target a declared variable.
+    description: Review-mode ticket-refactor flag; inert when is_review_mode is false.
     defaultValue: false
   - name: ticket_gaps_documented
     type: boolean
-    description: Review-mode-only flag from design-philosophy's ticket-completeness checkpoint; inert here (is_review_mode is always false). Declared so the shared checkpoint's effects target a declared variable.
+    description: Review-mode ticket-gaps flag; inert when is_review_mode is false.
     defaultValue: false
   - name: implementation_plan
     type: object
-    description: "Implementation plan produced by plan-prepare. Sub-shape: { task_count, tasks: [{ id, description, status }] }. The implement loop iterates implementation_plan.tasks."
+    description: "Implementation plan ({ task_count, tasks: [{ id, description, status }] })."
   - name: current_task
     type: object
-    description: Current task during the implementation loop (from implementation_plan.tasks).
+    description: Current task in the implementation loop.
   - name: has_uncertain_symbols
     type: boolean
-    description: True when the current implement task's self-review flagged symbols whose provenance could not be confirmed; drives the symbol-provenance checkpoint.
+    description: True when implement self-review found symbols with unconfirmed provenance.
     defaultValue: false
   - name: uncertain_symbols
     type: string
-    description: Multi-line list of symbols flagged by the implement self-review (empty when has_uncertain_symbols is false).
+    description: Multi-line list of symbols with unconfirmed provenance; empty if none.
     defaultValue: ""
   - name: validation_passed
     type: boolean
-    description: Whether the validation phase passed.
+    description: Whether validation passed.
     defaultValue: false
   - name: validation_results
     type: object
-    description: "Aggregate validation envelope emitted by cargo-operations::run-suite — { check_status, clippy_status, test_status, fmt_status, validation_passed }. The validate activity reads its fields by dotted path to drive the fix-revalidate loop."
+    description: Validation envelope (check/clippy/test/fmt status and validation_passed).
   - name: review_passed
     type: boolean
     description: Whether strategic review passed.
     defaultValue: false
   - name: needs_code_fixes
     type: boolean
-    description: Whether code review findings require fixes before proceeding.
+    description: Whether code review findings require fixes.
     defaultValue: false
   - name: needs_test_improvements
     type: boolean
-    description: Whether the test suite needs improvements before proceeding.
+    description: Whether the test suite needs improvements.
     defaultValue: false
   - name: gitnexus_indexed
     type: boolean
-    description: "Whether repo_root has a usable GitNexus index. This workflow keeps it false; GitNexus-dependent shared steps gate out."
+    description: Whether repo_root has a usable GitNexus index (kept false here).
     defaultValue: false
   - name: prism_artifact_paths
     type: array
-    description: Paths to prism structural analysis artifacts produced during post-impl-review.
+    description: Paths to prism analysis artifacts from post-impl-review.
   - name: block_path
     type: string
-    description: File path of the code block referenced by the current implementation or review block.
+    description: File path of the current review or implementation code block.
     defaultValue: ""
   - name: block_line_range
     type: string
-    description: Line range (e.g., 120-145) of the current code block; pairs with block_path.
+    description: Line range of the current code block (e.g. 120-145).
     defaultValue: ""
   - name: change_block_index
     type: string
-    description: Absolute path to the index file mapping change-block IDs to per-block artifacts.
+    description: Path to the change-block index mapping IDs to per-block artifacts.
     defaultValue: ""
   - name: flagged_block_indices
     type: array
-    description: Change-block indices flagged by the user during manual diff review.
+    description: Change-block indices flagged during manual diff review.
   - name: current_block_index
     type: number
-    description: Current block index during the manual diff review loop (from flagged_block_indices).
+    description: Current block index in the manual diff review loop.
     defaultValue: 0
   - name: has_flagged_blocks
     type: boolean
-    description: Whether the user flagged any change blocks during manual diff review.
+    description: Whether any change blocks were flagged in manual diff review.
     defaultValue: false
   - name: has_critical_blocker
     type: boolean
@@ -249,7 +249,7 @@ variables:
     defaultValue: false
   - name: skip_architecture_summary
     type: boolean
-    description: Whether to skip architecture summary creation in post-impl-review.
+    description: Whether to skip architecture summary creation.
     defaultValue: false
   - name: needs_strategic_fixes
     type: boolean
@@ -257,15 +257,15 @@ variables:
     defaultValue: false
   - name: strategic_fixes_selective
     type: boolean
-    description: Whether the user chose to fix only selected strategic-review findings; set by the review-findings checkpoint's selective-fixes option.
+    description: True when only selected strategic-review findings will be fixed.
     defaultValue: false
   - name: strategic_findings_deferred
     type: boolean
-    description: Whether the user deferred strategic-review findings (noted but proceeding); set by the review-findings checkpoint's defer-findings option.
+    description: True when strategic-review findings were deferred.
     defaultValue: false
   - name: strategic_findings_summary
     type: string
-    description: Concise multi-line summary of strategic-review findings (severity tag + one line each); empty when no findings. Gates and populates the review-findings checkpoint.
+    description: Multi-line summary of strategic-review findings; empty if none.
     defaultValue: ""
   - name: needs_cleanup
     type: boolean
@@ -273,50 +273,50 @@ variables:
     defaultValue: false
   - name: unsigned_commits_in_pr
     type: boolean
-    description: True when any commit in the branch range has no valid GPG signature.
+    description: True when any commit in the branch range lacks a valid GPG signature.
     defaultValue: false
   - name: resign_unsigned_commits_requested
     type: boolean
-    description: User chose to re-sign unsigned commits at the strategic-review checkpoint.
+    description: True when the user chose to re-sign unsigned commits.
     defaultValue: false
   - name: unsigned_commit_list_summary
     type: string
-    description: Short human-readable summary of unsigned commits from the strategic-review signature scan; empty when all commits are signed.
+    description: Short summary of unsigned commits; empty when all are signed.
     defaultValue: ""
   - name: recommended_strategic_option
     type: string
-    description: Agent-recommended action after strategic review analysis (fix-findings|acceptable). Set by the analyze-strategic-findings step.
+    description: Recommended strategic-review action (fix-findings|acceptable).
   - name: audit_confirmed
     type: boolean
-    description: True once the user has resolved the lean-coding-audit's audit-findings-confirmed gate (accept, apply-simplifications, or dispute).
+    description: True when lean-coding-audit findings were user-resolved.
     defaultValue: false
   - name: needs_simplification
     type: boolean
-    description: Whether accepted simplifications remain to apply at the audit-findings-confirmed gate. Drives the simplification-apply-cycle loop in lean-coding-audit; re-assessed each iteration after the safety floor is re-validated and cleared once the re-score surfaces no further accepted simplifications.
+    description: Whether accepted simplifications remain to apply.
     defaultValue: false
   - name: has_debt_markers
     type: boolean
-    description: Whether the harvest-debt step found at least one ponytail marker in the tree. Set by lean-coding-audit's harvest-debt step; gates the report-gain step.
+    description: Whether ponytail debt markers were found in the tree.
     defaultValue: false
   - name: worktree_created
     type: boolean
-    description: Kept false — this workflow develops in the user-supplied private checkout, so complete's remove-worktree step gates out.
+    description: Kept false; develops in the user-supplied private checkout.
     defaultValue: false
   - name: push_remote
     type: string
-    description: Git remote every push targets — always the private 'security' remote for this workflow. Consumed by manage-git::push-commits and the stealth-mode isolation checks in the shared submit-for-review activity.
+    description: "Git remote for every push (always 'security' here)."
     defaultValue: security
   - name: push_remote_url
     type: string
-    description: URL the 'security' remote resolves to, captured by manage-git::verify-remote-private and shown in the final isolation confirmation.
+    description: Resolved URL of the security remote.
     defaultValue: ""
   - name: squash_merge_supported
     type: boolean
-    description: Kept false — merge-strategy guidance is a public-PR concern; the stealth gates keep it out of this workflow, and the DCO checkpoint renders this as unavailable.
+    description: Kept false; public merge-strategy guidance is stealth-gated out.
     defaultValue: false
   - name: review_requires_changes
     type: boolean
-    description: Kept false — the PR review cycle is stealth-gated out, so the shared submit-for-review activity's default transition to complete always applies.
+    description: Kept false; PR review cycle is stealth-gated out.
     defaultValue: false
 initialActivity: start
 activities:

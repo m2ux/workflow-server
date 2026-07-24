@@ -22,41 +22,41 @@ techniques:
 variables:
   - name: planning_folder_path
     type: string
-    description: Path to the unique planning folder for this workflow execution (e.g., .engineering/artifacts/planning/YYYY-MM-DD-workflow-design-{workflow_id})
+    description: Absolute path to this workflow planning folder.
   - name: operation_type
     type: string
-    description: The classified operation for the request — create, update, or review. Sole mode state; gates and technique inputs compare this value directly.
+    description: The classified operation for the request — create, update, or review.
   - name: operation_type_ambiguous
     type: boolean
-    description: True when intake cannot confidently classify create vs update vs review from the request alone — contributes to Gate 1 (`intent_needs_confirmation`).
+    description: True when intake cannot confidently classify create vs update vs review from the request alone — contributes to Gate 1.
     defaultValue: false
   - name: change_request_clear
     type: boolean
-    description: In update mode, true when the change request is clear enough to proceed without Gate 1 clarification. Ignored in create/review when unused by conditions.
+    description: In update mode, true when the change request is clear enough to proceed without Gate 1 clarification.
     defaultValue: true
   - name: intent_needs_confirmation
     type: boolean
-    description: Composite gap flag for Gate 1 (`design-intent-batch`) — true when mode is ambiguous, the update change request is unclear, and/or review targets are ambiguous.
+    description: "Composite gap flag for Gate 1 (`design-intent-batch`) — true when mode is ambiguous, the update change request is unclear, and/or review."
     defaultValue: false
   - name: headless_mode
     type: boolean
-    description: When true, soft mid-flow gates auto-resolve (no AskQuestion). Default true. Intake sets false only on an explicit interactive opt-out (“interactive”, “not headless”, “with checkpoints”). Does not skip Gate 2 or safety gaps.
+    description: When true, soft mid-flow gates auto-resolve (no AskQuestion).
     defaultValue: true
   - name: assumption_decisions
     type: array
-    description: Per-assumption decisions (accept/reject/defer) for review-assumptions::record. Mid-flow requirements-refinement seeds an empty list when judgements are batched to Gate 2.
+    description: "Per-assumption decisions (accept/reject/defer) for review-assumptions::record."
     defaultValue: []
   - name: has_resolvable_assumptions
     type: boolean
-    description: Whether audit-resolvable design assumptions remain — drives the requirements-refinement reconcile while-loop. False when the while-loop is a no-op.
+    description: Whether audit-resolvable design assumptions remain — drives the requirements-refinement reconcile while-loop.
     defaultValue: false
   - name: review_findings_count
     type: number
-    description: Total number of compliance findings identified during review
+    description: Total number of compliance findings identified during review.
     defaultValue: 0
   - name: update_seeded_from_review
     type: boolean
-    description: True when update mode was entered from a review-mode fix disposition (fix-issues or selective-fixes). Suppresses intake re-confirmation on the subsequent pass; cleared at the end of that intake.
+    description: True when update mode was entered from a review-mode fix disposition (fix-issues or selective-fixes).
     defaultValue: false
   - name: expressiveness_finding_count
     type: number
@@ -176,42 +176,42 @@ variables:
     defaultValue: ""
   - name: review_scope_confirmed
     type: boolean
-    description: "In review mode: whether the user confirmed the audit target set in intake"
+    description: "In review mode: whether the user confirmed the audit target set in intake."
     defaultValue: false
   - name: target_workflow_id
     type: string
-    description: ID of the existing workflow to modify (update mode) or the current review-mode audit target (bound per iteration when reviewing multiple workflows)
+    description: ID of the existing workflow to modify (update mode) or the current review-mode audit target (bound per iteration when reviewing multiple.
   - name: target_workflow_ids
     type: array
-    description: Ordered list of workflow ids to audit in review mode (one or more). Single-target review uses a one-element list; update mode leaves this unset and uses target_workflow_id.
+    description: Ordered list of workflow ids to audit in review mode (one or more).
   - name: workflow_id
     type: string
-    description: The ID of the workflow being created or updated
+    description: The ID of the workflow being created or updated.
   - name: format_literacy_confirmed
     type: boolean
-    description: Whether YAML format understanding has been demonstrated for this session
+    description: Whether YAML format understanding has been demonstrated for this session.
     defaultValue: false
   - name: schema_constructs_confirmed
     type: boolean
-    description: Whether applicable schema constructs have been identified and confirmed
+    description: Whether applicable schema constructs have been identified and confirmed.
     defaultValue: false
   - name: scope_manifest_confirmed
     type: boolean
-    description: Whether the complete file manifest has been confirmed
+    description: Whether the complete file manifest has been confirmed.
     defaultValue: false
   - name: scope_manifest
     type: array
-    description: List of files to create, modify, or remove with full paths and actions
+    description: List of files to create, modify, or remove with full paths and actions.
   - name: current_file
     type: object
-    description: Current file being drafted during the content drafting loop
+    description: Current file being drafted during the content drafting loop.
   - name: has_unflagged_removals
     type: boolean
-    description: True when content drafting detects removals not flagged during impact analysis. Produced by review-drafted-file.
+    description: True when content drafting detects removals not flagged during impact analysis.
     defaultValue: false
   - name: needs_audit_fixes
     type: boolean
-    description: Whether audit passes surfaced findings that still need remedia. Drives quality-review audit-fix-cycle and post-update remedia while-loops. Reset to false when the content is clean.
+    description: Whether audit passes surfaced findings that still need remedia.
     defaultValue: false
   - name: needs_recommit
     type: boolean
@@ -223,28 +223,28 @@ variables:
     defaultValue: false
   - name: assumptions_log
     type: object
-    description: The design-assumptions log surfaced and reviewed during requirements-refinement — each assumption with its category, risk, resolvability, and outcome. Written via work-package::review-assumptions and reconcile-design-assumptions.
+    description: The design-assumptions log surfaced and reviewed during requirements-refinement — each assumption with its category, risk.
   - name: open_assumptions
     type: array
-    description: The design assumptions still open after audit reconciliation — genuine design judgements batched into Gate 2 (`approve-to-commit`).
+    description: "The design assumptions still open after audit reconciliation — genuine design judgements batched into Gate 2 (`approve-to-commit`)."
   - name: has_open_assumptions
     type: boolean
     description: Whether open design judgements remain after reconcile-design-assumptions — listed in the Gate 2 batch payload when true.
     defaultValue: false
   - name: design_dimensions
     type: array
-    description: The ordered design dimensions to elicit in requirements-refinement, set per mode by derive-design-dimensions (create elicits all eight; update skips the already-established activity model, variables, and techniques).
+    description: The ordered design dimensions to elicit in requirements-refinement, set per mode by derive-design-dimensions (create elicits all eight.
   - name: target_path
     type: string
-    description: "Path to the dedicated git worktree where create/update edits, commits, and PRs run — typically ~/projects/work/workflows/{planning-slug}/. Distinct from planning_folder_path (server .engineering artifacts) and from the shared workflows library checkout used for catalog/literacy reads. Set by derive-workflows-target-path before ensure (prepare-workflow-branch)."
+    description: Feature worktree path for edits, builds, and PR ops (not repo_root).
     defaultValue: ""
   - name: worktree_created
     type: boolean
-    description: True when a dedicated worktree at target_path was created or reused by this workflow run (only those worktrees are eligible for optional retrospective cleanup).
+    description: True when a dedicated worktree at target_path was created or reused by this workflow run (only those worktrees are eligible for optional.
     defaultValue: false
   - name: workflow_branch
     type: string
-    description: The feature branch in the workflows repo that the authored/updated workflow's changes are committed to (e.g., workflow/{workflow_id}); set by prepare-workflow-branch (ensure worktree) in create/update modes.
+    description: "The feature branch in the workflows repo that the authored/updated workflow's changes are committed to (e.g., workflow/{workflow_id})."
     defaultValue: ""
   - name: pr_url
     type: string
