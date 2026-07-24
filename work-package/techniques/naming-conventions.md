@@ -23,11 +23,11 @@ The issue number — the branch-name issue segment.
 
 ### component_name
 
-Basename of the component being worked on — the first path segment of the canonical worktree path.
+Basename of the component being worked on — used as the first path segment of the personal-layout worktree path.
 
 ### planning_folder_path
 
-The server's canonical planning folder for this work package. Its basename is the work-package slug reused as the worktree name.
+The server's canonical planning folder for this work package. Its basename is the work-package slug reused as the worktree name. Under the install layout its ancestors also encode the install root and `owner/repo` used to place the feature worktree.
 
 ### is_review_mode
 
@@ -41,12 +41,12 @@ Derived feature branch name `{type}/{issue_number}-{slugified-title}`. In review
 
 ### target_path
 
-Canonical worktree path under the install worktrees root:
-`$INSTALL/worktrees/{owner}/{repo}/{wp-slug}/` (or an operator-configured equivalent),
-distinct from the planning folder and from `{reference_path}`.
+Canonical feature-worktree path, distinct from `{planning_folder_path}` and from `{reference_path}`:
 
-When the install layout is not in use, operators may still use a personal path such as
-`~/projects/work/{component_name}/{wp-slug}/`.
+- **Install layout** — when `{planning_folder_path}` sits under `source/<owner>/<repo>/.engineering/artifacts/planning/<slug>` (or legacy `engineering/<owner>/<repo>/artifacts/planning/<slug>`):  
+  `<install-root>/worktrees/<owner>/<repo>/<slug>/`
+- **Personal layout** (fallback):  
+  `~/projects/work/{component_name}/<slug>/`
 
 ## Protocol
 
@@ -54,8 +54,11 @@ When the install layout is not in use, operators may still use a personal path s
 2. Derive the branch-name type prefix from `{issue_type}`: feature → `feat`, bug → `fix`, task/enhancement → `chore`/`refactor` as appropriate.
 3. Slugify `{issue_title}` (lowercase, dashes, max ~40 chars) for the description segment.
 4. Set `{branch_name}` to `{type}/{issue_number}-{slugified-title}` per the convention `type/issue-number-short-description`.
-5. Determine the work-package slug as the basename of `{planning_folder_path}` (the planning slug `YYYY-MM-DD-{initiative-name}`), so the worktree name stays aligned with the server's planning folder. In review mode, derive the slug from the PR title or branch name instead.
-6. Set `{target_path}` to the feature worktree path. It is distinct from `{planning_folder_path}`, which lives under the engineering root (`$INSTALL/source/{owner}/{repo}/.engineering/artifacts/planning/…` in the install layout), and from `{reference_path}` (`$INSTALL/source/{owner}/{repo}/`).
+5. Determine the work-package slug `{$wp_slug}` as the basename of `{planning_folder_path}` (the planning slug `YYYY-MM-DD-{initiative-name}`), so the worktree name stays aligned with the server's planning folder. In review mode, derive `{$wp_slug}` from the PR title or branch name instead.
+6. Set `{target_path}` from `{planning_folder_path}`:
+   - When `{planning_folder_path}` matches `…/source/<owner>/<repo>/.engineering/artifacts/planning/{$wp_slug}` (or legacy `…/engineering/<owner>/<repo>/artifacts/planning/{$wp_slug}`), take the install root as the ancestor above `source/` (or `engineering/`) and set `{target_path}` to `<install-root>/worktrees/<owner>/<repo>/{$wp_slug}/`.
+   - Otherwise set `{target_path}` to `~/projects/work/{component_name}/{$wp_slug}/`.
+   From this point on, "inside `{target_path}`" refers to this worktree (not the component checkout used as the reference). Never place `{target_path}` under `{planning_folder_path}` or under `{reference_path}`.
 
 ## Rules
 
