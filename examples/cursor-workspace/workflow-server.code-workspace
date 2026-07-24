@@ -1,0 +1,17 @@
+{
+  "folders": [
+    {
+      "name": "📦 workspace",
+      "path": "./"
+    },
+    {
+      "name": "📦 engineering",
+      "path": "../../../.local/share/workflow-server/engineering/owner/repo"
+    },
+    {
+      "name": "📦 sessions",
+      "path": "../../../.local/share/workflow-server/workspace/owner/repo"
+    }
+  ],
+  "settings": {}
+}
