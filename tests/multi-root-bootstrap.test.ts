@@ -26,7 +26,7 @@ describe('multi-root bootstrap binding', () => {
 
   beforeAll(async () => {
     installDir = mkdtempSync(join(tmpdir(), 'wf-multi-boot-'));
-    engMulti = join(installDir, 'source');
+    engMulti = join(installDir, 'projects');
     wsMulti = join(installDir, 'worktrees');
     mkdirSync(join(engMulti, 'acme', 'app', '.engineering'), { recursive: true });
     mkdirSync(join(wsMulti, 'acme', 'app'), { recursive: true });
@@ -147,7 +147,7 @@ describe('multi-root bootstrap binding', () => {
     expect(childResp.planning_folder_path).toBe(promoted);
   });
 
-  it('start_session with repo binds and dispatch_child promotes under source/owner/repo/.engineering', async () => {
+  it('start_session with repo binds and dispatch_child promotes under projects/owner/repo/.engineering', async () => {
     const meta = await client.callTool({
       name: 'start_session',
       arguments: {

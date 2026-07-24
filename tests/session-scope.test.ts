@@ -21,35 +21,19 @@ import { createInitialSessionFile } from '../src/schema/session.schema.js';
 import { computeSessionIndex } from '../src/utils/session/derivation.js';
 
 describe('session scope (multi-root)', () => {
-  it('detects multi-root when engineeringDir is $INSTALL/source and no process repo', () => {
+  it('detects multi-root when engineeringDir is $INSTALL/projects and no process repo', () => {
     const scope = buildSessionScope({
       workflowDir: '/w',
       schemasDir: '/s',
       workspaceDir: '/tmp/inst/worktrees',
-      engineeringDir: '/tmp/inst/source',
+      engineeringDir: '/tmp/inst/projects',
       installDir: '/tmp/inst',
       serverName: 't',
       serverVersion: '1',
     });
     expect(scope.mode).toBe('multi');
-    expect(scope.engineeringMultiRoot).toBe(resolve('/tmp/inst/source'));
-    expect(scope.multiRootLayout).toBe('source');
+    expect(scope.engineeringMultiRoot).toBe(resolve('/tmp/inst/projects'));
     expect(scope.planningRelativeDir).toBe(REPO_PLANNING_RELATIVE_DIR);
-  });
-
-  it('detects legacy multi-root when engineeringDir is $INSTALL/engineering', () => {
-    const scope = buildSessionScope({
-      workflowDir: '/w',
-      schemasDir: '/s',
-      workspaceDir: '/tmp/inst/workspace',
-      engineeringDir: '/tmp/inst/engineering',
-      installDir: '/tmp/inst',
-      serverName: 't',
-      serverVersion: '1',
-    });
-    expect(scope.mode).toBe('multi');
-    expect(scope.multiRootLayout).toBe('legacy');
-    expect(scope.engineeringMultiRoot).toBe(resolve('/tmp/inst/engineering'));
   });
 
   it('stays single when process is pinned with repo', () => {
@@ -57,26 +41,25 @@ describe('session scope (multi-root)', () => {
       workflowDir: '/w',
       schemasDir: '/s',
       workspaceDir: '/tmp/inst/worktrees/acme/app',
-      engineeringDir: '/tmp/inst/source/acme/app/.engineering',
+      engineeringDir: '/tmp/inst/projects/acme/app/.engineering',
       installDir: '/tmp/inst',
       repo: 'acme/app',
       serverName: 't',
       serverVersion: '1',
     });
     expect(scope.mode).toBe('single');
-    expect(scope.engineeringDir).toBe(resolve('/tmp/inst/source/acme/app/.engineering'));
+    expect(scope.engineeringDir).toBe(resolve('/tmp/inst/projects/acme/app/.engineering'));
   });
 
-  it('extractRepoFromPath reads owner/repo under source multi-root', () => {
-    const multi = '/var/lib/workflow-server/source';
+  it('extractRepoFromPath reads owner/repo under projects multi-root', () => {
+    const multi = '/var/lib/workflow-server/projects';
     expect(
       extractRepoFromPath(
         `${multi}/m2ux/workflow-server/.engineering/artifacts/planning/my-slug`,
         multi,
-        'source',
       ),
     ).toBe('m2ux/workflow-server');
-    expect(extractRepoFromPath('/other/path/slug', multi, 'source')).toBeUndefined();
+    expect(extractRepoFromPath('/other/path/slug', multi)).toBeUndefined();
   });
 
   it('resolveSessionRoot requires repo on multi-root', () => {
@@ -84,14 +67,14 @@ describe('session scope (multi-root)', () => {
       workflowDir: '/w',
       schemasDir: '/s',
       workspaceDir: '/tmp/inst/worktrees',
-      engineeringDir: '/tmp/inst/source',
+      engineeringDir: '/tmp/inst/projects',
       installDir: '/tmp/inst',
       serverName: 't',
       serverVersion: '1',
     });
     expect(() => resolveSessionRoot(scope, {})).toThrow(/repo is required/);
     const root = resolveSessionRoot(scope, { repo: 'acme/app' });
-    expect(root.engineeringDir).toBe(resolve('/tmp/inst/source/acme/app/.engineering'));
+    expect(root.engineeringDir).toBe(resolve('/tmp/inst/projects/acme/app/.engineering'));
     expect(root.planningRelativeDir).toBe(REPO_PLANNING_RELATIVE_DIR);
     expect(root.repo).toBe('acme/app');
   });
@@ -101,16 +84,16 @@ describe('session scope (multi-root)', () => {
       workflowDir: '/w',
       schemasDir: '/s',
       workspaceDir: '/tmp/inst/worktrees',
-      engineeringDir: '/tmp/inst/source',
+      engineeringDir: '/tmp/inst/projects',
       installDir: '/tmp/inst',
       serverName: 't',
       serverVersion: '1',
     });
     const root = resolveSessionRoot(scope, {
-      planningFolder: '/tmp/inst/source/acme/app/.engineering/artifacts/planning/slug-1',
+      planningFolder: '/tmp/inst/projects/acme/app/.engineering/artifacts/planning/slug-1',
     });
     expect(root.repo).toBe('acme/app');
-    expect(root.engineeringDir).toBe(resolve('/tmp/inst/source/acme/app/.engineering'));
+    expect(root.engineeringDir).toBe(resolve('/tmp/inst/projects/acme/app/.engineering'));
   });
 
   it('resolveSessionRoot error text tells agents to pass repo from AGENTS.md', () => {
@@ -118,7 +101,7 @@ describe('session scope (multi-root)', () => {
       workflowDir: '/w',
       schemasDir: '/s',
       workspaceDir: '/tmp/inst/worktrees',
-      engineeringDir: '/tmp/inst/source',
+      engineeringDir: '/tmp/inst/projects',
       installDir: '/tmp/inst',
       serverName: 't',
       serverVersion: '1',
@@ -139,9 +122,9 @@ describe('session multi-root FS search', () => {
   });
 
   it('lists owner/repo .engineering checkouts and finds sessions across them', async () => {
-    const sourceMulti = join(install, 'source');
-    const repoA = join(sourceMulti, 'acme', 'a', '.engineering');
-    const repoB = join(sourceMulti, 'acme', 'b', '.engineering');
+    const projectsMulti = join(install, 'projects');
+    const repoA = join(projectsMulti, 'acme', 'a', '.engineering');
+    const repoB = join(projectsMulti, 'acme', 'b', '.engineering');
     mkdirSync(repoA, { recursive: true });
     mkdirSync(repoB, { recursive: true });
 
@@ -149,7 +132,7 @@ describe('session multi-root FS search', () => {
       workflowDir: '/w',
       schemasDir: '/s',
       workspaceDir: join(install, 'worktrees'),
-      engineeringDir: sourceMulti,
+      engineeringDir: projectsMulti,
       installDir: install,
       serverName: 't',
       serverVersion: '1',
@@ -194,26 +177,26 @@ describe('session multi-root FS search', () => {
     const roots = await listSessionSearchRoots(scope);
     expect(roots.sort()).toEqual([resolve(repoA), resolve(repoB)].sort());
 
-    const foundA = await findPlanningFolderBySlug(sourceMulti, 'slug-a', {
+    const foundA = await findPlanningFolderBySlug(projectsMulti, 'slug-a', {
       planningRelativeDir: REPO_PLANNING_RELATIVE_DIR,
       searchRoots: roots,
     });
     expect(foundA).toBe(folderA);
 
-    const locB = await resolveSessionLocation(sourceMulti, idxB, {
+    const locB = await resolveSessionLocation(projectsMulti, idxB, {
       planningRelativeDir: REPO_PLANNING_RELATIVE_DIR,
       searchRoots: roots,
     });
     expect(locB.folder).toBe(folderB);
   });
 
-  it('legacy single-root still uses .engineering/artifacts/planning', async () => {
+  it('single-root still uses .engineering/artifacts/planning', async () => {
     const ws = join(install, 'ws');
     mkdirSync(ws, { recursive: true });
-    const folder = await ensurePlanningFolder(ws, 'legacy-slug', {
+    const folder = await ensurePlanningFolder(ws, 'single-slug', {
       planningRelativeDir: PLANNING_RELATIVE_DIR,
     });
-    expect(folder).toBe(join(ws, '.engineering/artifacts/planning', 'legacy-slug'));
+    expect(folder).toBe(join(ws, '.engineering/artifacts/planning', 'single-slug'));
     writeFileSync(join(folder, 'session.json'), '{}');
   });
 });

@@ -2,11 +2,11 @@
 # workflow-server — initialize a managed repo under the install root
 #
 # Accepts a full GitHub-style path (owner/repo), creates:
-#   source/<owner>/<repo>/              # app checkout (default branch or --branch)
-#   source/<owner>/<repo>/.engineering/ # eng submodule or materialised eng
+#   projects/<owner>/<repo>/              # app checkout (default branch or --branch)
+#   projects/<owner>/<repo>/.engineering/ # eng submodule or materialised eng
 #   worktrees/<owner>/<repo>/           # parent for feature worktrees
 #
-# Engineering resolution (into source/.../.engineering):
+# Engineering resolution (into projects/.../.engineering):
 #   1. Explicit --engineering-url / --engineering-branch overrides
 #   2. App checkout: git submodule update --init -- .engineering
 #   3. App remote branch named "engineering" (or --engineering-branch) into .engineering
@@ -27,7 +27,7 @@ DEFAULT_HOST="github.com"
 DEFAULT_ENG_PATH=".engineering"
 
 ROOT="${WORKFLOW_SERVER_INSTALL_DIR:-$DEFAULT_ROOT}"
-# Source checkout branch (empty = remote default: main/master via origin/HEAD).
+# Project checkout branch (empty = remote default: main/master via origin/HEAD).
 SOURCE_BRANCH="${WORKFLOW_SERVER_SOURCE_BRANCH:-}"
 ENG_BRANCH="${WORKFLOW_SERVER_ENGINEERING_BRANCH:-$DEFAULT_ENG_BRANCH}"
 REPO_URL=""
@@ -44,7 +44,7 @@ ENG_SOURCE_PIN=""
 
 usage() {
   cat <<EOF
-Initialize source + engineering + worktrees paths for a repo under the
+Initialize projects + engineering + worktrees paths for a repo under the
 workflow-server install root.
 
 USAGE
@@ -57,7 +57,7 @@ ARGUMENTS
 OPTIONS
   --root=PATH            Install root (default: ${DEFAULT_ROOT})
   --url=URL              App repo git remote (default: https://github.com/<owner/repo>.git)
-  --branch=NAME          Branch to check out in source/<owner>/<repo>
+  --branch=NAME          Branch to check out in projects/<owner>/<repo>
                          (default: remote default branch — usually main)
   --engineering-url=URL  Force engineering remote (skip submodule init)
   --engineering-branch=NAME
@@ -69,12 +69,12 @@ OPTIONS
   -h, --help
 
 LAYOUT
-  \$ROOT/source/<owner>/<repo>/                 # app checkout (--branch or default)
-  \$ROOT/source/<owner>/<repo>/.engineering/    # planning eng root
+  \$ROOT/projects/<owner>/<repo>/                 # app checkout (--branch or default)
+  \$ROOT/projects/<owner>/<repo>/.engineering/    # planning eng root
   \$ROOT/worktrees/<owner>/<repo>/              # feature worktree parent
 
 RESOLUTION
-  Clone the app into source/ on --branch (or remote default), then prefer
+  Clone the app into projects/ on --branch (or remote default), then prefer
   submodule init for .engineering, else clone eng branch
   "${DEFAULT_ENG_BRANCH}", else extract in-tree .engineering/.
 EOF
@@ -211,7 +211,7 @@ default_branch_for() {
   echo main
 }
 
-# Resolve which branch the source checkout should track.
+# Resolve which branch the project checkout should track.
 resolve_source_branch() {
   local dest="$1"
   if [[ -n "$SOURCE_BRANCH" ]]; then
@@ -221,7 +221,7 @@ resolve_source_branch() {
   default_branch_for "$dest"
 }
 
-# Clone or update the app checkout at SOURCE_DIR (no bulk submodule init).
+# Clone or update the app checkout at PROJECTS_DIR (no bulk submodule init).
 # Optional third arg: branch name (empty = remote default).
 ensure_source_checkout() {
   local dest="$1"
@@ -229,9 +229,9 @@ ensure_source_checkout() {
   local want_br="${3:-}"
 
   if is_git_checkout "$dest" && [[ "${FORCE}" -eq 0 ]]; then
-    echo "Source checkout already present → ${dest}"
+    echo "Project checkout already present → ${dest}"
     if [[ "${FETCH}" -eq 1 ]]; then
-      echo "Updating source checkout"
+      echo "Updating project checkout"
       git -C "${dest}" remote set-url origin "${url}" 2>/dev/null \
         || git -C "${dest}" remote add origin "${url}"
       git -C "${dest}" fetch --prune origin
@@ -346,7 +346,7 @@ resolve_engineering_source_fallback() {
     return 0
   fi
 
-  # Prefer reading .gitmodules from the live source checkout
+  # Prefer reading .gitmodules from the live project checkout
   local entry sub_url sub_branch
   if entry="$(read_gitmodules_entry "${source_dir}/.gitmodules" "$DEFAULT_ENG_PATH")"; then
     sub_url="${entry%%$'\t'*}"
@@ -543,89 +543,15 @@ if [[ -z "$REPO_URL" ]]; then
 fi
 
 ROOT="$(abs_path "$ROOT")"
-SOURCE_DIR="${ROOT}/source/${OWNER}/${NAME}"
-ENG_DIR="${SOURCE_DIR}/${DEFAULT_ENG_PATH}"
+PROJECTS_DIR="${ROOT}/projects/${OWNER}/${NAME}"
+ENG_DIR="${PROJECTS_DIR}/${DEFAULT_ENG_PATH}"
 WT_DIR="${ROOT}/worktrees/${OWNER}/${NAME}"
 # Legacy sibling eng (migration notice only)
-LEGACY_ENG_DIR="${ROOT}/engineering/${OWNER}/${NAME}"
-
-echo "Repo        : ${REPO_PATH}"
-echo "App URL     : ${REPO_URL}"
-echo "Root        : ${ROOT}"
-echo "Source      : ${SOURCE_DIR}"
-if [[ -n "$SOURCE_BRANCH" ]]; then
-  echo "Source br   : ${SOURCE_BRANCH}"
-else
-  echo "Source br   : (remote default)"
-fi
-echo "Engineering : ${ENG_DIR}"
-echo "Worktrees   : ${WT_DIR}"
-echo
-
-mkdir -p "${ROOT}/source/${OWNER}" \
-  "${ROOT}/worktrees/${OWNER}"
-
-ensure_source_checkout "$SOURCE_DIR" "$REPO_URL" "$SOURCE_BRANCH"
-# Record the branch actually checked out for the summary.
-if is_git_checkout "$SOURCE_DIR"; then
-  SOURCE_BRANCH_ACTUAL="$(git -C "$SOURCE_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || echo unknown)"
-else
-  SOURCE_BRANCH_ACTUAL="${SOURCE_BRANCH:-unknown}"
-fi
-
-# Engineering into source/.../.engineering
-if [[ -n "$ENG_URL_OVERRIDE" ]]; then
-  ENG_SOURCE_MODE="remote"
-  ENG_SOURCE_URL="$ENG_URL_OVERRIDE"
-  ENG_SOURCE_BRANCH="${ENG_BRANCH_OVERRIDE:-$ENG_BRANCH}"
-  clone_or_update_remote "$ENG_DIR" "$ENG_SOURCE_URL" "$ENG_SOURCE_BRANCH" ""
-  if is_git_checkout "$ENG_DIR"; then
-    init_nested_submodules "$ENG_DIR"
-  fi
-elif try_init_engineering_submodule "$SOURCE_DIR"; then
-  :
-else
-  resolve_engineering_source_fallback "$REPO_URL" "$SOURCE_DIR" "$ENG_BRANCH"
-  case "$ENG_SOURCE_MODE" in
-    remote)
-      clone_or_update_remote "$ENG_DIR" "$ENG_SOURCE_URL" "$ENG_SOURCE_BRANCH" "$ENG_SOURCE_PIN"
-      if is_git_checkout "$ENG_DIR"; then
-        init_nested_submodules "$ENG_DIR"
-      fi
-      ;;
-    intree)
-      clone_intree_engineering "$ENG_DIR" "$SOURCE_DIR"
-      ;;
-    intree-present)
-      echo "Using existing in-tree engineering at ${ENG_DIR}"
-      ;;
-    submodule)
-      ;;
-    *)
-      die "internal: unknown engineering source mode '${ENG_SOURCE_MODE}'"
-      ;;
-  esac
-fi
-
-[[ -d "$ENG_DIR" ]] || die "engineering path missing after init: ${ENG_DIR}"
-
-if [[ ! -d "${WT_DIR}" ]]; then
-  echo "Creating worktrees parent → ${WT_DIR}"
-  mkdir -p "${WT_DIR}"
-else
-  echo "Worktrees parent already present"
-fi
-
-if [[ -d "$LEGACY_ENG_DIR" && "$LEGACY_ENG_DIR" != "$ENG_DIR" ]]; then
-  echo
-  echo "note: legacy engineering path still exists: ${LEGACY_ENG_DIR}"
-  echo "      canonical planning root is now: ${ENG_DIR}"
-fi
 
 echo
 echo "Init complete."
 echo "  Repo path    : ${REPO_PATH}"
-echo "  Source       : ${SOURCE_DIR}"
+echo "  Projects     : ${PROJECTS_DIR}"
 echo "  Source branch: ${SOURCE_BRANCH_ACTUAL:-unknown}"
 echo "  Engineering  : ${ENG_DIR}"
 echo "  Worktrees    : ${WT_DIR}"

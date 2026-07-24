@@ -1,8 +1,7 @@
 import { readdir } from 'node:fs/promises';
 import { basename, dirname, isAbsolute, resolve, sep } from 'node:path';
 import {
-  INSTALL_ENGINEERING_DIR_LEGACY,
-  INSTALL_SOURCE_DIR,
+  INSTALL_PROJECTS_DIR,
   normalizeRepoPath,
   REPO_PLANNING_RELATIVE_DIR,
   resolveRepoPaths,
@@ -14,26 +13,16 @@ import { PLANNING_RELATIVE_DIR } from './store.js';
 /**
  * How the process is bound for session storage.
  *
- * - **single**: one engineering checkout (legacy workspace, or process pinned
- *   with `--repo`). All sessions live under that checkout's planning root.
- * - **multi**: install multi-root (`$INSTALL/source` or legacy
- *   `$INSTALL/engineering`). Sessions live under each repo's eng checkout
- *   `…/artifacts/planning/`. The agent supplies `repo` (or a path that embeds
- *   it) at `start_session`.
+ * - **single**: one engineering checkout (or process pinned with `--repo`).
+ *   All sessions live under that checkout's planning root.
+ * - **multi**: install multi-root (`$INSTALL/projects`). Sessions live under
+ *   each repo's `…/<owner>/<repo>/.engineering/artifacts/planning/`. The agent
+ *   supplies `repo` (or a path that embeds it) at `start_session`.
  */
 export interface SessionScope {
   mode: 'single' | 'multi';
-  /**
-   * Multi-root base when mode is multi:
-   * `$INSTALL/source` (canonical) or `$INSTALL/engineering` (legacy).
-   */
+  /** Multi-root base when mode is multi: `$INSTALL/projects`. */
   engineeringMultiRoot?: string;
-  /**
-   * Layout under the multi-root:
-   * - `source`: eng at `<multi>/<owner>/<repo>/.engineering`
-   * - `legacy`: eng at `<multi>/<owner>/<repo>`
-   */
-  multiRootLayout?: 'source' | 'legacy';
   /** Single engineering checkout when mode is single. */
   engineeringDir: string;
   installDir?: string;
@@ -46,8 +35,7 @@ export interface SessionScope {
 
 /**
  * Detect install multi-root engineering binding (Docker start.sh default).
- * Canonical: engineeringDir is exactly `$INSTALL/source`.
- * Legacy: engineeringDir is exactly `$INSTALL/engineering`.
+ * True when engineeringDir is exactly `$INSTALL/projects`.
  */
 export function isEngineeringMultiRoot(
   engineeringDir: string,
@@ -55,36 +43,17 @@ export function isEngineeringMultiRoot(
 ): boolean {
   const eng = resolve(engineeringDir);
   if (installDir) {
-    const root = resolve(installDir);
-    return (
-      eng === resolve(root, INSTALL_SOURCE_DIR) ||
-      eng === resolve(root, INSTALL_ENGINEERING_DIR_LEGACY)
-    );
+    return eng === resolve(installDir, INSTALL_PROJECTS_DIR);
   }
-  const base = basename(eng);
-  return base === INSTALL_SOURCE_DIR || base === INSTALL_ENGINEERING_DIR_LEGACY;
+  return basename(eng) === INSTALL_PROJECTS_DIR;
 }
 
-function multiRootLayoutFor(
-  engineeringDir: string,
-  installDir?: string,
-): 'source' | 'legacy' {
-  const eng = resolve(engineeringDir);
-  if (installDir) {
-    if (eng === resolve(installDir, INSTALL_ENGINEERING_DIR_LEGACY)) return 'legacy';
-    return 'source';
-  }
-  return basename(eng) === INSTALL_ENGINEERING_DIR_LEGACY ? 'legacy' : 'source';
-}
-
-/** Absolute eng checkout for owner/repo under a multi-root base. */
+/** Absolute eng checkout for owner/repo under a projects multi-root. */
 export function resolveMultiRootEngineeringDir(
   multiRoot: string,
   repo: string,
-  layout: 'source' | 'legacy' = 'source',
 ): string {
-  const base = resolve(multiRoot, repo);
-  return layout === 'legacy' ? base : resolve(base, '.engineering');
+  return resolve(multiRoot, repo, '.engineering');
 }
 
 /** Build the process session scope from server config. */
@@ -97,11 +66,9 @@ export function buildSessionScope(config: ServerConfig): SessionScope {
     !config.repo;
 
   if (multi) {
-    const multiRootLayout = multiRootLayoutFor(engineeringDir, installDir);
     return {
       mode: 'multi',
       engineeringMultiRoot: engineeringDir,
-      multiRootLayout,
       engineeringDir,
       installDir: installDir ?? dirname(engineeringDir),
       planningRelativeDir: REPO_PLANNING_RELATIVE_DIR,
@@ -122,13 +89,11 @@ export function buildSessionScope(config: ServerConfig): SessionScope {
 
 /**
  * If `planning_folder` sits under the multi-root as
- * `…/source/<owner>/<repo>/.engineering/…` or legacy
- * `…/engineering/<owner>/<repo>/…`, return `owner/repo`.
+ * `…/projects/<owner>/<repo>/.engineering/…`, return `owner/repo`.
  */
 export function extractRepoFromPath(
   planningFolder: string,
   engineeringMultiRoot: string,
-  layout: 'source' | 'legacy' = 'source',
 ): string | undefined {
   if (!isAbsolute(planningFolder)) return undefined;
   const folder = resolve(planningFolder);
@@ -139,10 +104,6 @@ export function extractRepoFromPath(
   const parts = rest.split(sep).filter(Boolean);
   if (parts.length < 2) return undefined;
   const candidate = `${parts[0]}/${parts[1]}`;
-  // Canonical source layout: …/source/o/r/.engineering/…
-  if (layout === 'source' && parts.length >= 3 && parts[2] !== '.engineering') {
-    // Still accept owner/repo when path continues with other segments after .engineering
-  }
   try {
     return normalizeRepoPath(candidate);
   } catch {
@@ -176,7 +137,6 @@ export function resolveSessionRoot(
     repoRaw = extractRepoFromPath(
       opts.planningFolder,
       scope.engineeringMultiRoot,
-      scope.multiRootLayout ?? 'source',
     );
   }
 
@@ -196,7 +156,6 @@ export function resolveSessionRoot(
         engineeringDir: resolveMultiRootEngineeringDir(
           scope.engineeringMultiRoot,
           repo,
-          scope.multiRootLayout ?? 'source',
         ),
         planningRelativeDir: REPO_PLANNING_RELATIVE_DIR,
         repo,
@@ -221,8 +180,8 @@ export function resolveSessionRoot(
   if (scope.mode === 'multi') {
     throw new Error(
       'start_session: repo is required when the server is bound to an install multi-root ' +
-        '($INSTALL/source). Pass repo: "owner/repo" (from the user or workspace AGENTS.md), ' +
-        'or an absolute planning_folder under source/<owner>/<repo>/.engineering/….',
+        '($INSTALL/projects). Pass repo: "owner/repo" (from the user or workspace AGENTS.md), ' +
+        'or an absolute planning_folder under projects/<owner>/<repo>/.engineering/….',
     );
   }
 
@@ -234,8 +193,7 @@ export function resolveSessionRoot(
 
 /**
  * List engineering checkouts to search for session_index / slug.
- * Multi-root source: every `source/<o>/<r>/.engineering`.
- * Multi-root legacy: every `engineering/<o>/<r>`.
+ * Multi-root: every `projects/<o>/<r>/.engineering`.
  * Single: just the process engineering dir.
  */
 export async function listSessionSearchRoots(scope: SessionScope): Promise<string[]> {
@@ -243,7 +201,6 @@ export async function listSessionSearchRoots(scope: SessionScope): Promise<strin
     return [scope.engineeringDir];
   }
   const multi = scope.engineeringMultiRoot;
-  const layout = scope.multiRootLayout ?? 'source';
   const roots: string[] = [];
   let owners: Array<{ name: string; isDirectory: () => boolean }>;
   try {
@@ -262,10 +219,7 @@ export async function listSessionSearchRoots(scope: SessionScope): Promise<strin
     }
     for (const repoEnt of repos) {
       if (!repoEnt.isDirectory() || repoEnt.name.startsWith('.')) continue;
-      const repoBase = resolve(ownerPath, repoEnt.name);
-      roots.push(
-        layout === 'legacy' ? repoBase : resolve(repoBase, '.engineering'),
-      );
+      roots.push(resolve(ownerPath, repoEnt.name, '.engineering'));
     }
   }
   return roots;

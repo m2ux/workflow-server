@@ -8,4 +8,4 @@ owner/repo
 
 Replace with your project (for example `m2ux/workflow-server`). Agents should pass this
 value as `repo` on `start_session` when the workflow-server is bound to an install
-multi-root (`$INSTALL/source` + `$INSTALL/worktrees`).
+multi-root (`$INSTALL/projects` + `$INSTALL/worktrees`).

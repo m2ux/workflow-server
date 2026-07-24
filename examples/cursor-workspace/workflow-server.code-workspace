@@ -6,7 +6,7 @@
     },
     {
       "name": "📦 source",
-      "path": "../../../.local/share/workflow-server/source/owner/repo"
+      "path": "../../../.local/share/workflow-server/projects/owner/repo"
     },
     {
       "name": "📦 worktrees",
