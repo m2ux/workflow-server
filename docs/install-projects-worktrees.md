@@ -1,9 +1,5 @@
 # Install layout: projects + worktrees
 
-**Status:** Implementation  
-**Date:** 2026-07-24  
-**Branch:** `feat/install-source-worktrees`
-
 ## Goal
 
 Every managed product repo under the workflow-server install root gets a **main/default-branch checkout** used as the git reference for feature worktrees. Engineering planning lives in that checkout’s **`.engineering` submodule** (initialized on init). Feature worktrees stay in a **sibling** install tree. Global workflow **definitions** remain a separate install clone.
