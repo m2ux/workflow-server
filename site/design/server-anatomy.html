@@ -252,21 +252,21 @@
   <p>How these surface to a calling agent — and how they differ from non-blocking validation warnings — is covered in <a href="../design/protocol.html">Protocol</a>.</p>
 
   <h2 id="disk">Where things live on disk</h2>
-  <p class="prose">Three locations, three lifetimes — definitions are read-only content, session state belongs to the workspace, and the server key is per-user infrastructure.</p>
+  <p class="prose">Three locations, three lifetimes — definitions are read-only content, session state belongs to the <strong>engineering root</strong>, and the server key is per-user infrastructure. Feature worktrees sit under a separate workspace root (not shown).</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 260" role="img" aria-labelledby="disk-title disk-desc">
       <title id="disk-title">Three on-disk locations</title>
-      <desc id="disk-desc">Workflow definitions live in the workflows worktree. Session state is written under the workspace engineering tree. The HMAC server key lives in the user home directory.</desc>
+      <desc id="disk-desc">Workflow definitions live in the workflows tree. Session state is written under the engineering root planning folder. The HMAC server key lives in the user home directory.</desc>
       <g font-size="14.5" font-weight="600">
         <rect x="30" y="40" width="280" height="168" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
-        <text x="50" y="68" fill="var(--diagram-label)">workflows/ worktree</text>
+        <text x="50" y="68" fill="var(--diagram-label)">workflows/</text>
         <text x="50" y="96" fill="var(--diagram-note)" font-size="12.5" font-weight="400">orphan workflows branch</text>
         <text x="50" y="120" fill="var(--diagram-note)" font-size="12.5" font-weight="400">workflow.yaml, activities/,</text>
         <text x="50" y="140" fill="var(--diagram-note)" font-size="12.5" font-weight="400">techniques/, resources/</text>
         <text x="50" y="172" fill="var(--diagram-note)" font-size="12" font-weight="400">read at call time, never cached</text>
         <rect x="340" y="40" width="280" height="168" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
-        <text x="360" y="68" fill="var(--diagram-label)">workspace/.engineering/</text>
+        <text x="360" y="68" fill="var(--diagram-label)">engineering root</text>
         <text x="360" y="96" fill="var(--diagram-note)" font-size="12.5" font-weight="400">artifacts/planning/&lt;slug&gt;/</text>
         <g font-size="12" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">
           <text x="360" y="122" fill="var(--diagram-note)">session.json</text>
@@ -284,7 +284,7 @@
       </g>
       <text x="480" y="236" font-size="12.5" text-anchor="middle" fill="var(--diagram-note)">loaders read left · session store reads and writes centre · crypto.ts reads right</text>
     </svg>
-    <figcaption>Definitions and session artifacts are version-controlled in their respective trees; the server key is created lazily at <code>~/.workflow-server/secret</code> (mode <code>0600</code>). Folder contents are detailed in <a href="./session-store.html">session store</a> and <a href="../guide/getting-started.html#install">getting started</a>.</figcaption>
+    <figcaption>Definitions and session artifacts are version-controlled in their respective trees; the server key is created lazily at <code>~/.workflow-server/secret</code> (mode <code>0600</code>). Folder contents are detailed in <a href="./session-store.html">session store</a> and <a href="../guide/getting-started.html#layout">getting started</a>.</figcaption>
   </figure>
 
   <h2 id="next">Next</h2>
