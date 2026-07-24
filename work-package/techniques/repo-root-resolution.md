@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Resolve the repo root used for comprehension, GitNexus indexing, and read-only investigation: determine whether the path the user pointed at is a standalone repository or a submodule inside a monorepo, and set the repo root and component name accordingly. Edits never happen here — they happen in a worktree created later.
+Resolve the product repo root used for comprehension, GitNexus indexing, read-only investigation, and as the git directory for `git worktree add`: determine whether the path the user pointed at is a standalone repository or a submodule inside a monorepo, and set `{repo_root}` and `{component_name}` accordingly. Edits are never performed under `{repo_root}` — they use a separate worktree path.
 
 ## Inputs
 
 ### discovered_path
 
-The path the user originally pointed at — the value resolved by start-workflow's target discovery.
+The path the user originally pointed at (absolute filesystem path).
 
 ## Outputs
 

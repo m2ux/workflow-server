@@ -24,7 +24,7 @@ The monorepo's submodules advanced to their tracked branches' remote HEADs (or a
 ### 1. Gate and Lock
 
 - Run only when `{repo_root}` is set AND points at a monorepo (i.e. `{repo_root}/.gitmodules` exists). Skip silently when `{repo_root}` is empty or the repo root is a standalone repo with no submodules.
-- Coordinate concurrent invocations from sibling work packages: serialize via an exclusive flock on `{repo_root}/.git/.workflow-submodule-refresh.lock` (blocking). Concrete form: `flock {repo_root}/.git/.workflow-submodule-refresh.lock -c <command>`. The lock prevents two parallel start-work-package runs from racing on `.git/index.lock` during the submodule update.
+- Coordinate concurrent invocations from sibling work packages: serialize via an exclusive flock on `{repo_root}/.git/.workflow-submodule-refresh.lock` (blocking). Concrete form: `flock {repo_root}/.git/.workflow-submodule-refresh.lock -c <command>`. The lock prevents two parallel work packages from racing on `.git/index.lock` during the submodule update.
 
 ### 2. Refresh Under Lock
 

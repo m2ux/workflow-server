@@ -23,11 +23,11 @@ The work package problem statement; used to match relevant existing artifacts an
 
 ### target_path
 
-Path to the working checkout surveyed for structure, build system, and entry points (`{target_path}`).
+Working checkout surveyed for structure, build system, and entry points.
 
 ### gitnexus_indexed
 
-Flag resolved by start-work-package indicating whether `{repo_root}` has a usable GitNexus index; selects between gitnexus-operations and grep/read/glob for structural analysis.
+Whether `{repo_root}` has a usable GitNexus index; selects between gitnexus-operations and grep/read/glob for structural analysis.
 
 ## Outputs
 

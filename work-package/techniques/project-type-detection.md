@@ -11,7 +11,7 @@ Auto-detect the project type of the target component from its build manifest, so
 
 ### repo_root
 
-The repo root holding the component's source. Detection runs here because the worktree does not exist yet — both paths see the same files.
+Product repo root (monorepo or standalone) holding the component's source tree used for build-manifest inspection.
 
 ### component_name
 
@@ -27,6 +27,6 @@ Default when detection cannot run: `other`.
 
 ## Protocol
 
-1. Inspect the component's source under `{repo_root}`/`{component_name}` (the component as it appears under the repo root).
+1. Inspect the component's source under `{repo_root}/{component_name}`.
 2. Check for a `Cargo.toml` with Substrate dependencies (`sp-*`, `frame-*`, `pallet-*`).
-3. Set `project_type` to `rust-substrate` when those Substrate dependencies are found, otherwise `other`.
+3. Set `{project_type}` to `rust-substrate` when those Substrate dependencies are found, otherwise `other`.

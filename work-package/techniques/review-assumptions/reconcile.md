@@ -15,7 +15,7 @@ The running [log](../../resources/assumption-reconciliation.md#integration-with-
 
 ### target_path
 
-Path to the working checkout within which code-resolvable assumptions are investigated (`{target_path}`).
+Working checkout within which code-resolvable assumptions are investigated.
 
 ### comprehension_artifact
 
