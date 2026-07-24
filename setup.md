@@ -9,9 +9,7 @@ Connect an MCP client (Cursor, Claude Desktop, or compatible) to workflow-server
 | **Docker / HTTP** | Run the GHCR image; no server source checkout | [http.md](http.md) |
 | **stdio** | IDE spawns `node dist/index.js` from a local checkout | [stdio.md](stdio.md) |
 
-## 2. Layout (defaults)
-
-Install root
+### Install root
 
 | Path | Default | Purpose |
 |------|---------|---------|
@@ -24,7 +22,7 @@ Created by [`scripts/install.sh`](scripts/install.sh). Override roots with `--in
 
 Legacy single-root: bind one path with `--workspace` / `WORKFLOW_WORKSPACE` and keep planning under `<workspace>/.engineering/…` (no split engineering dir).
 
-## 3. Init a target repo
+## 2. Init a target repo
 
 Materialise engineering + workspace for `owner/repo` under the install root:
 
@@ -41,7 +39,7 @@ Bind the server with `--repo=owner/repo` or `WORKFLOW_SERVER_REPO` (see [docs/de
 
 Alternatively, from a **project repo root**, [`scripts/deploy.sh`](scripts/deploy.sh) can create an in-tree `.engineering/` for legacy `--workspace` binding.
 
-## 4. Root binding (how the server finds paths)
+## 3. Root binding (how the server finds paths)
 
 One of workspace path **or** repo is required:
 
@@ -64,7 +62,7 @@ How each transport passes these values:
 - **HTTP** — set in `$INSTALL/env` by `install.sh` / container env via `start.sh` (see [http.md](http.md)).
 - **stdio** — CLI args or env on the MCP client command (see [stdio.md](stdio.md)).
 
-## 5. Connect the MCP client
+## 4. Connect the MCP client
 
 Transport-specific client snippets are in [http.md](http.md) and [stdio.md](stdio.md). After the client can reach the server:
 
@@ -79,11 +77,11 @@ export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp
 
 (Adjust host/port if you changed `--host-port`.)
 
-## 6. IDE bootstrap rule
+## 5. IDE bootstrap rule
 
 Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
 
-## 7. Verify
+## 6. Verify
 
 | Check | How |
 |-------|-----|
@@ -91,7 +89,7 @@ Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent 
 | HTTP readiness | `curl -fsS http://127.0.0.1:3000/ready` (dirs must exist) |
 | MCP | In the IDE: list available workflows |
 
-## 8. Day-two operations
+## 7. Day-two operations
 
 | Task | Command / note |
 |------|----------------|
