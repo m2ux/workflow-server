@@ -713,7 +713,7 @@ A raw harness tool name is used where a wrapping op exists.
 
 ### AP-52. brace-declared-ids
 
-"Examine target_path" / "for synthesis pass (index 23)" / "`reference_path`" / "`<files>`"
+"Examine target_path" / "for synthesis pass (index 23)" / "`repo_root`" / "`<files>`"
 
 A declared id is used unbraced where a designator is required.
 
@@ -1662,3 +1662,14 @@ A second how-to (README section, resource, or technique Protocol) that duplicate
 **Do not flag:** Workflow-specific orientation that links to SETUP; deltas unique to this workflow that SETUP does not cover.
 
 **Fix:** Link to SETUP once; keep only the workflow-specific delta here.
+
+### AP-126. variable-description-one-line
+
+**Rule:** A workflow `variables[].description` is a single line defining what the value *is* (optional short enum or shape hint).
+
+**Detect:** `description` is more than one sentence, essay-length multi-clause prose, or includes producer/consumer/gate/layout tails ("Set by…", "Drives…", "Read by…", "Gates…", "Interpolated into…", install-path catalogs, loop/checkpoint wiring, restatement of `defaultValue`).
+
+**Do not flag:** A single short phrase or one sentence with a compact enum/shape (`simple|moderate|complex`, `{ id, statement }`). Longer contracts belong on the producing technique's `## Outputs`.
+
+**Fix:** Rewrite to one line naming the value; delete producer, consumer, gate, and layout tails.
+

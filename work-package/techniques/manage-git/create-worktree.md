@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Working directory materialised as a git worktree of the target path on the named branch (new or existing).
+Working directory materialised as a git worktree of the component at `{target_path}` on `{branch_name}` (new feature branch or existing branch). `{create_branch}` selects between the two.
 
 ## Inputs
 
 ### target_path
 
-Filesystem path at which to materialise the worktree (e.g. the canonical `~/projects/work/{component_name}/{wp-slug}/`).
+Filesystem path at which to materialise the worktree.
 
 ### branch_name
 
@@ -21,9 +21,13 @@ Branch the worktree is checked out on — created fresh when `{create_branch}` i
 
 Optional. Boolean, default `true`. When true, create `{branch_name}` fresh off the component's default branch (`git worktree add -b`). When false, check out an existing `{branch_name}` (no `-b`) — the branch already exists upstream (e.g. a PR's branch under review).
 
+### repo_root
+
+Product repo root (monorepo root when the component is a submodule) used to locate the component git directory for `git worktree add`.
+
 ### component_name
 
-*(optional)* Basename of the component (submodule directory name, or basename of a standalone repo). Used to locate the component's git directory inside a monorepo reference. Omit for standalone repos.
+*(optional)* Basename of the component (submodule directory name, or basename of a standalone repo). Used to locate the component's git directory under `{repo_root}` when the path `{repo_root}/{component_name}` exists. Omit for standalone repos.
 
 ## Outputs
 
@@ -36,7 +40,7 @@ Boolean — true when the worktree exists at `{target_path}` on `{branch_name}`
 
 ### 1. Resolve and Fetch
 
-- Determine the component's git directory `{$component_git_dir}`: when `{reference_path}` is a monorepo and `{reference_path}/{component_name}` exists, use `{reference_path}/{component_name}`; otherwise use `{reference_path}` itself (standalone case).
+- Determine the component's git directory `{$component_git_dir}`: when `{repo_root}` is a monorepo and `{repo_root}/{component_name}` exists, use `{repo_root}/{component_name}`; otherwise use `{repo_root}` itself (standalone case).
 - Fetch first: `git -C {component_git_dir} fetch origin` so the remote-tracking refs are current before the worktree is materialised. Resolve `{$default_branch}` via `git -C {component_git_dir} symbolic-ref refs/remotes/origin/HEAD` (fall back to `main`, then `master`).
 
 ### 2. Create Worktree

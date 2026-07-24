@@ -145,21 +145,21 @@ steps:
       operator: ==
       value: true
   - kind: technique
-    id: resolve-reference
-    technique: reference-resolution
+    id: resolve-repo-root
+    technique: repo-root-resolution
   - kind: technique
-    id: update-reference-submodules
-    technique: manage-git::update-reference-submodules
+    id: update-repo-submodules
+    technique: manage-git::update-repo-submodules
     condition:
       type: simple
-      variable: reference_path
+      variable: repo_root
       operator: exists
   - kind: technique
-    id: analyze-reference-with-gitnexus
+    id: analyze-repo-with-gitnexus
     technique:
       name: gitnexus-operations::analyze
       inputs:
-        repo_path: reference_path
+        repo_path: repo_root
     actions:
       - action: set
         target: gitnexus_indexed

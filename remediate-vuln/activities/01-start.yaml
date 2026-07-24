@@ -37,9 +37,9 @@ steps:
         target: target_path exists
         message: Target directory not found at the supplied target_path
   - kind: technique
-    id: resolve-reference
+    id: resolve-repo-root
     technique:
-      name: work-package::reference-resolution
+      name: work-package::repo-root-resolution
       inputs:
         discovered_path: target_path
   - kind: technique

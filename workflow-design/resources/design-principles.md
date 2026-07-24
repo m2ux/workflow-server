@@ -32,7 +32,7 @@ When user intent admits materially different interpretations, ask one clarifying
 
 ## 5. Maximize Schema Expressiveness
 
-Prefer the most specific formal construct the schema provides. Prose is only for `description` / `outcome` (and equivalent) fields that state WHAT without restating structure. I/O contracts stay portable — describe what a value *is*, not which caller, activity, or workflow produces or consumes it.
+Prefer the most specific formal construct the schema provides. Prose is only for `description` / `outcome` (and equivalent) fields that state WHAT without restating structure. Workflow `variables[].description` is one line only ([variable-description-one-line](./anti-patterns.md#ap-126-variable-description-one-line)). I/O contracts stay portable — describe what a value *is*, not which caller, activity, or workflow produces or consumes it.
 
 ## 6. One Authoritative Home
 
