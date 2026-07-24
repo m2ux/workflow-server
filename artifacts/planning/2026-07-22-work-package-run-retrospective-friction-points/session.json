@@ -5,11 +5,12 @@
   "workflowVersion": "5.7.0",
   "agentId": "orchestrator",
   "sessionIndex": "RO6S54",
+  "planningFolderPath": "/home/mike1/projects/main/workflow-server/.engineering/artifacts/planning/2026-07-22-work-package-run-retrospective-friction-points",
   "currentActivity": "dispatch-client-workflow",
   "currentTechnique": "workflow-engine::create-session",
   "condition": "",
-  "seq": 10,
-  "ts": 1784787775,
+  "seq": 11,
+  "ts": 1784804718,
   "startedAt": "2026-07-23T06:10:02.642Z",
   "completedActivities": [
     "discover-session",
@@ -217,12 +218,26 @@
           "requirements-refinement-spec-confirmed": {
             "optionId": "confirmed",
             "respondedAt": "2026-07-23T06:36:05.000Z"
+          },
+          "scope-and-draft-batch-review-attested": {
+            "optionId": "attested",
+            "respondedAt": "2026-07-23T10:53:47.000Z"
+          },
+          "scope-and-draft-scope-and-structure-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "scope_manifest_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-07-23T06:51:38.000Z"
           }
         },
         "completedActivities": [
           "intake-and-context",
           "requirements-refinement",
-          "impact-analysis"
+          "impact-analysis",
+          "scope-and-draft"
         ],
         "condition": "",
         "currentActivity": "scope-and-draft",
@@ -244,10 +259,12 @@
             "resource:design-principles": "355ac6feaf834061",
             "resource:design-specification": "0d58a97ef13696c5",
             "resource:design-specification#template": "64712e893e054736",
+            "resource:draft-attestation#template": "dc53f3ecd40a5731",
             "resource:elicitation-guide": "09cdd51a3ddede68",
             "resource:follow-ups": "c489fddbcddd07c0",
             "resource:format-conventions": "e6979dfcb8d4b099",
             "resource:schema-construct-inventory": "096e7d389df5170c",
+            "resource:scope-manifest#template": "0f163e99321af341",
             "resource:structural-inventory#template": "645206e66373da3e",
             "resource:update-mode-guide": "9d0acc016d8e141e",
             "technique:context-loading": "1e4841fa4b3ad579",
@@ -256,10 +273,14 @@
             "technique:intake-classification": "fa0cf7c1465a489f",
             "technique:persist-design-specification": "83243ab80d679bc5",
             "technique:reconcile-design-assumptions": "c02a916d204406cb",
+            "technique:review-draft-yaml": "018d9c555450c733",
+            "technique:scope-definition": "ad6ca18d97b921e0",
             "technique:synthesize-update-specification": "d2120a8a8e4c2f0c",
-            "technique:work-package::manage-artifacts::write-artifact": "4382f6578071c34a",
+            "technique:verify-artifact-conforms": "5b4afb314c23b35d",
+            "technique:work-package::manage-artifacts::write-artifact": "0387df75e0b3e874",
             "technique:work-package::review-assumptions::collect": "c6991732d8ffb5af",
-            "technique:work-package::review-assumptions::record": "3863422e28015b10"
+            "technique:work-package::review-assumptions::record": "3863422e28015b10",
+            "technique:work-package::stakeholder-overview": "29f600d94b5ea59a"
           }
         },
         "history": [
@@ -660,16 +681,245 @@
             "activity": "scope-and-draft",
             "timestamp": "2026-07-23T06:42:37.398Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "scope-definition",
+              "techniqueId": "scope-definition"
+            },
+            "timestamp": "2026-07-23T06:48:19.456Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-scope-manifest",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-23T06:48:19.456Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "present-solution-overview",
+              "techniqueId": "work-package::stakeholder-overview"
+            },
+            "timestamp": "2026-07-23T06:48:19.456Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "review-draft-yaml",
+              "techniqueId": "review-draft-yaml"
+            },
+            "timestamp": "2026-07-23T06:48:19.456Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-draft-attestation",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-23T06:48:19.456Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-artifact-conforms",
+              "techniqueId": "verify-artifact-conforms"
+            },
+            "timestamp": "2026-07-23T06:48:19.456Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "scope-manifest#template"
+            },
+            "timestamp": "2026-07-23T06:48:19.456Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-23T06:48:19.456Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "draft-attestation#template"
+            },
+            "timestamp": "2026-07-23T06:48:19.456Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-and-structure-confirmed",
+            "timestamp": "2026-07-23T06:50:36.605Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-and-structure-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-23T06:51:38.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "value": true
+            },
+            "timestamp": "2026-07-23T06:51:38.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "batch-review-attested",
+            "timestamp": "2026-07-23T06:52:19.631Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "batch-review-attested",
+            "data": {
+              "optionId": "attested"
+            },
+            "timestamp": "2026-07-23T10:53:47.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-23T10:54:00.267Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-23T10:54:00.267Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "scope-definition",
+              "techniqueId": "scope-definition"
+            },
+            "timestamp": "2026-07-23T11:05:51.930Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-scope-manifest",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-23T11:05:51.930Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "present-solution-overview",
+              "techniqueId": "work-package::stakeholder-overview"
+            },
+            "timestamp": "2026-07-23T11:05:51.930Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "review-draft-yaml",
+              "techniqueId": "review-draft-yaml"
+            },
+            "timestamp": "2026-07-23T11:05:51.930Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-draft-attestation",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-23T11:05:51.930Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-artifact-conforms",
+              "techniqueId": "verify-artifact-conforms"
+            },
+            "timestamp": "2026-07-23T11:05:51.930Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "scope-manifest#template"
+            },
+            "timestamp": "2026-07-23T11:05:51.930Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-23T11:05:51.930Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "draft-attestation#template"
+            },
+            "timestamp": "2026-07-23T11:05:51.930Z",
+            "type": "resource_fetched"
           }
         ],
         "schemaVersion": 1,
-        "seq": 15,
+        "seq": 25,
         "sessionIndex": "TFFCGM",
         "skippedActivities": [],
         "startedAt": "2026-07-23T06:21:24.093Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1784788957,
+        "ts": 1784804855,
         "variables": {
           "addressed_count": 0,
           "anti_pattern_findings_path": "",
@@ -711,7 +961,7 @@
           "rule_hygiene_finding_count": 0,
           "rule_hygiene_findings_path": "",
           "schema_constructs_confirmed": false,
-          "scope_manifest_confirmed": false,
+          "scope_manifest_confirmed": true,
           "scope_manifest_path": "",
           "specification_path": "",
           "structural_inventory_path": "",
