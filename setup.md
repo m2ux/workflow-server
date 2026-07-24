@@ -22,7 +22,7 @@ Install workflow-server and prepare a target repo. Transport install, MCP client
 
 ## 2. Init a target repo
 
-Two steps per project: make the **repo** workflow-server-compatible, then materialise its trees under the **install** root.
+Two steps per project: the first (a) touches the **repo** to make it workflow-server-compatible. The second (b) initialises the *local* workflow-server workspace for operating on that repo.
 
 ### 2a. Deploy engineering into the project (required first)
 
