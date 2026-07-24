@@ -12,8 +12,7 @@ Working directory materialised as a git worktree of the target path on the named
 ### target_path
 
 Filesystem path at which to materialise the worktree (e.g. the install-layout
-`$INSTALL/worktrees/{owner}/{repo}/{wp-slug}/`, or an operator path such as
-`~/projects/work/{component_name}/{wp-slug}/`).
+`$INSTALL/worktrees/{owner}/{repo}/{wp-slug}/`).
 
 ### branch_name
 
