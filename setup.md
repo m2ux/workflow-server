@@ -22,7 +22,24 @@ Install workflow-server and prepare a target repo. Transport install, MCP client
 
 ## 2. Init a target repo
 
-Materialise engineering + workspace for each GitHub repo the server should work on:
+Two steps per project: make the **repo** workflow-server-compatible, then materialise its trees under the **install** root.
+
+### 2a. Deploy engineering into the project (required first)
+
+From the **root of the target project repo** (not the workflow-server checkout), run [`scripts/deploy.sh`](scripts/deploy.sh). This is the initial step that sets the repo up for workflow-server compatibility (`.engineering/` layout, engineering branch/submodule, planning structure).
+
+```bash
+# inside the target project
+curl -fsSL -o deploy.sh \
+  https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/deploy.sh
+chmod +x deploy.sh && ./deploy.sh
+```
+
+> Options: `./deploy.sh --help` (orphan engineering branch vs in-branch, history submodule, …).
+
+### 2b. Materialise install-root paths
+
+After the project has been deployed, register it under the workflow-server install layout:
 
 ```bash
 ~/.local/share/workflow-server/init-repo.sh owner/repo
@@ -33,9 +50,7 @@ That creates:
 - `$INSTALL/engineering/<owner>/<repo>/` — engineering checkout (planning / session state)
 - `$INSTALL/workspace/<owner>/<repo>/` — feature worktrees
 
-Repeat for each repo you care about.
-
-Alternatively, from a **project repo root**, [`scripts/deploy.sh`](scripts/deploy.sh) can create an in-tree `.engineering/` for a legacy single-checkout layout.
+Repeat **2a → 2b** for each repo you care about.
 
 ## 3. IDE bootstrap rule
 
@@ -45,5 +60,22 @@ Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent 
 
 If the workflows are updated remotely, they can be refreshed locally using the following command:
 
-`$INSTALL/update-workflows.sh` (restart HTTP server afterward) |
+```bash
+$INSTALL/update-workflows.sh
+```
 
+Restart the HTTP server afterward if it is running.
+
+## More detail
+
+| Topic | Where |
+|-------|--------|
+| HTTP / Docker only | [http.md](http.md) |
+| stdio / local checkout only | [stdio.md](stdio.md) |
+| Install script | [`scripts/install.sh`](scripts/install.sh) |
+| Deploy into a project | [`scripts/deploy.sh`](scripts/deploy.sh) |
+| Init install paths | [`scripts/init-repo.sh`](scripts/init-repo.sh) |
+| Env vars & flags (dev) | [docs/development.md](docs/development.md#environment-variables) |
+| IDE rule | [docs/ide-setup.md](docs/ide-setup.md) |
+| HTTP API routes | [docs/api-reference.md](docs/api-reference.md#http-endpoints) |
+| Architecture & fidelity | [docs/architecture.md](docs/architecture.md), [docs/workflow-fidelity.md](docs/workflow-fidelity.md) |
