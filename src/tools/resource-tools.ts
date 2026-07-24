@@ -374,16 +374,18 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       description:
         'Dispatch a child workflow under the parent session. Returns the child `session_index` and canonical `planning_folder_path`. ' +
         'Transient meta parents are promoted to a workspace planning folder first (optional `planning_slug`). ' +
+        'On install multi-root, pass `repo` here if it was not bound on start_session (workers often have owner/repo from the dispatch prompt). ' +
         'Never set `context_mode: "persistent"` on disposable-worker children — workers need fresh/full delivery.',
       inputSchema: z.object({
         ...sessionIndexParam,
         workflow_id: z.string().describe('Child workflow id (e.g. "work-package").'),
         agent_id: z.string().default('worker').describe('Child agent_id (default "worker").'),
         planning_slug: z.string().optional().describe('Optional. Promotion slug when the parent is a transient meta bootstrap. Ignored if the parent is already persistent.'),
+        repo: z.string().optional().describe('Optional. Target owner/repo (or github URL). Used when promoting a transient multi-root parent; overrides any repo stashed at start_session. Pass from worker prior-state / AGENTS.md when start_session omitted it.'),
         context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. Child delivery mode. "persistent" ONLY for solo child walks; omit/"fresh" for disposable workers.'),
       }).strict(),
     },
-    withAuditLog('dispatch_child', withSessionStoreErrors(async ({ session_index, workflow_id, agent_id, planning_slug, context_mode }) => {
+    withAuditLog('dispatch_child', withSessionStoreErrors(async ({ session_index, workflow_id, agent_id, planning_slug, repo, context_mode }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const parentFolder = loaded.folderAbsPath;
@@ -422,17 +424,20 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           planning_slug
           ?? lookupTransientSlugByFolder(parentFolder)
           ?? `${new Date().toISOString().slice(0, 10)}-${workflow_id}`;
-        // Promote into the repo checkout recorded at start_session (multi-root),
-        // or the process single engineering root. Parent folder path is tmp —
-        // use stashed repo + session scope, not dirname(parent).
+        // Promote into the repo checkout for multi-root. Precedence:
+        //   1. explicit `repo` on this call (initialize-session workers often
+        //      learn owner/repo after start_session and pass it here)
+        //   2. repo stashed on the transient folder at start_session
+        // Parent folder path is tmp — never derive owner/repo from dirname(parent).
         const promoteRoot = (() => {
           const stashedRepo = lookupTransientRepoByFolder(parentFolder);
+          const repoHint = repo?.trim() || stashedRepo;
           try {
-            return resolveSessionRoot(sessionScope, { repo: stashedRepo });
+            return resolveSessionRoot(sessionScope, { repo: repoHint });
           } catch (err) {
             throw new Error(
               `dispatch_child: cannot promote transient session without a target repo. ` +
-                `Pass repo on start_session when the server uses an install multi-root. ` +
+                `Pass repo on dispatch_child (or on start_session) when the server uses an install multi-root. ` +
                 `(${err instanceof Error ? err.message : String(err)})`,
             );
           }

@@ -93,7 +93,7 @@ describe('multi-root bootstrap binding', () => {
     expect(response.repo).toBeUndefined();
   });
 
-  it('dispatch_child fails without a stashed repo on multi-root', async () => {
+  it('dispatch_child fails without a stashed or explicit repo on multi-root', async () => {
     const meta = await client.callTool({
       name: 'start_session',
       arguments: { workflow_id: 'meta', agent_id: 'orchestrator' },
@@ -112,7 +112,39 @@ describe('multi-root bootstrap binding', () => {
     expect(child.isError).toBeTruthy();
     const text = (child.content as { text: string }[])[0]?.text ?? '';
     expect(text).toMatch(/cannot promote transient session without a target repo/i);
-    expect(text).toMatch(/Pass repo on start_session/i);
+    expect(text).toMatch(/Pass repo on dispatch_child/i);
+  });
+
+  it('dispatch_child accepts repo when start_session omitted it (worker path)', async () => {
+    // Mirrors initialize-session: orchestrator started multi-root meta without
+    // repo; the activity worker has owner/repo from prior-state / prompt and
+    // must be able to pass it on dispatch_child.
+    const meta = await client.callTool({
+      name: 'start_session',
+      arguments: { workflow_id: 'meta', agent_id: 'orchestrator' },
+    });
+    expect(meta.isError).toBeFalsy();
+    const metaResp = parseToolResponse(meta);
+    expect(metaResp.promotion_requires_repo).toBe(true);
+
+    const slug = '2026-07-24-worker-repo';
+    const child = await client.callTool({
+      name: 'dispatch_child',
+      arguments: {
+        session_index: metaResp.session_index,
+        workflow_id: 'work-package',
+        agent_id: 'worker-1',
+        planning_slug: slug,
+        repo: 'acme/app',
+      },
+    });
+    expect(child.isError).toBeFalsy();
+    const childResp = parseToolResponse(child);
+    expect(childResp.planning_slug).toBe(slug);
+
+    const promoted = join(engMulti, 'acme', 'app', 'artifacts', 'planning', slug);
+    expect(existsSync(join(promoted, 'session.json'))).toBe(true);
+    expect(childResp.planning_folder_path).toBe(promoted);
   });
 
   it('start_session with repo binds and dispatch_child promotes under engineering/owner/repo', async () => {
