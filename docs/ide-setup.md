@@ -10,15 +10,15 @@ For any start workflow, create work package, or resume work package request, cal
 If the user provides a `session_token`, pass it to subsequent workflow-server calls per their instructions.
 ```
 
-That is enough. `discover` returns the live bootstrap steps (schema fetch → `start_session` → `get_workflow`). Do not copy the protocol into IDE rules.
+That is enough. `discover` returns the live bootstrap steps (schema fetch → bind `repo` → `start_session` → `get_workflow`). Do not copy the protocol into IDE rules.
 
-When `discover` reports `session_scope: multi`, pass `repo: "owner/repo"` on `start_session` (from the user or workspace `AGENTS.md` / `CLAUDE.md`).
+Always pass `repo: "owner/repo"` on `start_session` (from the user or workspace `AGENTS.md` / `CLAUDE.md`). Agents do not special-case server topology.
 
 ## Verify
 
 1. Restart the MCP client.
 2. Ask to list workflows → `list_workflows`.
-3. Ask to start a work-package → `discover`, then the returned bootstrap (include `repo` when multi-root).
+3. Ask to start a work-package → `discover`, then the returned bootstrap (always include `repo`).
 
 If the agent skips `discover`, the rule is not loaded.
 

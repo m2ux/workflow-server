@@ -100,14 +100,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       description:
         'Start or resume the top-level workflow session. Returns `session_index`, workflow metadata, and canonical `planning_folder_path`. ' +
         'Pass `planning_folder` as an absolute path (basename = slug). ' +
-        'When the server is bound to an install multi-root, pass `repo` as owner/repo (from the user or workspace AGENTS.md) so planning lands under engineering/<owner>/<repo>/artifacts/planning/. ' +
+        'Always pass `repo` as owner/repo (from the user or workspace AGENTS.md) — stored on session.json#repo. ' +
         'Omit planning_folder for a transient meta bootstrap. Children use `dispatch_child`, not this tool. ' +
         '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for disposable workers.',
       inputSchema: z
         .object({
           workflow_id: z.string().optional().describe('Optional. Fresh-session workflow id (default "meta"). Ignored on resume.'),
           planning_folder: z.string().optional().describe('Optional. Absolute path; basename is the planning slug. Bare/relative paths rejected. Omit for transient meta bootstrap.'),
-          repo: z.string().optional().describe('Optional. Target owner/repo (or github URL). Required on install multi-root when creating a non-transient session; also accepted from planning_folder under engineering/<owner>/<repo>/….'),
+          repo: z.string().optional().describe('Target owner/repo (or github URL). Always pass when known; written to session.json#repo. Also accepted from planning_folder under …/<owner>/<repo>/….'),
           agent_id: z.string().default('orchestrator').describe('Agent identity stored on the session (default "orchestrator"). Use one canonical id for solo persistent walks.'),
           context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. "persistent" = reference delivery; ONLY for solo (same agent retains payloads). Omit/"fresh" for disposable workers. Resume overwrites recorded mode.'),
         })
@@ -369,16 +369,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         },
         session_index: sessionIndex,
         planning_slug: slug,
-        session_scope: sessionScope.mode,
       };
       if (state.planningFolderPath) response['planning_folder_path'] = state.planningFolderPath;
       // Echo the durable session binding (session.json#repo), not a path-only hint.
       if (state.repo) response['repo'] = state.repo;
-      // Fail-soft signal: multi-root transient without session.repo still boots, but
-      // dispatch_child promotion needs repo bound on the session (start_session or
-      // dispatch_child) before promote.
-      if (sessionScope.mode === 'multi' && isTransientSession && !state.repo) {
-        response['promotion_requires_repo'] = true;
+      // Fail-soft: transient without session.repo still boots; bind via start_session
+      // or dispatch_child before promote / durable path resolution needs it.
+      if (isTransientSession && !state.repo) {
+        response['repo_unbound'] = true;
       }
       if (state.contextMode) response['context_mode'] = state.contextMode;
       if (migrationResult.migrated) {
@@ -398,14 +396,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       description:
         'Dispatch a child workflow under the parent session. Returns the child `session_index` and canonical `planning_folder_path`. ' +
         'Transient meta parents are promoted to a workspace planning folder first (optional `planning_slug`). ' +
-        'On install multi-root, ensure `session.repo` is bound (pass `repo` here if start_session did not); promotion reads only session.json. ' +
+        'Ensure `session.repo` is bound (pass `repo` here if start_session did not); path resolution reads only session.json. ' +
         'Never set `context_mode: "persistent"` on disposable-worker children — workers need fresh/full delivery.',
       inputSchema: z.object({
         ...sessionIndexParam,
         workflow_id: z.string().describe('Child workflow id (e.g. "work-package").'),
         agent_id: z.string().default('worker').describe('Child agent_id (default "worker").'),
         planning_slug: z.string().optional().describe('Optional. Promotion slug when the parent is a transient meta bootstrap. Ignored if the parent is already persistent.'),
-        repo: z.string().optional().describe('Optional. Bind owner/repo onto the parent session when missing (must match if already set). Used for multi-root promotion; session.json is the source of truth.'),
+        repo: z.string().optional().describe('Bind owner/repo onto the parent session when missing (must match if already set). session.json#repo is the source of truth.'),
         context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. Child delivery mode. "persistent" ONLY for solo child walks; omit/"fresh" for disposable workers.'),
       }).strict(),
     },
@@ -423,8 +421,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const triggeredAt = new Date().toISOString();
 
       // Bind-if-missing on the parent session. session.json#repo is the single
-      // source of truth for multi-root promotion; dispatch_child.repo never
-      // overrides a prior bind.
+      // source of truth for path resolution / promotion; dispatch_child.repo
+      // never overrides a prior bind.
       let parentState = loaded.state;
       if (repo?.trim()) {
         try {
@@ -473,7 +471,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           } catch (err) {
             throw new Error(
               `dispatch_child: cannot promote transient session without session.repo. ` +
-                `Bind repo on start_session or pass repo on dispatch_child when the server uses an install multi-root. ` +
+                `Bind repo on start_session or pass repo on dispatch_child. ` +
                 `(${err instanceof Error ? err.message : String(err)})`,
             );
           }

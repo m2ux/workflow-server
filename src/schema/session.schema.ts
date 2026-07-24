@@ -134,11 +134,10 @@ const SessionFileBaseSchema = z.object({
   planningFolderPath: z.string().optional(),
 
   /**
-   * Target repository as `owner/repo` when this session is bound to a checkout
-   * under an install multi-root (or pinned for diagnostics on single-root).
-   * Single source of truth for promotion and planning path resolution —
-   * agents do not special-case multi vs single; they read/write this field
-   * via start_session / dispatch_child bind. Optional for back-compat.
+   * Target repository as `owner/repo`. Single source of truth for promotion
+   * and planning path resolution. Agents always bind this via start_session
+   * / dispatch_child (bind-if-missing); they do not special-case server
+   * topology. Optional only for back-compat with older session files.
    */
   repo: z.string().min(1).optional(),
 
@@ -272,7 +271,7 @@ export function createInitialSessionFile(args: {
   agentId: string;
   parentSession?: SessionFile;
   planningFolderPath?: string;
-  /** Target owner/repo bound on this session (install multi-root). */
+  /** Target owner/repo bound on this session (session.json SSOT). */
   repo?: string;
   contextMode?: 'persistent' | 'fresh';
   variables?: Record<string, unknown>;

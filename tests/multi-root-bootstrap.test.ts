@@ -12,7 +12,7 @@ function parseToolResponse(result: any): any {
   return JSON.parse(text);
 }
 
-describe('multi-root bootstrap binding', () => {
+describe('session.repo bootstrap binding', () => {
   let client: Client;
   let closeTransport: () => Promise<void>;
   let installDir: string;
@@ -59,36 +59,37 @@ describe('multi-root bootstrap binding', () => {
     }
   });
 
-  it('discover reports session_scope multi and repo_binding', async () => {
+  it('discover always requires repo_binding (no session_scope branching)', async () => {
     const result = await client.callTool({ name: 'discover', arguments: {} });
     expect(result.isError).toBeFalsy();
     const text = (result.content[0] as { type: 'text'; text: string }).text;
-    expect(text).toMatch(/session_scope:\s*multi/);
     expect(text).toMatch(/repo_binding:\s*required/);
     expect(text).toMatch(/repo:\s*"owner\/repo"/);
+    expect(text).not.toMatch(/session_scope:/);
   });
 
-  it('health_check reports session_scope multi', async () => {
+  it('health_check always reports repo_binding required', async () => {
     const result = await client.callTool({ name: 'health_check', arguments: {} });
     const health = parseToolResponse(result);
     expect(health.status).toBe('healthy');
-    expect(health.session_scope).toBe('multi');
     expect(health.repo_binding).toBe('required_on_start_session');
+    expect(health.session_scope).toBeUndefined();
   });
 
-  it('start_session without repo sets promotion_requires_repo on multi-root meta', async () => {
+  it('start_session without repo sets repo_unbound on transient meta', async () => {
     const result = await client.callTool({
       name: 'start_session',
       arguments: { workflow_id: 'meta', agent_id: 'orchestrator' },
     });
     expect(result.isError).toBeFalsy();
     const response = parseToolResponse(result);
-    expect(response.session_scope).toBe('multi');
-    expect(response.promotion_requires_repo).toBe(true);
+    expect(response.repo_unbound).toBe(true);
     expect(response.repo).toBeUndefined();
+    expect(response.session_scope).toBeUndefined();
+    expect(response.promotion_requires_repo).toBeUndefined();
   });
 
-  it('dispatch_child fails without session.repo on multi-root', async () => {
+  it('dispatch_child fails without session.repo', async () => {
     const meta = await client.callTool({
       name: 'start_session',
       arguments: { workflow_id: 'meta', agent_id: 'orchestrator' },
@@ -111,16 +112,13 @@ describe('multi-root bootstrap binding', () => {
   });
 
   it('dispatch_child binds repo onto session.json when start_session omitted it', async () => {
-    // Mirrors initialize-session: orchestrator started multi-root meta without
-    // repo; the activity worker has owner/repo from prior-state / prompt and
-    // binds it on dispatch_child. session.json is the source of truth.
     const meta = await client.callTool({
       name: 'start_session',
       arguments: { workflow_id: 'meta', agent_id: 'orchestrator' },
     });
     expect(meta.isError).toBeFalsy();
     const metaResp = parseToolResponse(meta);
-    expect(metaResp.promotion_requires_repo).toBe(true);
+    expect(metaResp.repo_unbound).toBe(true);
 
     const slug = '2026-07-24-worker-repo';
     const child = await client.callTool({
@@ -157,9 +155,8 @@ describe('multi-root bootstrap binding', () => {
     });
     expect(meta.isError).toBeFalsy();
     const metaResp = parseToolResponse(meta);
-    expect(metaResp.session_scope).toBe('multi');
     expect(metaResp.repo).toBe('acme/app');
-    expect(metaResp.promotion_requires_repo).toBeUndefined();
+    expect(metaResp.repo_unbound).toBeUndefined();
 
     const slug = '2026-07-24-with-repo';
     const child = await client.callTool({
