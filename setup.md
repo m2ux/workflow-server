@@ -9,7 +9,7 @@ Connect an MCP client (Cursor, Claude Desktop, or compatible) to workflow-server
 | **Docker / HTTP** | Run the GHCR image; no server source checkout | [http.md](http.md) |
 | **stdio** | IDE spawns `node dist/index.js` from a local checkout | [stdio.md](stdio.md) |
 
-### Install root
+### Installed root paths
 
 | Path | Default | Purpose |
 |------|---------|---------|
@@ -18,9 +18,8 @@ Connect an MCP client (Cursor, Claude Desktop, or compatible) to workflow-server
 | **Engineering** | `$INSTALL/engineering` | Per-repo engineering checkouts (planning / sessions) |
 | **Workflows** | `$INSTALL/workflows` | Workflow definitions (`workflows` branch) |
 
-Created by [`scripts/install.sh`](scripts/install.sh). Override roots with `--install-dir`, `--worktree-root`, `--engineering-root` (see `install.sh --help`).
 
-Legacy single-root: bind one path with `--workspace` / `WORKFLOW_WORKSPACE` and keep planning under `<workspace>/.engineering/…` (no split engineering dir).
+> Override roots with `--install-dir`, `--worktree-root`, `--engineering-root` (see `install.sh --help`).
 
 ## 2. Init a target repo
 
@@ -34,8 +33,6 @@ That creates:
 
 - `$INSTALL/engineering/<owner>/<repo>/` — engineering checkout (planning / session state)
 - `$INSTALL/workspace/<owner>/<repo>/` — feature worktrees
-
-Bind the server with `--repo=owner/repo` or `WORKFLOW_SERVER_REPO` (see [docs/development.md](docs/development.md#environment-variables)).
 
 Alternatively, from a **project repo root**, [`scripts/deploy.sh`](scripts/deploy.sh) can create an in-tree `.engineering/` for legacy `--workspace` binding.
 
