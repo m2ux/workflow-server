@@ -25,25 +25,25 @@ List of files to stage and commit
 
 Engineering branch to push to
 
-### reference_path
+### repo_root
 
-Path to the reference checkout (the engineering / parent repo where planning artifacts live), in which all staging, commit, rebase, and push operations run.
+Path to the repo root (monorepo or standalone checkout where planning artifacts live), in which all staging, commit, rebase, and push operations run.
 
 ## Outputs
 
 ### artifact_commit
 
-The artifact commit pushed to `{branch}` on `origin` in `{reference_path}`, carrying the canonical `docs(work-package): {activity_name} artifacts for {issue_key}` message and rebased onto sibling work-package commits. A side-effect op; the pushed commit is its product.
+The artifact commit pushed to `{branch}` on `origin` in `{repo_root}`, carrying the canonical `docs(work-package): {activity_name} artifacts for {issue_key}` message and rebased onto sibling work-package commits. A side-effect op; the pushed commit is its product.
 
 ## Protocol
 
 ### 1. Commit Artifacts
 
-- Stage the artifact files: `git -C {reference_path} add {files}`.
+- Stage the artifact files: `git -C {repo_root} add {files}`.
 - Commit with the canonical pattern: `git commit -m "docs(work-package): {activity_name} artifacts for {issue_key}"`. Whether commits are GPG-signed is governed by the user's local git config — do NOT impose `--no-gpg-sign` or `--gpg-sign` overrides.
 
 ### 2. Rebase and Push
 
-- BEFORE every push, integrate sibling work-package commits onto the same engineering branch: `git -C {reference_path} pull --rebase origin {branch}`. Without this, two work packages running in parallel on the same monorepo will produce non-fast-forward push rejections and halt mid-flow. The rebase is cheap because each work package writes only to its own planning subfolder, so conflicts are rare.
-- Push: `git -C {reference_path} push origin {branch}`.
+- BEFORE every push, integrate sibling work-package commits onto the same engineering branch: `git -C {repo_root} pull --rebase origin {branch}`. Without this, two work packages running in parallel on the same monorepo will produce non-fast-forward push rejections and halt mid-flow. The rebase is cheap because each work package writes only to its own planning subfolder, so conflicts are rare.
+- Push: `git -C {repo_root} push origin {branch}`.
 - If the push is still rejected (race with a sibling that pushed between our rebase and our push), retry the `pull --rebase` + `push` cycle once.

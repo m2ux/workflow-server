@@ -70,13 +70,13 @@ techniques:
 variables:
   - name: target_path
     type: string
-    description: Path to the working directory where edits, branch creation, builds, and PR operations occur. A dedicated git worktree of the component repo — not the reference checkout. Under the install layout this is <install-root>/worktrees/<owner>/<repo>/<wp-slug>/; otherwise a personal path such as ~/projects/work/<component_name>/<wp-slug>/. Set by start-work-package's compute-canonical-target-path step after the work-package slug is known. Downstream activities operate on this path.
-  - name: reference_path
+    description: Path to the working directory where edits, branch creation, builds, and PR operations occur. A dedicated git worktree of the component repo — not the repo root. Under the install layout this is <install-root>/worktrees/<owner>/<repo>/<wp-slug>/; otherwise a personal path such as ~/projects/work/<component_name>/<wp-slug>/. Set by start-work-package's compute-canonical-target-path step after the work-package slug is known. Downstream activities operate on this path.
+  - name: repo_root
     type: string
-    description: Path to the reference checkout used for codebase comprehension, GitNexus indexing, code-resolvable assumption analysis, and git worktree add. When the component is a submodule of a monorepo, this is the monorepo root; when standalone, the component's primary checkout. Under the install layout this is typically <install-root>/projects/<owner>/<repo>. NOT used for edits — edits happen in target_path. Resolved by start-work-package's resolve-target step from the path the user originally pointed at. No default — absence drives the start-work-package exists gate on reference-dependent steps.
+    description: Path to the repo root used for codebase comprehension, GitNexus indexing, code-resolvable assumption analysis, and git worktree add. When the component is a submodule of a monorepo, this is the monorepo root; when standalone, the component's primary checkout. Under the install layout this is typically <install-root>/projects/<owner>/<repo>. NOT used for edits — edits happen in target_path. Resolved by start-work-package's resolve-repo-root step from the path the user originally pointed at. No default — absence drives the start-work-package exists gate on repo-root-dependent steps.
   - name: component_name
     type: string
-    description: Basename of the component being worked on (e.g., 'midnight-node'). When the reference is a monorepo, this is the submodule directory name; when standalone, the basename of reference_path. Used in the personal-layout worktree path formula when the install layout is not detected from planning_folder_path.
+    description: Basename of the component being worked on (e.g., 'midnight-node'). When the repo root is a monorepo, this is the submodule directory name; when standalone, the basename of repo_root. Used in the personal-layout worktree path formula when the install layout is not detected from planning_folder_path.
     defaultValue: ""
   - name: worktree_created
     type: boolean
@@ -459,8 +459,7 @@ variables:
     defaultValue: false
   - name: gitnexus_indexed
     type: boolean
-    description: Whether reference_path has a usable GitNexus index (gates GitNexus-dependent steps and protocol phases).
-    defaultValue: false
+    description: Whether repo_root has a usable GitNexus index. Set by start-work-package's analyze-repo-with-gitnexus step. Gates GitNexus-dependent steps and protocol phases across the workflow (e.g., post-impl-review's gitnexus-detect-changes-preflight step, implement-task's pre-edit-impact-check / post-edit-verification phases).    defaultValue: false
   - name: problem_type
     type: string
     description: Problem or inventive-goal classification (e.g. defect, inventive-improvement).
@@ -470,7 +469,7 @@ variables:
     defaultValue: ""
   - name: discovered_path
     type: string
-    description: Path the user originally pointed at; resolved by reference-resolution into reference_path/component_name.
+    description: Path the user originally pointed at; resolved by repo-root-resolution into repo_root/component_name.
   - name: issue_title
     type: string
     description: Tracker issue/ticket title; used by naming-conventions to derive the branch name.

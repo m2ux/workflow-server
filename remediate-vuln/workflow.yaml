@@ -27,12 +27,12 @@ variables:
   - name: target_path
     type: string
     description: Path to the private checkout where edits, branch creation, builds, and pushes happen. All git operations run inside this directory; every push targets the 'security' remote. Resolved during start.
-  - name: reference_path
+  - name: repo_root
     type: string
-    description: Path used for codebase comprehension and code-resolvable assumption analysis by the shared work-package activities. In this workflow the fix develops directly in the private checkout, so start's resolve-reference step sets it to target_path.
+    description: Path used for codebase comprehension and code-resolvable assumption analysis by the shared work-package activities. In this workflow the fix develops directly in the private checkout, so start's resolve-repo-root step sets repo_root to target_path.
   - name: component_name
     type: string
-    description: Basename of the component under remediation, derived from target_path by start's resolve-reference step. Read by shared activities that name the component in artifacts and messages.
+    description: Basename of the component under remediation, derived from target_path by start's resolve-repo-root step. Read by shared activities that name the component in artifacts and messages.
     defaultValue: ""
   - name: planning_folder_path
     type: string
@@ -215,7 +215,7 @@ variables:
     defaultValue: false
   - name: gitnexus_indexed
     type: boolean
-    description: Whether reference_path has a usable GitNexus index. This workflow does not index the reference (kept false), so GitNexus-dependent steps in shared activities gate out.
+    description: Whether repo_root has a usable GitNexus index. This workflow does not index the repo root (kept false), so GitNexus-dependent steps in shared activities gate out.
     defaultValue: false
   - name: prism_artifact_paths
     type: array

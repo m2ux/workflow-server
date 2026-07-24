@@ -5,20 +5,20 @@ metadata:
 
 ## Capability
 
-Git operations supporting work-package delivery — worktrees, path restore from a base ref, edit-side commits, branch sync, and pre-push destination/signature checks.
+Git operations supporting work-package delivery — worktrees, path restore from a base ref, edit-side commits, branch sync, repo-root submodule maintenance, and pre-push destination/signature checks.
 
 ## Inputs
 
-### reference_path
+### repo_root
 
-Path to the reference checkout (the engineering / parent repo where planning artifacts and submodule references live)
+Path to the repo root (monorepo or standalone checkout — planning artifacts and submodules live here when applicable)
 
 
 ## Rules
 
 ### directory-scope
 
-Edit-side git operations (branch, PR, sync, push) run inside `{target_path}`. Reference-side git operations (submodule update, artifact commits) run inside `{reference_path}`. Branches and PRs are created against the target's upstream.
+Edit-side git operations (branch, PR, sync, push) run inside `{target_path}`. Repo-root git operations (submodule update, artifact commits) run inside `{repo_root}`. Branches and PRs are created against the target's upstream.
 
 ### code-commit-coauthor-trailer
 

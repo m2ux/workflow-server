@@ -41,7 +41,7 @@ Derived feature branch name `{type}/{issue_number}-{slugified-title}`. In review
 
 ### target_path
 
-Canonical feature-worktree path, distinct from `{planning_folder_path}` and from `{reference_path}`:
+Canonical feature-worktree path, distinct from `{planning_folder_path}` and from `{repo_root}`:
 
 - **Install layout** — when `{planning_folder_path}` sits under `projects/<owner>/<repo>/.engineering/artifacts/planning/<slug>`:  
   `<install-root>/worktrees/<owner>/<repo>/<slug>/`
@@ -58,7 +58,7 @@ Canonical feature-worktree path, distinct from `{planning_folder_path}` and from
 6. Set `{target_path}` from `{planning_folder_path}`:
    - When `{planning_folder_path}` matches `…/projects/<owner>/<repo>/.engineering/artifacts/planning/{$wp_slug}`, take the install root as the ancestor above `projects/` and set `{target_path}` to `<install-root>/worktrees/<owner>/<repo>/{$wp_slug}/`.
    - Otherwise set `{target_path}` to `~/projects/work/{component_name}/{$wp_slug}/`.
-   From this point on, "inside `{target_path}`" refers to this worktree (not the component checkout used as the reference). Never place `{target_path}` under `{planning_folder_path}` or under `{reference_path}`.
+   From this point on, "inside `{target_path}`" refers to this worktree (not the checkout at `{repo_root}`). Never place `{target_path}` under `{planning_folder_path}` or under `{repo_root}`.
 
 ## Rules
 
