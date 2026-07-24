@@ -5,11 +5,6 @@ import { createServer } from '../src/server.js';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
-import {
-  lookupTransientRepoByFolder,
-  registerTransient,
-  createTransientFolder,
-} from '../src/utils/session/store.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseToolResponse(result: any): any {
@@ -93,7 +88,7 @@ describe('multi-root bootstrap binding', () => {
     expect(response.repo).toBeUndefined();
   });
 
-  it('dispatch_child fails without a stashed or explicit repo on multi-root', async () => {
+  it('dispatch_child fails without session.repo on multi-root', async () => {
     const meta = await client.callTool({
       name: 'start_session',
       arguments: { workflow_id: 'meta', agent_id: 'orchestrator' },
@@ -111,14 +106,14 @@ describe('multi-root bootstrap binding', () => {
     });
     expect(child.isError).toBeTruthy();
     const text = (child.content as { text: string }[])[0]?.text ?? '';
-    expect(text).toMatch(/cannot promote transient session without a target repo/i);
-    expect(text).toMatch(/Pass repo on dispatch_child/i);
+    expect(text).toMatch(/cannot promote transient session without session\.repo/i);
+    expect(text).toMatch(/Bind repo on start_session or pass repo on dispatch_child/i);
   });
 
-  it('dispatch_child accepts repo when start_session omitted it (worker path)', async () => {
+  it('dispatch_child binds repo onto session.json when start_session omitted it', async () => {
     // Mirrors initialize-session: orchestrator started multi-root meta without
     // repo; the activity worker has owner/repo from prior-state / prompt and
-    // must be able to pass it on dispatch_child.
+    // binds it on dispatch_child. session.json is the source of truth.
     const meta = await client.callTool({
       name: 'start_session',
       arguments: { workflow_id: 'meta', agent_id: 'orchestrator' },
@@ -145,9 +140,13 @@ describe('multi-root bootstrap binding', () => {
     const promoted = join(engMulti, 'acme', 'app', 'artifacts', 'planning', slug);
     expect(existsSync(join(promoted, 'session.json'))).toBe(true);
     expect(childResp.planning_folder_path).toBe(promoted);
+
+    const stored = JSON.parse(readFileSync(join(promoted, 'session.json'), 'utf8'));
+    expect(stored.repo).toBe('acme/app');
+    expect(stored.triggeredWorkflows[0].state.repo).toBe('acme/app');
   });
 
-  it('start_session with repo binds and dispatch_child promotes under engineering/owner/repo', async () => {
+  it('start_session with repo binds session.json and dispatch_child promotes under engineering/owner/repo', async () => {
     const meta = await client.callTool({
       name: 'start_session',
       arguments: {
@@ -182,19 +181,36 @@ describe('multi-root bootstrap binding', () => {
 
     const stored = JSON.parse(readFileSync(join(promoted, 'session.json'), 'utf8'));
     expect(stored.workflowId).toBe('meta');
+    expect(stored.repo).toBe('acme/app');
     expect(stored.triggeredWorkflows).toHaveLength(1);
     expect(stored.triggeredWorkflows[0].workflowId).toBe('work-package');
+    expect(stored.triggeredWorkflows[0].state.repo).toBe('acme/app');
   });
-});
 
-describe('transient repo stash helpers', () => {
-  it('registerTransient stores and lookupTransientRepoByFolder returns repo', async () => {
-    const folder = await createTransientFolder();
-    try {
-      registerTransient('ABC234', folder, undefined, 'acme/app');
-      expect(lookupTransientRepoByFolder(folder)).toBe('acme/app');
-    } finally {
-      rmSync(folder, { recursive: true, force: true });
-    }
+  it('dispatch_child rejects repo that conflicts with session.repo', async () => {
+    const meta = await client.callTool({
+      name: 'start_session',
+      arguments: {
+        workflow_id: 'meta',
+        agent_id: 'orchestrator',
+        repo: 'acme/app',
+      },
+    });
+    const metaIdx = parseToolResponse(meta).session_index;
+
+    const child = await client.callTool({
+      name: 'dispatch_child',
+      arguments: {
+        session_index: metaIdx,
+        workflow_id: 'work-package',
+        agent_id: 'worker-1',
+        planning_slug: '2026-07-24-conflict',
+        repo: 'other/repo',
+      },
+    });
+    expect(child.isError).toBeTruthy();
+    const text = (child.content as { text: string }[])[0]?.text ?? '';
+    expect(text).toMatch(/already bound to repo 'acme\/app'/i);
+    expect(text).toMatch(/cannot rebind to 'other\/repo'/i);
   });
 });

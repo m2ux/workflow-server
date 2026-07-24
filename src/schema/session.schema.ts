@@ -134,6 +134,15 @@ const SessionFileBaseSchema = z.object({
   planningFolderPath: z.string().optional(),
 
   /**
+   * Target repository as `owner/repo` when this session is bound to a checkout
+   * under an install multi-root (or pinned for diagnostics on single-root).
+   * Single source of truth for promotion and planning path resolution —
+   * agents do not special-case multi vs single; they read/write this field
+   * via start_session / dispatch_child bind. Optional for back-compat.
+   */
+  repo: z.string().min(1).optional(),
+
+  /**
    * Declared context model for payload delivery. `persistent` opts the
    * session into reference-not-repeat delivery: composed bundle content and
    * technique payloads already delivered to this session+agent are replaced
@@ -182,6 +191,7 @@ export interface SessionFile {
   triggeredWorkflows: EmbeddedSessionRef[];
   parentSession?: SessionFile;
   planningFolderPath?: string;
+  repo?: string;
   contextMode?: 'persistent' | 'fresh';
   deliveredContent?: Record<string, Record<string, string>>;
 }
@@ -262,6 +272,8 @@ export function createInitialSessionFile(args: {
   agentId: string;
   parentSession?: SessionFile;
   planningFolderPath?: string;
+  /** Target owner/repo bound on this session (install multi-root). */
+  repo?: string;
   contextMode?: 'persistent' | 'fresh';
   variables?: Record<string, unknown>;
 }): SessionFile {
@@ -297,6 +309,30 @@ export function createInitialSessionFile(args: {
   };
   if (args.parentSession) file.parentSession = args.parentSession;
   if (args.planningFolderPath) file.planningFolderPath = args.planningFolderPath;
+  if (args.repo) file.repo = args.repo;
   if (args.contextMode) file.contextMode = args.contextMode;
   return file;
+}
+
+/**
+ * Bind `owner/repo` onto a session. Idempotent when the session already has
+ * the same repo; rejects a conflicting rebind. Empty/undefined input is a no-op.
+ */
+export function bindSessionRepo(
+  state: SessionFile,
+  repoRaw: string | undefined,
+  normalize: (raw: string) => string,
+): SessionFile {
+  const trimmed = repoRaw?.trim();
+  if (!trimmed) return state;
+  const repo = normalize(trimmed);
+  if (state.repo) {
+    if (state.repo !== repo) {
+      throw new Error(
+        `session already bound to repo '${state.repo}'; cannot rebind to '${repo}'`,
+      );
+    }
+    return state;
+  }
+  return { ...state, repo };
 }

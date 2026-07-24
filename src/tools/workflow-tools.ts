@@ -144,7 +144,7 @@ const HISTORY_MILESTONE_TYPES = new Set([
 
 /** Identity projection: the stable header fields identifying the session. */
 export function projectIdentity(s: SessionFile): Record<string, unknown> {
-  return {
+  const out: Record<string, unknown> = {
     workflowId: s.workflowId,
     workflowVersion: s.workflowVersion,
     sessionIndex: s.sessionIndex,
@@ -155,6 +155,9 @@ export function projectIdentity(s: SessionFile): Record<string, unknown> {
     startedAt: s.startedAt,
     seq: s.seq,
   };
+  if (s.repo) out['repo'] = s.repo;
+  if (s.planningFolderPath) out['planningFolderPath'] = s.planningFolderPath;
+  return out;
 }
 
 /** Checkpoint projection: each response reduced to option, timestamp, and any variables it set. */

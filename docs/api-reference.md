@@ -32,8 +32,8 @@ Most tools take a `session_index` from `start_session`. Bootstrap tools do not. 
 
 | Tool | Parameters | Returns | Description |
 |------|------------|---------|-------------|
-| `start_session` | `agent_id`, `workflow_id?`, `planning_folder?`, `repo?`, `context_mode?` | `session_index`, planning path, workflow info, `session_scope`, optional `repo` / `promotion_requires_repo` | Open or resume a top-level session (default workflow: `meta`). On install multi-root pass `repo: "owner/repo"` (from user or workspace `AGENTS.md`). [State](state_management_model.md) · [Reference delivery](resource_resolution_model.md#11-reference-delivery) |
-| `dispatch_child` | `session_index`, `workflow_id`, `agent_id?`, `planning_slug?`, `repo?`, `context_mode?` | Child `session_index` | Start a nested workflow under the current session. On multi-root, `repo` promotes a transient parent when `start_session` omitted it. [Dispatch](dispatch_model.md) |
+| `start_session` | `agent_id`, `workflow_id?`, `planning_folder?`, `repo?`, `context_mode?` | `session_index`, planning path, workflow info, `session_scope`, optional `repo` / `promotion_requires_repo` | Open or resume a top-level session (default workflow: `meta`). On install multi-root pass `repo: "owner/repo"` — written to `session.json#repo` (single source of truth for promotion). [State](state_management_model.md) · [Reference delivery](resource_resolution_model.md#11-reference-delivery) |
+| `dispatch_child` | `session_index`, `workflow_id`, `agent_id?`, `planning_slug?`, `repo?`, `context_mode?` | Child `session_index` | Start a nested workflow under the current session. Promotion reads only `session.repo`; optional `repo` binds if missing (must match if set). [Dispatch](dispatch_model.md) |
 | `get_workflow_status` | `session_index` | Status, current/completed activities, checkpoint hint | Snapshot of where the session is. |
 | `inspect_session` | `session_index`, `view?`, `child_index?`, `variable?` | Compact projection | Read-only view of session state (usable while blocked). |
 

@@ -692,8 +692,6 @@ export async function ensurePlanningFolder(
 const TRANSIENT_DIR_PREFIX = 'workflow-server-transient-';
 const transientFolderByIndex = new Map<string, string>();
 const transientFolderBySlug = new Map<string, string>();
-/** Optional owner/repo attached at start_session for multi-root promotion. */
-const transientRepoByFolder = new Map<string, string>();
 
 /** Create a fresh transient planning folder under `os.tmpdir()`. */
 export async function createTransientFolder(): Promise<string> {
@@ -707,16 +705,9 @@ export function registerTransient(
   sessionIndex: string,
   folder: string,
   slug?: string,
-  repo?: string,
 ): void {
   transientFolderByIndex.set(sessionIndex, folder);
   if (slug) transientFolderBySlug.set(slug, folder);
-  if (repo) transientRepoByFolder.set(folder, repo);
-}
-
-/** Repo hint recorded for a transient folder at start_session (multi-root). */
-export function lookupTransientRepoByFolder(folder: string): string | undefined {
-  return transientRepoByFolder.get(folder);
 }
 
 /** Look up a transient folder by the slug it was registered under. */
@@ -760,9 +751,6 @@ export async function redirectTransientToWorkspace(
   for (const [slug, f] of transientFolderBySlug.entries()) {
     if (f === oldFolder) transientFolderBySlug.delete(slug);
   }
-  const repo = transientRepoByFolder.get(oldFolder);
-  transientRepoByFolder.delete(oldFolder);
-  if (repo) transientRepoByFolder.set(newFolder, repo);
   try {
     await rm(oldFolder, { recursive: true, force: true });
   } catch {
