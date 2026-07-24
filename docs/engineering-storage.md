@@ -20,7 +20,7 @@ Best when a single product repo owns its engineering history.
 
 1. Run `./deploy.sh` (or `./deploy.sh --orphan`) from the app root.
 2. Creates orphan branch `engineering` on the app remote and adds `.engineering` as a submodule on the default branch.
-3. `init-repo.sh owner/repo` checks out that engineering content under `$INSTALL/engineering/<owner>/<repo>/`.
+3. `init-repo.sh owner/repo` clones the app under `$INSTALL/projects/<owner>/<repo>/` and materialises engineering at `projects/<owner>/<repo>/.engineering/`.
 
 ### Shared engineering monorepo
 

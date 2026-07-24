@@ -21,9 +21,9 @@ describe('session.repo bootstrap binding', () => {
 
   beforeAll(async () => {
     installDir = mkdtempSync(join(tmpdir(), 'wf-multi-boot-'));
-    engMulti = join(installDir, 'engineering');
-    wsMulti = join(installDir, 'workspace');
-    mkdirSync(join(engMulti, 'acme', 'app'), { recursive: true });
+    engMulti = join(installDir, 'projects');
+    wsMulti = join(installDir, 'worktrees');
+    mkdirSync(join(engMulti, 'acme', 'app', '.engineering'), { recursive: true });
     mkdirSync(join(wsMulti, 'acme', 'app'), { recursive: true });
 
     const config = {
@@ -135,7 +135,7 @@ describe('session.repo bootstrap binding', () => {
     const childResp = parseToolResponse(child);
     expect(childResp.planning_slug).toBe(slug);
 
-    const promoted = join(engMulti, 'acme', 'app', 'artifacts', 'planning', slug);
+    const promoted = join(engMulti, 'acme', 'app', '.engineering', 'artifacts', 'planning', slug);
     expect(existsSync(join(promoted, 'session.json'))).toBe(true);
     expect(childResp.planning_folder_path).toBe(promoted);
 
@@ -144,7 +144,7 @@ describe('session.repo bootstrap binding', () => {
     expect(stored.triggeredWorkflows[0].state.repo).toBe('acme/app');
   });
 
-  it('start_session with repo binds session.json and dispatch_child promotes under engineering/owner/repo', async () => {
+  it('start_session with repo binds session.json and dispatch_child promotes under projects/owner/repo/.engineering', async () => {
     const meta = await client.callTool({
       name: 'start_session',
       arguments: {
@@ -172,7 +172,7 @@ describe('session.repo bootstrap binding', () => {
     const childResp = parseToolResponse(child);
     expect(childResp.planning_slug).toBe(slug);
 
-    const promoted = join(engMulti, 'acme', 'app', 'artifacts', 'planning', slug);
+    const promoted = join(engMulti, 'acme', 'app', '.engineering', 'artifacts', 'planning', slug);
     expect(existsSync(join(promoted, 'session.json'))).toBe(true);
     expect(childResp.planning_folder_path).toBe(promoted);
 

@@ -3,8 +3,8 @@
 # Safe to re-run: preserves unknown keys; overwrites known path keys with
 # values derived from the install layout (and optional flags).
 #
-# Defaults match scripts/install.sh + docker-compose.yml:
-#   $INSTALL/{workspace,engineering,state,workflows}
+# Defaults match scripts/install.sh + start.sh:
+#   $INSTALL/{worktrees,projects,state,workflows}
 #   container targets under /var/lib/workflow-server/...
 set -euo pipefail
 
@@ -14,8 +14,8 @@ EXAMPLE="${ROOT}/.env.example"
 
 DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
 INSTALL_DEFAULT="${WORKFLOW_SERVER_INSTALL_DIR:-$DEFAULT_INSTALL_DIR}"
-WORKSPACE_DEFAULT="${WORKFLOW_WORKSPACE:-${HOST_WORKTREE_ROOT:-}}"
-ENGINEERING_DEFAULT="${WORKFLOW_SERVER_ENGINEERING_DIR:-${HOST_ENGINEERING_ROOT:-}}"
+WORKTREE_DEFAULT="${HOST_WORKTREE_ROOT:-${WORKFLOW_WORKSPACE:-${WORKTREE_ROOT:-}}}"
+PROJECTS_DEFAULT="${HOST_PROJECTS_ROOT:-${WORKFLOW_SERVER_ENGINEERING_DIR:-}}"
 REPO_DEFAULT="${WORKFLOW_SERVER_REPO:-}"
 
 usage() {
@@ -23,8 +23,8 @@ usage() {
 Usage: $(basename "$0") [options]
 
   --install-dir=PATH     Install root (default: ${DEFAULT_INSTALL_DIR})
-  --workspace=PATH       Workspace root (default: \$INSTALL/workspace)
-  --engineering=PATH     Engineering root (default: \$INSTALL/engineering)
+  --worktree-root=PATH   Feature worktrees root (default: \$INSTALL/worktrees)
+  --projects-root=PATH   Projects multi-root (default: \$INSTALL/projects)
   --repo=owner/repo      Optional WORKFLOW_SERVER_REPO for init-repo layout
   --force                Overwrite an existing .env from .env.example first
   -h, --help             Show this help
@@ -38,10 +38,10 @@ while [[ $# -gt 0 ]]; do
   case "$1" in
     --install-dir=*) INSTALL_DEFAULT="${1#*=}"; shift ;;
     --install-dir) INSTALL_DEFAULT="${2:?}"; shift 2 ;;
-    --workspace=*) WORKSPACE_DEFAULT="${1#*=}"; shift ;;
-    --workspace) WORKSPACE_DEFAULT="${2:?}"; shift 2 ;;
-    --engineering=*) ENGINEERING_DEFAULT="${1#*=}"; shift ;;
-    --engineering) ENGINEERING_DEFAULT="${2:?}"; shift 2 ;;
+    --worktree-root=*) WORKTREE_DEFAULT="${1#*=}"; shift ;;
+    --worktree-root) WORKTREE_DEFAULT="${2:?}"; shift 2 ;;
+    --projects-root=*) PROJECTS_DEFAULT="${1#*=}"; shift ;;
+    --projects-root) PROJECTS_DEFAULT="${2:?}"; shift 2 ;;
     --repo=*) REPO_DEFAULT="${1#*=}"; shift ;;
     --repo) REPO_DEFAULT="${2:?}"; shift 2 ;;
     --force) FORCE=1; shift ;;
@@ -99,14 +99,14 @@ ensure_dir() {
 }
 
 INSTALL_DEFAULT="$(expand_path "$INSTALL_DEFAULT")"
-if [[ -z "$WORKSPACE_DEFAULT" ]]; then
-  WORKSPACE_DEFAULT="${INSTALL_DEFAULT}/workspace"
+if [[ -z "$WORKTREE_DEFAULT" ]]; then
+  WORKTREE_DEFAULT="${INSTALL_DEFAULT}/worktrees"
 fi
-if [[ -z "$ENGINEERING_DEFAULT" ]]; then
-  ENGINEERING_DEFAULT="${INSTALL_DEFAULT}/engineering"
+if [[ -z "$PROJECTS_DEFAULT" ]]; then
+  PROJECTS_DEFAULT="${INSTALL_DEFAULT}/projects"
 fi
-WORKSPACE_DEFAULT="$(expand_path "$WORKSPACE_DEFAULT")"
-ENGINEERING_DEFAULT="$(expand_path "$ENGINEERING_DEFAULT")"
+WORKTREE_DEFAULT="$(expand_path "$WORKTREE_DEFAULT")"
+PROJECTS_DEFAULT="$(expand_path "$PROJECTS_DEFAULT")"
 STATE_DIR="${INSTALL_DEFAULT}/state"
 
 # Prefer checkout workflows/schemas when present (dev compose from repo root).
@@ -122,25 +122,27 @@ else
 fi
 
 ensure_dir "$INSTALL_DEFAULT" "install dir"
-ensure_dir "$WORKSPACE_DEFAULT" "workspace root"
-ensure_dir "$ENGINEERING_DEFAULT" "engineering root"
+ensure_dir "$WORKTREE_DEFAULT" "worktrees root"
+ensure_dir "$PROJECTS_DEFAULT" "projects root"
 ensure_dir "$STATE_DIR" "state dir (HMAC key)"
 
 upsert WORKFLOW_SERVER_MCP_URL "http://127.0.0.1:3000/mcp"
 upsert WORKFLOW_SERVER_INSTALL_DIR "${INSTALL_DEFAULT}"
-upsert WORKFLOW_WORKSPACE "${WORKSPACE_DEFAULT}"
-upsert WORKFLOW_SERVER_ENGINEERING_DIR "${ENGINEERING_DEFAULT}"
+upsert WORKFLOW_WORKSPACE "${WORKTREE_DEFAULT}"
+upsert WORKTREE_ROOT "${WORKTREE_DEFAULT}"
+upsert WORKFLOW_SERVER_ENGINEERING_DIR "${PROJECTS_DEFAULT}"
 upsert WORKFLOW_DIR "${WORKFLOWS_ABS}"
 upsert SCHEMAS_DIR "${SCHEMAS_ABS}"
-upsert HOST_WORKTREE_ROOT "${WORKSPACE_DEFAULT}"
-upsert HOST_ENGINEERING_ROOT "${ENGINEERING_DEFAULT}"
+upsert HOST_WORKTREE_ROOT "${WORKTREE_DEFAULT}"
+upsert HOST_PROJECTS_ROOT "${PROJECTS_DEFAULT}"
 upsert HOST_STATE_DIR "${STATE_DIR}"
 upsert HOST_WORKFLOWS_DIR "${WORKFLOWS_ABS}"
 upsert HOST_SCHEMAS_DIR "${SCHEMAS_ABS}"
 upsert HOST_PORT "3000"
 upsert CONTAINER_INSTALL_DIR "/var/lib/workflow-server"
-upsert CONTAINER_WORKTREE_ROOT "/var/lib/workflow-server/workspace"
-upsert CONTAINER_ENGINEERING_ROOT "/var/lib/workflow-server/engineering"
+upsert CONTAINER_WORKTREE_ROOT "/var/lib/workflow-server/worktrees"
+upsert CONTAINER_PROJECTS_ROOT "/var/lib/workflow-server/projects"
+upsert CONTAINER_ENGINEERING_ROOT "/var/lib/workflow-server/projects"
 upsert CONTAINER_STATE_DIR "/var/lib/workflow-server/state"
 upsert CONTAINER_WORKFLOW_DIR "/app/workflows"
 upsert CONTAINER_SCHEMAS_DIR "/app/schemas"
@@ -163,8 +165,8 @@ fi
 
 echo "Wrote local env → ${ENV_FILE}"
 echo "  WORKFLOW_SERVER_INSTALL_DIR=${INSTALL_DEFAULT}"
-echo "  WORKFLOW_WORKSPACE=${WORKSPACE_DEFAULT}"
-echo "  WORKFLOW_SERVER_ENGINEERING_DIR=${ENGINEERING_DEFAULT}"
+echo "  HOST_WORKTREE_ROOT=${WORKTREE_DEFAULT}"
+echo "  HOST_PROJECTS_ROOT=${PROJECTS_DEFAULT}"
 echo "  HOST_STATE_DIR=${STATE_DIR}"
 echo "  WORKFLOW_DIR=${WORKFLOWS_ABS}"
 if [[ -n "$REPO_DEFAULT" ]]; then

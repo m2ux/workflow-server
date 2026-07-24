@@ -10,14 +10,14 @@ Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, day-two)
 
 ## 1. Install host layout
 
-Fetches helper scripts, clones the `workflows` branch, creates `engineering/`,
-`workspace/`, and `state/` (HMAC key), writes `$INSTALL/env`:
+Fetches helper scripts, clones the `workflows` branch, creates `projects/`,
+`worktrees/`, and `state/` (HMAC key), writes `$INSTALL/env`:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
 ```
 
-> Options: `install.sh --help` (`--install-dir`, `--worktree-root`, `--engineering-root`, …).  
+> Options: `install.sh --help` (`--install-dir`, `--worktree-root`, `--projects-root`, …).  
 > Legacy URL `…/install-docker.sh` still works (forwards to `install.sh`).
 
 ## 2. Start the server
@@ -31,14 +31,14 @@ Defaults:
 - Image: `ghcr.io/m2ux/workflow-server:main`
 - Publish: `http://127.0.0.1:3000`
 - Binds:
-  - host `$INSTALL/workspace` → `/var/lib/workflow-server/workspace`
-  - host `$INSTALL/engineering` → `/var/lib/workflow-server/engineering`
+  - host `$INSTALL/worktrees` → `/var/lib/workflow-server/worktrees`
+  - host `$INSTALL/projects` → `/var/lib/workflow-server/projects` (eng multi-root)
   - host `$INSTALL/state` → `/var/lib/workflow-server/state` (HMAC signing key)
 - Container env: `WORKTREE_ROOT` / `WORKFLOW_WORKSPACE`, `WORKFLOW_SERVER_ENGINEERING_DIR`,
   `WORKFLOW_SERVER_INSTALL_DIR`, `WORKFLOW_SERVER_KEY_DIR` (see `start.sh`)
 - Per-repo planning is selected at **session** time via `start_session({ repo: "owner/repo" })`
   (after `init-repo.sh owner/repo`). Path:
-  `$INSTALL/engineering/owner/repo/artifacts/planning/<slug>/`.
+  `$INSTALL/projects/owner/repo/.engineering/artifacts/planning/<slug>/`.
 - Runs as your host uid:gid; key path does **not** depend on `HOME` (non-root
   containers often have `HOME=/`)
 

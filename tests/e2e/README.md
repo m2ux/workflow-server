@@ -191,7 +191,7 @@ drift, surfacing known issues without going red.
   `reconcile-assumptions`, and prism lenses returned "not found" — broader than
   the op-ref set, harmless here only because step descriptions stood alone.
 - **Definition smells** the worker flagged: an inverted-looking
-  `update-reference-submodules` condition, and `present-problem-overview`
+  `update-repo-submodules` condition, and `present-problem-overview`
   ordered before `initialize-planning-folder`.
 - 3b confirmed the orchestrator *agent* can resolve checkpoints by its own
   judgement (it chose `skip-issue` where the deterministic policy chose

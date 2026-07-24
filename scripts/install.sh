@@ -5,8 +5,8 @@
 #
 #   bash <(curl -fsSL …/install.sh) --worktree-root=~/projects/work
 #
-# Writes $INSTALL/env so start.sh needs no path args. Creates engineering/
-# and workspace/ under the install root (per-repo checkouts via init-repo.sh).
+# Writes $INSTALL/env so start.sh needs no path args. Creates projects/ and
+# worktrees/ under the install root (per-repo checkouts via init-repo.sh).
 #
 # Then:
 #   ~/.local/share/workflow-server/start.sh -d
@@ -36,9 +36,9 @@ LEGACY_NAMES=(
 )
 
 INSTALL_DIR="${WORKFLOW_SERVER_INSTALL_DIR:-$DEFAULT_INSTALL_DIR}"
-# Optional override; when unset, defaults to $INSTALL/workspace after abs_path.
+# Optional override; when unset, defaults to $INSTALL/worktrees after abs_path.
 HOST_WORKTREE_ROOT="${HOST_WORKTREE_ROOT:-${WORKFLOW_WORKSPACE:-}}"
-HOST_ENGINEERING_ROOT="${HOST_ENGINEERING_ROOT:-${WORKFLOW_SERVER_ENGINEERING_DIR:-}}"
+HOST_PROJECTS_ROOT="${HOST_PROJECTS_ROOT:-}"
 REPO_URL="${WORKFLOW_SERVER_REPO_URL:-$DEFAULT_REPO_URL}"
 RAW_BASE="${WORKFLOW_SERVER_RAW_BASE:-$DEFAULT_RAW_BASE}"
 REF="${WORKFLOW_SERVER_REF:-$DEFAULT_REF}"
@@ -48,7 +48,7 @@ HOST_PORT="${HOST_PORT:-$DEFAULT_HOST_PORT}"
 usage() {
   cat <<EOF
 Install workflow-server under a local data dir: fetch helper scripts, clone
-workflows data, create engineering/ + workspace/ roots, and write a persistent
+workflows data, create projects/ + worktrees/ roots, and write a persistent
 env file. Does not start Docker.
 
 USAGE
@@ -56,11 +56,11 @@ USAGE
 
 OPTIONS
   --install-dir=PATH       Install root (default: ${DEFAULT_INSTALL_DIR})
-  --worktree-root=PATH     Agent worktree / workspace root
-                           (default: \$INSTALL/workspace)
+  --worktree-root=PATH     Feature worktree parent root
+                           (default: \$INSTALL/worktrees)
                            Persisted to \$INSTALL/${DEFAULT_ENV_NAME} for start.sh
-  --engineering-root=PATH  Engineering checkout root
-                           (default: \$INSTALL/engineering)
+  --projects-root=PATH       Per-repo main checkout root
+                           (default: \$INSTALL/projects)
   --repo-url=URL           Git remote for workflows branch (default: GitHub m2ux)
   --ref=REF                Branch/tag for helper scripts raw URL (default: ${DEFAULT_REF})
   --name=NAME              Container name persisted for start/stop (default: ${DEFAULT_CONTAINER_NAME})
@@ -74,13 +74,14 @@ LAYOUT
     ${DEFAULT_UPDATE_NAME}
     ${DEFAULT_INIT_REPO_NAME}
     ${DEFAULT_ENV_NAME}               # persistent paths / ports for start + stop
-    workflows/               # git clone -b workflows
-    engineering/             # per-repo engineering checkouts (init-repo.sh)
-    workspace/               # per-repo feature worktrees (init-repo.sh)
+    workflows/               # git clone -b workflows (server definitions)
+    projects/                # per-repo main checkouts (init-repo.sh)
+      <owner>/<repo>/        #   app @ default branch
+      <owner>/<repo>/.engineering/  # eng submodule / materialised planning
+    worktrees/               # per-repo feature worktree parents (init-repo.sh)
     state/                   # durable HMAC key (mounted by start.sh)
 
-  Defaults place workspace + engineering under \$INSTALL. Override with
-  --worktree-root / --engineering-root when you want them elsewhere.
+  Per-repo paths are created by init-repo.sh owner/repo.
 
 AFTER INSTALL
   \$INSTALL/${DEFAULT_START_NAME} -d
@@ -151,12 +152,12 @@ while [[ $# -gt 0 ]]; do
       HOST_WORKTREE_ROOT="${2:?}"
       shift 2
       ;;
-    --engineering-root=*)
-      HOST_ENGINEERING_ROOT="${1#*=}"
+    --projects-root=*)
+      HOST_PROJECTS_ROOT="${1#*=}"
       shift
       ;;
-    --engineering-root)
-      HOST_ENGINEERING_ROOT="${2:?}"
+    --projects-root)
+      HOST_PROJECTS_ROOT="${2:?}"
       shift 2
       ;;
     --repo-url=*)
@@ -202,13 +203,13 @@ need git
 
 INSTALL_DIR=$(abs_path "$INSTALL_DIR")
 if [[ -z "$HOST_WORKTREE_ROOT" ]]; then
-  HOST_WORKTREE_ROOT="${INSTALL_DIR}/workspace"
+  HOST_WORKTREE_ROOT="${INSTALL_DIR}/worktrees"
 fi
-if [[ -z "$HOST_ENGINEERING_ROOT" ]]; then
-  HOST_ENGINEERING_ROOT="${INSTALL_DIR}/engineering"
+if [[ -z "$HOST_PROJECTS_ROOT" ]]; then
+  HOST_PROJECTS_ROOT="${INSTALL_DIR}/projects"
 fi
 HOST_WORKTREE_ROOT=$(abs_path "$HOST_WORKTREE_ROOT")
-HOST_ENGINEERING_ROOT=$(abs_path "$HOST_ENGINEERING_ROOT")
+HOST_PROJECTS_ROOT=$(abs_path "$HOST_PROJECTS_ROOT")
 
 START_PATH="${INSTALL_DIR}/${DEFAULT_START_NAME}"
 STOP_PATH="${INSTALL_DIR}/${DEFAULT_STOP_NAME}"
@@ -226,8 +227,8 @@ mkdir -p "$INSTALL_DIR"
 STATE_DIR="${INSTALL_DIR}/state"
 ensure_dir "$STATE_DIR" "state dir (HMAC key)"
 
-ensure_dir "$HOST_WORKTREE_ROOT" "workspace root"
-ensure_dir "$HOST_ENGINEERING_ROOT" "engineering root"
+ensure_dir "$HOST_WORKTREE_ROOT" "worktrees root"
+ensure_dir "$HOST_PROJECTS_ROOT" "projects root"
 
 fetch_script "$START_PATH" "$START_URL" "start"
 fetch_script "$STOP_PATH" "$STOP_URL" "stop"
@@ -242,7 +243,7 @@ for legacy in "${LEGACY_NAMES[@]}"; do
   fi
 done
 
-if [[ -d "${WORKFLOWS_DIR}/.git" ]]; then
+if [[ -d "${WORKFLOWS_DIR}/.git" ]] || [[ -f "${WORKFLOWS_DIR}/.git" ]]; then
   echo "Workflows already present: ${WORKFLOWS_DIR}"
 elif [[ -e "$WORKFLOWS_DIR" ]]; then
   die "${WORKFLOWS_DIR} exists but is not a git checkout"
@@ -252,17 +253,13 @@ else
 fi
 
 # Persistent config for start.sh / stop.sh (no path args needed at runtime).
-# Minimal keys only — start.sh derives the rest:
-#   install dir   → directory containing start.sh
-#   workflows     → $INSTALL/workflows
-#   schemas       → $INSTALL/schemas (if present)
-# Legacy aliases (WORKFLOW_WORKSPACE / WORKFLOW_DIR) are still accepted if set
-# in the process environment; they are not written here.
+# Engineering multi-root is $HOST_PROJECTS_ROOT (per-repo eng under
+# projects/<owner>/<repo>/.engineering).
 cat >"$ENV_PATH" <<EOF
 # Generated by install.sh — used by start.sh / stop.sh
 # Edit and re-run start, or re-run install with new flags.
 HOST_WORKTREE_ROOT=${HOST_WORKTREE_ROOT}
-HOST_ENGINEERING_ROOT=${HOST_ENGINEERING_ROOT}
+HOST_PROJECTS_ROOT=${HOST_PROJECTS_ROOT}
 HOST_PORT=${HOST_PORT}
 WORKFLOW_SERVER_CONTAINER_NAME=${CONTAINER_NAME}
 WORKFLOW_SERVER_INSTALL_DIR=${INSTALL_DIR}
@@ -273,8 +270,8 @@ echo
 echo "Install complete."
 echo "  Install dir  : ${INSTALL_DIR}"
 echo "  Workflows    : ${WORKFLOWS_DIR}"
-echo "  Workspace    : ${HOST_WORKTREE_ROOT}"
-echo "  Engineering  : ${HOST_ENGINEERING_ROOT}"
+echo "  Projects     : ${HOST_PROJECTS_ROOT}  (per-repo main + .engineering)"
+echo "  Worktrees    : ${HOST_WORKTREE_ROOT}"
 echo "  State        : ${STATE_DIR}  (HMAC key; mounted by start.sh)"
 echo "  Env          : ${ENV_PATH}"
 echo
@@ -282,10 +279,10 @@ echo "Start / stop (paths come from env — no flags required):"
 echo "  ${START_PATH} -d"
 echo "  ${STOP_PATH}"
 echo
-echo "Init a repo (engineering + workspace checkouts):"
+echo "Init a repo (projects main + .engineering + worktrees parent):"
 echo "  ${INIT_REPO_PATH} owner/repo"
 echo
-echo "Update workflows later with:"
+echo "Update workflows + project checkouts later with:"
 echo "  ${UPDATE_PATH}"
 echo
 echo "Then:"

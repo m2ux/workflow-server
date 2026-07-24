@@ -1,5 +1,5 @@
-# Host workspace + engineering roots are bound RW; the server derives planning
-# under engineering and feature worktrees under workspace.
+# Host worktrees + projects roots are bound RW; the server derives planning under
+# projects/<owner>/<repo>/.engineering and feature worktrees under worktrees/.
 # Agents create worktrees on the host before the server writes artifacts.
 #
 # Paths are overridable via environment variables or a local `.env` file
@@ -13,14 +13,14 @@
 services:
   workflow-server:
     build: .
-    # Match start.sh: same UID/GID as host binds (workspace/engineering/state).
+    # Match start.sh: same UID/GID as host binds (worktrees/projects/state).
     user: "${UID:-1000}:${GID:-1000}"
     ports:
       - "${HOST_PORT:-3000}:${PORT:-3000}"
     environment:
-      WORKTREE_ROOT: ${CONTAINER_WORKTREE_ROOT:-/var/lib/workflow-server/workspace}
-      WORKFLOW_WORKSPACE: ${CONTAINER_WORKTREE_ROOT:-/var/lib/workflow-server/workspace}
-      WORKFLOW_SERVER_ENGINEERING_DIR: ${CONTAINER_ENGINEERING_ROOT:-/var/lib/workflow-server/engineering}
+      WORKTREE_ROOT: ${CONTAINER_WORKTREE_ROOT:-/var/lib/workflow-server/worktrees}
+      WORKFLOW_WORKSPACE: ${CONTAINER_WORKTREE_ROOT:-/var/lib/workflow-server/worktrees}
+      WORKFLOW_SERVER_ENGINEERING_DIR: ${CONTAINER_ENGINEERING_ROOT:-${CONTAINER_PROJECTS_ROOT:-/var/lib/workflow-server/projects}}
       WORKFLOW_SERVER_INSTALL_DIR: ${CONTAINER_INSTALL_DIR:-/var/lib/workflow-server}
       # Optional: override default planning slug (multi-root uses artifacts/planning per repo)
       # PLANNING_SLUG: artifacts/planning
@@ -43,15 +43,15 @@ services:
         source: ${HOST_SCHEMAS_DIR:-./schemas}
         target: ${CONTAINER_SCHEMAS_DIR:-/app/schemas}
         read_only: true
-      # Workspace root: per-repo feature worktrees (default $INSTALL/workspace)
+      # Feature worktrees root (default $INSTALL/worktrees)
       - type: bind
-        source: ${HOST_WORKTREE_ROOT:-${HOME}/.local/share/workflow-server/workspace}
-        target: ${CONTAINER_WORKTREE_ROOT:-/var/lib/workflow-server/workspace}
+        source: ${HOST_WORKTREE_ROOT:-${HOME}/.local/share/workflow-server/worktrees}
+        target: ${CONTAINER_WORKTREE_ROOT:-/var/lib/workflow-server/worktrees}
         read_only: false
-      # Engineering root: per-repo engineering checkouts (default $INSTALL/engineering)
+      # Projects multi-root: app clones + .engineering (default $INSTALL/projects)
       - type: bind
-        source: ${HOST_ENGINEERING_ROOT:-${HOME}/.local/share/workflow-server/engineering}
-        target: ${CONTAINER_ENGINEERING_ROOT:-/var/lib/workflow-server/engineering}
+        source: ${HOST_PROJECTS_ROOT:-${HOME}/.local/share/workflow-server/projects}
+        target: ${CONTAINER_PROJECTS_ROOT:-/var/lib/workflow-server/projects}
         read_only: false
       # Durable server state (HMAC secret)
       - type: bind

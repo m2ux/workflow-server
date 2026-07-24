@@ -80,7 +80,7 @@ For each session, the server maintains two files under the planning folder. Plan
 | Binding | Engineering root | Default planning path |
 |---------|------------------|------------------------|
 | `--workspace=PATH` (legacy single-root) | same as workspace | `<root>/.engineering/artifacts/planning/<slug>/` |
-| `--repo=owner/repo` (or explicit engineering dir) | `$INSTALL/engineering/<owner>/<repo>` | `<engineering>/artifacts/planning/<slug>/` |
+| `--repo=owner/repo` (or explicit engineering dir) | `$INSTALL/projects/<owner>/<repo>/.engineering` | `<engineering>/artifacts/planning/<slug>/` |
 
 (`PLANNING_SLUG` overrides the relative segment.)
 
