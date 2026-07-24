@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ Optional. Absolute path whose basename is the planning slug. Omit for a transien
 
 ### repo
 
-Optional. Target `owner/repo` (or GitHub URL). Required when the server is bound to an install multi-root (`$INSTALL/engineering`) and the session will later promote via `dispatch_child` or create a durable planning folder. Also accepted implicitly when `planning_folder` sits under `engineering/<owner>/<repo>/…`. Source the value from the user or the workspace `AGENTS.md` / `CLAUDE.md` — do not invent owner/repo pairs.
+Target `owner/repo` (or GitHub URL). Always pass it — the server stores the binding on `session.json#repo` for the life of the session. Source from the user or the workspace `AGENTS.md` / `CLAUDE.md`; do not invent owner/repo pairs. Also accepted implicitly when `planning_folder` already sits under `…/<owner>/<repo>/…`.
 
 ### agent_id
 
@@ -41,19 +41,11 @@ Canonical absolute planning folder path as resolved by the server (omitted for p
 
 ### repo
 
-Echoed when a target repository was bound for this session.
-
-### session_scope
-
-`multi` or `single` — whether the process uses install multi-root engineering.
-
-### promotion_requires_repo
-
-Present and `true` only when the session is transient under multi-root **without** `session.repo`. Bind `repo` on `start_session` or pass it on the first `dispatch_child` (bind-if-missing).
+Echo of `session.json#repo` when bound.
 
 ## Protocol
 
-1. Call `start_session` with `{workflow_id}`, `{agent_id}`, optional `{planning_folder}`, and `{repo}` when multi-root requires it, per the [bootstrap protocol](../../resources/bootstrap-protocol.md). Omit `context_mode` (or pass `"fresh"`).
+1. Call `start_session` with `{workflow_id}`, `{agent_id}`, `{repo}`, and optional `{planning_folder}`, per the [bootstrap protocol](../../resources/bootstrap-protocol.md). Omit `context_mode` (or pass `"fresh"`).
 2. Save `{session_index}`, `{planning_folder_path}`, and `{repo}` from the response. Do not compose or reconcile the planning path yourself. The durable binding lives in `session.json#repo`.
 3. Call `get_workflow { session_index }` and follow the returned operations bundle. After summarization, re-fetch with the escapes in `workflow-engine.force-full-after-summarization`.
 
@@ -63,6 +55,6 @@ Present and `true` only when the session is transient under multi-root **without
 
 When targeting a planning folder, `planning_folder` MUST be an absolute path; only the basename is consumed as the slug. Bare slugs and relative paths are rejected. Omit `planning_folder` entirely for a transient meta bootstrap — the server mints a transitional slug and parks the session until `dispatch_child` promotes it. Always prefer the returned `planning_folder_path` over any path the agent constructed.
 
-### multi-root-repo-binding
+### always-bind-repo
 
-When `discover` / `health_check` report `session_scope: multi` (install multi-root), pass `repo: "owner/repo"` on meta `start_session` even when omitting `planning_folder`. The server writes the binding to `session.json#repo` and uses that field alone when `dispatch_child` promotes the transient parent into `engineering/<owner>/<repo>/artifacts/planning/<slug>/`. Omitting `repo` on multi-root leaves `promotion_requires_repo: true`; promotion still succeeds if the worker binds via `dispatch_child.repo`.
+Always pass `repo: "owner/repo"` on meta `start_session` (even when omitting `planning_folder`). The server writes it to `session.json#repo`. Do not branch on server topology — agents are environment-agnostic; `session.repo` is the binding.
