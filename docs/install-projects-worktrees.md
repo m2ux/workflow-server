@@ -27,12 +27,6 @@ $INSTALL/   # default: ~/.local/share/workflow-server
 | `$INSTALL/worktrees/<o>/<r>/<slug>/` | Feature edit worktrees |
 | `$INSTALL/workflows/` | Workflow YAML library for the server (not per-product) |
 
-## Non-goals
-
-- Do **not** init product `workflows` submodules under `projects/` by default (server uses global `$INSTALL/workflows`).
-- Do **not** put feature worktrees inside `projects/` (branch/worktree isolation).
-- Do **not** require a developer `~/projects/main/…` checkout for worktree creation.
-
 ## Lifecycle
 
 ### install.sh
