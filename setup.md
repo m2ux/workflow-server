@@ -9,8 +9,6 @@ Connect an MCP client (Cursor, Claude Desktop, or compatible) to workflow-server
 | **Docker / HTTP** | Run the GHCR image; no server source checkout | [http.md](http.md) |
 | **stdio** | IDE spawns `node dist/index.js` from a local checkout | [stdio.md](stdio.md) |
 
-Complete the transport guide through **server running** (or stdio client config that starts it), then continue here from **§2**.
-
 ## 2. Layout (defaults)
 
 Install root (default `~/.local/share/workflow-server`, or `$XDG_DATA_HOME/workflow-server`):
