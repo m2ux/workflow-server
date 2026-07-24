@@ -50,7 +50,7 @@ The IDE starts the process; you do not run a long-lived server yourself. Point t
 
 Developer-only process flags: [docs/development.md](docs/development.md#environment-variables).
 
-Continue with [setup.md](setup.md) **§3** (connect) through **§6**.
+Continue with [setup.md](setup.md) **§3** through **§5**.
 
 ## stdio-only references
 

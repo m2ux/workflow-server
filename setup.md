@@ -1,6 +1,6 @@
 # Setup
 
-Connect an MCP client (Cursor, Claude Desktop, or compatible) to workflow-server.
+Install workflow-server and prepare a target repo. MCP client wiring is transport-specific — see [http.md](http.md) or [stdio.md](stdio.md).
 
 ## 1. Choose a transport
 
@@ -37,26 +37,11 @@ Repeat for each repo you care about.
 
 Alternatively, from a **project repo root**, [`scripts/deploy.sh`](scripts/deploy.sh) can create an in-tree `.engineering/` for a legacy single-checkout layout.
 
-## 3. Connect the MCP client
-
-Transport-specific client snippets are in [http.md](http.md) and [stdio.md](stdio.md). After the client can reach the server:
-
-1. Restart the IDE (or reload MCP servers).
-2. Ask the agent to list available workflows.
-
-HTTP clients typically need:
-
-```bash
-export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp
-```
-
-(Adjust host/port if you changed `--host-port`.)
-
-## 4. IDE bootstrap rule
+## 3. IDE bootstrap rule
 
 Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
 
-## 5. Verify
+## 4. Verify
 
 | Check | How |
 |-------|-----|
@@ -64,7 +49,7 @@ Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent 
 | HTTP readiness | `curl -fsS http://127.0.0.1:3000/ready` (dirs must exist) |
 | MCP | In the IDE: list available workflows |
 
-## 6. Day-two operations
+## 5. Day-two operations
 
 | Task | Command / note |
 |------|----------------|

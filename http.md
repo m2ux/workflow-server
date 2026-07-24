@@ -59,7 +59,7 @@ Project config (e.g. [`.cursor/mcp.json`](.cursor/mcp.json)):
 }
 ```
 
-Continue with [setup.md](setup.md) **§2** through **§6**. Health: `curl -fsS http://127.0.0.1:3000/health`.
+Continue with [setup.md](setup.md) **§2** through **§5**. Health: `curl -fsS http://127.0.0.1:3000/health`.
 
 ## HTTP-only references
 
