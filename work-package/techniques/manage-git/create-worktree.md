@@ -11,7 +11,9 @@ Working directory materialised as a git worktree of the target path on the named
 
 ### target_path
 
-Filesystem path at which to materialise the worktree (e.g. the canonical `~/projects/work/{component_name}/{wp-slug}/`).
+Filesystem path at which to materialise the worktree (e.g. the install-layout
+`$INSTALL/worktrees/{owner}/{repo}/{wp-slug}/`, or an operator path such as
+`~/projects/work/{component_name}/{wp-slug}/`).
 
 ### branch_name
 
@@ -36,7 +38,7 @@ Boolean — true when the worktree exists at `{target_path}` on `{branch_name}`
 
 ### 1. Resolve and Fetch
 
-- Determine the component's git directory `{$component_git_dir}`: when `{reference_path}` is a monorepo and `{reference_path}/{component_name}` exists, use `{reference_path}/{component_name}`; otherwise use `{reference_path}` itself (standalone case).
+- Determine the component's git directory `{$component_git_dir}`: when `{reference_path}` is a monorepo and `{reference_path}/{component_name}` exists, use `{reference_path}/{component_name}`; otherwise use `{reference_path}` itself (standalone case). Under the install layout, `{reference_path}` is typically `$INSTALL/source/{owner}/{repo}` (the main/default-branch checkout created by `init-repo.sh`).
 - Fetch first: `git -C {component_git_dir} fetch origin` so the remote-tracking refs are current before the worktree is materialised. Resolve `{$default_branch}` via `git -C {component_git_dir} symbolic-ref refs/remotes/origin/HEAD` (fall back to `main`, then `master`).
 
 ### 2. Create Worktree
