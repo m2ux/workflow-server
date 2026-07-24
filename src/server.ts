@@ -1,5 +1,6 @@
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import type { ServerConfig, ResolvedServerConfig } from './config.js';
+import { resolveEngineeringDir } from './config.js';
 import { TraceStore } from './trace.js';
 import { registerWorkflowTools } from './tools/workflow-tools.js';
 import { registerResourceTools } from './tools/resource-tools.js';
@@ -9,23 +10,33 @@ import { logInfo, setAuditWorkspaceDir } from './logging.js';
 import { PLANNING_RELATIVE_DIR, setPlanningRelativeDir } from './utils/session/store.js';
 
 export function createServer(config: ServerConfig): McpServer {
+  const engineeringDir = resolveEngineeringDir(config);
   const resolvedConfig: ResolvedServerConfig = {
     ...config,
+    engineeringDir,
     traceStore: config.traceStore ?? new TraceStore(),
   };
 
-  // Apply planning slug once at startup so planningRoot(workspaceDir) callers
-  // keep a stable one-arg signature (CRITICAL blast radius if arity changes).
+  // Apply planning slug once at startup so planningRoot() callers keep a
+  // stable one-arg signature (CRITICAL blast radius if arity changes).
   setPlanningRelativeDir(
     resolvedConfig.planningRelativeDir ?? PLANNING_RELATIVE_DIR,
   );
-  setAuditWorkspaceDir(resolvedConfig.workspaceDir);
+  // Audit / session planning root is the engineering checkout when split.
+  setAuditWorkspaceDir(engineeringDir);
 
   const server = new McpServer(
     { name: resolvedConfig.serverName, version: resolvedConfig.serverVersion },
     { capabilities: { tools: {}, resources: {} } }
   );
-  logInfo('Creating workflow server', { name: resolvedConfig.serverName, version: resolvedConfig.serverVersion, workflowDir: resolvedConfig.workflowDir, workspaceDir: resolvedConfig.workspaceDir });
+  logInfo('Creating workflow server', {
+    name: resolvedConfig.serverName,
+    version: resolvedConfig.serverVersion,
+    workflowDir: resolvedConfig.workflowDir,
+    workspaceDir: resolvedConfig.workspaceDir,
+    engineeringDir: resolvedConfig.engineeringDir,
+    ...(resolvedConfig.repo !== undefined ? { repo: resolvedConfig.repo } : {}),
+  });
   registerWorkflowTools(server, resolvedConfig);
   registerResourceTools(server, resolvedConfig);
   registerSchemaResources(server, resolvedConfig);

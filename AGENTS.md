@@ -36,6 +36,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 
 - After code or schema changes, run `npm run typecheck` and `npm test` before committing.
 - Follow the repo’s PR/commit conventions.
+- **GitHub CLI: do not use GraphQL.** Prefer REST only (`gh api repos/...`, `gh api --method PATCH|POST|GET ...`). Avoid `gh pr view/create/list` and any path that hits `api.github.com/graphql` — GraphQL is deprecated/unreliable here.
 
 ## Where to look
 

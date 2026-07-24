@@ -75,6 +75,9 @@ function withSessionStoreErrors<T extends Record<string, unknown>, R>(
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
+  // Planning / session state lives under the engineering checkout when split
+  // from the feature-worktree root (`--repo` layout).
+  const planningRootDir = config.engineeringDir ?? config.workspaceDir;
 
   // ============== Session Tools ==============
 
@@ -135,7 +138,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       //   3. No existing folder + non-meta workflow → fresh workspace folder.
       let folder: string;
       let isTransientSession: boolean;
-      const slugCandidate = await findPlanningFolderBySlug(config.workspaceDir, slug);
+      const slugCandidate = await findPlanningFolderBySlug(planningRootDir, slug);
       isTransientSession = !slugCandidate && wouldBeTransient;
       if (slugCandidate) {
         folder = slugCandidate;
@@ -143,7 +146,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         const existing = lookupTransientBySlug(slug);
         folder = existing ?? await createTransientFolder();
       } else {
-        folder = await ensurePlanningFolder(config.workspaceDir, slug);
+        folder = await ensurePlanningFolder(planningRootDir, slug);
       }
 
       // Detect-and-migrate legacy session-state in the folder before anything
@@ -322,7 +325,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }).strict(),
     },
     withAuditLog('dispatch_child', withSessionStoreErrors(async ({ session_index, workflow_id, agent_id, planning_slug, context_mode }) => {
-      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const loaded = await loadSessionForTool(planningRootDir, session_index);
       const parentFolder = loaded.folderAbsPath;
       const parentIsTransient = isTransientFolder(parentFolder);
 
@@ -359,7 +362,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           planning_slug
           ?? lookupTransientSlugByFolder(parentFolder)
           ?? `${new Date().toISOString().slice(0, 10)}-${workflow_id}`;
-        const promotedWorkspaceFolder = await ensurePlanningFolder(config.workspaceDir, promotedSlug);
+        const promotedWorkspaceFolder = await ensurePlanningFolder(planningRootDir, promotedSlug);
         const childSessionIndex = await computeEmbeddedSessionIndex(
           promotedWorkspaceFolder,
           ['triggeredWorkflows', 0, 'state'],
@@ -450,7 +453,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       full: z.boolean().optional().describe('Optional. Force full content when persistent mode would return an unchanged-reference (e.g. after summarization).'),
     },
     withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, step_id, full }) => {
-      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const loaded = await loadSessionForTool(planningRootDir, session_index);
       const { state } = loaded;
       const workflow_id = state.workflowId;
 
@@ -632,7 +635,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       full: z.boolean().optional().describe('Optional. Force full content when persistent mode would return an unchanged-reference (e.g. after summarization).'),
     },
     withAuditLog('get_resource', withSessionStoreErrors(async ({ session_index, resource_id, full }) => {
-      const loaded = await loadSessionForTool(config.workspaceDir, session_index);
+      const loaded = await loadSessionForTool(planningRootDir, session_index);
       const { state } = loaded;
       assertNoActiveCheckpoint(state);
       const workflow_id = state.workflowId;
