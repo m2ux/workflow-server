@@ -2,32 +2,34 @@
 # workflow-server — initialize a managed repo under the install root
 #
 # Accepts a full GitHub-style path (owner/repo), creates:
-#   source/<owner>/<repo>/              # app main/default-branch checkout
+#   source/<owner>/<repo>/              # app checkout (default branch or --branch)
 #   source/<owner>/<repo>/.engineering/ # eng submodule or materialised eng
 #   worktrees/<owner>/<repo>/           # parent for feature worktrees
 #
 # Engineering resolution (into source/.../.engineering):
 #   1. Explicit --engineering-url / --engineering-branch overrides
 #   2. App checkout: git submodule update --init -- .engineering
-#   3. App remote branch named "engineering" (or --branch) cloned into .engineering
+#   3. App remote branch named "engineering" (or --engineering-branch) into .engineering
 #   4. App default branch: in-tree .engineering/ directory materialised
 #
 # Does NOT init other product submodules (e.g. workflows) by default.
 #
 #   ~/.local/share/workflow-server/init-repo.sh m2ux/workflow-server
-#   ./scripts/init-repo.sh m2ux/workflow-server
+#   ./scripts/init-repo.sh --branch=develop acme/app
 #   ./scripts/init-repo.sh --url=git@github.com:acme/app.git acme/app
 #
 # Needs: git
 set -euo pipefail
 
 DEFAULT_ROOT="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
-DEFAULT_BRANCH="engineering"
+DEFAULT_ENG_BRANCH="engineering"
 DEFAULT_HOST="github.com"
 DEFAULT_ENG_PATH=".engineering"
 
 ROOT="${WORKFLOW_SERVER_INSTALL_DIR:-$DEFAULT_ROOT}"
-BRANCH="${WORKFLOW_SERVER_ENGINEERING_BRANCH:-$DEFAULT_BRANCH}"
+# Source checkout branch (empty = remote default: main/master via origin/HEAD).
+SOURCE_BRANCH="${WORKFLOW_SERVER_SOURCE_BRANCH:-}"
+ENG_BRANCH="${WORKFLOW_SERVER_ENGINEERING_BRANCH:-$DEFAULT_ENG_BRANCH}"
 REPO_URL=""
 REPO_PATH=""
 ENG_URL_OVERRIDE=""
@@ -55,24 +57,26 @@ ARGUMENTS
 OPTIONS
   --root=PATH            Install root (default: ${DEFAULT_ROOT})
   --url=URL              App repo git remote (default: https://github.com/<owner/repo>.git)
-  --branch=NAME          Fallback engineering branch when not taken from
-                         .gitmodules (default: ${DEFAULT_BRANCH})
+  --branch=NAME          Branch to check out in source/<owner>/<repo>
+                         (default: remote default branch — usually main)
   --engineering-url=URL  Force engineering remote (skip submodule init)
   --engineering-branch=NAME
-                         Force engineering branch (with --engineering-url, or
-                         override the branch from .gitmodules)
+                         Engineering branch fallback / override
+                         (default: ${DEFAULT_ENG_BRANCH}; also used when
+                         .gitmodules has no branch)
   --no-fetch             Skip fetch when checkout already exists
   --force                Recreate paths if invalid / discard dirty trees
   -h, --help
 
 LAYOUT
-  \$ROOT/source/<owner>/<repo>/                 # main/default-branch checkout
+  \$ROOT/source/<owner>/<repo>/                 # app checkout (--branch or default)
   \$ROOT/source/<owner>/<repo>/.engineering/    # planning eng root
   \$ROOT/worktrees/<owner>/<repo>/              # feature worktree parent
 
 RESOLUTION
-  Clone the app into source/, then prefer submodule init for .engineering,
-  else clone branch "${DEFAULT_BRANCH}", else extract in-tree .engineering/.
+  Clone the app into source/ on --branch (or remote default), then prefer
+  submodule init for .engineering, else clone eng branch
+  "${DEFAULT_ENG_BRANCH}", else extract in-tree .engineering/.
 EOF
 }
 
@@ -207,10 +211,22 @@ default_branch_for() {
   echo main
 }
 
-# Clone or update the app main checkout at SOURCE_DIR (no bulk submodule init).
+# Resolve which branch the source checkout should track.
+resolve_source_branch() {
+  local dest="$1"
+  if [[ -n "$SOURCE_BRANCH" ]]; then
+    printf '%s\n' "$SOURCE_BRANCH"
+    return 0
+  fi
+  default_branch_for "$dest"
+}
+
+# Clone or update the app checkout at SOURCE_DIR (no bulk submodule init).
+# Optional third arg: branch name (empty = remote default).
 ensure_source_checkout() {
   local dest="$1"
   local url="$2"
+  local want_br="${3:-}"
 
   if is_git_checkout "$dest" && [[ "${FORCE}" -eq 0 ]]; then
     echo "Source checkout already present → ${dest}"
@@ -219,19 +235,28 @@ ensure_source_checkout() {
       git -C "${dest}" remote set-url origin "${url}" 2>/dev/null \
         || git -C "${dest}" remote add origin "${url}"
       git -C "${dest}" fetch --prune origin
-      local def_br
-      def_br="$(default_branch_for "$dest")"
+      local track_br
+      if [[ -n "$want_br" ]]; then
+        track_br="$want_br"
+      else
+        track_br="$(resolve_source_branch "$dest")"
+      fi
+      if ! git -C "${dest}" show-ref --verify --quiet "refs/remotes/origin/${track_br}"; then
+        die "branch 'origin/${track_br}' not found in ${dest}
+  Check --branch=NAME or that the remote has that branch"
+      fi
       if ! git -C "${dest}" diff --quiet || ! git -C "${dest}" diff --cached --quiet; then
         die "local changes in source ${dest}
   Commit/stash them, or re-run with --force"
       fi
       local cur
       cur="$(git -C "${dest}" rev-parse --abbrev-ref HEAD 2>/dev/null || echo HEAD)"
-      if [[ "$cur" != "$def_br" ]]; then
-        git -C "${dest}" checkout -B "$def_br" "origin/${def_br}"
+      if [[ "$cur" != "$track_br" ]]; then
+        git -C "${dest}" checkout -B "$track_br" "origin/${track_br}" \
+          || die "failed to checkout ${track_br} in ${dest}"
       else
-        git -C "${dest}" merge --ff-only "origin/${def_br}" \
-          || git -C "${dest}" reset --hard "origin/${def_br}"
+        git -C "${dest}" merge --ff-only "origin/${track_br}" \
+          || git -C "${dest}" reset --hard "origin/${track_br}"
       fi
     fi
     return 0
@@ -247,14 +272,21 @@ ensure_source_checkout() {
   fi
 
   mkdir -p "$(dirname "$dest")"
-  echo "Cloning app source → ${url} → ${dest}"
-  git clone --single-branch "${url}" "${dest}" \
-    || die "failed to clone ${url}"
-  local def_br
-  def_br="$(default_branch_for "$dest")"
-  git -C "${dest}" checkout -B "$def_br" "origin/${def_br}" 2>/dev/null \
-    || git -C "${dest}" checkout "$def_br" 2>/dev/null \
-    || true
+  if [[ -n "$want_br" ]]; then
+    echo "Cloning app source (${want_br}) → ${url} → ${dest}"
+    git clone --branch "${want_br}" --single-branch "${url}" "${dest}" \
+      || die "failed to clone ${url} branch '${want_br}'"
+  else
+    echo "Cloning app source → ${url} → ${dest}"
+    git clone --single-branch "${url}" "${dest}" \
+      || die "failed to clone ${url}"
+    local track_br
+    track_br="$(resolve_source_branch "$dest")"
+    if git -C "${dest}" show-ref --verify --quiet "refs/remotes/origin/${track_br}"; then
+      git -C "${dest}" checkout -B "$track_br" "origin/${track_br}" \
+        || die "failed to checkout ${track_br} in ${dest}"
+    fi
+  fi
 }
 
 # Try submodule init for .engineering only. Returns 0 on success.
@@ -468,12 +500,20 @@ while [[ $# -gt 0 ]]; do
     --root) ROOT="${2:?}"; shift 2 ;;
     --url=*) REPO_URL="${1#*=}"; shift ;;
     --url) REPO_URL="${2:?}"; shift 2 ;;
-    --branch=*) BRANCH="${1#*=}"; shift ;;
-    --branch) BRANCH="${2:?}"; shift 2 ;;
+    --branch=*) SOURCE_BRANCH="${1#*=}"; shift ;;
+    --branch) SOURCE_BRANCH="${2:?}"; shift 2 ;;
     --engineering-url=*) ENG_URL_OVERRIDE="${1#*=}"; shift ;;
     --engineering-url) ENG_URL_OVERRIDE="${2:?}"; shift 2 ;;
-    --engineering-branch=*) ENG_BRANCH_OVERRIDE="${1#*=}"; shift ;;
-    --engineering-branch) ENG_BRANCH_OVERRIDE="${2:?}"; shift 2 ;;
+    --engineering-branch=*)
+      ENG_BRANCH_OVERRIDE="${1#*=}"
+      ENG_BRANCH="$ENG_BRANCH_OVERRIDE"
+      shift
+      ;;
+    --engineering-branch)
+      ENG_BRANCH_OVERRIDE="${2:?}"
+      ENG_BRANCH="$ENG_BRANCH_OVERRIDE"
+      shift 2
+      ;;
     --no-fetch) FETCH=0; shift ;;
     --force) FORCE=1; shift ;;
     -*) die "unknown option: $1 (see --help)" ;;
@@ -513,6 +553,11 @@ echo "Repo        : ${REPO_PATH}"
 echo "App URL     : ${REPO_URL}"
 echo "Root        : ${ROOT}"
 echo "Source      : ${SOURCE_DIR}"
+if [[ -n "$SOURCE_BRANCH" ]]; then
+  echo "Source br   : ${SOURCE_BRANCH}"
+else
+  echo "Source br   : (remote default)"
+fi
 echo "Engineering : ${ENG_DIR}"
 echo "Worktrees   : ${WT_DIR}"
 echo
@@ -520,13 +565,19 @@ echo
 mkdir -p "${ROOT}/source/${OWNER}" \
   "${ROOT}/worktrees/${OWNER}"
 
-ensure_source_checkout "$SOURCE_DIR" "$REPO_URL"
+ensure_source_checkout "$SOURCE_DIR" "$REPO_URL" "$SOURCE_BRANCH"
+# Record the branch actually checked out for the summary.
+if is_git_checkout "$SOURCE_DIR"; then
+  SOURCE_BRANCH_ACTUAL="$(git -C "$SOURCE_DIR" rev-parse --abbrev-ref HEAD 2>/dev/null || echo unknown)"
+else
+  SOURCE_BRANCH_ACTUAL="${SOURCE_BRANCH:-unknown}"
+fi
 
 # Engineering into source/.../.engineering
 if [[ -n "$ENG_URL_OVERRIDE" ]]; then
   ENG_SOURCE_MODE="remote"
   ENG_SOURCE_URL="$ENG_URL_OVERRIDE"
-  ENG_SOURCE_BRANCH="${ENG_BRANCH_OVERRIDE:-$BRANCH}"
+  ENG_SOURCE_BRANCH="${ENG_BRANCH_OVERRIDE:-$ENG_BRANCH}"
   clone_or_update_remote "$ENG_DIR" "$ENG_SOURCE_URL" "$ENG_SOURCE_BRANCH" ""
   if is_git_checkout "$ENG_DIR"; then
     init_nested_submodules "$ENG_DIR"
@@ -534,7 +585,7 @@ if [[ -n "$ENG_URL_OVERRIDE" ]]; then
 elif try_init_engineering_submodule "$SOURCE_DIR"; then
   :
 else
-  resolve_engineering_source_fallback "$REPO_URL" "$SOURCE_DIR" "$BRANCH"
+  resolve_engineering_source_fallback "$REPO_URL" "$SOURCE_DIR" "$ENG_BRANCH"
   case "$ENG_SOURCE_MODE" in
     remote)
       clone_or_update_remote "$ENG_DIR" "$ENG_SOURCE_URL" "$ENG_SOURCE_BRANCH" "$ENG_SOURCE_PIN"
@@ -575,6 +626,7 @@ echo
 echo "Init complete."
 echo "  Repo path    : ${REPO_PATH}"
 echo "  Source       : ${SOURCE_DIR}"
+echo "  Source branch: ${SOURCE_BRANCH_ACTUAL:-unknown}"
 echo "  Engineering  : ${ENG_DIR}"
 echo "  Worktrees    : ${WT_DIR}"
 echo "  Eng mode     : ${ENG_SOURCE_MODE:-unknown}"

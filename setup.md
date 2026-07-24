@@ -45,11 +45,13 @@ After the project has been deployed, register it under the workflow-server insta
 
 ```bash
 ~/.local/share/workflow-server/init-repo.sh owner/repo
+# optional: pin the source checkout branch (default = remote default, usually main)
+~/.local/share/workflow-server/init-repo.sh --branch=develop owner/repo
 ```
 
 That creates:
 
-- `$INSTALL/source/<owner>/<repo>/` — app checkout on the default branch (reference for `git worktree add`)
+- `$INSTALL/source/<owner>/<repo>/` — app checkout on `--branch` or the remote default (reference for `git worktree add`)
 - `$INSTALL/source/<owner>/<repo>/.engineering/` — engineering submodule or materialised planning tree
 - `$INSTALL/worktrees/<owner>/<repo>/` — parent directory for feature worktrees
 

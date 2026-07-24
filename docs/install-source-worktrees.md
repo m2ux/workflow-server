@@ -50,10 +50,10 @@ $INSTALL/   # default: ~/.local/share/workflow-server
 
 ### init-repo.sh owner/repo
 
-1. Clone/ensure `$INSTALL/source/<o>/<r>` on the default branch (**no** bulk submodule init).
+1. Clone/ensure `$INSTALL/source/<o>/<r>` on `--branch=NAME` when set, otherwise the remote default branch (**no** bulk submodule init).
 2. Materialise engineering at `source/<o>/<r>/.engineering`:
    - Prefer `git submodule update --init -- .engineering` when listed in `.gitmodules`.
-   - Else existing resolution (eng branch clone into `.engineering`, or in-tree extract).
+   - Else existing resolution (`--engineering-branch` / eng branch clone into `.engineering`, or in-tree extract).
 3. `mkdir -p $INSTALL/worktrees/<o>/<r>/`.
 
 ### update-workflows.sh
