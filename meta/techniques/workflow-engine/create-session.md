@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ The work-package planning slug — `YYYY-MM-DD-{initiative_name}`. Names the pla
 
 ### repo
 
-`owner/repo` for the session. Prefer the value already on the parent (`session.json#repo` / prior-state / dispatch prompt, e.g. `Target Github repo`) or workspace `AGENTS.md`. Pass it when the parent is not yet bound; if already set, omit or pass the same value (conflicts are rejected).
+Target `owner/repo`. **Required on this call** for initialize-session workers: take it from prior-state `Target Github repo` / `{target_repo}` in the worker prompt. Do not invent owner/repo pairs. Do not wait for a durable parent `session.json` — promotion writes the bind from this argument.
 
 ## Outputs
 
@@ -43,14 +43,14 @@ The canonical absolute path of the planning folder, as resolved by the server un
    - `workflow_id: {workflow_id}`
    - `agent_id: 'orchestrator'`
    - `planning_slug: {client_planning_slug}` when known
-   - `repo: {owner/repo}` when the parent session is not yet bound (from prior-state / prompt / `AGENTS.md`)
+   - `repo: {repo}` — always, from prior-state / `{target_repo}` (see rule below)
 
-   Capture the returned `{session_index}` for use in all subsequent calls inside the child workflow, and the returned `{planning_folder_path}` (the server-resolved absolute folder under its workspace) as the single artifact location. The server appends the child under `parent.triggeredWorkflows[N].state` and embeds the full child SessionFile inline; the agent does not deal with separate child folders, and does not compose the folder path itself. Promotion and path resolution use only `session.json#repo` (after any bind-if-missing from this call).
+   Capture the returned `{session_index}` for use in all subsequent calls inside the child workflow, and the returned `{planning_folder_path}` (the server-resolved absolute folder under its workspace) as the single artifact location. The server appends the child under `parent.triggeredWorkflows[N].state` and embeds the full child SessionFile inline; the agent does not deal with separate child folders, and does not compose the folder path itself.
 
    Omit `context_mode` (or pass `"fresh"`). Client activities are executed by disposable per-activity workers via [dispatch-activity](./dispatch-activity.md); do not pass `context_mode: "persistent"` on the child session.
 
 ## Rules
 
-### bind-repo-on-dispatch
+### repo-from-prior-state
 
-If the parent session has no `repo` yet, you MUST pass `repo` on this `dispatch_child`. That binds `session.json#repo`. Do not invent owner/repo pairs; do not pass a conflicting `repo` when the parent is already bound. Agents do not special-case server topology.
+Always pass `repo` on `dispatch_child` using the value from the worker prompt prior-state (`Target Github repo` / `{target_repo}`). That is the authoritative source for initialize-session: the parent may still be a transient meta session with no durable planning `session.json` yet. The server bind-if-missings onto the parent and uses it for promotion. Do not skip `repo` hoping the parent already has it. Do not pass a conflicting owner/repo.

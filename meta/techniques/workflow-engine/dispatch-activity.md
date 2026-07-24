@@ -23,7 +23,7 @@ Resource ref for the worker prompt (e.g., [activity-worker-prompt](../../resourc
 
 ### state
 
-Current variable state for prompt substitution
+Current variable state for prompt substitution. MUST include at least `{target_repo}` (Target Github repo), `{meta_session_index}`, `{target_workflow_id}`, and any other bag fields the activity's techniques bind (e.g. `{client_planning_slug}`). Disposable workers have no durable parent `session.json` to read yet — prior-state is how they receive `repo`.
 
 ## Outputs
 
@@ -39,7 +39,7 @@ Trace token captured from `next_activity` response, appended to `trace_tokens`.
 
 1. Call `next_activity { session_index, activity_id, step_manifest, usage? }`; capture `_meta.trace-token`.
    - **`usage` (optional):** relay the harness-reported token usage for the activity the worker just completed — the figure the orchestrator reads from the worker's completion result (e.g. subagent token counts and cache/model fields when the harness surfaces them). Pass it on this transition call, keyed to the activity being exited. When the harness does not surface per-sub-agent usage, omit the param entirely — the run still completes and nothing is fabricated.
-2. Apply [compose-prompt](./compose-prompt.md) with `{prompt_template}` substituting `{state}` values.
+2. Apply [compose-prompt](./compose-prompt.md) with `{prompt_template}` substituting `{state}` values. The activity-worker template's **Prior-state** block must receive a non-empty `{target_repo}` (and the other bag fields listed there) — never leave Target Github repo blank when the orchestrator knows owner/repo from bootstrap / `AGENTS.md`.
 3. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await the worker's envelope and return it unchanged as `{worker_result}`.
    - If the worker does not return within the expected time, apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) if it is still running; otherwise dispatch a fresh worker for the same `{activity_id}`.
    - If the worker reports fewer steps than the activity defines, or required checkpoints have no response, do NOT accept the partial result — resume the worker with explicit instructions to complete the missing items.
@@ -66,3 +66,7 @@ NEVER call `get_technique` to pre-load techniques for the worker. `get_activity`
 ### workers-need-full-delivery
 
 Dispatched workers are fresh contexts with no prior deliveries. Leave a worker-dispatched session in its default (`fresh`) delivery mode — never set `context_mode: "persistent"` on it, and never instruct a worker to pass `bundle: "reference"`: an unchanged-reference points at content the new worker has never received.
+
+### prior-state-includes-target-repo
+
+When composing the activity-worker prompt, always substitute `{target_repo}` into **Target Github repo**. initialize-session workers call `dispatch_child` with that value as `repo`; omitting it leaves promotion unbound.
