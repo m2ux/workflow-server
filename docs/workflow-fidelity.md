@@ -106,7 +106,7 @@ flowchart TD
 
 ### Layer 1: Token Integrity
 
-Every session token is HMAC-SHA256 signed using a server-held key (`~/.workflow-server/secret`). The token format is `<base64url-payload>.<hmac-signature>`.
+Every session token is HMAC-SHA256 signed using a server-held key. Default path is `~/.workflow-server/secret`. Override with `WORKFLOW_SERVER_KEY_DIR` (key file `<dir>/secret`) or `WORKFLOW_SERVER_STATE_DIR`. Docker `start.sh` mounts `$INSTALL/state` → `/var/lib/workflow-server` and sets `WORKFLOW_SERVER_KEY_DIR` so the key does not depend on `HOME` (non-root containers often have `HOME=/`). The token format is `<base64url-payload>.<hmac-signature>`.
 
 The token payload carries:
 

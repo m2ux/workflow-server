@@ -23,6 +23,8 @@ DEFAULT_CONTAINER_PORT="3000"
 DEFAULT_WORKTREE_TARGET="/worktrees"
 DEFAULT_WORKFLOWS_TARGET="/app/workflows"
 DEFAULT_SCHEMAS_TARGET="/app/schemas"
+# Durable HMAC key + server state (not under HOME — Docker --user often has HOME=/)
+DEFAULT_STATE_TARGET="/var/lib/workflow-server"
 DEFAULT_TRANSPORT="http"
 DEFAULT_BIND_HOST="0.0.0.0"
 DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
@@ -79,6 +81,7 @@ SCHEMAS_SET=0
 CONTAINER_WORKTREE_ROOT="${CONTAINER_WORKTREE_ROOT:-$DEFAULT_WORKTREE_TARGET}"
 CONTAINER_WORKFLOW_DIR="${CONTAINER_WORKFLOW_DIR:-$DEFAULT_WORKFLOWS_TARGET}"
 CONTAINER_SCHEMAS_DIR="${CONTAINER_SCHEMAS_DIR:-$DEFAULT_SCHEMAS_TARGET}"
+CONTAINER_STATE_DIR="${CONTAINER_STATE_DIR:-$DEFAULT_STATE_TARGET}"
 
 PLANNING_SLUG="${PLANNING_SLUG:-}"
 TRANSPORT="${TRANSPORT:-$DEFAULT_TRANSPORT}"
@@ -268,6 +271,9 @@ if [[ "$SCHEMAS_SET" -eq 0 ]]; then
   [[ -z "$HOST_SCHEMAS_DIR" && -d "${INSTALL_DIR}/schemas" ]] && HOST_SCHEMAS_DIR="${INSTALL_DIR}/schemas"
 fi
 
+# Durable server state (HMAC secret). Lives under install dir, not HOME.
+HOST_STATE_DIR="${HOST_STATE_DIR:-${INSTALL_DIR}/state}"
+
 command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
 
 # Resolve + create worktree root before bind-mount (must exist for docker -v).
@@ -294,6 +300,13 @@ HOST_WORKFLOWS_DIR="$(abs_dir "$HOST_WORKFLOWS_DIR")"
 if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
   HOST_SCHEMAS_DIR="$(abs_dir "$HOST_SCHEMAS_DIR")"
 fi
+
+HOST_STATE_DIR="$(abs_path "$HOST_STATE_DIR")"
+if [[ ! -d "$HOST_STATE_DIR" ]]; then
+  echo "Creating server state dir: ${HOST_STATE_DIR}"
+  mkdir -p "$HOST_STATE_DIR" || die "failed to create state dir: ${HOST_STATE_DIR}"
+fi
+HOST_STATE_DIR="$(abs_dir "$HOST_STATE_DIR")"
 
 if [[ -n "$IMAGE_REF" ]]; then
   FULL_IMAGE="$IMAGE_REF"
@@ -340,6 +353,9 @@ DOCKER_RUN+=(-p "${HOST_PORT}:${CONTAINER_PORT}")
 DOCKER_RUN+=(-e "WORKTREE_ROOT=${CONTAINER_WORKTREE_ROOT}")
 DOCKER_RUN+=(-e "WORKFLOW_DIR=${CONTAINER_WORKFLOW_DIR}")
 DOCKER_RUN+=(-e "SCHEMAS_DIR=${CONTAINER_SCHEMAS_DIR}")
+# Session HMAC key path — independent of HOME (Docker --user without passwd → HOME=/)
+DOCKER_RUN+=(-e "WORKFLOW_SERVER_KEY_DIR=${CONTAINER_STATE_DIR}")
+DOCKER_RUN+=(-e "HOME=${CONTAINER_STATE_DIR}")
 DOCKER_RUN+=(-e "TRANSPORT=${TRANSPORT}")
 DOCKER_RUN+=(-e "HOST=${BIND_HOST}")
 DOCKER_RUN+=(-e "PORT=${CONTAINER_PORT}")
@@ -360,6 +376,8 @@ DOCKER_RUN+=(-v "${HOST_WORKFLOWS_DIR}:${CONTAINER_WORKFLOW_DIR}:ro")
 if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
   DOCKER_RUN+=(-v "${HOST_SCHEMAS_DIR}:${CONTAINER_SCHEMAS_DIR}:ro")
 fi
+# Persist signing key across container recreate (install dir, not worktree root).
+DOCKER_RUN+=(-v "${HOST_STATE_DIR}:${CONTAINER_STATE_DIR}")
 
 DOCKER_RUN+=("${DOCKER_ARGS[@]+"${DOCKER_ARGS[@]}"}")
 DOCKER_RUN+=("$FULL_IMAGE")
@@ -374,6 +392,7 @@ if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
 else
   echo "  schemas  : (image default at ${CONTAINER_SCHEMAS_DIR})"
 fi
+echo "  state    : ${HOST_STATE_DIR} → ${CONTAINER_STATE_DIR} (rw, HMAC key)"
 echo "  publish  : ${HOST_PORT} → ${CONTAINER_PORT}"
 echo "  MCP URL  : http://127.0.0.1:${HOST_PORT}/mcp"
 
@@ -383,4 +402,5 @@ if [[ "$DETACH" -eq 1 && "$DRY_RUN" -eq 0 ]]; then
   echo "Detached as '${NAME}'. Logs: docker logs -f ${NAME}"
   echo "Health:  curl -fsS http://127.0.0.1:${HOST_PORT}/health"
   echo "Ready:   curl -fsS http://127.0.0.1:${HOST_PORT}/ready"
+  echo "Smoke:   ready must show sessionKeyWritable=true before start_session"
 fi

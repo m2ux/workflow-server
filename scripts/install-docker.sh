@@ -65,9 +65,14 @@ LAYOUT
     ${DEFAULT_UPDATE_NAME}
     ${DEFAULT_ENV_NAME}             # persistent paths / ports for start + stop
     workflows/             # git clone -b workflows
+    state/                 # durable HMAC key (mounted by start.sh)
 
   Worktree root (default ${DEFAULT_HOST_WORKTREE_ROOT}) is created if missing
   and is not under \$INSTALL.
+
+  Planning artifacts live under the worktree root
+  (\$WORKTREE/<owner>/<repo>/.engineering/artifacts/planning/), not under
+  \$INSTALL and not via a separate engineering bind mount.
 
 AFTER INSTALL
   \$INSTALL/${DEFAULT_START_NAME} -d
@@ -180,6 +185,9 @@ UPDATE_URL="${RAW_BASE}/${REF}/scripts/update-workflows.sh"
 
 echo "Install dir: ${INSTALL_DIR}"
 mkdir -p "$INSTALL_DIR"
+STATE_DIR="${INSTALL_DIR}/state"
+mkdir -p "$STATE_DIR"
+echo "State dir (HMAC key): ${STATE_DIR}"
 
 if [[ ! -d "$HOST_WORKTREE_ROOT" ]]; then
   echo "Creating worktree root → ${HOST_WORKTREE_ROOT}"
@@ -229,6 +237,7 @@ echo
 echo "Install complete."
 echo "  Install dir : ${INSTALL_DIR}"
 echo "  Workflows   : ${WORKFLOWS_DIR}"
+echo "  State       : ${STATE_DIR}  (HMAC key; mounted by start.sh)"
 echo "  Worktrees   : ${HOST_WORKTREE_ROOT}"
 echo "  Env         : ${ENV_PATH}"
 echo
@@ -242,3 +251,4 @@ echo
 echo "Then:"
 echo "  export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:${HOST_PORT}/mcp"
 echo "  curl -fsS http://127.0.0.1:${HOST_PORT}/health"
+echo "  curl -fsS http://127.0.0.1:${HOST_PORT}/ready   # must include sessionKeyWritable: true"

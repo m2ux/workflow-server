@@ -20,6 +20,9 @@ services:
       # PLANNING_SLUG: .engineering/planning
       WORKFLOW_DIR: ${CONTAINER_WORKFLOW_DIR:-/app/workflows}
       SCHEMAS_DIR: ${CONTAINER_SCHEMAS_DIR:-/app/schemas}
+      # HMAC key dir — do not rely on HOME (Docker --user without passwd → HOME=/)
+      WORKFLOW_SERVER_KEY_DIR: ${CONTAINER_STATE_DIR:-/var/lib/workflow-server}
+      HOME: ${CONTAINER_STATE_DIR:-/var/lib/workflow-server}
       TRANSPORT: ${TRANSPORT:-http}
       HOST: ${HOST:-0.0.0.0}
       PORT: ${PORT:-3000}
@@ -36,4 +39,9 @@ services:
       - type: bind
         source: ${HOST_WORKTREE_ROOT:-${HOME}/worktrees}
         target: ${CONTAINER_WORKTREE_ROOT:-/worktrees}
+        read_only: false
+      # Durable server state (HMAC secret). Prefer a host path you control.
+      - type: bind
+        source: ${HOST_STATE_DIR:-./.workflow-server-state}
+        target: ${CONTAINER_STATE_DIR:-/var/lib/workflow-server}
         read_only: false
