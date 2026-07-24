@@ -198,6 +198,7 @@
           <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>yes</td><td>Workflow id to run or dispatch (for example, <code>work-package</code>).</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace. Default: <code>&quot;worker&quot;</code></td></tr>
           <tr><td><code>planning_slug</code></td><td><code>string</code></td><td>no</td><td>Slug for the promoted planning folder when dispatching from a meta bootstrap session. Ignored if the parent already has a persistent folder.</td></tr>
+          <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Optional. Target owner/repo (or github URL). Used when promoting a transient multi-root parent; overrides any repo stashed at start_session. Pass from worker prior-state / AGENTS.md when start_session omitted it.</td></tr>
           <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td><code>persistent</code>: reuse earlier deliveries when one agent keeps full context. <code>fresh</code> (default): always return full content.</td></tr>
           </tbody>
         </table>

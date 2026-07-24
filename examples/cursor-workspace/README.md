@@ -37,7 +37,7 @@ examples/cursor-workspace/
 
 | Path | Role |
 |------|------|
-| `AGENTS.md` | Declares the target `owner/repo`. Pass that value as `repo` on `start_session` when the server uses install multi-root. |
+| `AGENTS.md` | Declares the target `owner/repo`. Always pass that value as `repo` on `start_session`. |
 | `workflow-server.code-workspace` | Opens three roots: this folder, `$INSTALL/engineering/<owner>/<repo>`, and `$INSTALL/workspace/<owner>/<repo>`. |
 | `.cursor/mcp.json` | Connects Cursor to the running HTTP server via `npx mcp-remote`. |
 | `.cursor/rules/*.mdc` | Always-applied IDE rules (bootstrap + optional concept-rag). |

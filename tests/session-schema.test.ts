@@ -4,6 +4,7 @@ import {
   safeValidateSessionFile,
   validateSessionFile,
   createInitialSessionFile,
+  bindSessionRepo,
   parentChainDepth,
   PARENT_CHAIN_DEPTH_WARN_THRESHOLD,
   type SessionFile,
@@ -272,6 +273,59 @@ describe('SessionFile schema', () => {
         agentId: 'worker',
       });
       expect(file.parentSession).toBeUndefined();
+    });
+
+    it('includes optional repo when provided', () => {
+      const file = createInitialSessionFile({
+        sessionIndex: VALID_INDEX,
+        workflowId: 'meta',
+        workflowVersion: '5.0.0',
+        agentId: 'orchestrator',
+        repo: 'acme/app',
+      });
+      expect(file.repo).toBe('acme/app');
+      expect(safeValidateSessionFile(file).success).toBe(true);
+    });
+  });
+
+  describe('bindSessionRepo', () => {
+    const identity = (s: string) => s;
+
+    it('binds repo when missing', () => {
+      const file = createInitialSessionFile({
+        sessionIndex: VALID_INDEX,
+        workflowId: 'meta',
+        workflowVersion: '5.0.0',
+        agentId: 'orchestrator',
+      });
+      const next = bindSessionRepo(file, 'acme/app', identity);
+      expect(next.repo).toBe('acme/app');
+      expect(file.repo).toBeUndefined();
+    });
+
+    it('is idempotent for the same repo', () => {
+      const file = createInitialSessionFile({
+        sessionIndex: VALID_INDEX,
+        workflowId: 'meta',
+        workflowVersion: '5.0.0',
+        agentId: 'orchestrator',
+        repo: 'acme/app',
+      });
+      const next = bindSessionRepo(file, 'acme/app', identity);
+      expect(next).toBe(file);
+    });
+
+    it('rejects a conflicting rebind', () => {
+      const file = createInitialSessionFile({
+        sessionIndex: VALID_INDEX,
+        workflowId: 'meta',
+        workflowVersion: '5.0.0',
+        agentId: 'orchestrator',
+        repo: 'acme/app',
+      });
+      expect(() => bindSessionRepo(file, 'other/repo', identity)).toThrow(
+        /already bound to repo 'acme\/app'/,
+      );
     });
   });
 
