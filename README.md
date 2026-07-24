@@ -38,14 +38,9 @@ User Goal → Workflow → Activities → Techniques → Tools
 
 ## 🚀 Quick Start
 
-### Initialise Workflow Server
+### Setup
 
 Full sequence (layout, init repo, binding, IDE rule, verify): **[setup.md](setup.md)**.
-
-| Transport | When | Guide |
-|-----------|------|--------|
-| **Docker / HTTP** | GHCR image; no server checkout | [http.md](http.md) |
-| **stdio** | Local checkout; IDE spawns the process | [stdio.md](stdio.md) |
 
 HTTP one-liner:
 
