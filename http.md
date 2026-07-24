@@ -1,7 +1,7 @@
 # Setup — Docker / HTTP
 
 Transport-specific steps for running the **GHCR image** over HTTP.  
-Shared sequence: **[setup.md](setup.md)** (start there, then return here for §1–3).
+Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, day-two).
 
 ## Prerequisites
 
@@ -59,7 +59,20 @@ Project config (e.g. [`.cursor/mcp.json`](.cursor/mcp.json)):
 }
 ```
 
-Continue with [setup.md](setup.md) **§2** through **§5**. Health: `curl -fsS http://127.0.0.1:3000/health`.
+Restart the IDE (or reload MCP servers) after setting the env var and config.
+
+## 4. Verify
+
+| Check | How |
+|-------|-----|
+| Liveness | `curl -fsS http://127.0.0.1:3000/health` → `{"status":"ok"}` |
+| Readiness | `curl -fsS http://127.0.0.1:3000/ready` → `status: ready` (workflow, schemas, workspace, and engineering dirs when split) |
+| Container | `docker logs -f workflow-server` (default name; no crash loop) |
+| MCP | In the IDE: list available workflows |
+
+Adjust host/port if you changed `--host-port`. Routes: [docs/api-reference.md](docs/api-reference.md#http-endpoints).
+
+Then finish shared steps in [setup.md](setup.md) (**§2** init-repo, **§3** IDE rule, **§4** day-two).
 
 ## HTTP-only references
 

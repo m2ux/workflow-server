@@ -1,6 +1,6 @@
 # Setup
 
-Install workflow-server and prepare a target repo. MCP client wiring is transport-specific — see [http.md](http.md) or [stdio.md](stdio.md).
+Install workflow-server and prepare a target repo. Transport install, MCP client, and verify steps are in [http.md](http.md) or [stdio.md](stdio.md).
 
 ## 1. Choose a transport
 
@@ -41,15 +41,7 @@ Alternatively, from a **project repo root**, [`scripts/deploy.sh`](scripts/deplo
 
 Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
 
-## 4. Verify
-
-| Check | How |
-|-------|-----|
-| HTTP liveness | `curl -fsS http://127.0.0.1:3000/health` → `{"status":"ok"}` |
-| HTTP readiness | `curl -fsS http://127.0.0.1:3000/ready` (dirs must exist) |
-| MCP | In the IDE: list available workflows |
-
-## 5. Day-two operations
+## 4. Day-two operations
 
 | Task | Command / note |
 |------|----------------|

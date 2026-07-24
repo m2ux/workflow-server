@@ -1,7 +1,7 @@
 # Setup — stdio
 
 Transport-specific steps for a **local checkout** where the IDE spawns the server over stdio (default transport).  
-Shared sequence: **[setup.md](setup.md)** (start there, then return here for §1–2).
+Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, day-two).
 
 ## Prerequisites
 
@@ -50,7 +50,20 @@ The IDE starts the process; you do not run a long-lived server yourself. Point t
 
 Developer-only process flags: [docs/development.md](docs/development.md#environment-variables).
 
-Continue with [setup.md](setup.md) **§3** through **§5**.
+## 3. Verify
+
+There is no HTTP listener under stdio — the IDE owns the process.
+
+| Check | How |
+|-------|-----|
+| Build | `npm run typecheck` (and `npm run build` if `dist/` is stale) |
+| Paths | `--install-dir` / `--workflow-dir` exist and are readable |
+| MCP load | Restart the IDE (or reload MCP servers); the workflow-server entry shows as connected with no spawn error |
+| Tools | In the IDE: list available workflows (`list_workflows`) |
+
+If the server fails to start, check the MCP client log for the `node …/dist/index.js` stderr (missing workspace/install root, bad `WORKFLOW_DIR`, etc.).
+
+Then finish shared steps in [setup.md](setup.md) (**§2** init-repo if needed, **§3** IDE rule, **§4** day-two).
 
 ## stdio-only references
 
