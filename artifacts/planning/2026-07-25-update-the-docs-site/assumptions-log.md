@@ -25,20 +25,15 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | IA-3 | Implementation Analysis | Baseline Interpretation | L | SITE_ROUTES↔HTML equality means route registry is healthy; drift is content/claims not missing pages. | Python set equality on worktree | Validated |
 | IA-4 | Implementation Analysis | Dependency Understanding | M | Hand-authored site design/specs pages will not auto-sync from markdown — parity is a manual Batch 1–4 duty. | documentation-system.md; no md→html compiler for specs | Validated |
 | IA-5 | Implementation Analysis | Gap Identification | L | Adding new site pages (rationale, internals, orchestra HTML) is optional; prefer retargeting claims and hub links to preserve URL stability. | Requirements path-stability; C-07/C-08 | Confirmed (agent position for plan) |
-| PL-1 | Plan & Prepare | Design Approach | M | Seven-batch plan on existing two-layer system is the right implementation shape versus platform rewrite or HTML-only polish. | Requirements out-of-scope; alternatives table in work-package-plan | Open (approach-confirmed) |
-| PL-2 | Plan & Prepare | Task Breakdown | L | Single PR #293 with batch-labeled commits is preferable to seven PRs for this docs package. | Stakeholder PR tracking; reviewability | Open (approach-confirmed) |
+| PL-1 | Plan & Prepare | Design Approach | M | Seven-batch plan on existing two-layer system is the right implementation shape versus platform rewrite or HTML-only polish. | User checkpoint `approach-confirmed` / `confirmed` (2026-07-25) | Confirmed |
+| PL-2 | Plan & Prepare | Task Breakdown | L | Single PR #293 with batch-labeled commits is preferable to seven PRs for this docs package. | User checkpoint `approach-confirmed` / `confirmed` (2026-07-25) | Confirmed |
 | PL-3 | Plan & Prepare | Test Strategy | L | Site automated tests + manual golden path suffice; no new MCP server unit suite required unless Batch 7 adds a check script. | tests/site.test.ts; docs-only scope | Validated (plan) |
-| PL-4 | Plan & Prepare | Scope Decisions | M | Batches 3–6 may be trimmed after Batch 1–2 if review wants a minimal ship; Batch 1–2 are non-negotiable for SC-1/SC-2. | Severity in contradiction register | Open (approach-confirmed) |
+| PL-4 | Plan & Prepare | Scope Decisions | M | Batches 3–6 may be trimmed after Batch 1–2 if review wants a minimal ship; Batch 1–2 are non-negotiable for SC-1/SC-2. | User checkpoint `approach-confirmed` / `confirmed` (2026-07-25); full plan accepted | Confirmed |
 
 ## Open Assumptions
 
-### PL-1 / PL-2 / PL-4: Approach and batch depth
-**Assumption:** Full seven-batch plan on PR #293 after analysis approval.  
-**Decision space:** (A) Confirm full plan — preferred; (B) Revise (e.g. Batch 1–2 only for first merge); (C) Reject for replan.  
-**Why not code-resolvable:** Stakeholder scope/timeline.  
-**Agent's position:** (A) full plan; Batch 1–2 first commits if time-boxed.  
-**Reversibility:** easily-reversible via revise option.
+_None. All plan-prepare assumptions resolved._
 
 ## Wrap-Up
 
-20 assumptions — IA closed; PL-1/2/4 open at approach-confirmed; PL-3 plan-validated. See [work-package-plan.md](work-package-plan.md), [implementation-analysis.md](implementation-analysis.md). Deferred: [deferred-items](deferred-items.md).
+20 assumptions — all closed. PL-1/2/4 Confirmed (User) via `approach-confirmed`; PL-3 plan-validated; IA/RE/DP closed earlier. See [work-package-plan.md](work-package-plan.md), [implementation-analysis.md](implementation-analysis.md). Deferred: [deferred-items](deferred-items.md).

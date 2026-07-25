@@ -31,8 +31,8 @@ After you confirm the approach, work lands on PR #293 in seven reviewable batche
 | 5 | 03 | [Requirements elicitation](requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ✅ |
 | 6 | 04 | [KB research](kb-research.md) | Knowledge-base and web synthesis | 20-45m | ⊘ |
 | 7 | 05 | [Implementation analysis](implementation-analysis.md) | Baselines, gaps, measurement (A–G) | 20-45m | ✅ |
-| 8 | 06 | [Work package plan](work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ◐ |
-| 9 | 06 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ◐ |
+| 8 | 06 | [Work package plan](work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ✅ |
+| 9 | 06 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ |
 | 10 | 06 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ✅ |
 | 11 | 06 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | ⬚ |
 | 12 | 07 | Assumptions review | Converge open assumptions | 20-40m | ⬚ |

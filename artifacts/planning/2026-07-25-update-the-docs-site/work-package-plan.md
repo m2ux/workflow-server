@@ -1,6 +1,6 @@
 # Update the Docs Site — Implementation Plan
 
-> plan · HIGH · Planning · 3–6h agentic + 1–2h review · 2026-07-25
+> plan · HIGH · Ready · 3–6h agentic + 1–2h review · 2026-07-25
 
 ## Overview
 
@@ -134,7 +134,7 @@ Test cases and acceptance matrix: [test plan](test-plan.md).
 
 ### Requires (Blockers)
 
-- [ ] Stakeholder **approach-confirmed** on this plan + A–G analysis (this checkpoint)
+- [x] Stakeholder **approach-confirmed** on this plan + A–G analysis (confirmed 2026-07-25)
 - [ ] Access to docs worktree and ability to push PR #293 branch
 
 ### Risks
@@ -146,4 +146,4 @@ Test cases and acceptance matrix: [test plan](test-plan.md).
 | Editorial scope creep into brand redesign | MEDIUM | LOW | Hard out-of-scope D-2; a11y-only in Batch 6 |
 | Push/SSH failures on engineering submodule | LOW | MEDIUM | Retry with full perms; note in handoff |
 
-**Status:** Ready for implementation after approach-confirmed
+**Status:** Ready for implementation
