@@ -9,3 +9,10 @@
 | batch-7 | cursor | composer | docs | repo-only | tests/docs-drift.test.ts guards; build:site, check:site, check:svg, site+drift tests, typecheck green |
 | readme-out-of-scope | cursor | composer | docs | repo-only | Restore README pre-rewrite; exclude README from docs-drift guards per stakeholder |
 | validate | cursor | composer | docs | repo-only | Local suite re-run: build:site/check:site/check:svg/typecheck/site+drift PASS; validation-results.md |
+
+## Attestation
+
+- **Timestamp:** 2026-07-25T08:37:32Z
+- **Certifier:** Mike Clay <mike.clay@shielded.io>
+- **Option:** certify
+- **Statement:** Certifier attests (1) right to submit under the project license, (2) no unclear or incompatible provenance in the patch, (3) willingness to take responsibility for defects and licensing issues in this contribution.
