@@ -16,7 +16,9 @@ When docs drift, people waste time on outdated steps, misconfigure environments,
 
 ## Solution Overview
 
-Evidence-based docs accuracy/IA/UX analysis (deliverables A–G) is in [implementation-analysis.md](implementation-analysis.md). Highest-priority fixes: tool-count prose (16 vs 17), `session_token`→`session_index`, Skill→Technique in agent docs, ghost `site/internals`/`rationale` claims, setup day-two naming, and a stronger README golden path—**after** analysis review, in seven batches.
+We will keep the existing two-layer docs system (markdown as source of truth, hand-authored site with generated API/nav regions) and use the evidence in [implementation-analysis.md](implementation-analysis.md) to fix trust-breaking drift first, then onboarding, then polish.
+
+After you confirm the approach, work lands on PR #293 in seven reviewable batches: factual corrections (tool counts, session_index, vocabulary, ghost paths), onboarding/navigation, de-duplication, plain language, troubleshooting/examples, accessibility, and automated drift checks—ending with site tests and a manual golden-path walk, without a new docs platform or product redesign.
 
 ## 📊 Progress
 
@@ -29,9 +31,9 @@ Evidence-based docs accuracy/IA/UX analysis (deliverables A–G) is in [implemen
 | 5 | 03 | [Requirements elicitation](requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ✅ |
 | 6 | 04 | [KB research](kb-research.md) | Knowledge-base and web synthesis | 20-45m | ⊘ |
 | 7 | 05 | [Implementation analysis](implementation-analysis.md) | Baselines, gaps, measurement (A–G) | 20-45m | ✅ |
-| 8 | 06 | [Work package plan](work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ⬚ |
-| 9 | 06 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ |
-| 10 | 06 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ⬚ |
+| 8 | 06 | [Work package plan](work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ◐ |
+| 9 | 06 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ◐ |
+| 10 | 06 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ✅ |
 | 11 | 06 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | ⬚ |
 | 12 | 07 | Assumptions review | Converge open assumptions | 20-40m | ⬚ |
 | 13 | 08 | Implementation | Code changes per plan | 1-4h | ⬚ |
