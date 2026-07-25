@@ -18,7 +18,7 @@ All other changed paths map to requirements batches 1–7 (onboarding, accuracy,
 
 ## PR Body Conformance
 
-Body refreshed to Final template via `update-pr::render` (strategic-review `refresh-pr-body`). Residual pre-merge TODOs: manual golden-path spot-check; unsigned-commits disposition; Ready for review.
+Body conforms — Final template applied via `update-pr::render`. Residual pre-merge TODOs: manual golden-path spot-check; Ready for review.
 
 ## Minimality Assessment
 
@@ -26,12 +26,12 @@ All 5 minimality checks pass for docs/site/tests/examples. Sole borderline item 
 
 ## Unsigned commits
 
-Signature scan (`%G?`): all 10 commits in `main..HEAD` report `N` (no valid GPG signature). Handled by activity checkpoint `unsigned-commits-prompt` — not a code-scope finding.
+Signature scan (`%G?`): all 10 commits in `main..HEAD` report `N` (no valid GPG signature). Checkpoint `unsigned-commits-prompt` → **decline-resign** (`resign_unsigned_commits_requested=false`). Branch history remains unsigned by choice; not re-signed and not treated as a code-scope finding.
 
 ## Review Result
 
 **Outcome:** Passed with minor observations
 
-**Rationale:** Docs-only package; changes justified by requirements. Residuals: SR-1 (README micro-edit vs IM-2), stale PR body (refresh next), unsigned commits (user checkpoint).
+**Rationale:** Docs-only package; changes justified by requirements. PR body refreshed to Final template. Residuals: SR-1 (README link-bar vs IM-2); unsigned commit history retained per user choice.
 
-**Next Step:** Resolve unsigned-commits prompt; refresh PR body to final template; disposition SR-1 at findings checkpoint if still open.
+**Next Step:** Disposition SR-1 at findings checkpoint (`review-findings`); then submit-for-review when `review_passed`.
