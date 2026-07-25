@@ -5,8 +5,21 @@ Authoritative schema: [`schemas/technique.schema.json`](../schemas/technique.sch
 [`src/loaders/markdown-technique-loader.ts`](../src/loaders/markdown-technique-loader.ts),
 [`src/loaders/technique-loader.ts`](../src/loaders/technique-loader.ts).
 
-This document specifies what a technique is, how technique files are authored and parsed, how
-techniques are addressed and composed, and what the server delivers when one is referenced.
+## Before the formal rules
+
+**Who this is for:** workflow authors and contributors who write or change technique markdown.
+
+**In one sentence:** a technique is a reusable capability file — what it does, what it needs, the ordered steps to follow, and optional rules — that an activity step names so the agent knows how to act.
+
+**Practical path**
+
+1. Put technique files under a workflow’s `techniques/` directory (see §2).
+2. Give each technique a clear capability, inputs/outputs when useful, and an ordered protocol.
+3. Reference techniques from activity steps; the server loads and composes them at run time.
+
+**Product model:** `User goal → Workflow → Activities → Techniques → Tools`.
+
+The sections below are the normative contract (addressing, composition, delivery). For a short catalog of MCP tools, see [api-reference.md](api-reference.md).
 
 ---
 
@@ -14,7 +27,7 @@ techniques are addressed and composed, and what the server delivers when one is 
 
 A technique is a unit of reusable procedure and interface: a capability statement, an optional typed
 interface (inputs and outputs), an ordered protocol, and optional rules. Techniques are the leaf of
-the `Goal → Activity → Technique → Tools` model — an activity step names a technique, and the
+the `Goal → Workflow → Activities → Techniques → Tools` model — an activity step names a technique, and the
 technique tells the agent how.
 
 A technique can contain other techniques, nested within its folder. A nested technique is a

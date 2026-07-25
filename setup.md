@@ -1,6 +1,29 @@
 # Setup
 
-Install workflow-server and prepare a target repo. Transport install, MCP client, and verify steps are in [http.md](http.md) or [stdio.md](stdio.md).
+Install Workflow Server and prepare a target repository so an IDE agent can run workflows.
+
+**Outcome:** server reachable over your chosen transport, target repo registered, bootstrap rule in place, and a verified first session.
+
+Transport install, MCP client config, and transport verify steps live only in:
+
+- [http.md](http.md) — Docker / HTTP  
+- [stdio.md](stdio.md) — local stdio  
+
+This page owns the **shared** sequence both transports finish with.
+
+## Three different operations
+
+Do not treat these as synonyms:
+
+| Operation | Script | What it does |
+|-----------|--------|----------------|
+| **Install the server host** | [`scripts/install.sh`](scripts/install.sh) | Creates the install directory, helper scripts, workflows clone, and default layout under `$INSTALL` (see table below). |
+| **Deploy into a product repo** | [`scripts/deploy.sh`](scripts/deploy.sh) | Runs **inside the target project**. Makes that repo workflow-compatible (engineering layout / branch or submodule). |
+| **Register the repo with the install** | [`scripts/init-repo.sh`](scripts/init-repo.sh) | Runs against `$INSTALL`. Materialises checkouts and planning paths for `owner/repo`. Does **not** replace deploy. |
+
+Typical order for a new product repo: **install host (once) → deploy in the repo → init-repo → IDE rule → verify**.
+
+Engineering layout patterns: [docs/engineering-storage.md](docs/engineering-storage.md).
 
 ## 1. Choose a transport
 
@@ -9,7 +32,11 @@ Install workflow-server and prepare a target repo. Transport install, MCP client
 | **Docker / HTTP** | Run the GHCR image; no server source checkout | [http.md](http.md) |
 | **stdio** | IDE spawns `node dist/index.js` from a local checkout | [stdio.md](stdio.md) |
 
+Complete the transport guide’s install, start (HTTP), and MCP client sections first, then return here for §2–§4.
+
 ### Installed root paths
+
+Canonical path table (do not maintain a second full copy elsewhere):
 
 | Path | Default | Purpose |
 |------|---------|---------|
@@ -24,11 +51,11 @@ Install workflow-server and prepare a target repo. Transport install, MCP client
 
 ## 2. Init a target repo
 
-Two steps per project: the first (a) touches the **repo** to make it workflow-server-compatible. The second (b) initialises the *local* workflow-server paths for operating on that repo.
+Two steps per project. **2a** changes the **product repo**. **2b** sets up **local install paths** for that repo.
 
 ### 2a. Deploy engineering into the project (required first)
 
-From the **root of the target project repo** (not the workflow-server checkout), run [`scripts/deploy.sh`](scripts/deploy.sh). This sets the repo up for workflow-server compatibility (`.engineering/` layout, engineering branch/submodule, planning structure).
+From the **root of the target project repo** (not the workflow-server checkout), run [`scripts/deploy.sh`](scripts/deploy.sh):
 
 ```bash
 # inside the target project
@@ -41,7 +68,7 @@ Layouts (same-repo orphan, shared engineering monorepo, in-branch): [docs/engine
 
 ### 2b. Materialise install-root paths
 
-After the project has been deployed, register it under the workflow-server install layout:
+After deploy, register the project under the install layout:
 
 ```bash
 ~/.local/share/workflow-server/init-repo.sh owner/repo
@@ -51,7 +78,7 @@ After the project has been deployed, register it under the workflow-server insta
 
 That creates:
 
-- `$INSTALL/projects/<owner>/<repo>/` — app checkout on `--branch` or the remote default (reference for `git worktree add`)
+- `$INSTALL/projects/<owner>/<repo>/` — app checkout on `--branch` or the remote default
 - `$INSTALL/projects/<owner>/<repo>/.engineering/` — engineering submodule or materialised planning tree
 - `$INSTALL/worktrees/<owner>/<repo>/` — parent directory for feature worktrees
 
@@ -59,23 +86,47 @@ That creates:
 
 ## 3. IDE bootstrap rule
 
-Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests.
+Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests and passes `session_index` / `repo` correctly.
 
 ### Example Cursor workspace
 
-A ready-to-copy multi-root Cursor workspace (MCP config, always-on rules, `AGENTS.md` repo hint, and `.code-workspace` mounts for install-root projects + worktrees) lives at:
+Copy-ready multi-root workspace (MCP config, rules, `AGENTS.md` repo hint):
 
-**[examples/cursor-workspace/](examples/cursor-workspace/)** — layout and copy steps in [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md).
+**[examples/cursor-workspace/](examples/cursor-workspace/)** — [README](examples/cursor-workspace/README.md).
 
-## 4. Update Workflows
+## 4. Update Workflows {#day-two}
 
-If the workflows definitions or managed project checkouts are updated remotely, refresh locally:
+When workflow definitions or managed project checkouts change remotely, refresh locally:
 
 ```bash
 $INSTALL/update-workflows.sh
 ```
 
-This ff-updates `$INSTALL/workflows` and every `$INSTALL/projects/<owner>/<repo>` (plus `.engineering` when it is a git checkout). Restart the HTTP server afterward if it is running.
+This fast-forwards `$INSTALL/workflows` and every `$INSTALL/projects/<owner>/<repo>` (plus `.engineering` when it is a git checkout). Restart the HTTP server afterward if it is running.
+
+The anchor `#day-two` is kept for existing links (same section).
+
+## Verify (after transport + §2–§3)
+
+Transport-specific health checks: [http.md §4](http.md#4-verify) or [stdio.md §3](stdio.md#3-verify).
+
+**MCP smoke (both transports):**
+
+1. Agent calls **`discover`**.
+2. Agent calls **`start_session`** with at least `workflow_id` (default `meta`), `agent_id`, and **`repo: "owner/repo"`**.
+3. You get a **`session_index`** back.
+
+`list_workflows` alone is not a full smoke test.
+
+## Troubleshooting
+
+| Problem | Likely cause | Fix |
+|---------|--------------|-----|
+| Sessions fail while HTTP is up | `/ready` not fully ready | Require `sessionKeyWritable: true` — [http.md](http.md) |
+| Agent skips `discover` | Bootstrap rule missing | [docs/ide-setup.md](docs/ide-setup.md) |
+| Repo / planning path errors | Skipped deploy or init-repo | Complete §2a then §2b |
+| stdio exits at startup | No workspace or repo binding | [stdio.md](stdio.md) — `--workspace` or `--repo` required |
+| OAuth discovery 404s in logs | Unauthenticated local HTTP | Expected noise — [http.md](http.md) |
 
 ## More detail
 

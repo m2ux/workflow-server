@@ -17,8 +17,7 @@ Fetches helper scripts, clones the `workflows` branch, creates `projects/`,
 curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
 ```
 
-> Options: `install.sh --help` (`--install-dir`, `--worktree-root`, `--projects-root`, …).  
-> Legacy URL `…/install-docker.sh` still works (forwards to `install.sh`).
+> Options: `install.sh --help` (`--install-dir`, `--worktree-root`, `--projects-root`, …).
 
 ## 2. Start the server
 
@@ -106,13 +105,31 @@ still follows. They appear as ordinary request logs (`type: info`), not
 | Liveness | `curl -fsS http://127.0.0.1:3000/health` → `{"status":"ok"}` |
 | Readiness | `curl -fsS http://127.0.0.1:3000/ready` → `status: ready` including **`sessionKeyWritable: true`** (plus workflow/schemas/workspace, and `engineeringDir` when split) |
 | Container | `docker logs -f workflow-server` (default name; no crash loop) |
-| MCP smoke | `discover`, then `start_session` with `{ "workflow_id": "meta", "agent_id": "orchestrator" }` — listing workflows alone is not enough |
+| MCP smoke | `discover`, then `start_session` with `workflow_id` (e.g. `meta`), `agent_id`, and **`repo: "owner/repo"`** — listing workflows alone is not enough |
+
+**Expected cues**
+
+- `/health` → JSON with `"status":"ok"` (or equivalent ok payload).
+- `/ready` → ready payload with **`sessionKeyWritable: true`**.
+- `start_session` → response includes a six-character **`session_index`**.
 
 A green `/health` without `sessionKeyWritable: true` means sessions cannot start.
 
 Adjust host/port if you changed `--host-port`. Routes: [docs/api-reference.md](docs/api-reference.md#http-endpoints).
 
-Then finish shared steps in [setup.md](setup.md) (**§2** init-repo, **§3** IDE rule, **§4** Update Workflows).
+Then finish shared steps in [setup.md](setup.md) (**§2** deploy + init-repo, **§3** IDE rule, **§4** Update Workflows).
+
+## Troubleshooting
+
+| Symptom | What to check |
+|---------|----------------|
+| `/ready` fails or `sessionKeyWritable` is false | Host `$INSTALL/state` bind and `WORKFLOW_SERVER_KEY_DIR` — see `start.sh` and [workflow-fidelity](docs/workflow-fidelity.md) |
+| MCP client cannot reach the server | URL must be `http://127.0.0.1:<port>/mcp`; hard-code if IDE env interpolation is empty |
+| OAuth / `.well-known` 404 or bare `GET /mcp` 400 in logs | Expected without application auth — see §3 above |
+| `start_session` rejects or cannot find planning | Run [setup.md §2](setup.md#2-init-a-target-repo) (`deploy` then `init-repo`); always pass `repo` |
+| Image/container crash loop | `docker logs workflow-server`; confirm binds for worktrees, projects, and state |
+
+Shared install vs deploy vs init-repo: [setup.md](setup.md#three-different-operations).
 
 ## HTTP-only references
 

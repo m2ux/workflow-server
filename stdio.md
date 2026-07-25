@@ -95,11 +95,28 @@ There is no HTTP listener under stdio — the IDE owns the process.
 | Build | `npm run typecheck` (and `npm run build` if `dist/` is stale) |
 | Paths | `--repo` + `--install-dir`, or `--workspace`, plus readable `--workflow-dir` |
 | MCP load | Restart the IDE (or reload MCP servers); the workflow-server entry shows as connected with no spawn error |
-| Smoke | `discover`, then `start_session` (`list_workflows` alone is not enough) |
+| Smoke | `discover`, then `start_session` with **`repo: "owner/repo"`** (`list_workflows` alone is not enough) |
+
+**Expected cues**
+
+- MCP entry shows connected (no spawn error in the client log).
+- `start_session` returns a six-character **`session_index`**.
 
 If the server fails to start, check the MCP client log for the `node …/dist/index.js` stderr (missing workspace/repo, bad `WORKFLOW_DIR`, etc.).
 
-Then finish shared steps in [setup.md](setup.md) (**§2** init-repo if needed, **§3** IDE rule, **§4** Update Workflows).
+Then finish shared steps in [setup.md](setup.md) (**§2** deploy + init-repo if needed, **§3** IDE rule, **§4** Update Workflows).
+
+## Troubleshooting
+
+| Symptom | What to check |
+|---------|----------------|
+| Process exits immediately | Provide **`--workspace=…`** or **`--repo=owner/repo`** — `--install-dir` alone is not enough |
+| Spawn error / cannot find `dist/index.js` | Run `npm run build`; use an absolute path to `dist/index.js` |
+| Workflows not found | Readable `--workflow-dir` (or install workflows worktree) |
+| Planning path / repo errors | [setup.md §2](setup.md#2-init-a-target-repo); pass `repo` on `start_session` |
+| Agent never calls `discover` | [docs/ide-setup.md](docs/ide-setup.md) bootstrap rule |
+
+Shared install vs deploy vs init-repo: [setup.md](setup.md#three-different-operations).
 
 ## stdio-only references
 
