@@ -20,11 +20,16 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | RE-4 | Requirements Elicitation | Success Criteria Interpretation | M | Package is not complete when only automated checks pass — manual golden-path walk as a new user is required. | User brief §11 Validation and Acceptance criteria | Confirmed |
 | RE-5 | Requirements Elicitation | Scope Boundaries | L | Implementation batch order is fixed priority 1–7 (facts → onboarding → duplication → plain language → examples → a11y → automation). | User brief §9G / §10 | Confirmed |
 | RE-6 | Requirements Elicitation | Requirement Interpretation | M | Stakeholder transcript fully substitutes for agent-led domain interview; five domains answered at specification depth without further Q&A before confirmation. | User checkpoint `elicitation-complete` / `complete` | Confirmed |
+| IA-1 | Implementation Analysis | Current Behavior | L | Worktree docs baseline is valid for analysis even though main has a newer site regen commit — gaps are structural and will re-verify after rebase. | `git log HEAD..main -- site`; tool-count issues present on both | Validated |
+| IA-2 | Implementation Analysis | Gap Identification | M | Closing C-01–C-09 in Batch 1 is sufficient to restore factual trust before large editorial rewrites. | Contradiction register severity mix; SC-1 priority | Validated (plan) |
+| IA-3 | Implementation Analysis | Baseline Interpretation | L | SITE_ROUTES↔HTML equality means route registry is healthy; drift is content/claims not missing pages. | Python set equality on worktree | Validated |
+| IA-4 | Implementation Analysis | Dependency Understanding | M | Hand-authored site design/specs pages will not auto-sync from markdown — parity is a manual Batch 1–4 duty. | documentation-system.md; no md→html compiler for specs | Validated |
+| IA-5 | Implementation Analysis | Gap Identification | L | Adding new site pages (rationale, internals, orchestra HTML) is optional; prefer retargeting claims and hub links to preserve URL stability. | Requirements path-stability; C-07/C-08 | Confirmed (agent position for plan) |
 
 ## Open Assumptions
 
-_None open after elicitation-complete._
+_None open after implementation-analysis (all IA rows code-validated or plan-confirmed without stakeholder gate)._
 
 ## Wrap-Up
 
-11 assumptions after requirements-elicitation — all confirmed or code-validated. Residual unknowns move to implementation-analysis registers (A–G), not further elicitation. Deferred platform/brand/product items: [deferred-items](deferred-items.md).
+16 assumptions after implementation-analysis — elicitation set confirmed; IA-1–IA-5 validated from repo inspection. Open product decisions deferred to analysis review of [implementation-analysis.md](implementation-analysis.md) A–G. Deferred platform/brand/product items: [deferred-items](deferred-items.md).

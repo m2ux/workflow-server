@@ -16,7 +16,7 @@ When docs drift, people waste time on outdated steps, misconfigure environments,
 
 ## Solution Overview
 
-*Populated by the producing step (a `stakeholder-overview` call).*
+Evidence-based docs accuracy/IA/UX analysis (deliverables A–G) is in [implementation-analysis.md](implementation-analysis.md). Highest-priority fixes: tool-count prose (16 vs 17), `session_token`→`session_index`, Skill→Technique in agent docs, ghost `site/internals`/`rationale` claims, setup day-two naming, and a stronger README golden path—**after** analysis review, in seven batches.
 
 ## 📊 Progress
 
@@ -28,7 +28,7 @@ When docs drift, people waste time on outdated steps, misconfigure environments,
 | 4 | 02 | [Assumptions log](assumptions-log.md) | Tracked assumptions across activities | 10-15m | ✅ |
 | 5 | 03 | [Requirements elicitation](requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ✅ |
 | 6 | 04 | [KB research](kb-research.md) | Knowledge-base and web synthesis | 20-45m | ⊘ |
-| 7 | 05 | [Implementation analysis](implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ◐ |
+| 7 | 05 | [Implementation analysis](implementation-analysis.md) | Baselines, gaps, measurement (A–G) | 20-45m | ✅ |
 | 8 | 06 | [Work package plan](work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ⬚ |
 | 9 | 06 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ |
 | 10 | 06 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ⬚ |
