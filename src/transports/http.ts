@@ -36,10 +36,16 @@ export function createHttpApp(config: ServerConfig): Express {
   registerHealthRoutes(app, config);
   registerMcpRoute(app, config);
 
-  // Catch-all: any request that reached here matched no route — funnel it
-  // through the shared error handler so 404s get the same JSON error shape.
-  app.use((req: Request, _res: Response, next: NextFunction) => {
-    next(Object.assign(new Error(`Not found: ${req.method} ${req.path}`), { name: 'NotFoundError', status: 404 }));
+  // Catch-all: unmatched routes (including OAuth discovery probes from
+  // mcp-remote at /.well-known/oauth-*). Respond with the shared JSON error
+  // shape without throwing — 4xx must not surface as type:error log lines.
+  app.use((req: Request, res: Response, _next: NextFunction) => {
+    res.status(404).json({
+      error: 'NotFoundError',
+      message: `Not found: ${req.method} ${req.path}`,
+      requestId: req.requestId,
+      timestamp: new Date().toISOString(),
+    });
   });
   app.use(errorHandler);
 

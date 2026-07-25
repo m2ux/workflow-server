@@ -93,10 +93,11 @@ Restart the IDE (or reload MCP servers) after setting the env var and config.
 
 ### Expected log noise from `mcp-remote`
 
-On connect, local unauthenticated HTTP may log 404s for OAuth discovery
-(`.well-known/oauth-*`) and occasional `GET /mcp` → 400 during the streamable-HTTP
-handshake. These are **expected** without OAuth; successful MCP init still follows.
-Real failures are application errors on tools (e.g. `start_session`).
+On connect, local unauthenticated HTTP may request OAuth discovery paths
+(`.well-known/oauth-*`) and occasionally `GET /mcp` without a session.
+Those return 404/400 and are **expected** without OAuth; successful MCP init
+still follows. They appear as ordinary request logs (`type: info`), not
+`type: error`. Real failures are application errors on tools (e.g. `start_session`).
 
 ## 4. Verify
 

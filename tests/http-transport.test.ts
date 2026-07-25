@@ -132,6 +132,35 @@ describe('HTTP transport', () => {
       expect(typeof res.body.timestamp).toBe('string');
     });
 
+    it('OAuth discovery probes return 404 without logging type:error (mcp-remote noise)', async () => {
+      const lines: string[] = [];
+      const spy = vi.spyOn(console, 'error').mockImplementation((line: unknown) => {
+        lines.push(String(line));
+      });
+      try {
+        for (const path of [
+          '/.well-known/oauth-authorization-server',
+          '/.well-known/oauth-protected-resource',
+          '/.well-known/oauth-protected-resource/mcp',
+        ]) {
+          const res = await request(app).get(path);
+          expect(res.status).toBe(404);
+          expect(res.body.error).toBe('NotFoundError');
+        }
+      } finally {
+        spy.mockRestore();
+      }
+      const parsed = lines.map((line) => {
+        try {
+          return JSON.parse(line) as { type?: string; path?: string; message?: string };
+        } catch {
+          return {};
+        }
+      });
+      expect(parsed.some((e) => e.type === 'error')).toBe(false);
+      expect(parsed.some((e) => e.type === 'info' && e.message === 'HTTP request' && e.path?.includes('oauth'))).toBe(true);
+    });
+
     it('POST /mcp without a session id or initialize request returns 400 with the shared error shape', async () => {
       const res = await request(app).post('/mcp').send({ jsonrpc: '2.0', method: 'tools/list', id: 1 });
       expect(res.status).toBe(400);
