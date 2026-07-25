@@ -42,7 +42,7 @@ After you confirm the approach, work lands on PR #293 in seven reviewable batche
 | 16 | 09 | [Code review](code-review.md) | Consolidated review findings home | 15-30m | ✅ |
 | 17 | 09 | [Debt ledger](debt-ledger.md) | Harvested ponytail debt markers | 10-20m | ✅ |
 | 18 | 09 | [Lean change](lean-change.md) | Applied lean simplifications record | 10-20m | ✅ |
-| 19 | 10 | Post-implementation review | Quality review before validation | 30-60m | ⬚ |
+| 19 | 10 | Post-implementation review | Quality review before validation | 30-60m | ◐ |
 | 20 | 10 | [Change block index](change-block-index.md) | Indexed diff hunks for review | 5-10m | ⬚ |
 | 21 | 10 | [Test suite review](test-suite-review.md) | Test quality and coverage | 10-20m | ⬚ |
 | 22 | 10 | [Structural analysis](structural-analysis.md) | Prism L12 when written standalone | 15-30m | ⬚ |
