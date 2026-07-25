@@ -20,6 +20,8 @@ Mirrors the AGENTS.md Technique vocabulary update for Claude Code hosts. Dual fi
 
 Trims the top catalog strip to links that still resolve and matter for newcomers; full README rewrite stays out of scope per stakeholder. Removes brittle Schemas/Engineering pointers that competed with the docs site and setup spine. Minimal diff preserves URL stability while reducing catalog noise.
 
+**Post-review (SR-1 acceptable):** Link-bar trim kept. Additional user-requested Setup tweak (not a new block): Claude Code plugin text now links to the VS Marketplace item (`docs: link Claude Code plugin in README Setup`).
+
 ### [Block 5 — docs/api-reference.md:10](../../../../.worktrees/2026-07-25-update-the-docs-site/docs/api-reference.md:10)
 
 Documents GET and DELETE `/mcp` beside POST so Streamable HTTP session lifecycle is complete in the API table. Operators who only saw POST missed how server→client streams and session teardown work. Wording stays declarative and points at http.md for operational detail.
