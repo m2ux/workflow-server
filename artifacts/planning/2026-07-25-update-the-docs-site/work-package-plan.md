@@ -55,12 +55,13 @@ Ordered by dependency. Each task is a docs/automation change only.
 
 **Goal:** Close C-01–C-09, C-12–C-14 accuracy items.  
 **Deliverables:**
-- Prose fixes: tool counts (17 / 13+4), remove false “sixteen/twelve”
-- `docs/ide-setup.md` + example rules: `session_index` only
+- **No brittle counts (user 2026-07-25):** remove tool/route/file tallies from prose unless required for a procedure; point at generated catalogs instead of “N tools” / “fix 16→17”
+- `docs/ide-setup.md` + example rules: `session_index` only (not `session_token`)
 - `AGENTS.md` / `CLAUDE.md`: Goal → Workflow → Activities → Techniques → Tools
 - `docs/api-reference.md`: GET/DELETE `/mcp` with POST
-- `docs/documentation-system.md`: retarget ghost `site/internals/` and `rationale.html`
+- `docs/documentation-system.md`: retarget ghost `site/internals/` and `rationale.html`; add avoid-brittle-counts convention
 - `.engineering/AGENTS.md`: `setup.md` not `SETUP.md`
+- Generator + `npm run build:site`: drop count from tools.html lede
 - `npm run build:site` committed if generated regions change
 
 ### Task 3: Batch 2 — Onboarding and navigation (45–90 min)

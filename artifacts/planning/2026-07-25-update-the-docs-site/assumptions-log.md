@@ -30,6 +30,7 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | PL-3 | Plan & Prepare | Test Strategy | L | Site automated tests + manual golden path suffice; no new MCP server unit suite required unless Batch 7 adds a check script. | tests/site.test.ts; docs-only scope | Validated (plan) |
 | PL-4 | Plan & Prepare | Scope Decisions | M | Batches 3–6 may be trimmed after Batch 1–2 if review wants a minimal ship; Batch 1–2 are non-negotiable for SC-1/SC-2. | User checkpoint `approach-confirmed` / `confirmed` (2026-07-25); full plan accepted | Confirmed |
 | AR-1 | Assumptions Review | Scope Decisions | L | No significant residual assumptions ([reason]) — pre-implement residue empty after plan-prepare close-out; DP/RE/IA/PL all Confirmed or Validated; Open Assumptions empty; out-of-scope items live only in deferred-items (D-1–D-5), not as open assumptions. | Code: assumptions-log Open empty; session `has_open_assumptions=false`; deferred-items.md | Validated |
+| IM-1 | Implement | Editorial Standard | M | Fixed inventory counts (tool totals, “sixteen tools”, registrar tool counts) must be **removed** from product docs, not corrected to a new number — they go stale and are not useful. Prefer “registered MCP tools” + link to generated catalog. | User direction 2026-07-25 (“counts should be removed… unless absolutely necessary”) | Confirmed |
 
 ## Open Assumptions
 

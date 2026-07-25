@@ -18,7 +18,7 @@ When docs drift, people waste time on outdated steps, misconfigure environments,
 
 We will keep the existing two-layer docs system (markdown as source of truth, hand-authored site with generated API/nav regions) and use the evidence in [implementation-analysis.md](implementation-analysis.md) to fix trust-breaking drift first, then onboarding, then polish.
 
-After you confirm the approach, work lands on PR #293 in seven reviewable batches: factual corrections (tool counts, session_index, vocabulary, ghost paths), onboarding/navigation, de-duplication, plain language, troubleshooting/examples, accessibility, and automated drift checks—ending with site tests and a manual golden-path walk, without a new docs platform or product redesign.
+After you confirm the approach, work lands on PR #293 in seven reviewable batches: factual corrections (**remove** brittle inventory counts; session_index; vocabulary; ghost paths), onboarding/navigation, de-duplication, plain language, troubleshooting/examples, accessibility, and automated drift checks—ending with site tests and a manual golden-path walk, without a new docs platform or product redesign.
 
 ## 📊 Progress
 
@@ -36,7 +36,7 @@ After you confirm the approach, work lands on PR #293 in seven reviewable batche
 | 10 | 06 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ✅ |
 | 11 | 06 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | ⬚ |
 | 12 | 07 | Assumptions review | Converge open assumptions | 20-40m | ✅ |
-| 13 | 08 | Implementation | Code changes per plan | 1-4h | ⬚ |
+| 13 | 08 | Implementation | Code changes per plan | 1-4h | ◐ |
 | 14 | 08 | [Provenance log](provenance-log.md) | Per-task AI-assistance provenance | 5-15m | ⬚ |
 | 15 | 09 | Lean-coding audit | Ponytail lean lens on the change | 15-30m | ⬚ |
 | 16 | 09 | [Code review](code-review.md) | Consolidated review findings home | 15-30m | ⬚ |
