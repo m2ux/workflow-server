@@ -1,12 +1,15 @@
 #!/usr/bin/env bash
-# workflow-server — initialize a managed repo under the install root
+# workflow-server — initialize a managed repo under the projects multi-root
 #
-# Accepts a full GitHub-style path (owner/repo), creates:
-#   projects/<owner>/<repo>/              # app checkout (default branch or --branch)
-#   projects/<owner>/<repo>/.engineering/ # eng submodule or materialised eng
-#   worktrees/<owner>/<repo>/           # parent for feature worktrees
+# Accepts a full GitHub-style path (owner/repo), creates basename checkout:
+#   $PROJECTS_ROOT/<repo>/              # app checkout (default branch or --branch)
+#   $PROJECTS_ROOT/<repo>/.engineering/ # eng submodule or materialised eng
+#   $PROJECTS_ROOT/<repo>/.worktrees/   # parent for feature worktrees (gitignored)
 #
-# Engineering resolution (into projects/.../.engineering):
+# PROJECTS_ROOT defaults to HOST_PROJECTS_ROOT from env, else $ROOT/projects.
+# $INSTALL/worktrees/<owner>/<repo> is deprecated and is not created.
+#
+# Engineering resolution (into <checkout>/.engineering):
 #   1. Explicit --engineering-url / --engineering-branch overrides
 #   2. App checkout: git submodule update --init -- .engineering
 #   3. App remote branch named "engineering" (or --engineering-branch) into .engineering
@@ -15,7 +18,7 @@
 # Does NOT init other product submodules (e.g. workflows) by default.
 #
 #   ~/.local/share/workflow-server/init-repo.sh m2ux/workflow-server
-#   ./scripts/init-repo.sh --branch=develop acme/app
+#   ./scripts/init-repo.sh --projects-root=~/projects/dev --branch=develop acme/app
 #   ./scripts/init-repo.sh --url=git@github.com:acme/app.git acme/app
 #
 # Needs: git
@@ -25,8 +28,11 @@ DEFAULT_ROOT="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
 DEFAULT_ENG_BRANCH="engineering"
 DEFAULT_HOST="github.com"
 DEFAULT_ENG_PATH=".engineering"
+DEFAULT_WORKTREES_NAME=".worktrees"
 
 ROOT="${WORKFLOW_SERVER_INSTALL_DIR:-$DEFAULT_ROOT}"
+# Prefer external HOST_PROJECTS_ROOT; fall back to install-colocated projects/.
+PROJECTS_ROOT="${HOST_PROJECTS_ROOT:-${WORKFLOW_SERVER_ENGINEERING_DIR:-}}"
 # Project checkout branch (empty = remote default: main/master via origin/HEAD).
 SOURCE_BRANCH="${WORKFLOW_SERVER_SOURCE_BRANCH:-}"
 ENG_BRANCH="${WORKFLOW_SERVER_ENGINEERING_BRANCH:-$DEFAULT_ENG_BRANCH}"
@@ -44,8 +50,7 @@ ENG_SOURCE_PIN=""
 
 usage() {
   cat <<EOF
-Initialize projects + engineering + worktrees paths for a repo under the
-workflow-server install root.
+Initialize a basename checkout under the projects multi-root (canonical layout).
 
 USAGE
   $(basename "$0") [options] <owner/repo>
@@ -53,11 +58,14 @@ USAGE
 ARGUMENTS
   owner/repo             Full repo path, e.g. m2ux/workflow-server
                          (also accepts https://github.com/owner/repo[.git])
+                         On disk the checkout is \$PROJECTS_ROOT/<repo>/ only.
 
 OPTIONS
   --root=PATH            Install root (default: ${DEFAULT_ROOT})
+  --projects-root=PATH   Projects multi-root (default: \$HOST_PROJECTS_ROOT
+                         or \$ROOT/projects)
   --url=URL              App repo git remote (default: https://github.com/<owner/repo>.git)
-  --branch=NAME          Branch to check out in projects/<owner>/<repo>
+  --branch=NAME          Branch to check out in \$PROJECTS_ROOT/<repo>
                          (default: remote default branch — usually main)
   --engineering-url=URL  Force engineering remote (skip submodule init)
   --engineering-branch=NAME
@@ -68,14 +76,14 @@ OPTIONS
   --force                Recreate paths if invalid / discard dirty trees
   -h, --help
 
-LAYOUT
-  \$ROOT/projects/<owner>/<repo>/                 # app checkout (--branch or default)
-  \$ROOT/projects/<owner>/<repo>/.engineering/    # planning eng root
-  \$ROOT/worktrees/<owner>/<repo>/              # feature worktree parent
+LAYOUT (canonical)
+  \$PROJECTS_ROOT/<repo>/                 # app checkout (--branch or default)
+  \$PROJECTS_ROOT/<repo>/.engineering/    # planning eng root
+  \$PROJECTS_ROOT/<repo>/.worktrees/      # feature worktree parent
 
 RESOLUTION
-  Clone the app into projects/ on --branch (or remote default), then prefer
-  submodule init for .engineering, else clone eng branch
+  Clone the app into \$PROJECTS_ROOT/<repo> on --branch (or remote default), then
+  prefer submodule init for .engineering, else clone eng branch
   "${DEFAULT_ENG_BRANCH}", else extract in-tree .engineering/.
 EOF
 }
@@ -498,6 +506,8 @@ while [[ $# -gt 0 ]]; do
     -h|--help) usage; exit 0 ;;
     --root=*) ROOT="${1#*=}"; shift ;;
     --root) ROOT="${2:?}"; shift 2 ;;
+    --projects-root=*) PROJECTS_ROOT="${1#*=}"; shift ;;
+    --projects-root) PROJECTS_ROOT="${2:?}"; shift 2 ;;
     --url=*) REPO_URL="${1#*=}"; shift ;;
     --url) REPO_URL="${2:?}"; shift 2 ;;
     --branch=*) SOURCE_BRANCH="${1#*=}"; shift ;;
@@ -543,15 +553,19 @@ if [[ -z "$REPO_URL" ]]; then
 fi
 
 ROOT="$(abs_path "$ROOT")"
-PROJECTS_DIR="${ROOT}/projects/${OWNER}/${NAME}"
+if [[ -z "$PROJECTS_ROOT" ]]; then
+  PROJECTS_ROOT="${ROOT}/projects"
+fi
+PROJECTS_ROOT="$(abs_path "$PROJECTS_ROOT")"
+# Canonical basename checkout (not owner/repo).
+PROJECTS_DIR="${PROJECTS_ROOT}/${NAME}"
 ENG_DIR="${PROJECTS_DIR}/${DEFAULT_ENG_PATH}"
-WT_DIR="${ROOT}/worktrees/${OWNER}/${NAME}"
-# Legacy sibling eng (migration notice only)
+WT_DIR="${PROJECTS_DIR}/${DEFAULT_WORKTREES_NAME}"
 
 echo
 echo "Init complete."
 echo "  Repo path    : ${REPO_PATH}"
-echo "  Projects     : ${PROJECTS_DIR}"
+echo "  Checkout     : ${PROJECTS_DIR}"
 echo "  Source branch: ${SOURCE_BRANCH_ACTUAL:-unknown}"
 echo "  Engineering  : ${ENG_DIR}"
 echo "  Worktrees    : ${WT_DIR}"

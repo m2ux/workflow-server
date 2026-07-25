@@ -16,7 +16,7 @@ DEFAULT_REMOTE="origin"
 
 INSTALL_DIR="${WORKFLOW_SERVER_INSTALL_DIR:-$DEFAULT_INSTALL_DIR}"
 WORKFLOWS_DIR=""
-PROJECTS_ROOT=""
+PROJECTS_ROOT="${HOST_PROJECTS_ROOT:-${WORKFLOW_SERVER_ENGINEERING_DIR:-}}"
 BRANCH="${WORKFLOW_SERVER_WORKFLOWS_BRANCH:-$DEFAULT_BRANCH}"
 REMOTE="$DEFAULT_REMOTE"
 FORCE=0
@@ -24,8 +24,8 @@ SKIP_SOURCE=0
 
 usage() {
   cat <<EOF
-Update the local workflows definitions checkout and every per-repo projects
-checkout under \$INSTALL/projects (default branch + .engineering when present).
+Update the local workflows definitions checkout and every basename project
+checkout under the projects multi-root (default branch + .engineering when present).
 
 USAGE
   update-workflows.sh [options]
@@ -34,7 +34,8 @@ OPTIONS
   --install-dir=PATH    Install root (default: ${DEFAULT_INSTALL_DIR})
                         workflows dir = \$INSTALL/workflows unless overridden
   --workflows-dir=PATH  Explicit workflows git checkout
-  --projects-root=PATH    Per-repo projects root (default: \$INSTALL/projects)
+  --projects-root=PATH  Projects multi-root (default: \$HOST_PROJECTS_ROOT
+                        or \$INSTALL/projects). Checkouts are <repo>/ basename.
   --branch=NAME         Workflows branch to track (default: ${DEFAULT_BRANCH})
   --remote=NAME         Remote name (default: ${DEFAULT_REMOTE})
   --force               Discard local changes (git reset --hard + clean -fd)
@@ -43,7 +44,7 @@ OPTIONS
 
 Default paths:
   ${DEFAULT_INSTALL_DIR}/workflows
-  ${DEFAULT_INSTALL_DIR}/projects/<owner>/<repo>
+  \$HOST_PROJECTS_ROOT/<repo>   (or ${DEFAULT_INSTALL_DIR}/projects/<repo>)
 EOF
 }
 
@@ -247,20 +248,34 @@ is_git_checkout "$WORKFLOWS_DIR" || die "not a git checkout: ${WORKFLOWS_DIR}"
 
 ff_checkout "$WORKFLOWS_DIR" "$BRANCH" "Workflows"
 
+# Refresh one checkout (basename or legacy owner/repo leaf).
+refresh_checkout() {
+  local repo_dir="$1"
+  local label="$2"
+  is_git_checkout "$repo_dir" || return 0
+  local def_br
+  def_br="$(default_branch_for "$repo_dir")"
+  ff_checkout "$repo_dir" "$def_br" "Source ${label}"
+  update_engineering_under_projects "$repo_dir"
+}
+
 if [[ "$SKIP_SOURCE" -eq 0 && -d "$PROJECTS_ROOT" ]]; then
   echo
   echo "Refreshing project checkouts under ${PROJECTS_ROOT}"
   shopt -s nullglob
-  for owner_dir in "${PROJECTS_ROOT}"/*; do
-    [[ -d "$owner_dir" ]] || continue
-    owner="$(basename "$owner_dir")"
-    [[ "$owner" == .* ]] && continue
-    for repo_dir in "${owner_dir}"/*; do
+  for entry in "${PROJECTS_ROOT}"/*; do
+    [[ -d "$entry" ]] || continue
+    name="$(basename "$entry")"
+    [[ "$name" == .* ]] && continue
+    # Canonical: $ROOT/<repo> is itself a git checkout.
+    if is_git_checkout "$entry"; then
+      refresh_checkout "$entry" "$name"
+      continue
+    fi
+    # Legacy: $ROOT/<owner>/<repo> nested checkouts (resume/migration only).
+    for repo_dir in "${entry}"/*; do
       [[ -d "$repo_dir" ]] || continue
-      is_git_checkout "$repo_dir" || continue
-      def_br="$(default_branch_for "$repo_dir")"
-      ff_checkout "$repo_dir" "$def_br" "Source ${owner}/$(basename "$repo_dir")"
-      update_engineering_under_projects "$repo_dir"
+      refresh_checkout "$repo_dir" "${name}/$(basename "$repo_dir")"
     done
   done
   shopt -u nullglob

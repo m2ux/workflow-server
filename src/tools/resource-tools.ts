@@ -127,9 +127,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       //
       // `planning_folder` is treated as a HINT supplied by the agent. The
       // server consumes its basename as the slug. When the path sits under the
-      // engineering multi-root as …/engineering/<owner>/<repo>/…, that owner/repo
-      // is also taken as a repo hint (unless `repo` is passed explicitly).
-      // Off-workspace paths still work as slug-only hints.
+      // projects multi-root as …/<repo>/.engineering/… (canonical basename) or
+      // legacy …/<owner>/<repo>/.engineering/…, that identity is also taken as
+      // a repo hint (unless `repo` is passed explicitly). Off-workspace paths
+      // still work as slug-only hints.
       let planning_slug: string | undefined;
       if (planning_folder !== undefined) {
         if (!isAbsolute(planning_folder)) {

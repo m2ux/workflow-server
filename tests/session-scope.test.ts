@@ -42,15 +42,15 @@ describe('session scope (multi-root)', () => {
     const scope = buildSessionScope({
       workflowDir: '/w',
       schemasDir: '/s',
-      workspaceDir: '/tmp/inst/worktrees/acme/app',
-      engineeringDir: '/tmp/inst/projects/acme/app/.engineering',
+      workspaceDir: '/tmp/inst/projects/app/.worktrees',
+      engineeringDir: '/tmp/inst/projects/app/.engineering',
       installDir: '/tmp/inst',
       repo: 'acme/app',
       serverName: 't',
       serverVersion: '1',
     });
     expect(scope.mode).toBe('single');
-    expect(scope.engineeringDir).toBe(resolve('/tmp/inst/projects/acme/app/.engineering'));
+    expect(scope.engineeringDir).toBe(resolve('/tmp/inst/projects/app/.engineering'));
   });
 
   it('repoCheckoutBasename strips owner/', () => {
@@ -102,6 +102,24 @@ describe('session scope (multi-root)', () => {
     expect(root.repo).toBe('acme/app');
   });
 
+  it('resolveSessionRoot rejects basename-only path hint without explicit repo', () => {
+    const scope = buildSessionScope({
+      workflowDir: '/w',
+      schemasDir: '/s',
+      workspaceDir: '/tmp/inst/worktrees',
+      engineeringDir: '/tmp/inst/projects',
+      installDir: '/tmp/inst',
+      serverName: 't',
+      serverVersion: '1',
+    });
+    // Canonical basename path is not a substitute for owner/repo on session.repo.
+    expect(() =>
+      resolveSessionRoot(scope, {
+        planningFolder: '/tmp/inst/projects/app/.engineering/artifacts/planning/slug-1',
+      }),
+    ).toThrow(/repo is required/);
+  });
+
   it('resolveSessionRoot accepts owner/repo embedded in legacy planning_folder', () => {
     const scope = buildSessionScope({
       workflowDir: '/w',
@@ -113,7 +131,8 @@ describe('session scope (multi-root)', () => {
       serverVersion: '1',
     });
     const root = resolveSessionRoot(scope, {
-      planningFolder: '/tmp/inst/projects/acme/app/.engineering/artifacts/planning/slug-1',
+      planningFolder:
+        '/tmp/inst/projects/acme/app/.engineering/artifacts/planning/slug-1',
     });
     expect(root.repo).toBe('acme/app');
     // New writes still go to the canonical basename checkout.

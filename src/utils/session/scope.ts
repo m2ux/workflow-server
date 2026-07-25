@@ -4,11 +4,14 @@ import {
   INSTALL_PROJECTS_DIR,
   normalizeRepoPath,
   REPO_PLANNING_RELATIVE_DIR,
+  repoCheckoutBasename,
   resolveRepoPaths,
   type ServerConfig,
   WorkspaceConfigError,
 } from '../../config.js';
 import { PLANNING_RELATIVE_DIR } from './store.js';
+
+export { repoCheckoutBasename } from '../../config.js';
 
 /**
  * How the process is bound for session storage.
@@ -64,17 +67,6 @@ export function isEngineeringMultiRoot(
   return false;
 }
 
-/** Repo directory basename under the projects multi-root (`owner/repo` → `repo`). */
-export function repoCheckoutBasename(repo: string): string {
-  const normalized = repo.includes('/') ? normalizeRepoPath(repo) : repo.trim();
-  const parts = normalized.split('/').filter(Boolean);
-  const name = parts[parts.length - 1];
-  if (!name) {
-    throw new Error(`Invalid repo '${repo}': empty basename`);
-  }
-  return name;
-}
-
 /**
  * Absolute eng checkout for a repo under a projects multi-root.
  * Canonical: `$ROOT/<repo-basename>/.engineering` (not owner/repo).
@@ -83,7 +75,10 @@ export function resolveMultiRootEngineeringDir(
   multiRoot: string,
   repo: string,
 ): string {
-  return resolve(multiRoot, repoCheckoutBasename(repo), '.engineering');
+  const name = repo.includes('/')
+    ? repoCheckoutBasename(normalizeRepoPath(repo))
+    : repoCheckoutBasename(repo);
+  return resolve(multiRoot, name, '.engineering');
 }
 
 /** Build the process session scope from server config. */

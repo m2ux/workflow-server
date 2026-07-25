@@ -31,14 +31,15 @@ Defaults:
 - Image: `ghcr.io/m2ux/workflow-server:main`
 - Publish: `http://127.0.0.1:3000`
 - Binds:
-  - host `$INSTALL/worktrees` → `/var/lib/workflow-server/worktrees`
-  - host `$INSTALL/projects` → `/var/lib/workflow-server/projects` (eng multi-root)
+  - host `$HOST_PROJECTS_ROOT` → `/var/lib/workflow-server/projects` (checkouts + eng + nested `.worktrees`)
   - host `$INSTALL/state` → `/var/lib/workflow-server/state` (HMAC signing key)
-- Container env: `WORKTREE_ROOT` / `WORKFLOW_WORKSPACE`, `WORKFLOW_SERVER_ENGINEERING_DIR`,
-  `WORKFLOW_SERVER_INSTALL_DIR`, `WORKFLOW_SERVER_KEY_DIR` (see `start.sh`)
+  - (legacy) separate `$INSTALL/worktrees` is deprecated — prefer nested `<repo>/.worktrees/`
+- Container env: `HOST_PROJECTS_ROOT`, `WORKTREE_ROOT` / `WORKFLOW_WORKSPACE`,
+  `WORKFLOW_SERVER_ENGINEERING_DIR`, `WORKFLOW_SERVER_INSTALL_DIR`, `WORKFLOW_SERVER_KEY_DIR`
+  (see `start.sh`)
 - Per-repo planning is selected at **session** time via `start_session({ repo: "owner/repo" })`
-  (after `init-repo.sh owner/repo`). Path:
-  `$INSTALL/projects/owner/repo/.engineering/artifacts/planning/<slug>/`.
+  (after `init-repo.sh owner/repo`). Host path:
+  `$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/<slug>/`.
 - Runs as your host uid:gid; key path does **not** depend on `HOME` (non-root
   containers often have `HOME=/`)
 

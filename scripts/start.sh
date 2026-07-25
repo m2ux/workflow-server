@@ -21,7 +21,7 @@ DEFAULT_NAME="workflow-server"
 DEFAULT_HOST_PORT="3000"
 DEFAULT_CONTAINER_PORT="3000"
 # Inside the container the install root is fixed so start_session({ repo })
-# resolves under $CONTAINER_INSTALL/projects/<owner>/<repo>/.engineering.
+# resolves under $CONTAINER_INSTALL/projects/<repo>/.engineering (basename).
 DEFAULT_CONTAINER_INSTALL="/var/lib/workflow-server"
 DEFAULT_WORKTREE_TARGET="${DEFAULT_CONTAINER_INSTALL}/worktrees"
 DEFAULT_PROJECTS_TARGET="${DEFAULT_CONTAINER_INSTALL}/projects"

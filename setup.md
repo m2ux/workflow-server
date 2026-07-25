@@ -14,9 +14,9 @@ Install workflow-server and prepare a target repo. Transport install, MCP client
 | Path | Default | Purpose |
 |------|---------|---------|
 | **Install dir** | `~/.local/share/workflow-server` | Helper scripts, `env`, workflows clone |
-| **Projects** | `$INSTALL/projects` | Per-repo main/default-branch checkouts (`projects/<owner>/<repo>/`) |
-| **Engineering** | `$INSTALL/projects/<owner>/<repo>/.engineering` | Planning / sessions (submodule or materialised eng) |
-| **Worktrees** | `$INSTALL/worktrees` | Per-repo feature worktree parents |
+| **Projects** | `$HOST_PROJECTS_ROOT` (or `$INSTALL/projects`) | Basename checkouts (`$HOST_PROJECTS_ROOT/<repo>/`) |
+| **Engineering** | `$HOST_PROJECTS_ROOT/<repo>/.engineering` | Planning / sessions (submodule or materialised eng) |
+| **Worktrees** | `$HOST_PROJECTS_ROOT/<repo>/.worktrees` | Feature worktrees (nested; `$INSTALL/worktrees` deprecated) |
 | **Workflows** | `$INSTALL/workflows` | Workflow definitions (`workflows` branch) |
 
 > Full layout and migration notes: [docs/install-projects-worktrees.md](docs/install-projects-worktrees.md).  
@@ -49,11 +49,11 @@ After the project has been deployed, register it under the workflow-server insta
 ~/.local/share/workflow-server/init-repo.sh --branch=develop owner/repo
 ```
 
-That creates:
+That creates (canonical basename layout):
 
-- `$INSTALL/projects/<owner>/<repo>/` — app checkout on `--branch` or the remote default (reference for `git worktree add`)
-- `$INSTALL/projects/<owner>/<repo>/.engineering/` — engineering submodule or materialised planning tree
-- `$INSTALL/worktrees/<owner>/<repo>/` — parent directory for feature worktrees
+- `$HOST_PROJECTS_ROOT/<repo>/` — app checkout on `--branch` or the remote default (reference for `git worktree add`)
+- `$HOST_PROJECTS_ROOT/<repo>/.engineering/` — engineering submodule or materialised planning tree
+- `$HOST_PROJECTS_ROOT/<repo>/.worktrees/` — parent directory for feature worktrees
 
 `init-repo.sh` does **not** init product `workflows` submodules by default (server defs live in `$INSTALL/workflows`). Repeat **2a → 2b** for each product repo.
 
@@ -75,7 +75,7 @@ If the workflows definitions or managed project checkouts are updated remotely, 
 $INSTALL/update-workflows.sh
 ```
 
-This ff-updates `$INSTALL/workflows` and every `$INSTALL/projects/<owner>/<repo>` (plus `.engineering` when it is a git checkout). Restart the HTTP server afterward if it is running.
+This ff-updates `$INSTALL/workflows` and every `$HOST_PROJECTS_ROOT/<repo>` checkout (plus `.engineering` when it is a git checkout). Restart the HTTP server afterward if it is running.
 
 ## More detail
 

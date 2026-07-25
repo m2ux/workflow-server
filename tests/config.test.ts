@@ -210,18 +210,19 @@ describe('normalizeRepoPath / resolveRepoPaths', () => {
     expect(() => normalizeRepoPath('  ')).toThrow(WorkspaceConfigError);
   });
 
-  it('derives source, engineering, and worktrees under the install root', () => {
+  it('derives basename checkout, engineering, and nested .worktrees', () => {
     const paths = resolveRepoPaths('m2ux/workflow-server', '/data/workflow-server');
     expect(paths.repo).toBe('m2ux/workflow-server');
+    expect(paths.checkoutName).toBe('workflow-server');
     expect(paths.installDir).toBe(resolve('/data/workflow-server'));
     expect(paths.projectsDir).toBe(
-      resolve('/data/workflow-server/projects/m2ux/workflow-server'),
+      resolve('/data/workflow-server/projects/workflow-server'),
     );
     expect(paths.engineeringDir).toBe(
-      resolve('/data/workflow-server/projects/m2ux/workflow-server/.engineering'),
+      resolve('/data/workflow-server/projects/workflow-server/.engineering'),
     );
     expect(paths.workspaceDir).toBe(
-      resolve('/data/workflow-server/worktrees/m2ux/workflow-server'),
+      resolve('/data/workflow-server/projects/workflow-server/.worktrees'),
     );
   });
 });
@@ -237,7 +238,7 @@ describe('loadConfig — --repo binding', () => {
     restoreRepoEnv(envBefore);
   });
 
-  it('resolves worktrees and eng-in-projects from --repo=owner/repo', () => {
+  it('resolves nested .worktrees and eng-in-projects from --repo=owner/repo', () => {
     const config = loadConfig([
       '--repo=m2ux/workflow-server',
       '--install-dir=/tmp/wf-install',
@@ -245,10 +246,10 @@ describe('loadConfig — --repo binding', () => {
     expect(config.repo).toBe('m2ux/workflow-server');
     expect(config.installDir).toBe(resolve('/tmp/wf-install'));
     expect(config.workspaceDir).toBe(
-      resolve('/tmp/wf-install/worktrees/m2ux/workflow-server'),
+      resolve('/tmp/wf-install/projects/workflow-server/.worktrees'),
     );
     expect(config.engineeringDir).toBe(
-      resolve('/tmp/wf-install/projects/m2ux/workflow-server/.engineering'),
+      resolve('/tmp/wf-install/projects/workflow-server/.engineering'),
     );
     expect(config.planningRelativeDir).toBe(REPO_PLANNING_RELATIVE_DIR);
     expect(planningRoot(config.engineeringDir!)).toBe(
@@ -263,14 +264,16 @@ describe('loadConfig — --repo binding', () => {
       '--install-dir=/tmp/inst',
     ]);
     expect(fromCli.repo).toBe('acme/app');
-    expect(fromCli.workspaceDir).toBe(resolve('/tmp/inst/worktrees/acme/app'));
+    expect(fromCli.workspaceDir).toBe(
+      resolve('/tmp/inst/projects/app/.worktrees'),
+    );
 
     process.env['WORKFLOW_SERVER_REPO'] = 'acme/from-env';
     process.env['WORKFLOW_SERVER_INSTALL_DIR'] = '/tmp/inst-env';
     const fromEnv = loadConfig([]);
     expect(fromEnv.repo).toBe('acme/from-env');
     expect(fromEnv.engineeringDir).toBe(
-      resolve('/tmp/inst-env/projects/acme/from-env/.engineering'),
+      resolve('/tmp/inst-env/projects/from-env/.engineering'),
     );
   });
 
@@ -287,22 +290,37 @@ describe('loadConfig — --repo binding', () => {
   });
 
   it('Docker multi-root WORKTREE_ROOT keeps multi-root (repo is session-time)', () => {
-    // start.sh binds $INSTALL/worktrees + projects; WORKFLOW_SERVER_REPO must
-    // not pin the process — start_session selects owner/repo.
-    process.env['WORKTREE_ROOT'] = '/tmp/wf-install/worktrees';
-    process.env['WORKFLOW_WORKSPACE'] = '/tmp/wf-install/worktrees';
+    // Nested model: start.sh binds HOST_PROJECTS_ROOT for both workspace + eng.
+    // Legacy separate $INSTALL/worktrees multi-root is still recognised.
+    // WORKFLOW_SERVER_REPO must not pin the process — start_session selects repo.
+    process.env['WORKTREE_ROOT'] = '/tmp/wf-install/projects';
+    process.env['WORKFLOW_WORKSPACE'] = '/tmp/wf-install/projects';
     process.env['WORKFLOW_SERVER_ENGINEERING_DIR'] = '/tmp/wf-install/projects';
     process.env['WORKFLOW_SERVER_INSTALL_DIR'] = '/tmp/wf-install';
     process.env['WORKFLOW_SERVER_REPO'] = 'm2ux/workflow-server';
     const config = loadConfig([]);
     expect(config.installDir).toBe(resolve('/tmp/wf-install'));
     expect(config.repo).toBeUndefined();
-    expect(config.workspaceDir).toBe(resolve('/tmp/wf-install/worktrees'));
+    expect(config.workspaceDir).toBe(resolve('/tmp/wf-install/projects'));
     expect(config.engineeringDir).toBe(resolve('/tmp/wf-install/projects'));
     expect(config.planningRelativeDir).toBe(REPO_PLANNING_RELATIVE_DIR);
   });
 
   it('CLI --workspace at install multi-root with ENGINEERING_DIR stays multi-root', () => {
+    process.env['WORKFLOW_SERVER_ENGINEERING_DIR'] = '/tmp/wf-install/projects';
+    const config = loadConfig([
+      '--workspace=/tmp/wf-install/projects',
+      '--repo=acme/app',
+      '--install-dir=/tmp/wf-install',
+    ]);
+    expect(config.workspaceDir).toBe(resolve('/tmp/wf-install/projects'));
+    expect(config.engineeringDir).toBe(resolve('/tmp/wf-install/projects'));
+    expect(config.installDir).toBe(resolve('/tmp/wf-install'));
+    expect(config.repo).toBeUndefined();
+    expect(config.planningRelativeDir).toBe(REPO_PLANNING_RELATIVE_DIR);
+  });
+
+  it('legacy separate worktrees multi-root still stays multi-root', () => {
     process.env['WORKFLOW_SERVER_ENGINEERING_DIR'] = '/tmp/wf-install/projects';
     const config = loadConfig([
       '--workspace=/tmp/wf-install/worktrees',
@@ -311,9 +329,7 @@ describe('loadConfig — --repo binding', () => {
     ]);
     expect(config.workspaceDir).toBe(resolve('/tmp/wf-install/worktrees'));
     expect(config.engineeringDir).toBe(resolve('/tmp/wf-install/projects'));
-    expect(config.installDir).toBe(resolve('/tmp/wf-install'));
     expect(config.repo).toBeUndefined();
-    expect(config.planningRelativeDir).toBe(REPO_PLANNING_RELATIVE_DIR);
   });
 
   it('defaults install dir to ~/.local/share/workflow-server', () => {
@@ -322,7 +338,10 @@ describe('loadConfig — --repo binding', () => {
       resolve(homedir(), '.local/share/workflow-server'),
     );
     expect(config.workspaceDir).toBe(
-      resolve(homedir(), '.local/share/workflow-server/worktrees/m2ux/workflow-server'),
+      resolve(
+        homedir(),
+        '.local/share/workflow-server/projects/workflow-server/.worktrees',
+      ),
     );
   });
 

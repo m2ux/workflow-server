@@ -4,7 +4,8 @@
 # values derived from the install layout (and optional flags).
 #
 # Defaults match scripts/install.sh + start.sh:
-#   $INSTALL/{worktrees,projects,state,workflows}
+#   $HOST_PROJECTS_ROOT/<repo>/ + nested .engineering + .worktrees
+#   $INSTALL/{state,workflows}  ($INSTALL/worktrees is deprecated)
 #   container targets under /var/lib/workflow-server/...
 set -euo pipefail
 
@@ -23,9 +24,11 @@ usage() {
 Usage: $(basename "$0") [options]
 
   --install-dir=PATH     Install root (default: ${DEFAULT_INSTALL_DIR})
-  --worktree-root=PATH   Feature worktrees root (default: \$INSTALL/worktrees)
-  --projects-root=PATH   Projects multi-root (default: \$INSTALL/projects)
-  --repo=owner/repo      Optional WORKFLOW_SERVER_REPO for init-repo layout
+  --worktree-root=PATH   Legacy separate worktrees root (default: same as
+                         projects root — nested <repo>/.worktrees/)
+  --projects-root=PATH   Projects multi-root (default: \$HOST_PROJECTS_ROOT
+                         or \$INSTALL/projects). Checkouts are <repo>/ basename.
+  --repo=owner/repo      Optional WORKFLOW_SERVER_REPO for a pinned checkout
   --force                Overwrite an existing .env from .env.example first
   -h, --help             Show this help
 

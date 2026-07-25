@@ -99,8 +99,8 @@ workflow-server/
 │   ├── condition.schema.json
 │   └── state.schema.json
 ├── scripts/                  # Build, corpus guards, install helpers, benchmarks
-│   ├── install.sh            # Local install layout (helpers, workflows, projects/, worktrees/, env)
-│   ├── init-repo.sh          # Per-repo projects + .engineering + worktrees under $INSTALL
+│   ├── install.sh            # Local install layout (helpers, workflows, HOST_PROJECTS_ROOT, env)
+│   ├── init-repo.sh          # Basename checkout under HOST_PROJECTS_ROOT (+ .engineering + .worktrees)
 │   ├── start.sh / stop.sh    # GHCR container runner (loads $INSTALL/env)
 │   ├── update-workflows.sh
 │   ├── generate-schemas.ts
@@ -127,7 +127,7 @@ Root binding (one of workspace path **or** `--repo` is required at startup):
 | Variable / flag | Default | Description |
 |-----------------|---------|-------------|
 | `--workspace=PATH` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` | — | Explicit workspace / worktree root (legacy single-root: planning under this path) |
-| `--repo=owner/repo` / `WORKFLOW_SERVER_REPO` | — | Bind `$INSTALL/worktrees/<owner>/<repo>` and `$INSTALL/projects/<owner>/<repo>/.engineering` |
+| `--repo=owner/repo` / `WORKFLOW_SERVER_REPO` | — | Bind `$INSTALL/projects/<repo>/.worktrees` and `$INSTALL/projects/<repo>/.engineering` (basename; prefer external `HOST_PROJECTS_ROOT`) |
 | `--install-dir=PATH` / `WORKFLOW_SERVER_INSTALL_DIR` | `~/.local/share/workflow-server` (or `$XDG_DATA_HOME/workflow-server`) | Install root used with `--repo` |
 | `WORKFLOW_SERVER_ENGINEERING_DIR` | equals workspace when unbound; multi-root Docker: `$INSTALL/projects` | Engineering multi-root or single eng checkout used for planning / session files |
 | `PLANNING_SLUG` | `.engineering/artifacts/planning` (legacy) or `artifacts/planning` (repo / engineering-root mode) | Relative planning dir under the engineering root |
