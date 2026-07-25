@@ -6,4 +6,4 @@ For any start workflow or create or resume work package request, call the `disco
 
 Always pass `repo` from this workspace's `AGENTS.md` on `start_session`.
 
-If the user provides a `session_token`, pass it to subsequent workflow-server calls per their instructions.
+Pass `session_index` from `start_session` on every authenticated workflow-server call.

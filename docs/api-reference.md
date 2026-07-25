@@ -10,7 +10,9 @@ When the server starts with `--transport=http` (or `TRANSPORT=http` / `npm run s
 |---------------|---------|
 | `GET /health` | Liveness — process is up |
 | `GET /ready` | Readiness — `workflowDir`, `schemasDir`, and `workspaceDir` exist; `engineeringDir` when split from workspace (`--repo` layout); and `sessionKeyWritable` (HMAC key directory is usable) |
-| `POST /mcp` | MCP Streamable HTTP |
+| `POST /mcp` | MCP Streamable HTTP (client → server messages) |
+| `GET /mcp` | MCP Streamable HTTP (server → client stream when the session uses GET) |
+| `DELETE /mcp` | MCP Streamable HTTP (end session) |
 
 `/ready` returns 503 when any check is false. A green `/health` alone does **not** mean `start_session` can run — verify `sessionKeyWritable: true` (Docker non-root with `HOME=/` historically failed here; see [http.md](../http.md) and `WORKFLOW_SERVER_KEY_DIR`).
 

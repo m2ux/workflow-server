@@ -143,7 +143,7 @@ chmod +x deploy.sh && ./deploy.sh</code></pre>
   <p>Add this to your IDE's always-applied rule set (a Cursor rule, a Claude Code project rule, or the equivalent in your client):</p>
   <pre><code>For any start workflow, create work package, or resume work package request, call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure. Complete the procedure before any other action.
 
-If the user provides a `session_token`, pass it to subsequent workflow-server calls per their instructions.</code></pre>
+Pass `session_index` from `start_session` on every authenticated workflow-server call.</code></pre>
   <p class="prose">Restart your MCP client after adding the rule. Detail: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/ide-setup.md">docs/ide-setup.md</a>.</p>
 
   <h2 id="verify">5. Verify</h2>
@@ -167,7 +167,8 @@ If the user provides a `session_token`, pass it to subsequent workflow-server ca
   <p><strong>Finish</strong> or wind one down:</p>
   <pre><code>End the current work-package workflow</code></pre>
 
-  <h2 id="day-two">Day-two</h2>
+  <h2 id="day-two">Update workflows</h2>
+  <p class="prose">Same operations as <a href="https://github.com/m2ux/workflow-server/blob/main/setup.md">setup.md</a> §4 (Update Workflows). The anchor <code>#day-two</code> is stable for existing links.</p>
   <pre><code>$INSTALL/update-workflows.sh   # refresh workflows branch; restart HTTP if running
 $INSTALL/stop.sh               # stop HTTP container
 $INSTALL/init-repo.sh owner/repo</code></pre>

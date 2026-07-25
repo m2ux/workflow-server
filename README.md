@@ -56,7 +56,7 @@ The agent matches the request to the appropriate activity and guides you through
 
 ### MCP Tools
 
-The server registers 17 MCP tools across five concerns. See [docs/api-reference.md](docs/api-reference.md) for full signatures.
+MCP tools are listed in [docs/api-reference.md](docs/api-reference.md) (brief catalog) and on the [site tool reference](site/api/tools.html) (generated wire detail).
 
 ## 📜 License
 

@@ -1,7 +1,7 @@
 # Setup — stdio
 
 Transport-specific steps for a **local checkout** where the IDE spawns the server over stdio (default transport).  
-Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, day-two).
+Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, update workflows).
 
 ## Prerequisites
 
@@ -61,7 +61,7 @@ Pass `repo: "owner/your-project"` on `start_session`. Planning lands under
 
 Optional: pin one repo for the whole process with `--repo=owner/your-project` instead of multi-root.
 
-### Alternative: explicit workspace (legacy single-root)
+### Alternative: explicit workspace (single-root)
 
 ```json
 {
@@ -99,7 +99,7 @@ There is no HTTP listener under stdio — the IDE owns the process.
 
 If the server fails to start, check the MCP client log for the `node …/dist/index.js` stderr (missing workspace/repo, bad `WORKFLOW_DIR`, etc.).
 
-Then finish shared steps in [setup.md](setup.md) (**§2** init-repo if needed, **§3** IDE rule, **§4** day-two).
+Then finish shared steps in [setup.md](setup.md) (**§2** init-repo if needed, **§3** IDE rule, **§4** Update Workflows).
 
 ## stdio-only references
 

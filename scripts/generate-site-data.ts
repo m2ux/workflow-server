@@ -650,7 +650,7 @@ export function renderToolsRegion(): string {
   });
 
   return [
-    `      <p>The server registers ${tools.length} MCP tools. Each entry shows a short summary; expand for the full description and advanced parameters.</p>`,
+    `      <p>Each registered MCP tool is listed below. Expand an entry for the full description and advanced parameters. This page is generated from the server source — do not hand-edit the tool bodies.</p>`,
     '      <nav aria-label="Tools on this page">',
     '      <ul>',
     ...toc,

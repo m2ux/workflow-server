@@ -68,7 +68,7 @@
 
 <main id="main">
   <h1>Request lifecycle</h1>
-  <p class="lede">Every authenticated tool call follows the same skeleton: verify the session, load the definition, validate the claim the agent is making, advance the state, reseal it, and sign the trace. That uniformity is possible because the whole system crosses one boundary — sixteen MCP tools with schema-validated parameters, no side channel, no shared files as API. This page walks that skeleton using <a href="../api/tools.html#next_activity"><code>next_activity</code></a> — the most eventful call — as the example.</p>
+  <p class="lede">Every authenticated tool call follows the same skeleton: verify the session, load the definition, validate the claim the agent is making, advance the state, reseal it, and sign the trace. That uniformity is possible because the whole system crosses one boundary — the MCP tool surface with schema-validated parameters, no side channel, no shared files as API. This page walks that skeleton using <a href="../api/tools.html#next_activity"><code>next_activity</code></a> — the most eventful call — as the example.</p>
   <p>The handlers live in <a href="https://github.com/m2ux/workflow-server/blob/main/src/tools/workflow-tools.ts"><code>src/tools/workflow-tools.ts</code></a>; the shared machinery each stage uses is mapped in <a href="./server-anatomy.html">server anatomy</a>.</p>
 
   <figure class="diagram">

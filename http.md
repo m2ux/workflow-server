@@ -1,7 +1,7 @@
 # Setup — Docker / HTTP
 
 Transport-specific steps for running the **GHCR image** over HTTP.  
-Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, day-two).
+Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, update workflows).
 
 ## Prerequisites
 
@@ -112,7 +112,7 @@ A green `/health` without `sessionKeyWritable: true` means sessions cannot start
 
 Adjust host/port if you changed `--host-port`. Routes: [docs/api-reference.md](docs/api-reference.md#http-endpoints).
 
-Then finish shared steps in [setup.md](setup.md) (**§2** init-repo, **§3** IDE rule, **§4** day-two).
+Then finish shared steps in [setup.md](setup.md) (**§2** init-repo, **§3** IDE rule, **§4** Update Workflows).
 
 ## HTTP-only references
 
