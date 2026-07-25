@@ -95,7 +95,7 @@
       <thead><tr><th scope="col">Path</th><th scope="col">Default</th><th scope="col">Purpose</th></tr></thead>
       <tbody>
         <tr><td><strong>Install dir</strong></td><td><code>~/.local/share/workflow-server</code></td><td>Helper scripts, <code>env</code>, <code>state/</code>, workflows clone</td></tr>
-        <tr><td><strong>Projects root</strong></td><td><code>$HOST_PROJECTS_ROOT</code> (e.g. <code>~/projects/dev</code>)</td><td>Product checkouts by basename</td></tr>
+        <tr><td><strong>Projects root</strong></td><td><code>$HOST_PROJECTS_ROOT</code> (default <code>~/projects/dev</code>)</td><td>Product checkouts by basename</td></tr>
         <tr><td><strong>Checkout</strong></td><td><code>$HOST_PROJECTS_ROOT/&lt;repo&gt;/</code></td><td>Source / <code>repo_root</code></td></tr>
         <tr><td><strong>Planning</strong></td><td><code>$HOST_PROJECTS_ROOT/&lt;repo&gt;/.engineering/…</code></td><td>Planning / sessions</td></tr>
         <tr><td><strong>Feature worktrees</strong></td><td><code>$HOST_PROJECTS_ROOT/&lt;repo&gt;/.worktrees/&lt;slug&gt;/</code></td><td>Per-work-package trees</td></tr>
@@ -131,7 +131,7 @@ chmod +x deploy.sh && ./deploy.sh</code></pre>
   <p class="prose">This sets up engineering storage (layout, branch/submodule, planning structure). Patterns (same-repo orphan, shared engineering monorepo, in-branch): <a href="https://github.com/m2ux/workflow-server/blob/main/docs/engineering-storage.md">docs/engineering-storage.md</a>. Flags: <code>./deploy.sh --help</code>.</p>
 
   <h3 id="checkout-project">2b. Checkout the project</h3>
-  <pre><code># HOST_PROJECTS_ROOT from $INSTALL/env (example: ~/projects/dev)
+  <pre><code># HOST_PROJECTS_ROOT from $INSTALL/env (default: ~/projects/dev)
 git clone https://github.com/owner/repo.git "$HOST_PROJECTS_ROOT/&lt;repo&gt;"
 mkdir -p "$HOST_PROJECTS_ROOT/&lt;repo&gt;/.worktrees"</code></pre>
   <p class="prose">Use the repo <strong>basename</strong> for <code>&lt;repo&gt;</code>. Layout: <code>checkout = $HOST_PROJECTS_ROOT/&lt;repo&gt;</code>, planning under <code>checkout/.engineering/…</code>, feature worktrees under <code>checkout/.worktrees/&lt;slug&gt;/</code>. Full detail: <a href="https://github.com/m2ux/workflow-server/blob/main/setup.md#2b-checkout-the-project">setup.md §2b</a> · <a href="https://github.com/m2ux/workflow-server/blob/main/docs/install-projects-worktrees.md">install-projects-worktrees.md</a>. Repeat 2a → 2b for each product repo.</p>

@@ -8,12 +8,12 @@ Agents are explicitly instructed to respect distinct directory scopes:
 
 1. **`target_path` / feature worktree:** The user's actual codebase under the **worktree root** (`ServerConfig.workspaceDir`). All domain-specific execution (writing code, running tests, refactoring, building) must occur strictly within this directory. With `--repo=owner/repo`, feature trees live under `$HOST_PROJECTS_ROOT/<repo>/.worktrees/<slug>/`.
 2. **Engineering root:** Orchestration metadata — plans, session state, traces, ADRs. Bound as `ServerConfig.engineeringDir`:
-   - **Repo layout** (`--repo` / `init-repo.sh`): `$HOST_PROJECTS_ROOT/<repo>/.engineering/` (eng submodule or materialised tree inside the main checkout).
+   - **Repo layout** (`--repo` / multi-root session): `$HOST_PROJECTS_ROOT/<repo>/.engineering/` (eng submodule or materialised tree inside the main checkout).
    - **Legacy single-root** (`--workspace` only): the same path as the workspace, with planning under a nested `.engineering/` tree.
 3. **Workflow definitions:** Served from `WORKFLOW_DIR` / `$INSTALL/workflows` (the `workflows` orphan branch), not from the engineering checkout.
 4. **`repo_root` (projects checkout):** `$HOST_PROJECTS_ROOT/<repo>/` — main/default-branch clone used for comprehension, GitNexus, and `git worktree add`.
 
-Install layout (HTTP/Docker): [`scripts/install.sh`](../scripts/install.sh) creates `$INSTALL/{workflows,state}` and writes `$INSTALL/env` with `HOST_PROJECTS_ROOT`. Per-repo registration: [`scripts/init-repo.sh`](../scripts/init-repo.sh). Preferred paths: [install-projects-worktrees.md](install-projects-worktrees.md).
+Install layout (HTTP/Docker): [`scripts/install.sh`](../scripts/install.sh) creates `$INSTALL/{workflows,state}` and writes `$INSTALL/env` with `HOST_PROJECTS_ROOT` (default `~/projects/dev`). Product checkouts live under that root; engineering via [`scripts/deploy.sh`](../scripts/deploy.sh). Paths: [install-projects-worktrees.md](install-projects-worktrees.md).
 
 ## 2. The Planning Folder
 

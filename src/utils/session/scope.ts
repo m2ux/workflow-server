@@ -1,41 +1,58 @@
-import { readdir } from 'node:fs/promises';
-import { basename, dirname, isAbsolute, resolve, sep } from 'node:path';
+import { readdir, stat } from 'node:fs/promises';
+import { basename, dirname, isAbsolute, join, resolve, sep } from 'node:path';
 import {
   INSTALL_PROJECTS_DIR,
   normalizeRepoPath,
   REPO_PLANNING_RELATIVE_DIR,
+  repoCheckoutBasename,
   resolveRepoPaths,
   type ServerConfig,
   WorkspaceConfigError,
 } from '../../config.js';
 import { PLANNING_RELATIVE_DIR } from './store.js';
 
+export { repoCheckoutBasename } from '../../config.js';
+
 /**
  * How the process is bound for session storage.
  *
  * - **single**: one engineering checkout (or process pinned with `--repo`).
  *   All sessions live under that checkout's planning root.
- * - **multi**: install multi-root (`$INSTALL/projects`). Sessions live under
- *   each repo's `…/<owner>/<repo>/.engineering/artifacts/planning/`. The agent
- *   supplies `repo` (or a path that embeds it) at `start_session`.
+ * - **multi**: projects multi-root (`HOST_PROJECTS_ROOT` / container projects
+ *   bind). Canonical checkouts are **basename only**:
+ *   `…/<repo>/.engineering/artifacts/planning/<slug>/`.
+ *   Legacy install co-location used `…/<owner>/<repo>/.engineering/…` and is
+ *   still scanned on resume only. The agent supplies `repo: "owner/repo"`
+ *   (or a path that embeds the checkout) at `start_session`.
  */
 export interface SessionScope {
   mode: 'single' | 'multi';
-  /** Multi-root base when mode is multi: `$INSTALL/projects`. */
+  /**
+   * Multi-root base when mode is multi: host `HOST_PROJECTS_ROOT` (or the
+   * container mount target for that bind, e.g. `/var/lib/workflow-server/projects`).
+   */
   engineeringMultiRoot?: string;
   /** Single engineering checkout when mode is single. */
   engineeringDir: string;
   installDir?: string;
   /**
    * Planning relative dir for the active write root.
-   * Multi-root always uses `artifacts/planning` under each eng checkout.
+   * Multi-root always uses `artifacts/planning` under each eng checkout
+   * (`<checkout>/.engineering` is the eng root).
    */
   planningRelativeDir: string;
 }
 
 /**
- * Detect install multi-root engineering binding (Docker start.sh default).
- * True when engineeringDir is exactly `$INSTALL/projects`.
+ * Detect projects multi-root engineering binding (Docker start.sh default).
+ * True when engineeringDir is exactly `$INSTALL/projects`, or when its
+ * basename is `projects` (container mount of an external HOST_PROJECTS_ROOT).
+ *
+ * External roots (e.g. `~/projects/dev`) mounted at the container projects
+ * path still report basename `projects` inside the container; on the host
+ * stdio path, multi-root is detected when ENGINEERING_DIR equals the
+ * configured projects multi-root (basename `projects` or explicit install
+ * co-location).
  */
 export function isEngineeringMultiRoot(
   engineeringDir: string,
@@ -43,17 +60,25 @@ export function isEngineeringMultiRoot(
 ): boolean {
   const eng = resolve(engineeringDir);
   if (installDir) {
-    return eng === resolve(installDir, INSTALL_PROJECTS_DIR);
+    if (eng === resolve(installDir, INSTALL_PROJECTS_DIR)) return true;
   }
-  return basename(eng) === INSTALL_PROJECTS_DIR;
+  // Container / install co-location: directory named `projects`.
+  if (basename(eng) === INSTALL_PROJECTS_DIR) return true;
+  return false;
 }
 
-/** Absolute eng checkout for owner/repo under a projects multi-root. */
+/**
+ * Absolute eng checkout for a repo under a projects multi-root.
+ * Canonical: `$ROOT/<repo-basename>/.engineering` (not owner/repo).
+ */
 export function resolveMultiRootEngineeringDir(
   multiRoot: string,
   repo: string,
 ): string {
-  return resolve(multiRoot, repo, '.engineering');
+  const name = repo.includes('/')
+    ? repoCheckoutBasename(normalizeRepoPath(repo))
+    : repoCheckoutBasename(repo);
+  return resolve(multiRoot, name, '.engineering');
 }
 
 /** Build the process session scope from server config. */
@@ -62,7 +87,7 @@ export function buildSessionScope(config: ServerConfig): SessionScope {
   const installDir = config.installDir ? resolve(config.installDir) : undefined;
   const multi =
     isEngineeringMultiRoot(engineeringDir, installDir) &&
-    // Process-level --repo already narrowed engineeringDir to owner/repo.
+    // Process-level --repo already narrowed engineeringDir to a single checkout.
     !config.repo;
 
   if (multi) {
@@ -71,6 +96,7 @@ export function buildSessionScope(config: ServerConfig): SessionScope {
       engineeringMultiRoot: engineeringDir,
       engineeringDir,
       installDir: installDir ?? dirname(engineeringDir),
+      // Eng root is `<checkout>/.engineering` → planning at artifacts/planning.
       planningRelativeDir: REPO_PLANNING_RELATIVE_DIR,
     };
   }
@@ -88,8 +114,13 @@ export function buildSessionScope(config: ServerConfig): SessionScope {
 }
 
 /**
- * If `planning_folder` sits under the multi-root as
- * `…/projects/<owner>/<repo>/.engineering/…`, return `owner/repo`.
+ * If `planning_folder` sits under the multi-root, recover a repo hint:
+ *   - Canonical basename: `…/<repo>/.engineering/…` → returns `repo` (basename
+ *     only; caller should still pass `owner/repo` when known).
+ *   - Legacy: `…/<owner>/<repo>/.engineering/…` → returns `owner/repo`.
+ *
+ * Basename-only results are not valid `normalizeRepoPath` input; callers that
+ * need `owner/repo` must combine with an explicit `repo` argument.
  */
 export function extractRepoFromPath(
   planningFolder: string,
@@ -103,12 +134,30 @@ export function extractRepoFromPath(
   const rest = folder.slice(prefix.length);
   const parts = rest.split(sep).filter(Boolean);
   if (parts.length < 2) return undefined;
-  const candidate = `${parts[0]}/${parts[1]}`;
-  try {
-    return normalizeRepoPath(candidate);
-  } catch {
-    return undefined;
+
+  // …/<repo>/.engineering/…
+  if (parts[1] === '.engineering') {
+    return parts[0];
   }
+  // Legacy …/<owner>/<repo>/.engineering/…
+  if (parts.length >= 3 && parts[2] === '.engineering') {
+    const candidate = `${parts[0]}/${parts[1]}`;
+    try {
+      return normalizeRepoPath(candidate);
+    } catch {
+      return undefined;
+    }
+  }
+  // Legacy without requiring .engineering in path (older extract behaviour).
+  if (parts.length >= 2) {
+    const candidate = `${parts[0]}/${parts[1]}`;
+    try {
+      return normalizeRepoPath(candidate);
+    } catch {
+      return undefined;
+    }
+  }
+  return undefined;
 }
 
 export interface ResolvedSessionRoot {
@@ -126,7 +175,8 @@ export interface ResolvedSessionRoot {
  *   2. Repo embedded in an absolute `planning_folder` under the multi-root
  *   3. Process default (single mode only)
  *
- * Multi-root create/resume-by-new-slug requires a repo (via 1 or 2).
+ * Multi-root create/resume-by-new-slug requires a full `owner/repo` (via 1).
+ * A basename-only path hint is not enough to bind session.repo.
  */
 export function resolveSessionRoot(
   scope: SessionScope,
@@ -134,10 +184,15 @@ export function resolveSessionRoot(
 ): ResolvedSessionRoot {
   let repoRaw = opts.repo?.trim() || undefined;
   if (!repoRaw && opts.planningFolder && scope.engineeringMultiRoot) {
-    repoRaw = extractRepoFromPath(
+    const embedded = extractRepoFromPath(
       opts.planningFolder,
       scope.engineeringMultiRoot,
     );
+    // Only accept embedded hints that normalize to owner/repo (legacy path).
+    // Basename-only path segments are not a substitute for session.repo.
+    if (embedded && embedded.includes('/')) {
+      repoRaw = embedded;
+    }
   }
 
   if (repoRaw) {
@@ -162,6 +217,7 @@ export function resolveSessionRoot(
       };
     }
     if (installDir) {
+      // Process-pinned --repo under install root (legacy single-tenant).
       const paths = resolveRepoPaths(repo, installDir);
       return {
         engineeringDir: paths.engineeringDir,
@@ -179,9 +235,9 @@ export function resolveSessionRoot(
 
   if (scope.mode === 'multi') {
     throw new Error(
-      'start_session: repo is required when the server is bound to an install multi-root ' +
-        '($INSTALL/projects). Pass repo: "owner/repo" (from the user or workspace AGENTS.md), ' +
-        'or an absolute planning_folder under projects/<owner>/<repo>/.engineering/….',
+      'start_session: repo is required when the server is bound to a projects multi-root ' +
+        '(HOST_PROJECTS_ROOT). Pass repo: "owner/repo" (from the user or workspace AGENTS.md). ' +
+        'Planning lives at <repo>/.engineering/artifacts/planning/ under that root.',
     );
   }
 
@@ -191,9 +247,20 @@ export function resolveSessionRoot(
   };
 }
 
+async function isDirectory(path: string): Promise<boolean> {
+  try {
+    const st = await stat(path);
+    return st.isDirectory();
+  } catch {
+    return false;
+  }
+}
+
 /**
  * List engineering checkouts to search for session_index / slug.
- * Multi-root: every `projects/<o>/<r>/.engineering`.
+ *
+ * Multi-root (canonical): every `$ROOT/<repo>/.engineering`.
+ * Multi-root (legacy resume): also `$ROOT/<owner>/<repo>/.engineering`.
  * Single: just the process engineering dir.
  */
 export async function listSessionSearchRoots(scope: SessionScope): Promise<string[]> {
@@ -201,26 +268,39 @@ export async function listSessionSearchRoots(scope: SessionScope): Promise<strin
     return [scope.engineeringDir];
   }
   const multi = scope.engineeringMultiRoot;
-  const roots: string[] = [];
-  let owners: Array<{ name: string; isDirectory: () => boolean }>;
+  const roots = new Set<string>();
+  let topEntries: Array<{ name: string; isDirectory: () => boolean }>;
   try {
-    owners = await readdir(multi, { withFileTypes: true });
+    topEntries = await readdir(multi, { withFileTypes: true });
   } catch {
     return [];
   }
-  for (const ownerEnt of owners) {
-    if (!ownerEnt.isDirectory() || ownerEnt.name.startsWith('.')) continue;
-    const ownerPath = resolve(multi, ownerEnt.name);
-    let repos: typeof owners;
+
+  for (const ent of topEntries) {
+    if (!ent.isDirectory() || ent.name.startsWith('.')) continue;
+    const topPath = resolve(multi, ent.name);
+
+    // Canonical basename checkout: $ROOT/<repo>/.engineering
+    const basenameEng = join(topPath, '.engineering');
+    if (await isDirectory(basenameEng)) {
+      roots.add(resolve(basenameEng));
+    }
+
+    // Legacy install co-location: $ROOT/<owner>/<repo>/.engineering
+    let nested: typeof topEntries;
     try {
-      repos = await readdir(ownerPath, { withFileTypes: true });
+      nested = await readdir(topPath, { withFileTypes: true });
     } catch {
       continue;
     }
-    for (const repoEnt of repos) {
+    for (const repoEnt of nested) {
       if (!repoEnt.isDirectory() || repoEnt.name.startsWith('.')) continue;
-      roots.push(resolve(ownerPath, repoEnt.name, '.engineering'));
+      if (repoEnt.name === '.engineering' || repoEnt.name === '.worktrees') continue;
+      const legacyEng = resolve(topPath, repoEnt.name, '.engineering');
+      if (await isDirectory(legacyEng)) {
+        roots.add(legacyEng);
+      }
     }
   }
-  return roots;
+  return [...roots];
 }

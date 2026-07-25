@@ -1,7 +1,11 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import type { ServerConfig } from '../config.js';
-import { DEFAULT_BUNDLE_HEADROOM_FRACTION, DEFAULT_BUNDLE_CHARS_PER_TOKEN } from '../config.js';
+import type { PathPresentationMap, ServerConfig } from '../config.js';
+import {
+  DEFAULT_BUNDLE_HEADROOM_FRACTION,
+  DEFAULT_BUNDLE_CHARS_PER_TOKEN,
+  presentPathToAgent,
+} from '../config.js';
 import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, readActivityRaw, buildFragmentsLookup, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment, scanCheckpointRefLines } from '../loaders/fragment-resolver.js';
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
@@ -143,7 +147,10 @@ const HISTORY_MILESTONE_TYPES = new Set([
 ]);
 
 /** Identity projection: the stable header fields identifying the session. */
-export function projectIdentity(s: SessionFile): Record<string, unknown> {
+export function projectIdentity(
+  s: SessionFile,
+  pathPresentation?: PathPresentationMap,
+): Record<string, unknown> {
   const out: Record<string, unknown> = {
     workflowId: s.workflowId,
     workflowVersion: s.workflowVersion,
@@ -156,7 +163,8 @@ export function projectIdentity(s: SessionFile): Record<string, unknown> {
     seq: s.seq,
   };
   if (s.repo) out['repo'] = s.repo;
-  if (s.planningFolderPath) out['planningFolderPath'] = s.planningFolderPath;
+  const presented = presentPathToAgent(s.planningFolderPath, pathPresentation);
+  if (presented) out['planningFolderPath'] = presented;
   return out;
 }
 
@@ -223,9 +231,12 @@ export function projectChildren(s: SessionFile): Array<Record<string, unknown>> 
 }
 
 /** Summary (default) view: the composite of all projections for the addressed session. */
-export function projectSummary(s: SessionFile): Record<string, unknown> {
+export function projectSummary(
+  s: SessionFile,
+  pathPresentation?: PathPresentationMap,
+): Record<string, unknown> {
   return {
-    identity: projectIdentity(s),
+    identity: projectIdentity(s, pathPresentation),
     activities: projectActivities(s),
     variables: s.variables ?? {},
     checkpoints: projectCheckpoints(s),
@@ -243,9 +254,10 @@ export function projectSessionView(
   s: SessionFile,
   view: InspectSessionView,
   variable?: string,
+  pathPresentation?: PathPresentationMap,
 ): unknown {
   switch (view) {
-    case 'identity': return projectIdentity(s);
+    case 'identity': return projectIdentity(s, pathPresentation);
     case 'variables': {
       const bag = s.variables ?? {};
       return variable ? bag[variable] : bag;
@@ -256,7 +268,7 @@ export function projectSessionView(
     case 'children': return projectChildren(s);
     case 'summary':
     default:
-      return projectSummary(s);
+      return projectSummary(s, pathPresentation);
   }
 }
 
@@ -265,6 +277,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
   const sessionScope = buildSessionScope(config);
   const planningRootDir = sessionScope.engineeringDir;
+  /** Agent-facing path: rewrite container paths via host mount map when set. */
+  const presentPlanningPath = (serverPath: string | undefined): string | undefined =>
+    presentPathToAgent(serverPath, config.pathPresentation);
 
   async function sessionLoadOpts() {
     const searchRoots = await listSessionSearchRoots(sessionScope);
@@ -375,12 +390,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // than as a later "Activity not found". Omitted when every activity loaded.
         activity_load_errors: activityLoadErrors.length > 0 ? activityLoadErrors : undefined,
         session_index,
-        // Canonical absolute planning folder for this session, resolved by the
-        // server under its own workspace `.engineering` root. This is the single
-        // authoritative artifact location — the orchestrator binds
-        // `planning_folder_path` from here and never composes it relative to its
-        // CWD or the target component repo (which may be a submodule/worktree).
-        planning_folder_path: loaded.folderAbsPath,
+        // Canonical absolute planning folder for this session. Under Docker the
+        // server stores a container path; agent-facing responses rewrite it to
+        // the host bind (`HOST_PROJECTS_ROOT`) so IDE tools can open the folder.
+        // The orchestrator binds `planning_folder_path` from here and never
+        // recomposes it relative to CWD or a target worktree.
+        planning_folder_path: presentPlanningPath(loaded.folderAbsPath) ?? loaded.folderAbsPath,
       };
 
       return {
@@ -1413,7 +1428,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ? loaded.state
         : navigatePath(loaded.state, ['triggeredWorkflows', child_index, 'state']);
 
-      const projection = projectSessionView(addressed, view, variable);
+      const projection = projectSessionView(
+        addressed,
+        view,
+        variable,
+        config.pathPresentation,
+      );
 
       // Read-only: no advanceSession / saveSessionForTool — the on-disk state stays untouched.
       return {

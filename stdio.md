@@ -44,11 +44,12 @@ The IDE starts the process; you do not run a long-lived server yourself.
       "args": [
         "/path/to/workflow-server/dist/index.js",
         "--install-dir=/home/you/.local/share/workflow-server",
-        "--workspace=/home/you/.local/share/workflow-server/workspace",
+        "--workspace=/home/you/projects/dev",
         "--workflow-dir=/path/to/workflows"
       ],
       "env": {
-        "WORKFLOW_SERVER_ENGINEERING_DIR": "/home/you/.local/share/workflow-server/engineering",
+        "WORKFLOW_SERVER_ENGINEERING_DIR": "/home/you/projects/dev",
+        "HOST_PROJECTS_ROOT": "/home/you/projects/dev",
         "WORKFLOW_SERVER_INSTALL_DIR": "/home/you/.local/share/workflow-server"
       }
     }
@@ -114,7 +115,7 @@ Then finish shared steps in [setup.md](setup.md) (**§2** deploy + checkout, **�
 | Process exits immediately | Provide **`--workspace=…`** or **`--repo=owner/repo`** — `--install-dir` alone is not enough |
 | Spawn error / cannot find `dist/index.js` | Run `npm run build`; use an absolute path to `dist/index.js` |
 | Workflows not found | Readable `--workflow-dir` (or install workflows worktree) |
-| Planning path / repo errors | [setup.md §2](setup.md#2-init-a-target-repo); pass `repo` on `start_session` |
+| Planning path / repo errors | [setup.md §2](setup.md#2-initialise-a-target-repo); pass `repo` on `start_session` |
 | Agent never calls `discover` | [docs/ide-setup.md](docs/ide-setup.md) bootstrap rule |
 
 Shared install vs deploy vs checkout: [setup.md](setup.md).

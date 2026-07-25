@@ -4,7 +4,8 @@
 # values derived from the install layout (and optional flags).
 #
 # Defaults match scripts/install.sh + start.sh:
-#   $INSTALL/{worktrees,projects,state,workflows}
+#   $HOST_PROJECTS_ROOT/<repo>/ + nested .engineering + .worktrees
+#   $INSTALL/{state,workflows}
 #   container targets under /var/lib/workflow-server/...
 set -euo pipefail
 
@@ -23,9 +24,11 @@ usage() {
 Usage: $(basename "$0") [options]
 
   --install-dir=PATH     Install root (default: ${DEFAULT_INSTALL_DIR})
-  --worktree-root=PATH   Feature worktrees root (default: \$INSTALL/worktrees)
-  --projects-root=PATH   Projects multi-root (default: \$INSTALL/projects)
-  --repo=owner/repo      Optional WORKFLOW_SERVER_REPO for init-repo layout
+  --worktree-root=PATH   Optional separate worktrees root (default: same as
+                         projects root — nested <repo>/.worktrees/)
+  --projects-root=PATH   Projects multi-root (default: \$HOST_PROJECTS_ROOT
+                         or ~/projects/dev). Checkouts are <repo>/ basename.
+  --repo=owner/repo      Optional WORKFLOW_SERVER_REPO for a pinned checkout
   --force                Overwrite an existing .env from .env.example first
   -h, --help             Show this help
 
@@ -100,7 +103,7 @@ ensure_dir() {
 
 INSTALL_DEFAULT="$(expand_path "$INSTALL_DEFAULT")"
 if [[ -z "$PROJECTS_DEFAULT" ]]; then
-  PROJECTS_DEFAULT="${INSTALL_DEFAULT}/projects"
+  PROJECTS_DEFAULT="${HOME}/projects/dev"
 fi
 PROJECTS_DEFAULT="$(expand_path "$PROJECTS_DEFAULT")"
 # Nested .worktrees under projects root; do not default to $INSTALL/worktrees.
@@ -125,7 +128,7 @@ fi
 ensure_dir "$INSTALL_DEFAULT" "install dir"
 ensure_dir "$PROJECTS_DEFAULT" "projects root"
 if [[ "$WORKTREE_DEFAULT" != "$PROJECTS_DEFAULT" ]]; then
-  ensure_dir "$WORKTREE_DEFAULT" "legacy worktrees root"
+  ensure_dir "$WORKTREE_DEFAULT" "worktrees root"
 fi
 ensure_dir "$STATE_DIR" "state dir (HMAC key)"
 
@@ -180,7 +183,7 @@ echo "  HOST_PROJECTS_ROOT=${PROJECTS_DEFAULT}"
 if [[ "$WORKTREE_DEFAULT" == "$PROJECTS_DEFAULT" ]]; then
   echo "  worktrees: nested under HOST_PROJECTS_ROOT/<repo>/.worktrees/"
 else
-  echo "  HOST_WORKTREE_ROOT=${WORKTREE_DEFAULT}  (legacy)"
+  echo "  HOST_WORKTREE_ROOT=${WORKTREE_DEFAULT}"
 fi
 echo "  HOST_STATE_DIR=${STATE_DIR}"
 echo "  WORKFLOW_DIR=${WORKFLOWS_ABS}"

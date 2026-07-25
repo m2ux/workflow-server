@@ -11,7 +11,7 @@ Complete the transport guide’s install, then return here for §2–§4.
 | Path                              | When | Guide |
 |-----------------------------------|------|--------|
 | **Docker / HTTP**                 | Run the GHCR image; no server source checkout | [http.md](http.md) |
-| **stdio (soon to be deprecated)** | IDE spawns `node dist/index.js` from a local checkout | [stdio.md](stdio.md) |
+| **stdio** | IDE spawns `node dist/index.js` from a local checkout | [stdio.md](stdio.md) |
 
 ## 2. Initialise a target repo
 
@@ -33,10 +33,10 @@ Layouts (same-repo orphan, shared engineering monorepo, in-branch): [docs/engine
 ### 2b. Checkout the project
 
 After deploy, clone or check out the project into the canonical location under
-`HOST_PROJECTS_ROOT` (typical example `~/projects/dev`):
+`HOST_PROJECTS_ROOT` (default `~/projects/dev`):
 
 ```bash
-# HOST_PROJECTS_ROOT from $INSTALL/env (example: ~/projects/dev)
+# HOST_PROJECTS_ROOT from $INSTALL/env (default: ~/projects/dev)
 git clone https://github.com/owner/repo.git "$HOST_PROJECTS_ROOT/<repo>"
 mkdir -p "$HOST_PROJECTS_ROOT/<repo>/.worktrees"
 ```
@@ -56,15 +56,14 @@ Launch Cursor from a shell that exports `HOST_PROJECTS_ROOT` (source `$INSTALL/e
 
 ## 4. Update Workflows
 
-When workflow definitions (or managed checkouts under `HOST_PROJECTS_ROOT`) change
-remotely, refresh locally:
+When workflow definitions change remotely, refresh locally:
 
 ```bash
 $INSTALL/update-workflows.sh
 ```
 
-This fast-forwards `$INSTALL/workflows` and, when present, project checkouts under
-`HOST_PROJECTS_ROOT` (including nested `.engineering` when it is a git checkout).
+This fast-forwards `$INSTALL/workflows` only. Product checkouts under
+`HOST_PROJECTS_ROOT` are yours to update.
 Restart the HTTP server afterward if it is running.
 
 ## 5. Verify

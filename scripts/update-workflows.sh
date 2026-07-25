@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
-# workflow-server — refresh install data: workflows defs + all project checkouts
+# workflow-server — refresh the local workflows definitions checkout only
+#
+# Product repos under HOST_PROJECTS_ROOT are managed by you; this script does
+# not clone, ff-update, or touch them.
 #
 # After install:
 #   ~/.local/share/workflow-server/update-workflows.sh
@@ -16,16 +19,16 @@ DEFAULT_REMOTE="origin"
 
 INSTALL_DIR="${WORKFLOW_SERVER_INSTALL_DIR:-$DEFAULT_INSTALL_DIR}"
 WORKFLOWS_DIR=""
-PROJECTS_ROOT=""
 BRANCH="${WORKFLOW_SERVER_WORKFLOWS_BRANCH:-$DEFAULT_BRANCH}"
 REMOTE="$DEFAULT_REMOTE"
 FORCE=0
-SKIP_SOURCE=0
 
 usage() {
   cat <<EOF
-Update the local workflows definitions checkout and every per-repo projects
-checkout under \$INSTALL/projects (default branch + .engineering when present).
+Update the local workflows definitions checkout (\$INSTALL/workflows).
+
+Product checkouts under \$HOST_PROJECTS_ROOT are not touched — manage those
+yourself.
 
 USAGE
   update-workflows.sh [options]
@@ -34,16 +37,15 @@ OPTIONS
   --install-dir=PATH    Install root (default: ${DEFAULT_INSTALL_DIR})
                         workflows dir = \$INSTALL/workflows unless overridden
   --workflows-dir=PATH  Explicit workflows git checkout
-  --projects-root=PATH    Per-repo projects root (default: \$INSTALL/projects)
   --branch=NAME         Workflows branch to track (default: ${DEFAULT_BRANCH})
   --remote=NAME         Remote name (default: ${DEFAULT_REMOTE})
   --force               Discard local changes (git reset --hard + clean -fd)
-  --skip-projects         Only update workflows definitions
   -h, --help
 
-Default paths:
+  Ignored (no-op): --projects-root, --skip-projects
+
+Default path:
   ${DEFAULT_INSTALL_DIR}/workflows
-  ${DEFAULT_INSTALL_DIR}/projects/<owner>/<repo>
 EOF
 }
 
@@ -69,25 +71,6 @@ is_git_checkout() {
   local dest="$1"
   { [[ -d "${dest}/.git" ]] || [[ -f "${dest}/.git" ]]; } \
     && git -C "${dest}" rev-parse --is-inside-work-tree >/dev/null 2>&1
-}
-
-default_branch_for() {
-  local dest="$1"
-  local ref
-  ref="$(git -C "$dest" symbolic-ref --quiet refs/remotes/origin/HEAD 2>/dev/null || true)"
-  if [[ -n "$ref" ]]; then
-    printf '%s\n' "${ref#refs/remotes/origin/}"
-    return 0
-  fi
-  if git -C "$dest" show-ref --verify --quiet refs/remotes/origin/main; then
-    echo main
-    return 0
-  fi
-  if git -C "$dest" show-ref --verify --quiet refs/remotes/origin/master; then
-    echo master
-    return 0
-  fi
-  echo main
 }
 
 # Update a git worktree onto remote tracking branch tip.
@@ -136,37 +119,6 @@ ff_checkout() {
   fi
 }
 
-update_engineering_under_projects() {
-  local projects_dir="$1"
-  local eng="${projects_dir}/.engineering"
-  [[ -e "$eng" ]] || return 0
-  if ! is_git_checkout "$eng"; then
-    echo "  Engineering at ${eng} is not a git checkout (skip)"
-    return 0
-  fi
-  local br="engineering"
-  # Prefer .gitmodules branch when parent has it
-  if [[ -f "${projects_dir}/.gitmodules" ]]; then
-    local b
-    b="$(git config -f "${projects_dir}/.gitmodules" --get-regexp 'submodule\..*\.path' 2>/dev/null \
-      | while read -r key path; do
-          [[ "$path" == ".engineering" ]] || continue
-          name="${key#submodule.}"
-          name="${name%.path}"
-          git config -f "${projects_dir}/.gitmodules" --get "submodule.${name}.branch" 2>/dev/null || true
-          break
-        done)"
-    [[ -n "$b" ]] && br="$b"
-  fi
-  # Detached submodule pin: try to stay on tracking branch if remote has it
-  if git -C "$eng" show-ref --verify --quiet "refs/remotes/origin/${br}"; then
-    ff_checkout "$eng" "$br" "Engineering"
-  else
-    echo "  Engineering: fetch only (no origin/${br})"
-    git -C "$eng" fetch "$REMOTE" 2>/dev/null || true
-  fi
-}
-
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help)
@@ -190,12 +142,16 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     --projects-root=*)
-      PROJECTS_ROOT="${1#*=}"
+      echo "warning: ignored --projects-root (workflows only)" >&2
       shift
       ;;
     --projects-root)
-      PROJECTS_ROOT="${2:?}"
+      echo "warning: ignored --projects-root (workflows only)" >&2
       shift 2
+      ;;
+    --skip-projects)
+      echo "warning: --skip-projects is obsolete (workflows-only update is the default)" >&2
+      shift
       ;;
     --branch=*)
       BRANCH="${1#*=}"
@@ -217,10 +173,6 @@ while [[ $# -gt 0 ]]; do
       FORCE=1
       shift
       ;;
-    --skip-projects)
-      SKIP_SOURCE=1
-      shift
-      ;;
     *)
       die "unknown option: $1 (see --help)"
       ;;
@@ -234,10 +186,6 @@ if [[ -z "$WORKFLOWS_DIR" ]]; then
   WORKFLOWS_DIR="${INSTALL_DIR}/workflows"
 fi
 WORKFLOWS_DIR=$(abs_path "$WORKFLOWS_DIR")
-if [[ -z "$PROJECTS_ROOT" ]]; then
-  PROJECTS_ROOT="${INSTALL_DIR}/projects"
-fi
-PROJECTS_ROOT=$(abs_path "$PROJECTS_ROOT")
 
 [[ -d "$WORKFLOWS_DIR" ]] || die "workflows dir not found: ${WORKFLOWS_DIR}
   Run install first:
@@ -246,28 +194,6 @@ PROJECTS_ROOT=$(abs_path "$PROJECTS_ROOT")
 is_git_checkout "$WORKFLOWS_DIR" || die "not a git checkout: ${WORKFLOWS_DIR}"
 
 ff_checkout "$WORKFLOWS_DIR" "$BRANCH" "Workflows"
-
-if [[ "$SKIP_SOURCE" -eq 0 && -d "$PROJECTS_ROOT" ]]; then
-  echo
-  echo "Refreshing project checkouts under ${PROJECTS_ROOT}"
-  shopt -s nullglob
-  for owner_dir in "${PROJECTS_ROOT}"/*; do
-    [[ -d "$owner_dir" ]] || continue
-    owner="$(basename "$owner_dir")"
-    [[ "$owner" == .* ]] && continue
-    for repo_dir in "${owner_dir}"/*; do
-      [[ -d "$repo_dir" ]] || continue
-      is_git_checkout "$repo_dir" || continue
-      def_br="$(default_branch_for "$repo_dir")"
-      ff_checkout "$repo_dir" "$def_br" "Source ${owner}/$(basename "$repo_dir")"
-      update_engineering_under_projects "$repo_dir"
-    done
-  done
-  shopt -u nullglob
-elif [[ "$SKIP_SOURCE" -eq 0 ]]; then
-  echo
-  echo "No projects root at ${PROJECTS_ROOT} (skip); run init-repo.sh owner/repo first"
-fi
 
 echo
 echo "If the server is running, restart it to reload definitions:"

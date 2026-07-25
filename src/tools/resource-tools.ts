@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { normalizeRepoPath, type ServerConfig } from '../config.js';
+import { normalizeRepoPath, presentPathToAgent, type ServerConfig } from '../config.js';
 import { withAuditLog } from '../logging.js';
 
 import { loadWorkflow, loadWorkflowWithDiagnostics, getActivity } from '../loaders/workflow-loader.js';
@@ -83,6 +83,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   // owner/repo is resolved at start_session via the `repo` hint.
   const sessionScope = buildSessionScope(config);
   const planningRootDir = sessionScope.engineeringDir;
+  /** Agent-facing path: rewrite container paths via host mount map when set. */
+  const presentPlanningPath = (serverPath: string | undefined): string | undefined =>
+    presentPathToAgent(serverPath, config.pathPresentation);
 
   async function sessionLoadOpts() {
     const searchRoots = await listSessionSearchRoots(sessionScope);
@@ -124,9 +127,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       //
       // `planning_folder` is treated as a HINT supplied by the agent. The
       // server consumes its basename as the slug. When the path sits under the
-      // engineering multi-root as …/engineering/<owner>/<repo>/…, that owner/repo
-      // is also taken as a repo hint (unless `repo` is passed explicitly).
-      // Off-workspace paths still work as slug-only hints.
+      // projects multi-root as …/<repo>/.engineering/… (canonical basename) or
+      // legacy …/<owner>/<repo>/.engineering/…, that identity is also taken as
+      // a repo hint (unless `repo` is passed explicitly). Off-workspace paths
+      // still work as slug-only hints.
       let planning_slug: string | undefined;
       if (planning_folder !== undefined) {
         if (!isAbsolute(planning_folder)) {
@@ -370,7 +374,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         session_index: sessionIndex,
         planning_slug: slug,
       };
-      if (state.planningFolderPath) response['planning_folder_path'] = state.planningFolderPath;
+      {
+        const presented = presentPlanningPath(state.planningFolderPath);
+        if (presented) response['planning_folder_path'] = presented;
+      }
       // Echo the durable session binding (session.json#repo), not a path-only hint.
       if (state.repo) response['repo'] = state.repo;
       // Fail-soft: transient without session.repo still boots; bind via start_session
@@ -515,7 +522,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // index to it and remove the tmp folder.
         await redirectTransientToWorkspace(parentFolder, promotedWorkspaceFolder);
         return {
-          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_slug: promotedSlug, planning_folder_path: promotedWorkspaceFolder }, null, 2) }],
+          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_slug: promotedSlug, planning_folder_path: presentPlanningPath(promotedWorkspaceFolder) ?? promotedWorkspaceFolder }, null, 2) }],
           _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
         };
       }
@@ -556,7 +563,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       });
       await saveSessionForTool(loaded, parentNext);
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_folder_path: parentFolder }, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_folder_path: presentPlanningPath(parentFolder) ?? parentFolder }, null, 2) }],
         _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
       };
     }), traceOpts)

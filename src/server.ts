@@ -36,6 +36,14 @@ export function createServer(config: ServerConfig): McpServer {
     workspaceDir: resolvedConfig.workspaceDir,
     engineeringDir: resolvedConfig.engineeringDir,
     ...(resolvedConfig.repo !== undefined ? { repo: resolvedConfig.repo } : {}),
+    ...(resolvedConfig.pathPresentation
+      ? {
+          pathPresentation: {
+            serverProjectsRoot: resolvedConfig.pathPresentation.serverProjectsRoot,
+            hostProjectsRoot: resolvedConfig.pathPresentation.hostProjectsRoot,
+          },
+        }
+      : {}),
   });
   registerWorkflowTools(server, resolvedConfig);
   registerResourceTools(server, resolvedConfig);

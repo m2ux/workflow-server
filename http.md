@@ -9,7 +9,8 @@ Transport-specific steps for running the **GHCR image** over HTTP.
 
 ## 1. Install
 
-Fetches helper scripts, clones the `workflows` branch, creates `state/` (HMAC key), writes `$INSTALL/env`:
+Fetches helper scripts, clones the `workflows` branch, ensures a projects root
+(default `~/projects/dev`), creates `state/` (HMAC key), writes `$INSTALL/env`:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
@@ -20,6 +21,11 @@ curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/i
 ```bash
 ~/.local/share/workflow-server/start.sh -d
 ```
+
+Binds `$HOST_PROJECTS_ROOT` (default `~/projects/dev`) and `$INSTALL/state`. Planning
+for `start_session({ repo: "owner/repo" })` is under
+`$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/<slug>/` on the host
+when `HOST_PROJECTS_ROOT` is set.
 
 Compose alternative: [`docker-compose.yml`](docker-compose.yml) (same bind names as `.env.example`).
 

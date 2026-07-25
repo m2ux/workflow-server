@@ -1,12 +1,25 @@
 import { homedir } from 'node:os';
-import { resolve } from 'node:path';
+import { basename, resolve } from 'node:path';
 import type { TraceStore } from './trace.js';
+import {
+  buildPathPresentationMap,
+  type PathPresentationMap,
+} from './utils/path-presentation.js';
 import { PLANNING_RELATIVE_DIR, setPlanningRelativeDir } from './utils/session/store.js';
 
+export type { PathPresentationMap } from './utils/path-presentation.js';
+export {
+  buildPathPresentationMap,
+  presentPathToAgent,
+  isPathUnderRoot,
+  collapseOwnerRepoUnderRoot,
+} from './utils/path-presentation.js';
+
 /**
- * Planning path under an engineering-branch checkout (init-repo layout).
- * The engineering branch root already *is* the engineering tree, so planning
- * lives at `artifacts/planning` rather than `.engineering/artifacts/planning`.
+ * Planning path under an engineering-branch checkout (basename layout under
+ * HOST_PROJECTS_ROOT). The engineering branch root already *is* the engineering
+ * tree, so planning lives at `artifacts/planning` rather than
+ * `.engineering/artifacts/planning`.
  */
 export const REPO_PLANNING_RELATIVE_DIR = 'artifacts/planning';
 
@@ -15,16 +28,18 @@ export interface ServerConfig {
   schemasDir: string;
   /**
    * Absolute path to the feature-worktree root the server is bound to.
-   * Feature worktrees live under this path. With `--repo=owner/repo`, this is
-   * `$INSTALL/worktrees/<owner>/<repo>`.
+   * Feature worktrees live under this path. With `--repo=owner/repo` (pinned),
+   * this is `$HOST_PROJECTS_ROOT/<repo>/.worktrees` (or `$INSTALL/projects/<repo>/.worktrees`
+   * when projects still co-locate under the install root). Legacy separate
+   * `$INSTALL/worktrees/…` is deprecated.
    */
   workspaceDir: string;
   /**
    * Absolute path to the engineering checkout used for planning artifacts.
    * Optional on literals (tests/scripts): `createServer` / callers treat a
    * missing value as `workspaceDir` (single-root layout).
-   * With `--repo=owner/repo`, this is
-   * `$INSTALL/projects/<owner>/<repo>/.engineering`.
+   * With `--repo=owner/repo` (pinned), this is
+   * `$HOST_PROJECTS_ROOT/<repo>/.engineering` (basename checkout — not owner/repo).
    */
   engineeringDir?: string;
   /**
@@ -42,6 +57,26 @@ export interface ServerConfig {
    * (`engineeringDir` when set, else `workspaceDir`).
    */
   planningRelativeDir?: string;
+  /**
+   * Host-side bind source for the projects / engineering multi-root mount.
+   * When set (Docker via `HOST_PROJECTS_ROOT`), agent-facing paths such as
+   * `planning_folder_path` are rewritten from the server/container prefix to
+   * this host prefix, with deprecated `owner/repo` segments collapsed to the
+   * canonical basename checkout (`$HOST_PROJECTS_ROOT/<repo>/…`).
+   * Session storage continues to use server-side paths.
+   */
+  hostProjectsRoot?: string;
+  /**
+   * Host-side bind source for a legacy separate worktree multi-root mount.
+   * Unused when worktrees are nested under the projects root.
+   */
+  hostWorktreeRoot?: string;
+  /**
+   * Resolved prefix map for agent-facing path presentation. Built at config
+   * load from server roots + host bind sources; undefined when presentation
+   * is identity (stdio / same path namespace).
+   */
+  pathPresentation?: PathPresentationMap;
   serverName: string;
   serverVersion: string;
   /**
@@ -217,25 +252,58 @@ export function resolveInstallDir(
 
 export interface RepoPaths {
   repo: string;
+  /** Directory basename of the checkout (`owner/repo` → `repo`). */
+  checkoutName: string;
   installDir: string;
-  /** App main/default-branch checkout: `$INSTALL/projects/<owner>/<repo>`. */
+  /**
+   * App main/default-branch checkout:
+   * `$INSTALL/projects/<repo>` (basename; default co-located projects root).
+   * Operators should prefer an external `HOST_PROJECTS_ROOT/<repo>` instead.
+   */
   projectsDir: string;
-  /** Planning engineering root: `$INSTALL/projects/<owner>/<repo>/.engineering`. */
+  /** Planning engineering root: `<checkout>/.engineering`. */
   engineeringDir: string;
-  /** Feature worktree parent: `$INSTALL/worktrees/<owner>/<repo>`. */
+  /**
+   * Feature worktree parent: `<checkout>/.worktrees`.
+   * (Legacy `$INSTALL/worktrees/<owner>/<repo>` is not used for new paths.)
+   */
   workspaceDir: string;
 }
 
-/** Directory name for feature worktree parents under the install root. */
+/**
+ * Legacy directory name for a separate feature-worktree multi-root under the
+ * install root. Deprecated — prefer nested `<checkout>/.worktrees/`.
+ */
 export const INSTALL_WORKTREES_DIR = 'worktrees';
-/** Directory name for per-repo main checkouts under the install root. */
+/**
+ * Default co-located projects multi-root under the install root
+ * (`$INSTALL/projects`). Prefer an external `HOST_PROJECTS_ROOT` when set.
+ */
 export const INSTALL_PROJECTS_DIR = 'projects';
+/** Nested feature-worktree directory name inside each checkout. */
+export const CHECKOUT_WORKTREES_DIR = '.worktrees';
 
 /**
- * Derive the canonical per-repo paths under the install root:
- *   $INSTALL/projects/<owner>/<repo>                 # main checkout (reference)
- *   $INSTALL/projects/<owner>/<repo>/.engineering    # planning (submodule)
- *   $INSTALL/worktrees/<owner>/<repo>                # feature worktree parent
+ * Checkout directory basename for a normalised `owner/repo` (or bare name).
+ * Canonical on-disk layout is basename-only under the projects multi-root.
+ */
+export function repoCheckoutBasename(repo: string): string {
+  const trimmed = repo.trim().replace(/\/+$/, '');
+  const name = basename(trimmed);
+  if (!name || name === '.' || name === '..') {
+    throw new WorkspaceConfigError(`Invalid repo '${repo}': empty basename`);
+  }
+  return name;
+}
+
+/**
+ * Derive the canonical per-repo paths under the install-co-located projects root:
+ *   $INSTALL/projects/<repo>                 # main checkout (basename)
+ *   $INSTALL/projects/<repo>/.engineering    # planning (submodule)
+ *   $INSTALL/projects/<repo>/.worktrees      # feature worktree parent
+ *
+ * Prefer binding `HOST_PROJECTS_ROOT` externally; this helper only knows the
+ * install-relative default used by `--repo` / stdio pin without a host root.
  */
 export function resolveRepoPaths(
   repoRaw: string,
@@ -243,19 +311,30 @@ export function resolveRepoPaths(
 ): RepoPaths {
   const repo = normalizeRepoPath(repoRaw);
   const root = resolve(installDir);
-  const projectsDir = resolve(root, INSTALL_PROJECTS_DIR, repo);
+  const checkoutName = repoCheckoutBasename(repo);
+  const projectsDir = resolve(root, INSTALL_PROJECTS_DIR, checkoutName);
   return {
     repo,
+    checkoutName,
     installDir: root,
     projectsDir,
     engineeringDir: resolve(projectsDir, '.engineering'),
-    workspaceDir: resolve(root, INSTALL_WORKTREES_DIR, repo),
+    workspaceDir: resolve(projectsDir, CHECKOUT_WORKTREES_DIR),
   };
 }
 
-/** True when `workspaceDir` is the install multi-root `$INSTALL/worktrees`. */
+/**
+ * True when `workspaceDir` is a worktree multi-root bind target:
+ * - nested model: `$INSTALL/projects` (same as projects multi-root), or
+ * - legacy: `$INSTALL/worktrees`.
+ */
 export function isWorktreeMultiRoot(workspaceDir: string, installDir: string): boolean {
-  return resolve(workspaceDir) === resolve(installDir, INSTALL_WORKTREES_DIR);
+  const ws = resolve(workspaceDir);
+  const root = resolve(installDir);
+  return (
+    ws === resolve(root, INSTALL_PROJECTS_DIR) ||
+    ws === resolve(root, INSTALL_WORKTREES_DIR)
+  );
 }
 
 /** Engineering root used for planning: explicit field or workspace fallback. */
@@ -277,12 +356,12 @@ interface ResolvedRoots {
  *
  * Precedence:
  *   1. `--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` (explicit path).
- *      Docker start.sh binds install multi-roots (`$INSTALL/worktrees` +
- *      `$INSTALL/projects`). Repo is chosen at `start_session` time, not
- *      process start.
+ *      Docker start.sh binds the projects multi-root (`HOST_PROJECTS_ROOT` →
+ *      container projects) covering checkouts, `.engineering`, and nested
+ *      `.worktrees`. Repo is chosen at `start_session` time, not process start.
  *   2. Optional `--repo` / `WORKFLOW_SERVER_REPO` pins a single owner/repo under
- *      the install root (stdio single-tenant). Prefer session-time `repo` when
- *      serving multiple init-repo checkouts from one process.
+ *      `$INSTALL/projects/<repo>` (stdio single-tenant). Prefer session-time
+ *      `repo` when serving multiple checkouts from one process.
  *   3. Error if neither workspace nor repo can be resolved.
  *
  * Split engineering root defaults planning to `artifacts/planning`.
@@ -306,16 +385,28 @@ function resolveRoots(argv: readonly string[]): ResolvedRoots {
     const installDir = installDirEnv
       ? resolve(installDirEnv)
       : resolveInstallDir(argv);
-    // Optional process pin: only when workspace is NOT the install multi-root
-    // (or is already the per-repo worktrees path). Multi-root Docker keeps
-    // multi-root so start_session can select owner/repo dynamically.
+    // Optional process pin: only when workspace is NOT a multi-root bind
+    // (or is already the per-repo nested .worktrees path). Multi-root Docker
+    // keeps multi-root so start_session can select owner/repo dynamically.
     const isMultiRootWorkspace = isWorktreeMultiRoot(workspaceDir, installDir);
     if (repoRaw && !isMultiRootWorkspace) {
       const paths = resolveRepoPaths(repoRaw, installDir);
-      // Explicit workspace that already is the per-repo path, or arbitrary pin.
+      // Explicit workspace that already is the per-repo nested worktrees path,
+      // or a legacy separate $INSTALL/worktrees/<owner>/<repo> pin.
+      const legacyWorkspace = resolve(
+        installDir,
+        INSTALL_WORKTREES_DIR,
+        paths.repo,
+      );
+      const legacyBasenameWorkspace = resolve(
+        installDir,
+        INSTALL_WORKTREES_DIR,
+        paths.checkoutName,
+      );
       if (
         workspaceDir === paths.workspaceDir ||
-        workspaceDir === resolve(installDir, INSTALL_WORKTREES_DIR, paths.repo)
+        workspaceDir === legacyWorkspace ||
+        workspaceDir === legacyBasenameWorkspace
       ) {
         return {
           workspaceDir,
@@ -406,10 +497,32 @@ function resolveHost(argv: readonly string[]): string {
  * the precedence rules deterministically.
  *
  * Root binding: `--workspace` / env paths take precedence over `--repo` /
- * `WORKFLOW_SERVER_REPO`. Repo mode derives:
- *   workspaceDir    = $INSTALL/worktrees/<owner>/<repo>
- *   engineeringDir  = $INSTALL/projects/<owner>/<repo>/.engineering
+ * `WORKFLOW_SERVER_REPO`. Repo mode derives (basename checkout):
+ *   workspaceDir    = $INSTALL/projects/<repo>/.worktrees
+ *   engineeringDir  = $INSTALL/projects/<repo>/.engineering
  */
+/**
+ * Host bind sources for agent-facing path presentation (Docker).
+ * Prefer `HOST_PROJECTS_ROOT` / `HOST_WORKTREE_ROOT` (start.sh); accept the
+ * underscored aliases some compose files use.
+ */
+function resolveHostPathPresentation(
+  env: NodeJS.ProcessEnv = process.env,
+): { hostProjectsRoot?: string; hostWorktreeRoot?: string } {
+  const hostProjects =
+    env['HOST_PROJECTS_ROOT']?.trim() ||
+    env['HOST_PROJECTS_DIR']?.trim() ||
+    undefined;
+  const hostWorktree =
+    env['HOST_WORKTREE_ROOT']?.trim() ||
+    env['HOST_WORKTREE_DIR']?.trim() ||
+    undefined;
+  const out: { hostProjectsRoot?: string; hostWorktreeRoot?: string } = {};
+  if (hostProjects) out.hostProjectsRoot = resolve(hostProjects);
+  if (hostWorktree) out.hostWorktreeRoot = resolve(hostWorktree);
+  return out;
+}
+
 export function loadConfig(argv: readonly string[] = process.argv.slice(2)): ServerConfig {
   const roots = resolveRoots(argv);
   const planningRelativeDir = resolvePlanningRelativeDir(
@@ -419,6 +532,16 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
   // Pin the active planning relative dir at config load so planningRoot()
   // callers see the configured slug without a second argument.
   setPlanningRelativeDir(planningRelativeDir);
+  const hostPaths = resolveHostPathPresentation(process.env);
+  // Server-side projects root for the map: engineering multi-root when set,
+  // else workspace (single-root / nested bind).
+  const serverProjectsRoot = roots.engineeringDir;
+  const pathPresentation = buildPathPresentationMap({
+    serverProjectsRoot,
+    hostProjectsRoot: hostPaths.hostProjectsRoot,
+    serverWorktreeRoot: roots.workspaceDir,
+    hostWorktreeRoot: hostPaths.hostWorktreeRoot ?? hostPaths.hostProjectsRoot,
+  });
   return {
     workflowDir: resolveWorkflowDir(argv),
     schemasDir: resolve(PROJECT_ROOT, envOrDefault('SCHEMAS_DIR', './schemas')),
@@ -427,6 +550,13 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
     ...(roots.repo !== undefined ? { repo: roots.repo } : {}),
     ...(roots.installDir !== undefined ? { installDir: roots.installDir } : {}),
     planningRelativeDir,
+    ...(hostPaths.hostProjectsRoot !== undefined
+      ? { hostProjectsRoot: hostPaths.hostProjectsRoot }
+      : {}),
+    ...(hostPaths.hostWorktreeRoot !== undefined
+      ? { hostWorktreeRoot: hostPaths.hostWorktreeRoot }
+      : {}),
+    ...(pathPresentation !== undefined ? { pathPresentation } : {}),
     serverName: envOrDefault('SERVER_NAME', 'workflow-server'),
     serverVersion: envOrDefault('SERVER_VERSION', '2.1.0'),
     bundleHeadroomFraction: envNumberOrDefault('BUNDLE_HEADROOM_FRACTION', DEFAULT_BUNDLE_HEADROOM_FRACTION),
