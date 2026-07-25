@@ -1,25 +1,21 @@
 # Setup — Docker / HTTP
 
-Transport-specific steps for running the **GHCR image** over HTTP.  
-Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, update workflows).
+Transport-specific steps for running the **GHCR image** over HTTP.
 
 ## Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/)
 - `curl`, `git` (for `install.sh`)
 
-## 1. Install host layout
+## 1. Install
 
-Fetches helper scripts, clones the `workflows` branch, creates `projects/`,
-`worktrees/`, and `state/` (HMAC key), writes `$INSTALL/env`:
+Fetches helper scripts, clones the `workflows` branch, creates `state/` (HMAC key), writes `$INSTALL/env`:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
 ```
 
-> Options: `install.sh --help` (`--install-dir`, `--worktree-root`, `--projects-root`, …).
-
-## 2. Start the server
+## 2. Start
 
 ```bash
 ~/.local/share/workflow-server/start.sh -d
@@ -30,8 +26,6 @@ Defaults:
 - Image: `ghcr.io/m2ux/workflow-server:main`
 - Publish: `http://127.0.0.1:3000`
 - Binds:
-  - host `$INSTALL/worktrees` → `/var/lib/workflow-server/worktrees`
-  - host `$INSTALL/projects` → `/var/lib/workflow-server/projects` (eng multi-root)
   - host `$INSTALL/state` → `/var/lib/workflow-server/state` (HMAC signing key)
 - Container env: `WORKTREE_ROOT` / `WORKFLOW_WORKSPACE`, `WORKFLOW_SERVER_ENGINEERING_DIR`,
   `WORKFLOW_SERVER_INSTALL_DIR`, `WORKFLOW_SERVER_KEY_DIR` (see `start.sh`)
@@ -51,10 +45,19 @@ Compose alternative: [`docker-compose.yml`](docker-compose.yml) (same bind names
 
 ## 3. MCP client (HTTP)
 
-### Recommended for local Docker (hard-coded URL)
+### Recommended — example Cursor workspace
 
-Cursor only expands `${env:…}` from the **IDE process** environment. If that
-variable is unset, `mcp-remote` gets a broken URL. For a fixed local port, hard-code:
+Do **not** hand-roll MCP config as the primary path. Copy and open the example multi-root workspace; it already includes `.cursor/mcp.json`, always-applied rules, and `AGENTS.md`:
+
+**[examples/cursor-workspace/](examples/cursor-workspace/)** — [README](examples/cursor-workspace/README.md)
+
+That template mirrors the live layout under `~/.local/share/cursor/workspaces/workflow-server` (workspace + project + workflows + planning + work trees). After you open it in Cursor, ask the agent to start a workflow.
+
+Shared install / init-repo steps: [setup.md](setup.md). IDE detail: [docs/ide-setup.md](docs/ide-setup.md).
+
+### Optional — raw `mcp-remote` snippet
+
+Only if you cannot use the example workspace. Cursor expands `${env:…}` from the **IDE process** environment; an unset variable breaks `mcp-remote`. For a fixed local port, hard-code:
 
 ```json
 {
@@ -66,29 +69,6 @@ variable is unset, `mcp-remote` gets a broken URL. For a fixed local port, hard-
   }
 }
 ```
-
-### Optional: env interpolation
-
-If you launch Cursor from a shell that exports the variable:
-
-```bash
-export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:3000/mcp
-```
-
-Project config (e.g. [`.cursor/mcp.json`](.cursor/mcp.json)):
-
-```json
-{
-  "mcpServers": {
-    "workflow-server": {
-      "command": "npx",
-      "args": ["-y", "mcp-remote", "${env:WORKFLOW_SERVER_MCP_URL}"]
-    }
-  }
-}
-```
-
-Restart the IDE (or reload MCP servers) after setting the env var and config.
 
 ### Expected log noise from `mcp-remote`
 
@@ -105,7 +85,7 @@ still follows. They appear as ordinary request logs (`type: info`), not
 | Liveness | `curl -fsS http://127.0.0.1:3000/health` → `{"status":"ok"}` |
 | Readiness | `curl -fsS http://127.0.0.1:3000/ready` → `status: ready` including **`sessionKeyWritable: true`** (plus workflow/schemas/workspace, and `engineeringDir` when split) |
 | Container | `docker logs -f workflow-server` (default name; no crash loop) |
-| MCP smoke | `discover`, then `start_session` with `workflow_id` (e.g. `meta`), `agent_id`, and **`repo: "owner/repo"`** — listing workflows alone is not enough |
+| MCP smoke | From the example workspace: `discover`, then `start_session` with `workflow_id` (e.g. `meta`), `agent_id`, and **`repo: "owner/repo"`** — listing workflows alone is not enough |
 
 **Expected cues**
 
@@ -117,19 +97,19 @@ A green `/health` without `sessionKeyWritable: true` means sessions cannot start
 
 Adjust host/port if you changed `--host-port`. Routes: [docs/api-reference.md](docs/api-reference.md#http-endpoints).
 
-Then finish shared steps in [setup.md](setup.md) (**§2** deploy + init-repo, **§3** IDE rule, **§4** Update Workflows).
+Then finish shared steps in [setup.md](setup.md) (**§2** deploy + init-repo, **§3** example workspace / IDE, **§4** Update Workflows).
 
 ## Troubleshooting
 
 | Symptom | What to check |
 |---------|----------------|
 | `/ready` fails or `sessionKeyWritable` is false | Host `$INSTALL/state` bind and `WORKFLOW_SERVER_KEY_DIR` — see `start.sh` and [workflow-fidelity](docs/workflow-fidelity.md) |
-| MCP client cannot reach the server | URL must be `http://127.0.0.1:<port>/mcp`; hard-code if IDE env interpolation is empty |
+| MCP client cannot reach the server | URL must be `http://127.0.0.1:<port>/mcp`; prefer the example workspace’s `.cursor/mcp.json` |
 | OAuth / `.well-known` 404 or bare `GET /mcp` 400 in logs | Expected without application auth — see §3 above |
-| `start_session` rejects or cannot find planning | Run [setup.md §2](setup.md#2-init-a-target-repo) (`deploy` then `init-repo`); always pass `repo` |
-| Image/container crash loop | `docker logs workflow-server`; confirm binds for worktrees, projects, and state |
+| `start_session` rejects or cannot find planning | Run [setup.md §2](setup.md#2-initialise-a-target-repo) (`deploy` then `init-repo`); always pass `repo` |
+| Image/container crash loop | `docker logs workflow-server`; confirm the `state` bind and image pull |
 
-Shared install vs deploy vs init-repo: [setup.md](setup.md#three-different-operations).
+Shared install, deploy, and init-repo: [setup.md](setup.md).
 
 ## HTTP-only references
 
@@ -141,5 +121,6 @@ Shared install vs deploy vs init-repo: [setup.md](setup.md#three-different-opera
 | Local `.env` helper | [`scripts/init-local-env.sh`](scripts/init-local-env.sh), [`.env.example`](.env.example) |
 | HMAC key location | [docs/workflow-fidelity.md](docs/workflow-fidelity.md) (`WORKFLOW_SERVER_KEY_DIR`) |
 | HTTP routes | [docs/api-reference.md](docs/api-reference.md#http-endpoints) |
+| Example Cursor workspace | [examples/cursor-workspace/](examples/cursor-workspace/) |
 | Shared setup | [setup.md](setup.md) |
 | stdio transport | [stdio.md](stdio.md) |

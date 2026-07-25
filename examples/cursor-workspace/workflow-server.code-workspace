@@ -1,21 +1,25 @@
 {
-  "folders": [
-    {
-      "name": "📦 workspace",
-      "path": "./"
-    },
-    {
-      "name": "📦 project",
-      "path": "../../../projects/dev/workflow-server"
-    },
-    {
-      "name": "📦 engineering",
-      "path": "../../../projects/dev/workflow-server/.engineering"
-    },
-    {
-      "name": "📦 worktrees",
-      "path": "../../../projects/dev/workflow-server/.worktrees"
-    }
-  ],
-  "settings": {}
+	"folders": [
+		{
+			"name": "📦 workspace",
+			"path": "./"
+		},
+		{
+			"name": "📦 project",
+			"path": "../../../projects/dev/workflow-server"
+		},
+		{
+			"name": "📦 workflows",
+			"path": "../../../projects/dev/workflow-server/workflows"
+		},
+		{
+			"name": "📦 planning",
+			"path": "../../../projects/dev/workflow-server/.engineering/artifacts/planning"
+		},
+		{
+			"name": "📦 work trees",
+			"path": "../../../projects/dev/workflow-server/.worktrees"
+		}
+	],
+	"settings": {}
 }

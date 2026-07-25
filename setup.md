@@ -4,52 +4,16 @@ Install Workflow Server and prepare a target repository so an IDE agent can run 
 
 **Outcome:** server reachable over your chosen transport, target repo registered, bootstrap rule in place, and a verified first session.
 
-Transport install, MCP client config, and transport verify steps live only in:
-
-- [http.md](http.md) — Docker / HTTP  
-- [stdio.md](stdio.md) — local stdio  
-
-This page owns the **shared** sequence both transports finish with.
-
-## Three different operations
-
-Do not treat these as synonyms:
-
-| Operation | Script | What it does |
-|-----------|--------|----------------|
-| **Install the server host** | [`scripts/install.sh`](scripts/install.sh) | Creates the install directory, helper scripts, workflows clone, and default layout under `$INSTALL` (see table below). |
-| **Deploy into a product repo** | [`scripts/deploy.sh`](scripts/deploy.sh) | Runs **inside the target project**. Makes that repo workflow-compatible (engineering layout / branch or submodule). |
-| **Register the repo with the install** | [`scripts/init-repo.sh`](scripts/init-repo.sh) | Runs against `$INSTALL`. Materialises checkouts and planning paths for `owner/repo`. Does **not** replace deploy. |
-
-Typical order for a new product repo: **install host (once) → deploy in the repo → init-repo → IDE rule → verify**.
-
-Engineering layout patterns: [docs/engineering-storage.md](docs/engineering-storage.md).
-
 ## 1. Choose a transport
+
+Complete the transport guide’s install, then return here for §2–§4.
 
 | Path | When | Guide |
 |------|------|--------|
 | **Docker / HTTP** | Run the GHCR image; no server source checkout | [http.md](http.md) |
 | **stdio** | IDE spawns `node dist/index.js` from a local checkout | [stdio.md](stdio.md) |
 
-Complete the transport guide’s install, start (HTTP), and MCP client sections first, then return here for §2–§4.
-
-### Installed root paths
-
-Canonical path table (do not maintain a second full copy elsewhere):
-
-| Path | Default | Purpose |
-|------|---------|---------|
-| **Install dir** | `~/.local/share/workflow-server` | Helper scripts, `env`, workflows clone |
-| **Projects** | `$INSTALL/projects` | Per-repo main/default-branch checkouts (`projects/<owner>/<repo>/`) |
-| **Engineering** | `$INSTALL/projects/<owner>/<repo>/.engineering` | Planning / sessions (submodule or materialised eng) |
-| **Worktrees** | `$INSTALL/worktrees` | Per-repo feature worktree parents |
-| **Workflows** | `$INSTALL/workflows` | Workflow definitions (`workflows` branch) |
-
-> Full layout and migration notes: [docs/install-projects-worktrees.md](docs/install-projects-worktrees.md).  
-> Override roots with `--install-dir`, `--worktree-root`, `--projects-root` (see `install.sh --help`).
-
-## 2. Init a target repo
+## 2. Initialise a target repo
 
 Two steps per project. **2a** changes the **product repo**. **2b** sets up **local install paths** for that repo.
 
@@ -84,17 +48,20 @@ That creates:
 
 `init-repo.sh` does **not** init product `workflows` submodules by default (server defs live in `$INSTALL/workflows`). Repeat **2a → 2b** for each product repo.
 
-## 3. IDE bootstrap rule
+## 3. Adopt the example Cursor workspace
 
-Add the always-on rule from [docs/ide-setup.md](docs/ide-setup.md) so the agent calls `discover` on workflow requests and passes `session_index` / `repo` correctly.
+**Recommended path:** copy and open [examples/cursor-workspace/](examples/cursor-workspace/) (see its [README](examples/cursor-workspace/README.md)). That template mirrors `~/.local/share/cursor/workspaces/workflow-server` and already includes:
 
-### Example Cursor workspace
+- `.cursor/mcp.json` (workflow-server via `mcp-remote`)
+- always-applied bootstrap rules
+- one-line `AGENTS.md` for `repo: "owner/repo"`
+- multi-root `.code-workspace` (workspace, project, workflows, planning, work trees)
 
-Copy-ready multi-root workspace (MCP config, rules, `AGENTS.md` repo hint):
+Do **not** treat hand-rolled MCP JSON or pasting bootstrap rules as the primary onboarding path. After the workspace is open, ask the agent to start a workflow.
 
-**[examples/cursor-workspace/](examples/cursor-workspace/)** — [README](examples/cursor-workspace/README.md).
+Detail and verify steps: [docs/ide-setup.md](docs/ide-setup.md).
 
-## 4. Update Workflows {#day-two}
+## 4. Update Workflows
 
 When workflow definitions or managed project checkouts change remotely, refresh locally:
 
@@ -106,7 +73,7 @@ This fast-forwards `$INSTALL/workflows` and every `$INSTALL/projects/<owner>/<re
 
 The anchor `#day-two` is kept for existing links (same section).
 
-## Verify (after transport + §2–§3)
+## 5. Verify
 
 Transport-specific health checks: [http.md §4](http.md#4-verify) or [stdio.md §3](stdio.md#3-verify).
 
@@ -116,7 +83,7 @@ Transport-specific health checks: [http.md §4](http.md#4-verify) or [stdio.md �
 2. Agent calls **`start_session`** with at least `workflow_id` (default `meta`), `agent_id`, and **`repo: "owner/repo"`**.
 3. You get a **`session_index`** back.
 
-`list_workflows` alone is not a full smoke test.
+---
 
 ## Troubleshooting
 
@@ -126,21 +93,4 @@ Transport-specific health checks: [http.md §4](http.md#4-verify) or [stdio.md �
 | Agent skips `discover` | Bootstrap rule missing | [docs/ide-setup.md](docs/ide-setup.md) |
 | Repo / planning path errors | Skipped deploy or init-repo | Complete §2a then §2b |
 | stdio exits at startup | No workspace or repo binding | [stdio.md](stdio.md) — `--workspace` or `--repo` required |
-| OAuth discovery 404s in logs | Unauthenticated local HTTP | Expected noise — [http.md](http.md) |
 
-## More detail
-
-| Topic | Where |
-|-------|--------|
-| Install layout plan | [docs/install-projects-worktrees.md](docs/install-projects-worktrees.md) |
-| HTTP / Docker only | [http.md](http.md) |
-| stdio / local checkout only | [stdio.md](stdio.md) |
-| Install script | [`scripts/install.sh`](scripts/install.sh) |
-| Deploy into a project | [`scripts/deploy.sh`](scripts/deploy.sh) |
-| Engineering storage patterns | [docs/engineering-storage.md](docs/engineering-storage.md) |
-| Init install paths | [`scripts/init-repo.sh`](scripts/init-repo.sh) |
-| Env vars & flags (dev) | [docs/development.md](docs/development.md#environment-variables) |
-| IDE rule | [docs/ide-setup.md](docs/ide-setup.md) |
-| Example Cursor workspace | [examples/cursor-workspace/](examples/cursor-workspace/) |
-| HTTP API routes | [docs/api-reference.md](docs/api-reference.md#http-endpoints) |
-| Architecture & fidelity | [docs/architecture.md](docs/architecture.md), [docs/workflow-fidelity.md](docs/workflow-fidelity.md) |

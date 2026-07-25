@@ -1,8 +1,19 @@
 # Workflow Server IDE Setup
 
-## Bootstrap rule
+## Recommended — example Cursor workspace
 
-Add this to your IDE's always-applied rules (Cursor rule, Claude Code project rule, etc.):
+Copy and open **[examples/cursor-workspace/](../examples/cursor-workspace/)** (see its [README](../examples/cursor-workspace/README.md)). That template mirrors the live layout under `~/.local/share/cursor/workspaces/workflow-server` and already wires:
+
+- MCP (`workflow-server` → `http://127.0.0.1:3000/mcp` via `mcp-remote`)
+- Always-applied bootstrap rule (`discover` first)
+- One-line `AGENTS.md` for `repo: "owner/repo"`
+- Multi-root folders: workspace, project, workflows, planning, work trees
+
+Then ask the agent to start a workflow. Prefer this over hand-rolling MCP config or pasting rules into a single-folder project.
+
+## Bootstrap rule (reference)
+
+The example workspace already includes this always-applied rule. If you maintain a custom client, use the same text:
 
 ```
 For any start workflow, create work package, or resume work package request, call the `discover` tool on the workflow-server MCP server to learn the bootstrap procedure. Complete the procedure before any other action.
@@ -16,7 +27,7 @@ Always pass `repo: "owner/repo"` on `start_session` (from the user or workspace 
 
 ## Verify
 
-1. Restart the MCP client.
+1. Open the example workspace (or restart the MCP client after config changes).
 2. Ask to start a work package (or any workflow) → the agent must call `discover`, then follow the returned bootstrap.
 3. Confirm `start_session` includes `repo: "owner/repo"` (from you or workspace `AGENTS.md` / `CLAUDE.md`).
 4. Optional: ask to list workflows → `list_workflows` (catalog only; not a substitute for the bootstrap smoke).
