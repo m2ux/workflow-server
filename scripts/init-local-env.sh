@@ -5,7 +5,7 @@
 #
 # Defaults match scripts/install.sh + start.sh:
 #   $HOST_PROJECTS_ROOT/<repo>/ + nested .engineering + .worktrees
-#   $INSTALL/{state,workflows}  ($INSTALL/worktrees is deprecated)
+#   $INSTALL/{state,workflows}
 #   container targets under /var/lib/workflow-server/...
 set -euo pipefail
 
@@ -24,7 +24,7 @@ usage() {
 Usage: $(basename "$0") [options]
 
   --install-dir=PATH     Install root (default: ${DEFAULT_INSTALL_DIR})
-  --worktree-root=PATH   Legacy separate worktrees root (default: same as
+  --worktree-root=PATH   Optional separate worktrees root (default: same as
                          projects root — nested <repo>/.worktrees/)
   --projects-root=PATH   Projects multi-root (default: \$HOST_PROJECTS_ROOT
                          or ~/projects/dev). Checkouts are <repo>/ basename.
@@ -128,7 +128,7 @@ fi
 ensure_dir "$INSTALL_DEFAULT" "install dir"
 ensure_dir "$PROJECTS_DEFAULT" "projects root"
 if [[ "$WORKTREE_DEFAULT" != "$PROJECTS_DEFAULT" ]]; then
-  ensure_dir "$WORKTREE_DEFAULT" "legacy worktrees root"
+  ensure_dir "$WORKTREE_DEFAULT" "worktrees root"
 fi
 ensure_dir "$STATE_DIR" "state dir (HMAC key)"
 
@@ -183,7 +183,7 @@ echo "  HOST_PROJECTS_ROOT=${PROJECTS_DEFAULT}"
 if [[ "$WORKTREE_DEFAULT" == "$PROJECTS_DEFAULT" ]]; then
   echo "  worktrees: nested under HOST_PROJECTS_ROOT/<repo>/.worktrees/"
 else
-  echo "  HOST_WORKTREE_ROOT=${WORKTREE_DEFAULT}  (legacy)"
+  echo "  HOST_WORKTREE_ROOT=${WORKTREE_DEFAULT}"
 fi
 echo "  HOST_STATE_DIR=${STATE_DIR}"
 echo "  WORKFLOW_DIR=${WORKFLOWS_ABS}"

@@ -11,7 +11,7 @@ Complete the transport guide’s install, then return here for §2–§4.
 | Path                              | When | Guide |
 |-----------------------------------|------|--------|
 | **Docker / HTTP**                 | Run the GHCR image; no server source checkout | [http.md](http.md) |
-| **stdio (soon to be deprecated)** | IDE spawns `node dist/index.js` from a local checkout | [stdio.md](stdio.md) |
+| **stdio** | IDE spawns `node dist/index.js` from a local checkout | [stdio.md](stdio.md) |
 
 ## 2. Initialise a target repo
 
@@ -41,8 +41,7 @@ git clone https://github.com/owner/repo.git "$HOST_PROJECTS_ROOT/<repo>"
 mkdir -p "$HOST_PROJECTS_ROOT/<repo>/.worktrees"
 ```
 
-Repeat **2a → 2b** for each product repo.  
-`init-repo.sh` is deprecated — product checkouts are managed by you, external to workflow-server.
+Repeat **2a → 2b** for each product repo.
 
 ## 3. Setup Cursor workspace
 

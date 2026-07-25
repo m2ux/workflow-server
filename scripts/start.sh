@@ -30,7 +30,7 @@ DEFAULT_SCHEMAS_TARGET="/app/schemas"
 DEFAULT_TRANSPORT="http"
 DEFAULT_BIND_HOST="0.0.0.0"
 DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
-# Nested .worktrees/ under HOST_PROJECTS_ROOT is preferred; $INSTALL/worktrees is deprecated.
+# Nested .worktrees/ under HOST_PROJECTS_ROOT is preferred.
 DEFAULT_HOST_PROJECTS_ROOT="${HOME}/projects/dev"
 DEFAULT_HOST_WORKTREE_ROOT=""
 DEFAULT_ENV_NAME="env"
@@ -129,12 +129,11 @@ DEFAULT PROJECTS ROOT
 
 FEATURE WORKTREES
   Nested only: \$HOST_PROJECTS_ROOT/<repo>/.worktrees/<slug>/
-  \$INSTALL/worktrees and HOST_WORKTREE_ROOT are deprecated.
 
 OPTIONS (optional overrides — prefer re-running install to change paths)
   --install-dir=PATH        Install root (workflows under \$INSTALL/workflows)
   --projects-root=PATH      One-off host projects root (RW; covers nested .worktrees)
-  --worktree-root=PATH      DEPRECATED separate feature-tree root (RW)
+  --worktree-root=PATH      Optional separate feature-tree root (RW)
   --workflows-dir=PATH      One-off host workflows directory (RO)
   --schemas-dir=PATH        Host schemas directory (RO); optional
   --image=REF               Full image (default: ${DEFAULT_IMAGE_REPO}:${DEFAULT_TAG})
@@ -161,8 +160,8 @@ EXAMPLES
   ~/.local/share/workflow-server/start.sh -d
   ~/.local/share/workflow-server/stop.sh
 
-  # Product checkouts: manage under \$HOST_PROJECTS_ROOT/<repo>/ yourself
-  # (init-repo.sh is deprecated). Pass repo: owner/repo on start_session.
+  # Product checkouts: manage under \$HOST_PROJECTS_ROOT/<repo>/ yourself.
+  # Pass repo: owner/repo on start_session.
 
 MCP URL: http://127.0.0.1:<host-port>/mcp
 EOF
@@ -319,12 +318,11 @@ fi
 if [[ -z "$HOST_WORKTREE_ROOT" ]]; then
   HOST_WORKTREE_ROOT="$HOST_PROJECTS_ROOT"
 elif [[ "$(abs_path "$HOST_WORKTREE_ROOT")" == "$(abs_path "${INSTALL_DIR}/worktrees")" ]]; then
-  echo "warning: HOST_WORKTREE_ROOT=${HOST_WORKTREE_ROOT} is deprecated; using nested .worktrees under projects root" >&2
   HOST_WORKTREE_ROOT="$HOST_PROJECTS_ROOT"
 else
   HOST_WORKTREE_ROOT="$(abs_path "$HOST_WORKTREE_ROOT")"
   if [[ ! -d "$HOST_WORKTREE_ROOT" ]]; then
-    echo "Creating legacy worktrees root: ${HOST_WORKTREE_ROOT}"
+    echo "Creating worktrees root: ${HOST_WORKTREE_ROOT}"
     mkdir -p "$HOST_WORKTREE_ROOT" || die "failed to create worktrees root: ${HOST_WORKTREE_ROOT}"
   fi
   [[ -d "$HOST_WORKTREE_ROOT" ]] || die "worktrees root is not a directory: ${HOST_WORKTREE_ROOT}"
@@ -454,7 +452,7 @@ echo "Install  : ${INSTALL_DIR}"
 echo "Starting ${FULL_IMAGE}"
 echo "  projects   : ${HOST_PROJECTS_ROOT} → ${CONTAINER_PROJECTS_ROOT} (rw; eng + nested .worktrees)"
 if [[ "$NESTED_WORKTREES" -eq 0 ]]; then
-  echo "  worktrees  : ${HOST_WORKTREE_ROOT} → ${CONTAINER_WORKTREE_ROOT} (rw; legacy separate root)"
+  echo "  worktrees  : ${HOST_WORKTREE_ROOT} → ${CONTAINER_WORKTREE_ROOT} (rw; separate root)"
 else
   echo "  worktrees  : nested under projects (<repo>/.worktrees/)"
 fi

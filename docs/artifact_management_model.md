@@ -13,7 +13,7 @@ Agents are explicitly instructed to respect distinct directory scopes:
 3. **Workflow definitions:** Served from `WORKFLOW_DIR` / `$INSTALL/workflows` (the `workflows` orphan branch), not from the engineering checkout.
 4. **`repo_root` (projects checkout):** `$HOST_PROJECTS_ROOT/<repo>/` — main/default-branch clone used for comprehension, GitNexus, and `git worktree add`.
 
-Install layout (HTTP/Docker): [`scripts/install.sh`](../scripts/install.sh) creates `$INSTALL/{workflows,state}` and writes `$INSTALL/env` with `HOST_PROJECTS_ROOT`. Product checkouts are managed by you under `HOST_PROJECTS_ROOT` (default `~/projects/dev`); engineering via [`scripts/deploy.sh`](../scripts/deploy.sh). `init-repo.sh` is deprecated. Preferred paths: [install-projects-worktrees.md](install-projects-worktrees.md).
+Install layout (HTTP/Docker): [`scripts/install.sh`](../scripts/install.sh) creates `$INSTALL/{workflows,state}` and writes `$INSTALL/env` with `HOST_PROJECTS_ROOT` (default `~/projects/dev`). Product checkouts live under that root; engineering via [`scripts/deploy.sh`](../scripts/deploy.sh). Paths: [install-projects-worktrees.md](install-projects-worktrees.md).
 
 ## 2. The Planning Folder
 

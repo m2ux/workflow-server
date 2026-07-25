@@ -2,7 +2,7 @@
 # workflow-server — refresh the local workflows definitions checkout only
 #
 # Product repos under HOST_PROJECTS_ROOT are managed by you; this script does
-# not clone, ff-update, or touch them (init-repo.sh is also deprecated).
+# not clone, ff-update, or touch them.
 #
 # After install:
 #   ~/.local/share/workflow-server/update-workflows.sh
@@ -28,7 +28,7 @@ usage() {
 Update the local workflows definitions checkout (\$INSTALL/workflows).
 
 Product checkouts under \$HOST_PROJECTS_ROOT are not touched — manage those
-yourself. init-repo.sh is deprecated.
+yourself.
 
 USAGE
   update-workflows.sh [options]
@@ -42,7 +42,7 @@ OPTIONS
   --force               Discard local changes (git reset --hard + clean -fd)
   -h, --help
 
-  Deprecated (ignored): --projects-root, --skip-projects
+  Ignored (no-op): --projects-root, --skip-projects
 
 Default path:
   ${DEFAULT_INSTALL_DIR}/workflows
@@ -142,11 +142,11 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     --projects-root=*)
-      echo "warning: product checkout updates are no longer performed (ignored --projects-root)" >&2
+      echo "warning: ignored --projects-root (workflows only)" >&2
       shift
       ;;
     --projects-root)
-      echo "warning: product checkout updates are no longer performed (ignored --projects-root)" >&2
+      echo "warning: ignored --projects-root (workflows only)" >&2
       shift 2
       ;;
     --skip-projects)

@@ -1,7 +1,6 @@
 # Host projects root is bound RW. Preferred layout:
 #   $HOST_PROJECTS_ROOT/<repo>/.engineering/  and  <repo>/.worktrees/<slug>/
-# $INSTALL/worktrees (HOST_WORKTREE_ROOT) is deprecated; omit it when using nested
-# .worktrees under the projects root (compose may still mount a legacy path if set).
+# Nested .worktrees under the projects root. HOST_WORKTREE_ROOT is optional.
 # Agents create worktrees on the host before the server writes artifacts.
 #
 # Paths are overridable via environment variables or a local `.env` file

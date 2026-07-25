@@ -2,7 +2,7 @@
 
 How product repos store workflow-server engineering content (planning, ADRs, session state). Chosen at deploy time via [`scripts/deploy.sh`](../scripts/deploy.sh) inside the product checkout you manage under `$HOST_PROJECTS_ROOT`.
 
-For the operator install sequence, see [setup.md](../setup.md). `init-repo.sh` is deprecated.
+For the operator install sequence, see [setup.md](../setup.md).
 
 ## Patterns
 

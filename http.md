@@ -10,8 +10,7 @@ Transport-specific steps for running the **GHCR image** over HTTP.
 ## 1. Install
 
 Fetches helper scripts, clones the `workflows` branch, ensures a projects root
-(default `~/projects/dev`), creates `state/` (HMAC key), writes `$INSTALL/env`.
-Does **not** clone product repos (`init-repo.sh` is deprecated):
+(default `~/projects/dev`), creates `state/` (HMAC key), writes `$INSTALL/env`:
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash

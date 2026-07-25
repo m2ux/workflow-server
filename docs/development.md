@@ -100,7 +100,6 @@ workflow-server/
 │   └── state.schema.json
 ├── scripts/                  # Build, corpus guards, install helpers, benchmarks
 │   ├── install.sh            # Local install layout (helpers, workflows, projects/, worktrees/, env)
-│   ├── init-repo.sh          # DEPRECATED stub (product repos are user-managed)
 │   ├── start.sh / stop.sh    # GHCR container runner (loads $INSTALL/env)
 │   ├── update-workflows.sh
 │   ├── generate-schemas.ts
