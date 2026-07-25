@@ -99,14 +99,15 @@ ensure_dir() {
 }
 
 INSTALL_DEFAULT="$(expand_path "$INSTALL_DEFAULT")"
-if [[ -z "$WORKTREE_DEFAULT" ]]; then
-  WORKTREE_DEFAULT="${INSTALL_DEFAULT}/worktrees"
-fi
 if [[ -z "$PROJECTS_DEFAULT" ]]; then
   PROJECTS_DEFAULT="${INSTALL_DEFAULT}/projects"
 fi
-WORKTREE_DEFAULT="$(expand_path "$WORKTREE_DEFAULT")"
 PROJECTS_DEFAULT="$(expand_path "$PROJECTS_DEFAULT")"
+# Nested .worktrees under projects root; do not default to $INSTALL/worktrees.
+if [[ -z "$WORKTREE_DEFAULT" ]]; then
+  WORKTREE_DEFAULT="${PROJECTS_DEFAULT}"
+fi
+WORKTREE_DEFAULT="$(expand_path "$WORKTREE_DEFAULT")"
 STATE_DIR="${INSTALL_DEFAULT}/state"
 
 # Prefer checkout workflows/schemas when present (dev compose from repo root).
@@ -122,8 +123,10 @@ else
 fi
 
 ensure_dir "$INSTALL_DEFAULT" "install dir"
-ensure_dir "$WORKTREE_DEFAULT" "worktrees root"
 ensure_dir "$PROJECTS_DEFAULT" "projects root"
+if [[ "$WORKTREE_DEFAULT" != "$PROJECTS_DEFAULT" ]]; then
+  ensure_dir "$WORKTREE_DEFAULT" "legacy worktrees root"
+fi
 ensure_dir "$STATE_DIR" "state dir (HMAC key)"
 
 upsert WORKFLOW_SERVER_MCP_URL "http://127.0.0.1:3000/mcp"
@@ -133,14 +136,22 @@ upsert WORKTREE_ROOT "${WORKTREE_DEFAULT}"
 upsert WORKFLOW_SERVER_ENGINEERING_DIR "${PROJECTS_DEFAULT}"
 upsert WORKFLOW_DIR "${WORKFLOWS_ABS}"
 upsert SCHEMAS_DIR "${SCHEMAS_ABS}"
-upsert HOST_WORKTREE_ROOT "${WORKTREE_DEFAULT}"
 upsert HOST_PROJECTS_ROOT "${PROJECTS_DEFAULT}"
+if [[ "$WORKTREE_DEFAULT" != "$PROJECTS_DEFAULT" ]]; then
+  upsert HOST_WORKTREE_ROOT "${WORKTREE_DEFAULT}"
+fi
 upsert HOST_STATE_DIR "${STATE_DIR}"
 upsert HOST_WORKFLOWS_DIR "${WORKFLOWS_ABS}"
 upsert HOST_SCHEMAS_DIR "${SCHEMAS_ABS}"
 upsert HOST_PORT "3000"
 upsert CONTAINER_INSTALL_DIR "/var/lib/workflow-server"
-upsert CONTAINER_WORKTREE_ROOT "/var/lib/workflow-server/worktrees"
+# Nested model: workspace multi-root coincides with projects multi-root
+if [[ "$WORKTREE_DEFAULT" == "$PROJECTS_DEFAULT" ]]; then
+  upsert CONTAINER_WORKTREE_ROOT "/var/lib/workflow-server/projects"
+else
+  upsert CONTAINER_WORKTREE_ROOT "/var/lib/workflow-server/worktrees"
+  upsert HOST_WORKTREE_ROOT "${WORKTREE_DEFAULT}"
+fi
 upsert CONTAINER_PROJECTS_ROOT "/var/lib/workflow-server/projects"
 upsert CONTAINER_ENGINEERING_ROOT "/var/lib/workflow-server/projects"
 upsert CONTAINER_STATE_DIR "/var/lib/workflow-server/state"
@@ -165,8 +176,12 @@ fi
 
 echo "Wrote local env → ${ENV_FILE}"
 echo "  WORKFLOW_SERVER_INSTALL_DIR=${INSTALL_DEFAULT}"
-echo "  HOST_WORKTREE_ROOT=${WORKTREE_DEFAULT}"
 echo "  HOST_PROJECTS_ROOT=${PROJECTS_DEFAULT}"
+if [[ "$WORKTREE_DEFAULT" == "$PROJECTS_DEFAULT" ]]; then
+  echo "  worktrees: nested under HOST_PROJECTS_ROOT/<repo>/.worktrees/"
+else
+  echo "  HOST_WORKTREE_ROOT=${WORKTREE_DEFAULT}  (legacy)"
+fi
 echo "  HOST_STATE_DIR=${STATE_DIR}"
 echo "  WORKFLOW_DIR=${WORKFLOWS_ABS}"
 if [[ -n "$REPO_DEFAULT" ]]; then
