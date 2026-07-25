@@ -6,19 +6,19 @@
 		},
 		{
 			"name": "📦 project",
-			"path": "../../../projects/dev/workflow-server"
+			"path": "${env:HOST_PROJECTS_ROOT}/workflow-server"
 		},
 		{
 			"name": "📦 workflows",
-			"path": "../../../projects/dev/workflow-server/workflows"
+			"path": "${env:HOST_PROJECTS_ROOT}/workflow-server/workflows"
 		},
 		{
 			"name": "📦 planning",
-			"path": "../../../projects/dev/workflow-server/.engineering/artifacts/planning"
+			"path": "${env:HOST_PROJECTS_ROOT}/workflow-server/.engineering/artifacts/planning"
 		},
 		{
 			"name": "📦 work trees",
-			"path": "../../../projects/dev/workflow-server/.worktrees"
+			"path": "${env:HOST_PROJECTS_ROOT}/workflow-server/.worktrees"
 		}
 	],
 	"settings": {}

@@ -50,9 +50,9 @@ Repeat **2a → 2b** for each product repo.
 - `.cursor/mcp.json` (workflow-server via `mcp-remote`)
 - always-applied bootstrap rules
 - one-line `AGENTS.md` for `repo: "owner/repo"`
-- multi-root `.code-workspace` (workspace, project, workflows, planning, work trees)
+- multi-root `.code-workspace` roots via `${env:HOST_PROJECTS_ROOT}` (no hardcoded `/home/…` paths)
 
-After the workspace is open, ask the agent to start a workflow.
+Launch Cursor from a shell that exports `HOST_PROJECTS_ROOT` (source `$INSTALL/env`). After the workspace is open, ask the agent to start a workflow.
 
 ## 4. Update Workflows
 
