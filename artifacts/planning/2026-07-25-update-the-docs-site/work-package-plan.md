@@ -147,4 +147,4 @@ Test cases and acceptance matrix: [test plan](test-plan.md).
 | Editorial scope creep into brand redesign | MEDIUM | LOW | Hard out-of-scope D-2; a11y-only in Batch 6 |
 | Push/SSH failures on engineering submodule | LOW | MEDIUM | Retry with full perms; note in handoff |
 
-**Status:** Ready for implementation
+**Status:** Implementation complete (Batches 1–7 landed on PR #293 branch `docs/update-the-docs-site`; push `573f4c61`). Next: lean-coding audit / post-implementation review / validation per workflow.
