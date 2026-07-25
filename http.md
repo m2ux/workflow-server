@@ -23,28 +23,19 @@ curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/i
 ~/.local/share/workflow-server/start.sh -d
 ```
 
-Defaults:
-
-- Image: `ghcr.io/m2ux/workflow-server:main`
-- Publish: `http://127.0.0.1:3000`
-- Binds:
-  - host `$HOST_PROJECTS_ROOT` (default `~/projects/dev`) → `/var/lib/workflow-server/projects` (checkouts + eng + nested `.worktrees`)
-  - host `$INSTALL/state` → `/var/lib/workflow-server/state` (HMAC signing key)
-- Container env: `HOST_PROJECTS_ROOT`, `WORKTREE_ROOT` / `WORKFLOW_WORKSPACE`,
-  `WORKFLOW_SERVER_ENGINEERING_DIR`, `WORKFLOW_SERVER_INSTALL_DIR`, `WORKFLOW_SERVER_KEY_DIR`
-  (see `start.sh`)
-- Per-repo planning via `start_session({ repo: "owner/repo" })` for a checkout at
-  `$HOST_PROJECTS_ROOT/<repo>/` (with `.engineering/` after `deploy.sh`). Host path:
-  `$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/<slug>/`.
+Binds `$HOST_PROJECTS_ROOT` (default `~/projects/dev`) and `$INSTALL/state`. Planning
+for `start_session({ repo: "owner/repo" })` is under
+`$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/<slug>/` on the host
+when `HOST_PROJECTS_ROOT` is set.
 
 Compose alternative: [`docker-compose.yml`](docker-compose.yml) (same bind names as `.env.example`).
 
 ## 3. Verify
 
-| Check | How |
+| Check | How                                                        |
 |-------|------------------------------------------------------------|
-| Liveness | `curl -fsS http://127.0.0.1:3000/health` → `status: ok` |
-| Readiness | `curl -fsS http://127.0.0.1:3000/ready` → `status: ready` |
+| Liveness | `curl -fsS http://127.0.0.1:3000/health` → `status: ok`      |
+| Readiness | `curl -fsS http://127.0.0.1:3000/ready` → `status: ready`  |
 | Container | `docker logs -f workflow-server` (default name; no crash loop) |
 
 **Expected cues**
@@ -61,7 +52,7 @@ Adjust host/port if you changed `--host-port`. Routes: [docs/api-reference.md](d
 | Symptom | What to check |
 |---------|----------------|
 | `/ready` fails or `sessionKeyWritable` is false | Host `$INSTALL/state` bind and `WORKFLOW_SERVER_KEY_DIR` — see `start.sh` and [workflow-fidelity](docs/workflow-fidelity.md) |
-| OAuth / `.well-known` 404 or bare `GET /mcp` 400 in logs | Expected without application auth — ordinary request logs (`type: info`), not errors |
+| OAuth / `.well-known` 404 or bare `GET /mcp` 400 in logs | Expected without application auth — see §3 above |
 | Image/container crash loop | `docker logs workflow-server`; confirm the `state` bind and image pull |
 
 Shared install, deploy, and checkout: [setup.md](setup.md).

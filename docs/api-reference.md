@@ -1,16 +1,22 @@
 # API Reference
 
-Catalog of the MCP tool surface and HTTP routes.
+Catalog of the MCP tool surface and HTTP routes. For call-contract footguns, use the wire descriptions in `src/tools/` (mirrored on the [site tool reference](../site/api/tools.html)). For behavioral depth, follow the links to architecture models.
 
 ## HTTP endpoints
 
-When the server starts with `--transport=http` (or `TRANSPORT=http` / `npm run start:http`), it exposes these routes.
+When the server starts with `--transport=http` (or `TRANSPORT=http` / `npm run start:http`), it exposes these routes. stdio mode does not open an HTTP listener.
 
 | Method / path | Purpose |
 |---------------|---------|
 | `GET /health` | Liveness — process is up |
-| `GET /ready` | Readiness — `workflowDir`, `schemasDir`, and `workspaceDir` exist and `sessionKeyWritable` (HMAC key directory is usable) |
-| `POST /mcp` | MCP Streamable HTTP |
+| `GET /ready` | Readiness — `workflowDir`, `schemasDir`, and `workspaceDir` exist; `engineeringDir` when split from workspace (`--repo` layout); and `sessionKeyWritable` (HMAC key directory is usable) |
+| `POST /mcp` | MCP Streamable HTTP (client → server messages) |
+| `GET /mcp` | MCP Streamable HTTP (server → client stream when the session uses GET) |
+| `DELETE /mcp` | MCP Streamable HTTP (end session) |
+
+`/ready` returns 503 when any check is false. A green `/health` alone does **not** mean `start_session` can run — verify `sessionKeyWritable: true` (Docker non-root with `HOME=/` historically failed here; see [http.md](../http.md) and `WORKFLOW_SERVER_KEY_DIR`).
+
+Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. Local `mcp-remote` clients may probe OAuth well-known URLs (`/.well-known/oauth-*`) and receive 404s; that is expected without auth and is logged as info, not error. See [setup.md](../setup.md), [http.md](../http.md) / [stdio.md](../stdio.md) (transports), and [development.md](development.md) for process env (developers).
 
 ## MCP Tools
 

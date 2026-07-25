@@ -1,8 +1,8 @@
 # Engineering storage patterns
 
-How product repos store workflow-server engineering content (planning, ADRs, session state). Chosen at deploy time via [`scripts/deploy.sh`](../scripts/deploy.sh) **inside the product checkout you already manage**.
+How product repos store workflow-server engineering content (planning, ADRs, session state). Chosen at deploy time via [`scripts/deploy.sh`](../scripts/deploy.sh) inside the product checkout you manage under `$HOST_PROJECTS_ROOT`.
 
-workflow-server does **not** clone or materialise product repos (`init-repo.sh` is deprecated). Keep basename checkouts under `$HOST_PROJECTS_ROOT/<repo>/` yourself; see [setup.md](../setup.md) and [install-projects-worktrees.md](install-projects-worktrees.md).
+For the operator install sequence, see [setup.md](../setup.md). `init-repo.sh` is deprecated.
 
 ## Patterns
 
@@ -18,9 +18,9 @@ workflow-server does **not** clone or materialise product repos (`init-repo.sh` 
 
 Best when a single product repo owns its engineering history.
 
-1. Clone the app under `$HOST_PROJECTS_ROOT/<repo>/` (basename) yourself.
-2. Run `./deploy.sh` (or `./deploy.sh --orphan`) from the app root.
-3. Creates orphan branch `engineering` on the app remote and adds `.engineering` as a submodule on the default branch. Planning lives at `<checkout>/.engineering/`.
+1. Keep the app checkout at `$HOST_PROJECTS_ROOT/<repo>/` (basename).
+2. Run `./deploy.sh` (or `./deploy.sh --orphan`) from the app root; creates orphan branch `engineering` on the app remote and adds `.engineering` as a submodule on the default branch.
+3. Sessions resolve planning under `$HOST_PROJECTS_ROOT/<repo>/.engineering/` when the checkout sits there (see [install-projects-worktrees.md](install-projects-worktrees.md)).
 
 ### Shared engineering monorepo
 
@@ -38,14 +38,15 @@ Best for multi-app / monorepo orgs that want one engineering remote and clean pr
 - The script creates or uses branch `<project-name>` on that remote (basename of the project directory) and wires the app’s `.engineering` submodule to it.
 - Sibling apps repeat deploy with the **same** engineering remote; each gets its own branch. History stays out of product default branches.
 - Optional history submodule can use the same project-named branch convention (`--history-repo`, `--skip-history`).
-- After deploy, open/update the `.engineering` submodule in **your** checkout as usual (`git submodule update --init -- .engineering`).
+- After deploy, open/update the `.engineering` submodule in your checkout (`git submodule update --init -- .engineering`), including **external** remotes.
 
 ### In-branch
 
 Best for simple or experimental setups without orphan branches or submodules.
 
-1. Run `./deploy.sh --in-branch` in your product checkout.
+1. Run `./deploy.sh --in-branch`.
 2. `.engineering/` lives as ordinary files on the current app branch.
+3. No install-side materialisation step — planning uses the in-tree `.engineering/` under the checkout.
 
 ## Deploy entry point
 
@@ -63,4 +64,4 @@ Full flags: `./deploy.sh --help`.
 
 No install-side materialisation step. Ensure the checkout sits under `$HOST_PROJECTS_ROOT/<repo>/` and pass `repo: "owner/repo"` on `start_session`.
 
-See [setup.md §2](../setup.md#2-prepare-a-target-project). Artifact boundaries and git procedures: [artifact_management_model.md](artifact_management_model.md).
+See [setup.md §2](../setup.md#2-initialise-a-target-repo). Artifact boundaries and git procedures: [artifact_management_model.md](artifact_management_model.md).

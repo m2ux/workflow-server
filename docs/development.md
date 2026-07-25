@@ -99,8 +99,8 @@ workflow-server/
 │   ├── condition.schema.json
 │   └── state.schema.json
 ├── scripts/                  # Build, corpus guards, install helpers, benchmarks
-│   ├── install.sh            # Local install layout (helpers, workflows, HOST_PROJECTS_ROOT, env)
-│   ├── init-repo.sh          # DEPRECATED stub (exits; product repos are user-managed)
+│   ├── install.sh            # Local install layout (helpers, workflows, projects/, worktrees/, env)
+│   ├── init-repo.sh          # DEPRECATED stub (product repos are user-managed)
 │   ├── start.sh / stop.sh    # GHCR container runner (loads $INSTALL/env)
 │   ├── update-workflows.sh
 │   ├── generate-schemas.ts
@@ -127,9 +127,9 @@ Root binding (one of workspace path **or** `--repo` is required at startup):
 | Variable / flag | Default | Description |
 |-----------------|---------|-------------|
 | `--workspace=PATH` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` | — | Explicit workspace / worktree root (legacy single-root: planning under this path) |
-| `--repo=owner/repo` / `WORKFLOW_SERVER_REPO` | — | Bind `$INSTALL/projects/<repo>/.worktrees` and `$INSTALL/projects/<repo>/.engineering` (basename; prefer external `HOST_PROJECTS_ROOT`) |
+| `--repo=owner/repo` / `WORKFLOW_SERVER_REPO` | — | Bind `$HOST_PROJECTS_ROOT/<repo>/.worktrees` and `$HOST_PROJECTS_ROOT/<repo>/.engineering` |
 | `--install-dir=PATH` / `WORKFLOW_SERVER_INSTALL_DIR` | `~/.local/share/workflow-server` (or `$XDG_DATA_HOME/workflow-server`) | Install root used with `--repo` |
-| `WORKFLOW_SERVER_ENGINEERING_DIR` | equals workspace when unbound; multi-root Docker: `$INSTALL/projects` | Engineering multi-root or single eng checkout used for planning / session files |
+| `WORKFLOW_SERVER_ENGINEERING_DIR` | equals workspace when unbound; multi-root Docker: `$HOST_PROJECTS_ROOT` | Engineering multi-root or single eng checkout used for planning / session files |
 | `PLANNING_SLUG` | `.engineering/artifacts/planning` (legacy) or `artifacts/planning` (repo / engineering-root mode) | Relative planning dir under the engineering root |
 
 Other process config:
@@ -152,7 +152,7 @@ Examples:
 # Legacy single-root (workspace == engineering for planning)
 node dist/index.js --workspace=~/work --workflow-dir=./workflows
 
-# Per-repo layout (after install.sh + your checkout under HOST_PROJECTS_ROOT + deploy.sh)
+# Per-repo layout (after install.sh + checkout under HOST_PROJECTS_ROOT + deploy.sh)
 node dist/index.js --repo=m2ux/workflow-server --transport=http
 
 # HTTP defaults from npm

@@ -57,22 +57,11 @@ migrating feature worktrees under each checkout’s `.worktrees/`.
 
 ## Lifecycle
 
-### Product checkouts (you)
-
-workflow-server does **not** manage product git clones. `init-repo.sh` is
-**deprecated** and exits with an error. You own:
-
-```bash
-git clone … "$HOST_PROJECTS_ROOT/<repo>"
-# inside that checkout:
-./deploy.sh   # from workflow-server scripts — creates .engineering/
-```
-
 ### install.sh
 
 - Create `state/`; clone global `workflows/` on the `workflows` branch.
 - Write `env` with **`HOST_PROJECTS_ROOT`** (default **`~/projects/dev`**).
-- **Do not** clone product repos or ship `init-repo.sh`.
+- **Do not** clone product repos. `init-repo.sh` is deprecated.
 - **Do not** require or default a separate `$INSTALL/worktrees` root when using
   nested worktrees. If `HOST_WORKTREE_ROOT` is unset, start.sh treats the
   projects root as the bind that covers nested `.worktrees/`.
@@ -97,13 +86,14 @@ Ensure `.worktrees/` is listed in the project’s `.gitignore`.
 
 ## Cursor example roots
 
-Four navigation roots (see `examples/cursor-workspace/`):
+Five navigation roots (see `examples/cursor-workspace/`):
 
 ```text
-kickoff/                                      # rules + MCP
-$HOST_PROJECTS_ROOT/<repo>                    # project
-$HOST_PROJECTS_ROOT/<repo>/.engineering       # planning
-$HOST_PROJECTS_ROOT/<repo>/.worktrees         # feature trees
+kickoff/                                              # rules + MCP (📦 workspace)
+$HOST_PROJECTS_ROOT/<repo>                            # 📦 project
+$HOST_PROJECTS_ROOT/<repo>/workflows                  # 📦 workflows (when present)
+$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning  # 📦 planning
+$HOST_PROJECTS_ROOT/<repo>/.worktrees                 # 📦 work trees
 ```
 
 ## Success criteria

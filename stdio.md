@@ -25,7 +25,7 @@ Optional: same host layout as Docker (without starting a container):
 ./scripts/install.sh --install-dir=~/.local/share/workflow-server
 ```
 
-Then continue with [setup.md §2](setup.md#2-initialise-a-target-repo) (deploy engineering, then checkout under `$HOST_PROJECTS_ROOT/<repo>/`).
+Then continue with [setup.md §2](setup.md#2-initialise-a-target-repo) (deploy engineering, then checkout under `$HOST_PROJECTS_ROOT/<repo>`).
 
 ## 2. MCP client (stdio)
 
@@ -35,8 +35,6 @@ The IDE starts the process; you do not run a long-lived server yourself.
 `--install-dir` alone is not enough — the process exits without a workspace or repo binding.
 
 ### Recommended: install multi-root (matches Docker + `HOST_PROJECTS_ROOT`)
-
-Point workspace + engineering at your `HOST_PROJECTS_ROOT` (default `~/projects/dev`):
 
 ```json
 {
