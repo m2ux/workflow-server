@@ -1,59 +1,25 @@
 # Setup — Docker / HTTP
 
-Transport-specific steps for running the **GHCR image** over HTTP.  
-Shared sequence: **[setup.md](setup.md)** (layout, your project checkouts, IDE rule, day-two).
-
+Transport-specific steps for running over HTTP.  
 ## Prerequisites
 
 - [Docker](https://docs.docker.com/get-docker/)
 - `curl`, `git` (for `install.sh`)
 
-## 1. Install host layout
+## 1. Install
 
 Fetches helper scripts, clones the `workflows` branch, ensures a projects root
-and `state/` (HMAC key), writes `$INSTALL/env`. Does **not** clone product repos
-(`init-repo.sh` is deprecated — you manage checkouts under `HOST_PROJECTS_ROOT`):
+and `state/` (HMAC key), writes `$INSTALL/env`.
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
-# prefer an external projects tree:
-# bash <(curl -fsSL …/install.sh) --projects-root=~/projects/dev
 ```
 
-> Options: `install.sh --help` (`--install-dir`, `--projects-root`, …).  
-> Legacy URL `…/install-docker.sh` still works (forwards to `install.sh`).
-
-## 2. Start the server
+## 2. Start
 
 ```bash
 ~/.local/share/workflow-server/start.sh -d
 ```
-
-Defaults:
-
-- Image: `ghcr.io/m2ux/workflow-server:main`
-- Publish: `http://127.0.0.1:3000`
-- Binds:
-  - host `$HOST_PROJECTS_ROOT` → `/var/lib/workflow-server/projects` (checkouts + eng + nested `.worktrees`)
-  - host `$INSTALL/state` → `/var/lib/workflow-server/state` (HMAC signing key)
-  - (legacy) separate `$INSTALL/worktrees` is deprecated — prefer nested `<repo>/.worktrees/`
-- Container env: `HOST_PROJECTS_ROOT`, `WORKTREE_ROOT` / `WORKFLOW_WORKSPACE`,
-  `WORKFLOW_SERVER_ENGINEERING_DIR`, `WORKFLOW_SERVER_INSTALL_DIR`, `WORKFLOW_SERVER_KEY_DIR`
-  (see `start.sh`)
-- Per-repo planning is selected at **session** time via `start_session({ repo: "owner/repo" })`
-  for a checkout you already keep at `$HOST_PROJECTS_ROOT/<repo>/` (with `.engineering/`
-  after `deploy.sh`). Host path:
-  `$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/<slug>/`.
-- Runs as your host uid:gid; key path does **not** depend on `HOME` (non-root
-  containers often have `HOME=/`)
-
-Stop:
-
-```bash
-~/.local/share/workflow-server/stop.sh
-```
-
-Compose alternative: [`docker-compose.yml`](docker-compose.yml) (same bind names as `.env.example`).
 
 ## 3. MCP client (HTTP)
 

@@ -28,7 +28,6 @@ services:
       # Host bind sources for agent-facing path presentation (planning_folder_path)
       HOST_PROJECTS_ROOT: ${HOST_PROJECTS_ROOT:-${HOME}/projects/dev}
       HOST_WORKTREE_ROOT: ${HOST_WORKTREE_ROOT:-}
-      # Optional: override default planning slug (multi-root uses artifacts/planning per repo)
       # PLANNING_SLUG: artifacts/planning
       WORKFLOW_DIR: ${CONTAINER_WORKFLOW_DIR:-/app/workflows}
       SCHEMAS_DIR: ${CONTAINER_SCHEMAS_DIR:-/app/schemas}

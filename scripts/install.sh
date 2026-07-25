@@ -6,9 +6,9 @@
 #   bash <(curl -fsSL …/install.sh) --worktree-root=~/projects/work
 #
 # Writes $INSTALL/env so start.sh needs no path args. Creates a projects root
-# (default $INSTALL/projects, or --projects-root for an external tree such as
-# ~/projects/dev). Feature worktrees live under each checkout's .worktrees/
-# (gitignored). $INSTALL/worktrees is deprecated.
+# (default ~/projects/dev, or --projects-root / HOST_PROJECTS_ROOT). Feature
+# worktrees live under each checkout's .worktrees/ (gitignored).
+# $INSTALL/worktrees and $INSTALL/projects as the projects root are deprecated.
 #
 # Then:
 #   ~/.local/share/workflow-server/start.sh -d
@@ -18,6 +18,7 @@
 set -euo pipefail
 
 DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
+DEFAULT_HOST_PROJECTS_ROOT="${HOME}/projects/dev"
 DEFAULT_REPO_URL="https://github.com/m2ux/workflow-server.git"
 DEFAULT_RAW_BASE="https://raw.githubusercontent.com/m2ux/workflow-server"
 DEFAULT_REF="main"
@@ -59,7 +60,7 @@ USAGE
 OPTIONS
   --install-dir=PATH       Install root (default: ${DEFAULT_INSTALL_DIR})
   --projects-root=PATH     Project checkouts root
-                           (default: \$INSTALL/projects; prefer e.g. ~/projects/dev)
+                           (default: ${DEFAULT_HOST_PROJECTS_ROOT})
                            Checkouts are \$HOST_PROJECTS_ROOT/<repo>/ with nested
                            .engineering/ and .worktrees/<slug>/
   --worktree-root=PATH     DEPRECATED global feature-tree root. Prefer nested
@@ -207,7 +208,7 @@ need git
 
 INSTALL_DIR=$(abs_path "$INSTALL_DIR")
 if [[ -z "$HOST_PROJECTS_ROOT" ]]; then
-  HOST_PROJECTS_ROOT="${INSTALL_DIR}/projects"
+  HOST_PROJECTS_ROOT="${DEFAULT_HOST_PROJECTS_ROOT}"
 fi
 HOST_PROJECTS_ROOT=$(abs_path "$HOST_PROJECTS_ROOT")
 # Legacy only: when explicitly set, keep a separate global worktree root.

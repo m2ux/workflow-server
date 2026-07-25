@@ -14,7 +14,7 @@ Install workflow-server and prepare a target repo. Transport install, MCP client
 | Path | Default | Purpose |
 |------|---------|---------|
 | **Install dir** | `~/.local/share/workflow-server` | Helper scripts, `env`, workflows clone |
-| **Projects** | `$HOST_PROJECTS_ROOT` (or `$INSTALL/projects`) | **Your** basename checkouts (`$HOST_PROJECTS_ROOT/<repo>/`) |
+| **Projects** | `$HOST_PROJECTS_ROOT` (default `~/projects/dev`) | **Your** basename checkouts (`$HOST_PROJECTS_ROOT/<repo>/`) |
 | **Engineering** | `$HOST_PROJECTS_ROOT/<repo>/.engineering` | Planning / sessions (after `deploy.sh` in that project) |
 | **Worktrees** | `$HOST_PROJECTS_ROOT/<repo>/.worktrees` | Feature worktrees (nested; `$INSTALL/worktrees` deprecated) |
 | **Workflows** | `$INSTALL/workflows` | Workflow definitions (`workflows` branch) |

@@ -21,9 +21,3 @@ To preserve the precious context windows of Large Language Models, the system pa
 
 ## 6. [Workflow Fidelity](workflow-fidelity.md)
 Because agents are autonomous, they must be audited to ensure they actually followed the instructions defined in the workflow's YAML files. This document details the Step Completion Manifest (a structured summary of what the agent did), the Activity Manifest (tracking the workflow journey), and the cryptographic Trace Tokens. It explains how mechanical and semantic traces are recorded, validated against the workflow schema, and appended to the permanent audit log.
-
-## Tool Reference
-
-See [API Reference](api-reference.md) for the tool catalog. Wire contracts live in [`site/api/tools.html`](../site/api/tools.html); session and navigation behavior live in the models above.
-
-See [Development Guide](development.md) for setup, build commands, and testing.

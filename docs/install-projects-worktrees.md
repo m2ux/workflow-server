@@ -71,13 +71,12 @@ git clone … "$HOST_PROJECTS_ROOT/<repo>"
 ### install.sh
 
 - Create `state/`; clone global `workflows/` on the `workflows` branch.
-- Write `env` with **`HOST_PROJECTS_ROOT`** (default may still be `$INSTALL/projects`
-  for greenfield installs that have not opted out).
+- Write `env` with **`HOST_PROJECTS_ROOT`** (default **`~/projects/dev`**).
 - **Do not** clone product repos or ship `init-repo.sh`.
 - **Do not** require or default a separate `$INSTALL/worktrees` root when using
   nested worktrees. If `HOST_WORKTREE_ROOT` is unset, start.sh treats the
   projects root as the bind that covers nested `.worktrees/`.
-- Optional `--projects-root=PATH` → external root (e.g. `~/projects/dev`).
+- Optional `--projects-root=PATH` overrides the default projects root.
 
 ### start.sh (Docker)
 

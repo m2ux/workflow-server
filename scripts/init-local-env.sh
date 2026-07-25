@@ -27,7 +27,7 @@ Usage: $(basename "$0") [options]
   --worktree-root=PATH   Legacy separate worktrees root (default: same as
                          projects root — nested <repo>/.worktrees/)
   --projects-root=PATH   Projects multi-root (default: \$HOST_PROJECTS_ROOT
-                         or \$INSTALL/projects). Checkouts are <repo>/ basename.
+                         or ~/projects/dev). Checkouts are <repo>/ basename.
   --repo=owner/repo      Optional WORKFLOW_SERVER_REPO for a pinned checkout
   --force                Overwrite an existing .env from .env.example first
   -h, --help             Show this help
@@ -103,7 +103,7 @@ ensure_dir() {
 
 INSTALL_DEFAULT="$(expand_path "$INSTALL_DEFAULT")"
 if [[ -z "$PROJECTS_DEFAULT" ]]; then
-  PROJECTS_DEFAULT="${INSTALL_DEFAULT}/projects"
+  PROJECTS_DEFAULT="${HOME}/projects/dev"
 fi
 PROJECTS_DEFAULT="$(expand_path "$PROJECTS_DEFAULT")"
 # Nested .worktrees under projects root; do not default to $INSTALL/worktrees.

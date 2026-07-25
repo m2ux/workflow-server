@@ -31,7 +31,7 @@ DEFAULT_TRANSPORT="http"
 DEFAULT_BIND_HOST="0.0.0.0"
 DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
 # Nested .worktrees/ under HOST_PROJECTS_ROOT is preferred; $INSTALL/worktrees is deprecated.
-DEFAULT_HOST_PROJECTS_ROOT="${DEFAULT_INSTALL_DIR}/projects"
+DEFAULT_HOST_PROJECTS_ROOT="${HOME}/projects/dev"
 DEFAULT_HOST_WORKTREE_ROOT=""
 DEFAULT_ENV_NAME="env"
 
@@ -283,7 +283,7 @@ fi
 # Path resolution (CLI > install/process env already in shell > defaults):
 if [[ "$PROJECTS_SET" -eq 0 ]]; then
   if [[ -z "$HOST_PROJECTS_ROOT" ]]; then
-    HOST_PROJECTS_ROOT="${INSTALL_DIR}/projects"
+    HOST_PROJECTS_ROOT="${DEFAULT_HOST_PROJECTS_ROOT}"
   fi
 fi
 
