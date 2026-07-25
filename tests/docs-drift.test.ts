@@ -8,8 +8,8 @@ import { join, relative, resolve } from 'node:path';
 
 const ROOT = resolve(import.meta.dirname, '..');
 
+// README.md is intentionally out of scope for this work package (stakeholder).
 const PRODUCT_GLOBS = [
-  'README.md',
   'setup.md',
   'http.md',
   'stdio.md',
