@@ -1,7 +1,7 @@
 # Setup — Docker / HTTP
 
 Transport-specific steps for running the **GHCR image** over HTTP.  
-Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, day-two).
+Shared sequence: **[setup.md](setup.md)** (layout, target project, IDE rule, day-two).
 
 ## Prerequisites
 
@@ -10,8 +10,9 @@ Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, day-two)
 
 ## 1. Install host layout
 
-Fetches helper scripts, clones the `workflows` branch, creates `projects/`,
-`worktrees/`, and `state/` (HMAC key), writes `$INSTALL/env`:
+Fetches helper scripts, clones the `workflows` branch, ensures a projects root
+(default `~/projects/dev`), and `state/` (HMAC key), writes `$INSTALL/env`.
+Does **not** clone product repos (`init-repo.sh` is deprecated):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
@@ -31,14 +32,16 @@ Defaults:
 - Image: `ghcr.io/m2ux/workflow-server:main`
 - Publish: `http://127.0.0.1:3000`
 - Binds:
-  - host `$INSTALL/worktrees` → `/var/lib/workflow-server/worktrees`
-  - host `$INSTALL/projects` → `/var/lib/workflow-server/projects` (eng multi-root)
+  - host `$HOST_PROJECTS_ROOT` (default `~/projects/dev`) → `/var/lib/workflow-server/projects` (checkouts + eng + nested `.worktrees`)
   - host `$INSTALL/state` → `/var/lib/workflow-server/state` (HMAC signing key)
-- Container env: `WORKTREE_ROOT` / `WORKFLOW_WORKSPACE`, `WORKFLOW_SERVER_ENGINEERING_DIR`,
-  `WORKFLOW_SERVER_INSTALL_DIR`, `WORKFLOW_SERVER_KEY_DIR` (see `start.sh`)
+  - (legacy) separate `$INSTALL/worktrees` is deprecated — prefer nested `<repo>/.worktrees/`
+- Container env: `HOST_PROJECTS_ROOT`, `WORKTREE_ROOT` / `WORKFLOW_WORKSPACE`,
+  `WORKFLOW_SERVER_ENGINEERING_DIR`, `WORKFLOW_SERVER_INSTALL_DIR`, `WORKFLOW_SERVER_KEY_DIR`
+  (see `start.sh`)
 - Per-repo planning is selected at **session** time via `start_session({ repo: "owner/repo" })`
-  (after `init-repo.sh owner/repo`). Path:
-  `$INSTALL/projects/owner/repo/.engineering/artifacts/planning/<slug>/`.
+  for a checkout you already keep at `$HOST_PROJECTS_ROOT/<repo>/` (with `.engineering/`
+  after `deploy.sh`). Host path:
+  `$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/<slug>/`.
 - Runs as your host uid:gid; key path does **not** depend on `HOME` (non-root
   containers often have `HOME=/`)
 
@@ -112,7 +115,7 @@ A green `/health` without `sessionKeyWritable: true` means sessions cannot start
 
 Adjust host/port if you changed `--host-port`. Routes: [docs/api-reference.md](docs/api-reference.md#http-endpoints).
 
-Then finish shared steps in [setup.md](setup.md) (**§2** init-repo, **§3** IDE rule, **§4** day-two).
+Then finish shared steps in [setup.md](setup.md) (**§2** target project, **§3** IDE rule, **§4** day-two).
 
 ## HTTP-only references
 
