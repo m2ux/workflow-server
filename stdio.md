@@ -1,7 +1,7 @@
 # Setup — stdio
 
 Transport-specific steps for a **local checkout** where the IDE spawns the server over stdio (default transport).  
-Shared sequence: **[setup.md](setup.md)** (layout, your project checkouts, IDE rule, day-two).
+Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, day-two).
 
 ## Prerequisites
 
@@ -25,18 +25,16 @@ Optional: same host layout as Docker (without starting a container):
 ./scripts/install.sh --install-dir=~/.local/share/workflow-server
 ```
 
-Then continue with [setup.md §2](setup.md#2-prepare-a-target-project): place each product checkout under `$HOST_PROJECTS_ROOT/<repo>/` yourself and run `deploy.sh` in that repo.
+Then continue with [setup.md §2](setup.md#2-init-a-target-repo) to init each target repo (`init-repo.sh owner/repo`).
 
 ## 2. MCP client (stdio)
 
 The IDE starts the process; you do not run a long-lived server yourself.
 
-**Required:** either `--repo=owner/repo` (pins one basename checkout under the projects root) **or** `--workspace=PATH` (and optional engineering multi-root via env).  
+**Required:** either `--repo=owner/repo` (init-repo layout under the install root) **or** `--workspace=PATH` (and optional engineering root via env).  
 `--install-dir` alone is not enough — the process exits without a workspace or repo binding.
 
-### Recommended: projects multi-root (matches Docker)
-
-Point workspace + engineering at your `HOST_PROJECTS_ROOT` (basename checkouts you manage):
+### Recommended: install multi-root (matches Docker + init-repo)
 
 ```json
 {
@@ -46,12 +44,11 @@ Point workspace + engineering at your `HOST_PROJECTS_ROOT` (basename checkouts y
       "args": [
         "/path/to/workflow-server/dist/index.js",
         "--install-dir=/home/you/.local/share/workflow-server",
-        "--workspace=/home/you/projects/dev",
+        "--workspace=/home/you/.local/share/workflow-server/workspace",
         "--workflow-dir=/path/to/workflows"
       ],
       "env": {
-        "WORKFLOW_SERVER_ENGINEERING_DIR": "/home/you/projects/dev",
-        "HOST_PROJECTS_ROOT": "/home/you/projects/dev",
+        "WORKFLOW_SERVER_ENGINEERING_DIR": "/home/you/.local/share/workflow-server/engineering",
         "WORKFLOW_SERVER_INSTALL_DIR": "/home/you/.local/share/workflow-server"
       }
     }
@@ -60,7 +57,7 @@ Point workspace + engineering at your `HOST_PROJECTS_ROOT` (basename checkouts y
 ```
 
 Pass `repo: "owner/your-project"` on `start_session`. Planning lands under  
-`$HOST_PROJECTS_ROOT/your-project/.engineering/artifacts/planning/` (basename checkout).
+`$INSTALL/projects/owner/your-project/.engineering/artifacts/planning/`.
 
 Optional: pin one repo for the whole process with `--repo=owner/your-project` instead of multi-root.
 
@@ -102,7 +99,7 @@ There is no HTTP listener under stdio — the IDE owns the process.
 
 If the server fails to start, check the MCP client log for the `node …/dist/index.js` stderr (missing workspace/repo, bad `WORKFLOW_DIR`, etc.).
 
-Then finish shared steps in [setup.md](setup.md) (**§2** prepare project if needed, **§3** IDE rule, **§4** day-two).
+Then finish shared steps in [setup.md](setup.md) (**§2** init-repo if needed, **§3** IDE rule, **§4** day-two).
 
 ## stdio-only references
 
