@@ -100,7 +100,7 @@ workflow-server/
 │   └── state.schema.json
 ├── scripts/                  # Build, corpus guards, install helpers, benchmarks
 │   ├── install.sh            # Local install layout (helpers, workflows, HOST_PROJECTS_ROOT, env)
-│   ├── init-repo.sh          # Basename checkout under HOST_PROJECTS_ROOT (+ .engineering + .worktrees)
+│   ├── init-repo.sh          # DEPRECATED stub (exits; product repos are user-managed)
 │   ├── start.sh / stop.sh    # GHCR container runner (loads $INSTALL/env)
 │   ├── update-workflows.sh
 │   ├── generate-schemas.ts
@@ -152,7 +152,7 @@ Examples:
 # Legacy single-root (workspace == engineering for planning)
 node dist/index.js --workspace=~/work --workflow-dir=./workflows
 
-# Per-repo layout (after scripts/install.sh + scripts/init-repo.sh owner/repo)
+# Per-repo layout (after install.sh + your checkout under HOST_PROJECTS_ROOT + deploy.sh)
 node dist/index.js --repo=m2ux/workflow-server --transport=http
 
 # HTTP defaults from npm

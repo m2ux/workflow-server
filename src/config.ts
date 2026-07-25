@@ -16,9 +16,10 @@ export {
 } from './utils/path-presentation.js';
 
 /**
- * Planning path under an engineering-branch checkout (init-repo layout).
- * The engineering branch root already *is* the engineering tree, so planning
- * lives at `artifacts/planning` rather than `.engineering/artifacts/planning`.
+ * Planning path under an engineering-branch checkout (basename layout under
+ * HOST_PROJECTS_ROOT). The engineering branch root already *is* the engineering
+ * tree, so planning lives at `artifacts/planning` rather than
+ * `.engineering/artifacts/planning`.
  */
 export const REPO_PLANNING_RELATIVE_DIR = 'artifacts/planning';
 

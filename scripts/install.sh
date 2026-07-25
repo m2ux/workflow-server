@@ -24,7 +24,6 @@ DEFAULT_REF="main"
 DEFAULT_START_NAME="start.sh"
 DEFAULT_STOP_NAME="stop.sh"
 DEFAULT_UPDATE_NAME="update-workflows.sh"
-DEFAULT_INIT_REPO_NAME="init-repo.sh"
 DEFAULT_ENV_NAME="env"
 DEFAULT_CONTAINER_NAME="workflow-server"
 DEFAULT_HOST_PORT="3000"
@@ -34,6 +33,7 @@ LEGACY_NAMES=(
   "run-docker.sh"
   "stop-docker.sh"
   "install-docker.sh"
+  "init-repo.sh"
 )
 
 INSTALL_DIR="${WORKFLOW_SERVER_INSTALL_DIR:-$DEFAULT_INSTALL_DIR}"
@@ -76,16 +76,16 @@ LAYOUT
     ${DEFAULT_START_NAME}
     ${DEFAULT_STOP_NAME}
     ${DEFAULT_UPDATE_NAME}
-    ${DEFAULT_INIT_REPO_NAME}
     ${DEFAULT_ENV_NAME}               # HOST_PROJECTS_ROOT + port / name
     workflows/               # git clone -b workflows (server definitions)
     state/                   # durable HMAC key (mounted by start.sh)
 
   \$HOST_PROJECTS_ROOT/               # from env; not necessarily under \$INSTALL
-    <repo>/                          # basename checkout
-      .engineering/                  # planning submodule when present
+    <repo>/                          # YOU manage these checkouts (basename)
+      .engineering/                  # after deploy.sh in that project
       .worktrees/<slug>/             # feature worktrees only (gitignored)
 
+  Product repos are not cloned by install. init-repo.sh is deprecated.
   \$INSTALL/worktrees/ is deprecated — do not use for new feature trees.
 
 AFTER INSTALL
@@ -219,13 +219,11 @@ fi
 START_PATH="${INSTALL_DIR}/${DEFAULT_START_NAME}"
 STOP_PATH="${INSTALL_DIR}/${DEFAULT_STOP_NAME}"
 UPDATE_PATH="${INSTALL_DIR}/${DEFAULT_UPDATE_NAME}"
-INIT_REPO_PATH="${INSTALL_DIR}/${DEFAULT_INIT_REPO_NAME}"
 ENV_PATH="${INSTALL_DIR}/${DEFAULT_ENV_NAME}"
 WORKFLOWS_DIR="${INSTALL_DIR}/workflows"
 START_URL="${RAW_BASE}/${REF}/scripts/start.sh"
 STOP_URL="${RAW_BASE}/${REF}/scripts/stop.sh"
 UPDATE_URL="${RAW_BASE}/${REF}/scripts/update-workflows.sh"
-INIT_REPO_URL="${RAW_BASE}/${REF}/scripts/init-repo.sh"
 
 echo "Install dir: ${INSTALL_DIR}"
 mkdir -p "$INSTALL_DIR"
@@ -241,7 +239,6 @@ fi
 fetch_script "$START_PATH" "$START_URL" "start"
 fetch_script "$STOP_PATH" "$STOP_URL" "stop"
 fetch_script "$UPDATE_PATH" "$UPDATE_URL" "update-workflows"
-fetch_script "$INIT_REPO_PATH" "$INIT_REPO_URL" "init-repo"
 
 for legacy in "${LEGACY_NAMES[@]}"; do
   legacy_path="${INSTALL_DIR}/${legacy}"
@@ -283,7 +280,7 @@ echo
 echo "Install complete."
 echo "  Install dir  : ${INSTALL_DIR}"
 echo "  Workflows    : ${WORKFLOWS_DIR}"
-echo "  Projects     : ${HOST_PROJECTS_ROOT}  (<repo>/ + .engineering + .worktrees)"
+echo "  Projects     : ${HOST_PROJECTS_ROOT}  (you manage <repo>/ checkouts here)"
 if [[ -n "$HOST_WORKTREE_ROOT" ]]; then
   echo "  Worktrees    : ${HOST_WORKTREE_ROOT}  (legacy global root — deprecated)"
 else
@@ -291,6 +288,9 @@ else
 fi
 echo "  State        : ${STATE_DIR}  (HMAC key; mounted by start.sh)"
 echo "  Env          : ${ENV_PATH}"
+echo
+echo "Place product checkouts yourself under HOST_PROJECTS_ROOT (basename <repo>/)."
+echo "Run deploy.sh inside each project for .engineering/. init-repo.sh is deprecated."
 echo
 echo "Start / stop (paths come from env — no flags required):"
 echo "  ${START_PATH} -d"

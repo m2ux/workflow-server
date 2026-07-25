@@ -57,11 +57,23 @@ migrating feature worktrees under each checkout’s `.worktrees/`.
 
 ## Lifecycle
 
+### Product checkouts (you)
+
+workflow-server does **not** manage product git clones. `init-repo.sh` is
+**deprecated** and exits with an error. You own:
+
+```bash
+git clone … "$HOST_PROJECTS_ROOT/<repo>"
+# inside that checkout:
+./deploy.sh   # from workflow-server scripts — creates .engineering/
+```
+
 ### install.sh
 
 - Create `state/`; clone global `workflows/` on the `workflows` branch.
 - Write `env` with **`HOST_PROJECTS_ROOT`** (default may still be `$INSTALL/projects`
   for greenfield installs that have not opted out).
+- **Do not** clone product repos or ship `init-repo.sh`.
 - **Do not** require or default a separate `$INSTALL/worktrees` root when using
   nested worktrees. If `HOST_WORKTREE_ROOT` is unset, start.sh treats the
   projects root as the bind that covers nested `.worktrees/`.
@@ -97,8 +109,9 @@ $HOST_PROJECTS_ROOT/<repo>/.worktrees         # feature trees
 
 ## Success criteria
 
-- Checkouts live under `HOST_PROJECTS_ROOT/<repo>` (basename layout).
+- Checkouts live under `HOST_PROJECTS_ROOT/<repo>` (basename layout), managed by you.
 - Sessions plan under `<repo>/.engineering/artifacts/planning/` when eng is present.
 - Feature worktrees **only** under `<repo>/.worktrees/<slug>/`.
 - No new paths under `$INSTALL/worktrees`.
+- No `init-repo.sh` in the install lifecycle.
 - Global `$INSTALL/workflows` still serves definitions.

@@ -17,7 +17,7 @@ Two site sections have no markdown counterpart because their canonical source is
 | Source | Purpose | Audience |
 |--------|---------|----------|
 | [`README.md`](../README.md) | Project overview, quick start, the workflow model at a glance | Everyone — first contact |
-| [`setup.md`](../setup.md) | Shared install sequence: transport, init-repo, IDE rule, day-two | Integrators |
+| [`setup.md`](../setup.md) | Shared install sequence: transport, project prep, IDE rule, day-two | Integrators |
 | [`docs/engineering-storage.md`](engineering-storage.md) | How product repos store engineering (orphan, shared monorepo, in-branch) | Integrators |
 | [`http.md`](../http.md) / [`stdio.md`](../stdio.md) | Transport-only differences (Docker/HTTP vs local stdio MCP config) | Integrators |
 | [`docs/ide-setup.md`](ide-setup.md) | The always-applied bootstrap rule and connection verification | Integrators configuring an agent |

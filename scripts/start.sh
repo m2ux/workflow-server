@@ -157,10 +157,12 @@ OPTIONS (optional overrides — prefer re-running install to change paths)
 
 EXAMPLES
   curl -fsSL …/install.sh | bash
-  bash <(curl -fsSL …/install.sh) --worktree-root=~/projects/work
+  bash <(curl -fsSL …/install.sh) --projects-root=~/projects/dev
   ~/.local/share/workflow-server/start.sh -d
   ~/.local/share/workflow-server/stop.sh
-  ~/.local/share/workflow-server/init-repo.sh owner/repo
+
+  # Product checkouts: manage under \$HOST_PROJECTS_ROOT/<repo>/ yourself
+  # (init-repo.sh is deprecated). Pass repo: owner/repo on start_session.
 
 MCP URL: http://127.0.0.1:<host-port>/mcp
 EOF

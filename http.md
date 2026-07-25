@@ -1,7 +1,7 @@
 # Setup — Docker / HTTP
 
 Transport-specific steps for running the **GHCR image** over HTTP.  
-Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, day-two).
+Shared sequence: **[setup.md](setup.md)** (layout, your project checkouts, IDE rule, day-two).
 
 ## Prerequisites
 
@@ -10,14 +10,17 @@ Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, day-two)
 
 ## 1. Install host layout
 
-Fetches helper scripts, clones the `workflows` branch, creates `projects/`,
-`worktrees/`, and `state/` (HMAC key), writes `$INSTALL/env`:
+Fetches helper scripts, clones the `workflows` branch, ensures a projects root
+and `state/` (HMAC key), writes `$INSTALL/env`. Does **not** clone product repos
+(`init-repo.sh` is deprecated — you manage checkouts under `HOST_PROJECTS_ROOT`):
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
+# prefer an external projects tree:
+# bash <(curl -fsSL …/install.sh) --projects-root=~/projects/dev
 ```
 
-> Options: `install.sh --help` (`--install-dir`, `--worktree-root`, `--projects-root`, …).  
+> Options: `install.sh --help` (`--install-dir`, `--projects-root`, …).  
 > Legacy URL `…/install-docker.sh` still works (forwards to `install.sh`).
 
 ## 2. Start the server
@@ -38,7 +41,8 @@ Defaults:
   `WORKFLOW_SERVER_ENGINEERING_DIR`, `WORKFLOW_SERVER_INSTALL_DIR`, `WORKFLOW_SERVER_KEY_DIR`
   (see `start.sh`)
 - Per-repo planning is selected at **session** time via `start_session({ repo: "owner/repo" })`
-  (after `init-repo.sh owner/repo`). Host path:
+  for a checkout you already keep at `$HOST_PROJECTS_ROOT/<repo>/` (with `.engineering/`
+  after `deploy.sh`). Host path:
   `$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/<slug>/`.
 - Runs as your host uid:gid; key path does **not** depend on `HOME` (non-root
   containers often have `HOME=/`)
@@ -113,7 +117,7 @@ A green `/health` without `sessionKeyWritable: true` means sessions cannot start
 
 Adjust host/port if you changed `--host-port`. Routes: [docs/api-reference.md](docs/api-reference.md#http-endpoints).
 
-Then finish shared steps in [setup.md](setup.md) (**§2** init-repo, **§3** IDE rule, **§4** day-two).
+Then finish shared steps in [setup.md](setup.md) (**§2** prepare project, **§3** IDE rule, **§4** day-two).
 
 ## HTTP-only references
 

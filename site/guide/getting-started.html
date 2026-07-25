@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Getting started — Workflow Server</title>
-<meta name="description" content="Install workflow-server (Docker/HTTP or stdio), deploy engineering into a project, init install paths, connect an MCP client, add the bootstrap rule, and run your first workflow.">
+<meta name="description" content="Install workflow-server (Docker/HTTP or stdio), place product checkouts under HOST_PROJECTS_ROOT, deploy engineering, connect an MCP client, add the bootstrap rule, and run your first workflow.">
 <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -89,14 +89,15 @@
   </div>
 
   <h3 id="layout">Install layout (defaults)</h3>
-  <p class="prose">Both transports use the same host layout under <code>~/.local/share/workflow-server</code> (or <code>$XDG_DATA_HOME/workflow-server</code>):</p>
+  <p class="prose">Install helpers and workflow definitions live under <code>~/.local/share/workflow-server</code> (or <code>$XDG_DATA_HOME/workflow-server</code>). Product checkouts are <strong>yours</strong> under <code>$HOST_PROJECTS_ROOT</code> (basename <code>&lt;repo&gt;/</code>) — workflow-server does not clone them (<code>init-repo.sh</code> is deprecated).</p>
   <div class="table-wrap">
     <table>
       <thead><tr><th scope="col">Path</th><th scope="col">Default</th><th scope="col">Purpose</th></tr></thead>
       <tbody>
         <tr><td><strong>Install dir</strong></td><td><code>~/.local/share/workflow-server</code></td><td>Helper scripts, <code>env</code>, workflows clone</td></tr>
-        <tr><td><strong>Workspace</strong></td><td><code>$INSTALL/workspace</code></td><td>Per-repo feature worktrees</td></tr>
-        <tr><td><strong>Engineering</strong></td><td><code>$INSTALL/engineering</code></td><td>Per-repo engineering checkouts (planning / sessions)</td></tr>
+        <tr><td><strong>Projects</strong></td><td><code>$HOST_PROJECTS_ROOT</code> (or <code>$INSTALL/projects</code>)</td><td>Your basename checkouts (<code>&lt;repo&gt;/</code>)</td></tr>
+        <tr><td><strong>Engineering</strong></td><td><code>$HOST_PROJECTS_ROOT/&lt;repo&gt;/.engineering</code></td><td>Planning / sessions (after <code>deploy.sh</code>)</td></tr>
+        <tr><td><strong>Worktrees</strong></td><td><code>$HOST_PROJECTS_ROOT/&lt;repo&gt;/.worktrees</code></td><td>Feature worktrees (nested)</td></tr>
         <tr><td><strong>Workflows</strong></td><td><code>$INSTALL/workflows</code></td><td>Workflow definitions (<code>workflows</code> branch)</td></tr>
       </tbody>
     </table>
@@ -104,8 +105,9 @@
 
   <h3 id="http-install">Docker / HTTP (quick)</h3>
   <pre><code>curl -fsSL https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/install.sh | bash
+# prefer: bash <(curl -fsSL …/install.sh) --projects-root=~/projects/dev
 ~/.local/share/workflow-server/start.sh -d</code></pre>
-  <p class="prose">Creates the install layout, clones workflows, writes <code>$INSTALL/env</code>, and starts the GHCR image. Verify and MCP client steps: <a href="https://github.com/m2ux/workflow-server/blob/main/http.md">http.md</a>.</p>
+  <p class="prose">Creates the install layout, clones workflows, writes <code>$INSTALL/env</code>, and starts the GHCR image. Does not clone product repos. Verify and MCP client steps: <a href="https://github.com/m2ux/workflow-server/blob/main/http.md">http.md</a>.</p>
 
   <h3 id="stdio-install">stdio (quick)</h3>
   <pre><code>git clone https://github.com/m2ux/workflow-server.git
@@ -114,22 +116,22 @@ npm install
 git worktree add ./workflows workflows
 npm run build
 # optional host layout (without Docker):
-./scripts/install.sh --install-dir=~/.local/share/workflow-server</code></pre>
+./scripts/install.sh --install-dir=~/.local/share/workflow-server --projects-root=~/projects/dev</code></pre>
   <p class="prose">Point the IDE MCP config at <code>dist/index.js</code> with <code>--install-dir</code> and <code>--workflow-dir</code>. Full client snippet and verify: <a href="https://github.com/m2ux/workflow-server/blob/main/stdio.md">stdio.md</a>.</p>
 
-  <h2 id="deploy">2. Init a target repo</h2>
-  <p class="prose">Two steps per product repo: make the <strong>repo</strong> workflow-server-compatible, then materialise its trees under the <strong>install</strong> root.</p>
+  <h2 id="deploy">2. Prepare a target project</h2>
+  <p class="prose">Product repository management is external to workflow-server. Keep a basename checkout under <code>$HOST_PROJECTS_ROOT</code>, then make it workflow-compatible with <code>deploy.sh</code>.</p>
 
-  <h3 id="deploy-a">2a. Deploy engineering into the project (required first)</h3>
+  <h3 id="checkout">2a. Checkout under the projects root</h3>
+  <pre><code>git clone https://github.com/owner/my-app.git "$HOST_PROJECTS_ROOT/my-app"</code></pre>
+  <p class="prose">Canonical shape: <code>$HOST_PROJECTS_ROOT/&lt;repo&gt;/</code>, with nested <code>.engineering/</code> (after 2b) and <code>.worktrees/</code> for feature trees.</p>
+
+  <h3 id="deploy-a">2b. Deploy engineering into the project</h3>
   <p class="prose">From the <strong>root of the target project</strong> (not the workflow-server checkout):</p>
   <pre><code>curl -fsSL -o deploy.sh \
   https://raw.githubusercontent.com/m2ux/workflow-server/main/scripts/deploy.sh
 chmod +x deploy.sh && ./deploy.sh</code></pre>
-  <p class="prose">This sets up engineering storage (layout, branch/submodule, planning structure). Patterns (same-repo orphan, shared engineering monorepo, in-branch): <a href="https://github.com/m2ux/workflow-server/blob/main/docs/engineering-storage.md">docs/engineering-storage.md</a>. Flags: <code>./deploy.sh --help</code>.</p>
-
-  <h3 id="init-repo">2b. Materialise install-root paths</h3>
-  <pre><code>~/.local/share/workflow-server/init-repo.sh owner/repo</code></pre>
-  <p class="prose">Creates <code>$INSTALL/engineering/&lt;owner&gt;/&lt;repo&gt;/</code> (planning / sessions) and <code>$INSTALL/workspace/&lt;owner&gt;/&lt;repo&gt;/</code> (feature worktrees). <code>init-repo.sh</code> follows the app’s engineering source (submodule, branch, or in-tree), including external remotes. Repeat 2a → 2b for each product repo.</p>
+  <p class="prose">This sets up engineering storage (layout, branch/submodule, planning structure). Patterns (same-repo orphan, shared engineering monorepo, in-branch): <a href="https://github.com/m2ux/workflow-server/blob/main/docs/engineering-storage.md">docs/engineering-storage.md</a>. Flags: <code>./deploy.sh --help</code>. Pass <code>repo: "owner/repo"</code> on <code>start_session</code>; planning lands under <code>$HOST_PROJECTS_ROOT/&lt;repo&gt;/.engineering/artifacts/planning/</code>.</p>
 
   <h2 id="configure">3. Connect the MCP client</h2>
   <p class="prose">Transport-specific — do not duplicate here:</p>
@@ -170,7 +172,7 @@ If the user provides a `session_token`, pass it to subsequent workflow-server ca
   <h2 id="day-two">Day-two</h2>
   <pre><code>$INSTALL/update-workflows.sh   # refresh workflows branch; restart HTTP if running
 $INSTALL/stop.sh               # stop HTTP container
-$INSTALL/init-repo.sh owner/repo</code></pre>
+# Product checkouts: manage under $HOST_PROJECTS_ROOT/&lt;repo&gt;/ yourself</code></pre>
 
   <h2 id="next">Next steps</h2>
   <ul class="prose">
