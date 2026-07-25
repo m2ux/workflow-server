@@ -29,11 +29,12 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | PL-2 | Plan & Prepare | Task Breakdown | L | Single PR #293 with batch-labeled commits is preferable to seven PRs for this docs package. | User checkpoint `approach-confirmed` / `confirmed` (2026-07-25) | Confirmed |
 | PL-3 | Plan & Prepare | Test Strategy | L | Site automated tests + manual golden path suffice; no new MCP server unit suite required unless Batch 7 adds a check script. | tests/site.test.ts; docs-only scope | Validated (plan) |
 | PL-4 | Plan & Prepare | Scope Decisions | M | Batches 3–6 may be trimmed after Batch 1–2 if review wants a minimal ship; Batch 1–2 are non-negotiable for SC-1/SC-2. | User checkpoint `approach-confirmed` / `confirmed` (2026-07-25); full plan accepted | Confirmed |
+| AR-1 | Assumptions Review | Scope Decisions | L | No significant residual assumptions ([reason]) — pre-implement residue empty after plan-prepare close-out; DP/RE/IA/PL all Confirmed or Validated; Open Assumptions empty; out-of-scope items live only in deferred-items (D-1–D-5), not as open assumptions. | Code: assumptions-log Open empty; session `has_open_assumptions=false`; deferred-items.md | Validated |
 
 ## Open Assumptions
 
-_None. All plan-prepare assumptions resolved._
+_None. Residual collect and analyse-challenge left no stakeholder-dependent opens._
 
 ## Wrap-Up
 
-20 assumptions — all closed. PL-1/2/4 Confirmed (User) via `approach-confirmed`; PL-3 plan-validated; IA/RE/DP closed earlier. See [work-package-plan.md](work-package-plan.md), [implementation-analysis.md](implementation-analysis.md). Deferred: [deferred-items](deferred-items.md).
+21 assumptions — all validated/confirmed. AR-1 null residual at assumptions-review (no interview/batch). No deferred assumptions this activity. See [work-package-plan.md](work-package-plan.md), [deferred-items](deferred-items.md).

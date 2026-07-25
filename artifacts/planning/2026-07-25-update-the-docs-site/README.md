@@ -1,6 +1,6 @@
 # Update the Docs Site — July 2026
 
-> Enhancement · Created 2026-07-25 · **Status:** Planning
+> Enhancement · Created 2026-07-25 · **Status:** Ready for Implementation
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -35,7 +35,7 @@ After you confirm the approach, work lands on PR #293 in seven reviewable batche
 | 9 | 06 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ |
 | 10 | 06 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ✅ |
 | 11 | 06 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | ⬚ |
-| 12 | 07 | Assumptions review | Converge open assumptions | 20-40m | ⬚ |
+| 12 | 07 | Assumptions review | Converge open assumptions | 20-40m | ✅ |
 | 13 | 08 | Implementation | Code changes per plan | 1-4h | ⬚ |
 | 14 | 08 | [Provenance log](provenance-log.md) | Per-task AI-assistance provenance | 5-15m | ⬚ |
 | 15 | 09 | Lean-coding audit | Ponytail lean lens on the change | 15-30m | ⬚ |
