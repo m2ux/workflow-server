@@ -6,7 +6,7 @@
 
 ## 🎯 Executive Summary
 
-[2-3 sentences explaining what this delivers and why it matters]
+Bring the workflow-server documentation site and aligned markdown sources current so operators and agents can find accurate setup, workflow, and day-to-day guidance. Classified as an inventive improvement (moderate) on an elicitation-only path: pin scope and success criteria, then refresh content under the existing two-layer docs system (markdown canonical, hand-authored site/).
 
 ## Problem Overview
 
@@ -24,8 +24,8 @@ When docs drift, people waste time on outdated steps, misconfigure environments,
 |---|---|------|-------------|----------|--------|
 | 1 | 01 | Start work package | Issue, branch, worktree, planning folder | 20-40m | ✅ |
 | 2 | 01 | [Prior feedback triage](prior-feedback-triage.md) | Review-mode prior feedback ingest | 15-30m | ⊘ |
-| 3 | 02 | [Design philosophy](design-philosophy.md) | Problem classification, workflow path | 15-30m | ⬚ |
-| 4 | 02 | [Assumptions log](assumptions-log.md) | Tracked assumptions across activities | 10-15m | ⬚ |
+| 3 | 02 | [Design philosophy](design-philosophy.md) | Problem classification, workflow path | 15-30m | ✅ |
+| 4 | 02 | [Assumptions log](assumptions-log.md) | Tracked assumptions across activities | 10-15m | ✅ |
 | 5 | 03 | [Requirements elicitation](requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ⬚ |
 | 6 | 04 | [KB research](kb-research.md) | Knowledge-base and web synthesis | 20-45m | ⬚ |
 | 7 | 05 | [Implementation analysis](implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ⬚ |
