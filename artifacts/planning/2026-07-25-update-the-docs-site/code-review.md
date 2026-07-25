@@ -32,9 +32,9 @@ Checkpoint `file-index-table` → `rationale-confirmed-with-issues` (`has_flagge
 - setup §3 and ide-setup lead with the same recommended path; hand-rolled MCP/rules are secondary.
 - **Path model:** layout table and §2b now teach `$HOST_PROJECTS_ROOT/<repo>/` + nested `.engineering` / `.worktrees` (not `$INSTALL/projects` / `$INSTALL/worktrees`).
 
-### Path-model follow-up (post skip-block#10)
+### Path-model follow-up — §2b Checkout the project
 
-Adopted further user `setup.md` edits (stdio “soon to be deprecated”; leaner Verify; §3 title). Rewrote setup §2b / §4 and aligned operator + architecture docs to `HOST_PROJECTS_ROOT` language: `http.md`, `stdio.md`, `getting-started.html`, `architecture.md`, `artifact_management_model.md`, `engineering-storage.md`, `development.md`, `state_management_model.md`, `documentation-system.md`, `install-projects-worktrees.md` (Cursor roots). Migration contrast remains owned by `install-projects-worktrees.md`.
+User renamed §2b to **Checkout the project**. Populated with clone-into-`$HOST_PROJECTS_ROOT/<repo>` guidance (basename layout, `.worktrees` mkdir, uniform formula). Aligned getting-started §2b, troubleshooting, http/stdio/docs pointers away from init-repo as the primary §2b action.
 
 ## Lean-Coding Audit
 

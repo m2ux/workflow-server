@@ -54,7 +54,7 @@ Stops baking a live tool count into the generated tools.html lede so the site ca
 
 ### [Block 13 — setup.md:1](../../../../.worktrees/2026-07-25-update-the-docs-site/setup.md:1)
 
-**Rationale correction (user):** Onboarding spine after README descoping. §2b/§4 teach `$HOST_PROJECTS_ROOT/<repo>/` + nested `.worktrees` / `.engineering`; `$INSTALL` holds scripts, `state/`, and `workflows/` only. §3 is “Setup Cursor workspace.” stdio labeled soon-to-be-deprecated per user. Cite [install-projects-worktrees.md](../../../../.worktrees/2026-07-25-update-the-docs-site/docs/install-projects-worktrees.md).
+**Rationale correction (user):** Onboarding spine. §2b is **Checkout the project** — clone into `$HOST_PROJECTS_ROOT/<repo>` after deploy; uniform layout with nested `.engineering` / `.worktrees`. §3 is “Setup Cursor workspace.” stdio labeled soon-to-be-deprecated. Cite [install-projects-worktrees.md](../../../../.worktrees/2026-07-25-update-the-docs-site/docs/install-projects-worktrees.md).
 
 ### [Block 14 — site/api/tools.html:71](../../../../.worktrees/2026-07-25-update-the-docs-site/site/api/tools.html:71)
 
