@@ -28,8 +28,13 @@ Checkpoint `file-index-table` → `rationale-confirmed-with-issues` (`has_flagge
 
 ### Block 17 — `site/guide/getting-started.html` (+ `setup.md` / `docs/ide-setup.md`)
 
-- Merged “Connect MCP client” / “Add bootstrap rule” into **Adopt the example Cursor workspace**.
+- Merged “Connect MCP client” / “Add bootstrap rule” into **Setup Cursor workspace** (user title).
 - setup §3 and ide-setup lead with the same recommended path; hand-rolled MCP/rules are secondary.
+- **Path model:** layout table and §2b now teach `$HOST_PROJECTS_ROOT/<repo>/` + nested `.engineering` / `.worktrees` (not `$INSTALL/projects` / `$INSTALL/worktrees`).
+
+### Path-model follow-up (post skip-block#10)
+
+Adopted further user `setup.md` edits (stdio “soon to be deprecated”; leaner Verify; §3 title). Rewrote setup §2b / §4 and aligned operator + architecture docs to `HOST_PROJECTS_ROOT` language: `http.md`, `stdio.md`, `getting-started.html`, `architecture.md`, `artifact_management_model.md`, `engineering-storage.md`, `development.md`, `state_management_model.md`, `documentation-system.md`, `install-projects-worktrees.md` (Cursor roots). Migration contrast remains owned by `install-projects-worktrees.md`.
 
 ## Lean-Coding Audit
 

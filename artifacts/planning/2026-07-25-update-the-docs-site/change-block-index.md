@@ -46,7 +46,7 @@ Same progressive-disclosure pattern as the orchestra spec, plus a Technique mode
 
 ### [Block 11 — http.md:1](../../../../.worktrees/2026-07-25-update-the-docs-site/http.md:1)
 
-**Rationale correction (user):** Install/Start narrative is state-bind only (no projects/worktrees binds in the install story). Prefer the example Cursor workspace for MCP/IDE setup; demote hand-rolled mcp-remote JSON. Align troubleshooting and “finish shared steps” with that model.
+**Rationale correction (user):** Install/Start narrative is state-bind only (no projects/worktrees binds in the install story). Prefer the example Cursor workspace for MCP/IDE setup; demote hand-rolled mcp-remote JSON. Planning path uses `$HOST_PROJECTS_ROOT/<repo>/.engineering/…` (not `$INSTALL/projects/…`).
 
 ### [Block 12 — scripts/generate-site-data.ts:650](../../../../.worktrees/2026-07-25-update-the-docs-site/scripts/generate-site-data.ts:650)
 
@@ -54,7 +54,7 @@ Stops baking a live tool count into the generated tools.html lede so the site ca
 
 ### [Block 13 — setup.md:1](../../../../.worktrees/2026-07-25-update-the-docs-site/setup.md:1)
 
-Expands install/deploy/init-repo callouts, day-two guidance, and a troubleshooting hub after README was deliberately left minimal. setup.md becomes the onboarding spine for both stdio and HTTP paths. Growth is intentional coverage, not platform churn.
+**Rationale correction (user):** Onboarding spine after README descoping. §2b/§4 teach `$HOST_PROJECTS_ROOT/<repo>/` + nested `.worktrees` / `.engineering`; `$INSTALL` holds scripts, `state/`, and `workflows/` only. §3 is “Setup Cursor workspace.” stdio labeled soon-to-be-deprecated per user. Cite [install-projects-worktrees.md](../../../../.worktrees/2026-07-25-update-the-docs-site/docs/install-projects-worktrees.md).
 
 ### [Block 14 — site/api/tools.html:71](../../../../.worktrees/2026-07-25-update-the-docs-site/site/api/tools.html:71)
 
@@ -70,7 +70,7 @@ Drops registrar tool-count claims and links readers to the live tools catalog in
 
 ### [Block 17 — site/guide/getting-started.html:89](../../../../.worktrees/2026-07-25-update-the-docs-site/site/guide/getting-started.html:89)
 
-**Rationale correction (user):** Getting-started (and aligned setup.md / ide-setup.md) must advise adopting the example Cursor workspace as the primary Connect MCP / bootstrap path — copy/open `examples/cursor-workspace`, then start a workflow — not hand-rolled MCP config or pasted rules as the default.
+**Rationale correction (user):** Getting-started (and aligned setup.md / ide-setup.md) advises **Setup Cursor workspace** as the primary MCP/bootstrap path. Layout table and §2b use `$HOST_PROJECTS_ROOT` (not `$INSTALL/projects` / `$INSTALL/worktrees`).
 
 ### [Block 18 — site/index.html:131](../../../../.worktrees/2026-07-25-update-the-docs-site/site/index.html:131)
 
@@ -90,7 +90,7 @@ Improves skip-link and nav-summary focus rings and caps prose measure for readab
 
 ### [Block 22 — stdio.md:1](../../../../.worktrees/2026-07-25-update-the-docs-site/stdio.md:1)
 
-Mirrors http.md verify cues and troubleshooting for the stdio transport so both entry docs share the same recovery pattern. Points into setup.md as the shared hub. Keeps filename and section stability.
+**Rationale correction (user):** Planning path uses `$HOST_PROJECTS_ROOT/<repo>/.engineering/…`. Mirrors http.md verify/troubleshoot pattern; points into setup.md as the shared hub.
 
 ### [Block 23 — tests/docs-drift.test.ts:1](../../../../.worktrees/2026-07-25-update-the-docs-site/tests/docs-drift.test.ts:1)
 
