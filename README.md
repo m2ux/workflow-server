@@ -39,7 +39,10 @@ User Goal → Workflow → Activities → Techniques → Tools
 ## 🚀 Quick Start
 
 ### Setup
-See: **[setup.md](setup.md)**.
+
+This project is tailored towards the use of the Cursor IDE. To use with Claude Code it is recommended to setup the Claude Code plugin for Cursor.
+
+See: **[setup.md](setup.md)** for detailed setup instructions.
 
 ### Execute a workflow
 

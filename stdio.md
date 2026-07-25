@@ -118,12 +118,3 @@ Then finish shared steps in [setup.md](setup.md) (**ยง2** deploy + checkout, **ย
 | Agent never calls `discover` | [docs/ide-setup.md](docs/ide-setup.md) bootstrap rule |
 
 Shared install vs deploy vs checkout: [setup.md](setup.md).
-
-## stdio-only references
-
-| Topic | Where |
-|-------|--------|
-| Dev commands / HTTP from source | [docs/development.md](docs/development.md) |
-| Env vars & flags (dev) | [docs/development.md](docs/development.md#environment-variables) / `src/config.ts` |
-| Shared setup | [setup.md](setup.md) |
-| Docker / HTTP transport | [http.md](http.md) |

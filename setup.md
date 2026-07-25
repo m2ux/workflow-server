@@ -33,7 +33,7 @@ Layouts (same-repo orphan, shared engineering monorepo, in-branch): [docs/engine
 ### 2b. Checkout the project
 
 After deploy, clone or check out the project into the canonical location under
-`HOST_PROJECTS_ROOT` (from `$INSTALL/env`; typical example `~/projects/dev`):
+`HOST_PROJECTS_ROOT` (typical example `~/projects/dev`):
 
 ```bash
 # HOST_PROJECTS_ROOT from $INSTALL/env (example: ~/projects/dev)
@@ -41,15 +41,6 @@ git clone https://github.com/owner/repo.git "$HOST_PROJECTS_ROOT/<repo>"
 mkdir -p "$HOST_PROJECTS_ROOT/<repo>/.worktrees"
 ```
 
-Use the repo **basename** for `<repo>` (for example `my-app`, not `owner/my-app`).
-
-```text
-checkout    = $HOST_PROJECTS_ROOT / <repo>
-planning    = checkout / .engineering / …
-target_path = checkout / .worktrees / <slug>
-```
-
-Full layout: [docs/install-projects-worktrees.md](docs/install-projects-worktrees.md).
 Repeat **2a → 2b** for each product repo.
 
 ## 3. Setup Cursor workspace
