@@ -131,7 +131,7 @@
     <details class="implementer-panel">
       <summary>For agent implementers</summary>
       <p class="prose">The agent follows a bootstrap procedure returned by <code>discover</code> — you do not call MCP tools yourself; the IDE rule routes workflow requests here.</p>
-      <p class="prose"><a href="api/tools.html">Tool reference</a> (16 tools, generated from source). <a href="design/protocol.html">Protocol</a> for call order, checkpoints, errors, and reference delivery. <a href="specs/workflows.html#runtime">Workflows</a> for orchestrator vs worker roles.</p>
+      <p class="prose"><a href="api/tools.html">Tool reference</a> (generated from source). <a href="design/protocol.html">Protocol</a> for call order, checkpoints, errors, and reference delivery. <a href="specs/workflows.html#runtime">Workflows</a> for orchestrator vs worker roles.</p>
     </details>
   </section>
 
@@ -142,7 +142,7 @@
     <figure class="diagram">
       <svg viewBox="0 0 960 300" role="img" aria-labelledby="layers-title layers-desc">
         <title id="layers-title">System layers</title>
-        <desc id="layers-desc">Agents reach the server through sixteen MCP tools. Below the tool surface sit the enforcement layers, which consult workflow definitions read from the workflows directory and the session state persisted under the engineering root.</desc>
+        <desc id="layers-desc">Agents reach the server through the MCP tool surface. Below the tool surface sit the enforcement layers, which consult workflow definitions read from the workflows directory and the session state persisted under the engineering root.</desc>
         <defs>
           <marker id="arrow-layers" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
@@ -153,7 +153,7 @@
           <text x="480" y="46" fill="var(--diagram-label)">Agents (orchestrators and workers)</text>
           <rect x="280" y="105" width="400" height="50" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
           <text x="480" y="130" fill="var(--diagram-label)">MCP tool surface</text>
-          <text x="480" y="148" fill="var(--diagram-note)" font-size="13" font-weight="400">16 tools across six concerns</text>
+          <text x="480" y="148" fill="var(--diagram-note)" font-size="13" font-weight="400">session, navigation, content, trace</text>
           <rect x="280" y="195" width="400" height="50" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
           <text x="480" y="220" fill="var(--diagram-label)">Enforcement and resolution</text>
           <text x="480" y="238" fill="var(--diagram-note)" font-size="13" font-weight="400">fidelity layers · technique bundles</text>

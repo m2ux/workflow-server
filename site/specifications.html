@@ -115,25 +115,36 @@
   </div>
 
   <h2 id="authoring">Authoring contracts</h2>
+  <p class="prose">Start here when you define or change workflows. Read the plain-language openings in each document before the formal sections. Generated wire shapes: <a href="api/schemas.html">schema reference</a>.</p>
   <div class="table-wrap">
     <table>
-      <thead><tr><th scope="col">Specification</th><th scope="col">Summary</th></tr></thead>
+      <thead><tr><th scope="col">Specification</th><th scope="col">Summary</th><th scope="col">Related</th></tr></thead>
       <tbody>
-        <tr>
-          <td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md"><code>technique-protocol-specification.md</code></a></td>
-          <td>Normative contract for technique files: capability, inputs, outputs, protocol, rules, <code>::</code> addressing, contract inheritance, Initial/Final composition, and delivery.</td>
-        </tr>
         <tr>
           <td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/orchestra-specification.md"><code>orchestra-specification.md</code></a></td>
           <td>Grammar and semantic constraints for workflow primitives — activities, steps, decisions, and loops — in the Orchestra definition language.</td>
+          <td><a href="specs/workflows.html">Workflows</a></td>
+        </tr>
+        <tr>
+          <td><a href="https://github.com/m2ux/workflow-server/blob/main/docs/technique-protocol-specification.md"><code>technique-protocol-specification.md</code></a></td>
+          <td>Normative contract for technique files: capability, inputs, outputs, protocol, rules, <code>::</code> addressing, composition, and delivery.</td>
+          <td><a href="specs/resource-resolution.html">Resolution</a></td>
         </tr>
         <tr>
           <td><a href="https://github.com/m2ux/workflow-server/blob/main/schemas/README.md"><code>schemas/README.md</code></a></td>
           <td>Schema guide for authoring workflow definitions: manifest shapes, activity files, conditions, and validation conventions.</td>
+          <td><a href="api/schemas.html">Generated schemas</a></td>
         </tr>
       </tbody>
     </table>
   </div>
+  <h2 id="related">Related product docs</h2>
+  <ul class="prose">
+    <li><a href="https://github.com/m2ux/workflow-server/blob/main/docs/api-reference.md">API reference</a> (short tool and HTTP catalog)</li>
+    <li><a href="api/tools.html">MCP tool reference</a> (generated wire detail)</li>
+    <li><a href="https://github.com/m2ux/workflow-server/blob/main/docs/development.md">Development guide</a> (build, test, contribute)</li>
+    <li><a href="https://github.com/m2ux/workflow-server/blob/main/docs/documentation-system.md">Documentation system</a> (where content belongs)</li>
+  </ul>
 </main>
 
 

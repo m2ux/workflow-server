@@ -17,4 +17,10 @@
       });
     });
   });
+
+  // Escape closes any open nav group (keyboard users).
+  document.addEventListener('keydown', (event) => {
+    if (event.key !== 'Escape') return;
+    groups.forEach((details) => details.removeAttribute('open'));
+  });
 })();
