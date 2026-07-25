@@ -25,6 +25,9 @@ services:
       WORKFLOW_WORKSPACE: ${CONTAINER_WORKTREE_ROOT:-${CONTAINER_PROJECTS_ROOT:-/var/lib/workflow-server/projects}}
       WORKFLOW_SERVER_ENGINEERING_DIR: ${CONTAINER_ENGINEERING_ROOT:-${CONTAINER_PROJECTS_ROOT:-/var/lib/workflow-server/projects}}
       WORKFLOW_SERVER_INSTALL_DIR: ${CONTAINER_INSTALL_DIR:-/var/lib/workflow-server}
+      # Host bind sources for agent-facing path presentation (planning_folder_path)
+      HOST_PROJECTS_ROOT: ${HOST_PROJECTS_ROOT:-${HOME}/projects/dev}
+      HOST_WORKTREE_ROOT: ${HOST_WORKTREE_ROOT:-}
       # Optional: override default planning slug (multi-root uses artifacts/planning per repo)
       # PLANNING_SLUG: artifacts/planning
       WORKFLOW_DIR: ${CONTAINER_WORKFLOW_DIR:-/app/workflows}

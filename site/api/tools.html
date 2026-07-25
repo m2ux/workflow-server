@@ -122,7 +122,7 @@
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Opens a new workflow session or resumes an existing one.</p>
-          <p>Returns a <code>session_index</code> (six characters), basic workflow metadata, and <code>planning_folder_path</code> — the absolute path where the server stores session artifacts.</p>
+          <p>Returns a <code>session_index</code> (six characters), basic workflow metadata, and <code>planning_folder_path</code> — the absolute path agents should use for session artifacts (host bind path under Docker when <code>HOST_PROJECTS_ROOT</code> is set; server-local path under stdio).</p>
           <p>Pass <code>planning_folder</code> as any absolute path whose basename is your planning slug (for example, <code>.../planning/2026-05-28-my-slug</code>). Only the slug is used; the server resolves it under its own workspace. A stale or wrong path prefix is harmless.</p>
           <p>If that slug already has <code>session.json</code>, the session resumes and <code>workflow_id</code> is ignored. Otherwise the server creates a fresh session and seeds variables from the workflow defaults.</p>
           <p>Omit <code>planning_folder</code> to start a meta bootstrap session in a temp folder. Use <code>dispatch_child</code> later to promote it to a real planning folder.</p>

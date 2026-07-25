@@ -1,7 +1,19 @@
 import { homedir } from 'node:os';
 import { resolve } from 'node:path';
 import type { TraceStore } from './trace.js';
+import {
+  buildPathPresentationMap,
+  type PathPresentationMap,
+} from './utils/path-presentation.js';
 import { PLANNING_RELATIVE_DIR, setPlanningRelativeDir } from './utils/session/store.js';
+
+export type { PathPresentationMap } from './utils/path-presentation.js';
+export {
+  buildPathPresentationMap,
+  presentPathToAgent,
+  isPathUnderRoot,
+  collapseOwnerRepoUnderRoot,
+} from './utils/path-presentation.js';
 
 /**
  * Planning path under an engineering-branch checkout (init-repo layout).
@@ -42,6 +54,26 @@ export interface ServerConfig {
    * (`engineeringDir` when set, else `workspaceDir`).
    */
   planningRelativeDir?: string;
+  /**
+   * Host-side bind source for the projects / engineering multi-root mount.
+   * When set (Docker via `HOST_PROJECTS_ROOT`), agent-facing paths such as
+   * `planning_folder_path` are rewritten from the server/container prefix to
+   * this host prefix, with deprecated `owner/repo` segments collapsed to the
+   * canonical basename checkout (`$HOST_PROJECTS_ROOT/<repo>/…`).
+   * Session storage continues to use server-side paths.
+   */
+  hostProjectsRoot?: string;
+  /**
+   * Host-side bind source for a legacy separate worktree multi-root mount.
+   * Unused when worktrees are nested under the projects root.
+   */
+  hostWorktreeRoot?: string;
+  /**
+   * Resolved prefix map for agent-facing path presentation. Built at config
+   * load from server roots + host bind sources; undefined when presentation
+   * is identity (stdio / same path namespace).
+   */
+  pathPresentation?: PathPresentationMap;
   serverName: string;
   serverVersion: string;
   /**
@@ -410,6 +442,28 @@ function resolveHost(argv: readonly string[]): string {
  *   workspaceDir    = $INSTALL/worktrees/<owner>/<repo>
  *   engineeringDir  = $INSTALL/projects/<owner>/<repo>/.engineering
  */
+/**
+ * Host bind sources for agent-facing path presentation (Docker).
+ * Prefer `HOST_PROJECTS_ROOT` / `HOST_WORKTREE_ROOT` (start.sh); accept the
+ * underscored aliases some compose files use.
+ */
+function resolveHostPathPresentation(
+  env: NodeJS.ProcessEnv = process.env,
+): { hostProjectsRoot?: string; hostWorktreeRoot?: string } {
+  const hostProjects =
+    env['HOST_PROJECTS_ROOT']?.trim() ||
+    env['HOST_PROJECTS_DIR']?.trim() ||
+    undefined;
+  const hostWorktree =
+    env['HOST_WORKTREE_ROOT']?.trim() ||
+    env['HOST_WORKTREE_DIR']?.trim() ||
+    undefined;
+  const out: { hostProjectsRoot?: string; hostWorktreeRoot?: string } = {};
+  if (hostProjects) out.hostProjectsRoot = resolve(hostProjects);
+  if (hostWorktree) out.hostWorktreeRoot = resolve(hostWorktree);
+  return out;
+}
+
 export function loadConfig(argv: readonly string[] = process.argv.slice(2)): ServerConfig {
   const roots = resolveRoots(argv);
   const planningRelativeDir = resolvePlanningRelativeDir(
@@ -419,6 +473,16 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
   // Pin the active planning relative dir at config load so planningRoot()
   // callers see the configured slug without a second argument.
   setPlanningRelativeDir(planningRelativeDir);
+  const hostPaths = resolveHostPathPresentation(process.env);
+  // Server-side projects root for the map: engineering multi-root when set,
+  // else workspace (single-root / nested bind).
+  const serverProjectsRoot = roots.engineeringDir;
+  const pathPresentation = buildPathPresentationMap({
+    serverProjectsRoot,
+    hostProjectsRoot: hostPaths.hostProjectsRoot,
+    serverWorktreeRoot: roots.workspaceDir,
+    hostWorktreeRoot: hostPaths.hostWorktreeRoot ?? hostPaths.hostProjectsRoot,
+  });
   return {
     workflowDir: resolveWorkflowDir(argv),
     schemasDir: resolve(PROJECT_ROOT, envOrDefault('SCHEMAS_DIR', './schemas')),
@@ -427,6 +491,13 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
     ...(roots.repo !== undefined ? { repo: roots.repo } : {}),
     ...(roots.installDir !== undefined ? { installDir: roots.installDir } : {}),
     planningRelativeDir,
+    ...(hostPaths.hostProjectsRoot !== undefined
+      ? { hostProjectsRoot: hostPaths.hostProjectsRoot }
+      : {}),
+    ...(hostPaths.hostWorktreeRoot !== undefined
+      ? { hostWorktreeRoot: hostPaths.hostWorktreeRoot }
+      : {}),
+    ...(pathPresentation !== undefined ? { pathPresentation } : {}),
     serverName: envOrDefault('SERVER_NAME', 'workflow-server'),
     serverVersion: envOrDefault('SERVER_VERSION', '2.1.0'),
     bundleHeadroomFraction: envNumberOrDefault('BUNDLE_HEADROOM_FRACTION', DEFAULT_BUNDLE_HEADROOM_FRACTION),
