@@ -51,7 +51,7 @@ When docs drift, people waste time on outdated steps, misconfigure environments,
 | 27 | 14 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | ⬚ |
 | 28 | 14 | [Token usage](token-usage.md) | Session token and cost summary | 5-10m | ⬚ |
 | 29 | 14 | [Session trace](session-trace.md) | Lean mechanical execution trace | 5-10m | ⬚ |
-| 30 | 15 | Codebase comprehension | Persistent knowledge under comprehension/ | 20-45m | ⬚ |
+| 30 | 15 | Codebase comprehension | Persistent knowledge under comprehension/ | 20-45m | ◐ |
 
 **Status:** ⬚ pending · ◐ in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 

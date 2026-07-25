@@ -1,9 +1,9 @@
 # Documentation System — Comprehension Artifact
 
-> **Last updated**: 2026-06-18
-> **Work packages**: #132 — Coherent documentation system for workflow-server (2026-06-09-workflow-server-docs-system)
-> **Coverage**: The workflow-server documentation surface (root docs, `docs/`, `schemas/`, agent-rule files) AND the concept-rag reference documentation system (`~/projects/dev/concept-rag`) treated as the structural exemplar to mirror.
-> **Related artifacts**: [workflow-server.md](workflow-server.md) (source-code behavior — the system the docs describe), [orchestration.md](orchestration.md), [workflow-server-schemas.md](workflow-server-schemas.md)
+> **Last updated**: 2026-07-25  
+> **Work packages**: #132 — Coherent documentation system (2026-06-09); **2026-07-25-update-the-docs-site** (PR #293, branch `docs/update-the-docs-site`)  
+> **Coverage**: Historical #132 survey (markdown surface + concept-rag MkDocs exemplar) **plus** the as-shipped hand-authored `site/` HTML documentation system (routes, generators, CI deploy, two-layer canonical model).  
+> **Related artifacts**: [workflow-server.md](workflow-server.md), [orchestration.md](orchestration.md), [json-schemas.md](json-schemas.md)
 
 This artifact treats *documentation as the codebase area*. "Architecture" here means the structure of the doc set (files, navigation, cross-links, tooling); "abstractions" are the recurring page types (landing, task guide, section index, model/spec, ADR); "domain mapping" connects each document to the audience and question it serves.
 
@@ -210,26 +210,18 @@ workflow-server's documentation domain is "how an agent or human discovers, conf
 
 | # | Question | Status | Resolution | Deep-Dive Section |
 |---|----------|--------|------------|-------------------|
-| 1 | Does the reference use section-index landing pages, and via what mechanism? | Resolved | `navigation.indexes` theme feature + per-section `index.md`/`README.md` "Overview" pages (Activities/Skills/Architecture). | Deep-Dive Q1 |
-| 2 | What exactly does the concept-rag landing page contain (cards, icons, link style) and is it reproducible in plain MkDocs Material? | Resolved | 7 grid cards (`grid cards` div, `:material-*:` icons, CTA `:octicons-arrow-right-24:` links); reproducible with `attr_list`+`md_in_html`+Material theme, no custom CSS; must be unique, not README-derived (ADR-0052). | Deep-Dive Q2 |
-| 3 | How does the existing `docs/architecture.md` hub compare structurally to concept-rag's `architecture/README.md`? | Resolved | Both are hubs; cr adds a repo-structure table + component link list; wfs uses richer per-component prose but lacks the table. Relocate wfs hub to `architecture/README.md` folder. | Deep-Dive Q3 |
-| 4 | Where should the six `*_model.md` and two `*-specification.md` docs land in a concept-rag-style nav? | Resolved | They are component deep-dives → an `Architecture` section: `Overview` (relocated `architecture.md`) + the model/spec docs as siblings + `schemas/README.md` as schema ref. Not ADRs. | Deep-Dive Q4 |
-| 5 | How does surfacing the ADR series in the docs site reconcile with the describe-as-it-is voice rule? | **Planning-only** | wfs **has an ADR series AND a documented ADR practice.** `.engineering/artifacts/adr/` holds ADR-0001..0005 (Nygard-style: Status incl. Deprecated/Superseded, Context, Decision, Considered Options, Consequences); the practice is codified in `workflows/work-package/resources/architecture-review.md`. ADRs live **outside `docs/`** (in `.engineering/`), so they do **not** fall under the `docs/` describe-as-it-is voice rule — and `.engineering/AGENTS.md` exempts `artifacts/` content. The decision is narrow: whether to *surface* the `.engineering/` ADRs as a docs-site nav section (cr-style) — a planning choice, not a code-resolvable one (DP-6). | Deep-Dive 2 Q5 |
-| 6 | How to surface agent-guidance content as a docs section without relocating harness-path files? | Resolved | New `Agent Guidance` section: an Overview page summarizing/linking `docs/ide-setup.md` + referencing (not moving) `AGENTS.md`/`.claude/rules/`; mirrors cr's docs-guidance-≠-harness-config split. | Deep-Dive Q6 |
-| 7 | Are `AGENTS.md` and `CLAUDE.md` truly identical, and what is the maintenance implication? | Resolved | Differ on line 1 only (the H1 title); otherwise byte-identical lockstep twins — edits must apply to both; drift is a latent hazard. | Deep-Dive Q7 |
-| 8 | Does mirroring require the MkDocs toolchain + gh-deploy pipeline, or can a lighter equivalent suffice? | **Tooling known; depth = planning-only** | Full cr toolchain: `mkdocs.yml` (Material, 14 markdown extensions, manual `nav`), `requirements.txt` (`mkdocs-material>=9.0`), `package.json` scripts (`docs:serve`/`docs:build` → `mkdocs serve`/`build`), and `.github/workflows/docs.yml` (Python 3.11 + `pip install mkdocs-material` + `mkdocs gh-deploy --force`, triggered on push to `docs/**`/`mkdocs.yml`/the workflow, `permissions: contents: write`, `concurrency` cancel-in-progress). **wfs has NO `.github/workflows/` at all** — adopting `docs.yml` introduces the repo's first GitHub Action and first Python dependency into a TS repo. Decomposable into 3 independently-approvable layers: (a) structure (`mkdocs.yml`+pages, no CI), (b) local build (`requirements.txt`/npm scripts), (c) deploy Action (the CI-approval-gated half). Which layers to adopt is a planning judgement (DP-8). | Deep-Dive 2 Q8 |
-| 9 | Do FAQ/Troubleshooting docs need authoring from scratch, and what seeds them? | Resolved | No FAQ/troubleshooting content exists anywhere in wfs; would be authored fresh from thin seeds (SETUP gotchas, ide-setup "Verifying"/"If agent skips discover", fidelity failure modes); fidelity risk if invented. | Deep-Dive Q9 |
-| 10 | If MkDocs is adopted, how is `mkdocs.yml` nav kept in sync with files to avoid orphaned/broken entries? | **Mechanism known; policy = planning-only** | cr uses **fully manual nav** — `plugins: - search` is the only plugin. All ~80 pages incl. 54 ADRs are hand-enumerated in `mkdocs.yml` with explicit titles; adding/moving a file requires a manual `nav` edit. The mechanical tripwire is `mkdocs build` (catches nav→missing-file; the default build flags file→missing-nav orphans only under `--strict` / `validation` config). Whether wfs adopts manual nav vs. a plugin, and whether CI runs `--strict`, is a planning decision. | Deep-Dive 2 Q10 |
-| 11 | When relocating/renaming docs into a sectioned layout, how are existing inbound links (README links, `architecture.md` pointers, cross-refs) preserved? | **Links known; mitigation = planning-only** | Inbound-link inventory (see Deep-Dive 2 Q11): ~50 `.md` links across README/SETUP/AGENTS/CLAUDE/`docs/`/`schemas/README.md`. Highest-fan-in targets: `docs/ide-setup.md` (8 inbound), `docs/api-reference.md` (5), `README.md` (5), `SETUP.md` (4), `schemas/README.md` (3). Two anchor-fragment links (`state_management_model.md#5-persistence`) break on heading renames too. The harness-path files (`AGENTS.md`/`CLAUDE.md`/`.claude/rules/`) and `README.md`/`SETUP.md` (GitHub/npm entry points) **cannot move**. Whether to keep filenames (zero link rot), rename + add MkDocs redirects, or accept breakage is a planning decision. | Deep-Dive 2 Q11 |
-| 12 | Where do design records (e.g. the step-kinds-unification before/after) belong, and should they be surfaced in a sectioned docs nav? | **Planning-only** | Design records live in `.engineering/artifacts/planning/` (e.g. `2026-06-17-step-kinds-unification/step-kinds-unification.md`), alongside the ADRs in `.engineering/artifacts/adr/` — inside the `artifacts/` voice exemption, so their evolution-narrating prose carries no `docs/` voice conflict (the same standing as the ADRs in Q5/DR-4). The only open aspect is the same nav-surfacing choice as DP-6: whether to link these `.engineering/` records from a docs Architecture hub (link-only, low risk) or relocate/mirror them into `docs/` (which would then need a voice exemption). | Deep-Dive 2 Q5 |
+| 1–12 | #132 MkDocs-mirror / nav / ADR / toolchain questions | Resolved (architecture as-of 2026-07-25) | Shipped system is hand-authored `site/` + `SITE_ROUTES` + `build:site`/`check:site` + `deploy-docs.yml` (not MkDocs). Historical resolutions retained in Deep-Dive sections below. | Deep-Dive 2026-07-25 |
+| 13 | Scope of “update the docs site”: markdown only, `site/` only, or lockstep both layers? | Open | — | Elicitation (planning assumptions DP-5) |
+| 14 | Create missing documented sections (`site/internals/`, `design/rationale.html`) or correct `docs/documentation-system.md` to match disk? | Open | — | Deep-Dive 2026-07-25 DR-7 |
+| 15 | Priority order for drift repair across guide / specs / API / design / root setup? | Open | — | Elicitation |
+| 16 | Should `deploy-docs.yml` path filters include `docs/**` for markdown-only accuracy fixes? | Open | — | Deep-Dive 2026-07-25 invariants |
+| 17 | How much should `site/guide` duplicate vs link root `setup.md` / transport docs? | Open | — | Elicitation |
 
-### Remaining follow-up items (planning decisions, not comprehension gaps)
-For these rows the **code facts are fully established**; what remains is design judgement that further source inspection cannot decide. They are carried as planning decision points (DP-6, DP-8, and two nav/link DPs), not open comprehension questions:
-- **Surface the `.engineering/` ADRs in the docs site? (DP-6)** — wfs *has* ADRs and an ADR practice; the question is whether to add a cr-style ADR nav section pointing at them (or relocate/mirror them into `docs/`). No voice-rule conflict, because ADRs live in `.engineering/` (exempt).
-- **Which toolchain layers to adopt? (DP-8)** — structure-only vs. +local-build vs. +deploy-Action. The deploy Action is the repo's *first* GitHub workflow and needs CI approval (file-sensitivity-cicd-approval).
-- **Nav-sync policy** — manual nav (cr's approach) vs. a plugin; whether CI runs `mkdocs build --strict`.
-- **Link-preservation policy** — keep filenames vs. rename + redirects; harness-path and GitHub-entry files are fixed.
-- Whether `AGENTS.md`/`CLAUDE.md` duplication should be de-duplicated via a symlink or shared include (a separate maintenance work package).
+### Remaining follow-up items (out of scope for comprehension)
+- Stakeholder platform reopen (MkDocs) only if elicitation rejects the hand-authored system.
+- Page-by-page drift inventory → implementation-analysis / plan.
+- AGENTS.md / CLAUDE.md de-duplication (separate maintenance).
+- Historical #132 planning DPs (MkDocs layers, cr-style ADR nav) are **not** open comprehension gaps for the current architecture; reopen only if product direction changes.
 
 ## Deep-Dive — 2026-06-09
 
@@ -366,6 +358,97 @@ Concrete problems in the as-is workflow-server docs, the decision that enabled e
 | Renaming for consistency trades visible inconsistency for link rot | — | ✓ | Unique to rejected-paths |
 
 **Convergent high-confidence finding**: the dominant risk of faithfully mirroring concept-rag is **fidelity/sync drift**, not the structure itself. The structure transfers cleanly (it's a working exemplar); the danger lives in the *obligations the structure imposes* — keeping nav in sync with files, keeping root docs in sync with their docs-site mirrors, and not letting new page types (ADRs, FAQ) narrate evolution or invent behavior against the repo's own voice/fidelity rules.
+
+## Deep-Dive — Hand-authored site system (2026-07-25)
+
+Work package **update-the-docs-site** (PR #293). Target checkout: `.worktrees/2026-07-25-update-the-docs-site` on branch `docs/update-the-docs-site`. Prior sections above record the #132 state and MkDocs-mirror analysis; **this section is the as-is product documentation system on that branch** — do not treat MkDocs adoption as the current architecture.
+
+### Present architecture (supersedes “no site tooling” baseline)
+
+The product documentation system is a **two-layer** model codified in [`docs/documentation-system.md`](../../../docs/documentation-system.md):
+
+1. **Markdown is canonical** — facts live in root (`README.md`, `setup.md`, `http.md`, `stdio.md`), `docs/*`, `schemas/`, and agent rule files.
+2. **`site/` is a hand-authored static HTML site** — semantic HTML, shared [`site/style.css`](../../../site/style.css), light [`site/nav.js`](../../../site/nav.js) (dropdown UX only), inline SVG diagrams. Prefer on-site HTML for reading; link markdown for editing or unmirrored docs.
+
+**There is no MkDocs / Python docs toolchain in this checkout.** Navigation truth for the HTML site is TypeScript: `SITE_ROUTES` in [`scripts/generate-site-data.ts`](../../../scripts/generate-site-data.ts#L40).
+
+```
+site/
+├── index.html                 # home
+├── specifications.html        # specs hub
+├── nav.js, style.css, README.md
+├── guide/                     # getting-started, definitions
+├── specs/                     # architecture + model/fidelity pages
+├── api/                       # tools.html, schemas.html (generated bodies)
+└── design/                    # overview + server anatomy, lifecycle, protocol,
+                               # session-store, quality-system
+```
+
+**Route registry:** 20 `SITE_ROUTES` entries; on-disk HTML count is 20 with **zero** route↔disk mismatches (verified 2026-07-25). Sections: `home`, `guide`, `specifications`, `specs`, `api`, `design`. Nav renders top-level Guide + API plus Architecture/Design dropdowns (`NAV_TOP_LEVEL_SECTIONS` / `NAV_DROPDOWN_SECTIONS`).
+
+**Generators and guards:**
+
+| Mechanism | Role |
+|-----------|------|
+| `npm run build:site` → `scripts/generate-site-data.ts` | Regenerates BEGIN/END marker regions: global nav, breadcrumbs, pagination; API tool/schema bodies from live tool registration + Zod |
+| `npm run check:site` → `scripts/check-site-links.ts` | Internal href/src + fragment ids; GitHub `blob/main/` links must exist in tree; external hosts not fetched |
+| `npm run check:svg` → `scripts/check-svg-layout.ts` | SVG diagram layout integrity |
+| `tests/site.test.ts` | Generated regions match source; nav completeness; link check; SVG check |
+| `.github/workflows/deploy-docs.yml` | On push/PR path filters: typecheck → `build:site` → `git diff --exit-code -- site` (freshness) → `check:site` → `check:svg`; deploy job uploads `site/` to GitHub Pages (not on PR) |
+
+Deploy path filters watch `site/**`, `src/**`, schema JSON, generator/check scripts, and lockfiles — **not** all of `docs/**`. Markdown-only edits do not by themselves trigger the Pages workflow unless site HTML or generators change.
+
+### Module map (2026-07-25)
+
+| Surface | Responsibility | Sync obligation |
+|---------|-----------------|-----------------|
+| Root markdown (`README`, `setup`, transports) | First contact + install | Manual prose; README links to docs site URL |
+| `docs/*` | Architecture hub, models, specs, API index, IDE setup, **documentation-system map** | Canonical facts; site pages mirror selected material |
+| `schemas/` + `build:schemas` | Authoring schemas | Site API schemas region regenerated via `build:site` |
+| `site/**/*.html` hand regions | Illustrated guide/specs/design prose | Author edits outside GENERATED markers |
+| `SITE_ROUTES` + generated regions | Reachability + chrome + API bodies | Must re-run `build:site` and commit site diff |
+| Engineering ADRs / planning | Decision history | Outside product docs; design pages restate rationale in present tense |
+| `workflows` worktree | Technique/resource docs | Separate branch; not auto-mirrored into `site/` |
+
+### Design rationale updates
+
+#### DR-5: Hand-authored HTML site instead of MkDocs Material
+- **Observation**: Current tree ships `site/` + TS generators + Pages deploy; no `mkdocs.yml`.
+- **Hypothesized rationale**: Stay in the TypeScript toolchain; generate API chrome from the same Zod/tool registration the server uses; avoid Python/MkDocs as a second stack (the risk called out in #132 DP-8).
+- **Trade-offs**: Gains single-language CI and live tool schema fidelity; loses MkDocs search/Material grid patterns unless reimplemented in HTML/CSS.
+- **Implications for this WP**: “Update the docs site” means content + route/HTML fidelity under this system, not adopting MkDocs unless elicitation reopens platform choice (assumptions DP-1).
+
+#### DR-6: Filenames stable; structure via nav and links
+- **Observation**: `docs/documentation-system.md` Conventions: filenames stable; structure via linking/navigation.
+- **Implications**: Prefer new pages + `SITE_ROUTES` entries over renames; matches #132 link-rot analysis.
+
+#### DR-7: Documented sections not yet on disk
+- **Observation**: `docs/documentation-system.md` describes `site/internals/` and `site/design/rationale.html`; checkout has **no** `site/internals/` and no `rationale.html` (design has overview + five topic pages + schemas under design parent).
+- **Hypothesized rationale**: Spec describes the intended IA; implementation is partial or renamed.
+- **Implications**: Content update work should treat these as **documented gaps** (either add pages or correct the map) — high-value elicitation inputs.
+
+### Data flow (publish path)
+
+```
+author edits markdown and/or site HTML hand regions
+  → (optional) npm run build:site   # refresh GENERATED markers + API bodies
+  → npm run check:site / check:svg / tests/site.test.ts
+  → commit site/ + docs/
+  → push main (or merge) matching deploy-docs path filters
+  → verify job enforces typecheck + freshness + links + SVG
+  → deploy job → GitHub Pages (path: site/)
+```
+
+### Invariant alignment (2026-07-25)
+
+| Invariant | Producer enforces? | Consumer assumes? | Gap? |
+|-----------|--------------------|-------------------|------|
+| Every HTML page in `SITE_ROUTES` | `checkSiteNavigation` + site tests | Nav completeness | OK when `build:site` committed |
+| Generated regions match source tools/schemas | `git diff --exit-code -- site` in CI | Pages match live tools | Stale if API changes without `build:site` |
+| Internal links/anchors resolve | `check:site` | Readable site | OK |
+| Markdown facts match HTML mirrors | **manual** | Two-layer fidelity | **Primary drift risk** for this WP |
+| `docs/documentation-system.md` matches tree | **manual** | Map is authoritative | **Mismatch**: `internals/`, `rationale.html` |
+| Deploy runs on docs-only changes | path filters omit bare `docs/**` | Markdown publish via site | Markdown-only fixes need companion `site/` edit or workflow path change |
 
 ---
 *This artifact is part of a persistent knowledge base. It is augmented across
