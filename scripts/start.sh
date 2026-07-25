@@ -30,8 +30,9 @@ DEFAULT_SCHEMAS_TARGET="/app/schemas"
 DEFAULT_TRANSPORT="http"
 DEFAULT_BIND_HOST="0.0.0.0"
 DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
-DEFAULT_HOST_WORKTREE_ROOT="${DEFAULT_INSTALL_DIR}/worktrees"
+# Nested .worktrees/ under HOST_PROJECTS_ROOT is preferred; $INSTALL/worktrees is deprecated.
 DEFAULT_HOST_PROJECTS_ROOT="${DEFAULT_INSTALL_DIR}/projects"
+DEFAULT_HOST_WORKTREE_ROOT=""
 DEFAULT_ENV_NAME="env"
 
 # Directory containing this script (install dir when installed as start.sh).
@@ -123,16 +124,17 @@ DEFAULT INSTALL DIR
   ${DEFAULT_INSTALL_DIR}
   (or directory containing this script when installed as start.sh)
 
-DEFAULT WORKTREES ROOT
-  ${DEFAULT_HOST_WORKTREE_ROOT}  (set at install with --worktree-root; persisted in env)
-
 DEFAULT PROJECTS ROOT
-  ${DEFAULT_HOST_PROJECTS_ROOT}  (per-repo main + .engineering; multi-root eng base)
+  ${DEFAULT_HOST_PROJECTS_ROOT}  (\$HOST_PROJECTS_ROOT/<repo>/ + .engineering + .worktrees)
+
+FEATURE WORKTREES
+  Nested only: \$HOST_PROJECTS_ROOT/<repo>/.worktrees/<slug>/
+  \$INSTALL/worktrees and HOST_WORKTREE_ROOT are deprecated.
 
 OPTIONS (optional overrides — prefer re-running install to change paths)
   --install-dir=PATH        Install root (workflows under \$INSTALL/workflows)
-  --worktree-root=PATH      One-off host feature worktrees root (RW)
-  --projects-root=PATH      One-off host projects multi-root (RW)
+  --projects-root=PATH      One-off host projects root (RW; covers nested .worktrees)
+  --worktree-root=PATH      DEPRECATED separate feature-tree root (RW)
   --workflows-dir=PATH      One-off host workflows directory (RO)
   --schemas-dir=PATH        Host schemas directory (RO); optional
   --image=REF               Full image (default: ${DEFAULT_IMAGE_REPO}:${DEFAULT_TAG})
@@ -277,16 +279,16 @@ if [[ -z "$LOADED_ENV_FILE" && -f "${INSTALL_DIR}/${DEFAULT_ENV_NAME}" ]]; then
 fi
 
 # Path resolution (CLI > install/process env already in shell > defaults):
-if [[ "$WORKTREE_SET" -eq 0 ]]; then
-  if [[ -z "$HOST_WORKTREE_ROOT" ]]; then
-    HOST_WORKTREE_ROOT="${INSTALL_DIR}/worktrees"
-  fi
-fi
-
 if [[ "$PROJECTS_SET" -eq 0 ]]; then
   if [[ -z "$HOST_PROJECTS_ROOT" ]]; then
     HOST_PROJECTS_ROOT="${INSTALL_DIR}/projects"
   fi
+fi
+
+# Nested .worktrees under projects root is preferred. Only keep a separate
+# HOST_WORKTREE_ROOT when the operator set it explicitly (CLI or env).
+if [[ "$WORKTREE_SET" -eq 0 && -z "$HOST_WORKTREE_ROOT" ]]; then
+  HOST_WORKTREE_ROOT=""
 fi
 
 if [[ "$WORKFLOWS_SET" -eq 0 ]]; then
@@ -303,19 +305,28 @@ HOST_STATE_DIR="${HOST_STATE_DIR:-${INSTALL_DIR}/state}"
 command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
 
 # Resolve + create roots before bind-mount (must exist for docker -v).
-HOST_WORKTREE_ROOT="$(abs_path "$HOST_WORKTREE_ROOT")"
-if [[ ! -d "$HOST_WORKTREE_ROOT" ]]; then
-  echo "Creating worktrees root: ${HOST_WORKTREE_ROOT}"
-  mkdir -p "$HOST_WORKTREE_ROOT" || die "failed to create worktrees root: ${HOST_WORKTREE_ROOT}"
-fi
-[[ -d "$HOST_WORKTREE_ROOT" ]] || die "worktrees root is not a directory: ${HOST_WORKTREE_ROOT}"
-
 HOST_PROJECTS_ROOT="$(abs_path "$HOST_PROJECTS_ROOT")"
 if [[ ! -d "$HOST_PROJECTS_ROOT" ]]; then
   echo "Creating projects root: ${HOST_PROJECTS_ROOT}"
   mkdir -p "$HOST_PROJECTS_ROOT" || die "failed to create projects root: ${HOST_PROJECTS_ROOT}"
 fi
 [[ -d "$HOST_PROJECTS_ROOT" ]] || die "projects root is not a directory: ${HOST_PROJECTS_ROOT}"
+
+# When no separate worktree root is configured, reuse projects root so nested
+# <repo>/.worktrees/ is covered by the same bind mount.
+if [[ -z "$HOST_WORKTREE_ROOT" ]]; then
+  HOST_WORKTREE_ROOT="$HOST_PROJECTS_ROOT"
+elif [[ "$(abs_path "$HOST_WORKTREE_ROOT")" == "$(abs_path "${INSTALL_DIR}/worktrees")" ]]; then
+  echo "warning: HOST_WORKTREE_ROOT=${HOST_WORKTREE_ROOT} is deprecated; using nested .worktrees under projects root" >&2
+  HOST_WORKTREE_ROOT="$HOST_PROJECTS_ROOT"
+else
+  HOST_WORKTREE_ROOT="$(abs_path "$HOST_WORKTREE_ROOT")"
+  if [[ ! -d "$HOST_WORKTREE_ROOT" ]]; then
+    echo "Creating legacy worktrees root: ${HOST_WORKTREE_ROOT}"
+    mkdir -p "$HOST_WORKTREE_ROOT" || die "failed to create worktrees root: ${HOST_WORKTREE_ROOT}"
+  fi
+  [[ -d "$HOST_WORKTREE_ROOT" ]] || die "worktrees root is not a directory: ${HOST_WORKTREE_ROOT}"
+fi
 
 if [[ ! -d "$HOST_WORKFLOWS_DIR" ]]; then
   die "workflows directory not found: ${HOST_WORKFLOWS_DIR}
@@ -386,6 +397,12 @@ DOCKER_RUN+=(-p "${HOST_PORT}:${CONTAINER_PORT}")
 
 # Align container eng multi-root with projects mount target
 CONTAINER_ENGINEERING_ROOT="${CONTAINER_PROJECTS_ROOT}"
+# Nested .worktrees: one host root → same container path for workspace + projects
+NESTED_WORKTREES=0
+if [[ "$HOST_WORKTREE_ROOT" == "$HOST_PROJECTS_ROOT" ]]; then
+  NESTED_WORKTREES=1
+  CONTAINER_WORKTREE_ROOT="${CONTAINER_PROJECTS_ROOT}"
+fi
 
 DOCKER_RUN+=(-e "WORKTREE_ROOT=${CONTAINER_WORKTREE_ROOT}")
 DOCKER_RUN+=(-e "WORKFLOW_WORKSPACE=${CONTAINER_WORKTREE_ROOT}")
@@ -411,8 +428,10 @@ if [[ -n "$ENV_FILE" ]]; then
   DOCKER_RUN+=(--env-file "$ENV_FILE")
 fi
 
-DOCKER_RUN+=(-v "${HOST_WORKTREE_ROOT}:${CONTAINER_WORKTREE_ROOT}")
 DOCKER_RUN+=(-v "${HOST_PROJECTS_ROOT}:${CONTAINER_PROJECTS_ROOT}")
+if [[ "$NESTED_WORKTREES" -eq 0 ]]; then
+  DOCKER_RUN+=(-v "${HOST_WORKTREE_ROOT}:${CONTAINER_WORKTREE_ROOT}")
+fi
 DOCKER_RUN+=(-v "${HOST_WORKFLOWS_DIR}:${CONTAINER_WORKFLOW_DIR}:ro")
 if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
   DOCKER_RUN+=(-v "${HOST_SCHEMAS_DIR}:${CONTAINER_SCHEMAS_DIR}:ro")
@@ -426,8 +445,12 @@ DOCKER_RUN+=("$FULL_IMAGE")
 echo "Install  : ${INSTALL_DIR}"
 [[ -n "$LOADED_ENV_FILE" ]] && echo "Env file : ${LOADED_ENV_FILE}"
 echo "Starting ${FULL_IMAGE}"
-echo "  worktrees  : ${HOST_WORKTREE_ROOT} → ${CONTAINER_WORKTREE_ROOT} (rw)"
-echo "  projects   : ${HOST_PROJECTS_ROOT} → ${CONTAINER_PROJECTS_ROOT} (rw; eng multi-root)"
+echo "  projects   : ${HOST_PROJECTS_ROOT} → ${CONTAINER_PROJECTS_ROOT} (rw; eng + nested .worktrees)"
+if [[ "$NESTED_WORKTREES" -eq 0 ]]; then
+  echo "  worktrees  : ${HOST_WORKTREE_ROOT} → ${CONTAINER_WORKTREE_ROOT} (rw; legacy separate root)"
+else
+  echo "  worktrees  : nested under projects (<repo>/.worktrees/)"
+fi
 echo "  workflows  : ${HOST_WORKFLOWS_DIR} → ${CONTAINER_WORKFLOW_DIR} (ro)"
 if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
   echo "  schemas    : ${HOST_SCHEMAS_DIR} → ${CONTAINER_SCHEMAS_DIR} (ro)"

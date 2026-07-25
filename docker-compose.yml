@@ -1,5 +1,7 @@
-# Host worktrees + projects roots are bound RW; the server derives planning under
-# projects/<owner>/<repo>/.engineering and feature worktrees under worktrees/.
+# Host projects root is bound RW. Preferred layout:
+#   $HOST_PROJECTS_ROOT/<repo>/.engineering/  and  <repo>/.worktrees/<slug>/
+# $INSTALL/worktrees (HOST_WORKTREE_ROOT) is deprecated; omit it when using nested
+# .worktrees under the projects root (compose may still mount a legacy path if set).
 # Agents create worktrees on the host before the server writes artifacts.
 #
 # Paths are overridable via environment variables or a local `.env` file
@@ -18,8 +20,9 @@ services:
     ports:
       - "${HOST_PORT:-3000}:${PORT:-3000}"
     environment:
-      WORKTREE_ROOT: ${CONTAINER_WORKTREE_ROOT:-/var/lib/workflow-server/worktrees}
-      WORKFLOW_WORKSPACE: ${CONTAINER_WORKTREE_ROOT:-/var/lib/workflow-server/worktrees}
+      # Nested model: workspace multi-root defaults to the projects mount
+      WORKTREE_ROOT: ${CONTAINER_WORKTREE_ROOT:-${CONTAINER_PROJECTS_ROOT:-/var/lib/workflow-server/projects}}
+      WORKFLOW_WORKSPACE: ${CONTAINER_WORKTREE_ROOT:-${CONTAINER_PROJECTS_ROOT:-/var/lib/workflow-server/projects}}
       WORKFLOW_SERVER_ENGINEERING_DIR: ${CONTAINER_ENGINEERING_ROOT:-${CONTAINER_PROJECTS_ROOT:-/var/lib/workflow-server/projects}}
       WORKFLOW_SERVER_INSTALL_DIR: ${CONTAINER_INSTALL_DIR:-/var/lib/workflow-server}
       # Optional: override default planning slug (multi-root uses artifacts/planning per repo)
@@ -43,14 +46,9 @@ services:
         source: ${HOST_SCHEMAS_DIR:-./schemas}
         target: ${CONTAINER_SCHEMAS_DIR:-/app/schemas}
         read_only: true
-      # Feature worktrees root (default $INSTALL/worktrees)
+      # Projects root: checkouts + .engineering + nested .worktrees (preferred)
       - type: bind
-        source: ${HOST_WORKTREE_ROOT:-${HOME}/.local/share/workflow-server/worktrees}
-        target: ${CONTAINER_WORKTREE_ROOT:-/var/lib/workflow-server/worktrees}
-        read_only: false
-      # Projects multi-root: app clones + .engineering (default $INSTALL/projects)
-      - type: bind
-        source: ${HOST_PROJECTS_ROOT:-${HOME}/.local/share/workflow-server/projects}
+        source: ${HOST_PROJECTS_ROOT:-${HOME}/projects/dev}
         target: ${CONTAINER_PROJECTS_ROOT:-/var/lib/workflow-server/projects}
         read_only: false
       # Durable server state (HMAC secret)
