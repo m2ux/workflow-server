@@ -8,14 +8,14 @@ Install Workflow Server and prepare a target repository so an IDE agent can run 
 
 Complete the transport guide’s install, then return here for §2–§4.
 
-| Path | When | Guide |
-|------|------|--------|
-| **Docker / HTTP** | Run the GHCR image; no server source checkout | [http.md](http.md) |
-| **stdio** | IDE spawns `node dist/index.js` from a local checkout | [stdio.md](stdio.md) |
+| Path                              | When | Guide |
+|-----------------------------------|------|--------|
+| **Docker / HTTP**                 | Run the GHCR image; no server source checkout | [http.md](http.md) |
+| **stdio (soon to be deprecated)** | IDE spawns `node dist/index.js` from a local checkout | [stdio.md](stdio.md) |
 
 ## 2. Initialise a target repo
 
-Two steps per project. **2a** changes the **product repo**. **2b** sets up **local install paths** for that repo.
+Two steps per project. **2a** changes the **product repo**. **2b** registers it for sessions under `HOST_PROJECTS_ROOT`.
 
 ### 2a. Deploy engineering into the project (required first)
 
@@ -30,9 +30,10 @@ chmod +x deploy.sh && ./deploy.sh
 
 Layouts (same-repo orphan, shared engineering monorepo, in-branch): [docs/engineering-storage.md](docs/engineering-storage.md). Flags: `./deploy.sh --help`.
 
-### 2b. Materialise install-root paths
+### 2b. Register the project with the install
 
-After deploy, register the project under the install layout:
+After deploy, register `owner/repo` so the server can resolve planning for
+`start_session({ repo: "owner/repo" })`:
 
 ```bash
 ~/.local/share/workflow-server/init-repo.sh owner/repo
@@ -40,15 +41,22 @@ After deploy, register the project under the install layout:
 ~/.local/share/workflow-server/init-repo.sh --branch=develop owner/repo
 ```
 
-That creates:
+Product checkouts and feature worktrees live under **`HOST_PROJECTS_ROOT`**
+(from `$INSTALL/env`, e.g. `~/projects/dev`) — not under `$INSTALL`:
 
-- `$INSTALL/projects/<owner>/<repo>/` — app checkout on `--branch` or the remote default
-- `$INSTALL/projects/<owner>/<repo>/.engineering/` — engineering submodule or materialised planning tree
-- `$INSTALL/worktrees/<owner>/<repo>/` — parent directory for feature worktrees
+```text
+checkout    = $HOST_PROJECTS_ROOT / <repo>          # basename, e.g. workflow-server
+planning    = checkout / .engineering / …
+target_path = checkout / .worktrees / <slug>
+```
 
-`init-repo.sh` does **not** init product `workflows` submodules by default (server defs live in `$INSTALL/workflows`). Repeat **2a → 2b** for each product repo.
+`$INSTALL` holds helper scripts, `state/` (HMAC key), and `workflows/` (definitions).
+Full layout: [docs/install-projects-worktrees.md](docs/install-projects-worktrees.md).
 
-## 3. Adopt the example Cursor workspace
+`init-repo.sh` does **not** init product `workflows` submodules by default (server
+defs live in `$INSTALL/workflows`). Repeat **2a → 2b** for each product repo.
+
+## 3. Setup Cursor workspace
 
 **Recommended path:** copy and open [examples/cursor-workspace/](examples/cursor-workspace/) (see its [README](examples/cursor-workspace/README.md)). That template mirrors `~/.local/share/cursor/workspaces/workflow-server` and already includes:
 
@@ -57,27 +65,22 @@ That creates:
 - one-line `AGENTS.md` for `repo: "owner/repo"`
 - multi-root `.code-workspace` (workspace, project, workflows, planning, work trees)
 
-Do **not** treat hand-rolled MCP JSON or pasting bootstrap rules as the primary onboarding path. After the workspace is open, ask the agent to start a workflow.
-
-Detail and verify steps: [docs/ide-setup.md](docs/ide-setup.md).
+After the workspace is open, ask the agent to start a workflow.
 
 ## 4. Update Workflows
 
-When workflow definitions or managed project checkouts change remotely, refresh locally:
+When workflow definitions (or managed checkouts under `HOST_PROJECTS_ROOT`) change
+remotely, refresh locally:
 
 ```bash
 $INSTALL/update-workflows.sh
 ```
 
-This fast-forwards `$INSTALL/workflows` and every `$INSTALL/projects/<owner>/<repo>` (plus `.engineering` when it is a git checkout). Restart the HTTP server afterward if it is running.
-
-The anchor `#day-two` is kept for existing links (same section).
+This fast-forwards `$INSTALL/workflows` and, when present, project checkouts under
+`HOST_PROJECTS_ROOT` (including nested `.engineering` when it is a git checkout).
+Restart the HTTP server afterward if it is running.
 
 ## 5. Verify
-
-Transport-specific health checks: [http.md §4](http.md#4-verify) or [stdio.md §3](stdio.md#3-verify).
-
-**MCP smoke (both transports):**
 
 1. Agent calls **`discover`**.
 2. Agent calls **`start_session`** with at least `workflow_id` (default `meta`), `agent_id`, and **`repo: "owner/repo"`**.

@@ -57,7 +57,8 @@ The IDE starts the process; you do not run a long-lived server yourself.
 ```
 
 Pass `repo: "owner/your-project"` on `start_session`. Planning lands under  
-`$INSTALL/projects/owner/your-project/.engineering/artifacts/planning/`.
+`$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/`
+(see [install-projects-worktrees.md](docs/install-projects-worktrees.md)).
 
 Optional: pin one repo for the whole process with `--repo=owner/your-project` instead of multi-root.
 
