@@ -214,7 +214,7 @@
           <p>Loads the workflow definition for the current session.</p>
           <p>The response starts with the orchestrator technique, then a separator, then metadata: rules, variables, <code>initialActivity</code> (the first activity to run), and a short list of all activities.</p>
           <p>Use <code>initialActivity</code> for your first <code>next_activity</code> call — this is the only tool that returns it.</p>
-          <p>Also returns <code>planning_folder_path</code>. Treat this as the one true artifact location; do not build paths relative to your own working directory.</p>
+          <p>Also returns <code>planning_folder_path</code> (host bind path under Docker when <code>HOST_PROJECTS_ROOT</code> is set). Treat this as the one true artifact location; do not build paths relative to your own working directory.</p>
           <p>If some activity files failed to load, <code>activity_load_errors</code> lists them and those activities are omitted from the list.</p>
         </details>
         <div class="table-wrap">

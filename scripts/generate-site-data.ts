@@ -337,7 +337,7 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   ],
   start_session: [
     'Opens a new workflow session or resumes an existing one.',
-    'Returns a `session_index` (six characters), basic workflow metadata, and `planning_folder_path` — the absolute path where the server stores session artifacts.',
+    'Returns a `session_index` (six characters), basic workflow metadata, and `planning_folder_path` — the absolute path agents should use for session artifacts (host bind path under Docker when `HOST_PROJECTS_ROOT` is set; server-local path under stdio).',
     'Pass `planning_folder` as any absolute path whose basename is your planning slug (for example, `.../planning/2026-05-28-my-slug`). Only the slug is used; the server resolves it under its own workspace. A stale or wrong path prefix is harmless.',
     'If that slug already has `session.json`, the session resumes and `workflow_id` is ignored. Otherwise the server creates a fresh session and seeds variables from the workflow defaults.',
     'Omit `planning_folder` to start a meta bootstrap session in a temp folder. Use `dispatch_child` later to promote it to a real planning folder.',
@@ -363,7 +363,7 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
     'Loads the workflow definition for the current session.',
     'The response starts with the orchestrator technique, then a separator, then metadata: rules, variables, `initialActivity` (the first activity to run), and a short list of all activities.',
     'Use `initialActivity` for your first `next_activity` call — this is the only tool that returns it.',
-    'Also returns `planning_folder_path`. Treat this as the one true artifact location; do not build paths relative to your own working directory.',
+    'Also returns `planning_folder_path` (host bind path under Docker when `HOST_PROJECTS_ROOT` is set). Treat this as the one true artifact location; do not build paths relative to your own working directory.',
     'If some activity files failed to load, `activity_load_errors` lists them and those activities are omitted from the list.',
   ],
   next_activity: [
