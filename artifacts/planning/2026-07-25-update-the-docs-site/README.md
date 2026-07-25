@@ -36,7 +36,7 @@ After you confirm the approach, work lands on PR #293 in seven reviewable batche
 | 10 | 06 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ✅ |
 | 11 | 06 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | ⬚ |
 | 12 | 07 | Assumptions review | Converge open assumptions | 20-40m | ✅ |
-| 13 | 08 | Implementation | Batches 1–7 on PR #293 (`docs/update-the-docs-site`) | 1-4h | ✅ |
+| 13 | 08 | Implementation | Batches 1–7 on PR #293; README rewrite out of scope | 1-4h | ✅ |
 | 14 | 08 | [Provenance log](provenance-log.md) | Per-task AI-assistance provenance | 5-15m | ⬚ |
 | 15 | 09 | Lean-coding audit | Ponytail lean lens on the change | 15-30m | ⬚ |
 | 16 | 09 | [Code review](code-review.md) | Consolidated review findings home | 15-30m | ⬚ |

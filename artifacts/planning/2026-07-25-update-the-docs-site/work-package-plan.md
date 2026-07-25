@@ -68,7 +68,7 @@ Ordered by dependency. Each task is a docs/automation change only.
 
 **Goal:** Prospective-user path without implementation knowledge (SC-2, SC-3).  
 **Deliverables:**
-- `README.md` journey spine + documentation map links
+- ~~`README.md` journey spine~~ **OUT OF SCOPE** (stakeholder 2026-07-25) — onboarding spine in setup/site only
 - `setup.md` §4 / day-two anchor aligned with `http.md` / `stdio.md` / `site/guide/getting-started.html`
 - deploy vs init-repo vs install decision callout in setup
 - Verify guidance prioritizes `discover` + `start_session({ repo })`
