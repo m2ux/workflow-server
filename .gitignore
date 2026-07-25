@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 
+# Nested feature worktrees (per-checkout parent; not $INSTALL/worktrees)
+.worktrees/
+
 # Build output
 dist/
 

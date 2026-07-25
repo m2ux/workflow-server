@@ -5,12 +5,16 @@
       "path": "./"
     },
     {
-      "name": "📦 engineering",
-      "path": "../../../.local/share/workflow-server/engineering/owner/repo"
+      "name": "📦 project",
+      "path": "../../../projects/dev/workflow-server"
     },
     {
-      "name": "📦 sessions",
-      "path": "../../../.local/share/workflow-server/workspace/owner/repo"
+      "name": "📦 engineering",
+      "path": "../../../projects/dev/workflow-server/.engineering"
+    },
+    {
+      "name": "📦 worktrees",
+      "path": "../../../projects/dev/workflow-server/.worktrees"
     }
   ],
   "settings": {}

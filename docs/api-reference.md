@@ -14,7 +14,7 @@ When the server starts with `--transport=http` (or `TRANSPORT=http` / `npm run s
 
 `/ready` returns 503 when any check is false. A green `/health` alone does **not** mean `start_session` can run — verify `sessionKeyWritable: true` (Docker non-root with `HOME=/` historically failed here; see [http.md](../http.md) and `WORKFLOW_SERVER_KEY_DIR`).
 
-Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. Local `mcp-remote` clients may probe OAuth well-known URLs and receive 404s; that is expected without auth. See [setup.md](../setup.md), [http.md](../http.md) / [stdio.md](../stdio.md) (transports), and [development.md](development.md) for process env (developers).
+Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. Local `mcp-remote` clients may probe OAuth well-known URLs (`/.well-known/oauth-*`) and receive 404s; that is expected without auth and is logged as info, not error. See [setup.md](../setup.md), [http.md](../http.md) / [stdio.md](../stdio.md) (transports), and [development.md](development.md) for process env (developers).
 
 ## MCP Tools
 
@@ -32,7 +32,7 @@ Most tools take a `session_index` from `start_session`. Bootstrap tools do not. 
 
 | Tool | Parameters | Returns | Description |
 |------|------------|---------|-------------|
-| `start_session` | `agent_id`, `workflow_id?`, `planning_folder?`, `repo?`, `context_mode?` | `session_index`, planning path, workflow info, optional `repo` | Open or resume a top-level session (default workflow: `meta`). Always pass `repo: "owner/repo"` — written to `session.json#repo`. [State](state_management_model.md) · [Reference delivery](resource_resolution_model.md#11-reference-delivery) |
+| `start_session` | `agent_id`, `workflow_id?`, `planning_folder?`, `repo?`, `context_mode?` | `session_index`, planning path, workflow info, optional `repo` | Open or resume a top-level session (default workflow: `meta`). Always pass `repo: "owner/repo"` — written to `session.json#repo` (install multi-root plans under `projects/<owner>/<repo>/.engineering/…`). [State](state_management_model.md) · [Reference delivery](resource_resolution_model.md#11-reference-delivery) |
 | `dispatch_child` | `session_index`, `workflow_id`, `agent_id?`, `planning_slug?`, `repo?`, `context_mode?` | Child `session_index` | Start a nested workflow under the current session. Uses `session.repo`; optional `repo` binds if missing (must match if set). [Dispatch](dispatch_model.md) |
 | `get_workflow_status` | `session_index` | Status, current/completed activities, checkpoint hint | Snapshot of where the session is. |
 | `inspect_session` | `session_index`, `view?`, `child_index?`, `variable?` | Compact projection | Read-only view of session state (usable while blocked). |

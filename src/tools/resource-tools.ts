@@ -396,7 +396,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       description:
         'Dispatch a child workflow under the parent session. Returns the child `session_index` and canonical `planning_folder_path`. ' +
         'Transient meta parents are promoted to a workspace planning folder first (optional `planning_slug`). ' +
-        'Ensure `session.repo` is bound (pass `repo` here if start_session did not); path resolution reads only session.json. ' +
+'Ensure `session.repo` is bound (pass `repo` here if start_session did not); path resolution reads only session.json. ' +
         'Never set `context_mode: "persistent"` on disposable-worker children — workers need fresh/full delivery.',
       inputSchema: z.object({
         ...sessionIndexParam,

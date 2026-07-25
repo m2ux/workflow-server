@@ -21,17 +21,18 @@ DEFAULT_NAME="workflow-server"
 DEFAULT_HOST_PORT="3000"
 DEFAULT_CONTAINER_PORT="3000"
 # Inside the container the install root is fixed so start_session({ repo })
-# resolves under $CONTAINER_INSTALL/engineering/<owner>/<repo> (init-repo layout).
+# resolves under $CONTAINER_INSTALL/projects/<owner>/<repo>/.engineering.
 DEFAULT_CONTAINER_INSTALL="/var/lib/workflow-server"
-DEFAULT_WORKTREE_TARGET="${DEFAULT_CONTAINER_INSTALL}/workspace"
-DEFAULT_ENGINEERING_TARGET="${DEFAULT_CONTAINER_INSTALL}/engineering"
+DEFAULT_WORKTREE_TARGET="${DEFAULT_CONTAINER_INSTALL}/worktrees"
+DEFAULT_PROJECTS_TARGET="${DEFAULT_CONTAINER_INSTALL}/projects"
 DEFAULT_WORKFLOWS_TARGET="/app/workflows"
 DEFAULT_SCHEMAS_TARGET="/app/schemas"
 DEFAULT_TRANSPORT="http"
 DEFAULT_BIND_HOST="0.0.0.0"
 DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
-DEFAULT_HOST_WORKTREE_ROOT="${DEFAULT_INSTALL_DIR}/workspace"
-DEFAULT_HOST_ENGINEERING_ROOT="${DEFAULT_INSTALL_DIR}/engineering"
+# Nested .worktrees/ under HOST_PROJECTS_ROOT is preferred; $INSTALL/worktrees is deprecated.
+DEFAULT_HOST_PROJECTS_ROOT="${DEFAULT_INSTALL_DIR}/projects"
+DEFAULT_HOST_WORKTREE_ROOT=""
 DEFAULT_ENV_NAME="env"
 
 # Directory containing this script (install dir when installed as start.sh).
@@ -71,23 +72,23 @@ CONTAINER_PORT="${PORT:-$DEFAULT_CONTAINER_PORT}"
 INSTALL_DIR=""
 INSTALL_DIR_SET=0
 # Values from install env / process env (do not blank after source).
-# Canonical install keys: HOST_WORKTREE_ROOT, HOST_ENGINEERING_ROOT, HOST_PORT,
+# Canonical install keys: HOST_WORKTREE_ROOT, HOST_PROJECTS_ROOT, HOST_PORT,
 # WORKFLOW_SERVER_CONTAINER_NAME
 # Optional overrides: HOST_WORKFLOWS_DIR, HOST_SCHEMAS_DIR, WORKFLOW_SERVER_INSTALL_DIR
-# Legacy aliases still accepted: WORKFLOW_WORKSPACE, WORKFLOW_DIR, SCHEMAS_DIR,
-# WORKFLOW_SERVER_ENGINEERING_DIR
+# Optional overrides: WORKFLOW_WORKSPACE, WORKFLOW_DIR, SCHEMAS_DIR, WORKFLOW_SERVER_ENGINEERING_DIR
 HOST_WORKTREE_ROOT="${HOST_WORKTREE_ROOT:-${WORKFLOW_WORKSPACE:-}}"
-HOST_ENGINEERING_ROOT="${HOST_ENGINEERING_ROOT:-${WORKFLOW_SERVER_ENGINEERING_DIR:-}}"
+HOST_PROJECTS_ROOT="${HOST_PROJECTS_ROOT:-${WORKFLOW_SERVER_ENGINEERING_DIR:-}}"
 HOST_WORKFLOWS_DIR="${HOST_WORKFLOWS_DIR:-${WORKFLOW_DIR:-}}"
 HOST_SCHEMAS_DIR="${HOST_SCHEMAS_DIR:-${SCHEMAS_DIR:-}}"
 WORKTREE_SET=0
-ENGINEERING_SET=0
+PROJECTS_SET=0
 WORKFLOWS_SET=0
 SCHEMAS_SET=0
 
 CONTAINER_INSTALL_DIR="${CONTAINER_INSTALL_DIR:-$DEFAULT_CONTAINER_INSTALL}"
-CONTAINER_WORKTREE_ROOT="${CONTAINER_WORKTREE_ROOT:-${CONTAINER_INSTALL_DIR}/workspace}"
-CONTAINER_ENGINEERING_ROOT="${CONTAINER_ENGINEERING_ROOT:-${CONTAINER_INSTALL_DIR}/engineering}"
+CONTAINER_WORKTREE_ROOT="${CONTAINER_WORKTREE_ROOT:-${CONTAINER_INSTALL_DIR}/worktrees}"
+CONTAINER_PROJECTS_ROOT="${CONTAINER_PROJECTS_ROOT:-${CONTAINER_INSTALL_DIR}/projects}"
+CONTAINER_ENGINEERING_ROOT="${CONTAINER_ENGINEERING_ROOT:-$CONTAINER_PROJECTS_ROOT}"
 # Durable HMAC key — under install root, not HOME (Docker --user often has HOME=/)
 CONTAINER_STATE_DIR="${CONTAINER_STATE_DIR:-${CONTAINER_INSTALL_DIR}/state}"
 CONTAINER_WORKFLOW_DIR="${CONTAINER_WORKFLOW_DIR:-$DEFAULT_WORKFLOWS_TARGET}"
@@ -123,16 +124,17 @@ DEFAULT INSTALL DIR
   ${DEFAULT_INSTALL_DIR}
   (or directory containing this script when installed as start.sh)
 
-DEFAULT WORKSPACE ROOT
-  ${DEFAULT_HOST_WORKTREE_ROOT}  (set at install with --worktree-root; persisted in env)
+DEFAULT PROJECTS ROOT
+  ${DEFAULT_HOST_PROJECTS_ROOT}  (\$HOST_PROJECTS_ROOT/<repo>/ + .engineering + .worktrees)
 
-DEFAULT ENGINEERING ROOT
-  ${DEFAULT_HOST_ENGINEERING_ROOT}  (set at install with --engineering-root; persisted in env)
+FEATURE WORKTREES
+  Nested only: \$HOST_PROJECTS_ROOT/<repo>/.worktrees/<slug>/
+  \$INSTALL/worktrees and HOST_WORKTREE_ROOT are deprecated.
 
 OPTIONS (optional overrides — prefer re-running install to change paths)
   --install-dir=PATH        Install root (workflows under \$INSTALL/workflows)
-  --worktree-root=PATH      One-off host workspace / worktree root (RW)
-  --engineering-root=PATH   One-off host engineering root (RW)
+  --projects-root=PATH      One-off host projects root (RW; covers nested .worktrees)
+  --worktree-root=PATH      DEPRECATED separate feature-tree root (RW)
   --workflows-dir=PATH      One-off host workflows directory (RO)
   --schemas-dir=PATH        Host schemas directory (RO); optional
   --image=REF               Full image (default: ${DEFAULT_IMAGE_REPO}:${DEFAULT_TAG})
@@ -198,8 +200,8 @@ while [[ $# -gt 0 ]]; do
     --data-dir) INSTALL_DIR="${2:?}"; INSTALL_DIR_SET=1; shift 2 ;;
     --worktree-root=*) HOST_WORKTREE_ROOT="${1#*=}"; WORKTREE_SET=1; shift ;;
     --worktree-root) HOST_WORKTREE_ROOT="${2:?}"; WORKTREE_SET=1; shift 2 ;;
-    --engineering-root=*) HOST_ENGINEERING_ROOT="${1#*=}"; ENGINEERING_SET=1; shift ;;
-    --engineering-root) HOST_ENGINEERING_ROOT="${2:?}"; ENGINEERING_SET=1; shift 2 ;;
+    --projects-root=*) HOST_PROJECTS_ROOT="${1#*=}"; PROJECTS_SET=1; shift ;;
+    --projects-root) HOST_PROJECTS_ROOT="${2:?}"; PROJECTS_SET=1; shift 2 ;;
     --workflows-dir=*) HOST_WORKFLOWS_DIR="${1#*=}"; WORKFLOWS_SET=1; shift ;;
     --workflows-dir) HOST_WORKFLOWS_DIR="${2:?}"; WORKFLOWS_SET=1; shift 2 ;;
     --schemas-dir=*) HOST_SCHEMAS_DIR="${1#*=}"; SCHEMAS_SET=1; shift ;;
@@ -277,12 +279,16 @@ if [[ -z "$LOADED_ENV_FILE" && -f "${INSTALL_DIR}/${DEFAULT_ENV_NAME}" ]]; then
 fi
 
 # Path resolution (CLI > install/process env already in shell > defaults):
-if [[ "$WORKTREE_SET" -eq 0 ]]; then
-  [[ -z "$HOST_WORKTREE_ROOT" ]] && HOST_WORKTREE_ROOT="${INSTALL_DIR}/workspace"
+if [[ "$PROJECTS_SET" -eq 0 ]]; then
+  if [[ -z "$HOST_PROJECTS_ROOT" ]]; then
+    HOST_PROJECTS_ROOT="${INSTALL_DIR}/projects"
+  fi
 fi
 
-if [[ "$ENGINEERING_SET" -eq 0 ]]; then
-  [[ -z "$HOST_ENGINEERING_ROOT" ]] && HOST_ENGINEERING_ROOT="${INSTALL_DIR}/engineering"
+# Nested .worktrees under projects root is preferred. Only keep a separate
+# HOST_WORKTREE_ROOT when the operator set it explicitly (CLI or env).
+if [[ "$WORKTREE_SET" -eq 0 && -z "$HOST_WORKTREE_ROOT" ]]; then
+  HOST_WORKTREE_ROOT=""
 fi
 
 if [[ "$WORKFLOWS_SET" -eq 0 ]]; then
@@ -299,19 +305,28 @@ HOST_STATE_DIR="${HOST_STATE_DIR:-${INSTALL_DIR}/state}"
 command -v docker >/dev/null 2>&1 || die "docker not found on PATH"
 
 # Resolve + create roots before bind-mount (must exist for docker -v).
-HOST_WORKTREE_ROOT="$(abs_path "$HOST_WORKTREE_ROOT")"
-if [[ ! -d "$HOST_WORKTREE_ROOT" ]]; then
-  echo "Creating workspace root: ${HOST_WORKTREE_ROOT}"
-  mkdir -p "$HOST_WORKTREE_ROOT" || die "failed to create workspace root: ${HOST_WORKTREE_ROOT}"
+HOST_PROJECTS_ROOT="$(abs_path "$HOST_PROJECTS_ROOT")"
+if [[ ! -d "$HOST_PROJECTS_ROOT" ]]; then
+  echo "Creating projects root: ${HOST_PROJECTS_ROOT}"
+  mkdir -p "$HOST_PROJECTS_ROOT" || die "failed to create projects root: ${HOST_PROJECTS_ROOT}"
 fi
-[[ -d "$HOST_WORKTREE_ROOT" ]] || die "workspace root is not a directory: ${HOST_WORKTREE_ROOT}"
+[[ -d "$HOST_PROJECTS_ROOT" ]] || die "projects root is not a directory: ${HOST_PROJECTS_ROOT}"
 
-HOST_ENGINEERING_ROOT="$(abs_path "$HOST_ENGINEERING_ROOT")"
-if [[ ! -d "$HOST_ENGINEERING_ROOT" ]]; then
-  echo "Creating engineering root: ${HOST_ENGINEERING_ROOT}"
-  mkdir -p "$HOST_ENGINEERING_ROOT" || die "failed to create engineering root: ${HOST_ENGINEERING_ROOT}"
+# When no separate worktree root is configured, reuse projects root so nested
+# <repo>/.worktrees/ is covered by the same bind mount.
+if [[ -z "$HOST_WORKTREE_ROOT" ]]; then
+  HOST_WORKTREE_ROOT="$HOST_PROJECTS_ROOT"
+elif [[ "$(abs_path "$HOST_WORKTREE_ROOT")" == "$(abs_path "${INSTALL_DIR}/worktrees")" ]]; then
+  echo "warning: HOST_WORKTREE_ROOT=${HOST_WORKTREE_ROOT} is deprecated; using nested .worktrees under projects root" >&2
+  HOST_WORKTREE_ROOT="$HOST_PROJECTS_ROOT"
+else
+  HOST_WORKTREE_ROOT="$(abs_path "$HOST_WORKTREE_ROOT")"
+  if [[ ! -d "$HOST_WORKTREE_ROOT" ]]; then
+    echo "Creating legacy worktrees root: ${HOST_WORKTREE_ROOT}"
+    mkdir -p "$HOST_WORKTREE_ROOT" || die "failed to create worktrees root: ${HOST_WORKTREE_ROOT}"
+  fi
+  [[ -d "$HOST_WORKTREE_ROOT" ]] || die "worktrees root is not a directory: ${HOST_WORKTREE_ROOT}"
 fi
-[[ -d "$HOST_ENGINEERING_ROOT" ]] || die "engineering root is not a directory: ${HOST_ENGINEERING_ROOT}"
 
 if [[ ! -d "$HOST_WORKFLOWS_DIR" ]]; then
   die "workflows directory not found: ${HOST_WORKFLOWS_DIR}
@@ -325,7 +340,7 @@ Or run install.sh / pass --workflows-dir=PATH / --install-dir=PATH."
 fi
 
 HOST_WORKTREE_ROOT="$(abs_dir "$HOST_WORKTREE_ROOT")"
-HOST_ENGINEERING_ROOT="$(abs_dir "$HOST_ENGINEERING_ROOT")"
+HOST_PROJECTS_ROOT="$(abs_dir "$HOST_PROJECTS_ROOT")"
 HOST_WORKFLOWS_DIR="$(abs_dir "$HOST_WORKFLOWS_DIR")"
 if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
   HOST_SCHEMAS_DIR="$(abs_dir "$HOST_SCHEMAS_DIR")"
@@ -380,6 +395,15 @@ DOCKER_RUN+=(--name "$NAME")
 DOCKER_RUN+=(-p "${HOST_PORT}:${CONTAINER_PORT}")
 [[ -n "$USER_SPEC" ]] && DOCKER_RUN+=(--user "$USER_SPEC")
 
+# Align container eng multi-root with projects mount target
+CONTAINER_ENGINEERING_ROOT="${CONTAINER_PROJECTS_ROOT}"
+# Nested .worktrees: one host root → same container path for workspace + projects
+NESTED_WORKTREES=0
+if [[ "$HOST_WORKTREE_ROOT" == "$HOST_PROJECTS_ROOT" ]]; then
+  NESTED_WORKTREES=1
+  CONTAINER_WORKTREE_ROOT="${CONTAINER_PROJECTS_ROOT}"
+fi
+
 DOCKER_RUN+=(-e "WORKTREE_ROOT=${CONTAINER_WORKTREE_ROOT}")
 DOCKER_RUN+=(-e "WORKFLOW_WORKSPACE=${CONTAINER_WORKTREE_ROOT}")
 DOCKER_RUN+=(-e "WORKFLOW_SERVER_ENGINEERING_DIR=${CONTAINER_ENGINEERING_ROOT}")
@@ -404,8 +428,10 @@ if [[ -n "$ENV_FILE" ]]; then
   DOCKER_RUN+=(--env-file "$ENV_FILE")
 fi
 
-DOCKER_RUN+=(-v "${HOST_WORKTREE_ROOT}:${CONTAINER_WORKTREE_ROOT}")
-DOCKER_RUN+=(-v "${HOST_ENGINEERING_ROOT}:${CONTAINER_ENGINEERING_ROOT}")
+DOCKER_RUN+=(-v "${HOST_PROJECTS_ROOT}:${CONTAINER_PROJECTS_ROOT}")
+if [[ "$NESTED_WORKTREES" -eq 0 ]]; then
+  DOCKER_RUN+=(-v "${HOST_WORKTREE_ROOT}:${CONTAINER_WORKTREE_ROOT}")
+fi
 DOCKER_RUN+=(-v "${HOST_WORKFLOWS_DIR}:${CONTAINER_WORKFLOW_DIR}:ro")
 if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
   DOCKER_RUN+=(-v "${HOST_SCHEMAS_DIR}:${CONTAINER_SCHEMAS_DIR}:ro")
@@ -419,8 +445,12 @@ DOCKER_RUN+=("$FULL_IMAGE")
 echo "Install  : ${INSTALL_DIR}"
 [[ -n "$LOADED_ENV_FILE" ]] && echo "Env file : ${LOADED_ENV_FILE}"
 echo "Starting ${FULL_IMAGE}"
-echo "  workspace  : ${HOST_WORKTREE_ROOT} → ${CONTAINER_WORKTREE_ROOT} (rw)"
-echo "  engineering: ${HOST_ENGINEERING_ROOT} → ${CONTAINER_ENGINEERING_ROOT} (rw)"
+echo "  projects   : ${HOST_PROJECTS_ROOT} → ${CONTAINER_PROJECTS_ROOT} (rw; eng + nested .worktrees)"
+if [[ "$NESTED_WORKTREES" -eq 0 ]]; then
+  echo "  worktrees  : ${HOST_WORKTREE_ROOT} → ${CONTAINER_WORKTREE_ROOT} (rw; legacy separate root)"
+else
+  echo "  worktrees  : nested under projects (<repo>/.worktrees/)"
+fi
 echo "  workflows  : ${HOST_WORKFLOWS_DIR} → ${CONTAINER_WORKFLOW_DIR} (ro)"
 if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
   echo "  schemas    : ${HOST_SCHEMAS_DIR} → ${CONTAINER_SCHEMAS_DIR} (ro)"
