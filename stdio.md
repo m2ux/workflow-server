@@ -1,7 +1,7 @@
 # Setup — stdio
 
 Transport-specific steps for a **local checkout** where the IDE spawns the server over stdio (default transport).  
-Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, update workflows).
+Shared sequence: **[setup.md](setup.md)** (layout, deploy, checkout under `HOST_PROJECTS_ROOT`, Cursor workspace, update workflows).
 
 ## Prerequisites
 
@@ -25,16 +25,16 @@ Optional: same host layout as Docker (without starting a container):
 ./scripts/install.sh --install-dir=~/.local/share/workflow-server
 ```
 
-Then continue with [setup.md §2](setup.md#2-init-a-target-repo) to init each target repo (`init-repo.sh owner/repo`).
+Then continue with [setup.md §2](setup.md#2-initialise-a-target-repo) (deploy engineering, then checkout under `$HOST_PROJECTS_ROOT/<repo>`).
 
 ## 2. MCP client (stdio)
 
 The IDE starts the process; you do not run a long-lived server yourself.
 
-**Required:** either `--repo=owner/repo` (init-repo layout under the install root) **or** `--workspace=PATH` (and optional engineering root via env).  
+**Required:** either `--repo=owner/repo` (checkout under `HOST_PROJECTS_ROOT`) **or** `--workspace=PATH` (and optional engineering root via env).  
 `--install-dir` alone is not enough — the process exits without a workspace or repo binding.
 
-### Recommended: install multi-root (matches Docker + init-repo)
+### Recommended: install multi-root (matches Docker + `HOST_PROJECTS_ROOT`)
 
 ```json
 {
@@ -105,7 +105,7 @@ There is no HTTP listener under stdio — the IDE owns the process.
 
 If the server fails to start, check the MCP client log for the `node …/dist/index.js` stderr (missing workspace/repo, bad `WORKFLOW_DIR`, etc.).
 
-Then finish shared steps in [setup.md](setup.md) (**§2** deploy + init-repo if needed, **§3** IDE rule, **§4** Update Workflows).
+Then finish shared steps in [setup.md](setup.md) (**§2** deploy + checkout, **§3** Cursor workspace, **§4** Update Workflows).
 
 ## Troubleshooting
 
@@ -117,7 +117,7 @@ Then finish shared steps in [setup.md](setup.md) (**§2** deploy + init-repo if 
 | Planning path / repo errors | [setup.md §2](setup.md#2-init-a-target-repo); pass `repo` on `start_session` |
 | Agent never calls `discover` | [docs/ide-setup.md](docs/ide-setup.md) bootstrap rule |
 
-Shared install vs deploy vs init-repo: [setup.md](setup.md#three-different-operations).
+Shared install vs deploy vs checkout: [setup.md](setup.md).
 
 ## stdio-only references
 

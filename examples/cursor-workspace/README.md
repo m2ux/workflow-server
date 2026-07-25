@@ -134,7 +134,7 @@ folder entries (or use absolute paths).
 
 ## Related
 
-- [setup.md](../../setup.md) — install + init-repo
+- [setup.md](../../setup.md) — install + checkout under `HOST_PROJECTS_ROOT`
 - [docs/ide-setup.md](../../docs/ide-setup.md) — bootstrap rule text
 - [http.md](../../http.md) — Docker / HTTP
 - [stdio.md](../../stdio.md) — local stdio MCP alternative
