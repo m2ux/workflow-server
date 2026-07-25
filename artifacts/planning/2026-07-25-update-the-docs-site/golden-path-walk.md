@@ -4,6 +4,8 @@ PR branch: `docs/update-the-docs-site` · tip at push: `573f4c61` (Batches 2–7
 
 ## Automated (ran in worktree)
 
+Re-verified during **validate** activity (2026-07-25, session JBFTWX) — all PASS. See [validation-results.md](validation-results.md).
+
 - [x] `npm run build:site`
 - [x] `npm run check:site`
 - [x] `npm run check:svg`

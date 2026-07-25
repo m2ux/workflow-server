@@ -47,8 +47,8 @@ After you confirm the approach, work lands on PR #293 in seven reviewable batche
 | 21 | 10 | [Test suite review](test-suite-review.md) | Test quality and coverage | 10-20m | ✅ |
 | 22 | 10 | [Structural analysis](structural-analysis.md) | Prism L12 when written standalone | 15-30m | ✅ |
 | 23 | 10 | [Architecture summary](architecture-summary.md) | Stakeholder architecture overview | 15-30m | ✅ |
-| 24 | 11 | Validation | Build, test, lint verification | 15-30m | ◐ |
-| 25 | 12 | [Strategic review](strategic-review-1.md) | Scope/minimality series (`strategic-review-{n}`) | 15-30m | ⬚ |
+| 24 | 11 | Validation | Build, test, lint verification | 15-30m | ✅ |
+| 25 | 12 | [Strategic review](strategic-review-1.md) | Scope/minimality series (`strategic-review-{n}`) | 15-30m | ◐ |
 | 26 | 13 | Submit for review | PR review lifecycle / stealth push | 30-60m | ⬚ |
 | 27 | 14 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | ⬚ |
 | 28 | 14 | [Token usage](token-usage.md) | Session token and cost summary | 5-10m | ⬚ |

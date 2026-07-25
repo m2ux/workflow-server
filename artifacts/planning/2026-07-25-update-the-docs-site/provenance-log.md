@@ -8,3 +8,4 @@
 | batch-6 | cursor | composer | docs | repo-only | Skip-link focus, nav Escape close, prose measure in style.css/nav.js |
 | batch-7 | cursor | composer | docs | repo-only | tests/docs-drift.test.ts guards; build:site, check:site, check:svg, site+drift tests, typecheck green |
 | readme-out-of-scope | cursor | composer | docs | repo-only | Restore README pre-rewrite; exclude README from docs-drift guards per stakeholder |
+| validate | cursor | composer | docs | repo-only | Local suite re-run: build:site/check:site/check:svg/typecheck/site+drift PASS; validation-results.md |

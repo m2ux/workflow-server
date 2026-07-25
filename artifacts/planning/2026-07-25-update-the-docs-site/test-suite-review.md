@@ -52,6 +52,20 @@ npx vitest run tests/docs-drift.test.ts
 Test Files  1 passed (1)
 ```
 
+### Validate activity re-run (2026-07-25)
+
+```text
+npm run build:site          PASS
+npm run check:site          PASS
+npm run check:svg           PASS
+npm run typecheck           PASS
+npx vitest run tests/site.test.ts tests/docs-drift.test.ts
+  Test Files  2 passed (2)
+  Tests       8 passed (8)
+```
+
+Full `npm test` failed in this worktree (empty `workflows/` → Workflow not found); package gate remains the suite above — see [validation-results.md](validation-results.md).
+
 ## Recommendations
 
 1. Keep the four drift tests as the CI lock for this PR.
