@@ -106,7 +106,7 @@
       </section>
       <section class="tool" id="health_check">
         <h3><code>health_check</code></h3>
-        <p class="tool-summary">Server health: status, name, version, workflow count, uptime, session_scope.</p>
+        <p class="tool-summary">Server health: status, name, version, workflow count, uptime.</p>
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Quick ping to confirm the server is up. Returns status, name, version, workflow count, and uptime.</p>
@@ -134,7 +134,7 @@
           <tbody>
           <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>no</td><td>Workflow id to run or dispatch (for example, <code>work-package</code>).</td></tr>
           <tr><td><code>planning_folder</code></td><td><code>string</code></td><td>no</td><td>Absolute path whose basename is the planning slug. The server resolves the slug under its own workspace — the directory prefix is only a hint.</td></tr>
-          <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Optional. Target owner/repo (or github URL). Required on install multi-root when creating a non-transient session; also accepted from planning_folder under engineering/&lt;owner&gt;/&lt;repo&gt;/….</td></tr>
+          <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Target owner/repo (or github URL). Always pass when known; written to session.json#repo. Also accepted from planning_folder under …/&lt;owner&gt;/&lt;repo&gt;/….</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace. Default: <code>&quot;orchestrator&quot;</code></td></tr>
           <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td><code>persistent</code>: reuse earlier deliveries when one agent keeps full context. <code>fresh</code> (default): always return full content.</td></tr>
           </tbody>
@@ -198,7 +198,7 @@
           <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>yes</td><td>Workflow id to run or dispatch (for example, <code>work-package</code>).</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace. Default: <code>&quot;worker&quot;</code></td></tr>
           <tr><td><code>planning_slug</code></td><td><code>string</code></td><td>no</td><td>Slug for the promoted planning folder when dispatching from a meta bootstrap session. Ignored if the parent already has a persistent folder.</td></tr>
-          <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Optional. Target owner/repo (or github URL). Used when promoting a transient multi-root parent; overrides any repo stashed at start_session. Pass from worker prior-state / AGENTS.md when start_session omitted it.</td></tr>
+          <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Bind owner/repo onto the parent session when missing (must match if already set). session.json#repo is the source of truth.</td></tr>
           <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td><code>persistent</code>: reuse earlier deliveries when one agent keeps full context. <code>fresh</code> (default): always return full content.</td></tr>
           </tbody>
         </table>
