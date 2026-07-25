@@ -1,6 +1,0 @@
----
-alwaysApply: true
----
-# Overview
-
-Before using concept-rag MCP tools, fetch the `concept-rag://activities` resource.

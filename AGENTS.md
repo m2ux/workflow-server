@@ -46,6 +46,43 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 
   Other ops: `gh api repos/...`, `gh api --method PATCH|POST|GET ...`. Never use `gh pr *`.
 
+### GitHub auth and agent shell (required)
+
+Host auth is normally **keyring + SSH** (`gh` logged in as the active user; `origin` is `git@github.com:...`). Most agent GitHub failures are environment mistakes, not a broken login.
+
+1. **Do not set `GH_TOKEN` or `GITHUB_TOKEN` unless you have a known-good PAT.**  
+   `gh` prefers those env vars over keyring. A wrong or garbage value (including accidentally exporting command output into `GH_TOKEN`) yields `Bad credentials` / HTTP 401 even when `gh auth status` still shows a valid keyring login as inactive.
+
+2. **If auth looks wrong, clear env overrides and retry:**
+
+   ```bash
+   unset GH_TOKEN GITHUB_TOKEN
+   gh auth status
+   gh api user --jq .login
+   ```
+
+   Prefer bare `gh` / `git` with keyring. Never scrape `~/.config/gh/hosts.yml` into `GH_TOKEN` (tokens live in the keyring, not that file).
+
+3. **Run real GitHub network/SSH ops outside the Cursor sandbox.**  
+   Default sandboxed shells remap UIDs and break OpenSSH system config checks, typically:
+
+   ```text
+   Bad owner or permissions on /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf
+   fatal: Could not read from remote repository.
+   ```
+
+   For `git fetch` / `pull` / `push` / `ls-remote`, `ssh -T git@github.com`, and `gh api` against github.com, request full host permissions (unsandboxed), e.g. Shell `required_permissions: ["all"]`. Sandbox + SSH remotes + keyring do not mix reliably here.
+
+4. **Quick health check** (unsandboxed):
+
+   ```bash
+   unset GH_TOKEN GITHUB_TOKEN
+   gh auth status
+   gh api user --jq .login
+   ssh -T git@github.com
+   git ls-remote origin HEAD
+   ```
+
 ## Where to look
 
 - **Quick start, schema, API:** [README.md](README.md), [schemas/README.md](schemas/README.md), [docs/api-reference.md](docs/api-reference.md)
