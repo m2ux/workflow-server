@@ -26,7 +26,7 @@ When docs drift, people waste time on outdated steps, misconfigure environments,
 | 2 | 01 | [Prior feedback triage](prior-feedback-triage.md) | Review-mode prior feedback ingest | 15-30m | ⊘ |
 | 3 | 02 | [Design philosophy](design-philosophy.md) | Problem classification, workflow path | 15-30m | ✅ |
 | 4 | 02 | [Assumptions log](assumptions-log.md) | Tracked assumptions across activities | 10-15m | ✅ |
-| 5 | 03 | [Requirements elicitation](requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ⬚ |
+| 5 | 03 | [Requirements elicitation](requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ◐ |
 | 6 | 04 | [KB research](kb-research.md) | Knowledge-base and web synthesis | 20-45m | ⬚ |
 | 7 | 05 | [Implementation analysis](implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ⬚ |
 | 8 | 06 | [Work package plan](work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ⬚ |
@@ -51,7 +51,7 @@ When docs drift, people waste time on outdated steps, misconfigure environments,
 | 27 | 14 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | ⬚ |
 | 28 | 14 | [Token usage](token-usage.md) | Session token and cost summary | 5-10m | ⬚ |
 | 29 | 14 | [Session trace](session-trace.md) | Lean mechanical execution trace | 5-10m | ⬚ |
-| 30 | 15 | Codebase comprehension | Persistent knowledge under comprehension/ | 20-45m | ◐ |
+| 30 | 15 | Codebase comprehension | Persistent knowledge under comprehension/ | 20-45m | ✅ |
 
 **Status:** ⬚ pending · ◐ in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
