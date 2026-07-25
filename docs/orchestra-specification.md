@@ -6,6 +6,20 @@
 | **Date** | 2026-02-10 (last reviewed 2026-05-14) |
 | **Status** | Draft |
 
+## Before the formal rules
+
+**Who this is for:** authors who define workflow and activity structure in the Orchestra language and related schemas.
+
+**In one sentence:** Orchestra makes the path through an activity explicit (steps, decisions, loops) so agents follow a deterministic sequence instead of inventing control flow.
+
+**Practical path**
+
+1. Learn the product model: workflow → activities → techniques → tools ([README](../README.md)).
+2. Use [schemas/README.md](../schemas/README.md) and the generated [schema reference](../site/api/schemas.html) for file shapes you author today.
+3. Treat the activity grammar in this document as the normative control-flow contract; where a section is still TBD for a primitive, follow the linked JSON Schema.
+
+Illustrated architecture context: [docs/architecture.md](architecture.md) and the [site specifications hub](../site/specifications.html).
+
 ---
 
 ## 1. Overview and Design Rationale

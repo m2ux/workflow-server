@@ -1,7 +1,7 @@
 # Setup — stdio
 
 Transport-specific steps for a **local checkout** where the IDE spawns the server over stdio (default transport).  
-Shared sequence: **[setup.md](setup.md)** (layout, init-repo, IDE rule, day-two).
+Shared sequence: **[setup.md](setup.md)** (layout, deploy, checkout under `HOST_PROJECTS_ROOT`, Cursor workspace, update workflows).
 
 ## Prerequisites
 
@@ -25,16 +25,16 @@ Optional: same host layout as Docker (without starting a container):
 ./scripts/install.sh --install-dir=~/.local/share/workflow-server
 ```
 
-Then continue with [setup.md §2](setup.md#2-init-a-target-repo) to init each target repo (`init-repo.sh owner/repo`).
+Then continue with [setup.md §2](setup.md#2-initialise-a-target-repo) (deploy engineering, then checkout under `$HOST_PROJECTS_ROOT/<repo>`).
 
 ## 2. MCP client (stdio)
 
 The IDE starts the process; you do not run a long-lived server yourself.
 
-**Required:** either `--repo=owner/repo` (init-repo layout under the install root) **or** `--workspace=PATH` (and optional engineering root via env).  
+**Required:** either `--repo=owner/repo` (checkout under `HOST_PROJECTS_ROOT`) **or** `--workspace=PATH` (and optional engineering root via env).  
 `--install-dir` alone is not enough — the process exits without a workspace or repo binding.
 
-### Recommended: install multi-root (matches Docker + init-repo)
+### Recommended: install multi-root (matches Docker + `HOST_PROJECTS_ROOT`)
 
 ```json
 {
@@ -57,11 +57,12 @@ The IDE starts the process; you do not run a long-lived server yourself.
 ```
 
 Pass `repo: "owner/your-project"` on `start_session`. Planning lands under  
-`$INSTALL/projects/owner/your-project/.engineering/artifacts/planning/`.
+`$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning/`
+(see [install-projects-worktrees.md](docs/install-projects-worktrees.md)).
 
 Optional: pin one repo for the whole process with `--repo=owner/your-project` instead of multi-root.
 
-### Alternative: explicit workspace (legacy single-root)
+### Alternative: explicit workspace (single-root)
 
 ```json
 {
@@ -95,17 +96,25 @@ There is no HTTP listener under stdio — the IDE owns the process.
 | Build | `npm run typecheck` (and `npm run build` if `dist/` is stale) |
 | Paths | `--repo` + `--install-dir`, or `--workspace`, plus readable `--workflow-dir` |
 | MCP load | Restart the IDE (or reload MCP servers); the workflow-server entry shows as connected with no spawn error |
-| Smoke | `discover`, then `start_session` (`list_workflows` alone is not enough) |
+| Smoke | `discover`, then `start_session` with **`repo: "owner/repo"`** (`list_workflows` alone is not enough) |
+
+**Expected cues**
+
+- MCP entry shows connected (no spawn error in the client log).
+- `start_session` returns a six-character **`session_index`**.
 
 If the server fails to start, check the MCP client log for the `node …/dist/index.js` stderr (missing workspace/repo, bad `WORKFLOW_DIR`, etc.).
 
-Then finish shared steps in [setup.md](setup.md) (**§2** init-repo if needed, **§3** IDE rule, **§4** day-two).
+Then finish shared steps in [setup.md](setup.md) (**§2** deploy + checkout, **§3** Cursor workspace, **§4** Update Workflows).
 
-## stdio-only references
+## Troubleshooting
 
-| Topic | Where |
-|-------|--------|
-| Dev commands / HTTP from source | [docs/development.md](docs/development.md) |
-| Env vars & flags (dev) | [docs/development.md](docs/development.md#environment-variables) / `src/config.ts` |
-| Shared setup | [setup.md](setup.md) |
-| Docker / HTTP transport | [http.md](http.md) |
+| Symptom | What to check |
+|---------|----------------|
+| Process exits immediately | Provide **`--workspace=…`** or **`--repo=owner/repo`** — `--install-dir` alone is not enough |
+| Spawn error / cannot find `dist/index.js` | Run `npm run build`; use an absolute path to `dist/index.js` |
+| Workflows not found | Readable `--workflow-dir` (or install workflows worktree) |
+| Planning path / repo errors | [setup.md §2](setup.md#2-init-a-target-repo); pass `repo` on `start_session` |
+| Agent never calls `discover` | [docs/ide-setup.md](docs/ide-setup.md) bootstrap rule |
+
+Shared install vs deploy vs checkout: [setup.md](setup.md).

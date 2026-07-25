@@ -9,7 +9,7 @@ A [Model Context Protocol (MCP)](https://modelcontextprotocol.io/) server for AI
 
 ---
 
-**[Docs Site](https://m2ux.github.io/workflow-server/)** • **[Architecture](docs/architecture.md)** • **[Schemas](schemas/README.md)** • **[API](docs/api-reference.md)** • **[Workflow Fidelity](docs/workflow-fidelity.md)** • **[Development](docs/development.md)** • **[Workflows](https://github.com/m2ux/workflow-server/tree/workflows)** • **[Engineering](docs/engineering-storage.md)**
+**[Docs Site](https://m2ux.github.io/workflow-server/)** • **[Architecture](docs/architecture.md)** • **[API](docs/api-reference.md)** • **[Workflow Fidelity](docs/workflow-fidelity.md)** • **[Development](docs/development.md)** • **[Workflows](https://github.com/m2ux/workflow-server/tree/workflows)**
 
 ---
 
@@ -39,7 +39,10 @@ User Goal → Workflow → Activities → Techniques → Tools
 ## 🚀 Quick Start
 
 ### Setup
-See: **[setup.md](setup.md)**.
+
+This project is tailored towards the use of the Cursor IDE. To use with Claude Code it is recommended to setup the [Claude Code plugin for Cursor](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code).
+
+See: **[setup.md](setup.md)** for detailed setup instructions.
 
 ### Execute a workflow
 

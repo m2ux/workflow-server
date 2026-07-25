@@ -127,9 +127,9 @@ Root binding (one of workspace path **or** `--repo` is required at startup):
 | Variable / flag | Default | Description |
 |-----------------|---------|-------------|
 | `--workspace=PATH` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` | — | Explicit workspace / worktree root (legacy single-root: planning under this path) |
-| `--repo=owner/repo` / `WORKFLOW_SERVER_REPO` | — | Bind `$INSTALL/worktrees/<owner>/<repo>` and `$INSTALL/projects/<owner>/<repo>/.engineering` |
+| `--repo=owner/repo` / `WORKFLOW_SERVER_REPO` | — | Bind `$HOST_PROJECTS_ROOT/<repo>/.worktrees` and `$HOST_PROJECTS_ROOT/<repo>/.engineering` |
 | `--install-dir=PATH` / `WORKFLOW_SERVER_INSTALL_DIR` | `~/.local/share/workflow-server` (or `$XDG_DATA_HOME/workflow-server`) | Install root used with `--repo` |
-| `WORKFLOW_SERVER_ENGINEERING_DIR` | equals workspace when unbound; multi-root Docker: `$INSTALL/projects` | Engineering multi-root or single eng checkout used for planning / session files |
+| `WORKFLOW_SERVER_ENGINEERING_DIR` | equals workspace when unbound; multi-root Docker: `$HOST_PROJECTS_ROOT` | Engineering multi-root or single eng checkout used for planning / session files |
 | `PLANNING_SLUG` | `.engineering/artifacts/planning` (legacy) or `artifacts/planning` (repo / engineering-root mode) | Relative planning dir under the engineering root |
 
 Other process config:

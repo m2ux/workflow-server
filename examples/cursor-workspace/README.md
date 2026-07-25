@@ -1,37 +1,43 @@
 # Example Cursor workspace (workflow kick-off)
 
-Minimal multi-root Cursor workspace you can copy and open to drive
-workflow-server sessions against a project checkout under `HOST_PROJECTS_ROOT`.
+Copy-ready multi-root Cursor workspace that mirrors the **canonical live layout** at
+`~/.local/share/cursor/workspaces/workflow-server`.
 
-It mirrors a typical layout under `~/.local/share/cursor/workspaces/<name>/`:
-agent rules, MCP client config, and a `.code-workspace` that mounts the
-**project**, **`.engineering`**, and local **`.worktrees`** roots for easy
-navigation.
+Use this as the primary IDE path: copy it, set `HOST_PROJECTS_ROOT`, open the
+`.code-workspace` file, then ask the agent to start a workflow. Prefer this over
+hand-rolling MCP JSON or pasting bootstrap rules into a single-folder project.
 
 ## Prerequisites
 
 1. Install and start workflow-server ([setup.md](../../setup.md), [http.md](../../http.md)).
-2. Set `HOST_PROJECTS_ROOT` in `$INSTALL/env` (example: `~/projects/dev`).
-3. Have a checkout at `$HOST_PROJECTS_ROOT/<repo>` with optional `.engineering`
-   and a gitignored `.worktrees/` directory (create empty if missing).
-4. HTTP MCP listening at `http://127.0.0.1:3000/mcp` (or change
+2. Export **`HOST_PROJECTS_ROOT`** (written to `$INSTALL/env` by `install.sh`;
+   typical value `~/projects/dev`). Checkout the product repo under
+   `$HOST_PROJECTS_ROOT/<repo>` ([setup.md §2b](../../setup.md#2b-checkout-the-project)).
+3. HTTP MCP listening at `http://127.0.0.1:3000/mcp` (or edit
    [`.cursor/mcp.json`](.cursor/mcp.json)).
+4. Ensure `workflows/` and `.worktrees/` exist under the checkout when you mount
+   those roots (create empty `.worktrees/` if needed; add `workflows` via
+   `git worktree add ./workflows workflows` when developing the server itself).
 
 ## Layout
 
 ```text
 examples/cursor-workspace/
 ├── README.md                         # this file
-├── AGENTS.md                         # checkout basename + optional owner/repo
-├── CLAUDE.md -> AGENTS.md            # Claude Code reads the same hint
-├── workflow-server.code-workspace    # four roots: kickoff + project + eng + worktrees
+├── AGENTS.md                         # one-liner: targeted Github owner/repo
+├── CLAUDE.md -> AGENTS.md
+├── workflow-server.code-workspace    # five roots via HOST_PROJECTS_ROOT
+├── .mcp.json                         # required: workflow-server via mcp-remote
 ├── .cursor/
-│   ├── mcp.json                      # mcp-remote → workflow-server HTTP
+│   ├── mcp.json                      # same required server (Cursor project MCP)
+│   ├── skills/
+│   │   └── routing-workflow-design-resources/
+│   │       └── SKILL.md              # dispatcher → workflow-design resources
 │   └── rules/
-│       ├── workflow-server.mdc       # always-on: call discover first
+│       ├── workflow-server.mdc       # alwaysApply: call discover first
 │       └── concept-rag.mdc           # optional companion MCP rule
 └── .claude/
-    ├── settings.example.json         # optional Claude Code permissions template
+    ├── settings.example.json         # sanitized allow-list (no machine hooks)
     └── rules/
         ├── workflow-server.md
         └── concept-rag.md
@@ -39,82 +45,117 @@ examples/cursor-workspace/
 
 | Path | Role |
 |------|------|
-| `AGENTS.md` | Declares the checkout basename under `HOST_PROJECTS_ROOT` and optional GitHub `owner/repo` for `start_session`. |
-| `workflow-server.code-workspace` | Opens four roots: this folder, `$HOST_PROJECTS_ROOT/<repo>`, `<repo>/.engineering`, and `<repo>/.worktrees`. |
-| `.cursor/mcp.json` | Connects Cursor to the running HTTP server via `npx mcp-remote`. |
-| `.cursor/rules/*.mdc` | Always-applied IDE rules (bootstrap + optional concept-rag). |
-| `.claude/rules/*` | Same rules for Claude Code. |
-| `.claude/settings.example.json` | Template allow-list for workflow-server MCP tools (copy to `settings.local.json` locally; do not commit secrets). |
+| `AGENTS.md` | One line: `The Github repo for which this workspace is targeted is owner/repo.` |
+| `workflow-server.code-workspace` | Five roots: workspace, project, workflows, planning, work trees |
+| `.mcp.json` / `.cursor/mcp.json` | Required `workflow-server` → `http://127.0.0.1:3000/mcp` |
+| `.cursor/skills/…/SKILL.md` | Routes workflow-design resource opens (see skill multi-root note) |
+| `.cursor/rules/*.mdc` | Always-applied IDE rules |
+| `.claude/settings.example.json` | Copy to `settings.local.json` locally; do not commit machine hooks |
+| `.claude/rules/*` | Same rules for Claude Code |
+
+### Workspace roots (canonical names)
+
+Folder paths (except `./`) use Cursor’s `${env:HOST_PROJECTS_ROOT}` expansion —
+the same system-wide projects root as `$INSTALL/env`. No `/home/…` or
+`../../../projects/dev/…` user layout is baked in.
+
+| Name | Points at |
+|------|-----------|
+| `📦 workspace` | This kickoff folder (`./`) |
+| `📦 project` | `${env:HOST_PROJECTS_ROOT}/<repo>` |
+| `📦 workflows` | `${env:HOST_PROJECTS_ROOT}/<repo>/workflows` |
+| `📦 planning` | `${env:HOST_PROJECTS_ROOT}/<repo>/.engineering/artifacts/planning` |
+| `📦 work trees` | `${env:HOST_PROJECTS_ROOT}/<repo>/.worktrees` |
+
+The shipped file uses repo basename `workflow-server` to match this example’s
+`AGENTS.md`. Replace that basename when you target another product.
+
+Do **not** collapse planning + workflows + worktrees into a single `.engineering`
+root — keep them as separate roots, as in the canonical workspace.
 
 ## Use it
 
 ```bash
-# 1. Copy somewhere stable (XDG data home is a good default)
+# 1. Copy to the Cursor workspaces data dir (canonical location)
 mkdir -p ~/.local/share/cursor/workspaces
 cp -a examples/cursor-workspace \
-  ~/.local/share/cursor/workspaces/my-project
+  ~/.local/share/cursor/workspaces/workflow-server
 
-cd ~/.local/share/cursor/workspaces/my-project
+cd ~/.local/share/cursor/workspaces/workflow-server
 
-# 2. Point AGENTS.md at your checkout basename (and optional owner/repo)
+# 2. Set AGENTS.md to your Github owner/repo (one line)
+#    The Github repo for which this workspace is targeted is owner/repo.
 
-# 3. Fix multi-root paths in the .code-workspace file.
-#    Defaults assume:
-#      this folder         → ~/.local/share/cursor/workspaces/<name>/
-#      HOST_PROJECTS_ROOT  → ~/projects/dev
-#    so relative paths ../../../projects/dev/<repo>{,/.engineering,/.worktrees}
-#    resolve correctly. Replace workflow-server with your <repo> basename.
-#    Prefer absolute paths if your layout differs.
+# 3. Load HOST_PROJECTS_ROOT from the install env (required for folder roots)
+#    and launch Cursor from a shell that exports it:
+set -a && . "${WORKFLOW_SERVER_INSTALL_DIR:-$HOME/.local/share/workflow-server}/env" && set +a
+# Or: export HOST_PROJECTS_ROOT=~/projects/dev
 
-# 4. Ensure local worktree parent exists (gitignored on the project)
+# 4. If your repo basename is not workflow-server, edit the four
+#    ${env:HOST_PROJECTS_ROOT}/… entries in workflow-server.code-workspace.
+
+# 5. Ensure mount targets exist
 mkdir -p "$HOST_PROJECTS_ROOT/<repo>/.worktrees"
+# workflows worktree when needed:
+#   (cd "$HOST_PROJECTS_ROOT/<repo>" && git worktree add ./workflows workflows)
 
-# 5. Open in Cursor
+# 6. Open in Cursor (same shell / env so ${env:HOST_PROJECTS_ROOT} resolves)
 cursor workflow-server.code-workspace
 # or: File → Open Workspace from File…
 ```
 
+When you are done, your layout should look like
+`~/.local/share/cursor/workspaces/workflow-server` (this template’s destination).
+
 Then ask the agent to start a workflow. It should call `discover`, then
-`start_session` with identity from `AGENTS.md`.
+`start_session` with `repo` from `AGENTS.md`.
+
+## MCP servers
+
+**Required:** `workflow-server` via `npx mcp-remote http://127.0.0.1:3000/mcp`
+in both [`.mcp.json`](.mcp.json) and [`.cursor/mcp.json`](.cursor/mcp.json)
+(mirrors the live Cursor workspace pattern without machine-local paths).
+
+**Optional companions** (often present in a live workspace; **not** shipped here):
+
+- `gitnexus` — code intelligence MCP for the target repo
+- `concept-rag` — concept search (rule stubs remain in `.cursor/rules/concept-rag.mdc`)
+- `atlassian` — Jira/Confluence via mcp-remote
+
+Add them locally if you use them. Do **not** commit absolute host paths (e.g.
+`/home/…`) into this example.
+
+## Skills
+
+[`.cursor/skills/routing-workflow-design-resources/SKILL.md`](.cursor/skills/routing-workflow-design-resources/SKILL.md)
+dispatches to workflow-design resource files. Relative markdown links match the
+canonical live skill; when the five-root workspace is open, open the same paths
+under **📦 workflows** as `workflow-design/resources/<name>.md`.
 
 ## Path assumptions
 
-Relative folder paths in `workflow-server.code-workspace` are written for:
-
-| Root | Default absolute path |
-|------|------------------------|
-| This workspace (kickoff) | `~/.local/share/cursor/workspaces/<name>/` |
-| Project | `~/projects/dev/<repo>/` (`HOST_PROJECTS_ROOT/<repo>`) |
-| Engineering | `~/projects/dev/<repo>/.engineering/` |
-| Feature worktrees | `~/projects/dev/<repo>/.worktrees/` |
-
-Uniform formula (every project, including workflow-server):
-
 ```text
-checkout    = $HOST_PROJECTS_ROOT / <repo>
-planning    = checkout / .engineering / …
-target_path = checkout / .worktrees / <slug>
+HOST_PROJECTS_ROOT   # from $INSTALL/env — system-wide projects root
+checkout             = $HOST_PROJECTS_ROOT / <repo>
+planning             = checkout / .engineering / artifacts / planning
+worktrees            = checkout / .worktrees / <slug>
 ```
 
-**Deprecated — do not use for source or feature trees:**
+| Root | Path in the example |
+|------|---------------------|
+| This workspace (kickoff) | `./` (copy under `~/.local/share/cursor/workspaces/<name>/`) |
+| Project | `${env:HOST_PROJECTS_ROOT}/workflow-server` |
+| Workflows | `${env:HOST_PROJECTS_ROOT}/workflow-server/workflows` |
+| Planning | `${env:HOST_PROJECTS_ROOT}/workflow-server/.engineering/artifacts/planning` |
+| Work trees | `${env:HOST_PROJECTS_ROOT}/workflow-server/.worktrees` |
 
-- `$INSTALL/projects/…`
-- `$INSTALL/worktrees/…`
-
-Workflow **definitions** may still live under `$INSTALL/workflows` (server catalog).
-That is not the product source checkout.
-
-If a project has no `.engineering` yet, materialise or init the eng submodule
-before the engineering workspace root will resolve. Create an empty
-`.worktrees/` directory (gitignored) so the worktrees root always resolves.
-
-If your `HOST_PROJECTS_ROOT` or cursor share path differs, edit the three
-non-`./` folder entries (or use absolute paths).
+If folder roots do not resolve, confirm Cursor was started with `HOST_PROJECTS_ROOT`
+in its process environment (source `$INSTALL/env` in the launching shell).
 
 ## Related
 
-- [setup.md](../../setup.md) — install, IDE rule
-- [docs/install-projects-worktrees.md](../../docs/install-projects-worktrees.md) — layout plan
+- [setup.md](../../setup.md) — install + checkout under `HOST_PROJECTS_ROOT`
+- [docs/install-projects-worktrees.md](../../docs/install-projects-worktrees.md) — layout
 - [docs/ide-setup.md](../../docs/ide-setup.md) — bootstrap rule text
-- [http.md](../../http.md) — Docker / HTTP MCP URL
+- [http.md](../../http.md) — Docker / HTTP
 - [stdio.md](../../stdio.md) — local stdio MCP alternative

@@ -141,7 +141,30 @@ pre code { background: none; border: none; padding: 0; }
   z-index: 10;
 }
 
-.skip-link:focus { left: 0; }
+.skip-link:focus,
+.skip-link:focus-visible {
+  left: 0;
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Nav dropdown summaries: keyboard-visible focus */
+.site-nav__group > summary:focus-visible {
+  outline: 3px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
+/* Prefer readable measure for long prose without shrinking diagrams */
+main .prose,
+main .lede {
+  max-width: 70ch;
+}
+
+main .diagram,
+main .table-wrap,
+main pre {
+  max-width: none;
+}
 
 /* Layout */
 

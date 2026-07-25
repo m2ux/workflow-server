@@ -6,14 +6,14 @@ The Workflow Server operates with strict boundaries between **orchestration meta
 
 Agents are explicitly instructed to respect distinct directory scopes:
 
-1. **`target_path` / feature worktree:** The user's actual codebase under the **worktrees** root (`ServerConfig.workspaceDir`). All domain-specific execution (writing code, running tests, refactoring, building) must occur strictly within this directory. With `--repo=owner/repo`, worktrees live under `$INSTALL/worktrees/<owner>/<repo>/`.
+1. **`target_path` / feature worktree:** The user's actual codebase under the **worktree root** (`ServerConfig.workspaceDir`). All domain-specific execution (writing code, running tests, refactoring, building) must occur strictly within this directory. With `--repo=owner/repo`, feature trees live under `$HOST_PROJECTS_ROOT/<repo>/.worktrees/<slug>/`.
 2. **Engineering root:** Orchestration metadata — plans, session state, traces, ADRs. Bound as `ServerConfig.engineeringDir`:
-   - **Repo layout** (`--repo` / `init-repo.sh`): `$INSTALL/projects/<owner>/<repo>/.engineering/` (eng submodule or materialised tree inside the main checkout).
+   - **Repo layout** (`--repo` / `init-repo.sh`): `$HOST_PROJECTS_ROOT/<repo>/.engineering/` (eng submodule or materialised tree inside the main checkout).
    - **Legacy single-root** (`--workspace` only): the same path as the workspace, with planning under a nested `.engineering/` tree.
 3. **Workflow definitions:** Served from `WORKFLOW_DIR` / `$INSTALL/workflows` (the `workflows` orphan branch), not from the engineering checkout.
-4. **`repo_root` (projects checkout):** `$INSTALL/projects/<owner>/<repo>/` — main/default-branch clone used for comprehension, GitNexus, and `git worktree add`.
+4. **`repo_root` (projects checkout):** `$HOST_PROJECTS_ROOT/<repo>/` — main/default-branch clone used for comprehension, GitNexus, and `git worktree add`.
 
-Install layout (HTTP/Docker): [`scripts/install.sh`](../scripts/install.sh) creates `$INSTALL/{projects,worktrees,workflows,state}` and writes `$INSTALL/env`. Per-repo materialisation: [`scripts/init-repo.sh`](../scripts/init-repo.sh).
+Install layout (HTTP/Docker): [`scripts/install.sh`](../scripts/install.sh) creates `$INSTALL/{workflows,state}` and writes `$INSTALL/env` with `HOST_PROJECTS_ROOT`. Per-repo registration: [`scripts/init-repo.sh`](../scripts/init-repo.sh). Preferred paths: [install-projects-worktrees.md](install-projects-worktrees.md).
 
 ## 2. The Planning Folder
 

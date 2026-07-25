@@ -86,13 +86,14 @@ Ensure `.worktrees/` is listed in the project’s `.gitignore`.
 
 ## Cursor example roots
 
-Four navigation roots (see `examples/cursor-workspace/`):
+Five navigation roots (see `examples/cursor-workspace/`):
 
 ```text
-kickoff/                                      # rules + MCP
-$HOST_PROJECTS_ROOT/<repo>                    # project
-$HOST_PROJECTS_ROOT/<repo>/.engineering       # planning
-$HOST_PROJECTS_ROOT/<repo>/.worktrees         # feature trees
+kickoff/                                              # rules + MCP (📦 workspace)
+$HOST_PROJECTS_ROOT/<repo>                            # 📦 project
+$HOST_PROJECTS_ROOT/<repo>/workflows                  # 📦 workflows (when present)
+$HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning  # 📦 planning
+$HOST_PROJECTS_ROOT/<repo>/.worktrees                 # 📦 work trees
 ```
 
 ## Success criteria

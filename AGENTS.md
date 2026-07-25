@@ -4,7 +4,7 @@ Instructions for AI coding agents working in this repository (Workflow Orchestra
 
 ## Project overview
 
-This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, Node.js 18+). Agents discover, navigate, and execute structured workflows via a **Goal → Activity → Skill → Tools** model. Workflow data lives in a `workflows` worktree (orphan branch); engineering artifacts live in `.engineering/`. See [README.md](README.md) for overview and [docs/ide-setup.md](docs/ide-setup.md) for rule setup.
+This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, Node.js 18+). Agents discover, navigate, and execute structured workflows via a **Goal → Workflow → Activities → Techniques → Tools** model. Workflow data lives in a `workflows` worktree (orphan branch); engineering artifacts live in `.engineering/`. See [README.md](README.md) for overview and [docs/ide-setup.md](docs/ide-setup.md) for rule setup.
 
 ## Setup commands
 
