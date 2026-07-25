@@ -46,6 +46,8 @@ Same progressive-disclosure pattern as the orchestra spec, plus a Technique mode
 
 **Rationale correction (user):** Example workspace must mirror the canonical live Cursor workspace at `~/.local/share/cursor/workspaces/workflow-server` — five roots (workspace, project, workflows, planning, work trees), one-line `AGENTS.md`, discover-first rules without retired `session_token`, and MCP via mcp-remote. Copy/open docs treat that data-dir layout as the destination users should end up with.
 
+**Follow-up sync (pre-push):** Added root `.mcp.json`, `.cursor/skills/routing-workflow-design-resources/SKILL.md`, refreshed `settings.example.json` allow-list, and README layout tree. Optional MCP companions (concept-rag / atlassian / gitnexus) stay documented-only — no machine-local absolute paths. Did not copy `.claude/settings.local.json`.
+
 ### [Block 11 — http.md:1](../../../../.worktrees/2026-07-25-update-the-docs-site/http.md:1)
 
 **Rationale correction (user):** Install/Start narrative is state-bind only (no projects/worktrees binds in the install story). Prefer the example Cursor workspace for MCP/IDE setup; demote hand-rolled mcp-remote JSON. Planning path uses `$HOST_PROJECTS_ROOT/<repo>/.engineering/…` (not `$INSTALL/projects/…`).
