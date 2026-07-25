@@ -22,7 +22,7 @@ When docs drift, people waste time on outdated steps, misconfigure environments,
 
 | # | @ | Item | Description | Estimate | Status |
 |---|---|------|-------------|----------|--------|
-| 1 | 01 | Start work package | Issue, branch, worktree, planning folder | 20-40m | ⬚ |
+| 1 | 01 | Start work package | Issue, branch, worktree, planning folder | 20-40m | ✅ |
 | 2 | 01 | [Prior feedback triage](prior-feedback-triage.md) | Review-mode prior feedback ingest | 15-30m | ⊘ |
 | 3 | 02 | [Design philosophy](design-philosophy.md) | Problem classification, workflow path | 15-30m | ⬚ |
 | 4 | 02 | [Assumptions log](assumptions-log.md) | Tracked assumptions across activities | 10-15m | ⬚ |
@@ -59,5 +59,5 @@ When docs drift, people waste time on outdated steps, misconfigure environments,
 
 | Resource | Link |
 |----------|------|
-| Jira Ticket | _skipped_ |
-| PR | _pending_ |
+| Issue | _skipped_ |
+| PR | [#293](https://github.com/m2ux/workflow-server/pull/293) |
