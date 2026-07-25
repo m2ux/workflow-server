@@ -17,7 +17,7 @@ The main application (MCP server) lives at the repo root. See the root `README.m
 - **Build (repo root):** `npm run build`
 - **Run tests (repo root):** `npm test`
 - **Typecheck (repo root):** `npm run typecheck`
-- **Workflow data:** Workflows are typically in a `workflows` worktree; see root README and `SETUP.md`.
+- **Workflow data:** Workflows are typically in a `workflows` worktree; see root README and `setup.md`.
 
 Run these from the **repository root**, not from `.engineering/`.
 
