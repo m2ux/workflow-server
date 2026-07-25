@@ -87,7 +87,7 @@
         <tr><td><a href="#manifest"><strong>Manifest</strong></a></td><td>The <code>workflow.yaml</code> file that defines a workflow</td></tr>
         <tr><td><a href="#mcp"><strong>MCP</strong></a></td><td>How your IDE talks to the workflow-server process</td></tr>
         <tr><td><a href="#orchestrator"><strong>Orchestrator</strong></a></td><td>Agent that manages workflow state and user interaction</td></tr>
-        <tr><td><a href="#planning-folder"><strong>Planning folder</strong></a></td><td>Per-session directory under <code>.engineering/artifacts/planning/</code></td></tr>
+        <tr><td><a href="#planning-folder"><strong>Planning folder</strong></a></td><td>Per-session directory under the engineering planning root</td></tr>
         <tr><td><a href="#resource"><strong>Resource</strong></a></td><td>Reference material a technique can link to</td></tr>
         <tr><td><a href="#rule"><strong>Rule</strong></a></td><td>Behaviour constraint applied across a workflow or activity</td></tr>
         <tr><td><a href="#session"><strong>Session</strong></a></td><td>One run of a workflow, persisted on disk</td></tr>
@@ -101,7 +101,8 @@
         <tr><td><a href="#worker"><strong>Worker</strong></a></td><td>Background agent that executes activity steps</td></tr>
         <tr><td><a href="#workflow"><strong>Workflow</strong></a></td><td>The overall process from start to finish</td></tr>
         <tr><td><a href="#workflow-server"><strong>Workflow server</strong></a></td><td>The MCP server that enforces workflows and owns session state</td></tr>
-        <tr><td><a href="#workspace"><strong>Workspace</strong></a></td><td>Your project root the server manages sessions for</td></tr>
+        <tr><td><a href="#workspace"><strong>Workspace</strong></a></td><td>Feature-worktree root (<code>$INSTALL/workspace/…</code> or explicit <code>--workspace</code>)</td></tr>
+        <tr><td><a href="#engineering-root"><strong>Engineering root</strong></a></td><td>Planning / session checkout (<code>$INSTALL/engineering/…</code>)</td></tr>
       </tbody>
     </table>
   </div>
@@ -146,7 +147,9 @@
   <p class="prose">An <strong>orchestrator</strong> is the agent layer that owns workflow navigation — calling <code>next_activity</code>, presenting checkpoints to you, and spawning workers for individual activities. In a typical run you interact with the top-level orchestrator; background workers stay out of your chat. See <a href="../specs/dispatch.html">Dispatch</a>.</p>
 
   <h3 id="planning-folder">Planning folder</h3>
-  <p class="prose">A <strong>planning folder</strong> is the per-session directory under <code>.engineering/artifacts/planning/</code> where the server writes <code>session.json</code>, artifacts, and traces. Because state lives in your project tree, sessions survive IDE restarts and can be resumed by name across conversations.</p>
+  <p class="prose">A <strong>planning folder</strong> is the per-session directory under the engineering root where the server writes <code>session.json</code>, artifacts, and traces — typically <code>artifacts/planning/&lt;slug&gt;/</code> on an engineering-branch checkout, or <code>.engineering/artifacts/planning/&lt;slug&gt;/</code> in legacy single-root mode. Because state lives on disk under the install layout, sessions survive IDE restarts and can be resumed across conversations.</p>
+  <h3 id="engineering-root">Engineering root</h3>
+  <p class="prose">The <strong>engineering root</strong> is where planning and session files live (<code>ServerConfig.engineeringDir</code>). With the install layout it is <code>$INSTALL/engineering/&lt;owner&gt;/&lt;repo&gt;/</code> after <code>init-repo.sh</code>. Storage patterns: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/engineering-storage.md">engineering-storage.md</a>.</p>
 
   <h3 id="resource">Resource</h3>
   <p class="prose">A <strong>resource</strong> is reference material — extra markdown the server can attach when a technique links to it. Resources load lazily with <code>get_resource</code> only when needed, so the agent's context stays focused on the step in front of it. See <a href="../specs/workflows.html#resources">Resources</a> and <a href="../specs/resource-resolution.html">Resolution</a>.</p>
@@ -185,10 +188,10 @@
   <p class="prose">A <strong>workflow</strong> is the whole process from start to finish — a directory of declarative YAML and markdown files, not executable code. It lists activities, variables, techniques, and rules; the server reads the manifest and enforces the path the agent follows. See <a href="../specs/workflows.html">Workflows</a>.</p>
 
   <h3 id="workflow-server">Workflow server</h3>
-  <p class="prose">The <strong>workflow server</strong> is the MCP server in this repository. It loads workflow definitions from the <code>workflows/</code> worktree, exposes tools for agents to navigate them, enforces fidelity and checkpoints, and persists session state in your project's workspace. See <a href="../index.html">Home</a> and <a href="./getting-started.html">Getting started</a>.</p>
+  <p class="prose">The <strong>workflow server</strong> is the MCP server in this repository. It loads workflow definitions from the workflows tree, exposes tools for agents to navigate them, enforces fidelity and checkpoints, and persists session state under the engineering root. See <a href="../index.html">Home</a> and <a href="./getting-started.html">Getting started</a>.</p>
 
   <h3 id="workspace">Workspace</h3>
-  <p class="prose">The <strong>workspace</strong> is your project root — the repository the server manages sessions for, set via <code>WORKFLOW_WORKSPACE</code> or <code>--workspace</code>. Session folders and artifacts live under its <code>.engineering/</code> tree; the server refuses to start without a workspace path. See <a href="./getting-started.html#configure">Configure your MCP client</a>.</p>
+  <p class="prose">The <strong>workspace</strong> is the feature-worktree root (<code>ServerConfig.workspaceDir</code>) — typically <code>$INSTALL/workspace/&lt;owner&gt;/&lt;repo&gt;/</code> after <code>init-repo.sh</code>, or an explicit path via <code>--workspace</code> / <code>WORKFLOW_WORKSPACE</code>. Domain code and product git history live here; planning does not. See <a href="./getting-started.html#layout">Install layout</a> and <a href="../specs/artifact-management.html">Artifacts</a>.</p>
 
   <h2 id="next">Next</h2>
   <p class="prose"><a href="../specs/workflows.html">Workflows</a> — file layout, step kinds, binding, and runtime delivery. <a href="../specs/architecture.html">Architecture overview</a> — the enforcement models behind the server.</p>

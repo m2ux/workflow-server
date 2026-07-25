@@ -170,11 +170,14 @@ describe('mcp-server integration', () => {
       const guide = parseToolResponse(result);
       expect(guide.server).toBeDefined();
       expect(guide.version).toBeDefined();
+      expect(guide.repo_binding).toMatch(/required/);
       expect(guide._body).toBeDefined();
       expect(typeof guide._body).toBe('string');
       expect(guide._body).toContain('start_session');
       expect(guide._body).toContain('get_workflow');
+      expect(guide._body).toMatch(/repo/i);
       expect(guide.available_workflows).toBeUndefined();
+      expect(guide.session_scope).toBeUndefined();
     });
   });
 
@@ -428,6 +431,8 @@ describe('mcp-server integration', () => {
       const health = parseToolResponse(result);
       expect(health.status).toBe('healthy');
       expect(health.workflows_available).toBeGreaterThanOrEqual(2);
+      expect(health.repo_binding).toBe('required_on_start_session');
+      expect(health.session_scope).toBeUndefined();
     });
   });
 
@@ -1483,6 +1488,9 @@ describe('mcp-server integration', () => {
       expect(response.workflow.id).toBe('meta');
       expect(response.session_index).toMatch(/^[A-Z2-7]{6}$/);
       expect(response.planning_slug).toBeDefined();
+      expect(response.session_scope).toBeUndefined();
+      // Fresh meta without repo is unbound until bind; agents should pass repo always.
+      expect(response.repo_unbound).toBe(true);
     });
 
     it('accepts workflow_id for non-meta workflow', async () => {

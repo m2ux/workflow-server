@@ -121,7 +121,7 @@
     <h3>For users</h3>
     <p class="prose">You speak in natural language. The agent matches your request to a workflow, works through its phases, and stops at checkpoints when you need to decide something. You never manage tool names or session tokens yourself.</p>
     <ol class="steps">
-      <li><strong>Install and connect.</strong> Build the server and register it with your MCP client.</li>
+      <li><strong>Install and connect.</strong> Install via Docker/HTTP or a local stdio checkout, then register the MCP client.</li>
       <li><strong>Add the IDE rule.</strong> One always-applied rule makes the agent call <code>discover</code> first.</li>
       <li><strong>Run or resume.</strong> Start, resume, or end a workflow in plain language.</li>
       <li><strong>Answer checkpoints.</strong> When the run pauses, pick an option. The workflow cannot advance until you respond.</li>
@@ -137,12 +137,12 @@
 
   <section id="pieces" aria-labelledby="pieces-h">
     <h2 id="pieces-h">The pieces</h2>
-    <p class="prose">Your MCP client hosts the agent. The agent reaches the workflow-server through MCP; the server reads workflow definitions and owns session state in your project's workspace.</p>
+    <p class="prose">Your MCP client hosts the agent. The agent reaches the workflow-server through MCP; the server reads workflow definitions and owns session state under the engineering root (separate from feature worktrees under the workspace root).</p>
 
     <figure class="diagram">
       <svg viewBox="0 0 960 300" role="img" aria-labelledby="layers-title layers-desc">
         <title id="layers-title">System layers</title>
-        <desc id="layers-desc">Agents reach the server through sixteen MCP tools. Below the tool surface sit the enforcement layers, which consult workflow definitions read from the workflows directory and the session state persisted in the workspace.</desc>
+        <desc id="layers-desc">Agents reach the server through sixteen MCP tools. Below the tool surface sit the enforcement layers, which consult workflow definitions read from the workflows directory and the session state persisted under the engineering root.</desc>
         <defs>
           <marker id="arrow-layers" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
             <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--diagram-edge)"/>
@@ -163,7 +163,7 @@
           <rect x="730" y="195" width="200" height="70" rx="10" fill="var(--diagram-node-fill)" stroke="var(--diagram-node-stroke)" stroke-width="2"/>
           <text x="830" y="220" fill="var(--diagram-label)">Session state</text>
           <text x="830" y="240" fill="var(--diagram-note)" font-size="12.5" font-weight="400">session.json + .session-token</text>
-          <text x="830" y="256" fill="var(--diagram-note)" font-size="12.5" font-weight="400">in your workspace</text>
+          <text x="830" y="256" fill="var(--diagram-note)" font-size="12.5" font-weight="400">under engineering root</text>
         </g>
         <g stroke="var(--diagram-edge)" stroke-width="2" fill="none">
           <line x1="480" y1="65" x2="480" y2="101" marker-end="url(#arrow-layers)" marker-start="url(#arrow-layers)"/>
@@ -177,7 +177,7 @@
           <text x="705" y="213">owns</text>
         </g>
       </svg>
-      <figcaption>Agents only ever see the tool surface; the server validates every call against the workflow definition and persists canonical session state under <code>.engineering/artifacts/planning/</code>. Setup steps are in <a href="guide/getting-started.html">Getting started</a>.</figcaption>
+      <figcaption>Agents only ever see the tool surface; the server validates every call against the workflow definition and persists canonical session state under the engineering planning root. Setup steps are in <a href="guide/getting-started.html">Getting started</a>.</figcaption>
     </figure>
   </section>
 
@@ -244,8 +244,8 @@
         <tbody>
           <tr><td>I am new — where do I begin?</td><td><a href="guide/getting-started.html">Getting started</a> → <a href="guide/definitions.html">Definitions</a></td></tr>
           <tr><td>What is this project?</td><td><a href="#pieces">The pieces</a> on this page or <a href="https://github.com/m2ux/workflow-server/blob/main/README.md">README (source)</a></td></tr>
-          <tr><td>How do I install and connect the server?</td><td><a href="guide/getting-started.html">Getting started</a></td></tr>
-          <tr><td>How do I deploy <code>.engineering</code> to my project?</td><td><a href="guide/getting-started.html#deploy">Getting started</a> — step 2</td></tr>
+          <tr><td>How do I install and connect the server?</td><td><a href="guide/getting-started.html">Getting started</a> · <a href="https://github.com/m2ux/workflow-server/blob/main/setup.md">setup.md (source)</a></td></tr>
+          <tr><td>How do I deploy engineering and init a repo?</td><td><a href="guide/getting-started.html#deploy">Getting started</a> — step 2 · <a href="https://github.com/m2ux/workflow-server/blob/main/docs/engineering-storage.md">engineering storage (source)</a></td></tr>
           <tr><td>How do I wire the IDE bootstrap rule?</td><td><a href="guide/getting-started.html#bootstrap-rule">Getting started</a></td></tr>
           <tr><td>How do I run or resume a workflow?</td><td><a href="guide/getting-started.html#run">Getting started</a> — example phrases</td></tr>
           <tr><td>What are workflows, sessions, and checkpoints?</td><td><a href="guide/definitions.html">Definitions</a> · <a href="specs/checkpoints.html">Checkpoints</a></td></tr>

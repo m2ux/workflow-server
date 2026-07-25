@@ -16,7 +16,7 @@ import {
 
 const DECLS = new Map([
   ['review_needed', { type: 'boolean', hasDefault: true, defaultValue: false }],
-  ['reference_path', { type: 'string', hasDefault: false, defaultValue: undefined }],
+  ['repo_root', { type: 'string', hasDefault: false, defaultValue: undefined }],
   ['finding_items', { type: 'array', hasDefault: true, defaultValue: '[]' }],
 ]);
 
@@ -30,7 +30,7 @@ steps:
       type: and
       conditions:
         - { type: simple, variable: review_needed, operator: notExists }
-        - { type: simple, variable: reference_path, operator: exists }
+        - { type: simple, variable: repo_root, operator: exists }
 `);
     expect(lintDocument(doc, DECLS, 'x.yaml').map(v => v.rule)).toEqual(['exists-on-defaulted']);
   });
@@ -52,7 +52,7 @@ options:
     effect:
       setVariable:
         review_needed: "yes"
-        reference_path: "{finding_items}"
+        repo_root: "{finding_items}"
         phantom_value: true
 `);
     expect(lintDocument(doc, DECLS, 'x.yaml').map(v => v.rule).sort())
@@ -60,7 +60,7 @@ options:
   });
 
   it('accepts matching assignments', () => {
-    const doc = parse('effect: { setVariable: { review_needed: true, reference_path: some/path } }');
+    const doc = parse('effect: { setVariable: { review_needed: true, repo_root: some/path } }');
     expect(lintDocument(doc, DECLS, 'x.yaml')).toEqual([]);
   });
 

@@ -68,7 +68,7 @@
 
 <main id="main">
   <h1>Architecture</h1>
-  <p class="lede prose">The workflow-server is a small state machine wrapped in an MCP tool surface. Agents call tools; the server validates every request against the workflow definition, composes techniques and resources just in time, and persists canonical session state on disk in your project's workspace. The architecture is organized as models — dispatch, checkpoints, state, artifacts, resolution, and fidelity — so long-running, multi-agent runs stay bounded, pauses reach the user-facing agent, and transitions never depend on guesswork.</p>
+  <p class="lede prose">The workflow-server is a small state machine wrapped in an MCP tool surface. Agents call tools; the server validates every request against the workflow definition, composes techniques and resources just in time, and persists canonical session state on disk under the engineering root (feature work under a separate workspace root). The architecture is organized as models — dispatch, checkpoints, state, artifacts, resolution, and fidelity — so long-running, multi-agent runs stay bounded, pauses reach the user-facing agent, and transitions never depend on guesswork.</p>
 
   <h2 id="models">Models</h2>
   <ul class="card-grid">
@@ -89,7 +89,7 @@
     </li>
     <li class="card">
       <h3>4. Artifact and workspace isolation</h3>
-      <p>Strict separation between your codebase and the orchestration workspace: a per-session planning folder holds plans, state, and traces, with predictable artifact naming.</p>
+      <p>Strict separation between the workspace root (feature worktrees) and the engineering root (planning folders hold plans, state, and traces), with predictable artifact naming.</p>
       <span class="card-cta"><a href="./artifact-management.html">Artifact model</a></span>
     </li>
     <li class="card">

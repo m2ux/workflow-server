@@ -1,16 +1,45 @@
+import { homedir } from 'node:os';
 import { resolve } from 'node:path';
 import type { TraceStore } from './trace.js';
 import { PLANNING_RELATIVE_DIR, setPlanningRelativeDir } from './utils/session/store.js';
+
+/**
+ * Planning path under an engineering-branch checkout (init-repo layout).
+ * The engineering branch root already *is* the engineering tree, so planning
+ * lives at `artifacts/planning` rather than `.engineering/artifacts/planning`.
+ */
+export const REPO_PLANNING_RELATIVE_DIR = 'artifacts/planning';
 
 export interface ServerConfig {
   workflowDir: string;
   schemasDir: string;
   /**
-   * Absolute path to the worktree / workspace root the server is bound to.
+   * Absolute path to the feature-worktree root the server is bound to.
+   * Feature worktrees live under this path. With `--repo=owner/repo`, this is
+   * `$INSTALL/worktrees/<owner>/<repo>`.
    */
   workspaceDir: string;
   /**
-   * Relative planning directory under `workspaceDir`.
+   * Absolute path to the engineering checkout used for planning artifacts.
+   * Optional on literals (tests/scripts): `createServer` / callers treat a
+   * missing value as `workspaceDir` (single-root layout).
+   * With `--repo=owner/repo`, this is
+   * `$INSTALL/projects/<owner>/<repo>/.engineering`.
+   */
+  engineeringDir?: string;
+  /**
+   * Normalised `owner/repo` when the server was bound via `--repo` /
+   * `WORKFLOW_SERVER_REPO`. Absent when bound by an explicit workspace path.
+   */
+  repo?: string;
+  /**
+   * Absolute install root used to derive repo paths. Present when bound via
+   * `--repo` or when `WORKFLOW_SERVER_INSTALL_DIR` is set.
+   */
+  installDir?: string;
+  /**
+   * Relative planning directory under the engineering root
+   * (`engineeringDir` when set, else `workspaceDir`).
    */
   planningRelativeDir?: string;
   serverName: string;
@@ -54,9 +83,10 @@ function isTransport(value: string): value is Transport {
   return (VALID_TRANSPORTS as readonly string[]).includes(value);
 }
 
-/** Config shape after startup — traceStore is guaranteed present. */
+/** Config shape after startup — traceStore and engineeringDir are guaranteed. */
 export interface ResolvedServerConfig extends ServerConfig {
   traceStore: TraceStore;
+  engineeringDir: string;
 }
 
 const PROJECT_ROOT = resolve(import.meta.dirname, '..');
@@ -100,29 +130,39 @@ export class WorkspaceConfigError extends Error {
 }
 
 /**
- * Resolve `PLANNING_SLUG`: trim; empty / whitespace falls back to the monorepo
- * default `.engineering/artifacts/planning`.
+ * Resolve `PLANNING_SLUG`: trim; empty / whitespace falls back to `fallback`
+ * (legacy monorepo default `.engineering/artifacts/planning`, or
+ * `artifacts/planning` under a repo-bound engineering checkout).
  */
 export function resolvePlanningRelativeDir(
   env: NodeJS.ProcessEnv = process.env,
+  fallback: string = PLANNING_RELATIVE_DIR,
 ): string {
   const raw = env['PLANNING_SLUG']?.trim();
-  return raw || PLANNING_RELATIVE_DIR;
+  return raw || fallback;
+}
+
+/** Default install root: `$XDG_DATA_HOME/workflow-server` or `~/.local/share/workflow-server`. */
+export function defaultInstallDir(env: NodeJS.ProcessEnv = process.env): string {
+  const xdg = env['XDG_DATA_HOME']?.trim();
+  if (xdg) return resolve(xdg, 'workflow-server');
+  return resolve(homedir(), '.local/share/workflow-server');
 }
 
 /**
- * Parse `--workspace=PATH` or `--workspace PATH` from a CLI argument vector.
- * Returns the first match, or `undefined` if absent. Empty values are ignored
- * (treated as absent) so they fall through to the env-var branch.
+ * Parse a single `--flag=VALUE` / `--flag VALUE` style option from argv.
+ * Empty values are ignored so callers fall through to env defaults.
  */
-function parseWorkspaceFlag(argv: readonly string[]): string | undefined {
+function parseFlag(argv: readonly string[], name: string): string | undefined {
+  const eq = `--${name}=`;
+  const bare = `--${name}`;
   for (let i = 0; i < argv.length; i++) {
     const arg = argv[i];
     if (arg === undefined) continue;
-    if (arg.startsWith('--workspace=')) {
-      const value = arg.slice('--workspace='.length).trim();
+    if (arg.startsWith(eq)) {
+      const value = arg.slice(eq.length).trim();
       if (value) return value;
-    } else if (arg === '--workspace') {
+    } else if (arg === bare) {
       const next = argv[i + 1]?.trim();
       if (next) return next;
     }
@@ -130,63 +170,197 @@ function parseWorkspaceFlag(argv: readonly string[]): string | undefined {
   return undefined;
 }
 
-/** CLI `--workspace` > `WORKFLOW_WORKSPACE` > `WORKTREE_ROOT`; throws if unset. */
-function resolveWorkspaceDir(argv: readonly string[]): string {
-  const fromCli = parseWorkspaceFlag(argv);
-  if (fromCli) return resolve(fromCli);
+/**
+ * Normalize a repo identifier to `owner/repo`. Accepts:
+ *   m2ux/workflow-server
+ *   https://github.com/m2ux/workflow-server[.git]
+ *   git@github.com:m2ux/workflow-server.git
+ * Throws WorkspaceConfigError on invalid input.
+ */
+export function normalizeRepoPath(raw: string): string {
+  let value = raw.trim();
+  if (!value) {
+    throw new WorkspaceConfigError(
+      "Invalid --repo value: empty. Expected owner/repo (e.g. m2ux/workflow-server).",
+    );
+  }
+  value = value.replace(/\/+$/, '');
+  value = value.replace(/\.git$/i, '');
 
-  const fromEnv = process.env['WORKFLOW_WORKSPACE']?.trim();
-  if (fromEnv) return resolve(fromEnv);
-
-  const fromWorktreeRoot = process.env['WORKTREE_ROOT']?.trim();
-  if (fromWorktreeRoot) return resolve(fromWorktreeRoot);
-
+  const httpsMatch = value.match(/^https?:\/\/[^/]+\/([^/]+)\/([^/]+)$/i);
+  if (httpsMatch?.[1] && httpsMatch[2]) {
+    return `${httpsMatch[1]}/${httpsMatch[2]}`;
+  }
+  const sshMatch = value.match(/^git@[^:]+:([^/]+)\/([^/]+)$/i);
+  if (sshMatch?.[1] && sshMatch[2]) {
+    return `${sshMatch[1]}/${sshMatch[2]}`;
+  }
+  if (/^[A-Za-z0-9._-]+\/[A-Za-z0-9._-]+$/.test(value)) {
+    return value;
+  }
   throw new WorkspaceConfigError(
-    'Workspace / worktree root is required. Pass --workspace=PATH on the command line, or set WORKFLOW_WORKSPACE or WORKTREE_ROOT in the environment. The resolved path is ServerConfig.workspaceDir (the configured worktree root).',
+    `Invalid --repo value '${raw}'. Expected owner/repo (e.g. m2ux/workflow-server), or a github https/ssh URL.`,
   );
 }
 
-/** Parse `--workflow-dir=PATH` or `--workflow-dir PATH`. */
-function parseWorkflowDirFlag(argv: readonly string[]): string | undefined {
-  for (let i = 0; i < argv.length; i++) {
-    const arg = argv[i];
-    if (arg === undefined) continue;
-    if (arg.startsWith('--workflow-dir=')) {
-      const value = arg.slice('--workflow-dir='.length).trim();
-      if (value) return value;
-    } else if (arg === '--workflow-dir') {
-      const next = argv[i + 1]?.trim();
-      if (next) return next;
-    }
-  }
-  return undefined;
+/** Install root: CLI `--install-dir` > `WORKFLOW_SERVER_INSTALL_DIR` > XDG default. */
+export function resolveInstallDir(
+  argv: readonly string[] = [],
+  env: NodeJS.ProcessEnv = process.env,
+): string {
+  const fromCli = parseFlag(argv, 'install-dir');
+  if (fromCli) return resolve(fromCli);
+  const fromEnv = env['WORKFLOW_SERVER_INSTALL_DIR']?.trim();
+  if (fromEnv) return resolve(fromEnv);
+  return defaultInstallDir(env);
 }
 
-/** CLI `--workflow-dir` > `WORKFLOW_DIR` > `./workflows` (relative to install root). */
-function resolveWorkflowDir(argv: readonly string[]): string {
-  const fromCli = parseWorkflowDirFlag(argv);
-  if (fromCli) return resolve(PROJECT_ROOT, fromCli);
-  return resolve(PROJECT_ROOT, envOrDefault('WORKFLOW_DIR', './workflows'));
+export interface RepoPaths {
+  repo: string;
+  installDir: string;
+  /** App main/default-branch checkout: `$INSTALL/projects/<owner>/<repo>`. */
+  projectsDir: string;
+  /** Planning engineering root: `$INSTALL/projects/<owner>/<repo>/.engineering`. */
+  engineeringDir: string;
+  /** Feature worktree parent: `$INSTALL/worktrees/<owner>/<repo>`. */
+  workspaceDir: string;
+}
+
+/** Directory name for feature worktree parents under the install root. */
+export const INSTALL_WORKTREES_DIR = 'worktrees';
+/** Directory name for per-repo main checkouts under the install root. */
+export const INSTALL_PROJECTS_DIR = 'projects';
+
+/**
+ * Derive the canonical per-repo paths under the install root:
+ *   $INSTALL/projects/<owner>/<repo>                 # main checkout (reference)
+ *   $INSTALL/projects/<owner>/<repo>/.engineering    # planning (submodule)
+ *   $INSTALL/worktrees/<owner>/<repo>                # feature worktree parent
+ */
+export function resolveRepoPaths(
+  repoRaw: string,
+  installDir: string,
+): RepoPaths {
+  const repo = normalizeRepoPath(repoRaw);
+  const root = resolve(installDir);
+  const projectsDir = resolve(root, INSTALL_PROJECTS_DIR, repo);
+  return {
+    repo,
+    installDir: root,
+    projectsDir,
+    engineeringDir: resolve(projectsDir, '.engineering'),
+    workspaceDir: resolve(root, INSTALL_WORKTREES_DIR, repo),
+  };
+}
+
+/** True when `workspaceDir` is the install multi-root `$INSTALL/worktrees`. */
+export function isWorktreeMultiRoot(workspaceDir: string, installDir: string): boolean {
+  return resolve(workspaceDir) === resolve(installDir, INSTALL_WORKTREES_DIR);
+}
+
+/** Engineering root used for planning: explicit field or workspace fallback. */
+export function resolveEngineeringDir(config: ServerConfig): string {
+  return config.engineeringDir ?? config.workspaceDir;
+}
+
+interface ResolvedRoots {
+  workspaceDir: string;
+  engineeringDir: string;
+  repo?: string;
+  installDir?: string;
+  /** Planning relative-dir fallback before PLANNING_SLUG is applied. */
+  planningFallback: string;
 }
 
 /**
- * Parse `--transport=stdio|http` or `--transport stdio|http`, mirroring
- * `parseWorkspaceFlag`. Returns `undefined` when absent so the caller can
- * fall through to the env var and then the 'stdio' default.
+ * Resolve feature-worktree + engineering roots.
+ *
+ * Precedence:
+ *   1. `--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` (explicit path).
+ *      Docker start.sh binds install multi-roots (`$INSTALL/worktrees` +
+ *      `$INSTALL/projects`). Repo is chosen at `start_session` time, not
+ *      process start.
+ *   2. Optional `--repo` / `WORKFLOW_SERVER_REPO` pins a single owner/repo under
+ *      the install root (stdio single-tenant). Prefer session-time `repo` when
+ *      serving multiple init-repo checkouts from one process.
+ *   3. Error if neither workspace nor repo can be resolved.
+ *
+ * Split engineering root defaults planning to `artifacts/planning`.
+ * Legacy single-root defaults to `.engineering/artifacts/planning`.
  */
-function parseTransportFlag(argv: readonly string[]): string | undefined {
-  for (let i = 0; i < argv.length; i++) {
-    const arg = argv[i];
-    if (arg === undefined) continue;
-    if (arg.startsWith('--transport=')) {
-      const value = arg.slice('--transport='.length).trim();
-      if (value) return value;
-    } else if (arg === '--transport') {
-      const next = argv[i + 1]?.trim();
-      if (next) return next;
+function resolveRoots(argv: readonly string[]): ResolvedRoots {
+  const fromWorkspaceCli = parseFlag(argv, 'workspace');
+  const fromWorkspaceEnv = process.env['WORKFLOW_WORKSPACE']?.trim();
+  const fromWorktreeRoot = process.env['WORKTREE_ROOT']?.trim();
+  const explicitWorkspace = fromWorkspaceCli || fromWorkspaceEnv || fromWorktreeRoot;
+
+  const fromRepoCli = parseFlag(argv, 'repo');
+  const fromRepoEnv = process.env['WORKFLOW_SERVER_REPO']?.trim();
+  const repoRaw = fromRepoCli || fromRepoEnv;
+
+  if (explicitWorkspace) {
+    const workspaceDir = resolve(explicitWorkspace);
+    const engOverride = process.env['WORKFLOW_SERVER_ENGINEERING_DIR']?.trim();
+    const engineeringDir = engOverride ? resolve(engOverride) : workspaceDir;
+    const installDirEnv = process.env['WORKFLOW_SERVER_INSTALL_DIR']?.trim();
+    const installDir = installDirEnv
+      ? resolve(installDirEnv)
+      : resolveInstallDir(argv);
+    // Optional process pin: only when workspace is NOT the install multi-root
+    // (or is already the per-repo worktrees path). Multi-root Docker keeps
+    // multi-root so start_session can select owner/repo dynamically.
+    const isMultiRootWorkspace = isWorktreeMultiRoot(workspaceDir, installDir);
+    if (repoRaw && !isMultiRootWorkspace) {
+      const paths = resolveRepoPaths(repoRaw, installDir);
+      // Explicit workspace that already is the per-repo path, or arbitrary pin.
+      if (
+        workspaceDir === paths.workspaceDir ||
+        workspaceDir === resolve(installDir, INSTALL_WORKTREES_DIR, paths.repo)
+      ) {
+        return {
+          workspaceDir,
+          engineeringDir: engOverride ? engineeringDir : paths.engineeringDir,
+          repo: paths.repo,
+          installDir: paths.installDir,
+          planningFallback: REPO_PLANNING_RELATIVE_DIR,
+        };
+      }
     }
+    const result: ResolvedRoots = {
+      workspaceDir,
+      engineeringDir,
+      planningFallback: engOverride ? REPO_PLANNING_RELATIVE_DIR : PLANNING_RELATIVE_DIR,
+    };
+    // Record repo only when it pins a single checkout (not multi-root Docker).
+    if (repoRaw && !isMultiRootWorkspace) {
+      result.repo = normalizeRepoPath(repoRaw);
+    }
+    result.installDir = installDir;
+    return result;
   }
-  return undefined;
+
+  if (repoRaw) {
+    const installDir = resolveInstallDir(argv);
+    const paths = resolveRepoPaths(repoRaw, installDir);
+    return {
+      workspaceDir: paths.workspaceDir,
+      engineeringDir: paths.engineeringDir,
+      repo: paths.repo,
+      installDir: paths.installDir,
+      planningFallback: REPO_PLANNING_RELATIVE_DIR,
+    };
+  }
+
+  throw new WorkspaceConfigError(
+    'Workspace / worktree root is required. Pass --workspace=PATH, WORKFLOW_WORKSPACE, or WORKTREE_ROOT (Docker multi-root), or --repo=owner/repo for a single pinned checkout under $INSTALL. Repo for multi-root is selected at start_session.',
+  );
+}
+
+/** CLI `--workflow-dir` > `WORKFLOW_DIR` > `./workflows` (relative to package root). */
+function resolveWorkflowDir(argv: readonly string[]): string {
+  const fromCli = parseFlag(argv, 'workflow-dir');
+  if (fromCli) return resolve(PROJECT_ROOT, fromCli);
+  return resolve(PROJECT_ROOT, envOrDefault('WORKFLOW_DIR', './workflows'));
 }
 
 /**
@@ -195,7 +369,7 @@ function parseTransportFlag(argv: readonly string[]): string | undefined {
  * silently falling back to stdio when the caller made a typo.
  */
 function resolveTransport(argv: readonly string[]): Transport {
-  const raw = parseTransportFlag(argv) ?? process.env['TRANSPORT']?.trim();
+  const raw = parseFlag(argv, 'transport') ?? process.env['TRANSPORT']?.trim();
   if (!raw) return 'stdio';
   if (!isTransport(raw)) {
     throw new WorkspaceConfigError(
@@ -203,24 +377,6 @@ function resolveTransport(argv: readonly string[]): Transport {
     );
   }
   return raw;
-}
-
-/**
- * Parse `--port=N` or `--port N`, mirroring `parseWorkspaceFlag`.
- */
-function parsePortFlag(argv: readonly string[]): string | undefined {
-  for (let i = 0; i < argv.length; i++) {
-    const arg = argv[i];
-    if (arg === undefined) continue;
-    if (arg.startsWith('--port=')) {
-      const value = arg.slice('--port='.length).trim();
-      if (value) return value;
-    } else if (arg === '--port') {
-      const next = argv[i + 1]?.trim();
-      if (next) return next;
-    }
-  }
-  return undefined;
 }
 
 const DEFAULT_HTTP_PORT = 3000;
@@ -232,32 +388,14 @@ const DEFAULT_HTTP_PORT = 3000;
  * bad value here shouldn't block stdio users.
  */
 function resolvePort(argv: readonly string[]): number {
-  const raw = parsePortFlag(argv) ?? process.env['PORT']?.trim();
+  const raw = parseFlag(argv, 'port') ?? process.env['PORT']?.trim();
   if (!raw) return DEFAULT_HTTP_PORT;
   const parsed = Number(raw);
   return Number.isInteger(parsed) && parsed > 0 ? parsed : DEFAULT_HTTP_PORT;
 }
 
-/**
- * Parse `--host=HOST` or `--host HOST`, mirroring `parseWorkspaceFlag`.
- */
-function parseHostFlag(argv: readonly string[]): string | undefined {
-  for (let i = 0; i < argv.length; i++) {
-    const arg = argv[i];
-    if (arg === undefined) continue;
-    if (arg.startsWith('--host=')) {
-      const value = arg.slice('--host='.length).trim();
-      if (value) return value;
-    } else if (arg === '--host') {
-      const next = argv[i + 1]?.trim();
-      if (next) return next;
-    }
-  }
-  return undefined;
-}
-
 function resolveHost(argv: readonly string[]): string {
-  return parseHostFlag(argv) ?? envOrDefault('HOST', 'localhost');
+  return parseFlag(argv, 'host') ?? envOrDefault('HOST', 'localhost');
 }
 
 /**
@@ -266,16 +404,28 @@ function resolveHost(argv: readonly string[]): string {
  * `argv` defaults to `process.argv.slice(2)` so the function can be invoked
  * without arguments from `main()`; tests pass an explicit vector to exercise
  * the precedence rules deterministically.
+ *
+ * Root binding: `--workspace` / env paths take precedence over `--repo` /
+ * `WORKFLOW_SERVER_REPO`. Repo mode derives:
+ *   workspaceDir    = $INSTALL/worktrees/<owner>/<repo>
+ *   engineeringDir  = $INSTALL/projects/<owner>/<repo>/.engineering
  */
 export function loadConfig(argv: readonly string[] = process.argv.slice(2)): ServerConfig {
-  const planningRelativeDir = resolvePlanningRelativeDir();
+  const roots = resolveRoots(argv);
+  const planningRelativeDir = resolvePlanningRelativeDir(
+    process.env,
+    roots.planningFallback,
+  );
   // Pin the active planning relative dir at config load so planningRoot()
   // callers see the configured slug without a second argument.
   setPlanningRelativeDir(planningRelativeDir);
   return {
     workflowDir: resolveWorkflowDir(argv),
     schemasDir: resolve(PROJECT_ROOT, envOrDefault('SCHEMAS_DIR', './schemas')),
-    workspaceDir: resolveWorkspaceDir(argv),
+    workspaceDir: roots.workspaceDir,
+    engineeringDir: roots.engineeringDir,
+    ...(roots.repo !== undefined ? { repo: roots.repo } : {}),
+    ...(roots.installDir !== undefined ? { installDir: roots.installDir } : {}),
     planningRelativeDir,
     serverName: envOrDefault('SERVER_NAME', 'workflow-server'),
     serverVersion: envOrDefault('SERVER_VERSION', '2.1.0'),

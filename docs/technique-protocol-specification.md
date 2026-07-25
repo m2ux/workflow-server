@@ -334,11 +334,11 @@ shape, `{}` carries the data reference — parentheses call, braces name.
 Every LITERAL CODE-LIKE TOKEN in rendered prose is written in backticks, so code reads as code and
 never as a prose word. Five kinds: a **designator** (`` `{id}` `` / `` `{id}.field` ``, `` `{$name}` ``
 / `` `{name}` ``); a **symbol (rule) address** (`` `technique.rule-name` ``); a **CLI/shell command**
-(`` `git -C {reference_path} remote get-url origin` ``, `` `gh pr ready` ``); an **MCP tool call**
+(`` `git -C {repo_root} remote get-url origin` ``, `` `gh pr ready` ``); an **MCP tool call**
 (`` `get_workflow('work-package')` ``) or **resource URI** (`` `concept-rag://activities` ``); and a
 **literal path or filename** (`` `/tmp/pr-body.md` ``, `` `START-HERE.md` ``). A token already inside a
 larger code span is not wrapped again (no nesting). A token that CONTAINS a designator is ONE span with
-the braces inside it — `` `git -C {reference_path} remote get-url origin` ``, `` `portfolio-{lens_name}.md` ``
+the braces inside it — `` `git -C {repo_root} remote get-url origin` ``, `` `portfolio-{lens_name}.md` ``
 — never split into adjacent spans and never with a designator's backticks butting a literal with no
 separator (CommonMark mis-parses adjacent code spans). Markdown hyperlinks (`[text](path)`) and the
 `::` / `.` link targets of an executable or symbol reference carry their own markup — they are not
@@ -448,7 +448,7 @@ step's declared outputs:
 
 - **One output** — a short summary string (e.g. `"is_review_mode=false"`).
 - **More than one output** — a JSON object keyed by output id (e.g.
-  `{"reference_path": "lib/x", "component_name": "x"}`). This is the canonical multi-output form; a
+  `{"repo_root": "lib/x", "component_name": "x"}`). This is the canonical multi-output form; a
   step-bound technique's `provenance_note` cites it at point of use.
 
 An output lands in the session bag under its declared id, unless the step binding remaps it — in

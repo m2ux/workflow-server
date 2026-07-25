@@ -68,8 +68,8 @@
 
 <main id="main">
   <h1>Artifact and workspace isolation</h1>
-  <p class="lede">Orchestration metadata and your actual code never mix. Domain work happens strictly inside your codebase; plans, state, traces, and review documents live in a per-session planning folder under <code>.engineering/</code>. Each side stays clean, diffable, and independently version-controlled.</p>
-  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/artifact_management_model.md">docs/artifact_management_model.md</a>.</p>
+  <p class="lede">Orchestration metadata and your actual code never mix. Domain work happens under the <strong>workspace</strong> root (feature worktrees); plans, state, traces, and review documents live under the <strong>engineering</strong> root in a per-session planning folder. Each side stays clean, diffable, and independently version-controlled.</p>
+  <p>Canonical source: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/artifact_management_model.md">docs/artifact_management_model.md</a>. Storage layouts: <a href="https://github.com/m2ux/workflow-server/blob/main/docs/engineering-storage.md">docs/engineering-storage.md</a>.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 320" role="img" aria-labelledby="art-title art-desc">
@@ -83,7 +83,7 @@
         <text x="40" y="160" fill="var(--diagram-note)" font-size="13.5" font-weight="400">running tests, refactoring, building</text>
         <text x="40" y="195" fill="var(--diagram-note)" font-size="13.5" font-weight="400">committed to your product history</text>
         <rect x="510" y="55" width="430" height="200" rx="10" fill="var(--diagram-node-alt-fill)" stroke="var(--diagram-node-alt-stroke)" stroke-width="2"/>
-        <text x="530" y="85" fill="var(--diagram-label)">.engineering/artifacts/planning/&lt;slug&gt;/</text>
+        <text x="530" y="85" fill="var(--diagram-label)">…/artifacts/planning/&lt;slug&gt;/</text>
         <g font-size="13.5" font-weight="400" font-family="ui-monospace, Menlo, Consolas, monospace">
           <text x="530" y="115" fill="var(--diagram-note)">README.md          — progress tracker</text>
           <text x="530" y="137" fill="var(--diagram-note)">session.json       — server-managed state</text>
@@ -95,18 +95,18 @@
       </g>
       <text x="480" y="292" font-size="13.5" text-anchor="middle" fill="var(--diagram-note)">agents write domain work only to the left scope and planning artifacts only to the right scope — never across</text>
     </svg>
-    <figcaption>The two directory scopes. Everything an activity worker does to your product happens in <code>target_path</code>; everything about how the workflow got there — plans, state, traces, reviews — lands in the session's planning folder under <code>.engineering/</code>.</figcaption>
+    <figcaption>The two directory scopes. Domain work stays in <code>target_path</code> under the workspace root; planning artifacts live under the engineering root (<code>artifacts/planning/&lt;slug&gt;/</code> for an engineering-branch checkout, or <code>.engineering/artifacts/planning/&lt;slug&gt;/</code> in legacy single-root mode).</figcaption>
   </figure>
 
   <h2 id="planning-folder">The planning folder</h2>
-  <p>Each session establishes one planning folder that acts as its isolated "brain": <code>README.md</code> as the central progress tracker, the server-managed <code>session.json</code> + <code>.session-token</code> state pair (see <a href="./state-management.html">state management</a>), and <code>workflow-trace.json</code> holding the semantic log of what the agents did.</p>
+  <p>Each session establishes one planning folder under the engineering root that acts as its isolated "brain": <code>README.md</code> as the central progress tracker, the server-managed <code>session.json</code> + <code>.session-token</code> state pair (see <a href="./state-management.html">state management</a>), and <code>workflow-trace.json</code> holding the semantic log of what the agents did. Defaults: <code>&lt;engineering&gt;/artifacts/planning/&lt;slug&gt;/</code> (repo layout) or <code>&lt;workspace&gt;/.engineering/artifacts/planning/&lt;slug&gt;/</code> (legacy).</p>
   <p><strong>Progress tracking is mandatory.</strong> Before a worker may report an activity complete, its finalize protocol requires updating the planning folder's README — checking off progress-table items and keeping the artifact list accurate — so a human can always read the README and know exactly where the workflow stands without parsing logs.</p>
 
   <h2 id="naming">Predictable artifact naming</h2>
   <p>Every activity carries an <code>artifactPrefix</code>, inferred by the server from the activity's filename (<code>02-design-philosophy.yaml</code> → <code>02</code>). Workers prepend it to artifacts they produce — <code>design-philosophy.md</code> becomes <code>02-design-philosophy.md</code> — so a planning folder sorts into workflow order and artifacts never clash. The activity's <code>artifacts</code> array itself is a server-computed contract, synthesized by <code>get_activity</code> from the outputs of the techniques its steps bind; activities do not author the list.</p>
 
   <h2 id="git">Git and submodule protocol</h2>
-  <p>The <code>.engineering</code> tree typically lives as a Git submodule or orphan-branch worktree, so orchestration state is version-controlled independently of your product history. When the orchestrator commits artifacts it works inside the submodule first — stage, commit, push — then commits the updated submodule reference in the parent repository. Engineering metadata never pollutes product commits.</p>
+  <p>Engineering content is version-controlled independently of product history. Common layouts (see <a href="https://github.com/m2ux/workflow-server/blob/main/docs/engineering-storage.md">engineering storage patterns</a>): same-repo orphan branch, <strong>shared engineering monorepo</strong> (external remote + project-named branches), or in-tree <code>.engineering/</code>. When the orchestrator commits artifacts it works inside the engineering checkout first — stage, commit, push — then updates any app-repo submodule gitlink. Engineering metadata never pollutes product commits under the workspace root.</p>
 </main>
 
 

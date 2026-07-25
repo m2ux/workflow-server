@@ -8,8 +8,17 @@ export * from './schema/state.schema.js';
 export * from './schema/condition.schema.js';
 export * from './schema/activity.schema.js';
 export { createServer } from './server.js';
-export { loadConfig, WorkspaceConfigError } from './config.js';
-export type { ServerConfig, ResolvedServerConfig, Transport } from './config.js';
+export {
+  loadConfig,
+  WorkspaceConfigError,
+  normalizeRepoPath,
+  resolveRepoPaths,
+  resolveInstallDir,
+  defaultInstallDir,
+  resolveEngineeringDir,
+  REPO_PLANNING_RELATIVE_DIR,
+} from './config.js';
+export type { ServerConfig, ResolvedServerConfig, Transport, RepoPaths } from './config.js';
 export { TraceStore, createTraceToken, decodeTraceToken, createTraceEvent } from './trace.js';
 export type { TraceEvent, TraceTokenPayload } from './trace.js';
 
@@ -24,6 +33,8 @@ async function main(): Promise<void> {
     logInfo('Starting MCP Workflow Server', {
       workflowDir: config.workflowDir,
       workspaceDir: config.workspaceDir,
+      engineeringDir: config.engineeringDir ?? config.workspaceDir,
+      ...(config.repo !== undefined ? { repo: config.repo } : {}),
       transport: config.transport ?? 'stdio',
     });
 

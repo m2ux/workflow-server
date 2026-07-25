@@ -12,6 +12,7 @@ import { logInfo, logWarn } from '../logging.js';
 import { requestId } from '../middleware/request-id.js';
 import { requestLogging } from '../middleware/logging.js';
 import { errorHandler } from '../middleware/error-handler.js';
+import { probeSessionKeyWritable } from '../utils/session/crypto.js';
 
 /**
  * How long to wait for in-flight requests to drain on SIGTERM/SIGINT before
@@ -35,10 +36,16 @@ export function createHttpApp(config: ServerConfig): Express {
   registerHealthRoutes(app, config);
   registerMcpRoute(app, config);
 
-  // Catch-all: any request that reached here matched no route — funnel it
-  // through the shared error handler so 404s get the same JSON error shape.
-  app.use((req: Request, _res: Response, next: NextFunction) => {
-    next(Object.assign(new Error(`Not found: ${req.method} ${req.path}`), { name: 'NotFoundError', status: 404 }));
+  // Catch-all: unmatched routes (including OAuth discovery probes from
+  // mcp-remote at /.well-known/oauth-*). Respond with the shared JSON error
+  // shape without throwing — 4xx must not surface as type:error log lines.
+  app.use((req: Request, res: Response, _next: NextFunction) => {
+    res.status(404).json({
+      error: 'NotFoundError',
+      message: `Not found: ${req.method} ${req.path}`,
+      requestId: req.requestId,
+      timestamp: new Date().toISOString(),
+    });
   });
   app.use(errorHandler);
 
@@ -72,16 +79,24 @@ function registerHealthRoutes(app: Express, config: ServerConfig): void {
     res.status(200).json({ status: 'ok' });
   });
 
-  // Readiness: the directories every tool call depends on are resolvable.
+  // Readiness: directories every tool call depends on resolve, and the session
+  // HMAC key directory is writable (start_session fails hard otherwise).
   // `checks.workspaceDir` is the configured worktree / workspace root
-  // (`--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT`); the JSON key
-  // stays `workspaceDir` for existing HTTP consumers.
-  app.get('/ready', (_req, res) => {
-    const checks = {
+  // (`--workspace` / `WORKFLOW_WORKSPACE` / `WORKTREE_ROOT` / `--repo`);
+  // the JSON key stays `workspaceDir` for existing HTTP consumers.
+  // `engineeringDir` is included when split from workspace (repo binding).
+  app.get('/ready', async (_req, res) => {
+    const engineeringDir = config.engineeringDir ?? config.workspaceDir;
+    const sessionKeyWritable = await probeSessionKeyWritable();
+    const checks: Record<string, boolean> = {
       workflowDir: existsSync(config.workflowDir),
       schemasDir: existsSync(config.schemasDir),
       workspaceDir: existsSync(config.workspaceDir),
+      sessionKeyWritable,
     };
+    if (engineeringDir !== config.workspaceDir) {
+      checks['engineeringDir'] = existsSync(engineeringDir);
+    }
     const ready = Object.values(checks).every(Boolean);
     res.status(ready ? 200 : 503).json({ status: ready ? 'ready' : 'not-ready', checks });
   });

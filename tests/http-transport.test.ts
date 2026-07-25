@@ -47,7 +47,12 @@ describe('HTTP transport', () => {
       const res = await request(app).get('/ready');
       expect(res.status).toBe(200);
       expect(res.body.status).toBe('ready');
-      expect(res.body.checks).toEqual({ workflowDir: true, schemasDir: true, workspaceDir: true });
+      expect(res.body.checks).toEqual({
+        workflowDir: true,
+        schemasDir: true,
+        workspaceDir: true,
+        sessionKeyWritable: true,
+      });
     });
 
     it('GET /ready returns 503 with status not-ready when workspaceDir is missing', async () => {
@@ -57,6 +62,21 @@ describe('HTTP transport', () => {
       expect(res.status).toBe(503);
       expect(res.body.status).toBe('not-ready');
       expect(res.body.checks.workspaceDir).toBe(false);
+    });
+
+    it('GET /ready returns 503 when session key directory is not writable', async () => {
+      const prev = process.env['WORKFLOW_SERVER_KEY_DIR'];
+      // Root-owned path non-root tests cannot create (typical Docker HOME=/ failure mode).
+      process.env['WORKFLOW_SERVER_KEY_DIR'] = '/.workflow-server-unwritable-probe';
+      try {
+        const res = await request(app).get('/ready');
+        expect(res.status).toBe(503);
+        expect(res.body.status).toBe('not-ready');
+        expect(res.body.checks.sessionKeyWritable).toBe(false);
+      } finally {
+        if (prev === undefined) delete process.env['WORKFLOW_SERVER_KEY_DIR'];
+        else process.env['WORKFLOW_SERVER_KEY_DIR'] = prev;
+      }
     });
 
     it('GET /ready returns 200 when root was resolved from WORKTREE_ROOT alone (PR267-TC-11)', async () => {
@@ -110,6 +130,35 @@ describe('HTTP transport', () => {
       expect(typeof res.body.message).toBe('string');
       expect(typeof res.body.requestId).toBe('string');
       expect(typeof res.body.timestamp).toBe('string');
+    });
+
+    it('OAuth discovery probes return 404 without logging type:error (mcp-remote noise)', async () => {
+      const lines: string[] = [];
+      const spy = vi.spyOn(console, 'error').mockImplementation((line: unknown) => {
+        lines.push(String(line));
+      });
+      try {
+        for (const path of [
+          '/.well-known/oauth-authorization-server',
+          '/.well-known/oauth-protected-resource',
+          '/.well-known/oauth-protected-resource/mcp',
+        ]) {
+          const res = await request(app).get(path);
+          expect(res.status).toBe(404);
+          expect(res.body.error).toBe('NotFoundError');
+        }
+      } finally {
+        spy.mockRestore();
+      }
+      const parsed = lines.map((line) => {
+        try {
+          return JSON.parse(line) as { type?: string; path?: string; message?: string };
+        } catch {
+          return {};
+        }
+      });
+      expect(parsed.some((e) => e.type === 'error')).toBe(false);
+      expect(parsed.some((e) => e.type === 'info' && e.message === 'HTTP request' && e.path?.includes('oauth'))).toBe(true);
     });
 
     it('POST /mcp without a session id or initialize request returns 400 with the shared error shape', async () => {

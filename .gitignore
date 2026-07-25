@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 
+# Nested feature worktrees (per-checkout parent; not $INSTALL/worktrees)
+.worktrees/
+
 # Build output
 dist/
 
@@ -26,4 +29,9 @@ coverage/
 .env.local
 .env.*.local
 .gitnexus
-workflow-server.code-workspace
+# Local multi-root workspace at repo root (example lives under examples/)
+/workflow-server.code-workspace
+
+# Local Claude Code overrides (example ships settings.example.json only)
+**/.claude/settings.local.json
+examples/cursor-workspace.bak/

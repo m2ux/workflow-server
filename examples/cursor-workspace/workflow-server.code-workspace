@@ -1,0 +1,21 @@
+{
+  "folders": [
+    {
+      "name": "📦 workspace",
+      "path": "./"
+    },
+    {
+      "name": "📦 project",
+      "path": "../../../projects/dev/workflow-server"
+    },
+    {
+      "name": "📦 engineering",
+      "path": "../../../projects/dev/workflow-server/.engineering"
+    },
+    {
+      "name": "📦 worktrees",
+      "path": "../../../projects/dev/workflow-server/.worktrees"
+    }
+  ],
+  "settings": {}
+}

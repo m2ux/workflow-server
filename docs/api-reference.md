@@ -9,10 +9,12 @@ When the server starts with `--transport=http` (or `TRANSPORT=http` / `npm run s
 | Method / path | Purpose |
 |---------------|---------|
 | `GET /health` | Liveness — process is up |
-| `GET /ready` | Readiness — workflow, schemas, and workspace directories resolve |
+| `GET /ready` | Readiness — `workflowDir`, `schemasDir`, and `workspaceDir` exist; `engineeringDir` when split from workspace (`--repo` layout); and `sessionKeyWritable` (HMAC key directory is usable) |
 | `POST /mcp` | MCP Streamable HTTP |
 
-Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. See [SETUP.md](../SETUP.md#http-transport) and [development.md](development.md).
+`/ready` returns 503 when any check is false. A green `/health` alone does **not** mean `start_session` can run — verify `sessionKeyWritable: true` (Docker non-root with `HOME=/` historically failed here; see [http.md](../http.md) and `WORKFLOW_SERVER_KEY_DIR`).
+
+Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. Local `mcp-remote` clients may probe OAuth well-known URLs (`/.well-known/oauth-*`) and receive 404s; that is expected without auth and is logged as info, not error. See [setup.md](../setup.md), [http.md](../http.md) / [stdio.md](../stdio.md) (transports), and [development.md](development.md) for process env (developers).
 
 ## MCP Tools
 
@@ -22,7 +24,7 @@ Most tools take a `session_index` from `start_session`. Bootstrap tools do not. 
 
 | Tool | Parameters | Returns | Description |
 |------|------------|---------|-------------|
-| `discover` | — | Server info, bootstrap stub | First call: how to start a session. |
+| `discover` | — | Server info, bootstrap stub | First call: how to start a session. Always pass `repo` on `start_session`. |
 | `list_workflows` | — | Workflow list (`id`, `title`, `version`, `tags`) | Catalog of available workflows. |
 | `health_check` | — | Status, version, workflow count, uptime | Process health. |
 
@@ -30,8 +32,8 @@ Most tools take a `session_index` from `start_session`. Bootstrap tools do not. 
 
 | Tool | Parameters | Returns | Description |
 |------|------------|---------|-------------|
-| `start_session` | `agent_id`, `workflow_id?`, `planning_folder?`, `context_mode?` | `session_index`, planning path, workflow info | Open or resume a top-level session (default workflow: `meta`). [State](state_management_model.md) · [Reference delivery](resource_resolution_model.md#11-reference-delivery) |
-| `dispatch_child` | `session_index`, `workflow_id`, `agent_id?`, `planning_slug?`, `context_mode?` | Child `session_index` | Start a nested workflow under the current session. [Dispatch](dispatch_model.md) |
+| `start_session` | `agent_id`, `workflow_id?`, `planning_folder?`, `repo?`, `context_mode?` | `session_index`, planning path, workflow info, optional `repo` | Open or resume a top-level session (default workflow: `meta`). Always pass `repo: "owner/repo"` — written to `session.json#repo` (install multi-root plans under `projects/<owner>/<repo>/.engineering/…`). [State](state_management_model.md) · [Reference delivery](resource_resolution_model.md#11-reference-delivery) |
+| `dispatch_child` | `session_index`, `workflow_id`, `agent_id?`, `planning_slug?`, `repo?`, `context_mode?` | Child `session_index` | Start a nested workflow under the current session. Uses `session.repo`; optional `repo` binds if missing (must match if set). [Dispatch](dispatch_model.md) |
 | `get_workflow_status` | `session_index` | Status, current/completed activities, checkpoint hint | Snapshot of where the session is. |
 | `inspect_session` | `session_index`, `view?`, `child_index?`, `variable?` | Compact projection | Read-only view of session state (usable while blocked). |
 

@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__workflow-server__discover",
+      "mcp__workflow-server__list_workflows",
+      "mcp__workflow-server__start_session",
+      "mcp__workflow-server__get_workflow",
+      "mcp__workflow-server__get_resource",
+      "mcp__workflow-server__yield_checkpoint",
+      "mcp__workflow-server__present_checkpoint",
+      "mcp__workflow-server__respond_checkpoint",
+      "mcp__workflow-server__resume_checkpoint",
+      "mcp__workflow-server__get_activity",
+      "mcp__workflow-server__next_activity",
+      "mcp__workflow-server__get_technique",
+      "mcp__workflow-server__dispatch_child",
+      "mcp__workflow-server__inspect_session",
+      "mcp__workflow-server__get_workflow_status",
+      "mcp__workflow-server__health_check",
+      "mcp__workflow-server__get_trace"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "workflow-server"
+  ]
+}

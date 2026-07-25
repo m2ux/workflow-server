@@ -29,7 +29,7 @@ Why this works without shared memory:
 - The server is **stateless between calls** — every tool call loads/saves
   `session.json` from the workspace. So two server instances pointed at the same
   workspace cooperate through disk.
-- The seal/HMAC key is **machine-global** (`~/.workflow-server/secret`), so both
+- The seal/HMAC key is **machine-global** (`~/.workflow-server/secret`, or `WORKFLOW_SERVER_KEY_DIR` / Docker `$INSTALL/state`), so both
   instances verify the same sealed session.
 - This mirrors the production orchestrator/worker model exactly; "deterministic"
   only means the orchestrator's transition + checkpoint choices come from a

@@ -1,0 +1,36 @@
+# Local dev / IDE
+.cursor/
+.claude/
+.idea/
+.eslintcache
+
+# Git and repo metadata
+.git/
+.gitignore
+.github/
+
+# Node artifacts (rebuilt in image)
+node_modules/
+dist/
+
+# Engineering / planning directories
+.engineering/
+.electrons/
+.gitnexus/
+
+# Site, docs, tests (not needed at runtime)
+site/
+scripts/
+tests/
+docs/
+
+# CI and compose files not needed in image
+docker-compose.yml
+
+# Logs and temp files
+*.log
+*.tmp
+
+# Lock files handled explicitly — do not ignore package-lock.json
+!package.json
+!package-lock.json

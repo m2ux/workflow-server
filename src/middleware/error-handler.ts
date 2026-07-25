@@ -1,5 +1,5 @@
 import type { NextFunction, Request, Response } from 'express';
-import { logError } from '../logging.js';
+import { logError, logInfo } from '../logging.js';
 
 /** Error shapes carrying an HTTP status, e.g. body-parser's `entity.parse.failed`. */
 interface HttpStatusError extends Error {
@@ -15,12 +15,21 @@ function statusOf(err: HttpStatusError): number {
 /**
  * Express error-handling middleware (four-parameter signature is what makes
  * Express treat this as an error handler rather than regular middleware).
- * Logs via `logError` (stderr JSON) and responds with the JSON error body
- * `{ error, message, requestId, timestamp }` — never an HTML stack trace.
+ * Responds with the JSON error body `{ error, message, requestId, timestamp }`
+ * — never an HTML stack trace.
+ *
+ * Client errors (4xx), including OAuth well-known discovery 404s from
+ * `mcp-remote`, are logged as info without a stack so they do not look like
+ * server failures in agent/operator logs. Only 5xx use `logError` + stack.
  */
 export function errorHandler(err: HttpStatusError, req: Request, res: Response, _next: NextFunction): void {
   const status = statusOf(err);
-  logError('HTTP request failed', err, { requestId: req.requestId, method: req.method, path: req.path, status });
+  const fields = { requestId: req.requestId, method: req.method, path: req.path, status };
+  if (status >= 500) {
+    logError('HTTP request failed', err, fields);
+  } else {
+    logInfo('HTTP request rejected', { ...fields, error: err.name || 'Error', message: err.message });
+  }
 
   if (res.headersSent) return;
 

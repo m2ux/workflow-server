@@ -151,7 +151,7 @@ describe('fetch observability (#166 B8)', () => {
         activity_id: 'design-philosophy',
         step_manifest: [
           { step_id: 'detect-review-mode', output: 'new implementation confirmed' },
-          { step_id: 'resolve-reference', output: 'reference resolved' },
+          { step_id: 'resolve-repo-root', output: 'repo root resolved' },
         ],
       },
     });
@@ -159,7 +159,7 @@ describe('fetch observability (#166 B8)', () => {
     const warnings = ((result._meta as Record<string, unknown>)['validation'] as { warnings: string[] }).warnings;
     const fidelity = warnings.filter(w => w.includes('without an in-session technique fetch'));
     expect(fidelity).toHaveLength(1);
-    expect(fidelity[0]).toContain('resolve-reference');
+    expect(fidelity[0]).toContain('resolve-repo-root');
     expect(fidelity[0]).not.toContain('detect-review-mode');
   });
 });

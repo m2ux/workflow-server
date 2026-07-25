@@ -68,8 +68,8 @@
 
 <main id="main">
   <h1>Session store</h1>
-  <p class="lede">A session is a folder. Everything the server knows about a run — position, variables, history, children — lives in one sealed <code>session.json</code> inside a planning folder in your workspace. Agents identify a run with a derived six-character <code>session_index</code>, not a path or hand-carried token; the server holds the truth. Every piece of the design follows from making that file trustworthy, resumable, and inspectable.</p>
-  <p>The implementation is <a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/store.ts"><code>src/utils/session/</code></a>; the file's exact shape is <a href="../api/schemas.html#session-file"><code>session-file.schema.json</code></a>, and the user-level view of the same folder is in <a href="../specs/artifact-management.html">artifact and workspace isolation</a>. The server needs a workspace at launch, and every authenticated call reads or writes disk.</p>
+  <p class="lede">A session is a folder. Everything the server knows about a run — position, variables, history, children — lives in one sealed <code>session.json</code> inside a planning folder under the engineering root. Agents identify a run with a derived six-character <code>session_index</code>, not a path or hand-carried token; the server holds the truth. Every piece of the design follows from making that file trustworthy, resumable, and inspectable.</p>
+  <p>The implementation is <a href="https://github.com/m2ux/workflow-server/blob/main/src/utils/session/store.ts"><code>src/utils/session/</code></a>; the file's exact shape is <a href="../api/schemas.html#session-file"><code>session-file.schema.json</code></a>, and the user-level view of the same folder is in <a href="../specs/artifact-management.html">artifact and workspace isolation</a>. The server needs workspace and engineering roots at launch (or a legacy single root), and every authenticated call reads or writes disk under the engineering planning tree.</p>
 
   <figure class="diagram">
     <svg viewBox="0 0 960 320" role="img" aria-labelledby="ss-title ss-desc">
