@@ -26,9 +26,9 @@ When docs drift, people waste time on outdated steps, misconfigure environments,
 | 2 | 01 | [Prior feedback triage](prior-feedback-triage.md) | Review-mode prior feedback ingest | 15-30m | ⊘ |
 | 3 | 02 | [Design philosophy](design-philosophy.md) | Problem classification, workflow path | 15-30m | ✅ |
 | 4 | 02 | [Assumptions log](assumptions-log.md) | Tracked assumptions across activities | 10-15m | ✅ |
-| 5 | 03 | [Requirements elicitation](requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ◐ |
-| 6 | 04 | [KB research](kb-research.md) | Knowledge-base and web synthesis | 20-45m | ⬚ |
-| 7 | 05 | [Implementation analysis](implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ⬚ |
+| 5 | 03 | [Requirements elicitation](requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ✅ |
+| 6 | 04 | [KB research](kb-research.md) | Knowledge-base and web synthesis | 20-45m | ⊘ |
+| 7 | 05 | [Implementation analysis](implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ◐ |
 | 8 | 06 | [Work package plan](work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ⬚ |
 | 9 | 06 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ |
 | 10 | 06 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ⬚ |
