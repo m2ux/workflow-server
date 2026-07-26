@@ -6,10 +6,10 @@
 # HOST_PROJECTS_ROOT at launch.
 #
 # Layout (matches the canonical live workspace):
-#   📦 workspace   → ~/.local/share/cursor/workspaces/<name>/
-#   📦 project     → /home/$USER/…/<repo>
-#   📦 planning    → …/<repo>/.engineering/artifacts/planning
-#   📦 work trees  → …/<repo>/.worktrees
+#   🏠 workspace   → ~/.local/share/cursor/workspaces/<name>/
+#   📂 project     → /home/$USER/…/<repo>
+#   📋 planning    → …/<repo>/.engineering/artifacts/planning
+#   🌳 work trees  → …/<repo>/.worktrees
 #
 # Usage:
 #   ./scripts/deploy-cursor-workspace.sh [--repo=NAME] [options]
@@ -436,10 +436,10 @@ WORKSPACE_JSON=$(
 import json, os
 doc = {
   "folders": [
-    {"name": "📦 workspace", "path": "./"},
-    {"name": "📦 project", "path": os.environ["PROJECT_DIR"]},
-    {"name": "📦 planning", "path": os.environ["PLANNING_DIR"]},
-    {"name": "📦 work trees", "path": os.environ["WORKTREES_DIR"]},
+    {"name": "🏠 workspace", "path": "./"},
+    {"name": "📂 project", "path": os.environ["PROJECT_DIR"]},
+    {"name": "📋 planning", "path": os.environ["PLANNING_DIR"]},
+    {"name": "🌳 work trees", "path": os.environ["WORKTREES_DIR"]},
   ],
   "settings": {},
 }

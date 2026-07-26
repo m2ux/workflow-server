@@ -1,19 +1,19 @@
 {
 	"folders": [
 		{
-			"name": "📦 workspace",
+			"name": "🏠 workspace",
 			"path": "./"
 		},
 		{
-			"name": "📦 project",
+			"name": "📂 project",
 			"path": "${env:HOST_PROJECTS_ROOT}/workflow-server"
 		},
 		{
-			"name": "📦 planning",
+			"name": "📋 planning",
 			"path": "${env:HOST_PROJECTS_ROOT}/workflow-server/.engineering/artifacts/planning"
 		},
 		{
-			"name": "📦 work trees",
+			"name": "🌳 work trees",
 			"path": "${env:HOST_PROJECTS_ROOT}/workflow-server/.worktrees"
 		}
 	],
