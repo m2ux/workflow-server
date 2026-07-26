@@ -1,5 +1,27 @@
 {
   "mcpServers": {
+    "concept-rag": {
+      "command": "node",
+      "args": [
+        "__USER_HOME__/projects/main/concept-rag/dist/conceptual_index.js",
+        "__USER_HOME__/.concept_rag"
+      ]
+    },
+    "atlassian": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "mcp-remote",
+        "https://mcp.atlassian.com/v1/sse"
+      ]
+    },
+    "gitnexus": {
+      "command": "node",
+      "args": [
+        "/usr/local/bin/gitnexus",
+        "mcp"
+      ]
+    },
     "workflow-server": {
       "command": "npx",
       "args": [

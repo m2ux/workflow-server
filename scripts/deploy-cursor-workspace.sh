@@ -60,15 +60,22 @@ Options:
                              (default: http://127.0.0.1:3000/mcp)
   --template=DIR             Template source (default: <repo>/examples/cursor-workspace)
   --force                    Refresh managed files in an existing workspace dir
-                             (merges mcp.json; keeps extra MCP servers)
+                             (upserts required MCP servers; keeps any extras)
   --dry-run                  Print actions only
   --open                     Run \`cursor <workspace-file>\` after deploy (if on PATH)
   --skip-mkdir               Do not create .worktrees / planning parents on the checkout
   -h, --help                 Show this help
 
+Required MCP servers written into mcp.json (workflows depend on these):
+  concept-rag, atlassian, gitnexus, workflow-server
+
 Environment:
   USER                       Required (unless --user) for /home/\$USER/… path expansion
   HOST_PROJECTS_ROOT         Optional default for --projects-root
+  CONCEPT_RAG_ENTRY          Override concept-rag entry script
+                             (default: /home/\$USER/projects/main/concept-rag/dist/conceptual_index.js)
+  CONCEPT_RAG_INDEX          Override concept-rag index dir (default: /home/\$USER/.concept_rag)
+  GITNEXUS_BIN               Override gitnexus binary (default: /usr/local/bin/gitnexus)
 
 Examples:
   $(basename "$0")
@@ -281,37 +288,109 @@ else
   fi
 fi
 
-# --- mcp.json (upsert workflow-server; keep other servers) --------------------
+# --- mcp.json (required companions + workflow-server; keep extras) ------------
+# Workflows expect concept-rag, atlassian, and gitnexus alongside workflow-server.
+CONCEPT_RAG_ENTRY="${CONCEPT_RAG_ENTRY:-${USER_HOME}/projects/main/concept-rag/dist/conceptual_index.js}"
+CONCEPT_RAG_INDEX="${CONCEPT_RAG_INDEX:-${USER_HOME}/.concept_rag}"
+if [[ -z "${GITNEXUS_BIN:-}" ]]; then
+  if command -v gitnexus >/dev/null 2>&1; then
+    GITNEXUS_BIN="$(command -v gitnexus)"
+  else
+    GITNEXUS_BIN="/usr/local/bin/gitnexus"
+  fi
+fi
+if command -v node >/dev/null 2>&1; then
+  NODE_BIN="$(command -v node)"
+else
+  NODE_BIN="node"
+fi
+
 merge_mcp_json() {
   local existing_path="$1"
-  MCP_URL="$MCP_URL" EXISTING_PATH="$existing_path" python3 - <<'PY'
-import json, os, sys
+  MCP_URL="$MCP_URL" \
+  EXISTING_PATH="$existing_path" \
+  USER_HOME="$USER_HOME" \
+  CONCEPT_RAG_ENTRY="$CONCEPT_RAG_ENTRY" \
+  CONCEPT_RAG_INDEX="$CONCEPT_RAG_INDEX" \
+  GITNEXUS_BIN="$GITNEXUS_BIN" \
+  NODE_BIN="$NODE_BIN" \
+  python3 - <<'PY'
+import json, os, re, sys
 
 url = os.environ["MCP_URL"]
 path = os.environ.get("EXISTING_PATH") or ""
+user_home = os.environ["USER_HOME"]
+concept_entry = os.environ["CONCEPT_RAG_ENTRY"]
+concept_index = os.environ["CONCEPT_RAG_INDEX"]
+gitnexus_bin = os.environ["GITNEXUS_BIN"]
+node_bin = os.environ["NODE_BIN"]
+
+def expand(value: str) -> str:
+    if not isinstance(value, str):
+        return value
+    value = value.replace("__USER_HOME__", user_home)
+    # Normalize accidental /home/<other>/ prefixes when template used a literal user.
+    value = re.sub(r"^/home/[^/]+/", user_home.rstrip("/") + "/", value)
+    return value
+
+def expand_obj(obj):
+    if isinstance(obj, dict):
+        return {k: expand_obj(v) for k, v in obj.items()}
+    if isinstance(obj, list):
+        return [expand_obj(v) for v in obj]
+    if isinstance(obj, str):
+        return expand(obj)
+    return obj
+
 doc = {"mcpServers": {}}
 if path and os.path.isfile(path):
     try:
-        with open(path, encoding="utf-8") as f:
-            loaded = json.load(f)
+        raw = open(path, encoding="utf-8").read()
+        # Tolerate trailing commas sometimes left in hand-edited mcp.json.
+        raw = re.sub(r",\s*([}\]])", r"\1", raw)
+        loaded = json.loads(raw)
         if isinstance(loaded, dict) and isinstance(loaded.get("mcpServers"), dict):
-            doc = loaded
+            doc = expand_obj(loaded)
         else:
             doc = {"mcpServers": {}}
     except (OSError, json.JSONDecodeError):
         doc = {"mcpServers": {}}
 
 servers = doc.setdefault("mcpServers", {})
+
+# Required set — always upsert so deploys stay workflow-ready.
+servers["concept-rag"] = {
+    "command": node_bin,
+    "args": [concept_entry, concept_index],
+}
+servers["atlassian"] = {
+    "command": "npx",
+    "args": ["-y", "mcp-remote", "https://mcp.atlassian.com/v1/sse"],
+}
+servers["gitnexus"] = {
+    "command": node_bin,
+    "args": [gitnexus_bin, "mcp"],
+}
 servers["workflow-server"] = {
     "command": "npx",
     "args": ["-y", "mcp-remote", url],
 }
+
+# Stable key order for readable diffs.
+ordered = {}
+for key in ("concept-rag", "atlassian", "gitnexus", "workflow-server"):
+    if key in servers:
+        ordered[key] = servers.pop(key)
+for key in sorted(servers):
+    ordered[key] = servers[key]
+doc["mcpServers"] = ordered
+
 json.dump(doc, sys.stdout, indent=2, ensure_ascii=False)
 sys.stdout.write("\n")
 PY
 }
 
-# Prefer merging from .cursor/mcp.json; fall back to root .mcp.json.
+# Prefer merging from existing dest, then template.
 MCP_SRC=""
 if [[ -f "${DEST_DIR}/.cursor/mcp.json" ]]; then
   MCP_SRC="${DEST_DIR}/.cursor/mcp.json"
@@ -319,6 +398,8 @@ elif [[ -f "${DEST_DIR}/.mcp.json" ]]; then
   MCP_SRC="${DEST_DIR}/.mcp.json"
 elif [[ -f "${TEMPLATE_DIR}/.cursor/mcp.json" ]]; then
   MCP_SRC="${TEMPLATE_DIR}/.cursor/mcp.json"
+elif [[ -f "${TEMPLATE_DIR}/.mcp.json" ]]; then
+  MCP_SRC="${TEMPLATE_DIR}/.mcp.json"
 fi
 
 MCP_JSON="$(merge_mcp_json "$MCP_SRC")"

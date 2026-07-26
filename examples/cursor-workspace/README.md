@@ -21,8 +21,12 @@ Writes absolute `/home/$USER/…` roots into
 |-------------|---------|
 | `--github=owner/repo` | `AGENTS.md` + default repo basename |
 | `--repo=NAME` | Checkout name (default `workflow-server`) |
-| `--force` | Refresh; keeps extra MCP servers |
+| `--force` | Refresh; keeps any extra MCP servers |
 | `--open` | Open the `.code-workspace` in Cursor |
+
+MCP written by deploy (workflows depend on these): `concept-rag`, `atlassian`,
+`gitnexus`, `workflow-server`. Paths under `/home/$USER/…` for concept-rag;
+override with `CONCEPT_RAG_ENTRY`, `CONCEPT_RAG_INDEX`, `GITNEXUS_BIN` if needed.
 
 Then ask the agent to start a workflow (`discover` → `start_session` with `repo` from `AGENTS.md`).
 
@@ -43,7 +47,7 @@ if you copy manually instead of using the script.
 ## Template contents
 
 - `AGENTS.md` — target `owner/repo`
-- `.cursor/mcp.json` / `.mcp.json` — `workflow-server` → `http://127.0.0.1:3000/mcp`
+- `.cursor/mcp.json` / `.mcp.json` — `concept-rag`, `atlassian`, `gitnexus`, `workflow-server`
 - `.cursor/rules/` — always-on `discover` first
 - `workflow-server.code-workspace` — multi-root folders
 
