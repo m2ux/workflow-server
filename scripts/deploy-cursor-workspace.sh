@@ -237,8 +237,11 @@ if [[ "$REPO_BASENAME" == "workflow-server" || "$WORKSPACE_NAME" == "workflow-se
   WORKSPACE_FILE="${DEST_DIR}/workflow-server.code-workspace"
 fi
 
-if [[ -e "$DEST_DIR" && "$FORCE" -ne 1 ]]; then
+if [[ -e "$DEST_DIR" && "$FORCE" -ne 1 && "$DRY_RUN" -ne 1 ]]; then
   die "destination exists: ${DEST_DIR} (re-run with --force to overwrite managed files)"
+fi
+if [[ -e "$DEST_DIR" && "$DRY_RUN" -eq 1 && "$FORCE" -ne 1 ]]; then
+  log "note: destination exists (would require --force to write): ${DEST_DIR}"
 fi
 
 log "Deploy Cursor workspace"
