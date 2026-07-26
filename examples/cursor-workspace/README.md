@@ -3,9 +3,12 @@
 Copy-ready multi-root Cursor workspace that mirrors the **canonical live layout** at
 `~/.local/share/cursor/workspaces/workflow-server`.
 
-Use this as the primary IDE path: copy it, set `HOST_PROJECTS_ROOT`, open the
-`.code-workspace` file, then ask the agent to start a workflow. Prefer this over
-hand-rolling MCP JSON or pasting bootstrap rules into a single-folder project.
+Use this as the primary IDE path. Prefer
+[`scripts/deploy-cursor-workspace.sh`](../../scripts/deploy-cursor-workspace.sh)
+to install it under Cursor’s workspaces data dir with absolute `/home/$USER/…`
+folder paths. Manual copy + `${env:HOST_PROJECTS_ROOT}` (below) remains supported.
+Prefer either path over hand-rolling MCP JSON or pasting bootstrap rules into a
+single-folder project.
 
 ## Prerequisites
 
@@ -73,7 +76,42 @@ The shipped file uses repo basename `workflow-server` to match this example’s
 Do **not** collapse planning + workflows + worktrees into a single `.engineering`
 root — keep them as separate roots, as in the canonical workspace.
 
-## Use it
+## Use it (recommended: deploy script)
+
+```bash
+# From a workflow-server checkout
+./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server
+
+# Another product under the same projects root:
+./scripts/deploy-cursor-workspace.sh my-app --github=acme/my-app
+
+# Explicit user / layout (paths always under /home/$USER/…):
+./scripts/deploy-cursor-workspace.sh \
+  --user="$USER" \
+  --projects-root="/home/$USER/projects/dev" \
+  --github=m2ux/workflow-server \
+  --open
+```
+
+Defaults:
+
+| Setting | Default |
+|---------|---------|
+| `$USER` home paths | `/home/$USER/…` (override with `--user`) |
+| Projects root | `$HOST_PROJECTS_ROOT` or `/home/$USER/projects/dev` |
+| Kickoff dir | `/home/$USER/.local/share/cursor/workspaces/<repo>/` |
+| Roots written | workspace · project · planning · work trees |
+
+Re-run with `--force` to refresh rules / workspace file / the `workflow-server`
+MCP entry (other MCP servers already in `mcp.json` are kept).
+
+When you are done, your layout should look like
+`~/.local/share/cursor/workspaces/workflow-server` (this template’s destination).
+
+Then ask the agent to start a workflow. It should call `discover`, then
+`start_session` with `repo` from `AGENTS.md`.
+
+### Manual copy (optional)
 
 ```bash
 # 1. Copy to the Cursor workspaces data dir (canonical location)
@@ -103,12 +141,6 @@ mkdir -p "$HOST_PROJECTS_ROOT/<repo>/.worktrees"
 cursor workflow-server.code-workspace
 # or: File → Open Workspace from File…
 ```
-
-When you are done, your layout should look like
-`~/.local/share/cursor/workspaces/workflow-server` (this template’s destination).
-
-Then ask the agent to start a workflow. It should call `discover`, then
-`start_session` with `repo` from `AGENTS.md`.
 
 ## MCP servers
 
@@ -154,6 +186,7 @@ in its process environment (source `$INSTALL/env` in the launching shell).
 
 ## Related
 
+- [scripts/deploy-cursor-workspace.sh](../../scripts/deploy-cursor-workspace.sh) — deploy this template
 - [setup.md](../../setup.md) — install + checkout under `HOST_PROJECTS_ROOT`
 - [docs/install-projects-worktrees.md](../../docs/install-projects-worktrees.md) — layout
 - [docs/ide-setup.md](../../docs/ide-setup.md) — bootstrap rule text

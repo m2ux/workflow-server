@@ -45,14 +45,16 @@ Repeat **2a → 2b** for each product repo.
 
 ## 3. Setup Cursor workspace
 
-**Recommended path:** copy and open [examples/cursor-workspace/](examples/cursor-workspace/) (see its [README](examples/cursor-workspace/README.md)). That template mirrors `~/.local/share/cursor/workspaces/workflow-server` and already includes:
+**Recommended path:** deploy the [examples/cursor-workspace/](examples/cursor-workspace/) template with [`scripts/deploy-cursor-workspace.sh`](scripts/deploy-cursor-workspace.sh). That writes absolute `/home/$USER/…` multi-root paths (no `HOST_PROJECTS_ROOT` required when opening Cursor) and mirrors `~/.local/share/cursor/workspaces/workflow-server`:
 
-- `.cursor/mcp.json` (workflow-server via `mcp-remote`)
-- always-applied bootstrap rules
-- one-line `AGENTS.md` for `repo: "owner/repo"`
-- multi-root `.code-workspace` roots via `${env:HOST_PROJECTS_ROOT}` (no hardcoded `/home/…` paths)
+```bash
+# from a workflow-server checkout
+./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server
+# refresh an existing kickoff dir: add --force
+cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-workspace
+```
 
-Launch Cursor from a shell that exports `HOST_PROJECTS_ROOT` (source `$INSTALL/env`). After the workspace is open, ask the agent to start a workflow.
+The template already includes MCP (`workflow-server` via `mcp-remote`), always-applied bootstrap rules, and one-line `AGENTS.md` for `repo: "owner/repo"`. Manual copy + `${env:HOST_PROJECTS_ROOT}` roots remain documented in the [example README](examples/cursor-workspace/README.md).
 
 ## 4. Update Workflows
 
