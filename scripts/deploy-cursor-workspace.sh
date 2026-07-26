@@ -69,6 +69,9 @@ Options:
 Required MCP servers written into mcp.json (workflows depend on these):
   concept-rag, atlassian, gitnexus, workflow-server
 
+Path substitution (all MCP servers — command and args):
+  \${HOME}  \$HOME  \${USER}  \$USER  __USER_HOME__  /home/<name>/…
+
 Environment:
   USER                       Required (unless --user) for /home/\$USER/… path expansion
   HOST_PROJECTS_ROOT         Optional default for --projects-root
@@ -309,6 +312,7 @@ merge_mcp_json() {
   local existing_path="$1"
   MCP_URL="$MCP_URL" \
   EXISTING_PATH="$existing_path" \
+  USER_NAME="$USER_NAME" \
   USER_HOME="$USER_HOME" \
   CONCEPT_RAG_ENTRY="$CONCEPT_RAG_ENTRY" \
   CONCEPT_RAG_INDEX="$CONCEPT_RAG_INDEX" \
@@ -319,18 +323,28 @@ import json, os, re, sys
 
 url = os.environ["MCP_URL"]
 path = os.environ.get("EXISTING_PATH") or ""
-user_home = os.environ["USER_HOME"]
+user_name = os.environ["USER_NAME"]
+user_home = os.environ["USER_HOME"].rstrip("/")
 concept_entry = os.environ["CONCEPT_RAG_ENTRY"]
 concept_index = os.environ["CONCEPT_RAG_INDEX"]
 gitnexus_bin = os.environ["GITNEXUS_BIN"]
 node_bin = os.environ["NODE_BIN"]
 
 def expand(value: str) -> str:
+    """Substitute user path tokens in any MCP string (all servers)."""
     if not isinstance(value, str):
         return value
+    # Explicit placeholders (template + hand edits)
     value = value.replace("__USER_HOME__", user_home)
-    # Normalize accidental /home/<other>/ prefixes when template used a literal user.
-    value = re.sub(r"^/home/[^/]+/", user_home.rstrip("/") + "/", value)
+    value = value.replace("${USER_HOME}", user_home)
+    value = value.replace("$USER_HOME", user_home)
+    value = value.replace("${HOME}", user_home)
+    # Only bare $HOME (not $HOSTNAME etc.)
+    value = re.sub(r"\$HOME(?![A-Za-z0-9_])", user_home, value)
+    value = value.replace("${USER}", user_name)
+    value = re.sub(r"\$USER(?![A-Za-z0-9_])", user_name, value)
+    # /home/<any-user>/… → canonical /home/$USER/…
+    value = re.sub(r"/home/[^/]+/", user_home + "/", value)
     return value
 
 def expand_obj(obj):
@@ -342,23 +356,25 @@ def expand_obj(obj):
         return expand(obj)
     return obj
 
-doc = {"mcpServers": {}}
-if path and os.path.isfile(path):
+def load_mcp(path: str):
+    if not path or not os.path.isfile(path):
+        return {"mcpServers": {}}
     try:
         raw = open(path, encoding="utf-8").read()
         # Tolerate trailing commas sometimes left in hand-edited mcp.json.
         raw = re.sub(r",\s*([}\]])", r"\1", raw)
         loaded = json.loads(raw)
         if isinstance(loaded, dict) and isinstance(loaded.get("mcpServers"), dict):
-            doc = expand_obj(loaded)
-        else:
-            doc = {"mcpServers": {}}
+            return loaded
     except (OSError, json.JSONDecodeError):
-        doc = {"mcpServers": {}}
+        pass
+    return {"mcpServers": {}}
 
+doc = load_mcp(path)
 servers = doc.setdefault("mcpServers", {})
 
-# Required set — always upsert so deploys stay workflow-ready.
+# Required set — token-friendly values; expand_obj runs on the full doc below
+# so substitution applies to these and to every other server the same way.
 servers["concept-rag"] = {
     "command": node_bin,
     "args": [concept_entry, concept_index],
@@ -375,6 +391,10 @@ servers["workflow-server"] = {
     "command": "npx",
     "args": ["-y", "mcp-remote", url],
 }
+
+# Expand user-path tokens on every server (required + extras), every field.
+doc = expand_obj(doc)
+servers = doc.setdefault("mcpServers", {})
 
 # Stable key order for readable diffs.
 ordered = {}

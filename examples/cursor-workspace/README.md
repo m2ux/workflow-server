@@ -25,8 +25,10 @@ Writes absolute `/home/$USER/…` roots into
 | `--open` | Open the `.code-workspace` in Cursor |
 
 MCP written by deploy (workflows depend on these): `concept-rag`, `atlassian`,
-`gitnexus`, `workflow-server`. Paths under `/home/$USER/…` for concept-rag;
-override with `CONCEPT_RAG_ENTRY`, `CONCEPT_RAG_INDEX`, `GITNEXUS_BIN` if needed.
+`gitnexus`, `workflow-server`. Deploy expands `${HOME}`, `$HOME`, `${USER}`,
+`$USER`, `__USER_HOME__`, and `/home/<name>/…` on **every** MCP server entry
+(command + args). Overrides: `CONCEPT_RAG_ENTRY`, `CONCEPT_RAG_INDEX`,
+`GITNEXUS_BIN`.
 
 Then ask the agent to start a workflow (`discover` → `start_session` with `repo` from `AGENTS.md`).
 
