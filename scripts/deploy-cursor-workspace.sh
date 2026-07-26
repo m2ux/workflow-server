@@ -2,12 +2,12 @@
 # Deploy the example Cursor multi-root workspace for a product checkout.
 #
 # Copies examples/cursor-workspace into Cursor's workspaces data dir and writes
-# absolute folder paths under /home/$USER/… so Cursor does not need
+# absolute folder paths under $HOME/… so Cursor does not need
 # HOST_PROJECTS_ROOT at launch.
 #
 # Layout (matches the canonical live workspace):
-#   🏠 workspace   → ~/.local/share/cursor/workspaces/<name>/
-#   📂 project     → /home/$USER/…/<repo>
+#   🏠 workspace   → $HOME/.local/share/cursor/workspaces/<name>/
+#   📂 project     → $HOME/…/<repo>
 #   📋 planning    → …/<repo>/.engineering/artifacts/planning
 #   🌳 work trees  → …/<repo>/.worktrees
 #
@@ -30,8 +30,8 @@ else
   TEMPLATE_DIR="${SCRIPT_DIR}/../examples/cursor-workspace"
 fi
 
-# Canonical user paths are always /home/$USER/… (see --user to override $USER).
-USER_NAME="${USER:-}"
+# Paths are built from $HOME (see --home to override).
+HOME_DIR="${HOME:-}"
 REPO_BASENAME=""
 GITHUB_REPO=""
 WORKSPACE_NAME=""
@@ -48,7 +48,7 @@ usage() {
 Usage: $(basename "$0") [repo-basename | options]
 
 Deploy examples/cursor-workspace to Cursor's multi-root workspaces dir with
-absolute paths under /home/\$USER/….
+absolute paths under \$HOME/….
 
 Arguments:
   repo-basename              Checkout name under projects root (default: workflow-server)
@@ -58,11 +58,11 @@ Options:
   --github=owner/repo        Write AGENTS.md session identity (e.g. m2ux/workflow-server).
                              If --repo is omitted, basename is taken from this value.
   --name=NAME                Cursor workspace folder name (default: same as --repo)
-  --user=NAME                Override \$USER when building /home/NAME/… paths
+  --home=PATH                Override \$HOME when building paths (default: \$HOME)
   --projects-root=PATH       Projects root (default: \$HOST_PROJECTS_ROOT or
-                             /home/\$USER/projects/dev)
+                             \$HOME/projects/dev)
   --cursor-workspaces=PATH   Parent dir for kickoff folders
-                             (default: /home/\$USER/.local/share/cursor/workspaces)
+                             (default: \$HOME/.local/share/cursor/workspaces)
   --mcp-url=URL              workflow-server HTTP MCP URL written into mcp.json
                              (default: http://127.0.0.1:3000/mcp)
   --template=DIR             Template source (default: examples/cursor-workspace next to
@@ -78,21 +78,21 @@ Required MCP servers written into mcp.json (workflows depend on these):
   concept-rag, atlassian, gitnexus, workflow-server
 
 Path substitution (all MCP servers — command and args):
-  \${HOME}  \$HOME  \${USER}  \$USER  __USER_HOME__  /home/<name>/…
+  \${HOME}  \$HOME  __USER_HOME__  /home/<name>/…  → \$HOME/…
 
 Environment:
-  USER                       Required (unless --user) for /home/\$USER/… path expansion
+  HOME                       Required (unless --home) for path expansion
   HOST_PROJECTS_ROOT         Optional default for --projects-root
   CONCEPT_RAG_ENTRY          Override concept-rag entry script
-                             (default: /home/\$USER/projects/main/concept-rag/dist/conceptual_index.js)
-  CONCEPT_RAG_INDEX          Override concept-rag index dir (default: /home/\$USER/.concept_rag)
+                             (default: \$HOME/projects/main/concept-rag/dist/conceptual_index.js)
+  CONCEPT_RAG_INDEX          Override concept-rag index dir (default: \$HOME/.concept_rag)
   GITNEXUS_BIN               Override gitnexus binary (default: /usr/local/bin/gitnexus)
 
 Examples:
   $(basename "$0")
   $(basename "$0") my-app --github=acme/my-app
   $(basename "$0") --repo=workflow-server --github=m2ux/workflow-server --open
-  $(basename "$0") --user=\"\$USER\" --projects-root=/home/\"\$USER\"/projects/dev
+  $(basename "$0") --home=\"\$HOME\" --projects-root=\"\$HOME\"/projects/dev
 EOF
 }
 
@@ -130,16 +130,12 @@ abs_path() {
   fi
 }
 
-# Expand leading ~ and rewrite $HOME-style paths onto /home/$USER when applicable.
-normalize_user_path() {
+# Expand leading ~ onto $HOME_DIR.
+normalize_home_path() {
   local p="$1"
   case "$p" in
-    "~"|"~/"*) p="${USER_HOME}${p#\~}" ;;
+    "~"|"~/"*) p="${HOME_DIR}${p#\~}" ;;
   esac
-  # If caller passed $HOME and it is /home/$USER, keep canonical form.
-  if [[ -n "${HOME:-}" && "$p" == "$HOME"/* && "$HOME" == "$USER_HOME" ]]; then
-    p="${USER_HOME}${p#"$HOME"}"
-  fi
   abs_path "$p"
 }
 
@@ -163,8 +159,8 @@ while [[ $# -gt 0 ]]; do
     --github) GITHUB_REPO="${2:?}"; shift 2 ;;
     --name=*) WORKSPACE_NAME="${1#*=}"; shift ;;
     --name) WORKSPACE_NAME="${2:?}"; shift 2 ;;
-    --user=*) USER_NAME="${1#*=}"; shift ;;
-    --user) USER_NAME="${2:?}"; shift 2 ;;
+    --home=*) HOME_DIR="${1#*=}"; shift ;;
+    --home) HOME_DIR="${2:?}"; shift 2 ;;
     --projects-root=*) PROJECTS_ROOT="${1#*=}"; shift ;;
     --projects-root) PROJECTS_ROOT="${2:?}"; shift 2 ;;
     --cursor-workspaces=*) CURSOR_WORKSPACES_ROOT="${1#*=}"; shift ;;
@@ -188,26 +184,19 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-if [[ -z "$USER_NAME" ]]; then
-  die "\$USER is unset; export USER or pass --user=NAME"
+if [[ -z "$HOME_DIR" ]]; then
+  die "\$HOME is unset; export HOME or pass --home=PATH"
 fi
-if [[ ! "$USER_NAME" =~ ^[A-Za-z0-9._-]+$ ]]; then
-  die "user name must be alphanumeric/._- (got: ${USER_NAME})"
-fi
-
-USER_HOME="/home/${USER_NAME}"
-if [[ ! -d "$USER_HOME" ]]; then
-  die "expected home directory missing: ${USER_HOME} (check \$USER or --user; HOME=${HOME:-unset})"
-fi
-if [[ -n "${HOME:-}" && "$HOME" != "$USER_HOME" ]]; then
-  log "note: HOME=${HOME} differs from /home/${USER_NAME}; using /home/${USER_NAME} for defaults"
+HOME_DIR="$(abs_path "$HOME_DIR")"
+if [[ ! -d "$HOME_DIR" ]]; then
+  die "home directory missing: ${HOME_DIR} (check \$HOME or --home)"
 fi
 
 if [[ -z "$PROJECTS_ROOT" ]]; then
-  PROJECTS_ROOT="${USER_HOME}/projects/dev"
+  PROJECTS_ROOT="${HOME_DIR}/projects/dev"
 fi
 if [[ -z "$CURSOR_WORKSPACES_ROOT" ]]; then
-  CURSOR_WORKSPACES_ROOT="${USER_HOME}/.local/share/cursor/workspaces"
+  CURSOR_WORKSPACES_ROOT="${HOME_DIR}/.local/share/cursor/workspaces"
 fi
 
 if [[ -n "$GITHUB_REPO" ]]; then
@@ -237,12 +226,12 @@ fi
 
 [[ -d "$TEMPLATE_DIR" ]] || die "template not found: ${TEMPLATE_DIR}"
 
-PROJECTS_ROOT="$(normalize_user_path "$PROJECTS_ROOT")"
-CURSOR_WORKSPACES_ROOT="$(normalize_user_path "$CURSOR_WORKSPACES_ROOT")"
-TEMPLATE_DIR="$(normalize_user_path "$TEMPLATE_DIR")"
+PROJECTS_ROOT="$(normalize_home_path "$PROJECTS_ROOT")"
+CURSOR_WORKSPACES_ROOT="$(normalize_home_path "$CURSOR_WORKSPACES_ROOT")"
+TEMPLATE_DIR="$(normalize_home_path "$TEMPLATE_DIR")"
 
-if [[ "$PROJECTS_ROOT" != "$USER_HOME" && "$PROJECTS_ROOT" != "$USER_HOME"/* ]]; then
-  log "note: projects root is outside /home/${USER_NAME}: ${PROJECTS_ROOT}"
+if [[ "$PROJECTS_ROOT" != "$HOME_DIR" && "$PROJECTS_ROOT" != "$HOME_DIR"/* ]]; then
+  log "note: projects root is outside \$HOME (${HOME_DIR}): ${PROJECTS_ROOT}"
 fi
 
 PROJECT_DIR="${PROJECTS_ROOT}/${REPO_BASENAME}"
@@ -263,8 +252,7 @@ if [[ -e "$DEST_DIR" && "$DRY_RUN" -eq 1 && "$FORCE" -ne 1 ]]; then
 fi
 
 log "Deploy Cursor workspace"
-log "  USER              : ${USER_NAME}"
-log "  user home         : ${USER_HOME}"
+log "  HOME              : ${HOME_DIR}"
 log "  template          : ${TEMPLATE_DIR}"
 log "  destination       : ${DEST_DIR}"
 log "  projects root     : ${PROJECTS_ROOT}"
@@ -301,8 +289,8 @@ fi
 
 # --- mcp.json (required companions + workflow-server; keep extras) ------------
 # Workflows expect concept-rag, atlassian, and gitnexus alongside workflow-server.
-CONCEPT_RAG_ENTRY="${CONCEPT_RAG_ENTRY:-${USER_HOME}/projects/main/concept-rag/dist/conceptual_index.js}"
-CONCEPT_RAG_INDEX="${CONCEPT_RAG_INDEX:-${USER_HOME}/.concept_rag}"
+CONCEPT_RAG_ENTRY="${CONCEPT_RAG_ENTRY:-${HOME_DIR}/projects/main/concept-rag/dist/conceptual_index.js}"
+CONCEPT_RAG_INDEX="${CONCEPT_RAG_INDEX:-${HOME_DIR}/.concept_rag}"
 if [[ -z "${GITNEXUS_BIN:-}" ]]; then
   if command -v gitnexus >/dev/null 2>&1; then
     GITNEXUS_BIN="$(command -v gitnexus)"
@@ -320,8 +308,7 @@ merge_mcp_json() {
   local existing_path="$1"
   MCP_URL="$MCP_URL" \
   EXISTING_PATH="$existing_path" \
-  USER_NAME="$USER_NAME" \
-  USER_HOME="$USER_HOME" \
+  HOME_DIR="$HOME_DIR" \
   CONCEPT_RAG_ENTRY="$CONCEPT_RAG_ENTRY" \
   CONCEPT_RAG_INDEX="$CONCEPT_RAG_INDEX" \
   GITNEXUS_BIN="$GITNEXUS_BIN" \
@@ -331,28 +318,24 @@ import json, os, re, sys
 
 url = os.environ["MCP_URL"]
 path = os.environ.get("EXISTING_PATH") or ""
-user_name = os.environ["USER_NAME"]
-user_home = os.environ["USER_HOME"].rstrip("/")
+home_dir = os.environ["HOME_DIR"].rstrip("/")
 concept_entry = os.environ["CONCEPT_RAG_ENTRY"]
 concept_index = os.environ["CONCEPT_RAG_INDEX"]
 gitnexus_bin = os.environ["GITNEXUS_BIN"]
 node_bin = os.environ["NODE_BIN"]
 
 def expand(value: str) -> str:
-    """Substitute user path tokens in any MCP string (all servers)."""
+    """Substitute home path tokens in any MCP string (all servers)."""
     if not isinstance(value, str):
         return value
-    # Explicit placeholders (template + hand edits)
-    value = value.replace("__USER_HOME__", user_home)
-    value = value.replace("${USER_HOME}", user_home)
-    value = value.replace("$USER_HOME", user_home)
-    value = value.replace("${HOME}", user_home)
+    value = value.replace("__USER_HOME__", home_dir)
+    value = value.replace("${USER_HOME}", home_dir)
+    value = value.replace("$USER_HOME", home_dir)
+    value = value.replace("${HOME}", home_dir)
     # Only bare $HOME (not $HOSTNAME etc.)
-    value = re.sub(r"\$HOME(?![A-Za-z0-9_])", user_home, value)
-    value = value.replace("${USER}", user_name)
-    value = re.sub(r"\$USER(?![A-Za-z0-9_])", user_name, value)
-    # /home/<any-user>/… → canonical /home/$USER/…
-    value = re.sub(r"/home/[^/]+/", user_home + "/", value)
+    value = re.sub(r"\$HOME(?![A-Za-z0-9_])", home_dir, value)
+    # /home/<any-name>/… → $HOME/…
+    value = re.sub(r"/home/[^/]+/", home_dir + "/", value)
     return value
 
 def expand_obj(obj):
@@ -400,7 +383,7 @@ servers["workflow-server"] = {
     "args": ["-y", "mcp-remote", url],
 }
 
-# Expand user-path tokens on every server (required + extras), every field.
+# Expand home-path tokens on every server (required + extras), every field.
 doc = expand_obj(doc)
 servers = doc.setdefault("mcpServers", {})
 
@@ -434,7 +417,7 @@ MCP_JSON="$(merge_mcp_json "$MCP_SRC")"
 write_file "${DEST_DIR}/.cursor/mcp.json" "$MCP_JSON"
 write_file "${DEST_DIR}/.mcp.json" "$MCP_JSON"
 
-# --- .code-workspace (absolute /home/$USER paths) -----------------------------
+# --- .code-workspace (absolute $HOME paths) -----------------------------------
 # shellcheck disable=SC2016
 WORKSPACE_JSON=$(
   PROJECT_DIR="$PROJECT_DIR" \

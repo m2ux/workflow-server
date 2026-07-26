@@ -45,10 +45,10 @@ Repeat **2a → 2b** for each product repo.
 
 ## 3. Setup Cursor workspace
 
-**Recommended path:** deploy the [examples/cursor-workspace/](examples/cursor-workspace/) template with [`scripts/deploy-cursor-workspace.sh`](scripts/deploy-cursor-workspace.sh). That writes absolute `/home/$USER/…` multi-root paths (no `HOST_PROJECTS_ROOT` required when opening Cursor) and mirrors `~/.local/share/cursor/workspaces/workflow-server`:
+**Recommended path:** deploy the [examples/cursor-workspace/](examples/cursor-workspace/) template with [`scripts/deploy-cursor-workspace.sh`](scripts/deploy-cursor-workspace.sh). That writes absolute `$HOME/…` multi-root paths (no `HOST_PROJECTS_ROOT` required when opening Cursor) and mirrors `~/.local/share/cursor/workspaces/workflow-server`:
 
 ```bash
-# after install.sh ($USER must be set; needs python3) — preferred
+# after install.sh ($HOME must be set; needs python3) — preferred
 ~/.local/share/workflow-server/deploy-cursor-workspace.sh --github=m2ux/workflow-server
 # or from a workflow-server checkout:
 ./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server
@@ -65,8 +65,8 @@ cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-wor
 |------|---------|
 | `--github=owner/repo` | `AGENTS.md` identity; implies repo basename if `--repo` omitted |
 | `--repo=NAME` / positional | Checkout under projects root (default `workflow-server`) |
-| `--user=NAME` | Build paths as `/home/NAME/…` (default `$USER`) |
-| `--projects-root=PATH` | Default `$HOST_PROJECTS_ROOT` or `/home/$USER/projects/dev` |
+| `--home=PATH` | Build paths under this home (default `$HOME`) |
+| `--projects-root=PATH` | Default `$HOST_PROJECTS_ROOT` or `$HOME/projects/dev` |
 | `--force` | Refresh managed files; merge `mcp.json` without dropping other servers |
 | `--dry-run` / `--open` / `--help` | Preview, launch Cursor, full flag list |
 
