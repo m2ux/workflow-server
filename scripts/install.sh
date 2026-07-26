@@ -24,9 +24,11 @@ DEFAULT_REF="main"
 DEFAULT_START_NAME="start.sh"
 DEFAULT_STOP_NAME="stop.sh"
 DEFAULT_UPDATE_NAME="update-workflows.sh"
+DEFAULT_DEPLOY_CURSOR_NAME="deploy-cursor-workspace.sh"
 DEFAULT_ENV_NAME="env"
 DEFAULT_CONTAINER_NAME="workflow-server"
 DEFAULT_HOST_PORT="3000"
+DEFAULT_CURSOR_TEMPLATE_REL="examples/cursor-workspace"
 # Older helper script names — removed on upgrade when present.
 LEGACY_NAMES=(
   "run-workflow-server.sh"
@@ -76,6 +78,8 @@ LAYOUT
     ${DEFAULT_START_NAME}
     ${DEFAULT_STOP_NAME}
     ${DEFAULT_UPDATE_NAME}
+    ${DEFAULT_DEPLOY_CURSOR_NAME}
+    ${DEFAULT_CURSOR_TEMPLATE_REL}/  # template for deploy-cursor-workspace
     ${DEFAULT_ENV_NAME}               # HOST_PROJECTS_ROOT + port / name
     workflows/               # git clone -b workflows (server definitions)
     state/                   # durable HMAC key (mounted by start.sh)
@@ -92,6 +96,7 @@ AFTER INSTALL
   \$INSTALL/${DEFAULT_START_NAME} -d
   \$INSTALL/${DEFAULT_STOP_NAME}
   \$INSTALL/${DEFAULT_UPDATE_NAME}
+  \$INSTALL/${DEFAULT_DEPLOY_CURSOR_NAME} --github=owner/repo
   export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:${DEFAULT_HOST_PORT}/mcp
   curl -fsS http://127.0.0.1:${DEFAULT_HOST_PORT}/health
   curl -fsS http://127.0.0.1:${DEFAULT_HOST_PORT}/ready   # sessionKeyWritable: true
@@ -132,6 +137,46 @@ fetch_script() {
   echo "Fetching ${label} → ${dest}"
   curl -fsSL -o "$dest" "$url"
   chmod +x "$dest"
+}
+
+# Install examples/cursor-workspace next to deploy-cursor-workspace.sh.
+# Prefer GitHub codeload tarball when using the default raw base; else sparse clone.
+fetch_cursor_workspace_template() {
+  local dest="$1"
+  local tmp tarball_ok=0 src=""
+  tmp="$(mktemp -d "${TMPDIR:-/tmp}/wf-cursor-tmpl.XXXXXX")"
+
+  echo "Fetching Cursor workspace template → ${dest}"
+
+  if [[ "$RAW_BASE" == https://raw.githubusercontent.com/m2ux/workflow-server ]]; then
+    if curl -fsSL "https://codeload.github.com/m2ux/workflow-server/tar.gz/${REF}" \
+      -o "${tmp}/src.tgz" \
+      && tar -xzf "${tmp}/src.tgz" -C "$tmp" 2>/dev/null; then
+      src="$(find "$tmp" -type d -path '*/examples/cursor-workspace' 2>/dev/null | head -n 1 || true)"
+      if [[ -n "$src" && -d "$src" ]]; then
+        tarball_ok=1
+        rm -rf "$dest"
+        mkdir -p "$(dirname "$dest")"
+        cp -a "$src" "$dest"
+      fi
+    fi
+  fi
+
+  if [[ "$tarball_ok" -ne 1 ]]; then
+    echo "  (falling back to git sparse checkout from ${REPO_URL} @ ${REF})"
+    git clone -b "$REF" --depth 1 --filter=blob:none --sparse "$REPO_URL" "${tmp}/repo" \
+      || { rm -rf "$tmp"; die "failed to clone for Cursor template"; }
+    git -C "${tmp}/repo" sparse-checkout set examples/cursor-workspace \
+      || { rm -rf "$tmp"; die "failed sparse-checkout examples/cursor-workspace"; }
+    [[ -d "${tmp}/repo/examples/cursor-workspace" ]] \
+      || { rm -rf "$tmp"; die "examples/cursor-workspace missing after sparse checkout"; }
+    rm -rf "$dest"
+    mkdir -p "$(dirname "$dest")"
+    cp -a "${tmp}/repo/examples/cursor-workspace" "$dest"
+  fi
+
+  rm -rf "$tmp"
+  [[ -d "$dest" ]] || die "Cursor workspace template not installed: ${dest}"
 }
 
 while [[ $# -gt 0 ]]; do
@@ -219,11 +264,14 @@ fi
 START_PATH="${INSTALL_DIR}/${DEFAULT_START_NAME}"
 STOP_PATH="${INSTALL_DIR}/${DEFAULT_STOP_NAME}"
 UPDATE_PATH="${INSTALL_DIR}/${DEFAULT_UPDATE_NAME}"
+DEPLOY_CURSOR_PATH="${INSTALL_DIR}/${DEFAULT_DEPLOY_CURSOR_NAME}"
+CURSOR_TEMPLATE_DIR="${INSTALL_DIR}/${DEFAULT_CURSOR_TEMPLATE_REL}"
 ENV_PATH="${INSTALL_DIR}/${DEFAULT_ENV_NAME}"
 WORKFLOWS_DIR="${INSTALL_DIR}/workflows"
 START_URL="${RAW_BASE}/${REF}/scripts/start.sh"
 STOP_URL="${RAW_BASE}/${REF}/scripts/stop.sh"
 UPDATE_URL="${RAW_BASE}/${REF}/scripts/update-workflows.sh"
+DEPLOY_CURSOR_URL="${RAW_BASE}/${REF}/scripts/deploy-cursor-workspace.sh"
 
 echo "Install dir: ${INSTALL_DIR}"
 mkdir -p "$INSTALL_DIR"
@@ -238,6 +286,8 @@ fi
 fetch_script "$START_PATH" "$START_URL" "start"
 fetch_script "$STOP_PATH" "$STOP_URL" "stop"
 fetch_script "$UPDATE_PATH" "$UPDATE_URL" "update-workflows"
+fetch_script "$DEPLOY_CURSOR_PATH" "$DEPLOY_CURSOR_URL" "deploy-cursor-workspace"
+fetch_cursor_workspace_template "$CURSOR_TEMPLATE_DIR"
 
 for legacy in "${LEGACY_NAMES[@]}"; do
   legacy_path="${INSTALL_DIR}/${legacy}"
@@ -297,6 +347,10 @@ echo "  ${STOP_PATH}"
 echo
 echo "Update workflows later with:"
 echo "  ${UPDATE_PATH}"
+echo
+echo "Deploy Cursor multi-root workspace (after a product checkout exists):"
+echo "  ${DEPLOY_CURSOR_PATH} --github=owner/repo"
+echo "  Template: ${CURSOR_TEMPLATE_DIR}"
 echo
 echo "Then:"
 echo "  export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:${HOST_PORT}/mcp"

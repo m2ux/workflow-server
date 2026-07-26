@@ -48,14 +48,18 @@ Repeat **2a → 2b** for each product repo.
 **Recommended path:** deploy the [examples/cursor-workspace/](examples/cursor-workspace/) template with [`scripts/deploy-cursor-workspace.sh`](scripts/deploy-cursor-workspace.sh). That writes absolute `/home/$USER/…` multi-root paths (no `HOST_PROJECTS_ROOT` required when opening Cursor) and mirrors `~/.local/share/cursor/workspaces/workflow-server`:
 
 ```bash
-# from a workflow-server checkout ($USER must be set; needs python3)
+# after install.sh ($USER must be set; needs python3) — preferred
+~/.local/share/workflow-server/deploy-cursor-workspace.sh --github=m2ux/workflow-server
+# or from a workflow-server checkout:
 ./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server
 # refresh an existing kickoff dir (keeps extra MCP servers):
-./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server --force
+~/.local/share/workflow-server/deploy-cursor-workspace.sh --github=m2ux/workflow-server --force
 # preview:
-./scripts/deploy-cursor-workspace.sh --dry-run --github=m2ux/workflow-server
+~/.local/share/workflow-server/deploy-cursor-workspace.sh --dry-run --github=m2ux/workflow-server
 cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-workspace
 ```
+
+`install.sh` places `deploy-cursor-workspace.sh` and `examples/cursor-workspace/` under the install dir (default `~/.local/share/workflow-server/`).
 
 | Flag | Purpose |
 |------|---------|
@@ -66,7 +70,7 @@ cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-wor
 | `--force` | Refresh managed files; merge `mcp.json` without dropping other servers |
 | `--dry-run` / `--open` / `--help` | Preview, launch Cursor, full flag list |
 
-Flags: `./scripts/deploy-cursor-workspace.sh --help` · [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md).
+Flags: `deploy-cursor-workspace.sh --help` · [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md).
 
 The template includes MCP (`workflow-server` via `mcp-remote`), bootstrap rules, and `AGENTS.md` for `repo: "owner/repo"`.
 
