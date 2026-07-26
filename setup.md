@@ -49,13 +49,14 @@ Repeat **2a → 2b** for each product repo.
 
 ```bash
 # after install.sh ($HOME must be set; needs python3) — preferred
-~/.local/share/workflow-server/deploy-cursor-workspace.sh --github=m2ux/workflow-server
+~/.local/share/workflow-server/deploy-cursor-workspace.sh workflow-server
 # or from a workflow-server checkout:
-./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server
+./scripts/deploy-cursor-workspace.sh workflow-server
 # refresh an existing kickoff dir (keeps extra MCP servers):
-~/.local/share/workflow-server/deploy-cursor-workspace.sh --github=m2ux/workflow-server --force
+~/.local/share/workflow-server/deploy-cursor-workspace.sh workflow-server --force
 # preview:
-~/.local/share/workflow-server/deploy-cursor-workspace.sh --dry-run --github=m2ux/workflow-server
+~/.local/share/workflow-server/deploy-cursor-workspace.sh workflow-server --dry-run
+# no args → help (repo name is required)
 cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-workspace
 ```
 
@@ -63,12 +64,11 @@ cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-wor
 
 | Flag | Purpose |
 |------|---------|
-| `--github=owner/repo` | `AGENTS.md` identity; implies repo basename if `--repo` omitted |
-| `--repo=NAME` / positional | Checkout under projects root (default `workflow-server`) |
+| `REPO_NAME` or `--repo=NAME` | **Required.** Checkout / workspace basename (no `owner/repo`) |
 | `--home=PATH` | Build paths under this home (default `$HOME`) |
 | `--projects-root=PATH` | Default `$HOST_PROJECTS_ROOT` or `$HOME/projects/dev` |
 | `--force` | Refresh managed files; merge `mcp.json` without dropping other servers |
-| `--dry-run` / `--open` / `--help` | Preview, launch Cursor, full flag list |
+| `--dry-run` / `--open` / no args / `--help` | Preview, launch Cursor, or print help |
 
 Flags: `deploy-cursor-workspace.sh --help` · [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md).
 
