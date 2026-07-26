@@ -96,7 +96,7 @@ AFTER INSTALL
   \$INSTALL/${DEFAULT_START_NAME} -d
   \$INSTALL/${DEFAULT_STOP_NAME}
   \$INSTALL/${DEFAULT_UPDATE_NAME}
-  \$INSTALL/${DEFAULT_DEPLOY_CURSOR_NAME} --github=owner/repo
+  \$INSTALL/${DEFAULT_DEPLOY_CURSOR_NAME} REPO_NAME
   export WORKFLOW_SERVER_MCP_URL=http://127.0.0.1:${DEFAULT_HOST_PORT}/mcp
   curl -fsS http://127.0.0.1:${DEFAULT_HOST_PORT}/health
   curl -fsS http://127.0.0.1:${DEFAULT_HOST_PORT}/ready   # sessionKeyWritable: true
@@ -349,7 +349,7 @@ echo "Update workflows later with:"
 echo "  ${UPDATE_PATH}"
 echo
 echo "Deploy Cursor multi-root workspace (after a product checkout exists):"
-echo "  ${DEPLOY_CURSOR_PATH} --github=owner/repo"
+echo "  ${DEPLOY_CURSOR_PATH} REPO_NAME"
 echo "  Template: ${CURSOR_TEMPLATE_DIR}"
 echo
 echo "Then:"

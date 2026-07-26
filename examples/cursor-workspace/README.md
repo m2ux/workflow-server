@@ -10,10 +10,10 @@ a product checkout under your projects root, and `$HOME` set.
 
 ```bash
 # after install.sh (preferred)
-~/.local/share/workflow-server/deploy-cursor-workspace.sh --github=m2ux/workflow-server
+~/.local/share/workflow-server/deploy-cursor-workspace.sh workflow-server
 # or from a workflow-server checkout
-./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server
-~/.local/share/workflow-server/deploy-cursor-workspace.sh --help
+./scripts/deploy-cursor-workspace.sh workflow-server
+~/.local/share/workflow-server/deploy-cursor-workspace.sh   # help (repo name required)
 ```
 
 Writes absolute `$HOME/…` roots into
@@ -21,10 +21,10 @@ Writes absolute `$HOME/…` roots into
 
 | Common flag | Purpose |
 |-------------|---------|
-| `--github=owner/repo` | `AGENTS.md` + default repo basename |
-| `--repo=NAME` | Checkout name (default `workflow-server`) |
+| `REPO_NAME` or `--repo=NAME` | **Required.** Checkout / workspace basename |
 | `--force` | Refresh; keeps any extra MCP servers |
 | `--open` | Open the `.code-workspace` in Cursor |
+| (no args) | Print help |
 
 MCP written by deploy (workflows depend on these): `concept-rag`, `atlassian`,
 `gitnexus`, `workflow-server`. Deploy expands `${HOME}`, `$HOME`,
@@ -45,7 +45,7 @@ Then ask the agent to start a workflow (`discover` → `start_session` with `rep
 
 ## Template contents
 
-- `AGENTS.md` — target `owner/repo`
+- `AGENTS.md` — checkout basename + placeholder for `owner/repo`
 - `.cursor/mcp.json` / `.mcp.json` — `concept-rag`, `atlassian`, `gitnexus`, `workflow-server`
 - `.cursor/rules/` — always-on `discover` first
 - `workflow-server.code-workspace` — multi-root folders

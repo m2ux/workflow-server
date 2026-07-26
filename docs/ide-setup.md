@@ -10,8 +10,8 @@ Deploy **[examples/cursor-workspace/](../examples/cursor-workspace/)** with [`sc
 - Multi-root folders: workspace, project, planning, work trees
 
 ```bash
-./scripts/deploy-cursor-workspace.sh --github=owner/repo
-./scripts/deploy-cursor-workspace.sh --help
+./scripts/deploy-cursor-workspace.sh my-app
+./scripts/deploy-cursor-workspace.sh   # help (repo name required)
 ```
 
 Then ask the agent to start a workflow. Prefer this over hand-rolling MCP config or pasting rules into a single-folder project.

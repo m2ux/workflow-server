@@ -12,9 +12,8 @@
 #   🌳 work trees  → …/<repo>/.worktrees
 #
 # Usage:
-#   ./scripts/deploy-cursor-workspace.sh [--repo=NAME] [options]
-#   ./scripts/deploy-cursor-workspace.sh workflow-server
-#   ./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server
+#   ./scripts/deploy-cursor-workspace.sh REPO_NAME [options]
+#   ./scripts/deploy-cursor-workspace.sh --repo=REPO_NAME [options]
 #
 # Needs: bash, cp, mkdir, python3.
 set -euo pipefail
@@ -33,7 +32,6 @@ fi
 # Paths are built from $HOME (see --home to override).
 HOME_DIR="${HOME:-}"
 REPO_BASENAME=""
-GITHUB_REPO=""
 WORKSPACE_NAME=""
 PROJECTS_ROOT="${HOST_PROJECTS_ROOT:-}"
 CURSOR_WORKSPACES_ROOT=""
@@ -45,19 +43,21 @@ SKIP_MKDIR=0
 
 usage() {
   cat <<EOF
-Usage: $(basename "$0") [repo-basename | options]
+Usage: $(basename "$0") REPO_NAME [options]
+       $(basename "$0") --repo=REPO_NAME [options]
 
 Deploy examples/cursor-workspace to Cursor's multi-root workspaces dir with
 absolute paths under \$HOME/….
 
-Arguments:
-  repo-basename              Checkout name under projects root (default: workflow-server)
+Requires a product repo name (checkout basename under the projects root).
+No default target — running with no args prints this help.
+
+Required:
+  REPO_NAME                  Checkout / workspace name (e.g. workflow-server)
+  --repo=NAME                Same as positional REPO_NAME
 
 Options:
-  --repo=NAME                Same as positional repo-basename
-  --github=owner/repo        Write AGENTS.md session identity (e.g. m2ux/workflow-server).
-                             If --repo is omitted, basename is taken from this value.
-  --name=NAME                Cursor workspace folder name (default: same as --repo)
+  --name=NAME                Cursor workspace folder name (default: same as REPO_NAME)
   --home=PATH                Override \$HOME when building paths (default: \$HOME)
   --projects-root=PATH       Projects root (default: \$HOST_PROJECTS_ROOT or
                              \$HOME/projects/dev)
@@ -89,10 +89,10 @@ Environment:
   GITNEXUS_BIN               Override gitnexus binary (default: /usr/local/bin/gitnexus)
 
 Examples:
-  $(basename "$0")
-  $(basename "$0") my-app --github=acme/my-app
-  $(basename "$0") --repo=workflow-server --github=m2ux/workflow-server --open
-  $(basename "$0") --home=\"\$HOME\" --projects-root=\"\$HOME\"/projects/dev
+  $(basename "$0") workflow-server
+  $(basename "$0") my-app --open
+  $(basename "$0") --repo=workflow-server --force --dry-run
+  $(basename "$0") workflow-server --home=\"\$HOME\" --projects-root=\"\$HOME\"/projects/dev
 EOF
 }
 
@@ -150,13 +150,16 @@ write_file() {
   printf '%s' "$content" >"$dest"
 }
 
+if [[ $# -eq 0 ]]; then
+  usage
+  exit 0
+fi
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help) usage; exit 0 ;;
     --repo=*) REPO_BASENAME="${1#*=}"; shift ;;
     --repo) REPO_BASENAME="${2:?}"; shift 2 ;;
-    --github=*) GITHUB_REPO="${1#*=}"; shift ;;
-    --github) GITHUB_REPO="${2:?}"; shift 2 ;;
     --name=*) WORKSPACE_NAME="${1#*=}"; shift ;;
     --name) WORKSPACE_NAME="${2:?}"; shift 2 ;;
     --home=*) HOME_DIR="${1#*=}"; shift ;;
@@ -173,16 +176,30 @@ while [[ $# -gt 0 ]]; do
     --dry-run) DRY_RUN=1; shift ;;
     --open) OPEN_AFTER=1; shift ;;
     --skip-mkdir) SKIP_MKDIR=1; shift ;;
+    --github=*|--github)
+      die "unknown option: $1 (pass a repo name only, e.g. workflow-server; try --help)"
+      ;;
     --*) die "unknown option: $1 (try --help)" ;;
     *)
       if [[ -n "$REPO_BASENAME" ]]; then
-        die "unexpected argument: $1"
+        die "unexpected argument: $1 (repo already set to ${REPO_BASENAME})"
       fi
       REPO_BASENAME="$1"
       shift
       ;;
   esac
 done
+
+if [[ -z "$REPO_BASENAME" ]]; then
+  usage >&2
+  die "missing required repo name: pass REPO_NAME or --repo=NAME"
+fi
+if [[ "$REPO_BASENAME" == */* ]]; then
+  die "repo name must be a basename only (got: ${REPO_BASENAME}); do not pass owner/repo"
+fi
+if [[ ! "$REPO_BASENAME" =~ ^[A-Za-z0-9._-]+$ ]]; then
+  die "repo name must be alphanumeric/._- (got: ${REPO_BASENAME})"
+fi
 
 if [[ -z "$HOME_DIR" ]]; then
   die "\$HOME is unset; export HOME or pass --home=PATH"
@@ -197,23 +214,6 @@ if [[ -z "$PROJECTS_ROOT" ]]; then
 fi
 if [[ -z "$CURSOR_WORKSPACES_ROOT" ]]; then
   CURSOR_WORKSPACES_ROOT="${HOME_DIR}/.local/share/cursor/workspaces"
-fi
-
-if [[ -n "$GITHUB_REPO" ]]; then
-  if [[ ! "$GITHUB_REPO" =~ ^[A-Za-z0-9._-]+/[A-Za-z0-9._-]+$ ]]; then
-    die "--github must look like owner/repo (got: ${GITHUB_REPO})"
-  fi
-  if [[ -z "$REPO_BASENAME" ]]; then
-    REPO_BASENAME="${GITHUB_REPO##*/}"
-  fi
-fi
-
-if [[ -z "$REPO_BASENAME" ]]; then
-  REPO_BASENAME="workflow-server"
-fi
-
-if [[ ! "$REPO_BASENAME" =~ ^[A-Za-z0-9._-]+$ ]]; then
-  die "repo basename must be alphanumeric/._- (got: ${REPO_BASENAME})"
 fi
 
 if [[ -z "$WORKSPACE_NAME" ]]; then
@@ -239,10 +239,6 @@ PLANNING_DIR="${PROJECT_DIR}/.engineering/artifacts/planning"
 WORKTREES_DIR="${PROJECT_DIR}/.worktrees"
 DEST_DIR="${CURSOR_WORKSPACES_ROOT}/${WORKSPACE_NAME}"
 WORKSPACE_FILE="${DEST_DIR}/${REPO_BASENAME}.code-workspace"
-# Keep a stable filename for the default product name used in docs/live layout.
-if [[ "$REPO_BASENAME" == "workflow-server" || "$WORKSPACE_NAME" == "workflow-server" ]]; then
-  WORKSPACE_FILE="${DEST_DIR}/workflow-server.code-workspace"
-fi
 
 if [[ -e "$DEST_DIR" && "$FORCE" -ne 1 && "$DRY_RUN" -ne 1 ]]; then
   die "destination exists: ${DEST_DIR} (re-run with --force to overwrite managed files)"
@@ -253,6 +249,7 @@ fi
 
 log "Deploy Cursor workspace"
 log "  HOME              : ${HOME_DIR}"
+log "  repo              : ${REPO_BASENAME}"
 log "  template          : ${TEMPLATE_DIR}"
 log "  destination       : ${DEST_DIR}"
 log "  projects root     : ${PROJECTS_ROOT}"
@@ -261,9 +258,6 @@ log "  planning          : ${PLANNING_DIR}"
 log "  work trees        : ${WORKTREES_DIR}"
 log "  workspace file    : ${WORKSPACE_FILE}"
 log "  MCP URL           : ${MCP_URL}"
-if [[ -n "$GITHUB_REPO" ]]; then
-  log "  github            : ${GITHUB_REPO}"
-fi
 
 # --- copy template rules / skills (preserve extra local files) ----------------
 if [[ "$DRY_RUN" -eq 1 ]]; then
@@ -440,10 +434,7 @@ PY
 write_file "$WORKSPACE_FILE" "$WORKSPACE_JSON"
 
 # --- AGENTS.md / CLAUDE.md ----------------------------------------------------
-if [[ -n "$GITHUB_REPO" ]]; then
-  AGENTS_BODY="The Github repo for which this workspace is targeted is ${GITHUB_REPO}."
-else
-  AGENTS_BODY=$(cat <<EOF
+AGENTS_BODY=$(cat <<EOF
 # Target repository
 
 ## Filesystem checkout (navigation)
@@ -481,7 +472,6 @@ owner/repo
 Replace with your project (for example \`m2ux/${REPO_BASENAME}\`).
 EOF
 )
-fi
 
 write_file "${DEST_DIR}/AGENTS.md" "${AGENTS_BODY}"$'\n'
 
@@ -517,10 +507,8 @@ if [[ ! -d "$PROJECT_DIR" ]]; then
   echo "  ${PROJECT_DIR}"
   echo
 fi
-if [[ -z "$GITHUB_REPO" ]]; then
-  echo "Optional: set GitHub owner/repo in AGENTS.md, or re-run with --github=owner/repo"
-  echo
-fi
+echo "Optional: set GitHub owner/repo in AGENTS.md for start_session."
+echo
 
 if [[ "$OPEN_AFTER" -eq 1 ]]; then
   if command -v cursor >/dev/null 2>&1; then
