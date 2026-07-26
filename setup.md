@@ -63,12 +63,11 @@ cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-wor
 
 | Flag | Purpose |
 |------|---------|
-| `--github=owner/repo` | `AGENTS.md` identity; implies repo basename if `--repo` omitted |
-| `--repo=NAME` / positional | Checkout under projects root (default `workflow-server`) |
+| `--github=owner/repo` or `owner/repo` | **Required.** `AGENTS.md` identity; basename only used for checkout / workspace paths |
 | `--home=PATH` | Build paths under this home (default `$HOME`) |
 | `--projects-root=PATH` | Default `$HOST_PROJECTS_ROOT` or `$HOME/projects/dev` |
 | `--force` | Refresh managed files; merge `mcp.json` without dropping other servers |
-| `--dry-run` / `--open` / `--help` | Preview, launch Cursor, full flag list |
+| `--dry-run` / `--open` / no args / `--help` | Preview, launch Cursor, or print help |
 
 Flags: `deploy-cursor-workspace.sh --help` · [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md).
 

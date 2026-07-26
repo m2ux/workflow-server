@@ -21,10 +21,10 @@ Writes absolute `$HOME/…` roots into
 
 | Common flag | Purpose |
 |-------------|---------|
-| `--github=owner/repo` | `AGENTS.md` + default repo basename |
-| `--repo=NAME` | Checkout name (default `workflow-server`) |
+| `--github=owner/repo` or `owner/repo` | **Required.** Basename used for checkout / workspace paths |
 | `--force` | Refresh; keeps any extra MCP servers |
 | `--open` | Open the `.code-workspace` in Cursor |
+| (no args) | Print help |
 
 MCP written by deploy (workflows depend on these): `concept-rag`, `atlassian`,
 `gitnexus`, `workflow-server`. Deploy expands `${HOME}`, `$HOME`,
