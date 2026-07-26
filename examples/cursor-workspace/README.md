@@ -9,9 +9,11 @@ Requires workflow-server running ([setup.md](../../setup.md), [http.md](../../ht
 a product checkout under your projects root, and `$USER` set.
 
 ```bash
-# from a workflow-server checkout
+# after install.sh (preferred)
+~/.local/share/workflow-server/deploy-cursor-workspace.sh --github=m2ux/workflow-server
+# or from a workflow-server checkout
 ./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server
-./scripts/deploy-cursor-workspace.sh --help   # all flags
+~/.local/share/workflow-server/deploy-cursor-workspace.sh --help
 ```
 
 Writes absolute `/home/$USER/…` roots into

@@ -20,8 +20,15 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-REPO_ROOT="$(cd "${SCRIPT_DIR}/.." && pwd)"
-TEMPLATE_DIR="${REPO_ROOT}/examples/cursor-workspace"
+# Repo checkout: scripts/deploy-… → ../examples/cursor-workspace
+# install.sh layout: $INSTALL/deploy-… + $INSTALL/examples/cursor-workspace
+if [[ -d "${SCRIPT_DIR}/../examples/cursor-workspace" ]]; then
+  TEMPLATE_DIR="$(cd "${SCRIPT_DIR}/../examples/cursor-workspace" && pwd)"
+elif [[ -d "${SCRIPT_DIR}/examples/cursor-workspace" ]]; then
+  TEMPLATE_DIR="$(cd "${SCRIPT_DIR}/examples/cursor-workspace" && pwd)"
+else
+  TEMPLATE_DIR="${SCRIPT_DIR}/../examples/cursor-workspace"
+fi
 
 # Canonical user paths are always /home/$USER/… (see --user to override $USER).
 USER_NAME="${USER:-}"
@@ -58,7 +65,8 @@ Options:
                              (default: /home/\$USER/.local/share/cursor/workspaces)
   --mcp-url=URL              workflow-server HTTP MCP URL written into mcp.json
                              (default: http://127.0.0.1:3000/mcp)
-  --template=DIR             Template source (default: <repo>/examples/cursor-workspace)
+  --template=DIR             Template source (default: examples/cursor-workspace next to
+                             this script, or ../examples/cursor-workspace from scripts/)
   --force                    Refresh managed files in an existing workspace dir
                              (upserts required MCP servers; keeps any extras)
   --dry-run                  Print actions only
