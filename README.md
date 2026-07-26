@@ -42,15 +42,7 @@ User Goal → Workflow → Activities → Techniques → Tools
 
 This project is tailored towards the use of the Cursor IDE. To use with Claude Code it is recommended to setup the [Claude Code plugin for Cursor](https://marketplace.visualstudio.com/items?itemName=anthropic.claude-code).
 
-See: **[setup.md](setup.md)** for detailed setup instructions.
-
-Cursor multi-root workspace (after install + HTTP):
-
-```bash
-./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server
-# usage: ./scripts/deploy-cursor-workspace.sh --help
-# detail: examples/cursor-workspace/README.md
-```
+See: **[setup.md](setup.md)** for detailed setup instructions (including Cursor workspace at §3).
 
 ### Execute a workflow
 
