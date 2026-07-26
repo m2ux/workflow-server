@@ -45,14 +45,30 @@ Repeat **2a → 2b** for each product repo.
 
 ## 3. Setup Cursor workspace
 
-**Recommended path:** copy and open [examples/cursor-workspace/](examples/cursor-workspace/) (see its [README](examples/cursor-workspace/README.md)). That template mirrors `~/.local/share/cursor/workspaces/workflow-server` and already includes:
+**Recommended path:** deploy the [examples/cursor-workspace/](examples/cursor-workspace/) template with [`scripts/deploy-cursor-workspace.sh`](scripts/deploy-cursor-workspace.sh). That writes absolute `/home/$USER/…` multi-root paths (no `HOST_PROJECTS_ROOT` required when opening Cursor) and mirrors `~/.local/share/cursor/workspaces/workflow-server`:
 
-- `.cursor/mcp.json` (workflow-server via `mcp-remote`)
-- always-applied bootstrap rules
-- one-line `AGENTS.md` for `repo: "owner/repo"`
-- multi-root `.code-workspace` roots via `${env:HOST_PROJECTS_ROOT}` (no hardcoded `/home/…` paths)
+```bash
+# from a workflow-server checkout ($USER must be set; needs python3)
+./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server
+# refresh an existing kickoff dir (keeps extra MCP servers):
+./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server --force
+# preview:
+./scripts/deploy-cursor-workspace.sh --dry-run --github=m2ux/workflow-server
+cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-workspace
+```
 
-Launch Cursor from a shell that exports `HOST_PROJECTS_ROOT` (source `$INSTALL/env`). After the workspace is open, ask the agent to start a workflow.
+| Flag | Purpose |
+|------|---------|
+| `--github=owner/repo` | `AGENTS.md` identity; implies repo basename if `--repo` omitted |
+| `--repo=NAME` / positional | Checkout under projects root (default `workflow-server`) |
+| `--user=NAME` | Build paths as `/home/NAME/…` (default `$USER`) |
+| `--projects-root=PATH` | Default `$HOST_PROJECTS_ROOT` or `/home/$USER/projects/dev` |
+| `--force` | Refresh managed files; merge `mcp.json` without dropping other servers |
+| `--dry-run` / `--open` / `--help` | Preview, launch Cursor, full flag list |
+
+Flags: `./scripts/deploy-cursor-workspace.sh --help` · [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md).
+
+The template includes MCP (`workflow-server` via `mcp-remote`), bootstrap rules, and `AGENTS.md` for `repo: "owner/repo"`.
 
 ## 4. Update Workflows
 

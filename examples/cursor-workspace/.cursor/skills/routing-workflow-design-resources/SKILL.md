@@ -31,6 +31,7 @@ This skill is a **dispatcher**, not a reference. It tells you which resource fil
 
 ## Multi-root note
 
-Relative links above assume a `workflows/` directory reachable from this kickoff folder (same shape as the live workspace skill). When using the five-root Cursor workspace, prefer opening the same files under the **📦 workflows** root:
-
-`workflow-design/resources/<name>.md`
+Relative links above assume a `workflows/` directory reachable from this kickoff
+folder (for example a local checkout worktree). Prefer opening the same files via
+the project tree or `$INSTALL/workflows` when the kickoff workspace does not
+mount a workflows root.

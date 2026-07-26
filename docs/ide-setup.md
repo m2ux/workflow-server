@@ -2,12 +2,17 @@
 
 ## Recommended — example Cursor workspace
 
-Copy and open **[examples/cursor-workspace/](../examples/cursor-workspace/)** (see its [README](../examples/cursor-workspace/README.md)). That template mirrors the live layout under `~/.local/share/cursor/workspaces/workflow-server` and already wires:
+Deploy **[examples/cursor-workspace/](../examples/cursor-workspace/)** with [`scripts/deploy-cursor-workspace.sh`](../scripts/deploy-cursor-workspace.sh) (see the [README](../examples/cursor-workspace/README.md)). That installs the live layout under `~/.local/share/cursor/workspaces/<name>/` with absolute `/home/$USER/…` folder paths and already wires:
 
 - MCP (`workflow-server` → `http://127.0.0.1:3000/mcp` via `mcp-remote`)
 - Always-applied bootstrap rule (`discover` first)
 - One-line `AGENTS.md` for `repo: "owner/repo"`
-- Multi-root folders: workspace, project, workflows, planning, work trees
+- Multi-root folders: workspace, project, planning, work trees
+
+```bash
+./scripts/deploy-cursor-workspace.sh --github=owner/repo
+./scripts/deploy-cursor-workspace.sh --help
+```
 
 Then ask the agent to start a workflow. Prefer this over hand-rolling MCP config or pasting rules into a single-folder project.
 
@@ -38,5 +43,6 @@ If the agent skips `discover`, the rule is not loaded.
 
 - [setup.md](../setup.md) — install
 - [examples/cursor-workspace/](../examples/cursor-workspace/) — Cursor multi-root template
+- [scripts/deploy-cursor-workspace.sh](../scripts/deploy-cursor-workspace.sh) — deploy template with `/home/$USER/…` paths
 - [http.md](../http.md) / [stdio.md](../stdio.md) — transports
 - [api-reference.md](api-reference.md) — tools (`context_mode`, `context_tokens`, schemas)

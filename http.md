@@ -54,4 +54,4 @@ Adjust host/port if you changed `--host-port`. Routes: [docs/api-reference.md](d
 | OAuth / `.well-known` 404 or bare `GET /mcp` 400 in logs | Expected without application auth — see §3 above |
 | Image/container crash loop | `docker logs workflow-server`; confirm the `state` bind and image pull |
 
-Shared install, deploy, and checkout: [setup.md](setup.md).
+Shared install sequence (deploy, checkout, Cursor workspace, update workflows): [setup.md](setup.md).
