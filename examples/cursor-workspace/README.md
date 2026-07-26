@@ -78,22 +78,35 @@ root — keep them as separate roots, as in the canonical workspace.
 
 ## Use it (recommended: deploy script)
 
+Canonical usage lives in [`scripts/deploy-cursor-workspace.sh`](../../scripts/deploy-cursor-workspace.sh)
+(`./scripts/deploy-cursor-workspace.sh --help`). Summary below.
+
+### Quick start
+
 ```bash
-# From a workflow-server checkout
+# From a workflow-server checkout (requires $USER; paths under /home/$USER/…)
 ./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server
 
 # Another product under the same projects root:
 ./scripts/deploy-cursor-workspace.sh my-app --github=acme/my-app
 
-# Explicit user / layout (paths always under /home/$USER/…):
+# Explicit user / layout, then open Cursor:
 ./scripts/deploy-cursor-workspace.sh \
   --user="$USER" \
   --projects-root="/home/$USER/projects/dev" \
   --github=m2ux/workflow-server \
   --open
+
+# Preview only:
+./scripts/deploy-cursor-workspace.sh --dry-run --github=m2ux/workflow-server
+
+# Refresh an existing kickoff dir (keeps extra MCP servers):
+./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server --force
 ```
 
-Defaults:
+Needs: `bash`, `cp`, `mkdir`, `python3`. Optional: `cursor` on `PATH` when using `--open`.
+
+### Defaults
 
 | Setting | Default |
 |---------|---------|
@@ -101,9 +114,36 @@ Defaults:
 | Projects root | `$HOST_PROJECTS_ROOT` or `/home/$USER/projects/dev` |
 | Kickoff dir | `/home/$USER/.local/share/cursor/workspaces/<repo>/` |
 | Roots written | workspace · project · planning · work trees |
+| MCP URL | `http://127.0.0.1:3000/mcp` |
 
-Re-run with `--force` to refresh rules / workspace file / the `workflow-server`
-MCP entry (other MCP servers already in `mcp.json` are kept).
+### CLI reference
+
+```text
+deploy-cursor-workspace.sh [repo-basename | options]
+```
+
+| Flag / arg | Meaning |
+|------------|---------|
+| `repo-basename` or `--repo=NAME` | Checkout name under projects root (default: `workflow-server`) |
+| `--github=owner/repo` | Write `AGENTS.md` session identity; if `--repo` omitted, basename is taken from this value |
+| `--name=NAME` | Cursor workspace folder name (default: same as `--repo`) |
+| `--user=NAME` | Override `$USER` when building `/home/NAME/…` paths |
+| `--projects-root=PATH` | Projects root (default: `$HOST_PROJECTS_ROOT` or `/home/$USER/projects/dev`) |
+| `--cursor-workspaces=PATH` | Parent for kickoff folders (default: `/home/$USER/.local/share/cursor/workspaces`) |
+| `--mcp-url=URL` | workflow-server HTTP MCP URL written into `mcp.json` |
+| `--template=DIR` | Template source (default: `<repo>/examples/cursor-workspace`) |
+| `--force` | Refresh managed files in an existing workspace dir (merges `mcp.json`; keeps extra MCP servers) |
+| `--dry-run` | Print actions only |
+| `--open` | Run `cursor <workspace-file>` after deploy (if on `PATH`) |
+| `--skip-mkdir` | Do not create `.worktrees` / planning parents on the checkout |
+| `-h`, `--help` | Show help |
+
+**Environment:** `USER` (required unless `--user`); `HOST_PROJECTS_ROOT` (optional default for `--projects-root`).
+
+**What it writes** under the kickoff dir: `.cursor/rules/`, `.claude/rules/`,
+`.cursor/mcp.json` + `.mcp.json` (upserts `workflow-server` only),
+`<name>.code-workspace` with absolute project/planning/work-trees paths,
+`AGENTS.md` + `CLAUDE.md` symlink.
 
 When you are done, your layout should look like
 `~/.local/share/cursor/workspaces/workflow-server` (this template’s destination).

@@ -44,6 +44,14 @@ This project is tailored towards the use of the Cursor IDE. To use with Claude C
 
 See: **[setup.md](setup.md)** for detailed setup instructions.
 
+Cursor multi-root workspace (after install + HTTP):
+
+```bash
+./scripts/deploy-cursor-workspace.sh --github=m2ux/workflow-server
+# usage: ./scripts/deploy-cursor-workspace.sh --help
+# detail: examples/cursor-workspace/README.md
+```
+
 ### Execute a workflow
 
 With the server connected and target project initialised, tell the agent in your chat session what you want to do, for example:

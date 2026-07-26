@@ -108,6 +108,15 @@ If the server fails to start, check the MCP client log for the `node …/dist/in
 
 Then finish shared steps in [setup.md](setup.md) (**§2** deploy + checkout, **§3** Cursor workspace, **§4** Update Workflows).
 
+Cursor workspace deploy (recommended after stdio or HTTP is up):
+
+```bash
+./scripts/deploy-cursor-workspace.sh --github=owner/repo
+./scripts/deploy-cursor-workspace.sh --help
+```
+
+Full flags: [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md#use-it-recommended-deploy-script).
+
 ## Troubleshooting
 
 | Symptom | What to check |

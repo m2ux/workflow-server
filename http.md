@@ -54,4 +54,14 @@ Adjust host/port if you changed `--host-port`. Routes: [docs/api-reference.md](d
 | OAuth / `.well-known` 404 or bare `GET /mcp` 400 in logs | Expected without application auth — see §3 above |
 | Image/container crash loop | `docker logs workflow-server`; confirm the `state` bind and image pull |
 
-Shared install, deploy, and checkout: [setup.md](setup.md).
+Shared install, deploy, checkout, and Cursor workspace: [setup.md](setup.md).
+
+Cursor workspace deploy (absolute `/home/$USER/…` roots):
+
+```bash
+# from a workflow-server checkout
+./scripts/deploy-cursor-workspace.sh --github=owner/repo
+./scripts/deploy-cursor-workspace.sh --help
+```
+
+Full flags: [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md#use-it-recommended-deploy-script) · [scripts/deploy-cursor-workspace.sh](scripts/deploy-cursor-workspace.sh).
