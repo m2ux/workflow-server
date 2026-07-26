@@ -7,7 +7,7 @@ Deploy **[examples/cursor-workspace/](../examples/cursor-workspace/)** with [`sc
 - MCP (`workflow-server` → `http://127.0.0.1:3000/mcp` via `mcp-remote`)
 - Always-applied bootstrap rule (`discover` first)
 - One-line `AGENTS.md` for `repo: "owner/repo"`
-- Multi-root folders: workspace, project, planning, work trees (optional workflows root via manual template copy)
+- Multi-root folders: workspace, project, planning, work trees
 
 ```bash
 ./scripts/deploy-cursor-workspace.sh --github=owner/repo

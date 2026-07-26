@@ -9,10 +9,6 @@
 			"path": "${env:HOST_PROJECTS_ROOT}/workflow-server"
 		},
 		{
-			"name": "📦 workflows",
-			"path": "${env:HOST_PROJECTS_ROOT}/workflow-server/workflows"
-		},
-		{
 			"name": "📦 planning",
 			"path": "${env:HOST_PROJECTS_ROOT}/workflow-server/.engineering/artifacts/planning"
 		},

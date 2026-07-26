@@ -34,17 +34,12 @@ Then ask the agent to start a workflow (`discover` → `start_session` with `rep
 
 ## Roots
 
-Deploy script (four roots):
-
 | Name | Path |
 |------|------|
 | workspace | kickoff dir (`./`) |
-| project | `/home/$USER/projects/dev/<repo>` |
+| project | `/home/$USER/projects/dev/<repo>` (or `${env:HOST_PROJECTS_ROOT}/<repo>`) |
 | planning | `…/<repo>/.engineering/artifacts/planning` |
 | work trees | `…/<repo>/.worktrees` |
-
-Template file still uses five roots via `${env:HOST_PROJECTS_ROOT}` (includes `workflows`)
-if you copy manually instead of using the script.
 
 ## Template contents
 
