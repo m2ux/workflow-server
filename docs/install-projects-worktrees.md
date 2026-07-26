@@ -80,7 +80,7 @@ $HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning  # 📋 planning
 $HOST_PROJECTS_ROOT/<repo>/.worktrees                 # 🌳 work trees
 ```
 
-`deploy-cursor-workspace.sh` expands these to absolute `/home/$USER/…` paths in
+`deploy-cursor-workspace.sh` expands these to absolute `$HOME/…` paths in
 the generated `.code-workspace` file.
 
 ## Success criteria

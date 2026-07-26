@@ -2,7 +2,7 @@
 
 ## Recommended — example Cursor workspace
 
-Deploy **[examples/cursor-workspace/](../examples/cursor-workspace/)** with [`scripts/deploy-cursor-workspace.sh`](../scripts/deploy-cursor-workspace.sh) (see the [README](../examples/cursor-workspace/README.md)). That installs the live layout under `~/.local/share/cursor/workspaces/<name>/` with absolute `/home/$USER/…` folder paths and already wires:
+Deploy **[examples/cursor-workspace/](../examples/cursor-workspace/)** with [`scripts/deploy-cursor-workspace.sh`](../scripts/deploy-cursor-workspace.sh) (see the [README](../examples/cursor-workspace/README.md)). That installs the live layout under `~/.local/share/cursor/workspaces/<name>/` with absolute `$HOME/…` folder paths and already wires:
 
 - MCP (`workflow-server` → `http://127.0.0.1:3000/mcp` via `mcp-remote`)
 - Always-applied bootstrap rule (`discover` first)
@@ -43,6 +43,6 @@ If the agent skips `discover`, the rule is not loaded.
 
 - [setup.md](../setup.md) — install
 - [examples/cursor-workspace/](../examples/cursor-workspace/) — Cursor multi-root template
-- [scripts/deploy-cursor-workspace.sh](../scripts/deploy-cursor-workspace.sh) — deploy template with `/home/$USER/…` paths
+- [scripts/deploy-cursor-workspace.sh](../scripts/deploy-cursor-workspace.sh) — deploy template with `$HOME/…` paths
 - [http.md](../http.md) / [stdio.md](../stdio.md) — transports
 - [api-reference.md](api-reference.md) — tools (`context_mode`, `context_tokens`, schemas)
