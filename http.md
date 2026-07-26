@@ -64,4 +64,4 @@ Cursor workspace deploy (absolute `/home/$USER/…` roots):
 ./scripts/deploy-cursor-workspace.sh --help
 ```
 
-Full flags: [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md#use-it-recommended-deploy-script) · [scripts/deploy-cursor-workspace.sh](scripts/deploy-cursor-workspace.sh).
+Flags: `./scripts/deploy-cursor-workspace.sh --help` · [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md).

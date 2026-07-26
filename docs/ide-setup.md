@@ -11,9 +11,7 @@ Deploy **[examples/cursor-workspace/](../examples/cursor-workspace/)** with [`sc
 
 ```bash
 ./scripts/deploy-cursor-workspace.sh --github=owner/repo
-# common flags: --force  --dry-run  --open  --user="$USER"  --projects-root=/home/$USER/projects/dev
-# full usage:   ./scripts/deploy-cursor-workspace.sh --help
-# reference:    examples/cursor-workspace/README.md § Use it (recommended: deploy script)
+./scripts/deploy-cursor-workspace.sh --help
 ```
 
 Then ask the agent to start a workflow. Prefer this over hand-rolling MCP config or pasting rules into a single-folder project.

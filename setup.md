@@ -66,9 +66,9 @@ cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-wor
 | `--force` | Refresh managed files; merge `mcp.json` without dropping other servers |
 | `--dry-run` / `--open` / `--help` | Preview, launch Cursor, full flag list |
 
-Full CLI table and behaviour: [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md#use-it-recommended-deploy-script) · `./scripts/deploy-cursor-workspace.sh --help`.
+Flags: `./scripts/deploy-cursor-workspace.sh --help` · [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md).
 
-The template already includes MCP (`workflow-server` via `mcp-remote`), always-applied bootstrap rules, and one-line `AGENTS.md` for `repo: "owner/repo"`. Manual copy + `${env:HOST_PROJECTS_ROOT}` roots remain documented in the [example README](examples/cursor-workspace/README.md#manual-copy-optional).
+The template includes MCP (`workflow-server` via `mcp-remote`), bootstrap rules, and `AGENTS.md` for `repo: "owner/repo"`.
 
 ## 4. Update Workflows
 

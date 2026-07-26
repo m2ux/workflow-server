@@ -115,7 +115,7 @@ Cursor workspace deploy (recommended after stdio or HTTP is up):
 ./scripts/deploy-cursor-workspace.sh --help
 ```
 
-Full flags: [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md#use-it-recommended-deploy-script).
+Flags: `./scripts/deploy-cursor-workspace.sh --help` · [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md).
 
 ## Troubleshooting
 
