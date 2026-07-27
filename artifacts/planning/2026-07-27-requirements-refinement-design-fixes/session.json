@@ -347,10 +347,11 @@
           "requirements-refinement",
           "impact-analysis",
           "scope-and-draft",
-          "quality-review"
+          "quality-review",
+          "validate-and-commit"
         ],
-        "condition": "isDefault: transitions[0] → validate-and-commit (blocker-gate resolved no-blocker; has_critical_finding=false)",
-        "currentActivity": "validate-and-commit",
+        "condition": "operation_type == update → post-update-review",
+        "currentActivity": "post-update-review",
         "currentTechnique": "github-cli-protocol::mark-ready",
         "deliveredContent": {
           "orchestrator": {
@@ -364,6 +365,7 @@
             "bundle:workflow-engine::yield-checkpoint": "3d36e6b03c483346",
             "resource:anti-patterns": "47a101c5828c7fa0",
             "resource:anti-patterns#ap-114-pass-orchestration-in-technique": "f4ee3303e44a80e2",
+            "resource:compliance-report#template": "79245789778f4695",
             "resource:convention-conformance": "932c44fb8ad98a7c",
             "resource:design-assumption-reconciliation": "9ed98d1d67ac8606",
             "resource:design-assumptions#assumptions-log-template": "d14cc0b6091e5984",
@@ -375,6 +377,7 @@
             "resource:elicitation-guide": "12a112e8fa4db01e",
             "resource:file-review-note#template": "58fdd7f88457b295",
             "resource:findings-satellite": "6b7a0ed71245a7e6",
+            "resource:findings-satellite#template": "20c6cb3b26c2fb2f",
             "resource:follow-ups": "b20718be24468144",
             "resource:format-conventions": "58437d8be952aff1",
             "resource:impact-analysis": "dd67db71781ea12a",
@@ -388,8 +391,10 @@
             "resource:workflow-design/readme-seed": "498f9d6f21fc0848",
             "technique:apply-audit-fixes": "9220c393b1263fca",
             "technique:assemble-file-approach": "13c1d787cfe477d7",
+            "technique:audit-anti-patterns": "c1ef9ffa88e34f52",
             "technique:audit-conformance": "c01f7f417ad1d9a1",
             "technique:audit-expressiveness": "dd04e70d8d8eee8c",
+            "technique:audit-principles": "cc3979bfb0a87541",
             "technique:audit-rule-enforcement": "cd6493c3fa55fcdb",
             "technique:audit-rule-hygiene": "0b65b32101f16ed2",
             "technique:audit-schema-validation": "d7e824034bb03f53",
@@ -406,15 +411,18 @@
             "technique:publish-workflow-pr": "0fe348d43632439a",
             "technique:readme-authoring": "95df6474b7b579dd",
             "technique:reconcile-design-assumptions": "c02a916d204406cb",
+            "technique:reload-workflow": "aefd9fb0cb27585d",
             "technique:review-draft-yaml": "018d9c555450c733",
             "technique:review-drafted-file": "c3f17f51d9082876",
+            "technique:scope-audit": "97eda79317836f37",
             "technique:scope-definition": "ad6ca18d97b921e0",
             "technique:scope-verification": "9e64d6f82c89b7f9",
+            "technique:summarize-findings": "82930b9bd862c99e",
             "technique:synthesize-update-specification": "d2120a8a8e4c2f0c",
             "technique:verify-artifact-conforms": "5b4afb314c23b35d",
             "technique:verify-high-findings": "94e5fe77436a30f9",
             "technique:version-control::commit-regular-files": "36d64bfb3cf7a9c3",
-            "technique:work-package::manage-artifacts::write-artifact": "0387df75e0b3e874",
+            "technique:work-package::manage-artifacts::write-artifact": "55ede384ee9e1cf9",
             "technique:work-package::review-assumptions::collect": "c6991732d8ffb5af",
             "technique:work-package::review-assumptions::record": "3863422e28015b10",
             "technique:work-package::stakeholder-overview": "29f600d94b5ea59a",
@@ -1954,20 +1962,357 @@
             },
             "timestamp": "2026-07-27T16:36:21.882Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pass_count",
+              "source": "variables_changed",
+              "value": 14
+            },
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "fail_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "total_count",
+              "source": "variables_changed",
+              "value": 16
+            },
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "addressed_count",
+              "source": "variables_changed",
+              "value": 16
+            },
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "unaddressed_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "readme_conformance",
+              "source": "variables_changed",
+              "value": {
+                "conforms": true,
+                "extra_top_level_headings": [],
+                "header_block_drift": [],
+                "missing_sections": []
+              }
+            },
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "workflow_readme",
+              "source": "variables_changed",
+              "value": "requirements-refinement/README.md verified against the definition — v1.2.0 banner, cap stated as its literal, artifact-location claim dropped, activity count removed; already correct, no further revision needed this pass"
+            },
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "removal_count",
+              "source": "variables_changed",
+              "value": 21
+            },
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "needs_recommit",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "title",
+              "source": "variables_changed",
+              "value": "refactor(requirements-refinement): canon-conformance update (v1.1.0 to v1.2.0)"
+            },
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "body",
+              "source": "variables_changed",
+              "value": "PR body composed and posted to #318: change summary by change goal G1-G7, 16-file scope table, validation table, the 2 High findings called out for reviewer attention, the three held judgements A-3/A-5/A-7, and a planning-folder pointer."
+            },
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "declaredType": "string",
+              "name": "pr_number",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": 318,
+              "valueType": "number"
+            },
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/318"
+            },
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_status",
+              "source": "variables_changed",
+              "value": "ready for review"
+            },
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "timestamp": "2026-07-27T16:46:47.705Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "reload-updated-workflow",
+              "techniqueId": "reload-workflow"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-expressiveness",
+              "techniqueId": "audit-expressiveness"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-conformance",
+              "techniqueId": "audit-conformance"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-principles",
+              "techniqueId": "audit-principles"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-post-principles",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-anti-patterns",
+              "techniqueId": "audit-anti-patterns"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-post-anti-patterns",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-schema-validation",
+              "techniqueId": "audit-schema-validation"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "scope-audit",
+              "techniqueId": "scope-audit"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "summarize-findings",
+              "techniqueId": "summarize-findings"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "save-review-snapshot",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "schema-construct-inventory"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "findings-satellite#template"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "convention-conformance"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "design-principles"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "compliance-report#template"
+            },
+            "timestamp": "2026-07-27T16:47:16.933Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "anti-patterns"
+            },
+            "timestamp": "2026-07-27T16:49:43.642Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 55,
+        "seq": 58,
         "sessionIndex": "QKSIQR",
         "skippedActivities": [],
         "startedAt": "2026-07-27T14:37:16.197Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785170181,
+        "ts": 1785170983,
         "variables": {
           "accumulated_design": "Update specification for requirements-refinement covering all five update dimensions plus a Technique-surface section: seven change goals — G1 correction cycle terminates (counter as declared output, cap authoritative at the transition literal), G2 gates are artifact-linked statements with effect-bearing options, G3 routing integrity, G4 announcements name and link the server-computed filename, G5 no dead session state, G6 contract separated from procedure, G7 documentation matches definition. Out of scope: purpose/lifecycle redesign, activity renumbering, rubric criteria, new activities or techniques.",
-          "addressed_count": 0,
+          "addressed_count": 16,
           "anti_pattern_findings_path": "",
           "applicable_constructs_path": "",
           "artifact_conformance": {
@@ -1983,6 +2328,7 @@
           },
           "assumption_decisions": [],
           "assumptions_log": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/03-assumptions-log.md",
+          "body": "PR body composed and posted to #318: change summary by change goal G1-G7, 16-file scope table, validation table, the 2 High findings called out for reviewer attention, the three held judgements A-3/A-5/A-7, and a planning-folder pointer.",
           "change_category": "activity, technique, structural refactor",
           "change_request_clear": true,
           "conformance_finding_count": 1,
@@ -2031,13 +2377,20 @@
           ],
           "operation_type": "update",
           "operation_type_ambiguous": false,
-          "pass_count": 0,
+          "pass_count": 14,
           "pattern_analysis_path": "",
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes",
-          "pr_number": "",
-          "pr_url": "",
+          "pr_number": 318,
+          "pr_status": "ready for review",
+          "pr_url": "https://github.com/m2ux/workflow-server/pull/318",
           "principle_findings_path": "",
-          "removal_count": 15,
+          "readme_conformance": {
+            "conforms": true,
+            "extra_top_level_headings": [],
+            "header_block_drift": [],
+            "missing_sections": []
+          },
+          "removal_count": 21,
           "report_path": "",
           "review_findings_count": 0,
           "review_scope_confirmed": false,
@@ -2054,13 +2407,15 @@
           "structural_inventory_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/01-structural-inventory.md",
           "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-27-requirements-refinement-design-fixes/",
           "target_workflow_id": "requirements-refinement",
-          "total_count": 0,
+          "title": "refactor(requirements-refinement): canon-conformance update (v1.1.0 to v1.2.0)",
+          "total_count": 16,
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
           "verified_findings": "15 findings: 2 High confirmed by adversarial re-derivation (N-2 unbounded correction cycle, N-1 canonical-document integrity), 1 High downgraded to Medium (C-1 path-variable gap: divergence reproduced but no functional break, no unproduced-value-read, validators passed pre-fix), 9 Medium confirmed, 3 Low confirmed. 0 Critical",
           "verified_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-verified-findings.md",
           "workflow_branch": "workflow/requirements-refinement",
           "workflow_id": "requirements-refinement",
+          "workflow_readme": "requirements-refinement/README.md verified against the definition — v1.2.0 banner, cap stated as its literal, artifact-location claim dropped, activity count removed; already correct, no further revision needed this pass",
           "worktree_created": true,
           "written_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-verified-findings.md",
           "yaml_file": "All YAML valid: validate-workflow-yaml.ts passes workflow.yaml + 5 activities + 8 technique files; validate-activities.ts 5 passed, 0 failed"

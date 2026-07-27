@@ -35,12 +35,14 @@ Three questions are deliberately left open for a human to settle rather than dec
 | 9 | 06 | [Draft attestation](06-draft-attestation.md) | Batch review attestation | 5-10m | ✅ |
 | 10 | 06 | [File review note](06-file-review-note.md) | Removals and draft highlights | 5-10m | ✅ |
 | 11 | 08 | [Quality review](08-verified-findings.md) | Principle and anti-pattern audits | 30-60m | ✅ |
-| 12 | 08 | Principle findings | Principles audit satellite (review mode only) | 10-20m | ⊘ |
-| 13 | 08 | Anti-pattern findings | Anti-pattern audit satellite (review mode only) | 10-20m | ⊘ |
+| 12 | 08 | Principle findings | Review-mode satellite; update mode audits at row 16 | 10-20m | ⊘ |
+| 13 | 08 | Anti-pattern findings | Review-mode satellite; update mode audits at row 17 | 10-20m | ⊘ |
 | 14 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ✅ |
-| 15 | 10 | Post-update review | Follow-up after merge path | 15-30m | ◐ |
-| 16 | 11 | Retrospective | Session close-out | 15-30m | ⬚ |
-| 17 | 11 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
+| 15 | 10 | [Post-update review](10-post-update-review.md) | Follow-up after merge path | 15-30m | ✅ |
+| 16 | 10 | [Principle findings](10-principle-findings.md) | Principles audit satellite | 10-20m | ✅ |
+| 17 | 10 | [Anti-pattern findings](10-anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ✅ |
+| 18 | 11 | Retrospective | Session close-out | 15-30m | ◐ |
+| 19 | 11 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
 
 **Status:** ⬚ pending · ◐ in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
@@ -66,6 +68,9 @@ Three questions are deliberately left open for a human to settle rather than dec
 | Conformance findings | [conformance-findings.md](08-conformance-findings.md) |
 | Rule-hygiene findings | [rule-hygiene-findings.md](08-rule-hygiene-findings.md) |
 | Enforcement findings | [enforcement-findings.md](08-enforcement-findings.md) |
+| Post-update review | [post-update-review.md](10-post-update-review.md) |
+| Principle findings | [principle-findings.md](10-principle-findings.md) |
+| Anti-pattern findings | [anti-pattern-findings.md](10-anti-pattern-findings.md) |
 
 ## Design Decisions
 
