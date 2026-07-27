@@ -280,15 +280,29 @@
           "impact-analysis-impact-and-preservation-confirmed": {
             "optionId": "confirmed",
             "respondedAt": "2026-07-27T07:11:03.000Z"
+          },
+          "scope-and-draft-batch-review-attested": {
+            "optionId": "attested",
+            "respondedAt": "2026-07-27T07:40:36.000Z"
+          },
+          "scope-and-draft-scope-and-structure-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "scope_manifest_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-07-27T07:25:52.000Z"
           }
         },
         "completedActivities": [
           "intake-and-context",
-          "requirements-refinement"
+          "requirements-refinement",
+          "impact-analysis"
         ],
-        "condition": "operation_type == update",
-        "currentActivity": "impact-analysis",
-        "currentTechnique": "work-package::manage-artifacts::write-artifact",
+        "condition": "isDefault (sole transition from impact-analysis)",
+        "currentActivity": "scope-and-draft",
+        "currentTechnique": "prepare-workflow-branch",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:2a775f356d424475": "2a775f356d424475",
@@ -306,12 +320,14 @@
             "resource:design-principles": "0edf58baae5c7f62",
             "resource:design-specification": "560fdf4840438474",
             "resource:design-specification#template": "4aa6f66dddb9d97a",
+            "resource:draft-attestation#template": "f6ea38f76638418c",
             "resource:elicitation-guide": "b206b8a7d771fef9",
             "resource:follow-ups": "b1f0a812968cc938",
             "resource:format-conventions": "2f87df89160d81a2",
             "resource:impact-analysis": "03fcb472b0d3af6b",
             "resource:meta/planning-readme": "483b3afdde27a6a1",
             "resource:schema-construct-inventory": "df10051a68722839",
+            "resource:scope-manifest#template": "ae766441964ff97b",
             "resource:structural-inventory#template": "b3ef1b175f7732ab",
             "resource:update-mode-guide": "11ca587bf189cd89",
             "resource:workflow-design/anti-patterns": "a61799c37881be42",
@@ -319,15 +335,20 @@
             "resource:workflow-design/readme-seed": "d63eaed7f495d026",
             "technique:context-loading": "1e4841fa4b3ad579",
             "technique:derive-design-dimensions": "fd1ea705472b3cdf",
+            "technique:derive-workflows-target-path": "0f87433432ca4695",
             "technique:impact-analysis": "27ad658513c42a83",
             "technique:intake-classification": "fa0cf7c1465a489f",
             "technique:persist-design-specification": "83243ab80d679bc5",
+            "technique:prepare-workflow-branch": "88537b3184cdc854",
             "technique:reconcile-design-assumptions": "c02a916d204406cb",
+            "technique:review-draft-yaml": "018d9c555450c733",
+            "technique:scope-definition": "ad6ca18d97b921e0",
             "technique:synthesize-update-specification": "d2120a8a8e4c2f0c",
-            "technique:work-package::manage-artifacts::write-artifact": "7e26ff13419304d4",
+            "technique:verify-artifact-conforms": "5b4afb314c23b35d",
+            "technique:work-package::manage-artifacts::write-artifact": "0387df75e0b3e874",
             "technique:work-package::review-assumptions::collect": "c6991732d8ffb5af",
             "technique:work-package::review-assumptions::record": "3863422e28015b10",
-            "technique:work-package::stakeholder-overview": "e213dde5f7960790",
+            "technique:work-package::stakeholder-overview": "29f600d94b5ea59a",
             "technique:workflow-engine::create-readme": "4ea3139c7afa835e"
           }
         },
@@ -1019,17 +1040,176 @@
             },
             "timestamp": "2026-07-27T07:11:03.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "impact-analysis",
+            "timestamp": "2026-07-27T07:14:05.131Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-27T07:14:05.131Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "scope-definition",
+              "techniqueId": "scope-definition"
+            },
+            "timestamp": "2026-07-27T07:15:18.379Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-scope-manifest",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T07:15:18.379Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "present-solution-overview",
+              "techniqueId": "work-package::stakeholder-overview"
+            },
+            "timestamp": "2026-07-27T07:15:18.379Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "review-draft-yaml",
+              "techniqueId": "review-draft-yaml"
+            },
+            "timestamp": "2026-07-27T07:15:18.379Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-draft-attestation",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T07:15:18.379Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-artifact-conforms",
+              "techniqueId": "verify-artifact-conforms"
+            },
+            "timestamp": "2026-07-27T07:15:18.379Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "scope-manifest#template"
+            },
+            "timestamp": "2026-07-27T07:15:18.379Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-27T07:15:18.379Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "draft-attestation#template"
+            },
+            "timestamp": "2026-07-27T07:15:18.379Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "derive-workflows-target-path",
+              "techniqueId": "derive-workflows-target-path"
+            },
+            "timestamp": "2026-07-27T07:16:02.177Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "ensure-workflow-worktree",
+              "techniqueId": "prepare-workflow-branch"
+            },
+            "timestamp": "2026-07-27T07:16:10.445Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-and-structure-confirmed",
+            "timestamp": "2026-07-27T07:20:27.329Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-and-structure-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-27T07:25:52.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T07:25:52.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "batch-review-attested",
+            "timestamp": "2026-07-27T07:37:36.001Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "batch-review-attested",
+            "data": {
+              "optionId": "attested"
+            },
+            "timestamp": "2026-07-27T07:40:36.000Z",
+            "type": "checkpoint_response"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 23,
+        "seq": 33,
         "sessionIndex": "LIUL4T",
         "skippedActivities": [],
         "startedAt": "2026-07-27T05:27:46.102Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785136315,
+        "ts": 1785138060,
         "variables": {
           "addressed_count": 0,
           "anti_pattern_findings_path": "",
@@ -1071,7 +1251,7 @@
           "rule_hygiene_finding_count": 0,
           "rule_hygiene_findings_path": "",
           "schema_constructs_confirmed": false,
-          "scope_manifest_confirmed": false,
+          "scope_manifest_confirmed": true,
           "scope_manifest_path": "",
           "specification_path": "",
           "structural_inventory_path": "",

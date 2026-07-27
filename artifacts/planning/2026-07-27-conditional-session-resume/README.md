@@ -1,6 +1,6 @@
 # Conditional Session Resume — July 2026
 
-> Update · Created 2026-07-27 · **Status:** Planning
+> Update · Created 2026-07-27 · **Status:** Quality review
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -16,7 +16,9 @@ Worse, the search almost never pays off. The way saved sessions have been record
 
 ## Solution Overview
 
-*Populated by the producing step (a `stakeholder-overview` call).*
+The assistant will now ask itself one question before it goes looking: did the person actually say they wanted to carry on with something? Words like "resume" or "continue" turn the search on; a plain request to start turns it off. When the search is switched off, the assistant goes straight to the work instead of reading through every folder of past sessions first. A short, named list of the phrases that count as "carry on with this" is kept as its own reference document, so the vocabulary can be widened later without disturbing anything else. The file-by-file breakdown of the change is in the [scope manifest](07-scope-manifest.md), and the reasoning behind it is in the [design specification](03-design-specification.md).
+
+The same update also repairs the search itself, so that when it does run it can actually find things. Two faults are fixed: the search was looking for the name of the requested piece of work in the wrong place inside each saved file, and the step that records a successful match was gated on the very fact it was supposed to establish, so it could never run. Together these mean that people who ask to pick up earlier work will now be offered it, while people who simply want to begin are no longer made to wait for a search that was never going to help them. Because the change is confined to the discovery stage, nothing about how work is subsequently carried out is altered.
 
 ## 📊 Progress
 
@@ -30,17 +32,18 @@ Worse, the search almost never pays off. The way saved sessions have been record
 | 6 | 03 | [Deferred items](05-deferred-items.md) | Out-of-scope follow-ups | 5-10m | ✅ |
 | 7 | 04 | Pattern analysis | Create-mode only — not on the update path | 20-40m | ⊘ |
 | 8 | 05 | [Impact analysis](06-impact-analysis.md) | Blast radius and preservations | 20-40m | ✅ |
-| 9 | 06 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |
-| 10 | 06 | [Drafting plan](drafting-plan.md) | Draft order and blocks | 10-20m | ⬚ |
-| 11 | 06 | [Draft attestation](draft-attestation.md) | Batch review attestation | 5-10m | ⬚ |
-| 12 | 06 | [File review note](file-review-note.md) | Removals and draft highlights | 5-10m | ⬚ |
-| 13 | 08 | Quality review | Principle and anti-pattern audits | 30-60m | ⬚ |
-| 14 | 08 | [Principle findings](principle-findings.md) | Principles audit satellite | 10-20m | ⬚ |
-| 15 | 08 | [Anti-pattern findings](anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ⬚ |
-| 16 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ⬚ |
-| 17 | 10 | Post-update review | Follow-up after merge path | 15-30m | ⬚ |
-| 18 | 11 | Retrospective | Session close-out | 15-30m | ⬚ |
-| 19 | 11 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
+| 9 | 06 | [Scope manifest](07-scope-manifest.md) | File-level change inventory | 15-30m | ✅ |
+| 10 | 06 | [Drafting plan](08-drafting-plan.md) | Draft order and blocks | 10-20m | ✅ |
+| 11 | 06 | [Draft attestation](10-draft-attestation.md) | Batch review attestation | 5-10m | ✅ |
+| 12 | 06 | [File review note](09-file-review-note.md) | Removals and draft highlights | 5-10m | ✅ |
+| 13 | 06 | [Follow-ups](11-follow-ups.md) | In-task work owed before close-out | 5m | ✅ |
+| 14 | 08 | Quality review | Principle and anti-pattern audits | 30-60m | ◐ |
+| 15 | 08 | [Principle findings](principle-findings.md) | Principles audit satellite | 10-20m | ⬚ |
+| 16 | 08 | [Anti-pattern findings](anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ⬚ |
+| 17 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ⬚ |
+| 18 | 10 | Post-update review | Follow-up after merge path | 15-30m | ⬚ |
+| 19 | 11 | Retrospective | Session close-out | 15-30m | ⬚ |
+| 20 | 11 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
 
 **Status:** ⬚ pending · ◐ in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
