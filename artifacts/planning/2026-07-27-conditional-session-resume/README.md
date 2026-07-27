@@ -1,6 +1,6 @@
 # Conditional Session Resume — July 2026
 
-> Update · Created 2026-07-27 · **Status:** Validation
+> Update · Created 2026-07-27 · **Status:** Reviewing
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -44,7 +44,7 @@ The same update also repairs the search itself, so that when it does run it can 
 | 18 | 08 | [Verified findings](08-verified-findings.md) | Verified findings and resolutions | 10-20m | ✅ |
 | 19 | 08 | [Principle findings](principle-findings.md) | Principles audit satellite | 10-20m | ⊘ |
 | 20 | 08 | [Anti-pattern findings](anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ⊘ |
-| 21 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ⬚ |
+| 21 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ✅ |
 | 22 | 10 | Post-update review | Follow-up after merge path | 15-30m | ⬚ |
 | 23 | 11 | Retrospective | Session close-out | 15-30m | ⬚ |
 | 24 | 11 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
@@ -68,3 +68,5 @@ The same update also repairs the search itself, so that when it does run it can 
 |----------|------|
 | Target workflow | `workflows/meta/` |
 | Repository | m2ux/workflow-server |
+| PR | [#311](https://github.com/m2ux/workflow-server/pull/311) |
+| Related issues | [#309](https://github.com/m2ux/workflow-server/issues/309) · [#310](https://github.com/m2ux/workflow-server/issues/310) |
