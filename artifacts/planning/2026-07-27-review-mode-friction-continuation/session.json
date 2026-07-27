@@ -319,10 +319,11 @@
           "impact-analysis",
           "scope-and-draft",
           "quality-review",
-          "validate-and-commit"
+          "validate-and-commit",
+          "post-update-review"
         ],
-        "condition": "condition: operation_type == update -> post-update-review (matched first transition; retrospective isDefault not taken)",
-        "currentActivity": "post-update-review",
+        "condition": "condition: needs_audit_fixes == true -> intake-and-context (transitions[0]); retrospective default requires review_findings_count == 0 AND needs_recommit == false AND needs_audit_fixes == false, first and third conjuncts fail",
+        "currentActivity": "intake-and-context",
         "currentTechnique": "github-cli-protocol::mark-ready",
         "deliveredContent": {
           "orchestrator": {
@@ -391,7 +392,7 @@
             "technique:verify-high-findings": "94e5fe77436a30f9",
             "technique:version-control::commit-regular-files": "36d64bfb3cf7a9c3",
             "technique:version-control::push-branch": "968dacb93af1c8ac",
-            "technique:work-package::manage-artifacts::write-artifact": "55ede384ee9e1cf9",
+            "technique:work-package::manage-artifacts::write-artifact": "a59f37d9ccd4050c",
             "technique:work-package::review-assumptions::collect": "c6991732d8ffb5af",
             "technique:work-package::review-assumptions::record": "3863422e28015b10",
             "technique:work-package::stakeholder-overview": "29f600d94b5ea59a",
@@ -1984,21 +1985,231 @@
             },
             "timestamp": "2026-07-27T16:30:51.810Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "timestamp": "2026-07-27T16:55:28.094Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "expressiveness_finding_count",
+              "source": "variables_changed",
+              "value": 1
+            },
+            "timestamp": "2026-07-27T16:55:28.094Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "conformance_finding_count",
+              "source": "variables_changed",
+              "value": 1
+            },
+            "timestamp": "2026-07-27T16:55:28.094Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "principle_findings_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/10-principle-findings.md"
+            },
+            "timestamp": "2026-07-27T16:55:28.094Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "anti_pattern_findings_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/10-anti-pattern-findings.md"
+            },
+            "timestamp": "2026-07-27T16:55:28.094Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "pass_count",
+              "source": "variables_changed",
+              "value": 16
+            },
+            "timestamp": "2026-07-27T16:55:28.094Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "fail_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-07-27T16:55:28.094Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "scope_drift_findings",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-07-27T16:55:28.094Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "review_findings_count",
+              "source": "variables_changed",
+              "value": 5
+            },
+            "timestamp": "2026-07-27T16:55:28.094Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "report_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/10-post-update-review.md"
+            },
+            "timestamp": "2026-07-27T16:55:28.094Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "needs_audit_fixes",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T16:55:28.094Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "needs_recommit",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T16:55:28.094Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "timestamp": "2026-07-27T16:55:28.094Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "intake-classification",
+              "techniqueId": "intake-classification"
+            },
+            "timestamp": "2026-07-27T16:56:18.311Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "context-loading",
+              "techniqueId": "context-loading"
+            },
+            "timestamp": "2026-07-27T16:56:18.311Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-format-conventions",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T16:56:18.311Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "structural-inventory#template"
+            },
+            "timestamp": "2026-07-27T16:56:18.311Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "update-mode-guide"
+            },
+            "timestamp": "2026-07-27T16:56:18.311Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-27T16:56:18.311Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "schema-construct-inventory"
+            },
+            "timestamp": "2026-07-27T16:56:18.311Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "convention-conformance"
+            },
+            "timestamp": "2026-07-27T16:56:18.311Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "format-conventions"
+            },
+            "timestamp": "2026-07-27T16:56:18.311Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 55,
+        "seq": 57,
         "sessionIndex": "QDDWIT",
         "skippedActivities": [],
         "startedAt": "2026-07-27T13:49:48.066Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785169851,
+        "ts": 1785171378,
         "variables": {
           "accumulated_design": "Update specification over changed dimensions only - purpose (G-1 publish ref resolves, G-2 engineering checkout is the git target, G-3 URL slots stay in the resource, G-4 one statement of the source, G-5 judgements land), artifacts, rules; activity list and checkpoints unchanged.",
           "addressed_count": 4,
-          "anti_pattern_findings_path": "",
+          "anti_pattern_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/10-anti-pattern-findings.md",
           "applicable_constructs_path": "",
           "assumption_decisions": [
             {
@@ -2023,7 +2234,7 @@
             "resource"
           ],
           "change_request_clear": true,
-          "conformance_finding_count": 0,
+          "conformance_finding_count": 1,
           "conformance_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/08-conformance-findings.md",
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/README.md",
           "design_dimensions": [
@@ -2038,7 +2249,7 @@
           "drafting_plan_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/06-drafting-plan.md",
           "enforcement_finding_count": 0,
           "enforcement_findings_path": "",
-          "expressiveness_finding_count": 0,
+          "expressiveness_finding_count": 1,
           "expressiveness_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/08-expressiveness-findings.md",
           "fail_count": 0,
           "file_count": 4,
@@ -2053,7 +2264,7 @@
           "headless_mode": true,
           "impact_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/05-impact-analysis.md",
           "intent_needs_confirmation": false,
-          "needs_audit_fixes": false,
+          "needs_audit_fixes": true,
           "needs_recommit": false,
           "operation_type": "update",
           "operation_type_ambiguous": false,
@@ -2062,15 +2273,16 @@
           "pr_number": 274,
           "pr_status": "ready for review",
           "pr_url": "https://github.com/m2ux/workflow-server/pull/274",
-          "principle_findings_path": "",
+          "principle_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/10-principle-findings.md",
           "pushed_branch": "origin/workflow/work-package-review-mode-friction-271",
           "removal_count": 3,
-          "report_path": "",
-          "review_findings_count": 0,
+          "report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/10-post-update-review.md",
+          "review_findings_count": 5,
           "review_scope_confirmed": false,
           "rule_hygiene_finding_count": 0,
           "rule_hygiene_findings_path": "",
           "schema_constructs_confirmed": true,
+          "scope_drift_findings": [],
           "scope_manifest_confirmed": true,
           "scope_manifest_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/06-scope-manifest.md",
           "specification_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/03-design-specification.md",

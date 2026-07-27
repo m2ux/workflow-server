@@ -1,6 +1,6 @@
 # Review-Mode Friction Continuation — July 2026
 
-> Update · Created 2026-07-27 · **Status:** Planning
+> Update · Created 2026-07-27 · **Status:** Paused — committed on PR #274, remediation tracked in #319
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
