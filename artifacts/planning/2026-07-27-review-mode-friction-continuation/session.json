@@ -308,20 +308,31 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {},
-        "completedActivities": [],
-        "condition": "",
-        "currentActivity": "intake-and-context",
-        "currentTechnique": "work-package::stakeholder-overview",
+        "completedActivities": [
+          "intake-and-context"
+        ],
+        "condition": "condition: format_literacy_confirmed == true AND schema_constructs_confirmed == true -> requirements-refinement (isDefault arm)",
+        "currentActivity": "requirements-refinement",
+        "currentTechnique": "synthesize-update-specification",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:2a775f356d424475": "2a775f356d424475",
+            "bundle:rules:8954bf7c7fd0ffae": "8954bf7c7fd0ffae",
             "bundle:rules:ba1850ecedee5045": "ba1850ecedee5045",
+            "bundle:scatter-gather": "910dcd68356d8445",
             "bundle:variable-binding": "c3c784d885474397",
             "bundle:workflow-engine::finalize-activity": "c9a2a48b817efaae",
             "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
             "bundle:workflow-engine::yield-checkpoint": "3d36e6b03c483346",
             "resource:anti-patterns": "09bb2cfe819388b2",
+            "resource:anti-patterns#ap-114-pass-orchestration-in-technique": "305e6ee39c7f8fcc",
             "resource:convention-conformance": "cec5f1143acf4514",
+            "resource:design-assumption-reconciliation": "8a12fab2b07a3984",
+            "resource:design-assumptions#assumptions-log-template": "36a8bf077495721b",
+            "resource:design-principles": "b526c54e70d1d75d",
+            "resource:design-specification": "18725bc3554c33bf",
+            "resource:design-specification#template": "9b020263b82031b1",
+            "resource:elicitation-guide": "69ba94c61eb1647e",
             "resource:follow-ups": "3bb8d4144310f08f",
             "resource:format-conventions": "e208e3ba6620a19b",
             "resource:meta/planning-readme": "90923c846860a5f8",
@@ -331,8 +342,14 @@
             "resource:work-package/deferred-items": "52dd743a22d3d9a3",
             "resource:workflow-design/readme-seed": "562d05bdfa6dcf7c",
             "technique:context-loading": "1e4841fa4b3ad579",
+            "technique:derive-design-dimensions": "fd1ea705472b3cdf",
             "technique:intake-classification": "fa0cf7c1465a489f",
-            "technique:work-package::manage-artifacts::write-artifact": "a59f37d9ccd4050c",
+            "technique:persist-design-specification": "83243ab80d679bc5",
+            "technique:reconcile-design-assumptions": "c02a916d204406cb",
+            "technique:synthesize-update-specification": "d2120a8a8e4c2f0c",
+            "technique:work-package::manage-artifacts::write-artifact": "4382f6578071c34a",
+            "technique:work-package::review-assumptions::collect": "c6991732d8ffb5af",
+            "technique:work-package::review-assumptions::record": "3863422e28015b10",
             "technique:work-package::stakeholder-overview": "e213dde5f7960790",
             "technique:workflow-engine::create-readme": "4ea3139c7afa835e"
           }
@@ -551,25 +568,341 @@
             },
             "timestamp": "2026-07-27T14:24:03.872Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-context",
+            "timestamp": "2026-07-27T14:32:48.922Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "operation_type",
+              "source": "variables_changed",
+              "value": "update"
+            },
+            "timestamp": "2026-07-27T14:32:48.922Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "operation_type_ambiguous",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T14:32:48.922Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "change_request_clear",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T14:32:48.922Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "intent_needs_confirmation",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T14:32:48.922Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "headless_mode",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T14:32:48.922Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "target_workflow_id",
+              "source": "variables_changed",
+              "value": "work-package"
+            },
+            "timestamp": "2026-07-27T14:32:48.922Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "change_category",
+              "source": "variables_changed",
+              "value": [
+                "technique",
+                "resource"
+              ]
+            },
+            "timestamp": "2026-07-27T14:32:48.922Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "structural_inventory_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/01-structural-inventory.md"
+            },
+            "timestamp": "2026-07-27T14:32:48.922Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "format_conventions_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/01-format-conventions.md"
+            },
+            "timestamp": "2026-07-27T14:32:48.922Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "created_readme",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/README.md"
+            },
+            "timestamp": "2026-07-27T14:32:48.922Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "format_literacy_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T14:32:48.922Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "schema_constructs_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T14:32:48.922Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "timestamp": "2026-07-27T14:32:48.922Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "set-design-dimensions",
+              "techniqueId": "derive-design-dimensions"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-specification",
+              "techniqueId": "persist-design-specification"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-design-specification-artifact",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "collect-assumptions",
+              "techniqueId": "work-package::review-assumptions::collect"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "reconcile-design-assumptions"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "work-package::review-assumptions::record"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "elicitation-guide"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "design-specification"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "design-specification#template"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "design-assumptions#assumptions-log-template"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "design-assumption-reconciliation"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "convention-conformance"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "design-principles"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "anti-patterns#ap-114-pass-orchestration-in-technique"
+            },
+            "timestamp": "2026-07-27T14:33:24.002Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "update-mode-guide"
+            },
+            "timestamp": "2026-07-27T14:36:09.202Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "anti-patterns"
+            },
+            "timestamp": "2026-07-27T14:36:12.708Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "synthesize-update-specification",
+              "techniqueId": "synthesize-update-specification"
+            },
+            "timestamp": "2026-07-27T14:39:26.156Z",
+            "type": "technique_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 9,
+        "seq": 14,
         "sessionIndex": "QDDWIT",
         "skippedActivities": [],
         "startedAt": "2026-07-27T13:49:48.066Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785162243,
+        "ts": 1785163166,
         "variables": {
           "addressed_count": 0,
           "anti_pattern_findings_path": "",
           "applicable_constructs_path": "",
           "assumption_decisions": [],
+          "change_category": [
+            "technique",
+            "resource"
+          ],
           "change_request_clear": true,
           "conformance_finding_count": 0,
           "conformance_findings_path": "",
+          "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/README.md",
           "dimension_questions": "",
           "draft_attestation_path": "",
           "drafting_plan_path": "",
@@ -579,8 +912,8 @@
           "expressiveness_findings_path": "",
           "fail_count": 0,
           "file_review_note_path": "",
-          "format_conventions_path": "",
-          "format_literacy_confirmed": false,
+          "format_conventions_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/01-format-conventions.md",
+          "format_literacy_confirmed": true,
           "has_critical_finding": false,
           "has_open_assumptions": false,
           "has_resolvable_assumptions": false,
@@ -590,6 +923,7 @@
           "intent_needs_confirmation": false,
           "needs_audit_fixes": false,
           "needs_recommit": false,
+          "operation_type": "update",
           "operation_type_ambiguous": false,
           "pass_count": 0,
           "pattern_analysis_path": "",
@@ -602,12 +936,13 @@
           "review_scope_confirmed": false,
           "rule_hygiene_finding_count": 0,
           "rule_hygiene_findings_path": "",
-          "schema_constructs_confirmed": false,
+          "schema_constructs_confirmed": true,
           "scope_manifest_confirmed": false,
           "scope_manifest_path": "",
           "specification_path": "",
-          "structural_inventory_path": "",
+          "structural_inventory_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/01-structural-inventory.md",
           "target_path": "",
+          "target_workflow_id": "work-package",
           "total_count": 0,
           "unaddressed_count": 0,
           "update_seeded_from_review": false,

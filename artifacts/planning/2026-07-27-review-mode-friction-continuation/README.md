@@ -26,8 +26,8 @@ Left alone, each gap means the assistant reaches a step with nothing to fill in,
 | 2 | 01 | [Structural inventory](01-structural-inventory.md) | Target baseline counts and scope | 10-15m | ✅ |
 | 3 | 01 | [Format conventions](01-format-conventions.md) | Authoring literacy notes | 5-10m | ✅ |
 | 4 | 01 | [Deferred items](01-deferred-items.md) | Out-of-scope deferrals register | 5m | ✅ |
-| 5 | 03 | [Design specification](design-specification.md) | Change goals and constraints | 20-40m | ⬚ |
-| 6 | 03 | [Assumptions log](assumptions-log.md) | Open and settled assumptions | 10-15m | ⬚ |
+| 5 | 03 | [Design specification](03-design-specification.md) | Change goals and constraints | 20-40m | ✅ |
+| 6 | 03 | [Assumptions log](03-assumptions-log.md) | Open and settled assumptions | 10-15m | ✅ |
 | 7 | 04 | [Pattern analysis](pattern-analysis.md) | Applicable patterns and practices | 20-40m | ⬚ |
 | 8 | 05 | [Impact analysis](impact-analysis.md) | Blast radius and preservations | 20-40m | ⬚ |
 | 9 | 06 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |
@@ -43,6 +43,15 @@ Left alone, each gap means the assistant reaches a step with nothing to fill in,
 | 19 | 11 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
 
 **Status:** ⬚ pending · ◐ in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
+
+## 🧭 Design Decisions
+
+| Decision | Where it lives |
+|----------|----------------|
+| Five change goals G-1…G-5 bound this session's change surface | [Design specification § Purpose](03-design-specification.md#purpose) |
+| Closing the orphan input re-targets the git reads at the engineering checkout, not just the symbol name | [Design specification § Why G-2 is a re-target](03-design-specification.md#why-g-2-is-a-re-target-not-a-rename) |
+| The base URL and its UPPERCASE slots keep their single resource home | [Design specification § Rules](03-design-specification.md#rules) |
+| Open judgements carried to Gate 2 | [Assumptions log](03-assumptions-log.md) |
 
 ## 🔗 Links
 
