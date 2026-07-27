@@ -56,7 +56,7 @@ Compare new content against existing content. Flag any material being removed. C
 
 ## 11. Complete Documentation Structure
 
-Every workflow includes a README.md at the root and in each construct subfolder. READMEs orient (purpose, flow, value, structure, links).
+Every workflow includes a README.md at the root and in each construct subfolder. READMEs orient (purpose, flow, value, structure, links). A completeness verdict over them names the enumeration that grounds it, not the instances inspected.
 
 ## 12. Output Economy
 
