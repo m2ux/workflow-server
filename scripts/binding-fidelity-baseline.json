@@ -166,6 +166,11 @@
   },
   {
     "check": "dead-output",
+    "site": "meta/techniques/workflow-engine/detect-resume-intent.md",
+    "detail": "output 'resume_intent_requested' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
+  },
+  {
+    "check": "dead-output",
     "site": "meta/techniques/workflow-engine/dispatch-activity.md",
     "detail": "output 'trace_token' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)"
   },
@@ -623,6 +628,11 @@
     "check": "orphan-input",
     "site": "meta :: version-control::initialize-folder",
     "detail": "own input 'initiative_name' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)"
+  },
+  {
+    "check": "orphan-input",
+    "site": "meta :: workflow-engine::detect-resume-intent",
+    "detail": "own input 'user_request' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)"
   },
   {
     "check": "orphan-input",
