@@ -1,6 +1,6 @@
 # Requirements-Refinement Design Fixes — July 2026
 
-> Update · Created 2026-07-27 · **Status:** Submitted for review — Gate 2 approved; [PR #318](https://github.com/m2ux/workflow-server/pull/318) open against `workflows`
+> Update · Created 2026-07-27 · **Status:** Complete — closed out in [11-completion.md](11-completion.md); [PR #318](https://github.com/m2ux/workflow-server/pull/318) open against `workflows` awaiting human review and merge
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -41,8 +41,8 @@ Three questions are deliberately left open for a human to settle rather than dec
 | 15 | 10 | [Post-update review](10-post-update-review.md) | Follow-up after merge path | 15-30m | ✅ |
 | 16 | 10 | [Principle findings](10-principle-findings.md) | Principles audit satellite | 10-20m | ✅ |
 | 17 | 10 | [Anti-pattern findings](10-anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ✅ |
-| 18 | 11 | Retrospective | Session close-out | 15-30m | ◐ |
-| 19 | 11 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
+| 18 | 11 | Retrospective | Session close-out | 15-30m | ✅ |
+| 19 | 11 | [Close-out](11-completion.md) | Deliverables and limitations | 10-20m | ✅ |
 
 **Status:** ⬚ pending · ◐ in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
@@ -71,6 +71,7 @@ Three questions are deliberately left open for a human to settle rather than dec
 | Post-update review | [post-update-review.md](10-post-update-review.md) |
 | Principle findings | [principle-findings.md](10-principle-findings.md) |
 | Anti-pattern findings | [anti-pattern-findings.md](10-anti-pattern-findings.md) |
+| Close-out and retrospective | [completion.md](11-completion.md) |
 
 ## Design Decisions
 

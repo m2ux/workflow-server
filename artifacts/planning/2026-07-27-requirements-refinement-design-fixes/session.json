@@ -348,11 +348,12 @@
           "impact-analysis",
           "scope-and-draft",
           "quality-review",
-          "validate-and-commit"
+          "validate-and-commit",
+          "post-update-review"
         ],
-        "condition": "operation_type == update → post-update-review",
-        "currentActivity": "post-update-review",
-        "currentTechnique": "github-cli-protocol::mark-ready",
+        "condition": "isDefault: retrospective (the AND condition was unsatisfied — review_findings_count == 0 false and needs_recommit == false false — so routing fell through to isDefault)",
+        "currentActivity": "retrospective",
+        "currentTechnique": "work-package::manage-git::remove-worktree",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:2a775f356d424475": "2a775f356d424475",
@@ -365,6 +366,7 @@
             "bundle:workflow-engine::yield-checkpoint": "3d36e6b03c483346",
             "resource:anti-patterns": "47a101c5828c7fa0",
             "resource:anti-patterns#ap-114-pass-orchestration-in-technique": "f4ee3303e44a80e2",
+            "resource:completion-artifact#template": "1dd8b7e72320c44c",
             "resource:compliance-report#template": "79245789778f4695",
             "resource:convention-conformance": "932c44fb8ad98a7c",
             "resource:design-assumption-reconciliation": "9ed98d1d67ac8606",
@@ -388,6 +390,7 @@
             "resource:scope-manifest#template": "61b930a45b33006b",
             "resource:structural-inventory#template": "7db600d332941585",
             "resource:update-mode-guide": "0dc373ed74c78f61",
+            "resource:work-package/workflow-retrospective#output-section-template": "5fa47f5556b87ed6",
             "resource:workflow-design/readme-seed": "498f9d6f21fc0848",
             "technique:apply-audit-fixes": "9220c393b1263fca",
             "technique:assemble-file-approach": "13c1d787cfe477d7",
@@ -399,7 +402,9 @@
             "technique:audit-rule-hygiene": "0b65b32101f16ed2",
             "technique:audit-schema-validation": "d7e824034bb03f53",
             "technique:commit-verification": "305c1bb64446fb48",
+            "technique:conduct-retrospective": "58089ce8564aa2ad",
             "technique:context-loading": "1e4841fa4b3ad579",
+            "technique:create-completion-doc": "814e2b94902bf6ff",
             "technique:derive-design-dimensions": "fd1ea705472b3cdf",
             "technique:derive-workflows-target-path": "b0f192074f63de15",
             "technique:github-cli-protocol::create-pr": "c0465c9dbcd03e47",
@@ -422,7 +427,8 @@
             "technique:verify-artifact-conforms": "5b4afb314c23b35d",
             "technique:verify-high-findings": "94e5fe77436a30f9",
             "technique:version-control::commit-regular-files": "36d64bfb3cf7a9c3",
-            "technique:work-package::manage-artifacts::write-artifact": "55ede384ee9e1cf9",
+            "technique:work-package::manage-artifacts::write-artifact": "dcc0c0aa166f656c",
+            "technique:work-package::manage-git::remove-worktree": "bd207715a311c45b",
             "technique:work-package::review-assumptions::collect": "c6991732d8ffb5af",
             "technique:work-package::review-assumptions::record": "3863422e28015b10",
             "technique:work-package::stakeholder-overview": "29f600d94b5ea59a",
@@ -2299,21 +2305,311 @@
             },
             "timestamp": "2026-07-27T16:49:43.642Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "workflow_files",
+              "source": "variables_changed",
+              "value": "requirements-refinement v1.2.0 reloaded from the worktree at 37988f9a — 21 files: workflow.yaml, 5 activity YAMLs, 6 technique leaves, 1 container TECHNIQUE.md, 4 resources, 4 READMEs"
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "expressiveness_findings",
+              "source": "variables_changed",
+              "value": "5 findings: E-1 AP-111 Protocol 5 restates four Output identity criteria (residual, Gate 2); E-2 AP-98 route narration (applied, re-verified); E-3 AP-40 activity counts (applied, re-verified); E-4 AP-124/121 mode phases numbered as sequential (residual follow-up); E-5 NEW AP-118+AP-108 intake-sources Protocol 1 bind mechanics for two required declared inputs (not applied, needs design call). 3 residual after this pass"
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "expressiveness_finding_count",
+              "source": "variables_changed",
+              "value": 5
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "expressiveness_findings_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-expressiveness-findings.md"
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "conformance_findings",
+              "source": "variables_changed",
+              "value": "3 findings: C-1 seven _path variable declarations (applied, re-verified — 9 declarations cover all 10 interpolations); C-2 four resources lack sibling frontmatter (residual deferral, out of scope); C-3 NEW activities/README.md Produces and Transitions-to columns transcribe transitions[] and the synthesized artifact contract against a 4-of-6 sibling Role convention (not applied, blocked on AP-80 confirmation). Newly confirmed conformant: 01's condition-plus-isDefault transition matches 9 sites across 7 workflows; optional ## Rules matches 350 of 503 corpus technique files"
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "conformance_finding_count",
+              "source": "variables_changed",
+              "value": 3
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "conformance_findings_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-conformance-findings.md"
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "principle_findings",
+              "source": "variables_changed",
+              "value": "7 findings across 29 principles: P-1 HIGH principle 9 correction cycle has no structural termination guarantee (no in-scope fix — kind:loop is activity-scoped and cannot bound a cross-activity cycle; action:set is agent-executed so carries no stronger guarantee); P-2 HIGH principle 9 canonical-document integrity text-only across three homes with zero action:validate; P-3 principle 6 five rules.activity entries dual-homed or restating Protocol; P-4 principle 14 three gate-unread variables (A-3, machine-confirmed); P-5 principle 12 terminal acknowledgement gate records nothing (A-5); P-6 principle 23 three revise options carry no effect or route (A-7); P-7 principle 13 Protocol restates Output identity. 16 principles Pass with cited evidence"
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "principle_findings_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/10-principle-findings.md"
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "anti_pattern_findings",
+              "source": "variables_changed",
+              "value": "11 findings, 5 applied: A-1 no-technique-resource-dual-home both validate-specification rules restated validation-rubric criteria the technique already cites, non-sequential also triple-homed with specification-protocol (APPLIED); A-2 no-rule-protocol-restatement every-normative-statement-is-mapped (APPLIED); A-3 no-technique-resource-dual-home normative-statement vocabulary triple-homed, now a cite to validation-rubric#source-coverage (APPLIED); A-4 no-one-step-rules one-advance-per-correction-pass (APPLIED); A-11 cited-home-owns-claim F-9 rationale corrected (APPLIED); A-5 no-bind-mechanics-as-prose intake-sources Protocol 1 (NEW, not applied); A-6 readme-orients-not-transcribes activities/README.md (NEW, not applied, AP-80); A-7 session-interaction-in-technique surface-the-diagnostic-and-stop (residual); A-8 checkpoint-requires-decision (A-5 held); A-9 structure-backed-constraints (Gate 2 held); A-10 single-rule-authority x2 plus no-rule-protocol-restatement x3 (Gate 2 held). Tool-Technique-Doc entries non-applicable: the workflow authors no tool names, bootstrap claims, or tool-call recipes"
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "anti_pattern_findings_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/10-anti-pattern-findings.md"
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "pass_count",
+              "source": "variables_changed",
+              "value": 14
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "fail_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "scope_drift_findings",
+              "source": "variables_changed",
+              "value": ""
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "findings_summary",
+              "source": "variables_changed",
+              "value": "Post-update review of requirements-refinement v1.2.0 at 37988f9a: 0 Critical, 2 High, 12 Medium, 2 Low, 16 Pass. 2 new standing findings (both requiring human input, registered F-12/F-13), 6 applied this pass, 10 carried dispositioned residuals and held judgements all re-confirmed present. All six validators pass post-fix: 14/14 schema, 108/0 activities, 0 unresolved refs, 0 new binding drift, variable model coherent, technique template conformant. Scope clean at 16/16. Both High findings are structural limits with no in-scope fix and are flagged for reviewer attention on PR 318"
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "review_findings_count",
+              "source": "variables_changed",
+              "value": 2
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "report_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/10-post-update-review.md"
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "written_artifact",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/10-anti-pattern-findings.md"
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "fixes_applied",
+              "source": "variables_changed",
+              "value": "6 fixes, 5 in the workflow definition across 4 files plus 1 planning-register correction, all validators pass post-edit: validate-specification.md ## Rules section deleted (both entries duplicated validation-rubric.md); analyze-source.md rule every-normative-statement-is-mapped deleted and Protocol 4 normative-statement vocabulary replaced with a cite to validation-rubric.md#source-coverage (anchor verified resolvable); update-specification.md rule one-advance-per-correction-pass deleted; README.md flow-diagram back-edge glyphs reconnected; 03-follow-ups.md F-9 rationale corrected and F-11 closed. Published by the orchestrator as commit 7cc483e9 and pushed to origin/workflow/requirements-refinement"
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "needs_audit_fixes",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "name": "needs_recommit",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "retrospective",
+            "timestamp": "2026-07-27T17:17:31.569Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "conduct-retrospective",
+              "techniqueId": "conduct-retrospective"
+            },
+            "timestamp": "2026-07-27T17:18:07.288Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-retrospective",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T17:18:07.288Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "work-package/workflow-retrospective#output-section-template"
+            },
+            "timestamp": "2026-07-27T17:18:07.288Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-27T17:18:07.288Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-completion-doc",
+              "techniqueId": "create-completion-doc"
+            },
+            "timestamp": "2026-07-27T17:18:21.202Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "completion-artifact#template"
+            },
+            "timestamp": "2026-07-27T17:18:39.651Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "retrospective",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "remove-session-worktree",
+              "techniqueId": "work-package::manage-git::remove-worktree"
+            },
+            "timestamp": "2026-07-27T17:23:13.920Z",
+            "type": "technique_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 58,
+        "seq": 63,
         "sessionIndex": "QKSIQR",
         "skippedActivities": [],
         "startedAt": "2026-07-27T14:37:16.197Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785170983,
+        "ts": 1785172993,
         "variables": {
           "accumulated_design": "Update specification for requirements-refinement covering all five update dimensions plus a Technique-surface section: seven change goals — G1 correction cycle terminates (counter as declared output, cap authoritative at the transition literal), G2 gates are artifact-linked statements with effect-bearing options, G3 routing integrity, G4 announcements name and link the server-computed filename, G5 no dead session state, G6 contract separated from procedure, G7 documentation matches definition. Out of scope: purpose/lifecycle redesign, activity renumbering, rubric criteria, new activities or techniques.",
           "addressed_count": 16,
-          "anti_pattern_findings_path": "",
+          "anti_pattern_findings": "11 findings, 5 applied: A-1 no-technique-resource-dual-home both validate-specification rules restated validation-rubric criteria the technique already cites, non-sequential also triple-homed with specification-protocol (APPLIED); A-2 no-rule-protocol-restatement every-normative-statement-is-mapped (APPLIED); A-3 no-technique-resource-dual-home normative-statement vocabulary triple-homed, now a cite to validation-rubric#source-coverage (APPLIED); A-4 no-one-step-rules one-advance-per-correction-pass (APPLIED); A-11 cited-home-owns-claim F-9 rationale corrected (APPLIED); A-5 no-bind-mechanics-as-prose intake-sources Protocol 1 (NEW, not applied); A-6 readme-orients-not-transcribes activities/README.md (NEW, not applied, AP-80); A-7 session-interaction-in-technique surface-the-diagnostic-and-stop (residual); A-8 checkpoint-requires-decision (A-5 held); A-9 structure-backed-constraints (Gate 2 held); A-10 single-rule-authority x2 plus no-rule-protocol-restatement x3 (Gate 2 held). Tool-Technique-Doc entries non-applicable: the workflow authors no tool names, bootstrap claims, or tool-call recipes",
+          "anti_pattern_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/10-anti-pattern-findings.md",
           "applicable_constructs_path": "",
           "artifact_conformance": {
             "conforms": true,
@@ -2331,8 +2627,8 @@
           "body": "PR body composed and posted to #318: change summary by change goal G1-G7, 16-file scope table, validation table, the 2 High findings called out for reviewer attention, the three held judgements A-3/A-5/A-7, and a planning-folder pointer.",
           "change_category": "activity, technique, structural refactor",
           "change_request_clear": true,
-          "conformance_finding_count": 1,
-          "conformance_findings": "2 findings as found, 1 residual: seven _path outputs interpolated in activity messages were undeclared in variables[] against a 19/19 sibling convention (APPLIED); four resources lack the sibling frontmatter shape, 141/142 carry it, loads fine by filename-derived id and outside the confirmed 16-file scope (deferred follow-up). Confirmed conformant: file naming, field ordering, semver, transition patterns, checkpoint structure, technique section order, techniques.activity, terminal-activity omission, the 02 numbering gap, and effect-less options",
+          "conformance_finding_count": 3,
+          "conformance_findings": "3 findings: C-1 seven _path variable declarations (applied, re-verified — 9 declarations cover all 10 interpolations); C-2 four resources lack sibling frontmatter (residual deferral, out of scope); C-3 NEW activities/README.md Produces and Transitions-to columns transcribe transitions[] and the synthesized artifact contract against a 4-of-6 sibling Role convention (not applied, blocked on AP-80 confirmation). Newly confirmed conformant: 01's condition-plus-isDefault transition matches 9 sites across 7 workflows; optional ## Rules matches 350 of 503 corpus technique files",
           "conformance_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-conformance-findings.md",
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/README.md",
           "design_dimensions": [
@@ -2350,14 +2646,15 @@
           "enforcement_finding_count": 4,
           "enforcement_findings": "4 text-only rules, all residual: HIGH correction cycle has no structural termination guarantee, transition back-edges are unbounded and the counter advance is prose (mechanism: kind loop with maxIterations); HIGH canonical-document integrity text-only across three rule homes with zero action-validate anywhere (mechanism: action validate on the write target); MEDIUM status-change confirmation clause unenforced across three homes; MEDIUM source-readable precondition is technique prose with no failure arm, also AP-113",
           "enforcement_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-enforcement-findings.md",
-          "expressiveness_finding_count": 2,
-          "expressiveness_findings": "4 findings as found, 2 residual: AP-111 Protocol 5 restates four Output identity criteria (Gate 2, resolves F-4); AP-98 routing narration in two option descriptions (APPLIED); AP-40 activity inventory counts in two README tiers (APPLIED); AP-124/AP-121 mode-selection-only Protocol phase in update-specification (follow-up)",
+          "expressiveness_finding_count": 5,
+          "expressiveness_findings": "5 findings: E-1 AP-111 Protocol 5 restates four Output identity criteria (residual, Gate 2); E-2 AP-98 route narration (applied, re-verified); E-3 AP-40 activity counts (applied, re-verified); E-4 AP-124/121 mode phases numbered as sequential (residual follow-up); E-5 NEW AP-118+AP-108 intake-sources Protocol 1 bind mechanics for two required declared inputs (not applied, needs design call). 3 residual after this pass",
           "expressiveness_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-expressiveness-findings.md",
           "fail_count": 0,
           "file_count": 16,
           "file_review_note": "Per-file delta and removal inventory for all 16 files; every removal maps to impact rows 1-9, so no unflagged removal exists",
           "file_review_note_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/06-file-review-note.md",
-          "fixes_applied": "3 fixes across 4 files, no collateral removal, both repo validators pass post-edit: workflow.yaml gained seven _path variable declarations (type string, defaultValue empty) in pipeline order; activities/01-intake-and-analyze.yaml two confirmed-option descriptions stripped of route narration; README.md and activities/README.md activity inventory count removed. Diff: 4 files, 32 insertions, 4 deletions, uncommitted",
+          "findings_summary": "Post-update review of requirements-refinement v1.2.0 at 37988f9a: 0 Critical, 2 High, 12 Medium, 2 Low, 16 Pass. 2 new standing findings (both requiring human input, registered F-12/F-13), 6 applied this pass, 10 carried dispositioned residuals and held judgements all re-confirmed present. All six validators pass post-fix: 14/14 schema, 108/0 activities, 0 unresolved refs, 0 new binding drift, variable model coherent, technique template conformant. Scope clean at 16/16. Both High findings are structural limits with no in-scope fix and are flagged for reviewer attention on PR 318",
+          "fixes_applied": "6 fixes, 5 in the workflow definition across 4 files plus 1 planning-register correction, all validators pass post-edit: validate-specification.md ## Rules section deleted (both entries duplicated validation-rubric.md); analyze-source.md rule every-normative-statement-is-mapped deleted and Protocol 4 normative-statement vocabulary replaced with a cite to validation-rubric.md#source-coverage (anchor verified resolvable); update-specification.md rule one-advance-per-correction-pass deleted; README.md flow-diagram back-edge glyphs reconnected; 03-follow-ups.md F-9 rationale corrected and F-11 closed. Published by the orchestrator as commit 7cc483e9 and pushed to origin/workflow/requirements-refinement",
           "format_conventions_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/01-format-conventions.md",
           "format_literacy_confirmed": true,
           "has_critical_finding": false,
@@ -2368,7 +2665,7 @@
           "headless_mode": true,
           "impact_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/05-impact-analysis.md",
           "intent_needs_confirmation": false,
-          "needs_audit_fixes": true,
+          "needs_audit_fixes": false,
           "needs_recommit": false,
           "open_assumptions": [
             "A-3 Dead variable disposition — remove written-but-never-read variables vs give each a structural read",
@@ -2383,7 +2680,8 @@
           "pr_number": 318,
           "pr_status": "ready for review",
           "pr_url": "https://github.com/m2ux/workflow-server/pull/318",
-          "principle_findings_path": "",
+          "principle_findings": "7 findings across 29 principles: P-1 HIGH principle 9 correction cycle has no structural termination guarantee (no in-scope fix — kind:loop is activity-scoped and cannot bound a cross-activity cycle; action:set is agent-executed so carries no stronger guarantee); P-2 HIGH principle 9 canonical-document integrity text-only across three homes with zero action:validate; P-3 principle 6 five rules.activity entries dual-homed or restating Protocol; P-4 principle 14 three gate-unread variables (A-3, machine-confirmed); P-5 principle 12 terminal acknowledgement gate records nothing (A-5); P-6 principle 23 three revise options carry no effect or route (A-7); P-7 principle 13 Protocol restates Output identity. 16 principles Pass with cited evidence",
+          "principle_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/10-principle-findings.md",
           "readme_conformance": {
             "conforms": true,
             "extra_top_level_headings": [],
@@ -2391,14 +2689,15 @@
             "missing_sections": []
           },
           "removal_count": 21,
-          "report_path": "",
-          "review_findings_count": 0,
+          "report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/10-post-update-review.md",
+          "review_findings_count": 2,
           "review_scope_confirmed": false,
           "reviewed_blocks": "32 block-indexed rows across the 16 files: 27 modified/added, 5 deliberately unchanged (01 transitions, 01/05 gate options, 04 cap literal, 06 single option)",
           "rule_hygiene_finding_count": 5,
           "rule_hygiene_findings": "5 findings, all residual, all Gate 2 removals: AP-22 protocol-preservation dual-homed workflow.yaml rules.activity[0] vs TECHNIQUE.md with an already-drifted 4-of-7 identifier list; AP-22 planning-folder invariant dual-homed rules.activity[2] vs TECHNIQUE.md; AP-19 rules.activity[1] restates intake-sources and analyze-source Protocol 3; AP-19 rules.activity[3] restates update-specification Protocol 2; AP-19 rules.activity[4] restates four other homes. None applied: no impact row inventories these removals",
           "rule_hygiene_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-rule-hygiene-findings.md",
           "schema_constructs_confirmed": true,
+          "scope_drift_findings": "",
           "scope_manifest_confirmed": true,
           "scope_manifest_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/06-scope-manifest.md",
           "specification_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/03-design-specification.md",
@@ -2414,10 +2713,11 @@
           "verified_findings": "15 findings: 2 High confirmed by adversarial re-derivation (N-2 unbounded correction cycle, N-1 canonical-document integrity), 1 High downgraded to Medium (C-1 path-variable gap: divergence reproduced but no functional break, no unproduced-value-read, validators passed pre-fix), 9 Medium confirmed, 3 Low confirmed. 0 Critical",
           "verified_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-verified-findings.md",
           "workflow_branch": "workflow/requirements-refinement",
+          "workflow_files": "requirements-refinement v1.2.0 reloaded from the worktree at 37988f9a — 21 files: workflow.yaml, 5 activity YAMLs, 6 technique leaves, 1 container TECHNIQUE.md, 4 resources, 4 READMEs",
           "workflow_id": "requirements-refinement",
           "workflow_readme": "requirements-refinement/README.md verified against the definition — v1.2.0 banner, cap stated as its literal, artifact-location claim dropped, activity count removed; already correct, no further revision needed this pass",
           "worktree_created": true,
-          "written_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-verified-findings.md",
+          "written_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/10-anti-pattern-findings.md",
           "yaml_file": "All YAML valid: validate-workflow-yaml.ts passes workflow.yaml + 5 activities + 8 technique files; validate-activities.ts 5 passed, 0 failed"
         },
         "workflowId": "workflow-design",
