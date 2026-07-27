@@ -318,10 +318,11 @@
           "requirements-refinement",
           "impact-analysis",
           "scope-and-draft",
-          "quality-review"
+          "quality-review",
+          "validate-and-commit"
         ],
-        "condition": "decisions.blocker-gate -> no-blocker (has_critical_finding == false, isDefault); transitions[] isDefault -> validate-and-commit",
-        "currentActivity": "validate-and-commit",
+        "condition": "condition: operation_type == update -> post-update-review (matched first transition; retrospective isDefault not taken)",
+        "currentActivity": "post-update-review",
         "currentTechnique": "github-cli-protocol::mark-ready",
         "deliveredContent": {
           "orchestrator": {
@@ -335,6 +336,7 @@
             "bundle:workflow-engine::yield-checkpoint": "3d36e6b03c483346",
             "resource:anti-patterns": "09bb2cfe819388b2",
             "resource:anti-patterns#ap-114-pass-orchestration-in-technique": "305e6ee39c7f8fcc",
+            "resource:compliance-report#template": "9d0d9908b3f244c9",
             "resource:convention-conformance": "cec5f1143acf4514",
             "resource:design-assumption-reconciliation": "8a12fab2b07a3984",
             "resource:design-assumptions#assumptions-log-template": "36a8bf077495721b",
@@ -346,6 +348,7 @@
             "resource:elicitation-guide": "69ba94c61eb1647e",
             "resource:file-review-note#template": "e5cb4251276d0e30",
             "resource:findings-satellite": "98fe69464d271e64",
+            "resource:findings-satellite#template": "1116008cb79c8211",
             "resource:follow-ups": "3bb8d4144310f08f",
             "resource:format-conventions": "e208e3ba6620a19b",
             "resource:impact-analysis": "f86f9342ecbb199e",
@@ -358,7 +361,10 @@
             "resource:work-package/deferred-items": "52dd743a22d3d9a3",
             "resource:workflow-design/readme-seed": "562d05bdfa6dcf7c",
             "technique:assemble-file-approach": "13c1d787cfe477d7",
+            "technique:audit-anti-patterns": "c1ef9ffa88e34f52",
+            "technique:audit-conformance": "c01f7f417ad1d9a1",
             "technique:audit-expressiveness": "dd04e70d8d8eee8c",
+            "technique:audit-principles": "cc3979bfb0a87541",
             "technique:audit-schema-validation": "d7e824034bb03f53",
             "technique:commit-verification": "305c1bb64446fb48",
             "technique:context-loading": "1e4841fa4b3ad579",
@@ -373,16 +379,19 @@
             "technique:publish-workflow-pr": "0fe348d43632439a",
             "technique:readme-authoring": "95df6474b7b579dd",
             "technique:reconcile-design-assumptions": "c02a916d204406cb",
+            "technique:reload-workflow": "aefd9fb0cb27585d",
             "technique:review-draft-yaml": "018d9c555450c733",
             "technique:review-drafted-file": "c3f17f51d9082876",
+            "technique:scope-audit": "97eda79317836f37",
             "technique:scope-definition": "ad6ca18d97b921e0",
             "technique:scope-verification": "9e64d6f82c89b7f9",
+            "technique:summarize-findings": "82930b9bd862c99e",
             "technique:synthesize-update-specification": "d2120a8a8e4c2f0c",
             "technique:verify-artifact-conforms": "5b4afb314c23b35d",
             "technique:verify-high-findings": "94e5fe77436a30f9",
             "technique:version-control::commit-regular-files": "36d64bfb3cf7a9c3",
             "technique:version-control::push-branch": "968dacb93af1c8ac",
-            "technique:work-package::manage-artifacts::write-artifact": "5f8466cb5d686374",
+            "technique:work-package::manage-artifacts::write-artifact": "55ede384ee9e1cf9",
             "technique:work-package::review-assumptions::collect": "c6991732d8ffb5af",
             "technique:work-package::review-assumptions::record": "3863422e28015b10",
             "technique:work-package::stakeholder-overview": "29f600d94b5ea59a",
@@ -1657,23 +1666,357 @@
             },
             "timestamp": "2026-07-27T16:13:19.247Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-27T16:28:19.161Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pass_count",
+              "source": "variables_changed",
+              "value": 16
+            },
+            "timestamp": "2026-07-27T16:28:19.161Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "fail_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-07-27T16:28:19.161Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "total_count",
+              "source": "variables_changed",
+              "value": 4
+            },
+            "timestamp": "2026-07-27T16:28:19.161Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "addressed_count",
+              "source": "variables_changed",
+              "value": 4
+            },
+            "timestamp": "2026-07-27T16:28:19.161Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "unaddressed_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-07-27T16:28:19.161Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pushed_branch",
+              "source": "variables_changed",
+              "value": "origin/workflow/work-package-review-mode-friction-271"
+            },
+            "timestamp": "2026-07-27T16:28:19.161Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "declaredType": "string",
+              "name": "pr_number",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": 274,
+              "valueType": "number"
+            },
+            "timestamp": "2026-07-27T16:28:19.161Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/274"
+            },
+            "timestamp": "2026-07-27T16:28:19.161Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_status",
+              "source": "variables_changed",
+              "value": "ready for review"
+            },
+            "timestamp": "2026-07-27T16:28:19.161Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T16:28:19.161Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "assumption_decisions",
+              "source": "variables_changed",
+              "value": [
+                {
+                  "arm": 1,
+                  "decision": "re-disposed",
+                  "files_changed": "none",
+                  "id": "A-10"
+                },
+                {
+                  "decision": "re-affirmed",
+                  "files_changed": "none",
+                  "id": "A-11",
+                  "scope": [
+                    "B-1",
+                    "B-2"
+                  ]
+                }
+              ]
+            },
+            "timestamp": "2026-07-27T16:28:19.161Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "timestamp": "2026-07-27T16:28:19.161Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "reload-updated-workflow",
+              "techniqueId": "reload-workflow"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-expressiveness",
+              "techniqueId": "audit-expressiveness"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-conformance",
+              "techniqueId": "audit-conformance"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-principles",
+              "techniqueId": "audit-principles"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-post-principles",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-anti-patterns",
+              "techniqueId": "audit-anti-patterns"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-post-anti-patterns",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-schema-validation",
+              "techniqueId": "audit-schema-validation"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "scope-audit",
+              "techniqueId": "scope-audit"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "summarize-findings",
+              "techniqueId": "summarize-findings"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "save-review-snapshot",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "schema-construct-inventory"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "findings-satellite#template"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "convention-conformance"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "design-principles"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "compliance-report#template"
+            },
+            "timestamp": "2026-07-27T16:28:56.381Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "anti-patterns"
+            },
+            "timestamp": "2026-07-27T16:30:51.810Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 52,
+        "seq": 55,
         "sessionIndex": "QDDWIT",
         "skippedActivities": [],
         "startedAt": "2026-07-27T13:49:48.066Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785168799,
+        "ts": 1785169851,
         "variables": {
           "accumulated_design": "Update specification over changed dimensions only - purpose (G-1 publish ref resolves, G-2 engineering checkout is the git target, G-3 URL slots stay in the resource, G-4 one statement of the source, G-5 judgements land), artifacts, rules; activity list and checkpoints unchanged.",
-          "addressed_count": 0,
+          "addressed_count": 4,
           "anti_pattern_findings_path": "",
           "applicable_constructs_path": "",
-          "assumption_decisions": [],
+          "assumption_decisions": [
+            {
+              "arm": 1,
+              "decision": "re-disposed",
+              "files_changed": "none",
+              "id": "A-10"
+            },
+            {
+              "decision": "re-affirmed",
+              "files_changed": "none",
+              "id": "A-11",
+              "scope": [
+                "B-1",
+                "B-2"
+              ]
+            }
+          ],
           "assumptions_log": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/03-assumptions-log.md",
           "change_category": [
             "technique",
@@ -1704,7 +2047,7 @@
           "format_literacy_confirmed": true,
           "has_critical_finding": false,
           "has_deferred_assumptions": false,
-          "has_open_assumptions": true,
+          "has_open_assumptions": false,
           "has_resolvable_assumptions": false,
           "has_unflagged_removals": false,
           "headless_mode": true,
@@ -1714,11 +2057,13 @@
           "needs_recommit": false,
           "operation_type": "update",
           "operation_type_ambiguous": false,
-          "pass_count": 0,
+          "pass_count": 16,
           "pattern_analysis_path": "",
-          "pr_number": "",
-          "pr_url": "",
+          "pr_number": 274,
+          "pr_status": "ready for review",
+          "pr_url": "https://github.com/m2ux/workflow-server/pull/274",
           "principle_findings_path": "",
+          "pushed_branch": "origin/workflow/work-package-review-mode-friction-271",
           "removal_count": 3,
           "report_path": "",
           "review_findings_count": 0,
@@ -1732,7 +2077,7 @@
           "structural_inventory_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/01-structural-inventory.md",
           "target_path": "/home/mike1/projects/work/workflows/2026-07-09-workflow-design-doc-voice",
           "target_workflow_id": "work-package",
-          "total_count": 0,
+          "total_count": 4,
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
           "verified_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/08-verified-findings.md",

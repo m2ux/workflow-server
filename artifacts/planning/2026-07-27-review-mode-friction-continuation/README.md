@@ -42,7 +42,7 @@ The result is that the review summary the assistant posts carries links that res
 | 14 | 08 | [Expressiveness](08-expressiveness-findings.md) · [Conformance](08-conformance-findings.md) | Audit satellites, update mode | 10-20m | ✅ |
 | 15 | 08 | [Verified findings](08-verified-findings.md) | Adversarial re-derivation of High findings | 10-20m | ✅ |
 | 16 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ✅ |
-| 17 | 10 | Post-update review | Follow-up after merge path | 15-30m | ⬚ |
+| 17 | 10 | [Post-update review](10-post-update-review.md) | Follow-up after merge path | 15-30m | ✅ |
 | 18 | 11 | Retrospective | Session close-out | 15-30m | ⬚ |
 | 19 | 11 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
 
