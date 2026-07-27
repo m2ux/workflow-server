@@ -54,6 +54,10 @@ target_path = checkout / .worktrees / <slug>
 
 ### start.sh (Docker)
 
+- Refresh `$INSTALL/workflows` via `update-workflows.sh` before booting. The
+  step is best-effort: offline, or a dirty/absent checkout, warns and the server
+  starts on the definitions already on disk. Skip with `--no-update-workflows`
+  (or `WORKFLOW_SERVER_UPDATE_WORKFLOWS=0`).
 - Mount `HOST_PROJECTS_ROOT` RW (covers checkouts, `.engineering`, nested `.worktrees`).
 - Mount `workflows/` RO, `state/` RW.
 - Prefer leaving `HOST_WORKTREE_ROOT` unset (nested `.worktrees/` under projects root).
