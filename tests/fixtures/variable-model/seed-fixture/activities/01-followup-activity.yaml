@@ -1,0 +1,10 @@
+id: followup-activity
+version: 1.0.0
+name: Followup Activity
+description: Transition target used to exercise worker-output persistence via next_activity variables_changed.
+steps:
+  - kind: action
+    id: noop
+    actions:
+      - action: log
+        message: Nothing to do — this activity exists to give checkpoint-activity somewhere to transition to.

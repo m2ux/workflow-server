@@ -115,7 +115,7 @@
                             "emit",
                             "message"
                           ],
-                          "description": "Action verb, interpreted by the executing agent. The server has no action interpreter: `set` does not write the session variable bag (only a checkpoint option's setVariable effect does) and is slated for removal at the next workflow-schema major (#166 B7/B12)."
+                          "description": "Action verb, interpreted by the executing agent. The server has no action interpreter: executing `set` is the worker's job, and its value reaches the session variable bag when the worker reports it in the `variables_changed` its orchestrator relays on next_activity. `set` is slated for removal at the next workflow-schema major (#166 B7/B12)."
                         },
                         "target": {
                           "type": "string"
@@ -333,7 +333,7 @@
                             "setVariable": {
                               "type": "object",
                               "additionalProperties": {},
-                              "description": "Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt."
+                              "description": "Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied checkpoint effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt."
                             },
                             "transitionTo": {
                               "type": "string",

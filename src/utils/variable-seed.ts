@@ -1,4 +1,5 @@
 import type { VariableDefinition } from '../schema/workflow.schema.js';
+import type { HistoryEntry } from './../schema/state.schema.js';
 
 /**
  * Build the initial session variable bag from a workflow's variable
@@ -33,4 +34,54 @@ export function jsonTypeOf(value: unknown): string {
  */
 export function isTemplateReference(value: unknown): boolean {
   return typeof value === 'string' && /^\{[^{}]+\}$/.test(value);
+}
+
+/**
+ * The two engine-applied write paths into the session variable bag. Recorded
+ * on each `variable_set` history event so the stream distinguishes a user
+ * decision from a worker's domain output.
+ */
+export type VariableWriteSource = 'setVariable' | 'variables_changed';
+
+/** The mutable slice of session state a variable write touches. */
+interface VariableWriteTarget {
+  variables: Record<string, unknown>;
+  history: HistoryEntry[];
+}
+
+/**
+ * Apply a map of variable assignments to the session bag, appending one
+ * `variable_set` history event per name and returning warn-only messages for
+ * declared-type mismatches. Values are stored as written either way; `{name}`
+ * template passthroughs are exempt because they are resolved agent-side.
+ *
+ * Shared by both write paths so they stay honest with one another: checkpoint
+ * `setVariable` effects (respond_checkpoint) and worker-reported
+ * `variables_changed` results (next_activity).
+ */
+export function applyVariableWrites(
+  draft: VariableWriteTarget,
+  values: Record<string, unknown>,
+  declaredTypes: Map<string, string>,
+  ctx: { timestamp: string; activity?: string; source: VariableWriteSource },
+): string[] {
+  const warnings: string[] = [];
+  for (const [name, value] of Object.entries(values)) {
+    const declaredType = declaredTypes.get(name);
+    const valueType = jsonTypeOf(value);
+    const mismatch = declaredType !== undefined && !isTemplateReference(value) && valueType !== declaredType;
+    if (mismatch) {
+      warnings.push(
+        `${ctx.source} '${name}': value is ${valueType} but the variable is declared ${declaredType}; stored as written.`,
+      );
+    }
+    draft.variables[name] = value;
+    draft.history.push({
+      timestamp: ctx.timestamp,
+      type: 'variable_set',
+      ...(ctx.activity !== undefined ? { activity: ctx.activity } : {}),
+      data: { name, value, source: ctx.source, ...(mismatch ? { declaredType, valueType, typeMismatch: true } : {}) },
+    });
+  }
+  return warnings;
 }

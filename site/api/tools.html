@@ -245,6 +245,7 @@
           <tr><td><code>transition_condition</code></td><td><code>string</code></td><td>no</td><td>The condition name that led to this transition, from the previous activity.</td></tr>
           <tr><td><code>step_manifest</code></td><td><code>object[]</code></td><td>no</td><td>Steps completed in the previous activity, for example <code>[{ &quot;step_id&quot;: &quot;detect-review-mode&quot;, &quot;output&quot;: &quot;is_review_mode=false&quot; }]</code>. Omit if no steps ran.</td></tr>
           <tr><td><code>activity_manifest</code></td><td><code>object[]</code></td><td>no</td><td>History of completed activities with outcomes and transition conditions.</td></tr>
+          <tr><td><code>variables_changed</code></td><td><code>object</code></td><td>no</td><td>Variable assignments the completing activity produced — relay the worker's <code>activity_complete</code> <code>variables_changed</code> map verbatim. The server writes them into the session variable bag and records one <code>variable_set</code> history event per name, so the bag a later get_workflow_status / inspect_session returns reflects worker outputs and survives a lost agent context. Declared types are validated warn-only: a mismatch is stored as written and surfaced in _meta.validation. Omit when the activity changed nothing.</td></tr>
           </tbody>
         </table>
         </div>
