@@ -1,0 +1,9 @@
+{
+  "_comment": "Read by webfetch-allow.py (same directory). WebFetch URLs whose string starts with any allowPrefixes entry auto-approve. Domain-level WebFetch(domain:…) rules in settings.json still apply separately.",
+  "allowPrefixes": [
+    "https://github.com/",
+    "https://raw.githubusercontent.com/",
+    "https://docs.claude.com/",
+    "https://docs.anthropic.com/"
+  ]
+}

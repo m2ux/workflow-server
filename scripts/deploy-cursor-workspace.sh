@@ -28,6 +28,14 @@ elif [[ -d "${SCRIPT_DIR}/examples/cursor-workspace" ]]; then
 else
   TEMPLATE_DIR="${SCRIPT_DIR}/../examples/cursor-workspace"
 fi
+# Claude hooks tree: repo scripts/claude, or install-dir scripts/claude next to deploy.
+if [[ -d "${SCRIPT_DIR}/claude" ]]; then
+  CLAUDE_SCRIPTS_DIR="$(cd "${SCRIPT_DIR}/claude" && pwd)"
+elif [[ -d "${SCRIPT_DIR}/scripts/claude" ]]; then
+  CLAUDE_SCRIPTS_DIR="$(cd "${SCRIPT_DIR}/scripts/claude" && pwd)"
+else
+  CLAUDE_SCRIPTS_DIR=""
+fi
 
 # Paths are built from $HOME (see --home to override).
 HOME_DIR="${HOME:-}"
@@ -67,6 +75,8 @@ Options:
                              (default: http://127.0.0.1:3000/mcp)
   --template=DIR             Template source (default: examples/cursor-workspace next to
                              this script, or ../examples/cursor-workspace from scripts/)
+  --claude-scripts=DIR       Claude hooks source (default: scripts/claude next to this
+                             script, or \$INSTALL/scripts/claude)
   --force                    Refresh managed files in an existing workspace dir
                              (upserts required MCP servers; keeps any extras)
   --dry-run                  Print actions only
@@ -76,6 +86,11 @@ Options:
 
 Required MCP servers written into mcp.json (workflows depend on these):
   concept-rag, atlassian, gitnexus, workflow-server
+
+Claude baseline (workspace-local only):
+  copies scripts/claude/ → <workspace>/scripts/claude/
+  writes .claude/settings.json from settings.template.json
+  (hook paths + \$HOME permissions expanded; not committed)
 
 Path substitution (all MCP servers — command and args):
   \${HOME}  \$HOME  __USER_HOME__  /home/<name>/…  → \$HOME/…
@@ -172,6 +187,8 @@ while [[ $# -gt 0 ]]; do
     --mcp-url) MCP_URL="${2:?}"; shift 2 ;;
     --template=*) TEMPLATE_DIR="${1#*=}"; shift ;;
     --template) TEMPLATE_DIR="${2:?}"; shift 2 ;;
+    --claude-scripts=*) CLAUDE_SCRIPTS_DIR="${1#*=}"; shift ;;
+    --claude-scripts) CLAUDE_SCRIPTS_DIR="${2:?}"; shift 2 ;;
     --force) FORCE=1; shift ;;
     --dry-run) DRY_RUN=1; shift ;;
     --open) OPEN_AFTER=1; shift ;;
@@ -229,6 +246,9 @@ fi
 PROJECTS_ROOT="$(normalize_home_path "$PROJECTS_ROOT")"
 CURSOR_WORKSPACES_ROOT="$(normalize_home_path "$CURSOR_WORKSPACES_ROOT")"
 TEMPLATE_DIR="$(normalize_home_path "$TEMPLATE_DIR")"
+if [[ -n "$CLAUDE_SCRIPTS_DIR" ]]; then
+  CLAUDE_SCRIPTS_DIR="$(normalize_home_path "$CLAUDE_SCRIPTS_DIR")"
+fi
 
 if [[ "$PROJECTS_ROOT" != "$HOME_DIR" && "$PROJECTS_ROOT" != "$HOME_DIR"/* ]]; then
   log "note: projects root is outside \$HOME (${HOME_DIR}): ${PROJECTS_ROOT}"
@@ -239,6 +259,10 @@ PLANNING_DIR="${PROJECT_DIR}/.engineering/artifacts/planning"
 WORKTREES_DIR="${PROJECT_DIR}/.worktrees"
 DEST_DIR="${CURSOR_WORKSPACES_ROOT}/${WORKSPACE_NAME}"
 WORKSPACE_FILE="${DEST_DIR}/${REPO_BASENAME}.code-workspace"
+CLAUDE_SETTINGS_TEMPLATE="${TEMPLATE_DIR}/.claude/settings.template.json"
+if [[ ! -f "$CLAUDE_SETTINGS_TEMPLATE" ]]; then
+  CLAUDE_SETTINGS_TEMPLATE="${TEMPLATE_DIR}/.claude/settings.example.json"
+fi
 
 if [[ -e "$DEST_DIR" && "$FORCE" -ne 1 && "$DRY_RUN" -ne 1 ]]; then
   die "destination exists: ${DEST_DIR} (re-run with --force to overwrite managed files)"
@@ -258,6 +282,8 @@ log "  planning          : ${PLANNING_DIR}"
 log "  work trees        : ${WORKTREES_DIR}"
 log "  workspace file    : ${WORKSPACE_FILE}"
 log "  MCP URL           : ${MCP_URL}"
+log "  claude scripts    : ${CLAUDE_SCRIPTS_DIR:-"(none)"}"
+log "  claude settings   : ${CLAUDE_SETTINGS_TEMPLATE}"
 
 # --- copy template rules / skills (preserve extra local files) ----------------
 if [[ "$DRY_RUN" -eq 1 ]]; then
@@ -271,6 +297,10 @@ else
   if [[ -d "${TEMPLATE_DIR}/.claude/rules" ]]; then
     cp -a "${TEMPLATE_DIR}/.claude/rules/." "${DEST_DIR}/.claude/rules/"
   fi
+  if [[ -f "${TEMPLATE_DIR}/.claude/settings.template.json" ]]; then
+    cp -a "${TEMPLATE_DIR}/.claude/settings.template.json" \
+      "${DEST_DIR}/.claude/settings.template.json"
+  fi
   if [[ -f "${TEMPLATE_DIR}/.claude/settings.example.json" ]]; then
     cp -a "${TEMPLATE_DIR}/.claude/settings.example.json" \
       "${DEST_DIR}/.claude/settings.example.json"
@@ -279,6 +309,72 @@ else
     mkdir -p "${DEST_DIR}/.cursor/skills"
     cp -a "${TEMPLATE_DIR}/.cursor/skills/." "${DEST_DIR}/.cursor/skills/"
   fi
+fi
+
+# --- scripts/claude (hooks + sbx) — workspace-local only ----------------------
+if [[ -n "$CLAUDE_SCRIPTS_DIR" && -d "$CLAUDE_SCRIPTS_DIR" ]]; then
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    log "copy claude scripts → ${DEST_DIR}/scripts/claude"
+  else
+    mkdir -p "${DEST_DIR}/scripts"
+    rm -rf "${DEST_DIR}/scripts/claude"
+    cp -a "${CLAUDE_SCRIPTS_DIR}" "${DEST_DIR}/scripts/claude"
+    # Ensure hook + sbx executables stay runnable after copy.
+    find "${DEST_DIR}/scripts/claude" -type f \( -name '*.py' -o -name 'sbx' -o -name '*.cjs' \) \
+      -exec chmod a+x {} + 2>/dev/null || true
+  fi
+else
+  log "warning: claude scripts not found (skipping scripts/claude install)"
+  log "         expected scripts/claude next to deploy, or pass --claude-scripts=DIR"
+fi
+
+# --- .claude/settings.json (workspace-local; expanded paths) ------------------
+if [[ -f "$CLAUDE_SETTINGS_TEMPLATE" ]]; then
+  CLAUDE_SETTINGS_JSON="$(
+    HOME_DIR="$HOME_DIR" \
+    DEST_DIR="$DEST_DIR" \
+    TEMPLATE_PATH="$CLAUDE_SETTINGS_TEMPLATE" \
+    python3 - <<'PY'
+import json, os, re, sys
+
+home = os.environ["HOME_DIR"].rstrip("/")
+workspace = os.environ["DEST_DIR"].rstrip("/")
+path = os.environ["TEMPLATE_PATH"]
+
+raw = open(path, encoding="utf-8").read()
+# Drop JSON-only helper keys if present
+try:
+    doc = json.loads(raw)
+except json.JSONDecodeError as e:
+    print(f"error: invalid Claude settings template: {path}: {e}", file=sys.stderr)
+    sys.exit(1)
+
+def expand(value: str) -> str:
+    if not isinstance(value, str):
+        return value
+    value = value.replace("__WORKSPACE__", workspace)
+    value = value.replace("__HOME__", home)
+    value = value.replace("${HOME}", home)
+    value = re.sub(r"\$HOME(?![A-Za-z0-9_])", home, value)
+    return value
+
+def expand_obj(obj):
+    if isinstance(obj, dict):
+        return {k: expand_obj(v) for k, v in obj.items() if k != "_comment"}
+    if isinstance(obj, list):
+        return [expand_obj(v) for v in obj]
+    if isinstance(obj, str):
+        return expand(obj)
+    return obj
+
+doc = expand_obj(doc)
+json.dump(doc, sys.stdout, indent=2, ensure_ascii=False)
+sys.stdout.write("\n")
+PY
+  )" || die "failed to render Claude settings from ${CLAUDE_SETTINGS_TEMPLATE}"
+  write_file "${DEST_DIR}/.claude/settings.json" "$CLAUDE_SETTINGS_JSON"
+else
+  log "warning: Claude settings template missing (skipping .claude/settings.json)"
 fi
 
 # --- mcp.json (required companions + workflow-server; keep extras) ------------

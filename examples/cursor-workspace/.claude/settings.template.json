@@ -1,0 +1,282 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(awk:*)",
+      "Bash(basename:*)",
+      "Bash(cargo --version)",
+      "Bash(cargo audit *)",
+      "Bash(cargo bench *)",
+      "Bash(cargo build *)",
+      "Bash(cargo check *)",
+      "Bash(cargo clippy *)",
+      "Bash(cargo doc *)",
+      "Bash(cargo fmt *)",
+      "Bash(cargo metadata *)",
+      "Bash(cargo nextest *)",
+      "Bash(cargo test *)",
+      "Bash(cargo tree *)",
+      "Bash(cat:*)",
+      "Bash(cd:*)",
+      "Bash(claude mcp *)",
+      "Bash(command -v:*)",
+      "Bash(cp:*)",
+      "Bash(date:*)",
+      "Bash(df:*)",
+      "Bash(du:*)",
+      "Bash(echo:*)",
+      "Bash(export:*)",
+      "Bash(find:*)",
+      "Bash(free:*)",
+      "Bash(gh api:*)",
+      "Bash(gh auth *)",
+      "Bash(gh issue *)",
+      "Bash(gh label list *)",
+      "Bash(gh pr *)",
+      "Bash(gh repo *)",
+      "Bash(gh run *)",
+      "Bash(gh search *)",
+      "Bash(git add *)",
+      "Bash(git branch *)",
+      "Bash(git checkout *)",
+      "Bash(git commit *)",
+      "Bash(git config --get *)",
+      "Bash(git config --get-all *)",
+      "Bash(git config --list*)",
+      "Bash(git config user.name)",
+      "Bash(git config user.email)",
+      "Bash(git diff *)",
+      "Bash(git fetch *)",
+      "Bash(git grep *)",
+      "Bash(git log *)",
+      "Bash(git merge *)",
+      "Bash(git merge-base *)",
+      "Bash(git merge-tree *)",
+      "Bash(git ls-files *)",
+      "Bash(git check-ignore *)",
+      "Bash(git ls-remote *)",
+      "Bash(git ls-tree *)",
+      "Bash(git cat-file *)",
+      "Bash(git for-each-ref *)",
+      "Bash(git shortlog *)",
+      "Bash(git describe *)",
+      "Bash(git blame *)",
+      "Bash(git reflog *)",
+      "Bash(git rebase --abort *)",
+      "Bash(git rebase --continue *)",
+      "Bash(git rebase --quit *)",
+      "Bash(git rebase --skip *)",
+      "Bash(git remote *)",
+      "Bash(git reset HEAD *)",
+      "Bash(git reset -q HEAD *)",
+      "Bash(git reset --quiet HEAD *)",
+      "Bash(git rev-list *)",
+      "Bash(git rev-parse *)",
+      "Bash(git show *)",
+      "Bash(git show-ref *)",
+      "Bash(git show-ref)",
+      "Bash(git stash *)",
+      "Bash(git status *)",
+      "Bash(git submodule *)",
+      "Bash(git symbolic-ref *)",
+      "Bash(git verify-commit *)",
+      "Bash(git verify-tag *)",
+      "Bash(git worktree add *)",
+      "Bash(git worktree list *)",
+      "Bash(gpg --list-secret-keys *)",
+      "Bash(gpg --list-keys *)",
+      "Bash(gpg --list-public-keys *)",
+      "Bash(gpg --verify *)",
+      "Bash(grep:*)",
+      "Bash(head:*)",
+      "Bash(jq:*)",
+      "Bash(kill:*)",
+      "Bash(ls:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm audit *)",
+      "Bash(npm ci)",
+      "Bash(npm ls *)",
+      "Bash(npm test *)",
+      "Bash(npm view *)",
+      "Bash(nproc:*)",
+      "Bash(npx vitest *)",
+      "Bash(npx tsc *)",
+      "Bash(pgrep:*)",
+      "Bash(pkg-config:*)",
+      "Bash(pkill:*)",
+      "Bash(printf:*)",
+      "Bash(protoc:*)",
+      "Bash(ps:*)",
+      "Bash(pstree:*)",
+      "Bash(pwd:*)",
+      "Bash(sed:*)",
+      "Bash(sleep:*)",
+      "Bash(sort:*)",
+      "Bash(stat:*)",
+      "Bash(tail:*)",
+      "Bash(top:*)",
+      "Bash(touch *)",
+      "Bash(tr:*)",
+      "Bash(true:*)",
+      "Bash(uniq:*)",
+      "Bash(w:*)",
+      "Bash(wc:*)",
+      "Bash(which:*)",
+      "Bash(git -C /tmp/* rebase *)",
+      "Bash(git -C * worktree remove /tmp/*)",
+      "Bash(git -C * worktree remove --force /tmp/*)",
+      "Bash(git push *)",
+      "Bash(git pull *)",
+      "Bash(npx gitnexus *)",
+      "Bash(git restore --staged *)",
+      "Bash(git mv *)",
+      "Bash(git config --show-origin *)",
+      "Bash(git config --global --get *)",
+      "Bash(git reset --soft *)",
+      "Bash(git reset --mixed *)",
+      "Bash(gpg-connect-agent /bye *)",
+      "Bash(git config --list *)",
+      "Bash(npm run *)",
+      "Bash(__WORKSPACE__/scripts/claude/bin/sbx *)",
+      "Bash(sbx:*)",
+      "Edit(__HOME__/projects/**)",
+      "Edit(/tmp/**)",
+      "Monitor",
+      "MultiEdit(__HOME__/projects/**)",
+      "NotebookEdit(__HOME__/projects/**)",
+      "Read(//tmp/**)",
+      "Read(//__HOME__/projects/**)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.claude.com)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebSearch",
+      "Write(__HOME__/projects/**)",
+      "Write(/tmp/**)",
+      "mcp__workflow-server__*",
+      "mcp__atlassian__addCommentToJiraIssue",
+      "mcp__atlassian__atlassianUserInfo",
+      "mcp__atlassian__getAccessibleAtlassianResources",
+      "mcp__atlassian__getJiraIssue",
+      "mcp__atlassian__getJiraIssueRemoteIssueLinks",
+      "mcp__atlassian__searchJiraIssuesUsingJql",
+      "mcp__gitnexus__list_repos",
+      "mcp__gitnexus__query",
+      "mcp__gitnexus__cypher",
+      "mcp__gitnexus__group_query",
+      "mcp__gitnexus__detect_changes",
+      "mcp__gitnexus__impact",
+      "mcp__gitnexus__context",
+      "mcp__concept-rag__list_categories",
+      "mcp__concept-rag__concept_search",
+      "mcp__concept-rag__broad_chunks_search",
+      "mcp__concept-rag__list_concepts_in_category",
+      "mcp__concept-rag__chunks_search",
+      "mcp__concept-rag__catalog_search",
+      "Skill(gitnexus-cli)",
+      "Skill(gitnexus-cli:*)",
+      "Skill(gitnexus-exploring)",
+      "Skill(gitnexus-exploring:*)"
+    ],
+    "additionalDirectories": [
+      "__HOME__/projects",
+      "/tmp"
+    ]
+  },
+  "enabledMcpjsonServers": [
+    "concept-rag",
+    "atlassian",
+    "workflow-server",
+    "gitnexus"
+  ],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 __WORKSPACE__/scripts/claude/hooks/block-gh-api-writes.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Grep|Glob|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"__WORKSPACE__/scripts/claude/hooks/gitnexus/gitnexus-hook.cjs\"",
+            "timeout": 10,
+            "statusMessage": "Enriching with GitNexus graph context..."
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 __WORKSPACE__/scripts/claude/hooks/compound-bash-allow.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 __WORKSPACE__/scripts/claude/hooks/block-dynamic-shell.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 __WORKSPACE__/scripts/claude/hooks/curl-read-allow.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 __WORKSPACE__/scripts/claude/hooks/redirect-inline-eval.py",
+            "timeout": 5
+          }
+        ]
+      },
+      {
+        "matcher": "WebFetch",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 __WORKSPACE__/scripts/claude/hooks/webfetch-allow.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"__WORKSPACE__/scripts/claude/hooks/gitnexus/gitnexus-hook.cjs\"",
+            "timeout": 10,
+            "statusMessage": "Checking GitNexus index freshness..."
+          }
+        ]
+      }
+    ]
+  },
+  "enabledPlugins": {
+    "rust-analyzer-lsp@claude-plugins-official": true
+  },
+  "switchModelsOnFlag": true
+}
