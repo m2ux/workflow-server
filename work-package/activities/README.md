@@ -10,7 +10,7 @@ For the activity-to-activity flow diagram, the feedback loops, and review-mode b
 
 ### 01. Start Work Package
 
-Initializes the work package: resolves `{repo_root}` (monorepo vs standalone), refreshes repo-root submodules and GitNexus, verifies or creates a tracker issue, materializes a dedicated git worktree at `{target_path}` (install layout: `<install-root>/worktrees/<owner>/<repo>/<wp-slug>/`; otherwise `~/projects/work/{component_name}/{wp-slug}/`), sets up the feature branch and draft PR inside that worktree, and binds the server-resolved planning folder. In review mode it instead captures the existing PR reference and checks out the PR's branch. Entry activity; leads to design-philosophy.
+Initializes the work package: resolves `{repo_root}` (monorepo vs standalone), refreshes repo-root submodules and GitNexus, verifies or creates a tracker issue, materializes a dedicated git worktree at `{target_path}` (`<checkout>/.worktrees/<wp-slug>/`), sets up the feature branch and draft PR inside that worktree, and binds the server-resolved planning folder. In review mode it instead captures the existing PR reference and checks out the PR's branch. Entry activity; leads to design-philosophy.
 
 Definition: [`01-start-work-package.yaml`](./01-start-work-package.yaml)
 
