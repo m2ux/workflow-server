@@ -72,6 +72,5 @@ The same update also repairs the search itself, so that when it does run it can 
 | Target workflow | `workflows/meta/` |
 | Repository | m2ux/workflow-server |
 | PR | [#311](https://github.com/m2ux/workflow-server/pull/311) |
-| Related issues | [#309](https://github.com/m2ux/workflow-server/issues/309) · [#310](https://github.com/m2ux/workflow-server/issues/310) |
-| Worktree-layout branch | `fix/309-worktree-path-layout` |
-| Baseline branch | `chore/binding-fidelity-baseline-resume-intent` |
+| Related issues | [#309](https://github.com/m2ux/workflow-server/issues/309) (closed by #311) · [#310](https://github.com/m2ux/workflow-server/issues/310) |
+| Baseline PR | [#313](https://github.com/m2ux/workflow-server/pull/313) — `main` tree, cannot ride #311 |
