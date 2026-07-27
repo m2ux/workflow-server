@@ -309,11 +309,12 @@
         "agentId": "orchestrator",
         "checkpointResponses": {},
         "completedActivities": [
-          "intake-and-context"
+          "intake-and-context",
+          "requirements-refinement"
         ],
-        "condition": "condition: format_literacy_confirmed == true AND schema_constructs_confirmed == true -> requirements-refinement (isDefault arm)",
-        "currentActivity": "requirements-refinement",
-        "currentTechnique": "synthesize-update-specification",
+        "condition": "condition: operation_type == update -> impact-analysis (pattern-analysis path-skipped)",
+        "currentActivity": "impact-analysis",
+        "currentTechnique": "work-package::manage-artifacts::write-artifact",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:2a775f356d424475": "2a775f356d424475",
@@ -335,6 +336,7 @@
             "resource:elicitation-guide": "69ba94c61eb1647e",
             "resource:follow-ups": "3bb8d4144310f08f",
             "resource:format-conventions": "e208e3ba6620a19b",
+            "resource:impact-analysis": "f86f9342ecbb199e",
             "resource:meta/planning-readme": "90923c846860a5f8",
             "resource:schema-construct-inventory": "37f3cc0f7979b66c",
             "resource:structural-inventory#template": "bedec7b1d3d80a52",
@@ -343,11 +345,12 @@
             "resource:workflow-design/readme-seed": "562d05bdfa6dcf7c",
             "technique:context-loading": "1e4841fa4b3ad579",
             "technique:derive-design-dimensions": "fd1ea705472b3cdf",
+            "technique:impact-analysis": "27ad658513c42a83",
             "technique:intake-classification": "fa0cf7c1465a489f",
             "technique:persist-design-specification": "83243ab80d679bc5",
             "technique:reconcile-design-assumptions": "c02a916d204406cb",
             "technique:synthesize-update-specification": "d2120a8a8e4c2f0c",
-            "technique:work-package::manage-artifacts::write-artifact": "4382f6578071c34a",
+            "technique:work-package::manage-artifacts::write-artifact": "7e26ff13419304d4",
             "technique:work-package::review-assumptions::collect": "c6991732d8ffb5af",
             "technique:work-package::review-assumptions::record": "3863422e28015b10",
             "technique:work-package::stakeholder-overview": "e213dde5f7960790",
@@ -879,22 +882,152 @@
             },
             "timestamp": "2026-07-27T14:39:26.156Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "requirements-refinement",
+            "timestamp": "2026-07-27T15:00:27.331Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "design_dimensions",
+              "source": "variables_changed",
+              "value": [
+                "purpose",
+                "activity list",
+                "checkpoints",
+                "artifacts",
+                "rules"
+              ]
+            },
+            "timestamp": "2026-07-27T15:00:27.331Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "accumulated_design",
+              "source": "variables_changed",
+              "value": "Update specification over changed dimensions only - purpose (G-1 publish ref resolves, G-2 engineering checkout is the git target, G-3 URL slots stay in the resource, G-4 one statement of the source, G-5 judgements land), artifacts, rules; activity list and checkpoints unchanged."
+            },
+            "timestamp": "2026-07-27T15:00:27.331Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "specification_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/03-design-specification.md"
+            },
+            "timestamp": "2026-07-27T15:00:27.331Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "declaredType": "object",
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/03-assumptions-log.md",
+              "valueType": "string"
+            },
+            "timestamp": "2026-07-27T15:00:27.331Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T15:00:27.331Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T15:00:27.331Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "assumption_decisions",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-07-27T15:00:27.331Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T15:00:27.331Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "impact-analysis",
+            "timestamp": "2026-07-27T15:00:27.331Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "impact-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "impact-analysis",
+              "techniqueId": "impact-analysis"
+            },
+            "timestamp": "2026-07-27T15:01:15.898Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "impact-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "impact-analysis"
+            },
+            "timestamp": "2026-07-27T15:01:24.899Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "impact-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-impact-analysis",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T15:08:23.798Z",
+            "type": "technique_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 14,
+        "seq": 19,
         "sessionIndex": "QDDWIT",
         "skippedActivities": [],
         "startedAt": "2026-07-27T13:49:48.066Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785163166,
+        "ts": 1785164903,
         "variables": {
+          "accumulated_design": "Update specification over changed dimensions only - purpose (G-1 publish ref resolves, G-2 engineering checkout is the git target, G-3 URL slots stay in the resource, G-4 one statement of the source, G-5 judgements land), artifacts, rules; activity list and checkpoints unchanged.",
           "addressed_count": 0,
           "anti_pattern_findings_path": "",
           "applicable_constructs_path": "",
           "assumption_decisions": [],
+          "assumptions_log": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/03-assumptions-log.md",
           "change_category": [
             "technique",
             "resource"
@@ -903,6 +1036,13 @@
           "conformance_finding_count": 0,
           "conformance_findings_path": "",
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/README.md",
+          "design_dimensions": [
+            "purpose",
+            "activity list",
+            "checkpoints",
+            "artifacts",
+            "rules"
+          ],
           "dimension_questions": "",
           "draft_attestation_path": "",
           "drafting_plan_path": "",
@@ -915,7 +1055,8 @@
           "format_conventions_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/01-format-conventions.md",
           "format_literacy_confirmed": true,
           "has_critical_finding": false,
-          "has_open_assumptions": false,
+          "has_deferred_assumptions": false,
+          "has_open_assumptions": true,
           "has_resolvable_assumptions": false,
           "has_unflagged_removals": false,
           "headless_mode": true,
@@ -939,7 +1080,7 @@
           "schema_constructs_confirmed": true,
           "scope_manifest_confirmed": false,
           "scope_manifest_path": "",
-          "specification_path": "",
+          "specification_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/03-design-specification.md",
           "structural_inventory_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/01-structural-inventory.md",
           "target_path": "",
           "target_workflow_id": "work-package",

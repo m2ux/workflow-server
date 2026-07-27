@@ -28,8 +28,8 @@ Left alone, each gap means the assistant reaches a step with nothing to fill in,
 | 4 | 01 | [Deferred items](01-deferred-items.md) | Out-of-scope deferrals register | 5m | ✅ |
 | 5 | 03 | [Design specification](03-design-specification.md) | Change goals and constraints | 20-40m | ✅ |
 | 6 | 03 | [Assumptions log](03-assumptions-log.md) | Open and settled assumptions | 10-15m | ✅ |
-| 7 | 04 | [Pattern analysis](pattern-analysis.md) | Applicable patterns and practices | 20-40m | ⬚ |
-| 8 | 05 | [Impact analysis](impact-analysis.md) | Blast radius and preservations | 20-40m | ⬚ |
+| 7 | 04 | Pattern analysis | Applicable patterns and practices | 20-40m | ⊘ |
+| 8 | 05 | [Impact analysis](05-impact-analysis.md) | Blast radius and preservations | 20-40m | ✅ |
 | 9 | 06 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |
 | 10 | 06 | [Drafting plan](drafting-plan.md) | Draft order and blocks | 10-20m | ⬚ |
 | 11 | 06 | [Draft attestation](draft-attestation.md) | Batch review attestation | 5-10m | ⬚ |
