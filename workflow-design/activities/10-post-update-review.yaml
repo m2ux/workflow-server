@@ -1,7 +1,7 @@
 id: post-update-review
-version: 1.9.1
+version: 1.10.0
 name: Post-Update Review
-description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation. When findings remain, remediates automatically (never asks accept/iterate/revert).
+description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation. When findings remain, remediates automatically (never asks accept/iterate/revert) and publishes the remediation to the open pull request.
 required: true
 steps:
   - kind: technique
@@ -109,7 +109,7 @@ steps:
         message: Set true when review_findings_count is greater than 0 so the remedia while-loop runs. False only when the summary is already clean.
       - action: set
         target: needs_recommit
-        message: Set true — remedia edits already-committed files and must re-enter validate-and-commit before retrospective.
+        message: Set true — remedia edits already-committed files, so the publish tail below commits, pushes, and refreshes the pull request.
       - action: message
         message: "Post-update review complete. {review_findings_count} findings — remediating automatically ([post-update review]({report_path}))."
   - kind: loop
@@ -166,6 +166,57 @@ steps:
     actions:
       - action: message
         message: "Post-update remedia exhausted with findings remaining ([post-update review]({report_path}))."
+  - kind: technique
+    id: republish-verify-scope-manifest
+    technique: scope-verification
+    when: needs_recommit == true
+  - kind: technique
+    id: republish-verify-planning-readme
+    technique:
+      name: workflow-engine::verify-readme-conforms
+      inputs:
+        seed_profile: workflow-design/readme-seed
+    when: needs_recommit == true
+  - kind: technique
+    id: republish-stage-and-commit
+    technique: version-control::commit-regular-files
+    when: needs_recommit == true
+  - kind: technique
+    id: republish-verify-commit
+    technique: commit-verification
+    when: needs_recommit == true
+  - kind: technique
+    id: republish-push-branch
+    technique:
+      name: version-control::push-branch
+      inputs:
+        repo_path: target_path
+        branch: workflow_branch
+        remote_name: origin
+    when: needs_recommit == true
+  - kind: technique
+    id: republish-pr-description
+    technique: publish-workflow-pr
+    when: needs_recommit == true
+  - kind: technique
+    id: republish-pull-request
+    technique:
+      name: github-cli-protocol::create-pr
+      inputs:
+        repo_path: target_path
+        branch: workflow_branch
+        base_branch: workflows
+        as_draft: false
+    when: needs_recommit == true
+  - kind: action
+    id: republish-complete
+    when: needs_recommit == true
+    actions:
+      - action: set
+        target: needs_recommit
+        message: Set false — the remedia edits are committed, pushed, and reflected in the pull request.
+      - action: message
+        message: "Post-update remediation published to [PR #{pr_number}]({pr_url})."
 transitions:
   - to: intake-and-context
     condition:
@@ -173,18 +224,6 @@ transitions:
       variable: needs_audit_fixes
       operator: ==
       value: true
-  - to: validate-and-commit
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: needs_recommit
-          operator: ==
-          value: true
-        - type: simple
-          variable: review_findings_count
-          operator: ==
-          value: 0
   - to: retrospective
     condition:
       type: and
@@ -204,4 +243,5 @@ transitions:
     isDefault: true
 outcome:
   - The committed update is either clean or automatically remediated — findings never wait on an accept/iterate/revert choice
+  - Remediation edits reach the open pull request from here, so a finding costs one audit rather than a second pass over the whole definition tree
   - A dated compliance snapshot of the committed state exists to compare future audits against and to show the update was checked, not assumed

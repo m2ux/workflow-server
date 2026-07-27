@@ -215,7 +215,7 @@ variables:
     defaultValue: false
   - name: needs_recommit
     type: boolean
-    description: True when post-update remedia edited already-committed files and validate-and-commit must run again before retrospective.
+    description: True when post-update remedia edits are pending publication to the open pull request.
     defaultValue: false
   - name: has_critical_finding
     type: boolean

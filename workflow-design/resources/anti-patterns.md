@@ -1685,3 +1685,26 @@ A concrete value is written out where a declared variable or technique input alr
 
 **Fix:** Replace the literal with `{name}` for the declared slot. Leave exactly one home for the value — the declaration.
 
+### AP-128. unproduced-value-read
+
+"`when: intent_detected == true` on the sole producer" / "`variable: matched_item`, `operator: ==`, `value: null` on the reader's gate"
+
+A value's only producer sits behind a gate while a reader reaches it from a path that gate excludes, so on that path the reader sees an undefined variable rather than a produced one.
+
+**Detect:** For each step gated by `when` or `condition` that is the sole producer of a variable — step output, output remap, or `set` target — trace every later reader: an input binding, a `when` or `condition` naming it, a `{token}` interpolation. Flag when a reader is reachable on a path where the producer is skipped and the variable declares no `defaultValue`. Two shapes qualify: a reader gated by an equality or relational operator, which cannot distinguish an undefined variable from a produced value; and an ungated reader with no complementary producer arm covering the gate's negation.
+
+**Do not flag:** Variables with a `defaultValue` seeded at session creation, where the gate is constant rather than undefined; readers gated by the same expression as their producer; checkpoint `setVariable` effects that apply on every option. A parallel projection of state another variable already carries is `no-derived-state-shadow`.
+
+**Fix:** Use `operator: exists` or `notExists` when the question is definedness — the form that covers undefined and null alike. When the excluded path genuinely needs the value, add the complementary producer arm so the gates are exhaustive. Do not substitute a `defaultValue` a reader cannot distinguish from a produced value.
+
+### AP-129. stale-restatement-after-change
+
+"`identifies the target and any saved session` surviving in one README tier after the sibling tier gained `when the request states resume intent`"
+
+A change updates some restatements of a behaviour it altered and leaves others asserting the superseded behaviour.
+
+**Detect:** When a change alters a behavioural claim — a gate, precondition, default, or ordering — take the pre-change phrasing as the search key and sweep the whole definition tree: every README tier, activity `description`, technique `## Capability`, `outcome[]`, and resource body. Flag each surviving occurrence that still asserts the pre-change behaviour. The test is occurrence count against the tree, not against the change's file list: a manifest naming one file for a claim that appears in three is the same defect.
+
+**Do not flag:** Restatements already accurate and unaffected by the change; planning-folder artifacts that record the before state deliberately; a claim held once in a single authoritative home. Restatement that duplicates a Detect body an existing entry owns is `canon-layer-cites-not-restates`.
+
+**Fix:** Update every occurrence in one edit and record the count in the change's file manifest so the sweep is auditable. Where the claim needs only one home, delete the restatements instead of updating them — see [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
