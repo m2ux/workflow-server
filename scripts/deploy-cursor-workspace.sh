@@ -90,7 +90,6 @@ Required MCP servers written into mcp.json (workflows depend on these):
 Claude baseline (workspace-local only):
   copies scripts/claude/ → <workspace>/scripts/claude/
   writes .claude/settings.json from settings.template.json
-  (hook paths + \$HOME permissions expanded; template/example not installed)
 
 Path substitution (all MCP servers — command and args):
   \${HOME}  \$HOME  __USER_HOME__  /home/<name>/…  → \$HOME/…
@@ -285,12 +284,9 @@ log "  MCP URL           : ${MCP_URL}"
 log "  claude scripts    : ${CLAUDE_SCRIPTS_DIR:-"(none)"}"
 log "  claude settings   : ${CLAUDE_SETTINGS_TEMPLATE}"
 
-# --- copy template rules / skills (runtime only; preserve extra local files) --
-# settings.template.json / settings.example.json stay in the repo template only.
-# Live kickoff gets the rendered .claude/settings.json further below.
+# --- copy template rules / skills (preserve extra local files) ----------------
 if [[ "$DRY_RUN" -eq 1 ]]; then
   log "copy template rules/skills → ${DEST_DIR}"
-  log "omit settings.template.json / settings.example.json from destination"
 else
   mkdir -p "${DEST_DIR}/.cursor/rules" "${DEST_DIR}/.claude/rules"
 
@@ -300,7 +296,6 @@ else
   if [[ -d "${TEMPLATE_DIR}/.claude/rules" ]]; then
     cp -a "${TEMPLATE_DIR}/.claude/rules/." "${DEST_DIR}/.claude/rules/"
   fi
-  # Drop packaging leftovers from older deploys (template is never a runtime file).
   rm -f \
     "${DEST_DIR}/.claude/settings.template.json" \
     "${DEST_DIR}/.claude/settings.example.json"
@@ -319,11 +314,9 @@ if [[ -n "$CLAUDE_SCRIPTS_DIR" && -d "$CLAUDE_SCRIPTS_DIR" ]]; then
     mkdir -p "${DEST_DIR}/scripts"
     rm -rf "${DEST_DIR}/scripts/claude"
     cp -a "${CLAUDE_SCRIPTS_DIR}" "${DEST_DIR}/scripts/claude"
-    # Packaging-only / VCS noise — not needed in a live kickoff.
     rm -f "${DEST_DIR}/scripts/claude/.gitignore"
     find "${DEST_DIR}/scripts/claude" -type d -name '__pycache__' -prune -exec rm -rf {} + 2>/dev/null || true
     find "${DEST_DIR}/scripts/claude" -type f -name '*.pyc' -delete 2>/dev/null || true
-    # Ensure hook + sbx executables stay runnable after copy.
     find "${DEST_DIR}/scripts/claude" -type f \( -name '*.py' -o -name 'sbx' -o -name '*.cjs' \) \
       -exec chmod a+x {} + 2>/dev/null || true
   fi

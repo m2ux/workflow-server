@@ -77,7 +77,7 @@ Deploy installs:
 - MCP (`concept-rag`, `atlassian`, `gitnexus`, `workflow-server` via `mcp-remote`)
 - Bootstrap rules and `AGENTS.md` / `CLAUDE.md` for `repo: "owner/repo"`
 - Multi-root `.code-workspace` with absolute `$HOME/…` paths
-- **Claude baseline (kickoff only):** `scripts/claude/` + generated `.claude/settings.json` (rendered from `settings.template.json`; template/example files are not installed)
+- **Claude baseline (kickoff only):** `scripts/claude/` + generated `.claude/settings.json`
 
 ## 4. Update Workflows
 
