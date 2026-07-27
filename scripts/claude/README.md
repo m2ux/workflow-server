@@ -22,8 +22,6 @@ scripts/claude/
     ├── redirect-inline-eval.py
     ├── webfetch-allow.json
     ├── webfetch-allow.py
-    ├── gitnexus/
-    │   └── gitnexus-hook.cjs
     └── lib/
         └── project_scripts.py
 ```
