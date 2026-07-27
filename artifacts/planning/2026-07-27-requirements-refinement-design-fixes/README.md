@@ -27,7 +27,7 @@ The practical consequence is that the workflow behaves less predictably than it 
 | 3 | 03 | [Design specification](design-specification.md) | Change goals and constraints | 20-40m | ✅ |
 | 4 | 03 | [Assumptions log](assumptions-log.md) | Open and settled assumptions | 10-15m | ✅ |
 | 5 | 04 | [Pattern analysis](pattern-analysis.md) | Applicable patterns and practices | 20-40m | ⊘ |
-| 6 | 05 | [Impact analysis](impact-analysis.md) | Blast radius and preservations | 20-40m | ⬚ |
+| 6 | 05 | [Impact analysis](impact-analysis.md) | Blast radius and preservations | 20-40m | ✅ |
 | 7 | 06 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |
 | 8 | 06 | [Drafting plan](drafting-plan.md) | Draft order and blocks | 10-20m | ⬚ |
 | 9 | 06 | [Draft attestation](draft-attestation.md) | Batch review attestation | 5-10m | ⬚ |

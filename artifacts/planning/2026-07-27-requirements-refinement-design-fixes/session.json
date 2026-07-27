@@ -338,11 +338,12 @@
         "agentId": "orchestrator",
         "checkpointResponses": {},
         "completedActivities": [
-          "intake-and-context"
+          "intake-and-context",
+          "requirements-refinement"
         ],
-        "condition": "format_literacy_confirmed == true AND schema_constructs_confirmed == true (isDefault)",
-        "currentActivity": "requirements-refinement",
-        "currentTechnique": "synthesize-update-specification",
+        "condition": "operation_type == update → impact-analysis",
+        "currentActivity": "impact-analysis",
+        "currentTechnique": "work-package::manage-artifacts::write-artifact",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:2a775f356d424475": "2a775f356d424475",
@@ -364,6 +365,7 @@
             "resource:elicitation-guide": "12a112e8fa4db01e",
             "resource:follow-ups": "b20718be24468144",
             "resource:format-conventions": "58437d8be952aff1",
+            "resource:impact-analysis": "dd67db71781ea12a",
             "resource:meta/planning-readme": "be59cdada432fd61",
             "resource:schema-construct-inventory": "4a78224ff9226b4c",
             "resource:structural-inventory#template": "7db600d332941585",
@@ -371,11 +373,12 @@
             "resource:workflow-design/readme-seed": "498f9d6f21fc0848",
             "technique:context-loading": "1e4841fa4b3ad579",
             "technique:derive-design-dimensions": "fd1ea705472b3cdf",
+            "technique:impact-analysis": "27ad658513c42a83",
             "technique:intake-classification": "fa0cf7c1465a489f",
             "technique:persist-design-specification": "83243ab80d679bc5",
             "technique:reconcile-design-assumptions": "c02a916d204406cb",
             "technique:synthesize-update-specification": "d2120a8a8e4c2f0c",
-            "technique:work-package::manage-artifacts::write-artifact": "4382f6578071c34a",
+            "technique:work-package::manage-artifacts::write-artifact": "7e26ff13419304d4",
             "technique:work-package::review-assumptions::collect": "c6991732d8ffb5af",
             "technique:work-package::review-assumptions::record": "3863422e28015b10",
             "technique:work-package::stakeholder-overview": "e213dde5f7960790",
@@ -926,27 +929,188 @@
             },
             "timestamp": "2026-07-27T15:06:20.241Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "requirements-refinement",
+            "timestamp": "2026-07-27T15:19:49.636Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "design_dimensions",
+              "source": "variables_changed",
+              "value": [
+                "purpose",
+                "activity list",
+                "checkpoints",
+                "artifacts",
+                "rules"
+              ]
+            },
+            "timestamp": "2026-07-27T15:19:49.636Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "accumulated_design",
+              "source": "variables_changed",
+              "value": "Update specification for requirements-refinement covering all five update dimensions plus a Technique-surface section: seven change goals — G1 correction cycle terminates (counter as declared output, cap authoritative at the transition literal), G2 gates are artifact-linked statements with effect-bearing options, G3 routing integrity, G4 announcements name and link the server-computed filename, G5 no dead session state, G6 contract separated from procedure, G7 documentation matches definition. Out of scope: purpose/lifecycle redesign, activity renumbering, rubric criteria, new activities or techniques."
+            },
+            "timestamp": "2026-07-27T15:19:49.636Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "specification_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/03-design-specification.md"
+            },
+            "timestamp": "2026-07-27T15:19:49.636Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "written_artifact",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/03-design-specification.md"
+            },
+            "timestamp": "2026-07-27T15:19:49.636Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "declaredType": "object",
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/03-assumptions-log.md",
+              "valueType": "string"
+            },
+            "timestamp": "2026-07-27T15:19:49.636Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": [
+                "A-3 Dead variable disposition — remove written-but-never-read variables vs give each a structural read",
+                "A-5 Terminal acknowledgement gate — blocking gate with effect vs plain announcement",
+                "A-7 Rework destination — self back-edge vs transitionTo effect vs dedicated hold activity"
+              ]
+            },
+            "timestamp": "2026-07-27T15:19:49.636Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T15:19:49.636Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T15:19:49.636Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "assumption_decisions",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-07-27T15:19:49.636Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-refinement",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T15:19:49.636Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "impact-analysis",
+            "timestamp": "2026-07-27T15:19:49.636Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "impact-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "impact-analysis",
+              "techniqueId": "impact-analysis"
+            },
+            "timestamp": "2026-07-27T15:20:25.876Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "impact-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "impact-analysis"
+            },
+            "timestamp": "2026-07-27T15:20:40.325Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "impact-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-impact-analysis",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T15:24:03.674Z",
+            "type": "technique_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 12,
+        "seq": 17,
         "sessionIndex": "QKSIQR",
         "skippedActivities": [],
         "startedAt": "2026-07-27T14:37:16.197Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785164780,
+        "ts": 1785165843,
         "variables": {
+          "accumulated_design": "Update specification for requirements-refinement covering all five update dimensions plus a Technique-surface section: seven change goals — G1 correction cycle terminates (counter as declared output, cap authoritative at the transition literal), G2 gates are artifact-linked statements with effect-bearing options, G3 routing integrity, G4 announcements name and link the server-computed filename, G5 no dead session state, G6 contract separated from procedure, G7 documentation matches definition. Out of scope: purpose/lifecycle redesign, activity renumbering, rubric criteria, new activities or techniques.",
           "addressed_count": 0,
           "anti_pattern_findings_path": "",
           "applicable_constructs_path": "",
           "assumption_decisions": [],
+          "assumptions_log": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/03-assumptions-log.md",
           "change_category": "activity, technique, structural refactor",
           "change_request_clear": true,
           "conformance_finding_count": 0,
           "conformance_findings_path": "",
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/README.md",
+          "design_dimensions": [
+            "purpose",
+            "activity list",
+            "checkpoints",
+            "artifacts",
+            "rules"
+          ],
           "dimension_questions": "",
           "draft_attestation_path": "",
           "drafting_plan_path": "",
@@ -959,7 +1123,8 @@
           "format_conventions_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/01-format-conventions.md",
           "format_literacy_confirmed": true,
           "has_critical_finding": false,
-          "has_open_assumptions": false,
+          "has_deferred_assumptions": false,
+          "has_open_assumptions": true,
           "has_resolvable_assumptions": false,
           "has_unflagged_removals": false,
           "headless_mode": true,
@@ -967,6 +1132,11 @@
           "intent_needs_confirmation": false,
           "needs_audit_fixes": false,
           "needs_recommit": false,
+          "open_assumptions": [
+            "A-3 Dead variable disposition — remove written-but-never-read variables vs give each a structural read",
+            "A-5 Terminal acknowledgement gate — blocking gate with effect vs plain announcement",
+            "A-7 Rework destination — self back-edge vs transitionTo effect vs dedicated hold activity"
+          ],
           "operation_type": "update",
           "operation_type_ambiguous": false,
           "pass_count": 0,
@@ -984,7 +1154,7 @@
           "schema_constructs_confirmed": true,
           "scope_manifest_confirmed": false,
           "scope_manifest_path": "",
-          "specification_path": "",
+          "specification_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/03-design-specification.md",
           "stakeholder_overview": "Two-paragraph plain-language Problem Overview written under '## Problem Overview' in the planning README: requirements-refinement has never been audited against the workflow-design canon, and this session finds and fixes every departure without changing the workflow's purpose or lifecycle.",
           "structural_inventory": "Baseline inventory of requirements-refinement v1.1.0: 21 files (1 workflow.yaml, 5 activity YAML, 6 technique leaves, 1 container TECHNIQUE.md, 4 resources, 4 READMEs); 5 activities, 6 technique steps, 4 checkpoints, 0 action steps, 0 loops, 5 transitions, 0 decisions, 14 variables, 5 activity-partition rules.",
           "structural_inventory_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/01-structural-inventory.md",
@@ -996,7 +1166,8 @@
           "verified_findings_path": "",
           "workflow_branch": "",
           "workflow_id": "requirements-refinement",
-          "worktree_created": false
+          "worktree_created": false,
+          "written_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/03-design-specification.md"
         },
         "workflowId": "workflow-design",
         "workflowVersion": "1.30.0"
