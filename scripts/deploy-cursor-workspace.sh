@@ -296,6 +296,30 @@ else
   if [[ -d "${TEMPLATE_DIR}/.claude/rules" ]]; then
     cp -a "${TEMPLATE_DIR}/.claude/rules/." "${DEST_DIR}/.claude/rules/"
   fi
+
+  # Rules are copied verbatim, so expand the same placeholders the settings
+  # template uses. A rule naming an absolute path (the sbx launcher) has to
+  # match its allowlist entry, which is absolute after expansion.
+  DEST_DIR="$DEST_DIR" HOME_DIR="$HOME_DIR" python3 - <<'PY'
+import os, pathlib
+
+workspace = os.environ["DEST_DIR"].rstrip("/")
+home = os.environ["HOME_DIR"].rstrip("/")
+
+for sub in (".claude/rules", ".cursor/rules"):
+    d = pathlib.Path(workspace) / sub
+    if not d.is_dir():
+        continue
+    for p in sorted(d.iterdir()):
+        if not p.is_file() or p.suffix not in (".md", ".mdc"):
+            continue
+        text = p.read_text(encoding="utf-8")
+        new = text.replace("__WORKSPACE__", workspace).replace("__HOME__", home)
+        if new != text:
+            p.write_text(new, encoding="utf-8")
+            print(f"  expanded placeholders: {p.relative_to(workspace)}")
+PY
+
   rm -f \
     "${DEST_DIR}/.claude/settings.template.json" \
     "${DEST_DIR}/.claude/settings.example.json"
