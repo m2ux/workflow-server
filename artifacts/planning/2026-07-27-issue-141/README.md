@@ -27,7 +27,7 @@ The practical cost falls in two places. When a request quietly comes back empty,
 | 3 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, workflow path | 15-30m | ✅ |
 | 4 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across activities | 10-15m | ✅ |
 | 5 | 03 | [Requirements elicitation](03-requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ✅ |
-| 6 | 04 | [KB research](04-kb-research.md) | Knowledge-base and web synthesis | 20-45m | ◐ |
+| 6 | 04 | [KB research](04-kb-research.md) | Knowledge-base and web synthesis | 20-45m | ✅ |
 | 7 | 05 | [Implementation analysis](implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ⬚ |
 | 8 | 06 | [Work package plan](work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ⬚ |
 | 9 | 06 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ |
