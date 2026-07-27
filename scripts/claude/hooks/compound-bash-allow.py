@@ -146,8 +146,10 @@ def strip_quoted_heredocs(cmd: str) -> str | None:
         undergo expansion (command substitution = code execution), so it is left
         intact for has_unquoted_risky_token() to bail on, or
       * None when a heredoc is present but can't be cleanly/safely excised
-        (herestring, >1 heredoc, trailing content after the operator on its
-        line, or an unterminated body) — caller should bail.
+        (herestring, >1 heredoc, or an unterminated body) — caller should bail.
+
+    Command text following the operator on the same line (`cmd <<'EOF' && more`)
+    is retained and analyzed; only the body is excised.
     """
     if "<<" not in cmd:
         return cmd
@@ -166,14 +168,20 @@ def strip_quoted_heredocs(cmd: str) -> str | None:
     nl = cmd.find("\n", op_end)
     if nl == -1:
         return None  # operator with no following body
-    if cmd[op_end:nl].strip():
-        return None  # content after the operator on its line -> body ambiguous
+    # Text after the operator on the SAME line is ordinary command text: bash
+    # always starts the body on the next line, so `cmd <<'EOF' && other` is
+    # unambiguous. Keep it (joined onto the head) so the rest of the chain is
+    # still split and rule-checked per segment. Multi-heredoc ambiguity is
+    # already excluded by the len(ops) != 1 bail above.
+    trailing = cmd[op_end:nl].strip()
     tail = cmd[nl + 1:].split("\n")
     close_idx = next((i for i, ln in enumerate(tail) if ln.strip() == delim), None)
     if close_idx is None:
         return None  # unterminated heredoc
     remainder = "\n".join(tail[close_idx + 1:])
     head = cmd[:op_start].rstrip()
+    if trailing:
+        head = head + " " + trailing
     return head + "\n" + remainder if remainder.strip() else head
 
 
