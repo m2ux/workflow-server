@@ -1,6 +1,6 @@
 # Requirements-Refinement Design Fixes — July 2026
 
-> Update · Created 2026-07-27 · **Status:** Drafting complete — quality review next
+> Update · Created 2026-07-27 · **Status:** Audited — 15 findings, 0 Critical; awaiting Gate 2 approval to commit
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -35,10 +35,10 @@ Three questions are deliberately left open for a human to settle rather than dec
 | 8 | 06 | [Drafting plan](drafting-plan.md) | Draft order and blocks | 10-20m | ✅ |
 | 9 | 06 | [Draft attestation](draft-attestation.md) | Batch review attestation | 5-10m | ✅ |
 | 10 | 06 | [File review note](file-review-note.md) | Removals and draft highlights | 5-10m | ✅ |
-| 11 | 08 | Quality review | Principle and anti-pattern audits | 30-60m | ◐ |
-| 12 | 08 | [Principle findings](principle-findings.md) | Principles audit satellite | 10-20m | ◐ |
-| 13 | 08 | [Anti-pattern findings](anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ◐ |
-| 14 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ⬚ |
+| 11 | 08 | Quality review | Principle and anti-pattern audits | 30-60m | ✅ |
+| 12 | 08 | [Principle findings](principle-findings.md) | Principles audit satellite | 10-20m | ⊘ |
+| 13 | 08 | [Anti-pattern findings](anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ⊘ |
+| 14 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ◐ |
 | 15 | 10 | Post-update review | Follow-up after merge path | 15-30m | ⬚ |
 | 16 | 11 | Retrospective | Session close-out | 15-30m | ⬚ |
 | 17 | 11 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
@@ -55,6 +55,16 @@ Three questions are deliberately left open for a human to settle rather than dec
 | Design specification | [design-specification.md](03-design-specification.md) |
 | Assumptions log | [assumptions-log.md](03-assumptions-log.md) |
 | Follow-ups | [follow-ups.md](03-follow-ups.md) |
+| Impact analysis | [impact-analysis.md](05-impact-analysis.md) |
+| Scope manifest | [scope-manifest.md](06-scope-manifest.md) |
+| Drafting plan | [drafting-plan.md](06-drafting-plan.md) |
+| File review note | [file-review-note.md](06-file-review-note.md) |
+| Draft attestation | [draft-attestation.md](06-draft-attestation.md) |
+| Verified findings | [verified-findings.md](08-verified-findings.md) |
+| Expressiveness findings | [expressiveness-findings.md](08-expressiveness-findings.md) |
+| Conformance findings | [conformance-findings.md](08-conformance-findings.md) |
+| Rule-hygiene findings | [rule-hygiene-findings.md](08-rule-hygiene-findings.md) |
+| Enforcement findings | [enforcement-findings.md](08-enforcement-findings.md) |
 
 ## Design Decisions
 
