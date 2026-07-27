@@ -1,6 +1,6 @@
 # Meta Workflow
 
-> v5.2.0 — Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. The meta session runs five activities that identify a target client workflow, match any saved session, create or resume the client session as a child of meta, resolve target_path, drive the client workflow's activity loop and mediate its checkpoint yields, and close out. Provides the universal technique repository for all client workflows.
+> v5.9.0 — Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. The meta session runs five activities that identify a target client workflow, match any saved session when the request states resume intent, create or resume the client session as a child of meta, resolve target_path, drive the client workflow's activity loop and mediate its checkpoint yields, and close out. Provides the universal technique repository for all client workflows.
 
 ---
 
@@ -17,7 +17,7 @@ The meta workflow is the structural home for the orchestration logic that used t
 
 | # | Activity | Role |
 |---|----------|------|
-| 00 | [**Discover Session**](./activities/README.md#00-discover-session) | Identify the target client workflow and surface any saved session to resume |
+| 00 | [**Discover Session**](./activities/README.md#00-discover-session) | Identify the target client workflow and, on stated resume intent, surface any saved session to resume |
 | 01 | [**Initialize Session**](./activities/README.md#01-initialize-session) | Give the work package a stable identity and create or resume the client session as a child of meta |
 | 02 | [**Resolve Target**](./activities/README.md#02-resolve-target) | Detect the repo structure (regular vs. submodule monorepo) and resolve `target_path` |
 | 03 | [**Dispatch Client Workflow**](./activities/README.md#03-dispatch-client-workflow) | Drive the client workflow end to end inline, mediating its checkpoints with the user |
@@ -37,7 +37,7 @@ The meta workflow is the structural home for the orchestration logic that used t
 ```mermaid
 graph TD
     startNode(["Bootstrap"]) -->|"start_session(workflow_id: meta)"| DS["00 discover-session"]
-    DS -->|"target_workflow_id, has_saved_state, is_resuming"| INI["01 initialize-session"]
+    DS -->|"target_workflow_id, resume_intent_requested, has_saved_state, is_resuming"| INI["01 initialize-session"]
     INI -->|"client_session_index, client_planning_slug"| RT["02 resolve-target"]
     RT -->|"target_path"| DSP["03 dispatch-client-workflow"]
     DSP -->|"current_activity == null"| END["04 end-workflow"]
@@ -98,6 +98,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | `bootstrap-protocol` | [Bootstrap Protocol](./resources/bootstrap-protocol.md) | Pre-session stub served by `discover` — schema fetch, bind `repo` on `start_session`, bag `{target_repo}`, `get_workflow`. Ongoing delivery policy is in the operations bundle. |
 | `session-summary-template` | [Session Summary Template](./resources/session-summary-template.md) | Skeleton for the markdown session summary composed by `generate-summary` at workflow close. |
 | `planning-readme` | [Planning Folder README Guide](./resources/planning-readme.md) | Universal Template + Progress Status policy for planning-folder `README.md`. |
+| `resume-intent-lexicon` | [Resume Intent Lexicon](./resources/resume-intent-lexicon.md) | Continuation-phrase vocabulary gating `discover-session`'s saved-session search. |
 
 Agent entry Protocol: [`workflow-engine::activity-worker`](./techniques/workflow-engine/activity-worker.md) and [`workflow-engine::workflow-orchestrator`](./techniques/workflow-engine/workflow-orchestrator.md); spawn stubs from [`compose-prompt`](./techniques/workflow-engine/compose-prompt.md).
 
@@ -120,10 +121,10 @@ Meta itself produces no domain artefacts. Its outputs are session-state side-eff
 
 ```
 workflows/meta/
-├── workflow.yaml                            # Meta workflow definition (16 variables, 3 rules)
+├── workflow.yaml                            # Meta workflow definition
 ├── README.md                                # This file
 ├── activities/
-│   ├── 00-discover-session.yaml             # Match user request, scan saved sessions
+│   ├── 00-discover-session.yaml             # Match user request, scan saved sessions on resume intent
 │   ├── 01-initialize-session.yaml           # Create or resume the client session
 │   ├── 02-resolve-target.yaml               # Detect repo type, set target_path
 │   ├── 03-dispatch-client-workflow.yaml     # Drive the client activity loop (while current_activity != null)
@@ -150,5 +151,6 @@ workflows/meta/
     ├── bootstrap-protocol.md                # Pre-session stub (discover)
     ├── session-summary-template.md
     ├── planning-readme.md                   # Universal planning README Template + Progress policy
+    ├── resume-intent-lexicon.md             # Continuation phrases gating the saved-session search
     └── workflow-canonical.md                # Ontology / section conventions
 ```

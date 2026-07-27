@@ -233,7 +233,7 @@ variables:
     defaultValue: false
   - name: design_dimensions
     type: array
-    description: The ordered design dimensions to elicit in requirements-refinement, set per mode by derive-design-dimensions (create elicits all eight.
+    description: The ordered design dimensions to elicit for this run's mode.
   - name: target_path
     type: string
     description: Feature worktree path for edits, builds, and PR ops (not repo_root).

@@ -41,12 +41,7 @@ Derived feature branch name `{type}/{issue_number}-{slugified-title}`. In review
 
 ### target_path
 
-Canonical feature-worktree path, distinct from `{planning_folder_path}` and from `{repo_root}`:
-
-- **Install layout** — when `{planning_folder_path}` sits under `projects/<owner>/<repo>/.engineering/artifacts/planning/<slug>`:  
-  `<install-root>/worktrees/<owner>/<repo>/<slug>/`
-- **Personal layout** (fallback):  
-  `~/projects/work/{component_name}/<slug>/`
+Canonical feature-worktree path `<checkout>/.worktrees/<slug>/`, distinct from `{planning_folder_path}` and from `{repo_root}`.
 
 ## Protocol
 
@@ -55,10 +50,7 @@ Canonical feature-worktree path, distinct from `{planning_folder_path}` and from
 3. Slugify `{issue_title}` (lowercase, dashes, max ~40 chars) for the description segment.
 4. Set `{branch_name}` to `{type}/{issue_number}-{slugified-title}` per the convention `type/issue-number-short-description`.
 5. Determine the work-package slug `{$wp_slug}` as the basename of `{planning_folder_path}` (the planning slug `YYYY-MM-DD-{initiative-name}`), so the worktree name stays aligned with the server's planning folder. In review mode, derive `{$wp_slug}` from the PR title or branch name instead.
-6. Set `{target_path}` from `{planning_folder_path}`:
-   - When `{planning_folder_path}` matches `…/projects/<owner>/<repo>/.engineering/artifacts/planning/{$wp_slug}`, take the install root as the ancestor above `projects/` and set `{target_path}` to `<install-root>/worktrees/<owner>/<repo>/{$wp_slug}/`.
-   - Otherwise set `{target_path}` to `~/projects/work/{component_name}/{$wp_slug}/`.
-   From this point on, "inside `{target_path}`" refers to this worktree (not the checkout at `{repo_root}`). Never place `{target_path}` under `{planning_folder_path}` or under `{repo_root}`.
+6. Take `{$checkout_root}` as the ancestor of `{planning_folder_path}` above `.engineering/artifacts/planning/`, and set `{target_path}` to `{$checkout_root}/.worktrees/{$wp_slug}/` — the gitignored feature-worktree directory nested in the checkout. From this point on, "inside `{target_path}`" refers to this worktree (not the checkout at `{repo_root}`). Never place `{target_path}` under `{planning_folder_path}` or under `{repo_root}`, and never anchor it to a home directory or an install root.
 
 ## Rules
 
