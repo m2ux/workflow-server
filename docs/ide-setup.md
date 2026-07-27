@@ -33,6 +33,8 @@ Then ask the agent to start a workflow. Prefer this over hand-rolling MCP config
 | `scripts/claude/` | Portable hooks + `bin/sbx` (from repo [`scripts/claude/`](../scripts/claude/)) |
 | `.claude/settings.json` | **Generated at deploy** from [settings.template.json](../examples/cursor-workspace/.claude/settings.template.json) — broad Bash/MCP allows, safety hooks; not committed from a live workspace |
 
+`settings.template.json` / `settings.example.json` stay in the repo template only — deploy does **not** copy them into the kickoff dir (and removes them on `--force` if an older deploy left them behind).
+
 `install.sh` places `deploy-cursor-workspace.sh`, `examples/cursor-workspace/`, and `scripts/claude/` under the install dir so deploy works without a full checkout.
 
 Claude settings use `__HOME__` / `__WORKSPACE__` tokens in the template; deploy expands them to absolute paths. Hook commands point at the kickoff `scripts/claude/hooks/…`. Re-run with `--force` after pulling template or hook changes.
