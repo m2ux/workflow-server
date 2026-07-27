@@ -369,6 +369,24 @@
             "optionId": "full-workflow",
             "respondedAt": "2026-07-27T14:22:03.000Z"
           },
+          "requirements-elicitation-elicitation-complete": {
+            "effects": {
+              "variablesSet": {
+                "elicitation_complete": true
+              }
+            },
+            "optionId": "complete",
+            "respondedAt": "2026-07-27T15:27:07.000Z"
+          },
+          "requirements-elicitation-stakeholder-transcript": {
+            "effects": {
+              "variablesSet": {
+                "has_stakeholder_input": false
+              }
+            },
+            "optionId": "skip-discussion",
+            "respondedAt": "2026-07-27T15:14:22.000Z"
+          },
           "start-work-package-pr-creation": {
             "effects": {
               "variablesSet": {
@@ -381,10 +399,11 @@
         },
         "completedActivities": [
           "start-work-package",
-          "design-philosophy"
+          "design-philosophy",
+          "codebase-comprehension"
         ],
         "condition": "",
-        "currentActivity": "codebase-comprehension",
+        "currentActivity": "requirements-elicitation",
         "currentTechnique": "analyse-challenge::run-loop",
         "deliveredContent": {
           "orchestrator": {
@@ -395,6 +414,8 @@
             "bundle:workflow-engine::finalize-activity": "c9a2a48b817efaae",
             "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
             "bundle:workflow-engine::yield-checkpoint": "3d36e6b03c483346",
+            "resource:assumption-reconciliation#integration-with-assumptions-log": "b9afd88fa9dc5051",
+            "resource:assumption-reconciliation#scorecard": "0515b4f1035d5925",
             "resource:assumptions-review#assumptions-log-template": "46e5fe2b1e23b649",
             "resource:assumptions-review#classification-vocabulary": "cc2a17d7d6bd7999",
             "resource:assumptions-review#probe-vocabulary": "060f2f2101acdbe5",
@@ -405,6 +426,8 @@
             "resource:design-framework#design-philosophy-artifact-template": "2409a62611c3be51",
             "resource:follow-ups": "c6964a4a7ba41f66",
             "resource:meta/planning-readme": "0e07d24fc02769ce",
+            "resource:requirements-elicitation": "a3be94f69b148242",
+            "resource:requirements-elicitation#document-template": "b0e82865f2be54fd",
             "resource:work-package/readme-seed": "0eb6e9701dbc8ca0",
             "technique:analyse-challenge::run-loop": "f157571f6e0c2285",
             "technique:codebase-comprehension::deep-dive": "eb25438b18cc1274",
@@ -427,8 +450,13 @@
             "technique:naming-conventions": "fa787c2dd45cbdb2",
             "technique:project-type-detection": "3f280f67ee8cc51c",
             "technique:repo-root-resolution": "2a94e563cfa7135f",
-            "technique:review-assumptions::collect": "f79c5725888e0262",
-            "technique:review-assumptions::record": "7a88a1f212132746",
+            "technique:requirements-elicitation::ask-question": "dbd566ff6060570c",
+            "technique:requirements-elicitation::create-document": "52c6c7c22efcd4fe",
+            "technique:requirements-elicitation::discuss": "289ea5cee6751867",
+            "technique:requirements-elicitation::elicit": "2836c65d832fa4f6",
+            "technique:review-assumptions::collect": "d4292b811da5cc3e",
+            "technique:review-assumptions::reconcile": "7b7bca8eaccaa550",
+            "technique:review-assumptions::record": "93d0fb55a7936bc8",
             "technique:review-mode-detection": "60f8118fb21c6847",
             "technique:scatter-gather": "17c19c51954fcaea",
             "technique:stakeholder-overview": "6548550cd546e329",
@@ -1466,19 +1494,289 @@
             },
             "timestamp": "2026-07-27T14:58:49.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "timestamp": "2026-07-27T15:01:23.401Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "comprehension_artifact",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/resource-section-addressing.md"
+            },
+            "timestamp": "2026-07-27T15:01:23.401Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "artifact_name",
+              "source": "variables_changed",
+              "value": "resource-section-addressing.md"
+            },
+            "timestamp": "2026-07-27T15:01:23.401Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T15:01:23.401Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "has_open_questions",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T15:01:23.401Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "open_questions",
+              "source": "variables_changed",
+              "value": "Q1-Q7 Resolved; Q8 -> implementation-analysis (bench:token run), Q9 -> requirements-elicitation (user scope decision), Q10 -> plan-prepare (design proposal); 4 out-of-scope follow-ups recorded"
+            },
+            "timestamp": "2026-07-27T15:01:23.401Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "timestamp": "2026-07-27T15:01:23.401Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "stakeholder-discussion",
+              "techniqueId": "requirements-elicitation::discuss"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "elicit-requirements",
+              "techniqueId": "requirements-elicitation::elicit"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "ask-question",
+              "techniqueId": "requirements-elicitation::ask-question"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-document",
+              "techniqueId": "requirements-elicitation::create-document"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "requirements-elicitation#document-template"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "requirements-elicitation"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumption-reconciliation#integration-with-assumptions-log"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "codebase-comprehension#artifact-template"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumption-reconciliation#scorecard"
+            },
+            "timestamp": "2026-07-27T15:01:53.317Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "stakeholder-transcript",
+            "timestamp": "2026-07-27T15:06:26.652Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "stakeholder-transcript",
+            "data": {
+              "optionId": "skip-discussion"
+            },
+            "timestamp": "2026-07-27T15:14:22.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "has_stakeholder_input",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-07-27T15:14:22.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "elicitation-complete",
+            "timestamp": "2026-07-27T15:24:21.552Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "elicitation-complete",
+            "data": {
+              "optionId": "complete"
+            },
+            "timestamp": "2026-07-27T15:27:07.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "elicitation_complete",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-27T15:27:07.000Z",
+            "type": "variable_set"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 26,
+        "seq": 34,
         "sessionIndex": "ZVIT4L",
         "skippedActivities": [],
         "startedAt": "2026-07-27T13:45:51.860Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785164358,
+        "ts": 1785166045,
         "variables": {
-          "artifact_name": "",
+          "artifact_name": "resource-section-addressing.md",
           "assumption_batch_accepted": false,
           "assumption_deferred": false,
           "assumption_resolved_inline": false,
@@ -1497,14 +1795,14 @@
           "change_block_index": "",
           "classification_rationale": "Composite issue classified by centre of gravity: 5 of 7 acceptance criteria concern new path-scoped addressing, guard coverage and tests, consistent with issue_type feature. Complex on five grounds — delegated delimiter decision, multiple viable AC-1 approaches, GitHub slug semantics vs byte-identical delivery hashes tension, gitnexus CRITICAL blast radius (18/17 symbols, 10 processes, 4 modules) reaching the delivery-ledger hashing path, and a cross-repo change from a red test baseline.",
           "component_name": "workflow-server",
-          "comprehension_artifact": "",
+          "comprehension_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/resource-section-addressing.md",
           "context_scope": "repo-only",
           "context_scope_uncertain": false,
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-issue-141/README.md",
           "current_block_index": 0,
           "current_branch": "",
           "design_philosophy_doc": "02-design-philosophy.md",
-          "elicitation_complete": false,
+          "elicitation_complete": true,
           "existing_pr_number": "",
           "github_issue_found": false,
           "gitnexus_indexed": true,
@@ -1513,7 +1811,7 @@
           "has_deferred_assumptions": false,
           "has_flagged_blocks": false,
           "has_open_assumptions": true,
-          "has_open_questions": false,
+          "has_open_questions": true,
           "has_reconcilable_research": false,
           "has_resolvable_assumptions": false,
           "has_stakeholder_comment": false,
@@ -1550,6 +1848,7 @@
             "DP-7",
             "DP-10"
           ],
+          "open_questions": "Q1-Q7 Resolved; Q8 -> implementation-analysis (bench:token run), Q9 -> requirements-elicitation (user scope decision), Q10 -> plan-prepare (design proposal); 4 out-of-scope follow-ups recorded",
           "path_rationale": "Full workflow, user-confirmed. Elicitation settles decisions only the user can make (delimiter, AC-1 slugger strategy, slug-semantics vs delivery-hash reconciliation, red-baseline scope, two-repo sequencing). Research pins exact github-slugger and CommonMark closing-fence semantics. Comprehension mandatory and load-bearing here.",
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-issue-141",
           "post_jira_comment": false,
