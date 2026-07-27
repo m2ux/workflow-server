@@ -28,8 +28,8 @@ Worse, the search almost never pays off. The way saved sessions have been record
 | 4 | 03 | [Design specification](03-design-specification.md) | Change goals and constraints | 20-40m | ✅ |
 | 5 | 03 | [Assumptions log](04-assumptions-log.md) | Open and settled assumptions | 10-15m | ✅ |
 | 6 | 03 | [Deferred items](05-deferred-items.md) | Out-of-scope follow-ups | 5-10m | ✅ |
-| 7 | 04 | [Pattern analysis](pattern-analysis.md) | Applicable patterns and practices | 20-40m | ⬚ |
-| 8 | 05 | [Impact analysis](impact-analysis.md) | Blast radius and preservations | 20-40m | ⬚ |
+| 7 | 04 | Pattern analysis | Create-mode only — not on the update path | 20-40m | ⊘ |
+| 8 | 05 | [Impact analysis](06-impact-analysis.md) | Blast radius and preservations | 20-40m | ✅ |
 | 9 | 06 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |
 | 10 | 06 | [Drafting plan](drafting-plan.md) | Draft order and blocks | 10-20m | ⬚ |
 | 11 | 06 | [Draft attestation](draft-attestation.md) | Batch review attestation | 5-10m | ⬚ |

@@ -276,13 +276,19 @@
       "sessionIndex": "LIUL4T",
       "state": {
         "agentId": "orchestrator",
-        "checkpointResponses": {},
+        "checkpointResponses": {
+          "impact-analysis-impact-and-preservation-confirmed": {
+            "optionId": "confirmed",
+            "respondedAt": "2026-07-27T07:11:03.000Z"
+          }
+        },
         "completedActivities": [
-          "intake-and-context"
+          "intake-and-context",
+          "requirements-refinement"
         ],
-        "condition": "format_literacy_confirmed == true AND schema_constructs_confirmed == true",
-        "currentActivity": "requirements-refinement",
-        "currentTechnique": "synthesize-update-specification",
+        "condition": "operation_type == update",
+        "currentActivity": "impact-analysis",
+        "currentTechnique": "work-package::manage-artifacts::write-artifact",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:2a775f356d424475": "2a775f356d424475",
@@ -303,6 +309,7 @@
             "resource:elicitation-guide": "b206b8a7d771fef9",
             "resource:follow-ups": "b1f0a812968cc938",
             "resource:format-conventions": "2f87df89160d81a2",
+            "resource:impact-analysis": "03fcb472b0d3af6b",
             "resource:meta/planning-readme": "483b3afdde27a6a1",
             "resource:schema-construct-inventory": "df10051a68722839",
             "resource:structural-inventory#template": "b3ef1b175f7732ab",
@@ -312,11 +319,12 @@
             "resource:workflow-design/readme-seed": "d63eaed7f495d026",
             "technique:context-loading": "1e4841fa4b3ad579",
             "technique:derive-design-dimensions": "fd1ea705472b3cdf",
+            "technique:impact-analysis": "27ad658513c42a83",
             "technique:intake-classification": "fa0cf7c1465a489f",
             "technique:persist-design-specification": "83243ab80d679bc5",
             "technique:reconcile-design-assumptions": "c02a916d204406cb",
             "technique:synthesize-update-specification": "d2120a8a8e4c2f0c",
-            "technique:work-package::manage-artifacts::write-artifact": "4382f6578071c34a",
+            "technique:work-package::manage-artifacts::write-artifact": "7e26ff13419304d4",
             "technique:work-package::review-assumptions::collect": "c6991732d8ffb5af",
             "technique:work-package::review-assumptions::record": "3863422e28015b10",
             "technique:work-package::stakeholder-overview": "e213dde5f7960790",
@@ -957,17 +965,71 @@
             },
             "timestamp": "2026-07-27T06:25:32.500Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "requirements-refinement",
+            "timestamp": "2026-07-27T06:35:50.157Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "impact-analysis",
+            "timestamp": "2026-07-27T06:35:50.157Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "impact-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "impact-analysis",
+              "techniqueId": "impact-analysis"
+            },
+            "timestamp": "2026-07-27T06:36:41.967Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "impact-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "impact-analysis"
+            },
+            "timestamp": "2026-07-27T06:36:51.480Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "impact-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-impact-analysis",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T07:06:33.509Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "impact-analysis",
+            "checkpoint": "impact-and-preservation-confirmed",
+            "timestamp": "2026-07-27T07:07:17.398Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "impact-analysis",
+            "checkpoint": "impact-and-preservation-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-27T07:11:03.000Z",
+            "type": "checkpoint_response"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 15,
+        "seq": 23,
         "sessionIndex": "LIUL4T",
         "skippedActivities": [],
         "startedAt": "2026-07-27T05:27:46.102Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785133532,
+        "ts": 1785136315,
         "variables": {
           "addressed_count": 0,
           "anti_pattern_findings_path": "",

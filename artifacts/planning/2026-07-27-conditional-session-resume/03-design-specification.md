@@ -31,7 +31,7 @@ Measured baseline for G4: 128 planning folders; 77 carry no `session.json` at al
 
 Each is registered in [deferred items](05-deferred-items.md).
 
-**Also see:** [assumptions log](04-assumptions-log.md) · [deferred items](05-deferred-items.md) · [impact analysis](impact-analysis.md) (next activity)
+**Also see:** [assumptions log](04-assumptions-log.md) · [deferred items](05-deferred-items.md) · [impact analysis](06-impact-analysis.md)
 
 ---
 
