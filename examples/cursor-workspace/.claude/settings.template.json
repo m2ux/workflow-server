@@ -36,6 +36,7 @@
       "Bash(gh run *)",
       "Bash(gh search *)",
       "Bash(git add *)",
+      "Bash(git apply *)",
       "Bash(git branch *)",
       "Bash(git checkout *)",
       "Bash(git commit *)",
