@@ -29,6 +29,7 @@ DEFAULT_ENV_NAME="env"
 DEFAULT_CONTAINER_NAME="workflow-server"
 DEFAULT_HOST_PORT="3000"
 DEFAULT_CURSOR_TEMPLATE_REL="examples/cursor-workspace"
+DEFAULT_CLAUDE_SCRIPTS_REL="scripts/claude"
 # Older helper script names — removed on upgrade when present.
 LEGACY_NAMES=(
   "run-workflow-server.sh"
@@ -80,6 +81,7 @@ LAYOUT
     ${DEFAULT_UPDATE_NAME}
     ${DEFAULT_DEPLOY_CURSOR_NAME}
     ${DEFAULT_CURSOR_TEMPLATE_REL}/  # template for deploy-cursor-workspace
+    ${DEFAULT_CLAUDE_SCRIPTS_REL}/   # Claude hooks + sbx for Cursor workspace deploy
     ${DEFAULT_ENV_NAME}               # HOST_PROJECTS_ROOT + port / name
     workflows/               # git clone -b workflows (server definitions)
     state/                   # durable HMAC key (mounted by start.sh)
@@ -139,25 +141,33 @@ fetch_script() {
   chmod +x "$dest"
 }
 
-# Install examples/cursor-workspace next to deploy-cursor-workspace.sh.
+# Install examples/cursor-workspace and scripts/claude next to deploy-cursor-workspace.sh.
 # Prefer GitHub codeload tarball when using the default raw base; else sparse clone.
-fetch_cursor_workspace_template() {
-  local dest="$1"
-  local tmp tarball_ok=0 src=""
+fetch_cursor_workspace_assets() {
+  local cursor_dest="$1"
+  local claude_dest="$2"
+  local tmp tarball_ok=0 cursor_src="" claude_src=""
   tmp="$(mktemp -d "${TMPDIR:-/tmp}/wf-cursor-tmpl.XXXXXX")"
 
-  echo "Fetching Cursor workspace template → ${dest}"
+  echo "Fetching Cursor workspace template → ${cursor_dest}"
+  echo "Fetching Claude hooks scripts → ${claude_dest}"
 
   if [[ "$RAW_BASE" == https://raw.githubusercontent.com/m2ux/workflow-server ]]; then
     if curl -fsSL "https://codeload.github.com/m2ux/workflow-server/tar.gz/${REF}" \
       -o "${tmp}/src.tgz" \
       && tar -xzf "${tmp}/src.tgz" -C "$tmp" 2>/dev/null; then
-      src="$(find "$tmp" -type d -path '*/examples/cursor-workspace' 2>/dev/null | head -n 1 || true)"
-      if [[ -n "$src" && -d "$src" ]]; then
+      cursor_src="$(find "$tmp" -type d -path '*/examples/cursor-workspace' 2>/dev/null | head -n 1 || true)"
+      claude_src="$(find "$tmp" -type d -path '*/scripts/claude' 2>/dev/null | head -n 1 || true)"
+      if [[ -n "$cursor_src" && -d "$cursor_src" ]]; then
         tarball_ok=1
-        rm -rf "$dest"
-        mkdir -p "$(dirname "$dest")"
-        cp -a "$src" "$dest"
+        rm -rf "$cursor_dest"
+        mkdir -p "$(dirname "$cursor_dest")"
+        cp -a "$cursor_src" "$cursor_dest"
+        if [[ -n "$claude_src" && -d "$claude_src" ]]; then
+          rm -rf "$claude_dest"
+          mkdir -p "$(dirname "$claude_dest")"
+          cp -a "$claude_src" "$claude_dest"
+        fi
       fi
     fi
   fi
@@ -166,17 +176,25 @@ fetch_cursor_workspace_template() {
     echo "  (falling back to git sparse checkout from ${REPO_URL} @ ${REF})"
     git clone -b "$REF" --depth 1 --filter=blob:none --sparse "$REPO_URL" "${tmp}/repo" \
       || { rm -rf "$tmp"; die "failed to clone for Cursor template"; }
-    git -C "${tmp}/repo" sparse-checkout set examples/cursor-workspace \
-      || { rm -rf "$tmp"; die "failed sparse-checkout examples/cursor-workspace"; }
+    git -C "${tmp}/repo" sparse-checkout set examples/cursor-workspace scripts/claude \
+      || { rm -rf "$tmp"; die "failed sparse-checkout cursor/claude assets"; }
     [[ -d "${tmp}/repo/examples/cursor-workspace" ]] \
       || { rm -rf "$tmp"; die "examples/cursor-workspace missing after sparse checkout"; }
-    rm -rf "$dest"
-    mkdir -p "$(dirname "$dest")"
-    cp -a "${tmp}/repo/examples/cursor-workspace" "$dest"
+    rm -rf "$cursor_dest"
+    mkdir -p "$(dirname "$cursor_dest")"
+    cp -a "${tmp}/repo/examples/cursor-workspace" "$cursor_dest"
+    if [[ -d "${tmp}/repo/scripts/claude" ]]; then
+      rm -rf "$claude_dest"
+      mkdir -p "$(dirname "$claude_dest")"
+      cp -a "${tmp}/repo/scripts/claude" "$claude_dest"
+    fi
   fi
 
   rm -rf "$tmp"
-  [[ -d "$dest" ]] || die "Cursor workspace template not installed: ${dest}"
+  [[ -d "$cursor_dest" ]] || die "Cursor workspace template not installed: ${cursor_dest}"
+  if [[ ! -d "$claude_dest" ]]; then
+    echo "warning: scripts/claude not present at ${REF} (Claude hooks deploy will be skipped)" >&2
+  fi
 }
 
 while [[ $# -gt 0 ]]; do
@@ -266,6 +284,7 @@ STOP_PATH="${INSTALL_DIR}/${DEFAULT_STOP_NAME}"
 UPDATE_PATH="${INSTALL_DIR}/${DEFAULT_UPDATE_NAME}"
 DEPLOY_CURSOR_PATH="${INSTALL_DIR}/${DEFAULT_DEPLOY_CURSOR_NAME}"
 CURSOR_TEMPLATE_DIR="${INSTALL_DIR}/${DEFAULT_CURSOR_TEMPLATE_REL}"
+CLAUDE_SCRIPTS_DIR="${INSTALL_DIR}/${DEFAULT_CLAUDE_SCRIPTS_REL}"
 ENV_PATH="${INSTALL_DIR}/${DEFAULT_ENV_NAME}"
 WORKFLOWS_DIR="${INSTALL_DIR}/workflows"
 START_URL="${RAW_BASE}/${REF}/scripts/start.sh"
@@ -287,7 +306,7 @@ fetch_script "$START_PATH" "$START_URL" "start"
 fetch_script "$STOP_PATH" "$STOP_URL" "stop"
 fetch_script "$UPDATE_PATH" "$UPDATE_URL" "update-workflows"
 fetch_script "$DEPLOY_CURSOR_PATH" "$DEPLOY_CURSOR_URL" "deploy-cursor-workspace"
-fetch_cursor_workspace_template "$CURSOR_TEMPLATE_DIR"
+fetch_cursor_workspace_assets "$CURSOR_TEMPLATE_DIR" "$CLAUDE_SCRIPTS_DIR"
 
 for legacy in "${LEGACY_NAMES[@]}"; do
   legacy_path="${INSTALL_DIR}/${legacy}"

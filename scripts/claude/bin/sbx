@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# Generic sandbox launcher (profile C). Runs an arbitrary command under
+# bubblewrap with:
+#   - no network                          (--unshare-all --unshare-net)
+#   - whole filesystem READ-ONLY          (--ro-bind / /)
+#   - the ACTIVE PROJECT read-WRITE        (git top-level of cwd, if under
+#                                           $HOME/projects (or $CLAUDE_PROJECTS_BASE))
+#   - /tmp read-WRITE                      (session scratch lives here)
+#   - private /dev, /proc; dies with parent
+#
+# Rationale: destructive/file-mutating commands (rm, mv, ln, dd, chmod) and
+# inline interpreters (python3 -c, node -e, ...) can do their real work inside
+# the current project and /tmp, but cannot touch the rest of the filesystem
+# (system files, ~/.ssh, ~/.claude, ~/.cargo, sibling projects). Containment is
+# enforced by the kernel mount namespace, so path traversal, symlinks, and cwd
+# tricks cannot escape the writable roots — stronger than a path allowlist.
+#
+# Usage: sbx <command> [args...]   e.g.  sbx rm -rf build   sbx node -e '...'
+set -eo pipefail
+
+PROJECTS_BASE="${CLAUDE_PROJECTS_BASE:-${HOME}/projects}"
+
+args=(
+  --ro-bind / /
+  --dev /dev
+  --proc /proc
+  --bind /tmp /tmp
+)
+
+# Writable project root: the git top-level of cwd, but only when it lives under
+# PROJECTS_BASE (safety belt). A git root already under /tmp is covered by the
+# /tmp bind above.
+root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+if [ -n "$root" ]; then
+  root="$(realpath "$root")"
+  case "$root/" in
+    "$PROJECTS_BASE"/*) args+=(--bind "$root" "$root") ;;
+  esac
+fi
+
+args+=(
+  --unshare-all
+  --unshare-net
+  --die-with-parent
+)
+
+exec bwrap "${args[@]}" "$@"

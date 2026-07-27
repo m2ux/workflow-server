@@ -1,0 +1,19 @@
+{
+  "_comment": "Read by curl-read-allow.py (same directory). A curl target URL auto-approves only if BOTH (1) its host is in allowedHosts AND (2) the allowPrefixes per-host filter passes. allowPrefixes maps a host to path prefixes: [\"*\"] allows all paths; otherwise the URL path must start with a listed prefix. Hosts in allowedHosts but absent from allowPrefixes are unrestricted on path. allowedHosts match is case-insensitive ('.host' = subdomain wildcard).",
+  "allowedHosts": [
+    "github.com",
+    "raw.githubusercontent.com",
+    "api.github.com",
+    "code.claude.com",
+    "docs.claude.com",
+    "docs.anthropic.com"
+  ],
+  "allowPrefixes": {
+    "github.com": ["*"],
+    "raw.githubusercontent.com": ["*"],
+    "api.github.com": ["*"],
+    "code.claude.com": ["*"],
+    "docs.claude.com": ["*"],
+    "docs.anthropic.com": ["*"]
+  }
+}
