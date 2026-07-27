@@ -24,9 +24,9 @@ The practical consequence is that the workflow behaves less predictably than it 
 |---|---|------|-------------|----------|--------|
 | 1 | 01 | Intake and context | Target, mode, planning folder | 15-30m | ✅ |
 | 2 | 01 | [Format conventions](format-conventions.md) | Authoring literacy notes | 5-10m | ✅ |
-| 3 | 03 | [Design specification](design-specification.md) | Change goals and constraints | 20-40m | ⬚ |
-| 4 | 03 | [Assumptions log](assumptions-log.md) | Open and settled assumptions | 10-15m | ⬚ |
-| 5 | 04 | [Pattern analysis](pattern-analysis.md) | Applicable patterns and practices | 20-40m | ⬚ |
+| 3 | 03 | [Design specification](design-specification.md) | Change goals and constraints | 20-40m | ✅ |
+| 4 | 03 | [Assumptions log](assumptions-log.md) | Open and settled assumptions | 10-15m | ✅ |
+| 5 | 04 | [Pattern analysis](pattern-analysis.md) | Applicable patterns and practices | 20-40m | ⊘ |
 | 6 | 05 | [Impact analysis](impact-analysis.md) | Blast radius and preservations | 20-40m | ⬚ |
 | 7 | 06 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |
 | 8 | 06 | [Drafting plan](drafting-plan.md) | Draft order and blocks | 10-20m | ⬚ |
@@ -48,3 +48,18 @@ The practical consequence is that the workflow behaves less predictably than it 
 |----------|------|
 | Target workflow | `workflows/requirements-refinement/` |
 | Structural inventory | [structural-inventory.md](01-structural-inventory.md) |
+| Format conventions | [format-conventions.md](01-format-conventions.md) |
+| Design specification | [design-specification.md](03-design-specification.md) |
+| Assumptions log | [assumptions-log.md](03-assumptions-log.md) |
+| Follow-ups | [follow-ups.md](03-follow-ups.md) |
+
+## Design Decisions
+
+Each row points at its canonical home; the statement of the decision lives there.
+
+| Decision | Home |
+|----------|------|
+| Seven change goals (G1–G7) and the out-of-scope boundary for this update | [design specification](03-design-specification.md#purpose) |
+| The correction cap lives in the transition condition, and the parallel `max_correction_iterations` variable is removed | [design specification](03-design-specification.md#rules) |
+| Activity files are not renumbered — the `02` gap stays | [design specification](03-design-specification.md#purpose) |
+| Technique-surface changes are in scope though the update dimension set omits them | [assumptions log](03-assumptions-log.md) |
