@@ -171,48 +171,6 @@ steps:
         bare_filename: draft-attestation.md
         artifact_content: reviewed_blocks
         target_dir: planning_folder_path
-  - kind: checkpoint
-    id: draft-attestation
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: update
-    message: "Drafted-content review ([draft attestation]({draft_attestation_path}))."
-    blocking: false
-    defaultOption: attested
-    autoAdvanceMs: 30000
-    options:
-      - id: attested
-        label: Attest — drafted content is understood and intentional
-        description: Every drafted block is reviewed and approved as presented
-      - id: revise-block
-        label: Revise a flagged block
-        description: One or more drafted blocks require targeted revision before the audit passes.
-  - kind: checkpoint
-    id: batch-review-attested
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: update
-    message: "All {file_count} files modified ([draft attestation]({draft_attestation_path}))."
-    blocking: false
-    defaultOption: attested
-    autoAdvanceMs: 30000
-    options:
-      - id: attested
-        label: Attest — all changes understood and intentional
-        description: Full modification set and every drafted block are approved
-      - id: revise-specific
-        label: Revise a specific file
-        description: One particular file requires further modification.
-      - id: revise-block
-        label: Revise a flagged block
-        description: One or more drafted blocks require targeted revision before the audit passes.
-      - id: redraft-all
-        label: Redraft all changes
-        description: Entire drafting pass requires restart from scratch.
   - kind: technique
     id: verify-artifact-conforms
     technique: verify-artifact-conforms
@@ -240,6 +198,12 @@ steps:
       operator: "=="
       value: update
     actions:
+      - action: set
+        target: principle_finding_count
+        message: Count of verified findings reported by `audit-principles` in `principle_findings`; 0 when the audit reports none.
+      - action: set
+        target: anti_pattern_finding_count
+        message: Count of verified findings reported by `audit-anti-patterns` in `anti_pattern_findings`; 0 when the audit reports none.
       - action: set
         target: needs_audit_fixes
         message: Set true iff any of `principle_finding_count` or `anti_pattern_finding_count` is greater than 0; false when both are 0.
@@ -270,6 +234,12 @@ steps:
         id: reassess-pre-attestation-findings
         actions:
           - action: set
+            target: principle_finding_count
+            message: Re-count verified findings reported by `audit-principles` after the fix pass; 0 when the audit reports none.
+          - action: set
+            target: anti_pattern_finding_count
+            message: Re-count verified findings reported by `audit-anti-patterns` after the fix pass; 0 when the audit reports none.
+          - action: set
             target: needs_audit_fixes
             message: After re-running the pre-attestation audits, set true iff any of `principle_finding_count` or `anti_pattern_finding_count` is still greater than 0; false when both are 0.
           - action: set
@@ -291,21 +261,6 @@ steps:
     actions:
       - action: message
         message: "Pre-attestation audit: {principle_finding_count} principle + {anti_pattern_finding_count} anti-pattern findings remain after fix cycle. These require manual design review and must be fixed before attestation."
-  decisions:
-    - id: pre-attestation-blocker-gate
-      name: Critical Blocker Gate
-      branches:
-        - id: has-blocker
-          label: Critical finding remains — return to drafting
-          condition:
-            type: simple
-            variable: has_critical_finding
-            operator: "=="
-            value: true
-          transitionTo: scope-and-draft
-        - id: no-blocker
-          label: No critical findings — proceed to attestation
-          isDefault: true
   - kind: checkpoint
     id: draft-attestation
     condition:
@@ -348,6 +303,21 @@ steps:
       - id: redraft-all
         label: Redraft all changes
         description: Entire drafting pass requires restart from scratch.
+decisions:
+  - id: pre-attestation-blocker-gate
+    name: Critical Blocker Gate
+    branches:
+      - id: has-blocker
+        label: Critical finding remains — return to drafting
+        condition:
+          type: simple
+          variable: has_critical_finding
+          operator: "=="
+          value: true
+        transitionTo: scope-and-draft
+      - id: no-blocker
+        label: No critical findings — proceed to attestation
+        isDefault: true
 transitions:
   - to: quality-review
     isDefault: true
