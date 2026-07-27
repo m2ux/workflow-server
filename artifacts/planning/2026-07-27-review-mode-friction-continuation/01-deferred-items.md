@@ -1,0 +1,9 @@
+# Deferred Items
+
+> Design session · `work-package` · #271, #270 · updated 2026-07-27
+
+| ID | Deferred at | Item | Reason | Follow-up |
+|----|-------------|------|--------|-----------|
+| D-1 | intake-and-context | `workflow-design/activities/01-intake-and-context.yaml` step `persist-format-conventions` carries no mode `condition`, while the `context-loading` Protocol says to skip that persist outside create mode and the sibling `persist-applicable-constructs` step is gated on `operation_type == create`. The three surfaces disagree on whether update mode writes `format-conventions.md`. | Defect in `workflow-design`'s own definitions; this session's change surface is `work-package`. Resolved locally by writing the artifact (the unconditioned step and the `readme-seed` Progress inventory both expect it in update mode). | — until raised |
+| D-2 | intake-and-context | `workflow-design/resources/readme-seed.md` Progress inventory has no row for `structural-inventory.md`, although `intake-classification` persists that artifact under `@ 01` in update and review modes. | Same — a `workflow-design` seed gap outside this session's `work-package` surface. Resolved locally by splicing one `@ 01` artifact row per the [Progress table](../../../../workflows/meta/resources/planning-readme.md) rule that an artifact-producing activity gets artifact link rows. | — until raised |
+| D-3 | intake-and-context | The MCP catalog is served from `/home/mike1/projects/dev/workflow-server/workflows/` (`work-package` 3.35.0) while the branch under change carries 3.35.3, so `list_workflows` and `get_resource` deliver definitions one checkout behind the change surface. | Environment/serving concern, not a definition defect; worked around by measuring the structural inventory against the branch worktree. | — until raised |
