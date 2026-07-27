@@ -298,10 +298,11 @@
         "completedActivities": [
           "intake-and-context",
           "requirements-refinement",
-          "impact-analysis"
+          "impact-analysis",
+          "scope-and-draft"
         ],
-        "condition": "isDefault (sole transition from impact-analysis)",
-        "currentActivity": "scope-and-draft",
+        "condition": "isDefault: sole transition from scope-and-draft",
+        "currentActivity": "quality-review",
         "currentTechnique": "prepare-workflow-branch",
         "deliveredContent": {
           "orchestrator": {
@@ -1199,17 +1200,27 @@
             },
             "timestamp": "2026-07-27T07:40:36.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-27T08:18:20.881Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-07-27T08:18:20.881Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 33,
+        "seq": 34,
         "sessionIndex": "LIUL4T",
         "skippedActivities": [],
         "startedAt": "2026-07-27T05:27:46.102Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785138060,
+        "ts": 1785140300,
         "variables": {
           "addressed_count": 0,
           "anti_pattern_findings_path": "",
