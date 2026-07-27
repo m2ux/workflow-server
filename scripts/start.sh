@@ -12,6 +12,10 @@
 # start.sh loads $INSTALL/env automatically (or the env next to this script).
 # CLI path flags remain as one-off overrides only.
 #
+# Before booting, start.sh refreshes $INSTALL/workflows via update-workflows.sh.
+# That step is best-effort: offline or dirty checkouts warn and the server
+# starts on the definitions already on disk. Skip with --no-update-workflows.
+#
 # Needs: docker (public image: ghcr.io/m2ux/workflow-server)
 set -euo pipefail
 
@@ -34,6 +38,7 @@ DEFAULT_INSTALL_DIR="${XDG_DATA_HOME:-${HOME}/.local/share}/workflow-server"
 DEFAULT_HOST_PROJECTS_ROOT="${HOME}/projects/dev"
 DEFAULT_HOST_WORKTREE_ROOT=""
 DEFAULT_ENV_NAME="env"
+DEFAULT_UPDATE_NAME="update-workflows.sh"
 
 # Directory containing this script (install dir when installed as start.sh).
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -99,6 +104,10 @@ TRANSPORT="${TRANSPORT:-$DEFAULT_TRANSPORT}"
 BIND_HOST="${HOST:-$DEFAULT_BIND_HOST}"
 
 PULL=1
+UPDATE_WORKFLOWS=1
+case "${WORKFLOW_SERVER_UPDATE_WORKFLOWS:-}" in
+  0|false|no) UPDATE_WORKFLOWS=0 ;;
+esac
 DETACH=0
 RM=1
 DRY_RUN=0
@@ -146,6 +155,8 @@ OPTIONS (optional overrides — prefer re-running install to change paths)
   --env-file=PATH           docker --env-file
   --user=UID:GID            Container user (default: current uid:gid)
   --pull / --no-pull        Pull image first (default: pull)
+  --update-workflows        Refresh \$INSTALL/workflows first (default)
+  --no-update-workflows     Skip the workflows refresh
   -d, --detach              Background
   --rm / --no-rm            Remove on exit (default: rm unless -d)
   --dry-run                 Print docker commands only
@@ -192,6 +203,49 @@ abs_dir() {
   printf '%s\n' "$p"
 }
 
+is_git_checkout() {
+  local dir="$1"
+  { [[ -d "${dir}/.git" ]] || [[ -f "${dir}/.git" ]]; } \
+    && git -C "$dir" rev-parse --is-inside-work-tree >/dev/null 2>&1
+}
+
+# Refresh $INSTALL/workflows before starting. Best-effort by design: an
+# unreachable remote (offline, DNS failure, GitHub down) or a dirty checkout
+# warns and starts with the definitions already on disk.
+update_workflows() {
+  local script="" f
+  for f in "${SCRIPT_DIR}/${DEFAULT_UPDATE_NAME}" "${INSTALL_DIR}/${DEFAULT_UPDATE_NAME}"; do
+    [[ -f "$f" ]] || continue
+    script="$f"
+    break
+  done
+  if [[ -z "$script" ]]; then
+    echo "note: ${DEFAULT_UPDATE_NAME} not found (looked next to start.sh and in ${INSTALL_DIR}); skipping workflows refresh" >&2
+    return 0
+  fi
+  if ! command -v git >/dev/null 2>&1; then
+    echo "note: git not found on PATH; skipping workflows refresh" >&2
+    return 0
+  fi
+  if ! is_git_checkout "$HOST_WORKFLOWS_DIR"; then
+    echo "note: ${HOST_WORKFLOWS_DIR} is not a git checkout; skipping workflows refresh" >&2
+    return 0
+  fi
+  if [[ "$DRY_RUN" -eq 1 ]]; then
+    printf '+ bash %q --install-dir=%q --workflows-dir=%q --no-restart-hint\n' \
+      "$script" "$INSTALL_DIR" "$HOST_WORKFLOWS_DIR"
+    return 0
+  fi
+  if ! bash "$script" \
+    --install-dir="$INSTALL_DIR" \
+    --workflows-dir="$HOST_WORKFLOWS_DIR" \
+    --no-restart-hint
+  then
+    echo "warning: workflows refresh failed; starting with the definitions already in ${HOST_WORKFLOWS_DIR}" >&2
+  fi
+  return 0
+}
+
 while [[ $# -gt 0 ]]; do
   case "$1" in
     -h|--help) usage; exit 0 ;;
@@ -227,6 +281,8 @@ while [[ $# -gt 0 ]]; do
     --user) USER_SPEC="${2:?}"; shift 2 ;;
     --pull) PULL=1; shift ;;
     --no-pull) PULL=0; shift ;;
+    --update-workflows) UPDATE_WORKFLOWS=1; shift ;;
+    --no-update-workflows) UPDATE_WORKFLOWS=0; shift ;;
     --detach|-d) DETACH=1; RM=0; shift ;;
     --rm) RM=1; shift ;;
     --no-rm) RM=0; shift ;;
@@ -346,6 +402,10 @@ if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
   HOST_SCHEMAS_DIR="$(abs_dir "$HOST_SCHEMAS_DIR")"
 fi
 
+if [[ "$UPDATE_WORKFLOWS" -eq 1 ]]; then
+  update_workflows
+fi
+
 HOST_STATE_DIR="$(abs_path "$HOST_STATE_DIR")"
 if [[ ! -d "$HOST_STATE_DIR" ]]; then
   echo "Creating server state dir: ${HOST_STATE_DIR}"
@@ -450,20 +510,6 @@ DOCKER_RUN+=("$FULL_IMAGE")
 echo "Install  : ${INSTALL_DIR}"
 [[ -n "$LOADED_ENV_FILE" ]] && echo "Env file : ${LOADED_ENV_FILE}"
 echo "Starting ${FULL_IMAGE}"
-echo "  projects   : ${HOST_PROJECTS_ROOT} → ${CONTAINER_PROJECTS_ROOT} (rw; eng + nested .worktrees)"
-if [[ "$NESTED_WORKTREES" -eq 0 ]]; then
-  echo "  worktrees  : ${HOST_WORKTREE_ROOT} → ${CONTAINER_WORKTREE_ROOT} (rw; separate root)"
-else
-  echo "  worktrees  : nested under projects (<repo>/.worktrees/)"
-fi
-echo "  workflows  : ${HOST_WORKFLOWS_DIR} → ${CONTAINER_WORKFLOW_DIR} (ro)"
-if [[ -n "$HOST_SCHEMAS_DIR" ]]; then
-  echo "  schemas    : ${HOST_SCHEMAS_DIR} → ${CONTAINER_SCHEMAS_DIR} (ro)"
-else
-  echo "  schemas    : (image default at ${CONTAINER_SCHEMAS_DIR})"
-fi
-echo "  state      : ${HOST_STATE_DIR} → ${CONTAINER_STATE_DIR} (rw, HMAC key)"
-echo "  publish    : ${HOST_PORT} → ${CONTAINER_PORT}"
 echo "  MCP URL    : http://127.0.0.1:${HOST_PORT}/mcp"
 
 run "${DOCKER_RUN[@]}"

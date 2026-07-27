@@ -22,6 +22,7 @@ WORKFLOWS_DIR=""
 BRANCH="${WORKFLOW_SERVER_WORKFLOWS_BRANCH:-$DEFAULT_BRANCH}"
 REMOTE="$DEFAULT_REMOTE"
 FORCE=0
+RESTART_HINT=1
 
 usage() {
   cat <<EOF
@@ -40,6 +41,8 @@ OPTIONS
   --branch=NAME         Workflows branch to track (default: ${DEFAULT_BRANCH})
   --remote=NAME         Remote name (default: ${DEFAULT_REMOTE})
   --force               Discard local changes (git reset --hard + clean -fd)
+  --no-restart-hint     Omit the trailing "restart the server" note
+                        (used when start.sh calls this before booting)
   -h, --help
 
   Ignored (no-op): --projects-root, --skip-projects
@@ -173,6 +176,10 @@ while [[ $# -gt 0 ]]; do
       FORCE=1
       shift
       ;;
+    --no-restart-hint)
+      RESTART_HINT=0
+      shift
+      ;;
     *)
       die "unknown option: $1 (see --help)"
       ;;
@@ -195,6 +202,8 @@ is_git_checkout "$WORKFLOWS_DIR" || die "not a git checkout: ${WORKFLOWS_DIR}"
 
 ff_checkout "$WORKFLOWS_DIR" "$BRANCH" "Workflows"
 
-echo
-echo "If the server is running, restart it to reload definitions:"
-echo "  ${INSTALL_DIR}/start.sh -d"
+if [[ "$RESTART_HINT" -eq 1 ]]; then
+  echo
+  echo "If the server is running, restart it to reload definitions:"
+  echo "  ${INSTALL_DIR}/start.sh -d"
+fi
