@@ -1,4 +1,4 @@
-# Claude Code baseline (hooks + sandbox)
+# Claude Code Baseline
 
 Portable Claude Code hooks and the `sbx` sandbox launcher used by the Cursor
 workspace deploy path. `deploy-cursor-workspace.sh` copies this tree into the
@@ -27,13 +27,7 @@ scripts/claude/
         └── project_scripts.py      # shared by compound-bash (location allow)
 ```
 
-## Path resolution
-
-Hooks prefer config files next to themselves (`curl-allow.json`,
-`webfetch-allow.json`, optional `compound-bash.json`). `sbx` and
-`project_scripts.py` use `$HOME/projects` (override with `CLAUDE_PROJECTS_BASE`).
-
-## Not committed as live settings
+## Note
 
 Project-level Claude settings for Cursor kickoffs are generated at deploy time
 from `examples/cursor-workspace/.claude/settings.template.json` into the
