@@ -24,8 +24,8 @@ The practical cost falls in two places. When a request quietly comes back empty,
 |---|---|------|-------------|----------|--------|
 | 1 | 01 | Start work package | Issue, branch, worktree, planning folder | 20-40m | ✅ |
 | 2 | 01 | [Prior feedback triage](prior-feedback-triage.md) | Review-mode prior feedback ingest | 15-30m | ⊘ |
-| 3 | 02 | [Design philosophy](design-philosophy.md) | Problem classification, workflow path | 15-30m | ⬚ |
-| 4 | 02 | [Assumptions log](assumptions-log.md) | Tracked assumptions across activities | 10-15m | ⬚ |
+| 3 | 02 | [Design philosophy](02-design-philosophy.md) | Problem classification, workflow path | 15-30m | ✅ |
+| 4 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across activities | 10-15m | ✅ |
 | 5 | 03 | [Requirements elicitation](requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ⬚ |
 | 6 | 04 | [KB research](kb-research.md) | Knowledge-base and web synthesis | 20-45m | ⬚ |
 | 7 | 05 | [Implementation analysis](implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ⬚ |
