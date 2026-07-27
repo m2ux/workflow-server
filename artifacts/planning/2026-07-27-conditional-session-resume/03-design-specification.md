@@ -3,7 +3,7 @@
 **Workflow:** `meta` v5.8.0
 **Mode:** Update
 **Date:** 2026-07-27
-**Change categories:** Step-execution gating · variable addition · technique addition · activity-rule replacement
+**Change categories:** Step-execution gating · variable addition · technique addition · activity-rule removal
 **Change request:** `discover-session` searches saved sessions only when the user's request states resume intent.
 **Baseline:** [structural inventory](01-structural-inventory.md)
 
@@ -17,7 +17,7 @@
 |------|---------|
 | G1 Gate the search on stated intent | `extract-context`, `scan-planning-folders`, and `match-session` run only when the request states resume intent |
 | G2 Detect intent as a first-class value | A dedicated `workflow-engine` operation reads the request and emits the boolean those steps gate on |
-| G3 Align the activity rule with the gate | The `discover-session` activity rule states the intent precondition; its current text mandates the opposite |
+| G3 Align the activity rule with the gate | The `discover-session` activity rule no longer contradicts the gate; its original text mandated the opposite. Delivered as deletion rather than replacement — see § Rules |
 | G4 Make a gated search able to match | The candidate filter reads the client workflow id at the depth sessions record it, and a matched candidate sets `has_saved_state` |
 
 Measured baseline for G4: 128 planning folders; 77 carry no `session.json` at all; of the 51 that do, 39 record top-level `workflowId: meta` with the client id nested under `triggeredWorkflows[]`. The current top-level filter can therefore reach at most 10. Independently, no step derives `has_saved_state` from `{matched_session}` — `record-match` gates on the variable it sets — so the `resume-session` checkpoint condition never holds today.
@@ -83,7 +83,7 @@ No checkpoints are added or removed.
 
 | Rule / principle | Application |
 |------------------|-------------|
-| `discover-session` activity rule 1 | Replaced. Current text mandates matching "even when the user said 'start'" — a direct conflict with G1. Target text states that the search runs on stated resume intent and that a start request initializes a session directly |
+| `discover-session` activity rule 1 | Deleted, along with the now-empty `rules:` key. The original text mandated matching "even when the user said 'start'" — a direct conflict with G1. A replacement was specified, but the gates, the checkpoint condition, and the transition already carry the precondition structurally, so any replacement text restated them clause for clause; `no-activity-prose-rules` prefers the deletion. Recorded in [verified findings § Resolution](08-verified-findings.md#resolution) |
 | Encode Constraints as Structure (#9) | The precondition is a step `when:` gate on a declared variable, not rule prose alone |
 | Atomic Techniques; Compose at Activities (#26) | Intent detection is its own operation rather than a second output bolted onto `extract-identifying-context` |
 | Convention Over Invention (#7) | `when: <var> == true` on `kind: technique` steps matches live `meta` usage per [format conventions](02-format-conventions.md) |
@@ -96,4 +96,4 @@ No checkpoints are added or removed.
 
 ## Confirmation ask
 
-Approving settles the gate mechanism (a `when:`-gated trio behind a new `detect-resume-intent` operation), the replacement of `discover-session`'s conflicting activity rule, and whether G4's two correctness repairs stay inside this change.
+Approving settles the gate mechanism (a `when:`-gated trio behind a new `detect-resume-intent` operation), the removal of `discover-session`'s conflicting activity rule, and whether G4's two correctness repairs stay inside this change.

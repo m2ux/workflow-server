@@ -1,12 +1,14 @@
 # Scope Manifest — Conditional Session Resume
 
-**Target:** `meta` v5.8.0 · **Mode:** update
+**Target:** `meta` v5.10.0 · **Mode:** update
 **Basis:** [design specification](03-design-specification.md) · [impact](06-impact-analysis.md)
 **Worktree:** `/home/mike1/projects/work/workflows/2026-07-27-conditional-session-resume` ✅ (branch `workflow/meta-conditional-session-resume`) · folder layout unchanged
 
 Six existing files are modified and two leaf files are created — one `workflow-engine` operation and one resource. Intentional removals: **4** ([impact §3](06-impact-analysis.md#3-removals-inventory)).
 
-`file_count` = **8**
+Rows 9 to 11 were added after the original eight were drafted: row 9 repairs the resume hand-off the gated search feeds, and rows 10 and 11 are user-directed additions in `workflow-design/` rather than the `meta/` target.
+
+`file_count` = **11**
 
 ---
 
@@ -23,12 +25,14 @@ Paths are relative to `meta/` inside the worktree (the `workflows` library root)
 | 5 | `resources/resume-intent-lexicon.md` | resource | create | New resource — the continuation-phrase vocabulary the detection Protocol matches against |
 | 6 | `resources/README.md` | readme | modify | Resource Index gains a `resume-intent-lexicon` row |
 | 7 | `activities/README.md` | readme | modify | `00. Discover Session` entry states the intent precondition in place of the "even when the user said 'start'" clause |
-| 8 | `README.md` | readme | modify | Flow-legend edge label carries the new variable; activity-table role text; header version reads v5.9.0 |
+| 8 | `README.md` | readme | modify | Flow-legend edge label carries the new variable; activity-table role text; header version reads v5.10.0 |
+| 9 | `activities/01-initialize-session.yaml` | activity | modify | Add `adopt-saved-planning-slug` so a resuming run binds `client_planning_slug` from `saved_planning_slug`; bump `version` |
+| 10 | `../workflow-design/resources/anti-patterns.md` | resource | modify | Append `### AP-127. bag-value-as-literal` — user-directed, outside the `meta` target |
+| 11 | `../workflow-design/workflow.yaml` | workflow | modify | Rewrite `design_dimensions.description` to one line — drops a hard-coded count, a producer tail, and an unclosed parenthesis |
 
 **Out of scope this pass:**
 
 - `techniques/workflow-engine/extract-identifying-context.md` — detection stays a separate operation, so its `user_request` contract is unchanged.
-- `activities/01-initialize-session.yaml` — reads `is_resuming`, which the `resume-session` checkpoint still sets.
 - `src/schema/activity.schema.ts` (parent repo, outside the workflows component) — its `when` doc example stays syntactically valid; touching it would drag the parent repo into this worktree.
 - The deferrals recorded in [deferred items](05-deferred-items.md).
 

@@ -318,8 +318,8 @@
           "validate-and-commit",
           "post-update-review"
         ],
-        "condition": "condition: needs_recommit == true AND review_findings_count == 0",
-        "currentActivity": "validate-and-commit",
+        "condition": "condition: operation_type == update → post-update-review",
+        "currentActivity": "post-update-review",
         "currentTechnique": "github-cli-protocol::mark-ready",
         "deliveredContent": {
           "orchestrator": {
@@ -2319,17 +2319,276 @@
             },
             "timestamp": "2026-07-27T11:36:22.409Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-27T11:39:07.633Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pass_count",
+              "source": "variables_changed",
+              "value": 6
+            },
+            "timestamp": "2026-07-27T11:39:07.633Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "fail_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-07-27T11:39:07.633Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "total_count",
+              "source": "variables_changed",
+              "value": 8
+            },
+            "timestamp": "2026-07-27T11:39:07.633Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "addressed_count",
+              "source": "variables_changed",
+              "value": 8
+            },
+            "timestamp": "2026-07-27T11:39:07.633Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "unaddressed_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-07-27T11:39:07.633Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_number",
+              "source": "variables_changed",
+              "value": "311"
+            },
+            "timestamp": "2026-07-27T11:39:07.633Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/311"
+            },
+            "timestamp": "2026-07-27T11:39:07.633Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-update-review",
+            "timestamp": "2026-07-27T11:39:07.633Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "reload-updated-workflow",
+              "techniqueId": "reload-workflow"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-expressiveness",
+              "techniqueId": "audit-expressiveness"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-conformance",
+              "techniqueId": "audit-conformance"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-principles",
+              "techniqueId": "audit-principles"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-post-principles",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-anti-patterns",
+              "techniqueId": "audit-anti-patterns"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-post-anti-patterns",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-schema-validation",
+              "techniqueId": "audit-schema-validation"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "scope-audit",
+              "techniqueId": "scope-audit"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "summarize-findings",
+              "techniqueId": "summarize-findings"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "save-review-snapshot",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "schema-construct-inventory"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "findings-satellite#template"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "convention-conformance"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "design-principles"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "compliance-report#template"
+            },
+            "timestamp": "2026-07-27T11:39:33.867Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-update-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "anti-patterns"
+            },
+            "timestamp": "2026-07-27T11:41:16.608Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 83,
+        "seq": 86,
         "sessionIndex": "LIUL4T",
         "skippedActivities": [],
         "startedAt": "2026-07-27T05:27:46.102Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785152182,
+        "ts": 1785152476,
         "variables": {
           "addressed_count": 8,
           "anti_pattern_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-conditional-session-resume/10-anti-pattern-findings.md",

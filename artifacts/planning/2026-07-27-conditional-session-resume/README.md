@@ -73,3 +73,5 @@ The same update also repairs the search itself, so that when it does run it can 
 | Repository | m2ux/workflow-server |
 | PR | [#311](https://github.com/m2ux/workflow-server/pull/311) |
 | Related issues | [#309](https://github.com/m2ux/workflow-server/issues/309) · [#310](https://github.com/m2ux/workflow-server/issues/310) |
+| Worktree-layout branch | `fix/309-worktree-path-layout` |
+| Baseline branch | `chore/binding-fidelity-baseline-resume-intent` |
