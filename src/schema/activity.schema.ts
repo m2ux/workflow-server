@@ -23,7 +23,7 @@ export type BundleTechniques = z.infer<typeof BundleTechniquesSchema>;
 
 // Action schema
 export const ActionSchema = z.object({
-  action: z.enum(['log', 'validate', 'set', 'emit', 'message']).describe('Action verb, interpreted by the executing agent. The server has no action interpreter: `set` does not write the session variable bag (only a checkpoint option\'s setVariable effect does) and is slated for removal at the next workflow-schema major (#166 B7/B12).'),
+  action: z.enum(['log', 'validate', 'set', 'emit', 'message']).describe('Action verb, interpreted by the executing agent. The server has no action interpreter: executing `set` is the worker\'s job, and its value reaches the session variable bag when the worker reports it in the `variables_changed` its orchestrator relays on next_activity. `set` is slated for removal at the next workflow-schema major (#166 B7/B12).'),
   target: z.string().optional(),
   message: z.string().optional(),
   value: z.unknown().optional(),
@@ -46,7 +46,7 @@ export const CheckpointOptionSchema = z.object({
   label: z.string(),
   description: z.string().optional(),
   effect: z.object({
-    setVariable: z.record(z.unknown()).optional().describe('Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt.'),
+    setVariable: z.record(z.unknown()).optional().describe('Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied checkpoint effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt.'),
     transitionTo: z.string().optional().describe('Activity ID the orchestrator transitions to next via next_activity. Recorded and returned, not engine-applied: selecting the option does not itself move the session.'),
     skipActivities: z.array(z.string()).optional().describe('Activity IDs the orchestrator routes around. Recorded in session bookkeeping (`skippedActivities`) and returned, not engine-applied.'),
   }).optional(),

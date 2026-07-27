@@ -162,6 +162,78 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     expect(child.history.filter((h: { type: string }) => h.type === 'variables_seeded')).toHaveLength(1);
   });
 
+  it('next_activity persists variables_changed into the bag, attributed to the activity being exited', async () => {
+    const slug = '2026-07-07-worker-outputs';
+    const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
+    const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+    await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
+    await call('next_activity', {
+      session_index: sessionIndex,
+      activity_id: 'followup-activity',
+      variables_changed: { review_needed: true, retry_count: 2, unset_marker: 'produced' },
+    });
+
+    const stored = readSession(slug);
+    // Worker outputs land alongside the seeded defaults, including a variable
+    // that had no default and was therefore absent from the bag.
+    expect(stored.variables).toEqual({ ...SEEDED_FIXTURE_BAG, review_needed: true, retry_count: 2, unset_marker: 'produced' });
+
+    const events = stored.history.filter((h: { type: string }) => h.type === 'variable_set');
+    expect(events).toHaveLength(3);
+    for (const event of events) {
+      expect(event.activity).toBe('checkpoint-activity');
+      expect(event.data.source).toBe('variables_changed');
+    }
+  });
+
+  it('next_activity type-checks variables_changed warn-only, storing the value as written', async () => {
+    const slug = '2026-07-07-worker-mismatch';
+    const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
+    const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+    await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
+    const result = await call('next_activity', {
+      session_index: sessionIndex,
+      activity_id: 'followup-activity',
+      variables_changed: { review_needed: 'yes' },
+    });
+
+    const validation = (result._meta as { validation: { status: string; warnings: string[] } }).validation;
+    expect(validation.status).toBe('warning');
+    expect(validation.warnings.join('\n')).toMatch(/variables_changed.*review_needed.*string.*declared boolean/);
+
+    const stored = readSession(slug);
+    expect(stored.variables.review_needed).toBe('yes');
+    const event = stored.history.find((h: { type: string; data?: Record<string, unknown> }) => h.type === 'variable_set');
+    expect(event.data).toMatchObject({ typeMismatch: true, declaredType: 'boolean', valueType: 'string' });
+  });
+
+  it('a checkpoint condition reads worker-written state, so worker outputs can gate a checkpoint', async () => {
+    // The regression this closes: `has_saved_state`-style variables set by a
+    // worker were invisible to the server, so a checkpoint condition reading
+    // one could never fire. The bag is now the single source both sides share.
+    const slug = '2026-07-07-worker-gates-checkpoint';
+    const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
+    const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+    await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity', variables_changed: { review_needed: true } });
+    expect(readSession(slug).variables.review_needed).toBe(true);
+
+    // A fresh orchestrator that lost its context recovers the worker's value
+    // from the server rather than from a prompt.
+    const status = await call('get_workflow_status', { session_index: sessionIndex });
+    expect(JSON.parse((status.content as { text: string }[])[0].text).variables.review_needed).toBe(true);
+  });
+
+  it('omitting variables_changed leaves the bag untouched', async () => {
+    const slug = '2026-07-07-worker-no-outputs';
+    const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
+    const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+    await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
+    await call('next_activity', { session_index: sessionIndex, activity_id: 'followup-activity' });
+    const stored = readSession(slug);
+    expect(stored.variables).toEqual(SEEDED_FIXTURE_BAG);
+    expect(stored.history.filter((h: { type: string }) => h.type === 'variable_set')).toHaveLength(0);
+  });
+
   it('dispatch_child (transient meta promotion) seeds both the promoted parent and the embedded child', async () => {
     const started = await call('start_session', { agent_id: 'orchestrator' });
     const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;

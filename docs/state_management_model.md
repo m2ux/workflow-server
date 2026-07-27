@@ -4,7 +4,7 @@ The Workflow Server strictly enforces **deterministic state machine transitions*
 
 ## 1. Variable Initialization
 
-Every workflow defines a set of schema-validated state variables in its `workflow.yaml` file. The server seeds every declared `defaultValue` into the session variable bag when the session is created — `start_session` for fresh top-level sessions, `dispatch_child` for embedded children (each child's bag seeds from the child workflow's own declarations) — and records the seeded map as a single `variables_seeded` history event. The orchestrator's state dictionary and the server-held bag therefore agree from the first call: `get_workflow_status` returns the seeded values, and a variable without a default stays absent, which is what makes `exists`/`notExists` gates on it meaningful (never gate a defaulted variable that way — `check:variable-model` forbids it). `type` is validated warn-only when checkpoint `setVariable` effects write the bag; `required` remains unchecked authoring metadata. After seeding, the server writes the bag only through checkpoint `setVariable` effects.
+Every workflow defines a set of schema-validated state variables in its `workflow.yaml` file. The server seeds every declared `defaultValue` into the session variable bag when the session is created — `start_session` for fresh top-level sessions, `dispatch_child` for embedded children (each child's bag seeds from the child workflow's own declarations) — and records the seeded map as a single `variables_seeded` history event. The orchestrator's state dictionary and the server-held bag therefore agree from the first call: `get_workflow_status` returns the seeded values, and a variable without a default stays absent, which is what makes `exists`/`notExists` gates on it meaningful (never gate a defaulted variable that way — `check:variable-model` forbids it). `type` is validated warn-only whenever a write reaches the bag; `required` remains unchecked authoring metadata. After seeding, the server writes the bag through two paths: checkpoint `setVariable` effects (`respond_checkpoint`) and the completing activity's worker outputs relayed as `variables_changed` (`next_activity`).
 
 Example `workflow.yaml` variables:
 ```yaml
@@ -38,6 +38,10 @@ The Meta Orchestrator passes these variable updates down to the Workflow Orchest
 
 ### B. Worker Outputs
 When an Activity Worker successfully completes an activity, it returns a structured result. This payload includes any variables the worker programmatically determined needed updating based on its domain logic (e.g., setting `has_critical_bugs` to true after running tests).
+
+The orchestrator relays that map verbatim as `next_activity`'s `variables_changed` parameter, and the server writes it into the bag on the transition, recording one `variable_set` history event per name attributed to the activity being exited. Declared `type` is validated warn-only here on the same terms as a checkpoint effect: a mismatch is stored as written and surfaced in `_meta.validation`. Because worker outputs land in the bag, `get_workflow_status` and `inspect_session` report the state the workflow actually reached, and an orchestrator that lost its context window recovers that state from the server rather than from a prompt.
+
+Both mutation paths write through the same server routine, so the bag is the union of user decisions and worker outputs. Action verbs remain agent-executed: a `kind: action` step (or an `actions:` list) is carried out by the worker, and the way its result reaches the bag is the worker reporting it in `variables_changed`.
 
 ## 3. Transition Evaluation
 

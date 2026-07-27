@@ -14,7 +14,7 @@ import { readResourceRaw } from '../loaders/resource-loader.js';
 import { injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
 import { buildProvenanceContext, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
 import { withAuditLog, logWarn } from '../logging.js';
-import { jsonTypeOf, isTemplateReference } from '../utils/variable-seed.js';
+import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { extractResourceIds } from '../utils/resource-ref.js';
@@ -49,6 +49,13 @@ const activityManifestSchema = z.array(z.object({
   outcome: z.string(),
   transition_condition: z.string().optional(),
 })).optional().describe('Orchestrator activity-completion manifest: [{activity_id, outcome, transition_condition?}].');
+
+const variablesChangedSchema = z.record(z.unknown()).optional().describe(
+  'Variable assignments the completing activity produced — relay the worker\'s `activity_complete` `variables_changed` map verbatim. ' +
+  'The server writes them into the session variable bag and records one `variable_set` history event per name, so the bag a later ' +
+  'get_workflow_status / inspect_session returns reflects worker outputs and survives a lost agent context. Declared types are ' +
+  'validated warn-only: a mismatch is stored as written and surfaced in _meta.validation. Omit when the activity changed nothing.',
+);
 
 /**
  * Wrap a tool handler so any thrown `SessionStoreError` is re-thrown with a
@@ -411,8 +418,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       transition_condition: z.string().optional().describe('Optional. Transition condition text from the previous activity (advisory validation).'),
       step_manifest: stepManifestSchema,
       activity_manifest: activityManifestSchema,
+      variables_changed: variablesChangedSchema,
     },
-    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest }) => {
+    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, variables_changed }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -458,23 +466,33 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      const validation = buildValidation(
-        validateActivityTransition(view, result.value, activity_id),
-        validateWorkflowVersion(view, result.value),
-        condWarning,
-        ...manifestWarnings,
-        ...activityManifestWarnings,
-      );
+      // Declared variable types, for warn-only validation of the worker's
+      // variables_changed map — same contract as checkpoint setVariable.
+      const declaredTypes = new Map((result.value.variables ?? []).map(v => [v.name, v.type]));
+      const variableWarnings: string[] = [];
 
       const next = advanceSession(state, (draft) => {
         const now = new Date().toISOString();
         // Exit-prior: any non-empty previous activity is recorded as
         // completed once we transition off it.
-        if (draft.currentActivity) {
-          draft.history.push({ timestamp: now, type: 'activity_exited', activity: draft.currentActivity });
-          if (!draft.completedActivities.includes(draft.currentActivity)) {
-            draft.completedActivities.push(draft.currentActivity);
+        const exitingActivity = draft.currentActivity;
+        if (exitingActivity) {
+          draft.history.push({ timestamp: now, type: 'activity_exited', activity: exitingActivity });
+          if (!draft.completedActivities.includes(exitingActivity)) {
+            draft.completedActivities.push(exitingActivity);
           }
+        }
+        // Persist the completing activity's worker outputs into the bag. These
+        // are attributed to the activity being exited, not the one entered —
+        // they are its results. Without this the bag holds only seeded defaults
+        // plus checkpoint writes, so a fresh orchestrator resuming from
+        // get_workflow_status would read state that never advanced.
+        if (variables_changed) {
+          variableWarnings.push(...applyVariableWrites(draft, variables_changed, declaredTypes, {
+            timestamp: now,
+            ...(exitingActivity !== undefined ? { activity: exitingActivity } : {}),
+            source: 'variables_changed',
+          }));
         }
         draft.currentActivity = activity_id;
         draft.condition = transition_condition ?? '';
@@ -490,6 +508,19 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       });
       await saveSessionForTool(loaded, next);
+
+      if (variableWarnings.length > 0) {
+        logWarn('next_activity: variables_changed type mismatch', { session_index, warnings: variableWarnings });
+      }
+
+      const validation = buildValidation(
+        validateActivityTransition(view, result.value, activity_id),
+        validateWorkflowVersion(view, result.value),
+        condWarning,
+        ...manifestWarnings,
+        ...activityManifestWarnings,
+        ...variableWarnings,
+      );
 
       // If this child just reached its terminal activity, notify the parent
       // (if any) so the parent's `triggeredWorkflows[i].status` flips from
@@ -1205,23 +1236,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // `{name}` template passthroughs are references resolved agent-side,
         // so their string type is exempt from validation.
         if (variablesSet) {
-          for (const [name, value] of Object.entries(variablesSet)) {
-            const declaredType = declaredTypes.get(name);
-            const valueType = jsonTypeOf(value);
-            const mismatch = declaredType !== undefined && !isTemplateReference(value) && valueType !== declaredType;
-            if (mismatch) {
-              typeWarnings.push(
-                `setVariable '${name}': value is ${valueType} but the variable is declared ${declaredType}; stored as written.`,
-              );
-            }
-            draft.variables[name] = value;
-            draft.history.push({
-              timestamp: respondedAt,
-              type: 'variable_set',
-              activity: active.activityId,
-              data: { name, value, ...(mismatch ? { declaredType, valueType, typeMismatch: true } : {}) },
-            });
-          }
+          typeWarnings.push(...applyVariableWrites(draft, variablesSet, declaredTypes, {
+            timestamp: respondedAt,
+            activity: active.activityId,
+            source: 'setVariable',
+          }));
         }
         // Apply explicitly-skipped activities to the bookkeeping array.
         if (activitiesSkipped) {

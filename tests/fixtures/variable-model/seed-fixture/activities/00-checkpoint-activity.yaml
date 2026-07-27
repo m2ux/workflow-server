@@ -25,3 +25,6 @@ steps:
         effect:
           setVariable:
             mode_label: "{unset_marker}"
+transitions:
+  - to: followup-activity
+    isDefault: true
