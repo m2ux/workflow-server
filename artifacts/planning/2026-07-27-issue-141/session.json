@@ -369,6 +369,16 @@
             "optionId": "full-workflow",
             "respondedAt": "2026-07-27T14:22:03.000Z"
           },
+          "implementation-analysis-analysis-assumption-interview": {
+            "effects": {
+              "variablesSet": {
+                "assumption_batch_accepted": true,
+                "assumption_resolved_inline": true
+              }
+            },
+            "optionId": "accept-agent-positions",
+            "respondedAt": "2026-07-27T17:08:06.000Z"
+          },
           "requirements-elicitation-elicitation-complete": {
             "effects": {
               "variablesSet": {
@@ -405,10 +415,11 @@
           "start-work-package",
           "design-philosophy",
           "codebase-comprehension",
-          "requirements-elicitation"
+          "requirements-elicitation",
+          "research"
         ],
         "condition": "",
-        "currentActivity": "research",
+        "currentActivity": "implementation-analysis",
         "currentTechnique": "analyse-challenge::run-loop",
         "deliveredContent": {
           "orchestrator": {
@@ -430,6 +441,8 @@
             "resource:design-framework#design-framework-trizics-approach": "e52fbafb36d66d96",
             "resource:design-framework#design-philosophy-artifact-template": "2409a62611c3be51",
             "resource:follow-ups": "c6964a4a7ba41f66",
+            "resource:implementation-analysis": "ebd3cda02ad4dfd9",
+            "resource:implementation-analysis#document-template": "8dde99ea83b4f673",
             "resource:knowledge-base-research": "b52efc68ccefdf45",
             "resource:knowledge-base-research#planning-artifact": "4de7878ccbfb7584",
             "resource:meta/planning-readme": "0e07d24fc02769ce",
@@ -438,7 +451,7 @@
             "resource:research-reconciliation#integration-with-research-artifact": "4a767ae50336079b",
             "resource:web-research#planning-artifact": "7a3c08b7f3781c12",
             "resource:work-package/readme-seed": "0eb6e9701dbc8ca0",
-            "technique:analyse-challenge::run-loop": "2262ce7ae2b9b20d",
+            "technique:analyse-challenge::run-loop": "f07afba2c4aec78f",
             "technique:codebase-comprehension::deep-dive": "eb25438b18cc1274",
             "technique:codebase-comprehension::revise-questions": "2dcc44eba9471a95",
             "technique:codebase-comprehension::survey": "7a0976e3bf9ce9e3",
@@ -450,6 +463,8 @@
             "technique:github-cli-protocol::list-prs": "83ad4509b46a2405",
             "technique:github-cli-protocol::view-issue": "ac713f256120c30d",
             "technique:gitnexus-operations::analyze": "785942305935b306",
+            "technique:implementation-analysis::analyze": "5009825a4e4e84cc",
+            "technique:implementation-analysis::document": "05a3e7e41abcfb30",
             "technique:issue-reference-detection": "dc65c77ed7c981ac",
             "technique:manage-artifacts::write-artifact": "ec4b8ec047b2cc73",
             "technique:manage-git::create-worktree": "54c4987dd74ff86a",
@@ -467,10 +482,10 @@
             "technique:research::research": "f8ece58f3842d46f",
             "technique:research::synthesize": "176e52909f8f197c",
             "technique:research::triage": "a0e063d239126abe",
-            "technique:review-assumptions::collect": "862f2eb20b8d6391",
-            "technique:review-assumptions::interview": "fda24feda5e57f09",
+            "technique:review-assumptions::collect": "48d15f5bb3c2413d",
+            "technique:review-assumptions::interview": "f02b52aae1c1928d",
             "technique:review-assumptions::reconcile": "7b7bca8eaccaa550",
-            "technique:review-assumptions::record": "8b02374cd0917616",
+            "technique:review-assumptions::record": "d0a93ab1a0c4874b",
             "technique:review-mode-detection": "60f8118fb21c6847",
             "technique:scatter-gather": "17c19c51954fcaea",
             "technique:stakeholder-overview": "6548550cd546e329",
@@ -2093,22 +2108,331 @@
             },
             "timestamp": "2026-07-27T16:01:36.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "research",
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "kb_findings",
+              "source": "variables_changed",
+              "value": "empty — knowledge base has no relevant content (gap recorded as RC-1/RS-1)"
+            },
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "web_findings",
+              "source": "variables_changed",
+              "value": "GitHub slug semantics (github-slugger 2.0.0 source + fixtures) and CommonMark 0.31.2 fence rules pinned from primary sources"
+            },
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "findings_synthesis",
+              "source": "variables_changed",
+              "value": "8 patterns mapped to SC-1..SC-9; 5 corrections to the record"
+            },
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "applicable_patterns",
+              "source": "variables_changed",
+              "value": "shared slug() + buildAnchorTable(); CommonMark fence tracker; \\p{...} strip class; fixture-table pinning; guard-stricter-than-resolver; diff the verdict set"
+            },
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "synthesis_assumptions",
+              "source": "variables_changed",
+              "value": "recorded as RS-5, RS-8, RS-9 and the emphasis/code-span neutrality claim"
+            },
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "declaredType": "array",
+              "name": "research_candidates",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": "RC-1 Resolved; RC-2 Resolved (user, scope change); RC-3 Irreconcilable (out-of-scope); RC-4 Partially Resolved (-> code-analysis); RC-5 Irreconcilable (code-analysis)",
+              "valueType": "string"
+            },
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_reconcilable_research",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "research_document",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-issue-141/04-kb-research.md"
+            },
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-issue-141/02-assumptions-log.md"
+            },
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "context_scope",
+              "source": "variables_changed",
+              "value": "mixed"
+            },
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "context_scope_uncertain",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "timestamp": "2026-07-27T16:09:25.054Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "analyze-implementation",
+              "techniqueId": "implementation-analysis::analyze"
+            },
+            "timestamp": "2026-07-27T16:09:58.928Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-27T16:09:58.928Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "document",
+              "techniqueId": "implementation-analysis::document"
+            },
+            "timestamp": "2026-07-27T16:09:58.928Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-27T16:09:58.928Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-27T16:09:58.928Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::interview"
+            },
+            "timestamp": "2026-07-27T16:09:58.928Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "implementation-analysis"
+            },
+            "timestamp": "2026-07-27T16:09:58.928Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "implementation-analysis#document-template"
+            },
+            "timestamp": "2026-07-27T16:09:58.928Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-07-27T16:09:58.928Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-07-27T16:09:58.928Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-07-27T16:09:58.928Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-27T16:09:58.928Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "implementation-analysis",
+            "checkpoint": "analysis-assumption-interview",
+            "timestamp": "2026-07-27T17:06:08.812Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "implementation-analysis",
+            "checkpoint": "analysis-assumption-interview",
+            "data": {
+              "optionId": "accept-agent-positions"
+            },
+            "timestamp": "2026-07-27T17:08:06.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "assumption_resolved_inline",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-27T17:08:06.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "assumption_batch_accepted",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-27T17:08:06.000Z",
+            "type": "variable_set"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 39,
+        "seq": 44,
         "sessionIndex": "ZVIT4L",
         "skippedActivities": [],
         "startedAt": "2026-07-27T13:45:51.860Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785168120,
+        "ts": 1785172115,
         "variables": {
+          "applicable_patterns": "shared slug() + buildAnchorTable(); CommonMark fence tracker; \\p{...} strip class; fixture-table pinning; guard-stricter-than-resolver; diff the verdict set",
           "artifact_name": "resource-section-addressing.md",
-          "assumption_batch_accepted": false,
+          "assumption_batch_accepted": true,
           "assumption_deferred": false,
-          "assumption_resolved_inline": false,
+          "assumption_resolved_inline": true,
           "assumptions_log": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-issue-141/02-assumptions-log.md",
           "audit_confirmed": false,
           "awaiting_review": false,
@@ -2125,7 +2449,7 @@
           "classification_rationale": "Composite issue classified by centre of gravity: 5 of 7 acceptance criteria concern new path-scoped addressing, guard coverage and tests, consistent with issue_type feature. Complex on five grounds — delegated delimiter decision, multiple viable AC-1 approaches, GitHub slug semantics vs byte-identical delivery hashes tension, gitnexus CRITICAL blast radius (18/17 symbols, 10 processes, 4 modules) reaching the delivery-ledger hashing path, and a cross-repo change from a red test baseline.",
           "component_name": "workflow-server",
           "comprehension_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/resource-section-addressing.md",
-          "context_scope": "repo-only",
+          "context_scope": "mixed",
           "context_scope_uncertain": false,
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-issue-141/README.md",
           "current_block_index": 0,
@@ -2135,11 +2459,12 @@
           "elicitation_complete": true,
           "elicitation_log": "9 question/response pairs across 5 domains, 5 clarifications, 5 resolved open questions, 2 requirements-not-taken",
           "existing_pr_number": "",
+          "findings_synthesis": "8 patterns mapped to SC-1..SC-9; 5 corrections to the record",
           "github_issue_found": false,
           "gitnexus_indexed": true,
           "has_critical_blocker": false,
           "has_debt_markers": false,
-          "has_deferred_assumptions": true,
+          "has_deferred_assumptions": false,
           "has_flagged_blocks": false,
           "has_open_assumptions": false,
           "has_open_questions": true,
@@ -2158,6 +2483,7 @@
           "issue_title": "Hierarchical path-scoped resource section references (no flat-slug flattening) + anchor validation",
           "issue_type": "feature",
           "jira_issue_key": "",
+          "kb_findings": "empty — knowledge base has no relevant content (gap recorded as RC-1/RS-1)",
           "mark_progress_na": false,
           "needs_cleanup": false,
           "needs_code_fixes": false,
@@ -2191,6 +2517,8 @@
           "repo_root": "/home/mike1/projects/dev/workflow-server",
           "requirements": "Slug-semantics unification plus a CI-visible ambiguity failure. 9 in-scope items: shared slugger module (no new dependency); differential guard check; third guard reason ambiguous-anchor (guard capability, not resolver behaviour); repoint the 7 live over-delivering prism-evaluate refs to -1; fix the 3 currently-red anchor links; prepare a workflows-branch worktree and bump the submodule pointer; tests for duplicate leaf slugs / -N addressing / single-segment back-compat / fenced-code headings; measure fence-hardening exposure; guard coverage of resources: [id#section] array entries. Path-scoped hierarchical addressing out of scope and deferred.",
           "requirements_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-issue-141/03-requirements-elicitation.md",
+          "research_candidates": "RC-1 Resolved; RC-2 Resolved (user, scope change); RC-3 Irreconcilable (out-of-scope); RC-4 Partially Resolved (-> code-analysis); RC-5 Irreconcilable (code-analysis)",
+          "research_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-issue-141/04-kb-research.md",
           "resign_unsigned_commits_requested": false,
           "review_comments_summary": "",
           "review_mode_ambiguous": false,
@@ -2213,6 +2541,7 @@
           "strategic_fixes_selective": false,
           "submission_aborted": false,
           "success_criteria": "SC-1..SC-10 each with a verification method. SC-2 verified by direct resolver assertion (neither AC-2 link targets a resources/ file); SC-4 verified at the guard, not by a resolver throw; SC-5 needs a corpus-wide byte differential; SC-9 gates committing fence hardening on a counted exposure list; SC-10 requires code and corpus changes as separate commits.",
+          "synthesis_assumptions": "recorded as RS-5, RS-8, RS-9 and the emphasis/code-span neutrality claim",
           "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-27-issue-141/",
           "ticket_gaps_documented": false,
           "ticket_refactor_needed": false,
@@ -2221,6 +2550,7 @@
           "unsigned_commits_in_pr": false,
           "use_existing_pr": false,
           "validation_passed": false,
+          "web_findings": "GitHub slug semantics (github-slugger 2.0.0 source + fixtures) and CommonMark 0.31.2 fence rules pinned from primary sources",
           "worktree_created": true
         },
         "workflowId": "work-package",

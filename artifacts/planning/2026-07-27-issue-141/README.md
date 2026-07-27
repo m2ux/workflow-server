@@ -28,11 +28,11 @@ The practical cost falls in two places. When a request quietly comes back empty,
 | 4 | 02 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across activities | 10-15m | ✅ |
 | 5 | 03 | [Requirements elicitation](03-requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ✅ |
 | 6 | 04 | [KB research](04-kb-research.md) | Knowledge-base and web synthesis | 20-45m | ✅ |
-| 7 | 05 | [Implementation analysis](implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ⬚ |
-| 8 | 06 | [Work package plan](work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ⬚ |
-| 9 | 06 | [Test plan](test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ |
-| 10 | 06 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ⬚ |
-| 11 | 06 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | ⬚ |
+| 7 | 05 | [Implementation analysis](05-implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ✅ |
+| 8 | 06 | [Work package plan](06-work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ◐ |
+| 9 | 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ◐ |
+| 10 | 06 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ◐ |
+| 11 | 06 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | ◐ |
 | 12 | 07 | Assumptions review | Converge open assumptions | 20-40m | ⬚ |
 | 13 | 08 | Implementation | Code changes per plan | 1-4h | ⬚ |
 | 14 | 08 | [Provenance log](provenance-log.md) | Per-task AI-assistance provenance | 5-15m | ⬚ |
