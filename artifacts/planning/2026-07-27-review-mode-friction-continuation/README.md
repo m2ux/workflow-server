@@ -16,7 +16,11 @@ Left alone, each gap means the assistant reaches a step with nothing to fill in,
 
 ## Solution Overview
 
-*Populated by the producing step (a `stakeholder-overview` call).*
+The fix touches four files and adds no new behaviour. In three of them — two written procedures and one reference document — each instruction that referred to a piece of information by a name nothing supplied is rewritten to name something that genuinely exists: either a value the surrounding procedure already declares, or a clearly marked working value the procedure works out for itself and then reuses. The fourth file is the workflow's own list of declared values, where one description had been left describing the old behaviour. A second correction runs alongside the first: the instructions that look up which version of the planning documents to link were pointing at the wrong copy of the repository — the main product checkout rather than the nested checkout the planning documents actually live in — so they are re-aimed at the right one. The web-address template that builds those links stays where it always lived, in the reference document, and the procedures now simply point at it instead of restating it.
+
+The result is that the review summary the assistant posts carries links that resolve to the documents they name, rather than links built from blanks. Because the change is confined to descriptive text and one declared description, nothing about the order of work, the approval points, or the shape of the workflow moves; the same steps run in the same sequence as before. The correction can be checked mechanically rather than taken on trust — an existing repository check that currently reports exactly these eight gaps should report none once the edits land, while two neighbouring checks should stay exactly as they are, neither improving nor regressing. Three deliberate deletions are recorded in advance, each with a note of where the deleted wording now lives, so nothing is quietly lost. Two judgement calls carried over from the earlier run still need a person's decision before this is committed; both are written up and waiting at the final approval point, and neither changes which files are touched.
+
+*Engineering detail: [design specification](03-design-specification.md) · file breakdown in the [scope manifest](06-scope-manifest.md).*
 
 ## 📊 Progress
 
@@ -30,10 +34,10 @@ Left alone, each gap means the assistant reaches a step with nothing to fill in,
 | 6 | 03 | [Assumptions log](03-assumptions-log.md) | Open and settled assumptions | 10-15m | ✅ |
 | 7 | 04 | Pattern analysis | Applicable patterns and practices | 20-40m | ⊘ |
 | 8 | 05 | [Impact analysis](05-impact-analysis.md) | Blast radius and preservations | 20-40m | ✅ |
-| 9 | 06 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |
-| 10 | 06 | [Drafting plan](drafting-plan.md) | Draft order and blocks | 10-20m | ⬚ |
-| 11 | 06 | [Draft attestation](draft-attestation.md) | Batch review attestation | 5-10m | ⬚ |
-| 12 | 06 | [File review note](file-review-note.md) | Removals and draft highlights | 5-10m | ⬚ |
+| 9 | 06 | [Scope manifest](06-scope-manifest.md) | File-level change inventory | 15-30m | ✅ |
+| 10 | 06 | [Drafting plan](06-drafting-plan.md) | Draft order and blocks | 10-20m | ✅ |
+| 11 | 06 | [Draft attestation](06-draft-attestation.md) | Batch review attestation | 5-10m | ✅ |
+| 12 | 06 | [File review note](06-file-review-note.md) | Removals and draft highlights | 5-10m | ✅ |
 | 13 | 08 | Quality review | Principle and anti-pattern audits | 30-60m | ⬚ |
 | 14 | 08 | [Principle findings](principle-findings.md) | Principles audit satellite | 10-20m | ⬚ |
 | 15 | 08 | [Anti-pattern findings](anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ⬚ |

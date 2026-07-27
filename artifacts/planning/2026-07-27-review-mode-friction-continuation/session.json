@@ -310,11 +310,12 @@
         "checkpointResponses": {},
         "completedActivities": [
           "intake-and-context",
-          "requirements-refinement"
+          "requirements-refinement",
+          "impact-analysis"
         ],
-        "condition": "condition: operation_type == update -> impact-analysis (pattern-analysis path-skipped)",
-        "currentActivity": "impact-analysis",
-        "currentTechnique": "work-package::manage-artifacts::write-artifact",
+        "condition": "isDefault: scope-and-draft",
+        "currentActivity": "scope-and-draft",
+        "currentTechnique": "review-drafted-file",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:2a775f356d424475": "2a775f356d424475",
@@ -333,28 +334,40 @@
             "resource:design-principles": "b526c54e70d1d75d",
             "resource:design-specification": "18725bc3554c33bf",
             "resource:design-specification#template": "9b020263b82031b1",
+            "resource:draft-attestation#template": "da7fd588ae6dec74",
+            "resource:drafting-plan#template": "f2b1045d89685d8f",
             "resource:elicitation-guide": "69ba94c61eb1647e",
+            "resource:file-review-note#template": "e5cb4251276d0e30",
             "resource:follow-ups": "3bb8d4144310f08f",
             "resource:format-conventions": "e208e3ba6620a19b",
             "resource:impact-analysis": "f86f9342ecbb199e",
             "resource:meta/planning-readme": "90923c846860a5f8",
             "resource:schema-construct-inventory": "37f3cc0f7979b66c",
+            "resource:scope-manifest#template": "c96b0e22a8c033f9",
             "resource:structural-inventory#template": "bedec7b1d3d80a52",
             "resource:update-mode-guide": "7c789baf8ff06eef",
             "resource:work-package/deferred-items": "52dd743a22d3d9a3",
             "resource:workflow-design/readme-seed": "562d05bdfa6dcf7c",
+            "technique:assemble-file-approach": "13c1d787cfe477d7",
             "technique:context-loading": "1e4841fa4b3ad579",
             "technique:derive-design-dimensions": "fd1ea705472b3cdf",
+            "technique:derive-workflows-target-path": "b0f192074f63de15",
             "technique:impact-analysis": "27ad658513c42a83",
             "technique:intake-classification": "fa0cf7c1465a489f",
             "technique:persist-design-specification": "83243ab80d679bc5",
+            "technique:prepare-workflow-branch": "88537b3184cdc854",
             "technique:reconcile-design-assumptions": "c02a916d204406cb",
+            "technique:review-draft-yaml": "018d9c555450c733",
+            "technique:review-drafted-file": "c3f17f51d9082876",
+            "technique:scope-definition": "ad6ca18d97b921e0",
             "technique:synthesize-update-specification": "d2120a8a8e4c2f0c",
-            "technique:work-package::manage-artifacts::write-artifact": "7e26ff13419304d4",
+            "technique:verify-artifact-conforms": "5b4afb314c23b35d",
+            "technique:work-package::manage-artifacts::write-artifact": "0387df75e0b3e874",
             "technique:work-package::review-assumptions::collect": "c6991732d8ffb5af",
             "technique:work-package::review-assumptions::record": "3863422e28015b10",
-            "technique:work-package::stakeholder-overview": "e213dde5f7960790",
-            "technique:workflow-engine::create-readme": "4ea3139c7afa835e"
+            "technique:work-package::stakeholder-overview": "29f600d94b5ea59a",
+            "technique:workflow-engine::create-readme": "4ea3139c7afa835e",
+            "technique:yaml-authoring": "8460ba4e50e18f2c"
           }
         },
         "history": [
@@ -1010,17 +1023,205 @@
             },
             "timestamp": "2026-07-27T15:08:23.798Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "impact-analysis",
+            "timestamp": "2026-07-27T15:16:53.782Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "impact-analysis",
+            "data": {
+              "name": "removal_count",
+              "source": "variables_changed",
+              "value": 3
+            },
+            "timestamp": "2026-07-27T15:16:53.782Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "impact-analysis",
+            "data": {
+              "name": "impact_analysis_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/05-impact-analysis.md"
+            },
+            "timestamp": "2026-07-27T15:16:53.782Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-27T15:16:53.782Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "scope-definition",
+              "techniqueId": "scope-definition"
+            },
+            "timestamp": "2026-07-27T15:17:42.632Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-scope-manifest",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T15:17:42.632Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "present-solution-overview",
+              "techniqueId": "work-package::stakeholder-overview"
+            },
+            "timestamp": "2026-07-27T15:17:42.632Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "review-draft-yaml",
+              "techniqueId": "review-draft-yaml"
+            },
+            "timestamp": "2026-07-27T15:17:42.632Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-draft-attestation",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T15:17:42.632Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-artifact-conforms",
+              "techniqueId": "verify-artifact-conforms"
+            },
+            "timestamp": "2026-07-27T15:17:42.632Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "scope-manifest#template"
+            },
+            "timestamp": "2026-07-27T15:17:42.632Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-27T15:17:42.632Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "draft-attestation#template"
+            },
+            "timestamp": "2026-07-27T15:17:42.632Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "derive-workflows-target-path",
+              "techniqueId": "derive-workflows-target-path"
+            },
+            "timestamp": "2026-07-27T15:18:34.767Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "ensure-workflow-worktree",
+              "techniqueId": "prepare-workflow-branch"
+            },
+            "timestamp": "2026-07-27T15:18:35.233Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "assemble-file-approach",
+              "techniqueId": "assemble-file-approach"
+            },
+            "timestamp": "2026-07-27T15:21:36.455Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "yaml-authoring",
+              "techniqueId": "yaml-authoring"
+            },
+            "timestamp": "2026-07-27T15:21:36.891Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "review-drafted-file",
+              "techniqueId": "review-drafted-file"
+            },
+            "timestamp": "2026-07-27T15:21:50.854Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "drafting-plan#template"
+            },
+            "timestamp": "2026-07-27T15:21:51.549Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "file-review-note#template"
+            },
+            "timestamp": "2026-07-27T15:26:08.708Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 19,
+        "seq": 28,
         "sessionIndex": "QDDWIT",
         "skippedActivities": [],
         "startedAt": "2026-07-27T13:49:48.066Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785164903,
+        "ts": 1785165968,
         "variables": {
           "accumulated_design": "Update specification over changed dimensions only - purpose (G-1 publish ref resolves, G-2 engineering checkout is the git target, G-3 URL slots stay in the resource, G-4 one statement of the source, G-5 judgements land), artifacts, rules; activity list and checkpoints unchanged.",
           "addressed_count": 0,
@@ -1060,7 +1261,7 @@
           "has_resolvable_assumptions": false,
           "has_unflagged_removals": false,
           "headless_mode": true,
-          "impact_analysis_path": "",
+          "impact_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation/05-impact-analysis.md",
           "intent_needs_confirmation": false,
           "needs_audit_fixes": false,
           "needs_recommit": false,
@@ -1071,7 +1272,7 @@
           "pr_number": "",
           "pr_url": "",
           "principle_findings_path": "",
-          "removal_count": 0,
+          "removal_count": 3,
           "report_path": "",
           "review_findings_count": 0,
           "review_scope_confirmed": false,
