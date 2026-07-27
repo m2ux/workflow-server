@@ -52,12 +52,12 @@ requirements-refinement/   # unchanged
 └── README.md
 ```
 
-**Flow:** Topology is unchanged — five activities, five arms, the bounded correction cycle intact; `01`'s single arm sheds the condition it carried alongside `isDefault`.
+**Flow:** Topology is unchanged — five activities, five arms, the bounded correction cycle intact. `01`'s single arm keeps both the `condition` and `isDefault: true` it carried at baseline; shedding the condition is a Gate 2 decision, not this pass (see the out-of-scope note above).
 
 | Pattern | This change |
 |---------|-------------|
 | Checkpoint message is a statement; the decision lives in `options[]` | All four gate messages rewritten |
-| Artifact announced as `[label]({path_variable})`, never a hard-coded `NN-` prefix | Seven path outputs declared; five announcements plus four gate messages interpolate them |
+| Artifact announced as `[label]({path_variable})`, never a hard-coded `NN-` prefix | Seven path outputs declared; six announcements plus four gate messages interpolate them across ten sites |
 | A cap is enforced by the construct the engine evaluates | Cap authoritative as the `< 3` transition literal in `04`; the shadow variable removed |
 | A counter advances as a declared technique output | `correction_iteration` declared on `update-specification` |
 | Techniques are session-blind; activities own presentation | Two "Present …" Protocol phases removed |

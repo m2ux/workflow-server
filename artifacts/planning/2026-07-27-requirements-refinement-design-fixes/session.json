@@ -336,16 +336,22 @@
       "sessionIndex": "QKSIQR",
       "state": {
         "agentId": "orchestrator",
-        "checkpointResponses": {},
+        "checkpointResponses": {
+          "validate-and-commit-approve-to-commit": {
+            "optionId": "approved",
+            "respondedAt": "2026-07-27T16:33:41.000Z"
+          }
+        },
         "completedActivities": [
           "intake-and-context",
           "requirements-refinement",
           "impact-analysis",
-          "scope-and-draft"
+          "scope-and-draft",
+          "quality-review"
         ],
-        "condition": "isDefault: quality-review",
-        "currentActivity": "quality-review",
-        "currentTechnique": "apply-audit-fixes",
+        "condition": "isDefault: transitions[0] → validate-and-commit (blocker-gate resolved no-blocker; has_critical_finding=false)",
+        "currentActivity": "validate-and-commit",
+        "currentTechnique": "github-cli-protocol::mark-ready",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:2a775f356d424475": "2a775f356d424475",
@@ -373,6 +379,7 @@
             "resource:format-conventions": "58437d8be952aff1",
             "resource:impact-analysis": "dd67db71781ea12a",
             "resource:meta/planning-readme": "be59cdada432fd61",
+            "resource:meta/planning-readme#template": "04ee252c4ce358b3",
             "resource:requirements-refinement/specification-protocol#status-conventions": "933993b72438c8d6",
             "resource:schema-construct-inventory": "4a78224ff9226b4c",
             "resource:scope-manifest#template": "61b930a45b33006b",
@@ -385,25 +392,34 @@
             "technique:audit-expressiveness": "dd04e70d8d8eee8c",
             "technique:audit-rule-enforcement": "cd6493c3fa55fcdb",
             "technique:audit-rule-hygiene": "0b65b32101f16ed2",
+            "technique:audit-schema-validation": "d7e824034bb03f53",
+            "technique:commit-verification": "305c1bb64446fb48",
             "technique:context-loading": "1e4841fa4b3ad579",
             "technique:derive-design-dimensions": "fd1ea705472b3cdf",
             "technique:derive-workflows-target-path": "b0f192074f63de15",
+            "technique:github-cli-protocol::create-pr": "c0465c9dbcd03e47",
+            "technique:github-cli-protocol::mark-ready": "4219d93c469df236",
             "technique:impact-analysis": "27ad658513c42a83",
             "technique:intake-classification": "fa0cf7c1465a489f",
             "technique:persist-design-specification": "83243ab80d679bc5",
             "technique:prepare-workflow-branch": "88537b3184cdc854",
+            "technique:publish-workflow-pr": "0fe348d43632439a",
+            "technique:readme-authoring": "95df6474b7b579dd",
             "technique:reconcile-design-assumptions": "c02a916d204406cb",
             "technique:review-draft-yaml": "018d9c555450c733",
             "technique:review-drafted-file": "c3f17f51d9082876",
             "technique:scope-definition": "ad6ca18d97b921e0",
+            "technique:scope-verification": "9e64d6f82c89b7f9",
             "technique:synthesize-update-specification": "d2120a8a8e4c2f0c",
             "technique:verify-artifact-conforms": "5b4afb314c23b35d",
             "technique:verify-high-findings": "94e5fe77436a30f9",
+            "technique:version-control::commit-regular-files": "36d64bfb3cf7a9c3",
             "technique:work-package::manage-artifacts::write-artifact": "0387df75e0b3e874",
             "technique:work-package::review-assumptions::collect": "c6991732d8ffb5af",
             "technique:work-package::review-assumptions::record": "3863422e28015b10",
             "technique:work-package::stakeholder-overview": "29f600d94b5ea59a",
             "technique:workflow-engine::create-readme": "4ea3139c7afa835e",
+            "technique:workflow-engine::verify-readme-conforms": "ffd9457e0525f1d8",
             "technique:yaml-authoring": "8460ba4e50e18f2c"
           }
         },
@@ -1615,17 +1631,340 @@
             },
             "timestamp": "2026-07-27T16:17:24.614Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "expressiveness_findings",
+              "source": "variables_changed",
+              "value": "4 findings as found, 2 residual: AP-111 Protocol 5 restates four Output identity criteria (Gate 2, resolves F-4); AP-98 routing narration in two option descriptions (APPLIED); AP-40 activity inventory counts in two README tiers (APPLIED); AP-124/AP-121 mode-selection-only Protocol phase in update-specification (follow-up)"
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "expressiveness_finding_count",
+              "source": "variables_changed",
+              "value": 2
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "expressiveness_findings_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-expressiveness-findings.md"
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "conformance_findings",
+              "source": "variables_changed",
+              "value": "2 findings as found, 1 residual: seven _path outputs interpolated in activity messages were undeclared in variables[] against a 19/19 sibling convention (APPLIED); four resources lack the sibling frontmatter shape, 141/142 carry it, loads fine by filename-derived id and outside the confirmed 16-file scope (deferred follow-up). Confirmed conformant: file naming, field ordering, semver, transition patterns, checkpoint structure, technique section order, techniques.activity, terminal-activity omission, the 02 numbering gap, and effect-less options"
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "conformance_finding_count",
+              "source": "variables_changed",
+              "value": 1
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "conformance_findings_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-conformance-findings.md"
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "rule_hygiene_findings",
+              "source": "variables_changed",
+              "value": "5 findings, all residual, all Gate 2 removals: AP-22 protocol-preservation dual-homed workflow.yaml rules.activity[0] vs TECHNIQUE.md with an already-drifted 4-of-7 identifier list; AP-22 planning-folder invariant dual-homed rules.activity[2] vs TECHNIQUE.md; AP-19 rules.activity[1] restates intake-sources and analyze-source Protocol 3; AP-19 rules.activity[3] restates update-specification Protocol 2; AP-19 rules.activity[4] restates four other homes. None applied: no impact row inventories these removals"
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "rule_hygiene_finding_count",
+              "source": "variables_changed",
+              "value": 5
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "rule_hygiene_findings_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-rule-hygiene-findings.md"
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "enforcement_findings",
+              "source": "variables_changed",
+              "value": "4 text-only rules, all residual: HIGH correction cycle has no structural termination guarantee, transition back-edges are unbounded and the counter advance is prose (mechanism: kind loop with maxIterations); HIGH canonical-document integrity text-only across three rule homes with zero action-validate anywhere (mechanism: action validate on the write target); MEDIUM status-change confirmation clause unenforced across three homes; MEDIUM source-readable precondition is technique prose with no failure arm, also AP-113"
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "enforcement_finding_count",
+              "source": "variables_changed",
+              "value": 4
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "enforcement_findings_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-enforcement-findings.md"
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "verified_findings",
+              "source": "variables_changed",
+              "value": "15 findings: 2 High confirmed by adversarial re-derivation (N-2 unbounded correction cycle, N-1 canonical-document integrity), 1 High downgraded to Medium (C-1 path-variable gap: divergence reproduced but no functional break, no unproduced-value-read, validators passed pre-fix), 9 Medium confirmed, 3 Low confirmed. 0 Critical"
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "verified_findings_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-verified-findings.md"
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "fixes_applied",
+              "source": "variables_changed",
+              "value": "3 fixes across 4 files, no collateral removal, both repo validators pass post-edit: workflow.yaml gained seven _path variable declarations (type string, defaultValue empty) in pipeline order; activities/01-intake-and-analyze.yaml two confirmed-option descriptions stripped of route narration; README.md and activities/README.md activity inventory count removed. Diff: 4 files, 32 insertions, 4 deletions, uncommitted"
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "needs_audit_fixes",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "has_critical_finding",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "written_artifact",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-verified-findings.md"
+            },
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-27T16:20:57.665Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-commit",
+              "techniqueId": "commit-verification"
+            },
+            "timestamp": "2026-07-27T16:21:28.712Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-27T16:21:28.712Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "run-schema-validation",
+              "techniqueId": "audit-schema-validation"
+            },
+            "timestamp": "2026-07-27T16:21:48.482Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-scope-manifest",
+              "techniqueId": "scope-verification"
+            },
+            "timestamp": "2026-07-27T16:23:38.729Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-planning-readme",
+              "techniqueId": "workflow-engine::verify-readme-conforms"
+            },
+            "timestamp": "2026-07-27T16:25:12.648Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "meta/planning-readme#template"
+            },
+            "timestamp": "2026-07-27T16:25:33.109Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/readme-seed"
+            },
+            "timestamp": "2026-07-27T16:25:35.975Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "readme-authoring",
+              "techniqueId": "readme-authoring"
+            },
+            "timestamp": "2026-07-27T16:27:19.244Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "approve-to-commit",
+            "timestamp": "2026-07-27T16:31:02.181Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "approve-to-commit",
+            "data": {
+              "optionId": "approved"
+            },
+            "timestamp": "2026-07-27T16:33:41.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "stage-and-commit",
+              "techniqueId": "version-control::commit-regular-files"
+            },
+            "timestamp": "2026-07-27T16:34:44.838Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "compose-workflow-pr-description",
+              "techniqueId": "publish-workflow-pr"
+            },
+            "timestamp": "2026-07-27T16:35:05.529Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-pr",
+              "techniqueId": "github-cli-protocol::create-pr"
+            },
+            "timestamp": "2026-07-27T16:35:56.675Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "mark-ready",
+              "techniqueId": "github-cli-protocol::mark-ready"
+            },
+            "timestamp": "2026-07-27T16:36:21.882Z",
+            "type": "technique_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 40,
+        "seq": 55,
         "sessionIndex": "QKSIQR",
         "skippedActivities": [],
         "startedAt": "2026-07-27T14:37:16.197Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785169044,
+        "ts": 1785170181,
         "variables": {
           "accumulated_design": "Update specification for requirements-refinement covering all five update dimensions plus a Technique-surface section: seven change goals — G1 correction cycle terminates (counter as declared output, cap authoritative at the transition literal), G2 gates are artifact-linked statements with effect-bearing options, G3 routing integrity, G4 announcements name and link the server-computed filename, G5 no dead session state, G6 contract separated from procedure, G7 documentation matches definition. Out of scope: purpose/lifecycle redesign, activity renumbering, rubric criteria, new activities or techniques.",
           "addressed_count": 0,
@@ -1646,8 +1985,9 @@
           "assumptions_log": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/03-assumptions-log.md",
           "change_category": "activity, technique, structural refactor",
           "change_request_clear": true,
-          "conformance_finding_count": 0,
-          "conformance_findings_path": "",
+          "conformance_finding_count": 1,
+          "conformance_findings": "2 findings as found, 1 residual: seven _path outputs interpolated in activity messages were undeclared in variables[] against a 19/19 sibling convention (APPLIED); four resources lack the sibling frontmatter shape, 141/142 carry it, loads fine by filename-derived id and outside the confirmed 16-file scope (deferred follow-up). Confirmed conformant: file naming, field ordering, semver, transition patterns, checkpoint structure, technique section order, techniques.activity, terminal-activity omission, the 02 numbering gap, and effect-less options",
+          "conformance_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-conformance-findings.md",
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/README.md",
           "design_dimensions": [
             "purpose",
@@ -1661,14 +2001,17 @@
           "draft_attestation_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/06-draft-attestation.md",
           "drafting_plan": "Per-file delta for all 16 files in tier order (workflow.yaml, activities, techniques, READMEs), each framed against committed content with what stays recorded",
           "drafting_plan_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/06-drafting-plan.md",
-          "enforcement_finding_count": 0,
-          "enforcement_findings_path": "",
-          "expressiveness_finding_count": 0,
-          "expressiveness_findings_path": "",
+          "enforcement_finding_count": 4,
+          "enforcement_findings": "4 text-only rules, all residual: HIGH correction cycle has no structural termination guarantee, transition back-edges are unbounded and the counter advance is prose (mechanism: kind loop with maxIterations); HIGH canonical-document integrity text-only across three rule homes with zero action-validate anywhere (mechanism: action validate on the write target); MEDIUM status-change confirmation clause unenforced across three homes; MEDIUM source-readable precondition is technique prose with no failure arm, also AP-113",
+          "enforcement_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-enforcement-findings.md",
+          "expressiveness_finding_count": 2,
+          "expressiveness_findings": "4 findings as found, 2 residual: AP-111 Protocol 5 restates four Output identity criteria (Gate 2, resolves F-4); AP-98 routing narration in two option descriptions (APPLIED); AP-40 activity inventory counts in two README tiers (APPLIED); AP-124/AP-121 mode-selection-only Protocol phase in update-specification (follow-up)",
+          "expressiveness_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-expressiveness-findings.md",
           "fail_count": 0,
           "file_count": 16,
           "file_review_note": "Per-file delta and removal inventory for all 16 files; every removal maps to impact rows 1-9, so no unflagged removal exists",
           "file_review_note_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/06-file-review-note.md",
+          "fixes_applied": "3 fixes across 4 files, no collateral removal, both repo validators pass post-edit: workflow.yaml gained seven _path variable declarations (type string, defaultValue empty) in pipeline order; activities/01-intake-and-analyze.yaml two confirmed-option descriptions stripped of route narration; README.md and activities/README.md activity inventory count removed. Diff: 4 files, 32 insertions, 4 deletions, uncommitted",
           "format_conventions_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/01-format-conventions.md",
           "format_literacy_confirmed": true,
           "has_critical_finding": false,
@@ -1679,7 +2022,7 @@
           "headless_mode": true,
           "impact_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/05-impact-analysis.md",
           "intent_needs_confirmation": false,
-          "needs_audit_fixes": false,
+          "needs_audit_fixes": true,
           "needs_recommit": false,
           "open_assumptions": [
             "A-3 Dead variable disposition — remove written-but-never-read variables vs give each a structural read",
@@ -1699,8 +2042,9 @@
           "review_findings_count": 0,
           "review_scope_confirmed": false,
           "reviewed_blocks": "32 block-indexed rows across the 16 files: 27 modified/added, 5 deliberately unchanged (01 transitions, 01/05 gate options, 04 cap literal, 06 single option)",
-          "rule_hygiene_finding_count": 0,
-          "rule_hygiene_findings_path": "",
+          "rule_hygiene_finding_count": 5,
+          "rule_hygiene_findings": "5 findings, all residual, all Gate 2 removals: AP-22 protocol-preservation dual-homed workflow.yaml rules.activity[0] vs TECHNIQUE.md with an already-drifted 4-of-7 identifier list; AP-22 planning-folder invariant dual-homed rules.activity[2] vs TECHNIQUE.md; AP-19 rules.activity[1] restates intake-sources and analyze-source Protocol 3; AP-19 rules.activity[3] restates update-specification Protocol 2; AP-19 rules.activity[4] restates four other homes. None applied: no impact row inventories these removals",
+          "rule_hygiene_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-rule-hygiene-findings.md",
           "schema_constructs_confirmed": true,
           "scope_manifest_confirmed": true,
           "scope_manifest_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/06-scope-manifest.md",
@@ -1713,11 +2057,12 @@
           "total_count": 0,
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
-          "verified_findings_path": "",
+          "verified_findings": "15 findings: 2 High confirmed by adversarial re-derivation (N-2 unbounded correction cycle, N-1 canonical-document integrity), 1 High downgraded to Medium (C-1 path-variable gap: divergence reproduced but no functional break, no unproduced-value-read, validators passed pre-fix), 9 Medium confirmed, 3 Low confirmed. 0 Critical",
+          "verified_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-verified-findings.md",
           "workflow_branch": "workflow/requirements-refinement",
           "workflow_id": "requirements-refinement",
           "worktree_created": true,
-          "written_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/06-draft-attestation.md",
+          "written_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-requirements-refinement-design-fixes/08-verified-findings.md",
           "yaml_file": "All YAML valid: validate-workflow-yaml.ts passes workflow.yaml + 5 activities + 8 technique files; validate-activities.ts 5 passed, 0 failed"
         },
         "workflowId": "workflow-design",

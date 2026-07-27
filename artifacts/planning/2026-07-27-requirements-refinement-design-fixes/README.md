@@ -1,6 +1,6 @@
 # Requirements-Refinement Design Fixes — July 2026
 
-> Update · Created 2026-07-27 · **Status:** Audited — 15 findings, 0 Critical; awaiting Gate 2 approval to commit
+> Update · Created 2026-07-27 · **Status:** Submitted for review — Gate 2 approved; [PR #318](https://github.com/m2ux/workflow-server/pull/318) open against `workflows`
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -20,26 +20,25 @@ The fix touches sixteen of the workflow's twenty-one files, and it changes only 
 
 Three questions are deliberately left open for a human to settle rather than decided here, because each is a matter of preference rather than correctness: whether a run that ends in failure should require someone to click "acknowledged", where a "needs revision" choice should send the run back to, and whether three unused internal settings should be deleted or given a job. The workflow has been written so that any of those answers can still be applied without redoing this work. Everything else is settled, which means that after this change the workflow enforces the limits it claims to enforce, every choice offered to a user has a defined consequence, every file it announces can be opened from the message that announces it, and its documentation describes the workflow that actually exists.
 
-
 ## 📊 Progress
 
 | # | @ | Item | Description | Estimate | Status |
 |---|---|------|-------------|----------|--------|
 | 1 | 01 | Intake and context | Target, mode, planning folder | 15-30m | ✅ |
-| 2 | 01 | [Format conventions](format-conventions.md) | Authoring literacy notes | 5-10m | ✅ |
-| 3 | 03 | [Design specification](design-specification.md) | Change goals and constraints | 20-40m | ✅ |
-| 4 | 03 | [Assumptions log](assumptions-log.md) | Open and settled assumptions | 10-15m | ✅ |
-| 5 | 04 | [Pattern analysis](pattern-analysis.md) | Applicable patterns and practices | 20-40m | ⊘ |
-| 6 | 05 | [Impact analysis](impact-analysis.md) | Blast radius and preservations | 20-40m | ✅ |
-| 7 | 06 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ✅ |
-| 8 | 06 | [Drafting plan](drafting-plan.md) | Draft order and blocks | 10-20m | ✅ |
-| 9 | 06 | [Draft attestation](draft-attestation.md) | Batch review attestation | 5-10m | ✅ |
-| 10 | 06 | [File review note](file-review-note.md) | Removals and draft highlights | 5-10m | ✅ |
-| 11 | 08 | Quality review | Principle and anti-pattern audits | 30-60m | ✅ |
-| 12 | 08 | [Principle findings](principle-findings.md) | Principles audit satellite | 10-20m | ⊘ |
-| 13 | 08 | [Anti-pattern findings](anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ⊘ |
-| 14 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ◐ |
-| 15 | 10 | Post-update review | Follow-up after merge path | 15-30m | ⬚ |
+| 2 | 01 | [Format conventions](01-format-conventions.md) | Authoring literacy notes | 5-10m | ✅ |
+| 3 | 03 | [Design specification](03-design-specification.md) | Change goals and constraints | 20-40m | ✅ |
+| 4 | 03 | [Assumptions log](03-assumptions-log.md) | Open and settled assumptions | 10-15m | ✅ |
+| 5 | 04 | Pattern analysis | Applicable patterns and practices | 20-40m | ⊘ |
+| 6 | 05 | [Impact analysis](05-impact-analysis.md) | Blast radius and preservations | 20-40m | ✅ |
+| 7 | 06 | [Scope manifest](06-scope-manifest.md) | File-level change inventory | 15-30m | ✅ |
+| 8 | 06 | [Drafting plan](06-drafting-plan.md) | Draft order and blocks | 10-20m | ✅ |
+| 9 | 06 | [Draft attestation](06-draft-attestation.md) | Batch review attestation | 5-10m | ✅ |
+| 10 | 06 | [File review note](06-file-review-note.md) | Removals and draft highlights | 5-10m | ✅ |
+| 11 | 08 | [Quality review](08-verified-findings.md) | Principle and anti-pattern audits | 30-60m | ✅ |
+| 12 | 08 | Principle findings | Principles audit satellite (review mode only) | 10-20m | ⊘ |
+| 13 | 08 | Anti-pattern findings | Anti-pattern audit satellite (review mode only) | 10-20m | ⊘ |
+| 14 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ✅ |
+| 15 | 10 | Post-update review | Follow-up after merge path | 15-30m | ◐ |
 | 16 | 11 | Retrospective | Session close-out | 15-30m | ⬚ |
 | 17 | 11 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
 
@@ -50,6 +49,8 @@ Three questions are deliberately left open for a human to settle rather than dec
 | Resource | Link |
 |----------|------|
 | Target workflow | `workflows/requirements-refinement/` |
+| Pull request | [#318](https://github.com/m2ux/workflow-server/pull/318) |
+| Workflow branch | `workflow/requirements-refinement` |
 | Structural inventory | [structural-inventory.md](01-structural-inventory.md) |
 | Format conventions | [format-conventions.md](01-format-conventions.md) |
 | Design specification | [design-specification.md](03-design-specification.md) |
