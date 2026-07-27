@@ -77,4 +77,32 @@ variables:
     type: boolean
     description: True once every normative statement in the source document maps to at least one requirement
     defaultValue: false
+  - name: intake_record_path
+    type: string
+    description: Absolute path to the written intake record
+    defaultValue: ""
+  - name: requirements_analysis_path
+    type: string
+    description: Absolute path to the written requirements analysis report
+    defaultValue: ""
+  - name: working_specification_path
+    type: string
+    description: Absolute path to the working specification written for the current pass
+    defaultValue: ""
+  - name: validation_report_path
+    type: string
+    description: Absolute path to the validation report written for the current pass
+    defaultValue: ""
+  - name: final_specification_path
+    type: string
+    description: Absolute path to the staged final specification
+    defaultValue: ""
+  - name: change_summary_path
+    type: string
+    description: Absolute path to the written change summary
+    defaultValue: ""
+  - name: failure_report_path
+    type: string
+    description: Absolute path to the written failure report
+    defaultValue: ""
 initialActivity: intake-and-analyze

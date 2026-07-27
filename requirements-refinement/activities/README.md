@@ -2,7 +2,7 @@
 
 > Part of the [Requirements Refinement Workflow](../README.md)
 
-The five sequential activities of the pipeline. The numeric prefix is the execution order and supplies
+The sequential activities of the pipeline. The numeric prefix is the execution order and supplies
 each activity's artifact prefix.
 
 | # | Activity | Produces | Transitions to |

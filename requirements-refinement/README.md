@@ -62,6 +62,6 @@ specification is promoted automatically.
 ## Structure
 
 - [`workflow.yaml`](workflow.yaml) — metadata, variables, and rules.
-- [`activities/`](activities/) — the five pipeline activities.
+- [`activities/`](activities/) — the pipeline activities.
 - [`techniques/`](techniques/) — the procedures the activities apply.
 - [`resources/`](resources/) — the specification protocol and the report/rubric/summary templates.

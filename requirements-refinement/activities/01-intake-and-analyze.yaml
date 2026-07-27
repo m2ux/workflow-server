@@ -17,7 +17,7 @@ steps:
     options:
       - id: confirmed
         label: Yes, proceed
-        description: Sources, classified type, and mode are correct; continue to analysis.
+        description: Sources, classified type, and mode are correct.
         effect:
           setVariable:
             sources_confirmed: true
@@ -37,7 +37,7 @@ steps:
     options:
       - id: confirmed
         label: Yes, apply this analysis
-        description: Analysis is accurate; proceed to update the specification.
+        description: Analysis is accurate and reflects the source faithfully.
         effect:
           setVariable:
             analysis_confirmed: true
