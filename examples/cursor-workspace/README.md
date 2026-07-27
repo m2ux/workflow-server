@@ -50,8 +50,9 @@ Template permissions allow the four required MCP servers via wildcards
 (`mcp__workflow-server__*`, `mcp__concept-rag__*`, `mcp__gitnexus__*`,
 `mcp__atlassian__*`). PreToolUse hooks cover Bash safety (compound allow,
 dynamic-shell block, `gh api` write prompt, curl/webfetch allow, inline-eval →
-`sbx`). PostToolUse keeps a lightweight GitNexus index-staleness check after
-git mutations (no PreToolUse GitNexus enrich — that path was too slow).
+`sbx`). GitNexus Pre/Post tool hooks are not enabled in the template for now
+(process overhead); the hook script remains under `scripts/claude/hooks/gitnexus/`
+for optional re-enable later.
 
 Then ask the agent to start a workflow (`discover` → `start_session` with `repo` from `AGENTS.md`).
 
