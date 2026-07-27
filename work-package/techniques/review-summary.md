@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.7.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -31,11 +31,11 @@ The authored surface — the PR's changed-files set. Used to enforce the finding
 
 ### artifact_publish_ref
 
-*(optional)* The git ref for engineering-artifact hyperlinks — commit SHA from `publish-review-artifacts` (preferred) or the current parent branch. When not supplied, resolve from `{reference_path}`: `git -C {reference_path} branch --show-current`. Never hardcode `main`.
+*(optional)* The git ref engineering-artifact hyperlinks resolve against — a publish commit SHA from `publish-review-artifacts`, or a branch name; empty when no publish ref has been produced.
 
-### reference_path
+### repo_root
 
-Path to the parent repo containing `.engineering/` — used to resolve `{ENG_REPO_OWNER}`, `{ENG_REPO_NAME}`, and the fallback publish ref when `{artifact_publish_ref}` is not bound.
+Path to the product repo root (monorepo or standalone); the `.engineering/` artifacts directory sits under it.
 
 ## Outputs
 
@@ -52,15 +52,17 @@ The structured consolidated review summary text, organized per the Review Commen
 
 ### 2. Resolve the Publish Ref
 
-- Bind `{ARTIFACT_PUBLISH_REF}` from `{artifact_publish_ref}` when supplied; otherwise resolve the current parent branch from `{reference_path}`. Use this ref in every `Plan` and `Reports` hyperlink — the same engineering-artifacts base URL documented in the format, with `{ARTIFACT_PUBLISH_REF}` in place of a fixed branch name.
+- Resolve `{$eng_git_dir}`: `{repo_root}/.engineering` when that path is a git checkout (submodule or nested clone); otherwise `{repo_root}`.
+- Resolve `{$eng_publish_ref}`: `{artifact_publish_ref}` when it is non-empty; otherwise `git -C {eng_git_dir} branch --show-current` — never hardcode `main`.
+- Use `{eng_publish_ref}` as the ref in every `Plan` and `Reports` hyperlink, built from the engineering-artifacts base URL defined in [Header Fields](../resources/review-mode.md#header-fields) — that section owns the URL and its slots; this step supplies only the ref.
 
 ### 3. Render the Summary
 
 - Enforce the findings-constraint: every rendered finding names a file within the authored surface `{changed_files}`. Findings on files in `{changed_files}` render as the PR's findings; findings on other files render under a separate "pre-existing" grouping.
 - Populate the template from `{consolidated_findings}`: executive summary, per-category findings (code, test, documentation, validation, branch hygiene), action items, and severity definitions.
 - Reference, don't restate: each finding renders as its item designator, one-line title, `Source`, severity, and disposition only. The designator links to that finding's section in its associated report (the artifact named in the `Reports` header) when one exists, else it renders as plain text; the `Source` column links the pertinent file (with line or line range), test, document, CI run, or commit. Descriptions, evidence, and suggestions stay in the linked report artifacts per the format's reference-don't-restate rule.
-- Render the header fields in order — `PR`, then `Plan` on its own line immediately after `PR` (linking the planning folder's `README.md`, the work package's canonical home, via the engineering-artifacts base URL with `{ARTIFACT_PUBLISH_REF}`), then `Reviewers`, `Reports`, and `Date`. Every `Plan`, `Reports`, and reviewer hyperlink is mandatory — the posting step posts them verbatim.
-- Render the `Reports` field — one hyperlinked entry per report this run produced, each linking the report name to its artifact under the engineering-artifacts base URL with `{ARTIFACT_PUBLISH_REF}`. Include an entry only for a report actually produced this run; omit categories with no report. Each report's concrete artifact filename and content are owned by the technique that produced it — this step iterates over whatever reports were produced, it does not enumerate them.
+- Render the header fields in order — `PR`, then `Plan` on its own line immediately after `PR` (linking the planning folder's `README.md`, the work package's canonical home, via the engineering-artifacts base URL with `{eng_publish_ref}`), then `Reviewers`, `Reports`, and `Date`. Every `Plan`, `Reports`, and reviewer hyperlink is mandatory — the posting step posts them verbatim.
+- Render the `Reports` field — one hyperlinked entry per report this run produced, each linking the report name to its artifact under the engineering-artifacts base URL with `{eng_publish_ref}`. Include an entry only for a report actually produced this run; omit categories with no report. Each report's concrete artifact filename and content are owned by the technique that produced it — this step iterates over whatever reports were produced, it does not enumerate them.
 - Render the Reviewers field: list each contributing review *activity* once and hyperlink it to its section in the activities README, using the base URL from the [Header Fields](../resources/review-mode.md#header-fields) sub-section of the Review Comment Template — never link a reviewer to a technique file or to an activity's raw `.yaml`, and never split one activity into per-technique entries. The activity-to-anchor mapping is supplied by the rendering step at runtime (e.g. Post-Implementation Review → `#10-post-implementation-review`, Validate → `#11-validate`, Strategic Review → `#12-strategic-review`).
 - Render the Prior Feedback Triage section from `{prior_feedback_triage}`: one row per prior comment with its Confirmed / Refuted / Superseded disposition, and carry each Confirmed blocker-class entry into the Action Items as a blocking item.
 - Apply `{rating_cap}` to the Overall Rating per the rating-cap carve-in below.

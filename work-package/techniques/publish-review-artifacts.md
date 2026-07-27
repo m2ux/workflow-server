@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Commit and push review-linked planning artifacts to the parent-repo ref the consolidated review links, emitting the publish ref for hyperlink construction.
+Commit and push review-linked planning artifacts to the engineering-checkout ref the consolidated review links, emitting the publish ref for hyperlink construction.
 
 ## Inputs
 
@@ -13,22 +13,22 @@ Commit and push review-linked planning artifacts to the parent-repo ref the cons
 
 Path to the planning folder whose artifacts the consolidated review links (`README.md`, report artifacts, `review-summary.md`).
 
-### reference_path
+### repo_root
 
-Path to the parent repo containing `.engineering/` — used to resolve the push branch and capture the publish ref.
+Path to the product repo root (monorepo or standalone); the `.engineering/` artifacts directory sits under it.
 
 ## Outputs
 
 ### artifact_publish_ref
 
-The git ref embedded in engineering-artifact hyperlinks — the commit SHA of the push (preferred) or the current parent branch when the SHA cannot be read.
+The git ref engineering-artifact hyperlinks resolve against — the publish commit SHA, or the engineering checkout's current branch name.
 
 
 ## Protocol
 
-1. Resolve the current parent branch: `git -C {reference_path} branch --show-current`.
-2. Apply [version-control::commit-regular-files](../../meta/techniques/version-control/commit-regular-files.md) for ALL changed files under `{planning_folder_path}` (including `README.md`, linked report artifacts, `review-summary.md`, `session.json`, and `.session-token`) with message `docs(work-package): submit-for-review review artifacts` and `branch` = current parent branch.
-3. Capture the new commit SHA: `git -C {reference_path} rev-parse HEAD`. Emit it as `{artifact_publish_ref}`. When the SHA cannot be read, emit the current parent branch name instead.
+1. Resolve `{$eng_git_dir}`: `{repo_root}/.engineering` when that path is a git checkout (submodule or nested clone); otherwise `{repo_root}`. Resolve `{$eng_branch}`: `git -C {eng_git_dir} branch --show-current` — never hardcode `main`.
+2. Apply [version-control::commit-regular-files](../../meta/techniques/version-control/commit-regular-files.md) for ALL changed files under `{planning_folder_path}` (including `README.md`, linked report artifacts, `review-summary.md`, `session.json`, and `.session-token`) with message `docs(work-package): submit-for-review review artifacts` and `branch` = `{eng_branch}`.
+3. Capture the new commit SHA: `git -C {eng_git_dir} rev-parse HEAD`. Emit it as `{artifact_publish_ref}`. When the SHA cannot be read, emit `{eng_branch}` instead.
 
 ## Rules
 

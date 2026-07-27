@@ -2,7 +2,7 @@
 name: review-mode
 description: Guidelines for using the work-package workflow in review mode to conduct structured PR reviews. Covers detection, adapted workflow behavior, and output generation. Organized by review category for per-section delivery to the technique that renders that category.
 metadata:
-  version: 1.12.0
+  version: 1.12.1
   order: 24
   legacy_id: 24
 ---
@@ -36,10 +36,10 @@ The summary header carries `PR`, `Plan`, `Reviewers`, `Reports`, and `Date` fiel
 **Reports list:** The header includes a `Reports` field naming each report the summary links to, as hyperlinks. Each entry links the report by name to its artifact, under the engineering-artifacts base URL:
 
 ```
-https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/{ARTIFACT_PUBLISH_REF}/.engineering/artifacts/planning/{PLANNING_FOLDER}/
+https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/{ARTIFACT_PUBLISH_REF}/artifacts/planning/{PLANNING_FOLDER}/
 ```
 
-`{ARTIFACT_PUBLISH_REF}` is the git ref the linked artifacts are published on — the publish commit SHA (preferred, immutable permalink) or the current parent branch when the SHA is not yet available. Resolve `{ENG_REPO_OWNER}` and `{ENG_REPO_NAME}` from the parent repo remote (`reference_path`); never hardcode `main`. The set of reports and their artifact filenames are supplied by the rendering step — one entry per review category the run produced — not fixed by this template.
+`{ARTIFACT_PUBLISH_REF}` is the git ref the linked artifacts are published on — the publish commit SHA (preferred, immutable permalink) or the artifacts checkout's current branch when the SHA is not yet available. Resolve `{ENG_REPO_OWNER}` and `{ENG_REPO_NAME}` from the artifacts checkout's remote; never hardcode `main`. The path after the ref is relative to the root of the checkout that ref belongs to: `artifacts/planning/…` when `.engineering/` is itself a checkout, and `.engineering/artifacts/planning/…` when the artifacts live directly in the product checkout. The set of reports and their artifact filenames are supplied by the rendering step — one entry per review category the run produced — not fixed by this template.
 
 Section titles (a per-category findings heading) must NOT be hyperlinks — the report links live in the header instead.
 
