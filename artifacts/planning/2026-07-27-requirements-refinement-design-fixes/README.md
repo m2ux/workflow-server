@@ -1,6 +1,6 @@
 # Requirements-Refinement Design Fixes — July 2026
 
-> Update · Created 2026-07-27 · **Status:** Planning
+> Update · Created 2026-07-27 · **Status:** Drafting complete — quality review next
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -16,7 +16,10 @@ The practical consequence is that the workflow behaves less predictably than it 
 
 ## Solution Overview
 
-*Populated by the producing step (a `stakeholder-overview` call).*
+The fix touches sixteen of the workflow's twenty-one files, and it changes only how the instructions are written down — not what the workflow does or the order it does it in. Three kinds of correction account for almost all of it. Where the workflow pauses to ask the person in charge a question, it now states plainly what is on the table and puts the actual choice in the buttons, with a working link to the document being decided on, so nobody is asked to approve something they cannot see. Where the workflow announces that it has produced a file, it now links the real file under the real name the reader will find on disk, instead of a name typed in by hand that no longer matches. And the safety limit that stops the workflow retrying forever now lives in exactly one place — the rule the software actually checks — so the limit that is written down is the limit that is enforced. The full list of goals is in the [design specification](03-design-specification.md); the file-by-file breakdown is in the [scope manifest](06-scope-manifest.md).
+
+Three questions are deliberately left open for a human to settle rather than decided here, because each is a matter of preference rather than correctness: whether a run that ends in failure should require someone to click "acknowledged", where a "needs revision" choice should send the run back to, and whether three unused internal settings should be deleted or given a job. The workflow has been written so that any of those answers can still be applied without redoing this work. Everything else is settled, which means that after this change the workflow enforces the limits it claims to enforce, every choice offered to a user has a defined consequence, every file it announces can be opened from the message that announces it, and its documentation describes the workflow that actually exists.
+
 
 ## 📊 Progress
 
@@ -28,13 +31,13 @@ The practical consequence is that the workflow behaves less predictably than it 
 | 4 | 03 | [Assumptions log](assumptions-log.md) | Open and settled assumptions | 10-15m | ✅ |
 | 5 | 04 | [Pattern analysis](pattern-analysis.md) | Applicable patterns and practices | 20-40m | ⊘ |
 | 6 | 05 | [Impact analysis](impact-analysis.md) | Blast radius and preservations | 20-40m | ✅ |
-| 7 | 06 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |
-| 8 | 06 | [Drafting plan](drafting-plan.md) | Draft order and blocks | 10-20m | ⬚ |
-| 9 | 06 | [Draft attestation](draft-attestation.md) | Batch review attestation | 5-10m | ⬚ |
-| 10 | 06 | [File review note](file-review-note.md) | Removals and draft highlights | 5-10m | ⬚ |
-| 11 | 08 | Quality review | Principle and anti-pattern audits | 30-60m | ⬚ |
-| 12 | 08 | [Principle findings](principle-findings.md) | Principles audit satellite | 10-20m | ⬚ |
-| 13 | 08 | [Anti-pattern findings](anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ⬚ |
+| 7 | 06 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ✅ |
+| 8 | 06 | [Drafting plan](drafting-plan.md) | Draft order and blocks | 10-20m | ✅ |
+| 9 | 06 | [Draft attestation](draft-attestation.md) | Batch review attestation | 5-10m | ✅ |
+| 10 | 06 | [File review note](file-review-note.md) | Removals and draft highlights | 5-10m | ✅ |
+| 11 | 08 | Quality review | Principle and anti-pattern audits | 30-60m | ◐ |
+| 12 | 08 | [Principle findings](principle-findings.md) | Principles audit satellite | 10-20m | ◐ |
+| 13 | 08 | [Anti-pattern findings](anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ◐ |
 | 14 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ⬚ |
 | 15 | 10 | Post-update review | Follow-up after merge path | 15-30m | ⬚ |
 | 16 | 11 | Retrospective | Session close-out | 15-30m | ⬚ |
