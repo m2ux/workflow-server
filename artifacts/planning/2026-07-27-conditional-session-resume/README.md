@@ -45,9 +45,12 @@ The same update also repairs the search itself, so that when it does run it can 
 | 19 | 08 | [Principle findings](principle-findings.md) | Principles audit satellite | 10-20m | ⊘ |
 | 20 | 08 | [Anti-pattern findings](anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ⊘ |
 | 21 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ✅ |
-| 22 | 10 | Post-update review | Follow-up after merge path | 15-30m | ⬚ |
-| 23 | 11 | Retrospective | Session close-out | 15-30m | ⬚ |
-| 24 | 11 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
+| 22 | 10 | Post-update review | Follow-up after merge path | 15-30m | ✅ |
+| 23 | 10 | [Post-update review report](10-post-update-review.md) | Audit findings and remediation | 15-30m | ✅ |
+| 24 | 10 | [Anti-pattern findings](10-anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ✅ |
+| 25 | 10 | [Principle findings](10-principle-findings.md) | Principles audit satellite | 10-20m | ✅ |
+| 26 | 11 | Retrospective | Session close-out | 15-30m | ⬚ |
+| 27 | 11 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
 
 **Status:** ⬚ pending · ◐ in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
