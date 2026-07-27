@@ -1,7 +1,7 @@
 id: initialize-session
-version: 6.3.0
+version: 6.4.0
 name: Initialize Session
-description: Derive the client planning slug, then dispatch the client workflow as a child of the meta session.
+description: Bind the client planning slug for the run's mode, then dispatch the client workflow as a child of the meta session.
 required: true
 steps:
   - kind: technique
@@ -11,6 +11,14 @@ steps:
       outputs:
         planning_slug: client_planning_slug
     when: is_resuming == false
+  - kind: action
+    id: adopt-saved-planning-slug
+    actions:
+      - action: set
+        target: client_planning_slug
+        value: "{saved_planning_slug}"
+        description: Carry the matched session's slug into the dispatch slug so the server targets the existing planning folder.
+    when: is_resuming == true
   - kind: technique
     id: start-or-resume-session
     technique:

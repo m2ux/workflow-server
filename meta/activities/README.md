@@ -2,7 +2,7 @@
 
 > Part of the [Meta Workflow](../README.md)
 
-Five sequential activities that run inside the meta session: identify the target client workflow and any saved session, create or resume the client session, resolve target_path, drive the client workflow's activity loop inline and mediate its yielded checkpoints, and close out the session.
+Five sequential activities that run inside the meta session: identify the target client workflow and, on stated resume intent, any saved session, create or resume the client session, resolve target_path, drive the client workflow's activity loop inline and mediate its yielded checkpoints, and close out the session.
 
 Borrowable mid-phase orchestration pattern activities live under [`patterns/`](./patterns/README.md) and are **not** part of this lifecycle list.
 
@@ -20,7 +20,7 @@ Definition: [`00-discover-session.yaml`](./00-discover-session.yaml)
 
 ### 01. Initialize Session
 
-Gives the work package a stable, work-item-derived identity, then creates or resumes the client session as a child of the meta session. The slug is derived from the work item before dispatch so the server reuses it on every resume instead of a date-stamped fallback. The server owns folder creation and returns the canonical `planning_folder_path`; on resume it restores prior variables automatically, so there is no agent-side restore. Leads to [Resolve Target](#02-resolve-target).
+Gives the work package a stable, work-item-derived identity, then creates or resumes the client session as a child of the meta session. A fresh run derives the slug from the work item before dispatch so the server reuses it on every resume instead of a date-stamped fallback; a resuming run carries the matched session's slug through instead, so dispatch targets the existing planning folder. The server owns folder creation and returns the canonical `planning_folder_path`; on resume it restores prior variables automatically, so there is no agent-side restore. Leads to [Resolve Target](#02-resolve-target).
 
 Definition: [`01-initialize-session.yaml`](./01-initialize-session.yaml)
 

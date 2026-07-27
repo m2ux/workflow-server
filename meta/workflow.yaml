@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 5.9.0
+version: 5.10.0
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -58,7 +58,7 @@ variables:
     defaultValue: false
   - name: saved_planning_slug
     type: string
-    description: Planning slug of the matched saved client session (set by discover-session when has_saved_state) — passed to start_session to resume the existing session.json
+    description: Planning slug of the matched saved client session.
   - name: is_resuming
     type: boolean
     description: Whether the user chose to resume the matched saved session
