@@ -27,6 +27,11 @@ splits the candidate command on top-level &&, ||, ;, |, newline (respecting
 quotes, parens, and escapes), and emits {permissionDecision: "allow"} only if
 every segment matches an allow rule OR begins with a side-effect-free command.
 
+Shell control-flow keywords are stripped from the front of a segment before it is
+rule-checked, so `while true; do touch x; sleep 1; done` is judged on `true`,
+`touch x` and `sleep 1` rather than on `while`/`do`/`done`. Keywords are never
+safe-listed: `do rm -rf /` reduces to `rm -rf /` and is rejected.
+
 Heredocs with a quoted delimiter (`<<'EOF'` / `<<"EOF"`) are stripped before
 analysis: bash performs no expansion on such bodies, so they are inert stdin
 data. Unquoted heredocs (`<<EOF`, whose body IS expanded), herestrings, $(...),
@@ -67,7 +72,7 @@ DEFAULT_SAFE_COMMANDS = frozenset({
     "grep", "rg", "fgrep", "egrep",
     "jq", "yq",
     "which", "type", "command", "basename", "dirname",
-    "test", "[", "true", "false", ":", "sleep",
+    "test", "[", "[[", "true", "false", ":", "sleep",
     "cd", "pushd", "popd", "dirs",
 })
 
@@ -494,6 +499,64 @@ def unwrap_runner(seg: str) -> str | None:
     return " ".join(shlex.quote(x) for x in toks[i:])
 
 
+# Shell control-flow keywords. split_compound() cuts on `;`, `|`, `&&` and
+# newline — exactly where bash's grammar puts these keywords — so segments
+# routinely arrive as `while true`, `do touch x`, `then break`, `done`. Read
+# naively the keyword IS the binary, so the real command is never inspected and
+# every loop/conditional falls through to a prompt.
+#
+# Keywords are STRIPPED as prefixes rather than added to the safe list:
+# safe-listing `do` would auto-approve `do rm -rf /`, whereas stripping reduces
+# that segment to `rm -rf /`, which DENY_BINARIES rejects. Stripping can only
+# expose the real command to the existing checks; it can never grant more.
+_KW_PREFIX_RE = re.compile(r"^(?:!|if|then|elif|else|while|until|do)(?=\s|$)\s*")
+
+# Keywords that carry no command of their own — allowed only as a whole segment.
+_KW_BARE_RE = re.compile(r"^(fi|done|esac|else|do|then|break|continue)\b(.*)$", re.DOTALL)
+
+# `fi`/`done`/`esac` may carry loop redirections (`done < input`, `done >out
+# 2>&1`); `break`/`continue` may carry a loop level (`break 2`). Nothing else can
+# follow a bare keyword in valid bash, and neither a redirection target nor a
+# digit can execute anything.
+_REDIR_TAIL_RE = re.compile(r"^(?:\s*\d*(?:>>|&>|>&|<&|>|<)\s*[^\s]+)+$")
+
+# `for NAME [in words...]` and `for ((init; cond; step))` headers run no command
+# of their own: the word list is expanded, never executed, and code-executing
+# expansions ($(...), backticks, process substitution) already forced a bail in
+# has_unquoted_risky_token() before splitting.
+_FOR_HEADER_RE = re.compile(
+    r"^for\s+(?:\(\(.*\)\)|[A-Za-z_]\w*(?:\s+in(?:\s.*)?)?)$", re.DOTALL)
+
+
+def bare_keyword(seg: str) -> str | None:
+    """The keyword, if `seg` is a standalone control-flow keyword; else None."""
+    m = _KW_BARE_RE.match(seg.strip())
+    if not m:
+        return None
+    kw, tail = m.group(1), m.group(2).strip()
+    if not tail:
+        return kw
+    if kw in ("fi", "done", "esac") and _REDIR_TAIL_RE.match(tail):
+        return kw
+    if kw in ("break", "continue") and tail.isdigit():
+        return kw
+    return None  # `do`/`then`/`else` with a tail: strip the prefix instead
+
+
+def strip_keyword_prefix(seg: str) -> str | None:
+    """Drop leading control-flow keywords so the REAL command is what gets
+    rule-checked. Returns None when the segment starts with no keyword, "" when
+    it is nothing but keywords, else the remainder for re-checking."""
+    rest = seg.strip()
+    stripped = False
+    while True:
+        m = _KW_PREFIX_RE.match(rest)
+        if not m:
+            return rest if stripped else None
+        rest = rest[m.end():].strip()
+        stripped = True
+
+
 def matches_rule(seg: str, rule: str) -> bool:
     if rule == seg:
         return True
@@ -534,6 +597,17 @@ def is_segment_allowed(seg: str, rules: list[str], safe: set[str], base_cwd: str
         for r in rules:
             if matches_rule(git_norm, r):
                 return True, f"rule(git-normalized):{r!r}"
+    kw = bare_keyword(seg)
+    if kw is not None:
+        return True, f"shell-keyword:{kw}"
+    if _FOR_HEADER_RE.match(seg.strip()):
+        return True, "shell-keyword:for-header"
+    kw_rest = strip_keyword_prefix(seg)
+    if kw_rest is not None:
+        if not kw_rest:
+            return True, "shell-keywords-only"
+        ok, why = is_segment_allowed(kw_rest, rules, safe, base_cwd)
+        return ok, f"keyword-stripped -> {why}"
     binary = first_binary(seg)
     if binary in DENY_BINARIES:
         return False, f"deny-binary:{binary}"
