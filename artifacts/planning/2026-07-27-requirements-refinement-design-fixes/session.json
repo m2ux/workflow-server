@@ -5,24 +5,26 @@
   "workflowVersion": "5.10.0",
   "agentId": "orchestrator",
   "sessionIndex": "PLWTDY",
-  "currentActivity": "dispatch-client-workflow",
+  "currentActivity": "end-workflow",
   "currentTechnique": "workflow-engine::commit-and-persist",
-  "condition": "isDefault: dispatch-client-workflow",
-  "seq": 14,
-  "ts": 1785164467,
+  "condition": "condition: current_activity == null → end-workflow",
+  "seq": 19,
+  "ts": 1785173876,
   "startedAt": "2026-07-27T14:34:31.353Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
-    "resolve-target"
+    "resolve-target",
+    "dispatch-client-workflow"
   ],
   "skippedActivities": [],
   "variables": {
     "abort_completion": false,
     "client_planning_slug": "2026-07-27-requirements-refinement-design-fixes",
     "client_session_index": "QKSIQR",
-    "client_workflow_completed": false,
+    "client_workflow_completed": true,
     "component_selection_needed": false,
+    "current_activity": null,
     "has_saved_state": false,
     "is_monorepo": false,
     "is_resuming": false,
@@ -34,7 +36,17 @@
     "target_workflow_id": "workflow-design",
     "workflow_match_ambiguous": false
   },
-  "checkpointResponses": {},
+  "checkpointResponses": {
+    "end-workflow-completion-confirmed": {
+      "effects": {
+        "variablesSet": {
+          "abort_completion": false
+        }
+      },
+      "optionId": "confirm",
+      "respondedAt": "2026-07-27T17:37:40.000Z"
+    }
+  },
   "history": [
     {
       "timestamp": "2026-07-27T14:34:31.353Z",
@@ -329,6 +341,101 @@
       },
       "timestamp": "2026-07-27T15:01:07.395Z",
       "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-07-27T17:31:22.735Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_workflow_completed",
+        "source": "variables_changed",
+        "value": true
+      },
+      "timestamp": "2026-07-27T17:31:22.735Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "current_activity",
+        "source": "variables_changed",
+        "value": null
+      },
+      "timestamp": "2026-07-27T17:31:22.735Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-07-27T17:31:22.735Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "verify-outcomes",
+        "techniqueId": "workflow-engine::verify-outcomes"
+      },
+      "timestamp": "2026-07-27T17:31:43.857Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "generate-summary",
+        "techniqueId": "workflow-engine::generate-summary"
+      },
+      "timestamp": "2026-07-27T17:31:43.857Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "bundled": true,
+        "resourceId": "planning-readme"
+      },
+      "timestamp": "2026-07-27T17:31:43.857Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "bundled": true,
+        "resourceId": "session-summary-template#session-summary-template"
+      },
+      "timestamp": "2026-07-27T17:31:43.857Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "timestamp": "2026-07-27T17:34:21.561Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "data": {
+        "optionId": "confirm"
+      },
+      "timestamp": "2026-07-27T17:37:40.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "name": "abort_completion",
+        "source": "setVariable",
+        "value": false
+      },
+      "timestamp": "2026-07-27T17:37:40.000Z",
+      "type": "variable_set"
     }
   ],
   "triggeredWorkflows": [
@@ -2741,14 +2848,17 @@
       "bundle:workflow-engine::yield-checkpoint": "3d36e6b03c483346",
       "resource:planning-readme": "338bea88db94a0ef",
       "resource:resume-intent-lexicon": "7fa2d3cb78ca9570",
+      "resource:session-summary-template#session-summary-template": "fad4a43be2cdf7aa",
       "technique:version-control::detect-repo-type": "1c702594c2a21f34",
       "technique:version-control::initialize-folder": "f55191fc2132e4f7",
       "technique:workflow-engine::commit-and-persist": "edd0e50876d95d79",
       "technique:workflow-engine::create-session": "510ee362d073890b",
       "technique:workflow-engine::detect-resume-intent": "50020cf4c1d4f6e0",
       "technique:workflow-engine::dispatch-activity": "bf744b616ba08b8f",
+      "technique:workflow-engine::generate-summary": "ade4181f73ee9e20",
       "technique:workflow-engine::list-workflows": "53bfa6226bca72b3",
-      "technique:workflow-engine::match-target-workflow": "a62ffe25d0990a0a"
+      "technique:workflow-engine::match-target-workflow": "a62ffe25d0990a0a",
+      "technique:workflow-engine::verify-outcomes": "8d64901886ca1d22"
     }
   },
   "repo": "m2ux/workflow-server"
