@@ -507,8 +507,6 @@ DOCKER_RUN+=(-v "${HOST_STATE_DIR}:${CONTAINER_STATE_DIR}")
 DOCKER_RUN+=("${DOCKER_ARGS[@]+"${DOCKER_ARGS[@]}"}")
 DOCKER_RUN+=("$FULL_IMAGE")
 
-echo "Install  : ${INSTALL_DIR}"
-[[ -n "$LOADED_ENV_FILE" ]] && echo "Env file : ${LOADED_ENV_FILE}"
 echo "Starting ${FULL_IMAGE}"
 echo "  MCP URL    : http://127.0.0.1:${HOST_PORT}/mcp"
 
