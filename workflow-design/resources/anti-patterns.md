@@ -1675,13 +1675,13 @@ A second how-to (README section, resource, or technique Protocol) that duplicate
 
 ### AP-127. bag-value-as-literal
 
-"Set `{target_path}` to `~/projects/work/workflows/{$planning_slug}/`" / "push the branch to `workflows`" / "the audit covers all eight design dimensions"
+"push the branch to `workflows`" / "the audit covers all eight design dimensions"
 
 A concrete value is written out where a declared variable or technique input already holds it, so the declaration and the literal drift apart and the content pins one deployment, session, or mode.
 
-**Detect:** Cross-reference literals in workflow, activity, technique, and resource content against the workflow's `variables[]` and the enclosing technique's `## Inputs` / `## Outputs`. Flag a verbatim value — path root, branch or remote name, identifier, count, enum member, host — where a declared slot carries that same meaning and `{name}` belongs. Two signals must coincide: the slot's declared `description` names the thing the literal denotes, and the literal is the operative value rather than the slot's shape illustration. Bare literals with no declared slot are in scope only when the value varies by deployment, session, or mode; a fixed constant is not this smell.
+**Detect:** Cross-reference literals in workflow, activity, technique, and resource content against the workflow's `variables[]` and the enclosing technique's `## Inputs` / `## Outputs`. Flag a verbatim value — path root, branch or remote name, identifier, count, enum member, host — where a declared slot carries that same meaning and `{name}` belongs. Two signals must coincide: the slot's declared `description` names the thing the literal denotes, and the literal is the operative value rather than the slot's shape illustration.
 
-**Do not flag:** The declaration itself (`defaultValue`, an enum or shape hint inside the slot's own `description`); Template and example fences that show a resolved shape by design; planning-folder artifacts recording one session's resolved values; exemplar lines in a catalogue entry. Host-specific absolute paths and checkout roots are `worktree-root-placeholders`; state tracked in prose with no variable at all is `variable-for-approval`; a literal duplicating state a declared variable already derives is `no-derived-state-shadow`.
+**Do not flag:** The declaration itself (`defaultValue`, an enum or shape hint inside the slot's own `description`); Template and example fences that show a resolved shape by design; planning-folder artifacts recording one session's resolved values; exemplar lines in a catalogue entry. A literal with no declared slot carrying its meaning is out of scope here — a path literal repeated across sites is `factor-repeated-paths`, host-specific absolute paths and checkout roots are `worktree-root-placeholders`, state tracked in prose with no variable at all is `variable-for-approval`, and a literal duplicating state a declared variable already derives is `no-derived-state-shadow`.
 
-**Fix:** Replace the literal with `{name}` for the declared slot. When no slot exists and the value varies, declare the variable with its `type` (and `defaultValue` only where one value is genuinely universal), then reference it. Leave exactly one home for the value — the declaration.
+**Fix:** Replace the literal with `{name}` for the declared slot. Leave exactly one home for the value — the declaration.
 

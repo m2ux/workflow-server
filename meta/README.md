@@ -121,7 +121,7 @@ Meta itself produces no domain artefacts. Its outputs are session-state side-eff
 
 ```
 workflows/meta/
-├── workflow.yaml                            # Meta workflow definition (19 variables, 2 rules)
+├── workflow.yaml                            # Meta workflow definition
 ├── README.md                                # This file
 ├── activities/
 │   ├── 00-discover-session.yaml             # Match user request, scan saved sessions on resume intent
