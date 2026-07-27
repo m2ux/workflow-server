@@ -74,6 +74,14 @@ variables:
     type: number
     description: Count of text-only rules from audit-rule-enforcement.
     defaultValue: 0
+  - name: principle_finding_count
+    type: number
+    description: Count of design-principle findings from audit-principles.
+    defaultValue: 0
+  - name: anti_pattern_finding_count
+    type: number
+    description: Count of anti-pattern violations from audit-anti-patterns.
+    defaultValue: 0
   - name: removal_count
     type: number
     description: Count of content removals inventoried by impact-analysis.

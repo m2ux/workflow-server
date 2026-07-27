@@ -63,7 +63,7 @@ Lean mechanical summary of resolved trace events (tool counts, durations, errors
 - Interview one item at a time per [workflow-retrospective](../../resources/workflow-retrospective.md#interview-format).
 - Write `{retrospective_document}` using that resource's section template; include only categories with content; link `{session_trace_document}` when written. Apply `skip-if-trivial` from the group base when mechanical friction is non-trivial even if user-message signals are empty.
   - **Implementation path** (`is_review_mode` unset or false): write as `## Workflow Retrospective` in `COMPLETE.md` (update in place).
-  - **Review-mode path** (`is_review_mode == true`): when `create-complete-doc` was gated out and `COMPLETE.md` is absent, find-or-update a minimal `## Workflow Retrospective` section in the planning-folder session `README.md` — do not invent a stub `COMPLETE.md` or a second close-out filename solely to host the section.
+  - **Review-mode path** (`is_review_mode == true`): when `COMPLETE.md` is absent, find-or-update a minimal `## Workflow Retrospective` section in the planning-folder session `README.md` — do not invent a stub `COMPLETE.md` or a second close-out filename solely to host the section.
 
 ### 4. Update Status
 

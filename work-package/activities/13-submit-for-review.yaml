@@ -18,6 +18,14 @@ steps:
       operator: ==
       value: true
   - kind: technique
+    id: publish-review-artifacts
+    technique: publish-review-artifacts
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: ==
+      value: true
+  - kind: technique
     id: generate-review-summary
     technique: review-summary
     condition:
@@ -79,37 +87,6 @@ steps:
       inputs:
         bare_filename: review-summary.md
         artifact_content: review_summary
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: ==
-          value: true
-        - type: simple
-          variable: review_posted
-          operator: ==
-          value: true
-  - kind: technique
-    id: publish-review-artifacts
-    technique: publish-review-artifacts
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: ==
-          value: true
-        - type: simple
-          variable: review_posted
-          operator: ==
-          value: true
-  - kind: technique
-    id: refresh-review-summary-links
-    technique:
-      name: review-summary
-      inputs:
-        artifact_publish_ref: artifact_publish_ref
     condition:
       type: and
       conditions:

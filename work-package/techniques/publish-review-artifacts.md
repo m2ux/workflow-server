@@ -29,9 +29,3 @@ The git ref engineering-artifact hyperlinks resolve against — the publish comm
 1. Resolve `{$eng_git_dir}`: `{repo_root}/.engineering` when that path is a git checkout (submodule or nested clone); otherwise `{repo_root}`. Resolve `{$eng_branch}`: `git -C {eng_git_dir} branch --show-current` — never hardcode `main`.
 2. Apply [manage-git::artifact-commits](./manage-git/artifact-commits.md) for ALL changed files under `{planning_folder_path}` (including `README.md`, linked report artifacts, `review-summary.md`, `session.json`, and `.session-token`) with `branch` = `{eng_branch}`, `activity_name` = `submit-for-review`, and `issue_key` = `{issue_number}`. That op stages, commits and pushes inside the engineering checkout, so the ref step 3 emits addresses the commit that carries these artifacts.
 3. Capture the new commit SHA: `git -C {eng_git_dir} rev-parse HEAD`. Emit it as `{artifact_publish_ref}`. When the SHA cannot be read, emit `{eng_branch}` instead.
-
-## Rules
-
-### publish-before-post
-
-Runs only after `review-summary-approval` selects a post option (`review_posted == true`) and before `update-pr::post-review-comment`. The in-activity publish satisfies link resolution at post time; the post-activity [commit-and-persist](../../meta/techniques/workflow-engine/commit-and-persist.md) hook covers README Progress, session files, and any remaining dirty state without delaying this step.
