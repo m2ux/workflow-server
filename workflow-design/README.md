@@ -17,7 +17,7 @@ This workflow manages the complete lifecycle of workflow definition authoring th
 | 06 | [**Scope and Draft**](./activities/README.md#06-scope-and-draft) | Create, Update | Ensure dedicated `{target_path}` worktree, define file manifest, draft and validate each file, then verify planning artifacts against the design canonical-home map |
 | 08 | [**Quality Review**](./activities/README.md#08-quality-review) | All | Expressiveness, conformance, rule-hygiene, and rule-enforcement audits, then a bounded fix-revalidate loop (max 3) with a critical-blocker gate (full compliance audit in review mode; forEach over `target_workflow_ids`) |
 | 09 | [**Validate and Commit**](./activities/README.md#09-validate-and-commit) | All | Schema validation, Gate 2 `approve-to-commit`, then commit from `{target_path}` on `{workflow_branch}` + open a PR against `workflows` (create/update) or save the compliance report (review) |
-| 10 | [**Post-Update Review**](./activities/README.md#10-post-update-review) | Update only | Post-commit compliance audit with automatic remedia when findings remain (never asks disposition) |
+| 10 | [**Post-Update Review**](./activities/README.md#10-post-update-review) | Update only | Post-commit compliance audit with automatic remedia when findings remain (never asks disposition), publishing the remediation to the open pull request |
 | 11 | [**Retrospective**](./activities/README.md#11-retrospective) | All | Record a completion summary (create/update) and conduct a session retrospective |
 
 **Detailed documentation:**
