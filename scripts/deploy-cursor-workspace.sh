@@ -90,7 +90,6 @@ Required MCP servers written into mcp.json (workflows depend on these):
 Claude baseline (workspace-local only):
   copies scripts/claude/ → <workspace>/scripts/claude/
   writes .claude/settings.json from settings.template.json
-  (hook paths + \$HOME permissions expanded; not committed)
 
 Path substitution (all MCP servers — command and args):
   \${HOME}  \$HOME  __USER_HOME__  /home/<name>/…  → \$HOME/…
@@ -297,15 +296,11 @@ else
   if [[ -d "${TEMPLATE_DIR}/.claude/rules" ]]; then
     cp -a "${TEMPLATE_DIR}/.claude/rules/." "${DEST_DIR}/.claude/rules/"
   fi
-  if [[ -f "${TEMPLATE_DIR}/.claude/settings.template.json" ]]; then
-    cp -a "${TEMPLATE_DIR}/.claude/settings.template.json" \
-      "${DEST_DIR}/.claude/settings.template.json"
-  fi
-  if [[ -f "${TEMPLATE_DIR}/.claude/settings.example.json" ]]; then
-    cp -a "${TEMPLATE_DIR}/.claude/settings.example.json" \
-      "${DEST_DIR}/.claude/settings.example.json"
-  fi
-  if [[ -d "${TEMPLATE_DIR}/.cursor/skills" ]]; then
+  rm -f \
+    "${DEST_DIR}/.claude/settings.template.json" \
+    "${DEST_DIR}/.claude/settings.example.json"
+  if [[ -d "${TEMPLATE_DIR}/.cursor/skills" ]] \
+    && compgen -G "${TEMPLATE_DIR}/.cursor/skills/*" >/dev/null; then
     mkdir -p "${DEST_DIR}/.cursor/skills"
     cp -a "${TEMPLATE_DIR}/.cursor/skills/." "${DEST_DIR}/.cursor/skills/"
   fi
@@ -319,7 +314,9 @@ if [[ -n "$CLAUDE_SCRIPTS_DIR" && -d "$CLAUDE_SCRIPTS_DIR" ]]; then
     mkdir -p "${DEST_DIR}/scripts"
     rm -rf "${DEST_DIR}/scripts/claude"
     cp -a "${CLAUDE_SCRIPTS_DIR}" "${DEST_DIR}/scripts/claude"
-    # Ensure hook + sbx executables stay runnable after copy.
+    rm -f "${DEST_DIR}/scripts/claude/.gitignore"
+    find "${DEST_DIR}/scripts/claude" -type d -name '__pycache__' -prune -exec rm -rf {} + 2>/dev/null || true
+    find "${DEST_DIR}/scripts/claude" -type f -name '*.pyc' -delete 2>/dev/null || true
     find "${DEST_DIR}/scripts/claude" -type f \( -name '*.py' -o -name 'sbx' -o -name '*.cjs' \) \
       -exec chmod a+x {} + 2>/dev/null || true
   fi

@@ -9,8 +9,8 @@ kickoff workspace as `scripts/claude/` and writes workspace-local
 
 ```text
 scripts/claude/
-├── README.md                       # this file (deployed with the tree)
-├── .gitignore                      # ignore __pycache__ / *.pyc under this tree
+├── README.md
+├── .gitignore
 ├── bin/
 │   └── sbx                         # bubblewrap profile-C launcher (no net; project+/tmp RW)
 └── hooks/
@@ -29,7 +29,5 @@ scripts/claude/
 
 ## Note
 
-Project-level Claude settings for Cursor kickoffs are generated at deploy time
-from `examples/cursor-workspace/.claude/settings.template.json` into the
-workspace dir only (`~/.local/share/cursor/workspaces/<name>/.claude/settings.json`).
-Do not commit machine-local hook paths.
+Deploy writes `.claude/settings.json` from
+`examples/cursor-workspace/.claude/settings.template.json`.
