@@ -5,24 +5,28 @@
   "workflowVersion": "5.10.0",
   "agentId": "orchestrator",
   "sessionIndex": "EXHNTZ",
-  "currentActivity": "initialize-session",
+  "currentActivity": "resolve-target",
   "currentTechnique": "version-control::initialize-folder",
-  "condition": "isDefault: initialize-session",
-  "seq": 7,
-  "ts": 1785160188,
+  "condition": "isDefault: resolve-target",
+  "seq": 9,
+  "ts": 1785160442,
   "startedAt": "2026-07-27T13:41:50.978Z",
   "completedActivities": [
-    "discover-session"
+    "discover-session",
+    "initialize-session"
   ],
   "skippedActivities": [],
   "variables": {
     "abort_completion": false,
+    "client_planning_slug": "2026-07-27-review-mode-friction-continuation",
+    "client_session_index": "QDDWIT",
     "client_workflow_completed": false,
     "component_selection_needed": false,
     "has_saved_state": false,
     "is_monorepo": false,
     "is_resuming": false,
     "match_ambiguous": false,
+    "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation",
     "resume_intent_requested": false,
     "target_path": ".",
     "target_workflow_id": "workflow-design",
@@ -215,6 +219,56 @@
       },
       "timestamp": "2026-07-27T13:49:48.065Z",
       "type": "workflow_triggered"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-07-27T13:53:24.598Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_planning_slug",
+        "source": "variables_changed",
+        "value": "2026-07-27-review-mode-friction-continuation"
+      },
+      "timestamp": "2026-07-27T13:53:24.598Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_session_index",
+        "source": "variables_changed",
+        "value": "QDDWIT"
+      },
+      "timestamp": "2026-07-27T13:53:24.598Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "planning_folder_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-review-mode-friction-continuation"
+      },
+      "timestamp": "2026-07-27T13:53:24.598Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-07-27T13:53:24.598Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "detect-monorepo",
+        "techniqueId": "version-control::detect-repo-type"
+      },
+      "timestamp": "2026-07-27T13:54:02.318Z",
+      "type": "technique_bundled"
     }
   ],
   "triggeredWorkflows": [
@@ -376,6 +430,7 @@
       "bundle:workflow-engine::yield-checkpoint": "3d36e6b03c483346",
       "resource:planning-readme": "88a1ef40710a6d07",
       "resource:resume-intent-lexicon": "bb27cf17c3fdc8ab",
+      "technique:version-control::detect-repo-type": "1c702594c2a21f34",
       "technique:version-control::initialize-folder": "f55191fc2132e4f7",
       "technique:workflow-engine::create-session": "510ee362d073890b",
       "technique:workflow-engine::detect-resume-intent": "50020cf4c1d4f6e0",
