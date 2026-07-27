@@ -74,14 +74,16 @@ Navigation roots (see `examples/cursor-workspace/` and
 `scripts/deploy-cursor-workspace.sh`):
 
 ```text
-kickoff/                                              # rules + MCP (🏠 workspace)
+kickoff/                                              # rules + MCP + Claude baseline (🏠 workspace)
 $HOST_PROJECTS_ROOT/<repo>                            # 📂 project
 $HOST_PROJECTS_ROOT/<repo>/.engineering/artifacts/planning  # 📋 planning
 $HOST_PROJECTS_ROOT/<repo>/.worktrees                 # 🌳 work trees
 ```
 
-`deploy-cursor-workspace.sh` expands these to absolute `$HOME/…` paths in
-the generated `.code-workspace` file.
+`deploy-cursor-workspace.sh` expands folder roots to absolute `$HOME/…` paths in
+the generated `.code-workspace` file. Under the kickoff dir it also installs
+`scripts/claude/` and writes workspace-local `.claude/settings.json` (see
+[ide-setup.md](ide-setup.md), [examples/cursor-workspace/README.md](../examples/cursor-workspace/README.md)).
 
 ## Success criteria
 

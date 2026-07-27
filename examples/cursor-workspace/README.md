@@ -46,6 +46,13 @@ kickoff workspace (not into the product git checkout):
 workspace dir and `$HOME/projects` permission roots. Do not commit that file
 from a live workspace. Re-run deploy with `--force` to refresh hooks/settings.
 
+Template permissions allow the four required MCP servers via wildcards
+(`mcp__workflow-server__*`, `mcp__concept-rag__*`, `mcp__gitnexus__*`,
+`mcp__atlassian__*`). PreToolUse hooks cover Bash safety (compound allow,
+dynamic-shell block, `gh api` write prompt, curl/webfetch allow, inline-eval →
+`sbx`). PostToolUse keeps a lightweight GitNexus index-staleness check after
+git mutations (no PreToolUse GitNexus enrich — that path was too slow).
+
 Then ask the agent to start a workflow (`discover` → `start_session` with `repo` from `AGENTS.md`).
 
 ## Roots
