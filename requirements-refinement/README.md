@@ -1,6 +1,6 @@
 # Requirements Refinement Workflow
 
-> v1.1.0 — Refine a canonical requirements specification from a source document (a meeting transcript or an unstructured document): classify, analyze, apply, validate, correct within a bounded loop, and stage the result for human promotion. Operates on local files; performs no version-control operations.
+> v1.2.0 — Refine a canonical requirements specification from a source document (a meeting transcript or an unstructured document): classify, analyze, apply, validate, correct within a bounded loop, and stage the result for human promotion. Operates on local files; performs no version-control operations.
 
 ---
 
@@ -49,19 +49,19 @@ never edits the canonical document in place.
 
 ```
 intake-and-analyze → update-specification → validate-specification
-                                ▲                      │
-            (correctable & under the cap)  └───────────┤
-                                                        ├─ validation passed → finalize-specification
-                                                        └─ critical / cap reached → report-failure
+                              ▲                        │
+                              │                        ├─ validation passed → finalize-specification
+                              │                        ├─ critical / cap reached → report-failure
+                              └────────────────────────┘  (correctable & under the cap)
 ```
 
-The correction loop is bounded by `max_correction_iterations` (default 3). When validation passes the
+The correction loop is bounded at three correction passes. When validation passes the
 workflow finalizes; when critical issues appear or the budget is exhausted it reports failure. No
 specification is promoted automatically.
 
 ## Structure
 
-- [`workflow.yaml`](workflow.yaml) — metadata, variables, rules, and artifact location.
-- [`activities/`](activities/) — the five pipeline activities.
+- [`workflow.yaml`](workflow.yaml) — metadata, variables, and rules.
+- [`activities/`](activities/) — the pipeline activities.
 - [`techniques/`](techniques/) — the procedures the activities apply.
 - [`resources/`](resources/) — the specification protocol and the report/rubric/summary templates.

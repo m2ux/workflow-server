@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -29,6 +29,10 @@ Record of the captured sources, classified source type, detected augment/create 
 
 `intake.md`
 
+### intake_record_path
+
+Absolute path to the written intake record.
+
 ## Protocol
 
 ### 1. Capture Source Paths
@@ -55,7 +59,7 @@ Record of the captured sources, classified source type, detected augment/create 
 
 ### 6. Record Intake
 
-- Write `{intake_record}` to `{planning_folder_path}`, capturing `{source_path}`, `{target_doc_path}`, `{source_type}`, `{target_doc_exists}`, and `{spec_basename}`.
+- Write `{intake_record}` to `{planning_folder_path}`, capturing `{source_path}`, `{target_doc_path}`, `{source_type}`, `{target_doc_exists}`, and `{spec_basename}`; capture its written location as `{intake_record_path}`.
 
 ## Rules
 

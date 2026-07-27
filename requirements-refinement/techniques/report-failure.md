@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -23,11 +23,15 @@ Failure report carrying the critical issues, correction history, and manual-reso
 
 `failure-report.md`
 
+### failure_report_path
+
+Absolute path to the written failure report.
+
 ## Protocol
 
 ### 1. Summarize Failure
 
-- Record the verdict, the number of correction passes attempted (`{correction_iteration}` of `{max_correction_iterations}`), and every critical or irreconcilable issue drawn from `{validation_report}`.
+- Record the verdict, the number of correction passes attempted (`{correction_iteration}`), and every critical or irreconcilable issue drawn from `{validation_report}`.
 
 ### 2. Provide Resolution Guidance
 
@@ -35,11 +39,7 @@ Failure report carrying the critical issues, correction history, and manual-reso
 
 ### 3. Write Failure Report
 
-- Write `{failure_report}` to `{planning_folder_path}`.
-
-### 4. Present Failure Report
-
-- Present `{failure_report}` and the manual intervention it requires to the user.
+- Write `{failure_report}` to `{planning_folder_path}`; capture its written location as `{failure_report_path}`.
 
 ## Rules
 
