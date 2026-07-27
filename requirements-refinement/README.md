@@ -49,10 +49,10 @@ never edits the canonical document in place.
 
 ```
 intake-and-analyze → update-specification → validate-specification
-                                ▲                      │
-            (correctable & under the cap)  └───────────┤
-                                                        ├─ validation passed → finalize-specification
-                                                        └─ critical / cap reached → report-failure
+                              ▲                        │
+                              │                        ├─ validation passed → finalize-specification
+                              │                        ├─ critical / cap reached → report-failure
+                              └────────────────────────┘  (correctable & under the cap)
 ```
 
 The correction loop is bounded at three correction passes. When validation passes the

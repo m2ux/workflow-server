@@ -58,9 +58,3 @@ Count of correction passes performed: `0` on the initial pass, and one greater t
 ### 4. Write Working Specification
 
 - Write the complete `{working_specification}` to `{planning_folder_path}`; capture its written location as `{working_specification_path}` and emit `{correction_iteration}` for the pass just written.
-
-## Rules
-
-### one-advance-per-correction-pass
-
-The pass count advances once per correction pass; an initial pass leaves it at its default.

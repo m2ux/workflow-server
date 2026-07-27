@@ -55,7 +55,7 @@ Absolute path to the written analysis report.
 
 ### 4. Completeness Sweep
 
-- Re-walk the source document section by section as a completeness critic: for every normative statement (a `SHALL`/`MUST`/`SHOULD`/`MAY` obligation, constraint, or rule), confirm it maps to an identified requirement.
+- Re-walk the source document section by section as a completeness critic: for every normative statement per [Source Coverage](../resources/validation-rubric.md#source-coverage), confirm it maps to an identified requirement.
 - Add any normative statement that has no mapped requirement as a new requirement.
 - Record each source section against the requirement(s) it maps to in `{requirements_analysis.source_coverage_matrix}`, marking any section with no obligation as out of scope.
 
@@ -68,7 +68,3 @@ Absolute path to the written analysis report.
 ### analysis-records-intended-changes-only
 
 The analysis records intended changes; it does not modify the specification.
-
-### every-normative-statement-is-mapped
-
-Every normative statement in the source document maps to at least one requirement in the source-coverage matrix.
