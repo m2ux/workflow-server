@@ -38,9 +38,9 @@ The result is that the review summary the assistant posts carries links that res
 | 10 | 06 | [Drafting plan](06-drafting-plan.md) | Draft order and blocks | 10-20m | ✅ |
 | 11 | 06 | [Draft attestation](06-draft-attestation.md) | Batch review attestation | 5-10m | ✅ |
 | 12 | 06 | [File review note](06-file-review-note.md) | Removals and draft highlights | 5-10m | ✅ |
-| 13 | 08 | Quality review | Principle and anti-pattern audits | 30-60m | ⬚ |
-| 14 | 08 | [Principle findings](principle-findings.md) | Principles audit satellite | 10-20m | ⬚ |
-| 15 | 08 | [Anti-pattern findings](anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ⬚ |
+| 13 | 08 | Quality review | Expressiveness, conformance, hygiene, enforcement audits | 30-60m | ✅ |
+| 14 | 08 | [Expressiveness](08-expressiveness-findings.md) · [Conformance](08-conformance-findings.md) | Audit satellites, update mode | 10-20m | ✅ |
+| 15 | 08 | [Verified findings](08-verified-findings.md) | Adversarial re-derivation of High findings | 10-20m | ✅ |
 | 16 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ⬚ |
 | 17 | 10 | Post-update review | Follow-up after merge path | 15-30m | ⬚ |
 | 18 | 11 | Retrospective | Session close-out | 15-30m | ⬚ |

@@ -17,7 +17,7 @@ Four files modified, none created or removed — three markdown prose edits plus
 | 1 | `workflow.yaml` | workflow | modify | `artifact_publish_ref` description (`:341`) stops naming the parent branch as the fallback; `name`, `type`, `defaultValue` untouched. |
 | 2 | `techniques/publish-review-artifacts.md` | technique | modify | Orphan `reference_path` input becomes `repo_root`; both git reads re-target the engineering checkout via a `{$eng_git_dir}` local; output description de-proceduralised. |
 | 3 | `techniques/review-summary.md` | technique | modify | Four `{ARTIFACT_PUBLISH_REF}` reads bind a snake_case local; orphan `reference_path` input becomes `repo_root`; the two UPPERCASE URL slots drop in favour of a citation; fallback recipe relocates to Protocol § 2. |
-| 4 | `resources/review-mode.md` | resource | modify | The `(reference_path)` caller-symbol parenthetical (`:42`) drops; the URL template at `:39` is deliberately untouched. |
+| 4 | `resources/review-mode.md` | resource | modify | The `(reference_path)` caller-symbol parenthetical (`:42`) drops. The URL template at `:39` was initially left untouched; the `08` quality-review fix cycle then corrected its path segment to be checkout-root-relative and added the two-arm path rule, per [conformance findings F-1](08-conformance-findings.md). |
 
 **Out of scope this pass:**
 
