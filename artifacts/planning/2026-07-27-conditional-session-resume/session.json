@@ -5,11 +5,12 @@
   "workflowVersion": "5.8.0",
   "agentId": "orchestrator",
   "sessionIndex": "CXXUX2",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-07-27-conditional-session-resume",
   "currentActivity": "dispatch-client-workflow",
   "currentTechnique": "workflow-engine::commit-and-persist",
   "condition": "isDefault: dispatch-client-workflow",
-  "seq": 21,
-  "ts": 1785133907,
+  "seq": 23,
+  "ts": 1785147506,
   "startedAt": "2026-07-27T05:20:48.057Z",
   "completedActivities": [
     "discover-session",
@@ -269,6 +270,15 @@
       },
       "timestamp": "2026-07-27T06:31:47.499Z",
       "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "resourceId": "planning-readme"
+      },
+      "timestamp": "2026-07-27T10:18:26.747Z",
+      "type": "resource_fetched"
     }
   ],
   "triggeredWorkflows": [
@@ -303,7 +313,7 @@
         ],
         "condition": "isDefault: sole transition from scope-and-draft",
         "currentActivity": "quality-review",
-        "currentTechnique": "prepare-workflow-branch",
+        "currentTechnique": "apply-audit-fixes",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:2a775f356d424475": "2a775f356d424475",
@@ -314,6 +324,7 @@
             "bundle:workflow-engine::finalize-activity": "c9a2a48b817efaae",
             "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
             "bundle:workflow-engine::yield-checkpoint": "3d36e6b03c483346",
+            "resource:anti-patterns": "f0ff5e1dbaad5f8e",
             "resource:anti-patterns#ap-114-pass-orchestration-in-technique": "bcf4062b54d67f4d",
             "resource:convention-conformance": "c742d22e0f996738",
             "resource:design-assumption-reconciliation": "ebb1d4dc39701fb2",
@@ -323,6 +334,7 @@
             "resource:design-specification#template": "4aa6f66dddb9d97a",
             "resource:draft-attestation#template": "f6ea38f76638418c",
             "resource:elicitation-guide": "b206b8a7d771fef9",
+            "resource:findings-satellite": "951ad94efc35c88a",
             "resource:follow-ups": "b1f0a812968cc938",
             "resource:format-conventions": "2f87df89160d81a2",
             "resource:impact-analysis": "03fcb472b0d3af6b",
@@ -334,6 +346,12 @@
             "resource:workflow-design/anti-patterns": "a61799c37881be42",
             "resource:workflow-design/convention-conformance": "b5746afc5ab7c7b8",
             "resource:workflow-design/readme-seed": "d63eaed7f495d026",
+            "technique:apply-audit-fixes": "9220c393b1263fca",
+            "technique:audit-conformance": "c01f7f417ad1d9a1",
+            "technique:audit-expressiveness": "dd04e70d8d8eee8c",
+            "technique:audit-rule-enforcement": "cd6493c3fa55fcdb",
+            "technique:audit-rule-hygiene": "0b65b32101f16ed2",
+            "technique:audit-schema-validation": "d7e824034bb03f53",
             "technique:context-loading": "1e4841fa4b3ad579",
             "technique:derive-design-dimensions": "fd1ea705472b3cdf",
             "technique:derive-workflows-target-path": "0f87433432ca4695",
@@ -346,11 +364,13 @@
             "technique:scope-definition": "ad6ca18d97b921e0",
             "technique:synthesize-update-specification": "d2120a8a8e4c2f0c",
             "technique:verify-artifact-conforms": "5b4afb314c23b35d",
-            "technique:work-package::manage-artifacts::write-artifact": "0387df75e0b3e874",
+            "technique:verify-high-findings": "94e5fe77436a30f9",
+            "technique:work-package::manage-artifacts::write-artifact": "5f8466cb5d686374",
             "technique:work-package::review-assumptions::collect": "c6991732d8ffb5af",
             "technique:work-package::review-assumptions::record": "3863422e28015b10",
             "technique:work-package::stakeholder-overview": "29f600d94b5ea59a",
-            "technique:workflow-engine::create-readme": "4ea3139c7afa835e"
+            "technique:workflow-engine::create-readme": "4ea3139c7afa835e",
+            "technique:yaml-authoring": "8460ba4e50e18f2c"
           }
         },
         "history": [
@@ -1210,17 +1230,143 @@
             "activity": "quality-review",
             "timestamp": "2026-07-27T08:18:20.881Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-expressiveness",
+              "techniqueId": "audit-expressiveness"
+            },
+            "timestamp": "2026-07-27T10:05:47.511Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "schema-construct-inventory"
+            },
+            "timestamp": "2026-07-27T10:05:52.127Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "findings-satellite"
+            },
+            "timestamp": "2026-07-27T10:05:52.533Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "anti-patterns"
+            },
+            "timestamp": "2026-07-27T10:07:58.999Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-expressiveness-findings",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T10:09:40.037Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-conformance",
+              "techniqueId": "audit-conformance"
+            },
+            "timestamp": "2026-07-27T10:10:12.671Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "convention-conformance"
+            },
+            "timestamp": "2026-07-27T10:10:16.524Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-rule-hygiene",
+              "techniqueId": "audit-rule-hygiene"
+            },
+            "timestamp": "2026-07-27T10:11:55.058Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-rule-enforcement",
+              "techniqueId": "audit-rule-enforcement"
+            },
+            "timestamp": "2026-07-27T10:12:39.791Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-high-findings",
+              "techniqueId": "verify-high-findings"
+            },
+            "timestamp": "2026-07-27T10:12:49.695Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "yaml-authoring",
+              "techniqueId": "yaml-authoring"
+            },
+            "timestamp": "2026-07-27T10:13:39.272Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "audit-schema-validation",
+              "techniqueId": "audit-schema-validation"
+            },
+            "timestamp": "2026-07-27T10:13:39.700Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "apply-audit-fixes",
+              "techniqueId": "apply-audit-fixes"
+            },
+            "timestamp": "2026-07-27T10:14:45.068Z",
+            "type": "technique_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 34,
+        "seq": 49,
         "sessionIndex": "LIUL4T",
         "skippedActivities": [],
         "startedAt": "2026-07-27T05:27:46.102Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785140300,
+        "ts": 1785147285,
         "variables": {
           "addressed_count": 0,
           "anti_pattern_findings_path": "",

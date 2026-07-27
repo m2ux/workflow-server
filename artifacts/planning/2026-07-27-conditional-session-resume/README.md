@@ -1,6 +1,6 @@
 # Conditional Session Resume — July 2026
 
-> Update · Created 2026-07-27 · **Status:** Quality review
+> Update · Created 2026-07-27 · **Status:** Validation
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -37,13 +37,17 @@ The same update also repairs the search itself, so that when it does run it can 
 | 11 | 06 | [Draft attestation](10-draft-attestation.md) | Batch review attestation | 5-10m | ✅ |
 | 12 | 06 | [File review note](09-file-review-note.md) | Removals and draft highlights | 5-10m | ✅ |
 | 13 | 06 | [Follow-ups](11-follow-ups.md) | In-task work owed before close-out | 5m | ✅ |
-| 14 | 08 | Quality review | Principle and anti-pattern audits | 30-60m | ◐ |
-| 15 | 08 | [Principle findings](principle-findings.md) | Principles audit satellite | 10-20m | ⬚ |
-| 16 | 08 | [Anti-pattern findings](anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ⬚ |
-| 17 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ⬚ |
-| 18 | 10 | Post-update review | Follow-up after merge path | 15-30m | ⬚ |
-| 19 | 11 | Retrospective | Session close-out | 15-30m | ⬚ |
-| 20 | 11 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
+| 14 | 08 | Quality review | Principle and anti-pattern audits | 30-60m | ✅ |
+| 15 | 08 | [Expressiveness findings](08-expressiveness-findings.md) | Expressiveness audit satellite | 10-20m | ✅ |
+| 16 | 08 | [Conformance findings](08-conformance-findings.md) | Convention conformance satellite | 10-20m | ✅ |
+| 17 | 08 | [Rule hygiene findings](08-rule-hygiene-findings.md) | Rule hygiene audit satellite | 5-10m | ✅ |
+| 18 | 08 | [Verified findings](08-verified-findings.md) | Verified findings and resolutions | 10-20m | ✅ |
+| 19 | 08 | [Principle findings](principle-findings.md) | Principles audit satellite | 10-20m | ⊘ |
+| 20 | 08 | [Anti-pattern findings](anti-pattern-findings.md) | Anti-pattern audit satellite | 10-20m | ⊘ |
+| 21 | 09 | Validate and commit | Schema check, commit, PR | 20-40m | ⬚ |
+| 22 | 10 | Post-update review | Follow-up after merge path | 15-30m | ⬚ |
+| 23 | 11 | Retrospective | Session close-out | 15-30m | ⬚ |
+| 24 | 11 | [Close-out (COMPLETE.md)](COMPLETE.md) | Deliverables and limitations | 10-20m | ⬚ |
 
 **Status:** ⬚ pending · ◐ in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
