@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 5.8.0
+version: 5.9.0
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -47,6 +47,10 @@ variables:
   - name: workflow_match_ambiguous
     type: boolean
     description: Whether the user request matched multiple workflows — gates the workflow-selection checkpoint in discover-session
+    defaultValue: false
+  - name: resume_intent_requested
+    type: boolean
+    description: Whether the user's request states intent to resume or continue prior work
     defaultValue: false
   - name: has_saved_state
     type: boolean

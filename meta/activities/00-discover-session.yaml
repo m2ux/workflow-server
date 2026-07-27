@@ -1,10 +1,8 @@
 id: discover-session
-version: 7.2.1
+version: 7.3.0
 name: Discover Session
-description: Identify the target workflow and search for an existing client session to resume.
+description: Identify the target workflow and, on stated resume intent, search for an existing client session to resume.
 required: true
-rules:
-  - Match identifying context against saved sessions even when the user said 'start' — surface saved state via the resume-session checkpoint
 steps:
   - kind: technique
     id: list-available-workflows
@@ -34,17 +32,26 @@ steps:
           setVariable:
             workflow_match_ambiguous: false
   - kind: technique
+    id: detect-resume-intent
+    technique: workflow-engine::detect-resume-intent
+  - kind: technique
     id: extract-context
     technique: workflow-engine::extract-identifying-context
+    when: resume_intent_requested == true
   - kind: technique
     id: scan-planning-folders
     technique: workflow-engine::scan-saved-sessions
+    when: resume_intent_requested == true
   - kind: technique
     id: match-session
     technique: workflow-engine::match-saved-session
+    when: resume_intent_requested == true
   - kind: action
     id: record-match
-    when: has_saved_state == true
+    condition:
+      type: simple
+      variable: matched_session
+      operator: exists
     actions:
       - action: set
         target: has_saved_state
@@ -76,7 +83,10 @@ steps:
             has_saved_state: false
   - kind: action
     id: record-no-match
-    when: has_saved_state == false
+    condition:
+      type: simple
+      variable: matched_session
+      operator: notExists
     actions:
       - action: set
         target: has_saved_state
@@ -86,4 +96,4 @@ transitions:
     isDefault: true
 outcome:
   - Target workflow identified (and confirmed by user if ambiguous)
-  - Existing saved session matched and resume decision captured, or no session found
+  - Saved session matched and resume decision captured on stated resume intent; no search performed otherwise

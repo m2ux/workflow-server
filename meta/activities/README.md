@@ -12,7 +12,7 @@ The authoritative definition of each activity — its steps, technique bindings,
 
 ### 00. Discover Session
 
-Identifies the target workflow and looks for an existing client session to resume. It matches the user request against the workflow catalog, extracts the request's identifying context (ticket, branch, PR, work-package name), and scans planning folders so saved progress can be surfaced — even when the user said "start". It can surface a workflow-selection checkpoint (when the match is ambiguous) and a resume-session checkpoint (when saved state is found). Leads to [Initialize Session](#01-initialize-session).
+Identifies the target workflow and, when the request states resume intent, looks for an existing client session to resume. It matches the user request against the workflow catalog and detects resume intent against the [resume-intent lexicon](../resources/resume-intent-lexicon.md); on stated intent it then extracts the request's identifying context (ticket, branch, PR, work-package name) and scans planning folders so saved progress can be surfaced. A request stating a fresh start skips that search. It can surface a workflow-selection checkpoint (when the match is ambiguous) and a resume-session checkpoint (when saved state is found). Leads to [Initialize Session](#01-initialize-session).
 
 Definition: [`00-discover-session.yaml`](./00-discover-session.yaml)
 
