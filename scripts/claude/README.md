@@ -9,21 +9,22 @@ kickoff workspace as `scripts/claude/` and writes workspace-local
 
 ```text
 scripts/claude/
-├── README.md
+├── README.md                       # this file (deployed with the tree)
+├── .gitignore                      # ignore __pycache__ / *.pyc under this tree
 ├── bin/
-│   └── sbx                         # bubblewrap profile-C launcher
+│   └── sbx                         # bubblewrap profile-C launcher (no net; project+/tmp RW)
 └── hooks/
-    ├── allow-project-scripts.py    # shared by compound-bash (location allow)
-    ├── block-dynamic-shell.py
-    ├── block-gh-api-writes.py
-    ├── compound-bash-allow.py
-    ├── curl-allow.json
-    ├── curl-read-allow.py
-    ├── redirect-inline-eval.py
-    ├── webfetch-allow.json
-    ├── webfetch-allow.py
+    ├── allow-project-scripts.py    # optional PreToolUse: bare project-script location allow
+    ├── block-dynamic-shell.py      # PreToolUse: deny $() / backticks / $VAR dynamic shell
+    ├── block-gh-api-writes.py      # PreToolUse: ask on mutating gh api (keep GET/HEAD free)
+    ├── compound-bash-allow.py      # PreToolUse: auto-allow safe compounds + normalized singles
+    ├── curl-allow.json             # host/path allowlist config for curl-read-allow.py
+    ├── curl-read-allow.py          # PreToolUse: auto-allow read-only curl to trusted hosts
+    ├── redirect-inline-eval.py     # PreToolUse: deny bare python -c / node -e; redirect to sbx
+    ├── webfetch-allow.json         # URL-prefix allowlist config for webfetch-allow.py
+    ├── webfetch-allow.py           # PreToolUse: auto-allow WebFetch under configured prefixes
     └── lib/
-        └── project_scripts.py
+        └── project_scripts.py      # shared by compound-bash (location allow)
 ```
 
 ## Path resolution
