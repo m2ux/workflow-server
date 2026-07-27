@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -31,6 +31,10 @@ Structured analysis of the requirement changes derived from the source document,
 
 Mapping of each source section to the requirement identifier(s) it is covered by, with out-of-scope sections marked.
 
+### requirements_analysis_path
+
+Absolute path to the written analysis report.
+
 ## Protocol
 
 ### 1. Read Sources
@@ -57,7 +61,7 @@ Mapping of each source section to the requirement identifier(s) it is covered by
 
 ### 5. Compile Analysis Report
 
-- Write `{requirements_analysis}` to `{planning_folder_path}` using the [requirements-analysis-report](../resources/requirements-analysis-report.md) structure: source reference, new / updated / deprecated requirements, the [source coverage matrix](../resources/requirements-analysis-report.md#source-coverage-matrix), document updates required, quality issues, and implementation notes.
+- Write `{requirements_analysis}` to `{planning_folder_path}` using the [requirements-analysis-report](../resources/requirements-analysis-report.md) structure: source reference, new / updated / deprecated requirements, the [source coverage matrix](../resources/requirements-analysis-report.md#source-coverage-matrix), document updates required, quality issues, and implementation notes; capture its written location as `{requirements_analysis_path}`.
 
 ## Rules
 

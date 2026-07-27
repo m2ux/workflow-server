@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -27,21 +27,25 @@ Categorized validation findings with an overall verdict and the source-coverage 
 
 `validation-report-{correction_iteration}.md`
 
+### validation_report_path
+
+Absolute path to the written validation report for this pass.
+
 ### source_coverage_complete
 
-`true` when every normative source statement maps to at least one requirement.
+Coverage verdict for the source document — `true` when no normative statement remains unmapped, `false` while any gap stands.
 
 ### has_critical_issues
 
-`true` when any issue is critical or irreconcilable.
+Presence of a blocking defect — one that no correction pass resolves and that requires manual intervention.
 
 ### has_correctable_issues
 
-`true` when correctable issues remain — including source-coverage gaps — and no critical issue is present.
+Presence of a defect another correction pass resolves, with no blocking defect alongside it.
 
 ### validation_passed
 
-`true` when no critical or correctable issues remain and `{source_coverage_complete}` is `true`.
+Overall verdict — `true` when the specification is conformant and covers the source in full, so it is ready to finalize.
 
 ## Protocol
 
@@ -59,7 +63,7 @@ Categorized validation findings with an overall verdict and the source-coverage 
 
 ### 4. Compile Verdict
 
-- Write `{validation_report}` to `{planning_folder_path}`, recording the overall verdict (passed, correctable, or critical), the categorized issues, the source-coverage result, and the correction-pass number.
+- Write `{validation_report}` to `{planning_folder_path}`, recording the overall verdict (passed, correctable, or critical), the categorized issues, the source-coverage result, and the correction-pass number; capture its written location as `{validation_report_path}`.
 
 ### 5. Derive Routing Verdict
 
