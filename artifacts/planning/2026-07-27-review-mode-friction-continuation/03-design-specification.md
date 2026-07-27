@@ -78,4 +78,4 @@ The workflow's artifact set is otherwise unchanged; no artifact is added, rename
 
 ## Confirmation ask
 
-Approving this specification accepts the five goals above as the whole of this session's change surface — two technique files and one resource file — and accepts that closing G-2 re-targets the affected git reads at the engineering checkout rather than merely renaming a symbol.
+Approving this specification accepts the five goals above as the whole of this session's change surface — **four files**: two technique files, one resource file, and `workflow.yaml`, whose `artifact_publish_ref` description restates the very fallback semantics G-2 changes and so cannot be left standing — and accepts that closing G-2 re-targets the affected git reads at the engineering checkout rather than merely renaming a symbol. The per-file breakdown is the [scope manifest](06-scope-manifest.md#file-manifest)'s to state.
