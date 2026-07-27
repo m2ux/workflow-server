@@ -348,6 +348,15 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "codebase-comprehension-comprehension-sufficient": {
+            "effects": {
+              "variablesSet": {
+                "needs_comprehension": false
+              }
+            },
+            "optionId": "sufficient",
+            "respondedAt": "2026-07-27T14:58:49.000Z"
+          },
           "design-philosophy-classification-and-path-confirmed": {
             "effects": {
               "variablesSet": {
@@ -371,11 +380,12 @@
           }
         },
         "completedActivities": [
-          "start-work-package"
+          "start-work-package",
+          "design-philosophy"
         ],
         "condition": "",
-        "currentActivity": "design-philosophy",
-        "currentTechnique": "scatter-gather",
+        "currentActivity": "codebase-comprehension",
+        "currentTechnique": "analyse-challenge::run-loop",
         "deliveredContent": {
           "orchestrator": {
             "bundle:rules:4dbe797b70f91087": "4dbe797b70f91087",
@@ -388,12 +398,18 @@
             "resource:assumptions-review#assumptions-log-template": "46e5fe2b1e23b649",
             "resource:assumptions-review#classification-vocabulary": "cc2a17d7d6bd7999",
             "resource:assumptions-review#probe-vocabulary": "060f2f2101acdbe5",
+            "resource:codebase-comprehension": "ee92c1dba0007f98",
+            "resource:codebase-comprehension#artifact-template": "03c8e19bdd52176b",
             "resource:deferred-items": "a61e9ac992c6d7e5",
             "resource:design-framework#design-framework-trizics-approach": "e52fbafb36d66d96",
             "resource:design-framework#design-philosophy-artifact-template": "2409a62611c3be51",
+            "resource:follow-ups": "c6964a4a7ba41f66",
             "resource:meta/planning-readme": "0e07d24fc02769ce",
             "resource:work-package/readme-seed": "0eb6e9701dbc8ca0",
-            "technique:analyse-challenge::run-loop": "bf6123dd28296afa",
+            "technique:analyse-challenge::run-loop": "f157571f6e0c2285",
+            "technique:codebase-comprehension::deep-dive": "eb25438b18cc1274",
+            "technique:codebase-comprehension::revise-questions": "2dcc44eba9471a95",
+            "technique:codebase-comprehension::survey": "7a0976e3bf9ce9e3",
             "technique:design-philosophy::classify": "ecaa156eb4055095",
             "technique:design-philosophy::define": "33d3aa6436a3c27d",
             "technique:design-philosophy::determine-path": "ea46f5c3be77059c",
@@ -403,6 +419,7 @@
             "technique:github-cli-protocol::view-issue": "ac713f256120c30d",
             "technique:gitnexus-operations::analyze": "785942305935b306",
             "technique:issue-reference-detection": "dc65c77ed7c981ac",
+            "technique:manage-artifacts::write-artifact": "ec4b8ec047b2cc73",
             "technique:manage-git::create-worktree": "54c4987dd74ff86a",
             "technique:manage-git::detect-merge-strategy": "8a7464d1587adeb1",
             "technique:manage-git::update-repo-submodules": "dc752438d31ae441",
@@ -1150,22 +1167,322 @@
             },
             "timestamp": "2026-07-27T14:22:03.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_statement",
+              "source": "variables_changed",
+              "value": "A resource section is addressed by one flat GitHub-style slug, and two independent slug implementations disagree: the runtime resolver collapses whitespace runs and has no duplicate-heading dedupe, while the CI guard follows GitHub semantics — so a link can pass every automated check and still resolve to null at agent runtime (2 live cases). Separately, because the only namespace is the filename, a leaf heading cannot be addressed through its parent, so files repeating a heading expose only the first copy. Cost lands as either a hard get_resource failure or silent over-delivery, both invisible to CI."
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_type",
+              "source": "variables_changed",
+              "value": "inventive-improvement"
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_complexity",
+              "source": "variables_changed",
+              "value": "complex"
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "classification_rationale",
+              "source": "variables_changed",
+              "value": "Composite issue classified by centre of gravity: 5 of 7 acceptance criteria concern new path-scoped addressing, guard coverage and tests, consistent with issue_type feature. Complex on five grounds — delegated delimiter decision, multiple viable AC-1 approaches, GitHub slug semantics vs byte-identical delivery hashes tension, gitnexus CRITICAL blast radius (18/17 symbols, 10 processes, 4 modules) reaching the delivery-ledger hashing path, and a cross-repo change from a red test baseline."
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_elicitation",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_research",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "skip_optional_activities",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "path_rationale",
+              "source": "variables_changed",
+              "value": "Full workflow, user-confirmed. Elicitation settles decisions only the user can make (delimiter, AC-1 slugger strategy, slug-semantics vs delivery-hash reconciliation, red-baseline scope, two-repo sequencing). Research pins exact github-slugger and CommonMark closing-fence semantics. Comprehension mandatory and load-bearing here."
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "value": "02-assumptions-log.md"
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "design_philosophy_doc",
+              "source": "variables_changed",
+              "value": "02-design-philosophy.md"
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": [
+                "DP-5",
+                "DP-6",
+                "DP-7",
+                "DP-10"
+              ]
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "timestamp": "2026-07-27T14:32:06.397Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "build-comprehension",
+              "techniqueId": "codebase-comprehension::survey"
+            },
+            "timestamp": "2026-07-27T14:32:28.669Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-comprehension-artifact",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T14:32:28.669Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "initial-deep-dive",
+              "techniqueId": "codebase-comprehension::deep-dive"
+            },
+            "timestamp": "2026-07-27T14:32:28.669Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "update-artifact-initial",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-27T14:32:28.669Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "revise-initial-questions",
+              "techniqueId": "codebase-comprehension::revise-questions"
+            },
+            "timestamp": "2026-07-27T14:32:28.669Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "codebase-comprehension#artifact-template"
+            },
+            "timestamp": "2026-07-27T14:32:28.669Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-27T14:32:28.669Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-27T14:32:28.669Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "codebase-comprehension"
+            },
+            "timestamp": "2026-07-27T14:32:28.669Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "techniqueId": "scatter-gather"
+            },
+            "timestamp": "2026-07-27T14:33:03.793Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "analyse-challenge-pass",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-27T14:48:21.553Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "checkpoint": "comprehension-sufficient",
+            "timestamp": "2026-07-27T14:50:55.792Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "checkpoint": "comprehension-sufficient",
+            "data": {
+              "optionId": "sufficient"
+            },
+            "timestamp": "2026-07-27T14:58:49.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-07-27T14:58:49.000Z",
+            "type": "variable_set"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 19,
+        "seq": 26,
         "sessionIndex": "ZVIT4L",
         "skippedActivities": [],
         "startedAt": "2026-07-27T13:45:51.860Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785162150,
+        "ts": 1785164358,
         "variables": {
           "artifact_name": "",
           "assumption_batch_accepted": false,
           "assumption_deferred": false,
           "assumption_resolved_inline": false,
+          "assumptions_log": "02-assumptions-log.md",
           "audit_confirmed": false,
           "awaiting_review": false,
           "block_line_range": "",
@@ -1178,6 +1495,7 @@
           "build_dependent_artifact_commands": "",
           "build_dependent_artifacts_pending": false,
           "change_block_index": "",
+          "classification_rationale": "Composite issue classified by centre of gravity: 5 of 7 acceptance criteria concern new path-scoped addressing, guard coverage and tests, consistent with issue_type feature. Complex on five grounds — delegated delimiter decision, multiple viable AC-1 approaches, GitHub slug semantics vs byte-identical delivery hashes tension, gitnexus CRITICAL blast radius (18/17 symbols, 10 processes, 4 modules) reaching the delivery-ledger hashing path, and a cross-repo change from a red test baseline.",
           "component_name": "workflow-server",
           "comprehension_artifact": "",
           "context_scope": "repo-only",
@@ -1185,6 +1503,7 @@
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-issue-141/README.md",
           "current_block_index": 0,
           "current_branch": "",
+          "design_philosophy_doc": "02-design-philosophy.md",
           "elicitation_complete": false,
           "existing_pr_number": "",
           "github_issue_found": false,
@@ -1193,7 +1512,7 @@
           "has_debt_markers": false,
           "has_deferred_assumptions": false,
           "has_flagged_blocks": false,
-          "has_open_assumptions": false,
+          "has_open_assumptions": true,
           "has_open_questions": false,
           "has_reconcilable_research": false,
           "has_resolvable_assumptions": false,
@@ -1213,7 +1532,7 @@
           "mark_progress_na": false,
           "needs_cleanup": false,
           "needs_code_fixes": false,
-          "needs_comprehension": true,
+          "needs_comprehension": false,
           "needs_elicitation": true,
           "needs_further_discussion": false,
           "needs_github_issue_creation": false,
@@ -1225,12 +1544,21 @@
           "needs_strategic_fixes": false,
           "needs_test_improvements": false,
           "on_feature_branch": true,
+          "open_assumptions": [
+            "DP-5",
+            "DP-6",
+            "DP-7",
+            "DP-10"
+          ],
+          "path_rationale": "Full workflow, user-confirmed. Elicitation settles decisions only the user can make (delimiter, AC-1 slugger strategy, slug-semantics vs delivery-hash reconciliation, red-baseline scope, two-repo sequencing). Research pins exact github-slugger and CommonMark closing-fence semantics. Comprehension mandatory and load-bearing here.",
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-issue-141",
           "post_jira_comment": false,
           "pr_exists": false,
           "pr_skipped": true,
           "pr_url": "",
           "problem_complexity": "complex",
+          "problem_statement": "A resource section is addressed by one flat GitHub-style slug, and two independent slug implementations disagree: the runtime resolver collapses whitespace runs and has no duplicate-heading dedupe, while the CI guard follows GitHub semantics — so a link can pass every automated check and still resolve to null at agent runtime (2 live cases). Separately, because the only namespace is the filename, a leaf heading cannot be addressed through its parent, so files repeating a heading expose only the first copy. Cost lands as either a hard get_resource failure or silent over-delivery, both invisible to CI.",
+          "problem_type": "inventive-improvement",
           "project_type": "other",
           "provenance_log_path": "",
           "push_remote": "origin",
