@@ -4,6 +4,8 @@
 
 Planning record for [issue #321](https://github.com/m2ux/workflow-server/issues/321): cutting `workflow-design` to a minimal, token-efficient, maximally effective shape.
 
+> **To build, go to [`2026-07-28-workflow-authoring-build`](../2026-07-28-workflow-authoring-build/).** This folder is the analysis and provenance — the reasoning, the rejected alternatives and the adversarial passes. The build folder is the distilled, self-contained specification a fresh session authors from.
+
 ## Why this exists
 
 A full `workflow-design` update pass and a bare two-agent sweep — "apply the anti-pattern catalogue and the design principles to this diff" — were run against **the same branch, in the same session, hours apart**. The bare sweep found more real defects for roughly a third of the cost.
