@@ -273,4 +273,89 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     expect(validation.warnings.filter(w => w.includes('setVariable'))).toEqual([]);
     expect(readSession('2026-07-07-type-template').variables.mode_label).toBe('{unset_marker}');
   });
+
+  // #324 A1: the user's request reaches downstream agents as bag state, so a
+  // technique that matches or classifies it binds a variable instead of relying
+  // on the orchestrator to inline the request into a spawn prompt.
+  describe('user_request seeding (#324 A1)', () => {
+    it('start_session seeds user_request alongside the declared defaults', async () => {
+      const slug = '2026-07-28-request-seeded';
+      await call('start_session', {
+        workflow_id: 'seed-fixture', agent_id: 'orchestrator',
+        planning_folder: planningFolder(slug), user_request: 'review PR 49',
+      });
+      expect(readSession(slug).variables).toEqual({ ...SEEDED_FIXTURE_BAG, user_request: 'review PR 49' });
+    });
+
+    it('omitting user_request leaves it absent, so exists gates stay meaningful', async () => {
+      const slug = '2026-07-28-request-absent';
+      await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
+      expect('user_request' in readSession(slug).variables).toBe(false);
+    });
+
+    it('a resume rebinds user_request to the request that reopened the session', async () => {
+      const slug = '2026-07-28-request-rebound';
+      const args = { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) };
+      await call('start_session', { ...args, user_request: 'start the work package' });
+      await call('start_session', { ...args, user_request: 'carry on where we left off' });
+      expect(readSession(slug).variables.user_request).toBe('carry on where we left off');
+    });
+
+    it('dispatch_child hands user_request down to the child bag', async () => {
+      const started = await call('start_session', { agent_id: 'orchestrator', user_request: 'plan issue 141' });
+      const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+      const slug = '2026-07-28-request-inherited';
+      await call('dispatch_child', { session_index: sessionIndex, workflow_id: 'child-fixture', planning_slug: slug });
+      const stored = readSession(slug);
+      expect(stored.variables.user_request).toBe('plan issue 141');
+      expect(stored.triggeredWorkflows[0].state.variables).toEqual({
+        child_ready: false, child_label: 'seeded', user_request: 'plan issue 141',
+      });
+    });
+  });
+
+  // #324 B1: per-activity token accounting. The worker cannot self-measure, so
+  // the orchestrator relays what the harness reported for the activity it exits.
+  describe('next_activity usage accounting (#324 B1)', () => {
+    const usage = { input_tokens: 1200, output_tokens: 340, cache_read_input_tokens: 8000 };
+
+    it('records usage against the exited activity and surfaces it on the usage view', async () => {
+      const slug = '2026-07-28-usage-recorded';
+      const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
+      const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+      await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
+      await call('next_activity', { session_index: sessionIndex, activity_id: 'followup-activity', usage });
+
+      const events = readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage');
+      expect(events).toHaveLength(1);
+      expect(events[0].activity).toBe('checkpoint-activity');
+      expect(events[0].data).toEqual({ usage });
+
+      const view = await call('inspect_session', { session_index: sessionIndex, view: 'usage' });
+      const rows = JSON.parse((view.content as { text: string }[])[0]!.text);
+      expect(rows).toHaveLength(1);
+      expect(rows[0]).toMatchObject({ activity: 'checkpoint-activity', usage });
+    });
+
+    it('warns instead of dropping silently when usage rides the entry transition', async () => {
+      const slug = '2026-07-28-usage-entry';
+      const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
+      const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+      const result = await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity', usage });
+
+      const validation = (result._meta as { validation: { status: string; warnings: string[] } }).validation;
+      expect(validation.status).toBe('warning');
+      expect(validation.warnings.join('\n')).toMatch(/usage supplied on the entry transition/);
+      expect(readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage')).toHaveLength(0);
+    });
+
+    it('omitting usage records nothing and leaves the usage view empty', async () => {
+      const slug = '2026-07-28-usage-absent';
+      const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
+      const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+      await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
+      await call('next_activity', { session_index: sessionIndex, activity_id: 'followup-activity' });
+      expect(readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage')).toHaveLength(0);
+    });
+  });
 });

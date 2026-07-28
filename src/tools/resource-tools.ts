@@ -111,12 +111,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           workflow_id: z.string().optional().describe('Optional. Fresh-session workflow id (default "meta"). Ignored on resume.'),
           planning_folder: z.string().optional().describe('Optional. Absolute path; basename is the planning slug. Bare/relative paths rejected. Omit for transient meta bootstrap.'),
           repo: z.string().optional().describe('Target owner/repo (or github URL). Always pass when known; written to session.json#repo. Also accepted from planning_folder under …/<owner>/<repo>/….'),
+          user_request: z.string().optional().describe('The user\'s free-form request that opened this session. Seeded into the variable bag as `user_request`, so techniques that match or classify the request read it as state instead of needing it inlined into a spawn prompt. Children inherit it via dispatch_child.'),
           agent_id: z.string().default('orchestrator').describe('Agent identity stored on the session (default "orchestrator"). Use one canonical id for solo persistent walks.'),
           context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. "persistent" = reference delivery; ONLY for solo (same agent retains payloads). Omit/"fresh" for disposable workers. Resume overwrites recorded mode.'),
         })
         .strict(),
     },
-    withAuditLog('start_session', async ({ workflow_id, planning_folder, repo, agent_id, context_mode }) => {
+    withAuditLog('start_session', async ({ workflow_id, planning_folder, repo, agent_id, context_mode, user_request }) => {
       const DEFAULT_WORKFLOW_ID = 'meta';
 
       // start_session is top-level only — it either opens an existing
@@ -268,13 +269,17 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         const pathDrift = canonicalFolder !== undefined && state.planningFolderPath !== canonicalFolder;
         const agentDrift = state.agentId !== agent_id;
         const modeDrift = context_mode !== undefined && state.contextMode !== context_mode;
+        // A resume carries a fresh request from the user — rebind it so the bag
+        // describes why the session is running now, not why it opened.
+        const requestDrift = user_request !== undefined && state.variables?.['user_request'] !== user_request;
         let nextState = state;
-        if (pathDrift || agentDrift || modeDrift) {
+        if (pathDrift || agentDrift || modeDrift || requestDrift) {
           nextState = {
             ...nextState,
             ...(agentDrift ? { agentId: agent_id } : {}),
             ...(pathDrift ? { planningFolderPath: canonicalFolder } : {}),
             ...(modeDrift ? { contextMode: context_mode } : {}),
+            ...(requestDrift ? { variables: { ...nextState.variables, user_request } } : {}),
           };
         }
         const repoBindRaw = repo?.trim() || sessionRoot.repo;
@@ -311,7 +316,17 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           // B7 (#166): seed declared defaults into the fresh bag. Conditional
           // on the pre-load succeeding — its failure is only surfaced further
           // down, and an unseeded bag is the correct shape for that path.
-          ...(wfPreLoad.success ? { variables: seedDefaults(wfPreLoad.value.variables) } : {}),
+          // #324 A1: the caller's request seeds alongside them, so techniques
+          // that match or classify it bind a variable rather than relying on
+          // the orchestrator to inline it into a spawn prompt.
+          ...(wfPreLoad.success || user_request !== undefined
+            ? {
+              variables: {
+                ...(wfPreLoad.success ? seedDefaults(wfPreLoad.value.variables) : {}),
+                ...(user_request !== undefined ? { user_request } : {}),
+              },
+            }
+            : {}),
         });
         state = newState;
         await writeSessionFile(folder, state);
@@ -427,6 +442,16 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       const triggeredAt = new Date().toISOString();
 
+      // #324 A1: the request that opened the parent is the same request the
+      // child workflow serves, so it travels into the child bag as state. A
+      // child that declares `user_request` resolves it; one that does not is
+      // unaffected.
+      const inheritedRequest = loaded.state.variables?.['user_request'];
+      const childVariables = (wf: typeof wfResult.value): Record<string, unknown> => ({
+        ...seedDefaults(wf.variables),
+        ...(inheritedRequest !== undefined ? { user_request: inheritedRequest } : {}),
+      });
+
       // Bind-if-missing on the parent session. session.json#repo is the single
       // source of truth for path resolution / promotion; dispatch_child.repo
       // never overrides a prior bind.
@@ -499,7 +524,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           agentId: agent_id,
           ...(parentState.repo ? { repo: parentState.repo } : {}),
           ...(context_mode ? { contextMode: context_mode } : {}),
-          variables: seedDefaults(wfResult.value.variables),
+          variables: childVariables(wfResult.value),
         });
         const parentNext = advanceSession(parentState, (draft) => {
           draft.triggeredWorkflows.push({
@@ -543,7 +568,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         agentId: agent_id,
         ...(parentState.repo ? { repo: parentState.repo } : {}),
         ...(context_mode ? { contextMode: context_mode } : {}),
-        variables: seedDefaults(wfResult.value.variables),
+        variables: childVariables(wfResult.value),
       });
       const parentNext = advanceSession(parentState, (draft) => {
         draft.triggeredWorkflows.push({

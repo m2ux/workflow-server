@@ -50,6 +50,13 @@ const activityManifestSchema = z.array(z.object({
   transition_condition: z.string().optional(),
 })).optional().describe('Orchestrator activity-completion manifest: [{activity_id, outcome, transition_condition?}].');
 
+const usageSchema = z.record(z.unknown()).optional().describe(
+  'Harness-reported token usage for the activity this call EXITS — relay the figure the harness surfaced for the worker that just completed ' +
+  '(subagent token counts plus any cache/model fields), as reported. Recorded as an `activity_usage` history event keyed to the exited activity, ' +
+  'so inspect_session reports per-activity cost. Workers cannot self-measure: omit the parameter entirely when the harness surfaces nothing rather ' +
+  'than passing zeros.',
+);
+
 const variablesChangedSchema = z.record(z.unknown()).optional().describe(
   'Variable assignments the completing activity produced — relay the worker\'s `activity_complete` `variables_changed` map verbatim. ' +
   'The server writes them into the session variable bag and records one `variable_set` history event per name, so the bag a later ' +
@@ -138,7 +145,7 @@ export async function composeActivityArtifacts(
 
 /** The views `inspect_session` can project. `summary` is the default composite. */
 export const INSPECT_SESSION_VIEWS = [
-  'summary', 'identity', 'variables', 'checkpoints', 'activities', 'history', 'children',
+  'summary', 'identity', 'variables', 'checkpoints', 'activities', 'history', 'children', 'usage',
 ] as const;
 export type InspectSessionView = (typeof INSPECT_SESSION_VIEWS)[number];
 
@@ -237,6 +244,19 @@ export function projectChildren(s: SessionFile): Array<Record<string, unknown>> 
   });
 }
 
+/**
+ * Usage projection (#324 B1): one entry per `activity_usage` event, in the
+ * order the orchestrator reported them. An activity appears once per exit, so
+ * a resumed activity contributes a row per pass rather than a merged total —
+ * summing is the caller's call, since harnesses differ on whether a resumed
+ * worker re-reports cumulative figures.
+ */
+export function projectUsage(s: SessionFile): Array<Record<string, unknown>> {
+  return (s.history ?? [])
+    .filter(e => e.type === 'activity_usage')
+    .map(e => ({ activity: e.activity, timestamp: e.timestamp, usage: e.data?.['usage'] }));
+}
+
 /** Summary (default) view: the composite of all projections for the addressed session. */
 export function projectSummary(
   s: SessionFile,
@@ -273,6 +293,7 @@ export function projectSessionView(
     case 'activities': return projectActivities(s);
     case 'history': return projectHistory(s);
     case 'children': return projectChildren(s);
+    case 'usage': return projectUsage(s);
     case 'summary':
     default:
       return projectSummary(s, pathPresentation);
@@ -411,7 +432,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: an id from the current activity\'s transitions. Optional manifests enable advisory validation.',
+  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: an id from the current activity\'s transitions. Optional manifests enable advisory validation; optional `usage` records the exited activity\'s token cost.',
     {
       ...sessionIndexParam,
       activity_id: z.string().describe('Target activity id. First call: initialActivity from get_workflow; later: from current activity transitions.'),
@@ -419,8 +440,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       step_manifest: stepManifestSchema,
       activity_manifest: activityManifestSchema,
       variables_changed: variablesChangedSchema,
+      usage: usageSchema,
     },
-    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, variables_changed }) => {
+    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, variables_changed, usage }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -456,6 +478,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ? validateTransitionCondition(view, result.value, activity_id, transition_condition)
         : null;
 
+      // usage measures the activity being exited, so the entry transition has
+      // nothing to attribute it to. Say so rather than dropping it silently.
+      const usageWarning = (usage && !state.currentActivity)
+        ? `usage supplied on the entry transition to '${activity_id}', which exits no activity — not recorded. Pass usage on the call that leaves the measured activity.`
+        : null;
+
       const activityManifestWarnings: string[] = [];
       if (activity_manifest) {
         if (activity_manifest.length === 0) {
@@ -480,6 +508,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           draft.history.push({ timestamp: now, type: 'activity_exited', activity: exitingActivity });
           if (!draft.completedActivities.includes(exitingActivity)) {
             draft.completedActivities.push(exitingActivity);
+          }
+          // #324 B1: attribute the harness's usage figure to the activity being
+          // exited — it measures the worker that just finished, not the one
+          // about to start. Dropped on the first transition, which exits nothing.
+          if (usage) {
+            draft.history.push({
+              timestamp: now, type: 'activity_usage', activity: exitingActivity, data: { usage },
+            });
           }
         }
         // Persist the completing activity's worker outputs into the bag. These
@@ -517,6 +553,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         validateActivityTransition(view, result.value, activity_id),
         validateWorkflowVersion(view, result.value),
         condWarning,
+        usageWarning,
         ...manifestWarnings,
         ...activityManifestWarnings,
         ...variableWarnings,
@@ -1468,7 +1505,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     {
       ...sessionIndexParam,
       view: z.enum(INSPECT_SESSION_VIEWS).default('summary')
-        .describe('Projection: summary (default), identity, variables, checkpoints, activities, history, or children.'),
+        .describe('Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-activity token cost as the orchestrator reported it on next_activity).'),
       child_index: z.number().int().nonnegative().optional()
         .describe('Optional. Project triggeredWorkflows[child_index].state instead of the parent session.'),
       variable: z.string().optional()
