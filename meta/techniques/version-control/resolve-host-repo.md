@@ -11,7 +11,11 @@ Derive the host repository a session belongs to from git: ascend from the worksp
 
 ### workspace_path
 
-Directory the session was opened in — the starting point for the ascent. Defaults to the current working directory.
+*(optional)* Directory the session was opened in — the starting point for the ascent.
+
+#### default
+
+`.`
 
 ## Outputs
 
