@@ -666,13 +666,6 @@
     },
     {
       "check": "dead-output",
-      "site": "workflow-design/techniques/apply-audit-fixes.md",
-      "detail": "output 'fixes_applied' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
       "site": "workflow-design/techniques/review-draft-yaml.md",
       "detail": "output 'draft_attestation' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "fix-later",
@@ -682,13 +675,6 @@
       "check": "dead-output",
       "site": "workflow-design/techniques/scope-audit.md",
       "detail": "output 'scope_drift_findings' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-design/techniques/yaml-authoring.md",
-      "detail": "output 'yaml_file' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "fix-later",
       "rationale": "terminal-product-unconsumed"
     },
