@@ -394,12 +394,14 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
+        "COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
+        "14-COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "14-session-trace.md",
       ],
       "checkpoints": [
@@ -888,12 +890,14 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
+        "COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
+        "14-COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "14-session-trace.md",
       ],
       "checkpoints": [
@@ -1413,12 +1417,14 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
+        "COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
+        "14-COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "14-session-trace.md",
       ],
       "checkpoints": [
@@ -1897,12 +1903,14 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
+        "COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
+        "14-COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "14-session-trace.md",
       ],
       "checkpoints": [
@@ -1973,6 +1981,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "detect-review-mode",
         "announce-derived-review-mode",
         "ingest-prior-feedback",
+        "seed-review-mode-outcomes",
         "resolve-repo-root",
         "analyze-repo-with-gitnexus",
         "verify-signing-precondition",
@@ -2246,9 +2255,10 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "checkpoints": [
         {
           "id": "review-summary-approval",
-          "option": "post-review",
+          "option": "post-approve",
           "setVariable": {
             "review_posted": true,
+            "review_type": "approve",
           },
         },
       ],
@@ -2258,8 +2268,10 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "stepsExecuted": [
         "announce-start",
         "consolidate-review-findings",
+        "publish-review-artifacts",
         "generate-review-summary",
         "present-summary-to-user",
+        "persist-review-summary",
         "post-pr-review",
         "announce-completion",
       ],
@@ -2271,12 +2283,14 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
+        "COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
+        "14-COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "14-session-trace.md",
       ],
       "checkpoints": [
@@ -2695,12 +2709,14 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
+        "COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
+        "14-COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "14-session-trace.md",
       ],
       "checkpoints": [
