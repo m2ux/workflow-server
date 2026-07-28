@@ -416,11 +416,12 @@
           "design-philosophy",
           "codebase-comprehension",
           "requirements-elicitation",
-          "research"
+          "research",
+          "implementation-analysis"
         ],
         "condition": "",
-        "currentActivity": "implementation-analysis",
-        "currentTechnique": "analyse-challenge::run-loop",
+        "currentActivity": "plan-prepare",
+        "currentTechnique": "scatter-gather",
         "deliveredContent": {
           "orchestrator": {
             "bundle:rules:4dbe797b70f91087": "4dbe797b70f91087",
@@ -449,12 +450,17 @@
             "resource:requirements-elicitation": "a3be94f69b148242",
             "resource:requirements-elicitation#document-template": "b0e82865f2be54fd",
             "resource:research-reconciliation#integration-with-research-artifact": "4a767ae50336079b",
+            "resource:test-plan#templates": "b4855221fdcad336",
+            "resource:test-plan#test-plan-structure": "c068fd8712a2afd1",
             "resource:web-research#planning-artifact": "7a3c08b7f3781c12",
             "resource:work-package/readme-seed": "0eb6e9701dbc8ca0",
-            "technique:analyse-challenge::run-loop": "f07afba2c4aec78f",
+            "resource:wp-plan": "9aede76e14d1d574",
+            "resource:wp-plan#template": "234c33a9e74801ad",
+            "technique:analyse-challenge::run-loop": "d8452098a8278209",
             "technique:codebase-comprehension::deep-dive": "eb25438b18cc1274",
             "technique:codebase-comprehension::revise-questions": "2dcc44eba9471a95",
             "technique:codebase-comprehension::survey": "7a0976e3bf9ce9e3",
+            "technique:create-test-plan": "c1254313904ee2f7",
             "technique:design-philosophy::classify": "ecaa156eb4055095",
             "technique:design-philosophy::define": "33d3aa6436a3c27d",
             "technique:design-philosophy::determine-path": "ea46f5c3be77059c",
@@ -469,9 +475,12 @@
             "technique:manage-artifacts::write-artifact": "ec4b8ec047b2cc73",
             "technique:manage-git::create-worktree": "54c4987dd74ff86a",
             "technique:manage-git::detect-merge-strategy": "8a7464d1587adeb1",
+            "technique:manage-git::sync-branch": "8d516924ecbb90e1",
             "technique:manage-git::update-repo-submodules": "dc752438d31ae441",
             "technique:manage-git::verify-feature-branch": "31b72dfd32329c7e",
             "technique:naming-conventions": "fa787c2dd45cbdb2",
+            "technique:plan-prepare::create-todos": "ee959e188b1d8576",
+            "technique:plan-prepare::plan": "d30d771c72426560",
             "technique:project-type-detection": "3f280f67ee8cc51c",
             "technique:repo-root-resolution": "2a94e563cfa7135f",
             "technique:requirements-elicitation::ask-question": "dbd566ff6060570c",
@@ -482,13 +491,13 @@
             "technique:research::research": "f8ece58f3842d46f",
             "technique:research::synthesize": "176e52909f8f197c",
             "technique:research::triage": "a0e063d239126abe",
-            "technique:review-assumptions::collect": "48d15f5bb3c2413d",
+            "technique:review-assumptions::collect": "c8e3901a0afff2e3",
             "technique:review-assumptions::interview": "f02b52aae1c1928d",
             "technique:review-assumptions::reconcile": "7b7bca8eaccaa550",
-            "technique:review-assumptions::record": "d0a93ab1a0c4874b",
+            "technique:review-assumptions::record": "9255c091e1fffa4e",
             "technique:review-mode-detection": "60f8118fb21c6847",
             "technique:scatter-gather": "17c19c51954fcaea",
-            "technique:stakeholder-overview": "6548550cd546e329",
+            "technique:stakeholder-overview": "158fd2624938e7fb",
             "technique:workflow-engine::create-readme": "ae22338591834f35"
           }
         },
@@ -2416,18 +2425,328 @@
             },
             "timestamp": "2026-07-27T17:08:06.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "timestamp": "2026-07-27T17:19:41.460Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "located_implementation",
+              "source": "variables_changed",
+              "value": "src/utils/resource-ref.ts (parseResourceRef:8, extractMarkdownSection:33 + inline slugify:34 + two fence scans, extractResourceIds:72); scripts/check-resource-anchors.ts (slugify:42, collectAnchors:51, -N counter:61-63, LINK_RE:78, collectBrokenAnchors:80 + second fence toggle:90); consumers resource-tools.ts:774-783 (throws) and resource-delivery.ts:24-68 -> workflow-tools.ts:787,802-805 (silently skips); tests/resource-anchors.test.ts, tests/extract-section.test.ts; scripts/run-token-benchmark.ts. gitnexus impact CRITICAL: 9 symbols, 2 direct callers, 10 processes, 4 modules"
+            },
+            "timestamp": "2026-07-27T17:19:41.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "effectiveness_assessment",
+              "source": "variables_changed",
+              "value": "Guard is a faithful GitHub oracle (7 of 856 files diverge: 23 link-in-heading + 32 fence anchors). Broken: 101 of 1,333 addressable resource refs guard-approved and runtime-unresolvable (74 double-hyphen, 25 -N, 2 genuinely broken); fence hardening alone silently truncates 2 live template refs; 2 corpus files nest equal-length fences illegally; suite red on 18 tests across 7 files; both package regression nets red (3 from stale fixture meta/activity-worker-prompt); bench:token cannot see prism-evaluate; resources/README.md shadows sibling README.md; extractResourceIds resources:[...] branch has 0 live inputs"
+            },
+            "timestamp": "2026-07-27T17:19:41.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "baseline_metrics",
+              "source": "variables_changed",
+              "value": "SC-9 +1/-0 vs shipped collectBrokenAnchors() both directions (byte-identical copy as control), +1 = D-2. Anchor tables 3 of 856 files, +32/-0, 0 -N moved. Ref population 1,333: 1,232 ok / 101 FAIL via real loadResourceDelivery. Slug unification alone: 0 changed / 0 regressions / 99 FAIL->ok. COMMITTED CONFIG (hardened + remedy): guard reports the original 3 links (SC-9 +1 -> 0, D-2 unexposed); shipped guard also 3 (corpus commit verdict-neutral, either order lands); SC-5 1,226 identical / 6 changed each exactly +2 bytes / 0 regressions / 99 FAIL->ok. 4/4 github-slugger fixtures pass. Suite 18 failed / 680 passed / 14 skipped, identical at HEAD pointer b3dc2506. bench:token index 106.9, 1,449,054 chars, 43 resource:* keys. Q8: 3 ledger slots (not 7), -1,003 chars (-13.2%), delta 0 on every bench metric. Census 728 md + 128 yaml = 856; 0 resources: keys"
+            },
+            "timestamp": "2026-07-27T17:19:41.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "gaps_identified",
+              "source": "variables_changed",
+              "value": "G1 fence truncation (closed by user decision; remains a plan task); G2 ATX/fence coupling (sequencing constraint); G3 both regression nets red (HIGH, plan precondition); G4 baseline understated by 17 (HIGH, plan precondition); G5 SC-5 wording (corrected); G6 SC-2 verification method (corrected); G7 RC-5 fence-simplification test strategy (MEDIUM, open for the plan); G8 benchmark covers one workflow (-> D-9); G9 README id collision (-> D-8); G10 In Scope 9 has zero instances and zero producers"
+            },
+            "timestamp": "2026-07-27T17:19:41.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "analysis_document",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-issue-141/05-implementation-analysis.md"
+            },
+            "timestamp": "2026-07-27T17:19:41.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T17:19:41.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T17:19:41.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-07-27T17:19:41.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-27T17:19:41.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "assumption_resolved_inline",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T17:19:41.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "assumption_batch_accepted",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-27T17:19:41.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "timestamp": "2026-07-27T17:19:41.460Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-plan",
+              "techniqueId": "plan-prepare::plan"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-test-plan",
+              "techniqueId": "create-test-plan"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "present-solution-overview",
+              "techniqueId": "stakeholder-overview"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-todos",
+              "techniqueId": "plan-prepare::create-todos"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "sync-branch",
+              "techniqueId": "manage-git::sync-branch"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "wp-plan"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "design-framework#design-framework-trizics-approach"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "test-plan#templates"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "test-plan#test-plan-structure"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "design-framework#design-philosophy-artifact-template"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "bundled": true,
+              "resourceId": "wp-plan#template"
+            },
+            "timestamp": "2026-07-27T17:20:15.433Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "orchestrator",
+              "techniqueId": "scatter-gather"
+            },
+            "timestamp": "2026-07-27T17:20:45.303Z",
+            "type": "technique_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 44,
+        "seq": 47,
         "sessionIndex": "ZVIT4L",
         "skippedActivities": [],
         "startedAt": "2026-07-27T13:45:51.860Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785172115,
+        "ts": 1785172845,
         "variables": {
+          "analysis_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-issue-141/05-implementation-analysis.md",
           "applicable_patterns": "shared slug() + buildAnchorTable(); CommonMark fence tracker; \\p{...} strip class; fixture-table pinning; guard-stricter-than-resolver; diff the verdict set",
           "artifact_name": "resource-section-addressing.md",
           "assumption_batch_accepted": true,
@@ -2436,6 +2755,7 @@
           "assumptions_log": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-issue-141/02-assumptions-log.md",
           "audit_confirmed": false,
           "awaiting_review": false,
+          "baseline_metrics": "SC-9 +1/-0 vs shipped collectBrokenAnchors() both directions (byte-identical copy as control), +1 = D-2. Anchor tables 3 of 856 files, +32/-0, 0 -N moved. Ref population 1,333: 1,232 ok / 101 FAIL via real loadResourceDelivery. Slug unification alone: 0 changed / 0 regressions / 99 FAIL->ok. COMMITTED CONFIG (hardened + remedy): guard reports the original 3 links (SC-9 +1 -> 0, D-2 unexposed); shipped guard also 3 (corpus commit verdict-neutral, either order lands); SC-5 1,226 identical / 6 changed each exactly +2 bytes / 0 regressions / 99 FAIL->ok. 4/4 github-slugger fixtures pass. Suite 18 failed / 680 passed / 14 skipped, identical at HEAD pointer b3dc2506. bench:token index 106.9, 1,449,054 chars, 43 resource:* keys. Q8: 3 ledger slots (not 7), -1,003 chars (-13.2%), delta 0 on every bench metric. Census 728 md + 128 yaml = 856; 0 resources: keys",
           "block_line_range": "",
           "block_path": "",
           "body_conforms": false,
@@ -2456,10 +2776,12 @@
           "current_branch": "",
           "deferred_items": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-27-issue-141/deferred-items.md",
           "design_philosophy_doc": "02-design-philosophy.md",
+          "effectiveness_assessment": "Guard is a faithful GitHub oracle (7 of 856 files diverge: 23 link-in-heading + 32 fence anchors). Broken: 101 of 1,333 addressable resource refs guard-approved and runtime-unresolvable (74 double-hyphen, 25 -N, 2 genuinely broken); fence hardening alone silently truncates 2 live template refs; 2 corpus files nest equal-length fences illegally; suite red on 18 tests across 7 files; both package regression nets red (3 from stale fixture meta/activity-worker-prompt); bench:token cannot see prism-evaluate; resources/README.md shadows sibling README.md; extractResourceIds resources:[...] branch has 0 live inputs",
           "elicitation_complete": true,
           "elicitation_log": "9 question/response pairs across 5 domains, 5 clarifications, 5 resolved open questions, 2 requirements-not-taken",
           "existing_pr_number": "",
           "findings_synthesis": "8 patterns mapped to SC-1..SC-9; 5 corrections to the record",
+          "gaps_identified": "G1 fence truncation (closed by user decision; remains a plan task); G2 ATX/fence coupling (sequencing constraint); G3 both regression nets red (HIGH, plan precondition); G4 baseline understated by 17 (HIGH, plan precondition); G5 SC-5 wording (corrected); G6 SC-2 verification method (corrected); G7 RC-5 fence-simplification test strategy (MEDIUM, open for the plan); G8 benchmark covers one workflow (-> D-9); G9 README id collision (-> D-8); G10 In Scope 9 has zero instances and zero producers",
           "github_issue_found": false,
           "gitnexus_indexed": true,
           "has_critical_blocker": false,
@@ -2484,6 +2806,7 @@
           "issue_type": "feature",
           "jira_issue_key": "",
           "kb_findings": "empty — knowledge base has no relevant content (gap recorded as RC-1/RS-1)",
+          "located_implementation": "src/utils/resource-ref.ts (parseResourceRef:8, extractMarkdownSection:33 + inline slugify:34 + two fence scans, extractResourceIds:72); scripts/check-resource-anchors.ts (slugify:42, collectAnchors:51, -N counter:61-63, LINK_RE:78, collectBrokenAnchors:80 + second fence toggle:90); consumers resource-tools.ts:774-783 (throws) and resource-delivery.ts:24-68 -> workflow-tools.ts:787,802-805 (silently skips); tests/resource-anchors.test.ts, tests/extract-section.test.ts; scripts/run-token-benchmark.ts. gitnexus impact CRITICAL: 9 symbols, 2 direct callers, 10 processes, 4 modules",
           "mark_progress_na": false,
           "needs_cleanup": false,
           "needs_code_fixes": false,

@@ -1,6 +1,6 @@
 # Hierarchical Path-Scoped Resource Section References — July 2026
 
-> Feature · Created 2026-07-27 · **Status:** Planning
+> Feature · Created 2026-07-27 · **Status:** Aborted before plan-prepare · Revised 2026-07-28
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -16,7 +16,9 @@ The practical cost falls in two places. When a request quietly comes back empty,
 
 ## Solution Overview
 
-*Populated by the producing step (a `stakeholder-overview` call).*
+The two pieces of code that turn a heading into a label are being replaced by a single shared one, so there is only one rule and both sides follow it. That one rule is written to match exactly what GitHub itself does, including the way GitHub handles a document that repeats the same heading: it quietly numbers the repeats, so the second copy of a heading can be asked for by name. Making the fetching code honour that numbering is what finally makes every repeated heading reachable, which turns out to remove the need for the more elaborate "parent/child" addressing the original request proposed — so that idea has been set aside rather than built, and the reference material stays ordinary markdown that still works when read on GitHub or in an editor. Alongside this, the pre-release checker gains the ability to complain about a request that is technically valid but cannot possibly mean one specific heading, and to prove, for every link it approves, that the fetching code really does return something for it.
+
+The practical guarantee is that a check which passes can no longer hide a request that comes back empty at run time, because the checker now tests the real fetching code rather than its own private imitation of it. Every reference that works today returns the same content afterwards, with two deliberate and fully enumerated exceptions: six references shift by two characters because two documents had a formatting fault that was quietly cutting their content short, and three references are being rewritten to point at the section their authors meant, which also makes them slightly cheaper to deliver. Ninety-nine references that are currently accepted but silently return nothing start working. The work is deliberately narrow in two further respects: it does not add any new third-party code, and it does not attempt to repair fourteen unrelated test failures that were already present before this work began — those are recorded so nobody mistakes them for damage caused here.
 
 ## 📊 Progress
 
@@ -29,10 +31,10 @@ The practical cost falls in two places. When a request quietly comes back empty,
 | 5 | 03 | [Requirements elicitation](03-requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ✅ |
 | 6 | 04 | [KB research](04-kb-research.md) | Knowledge-base and web synthesis | 20-45m | ✅ |
 | 7 | 05 | [Implementation analysis](05-implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ✅ |
-| 8 | 06 | [Work package plan](06-work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ◐ |
-| 9 | 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ◐ |
-| 10 | 06 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ◐ |
-| 11 | 06 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | ◐ |
+| 8 | 06 | [Work package plan](06-work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ⬚ |
+| 9 | 06 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ |
+| 10 | 06 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ✅ |
+| 11 | 06 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | ⬚ |
 | 12 | 07 | Assumptions review | Converge open assumptions | 20-40m | ⬚ |
 | 13 | 08 | Implementation | Code changes per plan | 1-4h | ⬚ |
 | 14 | 08 | [Provenance log](provenance-log.md) | Per-task AI-assistance provenance | 5-15m | ⬚ |
