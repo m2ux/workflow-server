@@ -16,9 +16,8 @@ steps:
       - kind: technique
         id: run-synthesis
         technique:
-          name: full-prism
+          name: full-prism::synthesis
           inputs:
-            lens_name: synthesis
             target_content: "{current_unit.target}"
             prior_artifact_paths: all_artifact_paths
         actions:

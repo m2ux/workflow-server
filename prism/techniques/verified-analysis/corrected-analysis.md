@@ -13,6 +13,16 @@ Re-run the L12 analysis with the extracted gap context injected, producing the c
 
 Structured gap claims extracted from the gap-detection output, injected as the `verified_knowledge` context block for the corrected re-analysis
 
+## Outputs
+
+### corrected_analysis
+
+L12 structural analysis re-run against the target with the gap context injected.
+
+#### artifact
+
+`verified-corrected.md`
+
 ## Protocol
 
 ### 1. Corrected Analysis
@@ -24,5 +34,5 @@ Structured gap claims extracted from the gap-detection output, injected as the `
 `</verified_knowledge>`
 
 `{target_content}`
-- Worker writes `{verified_result.corrected_path}` into `{output_path}`
-- Return `{verified_result}` — its initial-path, gaps-path, and corrected-path sub-fields hold the three pipeline artifact paths.
+- Worker writes `{corrected_analysis}` into `{output_path}`
+- Return `{corrected_analysis}`

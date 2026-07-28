@@ -11,19 +11,11 @@ Minimize cost by automatically escalating analysis depth from cheap/fast to deep
 
 ### adaptive_result
 
-Paths and escalation trace for the adaptive run
-
-#### artifact
-
-`adaptive-stage1.md` (sdl stage) / `adaptive-stage2.md` (l12 stage); the full stage produces the full-prism `structural-analysis.md`, `adversarial-analysis.md`, and `synthesis.md`
+Escalation trace for the adaptive run
 
 #### stage_reached
 
 One of: sdl | l12 | full — deepest stage that ran
-
-#### artifact_paths
-
-Array of filesystem paths to all produced artifacts
 
 #### signal_assessment
 

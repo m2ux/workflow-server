@@ -9,25 +9,29 @@ Run 2 maximally orthogonal prisms against the same target and synthesize their d
 
 ## Outputs
 
-### dispute_result
+### lens_a_analysis
 
-Paths to the three dispute artifacts and the prism pair used
+Analysis from the first lens of the pair, produced without sight of the second.
 
 #### artifact
 
-`dispute-lens-a.md` (lens A) / `dispute-lens-b.md` (lens B) / `dispute-synthesis.md` (disagreement synthesis)
+`dispute-lens-a.md`
 
-#### lens_a_path
+### lens_b_analysis
 
-Filesystem path to the lens A artifact
+Analysis from the second lens of the pair, produced without sight of the first.
 
-#### lens_b_path
+#### artifact
 
-Filesystem path to the lens B artifact
+`dispute-lens-b.md`
 
-#### synthesis_path
+### disagreement_synthesis
 
-Filesystem path to the disagreement-synthesis artifact
+Synthesis of where the two lenses disagree, with convergence noted only to test implicit shared assumptions.
+
+#### artifact
+
+`dispute-synthesis.md`
 
 #### prism_pair
 
@@ -45,15 +49,15 @@ Resource indices and lens identities used for A and B
 - Dispatch prism A to a fresh worker with its resource index, passing `{target_content}` as the material to analyze  
   > Each lens runs in a fresh context; neither sees the other's output.
 - Dispatch prism B to a fresh worker against the same `{target_content}` (can be parallel)
-- Each worker writes its lens artifact (`{dispute_result.lens_a_path}` / `{dispute_result.lens_b_path}`) into `{output_path}`; capture the lens A artifact content as `{$output_a}` and the lens B artifact content as `{$output_b}`
+- Each worker writes its lens artifact (`{lens_a_analysis}` / `{lens_b_analysis}`) into `{output_path}`; capture the lens A artifact content as `{$output_a}` and the lens B artifact content as `{$output_b}`
 
 ### 3. Synthesize Disagreements
 
 - Dispatch synthesis to a fresh worker with [dispute-synthesis](../resources/dispute-synthesis.md) resource (62)
 - Worker constructs input: "# LENS A: `{prism_a}`\n\n`{output_a}`\n\n---\n\n# LENS B: `{prism_b}`\n\n`{output_b}`"
-- Worker writes `{dispute_result.synthesis_path}` into `{output_path}`
+- Worker writes `{disagreement_synthesis}` into `{output_path}`
 - The synthesis focuses on DISAGREEMENTS, not agreements. Convergence is noted only to test implicit shared assumptions.
-- Return `{dispute_result}`: the three artifact paths and the prism pair selected in step 1
+- Return `{lens_a_analysis}`, `{lens_b_analysis}`, and `{disagreement_synthesis}` — the latter recording in `{disagreement_synthesis.prism_pair}` the pair selected in step 1
 
 ## Rules
 

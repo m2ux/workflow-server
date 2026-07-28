@@ -31,10 +31,6 @@ Path to the planning folder where the final outcome, session-trace, and retrospe
 
 Workflow [retrospective](../../resources/workflow-retrospective.md#output-section-template) with lessons learned, written as the `## Workflow Retrospective` section of the close-out document (or the planning-folder session `README.md` when `COMPLETE.md` was not created).
 
-#### artifact
-
-`COMPLETE.md` (implementation) or planning-folder session `README.md` section (review mode)
-
 ### session_trace_document
 
 Lean mechanical summary of resolved trace events (tool counts, durations, errors, `vw` clusters), or a one-line skip when `{trace_tokens}` is empty.

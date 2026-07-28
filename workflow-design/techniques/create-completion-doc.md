@@ -21,7 +21,7 @@ The classified operation. When `update`, the summary frames the delivery as chan
 
 #### artifact
 
-COMPLETE.md
+`COMPLETE.md`
 
 ## Protocol
 

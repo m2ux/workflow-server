@@ -21,8 +21,13 @@ steps:
             analysis_type: context
     blocking: true
   - kind: technique
+    id: analyze-completion
+    technique: analyze-initiative-context::analyze-completion
+    when: "analysis_type == completion"
+  - kind: technique
     id: analyze-context
-    technique: analyze-initiative-context
+    technique: analyze-initiative-context::analyze-context
+    when: "analysis_type == context"
   - kind: checkpoint
     id: analysis-confirmed
     message: Analysis complete. Does this context look correct?

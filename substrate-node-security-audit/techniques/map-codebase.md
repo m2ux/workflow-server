@@ -23,17 +23,25 @@ Paths to include in the analysis
 
 ## Outputs
 
-### codebase_map
+### crate_map
 
-Structured codebase map.
+The in-scope components with their architectural classification and priority.
 
 #### artifact
 
-`r-crate-map.json` (component inventory and crate classification) / `r-reconnaissance-data.json` (trust boundaries, critical paths, hooks, data flows, safety overrides)
+`r-crate-map.json`
 
 #### component_inventory
 
 every crate/module with classification and priority
+
+### reconnaissance_data
+
+The security-relevant structure of the classified components: trust boundaries, consensus-critical paths, framework hooks, data flows, and safety overrides.
+
+#### artifact
+
+`r-reconnaissance-data.json`
 
 #### trust_boundary_map
 
@@ -77,7 +85,7 @@ forward and backward traces for priority-1 paths
 
 ### 6. Trace Data Flows
 
-- Apply forward tracing (entry point to sink) and backward tracing (sensitive operation to data source) to map how data moves through the system, recording these traces alongside the component, boundary, and critical-path findings to assemble the `{codebase_map}`. Prioritize candidate points: locations with high code complexity, multiple lock acquisitions, nested match on external data, unsafe blocks, error-handling switches, and codec deserialization sites.
+- Apply forward tracing (entry point to sink) and backward tracing (sensitive operation to data source) to map how data moves through the system, recording these traces alongside the boundary and critical-path findings to assemble `{reconnaissance_data}`, with the classified components assembled as `{crate_map}`. Prioritize candidate points: locations with high code complexity, multiple lock acquisitions, nested match on external data, unsafe blocks, error-handling switches, and codec deserialization sites.
 
 > When `{gitnexus_available}`, seed forward/backward traces from the call graph via [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../meta/techniques/gitnexus-operations/context.md) (callers/callees of a symbol) and [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../meta/techniques/gitnexus-operations/cypher.md) (custom chains), so a trace follows the resolved graph rather than a manual read of each hop. Reading the function bodies at each candidate point remains the comprehension step.
 

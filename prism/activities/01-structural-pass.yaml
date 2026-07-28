@@ -82,7 +82,7 @@ steps:
       - kind: technique
         id: dispatch-behavioral-lenses
         technique:
-          name: behavioral-pipeline
+          name: behavioral-pipeline::independent-lenses
           inputs:
             target_content: "{current_unit.target}"
         condition:

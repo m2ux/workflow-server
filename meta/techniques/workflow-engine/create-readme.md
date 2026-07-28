@@ -35,7 +35,7 @@ Full path to the created `README.md`
 
 #### artifact
 
-name: README.md
+`README.md`
 
 ## Protocol
 
