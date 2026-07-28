@@ -1,0 +1,188 @@
+$schema: ../../schemas/workflow.schema.json
+id: workflow-authoring
+version: 1.0.0
+title: Workflow Authoring Workflow
+description: Guide agents through creating, updating, or reviewing workflow definitions.
+author: m2ux
+tags:
+  - workflow-creation
+  - workflow-review
+  - workflow-authoring
+  - schema-validation
+  - design-principles
+  - elicitation
+  - conventions
+rules:
+  activity:
+    - >-
+      A correction the user makes at a gate is recorded against the fact it corrects, and every
+      later gate is answered from the corrected value — never from the value it superseded.
+    - >-
+      A checkpoint that declares neither `defaultOption` nor `autoAdvanceMs` requires a user
+      response and must never be answered on the user's behalf. When `{headless_mode}` is true,
+      a checkpoint declaring both resolves to its `defaultOption` without presentation.
+techniques:
+  activity:
+    - variable-binding
+variables:
+  - name: planning_folder_path
+    type: string
+    description: Absolute path to this workflow planning folder.
+  - name: operation_type
+    type: string
+    description: The classified operation for the request — create, update, or review.
+  - name: operation_type_ambiguous
+    type: boolean
+    description: True when intake cannot confidently classify create vs update vs review from the request alone.
+    defaultValue: false
+  - name: change_request_clear
+    type: boolean
+    description: In update mode, true when the change request is clear enough to proceed without Gate 1 clarification.
+    defaultValue: true
+  - name: intent_needs_confirmation
+    type: boolean
+    description: Composite gap flag for Gate 1 — true when mode is ambiguous, the update change request is unclear, and/or review.
+    defaultValue: false
+  - name: headless_mode
+    type: boolean
+    description: When true, soft mid-flow gates auto-resolve without presentation.
+    defaultValue: true
+  - name: open_finding_count
+    type: number
+    description: Count of open findings on the decision surface.
+    defaultValue: 0
+  - name: update_seeded_from_review
+    type: boolean
+    description: True when update mode was entered from a review-mode fix disposition.
+    defaultValue: false
+  - name: removal_count
+    type: number
+    description: Count of content removals inventoried for this change.
+    defaultValue: 0
+  - name: fail_count
+    type: number
+    description: Count of YAML files that failed schema validation.
+    defaultValue: 0
+  - name: total_count
+    type: number
+    description: Total scope-manifest items checked.
+    defaultValue: 0
+  - name: addressed_count
+    type: number
+    description: Scope-manifest items confirmed addressed.
+    defaultValue: 0
+  - name: unaddressed_count
+    type: number
+    description: Scope-manifest items still unaddressed.
+    defaultValue: 0
+  - name: change_brief_path
+    type: string
+    description: Absolute path to the persisted change-brief artifact.
+    defaultValue: ""
+  - name: impact_analysis_path
+    type: string
+    description: Absolute path to the persisted impact-analysis artifact.
+    defaultValue: ""
+  - name: scope_manifest_path
+    type: string
+    description: Absolute path to the persisted scope-manifest artifact.
+    defaultValue: ""
+  - name: report_path
+    type: string
+    description: Absolute path to the persisted findings register.
+    defaultValue: ""
+  - name: review_scope_confirmed
+    type: boolean
+    description: In review mode, whether the user confirmed the audit target set.
+    defaultValue: false
+  - name: target_workflow_id
+    type: string
+    description: The workflow id currently being authored, updated or audited.
+  - name: target_workflow_ids
+    type: array
+    description: Ordered list of workflow ids in scope for this run, one or more.
+  - name: workflow_id
+    type: string
+    description: The id of the workflow being created or updated.
+  - name: scope_manifest_confirmed
+    type: boolean
+    description: Whether the complete file manifest has been confirmed.
+    defaultValue: false
+  - name: scope_manifest
+    type: array
+    description: List of files to create, modify or remove with full paths and actions.
+  - name: current_file
+    type: object
+    description: The file currently being drafted.
+  - name: has_unflagged_removals
+    type: boolean
+    description: True when drafting detects removals absent from the impact inventory.
+    defaultValue: false
+  - name: has_critical_finding
+    type: boolean
+    description: Whether any finding is Critical severity — a schema-invalid or structurally broken construct that must not be committed.
+    defaultValue: false
+  - name: target_path
+    type: string
+    description: Worktree path for edits, builds and PR operations.
+    defaultValue: ""
+  - name: worktree_created
+    type: boolean
+    description: True when a dedicated worktree at `target_path` was created or reused by this run.
+    defaultValue: false
+  - name: workflow_branch
+    type: string
+    description: The feature branch in the workflows repo carrying this change.
+    defaultValue: ""
+  - name: pr_url
+    type: string
+    description: URL of the pull request opened for this change.
+    defaultValue: ""
+  - name: pr_number
+    type: string
+    description: Number of the pull request opened for this change.
+    defaultValue: ""
+  - name: open_judgements_count
+    type: number
+    description: Count of unresolved design judgements recorded in the change brief.
+    defaultValue: 0
+  - name: removals_approved
+    type: boolean
+    description: Whether the inventoried content removals are approved.
+    defaultValue: false
+  - name: removal_disposition
+    type: string
+    description: "Disposition of an unflagged removal — `flagged | restored`."
+    defaultValue: ""
+  - name: scope_round
+    type: number
+    description: Scope-confirmation round for this run.
+    defaultValue: 0
+  - name: remediation_round
+    type: number
+    description: Remediation round for this run.
+    defaultValue: 0
+  - name: remediation_selected
+    type: boolean
+    description: Whether the operator chose remediation over acceptance at the pre-attestation gate.
+    defaultValue: false
+  - name: commit_approved
+    type: boolean
+    description: Whether the operator approved the change for commit.
+    defaultValue: false
+  - name: review_closed
+    type: boolean
+    description: Whether a review run closed on its report with no escalation.
+    defaultValue: false
+  - name: has_coverage_gap
+    type: boolean
+    description: Whether any enumeration unit was blocked rather than walked.
+    defaultValue: false
+  - name: register_sections
+    type: array
+    description: Per-target register sections accumulated across the sweep.
+    defaultValue: []
+  - name: verified_findings
+    type: array
+    description: Findings whose claims survived independent re-derivation.
+initialActivity: intake-and-context
