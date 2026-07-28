@@ -2,7 +2,7 @@
 name: deferred-items
 description: Template and rules for the single deferred-items register every other artifact links to.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 # Deferred Items Register Guide
@@ -25,6 +25,6 @@ The register is the one canonical home for work consciously deferred **out of sc
 
 - **Out-of-scope only** — rows are conscious deferrals beyond this package. In-task remainders use `follow-ups.md`.
 - **One row per item, updated in place** — when a deferred item is raised as a tracker issue, add the link to its Follow-up cell; when it is picked up, mark the row `→ #[issue]` rather than deleting it.
-- **Created lazily** — create the register when the first deferred item appears (standard numbered-artifact semantics); a run that defers nothing has no register.
+- **Created lazily, unprefixed** — create the register as bare `deferred-items.md` when the first deferred item appears; a run that defers nothing has no register. Any activity may be the one that defers first, so the register has no owning activity and takes no `artifactPrefix`.
 - **Link, don't restate** — producers (requirements Deferred scope, assumption deferrals, review-finding deferrals, COMPLETE.md) record one pointer line to this register; the row here is the single statement of the item.
 - **Issue creation reads this register** — deferred-item issues are raised from register rows, carrying the row ID for traceability.

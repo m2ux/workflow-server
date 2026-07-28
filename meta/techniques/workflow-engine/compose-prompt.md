@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -43,3 +43,9 @@ Minimal stub string ready for the host spawn invoke.
 ### 4. Return stub
 
 - Emit the assembled text as `{composed_prompt}`
+
+## Rules
+
+### context-travels-as-state
+
+Prior-activity context reaches a worker as state, not as prose in the stub. Artifact paths, decisions, and measurements already live in the session bag and in the artifacts those bag variables point at; the worker binds them through its activity's step inputs. Do not restate artifact content, decisions, or scope lists in `{composed_prompt}` — a paraphrase drifts from the artifact that records it, and the worker cannot tell which is authoritative. A fact the worker needs and no variable carries is a missing declaration, not a licence to inline.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ Technique path to invoke for the analyse phase each iteration (supplied via `ste
 
 ### challenge_perspectives
 
-Perspectives (or lens names) passed to challenge for the parallel adversarial pass.
+Perspectives (or lens names) passed to challenge for the adversarial pass.
 
 ### convergence_flag
 

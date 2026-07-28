@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.4.0
 ---
 
 ## Capability
@@ -42,3 +42,5 @@ The sub-agent's final output (text, including any `<checkpoint_yield>` block) �
 ### depth-1-only
 
 spawn-agent operates depth-1 only. Spawned sub-agents do not inherit the orchestrator's dispatch primitive. Workflows MUST NOT design around nested orchestrator agents — one orchestrator agent drives all orchestrator-level work across all session levels. Harness-specific nesting limits are documented in the harness technique files.
+
+A spawned agent therefore has no dispatch primitive, and `concurrency = 1` is its scatter contract, not a shortfall against it: any [scatter-gather](../scatter-gather.md) it runs is the sequential case, and running one is conformance, not deviation. Parallel scatter is available only where the dispatch primitive is — at the orchestrator. Hoist a pass there when its fan-out is worth an orchestrator-owned step; otherwise author it sequential and size the work accordingly.

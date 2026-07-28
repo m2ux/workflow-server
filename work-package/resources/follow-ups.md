@@ -2,7 +2,7 @@
 name: follow-ups
 description: Template and rules for the in-task follow-ups register (work still inside the current package).
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 # Follow-Ups Register Guide
@@ -25,5 +25,5 @@ The register is the one canonical home for **in-task** follow-ups — work still
 
 - **In-task only** — rows are work that must finish (or explicitly drop) before package completion. Conscious out-of-scope deferrals go to `deferred-items.md`.
 - **One row per item, updated in place** — mark `done` when closed; do not delete historical rows.
-- **Created lazily** — create the register when the first in-task follow-up appears; a run with none has no register.
+- **Created lazily, unprefixed** — create the register as bare `follow-ups.md` when the first in-task follow-up appears; a run with none has no register. Any activity may be the one that logs first, so the register has no owning activity and takes no `artifactPrefix`.
 - **Link, don't restate** — producers record one pointer line to this register; the row here is the single statement of the item.

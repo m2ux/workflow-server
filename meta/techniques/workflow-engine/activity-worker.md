@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -39,6 +39,7 @@ Worker agent identity for this dispatch.
 
 ### 3. Execute steps
 
+- Read the artifact each bound artifact-path input names before the step that consumes it — the dispatch stub carries identity bindings only, never artifact content
 - Execute each activity step in document order
 - For `kind: technique` steps, load the bound operation on reach per [progressive-step-technique-load](./TECHNIQUE.md#progressive-step-technique-load)
 - Apply each bound operation via [variable-binding](../variable-binding.md)
