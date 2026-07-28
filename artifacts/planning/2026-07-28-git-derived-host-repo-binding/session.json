@@ -331,12 +331,23 @@
             },
             "optionId": "approve-removals",
             "respondedAt": "2026-07-28T10:58:45.000Z"
+          },
+          "scope-and-draft-scope-confirmed#0": {
+            "effects": {
+              "variablesSet": {
+                "scope_manifest_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-07-28T11:11:22.000Z"
           }
         },
-        "completedActivities": [],
-        "condition": "",
-        "currentActivity": "intake-and-context",
-        "currentTechnique": "work-package::manage-artifacts::write-artifact",
+        "completedActivities": [
+          "intake-and-context"
+        ],
+        "condition": "isDefault:scope-and-draft — both review-gated transitions failed because operation_type == update",
+        "currentActivity": "scope-and-draft",
+        "currentTechnique": "workflow-definition::verify-artifact-conforms",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
@@ -349,13 +360,24 @@
             "resource:elicitation-guide#mode-dimension-sets": "8ecb743386cfc647",
             "resource:impact-analysis#template": "40510ba8607a0dc7",
             "resource:meta/planning-readme": "db338707e2d03446",
+            "resource:scope-manifest": "1008957341b02f64",
             "resource:update-mode-guide#change-categories": "87894973441e9a60",
             "resource:workflow-authoring/readme-seed": "b789e3143d1609fd",
-            "technique:work-package::manage-artifacts::write-artifact": "f827a0549ba8368a",
+            "resource:workflow-design/anti-patterns": "ea96fac5e1be7027",
+            "resource:workflow-design/anti-patterns#schema-expressiveness-anti-patterns": "4e36de0bf0f3f959",
+            "resource:workflow-design/convention-conformance#reference-conventions": "448f79b06617cbd3",
+            "technique:work-package::manage-artifacts::write-artifact": "1c352aad9968529a",
+            "technique:work-package::manage-git::create-worktree": "af3a87aa65410f97",
+            "technique:workflow-definition::derive-workflow-branch": "d6c15a89164542d6",
             "technique:workflow-definition::derive-workflows-target-path": "9783ff568d465339",
             "technique:workflow-definition::impact-analysis": "1864a398fcab2a2c",
             "technique:workflow-definition::intake-classification": "785d48688bb7ae2a",
+            "technique:workflow-definition::readme-authoring": "4c771ac925cbea85",
+            "technique:workflow-definition::review-drafted-file": "1453b00ff692b2ae",
+            "technique:workflow-definition::scope-definition": "483414a68d3a0a66",
             "technique:workflow-definition::synthesize-change-brief": "aa2d514a9967c52f",
+            "technique:workflow-definition::verify-artifact-conforms": "1493620adb2741e0",
+            "technique:workflow-definition::yaml-authoring": "dd9430c3658d7cc3",
             "technique:workflow-engine::create-readme": "d02b1b4cc5a10853"
           }
         },
@@ -550,47 +572,531 @@
             },
             "timestamp": "2026-07-28T10:58:45.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "usage": {
+                "duration_ms": 1125769,
+                "subagent_tokens": 279631,
+                "tool_uses": 58
+              }
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "planning_folder_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding"
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "repo_root",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server"
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "target_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-git-derived-host-repo-binding/"
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "operation_type",
+              "source": "variables_changed",
+              "value": "update"
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "operation_type_ambiguous",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "change_request_clear",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "intent_needs_confirmation",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "review_scope_confirmed",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "headless_mode",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "target_workflow_id",
+              "source": "variables_changed",
+              "value": "meta"
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "target_workflow_ids",
+              "source": "variables_changed",
+              "value": [
+                "meta",
+                "work-package"
+              ]
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "change_category",
+              "source": "variables_changed",
+              "value": [
+                "Activity",
+                "Technique",
+                "Resource",
+                "Structural refactor"
+              ]
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "change_brief",
+              "source": "variables_changed",
+              "value": "Persisted at 01-change-brief.md — purpose, 6 changed dimensions (activity model, checkpoints, variables, techniques, resources, rules), 6 open judgements"
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "open_judgements_count",
+              "source": "variables_changed",
+              "value": 6
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "impact_analysis",
+              "source": "variables_changed",
+              "value": "Persisted at 01-impact-analysis.md — 13 directly modified, 8 exposed at draft time, transitions Pass, references conditional Pass, variables Fail (pre-existing)"
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "removal_count",
+              "source": "variables_changed",
+              "value": 6
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "removals_approved",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "created_readme",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/README.md"
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "change_brief_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/01-change-brief.md"
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "impact_analysis_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/01-impact-analysis.md"
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "structural_inventory",
+              "source": "variables_changed",
+              "value": {
+                "baseline_surface": "workflows @ branch 'workflows' commit f84fe02b — read from the submodule checkout because the run worktree is not yet materialised; it branches from this commit",
+                "meta": {
+                  "change_touches": "Activities 00 and 02, the bootstrap-protocol resource, and both the workflow-engine and version-control technique groups",
+                  "lifecycle_activities": 5,
+                  "resources": 5,
+                  "technique_groups": 9,
+                  "techniques_addressable": 122,
+                  "total_files": 152,
+                  "version": "5.11.0"
+                },
+                "work-package": {
+                  "activities": 15,
+                  "change_touches": "The standalone repo-root-resolution technique and its unbound binding at 01-start-work-package.yaml:160",
+                  "resources": 31,
+                  "technique_groups": 16,
+                  "techniques_addressable": 93,
+                  "total_files": 162,
+                  "version": "3.36.0"
+                }
+              }
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "change_constraints",
+              "source": "variables_changed",
+              "value": {
+                "co_change_sets": [
+                  "Host derivation: resolve-host-repo.md (new) + version-control/TECHNIQUE.md + bootstrap-protocol.md + start-session.md + 00-discover-session.yaml + meta/workflow.yaml",
+                  "Component context: extract-identifying-context.md + select-target-component.md + version-control/TECHNIQUE.md, plus 00-discover-session.yaml's resume-intent gate if judgement 2 ungates it",
+                  "Rename: meta/workflow.yaml + select-target-component.md + detect-repo-type.md + 02-resolve-target.yaml + meta/README.md + meta/activities/README.md, with commit-and-persist.md and agent-conduct.md pending judgement 3",
+                  "discovered_path binding: work-package/activities/01-start-work-package.yaml + repo-root-resolution.md + work-package/workflow.yaml",
+                  "Binding validation: 02-resolve-target.yaml + meta/workflow.yaml",
+                  "Walk re-baseline (server repo, pending judgement 5): tests/e2e/__snapshots__/corpus-sha.json + snapshot.test.ts.snap + submodule pointer bump"
+                ],
+                "identifier_collisions": [
+                  "target_path — three incompatible meanings across meta, work-package, remediate-vuln",
+                  "target_repo — already declared at meta/workflow.yaml:38 with description 'from user or workspace AGENTS.md'; description must be rewritten, not just the producer",
+                  "is_monorepo (meta) vs proposed is_monorepo_host",
+                  "repo_root (work-package) vs proposed host_repo_path",
+                  "component_name (work-package) vs proposed component_path and component_hint",
+                  "All six proposed identifiers are unused library-wide — no hard collision"
+                ]
+              }
+            },
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-28T11:01:56.831Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "derive-workflow-branch",
+              "techniqueId": "workflow-definition::derive-workflow-branch"
+            },
+            "timestamp": "2026-07-28T11:02:43.111Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "ensure-worktree",
+              "techniqueId": "work-package::manage-git::create-worktree"
+            },
+            "timestamp": "2026-07-28T11:03:14.552Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "define-scope",
+              "techniqueId": "workflow-definition::scope-definition"
+            },
+            "timestamp": "2026-07-28T11:04:06.243Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "scope-manifest"
+            },
+            "timestamp": "2026-07-28T11:04:14.484Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/convention-conformance#reference-conventions"
+            },
+            "timestamp": "2026-07-28T11:04:15.379Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-scope-manifest",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-28T11:06:31.361Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:06:54.698Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#schema-expressiveness-anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:07:00.267Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-confirmed#0",
+            "timestamp": "2026-07-28T11:10:09.305Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-confirmed#0",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-28T11:11:22.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-28T11:11:22.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "author-yaml",
+              "techniqueId": "workflow-definition::yaml-authoring"
+            },
+            "timestamp": "2026-07-28T11:11:45.132Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "review-file",
+              "techniqueId": "workflow-definition::review-drafted-file"
+            },
+            "timestamp": "2026-07-28T11:11:45.234Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "author-workflow-readme",
+              "techniqueId": "workflow-definition::readme-authoring"
+            },
+            "timestamp": "2026-07-28T11:25:01.664Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-planning-artifacts",
+              "techniqueId": "workflow-definition::verify-artifact-conforms"
+            },
+            "timestamp": "2026-07-28T11:25:02.189Z",
+            "type": "technique_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 17,
+        "seq": 34,
         "sessionIndex": "7IE6G7",
         "skippedActivities": [],
         "startedAt": "2026-07-28T10:36:29.297Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785236350,
+        "ts": 1785237902,
         "variables": {
           "addressed_count": 0,
-          "change_brief_path": "",
+          "change_brief": "Persisted at 01-change-brief.md — purpose, 6 changed dimensions (activity model, checkpoints, variables, techniques, resources, rules), 6 open judgements",
+          "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/01-change-brief.md",
+          "change_category": [
+            "Activity",
+            "Technique",
+            "Resource",
+            "Structural refactor"
+          ],
+          "change_constraints": {
+            "co_change_sets": [
+              "Host derivation: resolve-host-repo.md (new) + version-control/TECHNIQUE.md + bootstrap-protocol.md + start-session.md + 00-discover-session.yaml + meta/workflow.yaml",
+              "Component context: extract-identifying-context.md + select-target-component.md + version-control/TECHNIQUE.md, plus 00-discover-session.yaml's resume-intent gate if judgement 2 ungates it",
+              "Rename: meta/workflow.yaml + select-target-component.md + detect-repo-type.md + 02-resolve-target.yaml + meta/README.md + meta/activities/README.md, with commit-and-persist.md and agent-conduct.md pending judgement 3",
+              "discovered_path binding: work-package/activities/01-start-work-package.yaml + repo-root-resolution.md + work-package/workflow.yaml",
+              "Binding validation: 02-resolve-target.yaml + meta/workflow.yaml",
+              "Walk re-baseline (server repo, pending judgement 5): tests/e2e/__snapshots__/corpus-sha.json + snapshot.test.ts.snap + submodule pointer bump"
+            ],
+            "identifier_collisions": [
+              "target_path — three incompatible meanings across meta, work-package, remediate-vuln",
+              "target_repo — already declared at meta/workflow.yaml:38 with description 'from user or workspace AGENTS.md'; description must be rewritten, not just the producer",
+              "is_monorepo (meta) vs proposed is_monorepo_host",
+              "repo_root (work-package) vs proposed host_repo_path",
+              "component_name (work-package) vs proposed component_path and component_hint",
+              "All six proposed identifiers are unused library-wide — no hard collision"
+            ]
+          },
           "change_request_clear": true,
           "commit_approved": false,
+          "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/README.md",
           "fail_count": 0,
           "has_coverage_gap": false,
           "has_critical_finding": false,
           "has_unflagged_removals": false,
           "headless_mode": true,
-          "impact_analysis_path": "",
+          "impact_analysis": "Persisted at 01-impact-analysis.md — 13 directly modified, 8 exposed at draft time, transitions Pass, references conditional Pass, variables Fail (pre-existing)",
+          "impact_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/01-impact-analysis.md",
           "intent_needs_confirmation": false,
           "open_finding_count": 0,
-          "open_judgements_count": 0,
+          "open_judgements_count": 6,
+          "operation_type": "update",
           "operation_type_ambiguous": false,
+          "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding",
           "pr_number": "",
           "pr_url": "",
           "register_sections": [],
           "remediation_round": 0,
           "remediation_selected": false,
-          "removal_count": 0,
+          "removal_count": 6,
           "removal_disposition": "",
           "removals_approved": true,
+          "repo_root": "/home/mike1/projects/dev/workflow-server",
           "report_path": "",
           "review_closed": false,
           "review_scope_confirmed": false,
-          "scope_manifest_confirmed": false,
+          "scope_manifest_confirmed": true,
           "scope_manifest_path": "",
           "scope_round": 0,
-          "target_path": "",
+          "structural_inventory": {
+            "baseline_surface": "workflows @ branch 'workflows' commit f84fe02b — read from the submodule checkout because the run worktree is not yet materialised; it branches from this commit",
+            "meta": {
+              "change_touches": "Activities 00 and 02, the bootstrap-protocol resource, and both the workflow-engine and version-control technique groups",
+              "lifecycle_activities": 5,
+              "resources": 5,
+              "technique_groups": 9,
+              "techniques_addressable": 122,
+              "total_files": 152,
+              "version": "5.11.0"
+            },
+            "work-package": {
+              "activities": 15,
+              "change_touches": "The standalone repo-root-resolution technique and its unbound binding at 01-start-work-package.yaml:160",
+              "resources": 31,
+              "technique_groups": 16,
+              "techniques_addressable": 93,
+              "total_files": 162,
+              "version": "3.36.0"
+            }
+          },
+          "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-git-derived-host-repo-binding/",
+          "target_workflow_id": "meta",
+          "target_workflow_ids": [
+            "meta",
+            "work-package"
+          ],
           "total_count": 0,
           "unaddressed_count": 0,
           "update_seeded_from_review": false,

@@ -58,6 +58,19 @@ Only the dimensions this run changes appear. Activity list and artifacts are unc
 | 5 | Whether the run may commit outside the `workflows` submodule | The request scopes edits to the submodule, but `tests/e2e/__snapshots__/corpus-sha.json` pins the corpus at `f84fe02b` and both walk tests cover `meta`, so re-baselining writes server-repo files plus a submodule pointer bump. | Two-repo scope: the walk stays green in the same change. Submodule-only: the walk goes red until a separate server-repo change lands. |
 | 6 | Whether `detect-repo-type` is renamed with `select-target-component` | The request names only `select-target-component`'s output, but `detect-repo-type` is the seam's other producer — it sets the same variable to `.` for a regular repo. | Rename both: the variable has one meaning and one name. Rename one: two producers write two differently-named facts that downstream readers must union. |
 
+### Resolutions
+
+All six were resolved before drafting, at the `scope-confirmed` gate. None remains open.
+
+| # | Resolved | Reason it went that way |
+|---|----------|-------------------------|
+| 1 | Both sites | `start_session` needs `repo` at bootstrap step 3, so bootstrap step 2 derives it there; `00-discover-session` applies the same technique again so the facts reach the client session and the mismatch gate. Bootstrap-only leaves the gate with no values; activity-only leaves the bootstrap rewrite with nothing to call. |
+| 2 | Keep the resume gate | `component_hint` from git already covers fresh runs and is the better component signal. Ungating would pay the step's cost on every run and land its other outputs earlier, changing saved-session matching well outside this run's purpose. |
+| 3 | Repoint all three readers | `commit-and-persist`, `agent-conduct` and `cargo-operations/preflight` all describe the submodule in prose, so `component_path` is the fact they mean. Leaving two `meta` techniques reading a name `meta` no longer declares would turn working references into dangling ones — a regression this change would otherwise introduce. |
+| 4 | Exclude from resume scoring | A component fact must not steer which host session resumes. Achieved structurally: `mentioned_repo` is emitted as a sibling of `identifying_context` rather than a field inside it, so the exclusion cannot erode into a caveat. |
+| 5 | Out of scope | The run's edit surface is a checkout of the `workflows` repo alone, so `tests/e2e/__snapshots__/*` is not reachable from it. The walk stays red until a separate server-repo change bumps the submodule pointer and re-baselines. |
+| 6 | Rename both producers | One fact, one name. Leaving one producer on the old name would force downstream readers to union two names — the defect being fixed. Covered by inventoried removal 6. |
+
 ---
 
 ## Confirmation ask
