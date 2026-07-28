@@ -21,12 +21,7 @@ Summary, description, and context of the tracker ticket being assessed (the link
 
 ### ticket_gaps_documented
 
-True once any identified gaps have been recorded (in the assumptions log) so they persist as tracked findings.
-
-### ticket_refactor_needed
-
-True when the user elects to refactor the ticket to address the identified gaps; false when they choose to proceed with gaps noted or the ticket is complete.
-
+True once any identified gaps have been recorded (in the assumptions log) so they persist as tracked findings; false when every dimension is present and sufficient.
 
 ## Protocol
 
@@ -38,10 +33,5 @@ True when the user elects to refactor the ticket to address the identified gaps;
 ### 2. Document Gaps
 
 - For each dimension that is weak or missing, record the gap concisely as a tracked finding in `{assumptions_log}`.
-- Set `{ticket_gaps_documented}` once the gaps are recorded.
+- Set `{ticket_gaps_documented}` true once gaps are recorded, false when every dimension is present and sufficient.
 - Documented gaps are persistent findings, not ephemeral status text — they live in the assumptions log so review can proceed with them visible regardless of whether the ticket is refactored.
-
-### 3. Emit Gaps for Activity Decision
-
-- Emit the documented gaps as bindable output for the binding activity to surface (refactor vs proceed-with-gaps).
-- `{ticket_refactor_needed}` is set from the activity checkpoint effect: true to refactor, false to proceed with gaps noted or when no significant gaps were found.

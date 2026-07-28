@@ -108,10 +108,16 @@ steps:
   - kind: checkpoint
     id: ticket-completeness
     condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: ticket_gaps_documented
+          operator: ==
+          value: true
     message: Ticket completeness gaps were identified. Select whether to refactor the ticket or proceed with gaps noted.
     blocking: false
     defaultOption: proceed-with-gaps
@@ -125,11 +131,10 @@ steps:
             ticket_refactor_needed: true
       - id: proceed-with-gaps
         label: Proceed with gaps noted
-        description: Document gaps in the [assumptions log]({assumptions_log}) and continue review with gaps as tracked findings
+        description: Continue review with the recorded gaps as tracked findings in the [assumptions log]({assumptions_log})
         effect:
           setVariable:
             ticket_refactor_needed: false
-            ticket_gaps_documented: true
       - id: no-gaps
         label: Ticket is complete
         description: No significant gaps were found

@@ -66,6 +66,10 @@ steps:
   - kind: technique
     id: configure-sec-vuln-remote
     technique: security-setup::configure-security-remote
+    actions:
+      - action: validate
+        target: security_remote_configured != false
+        message: "The 'security' remote is not registered against the private fork inside {target_path}. Add it with git remote add security {private_fork_url} and re-run."
   - kind: checkpoint
     id: confirm-security-remote
     message: "CRITICAL: Isolation check. Confirm that the 'security' remote is configured and points to a PRIVATE repository. Is 'git remote -v' output correct for 'security'?"
@@ -112,6 +116,10 @@ steps:
   - kind: technique
     id: finalize-setup
     technique: security-setup::verify-origin-untracked
+    actions:
+      - action: validate
+        target: origin_untracked != false
+        message: "The current branch in {target_path} still tracks an upstream on origin, so a push could reach the public remote. Run git branch --unset-upstream in {target_path} and re-run."
   - kind: action
     id: announce-completion
     actions:
