@@ -250,44 +250,100 @@ Stderr: compact scorecard, plus a `gate: PASS|FAIL` line under `--gate`. Stdout:
 
 ## Validating Workflows
 
-Several layered checks validate workflow data:
+### One sweep, one registry
 
 ```bash
-# Structural / schema validation of YAML files (whole-directory sweep)
-npx tsx scripts/validate-workflow-yaml.ts <workflow-path>
-
-# Every step.technique reference resolves through the loader
-npx tsx scripts/check-all-refs.ts
-
-# Binding fidelity: every step.technique.inputs key is a declared input, and every
-# interpolation/condition read resolves to a producer (declared id, $-local,
-# workflow.yaml variable, or set-target). Fails only on NEW drift beyond
-# scripts/binding-fidelity-baseline.json (re-snapshot intentional changes with
-# --update-baseline).
-npm run check:binding
-
-# Normative technique template: metadata.version-only frontmatter, no H1 title,
-# the canonical H2 set in order (Capability, Inputs, Outputs, Protocol, Rules —
-# Outputs before Protocol), snake_case entry ids (camelCase tool-parameter
-# mirrors allowed), kebab-case rule names, snake_case {$name} sigils, and every
-# #### artifact body a filename the loader accepts. Hard-zero.
-npm run check:technique-template
-
-# Shared fragments (#166 B10): every rules { ref } and checkpoint ref resolves,
-# every declared fragment is referenced somewhere, no inline copy of a fragment,
-# and no identical rule/checkpoint body authored inline at multiple sites.
-# Near-duplicates of a fragment are reported as warnings. Hard-zero.
-npm run check:fragments
-
-# Audience convention: every output declared audience: agent that also carries an
-# #### artifact filename must name a JSON artifact (an agent-audience artifact is
-# serialized as JSON on disk). Fails only on NEW violations beyond
-# scripts/audience-baseline.json (re-snapshot intentional changes with
-# --update-baseline).
-npm run check:audience
+npm run check:all              # every guard, one table, ~1.5s
+npm run check:all -- --verbose # plus each guard's own output
+npm run check:all -- --corpus-only
+npm run check:all -- --only binding-fidelity,refs
+npm run check:all -- --root /path/to/worktree/workflows
 ```
 
-The binding-fidelity, technique-template, fragments, and audience guards also run as Vitest tests (`tests/binding-fidelity.test.ts`, `tests/technique-template.test.ts`, `tests/fragments-guard.test.ts`, `tests/audience-guard.test.ts`), so `npm test` fails on new binding drift, a template deviation, fragment drift, or a non-JSON agent-audience artifact.
+The set of guards is [`scripts/guards.ts`](../scripts/guards.ts). Adding an entry there enforces the
+guard in `check:all`, in `check:delta`, and in CI — nothing else needs editing. Each guard is still
+runnable on its own (`npm run check:binding`, `npm run check:refs`, …) and reports through one
+protocol ([`scripts/guard-protocol.ts`](../scripts/guard-protocol.ts)):
+
+| Exit | Meaning |
+|------|---------|
+| `0` | clean |
+| `1` | findings — printed as `[check] site / detail`, or as JSON under `--json` |
+| `2` | **could not measure** — the corpus root was missing, empty, or unreachable |
+
+Exit 2 exists because a guard aimed at a corpus it cannot reach used to walk nothing and report
+success. Every corpus guard resolves its root through `requireWorkflowsRoot` (`--root` >
+`WORKFLOWS_DIR` > default) and asserts it inspected something before reporting clean.
+
+### Did *my* change cause this?
+
+```bash
+npm run check:delta                       # vs the merge-base with origin/main
+npm run check:delta -- --base upstream/main
+npm run check:delta -- --only binding-fidelity --verbose
+```
+
+`check:delta` resolves the merge-base, materialises it in a throwaway worktree with the `workflows`
+submodule pinned to the commit *that* tree recorded, runs the registry against both trees, and
+reports only the difference — including what your change fixed. Nothing is stored, so nothing drifts.
+Base results are cached under `.guard-cache/` keyed by (base commit, base corpus commit), so the
+doubled runtime is paid once per rebase.
+
+Guards that speak `--json` give a precise per-finding delta; the rest are compared by exit code and
+by new output lines. That is the reason to move a guard onto the finding protocol when its output
+starts mattering.
+
+### Corpus debt
+
+`check:binding` reports the corpus's pre-existing binding debt, triaged once per finding in
+[`scripts/binding-fidelity-triage.json`](../scripts/binding-fidelity-triage.json):
+
+| Verdict | Guard behaviour |
+|---------|-----------------|
+| `harmless` | correct by design — suppressed |
+| `fix-later` | real debt — suppressed, but counted in the summary line |
+| `live-bug` | **reported**, so the guard stays red until it is fixed |
+
+A finding absent from the file is *untriaged* and reported; an entry matching nothing is *stale* and
+reported. There is no `--update-baseline`: a verdict is a human judgement, which is exactly what the
+retired baselines let a regenerate flag skip. `npx tsx scripts/check-binding-fidelity.ts
+--emit-untriaged` prints the findings still needing one.
+
+`check:review-mode` follows the same shape with a smaller list —
+`ACCEPTED_HEADLESS_AUTO_ADVANCE` in [`scripts/check-review-mode-gating.ts`](../scripts/check-review-mode-gating.ts),
+one reason per accepted checkpoint.
+
+### Running guards in a worktree
+
+A fresh worktree has an empty `workflows/` and no `node_modules`, so the guards and the suite cannot
+measure the edits that live there:
+
+```bash
+npm run worktree:provision            # this worktree
+npm run worktree:provision -- <path>  # another one
+```
+
+It checks out the submodules the worktree records and makes `node_modules` resolvable. Idempotent.
+
+### Enforcement
+
+[`.github/workflows/verify.yml`](../.github/workflows/verify.yml) runs `npm run typecheck`,
+`npm run test:ci`, and `npm run check:all` on every pull request, against the corpus commit the tree
+under review pins. Guards that also run as Vitest tests (`tests/binding-fidelity.test.ts`,
+`tests/technique-template.test.ts`, `tests/fragments-guard.test.ts`, `tests/audience-guard.test.ts`,
+`tests/review-mode-gating.test.ts`, `tests/identifier-qualification.test.ts`) fail `npm test` too.
+
+### Corpus-coupled baselines
+
+The walk snapshots in `tests/e2e/__snapshots__/` describe a path through the corpus, so they are only
+meaningful against the corpus that produced them. `tests/e2e/__snapshots__/corpus-sha.json` records
+that commit, and a mismatch fails with both SHAs named — so corpus drift reads as corpus drift rather
+than as six unrelated regressions. Bump it in the same commit that bumps the submodule:
+
+```bash
+npm run test:ci -- -u      # re-baseline the walk
+npm run baseline:stamp     # record the corpus commit it was baselined against
+```
 
 ## Branch Structure
 

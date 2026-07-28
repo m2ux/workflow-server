@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { resolve } from 'node:path';
 import { collectFragmentViolations } from '../scripts/check-fragments.js';
+import { corpusRoot } from './corpus-root.js';
 
 /**
  * Shared-fragment guard (B10, issue #166): every rules `{ ref }` and checkpoint `ref` resolves,
@@ -9,7 +10,7 @@ import { collectFragmentViolations } from '../scripts/check-fragments.js';
  * is the declaration drift the fragment mechanism exists to end. Hard-zero over the corpus.
  */
 
-const CORPUS_ROOT = resolve(import.meta.dirname, '../workflows');
+const CORPUS_ROOT = corpusRoot();
 const FIXTURE_ROOT = resolve(import.meta.dirname, 'fixtures/fragments');
 
 describe('fragments guard (corpus)', () => {

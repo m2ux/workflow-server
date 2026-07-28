@@ -14,8 +14,9 @@ import type { Workflow } from '../src/schema/workflow.schema.js';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { corpusRoot } from './corpus-root.js';
 
-const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
+const WORKFLOW_DIR = corpusRoot();
 
 async function loadMetaWorkflow(): Promise<Workflow> {
   const result = await loadWorkflow(WORKFLOW_DIR, 'meta');

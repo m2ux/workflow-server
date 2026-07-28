@@ -6,6 +6,7 @@ import { resolve, join } from 'node:path';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { parse } from 'yaml';
+import { corpusRoot } from './corpus-root.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseToolResponse(result: any): any {
@@ -121,7 +122,7 @@ describe('mcp-server integration', () => {
   beforeAll(async () => {
     workspaceDir = mkdtempSync(join(tmpdir(), 'wf-mcp-test-'));
     const config = {
-      workflowDir: resolve(import.meta.dirname, '../workflows'),
+      workflowDir: corpusRoot(),
       schemasDir: resolve(import.meta.dirname, '../schemas'),
       workspaceDir,
       serverName: 'test-workflow-server',

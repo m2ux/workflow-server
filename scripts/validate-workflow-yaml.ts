@@ -1,15 +1,23 @@
 #!/usr/bin/env npx tsx
 /**
- * Validate a workflow's YAML files (workflow.yaml, activities/*.yaml) against schemas.
- * Usage: npx tsx scripts/validate-workflow-yaml.ts <path-to-workflow-dir>
- * Example: npx tsx scripts/validate-workflow-yaml.ts /path/to/workflows/substrate-node-security-audit
+ * Validate workflow YAML (workflow.yaml, activities/*.yaml) and technique protocol references
+ * against the schemas.
+ *
+ *   npx tsx scripts/validate-workflow-yaml.ts                     # every workflow in the corpus
+ *   npx tsx scripts/validate-workflow-yaml.ts --root /wt/workflows # every workflow in a worktree
+ *   npx tsx scripts/validate-workflow-yaml.ts workflows/prism      # one workflow
+ *
+ * With no positional directory it walks the whole resolved corpus. It used to REQUIRE a positional
+ * path and exit 2 without one, which is why `package.json` never invoked it and its checks ran only
+ * when somebody remembered (issue #327 S1).
  */
 
-import { readFileSync, readdirSync, existsSync } from 'fs';
+import { readFileSync, readdirSync, existsSync, statSync } from 'fs';
 import { join, resolve } from 'path';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { parseActivityFilename } from '../src/loaders/filename-utils.js';
 import { validateActivityFile } from './validate-activities.js';
+import { requireRootOrExit } from './guard-protocol.js';
 
 /**
  * Check NN- filename prefix and report duplicate skill/activity IDs.
@@ -88,26 +96,37 @@ function checkTechniqueProtocolRefs(file: string): string[] {
   );
 }
 
-const workflowDirPath = resolve(process.argv[2] ?? '');
-if (!workflowDirPath || !existsSync(workflowDirPath)) {
-  console.error('Usage: npx tsx scripts/validate-workflow-yaml.ts <path-to-workflow-dir>');
-  console.error('Example: npx tsx scripts/validate-workflow-yaml.ts workflows/substrate-node-security-audit');
-  process.exit(2);
+const positional = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : undefined;
+
+/** Every workflow directory to validate: the positional one, or all of them under the corpus root. */
+function targets(): string[] {
+  if (positional) {
+    const dir = resolve(positional);
+    if (!existsSync(dir)) {
+      console.error(`[FAIL] ${dir} does not exist.`);
+      console.error('Usage: npx tsx scripts/validate-workflow-yaml.ts [<path-to-workflow-dir>] [--root <workflows-dir>]');
+      process.exit(2);
+    }
+    if (!existsSync(join(dir, 'workflow.yaml'))) {
+      console.error(`[FAIL] workflow.yaml not found at ${join(dir, 'workflow.yaml')}`);
+      console.error('The specified directory does not appear to be a workflow directory.');
+      process.exit(2);
+    }
+    return [dir];
+  }
+  const root = requireRootOrExit('workflow-yaml', resolve(import.meta.dirname, '../workflows'));
+  return readdirSync(root)
+    .map((entry) => join(root, entry))
+    .filter((dir) => statSync(dir).isDirectory() && existsSync(join(dir, 'workflow.yaml')))
+    .sort();
 }
 
-const workflowYamlPath = join(workflowDirPath, 'workflow.yaml');
-if (!existsSync(workflowYamlPath)) {
-  console.error(`[FAIL] workflow.yaml not found at ${workflowYamlPath}`);
-  console.error('The specified directory does not appear to be a workflow directory.');
-  process.exit(2);
-}
-
-const workflowId = workflowDirPath.split(/[/\\]/).pop() ?? '';
-const parentDir = resolve(workflowDirPath, '..');
-
-async function main() {
+async function validateWorkflowDir(workflowDirPath: string): Promise<number> {
+  const workflowId = workflowDirPath.split(/[/\\]/).pop() ?? '';
+  const parentDir = resolve(workflowDirPath, '..');
   let failed = 0;
 
+  console.log(`\n═══ ${workflowId} ═══`);
   const loadResult = await loadWorkflow(parentDir, workflowId);
   if (loadResult.success) {
     console.log('[PASS] workflow.yaml valid');
@@ -159,8 +178,18 @@ async function main() {
     }
   }
 
+  return failed;
+}
+
+async function main() {
+  const dirs = targets();
+  let failed = 0;
+  for (const dir of dirs) failed += await validateWorkflowDir(dir);
+
   console.log('\n' + '─'.repeat(50));
-  console.log(failed === 0 ? 'All YAML files valid.' : `Validation failed: ${failed} file(s).`);
+  console.log(failed === 0
+    ? `workflow-yaml: OK — ${dirs.length} workflow(s) valid.`
+    : `workflow-yaml: ${failed} file(s) failed across ${dirs.length} workflow(s).`);
   process.exit(failed > 0 ? 1 : 0);
 }
 

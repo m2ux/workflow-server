@@ -1,7 +1,7 @@
 /**
  * Headless delivery-cost benchmark for reference / persistent context mode.
  *
- * Walks `work-package` under the e2e `skip-optional` policy with the robot walker,
+ * Walks one workflow (`--workflow`, default `work-package`) under the e2e `skip-optional` policy with the robot walker,
  * forcing `start_session` `agent_id` / `context_mode`, and probes `get_resource` for
  * technique-linked resources plus a fixed hot-template set on every `get_activity`
  * (cross-activity resource repeat tax). Prints one JSON metrics object to stdout.
@@ -18,6 +18,8 @@
  *     --label=A3 --context-mode=persistent --server-root=$PWD
  *
  * Flags:
+ *   --workflow=<id>            Workflow to walk (default: work-package). Recorded in the output; a
+ *                              comparison across two different workflows is reported but never gated.
  *   --label=<string>           Run label in the JSON output (default: run)
  *   --context-mode=fresh|persistent   Forced on start_session (default: fresh)
  *   --agent-id=<string>        Forced agent_id / ledger key (default: bench-solo)
@@ -52,6 +54,8 @@ import { extractResourceIds } from '../src/utils/resource-ref.js';
 type ContextMode = 'fresh' | 'persistent';
 
 interface Metrics {
+  /** Workflow this run walked. Recorded because a delta is only meaningful within one workflow. */
+  workflowId: string;
   label: string;
   contextMode: ContextMode;
   agentId: string;
@@ -82,6 +86,8 @@ interface Metrics {
 interface ReferenceFixture {
   label: string;
   description?: string;
+  /** Workflow the fixture walked. Absent on fixtures recorded before the field: those walked work-package. */
+  workflowId?: string;
   /** Context mode the fixture was recorded in. A comparison is only valid within one mode. */
   contextMode?: ContextMode;
   /** Corpus revision the fixture was recorded against, for the pinning warning. */
@@ -117,6 +123,9 @@ interface VsReference {
   description?: string;
   /** Run and reference share a context mode. Only a matched comparison is a valid gate (#323 T4). */
   modeMatched: boolean;
+  /** Run and reference walked the same workflow. A cross-workflow delta measures two different
+   *  things and is never a gate (#327 S4). */
+  workflowMatched: boolean;
   /** Why a comparison is not gate-worthy, when it is not. */
   caveat?: string;
   /** Sum of activity+workflow+resource+technique payload chars. A0 = 100. */
@@ -191,16 +200,25 @@ function buildVsReference(metrics: Metrics, reference: ReferenceFixture, referen
   // shipped so far was recorded fresh.
   const referenceMode = reference.contextMode ?? metrics.contextMode;
   const modeMatched = referenceMode === metrics.contextMode;
+  // An unlabelled fixture predates the field; every fixture shipped so far walked work-package.
+  const referenceWorkflow = reference.workflowId ?? 'work-package';
+  const workflowMatched = referenceWorkflow === metrics.workflowId;
+  const caveats = [
+    modeMatched ? null
+      : `Cross-mode comparison: reference is ${referenceMode}, run is ${metrics.contextMode}. `
+        + 'The delta conflates the mode switch with the code change and is not a valid ship gate — '
+        + 'compare within one mode, and always include a fresh-mode arm.',
+    workflowMatched ? null
+      : `Cross-workflow comparison: reference walked '${referenceWorkflow}', run walked `
+        + `'${metrics.workflowId}'. The delta measures two different corpora paths, not a code change.`,
+  ].filter((c): c is string => c !== null);
   return {
     referenceLabel: reference.label,
     referencePath,
     description: reference.description,
     modeMatched,
-    ...(modeMatched ? {} : {
-      caveat: `Cross-mode comparison: reference is ${referenceMode}, run is ${metrics.contextMode}. `
-        + 'The delta conflates the mode switch with the code change and is not a valid ship gate — '
-        + 'compare within one mode, and always include a fresh-mode arm.',
-    }),
+    workflowMatched,
+    ...(caveats.length ? { caveat: caveats.join(' ') } : {}),
     deliveryCostIndex: {
       current: currentDelivery,
       reference: referenceDelivery,
@@ -321,8 +339,8 @@ function evaluateGate(vs: VsReference | undefined, maxRegressionPct: number): Ga
   if (!vs) {
     return { ...base, reason: 'No reference comparison to gate on (--no-compare, or the fixture is missing).' };
   }
-  if (!vs.modeMatched) {
-    return { ...base, reason: vs.caveat ?? 'Cross-mode comparison is not a valid gate.' };
+  if (!vs.modeMatched || !vs.workflowMatched) {
+    return { ...base, reason: vs.caveat ?? 'Mismatched comparison is not a valid gate.' };
   }
   const regressionPct = vs.metrics.deliveryChars!.deltaPct;
   if (regressionPct === null) {
@@ -357,6 +375,10 @@ async function main(): Promise<void> {
     throw new Error(`--context-mode must be fresh|persistent, got ${contextMode}`);
   }
   const agentId = arg('agent-id', 'bench-solo');
+  // The walked workflow used to be hardcoded, so a run reported a confident delta for a change it
+  // could not see — the same failure mode as a guard passing on a corpus it never reached (#327 S4).
+  // The robot policy is work-package-shaped, so another workflow needs a policy that can drive it.
+  const workflowId = arg('workflow', 'work-package');
   const serverRoot = resolve(arg('server-root', process.cwd()));
   const compare = !hasFlag('no-compare');
   const referencePath = resolve(arg('reference', join(serverRoot, DEFAULT_REFERENCE)));
@@ -452,7 +474,7 @@ async function main(): Promise<void> {
   }) as typeof client.callTool;
 
   try {
-    const walkResult = await walk(harness, 'work-package', skipOptionalPolicy, {
+    const walkResult = await walk(harness, workflowId, skipOptionalPolicy, {
       agentId,
       mode: 'robot',
     });
@@ -481,6 +503,7 @@ async function main(): Promise<void> {
     const ledgerKeys = Object.keys(ledger);
 
     const metrics: Metrics = {
+      workflowId,
       label,
       contextMode,
       agentId,

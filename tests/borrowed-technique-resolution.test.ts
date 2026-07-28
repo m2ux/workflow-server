@@ -4,8 +4,9 @@ import { composeActivityTechnique } from '../src/loaders/technique-loader.js';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { corpusRoot } from './corpus-root.js';
 
-const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
+const WORKFLOW_DIR = corpusRoot();
 
 /**
  * Borrowed cross-workflow activities resolve their technique refs against the workflow the

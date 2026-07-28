@@ -5,6 +5,7 @@ import { createServer } from '../src/server.js';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
+import { corpusRoot } from './corpus-root.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function parseToolResponse(result: any): any {
@@ -28,7 +29,7 @@ describe('session.repo bootstrap binding', () => {
     mkdirSync(join(engMulti, 'app', '.worktrees'), { recursive: true });
 
     const config = {
-      workflowDir: resolve(import.meta.dirname, '../workflows'),
+      workflowDir: corpusRoot(),
       schemasDir: resolve(import.meta.dirname, '../schemas'),
       workspaceDir: wsMulti,
       engineeringDir: engMulti,

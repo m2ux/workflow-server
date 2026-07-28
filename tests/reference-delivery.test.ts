@@ -8,6 +8,7 @@ import { tmpdir } from 'node:os';
 import { parse } from 'yaml';
 import { contentHash, deliveredHash, recordDeliveries, unchangedMarker } from '../src/utils/delivery.js';
 import { createInitialSessionFile, safeValidateSessionFile } from '../src/schema/session.schema.js';
+import { corpusRoot } from './corpus-root.js';
 
 /** An unchanged-reference marker as it appears in a parsed bundle. */
 interface UnchangedMarker {
@@ -116,7 +117,7 @@ describe('reference-not-repeat delivery (B1)', () => {
   beforeAll(async () => {
     workspaceDir = mkdtempSync(join(tmpdir(), 'wf-refdel-test-'));
     const config = {
-      workflowDir: resolve(import.meta.dirname, '../workflows'),
+      workflowDir: corpusRoot(),
       schemasDir: resolve(import.meta.dirname, '../schemas'),
       workspaceDir,
       serverName: 'test-workflow-server',
@@ -665,7 +666,7 @@ describe('reference-not-repeat delivery (B1)', () => {
       // definition can change between calls without touching the shared copy.
       const mutableWorkflowDir = mkdtempSync(join(tmpdir(), 'wf-refdel-mutable-'));
       const mutableWorkspace = mkdtempSync(join(tmpdir(), 'wf-refdel-ws2-'));
-      cpSync(resolve(import.meta.dirname, '../workflows'), mutableWorkflowDir, {
+      cpSync(corpusRoot(), mutableWorkflowDir, {
         recursive: true,
         filter: (src) => !src.includes('.git'),
       });

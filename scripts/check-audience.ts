@@ -14,30 +14,27 @@
  * *validity* (`human`|`agent`) is already enforced by the Zod `.strict()` schema at load; this
  * guard checks the on-disk *format* convention the schema cannot express.
  *
- * The current corpus carries no agent-audience adoption, so the expected baseline is empty. Any
- * violation is snapshotted in scripts/audience-baseline.json; the guard fails ONLY on violations
- * absent from that baseline (i.e. a NEW agent-audience artifact whose name is not JSON). Regenerate
- * the baseline after an intentional, reviewed change with:
- *   npx tsx scripts/check-audience.ts --update-baseline
+ * Hard zero, no baseline: the convention has no accepted exceptions, so any violation fails the
+ * guard. The retired `audience-baseline.json` held an empty array (issue #327 R5).
  *
- * Run: npx tsx scripts/check-audience.ts [--root <workflows-dir>]
+ * Run: npx tsx scripts/check-audience.ts [--root <workflows-dir>] [--json]
  * To check a dedicated worktree's workflows instead of the repo's own ../workflows, pass
  * `--root <path>` (or set WORKFLOWS_DIR).
  */
-import { readFileSync, readdirSync, existsSync, statSync, writeFileSync } from 'node:fs';
-import { join, relative, resolve } from 'node:path';
+import { readdirSync, existsSync, statSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { tryLoadMarkdownTechnique, tryLoadNestedTechnique } from '../src/loaders/markdown-technique-loader.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
-const BASELINE = join(DIR, 'audience-baseline.json');
+const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
 
 const GROUPED_INDEX = 'TECHNIQUE.md';
 
 export interface AudienceViolation {
-  /** `<workflow>::<technique-id>::<output-id>` — stable key for the baseline. */
+  /** `<workflow>::<technique-id>::<output-id>`. */
   key: string;
   detail: string;
 }
@@ -91,13 +88,14 @@ async function loadWorkflowTechniques(techniquesDir: string): Promise<Array<{ id
   return out;
 }
 
-export async function collectAudienceViolations(root: string = ROOT): Promise<AudienceViolation[]> {
+export async function collectAudienceViolations(root: string = DEFAULT_ROOT): Promise<AudienceViolation[]> {
   const out: AudienceViolation[] = [];
-  if (!existsSync(root)) return out;
+  let scanned = 0;
   for (const workflow of readdirSync(root).sort()) {
     const techniquesDir = join(root, workflow, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     for (const { id, technique } of await loadWorkflowTechniques(techniquesDir)) {
+      scanned++;
       for (const o of technique.outputs ?? []) {
         // Only agent-audience outputs that also declare an artifact filename are in scope: those
         // are the artifacts written to disk that the convention says must be JSON.
@@ -113,41 +111,18 @@ export async function collectAudienceViolations(root: string = ROOT): Promise<Au
       }
     }
   }
+  assertScanned(scanned, 'technique files', root);
   return out.sort((a, b) => a.key.localeCompare(b.key));
 }
 
-function loadBaseline(): Set<string> {
-  if (!existsSync(BASELINE)) return new Set();
-  try { return new Set(JSON.parse(readFileSync(BASELINE, 'utf-8')) as string[]); } catch { return new Set(); }
-}
-
-/** Violations not in the committed baseline (`added`) and baselined keys no longer present (`fixed`). */
-export async function diffBaseline(root: string = ROOT): Promise<{ added: AudienceViolation[]; fixed: string[] }> {
-  const all = await collectAudienceViolations(root);
-  const baseline = loadBaseline();
-  return {
-    added: all.filter(v => !baseline.has(v.key)),
-    fixed: [...baseline].filter(k => !all.some(v => v.key === k)),
-  };
+export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Finding[]> {
+  return (await collectAudienceViolations(root)).map((v) => ({ check: 'audience-json-format', site: v.key, detail: v.detail }));
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const all = await collectAudienceViolations();
-  if (process.argv.includes('--update-baseline')) {
-    writeFileSync(BASELINE, JSON.stringify(all.map(v => v.key), null, 2) + '\n');
-    process.stdout.write(`audience: baseline updated with ${all.length} entr(ies) at ${relative(process.cwd(), BASELINE)}\n`);
-    process.exit(0);
-  }
-  const baseline = loadBaseline();
-  const fresh = all.filter(v => !baseline.has(v.key));
-  const fixed = [...baseline].filter(k => !all.some(v => v.key === k));
-  if (fresh.length === 0) {
-    process.stdout.write(`audience: OK — ${all.length} total, ${baseline.size} baselined, 0 NEW${fixed.length ? `, ${fixed.length} fixed` : ''}\n`);
-    if (fixed.length) process.stdout.write(`  ${fixed.length} baselined entr(ies) no longer present — run --update-baseline to shrink the baseline\n`);
-    process.exit(0);
-  }
-  process.stdout.write(`audience: ${fresh.length} NEW violation(s) — an agent-audience artifact is not JSON:\n`);
-  for (const v of fresh) process.stdout.write(`  ${v.key} — ${v.detail}\n`);
-  process.exit(1);
+  await runGuard('audience', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
+    okMessage: 'every agent-audience artifact is JSON on disk',
+    remedy: 'rename each artifact to a .json filename',
+  });
 }

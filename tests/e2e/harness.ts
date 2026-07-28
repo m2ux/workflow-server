@@ -10,6 +10,7 @@
 import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { createServer } from '../../src/server.js';
+import { corpusRoot } from '../corpus-root.js';
 import { resolve, join } from 'node:path';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -29,12 +30,9 @@ export interface HarnessOptions {
 /** Create a connected client + server pair backed by a workspace (fresh temp by default). */
 export async function createHarness(opts: HarnessOptions = {}): Promise<Harness> {
   const workspaceDir = opts.workspaceDir ?? mkdtempSync(join(tmpdir(), 'wf-e2e-'));
-  // Default to the repo's own `../../workflows` checkout; allow WORKFLOWS_DIR to point the harness
-  // at a dedicated worktree's workflows directory (parity with the guard scripts' resolveWorkflowsRoot),
-  // so a change under review in a worktree can be walked before it lands in the submodule checkout.
-  const workflowDir = process.env.WORKFLOWS_DIR
-    ? resolve(process.env.WORKFLOWS_DIR)
-    : resolve(import.meta.dirname, '../../workflows');
+  // One corpus resolution for the whole suite, in parity with the guards' resolveWorkflowsRoot, so a
+  // change under review in a worktree is walked by the tests and the guards alike.
+  const workflowDir = corpusRoot();
   const config = {
     workflowDir,
     schemasDir: resolve(import.meta.dirname, '../../schemas'),

@@ -19,14 +19,18 @@
  *                  (so a lens is never referred to by a stale name or a wrong index).
  *
  * Run:
- *   npx tsx scripts/check-prism-lens-reachability.ts
+ *   npx tsx scripts/check-prism-lens-reachability.ts [--root <workflows-dir>]
  */
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { requireRootOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const PRISM = join(DIR, '..', 'workflows', 'prism');
+// The corpus root routes through the shared resolver so this guard measures the worktree under
+// review, not the repo's own submodule (issue #327 S2); an unreachable root exits 2 rather than
+// yielding an empty, reassuring result.
+const PRISM = join(requireRootOrExit('prism-lens-reachability', join(DIR, '..', 'workflows')), 'prism');
 const RESOURCES = join(PRISM, 'resources');
 const PLAN = join(PRISM, 'techniques', 'plan-analysis.md');
 const PORTFOLIO = join(PRISM, 'techniques', 'portfolio-analysis.md');

@@ -5,8 +5,9 @@ import { mkdir, writeFile, readFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { parse as parseYaml } from 'yaml';
 import { safeValidateTechnique } from '../src/schema/technique.schema.js';
+import { corpusRoot } from './corpus-root.js';
 
-const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
+const WORKFLOW_DIR = corpusRoot();
 const FIXTURE_DIR = resolve(import.meta.dirname, 'fixtures/markdown-techniques');
 
 /* -------------------------------------------------------------------------- */

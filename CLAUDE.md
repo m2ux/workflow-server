@@ -12,8 +12,10 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 - **Build:** `npm run build`
 - **Run (stdio, default):** `npm start` or `npm run dev`
 - **Run (HTTP):** `npm run start:http` or `npm run dev:http`
-- **Tests:** `npm test`
+- **Tests:** `npm test` (watch) / `npm run test:ci` (single run)
 - **Typecheck:** `npm run typecheck`
+- **Guards:** `npm run check:all` (every guard, one table) / `npm run check:delta` (only what your change added, against the merge-base)
+- **Worktree setup:** `npm run worktree:provision` — checks out the submodules and makes `node_modules` resolvable, so guards and tests measure the worktree you are editing
 - **Workflow data:** `git worktree add ./workflows workflows` (see [README.md](README.md), [setup.md](setup.md), [stdio.md](stdio.md), [http.md](http.md)).
 
 ## Code and doc style
@@ -35,6 +37,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 ## Testing and PR instructions
 
 - After code or schema changes, run `npm run typecheck` and `npm test` before committing.
+- After workflow-corpus changes, run `npm run check:all`. To see only what your change added, run `npm run check:delta`. Corpus debt is triaged per finding in `scripts/binding-fidelity-triage.json` — classify a new finding there (`harmless` / `fix-later` / `live-bug`) rather than suppressing it; there is no re-snapshot command.
 - Follow the repo’s PR/commit conventions.
 - **GitHub CLI — REST only (no GraphQL).** `gh pr create`, `gh pr view`, `gh pr list`, and any call that hits `api.github.com/graphql` are **forbidden** here (GraphQL is deprecated/unreliable and fails). Create and manage PRs with REST only, e.g.:
 

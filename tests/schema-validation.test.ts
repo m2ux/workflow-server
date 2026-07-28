@@ -18,8 +18,9 @@ import {
   safeValidateTechnique,
 } from '../src/schema/technique.schema.js';
 import { loadWorkflow, getActivity } from '../src/loaders/workflow-loader.js';
+import { corpusRoot } from './corpus-root.js';
 
-const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
+const WORKFLOW_DIR = corpusRoot();
 
 describe('schema-validation', () => {
   describe('ConditionSchema', () => {

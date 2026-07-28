@@ -9,12 +9,17 @@
  * Deterministic: substring-absence (word-bounded, hyphen/underscore-insensitive) is the signal.
  * Components (`####` sub-sections) are NOT designators — only top-level `###` entries are checked.
  *
- *   npx tsx scripts/analyze-io-protocol-refs.ts
+ *   npx tsx scripts/analyze-io-protocol-refs.ts [--root <workflows-dir>]
+ *
+ * This is an analyzer, not a gate — it never exits non-zero, and it is deliberately absent from the
+ * guard registry (`scripts/guards.ts`). It still resolves its corpus the same way every guard does,
+ * so an analysis run and a guard run always describe the same tree (issue #327 S2).
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
+import { requireWorkflowsRoot } from './workflows-root.js';
 
-const WORKFLOWS = join(import.meta.dirname, '..', 'workflows');
+const WORKFLOWS = requireWorkflowsRoot(join(import.meta.dirname, '..', 'workflows'));
 
 /** Recursively list technique markdown files (under any techniques/ dir, excluding resources/). */
 function listTechniqueFiles(root: string): string[] {

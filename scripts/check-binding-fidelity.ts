@@ -34,23 +34,21 @@
  * scripts/check-all-refs.ts for `techniques[]` lists; step bindings are covered here by the
  * binding-resolution check.
  *
- * The current corpus carries pre-existing violations. Those are snapshotted in
- * scripts/binding-fidelity-baseline.json; the guard fails ONLY on violations absent from that
- * baseline (i.e. NEW drift introduced by a change). Regenerate the baseline after an
- * intentional, reviewed change with:
+ * The corpus carries pre-existing violations. This guard reports ALL of them and exits 1; it no
+ * longer holds a stored baseline of accepted ones (issue #327 R1/R5). "Did MY change cause this?"
+ * is answered by `npm run check:delta`, which runs the guard against the merge-base tree as well
+ * and reports only the difference — the before-state is the merge-base, so there is nothing to
+ * store and nothing to drift. The retired `binding-fidelity-baseline.json` had accumulated 27
+ * entries for already-fixed violations, and had silently absorbed two live defects that later cost
+ * a three-hour run (#324 A1/A2).
  *
- *   npx tsx scripts/check-binding-fidelity.ts --update-baseline
- *
- * Plain run (used by CI / the workflow-design validation step):
- *
- *   npx tsx scripts/check-binding-fidelity.ts
+ *   npx tsx scripts/check-binding-fidelity.ts [--root <workflows-dir>] [--json]
+ *   npm run check:delta            # only what this branch added, against the merge-base
  *
  * To check a dedicated worktree's workflows instead of the repo's own ../workflows, pass
- * `--root <path>` (or set WORKFLOWS_DIR) — issue #160 follow-up #1:
- *
- *   npx tsx scripts/check-binding-fidelity.ts --root /path/to/worktree/workflows
+ * `--root <path>` (or set WORKFLOWS_DIR) — issue #160 follow-up #1.
  */
-import { readFileSync, readdirSync, existsSync, statSync, writeFileSync } from 'node:fs';
+import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
@@ -60,16 +58,19 @@ import { parseDefinition } from '../src/utils/serialization.js';
 import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from '../src/utils/binding-provenance.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment } from '../src/loaders/fragment-resolver.js';
 import { fragmentsLookupSync } from './fragments-index.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { assertScanned } from './workflows-root.js';
+import { findingKey, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
 
 // Resolve paths from this file's own URL (reliable under both tsx CLI and the vitest runner,
 // where import.meta.dirname is not populated).
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Corpus root defaults to the repo's own ../workflows; pass `--root <path>` or set WORKFLOWS_DIR
-// to check a dedicated worktree's workflows instead (issue #160 follow-up #1). The baseline stays
-// resolved against this script's own directory — it snapshots corpus content regardless of root.
-const ROOT = resolveWorkflowsRoot(join(DIR, '..', 'workflows'));
-const BASELINE = join(DIR, 'binding-fidelity-baseline.json');
+// to check a dedicated worktree's workflows instead (issue #160 follow-up #1). An unreachable or
+// empty root throws rather than yielding an empty, reassuring result (#327 S2).
+const ROOT = requireRootOrExit('binding-fidelity', join(DIR, '..', 'workflows'));
+// The triage file records a verdict per known violation; it lives beside the guard, not beside the
+// corpus, because it classifies findings rather than corpus content.
+const TRIAGE = join(DIR, 'binding-fidelity-triage.json');
 const META = 'meta';
 
 /* ----------------------------- signature parsing ----------------------------- */
@@ -189,6 +190,7 @@ function buildRegistry(wf: string): void {
 }
 
 const workflows = readdirSync(ROOT).filter((d) => statSync(join(ROOT, d)).isDirectory() && existsSync(join(ROOT, d, 'techniques')));
+assertScanned(workflows.length, 'workflows with a techniques/ folder', ROOT);
 for (const wf of workflows) buildRegistry(wf);
 
 function resolve(ref: string, wf: string, activityId?: string): { entry: OpEntry; homeWf: string; key: string } | null {
@@ -236,7 +238,9 @@ function resolve(ref: string, wf: string, activityId?: string): { entry: OpEntry
 
 /* ----------------------------- corpus collection ----------------------------- */
 const AMBIENT = new Set(AMBIENT_CONTEXT_IDS);
-const PLACEHOLDER = new Set(['path', 'token', 'placeholder', 'field', 'key', 'value', 'var', 'x', 'n', 'i', 'templated', 'output_id', 'declared_id', 'id', 'name', 'type', 'o']);
+// Metasyntactic tokens: notation for "some id", not a read of a bag value. `O` is the output-id
+// metavariable the variable-binding spec uses when describing the landing rule generically.
+const PLACEHOLDER = new Set(['path', 'token', 'placeholder', 'field', 'key', 'value', 'var', 'x', 'n', 'i', 'templated', 'output_id', 'declared_id', 'id', 'name', 'type', 'o', 'O']);
 /** Per-workflow produced names: workflow.yaml vars + activity set/loop/setVariable targets. */
 const producedByWf = new Map<string, Set<string>>();
 const fileLocals = new Map<string, Set<string>>();
@@ -262,6 +266,22 @@ type Step = {
   inputsMap: Record<string, unknown>; outputsMap: Record<string, string>; activityId: string;
 };
 const steps: Step[] = [];
+/** Bag names a `validate` action's target expression reads, with the activity file that gates on them. */
+const validateConsumes: Array<{ rel: string; name: string }> = [];
+
+/** Operators and literals in a condition expression are not bag names. */
+const EXPRESSION_LITERALS = new Set(['true', 'false', 'null', 'undefined', 'length', 'and', 'or', 'not']);
+
+/** The head bag names an expression reads: `missing_prerequisites.length == 0` -> `missing_prerequisites`. */
+function expressionNames(expr: string): string[] {
+  const out: string[] = [];
+  for (const m of expr.matchAll(/[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z0-9_]+)*/g)) {
+    const head = m[0]!.split('.')[0]!;
+    if (!EXPRESSION_LITERALS.has(head)) out.push(head);
+  }
+  return out;
+}
+
 function walkSteps(wf: string, rel: string, node: unknown, activityId: string): void {
   if (!node || typeof node !== 'object') return;
   if (Array.isArray(node)) { node.forEach((n) => walkSteps(wf, rel, n, activityId)); return; }
@@ -277,6 +297,13 @@ function walkSteps(wf: string, rel: string, node: unknown, activityId: string): 
     });
   }
   if (o.action === 'set' && typeof o.target === 'string') produced(wf).add(o.target);
+  // A `validate` action's `target` is an expression over bag names (`fragment_references_issue !=
+  // false`, `missing_prerequisites.length == 0`), not a `variable:` key and not a `{token}` — so it
+  // was invisible to the read scan, and an output whose ONLY consumer is a validate gate read as
+  // dead. That is the opposite of dead: it is the one place the value is enforced (#327 R3).
+  if (o.action === 'validate' && typeof o.target === 'string') {
+    for (const name of expressionNames(o.target)) validateConsumes.push({ rel, name });
+  }
   if (o.setVariable && typeof o.setVariable === 'object') Object.keys(o.setVariable).forEach((k) => produced(wf).add(k));
   const eff = o.effect as { setVariable?: object } | undefined;
   if (eff?.setVariable) Object.keys(eff.setVariable).forEach((k) => produced(wf).add(k));
@@ -286,7 +313,30 @@ function walkSteps(wf: string, rel: string, node: unknown, activityId: string): 
 
 type Read = { rel: string; line: number; full: string; head: string; kind: 'technique' | 'activity' };
 const reads: Read[] = [];
-function collectReads(rel: string, content: string, kind: 'technique' | 'activity'): void {
+
+/**
+ * Blank the contents of fenced code blocks, keeping line count so finding sites stay accurate.
+ *
+ * A fence holds a literal — an artifact template (`### Issue {number}: {title}`), a YAML example, a
+ * shell command. Its braces name the fields of the rendered thing, not values in the variable bag,
+ * so scanning them produced findings that could never be fixed except by deleting the template.
+ * INLINE code spans are deliberately left alone: house style backticks real designators
+ * (`` `{failed_checks}` ``), so stripping those would blind the check to most genuine reads.
+ */
+function blankFences(content: string): string {
+  const fence = /^\s*(```|~~~)/;
+  let inFence = false;
+  return content
+    .split('\n')
+    .map((line) => {
+      if (fence.test(line)) { inFence = !inFence; return ''; }
+      return inFence ? '' : line;
+    })
+    .join('\n');
+}
+
+function collectReads(rel: string, raw: string, kind: 'technique' | 'activity'): void {
+  const content = blankFences(raw);
   const locals = new Set<string>();
   const reIntro = new RegExp(`\\{\\$(${IDENTIFIER_PATTERN})\\}`, 'g'); let mi: RegExpExecArray | null;
   while ((mi = reIntro.exec(content))) locals.add(mi[1]!);
@@ -317,13 +367,29 @@ for (const wf of workflows) {
 // activities + workflow vars
 const fragmentsLookup = fragmentsLookupSync(ROOT);
 const allWf = new Set([...workflows, ...readdirSync(ROOT).filter((d) => { const p = join(ROOT, d); return statSync(p).isDirectory() && existsSync(join(p, 'activities')); })]);
+/**
+ * Every activity file under a workflow's `activities/`, INCLUDING nested library subdirectories.
+ * The server's own `loadActivitiesFromDir` is deliberately non-recursive (a subdirectory is a
+ * borrowable library, not part of the lifecycle graph), and this guard used to mirror that — which
+ * left `meta/activities/patterns/` completely unmeasured, so its step bindings and the outputs its
+ * loop conditions consume were invisible in both directions (#327 S2).
+ */
+function activityFiles(dir: string): string[] {
+  const out: string[] = [];
+  for (const entry of readdirSync(dir)) {
+    const p = join(dir, entry);
+    if (statSync(p).isDirectory()) out.push(...activityFiles(p));
+    else if (entry.endsWith('.yaml')) out.push(p);
+  }
+  return out;
+}
+
 for (const wf of allWf) {
   collectWorkflowVars(wf);
   const adir = join(ROOT, wf, 'activities');
   if (!existsSync(adir)) continue;
-  for (const f of readdirSync(adir)) {
-    if (!f.endsWith('.yaml')) continue;
-    const rel = relative(ROOT, join(adir, f)); let raw = readFileSync(join(adir, f), 'utf-8');
+  for (const path of activityFiles(adir)) {
+    const rel = relative(ROOT, path); let raw = readFileSync(path, 'utf-8');
     // Materialize checkpoint fragment refs (#166 B10) before analysis, so fragment-declared
     // setVariable producers and message/condition reads attribute to the referencing activity —
     // the same view the server delivers. An unresolved ref is check:fragments' finding; the
@@ -420,6 +486,7 @@ function collectConsumedSites(): Map<string, Set<string>> {
     }
   }
   for (const [id, rels] of allDeclaredInputSites) rels.forEach((rel) => add(id, rel));
+  for (const v of validateConsumes) add(v.name, v.rel);
   return consumed;
 }
 
@@ -493,39 +560,102 @@ export function collectViolations(): Violation[] {
   return v;
 }
 
-function sig(x: Violation): string { return `${x.check}${x.site.replace(/:\d+$/, '')}${x.detail}`; }
+/* --------------------------------- triage --------------------------------- */
+/**
+ * The corpus debt this guard reports was triaged once, per finding, in
+ * scripts/binding-fidelity-triage.json (issue #327 R3). Every entry carries a verdict and a named
+ * rationale, so "harmless" and "live bug" are no longer the same silence:
+ *
+ *   harmless   — the finding is correct about the structure and correct BY DESIGN; suppressed.
+ *   fix-later  — a real seam to close, accepted as debt for now; suppressed but counted.
+ *   live-bug   — affects a run; REPORTED, so the guard stays red until it is fixed.
+ *
+ * A violation absent from the file is untriaged and reported. An entry that matches nothing is
+ * stale and reported. There is no regenerate flag: the file is edited by a human making a judgement,
+ * which is what the retired baseline never required.
+ */
+export type TriageVerdict = 'harmless' | 'fix-later' | 'live-bug';
 
-/** Compare current violations to the committed baseline. Returns added (new drift) + fixed. */
-export function diffBaseline(): { added: Violation[]; fixed: Violation[]; total: number; baselined: number } {
-  const violations = collectViolations();
-  const baseline: Violation[] = existsSync(BASELINE) ? JSON.parse(readFileSync(BASELINE, 'utf-8')) : [];
-  const baseSet = new Set(baseline.map(sig));
-  const curSet = new Set(violations.map(sig));
-  return {
-    added: violations.filter((x) => !baseSet.has(sig(x))),
-    fixed: baseline.filter((x) => !curSet.has(sig(x))),
-    total: violations.length,
-    baselined: baseline.length,
-  };
+export interface TriageEntry extends Violation {
+  verdict: TriageVerdict;
+  /** Key into the file's `rationales` map — the reason this verdict holds. */
+  rationale: string;
+}
+
+export interface TriageFile {
+  corpusSha: string;
+  rationales: Record<string, string>;
+  entries: TriageEntry[];
+}
+
+export function violationKey(x: Violation): string { return findingKey(x as Finding); }
+
+export function loadTriage(): TriageFile {
+  if (!existsSync(TRIAGE)) return { corpusSha: '', rationales: {}, entries: [] };
+  return JSON.parse(readFileSync(TRIAGE, 'utf-8')) as TriageFile;
+}
+
+export interface TriagedResult {
+  findings: Finding[];
+  counts: Record<TriageVerdict | 'untriaged' | 'stale', number>;
+  total: number;
+}
+
+export function applyTriage(violations: Violation[] = collectViolations()): TriagedResult {
+  const triage = loadTriage();
+  const byKey = new Map(triage.entries.map((e) => [violationKey(e), e]));
+  const seen = new Set<string>();
+  const findings: Finding[] = [];
+  const counts = { harmless: 0, 'fix-later': 0, 'live-bug': 0, untriaged: 0, stale: 0 };
+  for (const v of violations) {
+    const key = violationKey(v);
+    const entry = byKey.get(key);
+    if (!entry) {
+      counts.untriaged++;
+      findings.push({ check: v.check, site: v.site, detail: `${v.detail} [untriaged — classify it in scripts/binding-fidelity-triage.json]` });
+      continue;
+    }
+    seen.add(key);
+    counts[entry.verdict]++;
+    if (entry.verdict === 'live-bug') {
+      const why = triage.rationales[entry.rationale] ?? entry.rationale;
+      findings.push({ check: v.check, site: v.site, detail: `${v.detail} [live bug: ${why}]` });
+    }
+  }
+  for (const [key, entry] of byKey) {
+    if (seen.has(key)) continue;
+    counts.stale++;
+    findings.push({
+      check: 'stale-triage',
+      site: entry.site,
+      detail: `triaged '${entry.check}' finding no longer occurs — delete the entry from scripts/binding-fidelity-triage.json`,
+    });
+  }
+  return { findings, counts, total: violations.length };
 }
 
 /* --------------------------------- CLI runner --------------------------------- */
 import { pathToFileURL } from 'node:url';
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  if (process.argv.includes('--update-baseline')) {
-    const sorted = [...collectViolations()].sort((a, b) => sig(a).localeCompare(sig(b)));
-    writeFileSync(BASELINE, JSON.stringify(sorted, null, 2) + '\n');
-    process.stdout.write(`baseline updated: ${sorted.length} accepted pre-existing violation(s)\n`);
+  // `--emit-untriaged` feeds the triage pass: it prints the violations that carry no verdict yet and
+  // writes nothing, so classification stays a human act.
+  if (process.argv.includes('--emit-untriaged')) {
+    const triage = loadTriage();
+    const known = new Set(triage.entries.map(violationKey));
+    const untriaged = collectViolations().filter((v) => !known.has(violationKey(v)));
+    process.stdout.write(JSON.stringify(untriaged, null, 2) + '\n');
     process.exit(0);
   }
-  const { added, fixed, total, baselined } = diffBaseline();
-  process.stdout.write(`binding-fidelity: ${total} total, ${baselined} baselined, ${added.length} NEW, ${fixed.length} fixed\n`);
-  if (fixed.length) process.stdout.write(`  ${fixed.length} baselined violation(s) no longer present — run --update-baseline to shrink the baseline\n`);
-  if (added.length) {
-    process.stdout.write(`\nNEW binding-fidelity violations (drift) — fix, or --update-baseline if intentional:\n`);
-    for (const x of added.sort((a, b) => sig(a).localeCompare(sig(b)))) process.stdout.write(`  [${x.check}] ${x.site}\n     ${x.detail}\n`);
-    process.exit(1);
+  const { findings, counts, total } = applyTriage();
+  if (!wantsJson()) {
+    process.stdout.write(`binding-fidelity: ${total} violation(s) — ${counts.harmless} harmless, `
+      + `${counts['fix-later']} fix-later, ${counts['live-bug']} live bug(s), ${counts.untriaged} untriaged`
+      + `${counts.stale ? `, ${counts.stale} stale triage entr(ies)` : ''}\n`);
   }
-  process.stdout.write('OK — no new binding drift\n');
+  report('binding-fidelity', findings, {
+    okMessage: `no live or untriaged binding defects (${counts.harmless + counts['fix-later']} triaged as accepted debt)`,
+    root: ROOT,
+    remedy: 'fix each live bug, and classify each untriaged finding in scripts/binding-fidelity-triage.json',
+  });
 }
