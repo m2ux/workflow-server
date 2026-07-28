@@ -19,7 +19,7 @@ Optional. Absolute path whose basename is the planning slug. Omit for a transien
 
 ### repo
 
-Target repository as `owner/repo` (or GitHub URL). Derived from the host repository's origin remote by [resolve-host-repo](../version-control/resolve-host-repo.md), which is why the derivation runs before this call rather than after it. The user or the workspace `AGENTS.md` / `CLAUDE.md` supply it only as the fallback, for a workspace that is not a git repo or whose host has no origin remote. Also accepted implicitly when `planning_folder` already sits under `…/<owner>/<repo>/…`.
+Target repository as `owner/repo` (or GitHub URL), as produced by [resolve-host-repo](../version-control/resolve-host-repo.md) under resolve-host-repo.prose-sources-are-fallback-only. Also accepted implicitly when `planning_folder` already sits under `…/<owner>/<repo>/…`.
 
 ### user_request
 

@@ -1,31 +1,38 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Resolve the product repo root used for comprehension, GitNexus indexing, read-only investigation, and as the git directory for `git worktree add`: determine whether the bound path is a standalone repository or a component inside a monorepo, and set `{repo_root}` and `{component_name}` accordingly. Edits are never performed under `{repo_root}` — they use a separate worktree path.
+The product repo root and component identity for this work package, assembled from the derived host repository. Edits are never performed under `{repo_root}` — they use a separate worktree path.
 
 ## Inputs
 
-### discovered_path
+### host_repo_path
 
-Absolute filesystem path the session is bound to. Bound explicitly by `01-start-work-package`'s `resolve-repo-root` step from the meta session's `component_path`, absolutized against `host_repo_path` — not a path the user typed. Always absolute: a bare `.` inherited from `component_path`'s default is not a usable value here.
+Absolute path of the host repository, as produced by [resolve-host-repo](../../meta/techniques/version-control/resolve-host-repo.md).
+
+### component_hint
+
+*(optional)* Basename of the component the session was opened inside. Unset when the session sits at the host root.
 
 ## Outputs
 
 ### repo_root
 
-The repo root: the outermost monorepo root when the discovered path is a component, otherwise the discovered path itself. Used for comprehension, GitNexus, read-only investigation, and as the git directory for `git worktree add`. Under the install layout this is typically the app clone at `<install-root>/projects/<owner>/<repo>` (created by `init-repo.sh`).
+Absolute path of the repo root used for comprehension, GitNexus indexing, read-only investigation, and as the git directory for `git worktree add`.
 
 ### component_name
 
-Basename of the discovered path (e.g. `midnight-node`).
+Basename of the component being worked on — the basename of `{repo_root}` when the session sits at the host root.
+
+### component_path
+
+Path of the component being worked on, relative to `{repo_root}` — `.` when the session sits at the host root.
 
 ## Protocol
 
-1. Read `{discovered_path}` — the absolute path the session is bound to.
-2. Determine the repository shape by ascending, not by a single test: the path is a monorepo component when its parent directory is itself a git repository whose `.gitmodules` declares the path's basename as a submodule `path`. Repeat the test from that parent and keep ascending while it holds, so a component nested more than one level deep resolves to the outermost superproject rather than to its immediate parent. When the first test fails, the path is a standalone repository. This is the same ascent `meta`'s `version-control::resolve-host-repo` performs at session bootstrap, where it is stated canonically; a single-level test agrees with it only for components exactly one level deep.
-3. Set `{repo_root}`: the outermost superproject reached by the ascent when `{discovered_path}` is a component, the discovered path itself when standalone.
-4. Set `{component_name}` to the basename of `{discovered_path}` (e.g. `midnight-node`) in both cases.
+1. Set `{repo_root}` to `{host_repo_path}` — the host derivation has already ascended to the outermost superproject, so no further ascent is performed here.
+2. When `{component_hint}` is unset, set `{component_path}` to `.` and `{component_name}` to the basename of `{repo_root}` — the session sits at the host root. Done.
+3. Read `{repo_root}/.gitmodules` and take the submodule `path` whose basename equals `{component_hint}`. Set `{component_path}` to that path and `{component_name}` to `{component_hint}`.

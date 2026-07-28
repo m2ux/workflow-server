@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Version-control operations for planning folders and artifacts — parent repos, submodules, and branch push.
+Version-control operations for planning folders and artifacts — parent repos, submodules, and branch push. Owns the host-versus-component distinction that keeps a session bound to the repository git resolves rather than one prose names.
 
 ## Rules
 

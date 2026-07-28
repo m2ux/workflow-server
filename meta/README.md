@@ -17,7 +17,7 @@ The meta workflow is the structural home for the orchestration logic that used t
 
 | # | Activity | Role |
 |---|----------|------|
-| 00 | [**Discover Session**](./activities/README.md#00-discover-session) | Identify the target client workflow and, on stated resume intent, surface any saved session to resume |
+| 00 | [**Discover Session**](./activities/README.md#00-discover-session) | Derive the host repository from git, identify the target client workflow and, on stated resume intent, surface any saved session to resume |
 | 01 | [**Initialize Session**](./activities/README.md#01-initialize-session) | Give the work package a stable identity and create or resume the client session as a child of meta |
 | 02 | [**Resolve Target**](./activities/README.md#02-resolve-target) | Detect the repo structure (regular vs. submodule monorepo), resolve `component_path`, and confirm the host binding agrees with the derivation |
 | 03 | [**Dispatch Client Workflow**](./activities/README.md#03-dispatch-client-workflow) | Drive the client workflow end to end inline, mediating its checkpoints with the user |
@@ -37,7 +37,7 @@ The meta workflow is the structural home for the orchestration logic that used t
 ```mermaid
 graph TD
     startNode(["Bootstrap"]) -->|"start_session(workflow_id: meta)"| DS["00 discover-session"]
-    DS -->|"target_workflow_id, resume_intent_requested, has_saved_state, is_resuming"| INI["01 initialize-session"]
+    DS -->|"target_repo, host_repo_path, target_workflow_id, resume_intent_requested, has_saved_state, is_resuming"| INI["01 initialize-session"]
     INI -->|"client_session_index, client_planning_slug"| RT["02 resolve-target"]
     RT -->|"component_path"| DSP["03 dispatch-client-workflow"]
     DSP -->|"current_activity == null"| END["04 end-workflow"]
@@ -78,7 +78,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | Technique | Capability |
 |-----------|------------|
 | [`workflow-engine`](techniques/workflow-engine/TECHNIQUE.md) | Operations and rules for executing a workflow's structured flow — session lifecycle, activity dispatch, agent entry, transitions, planning Progress, and the checkpoint protocol. |
-| [`agent-conduct`](techniques/agent-conduct.md) | Cross-cutting behavioural boundaries — single source of truth for file sensitivity, communication tone, attribution, code commentary, operational discipline, checkpoint discipline (worker / workflow-orchestrator / meta-orchestrator role split), and orchestrator discipline (`no-domain-work`, `no-inline-on-resume`, `target-path-scope`, `automatic-transitions`, `no-ad-hoc-interaction`) |
+| [`agent-conduct`](techniques/agent-conduct.md) | Cross-cutting behavioural boundaries — single source of truth for file sensitivity, communication tone, attribution, code commentary, operational discipline, checkpoint discipline, and orchestrator discipline |
 | [`version-control`](techniques/version-control/TECHNIQUE.md) | Host-repository derivation from git, planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
 | [`github-cli-protocol`](techniques/github-cli-protocol/TECHNIQUE.md) | GitHub CLI usage with GraphQL-deprecation workarounds — REST API for mutations |
 | [`knowledge-base-search`](techniques/knowledge-base-search/TECHNIQUE.md) | Optimised concept-rag searches via pre-indexed domain maps |

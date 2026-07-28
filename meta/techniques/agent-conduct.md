@@ -95,7 +95,7 @@ On resume, still dispatch a worker via [dispatch-activity](./workflow-engine/dis
 
 ### orchestrator-component-path-scope
 
-Branch creation, PR creation, and code commits MUST be performed inside the component directory `{host_repo_path}/{component_path}` (the submodule), NEVER in the host monorepo root. Planning artifact commits (`.engineering/artifacts/`) MUST be performed in the host repo where that directory lives, on the current branch — do NOT create a new branch in the host repo.
+Branch creation, PR creation, and code commits MUST be performed inside the component directory (the submodule), NEVER in the host monorepo root. Planning artifact commits (`.engineering/artifacts/`) MUST be performed in the host repo where that directory lives, on the current branch — do NOT create a new branch in the host repo.
 
 ### orchestrator-automatic-transitions
 

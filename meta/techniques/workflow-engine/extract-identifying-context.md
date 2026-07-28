@@ -21,7 +21,7 @@ Map of any identifiers found: `{ issue_number?, branch_name?, pr_number?, work_p
 
 ### mentioned_repo
 
-`owner/repo` named in the request, typically the repository segment of a PR or issue URL. A sibling of `{identifying_context}` rather than a field within it, because the map is scored for saved-session matching and this fact must not join that scoring — see [match-saved-session](./match-saved-session.md). Component context only, per [version-control](../version-control/TECHNIQUE.md)::host-is-derived-component-is-named. Unset when the request names no repository.
+`owner/repo` named in the request, typically the repository segment of a PR or issue URL — version-control.host-is-derived-component-is-named. Unset when the request names no repository.
 
 ## Protocol
 
