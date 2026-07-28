@@ -344,10 +344,11 @@
         },
         "completedActivities": [
           "intake-and-context",
-          "scope-and-draft"
+          "scope-and-draft",
+          "quality-review"
         ],
-        "condition": "isDefault:quality-review",
-        "currentActivity": "quality-review",
+        "condition": "isDefault:validate-and-commit",
+        "currentActivity": "validate-and-commit",
         "currentTechnique": "workflow-definition::verify-artifact-conforms",
         "deliveredContent": {
           "orchestrator": {
@@ -359,6 +360,7 @@
             "bundle:workflow-engine::yield-checkpoint": "3d36e6b03c483346",
             "resource:change-brief#template": "1969a75a10653d54",
             "resource:elicitation-guide#mode-dimension-sets": "8ecb743386cfc647",
+            "resource:findings-register#template": "710987a3ffde1bc7",
             "resource:impact-analysis#template": "40510ba8607a0dc7",
             "resource:meta/planning-readme": "db338707e2d03446",
             "resource:scope-manifest": "1008957341b02f64",
@@ -382,10 +384,11 @@
             "resource:workflow-design/convention-conformance#reference-conventions": "448f79b06617cbd3",
             "resource:workflow-design/design-principles": "d5138843b2f3534d",
             "resource:workflow-design/schema-construct-inventory": "4cacc0129b3fead7",
-            "technique:work-package::manage-artifacts::write-artifact": "1c352aad9968529a",
+            "technique:work-package::manage-artifacts::write-artifact": "657861b28b614c28",
             "technique:work-package::manage-git::create-worktree": "af3a87aa65410f97",
             "technique:workflow-definition::audit-canon": "1410d942156f64d9",
             "technique:workflow-definition::audit-schema-validation": "d8414f3bfd12b972",
+            "technique:workflow-definition::compile-report": "38960bdb7f1bcaa2",
             "technique:workflow-definition::derive-workflow-branch": "d6c15a89164542d6",
             "technique:workflow-definition::derive-workflows-target-path": "9783ff568d465339",
             "technique:workflow-definition::impact-analysis": "1864a398fcab2a2c",
@@ -398,6 +401,7 @@
             "technique:workflow-definition::scope-definition": "483414a68d3a0a66",
             "technique:workflow-definition::synthesize-change-brief": "aa2d514a9967c52f",
             "technique:workflow-definition::verify-artifact-conforms": "1493620adb2741e0",
+            "technique:workflow-definition::verify-high-findings": "63ce4cfaefee651f",
             "technique:workflow-definition::yaml-authoring": "dd9430c3658d7cc3",
             "technique:workflow-engine::create-readme": "d02b1b4cc5a10853",
             "technique:workflow-engine::list-workflows": "822ff399538ae84f"
@@ -1336,19 +1340,194 @@
             },
             "timestamp": "2026-07-28T11:37:59.511Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-07-28T12:06:57.524Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "usage": {
+                "duration_ms": 2071919,
+                "subagent_tokens": 188512,
+                "tool_uses": 43
+              }
+            },
+            "timestamp": "2026-07-28T12:06:57.524Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "base_ref",
+              "source": "variables_changed",
+              "value": "f84fe02b12f9617f401767b9b96f329d8c13225c"
+            },
+            "timestamp": "2026-07-28T12:06:57.524Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "consumer_surface",
+              "source": "variables_changed",
+              "value": "meta 435 refs / 11 into changed files; work-package 50 refs / 0 into changed files"
+            },
+            "timestamp": "2026-07-28T12:06:57.524Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "audit_findings",
+              "source": "variables_changed",
+              "value": "59 open (2 Critical, 11 High, 33 Medium, 13 Low), 1 resolved in-activity, 0 known"
+            },
+            "timestamp": "2026-07-28T12:06:57.524Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "coverage_ledger",
+              "source": "variables_changed",
+              "value": "50 units — 46 walked, 4 not-applicable, 0 blocked"
+            },
+            "timestamp": "2026-07-28T12:06:57.524Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "fail_count",
+              "source": "variables_changed",
+              "value": 3
+            },
+            "timestamp": "2026-07-28T12:06:57.524Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "register_sections",
+              "source": "variables_changed",
+              "value": [
+                "meta",
+                "work-package"
+              ]
+            },
+            "timestamp": "2026-07-28T12:06:57.524Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "has_critical_finding",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-28T12:06:57.524Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "has_coverage_gap",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-28T12:06:57.524Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "open_finding_count",
+              "source": "variables_changed",
+              "value": 59
+            },
+            "timestamp": "2026-07-28T12:06:57.524Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "report_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/08-findings-register.md"
+            },
+            "timestamp": "2026-07-28T12:06:57.524Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-28T12:06:57.524Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-audit-findings",
+              "techniqueId": "workflow-definition::verify-high-findings"
+            },
+            "timestamp": "2026-07-28T12:07:15.584Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "compile-register",
+              "techniqueId": "workflow-definition::compile-report"
+            },
+            "timestamp": "2026-07-28T12:07:15.584Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-register",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-28T12:07:15.584Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "findings-register#template"
+            },
+            "timestamp": "2026-07-28T12:07:42.105Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#schema-expressiveness-anti-patterns"
+            },
+            "timestamp": "2026-07-28T12:08:17.572Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 54,
+        "seq": 58,
         "sessionIndex": "7IE6G7",
         "skippedActivities": [],
         "startedAt": "2026-07-28T10:36:29.297Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785238679,
+        "ts": 1785240497,
         "variables": {
           "addressed_count": 0,
+          "audit_findings": "59 open (2 Critical, 11 High, 33 Medium, 13 Low), 1 resolved in-activity, 0 known",
+          "base_ref": "f84fe02b12f9617f401767b9b96f329d8c13225c",
           "change_brief": "Persisted at 01-change-brief.md — purpose, 6 changed dimensions (activity model, checkpoints, variables, techniques, resources, rules), 6 open judgements",
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/01-change-brief.md",
           "change_category": [
@@ -1377,31 +1556,36 @@
           },
           "change_request_clear": true,
           "commit_approved": false,
+          "consumer_surface": "meta 435 refs / 11 into changed files; work-package 50 refs / 0 into changed files",
+          "coverage_ledger": "50 units — 46 walked, 4 not-applicable, 0 blocked",
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/README.md",
-          "fail_count": 0,
+          "fail_count": 3,
           "file_count": 19,
           "has_coverage_gap": false,
-          "has_critical_finding": false,
+          "has_critical_finding": true,
           "has_unflagged_removals": false,
           "headless_mode": true,
           "impact_analysis": "Persisted at 01-impact-analysis.md — 13 directly modified, 8 exposed at draft time, transitions Pass, references conditional Pass, variables Fail (pre-existing)",
           "impact_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/01-impact-analysis.md",
           "intent_needs_confirmation": false,
-          "open_finding_count": 0,
+          "open_finding_count": 59,
           "open_judgements_count": 6,
           "operation_type": "update",
           "operation_type_ambiguous": false,
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding",
           "pr_number": "",
           "pr_url": "",
-          "register_sections": [],
+          "register_sections": [
+            "meta",
+            "work-package"
+          ],
           "remediation_round": 0,
           "remediation_selected": false,
           "removal_count": 6,
           "removal_disposition": "",
           "removals_approved": true,
           "repo_root": "/home/mike1/projects/dev/workflow-server",
-          "report_path": "",
+          "report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/08-findings-register.md",
           "review_closed": false,
           "review_scope_confirmed": false,
           "scope_manifest_confirmed": true,
