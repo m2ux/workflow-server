@@ -1,0 +1,61 @@
+id: quality-review
+version: 1.0.0
+name: Quality Review
+description: "Walk every criteria home against each target's definition surface in one pass, extend that walk to the references other workflows hold into the target, and run the repository's definition guards against the tree the run edits."
+required: true
+steps:
+  - kind: technique
+    id: author-fixes
+    technique:
+      name: workflow-definition::yaml-authoring
+      inputs:
+        selected_findings: verified_findings
+    when: remediation_round > 0
+  - kind: technique
+    id: record-fixes
+    technique:
+      name: workflow-definition::apply-audit-fixes
+      inputs:
+        selected_findings: verified_findings
+    when: remediation_round > 0
+  - kind: technique
+    id: load-known-findings
+    technique: workflow-definition::load-known-findings
+  - kind: technique
+    id: survey-reference-workflows
+    technique:
+      name: workflow-engine::list-workflows
+      outputs:
+        workflow_catalog: reference_workflows
+  - kind: loop
+    id: target-sweep-loop
+    name: Target Sweep Loop
+    loopType: forEach
+    variable: target_workflow_id
+    over: target_workflow_ids
+    maxIterations: 20
+    steps:
+      - kind: technique
+        id: rebind-target-baseline
+        technique: workflow-definition::reload-workflow
+      - kind: technique
+        id: resolve-consumer-surface
+        technique: workflow-definition::resolve-consumer-surface
+      - kind: technique
+        id: sweep-canon
+        technique: workflow-definition::audit-canon
+      - kind: technique
+        id: validate-schema
+        technique: workflow-definition::audit-schema-validation
+        actions:
+          - action: set
+            target: register_sections
+            message: "This target's register section appended to the sections already gathered: `{target_workflow_id}` with `{audit_findings}`, the divergences in `{coverage_ledger}`, and `{fail_count}`. Appends; never replaces a prior target's section."
+transitions:
+  - to: validate-and-commit
+    isDefault: true
+outcome:
+  - Every criteria home is walked once per target against the working tree, so a finding is attributed to this change rather than to the catalogue it came from
+  - A violation reachable only through another workflow's reference into the target is reachable, because the consumer surface is part of what the walk covers
+  - Every enumeration unit the walk could not apply is recorded with the reason, so absent coverage is visible rather than indistinguishable from a clean result
+  - The definition guards run against the tree this run edits, not against a checkout it never touched

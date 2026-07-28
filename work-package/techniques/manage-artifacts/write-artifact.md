@@ -23,7 +23,11 @@ Artifact content to write
 
 ### target_dir
 
-*(optional, default `planning_folder_path`)* The directory the artifact is written into. Defaults to `{planning_folder_path}`; bind it to `{comprehension_dir}` when writing into the comprehension directory rather than the planning folder.
+*(optional)* The directory the artifact is written into. Defaults to `{planning_folder_path}`; bind it to `{comprehension_dir}` when writing into the comprehension directory rather than the planning folder.
+
+#### default
+
+`planning_folder_path`
 
 ## Outputs
 

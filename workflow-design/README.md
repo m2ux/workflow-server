@@ -1,5 +1,15 @@
 # Workflow Design Workflow
 
+> **DEPRECATED — start [`workflow-authoring`](../workflow-authoring/README.md) instead.**
+> This workflow remains only so sessions already in flight can finish, and is removed once none
+> remain. Do not start a new session against it. Its version is deliberately frozen: a bump would
+> emit a version-mismatch warning on every call for every in-flight session.
+>
+> A session already under way can be finished here. The defects the replacement exists to fix are
+> still present in this tree and are not being repaired — including two thirty-second auto-advances
+> at the commit gates that select *proceed to commit* even when files are failing schema validation.
+> Prefer finishing promptly over resuming late.
+
 > v1.30.0 — Guides agents through creating, updating, or reviewing workflow definitions. In create/update modes, accepts a free-form user description, derives intent first, reconciles assumptions in a while-loop, and batches stakeholder decisions into Gate 1 (gap-only) and Gate 2 (approve-to-commit); `{headless_mode}` defaults to true so soft mid-flow gates auto-resolve (opt out with “interactive”, “not headless”, or “with checkpoints”). Create/update edits run in a dedicated `{target_path}` worktree. In review mode, audits one or more existing workflows against the design principles and produces a compliance report.
 
 ---

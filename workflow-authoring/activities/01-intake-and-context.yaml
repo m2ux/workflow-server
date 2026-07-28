@@ -1,0 +1,185 @@
+id: intake-and-context
+version: 1.0.0
+name: Intake and Context
+description: "Classify the request as create, update or review, name the target, derive the edit-surface path, and produce the change brief and the change constraints the rest of the run draws on."
+required: true
+steps:
+  - kind: action
+    id: bind-planning-folder-path
+    actions:
+      - action: set
+        target: planning_folder_path
+        message: Absolute planning folder this session writes its artifacts into, as reported in the server session summary.
+  - kind: technique
+    id: derive-target-path
+    technique: workflow-definition::derive-workflows-target-path
+  - kind: technique
+    id: classify-intake
+    technique: workflow-definition::intake-classification
+    when: update_seeded_from_review != true
+  - kind: checkpoint
+    id: design-intent-batch
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: intent_needs_confirmation
+          operator: ==
+          value: true
+        - type: simple
+          variable: update_seeded_from_review
+          operator: "!="
+          value: true
+    message: "Design intent needs confirmation — classified `{operation_type}` for `{workflow_id}` (mode ambiguous={operation_type_ambiguous}, change_request_clear={change_request_clear})."
+    blocking: true
+    options:
+      - id: confirm-intent
+        label: Confirm classified intent
+        description: Accept the classified mode, target, and change request as stated.
+        effect:
+          setVariable:
+            intent_needs_confirmation: false
+            review_scope_confirmed: true
+      - id: confirm-create
+        label: Create a new workflow
+        description: Correct classification to create mode.
+        effect:
+          setVariable:
+            operation_type: create
+            operation_type_ambiguous: false
+            intent_needs_confirmation: false
+      - id: confirm-update
+        label: Update an existing workflow
+        description: Correct classification to update mode.
+        effect:
+          setVariable:
+            operation_type: update
+            operation_type_ambiguous: false
+            intent_needs_confirmation: false
+      - id: wrong-review-target
+        label: Wrong review target set
+        description: Rejects the review target set; supply a corrected `target_workflow_ids` list.
+        effect:
+          setVariable:
+            review_scope_confirmed: false
+      - id: cancel-as-create
+        label: Cancel update — create new instead
+        description: Abandon the update path; flip mode to create.
+        effect:
+          setVariable:
+            operation_type: create
+            operation_type_ambiguous: false
+            intent_needs_confirmation: false
+  - kind: action
+    id: announce-wrong-target
+    when: operation_type == 'review' && review_scope_confirmed != true
+    actions:
+      - action: message
+        message: "Review target set `{target_workflow_ids}` is rejected — no audit target is confirmed for this run."
+  - kind: technique
+    id: seed-planning-readme
+    technique:
+      name: workflow-engine::create-readme
+      inputs:
+        entity_context: "entity_title={workflow_id}; entity_type={operation_type}; status=Planning"
+        seed_profile: workflow-authoring/readme-seed
+    when: operation_type != 'review'
+  - kind: technique
+    id: elicit-change-brief
+    technique: workflow-definition::elicit-change-brief
+    when: operation_type == 'create'
+  - kind: technique
+    id: synthesize-change-brief
+    technique: workflow-definition::synthesize-change-brief
+    when: operation_type == 'update'
+  - kind: technique
+    id: analyze-impact
+    technique: workflow-definition::impact-analysis
+    when: operation_type == 'update'
+  - kind: technique
+    id: persist-change-brief
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: change-brief.md
+        artifact_content: change_brief
+      outputs:
+        written_artifact: change_brief_path
+    when: operation_type != 'review'
+  - kind: technique
+    id: persist-impact-analysis
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: impact-analysis.md
+        artifact_content: impact_analysis
+      outputs:
+        written_artifact: impact_analysis_path
+    when: operation_type == 'update'
+  - kind: action
+    id: surface-open-judgements
+    when: open_judgements_count > 0
+    actions:
+      - action: message
+        message: "{open_judgements_count} design judgements are unresolved in the [change brief]({change_brief_path})."
+  - kind: checkpoint
+    id: impact-approved
+    condition:
+      type: simple
+      variable: removal_count
+      operator: ">"
+      value: 0
+    message: "{removal_count} content removals are inventoried in the [impact analysis]({impact_analysis_path})."
+    blocking: true
+    options:
+      - id: approve-removals
+        label: Approve the inventoried removals
+        description: Accept every removal in the inventory as intentional.
+        effect:
+          setVariable:
+            removals_approved: true
+      - id: preserve-more
+        label: Preserve content instead
+        description: Reject the inventory; the manifest must preserve the flagged content.
+        effect:
+          setVariable:
+            removals_approved: false
+  - kind: action
+    id: clear-review-seed
+    when: update_seeded_from_review == true
+    actions:
+      - action: set
+        target: update_seeded_from_review
+        value: false
+transitions:
+  - to: __terminal__
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: ==
+          value: review
+        - type: simple
+          variable: review_scope_confirmed
+          operator: "!="
+          value: true
+  - to: quality-review
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: ==
+          value: review
+        - type: simple
+          variable: review_scope_confirmed
+          operator: ==
+          value: true
+  - to: scope-and-draft
+    isDefault: true
+outcome:
+  - The run carries a classified operation type and a named target, so every later gate and step can branch on derived state rather than re-reading the request
+  - The edit-surface path is derived in every mode, so a guard invoked later never falls back to a checkout the run did not touch
+  - Create and update runs hold a persisted change brief; update runs additionally hold an impact classification with an approved removals inventory
+  - A rejected review target set ends the run instead of proceeding to audit content the user declined

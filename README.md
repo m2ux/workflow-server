@@ -59,7 +59,8 @@ defines the ontology and section conventions that every technique follows.
 | [`prism`](prism/) | Structural analysis through cognitive lenses — 46 prisms across 11 families, 4 pipeline modes |
 | [`prism-update`](prism-update/) | Sync the prism workflow's resources and routing with upstream agi-in-md changes |
 | [`prism-evaluate`](prism-evaluate/) | Multi-dimensional evaluation of proposals, documents, or codebases through configurable analytical dimensions mapped to prism lenses |
-| [`workflow-design`](workflow-design/) | Create or update workflow definitions with guided elicitation, schema expressiveness enforcement, and convention conformance |
+| [`workflow-authoring`](workflow-authoring/) | Create, update, or audit workflow definitions — guided elicitation, one criteria walk per target, and structural gates on removals and commit |
+| [`workflow-design`](workflow-design/) | **Deprecated** — start `workflow-authoring` instead. Retained only until the sessions already in flight against it finish |
 
 ## Universal Techniques ([meta/techniques/](meta/techniques/))
 

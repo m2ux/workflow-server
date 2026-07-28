@@ -1,0 +1,122 @@
+id: scope-and-draft
+version: 1.0.0
+name: Scope and Draft
+description: "Prepare the edit worktree, enumerate the complete file manifest, author every file the manifest names, and bring the target README and the planning artifacts into line with what was drafted."
+required: true
+steps:
+  - kind: technique
+    id: derive-workflow-branch
+    technique: workflow-definition::derive-workflow-branch
+    when: operation_type != 'review'
+  - kind: technique
+    id: ensure-worktree
+    technique:
+      name: work-package::manage-git::create-worktree
+      inputs:
+        branch_name: workflow_branch
+        create_branch: true
+        component_name: workflows
+    when: operation_type != 'review'
+  - kind: technique
+    id: define-scope
+    technique: workflow-definition::scope-definition
+    when: operation_type != 'review'
+  - kind: technique
+    id: persist-scope-manifest
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: scope-manifest.md
+        artifact_content: scope_manifest
+      outputs:
+        written_artifact: scope_manifest_path
+    when: operation_type != 'review'
+  - kind: checkpoint
+    id: scope-confirmed#{scope_round}
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "!="
+      value: review
+    message: "{file_count} files are enumerated for `{workflow_id}` ([scope manifest]({scope_manifest_path}))."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
+    options:
+      - id: confirmed
+        label: Manifest is complete and correct
+        description: Every file the change touches is enumerated, and the drafting order holds.
+        effect:
+          setVariable:
+            scope_manifest_confirmed: true
+      - id: revise
+        label: Manifest needs revising
+        description: A file is missing, misclassified or wrongly in scope; re-enumerate before drafting.
+        effect:
+          setVariable:
+            scope_manifest_confirmed: false
+          transitionTo: scope-and-draft
+  - kind: action
+    id: bump-scope-round
+    when: operation_type != 'review' && scope_manifest_confirmed != true
+    actions:
+      - action: set
+        target: scope_round
+        message: The next scope-confirmation round for this run, one higher than the round just answered.
+  - kind: loop
+    id: file-drafting-loop
+    name: File Drafting Loop
+    loopType: forEach
+    variable: current_file
+    over: scope_manifest
+    maxIterations: 50
+    when: scope_manifest_confirmed == true
+    steps:
+      - kind: technique
+        id: author-yaml
+        technique: workflow-definition::yaml-authoring
+      - kind: technique
+        id: review-file
+        technique: workflow-definition::review-drafted-file
+      - kind: checkpoint
+        id: preservation-check#{current_file.path}
+        condition:
+          type: simple
+          variable: has_unflagged_removals
+          operator: ==
+          value: true
+        message: "The draft of `{current_file.path}` removes content the [impact analysis]({impact_analysis_path}) does not account for."
+        blocking: true
+        options:
+          - id: flag-and-proceed
+            label: Removal is intentional
+            description: Record the removal against the inventory and keep the draft as written.
+            effect:
+              setVariable:
+                removal_disposition: flagged
+          - id: restore-content
+            label: Restore the content
+            description: The content must survive; re-author the file preserving it.
+            effect:
+              setVariable:
+                removal_disposition: restored
+      - kind: technique
+        id: apply-removal-disposition
+        technique: workflow-definition::yaml-authoring
+        when: has_unflagged_removals == true && removal_disposition == 'restored'
+  - kind: technique
+    id: author-workflow-readme
+    technique: workflow-definition::readme-authoring
+    when: operation_type != 'review' && scope_manifest_confirmed == true
+  - kind: technique
+    id: verify-planning-artifacts
+    technique: workflow-definition::verify-artifact-conforms
+    when: operation_type != 'review' && scope_manifest_confirmed == true
+transitions:
+  - to: quality-review
+    isDefault: true
+outcome:
+  - Create and update runs hold a dedicated worktree on their own branch, so no edit lands in the shared library checkout
+  - The complete set of files the change touches is enumerated and confirmed before any of them is written
+  - Every enumerated file is authored against the schema its kind selects, and a reduction no inventory accounts for is surfaced for a decision rather than committed quietly
+  - The target README and the planning artifacts state what the tree actually contains
