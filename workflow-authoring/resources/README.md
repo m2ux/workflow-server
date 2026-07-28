@@ -12,6 +12,7 @@ Read-guides for the design surface, and **creation guides** — Template plus Ru
 |----------|---------|
 | [Change Brief](change-brief.md) | Creation guide: `change-brief.md` |
 | [Impact Analysis](impact-analysis.md) | Creation guide: `impact-analysis.md` |
+| [Scope Manifest](scope-manifest.md) | Creation guide: `scope-manifest.md` |
 | [Elicitation Guide](elicitation-guide.md) | Mode dimension sets and the per-dimension question bank |
 | [Update Mode Guide](update-mode-guide.md) | Change-request category vocabulary |
 | [README Seed](readme-seed.md) | Progress inventory, classifier and mode-exclusion map for the planning-folder `README.md` |
@@ -27,6 +28,7 @@ Every bare filename this workflow persists maps to a guide that owns its Templat
 | `README.md` | [planning-readme](../../meta/resources/planning-readme.md) Template plus [readme-seed](readme-seed.md) |
 | `change-brief.md` | [change-brief](change-brief.md) |
 | `impact-analysis.md` | [impact-analysis](impact-analysis.md) |
+| `scope-manifest.md` | [scope-manifest](scope-manifest.md) |
 
 Layout authority lives in the guide, not in the protocol of the operation that persists the file.
 
@@ -51,5 +53,6 @@ Other workflows may consult this workflow's guides by resource id:
 
 - `workflow-authoring/change-brief`
 - `workflow-authoring/impact-analysis`
+- `workflow-authoring/scope-manifest`
 - `workflow-authoring/elicitation-guide`
 - `workflow-authoring/update-mode-guide`

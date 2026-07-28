@@ -157,7 +157,7 @@ transitions:
           variable: review_scope_confirmed
           operator: "!="
           value: true
-  - to: __terminal__
+  - to: scope-and-draft
     isDefault: true
 outcome:
   - The run carries a classified operation type and a named target, so every later gate and step can branch on derived state rather than re-reading the request

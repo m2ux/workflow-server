@@ -23,6 +23,10 @@ Baseline of the target's existing definition: file counts by kind, entity counts
 
 Number of distinct content removals in the inventory, counting diff-based and obsolete-file removals alike. Zero when the change is additive or string-only with no material deleted.
 
+### change_constraints
+
+The constraints the change surface imposes on scope: the co-change set — files that must move together for the change to stay coherent — and the identifier-collision set of names already taken in the target.
+
 ### impact_analysis
 
 The assembled impact report: per-file classification, the integrity verdicts, and the removals inventory as removed-versus-preserved rows. Shaped by [Template](../../resources/impact-analysis.md#template).
@@ -55,13 +59,17 @@ The assembled impact report: per-file classification, the integrity verdicts, an
 - Verify every checkpoint `effect.setVariable` key resolves to a declared variable
 - Record any variable declared and never referenced
 
-### 6. Inventory Removals
+### 6. Derive the Change Constraints
+
+- From the classification and the reference checks, take every set of files that must move together for the change to stay coherent, and every identifier the target already uses that a new name could collide with, as `{change_constraints}`
+
+### 7. Inventory Removals
 
 - Compare the planned change against the existing content and list every material removal — fewer lines, removed sections, dropped fields, obsolete files
 - Record each removal as a removed-versus-preserved pair naming what drops and what stays in that region
 - Set `{removal_count}` to the number of distinct inventoried removals
 
-### 7. Compose the Impact Report
+### 8. Compose the Impact Report
 
 - Assemble `{impact_analysis}` from the classification, the integrity verdicts and the removals inventory, at the shape [Template](../../resources/impact-analysis.md#template) declares
 - Link the change brief for purpose and the baseline for inventory rather than restating either

@@ -31,6 +31,8 @@ Lifecycle **Status** values: `Planning`, `Drafting`, `Reviewing`, `Complete`.
 | 1 | 01 | Intake and context | Mode, target, edit-surface path | 15-30m | ⬚ |
 | 2 | 01 | [Change brief](change-brief.md) | Purpose, dimension shape, open judgements | 20-40m | ⬚ |
 | 3 | 01 | [Impact analysis](impact-analysis.md) | Blast radius, integrity, removals | 20-40m | ⊘ |
+| 4 | 06 | Scope and draft | Worktree, manifest, per-file drafting | 30-60m | ⬚ |
+| 5 | 06 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |
 
 Initial Status icons are from [Status vocabulary](../../meta/resources/planning-readme.md#status-vocabulary). The impact-analysis row starts cancelled/N/A because only an update run produces it.
 

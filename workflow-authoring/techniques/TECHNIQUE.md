@@ -33,12 +33,13 @@ Every planning fact has exactly one canonical artifact. Where a second artifact 
 
 ### canonical-home-map
 
-No fact category below has a second canonical home.
+No fact category below has a second canonical home. [verify-artifact-conforms](./workflow-definition/verify-artifact-conforms.md) enforces the map.
 
 | Fact category | Canonical home |
 |---|---|
 | Purpose, change goals, open design judgements | `change-brief.md` |
 | Impact classification, integrity verdicts, removals inventory | `impact-analysis.md` |
+| File manifest, structural design, drafting order | `scope-manifest.md` |
 | Session index — progress, links, artifact pointers | `README.md` |
 
 ### apply-canon-when-authoring

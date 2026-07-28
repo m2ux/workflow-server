@@ -11,6 +11,7 @@ Activity `#` columns match the on-disk `NN-` file prefixes; the prefix is server
 | # | Activity | Mode | Purpose |
 |---|----------|------|---------|
 | 01 | [**Intake and Context**](./activities/README.md#01-intake-and-context) | All | Classify create/update/review, name the target, derive the edit surface, produce the change brief and approve inventoried removals |
+| 06 | [**Scope and Draft**](./activities/README.md#06-scope-and-draft) | Create, Update | Prepare the edit worktree, enumerate and confirm the file manifest, author every file it names, align the target README and the planning artifacts |
 
 **Detailed documentation:**
 
@@ -48,9 +49,9 @@ The audit criteria this workflow applies — the anti-pattern catalog, the desig
 
 In create and update modes the workflow seeds a **planning folder** under `.engineering/artifacts/planning/`: a `README.md` from the universal [planning-readme](../meta/resources/planning-readme.md) Template under this workflow's [readme-seed](./resources/readme-seed.md) profile, plus the planning artifacts each activity persists as numbered files via [`work-package::manage-artifacts::write-artifact`](../work-package/techniques/manage-artifacts/write-artifact.md).
 
-**Create mode:** a change brief recording the design surface and any judgement left open.
+**Create mode:** a change brief recording the design surface and any judgement left open, a confirmed scope manifest, and the enumerated definition files authored under `{target_path}`.
 
-**Update mode:** a change brief plus an impact analysis whose removals inventory has been approved.
+**Update mode:** the same, plus an impact analysis whose removals inventory has been approved, and a per-file check that no reduction reaches the tree unaccounted for.
 
 **Review mode:** no planning folder is seeded and no worktree is created; the edit-surface path is still derived, so every guard a review run invokes reads the tree the run targets.
 
@@ -64,7 +65,8 @@ workflows/workflow-authoring/
 ├── README.md                               # This file
 ├── activities/
 │   ├── README.md                           # Per-activity orientation map
-│   └── 01-intake-and-context.yaml          # Classify mode and target, derive edit surface, change brief
+│   ├── 01-intake-and-context.yaml          # Classify mode and target, derive edit surface, change brief
+│   └── 06-scope-and-draft.yaml             # Worktree, file manifest, per-file drafting, artifact alignment
 ├── techniques/
 │   ├── README.md                           # Technique orientation map
 │   ├── TECHNIQUE.md                        # Shared inputs and authoring invariants
@@ -74,11 +76,18 @@ workflows/workflow-authoring/
 │       ├── intake-classification.md
 │       ├── elicit-change-brief.md
 │       ├── synthesize-change-brief.md
-│       └── impact-analysis.md
+│       ├── impact-analysis.md
+│       ├── derive-workflow-branch.md
+│       ├── scope-definition.md
+│       ├── yaml-authoring.md
+│       ├── review-drafted-file.md
+│       ├── readme-authoring.md
+│       └── verify-artifact-conforms.md
 └── resources/
     ├── README.md                           # Resource index and artifact-to-guide map
     ├── change-brief.md                     # Creation guide
     ├── impact-analysis.md                  # Creation guide
+    ├── scope-manifest.md                   # Creation guide
     ├── elicitation-guide.md                # Mode dimension sets and question bank
     ├── update-mode-guide.md                # Change-category vocabulary
     └── readme-seed.md                      # Progress inventory and mode map for the planning README
