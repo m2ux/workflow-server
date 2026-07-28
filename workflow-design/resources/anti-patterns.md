@@ -621,11 +621,11 @@ Protocol cites a filename/path instead of a canonical I/O id.
 
 A filename lives in Protocol instead of the I/O declaration.
 
-**Detect:** Protocol prose names a concrete artifact filename (literal, or ad-hoc path) instead of a canonical Input/Output id. Fixed names belong as `#### artifact` literals; dynamic names as token-templates (`{package_name}-plan.md`); conditional names as discriminator-keyed notes on the I/O declaration.
+**Detect:** Protocol prose names a concrete artifact filename (literal, or ad-hoc path) instead of a canonical Input/Output id. Fixed names belong as `#### artifact` literals; dynamic names as token-templates (`{package_name}-plan.md`). A name selected by a mode is one literal per op, not one slot holding both — see `artifact-name-is-filename`.
 
 **Do not flag:** Protocol references that already use `{canonical_id}` only. Opaque multi-file path arrays — see `no-opaque-artifact-path-array`.
 
-**Fix:** Move the filename (literal, token-template, or discriminator-keyed note) into the I/O declaration; reference identifiers only in Protocol.
+**Fix:** Move the filename (literal or token-template) into the I/O declaration; reference identifiers only in Protocol.
 
 ### AP-45. no-opaque-artifact-path-array
 
@@ -635,7 +635,7 @@ An opaque path array stands in for named artifact inputs.
 
 **Detect:** A technique consumes several artifacts via a single opaque `*-paths` (or similar) array that forces Protocol to name the files.
 
-**Do not flag:** A single artifact with a token-template or discriminator-keyed name on one Input (`artifact-name-in-io`).
+**Do not flag:** A single artifact with a literal or token-template name on one Input (`artifact-name-in-io`).
 
 **Fix:** Split into individually named Inputs with canonical ids; Protocol references those ids only.
 
@@ -1708,3 +1708,15 @@ A change updates some restatements of a behaviour it altered and leaves others a
 **Do not flag:** Restatements already accurate and unaffected by the change; planning-folder artifacts that record the before state deliberately; a claim held once in a single authoritative home. Restatement that duplicates a Detect body an existing entry owns is `canon-layer-cites-not-restates`.
 
 **Fix:** Update every occurrence in one edit and record the count in the change's file manifest so the sweep is auditable. Where the claim needs only one home, delete the restatements instead of updating them — see [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+
+### AP-130. artifact-name-is-filename
+
+"`COMPLETE.md` (implementation) or planning-folder session `README.md` section (review mode)" / "`stage-1.md` (fast stage) / `stage-2.md` (deep stage)"
+
+An `#### artifact` body holds text no file can be named, and the worker creates a file named after that text.
+
+**Detect:** Read each `#### artifact` body as the literal filename a worker creates under the artifact prefix. Flag a body that is not one path segment ending in an extension: several names joined by `/`, `and`, or `or`; a name trailed by a parenthesised mode selector or condition; a declaration key written as text (`name: <file>`); a sentence naming a section of a document another technique creates; a path carrying a separator.
+
+**Do not flag:** A single literal (`01-audit-report.md`); a token-template whose `{placeholder}` resolves at runtime (`{package_name}-plan.md`, `subsystem-{code_subsystem.subsystem_name}.md`) — a placeholder standing where literal text would is part of the name, not prose.
+
+**Fix:** Branch on what the slot was holding. Several files from one technique → one `### <output>` per file, each with its own `#### artifact`. A name selected by a mode input → split into a group with one op per mode, each declaring its literal name, and gate the bind sites on the mode (`no-monolith-masking-steps`). A section written into a document another technique creates → declare no artifact; the creating technique owns the file. Files a bound sibling op produces → declare them there, never on the caller (`canonical-fact-home`).

@@ -193,8 +193,8 @@ The cross-cutting `variable-binding` technique is declared once at the workflow 
 | `structural-analysis` | Single-pass L12 structural analysis |
 | `single-lens-analysis` | Apply one plan-selected lens (any non-L12 single lens) in a single isolated pass |
 | `portfolio-analysis` | Run 2+ complementary portfolio lenses |
-| `behavioral-pipeline` | Execute 4+1 behavioral pipeline with labeled synthesis |
-| `full-prism` | Execute one isolated pass of the Full Prism pipeline |
+| `behavioral-pipeline::*` | Execute 4+1 behavioral pipeline with labeled synthesis |
+| `full-prism::*` | Execute the adversarial and synthesis passes of the Full Prism pipeline |
 | `dispute-analysis` | Run two orthogonal prisms and synthesize disagreements |
 | `subsystem-analysis::*` | Per-region prism assignment + cross-subsystem synthesis |
 | `verified-analysis::*` | L12 + gap detection + corrected re-analysis |
@@ -205,7 +205,7 @@ The cross-cutting `variable-binding` technique is declared once at the workflow 
 | `emit-run-manifest` | Write RUN-MANIFEST.md recording produced artifacts + completion status; verify the run completed |
 | `present-result` | Cross-reference-format and present the final report with the definitive-findings and manifest paths |
 
-The four `::*` techniques are **operation-groups** — a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `<op>.md` file per operation. The rest are standalone `techniques/<slug>.md` files.
+The `::*` techniques are **operation-groups** — a `techniques/<group>/` directory holding a `TECHNIQUE.md` shared contract plus one `<op>.md` file per operation. The rest are standalone `techniques/<slug>.md` files.
 
 **Detailed documentation:** See [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md) for the inherited base contract; each standalone technique's `techniques/<slug>.md` file and each operation-group's `techniques/<group>/<op>.md` file documents its protocol flow.
 
@@ -333,13 +333,19 @@ workflows/prism/
 │   ├── structural-analysis.md               # Single-pass L12
 │   ├── single-lens-analysis.md              # Single-pass application of any non-L12 lens
 │   ├── portfolio-analysis.md                # Portfolio lenses
-│   ├── behavioral-pipeline.md               # Behavioral pipeline worker pass
-│   ├── full-prism.md                        # Full Prism worker pass
 │   ├── dispute-analysis.md                  # Dispute pipeline
 │   ├── reflect-analysis.md                  # Reflect pipeline
 │   ├── generate-report.md                   # REPORT.md + DEFINITIVE-FINDINGS.md generation from analysis artifacts
 │   ├── emit-run-manifest.md                 # Write RUN-MANIFEST.md + verify run completion
 │   ├── present-result.md                    # Format and present the final report with artifact paths
+│   ├── full-prism/                          # Full Prism operation-group
+│   │   ├── TECHNIQUE.md                      # Group contract
+│   │   ├── adversarial.md                    # Adversarial pass + graph verification
+│   │   └── synthesis.md                      # Definitive synthesis pass
+│   ├── behavioral-pipeline/                 # Behavioral operation-group
+│   │   ├── TECHNIQUE.md                      # Group contract
+│   │   ├── independent-lenses.md             # Four independent behavioral lenses
+│   │   └── synthesis.md                      # Labeled behavioral synthesis
 │   ├── subsystem-analysis/                  # Subsystem operation-group
 │   │   ├── TECHNIQUE.md                      # Group contract
 │   │   ├── decompose.md                      # AST split into subsystems

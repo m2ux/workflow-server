@@ -16,10 +16,10 @@ steps:
       - kind: technique
         id: run-behavioral-synthesis
         technique:
-          name: behavioral-pipeline
+          name: behavioral-pipeline::synthesis
           inputs:
-            lens_name: synthesis
             target_content: "{current_unit.target}"
+            prior_artifact_paths: behavioral_output_paths
         actions:
           - action: set
             target: all_artifact_paths

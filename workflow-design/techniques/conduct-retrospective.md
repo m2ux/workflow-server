@@ -11,11 +11,7 @@ Session retrospective surfacing friction points and prioritized workflow improve
 
 ### retrospective_document
 
-Session [retrospective](../../work-package/resources/workflow-retrospective.md#output-section-template) with prioritized lessons learned, written as the `## Workflow Retrospective` section of the close-out document rather than a standalone artifact.
-
-#### artifact
-
-COMPLETE.md
+Session [retrospective](../../work-package/resources/workflow-retrospective.md#output-section-template) with prioritized lessons learned, written as the `## Workflow Retrospective` section of the close-out document.
 
 ## Protocol
 

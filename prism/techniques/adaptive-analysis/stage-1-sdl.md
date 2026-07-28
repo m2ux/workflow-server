@@ -13,12 +13,20 @@ Run the cheapest SDL scan on Haiku and assess signal quality to decide whether e
 
 Signal-quality assessment at the current stage.
 
+### sdl_scan
+
+Cheapest-stage deep scan of the target.
+
+#### artifact
+
+`adaptive-stage1.md`
+
 ## Protocol
 
 ### 1. Stage 1 Sdl
 
 - Dispatch [deep-scan](../../resources/deep-scan.md) to a fresh worker on Haiku, passing `{target_content}` and `{target_type}` so the scan adapts to whether the input is code or general text
-- Worker writes `{adaptive_result.artifact_paths}` stage-1 entry into `{output_path}`
+- Worker writes `{sdl_scan}` into `{output_path}`
 - Assess signal quality: conservation law + word count > 300 + bug table
 
 ### 2. Assess Signal

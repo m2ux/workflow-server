@@ -16,9 +16,8 @@ steps:
       - kind: technique
         id: run-adversarial
         technique:
-          name: full-prism
+          name: full-prism::adversarial
           inputs:
-            lens_name: adversarial
             target_content: "{current_unit.target}"
             prior_artifact_paths: all_artifact_paths
         actions:

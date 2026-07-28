@@ -7,9 +7,19 @@ metadata:
 
 Run the initial L12 structural analysis on the target in a fresh worker
 
+## Outputs
+
+### initial_analysis
+
+L12 structural analysis of the target, as first run — before any gap correction.
+
+#### artifact
+
+`verified-initial.md`
+
 ## Protocol
 
 ### 1. Initial Analysis
 
 - Dispatch [L12](../../resources/l12.md) to a fresh worker, configured for the `{target_type}` of input ('code' or 'general')
-- Worker writes `{verified_result.initial_path}` into `{output_path}`
+- Worker writes `{initial_analysis}` into `{output_path}`

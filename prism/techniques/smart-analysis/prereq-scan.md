@@ -7,9 +7,19 @@ metadata:
 
 Run the prerequisite scan over the target and extract atomic questions for knowledge fill
 
+## Outputs
+
+### prereq_scan
+
+Prerequisite scan of the target, with the atomic questions knowledge fill answers.
+
+#### artifact
+
+`smart-prereq.md`
+
 ## Protocol
 
 ### 1. Prereq Scan
 
-- Dispatch [prereq](../../resources/prereq.md) over `{target_content}` to a fresh worker, writing `{smart_result.prereq_path}` into `{output_path}`
+- Dispatch [prereq](../../resources/prereq.md) over `{target_content}` to a fresh worker, writing `{prereq_scan}` into `{output_path}`
 - Extract atomic questions from output for knowledge fill

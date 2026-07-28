@@ -39,26 +39,6 @@ Names of the peer subsystems adjacent to this one
 
 The set of decomposed structural subsystems, each carrying its identity, line range, source file, and peer names (see the matching input declaration for the per-subsystem fields).
 
-### subsystem_result
-
-Paths to per-subsystem artifacts, synthesis artifact, and prism assignments
-
-#### artifact
-
-`subsystem-{code_subsystem.subsystem_name}.md` (one per structural subsystem) / `subsystem-synthesis.md` (cross-subsystem synthesis)
-
-#### subsystem_paths
-
-Filesystem paths to the per-subsystem artifacts
-
-#### synthesis_path
-
-Filesystem path to the cross-subsystem synthesis artifact
-
-#### assignments
-
-Map of subsystem name (or id) to assigned prism resource index or lens id
-
 ## Rules
 
 ### code-only

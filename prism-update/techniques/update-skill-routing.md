@@ -24,7 +24,7 @@ Update prism routing technique files to reflect resource changes: fix renamed re
 
 ### 3. Update Behavioral Pipeline
 
-- Fix renamed references to behavioral lens names or indices in `behavioral-pipeline.md`.
+- Fix renamed references to behavioral lens names or indices in the `behavioral-pipeline` operation group.
 
 ### 4. Update Orchestrate Prism
 

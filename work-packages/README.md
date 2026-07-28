@@ -90,14 +90,16 @@ graph TD
     subgraph analysis[Analysis]
         cpType{Analysis type?}
         d1{analysis_type?}
-        a1([analyze-context → analyze-initiative-context])
+        a1([analyze-completion → analyze-initiative-context::analyze-completion])
+        a2([analyze-context → analyze-initiative-context::analyze-context])
         cp1{Analysis confirmed?}
         
         cpType -->|continuing| d1
         cpType -->|new initiative| d1
         d1 -->|completion| a1
-        d1 -->|context| a1
+        d1 -->|context| a2
         a1 --> cp1
+        a2 --> cp1
         cp1 -->|proceed| Next([→ package-planning])
         cp1 -->|revise| cpType
     end
@@ -185,13 +187,15 @@ The workflow produces planning documentation under the planning folder: START-HE
 
 ## Techniques Summary
 
-Workflow-specific techniques live under `techniques/`. Two are **operation groups** (a `TECHNIQUE.md` contract plus one file per operation, referenced as `<group>::<op>`); the rest are standalone techniques. All share the base contract in `techniques/TECHNIQUE.md`.
+Workflow-specific techniques live under `techniques/`. Three are **operation groups** (a `TECHNIQUE.md` contract plus one file per operation, referenced as `<group>::<op>`); the rest are standalone techniques. All share the base contract in `techniques/TECHNIQUE.md`.
 
 | Technique / Operation | Type | Capability | Used By |
 |-----------------------|------|------------|---------|
 | `assess-initiative-scope` | Standalone | Identify and categorize work packages | Scope Assessment |
 | `setup-planning-folder` | Standalone | Create START-HERE.md and README.md skeletons | Folder Setup |
-| `analyze-initiative-context` | Standalone | Completion or context analysis | Analysis |
+| `analyze-initiative-context` | Group | Initiative-level analysis grounding package planning | Analysis |
+| `analyze-initiative-context::analyze-completion` | Group op | Assess the completion state of existing progress | Analysis (continuing) |
+| `analyze-initiative-context::analyze-context` | Group op | Establish the starting context for a fresh initiative | Analysis (new) |
 | `plan-work-package-scope` | Group | Scope, dependencies, effort, success criteria per package | Package Planning |
 | `plan-work-package-scope::present-overview` | Group op | Present packages and the per-package planning approach | Package Planning |
 | `plan-work-package-scope::plan-package` | Group op | Plan and document one package (scope, deps, effort, success) | Package Planning (loop) |
@@ -237,7 +241,10 @@ work-packages/
 │   ├── TECHNIQUE.md
 │   ├── assess-initiative-scope.md
 │   ├── setup-planning-folder.md
-│   ├── analyze-initiative-context.md
+│   ├── analyze-initiative-context/
+│   │   ├── TECHNIQUE.md
+│   │   ├── analyze-completion.md
+│   │   └── analyze-context.md
 │   ├── prioritize-packages.md
 │   ├── document-roadmap.md
 │   ├── plan-work-package-scope/

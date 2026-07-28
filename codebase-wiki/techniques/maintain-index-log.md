@@ -19,28 +19,36 @@ A one-line description of the mutation for the log entry — the area ingested, 
 
 ## Outputs
 
-### index_log
+### wiki_index
 
-The refreshed catalog and the appended ledger for the wiki.
+The refreshed catalog: one entry per page, organized by page type and routing to the page by wikilink.
 
 #### artifact
 
-`index.md` and `log.md`
+`index.md`
+
+### mutation_log
+
+The appended ledger: one entry per create/update operation, in operation order.
+
+#### artifact
+
+`log.md`
 
 ## Protocol
 
 ### 1. Update The Index
 
-- For each page in `{mutated_pages}`, ensure `index.md` has an entry under its type section linking to the page by `[[wikilink]]`, with its title and one-line summary; add a new entry for a new page, refresh the summary for an updated one.
+- For each page in `{mutated_pages}`, ensure `{wiki_index}` has an entry under its type section linking to the page by `[[wikilink]]`, with its title and one-line summary; add a new entry for a new page, refresh the summary for an updated one.
 - Keep the index organized by page type (`concepts`, `entities`, `sources`, `comparisons`) so it stays navigable as it grows.
 
 ### 2. Append The Log
 
-- Append one entry to `log.md` recording the operation: a timestamp, the `{operation_summary}`, the pages touched, the `{raw_baseline_commit}` the claims cite, and whether the mutation was code-driven or task-driven. The log is append-only — never rewrite prior entries.
+- Append one entry to `{mutation_log}` recording the operation: a timestamp, the `{operation_summary}`, the pages touched, the `{raw_baseline_commit}` the claims cite, and whether the mutation was code-driven or task-driven. The log is append-only — never rewrite prior entries.
 
 ### 3. Write Both Files
 
-- Write `index.md` and `log.md` by delegating to [`work-package::manage-artifacts::write-artifact`](../../work-package/techniques/manage-artifacts/write-artifact.md), binding `bare_filename` to `index.md` / `log.md`, `artifact_content` to the composed content, and `target_dir` to `{wiki_path}`.
+- Write `{wiki_index}` and `{mutation_log}` by delegating to [`work-package::manage-artifacts::write-artifact`](../../work-package/techniques/manage-artifacts/write-artifact.md), binding *bare_filename* to each artifact's declared name, *artifact_content* to the composed content, and *target_dir* to `{wiki_path}`.
 
 ## Rules
 
