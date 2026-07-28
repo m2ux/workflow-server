@@ -113,7 +113,7 @@ steps:
     technique: workflow-definition::verify-artifact-conforms
     when: operation_type != 'review' && scope_manifest_confirmed == true
 transitions:
-  - to: __terminal__
+  - to: quality-review
     isDefault: true
 outcome:
   - Create and update runs hold a dedicated worktree on their own branch, so no edit lands in the shared library checkout

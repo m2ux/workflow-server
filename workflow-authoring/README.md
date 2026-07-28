@@ -12,6 +12,7 @@ Activity `#` columns match the on-disk `NN-` file prefixes; the prefix is server
 |---|----------|------|---------|
 | 01 | [**Intake and Context**](./activities/README.md#01-intake-and-context) | All | Classify create/update/review, name the target, derive the edit surface, produce the change brief and approve inventoried removals |
 | 06 | [**Scope and Draft**](./activities/README.md#06-scope-and-draft) | Create, Update | Prepare the edit worktree, enumerate and confirm the file manifest, author every file it names, align the target README and the planning artifacts |
+| 08 | [**Quality Review**](./activities/README.md#08-quality-review) | All | One criteria walk per target over its own surface and its consumer surface, plus the repository's definition guards against the tree the run edits |
 
 **Detailed documentation:**
 
@@ -66,7 +67,8 @@ workflows/workflow-authoring/
 ├── activities/
 │   ├── README.md                           # Per-activity orientation map
 │   ├── 01-intake-and-context.yaml          # Classify mode and target, derive edit surface, change brief
-│   └── 06-scope-and-draft.yaml             # Worktree, file manifest, per-file drafting, artifact alignment
+│   ├── 06-scope-and-draft.yaml             # Worktree, file manifest, per-file drafting, artifact alignment
+│   └── 08-quality-review.yaml              # Per-target criteria walk, consumer surface, definition guards
 ├── techniques/
 │   ├── README.md                           # Technique orientation map
 │   ├── TECHNIQUE.md                        # Shared inputs and authoring invariants
@@ -82,12 +84,18 @@ workflows/workflow-authoring/
 │       ├── yaml-authoring.md
 │       ├── review-drafted-file.md
 │       ├── readme-authoring.md
-│       └── verify-artifact-conforms.md
+│       ├── verify-artifact-conforms.md
+│       ├── load-known-findings.md
+│       ├── reload-workflow.md
+│       ├── resolve-consumer-surface.md
+│       ├── audit-canon.md
+│       └── audit-schema-validation.md
 └── resources/
     ├── README.md                           # Resource index and artifact-to-guide map
     ├── change-brief.md                     # Creation guide
     ├── impact-analysis.md                  # Creation guide
     ├── scope-manifest.md                   # Creation guide
+    ├── findings-register.md                # Creation guide, section-delivered
     ├── elicitation-guide.md                # Mode dimension sets and question bank
     ├── update-mode-guide.md                # Change-category vocabulary
     └── readme-seed.md                      # Progress inventory and mode map for the planning README

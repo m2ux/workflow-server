@@ -20,4 +20,12 @@ Definition: [`01-intake-and-context.yaml`](./01-intake-and-context.yaml). Leads 
 
 Prepares a dedicated worktree on the run's own branch, so no edit lands in the shared library checkout. Enumerates the complete set of files the change touches and holds that manifest at a soft gate before anything is written; revising the manifest re-enters the activity rather than continuing into drafting. Then authors each enumerated file against the schema its kind selects, and stops on any reduction the removals inventory does not account for so the operator disposes of it. Closes by bringing the target README and the planning artifacts into line with what was drafted. Skipped whole in review mode: every step is either mode-gated or gated on a manifest confirmation a review run never reaches.
 
-Definition: [`06-scope-and-draft.yaml`](./06-scope-and-draft.yaml).
+Definition: [`06-scope-and-draft.yaml`](./06-scope-and-draft.yaml). Leads to [Quality Review](#08-quality-review).
+
+---
+
+### 08. Quality Review
+
+Runs in every mode. Loads the exclusions a prior pass accepted, takes the library catalog as the reference set, then sweeps each target in scope: resolves that target's current surface and the base ref its change is measured against, resolves the references other workflows hold into it, walks every criteria home against both surfaces in a single pass, and runs the repository's definition guards against the tree the run edits. A create or update run sweeps its one target; a review run sweeps each named target in turn, accumulating a register section per target.
+
+Definition: [`08-quality-review.yaml`](./08-quality-review.yaml).

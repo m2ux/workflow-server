@@ -43,15 +43,15 @@ The id of the workflow being created or updated.
 
 ### target_workflow_id
 
-The id of the existing workflow to modify (update), or the current audit target (review). In multi-target review this is the first id in `{target_workflow_ids}` at intake and is rebound per target; unset in create mode.
+The workflow id currently in scope — the one being authored on a create run, the one being modified on an update run, or the audit target currently bound on a review run. On a multi-target review it starts as the first id in `{target_workflow_ids}` and is rebound per target.
 
 ### target_workflow_ids
 
-Ordered list of workflow ids in scope. One element for single-target review or for update; two or more when the request names multiple workflows. Unset in create mode.
+Ordered list of workflow ids in scope for this run, always holding at least one. A create or update run holds the single target; a review run holds every named audit target in request order.
 
 ### structural_inventory
 
-Per-target baseline of the existing definition — file counts by kind, entity counts, activity ids in prefix order, and a one-line statement of what the change touches. Unset in create mode.
+Per-target baseline of the existing definition — file counts by kind, entity counts, activity ids in prefix order, and a one-line statement of what the change touches. Absent on a create run, which has no existing definition.
 
 ### change_category
 
@@ -63,7 +63,7 @@ In update mode, the categorised change request from `{user_description}`: one or
 
 - Determine `{operation_type}` per the Output criteria
 - Set `{operation_type_ambiguous}` true when classification signals conflict or are insufficient; otherwise false
-- In review mode resolve `{target_workflow_ids}` from the request and seed `{target_workflow_id}` to the first element; in update mode resolve both from the single named target; in create mode leave both unset
+- In review mode resolve `{target_workflow_ids}` from the request and bind `{target_workflow_id}` to its first element; in update mode take both from the single named target; in create mode take both from the id being authored, so the list is never empty in any mode
 - In review mode set `{review_scope_confirmed}` true when every named id resolves to an existing workflow directory, and false when no concrete id is named or the named set cannot be resolved with certainty
 
 ### 2. Derive Intent Gap Flag and Headless
