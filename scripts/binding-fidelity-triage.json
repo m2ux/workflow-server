@@ -316,13 +316,6 @@
     },
     {
       "check": "dead-output",
-      "site": "prism/techniques/subsystem-analysis/execute.md",
-      "detail": "output 'subsystem_outputs' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
       "site": "remediate-vuln/techniques/security-setup/present-security-overview.md",
       "detail": "output 'security_overview' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "fix-later",
@@ -624,20 +617,6 @@
     },
     {
       "check": "dead-output",
-      "site": "work-packages/techniques/analyze-initiative-context.md",
-      "detail": "output 'key_findings' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-packages/techniques/analyze-initiative-context.md",
-      "detail": "output 'planning_recommendation' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
       "site": "work-packages/techniques/assess-initiative-scope.md",
       "detail": "output 'package_count' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "fix-later",
@@ -821,21 +800,7 @@
     {
       "check": "orphan-input",
       "site": "substrate-node-security-audit :: analyze-architecture",
-      "detail": "own input 'crate_map' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "substrate-node-security-audit :: analyze-architecture",
       "detail": "own input 'file_inventory' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "substrate-node-security-audit :: analyze-architecture",
-      "detail": "own input 'reconnaissance_data' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "fix-later",
       "rationale": "undeclared-seed"
     },
@@ -913,13 +878,6 @@
       "check": "orphan-input",
       "site": "substrate-node-security-audit :: map-codebase",
       "detail": "own input 'workspace_root' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "substrate-node-security-audit :: map-vulnerability-domains",
-      "detail": "own input 'crate_map' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "fix-later",
       "rationale": "undeclared-seed"
     },
