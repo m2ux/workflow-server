@@ -2,6 +2,7 @@
   "label": "A0",
   "description": "Pre-optimisation reference: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-07-16 (server@7aaf7e2b, workflows@a1409d5b). See .engineering/artifacts/planning/2026-07-16-token-usage-reductions/20-token-benchmark.md.",
   "contextMode": "fresh",
+  "workflowsRev": "a1409d5b",
   "agentId": "bench-solo",
   "path": [
     "start-work-package",

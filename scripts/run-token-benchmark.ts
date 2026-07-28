@@ -24,15 +24,25 @@
  *   --server-root=<path>       Server checkout root (default: cwd)
  *   --reference=<path>         A0 fixture path (default: <server-root>/scripts/fixtures/…)
  *   --no-compare               Skip vs-reference scorecard
+ *   --gate                     Fail (exit 3) on a delivery-char regression beyond the threshold
+ *   --max-regression-pct=<n>   Gate threshold in percent (default: 1)
  *
  * Env:
  *   WORKFLOWS_DIR   Corpus root for the harness (default: <server-root>/workflows)
  *
- * Exit: 0 on completed walk; 2 if finalStatus !== completed; 1 on hard failure.
+ * A comparison is only valid when the run and the reference share a context mode
+ * (#323 T4): a fresh-vs-persistent delta conflates a mode switch with a code
+ * change, and a persistent-only comparison cannot see a regression on the mode
+ * production actually uses. Cross-mode runs still report, but are marked
+ * `modeMatched: false` and can never pass `--gate`.
+ *
+ * Exit: 0 on completed walk; 2 if finalStatus !== completed; 3 on gate failure;
+ * 1 on hard failure.
  *
  * See docs/development.md § "Token delivery benchmark" and docs/api-reference.md
  * § Reference Delivery.
  */
+import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { pathToFileURL } from 'node:url';
@@ -72,6 +82,10 @@ interface Metrics {
 interface ReferenceFixture {
   label: string;
   description?: string;
+  /** Context mode the fixture was recorded in. A comparison is only valid within one mode. */
+  contextMode?: ContextMode;
+  /** Corpus revision the fixture was recorded against, for the pinning warning. */
+  workflowsRev?: string;
   getActivityChars: number;
   getWorkflowChars: number;
   getResourceChars: number;
@@ -101,6 +115,10 @@ interface VsReference {
   referenceLabel: string;
   referencePath: string;
   description?: string;
+  /** Run and reference share a context mode. Only a matched comparison is a valid gate (#323 T4). */
+  modeMatched: boolean;
+  /** Why a comparison is not gate-worthy, when it is not. */
+  caveat?: string;
   /** Sum of activity+workflow+resource+technique payload chars. A0 = 100. */
   deliveryCostIndex: {
     current: number;
@@ -108,6 +126,14 @@ interface VsReference {
     relative: number;
   };
   metrics: Record<string, Delta>;
+}
+
+interface GateResult {
+  /** Percent regression in total delivery chars that fails the gate. */
+  maxRegressionPct: number;
+  regressionPct: number | null;
+  passed: boolean;
+  reason: string;
 }
 
 function arg(name: string, fallback: string): string {
@@ -130,6 +156,9 @@ const HOT_RESOURCES = [
 ] as const;
 
 const DEFAULT_REFERENCE = 'scripts/fixtures/token-benchmark-a0-reference.json';
+
+/** Default `--gate` threshold: total delivery chars may not regress by more than this percent. */
+const DEFAULT_MAX_REGRESSION_PCT = 1;
 
 function deliveryChars(m: {
   getActivityChars: number;
@@ -158,10 +187,20 @@ function makeDelta(current: number, reference: number, better: 'lower' | 'higher
 function buildVsReference(metrics: Metrics, reference: ReferenceFixture, referencePath: string): VsReference {
   const currentDelivery = deliveryChars(metrics);
   const referenceDelivery = deliveryChars(reference);
+  // An unlabelled fixture is treated as matching: it predates the mode field and every fixture
+  // shipped so far was recorded fresh.
+  const referenceMode = reference.contextMode ?? metrics.contextMode;
+  const modeMatched = referenceMode === metrics.contextMode;
   return {
     referenceLabel: reference.label,
     referencePath,
     description: reference.description,
+    modeMatched,
+    ...(modeMatched ? {} : {
+      caveat: `Cross-mode comparison: reference is ${referenceMode}, run is ${metrics.contextMode}. `
+        + 'The delta conflates the mode switch with the code change and is not a valid ship gate — '
+        + 'compare within one mode, and always include a fresh-mode arm.',
+    }),
     deliveryCostIndex: {
       current: currentDelivery,
       reference: referenceDelivery,
@@ -231,12 +270,14 @@ function formatPct(deltaPct: number | null): string {
   return `${sign}${deltaPct}%`;
 }
 
-function writeScorecard(vs: VsReference): void {
+function writeScorecard(vs: VsReference, contextMode: ContextMode, corpusNote?: string): void {
   const lines: string[] = [
     '',
-    `vs ${vs.referenceLabel} (pre-optimisation reference) · deliveryCostIndex ${vs.deliveryCostIndex.relative} (A0 = 100, lower is better)`,
+    `vs ${vs.referenceLabel} (pre-optimisation reference) · ${contextMode}-mode · deliveryCostIndex ${vs.deliveryCostIndex.relative} (A0 = 100, lower is better)`,
     '─'.repeat(72),
   ];
+  if (!vs.modeMatched) lines.push(`  ⚠ NOT A VALID GATE — ${vs.caveat}`, '');
+  if (corpusNote) lines.push(`  ⚠ ${corpusNote}`, '');
   const rows: Array<[string, Delta]> = [
     ['delivery chars (act+wf+res+tech)', vs.metrics.deliveryChars!],
     ['get_activity chars', vs.metrics.getActivityChars!],
@@ -255,6 +296,47 @@ function writeScorecard(vs: VsReference): void {
   }
   lines.push('');
   process.stderr.write(`${lines.join('\n')}`);
+}
+
+/** Corpus revision of the walked workflows dir, when it is a git checkout. */
+function resolveCorpusRev(workflowsDir: string): string | undefined {
+  try {
+    const rev = execFileSync('git', ['-C', workflowsDir, 'rev-parse', '--short=8', 'HEAD'], {
+      encoding: 'utf8',
+      stdio: ['ignore', 'pipe', 'ignore'],
+    }).trim();
+    return rev || undefined;
+  } catch {
+    return undefined;
+  }
+}
+
+/**
+ * Ship gate on total delivery chars (#323 T4). A gate can only pass on a mode-matched
+ * comparison: the July gate compared fresh-before against persistent-after and so could not
+ * see a +24.5% regression on the only mode production uses.
+ */
+function evaluateGate(vs: VsReference | undefined, maxRegressionPct: number): GateResult {
+  const base = { maxRegressionPct, regressionPct: null as number | null, passed: false };
+  if (!vs) {
+    return { ...base, reason: 'No reference comparison to gate on (--no-compare, or the fixture is missing).' };
+  }
+  if (!vs.modeMatched) {
+    return { ...base, reason: vs.caveat ?? 'Cross-mode comparison is not a valid gate.' };
+  }
+  const regressionPct = vs.metrics.deliveryChars!.deltaPct;
+  if (regressionPct === null) {
+    return { ...base, reason: 'Reference delivery chars are zero — no ratio to gate on.' };
+  }
+  const passed = regressionPct <= maxRegressionPct;
+  return {
+    maxRegressionPct,
+    regressionPct,
+    passed,
+    reason: passed
+      ? `Total delivery chars ${formatPct(regressionPct)} vs ${vs.referenceLabel}, within the ${maxRegressionPct}% threshold.`
+      : `Total delivery chars regressed ${formatPct(regressionPct)} vs ${vs.referenceLabel}, beyond the ${maxRegressionPct}% threshold.`,
+  };
 }
 
 /** Resource ids already delivered on get_activity's sibling `resources` map — skip re-fetch. */
@@ -278,6 +360,11 @@ async function main(): Promise<void> {
   const serverRoot = resolve(arg('server-root', process.cwd()));
   const compare = !hasFlag('no-compare');
   const referencePath = resolve(arg('reference', join(serverRoot, DEFAULT_REFERENCE)));
+  const gate = hasFlag('gate');
+  const maxRegressionPct = Number(arg('max-regression-pct', String(DEFAULT_MAX_REGRESSION_PCT)));
+  if (!Number.isFinite(maxRegressionPct)) {
+    throw new Error(`--max-regression-pct must be numeric, got ${arg('max-regression-pct', '')}`);
+  }
 
   const harnessMod = await import(pathToFileURL(join(serverRoot, 'tests/e2e/harness.ts')).href) as typeof import('../tests/e2e/harness.js');
   const walkerMod = await import(pathToFileURL(join(serverRoot, 'tests/e2e/walker.ts')).href) as typeof import('../tests/e2e/walker.js');
@@ -431,15 +518,29 @@ async function main(): Promise<void> {
       } else {
         const reference = JSON.parse(readFileSync(referencePath, 'utf8')) as ReferenceFixture;
         vsReference = buildVsReference(metrics, reference, referencePath);
-        writeScorecard(vsReference);
+        // A delta against a different corpus is not attributable to the code change. Reported,
+        // not enforced: measuring a new corpus deliberately is a legitimate run.
+        const corpusRev = resolveCorpusRev(metrics.workflowsDir);
+        const corpusNote = reference.workflowsRev && corpusRev && corpusRev !== reference.workflowsRev
+          ? `Corpus mismatch: reference recorded at workflows@${reference.workflowsRev}, this walk ran workflows@${corpusRev}. `
+            + 'Pin WORKFLOWS_DIR to the reference corpus to attribute the delta to server code.'
+          : undefined;
+        writeScorecard(vsReference, metrics.contextMode, corpusNote);
       }
     }
 
-    const output = vsReference ? { ...metrics, vsReference } : metrics;
+    const gateResult = gate ? evaluateGate(vsReference, maxRegressionPct) : undefined;
+    if (gateResult) {
+      process.stderr.write(`gate: ${gateResult.passed ? 'PASS' : 'FAIL'} — ${gateResult.reason}\n`);
+    }
+
+    const output = { ...metrics, ...(vsReference ? { vsReference } : {}), ...(gateResult ? { gate: gateResult } : {}) };
     process.stdout.write(`${JSON.stringify(output, null, 2)}\n`);
     if (metrics.finalStatus !== 'completed') {
       process.stderr.write(`WARN: finalStatus=${metrics.finalStatus}\n`);
       process.exitCode = 2;
+    } else if (gateResult && !gateResult.passed) {
+      process.exitCode = 3;
     }
   } finally {
     await harness.close();

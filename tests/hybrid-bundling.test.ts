@@ -123,6 +123,27 @@ describe('hybrid technique bundling (#189 C1c)', () => {
       '',
     ].join('\n'));
 
+    // Two chunky resources for the eager-budget test (#323 T2): each body is far larger than any
+    // technique in this corpus, so a budget sized to admit one of them must exclude the other.
+    for (const name of ['big-a', 'big-b']) {
+      const body = Array.from(
+        { length: 60 },
+        (_, i) => `Paragraph ${i} of ${name}: ${'policy detail '.repeat(7)}`,
+      ).join('\n\n');
+      writeFileSync(join(wf, 'resources', `${name}.md`), [
+        '---', `name: ${name}`, `description: Fixture bulk resource ${name}`, '---', '', body, '',
+      ].join('\n'));
+    }
+    writeFileSync(join(wf, 'activities', '04-wide.yaml'), [
+      'id: wide',
+      'version: 1.0.0',
+      'name: Wide',
+      'steps:',
+      '  - kind: technique',
+      '    id: consult',
+      '    technique: consult',
+    ].join('\n'));
+
     const t = join(wf, 'techniques');
     writeFileSync(join(t, 'work', 'classify.md'), op('Classify.', '## Outputs\n\n### classified_intake\n\nThe classification.\n\n## Protocol\n\n### 1. Go\n\n- Classify it.\n'));
     writeFileSync(join(t, 'gather.md'), op(
@@ -134,6 +155,10 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     writeFileSync(join(t, 'loop-op.md'), op('Iterate.', '## Protocol\n\n### 1. Go\n\n- Handle the current item.\n'));
     const bigBody = Array.from({ length: 100 }, (_, i) => `- Perform elaborate sub-operation number ${i} with full attention to every detail.`).join('\n');
     writeFileSync(join(t, 'bigone.md'), op('Big.', `## Protocol\n\n### 1. Go\n\n${bigBody}\n`));
+    writeFileSync(join(t, 'consult.md'), op(
+      'Consult.',
+      '## Protocol\n\n### 1. Go\n\n- Apply [big-a](../resources/big-a.md), then [big-b](../resources/big-b.md).\n',
+    ));
 
     const config = {
       workflowDir,
@@ -186,7 +211,7 @@ describe('hybrid technique bundling (#189 C1c)', () => {
 
   type ToolResult = { isError?: boolean; content?: Array<{ text: string }>; _meta?: Record<string, unknown> };
 
-  async function getActivity(sessionIndex: string, extra: Record<string, unknown> = {}): Promise<{ ops: Record<string, unknown>; meta: Record<string, unknown> }> {
+  async function getActivity(sessionIndex: string, extra: Record<string, unknown> = {}): Promise<{ ops: Record<string, unknown>; meta: Record<string, unknown>; text: string }> {
     const result = await client.callTool({
       name: 'get_activity',
       arguments: { session_index: sessionIndex, context_tokens: 200_000, ...extra },
@@ -194,7 +219,7 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     expect(result.isError).toBeFalsy();
     const text = result.content![0]!.text;
     const ops = parse(text.split('\n\n---\n\n')[0]!) as Record<string, unknown>;
-    return { ops, meta: result._meta ?? {} };
+    return { ops, meta: result._meta ?? {}, text };
   }
 
   it('inlines small ungated step techniques and leaves large and gated ones lazy', async () => {
@@ -209,7 +234,7 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     expect(ops['step_techniques_note']).toContain('get_technique { step_id }');
     // The note prescribes the deliberate in-order step-begin beat (#189 C1c(C)2).
     expect(ops['step_techniques_note']).toContain('▶ step');
-    expect(ops['step_techniques_note']).toContain('resources');
+    expect(ops['step_techniques_note']).toContain('resources_note');
 
     // Each entry leads with a ▼ STEP arrival marker (#189 C1c(C)1), then the full composed
     // technique resolved through the activity-group shorthand at the same level.
@@ -225,9 +250,9 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     expect(meta['bundled_steps']).toEqual(['classify', 'gather', 'record', 'loop-op']);
   });
 
-  it('eager-bundles technique-linked resources as a sibling resources map', async () => {
+  it('eager-bundles technique-linked resource BODIES as a sibling resources map under reference delivery', async () => {
     const slug = 'b11-resources';
-    const idx = await startSession(slug, 'w1');
+    const idx = await startSession(slug, 'w1', 'persistent');
     await enterActivity(idx, 'work');
     const { ops, meta } = await getActivity(idx);
 
@@ -237,6 +262,9 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     expect(String(resources['guide#overview']!['content'])).toContain('Use this guide when gathering');
     expect(ops['resources_note']).toContain('resource:');
     expect(meta['bundled_resources']).toContain('guide#overview');
+    // Every linked id has a body, so there is nothing left for the worker to fetch.
+    expect(ops['resource_refs']).toBeUndefined();
+    expect(meta['resource_refs']).toBeUndefined();
 
     const history = sessionHistory(slug);
     expect(history.some((h) =>
@@ -244,6 +272,68 @@ describe('hybrid technique bundling (#189 C1c)', () => {
       (h.data as { resourceId?: string; bundled?: boolean } | undefined)?.resourceId === 'guide#overview' &&
       (h.data as { bundled?: boolean } | undefined)?.bundled === true,
     )).toBe(true);
+  });
+
+  it('under full delivery, ships linked resource IDS only — no bodies, no ledger writes (#323 T1)', async () => {
+    // A fresh worker context cannot collapse a repeat delivery, so a body inlined here would ship
+    // again in full in every activity that links it. The ids are what the worker needs.
+    const slug = 'b11-resources-fresh';
+    const idx = await startSession(slug, 'w1');
+    await enterActivity(idx, 'work');
+    const { ops, meta } = await getActivity(idx);
+
+    expect(ops['resources']).toBeUndefined();
+    expect(meta['bundled_resources']).toBeUndefined();
+    expect(ops['resource_refs']).toEqual(['guide#overview']);
+    expect(meta['resource_refs']).toEqual(['guide#overview']);
+    expect(ops['resources_note']).toContain('resource_refs');
+    expect(ops['resources_note']).toContain('get_resource');
+    // The step-technique note must not promise a map this mode did not send.
+    expect(ops['step_techniques_note']).toContain('resources_note');
+
+    // No `resources` map was delivered, so no resource:* ledger key is written — under the old
+    // behaviour these were recorded and never read.
+    const state = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8')) as {
+      deliveredContent?: Record<string, Record<string, string>>;
+    };
+    const keys = Object.keys(state.deliveredContent?.['w1'] ?? {});
+    expect(keys.length).toBeGreaterThan(0);
+    expect(keys.filter((k) => k.startsWith('resource:'))).toEqual([]);
+
+    // And no bundled resource_fetched event claims a delivery that never happened.
+    expect(sessionHistory(slug).filter((h) =>
+      h.type === 'resource_fetched' && (h.data as { bundled?: boolean } | undefined)?.bundled === true,
+    )).toHaveLength(0);
+  });
+
+  it('resource bodies draw down the eager budget; the overflow stays fetchable (#323 T2)', async () => {
+    // `wide` links two bulk resources. The budget is sized to admit the technique plus the first
+    // body only, so the second must be excluded — and the whole eager bundle must stay under it.
+    const slug = 'b11-resource-budget';
+    const idx = await startSession(slug, 'w1', 'persistent');
+    await enterActivity(idx, 'wide');
+
+    const contextTokens = 4_000;
+    const budget = contextTokens * 0.8 * 4;
+    const { ops, meta, text } = await getActivity(idx, { context_tokens: contextTokens });
+
+    const resources = (ops['resources'] ?? {}) as Record<string, Record<string, unknown>>;
+    expect(Object.keys(resources)).toEqual(['big-a']);
+    expect(ops['resource_refs']).toEqual(['big-b']);
+    expect(meta['bundled_resources']).toEqual(['big-a']);
+
+    // The eager bundle — inlined technique bodies plus inlined resource bodies — is bounded by
+    // `context_tokens`, which is the stated purpose of the budget policy in src/config.ts.
+    const eagerChars =
+      JSON.stringify(ops['step_techniques']).length + JSON.stringify(ops['resources']).length;
+    expect(eagerChars).toBeLessThanOrEqual(budget);
+    // And with it, the whole response — the acceptance form of the same bound. (The always-full
+    // parts of a response — activity body, inherited rules — are not budget-governed, so this
+    // holds for an activity whose non-eager content is small, as `wide` is.)
+    expect(text.length).toBeLessThanOrEqual(budget);
+    // Both bodies together would have overflowed it.
+    const bigA = String(resources['big-a']!['content']);
+    expect(bigA.length * 2).toBeGreaterThan(budget);
   });
 
   it('collapses eagerly bundled resources under persistent mode and shares the get_resource ledger', async () => {
