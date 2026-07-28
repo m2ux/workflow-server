@@ -281,6 +281,10 @@ steps:
       type: and
       conditions:
         - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
           variable: issue_platform
           operator: ==
           value: jira
@@ -408,10 +412,16 @@ steps:
   - kind: checkpoint
     id: issue-review
     condition:
-      type: simple
-      variable: needs_issue_creation
-      operator: ==
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: needs_issue_creation
+          operator: ==
+          value: true
     message: Here is the drafted issue. Select whether to create it, edit it, or cancel.
     blocking: false
     defaultOption: create

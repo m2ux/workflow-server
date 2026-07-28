@@ -9,11 +9,11 @@ Judge whether synthesis (and gathered results) leave material gaps against the g
 
 ## Inputs
 
-### goal
+### work_goal
 
 Original research goal.
 
-### synthesis
+### combined_synthesis
 
 Current synthesised answer.
 
@@ -37,6 +37,6 @@ Follow-up research units when `{has_research_gaps}` is true; empty array otherwi
 
 ## Protocol
 
-1. Compare `{synthesis}` (and `{gathered_results}` when present) to `{goal}`.
+1. Compare `{combined_synthesis}` (and `{gathered_results}` when present) to `{work_goal}`.
 2. If gaps are material and within `{effort_cap}`, set `{has_research_gaps}` true and emit targeted `{work_units}` briefs.
 3. Otherwise set `{has_research_gaps}` false and `{work_units}` to `[]`.
