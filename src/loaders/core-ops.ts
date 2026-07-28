@@ -34,6 +34,12 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   // stale — no such op files.)
   'version-control::commit-submodule',
   'version-control::commit-regular-files',
+  // Progress Status writer (#324 B2). Both dispatch-activity and
+  // commit-and-persist say "Apply sync-progress-status", but get_technique
+  // resolves only step-bound or first-declared techniques and orchestrators are
+  // barred from get_activity — so without this entry the named op has no
+  // delivery path and every Progress write is hand-rolled from the resource.
+  'workflow-engine::sync-progress-status',
   // Sub-agent dispatch primitives — dispatch-activity invokes spawn-agent in
   // its body, so the orchestrator must receive the harness-specific prose for
   // these to actually dispatch instead of improvising / inlining.

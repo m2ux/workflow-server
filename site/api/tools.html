@@ -135,6 +135,7 @@
           <tr><td><code>workflow_id</code></td><td><code>string</code></td><td>no</td><td>Workflow id to run or dispatch (for example, <code>work-package</code>).</td></tr>
           <tr><td><code>planning_folder</code></td><td><code>string</code></td><td>no</td><td>Absolute path whose basename is the planning slug. The server resolves the slug under its own workspace — the directory prefix is only a hint.</td></tr>
           <tr><td><code>repo</code></td><td><code>string</code></td><td>no</td><td>Target owner/repo (or github URL). Always pass when known; written to session.json#repo. Also accepted from planning_folder under …/&lt;owner&gt;/&lt;repo&gt;/….</td></tr>
+          <tr><td><code>user_request</code></td><td><code>string</code></td><td>no</td><td>The user's free-form request that opened this session. Seeded into the variable bag as <code>user_request</code>, so techniques that match or classify the request read it as state instead of needing it inlined into a spawn prompt. Children inherit it via dispatch_child.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace. Default: <code>&quot;orchestrator&quot;</code></td></tr>
           <tr><td><code>context_mode</code></td><td><code>&quot;persistent&quot; | &quot;fresh&quot;</code></td><td>no</td><td><code>persistent</code>: reuse earlier deliveries when one agent keeps full context. <code>fresh</code> (default): always return full content.</td></tr>
           </tbody>
@@ -173,7 +174,7 @@
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot;</code></td><td>no</td><td>Projection: summary (default), identity, variables, checkpoints, activities, history, or children. Default: <code>&quot;summary&quot;</code></td></tr>
+          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot; | &quot;usage&quot;</code></td><td>no</td><td>Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-activity token cost as the orchestrator reported it on next_activity). Default: <code>&quot;summary&quot;</code></td></tr>
           <tr><td><code>child_index</code></td><td><code>integer</code></td><td>no</td><td>Optional. Project triggeredWorkflows[child_index].state instead of the parent session.</td></tr>
           <tr><td><code>variable</code></td><td><code>string</code></td><td>no</td><td>Optional. With view=variables, return a single variable by name.</td></tr>
           </tbody>
@@ -246,6 +247,7 @@
           <tr><td><code>step_manifest</code></td><td><code>object[]</code></td><td>no</td><td>Steps completed in the previous activity, for example <code>[{ &quot;step_id&quot;: &quot;detect-review-mode&quot;, &quot;output&quot;: &quot;is_review_mode=false&quot; }]</code>. Omit if no steps ran.</td></tr>
           <tr><td><code>activity_manifest</code></td><td><code>object[]</code></td><td>no</td><td>History of completed activities with outcomes and transition conditions.</td></tr>
           <tr><td><code>variables_changed</code></td><td><code>object</code></td><td>no</td><td>Variable assignments the completing activity produced — relay the worker's <code>activity_complete</code> <code>variables_changed</code> map verbatim. The server writes them into the session variable bag and records one <code>variable_set</code> history event per name, so the bag a later get_workflow_status / inspect_session returns reflects worker outputs and survives a lost agent context. Declared types are validated warn-only: a mismatch is stored as written and surfaced in _meta.validation. Omit when the activity changed nothing.</td></tr>
+          <tr><td><code>usage</code></td><td><code>object</code></td><td>no</td><td>Harness-reported token usage for the activity this call EXITS — relay the figure the harness surfaced for the worker that just completed (subagent token counts plus any cache/model fields), as reported. Recorded as an <code>activity_usage</code> history event keyed to the exited activity, so inspect_session reports per-activity cost. Workers cannot self-measure: omit the parameter entirely when the harness surfaces nothing rather than passing zeros.</td></tr>
           </tbody>
         </table>
         </div>

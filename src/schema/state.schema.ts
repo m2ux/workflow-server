@@ -27,6 +27,12 @@ export const HistoryEventTypeSchema = z.enum([
   // session variable bag at session creation. ONE event per session; `data`
   // carries { variables: <the seeded map> }.
   'variables_seeded',
+  // Per-activity cost accounting (#324 B1): harness-reported token usage for
+  // the activity a next_activity call exits, relayed by the orchestrator.
+  // `activity` is the exited activity; `data` carries { usage: <as reported> }.
+  // A worker cannot self-measure, so absence means the harness surfaced
+  // nothing — never a zero.
+  'activity_usage',
 ]);
 export type HistoryEventType = z.infer<typeof HistoryEventTypeSchema>;
 
