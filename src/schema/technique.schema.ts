@@ -43,8 +43,22 @@ export type RulesDefinition = z.infer<typeof RulesDefinitionSchema>;
 export const OutputComponentsDefinitionSchema = z.record(z.string()).describe('Named output components: each key is a component id, value is the spec or description for that component');
 export type OutputComponentsDefinition = z.infer<typeof OutputComponentsDefinitionSchema>;
 
+/**
+ * An artifact name is a filename: one path segment ending in an extension, where a `{token}`
+ * placeholder stands wherever literal text would. Whatever an author writes here becomes the file a
+ * worker creates, so anything that cannot be a filename — prose, several names joined by `/`, a
+ * mode selector in parentheses, a YAML key — is rejected at load (the technique is dropped with a
+ * logged warning, the same treatment a mistyped `audience` gets) instead of being derived into a
+ * nonsense filename. A technique that writes several files declares one output per artifact.
+ */
+export const ARTIFACT_NAME_PATTERN = /^(?:[A-Za-z0-9._-]|\{[A-Za-z0-9._$-]+\})+\.[A-Za-z0-9]+$/;
+
+/** Rejection message for {@link ARTIFACT_NAME_PATTERN}: cause, then the conforming forms. */
+const ARTIFACT_NAME_MESSAGE =
+  'an artifact name is a single filename — one path segment ending in an extension, `{token}` placeholders allowed (`01-audit-report.md`, `{package_name}-plan.md`). Declare one output per artifact when a technique writes several files';
+
 export const OutputArtifactSchema = z.object({
-  name: z.string().describe('Artifact filename when this output is persisted. A literal (e.g. 01-audit-report.md) or a token-template with {variable} placeholders the worker interpolates from in-scope inputs/variables at runtime (e.g. {package-name}-plan.md). Declare the name here, never hardcode it in Protocol prose.'),
+  name: z.string().regex(ARTIFACT_NAME_PATTERN, ARTIFACT_NAME_MESSAGE).describe('Artifact filename when this output is persisted. A literal (e.g. 01-audit-report.md) or a token-template with {variable} placeholders the worker interpolates from in-scope inputs/variables at runtime (e.g. {package-name}-plan.md). One filename, one path segment, with an extension — a technique writing several files declares one output per artifact. Declare the name here, never hardcode it in Protocol prose.'),
   action: z.enum(['create', 'update']).default('create').optional().describe('Whether this output creates a new artifact or updates an existing one'),
 });
 export type OutputArtifact = z.infer<typeof OutputArtifactSchema>;

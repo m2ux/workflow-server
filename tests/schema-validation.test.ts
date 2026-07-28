@@ -321,6 +321,48 @@ describe('schema-validation', () => {
     });
   });
 
+  describe('OutputArtifactSchema name (#330)', () => {
+    const parse = (name: string) => OutputItemDefinitionSchema.safeParse({ id: 'out', artifact: { name } }).success;
+
+    it('accepts a literal filename and a {token}-templated one', () => {
+      expect(parse('01-audit-report.md')).toBe(true);
+      expect(parse('START-HERE.md')).toBe(true);
+      expect(parse('{package_name}-plan.md')).toBe(true);
+      expect(parse('{YYYY-MM-DD}-pr{pr_number}-review-analysis.md')).toBe(true);
+      // A `{$local}` sigil and a dotted sub-field both bind inside a placeholder.
+      expect(parse('{$page_slug}.md')).toBe(true);
+      expect(parse('subsystem-{code_subsystem.subsystem_name}.md')).toBe(true);
+    });
+
+    it('rejects prose, several names, and a YAML key written as the name', () => {
+      // The two declarations that reached a worker as filenames before this refinement.
+      expect(parse('COMPLETE.md` (implementation) or planning-folder session `README.md` section (review mode)')).toBe(false);
+      expect(parse('name: README.md')).toBe(false);
+      // Several files in one slot, with or without mode selectors.
+      expect(parse('index.md` and `log.md')).toBe(false);
+      expect(parse('reflect-l12.md` (L12 structural) / `reflect-meta.md` (claim meta-analysis)')).toBe(false);
+    });
+
+    it('rejects a name that is not one path segment with an extension', () => {
+      expect(parse('planning/notes.md')).toBe(false);
+      expect(parse('audit-report')).toBe(false);
+      expect(parse('.md')).toBe(false);
+      expect(parse('')).toBe(false);
+    });
+
+    // The refinement lives under `.strict()`, so a bad name fails the whole technique — which is
+    // what drops it at load with a logged warning, as an invalid audience does.
+    it('rejects an unfilenameable name through the strict TechniqueSchema', () => {
+      const bad = {
+        id: 't', version: '1.0.0', capability: 'Cap.',
+        outputs: [{ id: 'out', artifact: { name: 'a.md` (one mode) / `b.md` (the other)' } }],
+      };
+      expect(safeValidateTechnique(bad).success).toBe(false);
+      const good = { ...bad, outputs: [{ id: 'out', artifact: { name: 'a.md' } }] };
+      expect(safeValidateTechnique(good).success).toBe(true);
+    });
+  });
+
   describe('corpus strict-parse', () => {
     // Every definition file of every workflow must parse under the closed schemas. This is the
     // guardrail for the loader's skip-on-validation-failure behavior: a schema tightening that

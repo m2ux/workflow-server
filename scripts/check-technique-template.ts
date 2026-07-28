@@ -15,6 +15,11 @@
  *   tool parameter may be camelCase (spec §3.2 — Atlassian's `cloudId` binds natively).
  *   `###` rule names under Rules are kebab-case, optionally dot-grouped (`commit.signed`).
  * - Every `{$name}` protocol-variable binding is snake_case (spec §3.3; AP-55).
+ * - Every `#### artifact` body under Outputs is a filename the loader can accept — one path
+ *   segment with an extension, `{token}` placeholders allowed (spec §3.2). The Zod schema rejects
+ *   anything else at load, which drops the technique with a logged warning; this guard is what
+ *   makes an unfilenameable declaration read as a red test naming the file, rather than a
+ *   technique quietly missing from the corpus (#330).
  *
  * `README.md` files inside `techniques/` are navigation docs, not techniques — skipped.
  * Headings and sigils inside fenced code blocks are illustrative — skipped.
@@ -27,6 +32,7 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { resolveWorkflowsRoot } from './workflows-root.js';
+import { ARTIFACT_NAME_PATTERN } from '../src/schema/technique.schema.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
@@ -45,7 +51,8 @@ export interface TemplateViolation {
     | 'section-order'
     | 'entry-id-casing'
     | 'rule-name-casing'
-    | 'sigil-casing';
+    | 'sigil-casing'
+    | 'artifact-name';
   /** The offending token or the observed shape. */
   detail: string;
 }
@@ -137,6 +144,35 @@ export function lintTechniqueFile(raw: string, file: string): TemplateViolation[
   const inOrder = [...seen].sort((a, b) => CANONICAL.indexOf(a) - CANONICAL.indexOf(b));
   if (seen.join(' > ') !== inOrder.join(' > ')) {
     violations.push({ file, rule: 'section-order', detail: seen.join(' > ') });
+  }
+
+  // --- `#### artifact` bodies under Outputs name one file the loader can accept. ---
+  // `artifact` is reserved metadata only under Outputs; under Inputs the same heading is an
+  // ordinary component member, so the pass tracks which H2 it is reading.
+  const lines = annotateFences(body);
+  let inOutputs = false;
+  for (let i = 0; i < lines.length; i++) {
+    const { text, inFence } = lines[i]!;
+    if (inFence) continue;
+    const h2 = /^## (?!#)(.*)$/.exec(text);
+    if (h2) {
+      inOutputs = h2[1]!.trim() === 'Outputs';
+      continue;
+    }
+    if (!inOutputs || !/^#### artifact\s*$/i.test(text)) continue;
+    const collected: string[] = [];
+    for (let j = i + 1; j < lines.length && !/^#{1,6}\s/.test(lines[j]!.text); j++) collected.push(lines[j]!.text);
+    // Normalize as the loader does — paragraph-join the body, then strip the inline-code
+    // backticks that wrap a filename literal — so the guard tests the derived name verbatim.
+    const name = collected
+      .join('\n')
+      .split(/\r?\n\s*\r?\n/)
+      .map((p) => p.trim())
+      .filter(Boolean)
+      .join('\n\n')
+      .replace(/^`+|`+$/g, '')
+      .trim();
+    if (!ARTIFACT_NAME_PATTERN.test(name)) violations.push({ file, rule: 'artifact-name', detail: name });
   }
 
   // --- `{$name}` sigil casing (code spans included — designators are backticked). ---
