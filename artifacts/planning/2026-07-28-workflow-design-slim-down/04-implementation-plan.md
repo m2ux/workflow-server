@@ -495,4 +495,206 @@ Writers select Progress rows by the activity-prefix field equal to `{artifact_pr
 | 04 | Pattern analysis | set `⊘` |
 | 05 | Impact analysis | rewrite `@` → `01` (the on-disk file keeps its `05-` prefix: `write-artifact.md:39-42` is prefix-agnostic and sticky) |
 | 06 | Scope manifest | **unchanged** |
-| 06 | Drafting plan / Draft attestation / File
+| 06 | Drafting plan / Draft attestation / File review note | set `⊘` |
+| 08 | Quality review | unchanged |
+| 08 | Principle / Anti-pattern / Expressiveness / Conformance / Verified findings | replace with one row `@ 09` `[Findings register](findings-register.md)`; set the old satellite rows `⊘` |
+| 09 | Validate and commit | unchanged |
+| 10 | Post-update review | set `⊘` |
+| 11 | Retrospective | rewrite `@` → `09` |
+| 11 | Close-out (COMPLETE.md) | rewrite `@` → `09` |
+
+32 folders, mechanical. Ship as `SRV/scripts/migrate-planning-progress.ts` alongside M1 so the two data migrations are reviewable together. No guard covers planning folders — greps for `readme-seed` in `SRV/scripts` and `SRV/src` return nothing — so this cannot be caught later.
+
+### M3 — Retire the stale gating baseline row
+
+Delete `SRV/scripts/review-mode-gating-baseline.json:7` (`workflow-design::scope-and-drafts-cope-and-structure-confirmed`) by hand. It is **already** unmatchable: `check-review-mode-gating.ts:150-152` skips any workflow whose `variables[]` lacks `is_review_mode`, and `workflow-design` uses `operation_type`, so the guard never walks it — the current run reports "1 fixed". Renaming the checkpoint to `scope-confirmed#{scope_round}` would leave it unmatchable forever. Land alone; expect the run to report `0 NEW`, `0 fixed`.
+
+### M4 — Add the new resources and techniques (additive only)
+
+Create `resources/change-brief.md` and `resources/findings-register.md` (both sectioned per §30, both with `## Template` + operative `## Rules`). Create `techniques/audit-canon.md`, `techniques/load-known-findings.md`, `techniques/resolve-consumer-surface.md`, `techniques/elicit-change-brief.md`, `techniques/synthesize-change-brief.md`. Apply the ten technique extensions in §4.2 ("Reduced or extended"). Add the ten new `workflow.yaml` variables and the two renames' **new** names as additional declarations (keep the old names for now so nothing breaks).
+
+Nothing is deleted, nothing is bound yet. `check-technique-template` validates shape; `check-resource-anchors` must stay at exactly 3. This is the largest authoring step and it lands green on its own.
+
+### M5 — Rewrite `01-intake-and-context.yaml`
+
+Land the 12-step inventory from §1.2 and its two transitions. `03`/`04`/`05` remain on disk but become unreachable — unreachable activities are warn-only, and `readActivityRaw` still resolves them, so any session pinned to one is unaffected until M9. Old `06` still sets `scope_manifest_confirmed` at `06:46-48`, so the downstream graph keeps working. Land alone.
+
+### M6 — Rewrite `06-scope-and-draft.yaml`
+
+Land the 9-step inventory from §1.2, including the instance-qualified `preservation-check#{current_file.path}` and the moved `readme-authoring`. It consumes `{change_constraints}` and `{removals_approved}`, both produced by M4+M5. It transitions to the *old* `08`, which still gates on `scope_manifest_confirmed` — satisfied by the new soft gate. Land alone.
+
+### M7 — Rewrite `08-quality-review.yaml` **and** `09-validate-and-commit.yaml` together
+
+**This is the one unavoidable pairing.** The audit/verify split spans the two files: new `08` emits `{register_sections}`/`{audit_findings}` and binds no persist; new `09` consumes them at step 1. Landing either alone leaves verification without an input or a sweep without a consumer. One commit, both files.
+
+Also in this commit: bump `workflow.yaml` `version` to `2.0.0` (a content-reducing, contract-changing update), and rewrite `workflow.yaml:18` to remove its checkpoint-id enumeration (AP-107).
+
+### M8 — Delete the five activity files
+
+`03-requirements-refinement.yaml`, `04-pattern-analysis.yaml`, `05-impact-analysis.yaml`, `10-post-update-review.yaml`, `11-retrospective.yaml`. By M8 no transition, decision or checkpoint effect targets any of them (M5-M7 removed every reference; verify with a grep for the five ids across `activities/` and `workflow.yaml`). Land alone.
+
+### M9 — The atomic deletion commit (AP-129 sweep, one edit, counted manifest)
+
+Everything in §4.2-§4.4 that is a *deletion* lands here, together with every read of it. AP-129's test is occurrence count against the **whole definition tree**, not against the change's file list, so the manifest records the count per claim.
+
+| Site | What changes |
+|---|---|
+| `techniques/` | delete the 19 retired files; delete the two activity-level `techniques:` blocks (done in M5/M6) |
+| `resources/` | delete the 13 retired guides — **by hand, in this commit**: no entry Detects an orphaned guide (AP-116 is unidirectional, `AP:1508`), so nothing will flag a miss |
+| `workflow.yaml` | delete the 32 variable declarations; complete the two renames by removing the old names; rewrite the AP-126 tails at `:51` and `:87` |
+| `resources/README.md:12-35` | rewrite the index (12 resources) |
+| `resources/README.md:39-58` | rewrite the artifact→guide map (6 filenames) |
+| `techniques/TECHNIQUE.md:73-86` | rewrite the canonical-home map to the 6 surviving filenames — and note that `:70` ("`verify-artifact-conforms` enforces the map at the end of `scope-and-draft`") stays **true**, a direct dividend of id preservation |
+| `techniques/README.md:37, :40` | rewrite |
+| `README.md:13-21, :45-67, :83, :168, :180-188` | re-author the activity table, the mermaid graph and the file tree; **no inventory counts** (AP-40 `:566`) |
+| `activities/README.md:13-77` | replace nine `### NN. Name` headings with four; these are the anchor targets of the 10 links at `README.md:13-21, :168` |
+| `resources/readme-seed.md:28-46` | replace the 17-row Progress table with the 9-row table in §5.1 below |
+| `resources/readme-seed.md:56, :60` | rewrite the mode-exclusion map, which keys on "`@` `10`" |
+| `techniques/commit-verification.md:18` | delete (six hard-coded `09` step ids) |
+
+**New `readme-seed.md` Progress inventory (9 rows):**
+
+| # | @ | Item | Estimate |
+|---|---|---|---|
+| 1 | 01 | Intake and context | 15-30m |
+| 2 | 01 | `[Change brief](change-brief.md)` | 20-40m |
+| 3 | 01 | `[Impact analysis](impact-analysis.md)` | 20-40m |
+| 4 | 06 | Scope and draft | 30-60m |
+| 5 | 06 | `[Scope manifest](scope-manifest.md)` | 15-30m |
+| 6 | 08 | Quality review | 30-60m |
+| 7 | 09 | Validate and commit | 20-40m |
+| 8 | 09 | `[Findings register](findings-register.md)` | 10-20m |
+| 9 | 09 | `[Close-out (COMPLETE.md)](COMPLETE.md)` | 10-20m |
+
+Every `@` value equals an existing `activities/NN-*.yaml` index. Links are bare filenames; the mint prefixes them like every other row.
+
+**AP-128 re-trace checklist, executed in this commit** (each gate that moved from a transition to a step `when`): `{change_constraints}` — producer `01:8` gated `operation_type == 'update'`, reader `06:3` gated `operation_type != 'review'`; in create mode the reader is reachable with the producer skipped, so `scope-definition` declares it **optional** and its Protocol branches on presence rather than on a `defaultValue` a reader cannot distinguish. `{removals_approved}` — `defaultValue: false` is distinguishable and correct (no removals ⇒ nothing approved). `{impact_analysis_path}` — read only in Gate 2's payload, which omits the clause when `operation_type != 'update'`; **never** interpolated on a path where `01:10` is skipped (the exact defect at `05:28-37`). `{scope_manifest_path}` — producer `06:4` and reader `09:9` share the `operation_type != 'review'` arm. `{report_path}` — producer `09:3` is ungated. `{removal_disposition}` — producer `06:7c` gated on `has_unflagged_removals`, reader `06:7d` gated on the value itself, so the reader is unreachable when the producer is skipped.
+
+### M10 — Verification gate
+
+Run all twelve guards with `--root` pointed at the worktree. Update **no** baseline until a reviewer has read the diff: `check-binding-fidelity` currently reports 22 already-fixed entries, so an unreviewed `--update-baseline` would silently bank those too. Then, and only then, regenerate `binding-fidelity-baseline.json` and record the shrink in the PR body.
+
+### On `artifactPrefix` renumbering
+
+**There is none.** `artifactPrefix` is not authorable — "Server-computed — do not set in definition files" (`SRV/src/schema/activity.schema.ts:301`) — and is derived solely from the filename (`filename-utils.ts:6-10`, assigned `workflow-loader.ts:83`), then used to sort the activity list by `localeCompare` (`:91-93`) and to name artifacts `{artifactPrefix}-{bare_filename}`. Preserving 01/06/08/09 means: the sort order is correct; `06-scope-manifest.md` keeps its name in all 32 folders; every other artifact that survives is find-or-updated at whatever prefix it already carries (`work-package/techniques/manage-artifacts/write-artifact.md:37-44` — step 1 matches `<NN>-{bare_filename}` at **any** two-digit prefix, step 2 updates in place and keeps the existing prefix, step 3 mints only when nothing matches). The only prefix work is M2's `@`-column data migration, and it is a rewrite of three rows plus `⊘` on nine.
+
+### On hardcoded activity ids
+
+Id preservation collapses the surface to five items, all handled above: `SRV/scripts/review-mode-gating-baseline.json:7` (M3 — the **only** hardcoded workflow-design activity id anywhere in `SRV/src`, `SRV/scripts`, `SRV/schemas`, `SRV/tests`, `SRV/site`, `SRV/.github` or `SRV/docs`); the 19 intra-corpus transition/effect targets (M5-M7, rewritten as part of each activity); `workflow.yaml:265 initialActivity: intake-and-context` (**unchanged**); the prose sites in M9's table; and `workflow.yaml:51, :87, :123, :127, :234` variable descriptions naming activities (M9). `SRV/tests/e2e/all-paths-walk.test.ts:20` and `all-workflows-walk.test.ts:17` name only the workflow id; `SRV/tests/e2e/__snapshots__/snapshot.test.ts.snap` contains zero occurrences of `workflow-design` or any of its activity ids.
+
+---
+
+## 6. Validation
+
+### 6.1 Validators that must be green
+
+Run every one with `--root /home/mike1/projects/dev/workflow-server/.worktrees/…` (or the merge target's worktree).
+
+| Guard | Baseline? | Required result | Why it can fail here |
+|---|---|---|---|
+| `validate-workflow-yaml.ts` | no | all valid; 4 activities, 23 techniques | `:26` — a file without an `NN-` prefix is invisible to the loader; `:35` — duplicate ids across files |
+| `validate-activities.ts` | no | 0 failed | `populateStepIds` collision detection (`:36-41`); concatenating step lists is where this bites, so **every step in the four rewritten files carries an explicit `id:`** |
+| `check-all-refs.ts` | no | 0 unresolved | 19 deleted techniques must have zero surviving `techniques[]`/`technique:` references |
+| `check-binding-fidelity.ts` | yes (256 entries) | **0 NEW** before any `--update-baseline` | `read-resolution` (`:474-481`) on a deleted variable with a surviving `{token}` read; `dead-output` (`:484-490`) once an `#### artifact` block is stripped (`:485` is the exemption) — `verified_findings_path`, `format_conventions_path`, `applicable_constructs_path` all become candidates the moment their artifact blocks go |
+| `check-variable-model.ts` | no — hard-zero | 0 | `setvariable-undeclared` (`:113`) fires the instant a surviving checkpoint effect targets a deleted variable; `exists-on-defaulted` (`:96-105`) |
+| `check-fragments.ts` | no — hard-zero | workflow-design contributes 0 (corpus stays at the 1 pre-existing `work-package/activities/04-research.yaml` violation) | `duplicate-checkpoint` (`:307-312`) — two normalized-identical inline bodies at ≥2 sites **corpus-wide**. workflow-design has no `fragments:` block and no `ref:`, and the target introduces neither: each of the 7 checkpoint bodies appears once |
+| `check-resource-anchors.ts` | no — hard-zero | **exactly the 3 pre-existing entries**, verified today: `meta/techniques/workflow-engine/workflow-orchestrator.md → ./dispatch-activity.md#accumulate-trace-tokens`, `work-package/techniques/review-assumptions/interview.md → ../../resources/assumptions-review.md#open-assumptions`, `work-package/techniques/review-test-suite.md → ../resources/test-suite-review.md#test-suite-review-report-template` | the highest-yield guard for this change: 10 links point at `activities/README.md#NN-activity-name` headings, and ~35 anchored links point into the 13 deleted guides. M9 must land them all in one commit |
+| `check-activity-technique-overlap.ts` | no — hard-zero | 0 | an activity-level `techniques[]` entry also bound by a step in the same file; both blocks are deleted, so the exposure is removed rather than mitigated |
+| `check-technique-template.ts` | no — hard-zero | 0 | shape of the 5 new and 10 extended techniques |
+| `check-audience.ts` | yes (`[]`) | 0 total | `findings-register.md` is declared `audience: agent` (AP-96), so this guard becomes live for workflow-design for the first time — its output must satisfy the structured one-row-per-item shape |
+| `check-review-mode-gating.ts` | yes | 0 NEW, 0 fixed after M3 | otherwise a permanently unmatchable row |
+| `check-self-provisioned-input.ts`, `check-identifier-qualification.ts`, `check-stealth-isolation.ts` | mixed | no regression | routine |
+
+### 6.2 The re-run
+
+Re-run the target audit stage against the **same branch** that produced the 1,430,000-token / 3-High result and the 410,000-token / 8-High bare sweep. Procedure: check out that branch into a worktree, start a `workflow-design` session in `update` mode against it, drive `intake-and-context → scope-and-draft` with the scope manifest already satisfied (`file_count` reflecting the branch diff), then let `quality-review` and `validate-and-commit` run.
+
+### 6.3 Acceptance criteria
+
+| Metric | Target | Instrument |
+|---|---|---|
+| Dispatches, clean path | **4** (`intake-and-context`, `scope-and-draft`, `quality-review`, `validate-and-commit`) | count `get_activity` calls in `get_trace` |
+| Dispatches, worst case | ≤ 8 (two remediation rounds × 2 nodes) | `remediation_round < 3` |
+| Total subagent tokens | **≤ 500,000**; expected 260,000-400,000 | trace accumulation |
+| Criteria delivered per run | **once** — 154,507 B (`anti-patterns.md` 128,341 + `design-principles.md` + `schema-construct-inventory.md` + `convention-conformance.md`) ≈ 39k tokens, in dispatch 3 | `_meta` eager-bundle map in the `08` `get_activity` response must list all 13 `anti-patterns` anchors plus the 3 whole homes |
+| `get_resource` calls during the sweep | **0** | trace |
+| Eager-eligible steps in `08` | **all 6 top-level and all 4 loop-body steps** except the two `remediation_round > 0` fix steps (from **0 of 27** today) | `collectUngated` behaviour; assert on the delivered `techniques` map |
+| Audit invocations per target | **≤ 3** (initial + 2 remediation rounds), from 46 worst case | count `audit-canon` binds in the trace |
+| Per-dispatch fixed floor | 4 × ~16 KB (7 `CORE_WORKER_TECHNIQUES` at `SRV/src/loaders/core-ops.ts:52-62` + inherited `variable-binding`), from 12 × ~16 KB | unavoidable; reference-mode collapse is invalid for fresh workers (`workflow-tools.ts:588-590`) |
+| Activity YAML delivered | ~650 lines / ~22 KB across 4 files, from 1,935 lines / 65,748 B across 9 | `readActivityRaw` is verbatim (`:608-611`, `:941`) |
+
+### 6.4 Finding-parity test — the acceptance gate that actually matters
+
+Token reduction without finding parity is a regression. Four assertions, all read off one `findings-register.md`:
+
+1. **Pre-verification parity with the bare sweep.** The `{audit_findings}` set emitted by `08:6b` before `09:1` runs must contain **≥ 8** rows with `Severity: high` and `Origin: diff`. Below 8, the single sweep is diluted relative to the two-agent sweep and the merge is not yet safe to keep — instrument by persisting the pre-verification row set as `findings-register.md#findings` at `09:3` *before* verification's recalibration is applied, with disposition `unverified`.
+2. **Post-verification superset of the full pass.** The `confirmed` High set must contain the 3 Highs the 1.43M-token pass produced. Each is matched by `(Entry, Location)`, not by prose.
+3. **The two named cross-file findings must appear.** (a) The `review_type` dual-home contradiction — a row with `Dimension: anti-pattern`, `Entry: canonical-fact-home`, `Home: anti-patterns.md#output-economy-anti-patterns`, `Location` naming `work-package/techniques/update-pr/post-review-comment.md:34` **and** `midnight-system-review/resources/verdict-rubric.md:37`, reachable only via `{consumer_surface}`. (b) At least one `Entry: stale-restatement-after-change` row. If (a) is absent, `resolve-consumer-surface`'s reference resolution is under-scoped and the fatal is not actually fixed.
+4. **Zero coverage gaps.** `findings-register.md#coverage` must contain one row per enumeration unit — all 13 `anti-patterns.md` `##` sections including `#authoring-guidance-mr`, all 30 `design-principles.md` headings, all 6 `schema-construct-inventory.md` mapping tables, all 6 `convention-conformance.md` concerns — each `walked`, none `not-walked`, and `{has_coverage_gap}` false. The row set is cross-checked at `09:1` against `audit-canon`'s Protocol phase-1 anchor inventory, so a false claim is detectable from the register alone.
+
+**Rollback trigger.** If (1) yields < 8 Highs or (4) yields any `not-walked` row on three consecutive runs, the walker merge is reverted to **two** walkers over two homes — `anti-patterns.md` and `design-principles.md` in one, `schema-construct-inventory.md` and `convention-conformance.md` in the other, both still bound as steps in `08`. That is still AP-105-compliant (one walker per home) and costs one extra bind, no extra dispatch, no extra criteria load. Every other cut in this plan is independent of that choice.
+
+---
+
+## 7. Risks and rejected alternatives
+
+### 7.1 Risks, largest first
+
+**R1 — One sweep is one attention budget, and the evidence for it is two data points.** The six-pass shape bought one property this design gives up: each pass was a fresh context holding one home, so a lens could not be crowded out. The bare sweep's 8 Highs came from a prompt naming **two** homes; `audit-canon` carries **four**, plus `{consumer_surface}`, `{change_constraints}`, `{reference_workflows}`, base attribution and known-item exclusion as per-row work. The plausible failure is dilution — 129 catalogue entries crowding out 30 principles, and the conformance/expressiveness dimensions degrading to a skim. Mitigations, in order of strength: verification runs in a **different context** so `{coverage_ledger}` is cross-checked rather than self-attested (§3.6); coverage rows key on section titles so the check is mechanical; the register persists at every round so dilution is visible in the diff; §6.4's assertion (1) makes pre-verification yield a **release gate**, not an observation; and §6.4's rollback trigger names the exact fallback. Residual risk is real and I would not retire the six-pass shape until three runs have passed §6.4.
+
+**R2 — Two load-bearing behaviours are code facts, not contracts.** (a) The eager-**resource** loop has no cumulative budget — only the 80,000-char per-resource cap (`workflow-tools.ts:798-830`; `resource-delivery.ts:6`) — while the technique loop has an explicit `context_tokens × 0.8 × 4` budget (`:706-710`). That asymmetry is what makes "155 KB of criteria in one response, zero `get_resource` calls" work; it reads like an oversight, and adding a cumulative resource cap would silently revert `08` to ~17 lazy fetches with **no test failing**. Mitigation: §6.3 asserts on the delivered `_meta` eager map, so the regression surfaces as a test failure rather than a cost drift. (b) `collectUngated`'s recursion into loops with `breakCondition`/`maxIterations` as non-gates (`workflow-tools.ts:713-719`; `activity.schema.ts:73-77`) is why the sweep loop stays bundleable; the same assertion covers it.
+
+**R3 — Every bound below a yielded checkpoint is agent-honoured.** `maxIterations` and `breakCondition` are agent-executed (`activity.schema.ts:144-145`; `SRV/schemas/README.md:34`); step order is a warn-only subsequence check (`SRV/src/utils/validation.ts:104-115`); `blocking: true` is advisory (`activity.schema.ts:111, :129`); `effect.transitionTo` is recorded and returned but **not enacted** (`:50`); `effect.skipActivities` is bookkeeping only (`workflow-tools.ts:1246-1257`); an activity self-transition is legal and unwarned (`validation.ts:39`); and an activity declaring no transitions, decisions **and** no checkpoint `transitionTo` legalizes every target because `validateActivityTransition` returns null on an empty valid set (`:45`). The **only** genuinely server-enforced gate is a *yielded* checkpoint, which blocks every other tool via `state.activeCheckpoint`. This design leans on that fact deliberately: the bound on remediation is a BLOCKING per-round checkpoint plus a transition condition, not a loop counter; `09` declares transitions so its valid set is non-empty; and `09` contains zero content-producing steps so "nothing lands unaudited" does not depend on an agent honouring step order. What remains unenforceable is a worker that skips `08:6b` entirely and advances — mitigated only by `{has_coverage_gap}` and `{open_finding_count}` in Gate 2's payload, both read by a human before the irreversible act.
+
+**R4 — Seven gates, six of them BLOCKING, and `headless_mode` still defaults true.** A yielded checkpoint stalls an unattended run. `headless_mode` (`workflow.yaml:41-44`, default true) is **retained** and one gate stays SOFT with effects (`scope-confirmed#{scope_round}`), so headless behaviour matches today's declared intent exactly: the four gates today's `workflow.yaml:18` names as staying interactive (Gate 1, Gate 2, `preservation-check`, `review-disposition`) are all present, and the two added BLOCKING gates (`impact-approved`, `audit-disposition`) are both **conditional and exception-only** — `removal_count > 0`, and `or(has_critical_finding, open_finding_count > 0)`. A clean create-mode run yields **at most one** gate (Gate 2). The temptation to give `impact-approved` or `audit-disposition` a `defaultOption` must be resisted: that recreates precisely the defects deleted here — `05:39` auto-confirming removals while `05:62-65` claims the user consciously approved them, and `09:54-77` auto-selecting proceed-to-commit on schema-invalid files.
+
+**R5 — §10 makes this proposal subject to workflow-design's own preservation gate.** A 9→4 activity, 20→5 artifact, 37→23 technique, 23→12 resource, 63→41 variable cut **is** a content-reducing update (`DP:53-55`), and it must be executed *through* `01:12 impact-approved` with a flagged removal inventory (`{removal_count}`), not applied around it. §4 of this plan is that inventory. AP-80 `preserve-readme-content` (`AP:1058`) extends the obligation to every README, which is why M9 re-authors rather than trims.
+
+**R6 — The `@`-column and register migrations have no guard.** No validator reads `readme-seed.md` or any planning folder. If M2 is skipped or partial, `sync-progress-status` selects zero rows, returns `{rows_updated}: 0`, and raises **no error** (`sync-progress-status.md:45-47, :56`; `planning-readme.md:88-91`) — a session that reports nothing until Gate 2. Mitigation: add a mechanical check that every `@` value in `readme-seed.md` equals an existing `activities/NN-*.yaml` index, and name M2's folder count in the PR body.
+
+**R7 — Artifact consolidation orphans files in the 32 existing folders.** Renumbering is harmless (find-or-update is prefix-agnostic and sticky), but *consolidation* leaves `01-structural-inventory.md`, `01-format-conventions.md`, `03-design-specification.md`, `03-assumptions-log.md`, `06-drafting-plan.md`, `06-file-review-note.md`, `06-draft-attestation.md`, the six `08-*-findings.md` files and `10-post-update-review.md` on disk, still hyperlinked from Progress rows, with nothing to notice. M2 marks those rows `⊘` rather than deleting the files — the folders are a historical record and §10 favours preservation over removal.
+
+**R8 — Two catalogue gaps this change exposes and does not close.** (a) No entry Detects an **orphaned creation guide**; AP-116 is unidirectional (`AP:1508`) and the nearest coverage is AP-92's "dissolve the resource when nothing template-shaped remains" (`:1216`). (b) No entry constrains artifact **count**; AP-84 covers only terminal artifacts and AP-93 only fact duplication across templates, so 20→5 is permitted but not *directed* by any Detect — the case rests on §12 and AP-91's "present in-session, not persisted". If an auditable rule is wanted it must be authored under the Creation Rules (`AP:15-73`), shaped as a structural test that transfers to a foreign workflow — "a persisted artifact that no later step or user gate reads", never "more than N artifacts". Out of scope here; recorded so the next design pass has it.
+
+### 7.2 Rejected alternatives
+
+| Option | Why rejected |
+|---|---|
+| **Rename activity ids to `frame`/`draft`/`audit`/`land`** | Bricks 9 sessions that id preservation rescues, for cosmetics. `get_activity` throws `Activity not found` with no fallback (`workflow-tools.ts:602-609`) while `get_workflow_status` reports the dead id as healthy (`:1358, :1392`) and `next_activity` to a surviving id succeeds **silently** via the empty-valid-set escape hatch (`validation.ts:45`). It also breaks `techniques/TECHNIQUE.md:70`, which is currently accurate. New vocabulary goes in `description`/`outcome`/README. |
+| **Renumber prefixes to `01-04`** | New `03` collides with the live folders' `@ 03` (design specification, assumptions log) and new `04` with `@ 04` (pattern analysis). Writers select by `@` and mutate Status (`planning-readme.md:88-91`), so the failure is a **wrong write**, not a missing one. Sparse 01/06/08/09 sorts correctly (`workflow-loader.ts:91-93`) and gaps are sanctioned (`activities/README.md:9`). |
+| **Borrow `meta/activities/patterns/04-isolated-fan-out.yaml` for multi-target review** | Three independent blockers. The borrowed file declares no `transitions:` (verified), so `getValidTransitions` returns `[]` and every target from it is legal and unwarned (`validation.ts:45`) — a review session could bypass `validate-and-commit` entirely; a wrapper *before* it cannot fix its *exit*, and adding transitions to a generic reusable pattern is wrong. Its filename prefix `04` collides with live `@ 04` rows. And the string form is invisible to both schemas (`SRV/src/schema/workflow.schema.ts:88`; `SRV/schemas/workflow.schema.json:422+`). A declared `forEach` at `08:6` is also *cheaper*: the criteria arrive once per `get_activity`, so in-context iteration over N targets pays the catalogue once where N isolated workers pay it N times. **Revisit trigger:** a review run exceeding ~3 targets, where saturation outweighs the delivery saving. |
+| **Bind `orchestration-patterns::*` ops from a new local activity instead of borrowing** | Same capability, no schema-invisible construct — but it re-authors the pattern's bind roster locally (an AP-110-adjacent duplication of a borrowable activity) and still adds a node and four seed variables. The `forEach` needs neither. |
+| **Move the commit into the drafting stage behind a draft PR, with Gate 2 at `mark-ready`** | The strongest idea in the rejected set, and its *purpose* is taken a different way. As stated it trips AP-07 `scope-reverify-completion` (`AP:158`), whose Detect names **commit**: scope verification would follow the commit, push and PR by a whole activity. It also rests on a reversibility judgement the migration cannot validate (no CI on push; PR stays draft), and it makes both `06-scope-and-draft` and `09-validate-and-commit` stale names. Its real value — "nothing lands unaudited" as structure — is captured instead by moving `readme-authoring` to `06:8` so `09` produces **zero content**, at no cost to naming, AP-07 or §8. |
+| **A fifth activity for verification** | The property it buys (a context that never held the sweep) is bought for free by binding `verify-high-findings` at `09:1`, because a new activity is a new `get_activity` in a fresh worker regardless. A fifth node would add a graph edge, a prefix, an `outcome` block, a README heading and a cross-node loop leg per remediation round. |
+| **Keep verification inside `08`** | `verify-high-findings.md:28`'s "without reading the originating pass's reasoning" is unenforceable in the sweep's context, which is the entire mechanism behind the 8-vs-3 spread. Contract-level independence (register rows as the only input) is weaker and would leave the workflow's sole severity-calibration mechanism advisory. |
+| **Fuse create-mode and update-mode brief composition into one technique** | AP-124 `alternate-ops-as-protocol-sequence` (`AP:1598`) names "create vs update" as its exemplar, and its test fires: renumbering the phases changes nothing because only one applies per call. Two flat techniques with mutually exclusive `when` (AP-38's own carve-out) instead — and no group container, so AP-70's YAGNI do-not-flag (`:938`) and §27/AP-115/AP-123 never engage. |
+| **Merge removal approval into the scope gate** | The answer spaces do not overlap, and AP-88's do-not-flag (`AP:1158`) is precisely "distinct decisions with non-overlapping answer spaces" — so AP-88 licenses no merge and AP-05 (`:134`) fires on one. Two conditional gates, each firing only on its exception, is also the better §12 answer. |
+| **Re-section `anti-patterns.md` so AP-126-129 sit under an `*Anti-Patterns` heading** | Fixes a real hazard the wrong way: it edits a §6 authoritative home and the sole criteria source for three walkers, dragging §10's removal inventory over the canon itself and adding an AP-129 sweep. Enumerating all 13 `##` anchors including `#authoring-guidance-mr` gets identical coverage with zero edits. |
+| **Delete `headless_mode` and make every gate BLOCKING** | `headless_mode` defaults true and workflow-design runs as a meta-dispatched child, so an all-hard gate set would not have completed the 12-dispatch run that motivated #321. The AP-89 problem those soft gates had is *zero recorded effect*, which is fixed by giving each option an effect — not by deleting auto-advance. It also avoids a `headless` AP-129 sweep across `intake-classification.md:32-34, :77, :104, :106-108`, `README.md:3, :13, :99` and `activities/README.md:15, :31, :63`. |
+| **Use `fragments.rules` / `fragments.checkpoints` to shrink delivery** | Not a cost lever. `materializeRuleEntries` splices refs to plain strings at load (`fragment-resolver.ts:80-82`) and `injectCheckpointFragmentBodies` expands the body into the delivered raw YAML (`:164-170`, called at `workflow-tools.ts:617-622`), so a referenced checkpoint costs the same wire bytes as an inline one. Authoring dedup only — and with each of the 7 checkpoint bodies appearing exactly once, there is nothing to dedup. |
+| **`bundleTechniques: { maxChars: 0 }` on the audit activity** | It is the opt-out sentinel: it suppresses the eager technique map **and** the sibling eager-resource map (`workflow-tools.ts:704, :711, :792-833`), which is exactly the delivery path this design depends on. Omitted everywhere. |
+
+---
+
+## 8. Net effect
+
+| Dimension | Before | After | Δ |
+|---|---|---|---|
+| Activities | 9 | 4 | −56% |
+| Activity YAML lines | 1,926 | ~650 | −66% |
+| Top-level steps / with loop bodies | 126 / 169 | 44 / 52 | −65% / −69% |
+| Checkpoints (effect-bearing) | 16 (6) | 7 (7) | −56% |
+| `decisions` blocks | 1 (inert) | 0 | — |
+| Techniques (workflow-local) | 37 | 23 | −38% |
+| Criteria walkers | 6 over 4 homes | 1 over 4 homes | −83% |
+| Worst-case audit invocations per update run | 46 across 3 activities | ≤3 per target in 1 activity | −93% |
+| Resources | 23 | 12 | −48% |
+| `write-artifact` bind sites | 27 | 6 | −78% |
+| Persisted bare filenames | 20 (22 incl. borrowed) | 5 (6 incl. seeded README) | −75% |
+| Workflow variables | 63 | 41 | −35% |
+| Dispatches (clean / worst) | 12 observed | 4 / 8 | −67% |
+| Criteria delivered per run | up to 46 × 128 KB, un-bundleable | 154,507 B once, eager-bundled, 0 `get_resource` | — |
+| Eager-eligible steps in the audit activity | 0 of 27 | 8 of 10 | — |
+| Total subagent tokens | 1,430,000 | ≤500,000 target, 260-400k expected | −65 to −82% |
+
+The single densest saving is `08-quality-review.yaml:120-413` — **294 of 531 lines** of satellite-persist and per-pass clean/flagged announce triads, all of which exist to service `findings-satellite.md` and four per-family finding-count variables. The single highest-value *efficacy* change is binding `verify-high-findings` where `refute-by-default` is enforceable, and binding it on the path every mode and every remediation round takes — which #321 as written does not mention, and which today runs at only one of three audit sites and in only one of three modes.
