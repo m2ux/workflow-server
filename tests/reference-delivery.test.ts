@@ -218,10 +218,11 @@ describe('reference-not-repeat delivery (B1)', () => {
         expect(isUnchangedMarker(value), `expected marker for ${key}`).toBe(true);
       }
       expect(isUnchangedMarker(second.bundle['rules'])).toBe(true);
-      // The inherited worker rules block also collapses.
+      // The activity body itself is still delivered. (`work-package` declares only
+      // orchestrator-scoped `rules.workflow`, so it carries no inherited `activity_rules`
+      // block — that collapse is covered below against a workflow that declares them.)
       const secondBody = parse(second.bodyText) as Record<string, unknown>;
-      expect(isUnchangedMarker(secondBody['activity_rules'])).toBe(true);
-      // The activity body itself is still delivered.
+      expect(secondBody['activity_rules']).toBeUndefined();
       expect(secondBody['id']).toBe('start-work-package');
       expect(secondBody['steps']).toBeDefined();
 
@@ -232,6 +233,28 @@ describe('reference-not-repeat delivery (B1)', () => {
         const { stringify } = await import('yaml');
         expect(marker.content_hash).toBe(contentHash(stringify(firstTechniques[key], { lineWidth: 0 })));
       }
+    });
+
+    it('the inherited activity_rules block collapses on refetch', async () => {
+      // `requirements-refinement` declares both `rules.activity` and `rules.universal`, the two
+      // buckets every activity inherits — so its get_activity carries an `activity_rules` block.
+      const session = await startSession({
+        workflow_id: 'requirements-refinement',
+        agent_id: 'solo',
+        planning_folder: planningFolder('2026-07-03-persistent-activity-rules'),
+        context_mode: 'persistent',
+      });
+      const idx = session['session_index'] as string;
+      await enterActivity(idx, 'intake-and-analyze');
+
+      const firstBody = parse(splitActivityResponse(await getActivity(idx)).bodyText) as Record<string, unknown>;
+      expect(Array.isArray(firstBody['activity_rules'])).toBe(true);
+      expect((firstBody['activity_rules'] as unknown[]).length).toBeGreaterThan(0);
+
+      const secondBody = parse(splitActivityResponse(await getActivity(idx)).bodyText) as Record<string, unknown>;
+      expect(isUnchangedMarker(secondBody['activity_rules'])).toBe(true);
+      // The activity body itself is still delivered in full.
+      expect(secondBody['id']).toBe('intake-and-analyze');
     });
 
     it('across activities, shared inherited techniques collapse while new ones arrive in full', async () => {
@@ -288,14 +311,16 @@ describe('reference-not-repeat delivery (B1)', () => {
 
     it('persists contextMode and the delivery ledger in session.json', async () => {
       const slug = '2026-07-03-persistent-ledger-on-disk';
+      // `requirements-refinement` declares inherited `rules.activity` / `rules.universal`, so one
+      // walk exercises all three key shapes asserted below, `activity_rules:*` included.
       const session = await startSession({
-        workflow_id: 'work-package',
+        workflow_id: 'requirements-refinement',
         agent_id: 'solo',
         planning_folder: planningFolder(slug),
         context_mode: 'persistent',
       });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'start-work-package');
+      await enterActivity(idx, 'intake-and-analyze');
       await getActivity(idx);
 
       const onDisk = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
@@ -678,9 +703,11 @@ describe('reference-not-repeat delivery (B1)', () => {
 
         // Mutate the workflow-inherited technique between calls.
         const techniqueFile = join(mutableWorkflowDir, 'meta/techniques/variable-binding.md');
+        // Anchor the mutation on the structural heading, not on the capability's wording —
+        // the latter is corpus prose and drifts.
         const original = readFileSync(techniqueFile, 'utf8');
-        expect(original).toContain('Bind a step');
-        writeFileSync(techniqueFile, original.replace('## Capability\n\nBind a step', '## Capability\n\nMUTATED: Bind a step'));
+        expect(original).toContain('## Capability\n');
+        writeFileSync(techniqueFile, original.replace('## Capability\n', '## Capability\n\nMUTATED.\n'));
 
         // The changed technique arrives in full (new content, hash mismatch);
         // untouched techniques collapse to markers.

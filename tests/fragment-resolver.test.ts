@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { resolve } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { parse } from 'yaml';
 import {
   FragmentResolutionError,
@@ -25,6 +26,20 @@ import type { WorkflowFragments } from '../src/schema/workflow.schema.js';
  */
 
 const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
+
+/**
+ * The declared body of a checkpoint fragment, read from the corpus itself. Materialization
+ * assertions compare against this rather than a transcribed sentence, so they prove the body
+ * was inlined without breaking when the corpus rewords it.
+ */
+function fragmentCheckpointMessage(workflowId: string, fragmentName: string): string {
+  const wf = parse(readFileSync(join(WORKFLOW_DIR, workflowId, 'workflow.yaml'), 'utf8')) as {
+    fragments?: { checkpoints?: Record<string, { message?: string }> };
+  };
+  const message = wf.fragments?.checkpoints?.[fragmentName]?.message;
+  if (!message) throw new Error(`No checkpoint fragment '${fragmentName}' in ${workflowId}/workflow.yaml`);
+  return message;
+}
 
 const GATE_BODY = {
   message: 'Confirm the scope.',
@@ -165,12 +180,13 @@ describe('loader materialization over the corpus', () => {
       ['implementation-analysis', 'analysis-assumption-interview'],
       ['implement', 'implementation-assumption-interview'],
     ];
+    const fragmentMessage = fragmentCheckpointMessage('work-package', 'assumption-interview');
     for (const [activityId, checkpointId] of sites) {
       const activity = result.value.activities?.find((a) => a.id === activityId);
       expect(activity, activityId).toBeDefined();
       const steps = JSON.stringify(activity);
       expect(steps).toContain(checkpointId);
-      expect(steps).toContain('Can you resolve this, or defer to stakeholders?');
+      expect(steps, activityId).toContain(JSON.stringify(fragmentMessage).slice(1, -1));
       expect(steps).not.toContain('"ref"');
     }
   });
@@ -183,6 +199,7 @@ describe('loader materialization over the corpus', () => {
     expect(rules).toContain("Ask, don't assume - Clarify requirements before acting");
     // Borrowed work-package activity: its bare ref resolves against work-package, not the borrower.
     const research = result.value.activities?.find((a) => a.id === 'research');
-    expect(JSON.stringify(research)).toContain('Can you resolve this, or defer to stakeholders?');
+    const fragmentMessage = fragmentCheckpointMessage('work-package', 'assumption-interview');
+    expect(JSON.stringify(research)).toContain(JSON.stringify(fragmentMessage).slice(1, -1));
   });
 });
