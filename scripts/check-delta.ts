@@ -301,8 +301,9 @@ async function main(): Promise<void> {
     }
     if (b.findings && h.findings) {
       const baseKeys = new Set(b.findings.map(findingKey));
+      const headKeys = new Set(h.findings.map(findingKey));
       const fresh = h.findings.filter((f) => !baseKeys.has(findingKey(f)));
-      const gone = b.findings.filter((f) => !new Set(h.findings!.map(findingKey)).has(findingKey(f)));
+      const gone = b.findings.filter((f) => !headKeys.has(findingKey(f)));
       if (fresh.length === 0) {
         report.push(`  [SAME] ${guard.id} — ${h.findings.length} finding(s), none new`
           + `${gone.length ? `, ${gone.length} fixed by this change` : ''}`);

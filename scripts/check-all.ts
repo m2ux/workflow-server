@@ -113,6 +113,12 @@ async function main(): Promise<void> {
 
   const failed = runs.filter((r) => r.code === EXIT_FINDINGS);
   const unmeasured = runs.filter((r) => r.code !== EXIT_CLEAN && r.code !== EXIT_FINDINGS);
+  // A filter combination can select nothing (`--corpus-only --only site-links`); say so rather than
+  // printing an empty table that reads like a clean sweep.
+  if (selected.length === 0) {
+    process.stderr.write('check:all: no guard matched the given filters — nothing was measured.\n');
+    process.exit(EXIT_UNMEASURED);
+  }
   const width = Math.max(...selected.map((g) => g.id.length));
 
   process.stdout.write('\n');
