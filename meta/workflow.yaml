@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 5.11.0
+version: 5.12.0
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -37,7 +37,24 @@ variables:
     description: 6-character base32 session_index of the meta session itself — read by initialize-session and passed as parent_session_index when create-session creates the client session
   - name: target_repo
     type: string
-    description: Target GitHub owner/repo for this run (from user or workspace AGENTS.md)
+    description: Target GitHub owner/repo for this run, derived from the host repository's origin remote by version-control::resolve-host-repo. Workspace AGENTS.md/CLAUDE.md or the user supply it only as the fallback for a workspace that is not a git repo or has no origin remote
+  - name: host_repo_path
+    type: string
+    description: Absolute path to the host repository the session belongs to — the outermost superproject that claims the workspace checkout as a submodule, or the workspace toplevel itself when nothing claims it. Set by version-control::resolve-host-repo
+  - name: is_monorepo_host
+    type: boolean
+    description: Whether the resolved host repository contains the workspace checkout as a submodule, meaning the session was opened inside a component of a larger superproject. Set by version-control::resolve-host-repo
+    defaultValue: false
+  - name: component_hint
+    type: string
+    description: Basename of the innermost git toplevel when resolve-host-repo ascended to reach the host — the component the user is already working inside, read by select-target-component for pre-selection. Absent when no ascent happened
+  - name: mentioned_repo
+    type: string
+    description: Repository named in the user's request, such as the owner/repo of a PR or issue URL. Set by workflow-engine::extract-identifying-context and read by select-target-component as component context only — it never binds the session, per version-control::host-is-derived-component-is-named
+  - name: host_binding_mismatch
+    type: boolean
+    description: Whether the derived host repository's basename disagrees with the repository segment of target_repo. The server's multi-root mapping is basename-only and cannot represent the divergence, so this gates the host-binding-mismatch checkpoint in discover-session rather than binding silently
+    defaultValue: false
   - name: target_workflow_outcomes
     type: string
     description: The client workflow's declared outcomes, read by verify-outcomes during end-workflow close-out
@@ -68,7 +85,7 @@ variables:
     defaultValue: false
   - name: planning_folder_path
     type: string
-    description: Canonical absolute path to the client workflow's planning folder, as resolved by the server under its own workspace .engineering root. Returned by create-session/dispatch_child (and start_session on resume); the single location for planning artifacts, never composed by the agent or anchored to target_path/CWD
+    description: Canonical absolute path to the client workflow's planning folder, as resolved by the server under its own workspace .engineering root. Returned by create-session/dispatch_child (and start_session on resume); the single location for planning artifacts, never composed by the agent or anchored to component_path/CWD
   - name: client_session_index
     type: string
     description: 6-character base32 session_index for the dispatched client workflow (returned by start_session when initialize-session creates or resumes the session)
@@ -79,9 +96,9 @@ variables:
     type: boolean
     description: Whether the target repository is a submodule monorepo (set by resolve-target)
     defaultValue: false
-  - name: target_path
+  - name: component_path
     type: string
-    description: Resolved target directory for git operations — '.' for regular repos, a submodule path for monorepos
+    description: Path of the component being worked on, relative to the host repository — '.' for a regular repo, the submodule path for a monorepo. Distinct from the client workflow's own target_path, which is a feature worktree for edits
     defaultValue: .
   - name: component_selection_needed
     type: boolean

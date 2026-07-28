@@ -2,7 +2,7 @@
 
 > Part of the [Meta Workflow](../README.md)
 
-Five sequential activities that run inside the meta session: identify the target client workflow and, on stated resume intent, any saved session, create or resume the client session, resolve target_path, drive the client workflow's activity loop inline and mediate its yielded checkpoints, and close out the session.
+Five sequential activities that run inside the meta session: derive the host repository from git and identify the target client workflow and, on stated resume intent, any saved session, create or resume the client session, resolve component_path, drive the client workflow's activity loop inline and mediate its yielded checkpoints, and close out the session.
 
 Borrowable mid-phase orchestration pattern activities live under [`patterns/`](./patterns/README.md) and are **not** part of this lifecycle list.
 
@@ -12,7 +12,7 @@ The authoritative definition of each activity — its steps, technique bindings,
 
 ### 00. Discover Session
 
-Identifies the target workflow and, when the request states resume intent, looks for an existing client session to resume. It matches the user request against the workflow catalog and detects resume intent against the [resume-intent lexicon](../resources/resume-intent-lexicon.md); on stated intent it then extracts the request's identifying context (ticket, branch, PR, work-package name) and scans planning folders so saved progress can be surfaced. A request stating a fresh start skips that search. It can surface a workflow-selection checkpoint (when the match is ambiguous) and a resume-session checkpoint (when saved state is found). Leads to [Initialize Session](#01-initialize-session).
+Derives the host repository the session belongs to from git — ascending to the outermost superproject that claims the workspace checkout — then identifies the target workflow and, when the request states resume intent, looks for an existing client session to resume. The derivation runs first so a divergence the server's basename-only mapping cannot represent is raised at the host-binding-mismatch checkpoint before any matching work is done; the same technique also runs at bootstrap step 2, which is where the meta session's own binding is fixed. It matches the user request against the workflow catalog and detects resume intent against the [resume-intent lexicon](../resources/resume-intent-lexicon.md); on stated intent it then extracts the request's identifying context (ticket, branch, PR, work-package name) and scans planning folders so saved progress can be surfaced. A request stating a fresh start skips that search. It can surface a host-binding-mismatch checkpoint (when the derived host's basename disagrees with its remote), a workflow-selection checkpoint (when the match is ambiguous) and a resume-session checkpoint (when saved state is found). Leads to [Initialize Session](#01-initialize-session).
 
 Definition: [`00-discover-session.yaml`](./00-discover-session.yaml)
 
@@ -28,7 +28,7 @@ Definition: [`01-initialize-session.yaml`](./01-initialize-session.yaml)
 
 ### 02. Resolve Target
 
-Detects the target repository structure — regular directory vs. submodule monorepo — and resolves `target_path` so downstream git operations have a confirmed working git tree to act on. For a monorepo the user picks the target submodule via a checkpoint; `target_path` must resolve to a directory containing a working git tree. Leads to [Dispatch Client Workflow](#03-dispatch-client-workflow).
+Detects the target repository structure — regular directory vs. submodule monorepo — and resolves `component_path` so downstream git operations have a confirmed working git tree to act on. For a monorepo the user picks the target submodule via a checkpoint; `component_path` is relative to `host_repo_path`, and their join must resolve to a directory containing a working git tree. A binding-agreement assertion fails the run here when the session is bound to a directory that is not the derived host repository, before any planning artifact exists. Leads to [Dispatch Client Workflow](#03-dispatch-client-workflow).
 
 Definition: [`02-resolve-target.yaml`](./02-resolve-target.yaml)
 

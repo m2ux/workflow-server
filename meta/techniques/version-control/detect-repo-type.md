@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.2
+  version: 1.2.0
 ---
 
 ## Capability
@@ -13,12 +13,12 @@ Determine whether the working directory is a regular repo or a submodule monorep
 
 true when `.gitmodules` declares at least one non-infrastructure submodule; false otherwise.
 
-### target_path
+### component_path
 
 `.` when the repo is regular. Left for submodule selection to resolve when `is_monorepo` is true.
 
 ## Protocol
 
-1. If `.gitmodules` does not exist at the repo root, set `{is_monorepo}` = false and `{target_path}` = `.` — a regular repo. Done.
+1. If `.gitmodules` does not exist at the repo root, set `{is_monorepo}` = false and `{component_path}` = `.` — a regular repo. Done.
 2. Parse `.gitmodules` and collect the `path` of every `[submodule "..."]` section. Discard infrastructure submodules — apply [version-control](./TECHNIQUE.md)::infrastructure-submodule-paths.
-3. If one or more submodule paths remain, set `{is_monorepo}` = true and leave `{target_path}` for submodule selection. Otherwise set `{is_monorepo}` = false and `{target_path}` = `.` — the `.gitmodules` file declared only infrastructure submodules, so this is effectively a regular repo.
+3. If one or more submodule paths remain, set `{is_monorepo}` = true and leave `{component_path}` for submodule selection. Otherwise set `{is_monorepo}` = false and `{component_path}` = `.` — the `.gitmodules` file declared only infrastructure submodules, so this is effectively a regular repo.

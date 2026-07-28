@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.14.0
+version: 3.15.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 required: true
@@ -157,7 +157,10 @@ steps:
         message: "Seed target_workflow_outcomes with the review-native plain list (no mode predicates in prose): (1) The review close-out (findings, disposition, retrospective) is recorded under the planning folder; (2) Lessons learned are captured to improve future work packages; (3) The temporary worktree this work package created is cleaned up, leaving no orphaned workspaces; (4) Reference monorepo left untouched; (5) Ready for next work package. Create path leaves this unset and uses activity outcome lists."
   - kind: technique
     id: resolve-repo-root
-    technique: repo-root-resolution
+    technique:
+      name: repo-root-resolution
+      inputs:
+        discovered_path: "{host_repo_path}/{component_path}"
   - kind: technique
     id: update-repo-submodules
     technique: manage-git::update-repo-submodules

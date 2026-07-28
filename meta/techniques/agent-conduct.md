@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 4.4.0
+  version: 4.5.0
 ---
 
 ## Capability
@@ -93,9 +93,9 @@ Orchestrators (meta or workflow) never execute activity steps or produce domain 
 
 On resume, still dispatch a worker via [dispatch-activity](./workflow-engine/dispatch-activity.md) — resume changes which activity is dispatched, not whether one is. Do not execute steps inline from restored bag/folder context.
 
-### orchestrator-target-path-scope
+### orchestrator-component-path-scope
 
-Branch creation, PR creation, and code commits MUST be performed inside the `target_path` directory (the submodule), NEVER in the parent monorepo. Planning artifact commits (`.engineering/artifacts/`) MUST be performed in the parent repo where that directory lives, on the current branch — do NOT create a new branch in the parent repo.
+Branch creation, PR creation, and code commits MUST be performed inside the component directory `{host_repo_path}/{component_path}` (the submodule), NEVER in the host monorepo root. Planning artifact commits (`.engineering/artifacts/`) MUST be performed in the host repo where that directory lives, on the current branch — do NOT create a new branch in the host repo.
 
 ### orchestrator-automatic-transitions
 

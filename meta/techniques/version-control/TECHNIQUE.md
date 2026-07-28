@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.2.0
+  version: 5.3.0
 ---
 
 ## Capability
@@ -36,3 +36,7 @@ All commits made via this technique use `git commit -s`. The `Signed-off-by` tra
 ### infrastructure-submodule-paths
 
 A submodule is infrastructure when its `path` equals `workflows`, equals `.engineering`, or starts with `.engineering/`. Infrastructure submodules are never target components and never classify a repo as a monorepo on their own.
+
+### host-is-derived-component-is-named
+
+The host repository a session belongs to and the component being worked on are two facts, never one variable. The host is DERIVED from git by [resolve-host-repo](./resolve-host-repo.md) — the outermost superproject that claims the workspace checkout — and lands as `{host_repo_path}` and `{target_repo}`. A repository named in the user's request, such as the `owner/repo` in a PR or issue URL, identifies the COMPONENT and lands as `{mentioned_repo}`; it is component context for [select-target-component](./select-target-component.md) alone and never binds the session. Binding a session to a repository merely because the request mentioned it is what produces a checkout that does not exist.
