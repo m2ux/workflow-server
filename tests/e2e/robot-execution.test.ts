@@ -6,6 +6,7 @@ import { walk, type WalkResult } from './walker.js';
 import { fullWorkflowPolicy } from './policies.js';
 import { join } from 'node:path';
 import { corpusRoot } from '../corpus-root.js';
+import { walkHookTimeout } from './budgets.js';
 
 /**
  * Source of truth for the expected numeric prefix of each activity, read from
@@ -40,7 +41,7 @@ describe('work-package robot execution (Layer 3c)', () => {
   beforeAll(async () => {
     h = await createHarness();
     full = await walk(h, 'work-package', fullWorkflowPolicy); // robot mode is the default
-  }, 60_000);
+  }, walkHookTimeout(1));
   afterAll(async () => { await h.close(); });
 
   it('reaches the terminal activity executing steps (not just walking the graph)', () => {
