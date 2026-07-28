@@ -25,7 +25,7 @@ The assumptions [log](../../resources/assumptions-review.md#assumptions-log-temp
 
 ### assumption_review_presentation
 
-Structured judgement-augmentation context for decision, shaped like the [Open Assumptions](../../resources/assumptions-review.md#open-assumptions) entry fields (decision space, non-resolvability rationale, technical context, agent's position, reversibility) plus a link to the assumptions log.
+Structured judgement-augmentation context for decision, shaped like the Open Assumptions entry fields of the [assumptions log template](../../resources/assumptions-review.md#assumptions-log-template) (decision space, non-resolvability rationale, technical context, agent's position, reversibility) plus a link to the assumptions log.
 
 
 ## Protocol

@@ -65,6 +65,23 @@ fragments:
           effect:
             setVariable:
               needs_individual_interview: true
+    assumption-decision:
+      message: "Assumption {current_assumption.id}: {current_assumption.statement}. Resolve now or defer."
+      blocking: true
+      options:
+        - id: resolve-inline
+          label: Resolve now
+          description: Provide resolution for this assumption
+          effect:
+            setVariable:
+              assumption_resolved_inline: true
+        - id: defer-to-stakeholder
+          label: Defer to stakeholder review
+          description: Queue this assumption for stakeholder review
+          effect:
+            setVariable:
+              assumption_deferred: true
+              has_deferred_assumptions: true
 techniques:
   activity:
     - variable-binding

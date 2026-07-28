@@ -13,7 +13,7 @@ Parameterized analyse–challenge–combine loop that drives agent-resolvable co
 
 Domain of the open set this binding addresses (e.g. `assumptions`, `open_questions`).
 
-### analyse
+### analyse_technique
 
 Technique path invoked each iteration to deepen or resolve agent-resolvable items (e.g. `review-assumptions::reconcile`, `codebase-comprehension::deep-dive`).
 
