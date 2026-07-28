@@ -9,7 +9,7 @@ Classify the goal against a fixed lane roster and select exactly one lane — th
 
 ## Inputs
 
-### goal
+### work_goal
 
 Request to classify.
 
@@ -29,11 +29,11 @@ Short rationale for the chosen lane (for synthesis / escalation context).
 
 ### work_unit
 
-Single `{ id, brief, tools_hint? }` for the selected lane: `id` = `{lane_id}`; `brief` = lane instructions plus `{goal}`; `tools_hint` from the lane when present. When `{lane_id}` is `escalate`, `brief` states the escalation case.
+Single `{ id, brief, tools_hint? }` for the selected lane: `id` = `{lane_id}`; `brief` = lane instructions plus `{work_goal}`; `tools_hint` from the lane when present. When `{lane_id}` is `escalate`, `brief` states the escalation case.
 
 ## Protocol
 
-1. Match `{goal}` to the best lane in `{lane_roster}` by declared scope.
+1. Match `{work_goal}` to the best lane in `{lane_roster}` by declared scope.
 2. Set `{lane_id}` to that lane's `id` and record `{classification_rationale}`.
 3. If no lane fits, set `{lane_id}` to the roster entry marked default when present; otherwise set `{lane_id}` to `escalate` and state why in `{classification_rationale}`.
 4. Emit `{work_unit}` for the selected (or escalate) lane so [compose-worker-brief](./compose-worker-brief.md) can bind it by name.

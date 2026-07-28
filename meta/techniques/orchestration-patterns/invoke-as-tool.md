@@ -9,7 +9,7 @@ Run one bounded sub-agent behind a function-shaped boundary and return only the 
 
 ## Inputs
 
-### task
+### task_brief
 
 Self-contained task string for the sub-agent.
 
@@ -33,6 +33,6 @@ Structured or textual return value only.
 
 ## Protocol
 
-1. Build a prompt from `{task}`, `{output_contract}`, and `{session_index}` when present — instruct the agent to return only the final result matching the contract.
+1. Build a prompt from `{task_brief}`, `{output_contract}`, and `{session_index}` when present — instruct the agent to return only the final result matching the contract.
 2. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with that prompt (and `{description}` when set).
 3. Capture the agent's final output as `{tool_result}`. Discard intermediate transcript from the parent bag.

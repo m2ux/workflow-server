@@ -17,7 +17,7 @@ steps:
     technique:
       name: orchestration-patterns::dispatch-workers
       inputs:
-        concurrency: 1
+        dispatch_concurrency: 1
   - kind: technique
     id: gather
     technique:

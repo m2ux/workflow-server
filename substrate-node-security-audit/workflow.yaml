@@ -41,6 +41,9 @@ techniques:
   activity:
     - variable-binding
 variables:
+  - name: user_request
+    type: string
+    description: The user's free-form request that opened this audit.
   - name: target_submodule
     type: string
     description: Path to the submodule being audited (e.g., midnight-node)

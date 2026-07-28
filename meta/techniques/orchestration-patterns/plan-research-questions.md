@@ -9,11 +9,11 @@ Turn a research goal into parallel research questions as work units — the plan
 
 ## Inputs
 
-### goal
+### work_goal
 
 Research question or brief.
 
-### context
+### planning_context
 
 *(optional)* Scope limits, sources to prefer/avoid, deadline hints.
 
@@ -29,6 +29,6 @@ Ordered research units `{ id, brief, tools_hint? }` suitable for parallel fan-ou
 
 ## Protocol
 
-1. Derive breadth-first research questions that cover `{goal}` with minimal overlap.
+1. Derive breadth-first research questions that cover `{work_goal}` with minimal overlap.
 2. Honour `{effort_cap}` when set (prefer fewer sharper questions over exceeding the cap).
 3. Emit `{work_units}` with briefs that demand structured findings (claims + sources), not open-ended essays.

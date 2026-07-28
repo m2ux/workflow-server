@@ -150,6 +150,10 @@ steps:
       variable: stealth_mode
       operator: ==
       value: true
+    actions:
+      - action: validate
+        target: push_remote_verified != false
+        message: "Push remote '{push_remote}' ({push_remote_url}) did not verify as private. Point {push_remote} at the private fork inside {target_path} and re-run."
   - kind: checkpoint
     id: private-remote-confirmation
     condition:
@@ -174,6 +178,10 @@ steps:
       variable: stealth_mode
       operator: ==
       value: true
+    actions:
+      - action: validate
+        target: commits_signed != false
+        message: "Commits staged for the private push carry no valid signature. Sign them in {target_path} and re-run."
   - kind: checkpoint
     id: push-confirmation
     condition:

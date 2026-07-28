@@ -9,11 +9,11 @@ Shared Inputs, Outputs, and domain invariants for mid-phase multi-agent orchestr
 
 ## Inputs
 
-### goal
+### work_goal
 
 The caller-facing goal or request text the pattern operates on.
 
-### concurrency
+### dispatch_concurrency
 
 *(optional)* Positive integer. Default `1`. `1` = sequential dispatch; greater than `1` = parallel fan-out.
 
@@ -43,7 +43,7 @@ Ordered array of `{ id, description, prompt }` ready for dispatch.
 
 Ordered keyed collection of per-unit worker outputs plus a dispatch completeness manifest.
 
-### synthesis
+### combined_synthesis
 
 Single combined result produced from `{gathered_results}` under caller-supplied criteria.
 
@@ -59,7 +59,7 @@ Under `context` isolation, workers must not write sibling workspaces. Under `wor
 
 ### parallelism-is-optimisation
 
-Honor [scatter-gather](../scatter-gather.md)::parallelism-is-optimisation (`concurrency = 1` remains correct).
+Honor [scatter-gather](../scatter-gather.md)::parallelism-is-optimisation (a `{dispatch_concurrency}` of 1 remains correct).
 
 ### workers-see-briefs-only
 

@@ -9,11 +9,11 @@ Produce an inspectable ordered execution plan of steps for the goal — the plan
 
 ## Inputs
 
-### goal
+### work_goal
 
 Goal to plan against.
 
-### context
+### planning_context
 
 *(optional)* Constraints, inventory, or prior state the planner should honour.
 
@@ -29,6 +29,6 @@ Boolean, default `false`. Set `true` only when planning itself detects the world
 
 ## Protocol
 
-1. Decompose `{goal}` into an ordered list of mostly-independent executable steps using `{context}` when present.
+1. Decompose `{work_goal}` into an ordered list of mostly-independent executable steps using `{planning_context}` when present.
 2. Emit `{execution_plan}` with stable step ids and explicit `depends_on` when a step requires a prior step's product.
 3. Leave `{plan_needs_replan}` false unless planning cannot produce a credible plan.

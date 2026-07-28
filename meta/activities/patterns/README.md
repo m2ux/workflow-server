@@ -37,15 +37,15 @@ Deferred: dynamic-expert-recruitment; inter-agent-communication (MCP / workflow-
 
    Wire your own `transitions` in a thin local wrapper activity when the borrowed file has none, or copy the step pipeline into a local activity and bind the same ops with input overrides.
 
-2. **Re-bind ops** inside a local activity with `{ name, inputs }` deviations when you need different bag names or concurrency defaults.
+2. **Re-bind ops** inside a local activity with `{ name, inputs }` deviations when you need different bag names or a non-default dispatch concurrency.
 
 3. **Seed the bag** before the pattern runs (consumer responsibility):
 
 | Variable / input | Used by |
 |------------------|---------|
-| `goal` | all patterns |
-| `context` | decompose, plan-steps, plan-research-questions |
-| `concurrency` | dispatch / isolated-fan-out / lead-researcher (default `1` on ops) |
+| `work_goal` | all patterns |
+| `planning_context` | decompose, plan-steps, plan-research-questions |
+| `dispatch_concurrency` | dispatch / isolated-fan-out / lead-researcher (default `1` on ops) |
 | `isolation_mode` | isolated-fan-out (`context` \| `worktree`) |
 | `effort_cap` | decompose / research planning |
 | `lane_roster` | supervisor |
@@ -68,7 +68,7 @@ Deferred: dynamic-expert-recruitment; inter-agent-communication (MCP / workflow-
 
 ### 01 Orchestrator Workers
 
-Runtime decomposition → briefs → dispatch → gather → synthesise. Seed `goal`, `synthesis_criteria`; set `concurrency` > 1 for parallel fan-out.
+Runtime decomposition → briefs → dispatch → gather → synthesise. Seed `work_goal`, `synthesis_criteria`; set `dispatch_concurrency` > 1 for parallel fan-out.
 
 ### 02 Supervisor
 

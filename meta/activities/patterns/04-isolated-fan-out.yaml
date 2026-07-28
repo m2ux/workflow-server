@@ -17,10 +17,7 @@ steps:
         isolation_mode: isolation_mode
   - kind: technique
     id: dispatch
-    technique:
-      name: orchestration-patterns::dispatch-workers
-      inputs:
-        concurrency: concurrency
+    technique: orchestration-patterns::dispatch-workers
   - kind: technique
     id: gather
     technique:

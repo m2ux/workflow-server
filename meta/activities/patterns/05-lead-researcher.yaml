@@ -14,10 +14,7 @@ steps:
     technique: orchestration-patterns::compose-worker-briefs
   - kind: technique
     id: dispatch
-    technique:
-      name: orchestration-patterns::dispatch-workers
-      inputs:
-        concurrency: concurrency
+    technique: orchestration-patterns::dispatch-workers
   - kind: technique
     id: gather
     technique:
@@ -46,10 +43,7 @@ steps:
         technique: orchestration-patterns::compose-worker-briefs
       - kind: technique
         id: dispatch-followup
-        technique:
-          name: orchestration-patterns::dispatch-workers
-          inputs:
-            concurrency: concurrency
+        technique: orchestration-patterns::dispatch-workers
       - kind: technique
         id: gather-followup
         technique:

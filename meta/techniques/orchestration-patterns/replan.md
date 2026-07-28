@@ -9,7 +9,7 @@ Revise the execution plan in light of the replan reason and prior step results, 
 
 ## Inputs
 
-### goal
+### work_goal
 
 Original goal.
 
@@ -37,6 +37,6 @@ Replan-needed flag.
 
 ## Protocol
 
-1. Incorporate `{prior_step_results}` and `{replan_reason}` into a revised decomposition of `{goal}`.
+1. Incorporate `{prior_step_results}` and `{replan_reason}` into a revised decomposition of `{work_goal}`.
 2. Emit a new `{execution_plan}` that preserves completed useful work and schedules only remaining steps.
 3. Set `{plan_needs_replan}` to false.

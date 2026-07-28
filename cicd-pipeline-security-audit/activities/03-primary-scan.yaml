@@ -20,7 +20,7 @@ steps:
     technique:
       name: orchestration-patterns::dispatch-workers
       inputs:
-        concurrency: scanners_assigned
+        dispatch_concurrency: scanners_assigned
   - kind: technique
     id: gather-all-scanners
     technique:
