@@ -273,11 +273,30 @@ async function main(): Promise<void> {
     const b = baseRuns.find((r) => r.id === guard.id);
     const h = headRuns.find((r) => r.id === guard.id);
     if (!b || !h) continue;
-    if (b.code === EXIT_UNMEASURED || h.code === EXIT_UNMEASURED) {
+    if (h.code === EXIT_UNMEASURED) {
+      // THIS tree could not measure — the delta has a hole in it, whatever the base did.
       unmeasured++;
-      const broken = h.code === EXIT_UNMEASURED ? h : b;
-      report.push(`  [UNMEASURED] ${guard.id} — base exit ${b.code}, head exit ${h.code}`);
-      for (const l of [...broken.lines, ...broken.stderr].slice(-5)) report.push(`      ${l}`);
+      report.push(`  [UNMEASURED] ${guard.id} — head could not measure (exit ${h.code})`);
+      for (const l of [...h.stderr, ...h.lines].slice(-5)) report.push(`      ${l}`);
+      continue;
+    }
+    if (b.code === EXIT_UNMEASURED) {
+      // The BASE tree could not run this guard as invoked — normal when the change alters a guard's
+      // CLI (this tree taught two validators to accept --root). The head measured fine, so there is
+      // no hole; there is simply no before-state to subtract, and that is reported, not counted.
+      report.push(`  [NO-BASE] ${guard.id} — the base tree could not run this guard as invoked`
+        + ` (exit ${b.code}); head reports ${h.findings ? `${h.findings.length} finding(s)` : `exit ${h.code}`}`);
+      continue;
+    }
+    if (guard.json && h.findings && !b.findings) {
+      // Head speaks the finding protocol and base does not: this change put the guard on the
+      // protocol. Comparing formatted output would read every JSON line as a new finding, so compare
+      // the verdicts only.
+      const wentRed = b.code === EXIT_CLEAN && h.code !== EXIT_CLEAN;
+      if (wentRed) added++;
+      report.push(`  [${wentRed ? 'ADDED' : 'PROTOCOL'}] ${guard.id} — base predates the finding protocol;`
+        + ` base exit ${b.code}, head ${h.findings.length} finding(s)`);
+      if (wentRed) for (const f of h.findings) report.push(`      [${f.check}] ${f.site}\n         ${f.detail}`);
       continue;
     }
     if (b.findings && h.findings) {
@@ -295,7 +314,9 @@ async function main(): Promise<void> {
       for (const f of fresh) report.push(`      [${f.check}] ${f.site}\n         ${f.detail}`);
       continue;
     }
-    // Coarse comparison: no finding protocol, so compare the verdict and the new output lines.
+    // Coarse comparison: no finding protocol here, so the only reliable signal is the verdict. New
+    // output lines are shown but not counted — without a finding protocol an output-format tweak is
+    // indistinguishable from a finding, and counting it would make the delta cry wolf.
     const baseLines = new Set(b.lines);
     const freshLines = h.lines.filter((l) => !baseLines.has(l));
     const wentRed = b.code === EXIT_CLEAN && h.code !== EXIT_CLEAN;
@@ -304,10 +325,11 @@ async function main(): Promise<void> {
       continue;
     }
     if (wentRed) added++;
-    else if (freshLines.length) added += freshLines.length;
     report.push(`  [${wentRed ? 'ADDED' : 'CHANGED'}] ${guard.id} — base exit ${b.code}, head exit ${h.code}`
-      + `${freshLines.length ? `, ${freshLines.length} new output line(s)` : ''}`);
-    for (const l of freshLines) report.push(`      ${l}`);
+      + `${freshLines.length ? `, ${freshLines.length} new output line(s)` : ''}`
+      + `${wentRed ? '' : ' (not counted — this guard has no finding protocol)'}`);
+    for (const l of freshLines.slice(0, 20)) report.push(`      ${l}`);
+    if (freshLines.length > 20) report.push(`      … ${freshLines.length - 20} more line(s)`);
   }
 
   process.stdout.write('\n' + report.join('\n') + '\n\n');
