@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Parallel adversarial challenge perspectives over the current concern set for the combine step.
+Adversarial challenge perspectives over the current concern set for the combine step.
 
 ## Inputs
 
@@ -40,7 +40,7 @@ Ordered collection of per-perspective findings (keyed by perspective name): conc
 ### 1. Scatter
 
 - Build one work unit per entry in `{challenge_perspectives}`
-- Dispatch via scatter-gather (sequential when concurrency is 1; parallel spawn-concurrent when the binding activity enables concurrency > 1)
+- Dispatch via [scatter-gather](../../../meta/techniques/scatter-gather.md); the mode available to this context follows [depth-1-only](../../../meta/techniques/harness-compat/spawn-agent.md#depth-1-only)
 - Each unit receives only the concern set (or a read-only summary) plus its perspective name — not other units' findings
 
 ### 2. Per-Perspective Challenge

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ Technique path invoked each iteration to deepen or resolve agent-resolvable item
 
 ### challenge_perspectives
 
-List of adversarial perspectives (or lens names) for the parallel challenge pass.
+List of adversarial perspectives (or lens names) for the challenge pass.
 
 ### convergence_flag
 

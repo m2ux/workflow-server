@@ -1,5 +1,5 @@
 id: discover-session
-version: 7.3.0
+version: 7.3.1
 name: Discover Session
 description: Identify the target workflow and, on stated resume intent, search for an existing client session to resume.
 required: true
@@ -9,7 +9,10 @@ steps:
     technique: workflow-engine::list-workflows
   - kind: technique
     id: match-target
-    technique: workflow-engine::match-target-workflow
+    technique:
+      name: workflow-engine::match-target-workflow
+      outputs:
+        match_ambiguous: workflow_match_ambiguous
   - kind: checkpoint
     id: workflow-selection
     condition:

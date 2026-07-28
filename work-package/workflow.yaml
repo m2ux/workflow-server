@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.35.0
+version: 3.36.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first.
 author: m2ux
@@ -68,6 +68,9 @@ techniques:
   activity:
     - variable-binding
 variables:
+  - name: user_request
+    type: string
+    description: The user's free-form request that opened this work package.
   - name: target_path
     type: string
     description: Feature worktree path for edits, builds, and PR ops (not repo_root).
@@ -237,6 +240,13 @@ variables:
   - name: issue_type
     type: string
     description: "Type of issue (feature|bug|task|enhancement|epic)."
+  - name: issue_type_ambiguous
+    type: boolean
+    description: Whether the tracked issue's own signals leave its type unsettled.
+    defaultValue: false
+  - name: issue_record
+    type: object
+    description: The tracked issue as its platform returned it.
   - name: has_stakeholder_input
     type: boolean
     description: Whether stakeholder discussion transcript was provided.

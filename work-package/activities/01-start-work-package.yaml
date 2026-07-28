@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.13.0
+version: 3.14.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 required: true
@@ -326,13 +326,37 @@ steps:
         effect:
           setVariable:
             jira_project: specified
+  - kind: technique
+    id: derive-issue-type
+    technique: issue-type-detection
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: needs_issue_creation
+          operator: "!="
+          value: true
+        - type: simple
+          variable: issue_skipped
+          operator: "!="
+          value: true
   - kind: checkpoint
     id: issue-type-selection
     condition:
-      type: simple
-      variable: needs_issue_creation
-      operator: ==
-      value: true
+      type: or
+      conditions:
+        - type: simple
+          variable: needs_issue_creation
+          operator: ==
+          value: true
+        - type: simple
+          variable: issue_type_ambiguous
+          operator: ==
+          value: true
     message: Select the issue type.
     options:
       - id: feature
@@ -341,30 +365,35 @@ steps:
         effect:
           setVariable:
             issue_type: feature
+            issue_type_ambiguous: false
       - id: bug
         label: Bug
         description: Defect in existing functionality
         effect:
           setVariable:
             issue_type: bug
+            issue_type_ambiguous: false
       - id: task
         label: Task
         description: Technical work not directly user-facing
         effect:
           setVariable:
             issue_type: task
+            issue_type_ambiguous: false
       - id: enhancement
         label: Enhancement
         description: Improvement to existing functionality
         effect:
           setVariable:
             issue_type: enhancement
+            issue_type_ambiguous: false
       - id: epic
         label: Epic (Jira only)
         description: Large feature spanning multiple stories/tasks
         effect:
           setVariable:
             issue_type: epic
+            issue_type_ambiguous: false
   - kind: checkpoint
     id: issue-review
     condition:
@@ -608,6 +637,40 @@ steps:
         effect:
           setVariable:
             use_existing_pr: false
+  - kind: checkpoint
+    id: pr-creation
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: issue_cancelled
+          operator: "!="
+          value: true
+        - type: simple
+          variable: use_existing_pr
+          operator: "!="
+          value: true
+    message: "Feature branch {branch_name} and its worktree exist. No draft PR is open for the branch yet."
+    blocking: false
+    defaultOption: proceed
+    autoAdvanceMs: 30000
+    options:
+      - id: proceed
+        label: Create draft PR
+        description: Open a draft pull request from the feature branch, linked to the issue
+        effect:
+          setVariable:
+            pr_skipped: false
+      - id: skip-pr
+        label: Skip PR for now
+        description: Continue without a pull request (can create later)
+        effect:
+          setVariable:
+            pr_skipped: true
   - kind: technique
     id: create-pr
     technique:
@@ -626,45 +689,15 @@ steps:
           variable: use_existing_pr
           operator: ==
           value: false
+        - type: simple
+          variable: pr_skipped
+          operator: "!="
+          value: true
     actions:
       - action: set
         target: pr_exists
         value: true
         description: Mark PR as existing once successfully created.
-  - kind: checkpoint
-    id: pr-creation
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_cancelled
-          operator: "!="
-          value: true
-        - type: simple
-          variable: use_existing_pr
-          operator: "!="
-          value: true
-    message: Issue confirmed. Ready to create the feature branch and draft PR.
-    blocking: false
-    defaultOption: proceed
-    autoAdvanceMs: 30000
-    options:
-      - id: proceed
-        label: Create branch and PR
-        description: Create feature branch and draft PR linked to issue
-        effect:
-          setVariable:
-            pr_skipped: false
-      - id: skip-pr
-        label: Skip PR for now
-        description: Continue without creating PR (can create later)
-        effect:
-          setVariable:
-            pr_skipped: true
   - kind: technique
     id: link-pr-to-ticket-jira
     technique:

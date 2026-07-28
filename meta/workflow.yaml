@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 5.10.0
+version: 5.11.0
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -26,6 +26,9 @@ rules:
     - "This workflow is the entrypoint for all workflow operations — bootstrap protocol enters here directly via start_session({ workflow_id: 'meta' })"
     - Techniques in this workflow are universal and resolve for any client workflow via the loader's universal-technique fallback
 variables:
+  - name: user_request
+    type: string
+    description: The user's free-form request that opened this session.
   - name: target_workflow_id
     type: string
     description: ID of the client workflow to dispatch (set by discover-session)
