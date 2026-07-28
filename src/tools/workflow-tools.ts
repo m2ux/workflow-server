@@ -585,8 +585,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_activity', 'Worker tool: load the current activity definition (from session state — no activity_id). `context_tokens` is REQUIRED for eager step-technique bundling. ' +
-    'Under persistent/`bundle: "reference"`, already-delivered content may collapse to unchanged markers — ONLY valid when THIS agent received the earlier payloads. ' +
+  server.tool('get_activity', 'Worker tool: load the current activity definition (from session state — no activity_id). `context_tokens` is REQUIRED for eager step-technique bundling, and bounds the whole eager bundle (step technique bodies plus any bundled resource bodies). ' +
+    'Under persistent/`bundle: "reference"`, already-delivered content may collapse to unchanged markers — ONLY valid when THIS agent received the earlier payloads; technique-linked resource BODIES also arrive under a sibling `resources` map. ' +
+    'Under full delivery, that map is not sent: the linked ids arrive under `resource_refs` and you fetch the ones you need with get_resource. `resources_note` states which shape this response used. ' +
     'Use `bundle: "full"` after summarization or for disposable workers (never `bundle: "reference"` on fresh workers).',
     {
       ...sessionIndexParam,
@@ -696,6 +697,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const bundledStepTechniques: Record<string, unknown> = {};
       const bundledSteps: Array<{ stepId: string; techniqueId: string }> = [];
       const bundledResourceIds: string[] = [];
+      /** Linked resource ids this response does NOT deliver a body for — the worker fetches these. */
+      const resourceRefIds: string[] = [];
       const linkedResourceIds = new Set<string>();
       const bundlingWarnings: string[] = [];
       const bundleConfig = (activity as Activity | undefined)?.bundleTechniques;
@@ -790,31 +793,54 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
 
         if (bundledSteps.length > 0) {
-          bundleData['step_techniques'] = bundledStepTechniques;
-          bundleData['step_techniques_note'] =
-            'Each step_techniques entry is a discrete ▼ STEP block whose composed technique is identical to a get_technique { step_id } fetch. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Technique-linked resource bodies for these steps appear under the sibling `resources` map (keyed by exact resource_id, including #section) — reuse those bodies or unchanged markers; call get_resource only for ids absent from the map (or after summarization via full: true). Resource bodies are NOT nested inside step_techniques entries. Technique steps absent from the map (gated, or past the derived eager-delivery budget / a per-activity size cap) still require get_technique { step_id } before execution.';
-
-          // Eager resource bundling (R2): sibling map keyed by exact resource_id. Dedupes across
-          // steps; shares resource:<id> ledger keys with get_resource so persistent refetches collapse.
+          // Eager resource delivery for the bundled steps. Two shapes, selected by delivery mode
+          // (#323 T1) — the resource CONTRACT is stated once, in `resources_note`, so this note
+          // only points at it:
+          //   reference — bodies under a sibling `resources` map, deduped across steps and sharing
+          //               get_resource's `resource:<id>` ledger, so a repeat delivery collapses;
+          //   full      — ids only, under `resource_refs`. In a fresh worker context there is no
+          //               repeat delivery for the map to collapse against, so every linked body
+          //               ships in full in every activity that links it — measured at +24.5% on
+          //               get_activity (#322). The ids are enough for the worker to fetch what it
+          //               actually reads via get_resource.
           const bundledResources: Record<string, unknown> = {};
-          const maxResourceChars = DEFAULT_MAX_EAGER_RESOURCE_CHARS;
-          for (const resourceId of linkedResourceIds) {
-            const loaded = await loadResourceDelivery(
-              config.workflowDir, sourceWorkflowId, resourceId, session_index,
-            );
-            if (!loaded.success) continue;
-            const { hash, content, id, version } = loaded.value;
-            if (content.length > maxResourceChars) continue;
-            const ledgerKey = `resource:${resourceId}`;
-            const already =
-              referenceMode &&
-              (deliveredHash(state, ledgerKey) === hash || newDeliveries[ledgerKey] === hash);
-            if (already) {
-              bundledResources[resourceId] = {
-                resource_id: resourceId,
-                ...unchangedMarker(hash),
-              };
-            } else {
+          const linkedIds = [...linkedResourceIds];
+          if (referenceMode) {
+            const maxResourceChars = DEFAULT_MAX_EAGER_RESOURCE_CHARS;
+            for (let i = 0; i < linkedIds.length; i += 1) {
+              const resourceId = linkedIds[i]!;
+              const loaded = await loadResourceDelivery(
+                config.workflowDir, sourceWorkflowId, resourceId, session_index,
+              );
+              if (!loaded.success) continue;
+              const { hash, content, id, version } = loaded.value;
+              const ledgerKey = `resource:${resourceId}`;
+              if (deliveredHash(state, ledgerKey) === hash || newDeliveries[ledgerKey] === hash) {
+                // A reference marker is near-zero cost — like a collapsed technique it does not
+                // draw down the eager budget, so it never displaces a body that still needs sending.
+                bundledResources[resourceId] = {
+                  resource_id: resourceId,
+                  ...unchangedMarker(hash),
+                };
+                bundledResourceIds.push(resourceId);
+                continue;
+              }
+              // Secondary guard, retained from R2: a single oversized body never eager-bundles,
+              // budget or not. Skipping one does not stop the loop — a later small resource still
+              // bundles — but the id joins the ref list so nothing becomes unreachable.
+              if (content.length > maxResourceChars) {
+                resourceRefIds.push(resourceId);
+                continue;
+              }
+              // #323 T2: resource bodies draw down the SAME cumulative `spentChars` counter as
+              // techniques, so `context_tokens` actually bounds the eager bundle. Stop at the
+              // first body that would overflow (mirroring the technique loop's stop-and-break);
+              // it and every id after it stay fetchable via get_resource.
+              if (spentChars + content.length > eagerBudgetChars) {
+                resourceRefIds.push(...linkedIds.slice(i));
+                break;
+              }
+              spentChars += content.length;
               newDeliveries[ledgerKey] = hash;
               bundledResources[resourceId] = {
                 resource_id: resourceId,
@@ -822,13 +848,23 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
                 ...(version ? { version } : {}),
                 content,
               };
+              bundledResourceIds.push(resourceId);
             }
-            bundledResourceIds.push(resourceId);
+          } else {
+            // No map is delivered, so no `resource:<id>` ledger writes either — under full
+            // delivery those keys were written and never read (62–98 stale keys per session).
+            resourceRefIds.push(...linkedIds);
           }
-          if (bundledResourceIds.length > 0) {
-            bundleData['resources'] = bundledResources;
-            bundleData['resources_note'] =
-              'Bodies for technique-linked resources from eagerly bundled steps, keyed by exact resource_id (including #section). Deduped across steps. Same delivery ledger as get_resource (resource:<id>). Reuse content or unchanged markers; call get_resource only for ids not listed here, or with full: true after summarization.';
+
+          bundleData['step_techniques'] = bundledStepTechniques;
+          bundleData['step_techniques_note'] =
+            'Each step_techniques entry is a discrete ▼ STEP block whose composed technique is identical to a get_technique { step_id } fetch. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resource bodies are NEVER nested inside a step_techniques entry — `resources_note` states how this response delivers the technique-linked resources. Technique steps absent from this map (gated, or past the derived eager-delivery budget / a per-activity size cap) still require get_technique { step_id } before execution.';
+          if (bundledResourceIds.length > 0) bundleData['resources'] = bundledResources;
+          if (resourceRefIds.length > 0) bundleData['resource_refs'] = resourceRefIds;
+          if (linkedIds.length > 0) {
+            bundleData['resources_note'] = bundledResourceIds.length > 0
+              ? 'Bodies for technique-linked resources from eagerly bundled steps under `resources`, keyed by exact resource_id (including #section). Deduped across steps. Same delivery ledger as get_resource (resource:<id>). Reuse content or unchanged markers. Ids under `resource_refs` were NOT bundled (oversized, or past the eager-delivery budget) — call get_resource for those, or with full: true after summarization.'
+              : 'Ids of the technique-linked resources for the eagerly bundled steps, under `resource_refs` (exact resource_id, including #section). No bodies are bundled in this mode — call get_resource for the ids you actually need to read.';
           }
         }
       }
@@ -943,6 +979,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules,
           ...(bundledSteps.length > 0 ? { bundled_steps: bundledSteps.map(b => b.stepId) } : {}),
           ...(bundledResourceIds.length > 0 ? { bundled_resources: bundledResourceIds } : {}),
+          ...(resourceRefIds.length > 0 ? { resource_refs: resourceRefIds } : {}),
           ...(Object.keys(enforcementNotes).length > 0 ? { enforcement_notes: enforcementNotes } : {}),
         },
       };

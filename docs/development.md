@@ -207,26 +207,46 @@ Run `npm test -- --run` for the live count and pass/fail summary.
 
 By default each run compares against the frozen pre-optimisation reference
 [`scripts/fixtures/token-benchmark-a0-reference.json`](../scripts/fixtures/token-benchmark-a0-reference.json)
-(A0: fresh, recorded 2026-07-16). Stderr prints a compact scorecard; stdout JSON
-includes `vsReference` with absolute/percent deltas and a **deliveryCostIndex**
-(A0 = 100, lower is better — sum of activity + workflow + resource + technique chars).
+(A0: fresh, recorded 2026-07-16 against `workflows@a1409d5b`). Stderr prints a
+compact scorecard; stdout JSON includes `vsReference` with absolute/percent deltas
+and a **deliveryCostIndex** (A0 = 100, lower is better — sum of activity + workflow
++ resource + technique chars).
+
+#### A persistent-only comparison is not a valid ship gate
+
+The fixture records a **context mode** (`contextMode`) and the comparison records
+whether the run matched it (`vsReference.modeMatched`). A cross-mode comparison —
+fresh reference against a persistent run — still reports, but is banner-warned and
+can never pass `--gate`, because the delta conflates the mode switch with the code
+change: the July 2026 gate attributed −40.2% to the mode switch alone in its own
+ablation, and a +24.5% `get_activity` regression on the only mode production uses
+was invisible to it ([#322](https://github.com/m2ux/workflow-server/issues/322)).
+
+**Every delivery-path change must be gated on a fresh-mode arm**: run the same
+`--context-mode=fresh` walk before and after, against the same corpus, and gate on
+the total-delivery-chars delta. A persistent-mode run is a supplementary
+measurement of the reference-delivery win, never the gate.
 
 ```bash
-# Optimised walk vs A0 reference (default compare). Use --silent for clean JSON on stdout.
-npm run --silent bench:token -- --label=opt --context-mode=persistent
+# Fresh-mode ship gate (the required arm). Fails with exit 3 above the threshold.
+WORKFLOWS_DIR=/path/to/workflows npm run --silent bench:token -- \
+  --label=AFTER --context-mode=fresh --gate --max-regression-pct=1
 
 # Baseline (full redelivery) — expect deliveryCostIndex ≈ 100
 npm run --silent bench:token -- --label=A0 --context-mode=fresh
 
-# Pin a feature corpus worktree
-WORKFLOWS_DIR=/path/to/workflows npm run --silent bench:token -- \
-  --label=A3 --context-mode=persistent --server-root=$PWD
+# Supplementary: the reference-delivery win. Banner-warned as cross-mode, not a gate.
+npm run --silent bench:token -- --label=opt --context-mode=persistent
 
 # Absolute metrics only
 npm run --silent bench:token -- --label=raw --context-mode=persistent --no-compare
 ```
 
-Stderr: compact vs-A0 scorecard. Stdout: one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals, optional `vsReference`). Exit `2` if the walk does not complete. See [Reference Delivery](resource_resolution_model.md#11-reference-delivery) for the contract under test.
+Pin `WORKFLOWS_DIR` to the corpus the fixture names (`workflowsRev`) for a gate run
+— a delta measured against a different corpus is not attributable to server code,
+and the scorecard warns when the two disagree.
+
+Stderr: compact scorecard, plus a `gate: PASS|FAIL` line under `--gate`. Stdout: one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals, optional `vsReference` and `gate`). Exit `2` if the walk does not complete, `3` on gate failure. See [Reference Delivery](resource_resolution_model.md#11-reference-delivery) for the contract under test.
 
 ## Validating Workflows
 
