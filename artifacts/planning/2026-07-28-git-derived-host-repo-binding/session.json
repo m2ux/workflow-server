@@ -343,10 +343,11 @@
           }
         },
         "completedActivities": [
-          "intake-and-context"
+          "intake-and-context",
+          "scope-and-draft"
         ],
-        "condition": "isDefault:scope-and-draft — both review-gated transitions failed because operation_type == update",
-        "currentActivity": "scope-and-draft",
+        "condition": "isDefault:quality-review",
+        "currentActivity": "quality-review",
         "currentTechnique": "workflow-definition::verify-artifact-conforms",
         "deliveredContent": {
           "orchestrator": {
@@ -364,21 +365,42 @@
             "resource:update-mode-guide#change-categories": "87894973441e9a60",
             "resource:workflow-authoring/readme-seed": "b789e3143d1609fd",
             "resource:workflow-design/anti-patterns": "ea96fac5e1be7027",
+            "resource:workflow-design/anti-patterns#authoring-guidance-mr": "1d17d042ea88bdd8",
+            "resource:workflow-design/anti-patterns#canon-hygiene-anti-patterns": "c07b283c87cd1d42",
+            "resource:workflow-design/anti-patterns#coupling-anti-patterns": "c8346154c39f8ccd",
+            "resource:workflow-design/anti-patterns#creation-rules": "db6f470d0e9c71d0",
+            "resource:workflow-design/anti-patterns#description-hygiene-anti-patterns": "595fe3d85f064698",
+            "resource:workflow-design/anti-patterns#execution-anti-patterns": "a8e28564bcd2c3b9",
+            "resource:workflow-design/anti-patterns#interaction-anti-patterns": "54b90cd5621a0a5b",
+            "resource:workflow-design/anti-patterns#output-economy-anti-patterns": "9d4cf51c364ee79e",
+            "resource:workflow-design/anti-patterns#rule-hygiene-anti-patterns": "bfe44225759aed69",
             "resource:workflow-design/anti-patterns#schema-expressiveness-anti-patterns": "4e36de0bf0f3f959",
+            "resource:workflow-design/anti-patterns#structural-anti-patterns": "107a139bfd859b10",
+            "resource:workflow-design/anti-patterns#technique-protocol-anti-patterns": "370099f6ca27f4a9",
+            "resource:workflow-design/anti-patterns#tool-technique-doc-consistency-anti-patterns": "1b7ddd534d406e90",
+            "resource:workflow-design/convention-conformance": "4cea3e2be1340d2a",
             "resource:workflow-design/convention-conformance#reference-conventions": "448f79b06617cbd3",
+            "resource:workflow-design/design-principles": "d5138843b2f3534d",
+            "resource:workflow-design/schema-construct-inventory": "4cacc0129b3fead7",
             "technique:work-package::manage-artifacts::write-artifact": "1c352aad9968529a",
             "technique:work-package::manage-git::create-worktree": "af3a87aa65410f97",
+            "technique:workflow-definition::audit-canon": "1410d942156f64d9",
+            "technique:workflow-definition::audit-schema-validation": "d8414f3bfd12b972",
             "technique:workflow-definition::derive-workflow-branch": "d6c15a89164542d6",
             "technique:workflow-definition::derive-workflows-target-path": "9783ff568d465339",
             "technique:workflow-definition::impact-analysis": "1864a398fcab2a2c",
             "technique:workflow-definition::intake-classification": "785d48688bb7ae2a",
+            "technique:workflow-definition::load-known-findings": "bc12b59eea4f2f00",
             "technique:workflow-definition::readme-authoring": "4c771ac925cbea85",
+            "technique:workflow-definition::reload-workflow": "7b1ad19b43c57b6c",
+            "technique:workflow-definition::resolve-consumer-surface": "45113484e215e5d8",
             "technique:workflow-definition::review-drafted-file": "1453b00ff692b2ae",
             "technique:workflow-definition::scope-definition": "483414a68d3a0a66",
             "technique:workflow-definition::synthesize-change-brief": "aa2d514a9967c52f",
             "technique:workflow-definition::verify-artifact-conforms": "1493620adb2741e0",
             "technique:workflow-definition::yaml-authoring": "dd9430c3658d7cc3",
-            "technique:workflow-engine::create-readme": "d02b1b4cc5a10853"
+            "technique:workflow-engine::create-readme": "d02b1b4cc5a10853",
+            "technique:workflow-engine::list-workflows": "822ff399538ae84f"
           }
         },
         "history": [
@@ -1000,17 +1022,331 @@
             },
             "timestamp": "2026-07-28T11:25:02.189Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-28T11:30:17.834Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "usage": {
+                "duration_ms": 1398624,
+                "subagent_tokens": 374606,
+                "tool_uses": 131
+              }
+            },
+            "timestamp": "2026-07-28T11:30:17.834Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "workflow_branch",
+              "source": "variables_changed",
+              "value": "workflow/meta-git-derived-host-repo-binding"
+            },
+            "timestamp": "2026-07-28T11:30:17.834Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-28T11:30:17.834Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "file_count",
+              "source": "variables_changed",
+              "value": 19
+            },
+            "timestamp": "2026-07-28T11:30:17.834Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/06-scope-manifest.md"
+            },
+            "timestamp": "2026-07-28T11:30:17.834Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-28T11:30:17.834Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "has_unflagged_removals",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-28T11:30:17.834Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "removal_disposition",
+              "source": "variables_changed",
+              "value": ""
+            },
+            "timestamp": "2026-07-28T11:30:17.834Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-07-28T11:30:17.834Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "load-known-findings",
+              "techniqueId": "workflow-definition::load-known-findings"
+            },
+            "timestamp": "2026-07-28T11:30:32.388Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "survey-reference-workflows",
+              "techniqueId": "workflow-engine::list-workflows"
+            },
+            "timestamp": "2026-07-28T11:30:32.388Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "rebind-target-baseline",
+              "techniqueId": "workflow-definition::reload-workflow"
+            },
+            "timestamp": "2026-07-28T11:30:32.388Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "resolve-consumer-surface",
+              "techniqueId": "workflow-definition::resolve-consumer-surface"
+            },
+            "timestamp": "2026-07-28T11:30:32.388Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "sweep-canon",
+              "techniqueId": "workflow-definition::audit-canon"
+            },
+            "timestamp": "2026-07-28T11:30:32.388Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "validate-schema",
+              "techniqueId": "workflow-definition::audit-schema-validation"
+            },
+            "timestamp": "2026-07-28T11:30:32.388Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:34:45.851Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#creation-rules"
+            },
+            "timestamp": "2026-07-28T11:36:28.499Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#structural-anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:36:32.674Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#rule-hygiene-anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:36:33.148Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#interaction-anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:36:35.472Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#description-hygiene-anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:36:36.665Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#schema-expressiveness-anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:36:38.693Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#coupling-anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:36:41.080Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#tool-technique-doc-consistency-anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:36:49.193Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#execution-anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:36:49.559Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#canon-hygiene-anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:36:52.126Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#output-economy-anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:36:52.468Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#technique-protocol-anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:36:55.880Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#authoring-guidance-mr"
+            },
+            "timestamp": "2026-07-28T11:36:59.318Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/design-principles"
+            },
+            "timestamp": "2026-07-28T11:37:06.005Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/schema-construct-inventory"
+            },
+            "timestamp": "2026-07-28T11:37:09.467Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/convention-conformance"
+            },
+            "timestamp": "2026-07-28T11:37:12.492Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns"
+            },
+            "timestamp": "2026-07-28T11:37:59.511Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 34,
+        "seq": 54,
         "sessionIndex": "7IE6G7",
         "skippedActivities": [],
         "startedAt": "2026-07-28T10:36:29.297Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785237902,
+        "ts": 1785238679,
         "variables": {
           "addressed_count": 0,
           "change_brief": "Persisted at 01-change-brief.md — purpose, 6 changed dimensions (activity model, checkpoints, variables, techniques, resources, rules), 6 open judgements",
@@ -1043,6 +1379,7 @@
           "commit_approved": false,
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/README.md",
           "fail_count": 0,
+          "file_count": 19,
           "has_coverage_gap": false,
           "has_critical_finding": false,
           "has_unflagged_removals": false,
@@ -1068,7 +1405,7 @@
           "review_closed": false,
           "review_scope_confirmed": false,
           "scope_manifest_confirmed": true,
-          "scope_manifest_path": "",
+          "scope_manifest_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/06-scope-manifest.md",
           "scope_round": 0,
           "structural_inventory": {
             "baseline_surface": "workflows @ branch 'workflows' commit f84fe02b — read from the submodule checkout because the run worktree is not yet materialised; it branches from this commit",
@@ -1101,8 +1438,8 @@
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
           "user_request": "Start a workflow-authoring workflow to update the work-package and meta workflows so the monorepo host-repo binding is DERIVED FROM GIT instead of inferred from prose.\n\nMotivation: a session bound to midnightntwrk/midnight-node (taken from a PR URL) mapped through the server's basename-only multi-root mapping to /home/mike1/projects/dev/midnight-node/.engineering and silently created an empty, non-git directory. The real checkout is a submodule of the shieldedtech/midnight-agent-eng superproject at dev/midnight-agent-eng/midnight-node, so the commit+push hook had no repo and the reviewer had no source. The workflow already owns monorepo detection but runs it AFTER the binding is committed, and it answers a different question (which component, not which host repo).\n\nFixes to author:\n\n1. New technique version-control::resolve-host-repo, run in meta 00-discover-session before the transition to initialize-session. Protocol: git rev-parse --show-toplevel from the workspace cwd; ascend while the parent directory is itself a git repo whose .gitmodules lists the current basename as a submodule path (outermost superproject wins — this generalizes work-package repo-root-resolution.md's existing single-level test and moves it to where it can gate the binding); derive owner/repo from that host's origin remote. Outputs: target_repo, host_repo_path, is_monorepo_host, and component_hint (the innermost toplevel's basename when we ascended — a better component signal than a URL, feeding select-target-component's pre-selection). Assert basename(host_repo_path) == basename(target_repo), because the server's multi-root mapping is basename-only; a mismatch raises a checkpoint rather than diverging silently.\n\n2. Add mentioned_repo (from PR/issue URLs) to workflow-engine::extract-identifying-context and route it to version-control::select-target-component as component context only. State the invariant once in version-control::TECHNIQUE.md beside infrastructure-submodule-paths: a repo named in the request identifies the COMPONENT; the host binding is derived from git; they are never the same variable.\n\n3. Retire the prose sources: meta/resources/bootstrap-protocol.md step 2 and workflow-engine/start-session.md's repo input currently say the repo comes from workspace AGENTS.md/CLAUDE.md or the user. Rewrite both to derive via resolve-host-repo, with AGENTS.md/user demoted to fallback for when the workspace is not a git repo or has no origin remote.\n\n4. Close the loop in meta 02-resolve-target: add a validation that the repo_root resolved by work-package repo-root-resolution is the same directory the session bound, so a bad binding fails at activity 02 before artifacts exist. This also catches a resume carrying a stale saved binding, which resolve-host-repo alone will not.\n\n5. Fix two latent defects in the same seam: (a) meta's target_path (\"submodule path for monorepos\", default \".\") collides by name with work-package's target_path (\"feature worktree path for edits\"), which is overwritten by compute-canonical-target-path at step 570 and is safe only because resolve-repo-root happens to sit at step 159 — rename meta's output to component_path; (b) work-package repo-root-resolution's discovered_path input is never bound by anything and specifies an absolute path while meta's target_path defaults to relative \".\" — bind it explicitly from component_path, absolutized against host_repo_path.\n\nAll edited files live in the workflows submodule (branch: workflows). Touching the meta activities will likely require re-baselining the walk snapshots.",
-          "workflow_branch": "",
-          "worktree_created": false
+          "workflow_branch": "workflow/meta-git-derived-host-repo-binding",
+          "worktree_created": true
         },
         "workflowId": "workflow-authoring",
         "workflowVersion": "1.0.0"
