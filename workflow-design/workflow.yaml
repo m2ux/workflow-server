@@ -1,10 +1,14 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
 version: 1.30.0
-title: Workflow Design Workflow
-description: Guide agents through creating, updating, or reviewing workflow definitions.
+title: DEPRECATED — use workflow-authoring — Workflow Design Workflow
+description: >-
+  DEPRECATED — start `workflow-authoring` instead. This workflow remains only so sessions already
+  in flight can finish; it is removed once none remain. Guide agents through creating, updating, or
+  reviewing workflow definitions.
 author: m2ux
 tags:
+  - deprecated
   - workflow-creation
   - workflow-review
   - workflow-design
