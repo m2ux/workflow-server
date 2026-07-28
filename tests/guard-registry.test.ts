@@ -1,0 +1,85 @@
+import { describe, it, expect } from 'vitest';
+import { existsSync, readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
+import { CORPUS_GUARDS, GUARDS, guardById } from '../scripts/guards.js';
+import { findingKey, sortFindings, wantsJson } from '../scripts/guard-protocol.js';
+
+const REPO = resolve(import.meta.dirname, '..');
+
+/**
+ * The registry is what makes the guards enforced rather than remembered: `check:all` and CI walk it,
+ * so an entry that names a missing script or a missing npm script would silently drop a guard from
+ * every sweep (#327 S1/R2).
+ */
+describe('guard registry', () => {
+  const pkg = JSON.parse(readFileSync(join(REPO, 'package.json'), 'utf-8')) as { scripts: Record<string, string> };
+
+  it('points every entry at a script that exists', () => {
+    const missing = GUARDS.filter((g) => !existsSync(join(REPO, g.script))).map((g) => g.script);
+    expect(missing).toEqual([]);
+  });
+
+  it('exposes every entry that claims an npm script', () => {
+    const missing = GUARDS
+      .filter((g) => g.npmScript !== null && !(g.npmScript in pkg.scripts))
+      .map((g) => g.npmScript);
+    expect(missing).toEqual([]);
+  });
+
+  it('registers the three scripts that package.json never invoked before', () => {
+    for (const id of ['refs', 'activities', 'workflow-yaml']) {
+      expect(guardById(id), `guard '${id}' is registered`).toBeDefined();
+      expect(guardById(id)!.npmScript).not.toBeNull();
+    }
+  });
+
+  it('gives every guard a unique id and a stated invariant', () => {
+    expect(new Set(GUARDS.map((g) => g.id)).size).toBe(GUARDS.length);
+    expect(GUARDS.filter((g) => g.proves.trim().length === 0)).toEqual([]);
+  });
+
+  it('separates corpus-scoped guards from repo-scoped ones', () => {
+    expect(CORPUS_GUARDS.length).toBeGreaterThan(0);
+    expect(CORPUS_GUARDS.every((g) => g.scope === 'corpus')).toBe(true);
+    // The site guards read `site/`, not the corpus, so a delta run must not aim them at a corpus root.
+    expect(GUARDS.filter((g) => g.scope === 'repo').map((g) => g.id).sort()).toEqual(['site-links', 'svg-layout']);
+  });
+
+  it('covers every check:* script in package.json', () => {
+    const aggregate = new Set(['check:all', 'check:delta']);
+    const uncovered = Object.keys(pkg.scripts)
+      .filter((name) => name.startsWith('check:') && !aggregate.has(name))
+      .filter((name) => !GUARDS.some((g) => g.npmScript === name));
+    expect(uncovered).toEqual([]);
+  });
+});
+
+describe('guard finding protocol', () => {
+  it('keys a finding independently of the line it sits on', () => {
+    const a = { check: 'dead-output', site: 'wf/techniques/x.md:12', detail: 'output y is dead' };
+    const b = { check: 'dead-output', site: 'wf/techniques/x.md:400', detail: 'output y is dead' };
+    expect(findingKey(a)).toBe(findingKey(b));
+  });
+
+  it('distinguishes findings that differ by check, site, or detail', () => {
+    const base = { check: 'dead-output', site: 'wf/a.md', detail: 'd' };
+    expect(findingKey(base)).not.toBe(findingKey({ ...base, check: 'orphan-input' }));
+    expect(findingKey(base)).not.toBe(findingKey({ ...base, site: 'wf/b.md' }));
+    expect(findingKey(base)).not.toBe(findingKey({ ...base, detail: 'e' }));
+  });
+
+  it('sorts findings into a stable order so two sweeps read identically', () => {
+    const findings = [
+      { check: 'orphan-input', site: 'b', detail: '2' },
+      { check: 'dead-output', site: 'a', detail: '1' },
+      { check: 'dead-output', site: 'a', detail: '0' },
+    ];
+    expect(sortFindings(findings).map((f) => f.detail)).toEqual(['0', '1', '2']);
+    expect(sortFindings(findings)).toEqual(sortFindings([...findings].reverse()));
+  });
+
+  it('reads the --json switch from an explicit argv', () => {
+    expect(wantsJson(['--root', '/x', '--json'])).toBe(true);
+    expect(wantsJson(['--root', '/x'])).toBe(false);
+  });
+});

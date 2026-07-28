@@ -1,17 +1,32 @@
 import { describe, it, expect } from 'vitest';
-import { diffBaseline } from '../scripts/check-binding-fidelity.js';
+import { applyTriage, loadTriage } from '../scripts/check-binding-fidelity.js';
 
 /**
- * Drift guard: the workflow corpus must introduce no binding-fidelity violations beyond the
- * committed baseline (scripts/binding-fidelity-baseline.json). A failure here means a workflow
- * change added a stale `step.technique.inputs`/`outputs` key or a {read} with no producer. Fix it, or — if the
- * change is intentional and reviewed — run `npx tsx scripts/check-binding-fidelity.ts
- * --update-baseline` to re-snapshot.
+ * Binding-fidelity gate. The corpus carries triaged debt, recorded per finding with a verdict and a
+ * rationale in scripts/binding-fidelity-triage.json; this asserts the two states that must never
+ * ship: a finding nobody has judged, and a finding judged a live bug.
+ *
+ * There is no baseline and no re-snapshot command. A new finding is classified by hand — the act the
+ * retired baseline let a `--update-baseline` skip, which is how two live defects reached a session
+ * (#324 A1/A2). "Did MY change add this?" is `npm run check:delta`.
  */
-describe('binding-fidelity drift guard', () => {
-  const { added } = diffBaseline();
+describe('binding-fidelity gate', () => {
+  const { findings, counts, total } = applyTriage();
 
-  it('introduces no NEW binding-fidelity violations beyond the baseline', () => {
-    expect(added.map((v) => `[${v.check}] ${v.site} — ${v.detail}`)).toEqual([]);
+  it('leaves no finding untriaged and no live bug unfixed', () => {
+    expect(findings.map((v) => `[${v.check}] ${v.site} — ${v.detail}`)).toEqual([]);
+  });
+
+  it('accounts for every violation with a verdict', () => {
+    expect(counts.harmless + counts['fix-later'] + counts['live-bug'] + counts.untriaged).toBe(total);
+    expect(counts.untriaged).toBe(0);
+  });
+
+  it('names a rationale that the triage file defines for every entry', () => {
+    const triage = loadTriage();
+    const undefinedRationales = triage.entries
+      .filter((e) => !(e.rationale in triage.rationales))
+      .map((e) => `${e.site}: ${e.rationale}`);
+    expect(undefinedRationales).toEqual([]);
   });
 });

@@ -16,6 +16,7 @@ import {
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import type { CheckpointStep } from '../src/schema/activity.schema.js';
 import type { WorkflowFragments } from '../src/schema/workflow.schema.js';
+import { corpusRoot } from './corpus-root.js';
 
 /**
  * Shared fragments (B10, issue #166): rule texts and checkpoint bodies declared once under a
@@ -25,7 +26,7 @@ import type { WorkflowFragments } from '../src/schema/workflow.schema.js';
  * so agents and downstream readers only ever see plain rules and full checkpoint steps.
  */
 
-const WORKFLOW_DIR = resolve(import.meta.dirname, '../workflows');
+const WORKFLOW_DIR = corpusRoot();
 
 /**
  * The declared body of a checkpoint fragment, read from the corpus itself. Materialization

@@ -39,6 +39,7 @@ import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
 import { composeActivityTechnique } from '../src/loaders/technique-loader.js';
 import { stringifyForResponse } from '../src/utils/serialization.js';
 import type { Activity, Step, Condition } from '../src/schema/index.js';
+import { requireRootOrExit } from './guard-protocol.js';
 
 /* ----------------------------------- CLI ----------------------------------- */
 
@@ -48,7 +49,9 @@ const argOf = (flag: string): string | undefined => {
   return i >= 0 ? args[i + 1] : undefined;
 };
 const scriptDir = dirname(fileURLToPath(import.meta.url));
-const workflowsRoot = argOf('--root') ?? process.env['WORKFLOWS_DIR'] ?? join(scriptDir, '..', 'workflows');
+// One resolver for every guard — this script used to re-implement --root / WORKFLOWS_DIR precedence
+// locally, and a local copy is how two guards end up measuring two different corpora (#327 S2).
+const workflowsRoot = requireRootOrExit('stealth-isolation', join(scriptDir, '..', 'workflows'));
 const workflowId = argOf('--workflow') ?? 'remediate-vuln';
 const runtimeTarget = argOf('--target');
 const runtimeRemote = argOf('--remote');

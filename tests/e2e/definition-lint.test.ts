@@ -9,6 +9,7 @@ import {
   elicitationOnlyPolicy,
   reviewModePolicy,
 } from './policies.js';
+import { walkHookTimeout } from './budgets.js';
 
 /**
  * Layer 2 — definition lint. The skills→techniques migration's most likely
@@ -49,10 +50,10 @@ describe('work-package definition lint (Layer 2: resolution)', () => {
       researchOnlyPolicy, elicitationOnlyPolicy, reviewModePolicy,
     ];
     walks = [];
+    // Sequential by design: each walk opens its own session, and two concurrent walks of one
+    // workflow could land on the same planning slug.
     for (const p of policies) walks.push(await walk(h, 'work-package', p));
-  // 120s: six full policy walks in one hook — the corpus has outgrown the original 60s budget
-  // (the hook times out at 60s even on an unchanged main checkout on a mid-range machine).
-  }, 120_000);
+  }, walkHookTimeout(6));
   afterAll(async () => { await h.close(); });
 
   it('reports no unresolved operation refs beyond the documented baseline', () => {

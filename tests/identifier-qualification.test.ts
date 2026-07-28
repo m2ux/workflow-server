@@ -1,21 +1,19 @@
 import { describe, it, expect } from 'vitest';
-import { diffBaseline } from '../scripts/check-identifier-qualification.js';
+import { collectFindings } from '../scripts/check-identifier-qualification.js';
 
 /**
- * Identifier-qualification drift guard (AP-60 sub-rule 3), markdown surface: the corpus must
- * introduce no NEW bare single-word technique I/O ids beyond the committed baseline
- * (scripts/identifier-qualification-baseline.json). A failure means a technique top-level `###`
- * I/O id was added as a bare single word. Qualify it (a >=2-word noun phrase, head noun last),
- * or — if it is genuinely AP-60-exempt (plural item-noun / external-tool-or-param mirror /
- * `_type`-`_mode`-`kind` discriminator) — add it to EXEMPT_DATA_IDS in src/schema/identifiers.ts
- * (shared with VariableNameSchema, which enforces the same rule for YAML variable names at
- * validation time). After qualifying or exempting, run
- * `npx tsx scripts/check-identifier-qualification.ts --update-baseline`.
+ * Identifier-qualification gate (AP-60 sub-rule 3), markdown surface: every technique top-level `###`
+ * I/O id is a qualified noun phrase. Hard zero — the corpus is fully qualified, so the retired
+ * baseline is gone (#327 R5).
+ *
+ * A bare id is unbindable as well as unclear: `VariableNameSchema` rejects the same spelling on the
+ * producing side, so an unqualified input can never be seeded by name. Qualify it (>=2 words, head
+ * noun last), or — if it is genuinely exempt (plural item-noun / external-tool-or-param mirror /
+ * `_type`-`_mode`-`kind` discriminator) — add it to EXEMPT_DATA_IDS in src/schema/identifiers.ts with
+ * its reason, which the schema shares.
  */
-describe('identifier-qualification drift guard', () => {
-  const { added } = diffBaseline();
-
-  it('introduces no NEW bare single-word data ids beyond the baseline', () => {
-    expect(added).toEqual([]);
+describe('identifier-qualification gate', () => {
+  it('declares no bare single-word data id', () => {
+    expect(collectFindings().map((f) => f.detail)).toEqual([]);
   });
 });

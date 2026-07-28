@@ -16,26 +16,49 @@
  * (e.g. `is_review_mode == true`) fires first, so later default edges behind it (assumptions-review's
  * default edge into `implement`) are correctly treated as unreachable in review mode.
  *
- * The current corpus carries benign instances (checkpoints whose consequential default is harmless in
- * review because the review-mode transition ignores the variable they set — e.g. strategic-review's
- * review-findings). Those are snapshotted in scripts/review-mode-gating-baseline.json; the guard fails
- * ONLY on violations absent from that baseline (NEW friction, or a reverted gate). Regenerate the
- * baseline after an intentional, reviewed change with:
- *   npx tsx scripts/check-review-mode-gating.ts --root <workflows-dir> --update-baseline
+ * A workflow may declare headless auto-advance as its review-mode design (work-package's
+ * `review-mode-headless-auto-advance` rule does). Under that design a default that merely RECORDS an
+ * assessment is the intended outcome, while a default that authorises CREATING or PUBLISHING
+ * something is the defect this guard exists to catch. The guard cannot tell those apart
+ * structurally, so the few accepted instances are enumerated in `ACCEPTED_HEADLESS_AUTO_ADVANCE`
+ * below — each with the reason it is safe.
  *
- * Run: npx tsx scripts/check-review-mode-gating.ts [--root <workflows-dir>]
+ * That list replaces the retired `review-mode-gating-baseline.json` (issue #327 R5). A baseline was
+ * regenerable (`--update-baseline`) and carried no reasons, so it absorbed real defects silently:
+ * two of its six entries auto-created GitHub/Jira issues in a headless review run. An acceptance
+ * entry is hand-written, carries its justification, and is reviewed in the diff.
+ *
+ * Run: npx tsx scripts/check-review-mode-gating.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync, writeFileSync } from 'node:fs';
-import { join, relative, resolve } from 'node:path';
+import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { evaluateCondition, type Condition } from '../src/schema/condition.schema.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
-const BASELINE = join(DIR, 'review-mode-gating-baseline.json');
+const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
 const REVIEW_BAG = { is_review_mode: true } as const;
+
+/**
+ * Review-reachable checkpoints whose auto-advanced default is accepted, keyed
+ * `<workflow>::<activity>::<checkpoint>`. An entry belongs here only when the default RECORDS an
+ * assessment the run can stand behind headlessly. A default that creates, publishes, pushes, or
+ * approves anything does not qualify — gate it on `is_review_mode` instead.
+ */
+export const ACCEPTED_HEADLESS_AUTO_ADVANCE: Record<string, string> = {
+  'work-package::codebase-comprehension::comprehension-sufficient':
+    'default accepts the remaining open questions and clears the comprehension loop; it records a '
+    + 'sufficiency judgement and mutates nothing outside the run.',
+  'work-package::requirements-elicitation::elicitation-complete':
+    'default closes elicitation once every question domain is covered; it records completion and '
+    + 'mutates nothing outside the run.',
+  'work-package::research::context-scope-declaration':
+    'checkpoint fires only when run evidence could not derive the scope, and the default is the '
+    + 'declared repo-only fallback; it records a provenance value and mutates nothing outside the run.',
+};
 
 export interface ReviewGatingViolation {
   /** `<workflow>::<activity>::<checkpoint>` — stable key for the baseline. */
@@ -142,8 +165,9 @@ function hasConsequentialDefault(cp: StepDef): boolean {
   return Boolean(e && (e.setVariable || e.transitionTo || e.skipActivities));
 }
 
-export function collectReviewGatingViolations(root: string = ROOT): ReviewGatingViolation[] {
+export function collectReviewGatingViolations(root: string = DEFAULT_ROOT): ReviewGatingViolation[] {
   const out: ReviewGatingViolation[] = [];
+  let scanned = 0;
   for (const workflow of readdirSync(root).sort()) {
     const workflowYamlPath = join(root, workflow, 'workflow.yaml');
     if (!existsSync(workflowYamlPath)) continue;
@@ -158,6 +182,7 @@ export function collectReviewGatingViolations(root: string = ROOT): ReviewGating
       if (!entry.endsWith('.yaml') && !entry.endsWith('.yml')) continue;
       const def = parse(readFileSync(join(activitiesDir, entry), 'utf-8')) as ActivityDef;
       if (def?.id) activities.set(def.id, def);
+      scanned++;
     }
     const initial = wf.initialActivity ?? [...activities.keys()][0];
     if (!initial) continue;
@@ -176,41 +201,36 @@ export function collectReviewGatingViolations(root: string = ROOT): ReviewGating
       }
     }
   }
+  assertScanned(scanned, 'activity files', root);
   return out.sort((a, b) => a.key.localeCompare(b.key));
 }
 
-function loadBaseline(): Set<string> {
-  if (!existsSync(BASELINE)) return new Set();
-  try { return new Set(JSON.parse(readFileSync(BASELINE, 'utf-8')) as string[]); } catch { return new Set(); }
-}
-
-/** Violations not in the committed baseline (`added`) and baselined keys no longer present (`fixed`). */
-export function diffBaseline(root: string = ROOT): { added: ReviewGatingViolation[]; fixed: string[] } {
+/**
+ * Violations minus the reasoned acceptances. An acceptance key that no longer matches any violation
+ * is itself reported: a stale entry means the corpus changed under it, and silently ignoring it is
+ * how the retired baseline drifted.
+ */
+export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const all = collectReviewGatingViolations(root);
-  const baseline = loadBaseline();
-  return {
-    added: all.filter(v => !baseline.has(v.key)),
-    fixed: [...baseline].filter(k => !all.some(v => v.key === k)),
-  };
+  const findings: Finding[] = all
+    .filter((v) => !(v.key in ACCEPTED_HEADLESS_AUTO_ADVANCE))
+    .map((v) => ({ check: 'review-reachable-mutating-default', site: v.key, detail: v.detail }));
+  for (const key of Object.keys(ACCEPTED_HEADLESS_AUTO_ADVANCE)) {
+    if (all.some((v) => v.key === key)) continue;
+    findings.push({
+      check: 'stale-acceptance',
+      site: key,
+      detail: 'accepted headless auto-advance no longer matches any checkpoint — delete the entry from '
+        + 'ACCEPTED_HEADLESS_AUTO_ADVANCE in scripts/check-review-mode-gating.ts',
+    });
+  }
+  return findings;
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const all = collectReviewGatingViolations();
-  if (process.argv.includes('--update-baseline')) {
-    writeFileSync(BASELINE, JSON.stringify(all.map(v => v.key), null, 2) + '\n');
-    process.stdout.write(`review-mode-gating: baseline updated with ${all.length} entr(ies) at ${relative(process.cwd(), BASELINE)}\n`);
-    process.exit(0);
-  }
-  const baseline = loadBaseline();
-  const fresh = all.filter(v => !baseline.has(v.key));
-  const fixed = [...baseline].filter(k => !all.some(v => v.key === k));
-  if (fresh.length === 0) {
-    process.stdout.write(`review-mode-gating: OK — ${all.length} total, ${baseline.size} baselined, 0 NEW${fixed.length ? `, ${fixed.length} fixed` : ''}\n`);
-    if (fixed.length) process.stdout.write(`  ${fixed.length} baselined entr(ies) no longer present — run --update-baseline to shrink the baseline\n`);
-    process.exit(0);
-  }
-  process.stdout.write(`review-mode-gating: ${fresh.length} NEW violation(s) — a review-reachable checkpoint gained a silent create-mode default:\n`);
-  for (const v of fresh) process.stdout.write(`  ${v.key} — ${v.detail}\n`);
-  process.exit(1);
+  await runGuard('review-mode-gating', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
+    okMessage: 'no review-reachable checkpoint auto-advances into unapproved mutating work',
+    remedy: 'gate the checkpoint on is_review_mode, or accept it with a reason in ACCEPTED_HEADLESS_AUTO_ADVANCE',
+  });
 }

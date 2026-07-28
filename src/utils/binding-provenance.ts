@@ -35,8 +35,14 @@ export const AMBIENT_CONTEXT_IDS: ReadonlySet<string> = new Set(['target_symbol'
 /** The bag-name identifier grammar (snake_case and camelCase ids like `issueKey`). */
 export const IDENTIFIER_PATTERN = '[a-zA-Z_][a-zA-Z0-9_]*';
 
-/** Corpus convention: an input is optional when its description leads with `*(optional)*`. */
-export const OPTIONAL_INPUT_RE = /^[*_]{0,2}\(optional\)/i;
+/**
+ * Corpus convention: an input is optional when its description leads with `*(optional)*`. The marker
+ * carries qualifiers in the same parentheses — `*(optional, default `origin`)*`, `*(optional, enum:
+ * … )*` — so the match runs to the closing paren rather than requiring a bare `(optional)`. Without
+ * that, an input that declares BOTH optionality and a default read as required-and-unsupplied on
+ * both surfaces that share this constant: the provenance annotation and the orphan-input guard.
+ */
+export const OPTIONAL_INPUT_RE = /^[*_]{0,2}\(optional\b[^)]*\)/i;
 
 /** Note delivered alongside the annotations: the output delivery mechanics (probe class 3's
  *  "set variable X — how?"), read by the worker at point of use — including the multi-output

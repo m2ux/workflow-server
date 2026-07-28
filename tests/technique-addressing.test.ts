@@ -1,13 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { resolve } from 'node:path';
 import { resolveTechniques } from '../src/loaders/technique-loader.js';
+import { corpusRoot } from './corpus-root.js';
 
 /**
  * Technique addressing: the `::` path form `[workflow::]technique[::sub]`.
  * Same-workflow refs are implicit (parent workflow filled in via currentWorkflow);
  * the full canonical path is also available; cross-workflow uses an explicit prefix.
  */
-const WF_DIR = resolve(import.meta.dirname, '../workflows');
+const WF_DIR = corpusRoot();
 
 describe('technique addressing (:: path)', () => {
   it('resolves an implicit same-workflow sub-technique', async () => {

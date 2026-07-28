@@ -6,6 +6,7 @@ import { resolve, join } from 'node:path';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import type { HistoryEntry } from '../src/schema/state.schema.js';
+import { corpusRoot } from './corpus-root.js';
 
 /**
  * Fidelity observability (#166 B8): `get_technique` / `get_resource` record
@@ -27,7 +28,7 @@ describe('fetch observability (#166 B8)', () => {
   beforeAll(async () => {
     workspaceDir = mkdtempSync(join(tmpdir(), 'wf-fetchobs-test-'));
     const config = {
-      workflowDir: resolve(import.meta.dirname, '../workflows'),
+      workflowDir: corpusRoot(),
       schemasDir: resolve(import.meta.dirname, '../schemas'),
       workspaceDir,
       serverName: 'test-workflow-server',

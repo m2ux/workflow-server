@@ -1,0 +1,72 @@
+name: Verify
+
+# The guards and the test suite are enforced here, on every pull request.
+#
+# Before this, CI ran four things — typecheck, build:site, check:site, check:svg — and only when a
+# change touched site paths. The 46-file vitest suite and 15 of the 17 guards ran solely when a human
+# or agent remembered to invoke them, so coverage was a function of who remembered. That is how the
+# two most expensive defects of the #324 run reached a live session (issue #327 R2).
+#
+# `npm run check:all` walks the guard registry in scripts/guards.ts, so a guard added there is
+# enforced here without touching this file.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  verify:
+    name: Typecheck, tests, and the full guard sweep
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # `.engineering` nests a private repo this runner cannot clone, so submodules are checked
+          # out one at a time below rather than with `submodules: recursive`.
+          submodules: false
+
+      # Both submodules are branches of THIS repo behind an SSH URL, which the default token cannot
+      # use. A second checkout of the pinned gitlink commit avoids submodule machinery and credential
+      # rewriting entirely. `HEAD:workflows` reads the gitlink from the superproject tree, so it
+      # resolves without the submodule ever being initialised.
+      - name: Resolve the pinned workflows-corpus commit
+        id: corpus
+        run: echo "sha=$(git rev-parse HEAD:workflows)" >> "$GITHUB_OUTPUT"
+
+      # The PINNED commit, not the `workflows` branch tip: this job verifies the corpus the tree under
+      # review actually adopts. Corpus drift ahead of the pin is the submodule bump's business.
+      - name: Check out the workflows corpus at the pinned commit
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ steps.corpus.outputs.sha }}
+          path: workflows
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck server source
+        run: npm run typecheck
+
+      # `npm test` is vitest in watch mode; `test:ci` is the single-run entry point so the job cannot
+      # hang waiting for file changes.
+      - name: Run the test suite
+        run: npm run test:ci
+
+      # Every guard in the registry, against the corpus checked out above. A guard that cannot reach
+      # its corpus exits 2 and fails the job — an unmeasured guard is never folded into a pass.
+      - name: Run every guard
+        run: npm run check:all

@@ -1,8 +1,0 @@
-[
-  "work-package::codebase-comprehension::comprehension-sufficient",
-  "work-package::requirements-elicitation::elicitation-complete",
-  "work-package::research::context-scope-declaration",
-  "work-package::start-work-package::github-issue-missing",
-  "work-package::start-work-package::issue-review",
-  "workflow-design::scope-and-draft::scope-and-structure-confirmed"
-]

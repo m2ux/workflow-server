@@ -9,10 +9,11 @@ import type { ServerConfig } from '../src/config.js';
 import { loadConfig } from '../src/config.js';
 import { createHttpApp, shutdownHandler, startHttpServer } from '../src/transports/http.js';
 import { PLANNING_RELATIVE_DIR, setPlanningRelativeDir } from '../src/utils/session/store.js';
+import { corpusRoot } from './corpus-root.js';
 
 function buildConfig(overrides: Partial<ServerConfig> = {}): ServerConfig {
   return {
-    workflowDir: resolve(import.meta.dirname, '../workflows'),
+    workflowDir: corpusRoot(),
     schemasDir: resolve(import.meta.dirname, '../schemas'),
     workspaceDir: mkdtempSync(join(tmpdir(), 'wf-http-test-')),
     serverName: 'test-http-workflow-server',

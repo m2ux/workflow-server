@@ -14,106 +14,84 @@
  * the reader cannot tell which target or whose summary is meant. Qualify it with its
  * parent/concept (`analysis_target`, `completion_summary`, `audit_scope`).
  *
+ * A bare id is also unbindable from a workflow variable, because `VariableNameSchema` rejects the
+ * same spelling on the producing side — so an unqualified input can never be seeded by name and
+ * reads as an orphan for the life of the corpus.
+ *
  * Exemptions live in src/schema/identifiers.ts (EXEMPT_DATA_IDS), shared with the schema so both
- * surfaces apply one list.
+ * surfaces apply one list. Each entry carries the reason it stays bare — that reasoned list is the
+ * only accepted exception; the guard is hard zero and carries no baseline (issue #327 R5).
  *
- * Scope: DATA identifiers only. Structural ids (activity / step / checkpoint-option ids) are
- * out of scope — they are not values bound through the variable bag.
- *
- * Hard-zero rule (no baseline): every flagged id is either fixed (qualified) or added to
- * EXEMPT_DATA_IDS with its reason. Run:
- *   npx tsx scripts/check-identifier-qualification.ts
+ *   npx tsx scripts/check-identifier-qualification.ts [--root <workflows-dir>] [--json]
  */
-import { readFileSync, readdirSync, existsSync, statSync, writeFileSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
+import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { EXEMPT_DATA_ID_SET as EXEMPT, isSingleWord } from '../src/schema/identifiers.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
+import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
-// Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree (issue #160 #1).
-const ROOT = resolveWorkflowsRoot(join(DIR, '..', 'workflows'));
+const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
 
-/**
- * Accepted pre-existing flagged ids, snapshotted in identifier-qualification-baseline.json. The guard
- * fails on any id ABSENT from the baseline (new bare-word identifiers). The corpus has now been fully
- * qualified, so the baseline is EMPTY — every bare data id is a failure. Regenerate after an
- * intentional, reviewed qualification/exemption with `--update-baseline`.
- */
-const BASELINE = join(DIR, 'identifier-qualification-baseline.json');
+export type Hit = { id: string; where: string };
 
-type Hit = { id: string; where: string };
-const hits: Hit[] = [];
-
-/** Record every `###`/`####` heading under `## Inputs` / `## Outputs` in a technique file. */
-function scanTechnique(path: string, rel: string): void {
+/** Record every bare `###` heading under `## Inputs` / `## Outputs` in a technique file. */
+function scanTechnique(path: string, rel: string, hits: Hit[]): void {
   const lines = readFileSync(path, 'utf-8').split('\n');
   let inIO = false;
   lines.forEach((line, i) => {
     const h2 = /^##\s+(.+?)\s*$/.exec(line);
-    if (h2) { inIO = ['Inputs', 'Outputs'].includes(h2[1].trim()); return; }
+    if (h2) { inIO = ['Inputs', 'Outputs'].includes(h2[1]!.trim()); return; }
     if (!inIO) return;
     const h = /^###\s+(\S+)\s*$/.exec(line);
     if (h) {
-      const id = h[1].trim();
+      const id = h[1]!.trim();
       if (isSingleWord(id) && !EXEMPT.has(id)) hits.push({ id, where: `${rel}:${i + 1}` });
     }
   });
 }
 
-function scanTechniqueDir(dir: string, wf: string): void {
-  if (!existsSync(dir)) return;
+function scanTechniqueDir(dir: string, root: string, hits: Hit[]): number {
+  if (!existsSync(dir)) return 0;
+  let scanned = 0;
   for (const entry of readdirSync(dir)) {
     const p = join(dir, entry); const st = statSync(p);
-    if (st.isFile() && entry.endsWith('.md')) scanTechnique(p, relative(ROOT, p));
-    else if (st.isDirectory()) scanTechniqueDir(p, wf);
+    if (st.isFile() && entry.endsWith('.md')) { scanTechnique(p, relative(root, p), hits); scanned++; }
+    else if (st.isDirectory()) scanned += scanTechniqueDir(p, root, hits);
   }
+  return scanned;
 }
 
-const workflows = readdirSync(ROOT).filter((d) => statSync(join(ROOT, d)).isDirectory());
-for (const wf of workflows) {
-  scanTechniqueDir(join(ROOT, wf, 'techniques'), wf);
+export function collectHits(root: string = DEFAULT_ROOT): Hit[] {
+  const hits: Hit[] = [];
+  let scanned = 0;
+  for (const wf of readdirSync(root).filter((d) => statSync(join(root, d)).isDirectory())) {
+    scanned += scanTechniqueDir(join(root, wf, 'techniques'), root, hits);
+  }
+  assertScanned(scanned, 'technique files', root);
+  return hits;
 }
 
-/* ----------------------------- report ----------------------------- */
-const byId = new Map<string, string[]>();
-for (const h of hits) {
-  if (!byId.has(h.id)) byId.set(h.id, []);
-  byId.get(h.id)!.push(h.where);
-}
-const flaggedIds = [...byId.keys()].sort();
-
-/** Compare current flagged ids to the committed baseline. `added` = NEW bare-word ids (drift). */
-export function diffBaseline(): { added: string[]; fixed: string[]; total: number; baselined: number } {
-  const baseline: string[] = existsSync(BASELINE) ? JSON.parse(readFileSync(BASELINE, 'utf-8')) : [];
-  const baseSet = new Set(baseline);
-  const curSet = new Set(flaggedIds);
-  return {
-    added: flaggedIds.filter((id) => !baseSet.has(id)),
-    fixed: baseline.filter((id) => !curSet.has(id)),
-    total: flaggedIds.length,
-    baselined: baseline.length,
-  };
+/** One finding per bare id, listing every site that declares it. */
+export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
+  const byId = new Map<string, string[]>();
+  for (const h of collectHits(root)) {
+    if (!byId.has(h.id)) byId.set(h.id, []);
+    byId.get(h.id)!.push(h.where);
+  }
+  return [...byId.entries()].sort(([a], [b]) => a.localeCompare(b)).map(([id, where]) => ({
+    check: 'bare-data-id',
+    site: where[0]!,
+    detail: `I/O id '${id}' is a bare single word, declared at ${where.length} site(s): ${where.join(', ')}`
+      + ` — qualify it (>=2-word noun phrase) or add it to EXEMPT_DATA_IDS with its AP-60 reason`,
+  }));
 }
 
-/* --------------------------------- CLI runner --------------------------------- */
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  if (process.argv.includes('--update-baseline')) {
-    writeFileSync(BASELINE, JSON.stringify(flaggedIds, null, 2) + '\n');
-    process.stdout.write(`baseline updated: ${flaggedIds.length} accepted pre-existing bare-word id(s)\n`);
-    process.exit(0);
-  }
-  const { added, fixed, total, baselined } = diffBaseline();
-  process.stdout.write(`identifier-qualification: ${total} flagged, ${baselined} baselined, ${added.length} NEW, ${fixed.length} qualified\n`);
-  if (fixed.length) process.stdout.write(`  ${fixed.length} baselined id(s) no longer bare — run --update-baseline to shrink the baseline\n`);
-  if (added.length) {
-    process.stdout.write(`\nNEW bare single-word data id(s) — qualify each (>=2-word noun phrase), or add to EXEMPT with its AP-60 reason:\n`);
-    for (const id of added) {
-      const where = byId.get(id)!;
-      process.stdout.write(`  ${id}  (${where.length})  e.g. ${where.slice(0, 3).join(', ')}${where.length > 3 ? ' …' : ''}\n`);
-    }
-    process.exit(1);
-  }
-  process.stdout.write('OK — no new bare-word data ids\n');
+  await runGuard('identifier-qualification', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
+    okMessage: 'every technique I/O id is a qualified noun phrase',
+    remedy: 'qualify each id, or exempt it in src/schema/identifiers.ts with its reason',
+  });
 }

@@ -3,12 +3,17 @@
  * Validate all activity files in a workflow folder against the activity schema
  * 
  * Usage: npx tsx scripts/validate-activities.ts [workflow-folder]
- * 
+ *
  * Examples:
  *   npx tsx scripts/validate-activities.ts workflows/work-package
  *   npx tsx scripts/validate-activities.ts workflows/meta
  *   npx tsx scripts/validate-activities.ts workflows  # validates all workflows
- *   npx tsx scripts/validate-activities.ts            # defaults to workflows/
+ *   npx tsx scripts/validate-activities.ts            # the resolved corpus root
+ *   npx tsx scripts/validate-activities.ts --root /wt/workflows
+ *
+ * With no positional folder the target comes from the shared resolver (`--root` > WORKFLOWS_DIR >
+ * default), so this validator can be aimed at a worktree like every other guard. Until #327 it read
+ * a positional path only, which is why nothing in package.json invoked it and it was run by hand.
  */
 
 import { readFileSync, readdirSync, existsSync, statSync } from 'fs';
@@ -16,6 +21,7 @@ import { join, resolve, basename } from 'path';
 import { pathToFileURL } from 'url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { safeValidateActivity, populateStepIds } from '../src/schema/activity.schema.js';
+import { requireRootOrExit } from './guard-protocol.js';
 
 export interface ValidationResult {
   workflow: string;
@@ -81,9 +87,10 @@ const isDirectInvocation =
   import.meta.url === pathToFileURL(process.argv[1]).href;
 
 if (isDirectInvocation) {
-  const inputPath = process.argv[2]
-    ? resolve(process.argv[2])
-    : resolve(import.meta.dirname, '../workflows');
+  const positional = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : undefined;
+  const inputPath = positional
+    ? resolve(positional)
+    : requireRootOrExit('activities', resolve(import.meta.dirname, '../workflows'));
 
   const workflowDirs = findWorkflowDirs(inputPath);
 
