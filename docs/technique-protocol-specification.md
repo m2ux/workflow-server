@@ -108,6 +108,10 @@ loader rejects the singular `## Input` / `## Output` (and `## Output(s)`) varian
 - `#### <member>` is a named component of the entry (`components[member]`).
 - `#### artifact` (Outputs) is the persistence filename — a literal (`code-review.md`) or a
   `{token}`-template the worker interpolates at runtime (`{package_name}-plan.md`, the token being a snake_case symbol).
+  One filename per output: one path segment ending in an extension, with `{token}` placeholders standing where
+  literal text would. The loader rejects anything else — a technique whose artifact body is prose, several
+  names, or a declaration key is dropped with a logged warning, as a mistyped `audience` is. A technique that
+  writes several files declares one output per artifact; a name selected by a mode is one op per mode.
 - `#### audience` (Outputs) is the intended reader of the output/artifact — `human` or `agent`.
   Absent means `human`. An `agent`-audience artifact is serialized as **JSON** on disk (named under
   the same `artifactPrefix` rule as any artifact); a `human`-audience artifact is prose markdown.
@@ -480,7 +484,7 @@ The protocol-relevant rules:
   another technique only in `## Protocol` or `## Capability`, as utilisation ("use
   `cargo-operations::fmt-fix`").
 - A protocol references data by its Input/Output id. An artifact filename lives in the `#### artifact`
-  declaration (literal, `{token}`-template, or discriminator-keyed).
+  declaration (literal or `{token}`-template), one filename per output.
 - A capability or description states what a construct is; the sequence of steps and phases lives in
   `protocol[]`.
 - A protocol step is an action. A standing prohibition or invariant is a rule (§3.4) or a guard

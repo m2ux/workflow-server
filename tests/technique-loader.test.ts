@@ -262,6 +262,29 @@ describe('technique-loader', () => {
       }
     });
 
+    // #330 — an `#### artifact` body that cannot be a filename reaches the schema refinement and
+    // drops the technique, rather than being derived into the file a worker tries to create.
+    it('rejects an `#### artifact` body that is not a filename, and loads the corrected literal', async () => {
+      const dir = join(tempDir, 'meta', 'techniques');
+      await mkdir(dir, { recursive: true });
+      const technique = (artifactBody: string) => [
+        '---', 'metadata:', '  version: 1.0.0', '---', '',
+        '## Capability', '', 'Cap.', '',
+        '## Outputs', '', '### completion_record', '', 'The close-out.', '',
+        '#### artifact', '', artifactBody, '',
+      ].join('\n');
+
+      await writeFile(join(dir, 'artifact-prose.md'), technique('`COMPLETE.md` (implementation) or session `README.md` section (review mode)'), 'utf-8');
+      expect((await readTechnique('artifact-prose', tempDir)).success).toBe(false);
+
+      await writeFile(join(dir, 'artifact-prose.md'), technique('`COMPLETE.md`'), 'utf-8');
+      const fixed = await readTechnique('artifact-prose', tempDir);
+      expect(fixed.success).toBe(true);
+      if (fixed.success) {
+        expect(fixed.value.outputs?.[0]?.artifact?.name).toBe('COMPLETE.md');
+      }
+    });
+
     it('loads a minimal flat technique with frontmatter + Capability', async () => {
       const dir = join(tempDir, 'meta', 'techniques');
       await mkdir(dir, { recursive: true });

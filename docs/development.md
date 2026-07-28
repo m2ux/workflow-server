@@ -269,7 +269,8 @@ npm run check:binding
 # Normative technique template: metadata.version-only frontmatter, no H1 title,
 # the canonical H2 set in order (Capability, Inputs, Outputs, Protocol, Rules —
 # Outputs before Protocol), snake_case entry ids (camelCase tool-parameter
-# mirrors allowed), kebab-case rule names, snake_case {$name} sigils. Hard-zero.
+# mirrors allowed), kebab-case rule names, snake_case {$name} sigils, and every
+# #### artifact body a filename the loader accepts. Hard-zero.
 npm run check:technique-template
 
 # Shared fragments (#166 B10): every rules { ref } and checkpoint ref resolves,

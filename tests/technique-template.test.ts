@@ -96,6 +96,32 @@ describe('technique-template guard', () => {
     expect(lintTechniqueFile(bad, 'x.md').map((v) => v.rule)).toEqual(['sigil-casing']);
   });
 
+  // #330 — the guard is what makes an unfilenameable artifact declaration red. The schema drops
+  // such a technique at load with a logged warning, which on its own reads as a missing technique.
+  it('flags an `#### artifact` body that is not a filename', () => {
+    const declare = (body: string) => CONFORMANT.replace('What was found.', `What was found.\n\n#### artifact\n\n${body}`);
+    for (const bad of [
+      '`COMPLETE.md` (implementation) or session `README.md` section (review mode)',
+      '`index.md` and `log.md`',
+      'name: README.md',
+      '`planning/notes.md`',
+    ]) {
+      expect(lintTechniqueFile(declare(bad), 'x.md').map((v) => v.rule)).toEqual(['artifact-name']);
+    }
+  });
+
+  it('accepts a literal and a {token}-templated artifact name', () => {
+    const declare = (body: string) => CONFORMANT.replace('What was found.', `What was found.\n\n#### artifact\n\n${body}`);
+    for (const ok of ['`01-audit-report.md`', '`{package_name}-plan.md`', '`{$page_slug}.md`', '`START-HERE.md`']) {
+      expect(lintTechniqueFile(declare(ok), 'x.md')).toEqual([]);
+    }
+  });
+
+  it('leaves an `#### artifact` member under Inputs alone (reserved only on Outputs)', () => {
+    const raw = CONFORMANT.replace('Where to act.', 'Where to act.\n\n#### artifact\n\nThe artifact this input points at.');
+    expect(lintTechniqueFile(raw, 'x.md')).toEqual([]);
+  });
+
   it('every technique file in the corpus follows the template', () => {
     expect(collectTemplateViolations().map((v) => `[${v.rule}] ${v.file}: ${v.detail}`)).toEqual([]);
   });

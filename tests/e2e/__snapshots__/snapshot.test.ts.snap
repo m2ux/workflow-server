@@ -25,11 +25,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "activity": "start-work-package",
       "artifacts": [
         "prior-feedback-triage.md",
-        "name: README.md",
+        "README.md",
       ],
       "artifactsWritten": [
         "01-prior-feedback-triage.md",
-        "01-name: README.md",
+        "01-README.md",
       ],
       "checkpoints": [
         {
@@ -395,14 +395,12 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
-        "COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
-        "14-COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "14-session-trace.md",
       ],
       "checkpoints": [
@@ -458,11 +456,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "start-work-package",
       "artifacts": [
         "prior-feedback-triage.md",
-        "name: README.md",
+        "README.md",
       ],
       "artifactsWritten": [
         "01-prior-feedback-triage.md",
-        "01-name: README.md",
+        "01-README.md",
       ],
       "checkpoints": [
         {
@@ -892,14 +890,12 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
-        "COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
-        "14-COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "14-session-trace.md",
       ],
       "checkpoints": [
@@ -958,11 +954,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "start-work-package",
       "artifacts": [
         "prior-feedback-triage.md",
-        "name: README.md",
+        "README.md",
       ],
       "artifactsWritten": [
         "01-prior-feedback-triage.md",
-        "01-name: README.md",
+        "01-README.md",
       ],
       "checkpoints": [
         {
@@ -1420,14 +1416,12 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
-        "COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
-        "14-COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "14-session-trace.md",
       ],
       "checkpoints": [
@@ -1485,11 +1479,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "start-work-package",
       "artifacts": [
         "prior-feedback-triage.md",
-        "name: README.md",
+        "README.md",
       ],
       "artifactsWritten": [
         "01-prior-feedback-triage.md",
-        "01-name: README.md",
+        "01-README.md",
       ],
       "checkpoints": [
         {
@@ -1907,14 +1901,12 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
-        "COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
-        "14-COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "14-session-trace.md",
       ],
       "checkpoints": [
@@ -1970,11 +1962,11 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "activity": "start-work-package",
       "artifacts": [
         "prior-feedback-triage.md",
-        "name: README.md",
+        "README.md",
       ],
       "artifactsWritten": [
         "01-prior-feedback-triage.md",
-        "01-name: README.md",
+        "01-README.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -2287,14 +2279,12 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
-        "COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
-        "14-COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "14-session-trace.md",
       ],
       "checkpoints": [
@@ -2344,11 +2334,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "activity": "start-work-package",
       "artifacts": [
         "prior-feedback-triage.md",
-        "name: README.md",
+        "README.md",
       ],
       "artifactsWritten": [
         "01-prior-feedback-triage.md",
-        "01-name: README.md",
+        "01-README.md",
       ],
       "checkpoints": [
         {
@@ -2714,14 +2704,12 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
-        "COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
-        "14-COMPLETE.md\` (implementation) or planning-folder session \`README.md\` section (review mode)",
         "14-session-trace.md",
       ],
       "checkpoints": [
