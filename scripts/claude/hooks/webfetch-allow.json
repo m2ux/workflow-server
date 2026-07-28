@@ -1,5 +1,5 @@
 {
-  "_comment": "Read by webfetch-allow.py (same directory). WebFetch URLs whose string starts with any allowPrefixes entry auto-approve. Domain-level WebFetch(domain:…) rules in settings.json still apply separately.",
+  "_comment": "Read by webfetch-allow.py (same directory). WebFetch URLs whose string starts with any allowPrefixes entry auto-approve. Domain-level WebFetch(domain:…) rules in settings.json still apply separately. Keep this list deliberately NARROW: prefer scoping a code host to a single org (\"https://github.com/my-org/\") over allowing the whole host, as the starter entries below do.",
   "allowPrefixes": [
     "https://github.com/",
     "https://raw.githubusercontent.com/",

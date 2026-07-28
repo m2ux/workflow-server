@@ -1,9 +1,8 @@
 {
-  "_comment": "Read by curl-read-allow.py (same directory). A curl target URL auto-approves only if BOTH (1) its host is in allowedHosts AND (2) the allowPrefixes per-host filter passes. allowPrefixes maps a host to path prefixes: [\"*\"] allows all paths; otherwise the URL path must start with a listed prefix. Hosts in allowedHosts but absent from allowPrefixes are unrestricted on path. allowedHosts match is case-insensitive ('.host' = subdomain wildcard).",
+  "_comment": "Read by curl-read-allow.py (same directory). A curl target URL auto-approves (no prompt) only if BOTH (1) its host is in allowedHosts AND (2) the allowPrefixes per-host filter passes. allowPrefixes maps a host to its allowed PATH prefixes: [\"*\"] (or an empty list) allows all paths on that host; otherwise the URL path must start with a listed prefix, e.g. \"/my-org/\". A host that is in allowedHosts but ABSENT from allowPrefixes is unrestricted (the host gate still applies). To scope a site, replace its [\"*\"] with specific path prefixes. allowedHosts match is case-insensitive/exact ('.host' = subdomain wildcard); allowPrefixes host keys honor the same wildcard.",
   "allowedHosts": [
     "github.com",
     "raw.githubusercontent.com",
-    "api.github.com",
     "code.claude.com",
     "docs.claude.com",
     "docs.anthropic.com"
@@ -11,7 +10,6 @@
   "allowPrefixes": {
     "github.com": ["*"],
     "raw.githubusercontent.com": ["*"],
-    "api.github.com": ["*"],
     "code.claude.com": ["*"],
     "docs.claude.com": ["*"],
     "docs.anthropic.com": ["*"]
