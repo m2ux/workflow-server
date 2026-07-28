@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: requirements-refinement
-version: 1.1.0
+version: 1.2.0
 title: Requirements Refinement Workflow
 description: Refine a canonical requirements specification from a source document — a meeting transcript or an unstructured document — preserving the specification protocol verbatim and staging the finalized specification and a change summary in the planning folder for human promotion. Operates on local files and performs no version-control operations.
 author: m2ux
@@ -69,10 +69,6 @@ variables:
     type: number
     description: Count of correction passes performed so far; 0 on the initial update
     defaultValue: 0
-  - name: max_correction_iterations
-    type: number
-    description: Maximum number of correction passes before routing to report-failure
-    defaultValue: 3
   - name: finalization_confirmed
     type: boolean
     description: True once the user has accepted the finalized specification for promotion
@@ -81,4 +77,32 @@ variables:
     type: boolean
     description: True once every normative statement in the source document maps to at least one requirement
     defaultValue: false
+  - name: intake_record_path
+    type: string
+    description: Absolute path to the written intake record
+    defaultValue: ""
+  - name: requirements_analysis_path
+    type: string
+    description: Absolute path to the written requirements analysis report
+    defaultValue: ""
+  - name: working_specification_path
+    type: string
+    description: Absolute path to the working specification written for the current pass
+    defaultValue: ""
+  - name: validation_report_path
+    type: string
+    description: Absolute path to the validation report written for the current pass
+    defaultValue: ""
+  - name: final_specification_path
+    type: string
+    description: Absolute path to the staged final specification
+    defaultValue: ""
+  - name: change_summary_path
+    type: string
+    description: Absolute path to the written change summary
+    defaultValue: ""
+  - name: failure_report_path
+    type: string
+    description: Absolute path to the written failure report
+    defaultValue: ""
 initialActivity: intake-and-analyze

@@ -13,7 +13,7 @@ Parameterized analyse–challenge–combine iterations until agent-resolvable co
 
 Domain of the open set (e.g. `assumptions`, `open_questions`).
 
-### analyse
+### analyse_technique
 
 Technique path to invoke for the analyse phase each iteration (supplied via `step.technique.inputs`).
 
@@ -68,13 +68,13 @@ The bound residue variable after combine.
 ### 1. Resolve Binding Defaults
 
 - Resolve `{convergence_flag}` and `{residue_flag}` bag names from explicit inputs or from `{concern_kind}` defaults above
-- Confirm `{analyse}` is a callable technique path; surface a binding gap if missing
+- Confirm `{analyse_technique}` is a callable technique path; surface a binding gap if missing
 
 ### 2. Iterate (or Single Pass)
 
 - When `{iteration_mode}` is `once`, run one analyse → challenge → combine cycle and proceed to handoff.
 - When `{iteration_mode}` is `until_converged` (default), repeat while the bag variable named by `{convergence_flag}` is true (or on the first pass when the flag is unset and open concerns exist):
-  1. **Analyse** — invoke the bound `{analyse}` technique with forwarded context (`{assumptions_log}`, `{target_path}`, `{comprehension_artifact}` as applicable). When `{concern_kind}` is `open_questions` and `{analyse}` is `codebase-comprehension::deep-dive`, follow with [revise-questions](../codebase-comprehension/revise-questions.md) so Open Questions and `{needs_comprehension}` / `{has_open_questions}` stay current. Analyse updates the concern set and may set the convergence flag true when more agent-resolvable work remains.
+  1. **Analyse** — invoke the bound `{analyse_technique}` technique with forwarded context (`{assumptions_log}`, `{target_path}`, `{comprehension_artifact}` as applicable). When `{concern_kind}` is `open_questions` and `{analyse_technique}` is `codebase-comprehension::deep-dive`, follow with [revise-questions](../codebase-comprehension/revise-questions.md) so Open Questions and `{needs_comprehension}` / `{has_open_questions}` stay current. Analyse updates the concern set and may set the convergence flag true when more agent-resolvable work remains.
   2. **Challenge** — invoke [challenge](./challenge.md) with `{challenge_perspectives}` and the current concern set / log. Challenge fans out adversarially via scatter-gather and returns per-perspective findings without writing shared bag flags itself.
   3. **Combine** — invoke [combine](./combine.md) to merge challenge findings into the concern set, resolve or reclassify items, and set `{convergence_flag}` / `{residue_flag}` (and `{residue_collection}` when bound).
 - Exit when `{convergence_flag}` is false after combine (`until_converged`), or after the single pass (`once`). An empty open set yields `{residue_flag}` false.

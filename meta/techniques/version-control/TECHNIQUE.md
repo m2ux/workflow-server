@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.1.0
+  version: 5.2.0
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ NEVER skip hooks (`--no-verify`, `--no-gpg-sign`) unless the user explicitly req
 
 ### explicit-commit
 
-NEVER commit changes unless the user explicitly asks. Verify the request before executing.
+NEVER commit changes unless the user explicitly asks. Verify the request before executing. Scope: ad-hoc commits only — distinct from [commit-after-activity](../workflow-engine/commit-and-persist.md#commit-after-activity), which mandates commit+push after each completed activity, and from any bound operation whose own rules mandate a commit as the value it produces.
 
 ### read-agents-md
 

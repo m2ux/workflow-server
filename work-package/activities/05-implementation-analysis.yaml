@@ -35,7 +35,7 @@ steps:
       name: analyse-challenge::run-loop
       inputs:
         concern_kind: assumptions
-        analyse: review-assumptions::reconcile
+        analyse_technique: review-assumptions::reconcile
         challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
         convergence_flag: has_resolvable_assumptions
         residue_flag: has_open_assumptions
@@ -101,22 +101,7 @@ steps:
             assembly_mode: interview
       - kind: checkpoint
         id: analysis-assumption-decision#{current_assumption.id}
-        message: "Assumption {current_assumption.id}: {current_assumption.statement}. Resolve now or defer."
-        blocking: true
-        options:
-          - id: resolve-inline
-            label: Resolve now
-            description: Provide resolution for this assumption
-            effect:
-              setVariable:
-                assumption_resolved_inline: true
-          - id: defer-to-stakeholder
-            label: Defer to stakeholder review
-            description: Queue this assumption for stakeholder review
-            effect:
-              setVariable:
-                assumption_deferred: true
-                has_deferred_assumptions: true
+        ref: assumption-decision
       - kind: technique
         id: record-response
         technique: review-assumptions::record

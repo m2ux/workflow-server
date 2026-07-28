@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -27,6 +27,10 @@ The finalized specification staged for promotion.
 
 `final-spec.md`
 
+### final_specification_path
+
+Absolute path to the staged final specification.
+
 ### change_summary
 
 Human-readable summary of all applied changes and the validation status.
@@ -35,19 +39,19 @@ Human-readable summary of all applied changes and the validation status.
 
 `change-summary.md`
 
+### change_summary_path
+
+Absolute path to the written change summary.
+
 ## Protocol
 
 ### 1. Assemble Final Specification
 
-- Copy the validation-passed `{working_specification}` into `{final_specification}` in `{planning_folder_path}`.
+- Copy the validation-passed `{working_specification}` into `{final_specification}` in `{planning_folder_path}`; capture its written location as `{final_specification_path}`.
 
 ### 2. Write Change Summary
 
-- Summarize the applied changes — new, updated, and deprecated requirements and added sources — from `{requirements_analysis}` into `{change_summary}` using the [change-summary](../resources/change-summary.md) structure.
-
-### 3. Present for Promotion
-
-- Present `{final_specification}` and `{change_summary}` for the user to review and promote to `{target_doc_path}`.
+- Summarize the applied changes — new, updated, and deprecated requirements and added sources — from `{requirements_analysis}` into `{change_summary}` using the [change-summary](../resources/change-summary.md) structure; capture its written location as `{change_summary_path}`.
 
 ## Rules
 

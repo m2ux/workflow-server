@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.5.0
+  version: 2.5.1
 ---
 
 ## Capability
@@ -53,7 +53,7 @@ List of `{ rule_id, detail }` entries, one per failed conformance rule; empty wh
 
 Callers bind `{pr_template_variant}` at the step. Selection for [render](./render.md):
 
-1. If `{is_review_mode}` → [Consolidated Review Format](../../resources/review-mode.md#consolidated-review-format)
+1. If `{is_review_mode}` → [Review Comment Template](../../resources/review-mode.md#review-comment-template)
 2. If `{pr_template_variant}` is `initial` → [Template (Initial)](../../resources/pr-description.md#template-initial)
 3. If `{pr_template_variant}` is `final` → [Template (Final)](../../resources/pr-description.md#template-final); apply [lifecycle tense](../../resources/pr-description.md#lifecycle-tense)
 
@@ -71,7 +71,7 @@ Typical binds: `plan-prepare` → `initial`; `strategic-review` and `submit-for-
 
 ### pr-body-conformance
 
-- all-mandated-sections-present: Every section the selected pr-description template ([Template (Initial)](../../resources/pr-description.md#template-initial) or [Template (Final)](../../resources/pr-description.md#template-final)) mandates is present in the rendered body as a literal heading. The Final template mandates Summary, the Issue/Engineering link row, Motivation, Changes, 🤖 AI Assistance, 📌 Submission Checklist, 🔱 Fork Strategy, and 🗹 TODO before merging; the Initial template mandates that set minus 🤖 AI Assistance. Optional sections (Migration Notes, Screenshots) are never required. A missing mandated section is a finding naming that section — the intra-section rules below do not substitute for this check, since a body that omits a section passes them vacuously.
+- all-mandated-sections-present: Every section the selected pr-description template variant mandates is present in the rendered body as a literal heading. The mandated sections are defined in the resource — [Template (Initial)](../../resources/pr-description.md#template-initial) or [Template (Final)](../../resources/pr-description.md#template-final) — and are checked by name (e.g. `grep -F` each `## <heading>` the template requires, plus the Issue/Engineering link row). Optional sections (`Migration Notes`, `Screenshots`) are never required. A missing mandated section is a finding naming that section — the intra-section rules below do not substitute for this check, since a body that omits a section passes them vacuously.
 - summary-max-two-sentences: Summary section is 1-2 sentences, leads with the outcome, and includes measurable impact when available.
 - engineering-link-mandatory: Engineering link is present, resolved from the parent repo's `git remote get-url origin` and current `git branch --show-current`, and resolves to a committed file on the remote.
 - issue-link-or-explicit-placeholder: Issue line is present. When `issue-skipped == true`, render `🐛 _Issue: skipped_` as an explicit placeholder rather than dropping the line or fabricating a number.
@@ -85,7 +85,7 @@ Create PRs as drafts initially. Convert to ready-for-review only when a later st
 
 ### posting
 
-- review-comment-verbatim: The `post-review-comment` op posts the confirmed `{review_summary}` to the PR byte-for-byte via `gh pr review` — never re-rendering, paraphrasing, or summarizing it. The summary is authored to [review-mode](../../resources/review-mode.md#consolidated-review-format); posting is a transport step, not a re-authoring one. This is distinct from `render`, which PATCHes the PR *description* body from a template.
+- review-comment-verbatim: The `post-review-comment` op posts the confirmed `{review_summary}` to the PR byte-for-byte via `gh pr review` — never re-rendering, paraphrasing, or summarizing it. The summary is authored to [review-mode](../../resources/review-mode.md#review-comment-template); posting is a transport step, not a re-authoring one. This is distinct from `render`, which PATCHes the PR *description* body from a template.
 
 ### tool-usage
 

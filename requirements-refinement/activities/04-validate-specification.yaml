@@ -1,5 +1,5 @@
 id: validate-specification
-version: 1.3.0
+version: 1.4.0
 name: Validate Specification
 description: Validate the updated specification against structural, identifier-uniqueness, consistency, and protocol-conformance checks, categorize each issue as critical or correctable, and route to finalization, another correction pass, or failure reporting.
 required: true
@@ -7,6 +7,9 @@ steps:
   - kind: technique
     id: validate-specification
     technique: validate-specification
+    actions:
+      - action: message
+        message: "Validation of pass {correction_iteration} categorizes each finding as critical or correctable and records the source-coverage result ([validation report]({validation_report_path}))."
 transitions:
   - to: finalize-specification
     condition:

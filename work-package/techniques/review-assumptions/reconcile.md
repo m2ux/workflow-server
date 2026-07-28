@@ -123,7 +123,7 @@ Convergence is reached when no open assumption in the log — including assumpti
 
 ### handoff-to-residue
 
-After convergence, set `{has_resolvable_assumptions}` false and `{has_open_assumptions}` from the irreducible open set. When bound as `{analyse}` inside [analyse-challenge](../analyse-challenge/TECHNIQUE.md), [challenge](../analyse-challenge/challenge.md) / [combine](../analyse-challenge/combine.md) may further shrink that set before the activity gates [interview](./interview.md) on `{has_open_assumptions}`.
+After convergence, set `{has_resolvable_assumptions}` false and `{has_open_assumptions}` from the irreducible open set. When bound as `{analyse_technique}` inside [analyse-challenge](../analyse-challenge/TECHNIQUE.md), [challenge](../analyse-challenge/challenge.md) / [combine](../analyse-challenge/combine.md) may further shrink that set before the activity gates [interview](./interview.md) on `{has_open_assumptions}`.
 
 | Element | Source |
 |---------|--------|

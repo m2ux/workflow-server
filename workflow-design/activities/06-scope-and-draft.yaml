@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.10.0
+version: 1.11.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file, then planning-artifact conformance verify.
 required: true
@@ -171,6 +171,117 @@ steps:
         bare_filename: draft-attestation.md
         artifact_content: reviewed_blocks
         target_dir: planning_folder_path
+  - kind: technique
+    id: verify-artifact-conforms
+    technique: verify-artifact-conforms
+  - kind: technique
+    id: pre-attestation-audit-principles
+    technique: audit-principles
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "=="
+      value: update
+  - kind: technique
+    id: pre-attestation-audit-anti-patterns
+    technique: audit-anti-patterns
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "=="
+      value: update
+  - kind: action
+    id: classify-pre-attestation-findings
+    condition:
+      type: simple
+      variable: operation_type
+      operator: "=="
+      value: update
+    actions:
+      - action: set
+        target: principle_finding_count
+        message: Count of verified findings reported by `audit-principles` in `principle_findings`; 0 when the audit reports none.
+      - action: set
+        target: anti_pattern_finding_count
+        message: Count of verified findings reported by `audit-anti-patterns` in `anti_pattern_findings`; 0 when the audit reports none.
+      - action: set
+        target: needs_audit_fixes
+        message: Set true iff any of `principle_finding_count` or `anti_pattern_finding_count` is greater than 0; false when both are 0.
+      - action: set
+        target: has_critical_finding
+        message: Set true iff any verified pre-attestation finding (from `audit-principles` or `audit-anti-patterns`) is Critical severity — a schema-invalid or structurally broken construct that must not be committed.
+  - kind: loop
+    id: pre-attestation-fix-cycle
+    name: Pre-Attestation Fix Cycle
+    loopType: while
+    condition:
+      type: simple
+      variable: needs_audit_fixes
+      operator: "=="
+      value: true
+    maxIterations: 2
+    steps:
+      - kind: technique
+        id: apply-pre-attestation-fixes
+        technique: apply-audit-fixes
+      - kind: technique
+        id: re-audit-principles
+        technique: audit-principles
+      - kind: technique
+        id: re-audit-anti-patterns
+        technique: audit-anti-patterns
+      - kind: action
+        id: reassess-pre-attestation-findings
+        actions:
+          - action: set
+            target: principle_finding_count
+            message: Re-count verified findings reported by `audit-principles` after the fix pass; 0 when the audit reports none.
+          - action: set
+            target: anti_pattern_finding_count
+            message: Re-count verified findings reported by `audit-anti-patterns` after the fix pass; 0 when the audit reports none.
+          - action: set
+            target: needs_audit_fixes
+            message: After re-running the pre-attestation audits, set true iff any of `principle_finding_count` or `anti_pattern_finding_count` is still greater than 0; false when both are 0.
+          - action: set
+            target: has_critical_finding
+            message: After re-running the pre-attestation audits, set true iff any remaining finding is Critical severity.
+  - kind: action
+    id: pre-attestation-findings-remain
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "=="
+          value: update
+        - type: simple
+          variable: needs_audit_fixes
+          operator: "=="
+          value: true
+    actions:
+      - action: message
+        message: "Pre-attestation audit: {principle_finding_count} principle + {anti_pattern_finding_count} anti-pattern findings remain after the fix cycle — [principle findings]({principle_findings_path}), [anti-pattern findings]({anti_pattern_findings_path})."
+  - kind: checkpoint
+    id: pre-attestation-blocker
+    condition:
+      type: simple
+      variable: has_critical_finding
+      operator: "=="
+      value: true
+    message: "A Critical pre-attestation finding remains after the fix cycle — a schema-invalid or structurally broken construct. Drafted content must not be attested while it stands."
+    blocking: true
+    options:
+      - id: redraft
+        label: Return to drafting
+        description: Re-enter the drafting loop to correct the Critical finding before attestation.
+        effect:
+          transitionTo: scope-and-draft
+      - id: attest-with-deferral
+        label: Attest, recording the finding as a deferral
+        description: Proceed to attestation, accepting the Critical finding as a recorded deferral rather than a blocker.
+        effect:
+          setVariable:
+            has_critical_finding: false
   - kind: checkpoint
     id: draft-attestation
     condition:
@@ -194,7 +305,7 @@ steps:
     condition:
       type: simple
       variable: operation_type
-      operator: ==
+      operator: "=="
       value: update
     message: "All {file_count} files modified ([draft attestation]({draft_attestation_path}))."
     blocking: false
@@ -213,9 +324,6 @@ steps:
       - id: redraft-all
         label: Redraft all changes
         description: Entire drafting pass requires restart from scratch.
-  - kind: technique
-    id: verify-artifact-conforms
-    technique: verify-artifact-conforms
 transitions:
   - to: quality-review
     isDefault: true
@@ -225,3 +333,4 @@ outcome:
   - The full workflow is drafted with create-mode per-file review or a single update-mode batch attestation, giving the user a known-good body of content rather than an unreviewed dump
   - Every YAML file is schema-valid, so downstream loading and validation start from clean, conformant content
   - Planning artifacts conform to the design canonical-home map and template line budgets before quality-review audits
+  - In update mode, anti-pattern and design-principle audits run before attestation, so no content is batch-reviewed without first passing the canon

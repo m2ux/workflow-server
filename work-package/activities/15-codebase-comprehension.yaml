@@ -40,7 +40,7 @@ steps:
           name: analyse-challenge::run-loop
           inputs:
             concern_kind: open_questions
-            analyse: codebase-comprehension::deep-dive
+            analyse_technique: codebase-comprehension::deep-dive
             challenge_perspectives: '["pedagogy", "rejected-paths"]'
             convergence_flag: needs_comprehension
             residue_flag: has_open_questions

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -28,14 +28,6 @@ Count of correction passes performed so far; `0` on the initial update.
 #### default
 
 `0`
-
-### max_correction_iterations
-
-Maximum number of correction passes before refinement cannot complete automatically.
-
-#### default
-
-`3`
 
 ## Rules
 
