@@ -5,6 +5,20 @@ description: "Walk every criteria home against each target's definition surface 
 required: true
 steps:
   - kind: technique
+    id: author-fixes
+    technique:
+      name: workflow-definition::yaml-authoring
+      inputs:
+        selected_findings: verified_findings
+    when: remediation_round > 0
+  - kind: technique
+    id: record-fixes
+    technique:
+      name: workflow-definition::apply-audit-fixes
+      inputs:
+        selected_findings: verified_findings
+    when: remediation_round > 0
+  - kind: technique
     id: load-known-findings
     technique: workflow-definition::load-known-findings
   - kind: technique
@@ -38,7 +52,7 @@ steps:
             target: register_sections
             message: "This target's register section appended to the sections already gathered: `{target_workflow_id}` with `{audit_findings}`, the divergences in `{coverage_ledger}`, and `{fail_count}`. Appends; never replaces a prior target's section."
 transitions:
-  - to: __terminal__
+  - to: validate-and-commit
     isDefault: true
 outcome:
   - Every criteria home is walked once per target against the working tree, so a finding is attributed to this change rather than to the catalogue it came from

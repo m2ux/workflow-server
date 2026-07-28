@@ -28,4 +28,16 @@ Definition: [`06-scope-and-draft.yaml`](./06-scope-and-draft.yaml). Leads to [Qu
 
 Runs in every mode. Loads the exclusions a prior pass accepted, takes the library catalog as the reference set, then sweeps each target in scope: resolves that target's current surface and the base ref its change is measured against, resolves the references other workflows hold into it, walks every criteria home against both surfaces in a single pass, and runs the repository's definition guards against the tree the run edits. A create or update run sweeps its one target; a review run sweeps each named target in turn, accumulating a register section per target.
 
-Definition: [`08-quality-review.yaml`](./08-quality-review.yaml).
+On a remediation round it also applies the fixes the re-derived findings prescribe and records what changed, before sweeping again.
+
+Definition: [`08-quality-review.yaml`](./08-quality-review.yaml). Leads to [Validate and Commit](#09-validate-and-commit).
+
+---
+
+### 09. Validate and Commit
+
+Terminal. Re-derives every high-severity finding independently, refuting by default, so a finding that cannot be reproduced from the construct it cites never drives an edit. Persists the register, then takes the operator's disposition: a review run closes on the register or escalates to update mode against one narrowed target; a create or update run either remediates and returns to the sweep, or accepts the findings as recorded. Past the disposition it re-verifies scope in both directions, gates the commit, then commits, publishes a non-draft pull request, writes the close-out and tears the worktree down.
+
+Everything past the disposition is suppressed on any path that has chosen to go back, because a recorded transition does not itself move the run. A remediation round therefore leaves the worktree, the branch and the register intact for the round that resolves it.
+
+Definition: [`09-validate-and-commit.yaml`](./09-validate-and-commit.yaml). Terminal in every mode.

@@ -144,6 +144,13 @@ steps:
         effect:
           setVariable:
             removals_approved: false
+  - kind: action
+    id: clear-review-seed
+    when: update_seeded_from_review == true
+    actions:
+      - action: set
+        target: update_seeded_from_review
+        value: false
 transitions:
   - to: __terminal__
     condition:
@@ -156,6 +163,18 @@ transitions:
         - type: simple
           variable: review_scope_confirmed
           operator: "!="
+          value: true
+  - to: quality-review
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: ==
+          value: review
+        - type: simple
+          variable: review_scope_confirmed
+          operator: ==
           value: true
   - to: scope-and-draft
     isDefault: true

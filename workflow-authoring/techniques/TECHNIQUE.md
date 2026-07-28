@@ -41,6 +41,7 @@ No fact category below has a second canonical home. [verify-artifact-conforms](.
 | Impact classification, integrity verdicts, removals inventory | `impact-analysis.md` |
 | File manifest, structural design, drafting order | `scope-manifest.md` |
 | Audit findings, coverage divergences, accepted exclusions | `findings-register.md` |
+| Delivery, limitations, deferrals, the run's own retrospective | `COMPLETE.md` |
 | Session index — progress, links, artifact pointers | `README.md` |
 
 ### apply-canon-when-authoring

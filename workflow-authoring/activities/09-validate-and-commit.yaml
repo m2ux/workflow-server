@@ -1,0 +1,202 @@
+id: validate-and-commit
+version: 1.0.0
+name: Validate and Commit
+description: "Re-derive the high-severity findings independently, persist the register, take the operator's disposition, then re-verify scope, commit, publish and close out. Terminal."
+required: true
+steps:
+  - kind: technique
+    id: verify-audit-findings
+    technique: workflow-definition::verify-high-findings
+  - kind: technique
+    id: compile-register
+    technique: workflow-definition::compile-report
+  - kind: technique
+    id: persist-register
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: findings-register.md
+        artifact_content: findings_register
+      outputs:
+        written_artifact: report_path
+  - kind: checkpoint
+    id: review-disposition
+    condition:
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: review
+    message: "{open_finding_count} findings are open across {target_workflow_ids} ([findings register]({report_path}))."
+    blocking: true
+    options:
+      - id: fix-issues
+        label: Fix the findings
+        description: Escalate to update mode against one escalated target; supply a corrected `target_workflow_ids` holding only that target.
+        effect:
+          setVariable:
+            operation_type: update
+            update_seeded_from_review: true
+          transitionTo: intake-and-context
+      - id: report-only
+        label: Close on the register
+        description: The register is the run's terminal record; make no changes.
+        effect:
+          setVariable:
+            review_closed: true
+  - kind: checkpoint
+    id: audit-disposition#{remediation_round}
+    condition:
+      type: or
+      conditions:
+        - type: simple
+          variable: has_critical_finding
+          operator: ==
+          value: true
+        - type: simple
+          variable: open_finding_count
+          operator: ">"
+          value: 0
+    message: "{open_finding_count} findings are open, critical={has_critical_finding}, blocked units={has_coverage_gap}, files failing validation={fail_count} ([findings register]({report_path}))."
+    blocking: true
+    options:
+      - id: remediate
+        label: Remediate before attesting
+        description: Return to the sweep and apply the fixes the re-derived findings prescribe.
+        effect:
+          setVariable:
+            remediation_selected: true
+          transitionTo: quality-review
+      - id: accept-and-record
+        label: Accept the findings as recorded
+        description: The open findings stand as recorded in the register; proceed to attestation.
+        effect:
+          setVariable:
+            remediation_selected: false
+            has_critical_finding: false
+  - kind: action
+    id: bump-remediation-round
+    when: remediation_selected == true
+    actions:
+      - action: set
+        target: remediation_round
+        message: The next remediation round for this run, one higher than the round just answered.
+  - kind: technique
+    id: verify-scope-manifest
+    technique: workflow-definition::scope-verification
+    when: operation_type != 'review' && remediation_selected != true && review_closed != true && update_seeded_from_review != true
+  - kind: technique
+    id: verify-planning-readme
+    technique:
+      name: workflow-engine::verify-readme-conforms
+      inputs:
+        seed_profile: workflow-authoring/readme-seed
+    when: remediation_selected != true && review_closed != true && update_seeded_from_review != true
+  - kind: checkpoint
+    id: approve-to-commit#{remediation_round}
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: "!="
+          value: review
+        - type: simple
+          variable: remediation_selected
+          operator: "!="
+          value: true
+        - type: simple
+          variable: review_closed
+          operator: "!="
+          value: true
+        - type: simple
+          variable: update_seeded_from_review
+          operator: "!="
+          value: true
+    message: "{addressed_count} of {total_count} manifest entries are delivered with {unaddressed_count} outstanding, {open_finding_count} findings open, blocked units={has_coverage_gap} ([change brief]({change_brief_path}), [scope manifest]({scope_manifest_path}), [findings register]({report_path}))."
+    blocking: true
+    options:
+      - id: approved
+        label: Approved — commit and publish
+        description: The change is complete as recorded and may be committed and published.
+        effect:
+          setVariable:
+            commit_approved: true
+      - id: return-to-draft
+        label: Return to drafting
+        description: The change is not ready; re-enter drafting to revise the files.
+        effect:
+          transitionTo: scope-and-draft
+  - kind: technique
+    id: compose-publication
+    technique: workflow-definition::compose-publication
+    when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
+  - kind: technique
+    id: stage-and-commit
+    technique:
+      name: version-control::commit-regular-files
+      inputs:
+        branch: workflow_branch
+    when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
+  - kind: technique
+    id: verify-commit
+    technique: workflow-definition::commit-verification
+    when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
+  - kind: technique
+    id: push-branch
+    technique:
+      name: version-control::push-branch
+      inputs:
+        repo_path: target_path
+        branch: workflow_branch
+        remote_name: origin
+    when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
+  - kind: technique
+    id: open-pr
+    technique:
+      name: github-cli-protocol::create-pr
+      inputs:
+        repo_path: target_path
+        branch: workflow_branch
+        base_branch: workflows
+        as_draft: false
+    when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
+  - kind: technique
+    id: compose-close-out
+    technique: workflow-definition::create-completion-doc
+    when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
+  - kind: technique
+    id: persist-close-out
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: COMPLETE.md
+        artifact_content: completion_document
+    when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
+  - kind: technique
+    id: remove-worktree
+    technique:
+      name: work-package::manage-git::remove-worktree
+      inputs:
+        component_name: workflows
+    when: worktree_created == true && commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
+transitions:
+  - to: quality-review
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: remediation_selected
+          operator: ==
+          value: true
+        - type: simple
+          variable: remediation_round
+          operator: "<"
+          value: 3
+  - to: __terminal__
+    isDefault: true
+outcome:
+  - Every high-severity finding is re-derived independently before it drives an edit, so a finding that cannot be reproduced never reaches remediation
+  - The register is the run's durable audit record, and a review run terminates on it with nothing committed
+  - Scope is re-verified in both directions before the commit gate, not after it
+  - A remediation round leaves the worktree, the branch and the register intact, because nothing past the disposition runs until the round that resolves it
+  - A committed change is published as a non-draft pull request with a close-out that states delivery, limitations and what the run itself taught
