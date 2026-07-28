@@ -25,9 +25,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "activity": "start-work-package",
       "artifacts": [
         "prior-feedback-triage.md",
+        "name: README.md",
       ],
       "artifactsWritten": [
         "01-prior-feedback-triage.md",
+        "01-name: README.md",
       ],
       "checkpoints": [
         {
@@ -56,6 +58,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "verify-signing-precondition",
         "detect-merge-strategy",
         "detect-project-type",
+        "announce-project-type",
         "check-issue",
         "bind-planning-folder-path",
         "initialize-planning-folder",
@@ -102,7 +105,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "document-philosophy",
         "collect-assumptions",
         "create-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
       ],
       "unresolved": [],
     },
@@ -110,13 +113,9 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "portfolio-{lens_name}.md",
-        "portfolio-synthesis.md",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-portfolio-lens_name.md",
-        "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -126,13 +125,10 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "build-comprehension",
         "create-comprehension-artifact",
         "initial-deep-dive",
-        "initial-lens-pass",
         "update-artifact-initial",
         "revise-initial-questions",
-        "select-area",
-        "portfolio-lens-pass",
+        "analyse-challenge-pass",
         "update-artifact",
-        "revise-open-questions",
       ],
       "unresolved": [],
     },
@@ -165,7 +161,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "present-solution-overview",
         "collect-assumptions",
         "update-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "create-todos",
         "sync-branch",
         "update-pr",
@@ -180,22 +176,13 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "artifactsWritten": [
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "assumption-decision#{current_assumption.id}",
-          "option": "accept",
-          "setVariable": {
-            "assumption_resolved_inline": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "valid",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "evaluate-open-assumptions",
-        "present-assumption",
-        "record-decision",
+        "analyse-challenge-loop",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -210,19 +197,8 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "08-provenance-log.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "switch-model-pre-impl",
-          "option": "continue-current",
-          "setVariable": undefined,
-        },
-        {
-          "id": "switch-model-post-impl",
-          "option": "continue-current",
-          "setVariable": undefined,
-        },
-      ],
-      "manifestStatus": "warning",
+      "checkpoints": [],
+      "manifestStatus": "valid",
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -233,11 +209,8 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "log-provenance",
         "self-review",
         "collect-assumptions",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "present-resolved-assumptions",
-        "interview-open-assumptions",
-        "present-assumption",
-        "record-response",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -316,7 +289,16 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "artifactsWritten": [
         "10-test-suite-review.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "local-validation-permission",
+          "option": "run-locally",
+          "setVariable": {
+            "mark_progress_na": false,
+            "run_local_validation": true,
+          },
+        },
+      ],
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
@@ -339,6 +321,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "review-strategy",
+        "refresh-pr-body",
         "verify-readme",
         "verify-artifact-conformance",
         "ensure-changes-folder-entry",
@@ -373,6 +356,13 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           },
         },
         {
+          "id": "build-artifact-check",
+          "option": "none-needed",
+          "setVariable": {
+            "build_dependent_artifacts_pending": false,
+          },
+        },
+        {
           "id": "review-outcome",
           "option": "approved",
           "setVariable": {
@@ -404,13 +394,21 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
+        "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
+        "14-session-trace.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "retrospective-confirm",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
       "manifestStatus": "valid",
       "next": null,
       "orphanCheckpoints": [],
@@ -457,9 +455,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "start-work-package",
       "artifacts": [
         "prior-feedback-triage.md",
+        "name: README.md",
       ],
       "artifactsWritten": [
         "01-prior-feedback-triage.md",
+        "01-name: README.md",
       ],
       "checkpoints": [
         {
@@ -488,6 +488,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "verify-signing-precondition",
         "detect-merge-strategy",
         "detect-project-type",
+        "announce-project-type",
         "check-issue",
         "bind-planning-folder-path",
         "initialize-planning-folder",
@@ -534,7 +535,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "document-philosophy",
         "collect-assumptions",
         "create-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
       ],
       "unresolved": [],
     },
@@ -542,13 +543,9 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "portfolio-{lens_name}.md",
-        "portfolio-synthesis.md",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-portfolio-lens_name.md",
-        "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -558,13 +555,10 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "build-comprehension",
         "create-comprehension-artifact",
         "initial-deep-dive",
-        "initial-lens-pass",
         "update-artifact-initial",
         "revise-initial-questions",
-        "select-area",
-        "portfolio-lens-pass",
+        "analyse-challenge-pass",
         "update-artifact",
-        "revise-open-questions",
       ],
       "unresolved": [],
     },
@@ -618,13 +612,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "05-implementation-analysis.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "analysis-confirmed",
-          "option": "confirmed",
-          "setVariable": undefined,
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "warning",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
@@ -633,11 +621,8 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "collect-assumptions",
         "document",
         "update-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "present-resolved-assumptions",
-        "interview-open-assumptions",
-        "present-assumption",
-        "record-response",
       ],
       "unresolved": [],
     },
@@ -660,7 +645,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -670,7 +655,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "present-solution-overview",
         "collect-assumptions",
         "update-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "create-todos",
         "sync-branch",
         "update-pr",
@@ -685,22 +670,13 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "artifactsWritten": [
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "assumption-decision#{current_assumption.id}",
-          "option": "accept",
-          "setVariable": {
-            "assumption_resolved_inline": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "valid",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "evaluate-open-assumptions",
-        "present-assumption",
-        "record-decision",
+        "analyse-challenge-loop",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -715,19 +691,8 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "08-provenance-log.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "switch-model-pre-impl",
-          "option": "continue-current",
-          "setVariable": undefined,
-        },
-        {
-          "id": "switch-model-post-impl",
-          "option": "continue-current",
-          "setVariable": undefined,
-        },
-      ],
-      "manifestStatus": "warning",
+      "checkpoints": [],
+      "manifestStatus": "valid",
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -738,11 +703,8 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "log-provenance",
         "self-review",
         "collect-assumptions",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "present-resolved-assumptions",
-        "interview-open-assumptions",
-        "present-assumption",
-        "record-response",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -821,7 +783,16 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "artifactsWritten": [
         "10-test-suite-review.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "local-validation-permission",
+          "option": "run-locally",
+          "setVariable": {
+            "mark_progress_na": false,
+            "run_local_validation": true,
+          },
+        },
+      ],
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
@@ -844,6 +815,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "review-strategy",
+        "refresh-pr-body",
         "verify-readme",
         "verify-artifact-conformance",
         "ensure-changes-folder-entry",
@@ -878,6 +850,13 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           },
         },
         {
+          "id": "build-artifact-check",
+          "option": "none-needed",
+          "setVariable": {
+            "build_dependent_artifacts_pending": false,
+          },
+        },
+        {
           "id": "review-outcome",
           "option": "approved",
           "setVariable": {
@@ -909,13 +888,21 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
+        "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
+        "14-session-trace.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "retrospective-confirm",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
       "manifestStatus": "valid",
       "next": null,
       "orphanCheckpoints": [],
@@ -965,9 +952,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "start-work-package",
       "artifacts": [
         "prior-feedback-triage.md",
+        "name: README.md",
       ],
       "artifactsWritten": [
         "01-prior-feedback-triage.md",
+        "01-name: README.md",
       ],
       "checkpoints": [
         {
@@ -996,6 +985,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "verify-signing-precondition",
         "detect-merge-strategy",
         "detect-project-type",
+        "announce-project-type",
         "check-issue",
         "bind-planning-folder-path",
         "initialize-planning-folder",
@@ -1042,7 +1032,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "document-philosophy",
         "collect-assumptions",
         "create-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
       ],
       "unresolved": [],
     },
@@ -1050,13 +1040,9 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "portfolio-{lens_name}.md",
-        "portfolio-synthesis.md",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-portfolio-lens_name.md",
-        "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -1066,13 +1052,10 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "build-comprehension",
         "create-comprehension-artifact",
         "initial-deep-dive",
-        "initial-lens-pass",
         "update-artifact-initial",
         "revise-initial-questions",
-        "select-area",
-        "portfolio-lens-pass",
+        "analyse-challenge-pass",
         "update-artifact",
-        "revise-open-questions",
       ],
       "unresolved": [],
     },
@@ -1137,13 +1120,10 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "collect-assumptions",
         "document",
         "update-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "present-resolved-assumptions",
         "derive-context-scope",
         "announce-derived-context-scope",
-        "interview-open-assumptions",
-        "present-assumption",
-        "record-response",
       ],
       "unresolved": [],
     },
@@ -1157,14 +1137,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "05-implementation-analysis.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "analysis-confirmed",
-          "option": "confirmed",
-          "setVariable": undefined,
-        },
-      ],
-      "manifestStatus": "warning",
+      "checkpoints": [],
+      "manifestStatus": "valid",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1172,11 +1146,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "collect-assumptions",
         "document",
         "update-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "present-resolved-assumptions",
-        "interview-open-assumptions",
-        "present-assumption",
-        "record-response",
       ],
       "unresolved": [],
     },
@@ -1199,7 +1170,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1209,7 +1180,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "present-solution-overview",
         "collect-assumptions",
         "update-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "create-todos",
         "sync-branch",
         "update-pr",
@@ -1224,22 +1195,13 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "artifactsWritten": [
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "assumption-decision#{current_assumption.id}",
-          "option": "accept",
-          "setVariable": {
-            "assumption_resolved_inline": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "valid",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "evaluate-open-assumptions",
-        "present-assumption",
-        "record-decision",
+        "analyse-challenge-loop",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -1254,19 +1216,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "08-provenance-log.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "switch-model-pre-impl",
-          "option": "continue-current",
-          "setVariable": undefined,
-        },
-        {
-          "id": "switch-model-post-impl",
-          "option": "continue-current",
-          "setVariable": undefined,
-        },
-      ],
-      "manifestStatus": "warning",
+      "checkpoints": [],
+      "manifestStatus": "valid",
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1277,11 +1228,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "log-provenance",
         "self-review",
         "collect-assumptions",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "present-resolved-assumptions",
-        "interview-open-assumptions",
-        "present-assumption",
-        "record-response",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -1360,7 +1308,16 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "artifactsWritten": [
         "10-test-suite-review.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "local-validation-permission",
+          "option": "run-locally",
+          "setVariable": {
+            "mark_progress_na": false,
+            "run_local_validation": true,
+          },
+        },
+      ],
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
@@ -1383,6 +1340,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "review-strategy",
+        "refresh-pr-body",
         "verify-readme",
         "verify-artifact-conformance",
         "ensure-changes-folder-entry",
@@ -1417,6 +1375,13 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           },
         },
         {
+          "id": "build-artifact-check",
+          "option": "none-needed",
+          "setVariable": {
+            "build_dependent_artifacts_pending": false,
+          },
+        },
+        {
           "id": "review-outcome",
           "option": "approved",
           "setVariable": {
@@ -1448,13 +1413,21 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
+        "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
+        "14-session-trace.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "retrospective-confirm",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
       "manifestStatus": "valid",
       "next": null,
       "orphanCheckpoints": [],
@@ -1503,9 +1476,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "start-work-package",
       "artifacts": [
         "prior-feedback-triage.md",
+        "name: README.md",
       ],
       "artifactsWritten": [
         "01-prior-feedback-triage.md",
+        "01-name: README.md",
       ],
       "checkpoints": [
         {
@@ -1534,6 +1509,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "verify-signing-precondition",
         "detect-merge-strategy",
         "detect-project-type",
+        "announce-project-type",
         "check-issue",
         "bind-planning-folder-path",
         "initialize-planning-folder",
@@ -1580,7 +1556,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "document-philosophy",
         "collect-assumptions",
         "create-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
       ],
       "unresolved": [],
     },
@@ -1588,13 +1564,9 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "portfolio-{lens_name}.md",
-        "portfolio-synthesis.md",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-portfolio-lens_name.md",
-        "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -1604,13 +1576,10 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "build-comprehension",
         "create-comprehension-artifact",
         "initial-deep-dive",
-        "initial-lens-pass",
         "update-artifact-initial",
         "revise-initial-questions",
-        "select-area",
-        "portfolio-lens-pass",
+        "analyse-challenge-pass",
         "update-artifact",
-        "revise-open-questions",
       ],
       "unresolved": [],
     },
@@ -1635,13 +1604,10 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "collect-assumptions",
         "document",
         "update-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "present-resolved-assumptions",
         "derive-context-scope",
         "announce-derived-context-scope",
-        "interview-open-assumptions",
-        "present-assumption",
-        "record-response",
       ],
       "unresolved": [],
     },
@@ -1655,14 +1621,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "05-implementation-analysis.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "analysis-confirmed",
-          "option": "confirmed",
-          "setVariable": undefined,
-        },
-      ],
-      "manifestStatus": "warning",
+      "checkpoints": [],
+      "manifestStatus": "valid",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1670,11 +1630,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "collect-assumptions",
         "document",
         "update-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "present-resolved-assumptions",
-        "interview-open-assumptions",
-        "present-assumption",
-        "record-response",
       ],
       "unresolved": [],
     },
@@ -1697,7 +1654,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1707,7 +1664,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "present-solution-overview",
         "collect-assumptions",
         "update-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "create-todos",
         "sync-branch",
         "update-pr",
@@ -1722,22 +1679,13 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "artifactsWritten": [
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "assumption-decision#{current_assumption.id}",
-          "option": "accept",
-          "setVariable": {
-            "assumption_resolved_inline": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "valid",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "evaluate-open-assumptions",
-        "present-assumption",
-        "record-decision",
+        "analyse-challenge-loop",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -1752,19 +1700,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "08-provenance-log.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "switch-model-pre-impl",
-          "option": "continue-current",
-          "setVariable": undefined,
-        },
-        {
-          "id": "switch-model-post-impl",
-          "option": "continue-current",
-          "setVariable": undefined,
-        },
-      ],
-      "manifestStatus": "warning",
+      "checkpoints": [],
+      "manifestStatus": "valid",
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1775,11 +1712,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "log-provenance",
         "self-review",
         "collect-assumptions",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "present-resolved-assumptions",
-        "interview-open-assumptions",
-        "present-assumption",
-        "record-response",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -1858,7 +1792,16 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "artifactsWritten": [
         "10-test-suite-review.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "local-validation-permission",
+          "option": "run-locally",
+          "setVariable": {
+            "mark_progress_na": false,
+            "run_local_validation": true,
+          },
+        },
+      ],
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
@@ -1881,6 +1824,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "review-strategy",
+        "refresh-pr-body",
         "verify-readme",
         "verify-artifact-conformance",
         "ensure-changes-folder-entry",
@@ -1915,6 +1859,13 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           },
         },
         {
+          "id": "build-artifact-check",
+          "option": "none-needed",
+          "setVariable": {
+            "build_dependent_artifacts_pending": false,
+          },
+        },
+        {
           "id": "review-outcome",
           "option": "approved",
           "setVariable": {
@@ -1946,13 +1897,21 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
+        "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
+        "14-session-trace.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "retrospective-confirm",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
       "manifestStatus": "valid",
       "next": null,
       "orphanCheckpoints": [],
@@ -1999,9 +1958,11 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "activity": "start-work-package",
       "artifacts": [
         "prior-feedback-triage.md",
+        "name: README.md",
       ],
       "artifactsWritten": [
         "01-prior-feedback-triage.md",
+        "01-name: README.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -2017,6 +1978,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "verify-signing-precondition",
         "detect-merge-strategy",
         "detect-project-type",
+        "announce-project-type",
         "check-issue",
         "bind-planning-folder-path",
         "initialize-planning-folder",
@@ -2058,7 +2020,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "document-philosophy",
         "collect-assumptions",
         "create-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "assess-ticket-completeness",
         "set-review-mode-path",
       ],
@@ -2068,13 +2030,9 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "portfolio-{lens_name}.md",
-        "portfolio-synthesis.md",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-portfolio-lens_name.md",
-        "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -2084,13 +2042,10 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "build-comprehension",
         "create-comprehension-artifact",
         "initial-deep-dive",
-        "initial-lens-pass",
         "update-artifact-initial",
         "revise-initial-questions",
-        "select-area",
-        "portfolio-lens-pass",
+        "analyse-challenge-pass",
         "update-artifact",
-        "revise-open-questions",
       ],
       "unresolved": [],
     },
@@ -2104,13 +2059,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "05-implementation-analysis.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "analysis-confirmed",
-          "option": "confirmed",
-          "setVariable": undefined,
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "valid",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
@@ -2120,9 +2069,8 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "collect-assumptions",
         "document",
         "update-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "present-resolved-assumptions",
-        "interview-open-assumptions",
       ],
       "unresolved": [],
     },
@@ -2139,7 +2087,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2149,7 +2097,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "present-solution-overview",
         "collect-assumptions",
         "update-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "create-todos",
         "sync-branch",
       ],
@@ -2169,8 +2117,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "evaluate-open-assumptions",
-        "present-assumption",
-        "record-decision",
+        "analyse-challenge-loop",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -2186,7 +2133,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "09-lean-change.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "post-impl-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2241,7 +2188,16 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "artifactsWritten": [
         "10-test-suite-review.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "local-validation-permission",
+          "option": "run-locally",
+          "setVariable": {
+            "mark_progress_na": false,
+            "run_local_validation": true,
+          },
+        },
+      ],
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
@@ -2263,7 +2219,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "10-architecture-summary.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "submit-for-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2315,13 +2271,21 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
+        "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
+        "14-session-trace.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "retrospective-confirm",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
       "manifestStatus": "valid",
       "next": null,
       "orphanCheckpoints": [],
@@ -2362,9 +2326,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "activity": "start-work-package",
       "artifacts": [
         "prior-feedback-triage.md",
+        "name: README.md",
       ],
       "artifactsWritten": [
         "01-prior-feedback-triage.md",
+        "01-name: README.md",
       ],
       "checkpoints": [
         {
@@ -2393,6 +2359,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "verify-signing-precondition",
         "detect-merge-strategy",
         "detect-project-type",
+        "announce-project-type",
         "check-issue",
         "bind-planning-folder-path",
         "initialize-planning-folder",
@@ -2439,7 +2406,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "document-philosophy",
         "collect-assumptions",
         "create-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
       ],
       "unresolved": [],
     },
@@ -2447,13 +2414,9 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
-        "portfolio-{lens_name}.md",
-        "portfolio-synthesis.md",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
-        "15-portfolio-lens_name.md",
-        "15-portfolio-synthesis.md",
       ],
       "checkpoints": [],
       "manifestStatus": "valid",
@@ -2463,13 +2426,10 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "build-comprehension",
         "create-comprehension-artifact",
         "initial-deep-dive",
-        "initial-lens-pass",
         "update-artifact-initial",
         "revise-initial-questions",
-        "select-area",
-        "portfolio-lens-pass",
+        "analyse-challenge-pass",
         "update-artifact",
-        "revise-open-questions",
       ],
       "unresolved": [],
     },
@@ -2502,7 +2462,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "present-solution-overview",
         "collect-assumptions",
         "update-assumptions-log",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "create-todos",
         "sync-branch",
         "update-pr",
@@ -2517,22 +2477,13 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "artifactsWritten": [
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "assumption-decision#{current_assumption.id}",
-          "option": "accept",
-          "setVariable": {
-            "assumption_resolved_inline": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "valid",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "evaluate-open-assumptions",
-        "present-assumption",
-        "record-decision",
+        "analyse-challenge-loop",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -2547,19 +2498,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "08-provenance-log.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "switch-model-pre-impl",
-          "option": "continue-current",
-          "setVariable": undefined,
-        },
-        {
-          "id": "switch-model-post-impl",
-          "option": "continue-current",
-          "setVariable": undefined,
-        },
-      ],
-      "manifestStatus": "warning",
+      "checkpoints": [],
+      "manifestStatus": "valid",
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2570,11 +2510,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "log-provenance",
         "self-review",
         "collect-assumptions",
-        "reconcile-assumptions",
+        "analyse-challenge-loop",
         "present-resolved-assumptions",
-        "interview-open-assumptions",
-        "present-assumption",
-        "record-response",
         "update-assumptions-log",
       ],
       "unresolved": [],
@@ -2653,7 +2590,16 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "artifactsWritten": [
         "10-test-suite-review.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "local-validation-permission",
+          "option": "run-locally",
+          "setVariable": {
+            "mark_progress_na": false,
+            "run_local_validation": true,
+          },
+        },
+      ],
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
@@ -2676,6 +2622,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "review-strategy",
+        "refresh-pr-body",
         "verify-readme",
         "verify-artifact-conformance",
         "ensure-changes-folder-entry",
@@ -2710,6 +2657,13 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           },
         },
         {
+          "id": "build-artifact-check",
+          "option": "none-needed",
+          "setVariable": {
+            "build_dependent_artifacts_pending": false,
+          },
+        },
+        {
           "id": "review-outcome",
           "option": "approved",
           "setVariable": {
@@ -2741,13 +2695,21 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "NNNN-{decision_title}.md",
         "COMPLETE.md",
         "token-usage.md",
+        "session-trace.md",
       ],
       "artifactsWritten": [
         "14-NNNN-decision_title.md",
         "14-COMPLETE.md",
         "14-token-usage.md",
+        "14-session-trace.md",
       ],
-      "checkpoints": [],
+      "checkpoints": [
+        {
+          "id": "retrospective-confirm",
+          "option": "confirmed",
+          "setVariable": undefined,
+        },
+      ],
       "manifestStatus": "valid",
       "next": null,
       "orphanCheckpoints": [],

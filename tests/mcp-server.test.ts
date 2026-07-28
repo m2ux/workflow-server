@@ -521,12 +521,12 @@ describe('mcp-server integration', () => {
     it('should load cross-workflow resource with prefix', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_index: sessionToken, resource_id: 'meta/activity-worker-prompt' },
+        arguments: { session_index: sessionToken, resource_id: 'meta/bootstrap-protocol' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.resource_id).toBe('meta/activity-worker-prompt');
-      expect(response.id).toBe('activity-worker-prompt');
+      expect(response.resource_id).toBe('meta/bootstrap-protocol');
+      expect(response.id).toBe('bootstrap-protocol');
       expect(response._body.length).toBeGreaterThan(0);
     });
 
@@ -585,21 +585,21 @@ describe('mcp-server integration', () => {
       // canonical "meta/<id>" reference via get_resource. Numbered ids are deprecated.
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_index: sessionToken, resource_id: 'meta/activity-worker-prompt' },
+        arguments: { session_index: sessionToken, resource_id: 'meta/bootstrap-protocol' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.id).toBe('activity-worker-prompt');
+      expect(response.id).toBe('bootstrap-protocol');
     });
 
     it('get_resource should load cross-workflow resource content by ref', async () => {
       const result = await client.callTool({
         name: 'get_resource',
-        arguments: { session_index: sessionToken, resource_id: 'meta/activity-worker-prompt' },
+        arguments: { session_index: sessionToken, resource_id: 'meta/bootstrap-protocol' },
       });
       expect(result.isError).toBeFalsy();
       const response = parseToolResponse(result);
-      expect(response.id).toBe('activity-worker-prompt');
+      expect(response.id).toBe('bootstrap-protocol');
       expect(response._body.length).toBeGreaterThan(0);
     });
   });
@@ -1280,11 +1280,12 @@ describe('mcp-server integration', () => {
     it('respond_checkpoint with condition_not_met should reject unconditional checkpoint', async () => {
       const act = await client.callTool({
         name: 'next_activity',
-        arguments: { session_index: sessionToken, activity_id: 'implementation-analysis' },
+        arguments: { session_index: sessionToken, activity_id: 'validate' },
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
-      const unconditionalCpId = 'analysis-confirmed';
+      // A checkpoint declaring no `condition` — the rejection path under test.
+      const unconditionalCpId = 'local-validation-permission';
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',
