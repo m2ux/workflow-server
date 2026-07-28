@@ -57,4 +57,4 @@ Honor [no-get-activity-from-orchestrator](./dispatch-activity.md#no-get-activity
 
 ### resolve-trace-at-close-out
 
-At client finalize / retrospective close-out, honor [resolve-trace-at-close-out](./dispatch-activity.md#resolve-trace-at-close-out) (mid-run accumulate via [accumulate-trace-tokens](./dispatch-activity.md#accumulate-trace-tokens)).
+At client finalize / retrospective close-out, honor [resolve-trace-at-close-out](./dispatch-activity.md#resolve-trace-at-close-out), which owns both halves of the contract — the mid-run accumulate and the close-out resolve.

@@ -21,7 +21,7 @@ Git ref to restore from (default branch name, merge-base SHA, or other commit-is
 
 Array of repository-relative paths to restore from `{base_ref}`.
 
-### interactive
+### interactive_restore
 
 *(optional)* When true, use interactive hunk restore (`checkout -p`) per path. When false or unbound, restore each path whole from `{base_ref}`.
 
@@ -43,7 +43,7 @@ Paths successfully restored from `{base_ref}` and staged in `{target_path}`. Emp
 ### 2. Restore
 
 - For each path in `{paths}`:
-  - When `{interactive}` is true: `git -C {target_path} checkout -p {base_ref} -- {path}` (agent/user selects hunks).
+  - When `{interactive_restore}` is true: `git -C {target_path} checkout -p {base_ref} -- {path}` (agent/user selects hunks).
   - Otherwise: `git -C {target_path} checkout {base_ref} -- {path}`.
 - Skip paths that do not exist at `{base_ref}` (record and continue); do not invent content.
 

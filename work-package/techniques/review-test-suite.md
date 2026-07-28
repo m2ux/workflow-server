@@ -25,7 +25,7 @@ Folder where the test suite review report is written
 
 ### test_suite_review_report
 
-Test suite review [report](../resources/test-suite-review.md#test-suite-review-report-template) documenting quality assessment
+Test suite review [report](../resources/test-suite-review.md#report-template) documenting quality assessment
 
 #### artifact
 

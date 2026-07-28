@@ -92,7 +92,7 @@ steps:
       name: analyse-challenge::run-loop
       inputs:
         concern_kind: assumptions
-        analyse: review-assumptions::reconcile
+        analyse_technique: review-assumptions::reconcile
         challenge_perspectives: '["stakeholder-gap", "rejected-paths", "evidence-strength"]'
         convergence_flag: has_resolvable_assumptions
         residue_flag: has_open_assumptions
