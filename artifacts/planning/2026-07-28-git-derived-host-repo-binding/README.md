@@ -1,6 +1,6 @@
 # Git-Derived Host Repo Binding — July 2026
 
-> Update · Created 2026-07-28 · **Status:** Blocked in validate-and-commit
+> Update · Created 2026-07-28 · **Status:** Quality review — remediation round 1
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -27,7 +27,7 @@
 | 5 | 06 | [Scope manifest](06-scope-manifest.md) | File-level change inventory | 20-40m | ✅ |
 | 6 | 08 | Quality review | Criteria walk, consumer surface, guards | 45-75m | ✅ |
 | 7 | 08 | [Findings register](08-findings-register.md) | Audit record, coverage, exclusions | 15-30m | ✅ |
-| 8 | 09 | Validate and commit | Scope re-check, commit, pull request | 30-50m | ❌ |
+| 8 | 09 | Validate and commit | Scope re-check, commit, pull request | 30-50m | ◐ |
 | 9 | 09 | [Close-out (COMPLETE.md)](09-COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |
 
 **Status:** ⬚ pending · ◐ in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A

@@ -340,6 +340,16 @@
             },
             "optionId": "confirmed",
             "respondedAt": "2026-07-28T11:11:22.000Z"
+          },
+          "validate-and-commit-audit-disposition#0": {
+            "effects": {
+              "transitionedTo": "quality-review",
+              "variablesSet": {
+                "remediation_selected": true
+              }
+            },
+            "optionId": "remediate",
+            "respondedAt": "2026-07-28T14:55:55.000Z"
           }
         },
         "completedActivities": [
@@ -1513,17 +1523,78 @@
             },
             "timestamp": "2026-07-28T12:08:17.572Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns"
+            },
+            "timestamp": "2026-07-28T14:44:05.436Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/design-principles"
+            },
+            "timestamp": "2026-07-28T14:44:05.916Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/schema-construct-inventory"
+            },
+            "timestamp": "2026-07-28T14:44:15.349Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/convention-conformance"
+            },
+            "timestamp": "2026-07-28T14:44:24.423Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "audit-disposition#0",
+            "timestamp": "2026-07-28T14:54:19.126Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "audit-disposition#0",
+            "data": {
+              "optionId": "remediate"
+            },
+            "timestamp": "2026-07-28T14:55:55.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "remediation_selected",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-28T14:55:55.000Z",
+            "type": "variable_set"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 58,
+        "seq": 65,
         "sessionIndex": "7IE6G7",
         "skippedActivities": [],
         "startedAt": "2026-07-28T10:36:29.297Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785240497,
+        "ts": 1785250598,
         "variables": {
           "addressed_count": 0,
           "audit_findings": "59 open (2 Critical, 11 High, 33 Medium, 13 Low), 1 resolved in-activity, 0 known",
@@ -1580,7 +1651,7 @@
             "work-package"
           ],
           "remediation_round": 0,
-          "remediation_selected": false,
+          "remediation_selected": true,
           "removal_count": 6,
           "removal_disposition": "",
           "removals_approved": true,
