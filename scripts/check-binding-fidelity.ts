@@ -266,8 +266,13 @@ type Step = {
   inputsMap: Record<string, unknown>; outputsMap: Record<string, string>; activityId: string;
 };
 const steps: Step[] = [];
-/** Bag names a `validate` action's target expression reads, with the activity file that gates on them. */
-const validateConsumes: Array<{ rel: string; name: string }> = [];
+/**
+ * Bag names read by an EXPRESSION rather than a `{token}` or a structured `variable:` key — a step's
+ * `when` string and a `validate` action's `target`. Both are consumption sites, and neither was
+ * visible to the read scan, so an output whose only consumer was a `when` gate or a validate gate
+ * read as dead — the opposite of dead (#327 R3).
+ */
+const expressionConsumes: Array<{ rel: string; name: string }> = [];
 
 /** Operators and literals in a condition expression are not bag names. */
 const EXPRESSION_LITERALS = new Set(['true', 'false', 'null', 'undefined', 'length', 'and', 'or', 'not']);
@@ -297,12 +302,14 @@ function walkSteps(wf: string, rel: string, node: unknown, activityId: string): 
     });
   }
   if (o.action === 'set' && typeof o.target === 'string') produced(wf).add(o.target);
-  // A `validate` action's `target` is an expression over bag names (`fragment_references_issue !=
-  // false`, `missing_prerequisites.length == 0`), not a `variable:` key and not a `{token}` — so it
-  // was invisible to the read scan, and an output whose ONLY consumer is a validate gate read as
-  // dead. That is the opposite of dead: it is the one place the value is enforced (#327 R3).
+  // A `validate` action's `target` and a step's `when` are expressions over bag names
+  // (`fragment_references_issue != false`, `has_debt_markers == true`) — the one place the value is
+  // enforced or the gate that consumes it.
   if (o.action === 'validate' && typeof o.target === 'string') {
-    for (const name of expressionNames(o.target)) validateConsumes.push({ rel, name });
+    for (const name of expressionNames(o.target)) expressionConsumes.push({ rel, name });
+  }
+  if (typeof o.when === 'string') {
+    for (const name of expressionNames(o.when)) expressionConsumes.push({ rel, name });
   }
   if (o.setVariable && typeof o.setVariable === 'object') Object.keys(o.setVariable).forEach((k) => produced(wf).add(k));
   const eff = o.effect as { setVariable?: object } | undefined;
@@ -486,7 +493,7 @@ function collectConsumedSites(): Map<string, Set<string>> {
     }
   }
   for (const [id, rels] of allDeclaredInputSites) rels.forEach((rel) => add(id, rel));
-  for (const v of validateConsumes) add(v.name, v.rel);
+  for (const v of expressionConsumes) add(v.name, v.rel);
   return consumed;
 }
 
@@ -638,13 +645,17 @@ export function applyTriage(violations: Violation[] = collectViolations()): Tria
 import { pathToFileURL } from 'node:url';
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  // `--emit-untriaged` feeds the triage pass: it prints the violations that carry no verdict yet and
-  // writes nothing, so classification stays a human act.
-  if (process.argv.includes('--emit-untriaged')) {
-    const triage = loadTriage();
-    const known = new Set(triage.entries.map(violationKey));
-    const untriaged = collectViolations().filter((v) => !known.has(violationKey(v)));
-    process.stdout.write(JSON.stringify(untriaged, null, 2) + '\n');
+  // `--emit-untriaged` feeds the triage pass: it prints the violations that carry no verdict yet.
+  // `--emit-all` prints every violation, which is what prunes entries whose finding no longer occurs.
+  // Both only read — classification stays a human act.
+  if (process.argv.includes('--emit-untriaged') || process.argv.includes('--emit-all')) {
+    const all = collectViolations();
+    if (process.argv.includes('--emit-all')) {
+      process.stdout.write(JSON.stringify(all, null, 2) + '\n');
+      process.exit(0);
+    }
+    const known = new Set(loadTriage().entries.map(violationKey));
+    process.stdout.write(JSON.stringify(all.filter((v) => !known.has(violationKey(v))), null, 2) + '\n');
     process.exit(0);
   }
   const { findings, counts, total } = applyTriage();

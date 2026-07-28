@@ -1,6 +1,6 @@
 {
   "note": "One-time triage of the binding-fidelity findings the retired baseline had suppressed (issue #327 R3). Every finding carries a verdict and a named rationale, so \"harmless\" and \"live bug\" are no longer the same silence. harmless = correct by design, suppressed. fix-later = real debt, suppressed but counted. live-bug = REPORTED, so the guard stays red until it is fixed. A finding absent from this file is untriaged and reported; an entry that matches nothing is stale and reported. There is no regenerate flag \u2014 an entry is a human judgement, which is exactly what the baseline never required. The triage also found and FIXED three live defects, so they appear here as history rather than as entries: work-package auto-created GitHub/Jira issues in a headless review run (two review-reachable checkpoints with a create default); substrate-node-security-audit required user_request without declaring it; and the stealth push path computed push_remote_verified and commits_signed without gating on either.",
-  "corpusSha": "645951338f54961ff05f961ff20941f8ef443742",
+  "corpusSha": "7a57d3c1b33cfabd3cb5e205d2f7d80ea853c20f",
   "rationales": {
     "shared-op-return-contract": "A shared meta operation declares what it returns. Library ops are bound ad hoc by any workflow, so having no consumer inside the corpus is the expected state of a library, not a broken seam; the caller that binds the op consumes the value in its own context.",
     "shared-op-caller-argument": "A shared meta operation input that the binding step supplies as a deviation when it needs a non-default value. No workflow-level producer is expected: callers that need it bind it, and callers that do not take the op default path.",
@@ -9,8 +9,8 @@
     "documentation-notation": "The brace is metasyntax or an illustrative example inside a spec sentence, not a read.",
     "external-tool-syntax": "The brace belongs to an external tool's own syntax (a jq object constructor), not to the designator namespace.",
     "undeclared-seed": "No operation anywhere in the corpus declares this value as an output and no workflow variable holds it, so the executing agent improvises it at the point of use. Runs work today because the agent has the context; the value is simply not state. This is the seam that becomes prompt-stuffing (#324 A1), so it is debt to close \u2014 declare and seed it \u2014 not a false positive.",
-    "verification-result-unconsumed": "A verification operation returns a verdict that no gate, condition, or validate target reads. The check runs and its answer is discarded, leaving the constraint carried by prose rather than structure (design principle 9). Each one is a candidate validate gate.",
-    "terminal-product-unconsumed": "A declared output with no destination: nothing binds it, no gate reads it, and it carries no #### artifact block, so the value exists only in the producing worker's report. Either bind it to the step that needs it or declare the artifact that carries it."
+    "terminal-product-unconsumed": "A declared output with no destination: nothing binds it, no gate reads it, and it carries no #### artifact block, so the value exists only in the producing worker's report. Either bind it to the step that needs it or declare the artifact that carries it.",
+    "verdict-component-of-composite": "A component verdict the operation folds into its own overall verdict, which the gates and transitions consume. The component stays declared because the artifact reports it; the composite is what routing reads."
   },
   "entries": [
     {
@@ -225,13 +225,6 @@
     },
     {
       "check": "dead-output",
-      "site": "meta/techniques/workflow-engine/detect-resume-intent.md",
-      "detail": "output 'resume_intent_requested' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
-    },
-    {
-      "check": "dead-output",
       "site": "meta/techniques/workflow-engine/dispatch-activity.md",
       "detail": "output 'trace_token' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
@@ -274,13 +267,6 @@
     },
     {
       "check": "dead-output",
-      "site": "ponytail/techniques/harvest-debt.md",
-      "detail": "output 'has_debt_markers' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "verification-result-unconsumed"
-    },
-    {
-      "check": "dead-output",
       "site": "ponytail/techniques/report-gain.md",
       "detail": "output 'gain_scoreboard' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "fix-later",
@@ -319,7 +305,7 @@
       "site": "prism/techniques/emit-run-manifest.md",
       "detail": "output 'run_status' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "fix-later",
-      "rationale": "verification-result-unconsumed"
+      "rationale": "terminal-product-unconsumed"
     },
     {
       "check": "dead-output",
@@ -337,13 +323,6 @@
     },
     {
       "check": "dead-output",
-      "site": "remediate-vuln/techniques/security-setup/configure-security-remote.md",
-      "detail": "output 'security_remote_configured' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "verification-result-unconsumed"
-    },
-    {
-      "check": "dead-output",
       "site": "remediate-vuln/techniques/security-setup/present-security-overview.md",
       "detail": "output 'security_overview' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "fix-later",
@@ -351,17 +330,10 @@
     },
     {
       "check": "dead-output",
-      "site": "remediate-vuln/techniques/security-setup/verify-origin-untracked.md",
-      "detail": "output 'origin_untracked' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "verification-result-unconsumed"
-    },
-    {
-      "check": "dead-output",
       "site": "requirements-refinement/techniques/validate-specification.md",
       "detail": "output 'source_coverage_complete' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "verification-result-unconsumed"
+      "verdict": "harmless",
+      "rationale": "verdict-component-of-composite"
     },
     {
       "check": "dead-output",
@@ -442,20 +414,6 @@
     },
     {
       "check": "dead-output",
-      "site": "work-package/techniques/assess-ticket-completeness.md",
-      "detail": "output 'ticket_gaps_documented' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "verification-result-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/assess-ticket-completeness.md",
-      "detail": "output 'ticket_refactor_needed' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "verification-result-unconsumed"
-    },
-    {
-      "check": "dead-output",
       "site": "work-package/techniques/codebase-comprehension/survey.md",
       "detail": "output 'architecture_overview' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "fix-later",
@@ -526,13 +484,6 @@
     },
     {
       "check": "dead-output",
-      "site": "work-package/techniques/issue-reference-detection.md",
-      "detail": "output 'issue_present' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "verification-result-unconsumed"
-    },
-    {
-      "check": "dead-output",
       "site": "work-package/techniques/manage-git/artifact-commits.md",
       "detail": "output 'artifact_commit' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "fix-later",
@@ -568,13 +519,6 @@
     },
     {
       "check": "dead-output",
-      "site": "work-package/techniques/manage-git/verify-feature-branch.md",
-      "detail": "output 'on_feature_branch' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "verification-result-unconsumed"
-    },
-    {
-      "check": "dead-output",
       "site": "work-package/techniques/plan-prepare/create-todos.md",
       "detail": "output 'todo_tasks' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "fix-later",
@@ -586,13 +530,6 @@
       "detail": "output 'elicitation_log' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "fix-later",
       "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/requirements-elicitation/discuss.md",
-      "detail": "output 'has_stakeholder_input' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "verification-result-unconsumed"
     },
     {
       "check": "dead-output",

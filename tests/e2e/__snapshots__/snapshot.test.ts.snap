@@ -2005,16 +2005,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "02-design-philosophy.md",
         "02-assumptions-log.md",
       ],
-      "checkpoints": [
-        {
-          "id": "ticket-completeness",
-          "option": "proceed-with-gaps",
-          "setVariable": {
-            "ticket_gaps_documented": true,
-            "ticket_refactor_needed": false,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "valid",
       "next": "codebase-comprehension",
       "orphanCheckpoints": [],
