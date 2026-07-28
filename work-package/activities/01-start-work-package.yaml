@@ -205,8 +205,9 @@ steps:
           operator: "!="
           value: true
         - type: simple
-          variable: issue_number
-          operator: notExists
+          variable: issue_present
+          operator: ==
+          value: false
     message: No GitHub or Jira issue is associated with this work package. Select how to proceed.
     options:
       - id: provide-existing
@@ -590,6 +591,10 @@ steps:
   - kind: technique
     id: check-branch
     technique: manage-git::verify-feature-branch
+    actions:
+      - action: validate
+        target: on_feature_branch != false
+        message: "The worktree at {target_path} is on a default branch, not a feature branch, so subsequent commits would land there. Check out {branch_name} in {target_path} and re-run."
   - kind: technique
     id: check-pr
     technique:

@@ -19,10 +19,6 @@ Prompt the user for the stakeholder discussion transcript before agent-led elici
 
 The transcript or summary captured from the user, or absent when the user skips.
 
-### has_stakeholder_input
-
-Boolean gate — true iff a transcript was provided, false when stakeholder discussion was skipped.
-
 ## Protocol
 
 ### 1. Prompt Transcript

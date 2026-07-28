@@ -215,6 +215,10 @@ variables:
     type: boolean
     description: True while submit-for-review is waiting for reviewer feedback.
     defaultValue: false
+  - name: issue_present
+    type: boolean
+    description: Whether the user supplied an issue reference for this work package.
+    defaultValue: false
   - name: needs_issue_creation
     type: boolean
     description: Whether a new issue needs to be created.
