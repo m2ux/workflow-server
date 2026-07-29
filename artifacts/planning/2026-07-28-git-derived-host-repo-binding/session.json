@@ -8,13 +8,8 @@
   "currentActivity": "end-workflow",
   "currentTechnique": "version-control::initialize-folder",
   "condition": "condition:current_activity == null — client activity loop exited on workflow_complete",
-  "activeCheckpoint": {
-    "activityId": "end-workflow",
-    "checkpointId": "completion-confirmed",
-    "yieldedAt": "2026-07-29T06:38:15.713Z"
-  },
-  "seq": 16,
-  "ts": 1785307095,
+  "seq": 18,
+  "ts": 1785307300,
   "startedAt": "2026-07-28T10:33:19.694Z",
   "completedActivities": [
     "discover-session",
@@ -43,7 +38,17 @@
     "user_request": "Start a workflow-authoring workflow to update the work-package and meta workflows so the monorepo host-repo binding is DERIVED FROM GIT instead of inferred from prose.\n\nMotivation: a session bound to midnightntwrk/midnight-node (taken from a PR URL) mapped through the server's basename-only multi-root mapping to /home/mike1/projects/dev/midnight-node/.engineering and silently created an empty, non-git directory. The real checkout is a submodule of the shieldedtech/midnight-agent-eng superproject at dev/midnight-agent-eng/midnight-node, so the commit+push hook had no repo and the reviewer had no source. The workflow already owns monorepo detection but runs it AFTER the binding is committed, and it answers a different question (which component, not which host repo).\n\nFixes to author:\n\n1. New technique version-control::resolve-host-repo, run in meta 00-discover-session before the transition to initialize-session. Protocol: git rev-parse --show-toplevel from the workspace cwd; ascend while the parent directory is itself a git repo whose .gitmodules lists the current basename as a submodule path (outermost superproject wins — this generalizes work-package repo-root-resolution.md's existing single-level test and moves it to where it can gate the binding); derive owner/repo from that host's origin remote. Outputs: target_repo, host_repo_path, is_monorepo_host, and component_hint (the innermost toplevel's basename when we ascended — a better component signal than a URL, feeding select-target-component's pre-selection). Assert basename(host_repo_path) == basename(target_repo), because the server's multi-root mapping is basename-only; a mismatch raises a checkpoint rather than diverging silently.\n\n2. Add mentioned_repo (from PR/issue URLs) to workflow-engine::extract-identifying-context and route it to version-control::select-target-component as component context only. State the invariant once in version-control::TECHNIQUE.md beside infrastructure-submodule-paths: a repo named in the request identifies the COMPONENT; the host binding is derived from git; they are never the same variable.\n\n3. Retire the prose sources: meta/resources/bootstrap-protocol.md step 2 and workflow-engine/start-session.md's repo input currently say the repo comes from workspace AGENTS.md/CLAUDE.md or the user. Rewrite both to derive via resolve-host-repo, with AGENTS.md/user demoted to fallback for when the workspace is not a git repo or has no origin remote.\n\n4. Close the loop in meta 02-resolve-target: add a validation that the repo_root resolved by work-package repo-root-resolution is the same directory the session bound, so a bad binding fails at activity 02 before artifacts exist. This also catches a resume carrying a stale saved binding, which resolve-host-repo alone will not.\n\n5. Fix two latent defects in the same seam: (a) meta's target_path (\"submodule path for monorepos\", default \".\") collides by name with work-package's target_path (\"feature worktree path for edits\"), which is overwritten by compute-canonical-target-path at step 570 and is safe only because resolve-repo-root happens to sit at step 159 — rename meta's output to component_path; (b) work-package repo-root-resolution's discovered_path input is never bound by anything and specifies an absolute path while meta's target_path defaults to relative \".\" — bind it explicitly from component_path, absolutized against host_repo_path.\n\nAll edited files live in the workflows submodule (branch: workflows). Touching the meta activities will likely require re-baselining the walk snapshots.",
     "workflow_match_ambiguous": false
   },
-  "checkpointResponses": {},
+  "checkpointResponses": {
+    "end-workflow-completion-confirmed": {
+      "effects": {
+        "variablesSet": {
+          "abort_completion": false
+        }
+      },
+      "optionId": "confirm",
+      "respondedAt": "2026-07-29T06:41:06.000Z"
+    }
+  },
   "history": [
     {
       "timestamp": "2026-07-28T10:33:19.694Z",
@@ -421,6 +426,25 @@
       "checkpoint": "completion-confirmed",
       "timestamp": "2026-07-29T06:38:15.713Z",
       "type": "checkpoint_reached"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "data": {
+        "optionId": "confirm"
+      },
+      "timestamp": "2026-07-29T06:41:06.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "name": "abort_completion",
+        "source": "setVariable",
+        "value": false
+      },
+      "timestamp": "2026-07-29T06:41:06.000Z",
+      "type": "variable_set"
     }
   ],
   "triggeredWorkflows": [
