@@ -236,7 +236,9 @@ export function resolveSessionRoot(
   if (scope.mode === 'multi') {
     throw new Error(
       'start_session: repo is required when the server is bound to a projects multi-root ' +
-        '(HOST_PROJECTS_ROOT). Pass repo: "owner/repo" (from the user or workspace AGENTS.md). ' +
+        '(HOST_PROJECTS_ROOT). Pass repo: "owner/repo" derived from git via version-control::resolve-host-repo ' +
+        '(origin remote of the outermost claiming superproject); the user or workspace AGENTS.md is a fallback ' +
+        'only when the workspace is not a git repo or has no origin remote. ' +
         'Planning lives at <repo>/.engineering/artifacts/planning/ under that root.',
     );
   }

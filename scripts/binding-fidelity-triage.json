@@ -1317,6 +1317,13 @@
     },
     {
       "check": "read-resolution",
+      "site": "substrate-node-security-audit/techniques/write-report.md:90",
+      "detail": "{target_path} has no producer (declared id / $-local / workflow var / set-target)",
+      "verdict": "fix-later",
+      "rationale": "undeclared-seed"
+    },
+    {
+      "check": "read-resolution",
       "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
       "detail": "{display_name} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",

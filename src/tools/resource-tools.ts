@@ -103,7 +103,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       description:
         'Start or resume the top-level workflow session. Returns `session_index`, workflow metadata, and canonical `planning_folder_path`. ' +
         'Pass `planning_folder` as an absolute path (basename = slug). ' +
-        'Always pass `repo` as owner/repo (from the user or workspace AGENTS.md) — stored on session.json#repo. ' +
+        'Always pass `repo` as owner/repo, derived from git via `version-control::resolve-host-repo` (origin remote of the outermost claiming superproject); the user or workspace AGENTS.md is a fallback only when the workspace is not a git repo or has no origin remote. Stored on session.json#repo. ' +
         'Omit planning_folder for a transient meta bootstrap. Children use `dispatch_child`, not this tool. ' +
         '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for disposable workers.',
       inputSchema: z
