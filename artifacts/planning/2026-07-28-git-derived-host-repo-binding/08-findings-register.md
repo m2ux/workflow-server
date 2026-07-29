@@ -1,38 +1,49 @@
 # Findings Register — git-derived host-repo binding
 
-**Date:** 2026-07-28 · **Mode:** Update
+**Date:** 2026-07-28 · **Mode:** Update · **Remediation round:** 1
 **Base ref:** `f84fe02b12f9617f401767b9b96f329d8c13225c` (merge base of `workflow/meta-git-derived-host-repo-binding` with `origin/workflows`)
 **Targets:** `meta`, `work-package` — one section each below
 
 Canonical home for this run's audit findings, coverage divergences and accepted exclusions.
 
-- **Edit surface**: `/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-git-derived-host-repo-binding` — 19 changed files, diff-confirmed against the base ref
-- **Targets**: `meta` (153 surface files, 16 changed) · `work-package` (162 surface files, 3 changed)
-- **Criteria units**: 44 walked, 4 not-applicable, 0 blocked — see [Coverage](#coverage) for a correction to the denominator
-- **Guard suite**: 16 of 17 pass; `binding-fidelity` rejects 3 definition files
+- **Edit surface**: `/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-git-derived-host-repo-binding` — **22** changed files vs the base ref, diff-confirmed; remediation round 1 landed as `9eea56c6`
+- **Changed by target**: `meta` 16 · `work-package` 4 · `remediate-vuln` 1 (consumer repair — see [Divergence 3](#divergence-3--round-0s-work-package-consumer-surface-was-wrong-and-round-1-acted-on-it))
+- **Criteria units**: 44 walked, 4 not-applicable, 0 blocked
+- **Guard suite**: 16 of 17 pass; `binding-fidelity` rejects **1** file, and it lies outside both targets
 - **Known findings**: 74 keys loaded, 0 matched a finding raised here
 
 Severity: `Critical` = schema-invalid or structurally broken construct that must not be committed.
 Attribution is measured against the base ref: **new** arrived with this change, **pre** pre-existed it.
 
-Every `Critical` and `High` row below was **independently re-derived** from the construct it cites,
-refuting by default. Verdicts: `confirmed` (reproduced), `downgraded` (evidence supports a lesser
-issue), `withdrawn` (not reproduced — drives no edit). Surviving `Medium` rows were spot-confirmed
-against their cited construct, which corrected several citations recorded below.
+Every `Critical` and `High` row was **independently re-derived** from the construct it cites, refuting by
+default — in round 0, and again in round 1 against the post-remediation files. Verdicts: `confirmed`
+(reproduced), `downgraded` (evidence supports a lesser issue), `withdrawn` (not reproduced — drives no
+edit), `closed` (the cited construct no longer reproduces the violation). Surviving `Medium` and `Low`
+rows were spot-confirmed against their cited constructs, which narrowed several citations recorded below.
 
 ## Summary
 
-| Severity | Open | Known |
-|----------|-----:|------:|
-| Critical | 2 | 0 |
-| High     | 8 | 0 |
-| Medium   | 33 | 0 |
-| Low      | 15 | 0 |
-| **Total** | **58** | **0** |
+| Severity | Open | Closed in R1 | Known |
+|----------|-----:|-------------:|------:|
+| Critical | 0 | 2 | 0 |
+| High     | 1 | 6 | 0 |
+| Medium   | 10 | 24 | 0 |
+| Low      | 10 | 5 | 0 |
+| **Total** | **21** | **37** | **0** |
 
-One finding was withdrawn by re-derivation (MM-24), taking the surface from 59 to 58. Three Highs
-were downgraded to Medium and two Mediums to Low; downgraded rows stay on the decision surface.
-**Both Criticals survived re-derivation, so nothing here is committable as it stands.**
+The decision surface entered round 1 at 58 and leaves it at **21 open, 37 closed**. **Both Criticals are
+closed by re-derivation rather than by assertion**, so no structurally broken construct remains and
+`has_critical_finding` is false.
+
+One round-1 recalibration moved a row between severities: **MH-4 is downgraded from High to Medium**,
+because the duplication it cited is gone from the definition surface and only a server-repo co-change gap
+remains. The open total is therefore unchanged at 21 while the mix shifts High 2 → 1 and Medium 9 → 10.
+
+**Two open items are not reachable from this run's edit surface** and cannot close here — MH-4's three
+harness strings and the e2e walk snapshots. Both are recorded under
+[Accepted exclusions](#accepted-exclusions--not-reachable-from-this-edit-surface). **This change is not
+self-contained**: it lands correct in the definition library and leaves obligations in the
+`workflow-server` repository.
 
 ---
 
@@ -43,327 +54,151 @@ were downgraded to Medium and two Mediums to Low; downgraded rows stay on the de
 Consumer surface: 435 references from 115 files across 15 other workflow directories reach 78 `meta`
 files; 11 resolve into a file this run changed. Those 11 sites were walked.
 
-Counts: 1 Critical · 6 High · 28 Medium · 9 Low.
+Open: 0 Critical · 1 High · 10 Medium · 6 Low.
 
-#### Critical
+#### Open — High
 
-**MC-1 · `unproduced-value-read` · `meta/techniques/cargo-operations/preflight.md` `## Inputs`** — **confirmed** · **new**
+**MH-5 · `io-id-shape` · `meta/techniques/version-control/resolve-host-repo.md:26` vs `work-package/techniques/repo-root-resolution.md:22`** — **confirmed; evidence strengthened in round 1** · **new**
 
-The change replaced preflight's single `target_path` input with `host_repo_path` + `component_path`
-(`preflight.md:12,16`); neither carries a `#### default`. Its only bind site library-wide is the
-bare-string bind at `work-package/activities/11-validate.yaml:28` — no `inputs` deviation — so both
-inputs same-name bind against a bag that declares neither: `work-package/workflow.yaml` declares
-`target_path` (:92), `repo_root` (:95), `component_name` (:98) and `discovered_path` (:514), and a
-tree-wide grep finds `host_repo_path` / `component_path` anywhere in `work-package` only inside
-description prose (`workflow.yaml:516`, `repo-root-resolution.md:14`) and the WC-1 template. The
-rename converted a working bind into a broken one, and because the break is *implicit* same-name
-binding it is invisible to a grep for the ids. Guard-confirmed: two untriaged `orphan-input`
-rejections. `11-validate.yaml` appears in neither the scope manifest nor the approved out-of-scope list.
-*Re-derived from*: `preflight.md` `## Inputs`, the `11-validate.yaml` bind, the `work-package/workflow.yaml` variable block.
-*Fix*: declare and seed both ids in `work-package/workflow.yaml`, or supply them via a
-`step.technique.inputs` deviation at the bind site.
+One concept, two ids. `host_repo_path` is "the outermost repository that claims the workspace checkout"
+(`resolve-host-repo.md:28`); `repo_root` is the "repo root used for comprehension, GitNexus indexing …
+and as the git directory for `git worktree add`" (`repo-root-resolution.md:24`).
 
-#### High — confirmed
+Round 1 made the aliasing **explicit and unconditional**, which strengthens the finding rather than
+clearing it. `repo-root-resolution.md:36` now reads:
 
-**MH-2 · `stale-restatement-after-change` + `technique-inputs-declared` · `meta/techniques/version-control/detect-repo-type.md:8,22`** — **confirmed** · **new**
+> Set `{repo_root}` to `{host_repo_path}` — the host derivation has already ascended to the outermost
+> superproject, so no further ascent is performed here.
 
-The file has **no `## Inputs` section at all** (Capability → Outputs → Protocol). Capability still
-scopes the question to "whether **the working directory** is a regular repo or a submodule monorepo"
-(:8), and Protocol step 1 still anchors the read at "`.gitmodules` … at **the repo root**" (:22) —
-after this change made `host_repo_path` the authoritative root and rewrote `02-resolve-target.yaml:7`
-to "component_path is relative to host_repo_path". The diff did edit this file (8 lines, `target_path`
-→ `component_path`), so the anchor claim was inside the edit's scope and was left behind.
-*Consequence*: a session opened inside a component detects the **component's own** structure and
-emits `component_path` relative to the wrong root — the exact failure this change exists to prevent.
-*Same class, second site*: `meta/techniques/version-control/list-submodules.md:8,18` also declares no
-`## Inputs` and reads `.gitmodules` with no root named at all. That file is **not** among the 19
-changed files, so that site is **pre**, not new.
-*Fix*: declare `host_repo_path` as an input on both techniques and anchor both `.gitmodules` reads to it.
+A Protocol step now exists whose entire content is copying one id onto the other, with `host_repo_path`
+declared as that technique's own input (:12-14). The runtime equality assertion also survives, relocated
+into its own gated step at `meta/activities/02-resolve-target.yaml:56-61`. A single id would remove both
+the copy step and the assertion.
 
-**MH-4 · `no-duplicated-guidance` · git-derivation fallback rule in four definition homes plus three stale harness homes** — **confirmed** · **new**
+*Why it stays open rather than being fixed*: the remedy is a library-wide rename of `repo_root` →
+`host_repo_path` across `work-package` and every consumer. Round 1 judged a half-completed rename more
+dangerous than the naming defect, and the surviving copy step keeps behaviour correct meanwhile. Recorded
+as an accepted open finding awaiting a dedicated rename pass.
+*Fix*: hoist the host-root concept to one shared id and drop the representation suffix, in one pass.
 
-The fallback rule — AGENTS.md/CLAUDE.md or the user apply *only* when the workspace is not a git repo
-or the host has no origin remote — is stated in **full** at four homes, none of them a pointer:
-`resolve-host-repo.md:24`, `bootstrap-protocol.md:17`, `start-session.md:22`, `meta/workflow.yaml:40`.
-More seriously, three harness homes this change did not touch still teach the **retired** provenance:
+#### Open — Medium
 
-| Harness site | Text |
-|---|---|
-| `src/tools/resource-tools.ts:106` | "Always pass `repo` as owner/repo (from the user or workspace AGENTS.md)" |
-| `src/tools/workflow-tools.ts:326` | "repo_binding: required — pass repo … (from user or workspace AGENTS.md)" |
-| `src/utils/session/scope.ts:239` | "Pass repo: \"owner/repo\" (from the user or workspace AGENTS.md)." |
+The **Correction** column carries round-1 spot-confirmation results; several citations narrowed as
+remediation closed some of a finding's sites but not all.
 
-`workflow-tools.ts:326` sits inside the `discover` return and is pushed immediately above the
-bootstrap body (`:323-330`), so the **first surface an orchestrator reads teaches the superseded
-rule**. This is a co-change gap reaching outside the workflows submodule.
-*Fix*: keep `resolve-host-repo.md` as the one home, reduce the definition duplicates to pointers, and
-update the three server-side strings.
-
-**MH-5 · `io-id-shape` · `resolve-host-repo.md:26` vs `work-package/techniques/repo-root-resolution.md:18`** — **confirmed, scope narrowed** · **new**
-
-One concept, two ids. `host_repo_path` is "the outermost repository that claims the workspace
-checkout" (:28); `repo_root` is "the outermost monorepo root when the discovered path is a component"
-(`repo-root-resolution.md:20`) — and `repo-root-resolution.md:29` states the computation is the same
-ascent, "where it is stated canonically". Because `discovered_path` is built as
-`{host_repo_path}/{component_path}`, ascending from it returns `host_repo_path` by construction, so
-the two hold the same value in every run. `02-resolve-target.yaml:58` asserts that equality at
-runtime, which is the tell: a single id removes the need for the assertion. The `-path` suffix on one
-of the pair and not its synonym makes the suffix encode representation rather than the noun.
-*Withdrawn half*: the claim that the drift repeats between `component_hint` and `component_name` is
-**not reproduced**. `component_hint` is a *candidate signal* — unset when no ascent happened
-(`resolve-host-repo.md:36,47`), used only to rank a pre-selection that "never resolves the
-checkpoint" (`select-target-component.md:41`). `component_name` is the always-set resolved basename
-(`repo-root-resolution.md:22`). A hint and a resolved name are different concepts; this half drives
-no edit.
-*Fix*: hoist the host-root concept to one shared id and drop the representation suffix.
-
-**MH-6 · `no-activity-prose-rules` + `no-rule-protocol-restatement` · `meta/activities/02-resolve-target.yaml:6-8`** — **confirmed** · entry 1 **new**; the block and entry 2 **pre**
-
-`grep "^rules:"` over every `*/activities/*.yaml` in the library returns **exactly this one file** —
-no sibling activity anywhere carries an activity-level `rules:` block. Entry 1 (":7 — component_path
-is relative to host_repo_path, and their join MUST resolve to a directory containing a working git
-tree") restates the formal `validate` step 20 lines later at :63 ("Confirm
-`{host_repo_path}/{component_path}` resolves to a directory containing a working git tree"), plus the
-relativity already declared in `meta/workflow.yaml`'s `component_path` description. Entry 2 (":8 —
-Exclude infrastructure submodules per version-control::infrastructure-submodule-paths") restates what
-the bound techniques already apply themselves — `detect-repo-type.md:23` and `resolve-host-repo.md:45`
-both invoke that rule.
-*Fix*: delete entry 1, migrate or delete entry 2, leaving no activity `rules:` block.
-
-**MH-7 · `bind-protocol-locals` · `meta/techniques/agent-conduct.md:98`** — **confirmed** · **new**
-
-The renamed rule reads "commits MUST be performed inside the component directory
-`{host_repo_path}/{component_path}`". `agent-conduct.md` declares **no `## Inputs`** and is delivered
-into client-workflow contexts: **seven** of its consumer sites are outside `meta` — four in
-`workflow-design` (`audit-conformance.md`, `reload-workflow.md`, `context-loading.md`,
-`intake-classification.md`) and three in `work-package` (`rust-substrate-code-review.md`,
-`architecture-review.md`, `respond-to-pr-review.md`). In none of those workflows is either name
-declared or ambient: a tree-wide grep finds `host_repo_path` in `work-package` only in description
-prose, and no occurrence at all in `workflow-design`. The pre-change designator `{target_path}` **was**
-declared (`work-package/workflow.yaml:92`), so the rename converted one resolving read into two
-non-resolving ones on a shared surface.
-*Fix*: read a `{name}` declared or ambient at each consuming workflow, or drop the designator for role prose.
-
-**MH-8 · dead output `is_monorepo_host` + `single-source-of-truth` · `meta/workflow.yaml:44`** — **confirmed** · **new**
-
-A tree-wide grep for `is_monorepo_host` returns exactly three hits — the declaration
-(`meta/workflow.yaml:44`), the Output heading (`resolve-host-repo.md:30`) and the Protocol set
-(`resolve-host-repo.md:46`). **Nothing reads it.** Every gate that branches on the monorepo fact
-compares a *different* variable, `is_monorepo` (`02-resolve-target.yaml:21,25,32`), declared at
-`meta/workflow.yaml:95` and produced by `detect-repo-type` — whose root is undeclared (MH-2). The
-monorepo fact now has two variables and the gates read the one whose root is wrong. Guard-confirmed:
-untriaged `dead-output`.
-*Fix*: keep one authoritative variable — bind `detect-repo-type` to the derived host root and gate on
-the survivor, or delete the unread declaration and its Output.
-
-#### Downgraded from High by re-derivation
-
-**MH-1 · `stale-restatement-after-change` · `meta/README.md:81`** — **downgraded to Medium** · **new**
-
-Reproduced as fact: a tree-wide grep for `target-path-scope` returns two hits — the renamed rule
-`### orchestrator-component-path-scope` (`agent-conduct.md:96`) and this bare-text citation in a
-README table. **No rule by the cited name exists**, so the citation dangles, and `meta/README.md` was
-edited by this change (12 lines).
-*Why downgraded*: the evidence supports a documentation-hygiene defect rather than a High. The site is
-a rule-key inventory inside a README this register elsewhere treats as non-authoritative, it gates no
-execution path, and MM-4 already marks that very inventory for deletion — which subsumes the fix. The
-`resource-anchors` guard misses it only because it is bare text, not an `.md#anchor` link.
-
-**MH-3 · `complete-bootstrap-path` · `meta/resources/bootstrap-protocol.md:14-18`** — **downgraded to Medium** · **new**
-
-The filed claim — that *neither* hop is reachable from what the prior tools return — is **not
-reproduced**. Step 2 (:14) inlines its own operative derivation ("ascend to the outermost repository
-that claims the workspace checkout as a submodule, and read `owner/repo` from that host's origin
-remote"), so the step is executable without loading the linked technique — even though
-`get_technique` / `get_resource` do require a `session_index` that does not exist until step 3, and
-`discover` returns only server/version/repo_binding plus the bootstrap body
-(`src/tools/workflow-tools.ts:320-331`). The carry instruction at :18 likewise survives in practice:
-:16 states that `00-discover-session` applies the same technique again, and an orchestrator holds the
-derived fact in its own context rather than needing a `start_session` parameter for it.
-*What does reproduce, and why it stays on the surface*: the inlined summary omits the origin-URL forms
-that `owner/repo` correctness depends on — `resolve-host-repo.md:48` specifies accepting both the SSH
-form `git@host:owner/repo.git` and the HTTPS form and dropping a trailing `.git`, none of which
-reaches the pre-session surface. A real incompleteness on the one surface an orchestrator reads before
-any session exists, at Medium rather than High.
-
-#### Medium
-
-Rows are as swept unless the **Correction** column says otherwise; corrections come from
-spot-confirmation against the cited construct.
-
-| # | Entry | Site(s) | Note | Correction | Attr |
+| # | Entry | Site(s) — as confirmed in round 1 | Note | Correction | Attr |
 |---|---|---|---|---|---|
-| MH-1 | `stale-restatement-after-change` | `meta/README.md:81` | downgraded from High — see above | — | new |
-| MH-3 | `complete-bootstrap-path` | `bootstrap-protocol.md:14-18` | downgraded from High — see above | — | new |
-| MM-1 | `no-rationale-in-description` | `meta/workflow.yaml:56`; `extract-identifying-context.md:24`; `start-session.md:22`; `00-discover-session.yaml:28` | rationale / gating tails after the WHAT clause | narrowed to 4 sites — `bootstrap-protocol.md:16,18`, `match-saved-session.md:28` and `00-discover-session.yaml:17` are step bullets, a Protocol step and a checkpoint message, not `description` fields | new |
-| MM-2 | `variable-description-one-line` | `meta/workflow.yaml:40,43,46,50,53,56` | each multi-sentence with a producer, consumer or gate tail | all six confirmed | new |
-| MM-3 | `validate-message-economy` | `02-resolve-target.yaml:58` | trailing consequence paragraph after the cause; no fix command anywhere in the message | confirmed | new |
-| MM-4 | `readme-orients-not-transcribes` | `meta/README.md:3,81`; `meta/activities/README.md:5,15,31` | rule-key inventory, checkpoint roster with firing conditions, near-verbatim activity `rules` restatement, count plus prose sequence duplicating the index table | all five confirmed | new |
-| MM-5 | `stale-restatement-after-change` | `meta/README.md:20,40` | row 00's role and the `DS → INI` edge label left at the pre-change duty set | diff-confirmed: :20 and :40 untouched while sibling row 02 and the `RT` label *were* rewritten in the same diff | new |
-| MM-6 | `technique-ref-in-io-contract` | `preflight.md:14`; `commit-and-persist.md:22`; `select-target-component.md:22`; `extract-identifying-context.md:24`; `start-session.md:22` | I/O descriptions hyperlink a producing or consuming technique | narrowed to 5 sites — `select-target-component.md:26` is a rule citation and `resolve-host-repo.md:28` carries no hyperlink | new |
-| MM-7 | `procedure-in-io-contract` | `start-session.md:22`; `resolve-host-repo.md:36`; `select-target-component.md:22`; `extract-identifying-context.md:24`; `preflight.md:18` | sequencing, gating, ranking and prohibition duties inside I/O entries | all five confirmed | new |
-| MM-8 | `io-agnostic-contract` | `preflight.md:14`; `commit-and-persist.md:22`; `select-target-component.md:32,36`; `start-session.md:22` | I/O entries naming a workflow-internal producer or the consuming `submodule-selection` checkpoint | `detect-repo-type.md:18` dropped — "left for submodule selection" does not name the checkpoint id | new / pre |
-| MM-9 | `no-bind-mechanics-as-prose` | `start-session.md:22`; `resolve-host-repo.md:24` | fallback resolution as prose where it belongs in `variable-binding` or a declared `default` | re-cited from `resolve-host-repo.md:20` (a bare heading) to :24; the same file shows the declared form at :16-18 | new |
-| MM-10 | `dotted-rule-address` | `resolve-host-repo.md:8,32,45`; `select-target-component.md:26`; `extract-identifying-context.md:24` | a `## Rules` entry cited with `::`, which addresses an operation; the correct dotted form is in use at `start-session.md:56` | re-cited — the `::` uses are at :32/:45, not :28/:41. Both cited rules are `###` entries under `## Rules` at `version-control/TECHNIQUE.md:36,40` | new |
-| MM-11 | `brace-declared-ids` | `02-resolve-target.yaml:7,39,43`; `preflight.md:30`; `detect-repo-type.md:18`; `meta/workflow.yaml:88,101` | declared ids bare or backticked without braces | `:58` removed from the offender list — it braces correctly and is the contrast, with :63 | new / pre |
-| MM-13 | `technique-stage-agnostic` | `select-target-component.md:41` | technique Protocol names the `submodule-selection` checkpoint the activity declares at `02-resolve-target.yaml:26` | confirmed | new |
-| MM-14 | `session-interaction-in-technique` | `select-target-component.md:41`; `preflight.md:30` | Protocol prescribes human-facing option ordering that no declared output carries, and "surface it to the user" where the activity's `validate` owns delivery | both confirmed | new / pre |
-| MM-15 | `contract-not-procedure` | `resolve-host-repo.md:47,49` | Protocol steps 4 and 6 are projections of already-produced outputs; step 6 is verbatim its own Output at :40 | re-cited from :43/:45 (a blank line and real procedure) to :47/:49 | new |
-| MM-16 | `pass-orchestration-in-technique` | `commit-and-persist.md:34,35,38,39` | four `Apply` / `::` op invokes inside one technique bound as a step at `03-dispatch-client-workflow.yaml:58`, so each op could be its own step | corrected — these are steps 1, 4, 5 of six plus a fourth Apply at :35, not three contiguous phases | pre |
-| MM-17 | `constraint-as-blockquote` | `commit-and-persist.md:35` | indented sub-bullet loads as a disconnected peer step | loader-confirmed: `markdown-technique-loader.ts:192` captures indentation in group 1 and never reads it; the correct `>` form at `start-session.md:53` folds in as continuation | pre |
-| MM-18 | `no-duplicated-guidance` | `extract-identifying-context.md:24`; `match-saved-session.md:28`; `select-target-component.md:26`; `meta/workflow.yaml:53` | `version-control/TECHNIQUE.md:40-42` is the declared home, yet all four carry pointer *and* full restatement | confirmed, including the bidirectional pair between `extract-identifying-context` and `match-saved-session` | new |
-| MM-19 | `no-false-resource-delivery` | `bootstrap-protocol.md:24` | claims the response carries "the workflow definition"; `workflow-tools.ts:402-419` returns metadata plus activity stubs mapped to `{id, name, required, artifactPrefix}` | harness-confirmed | pre |
-| MM-20 | `describe-tool-value` | `bootstrap-protocol.md:24`; `start-session.md:36-48` | mechanics in place of value; Outputs are only `session_index`, `planning_folder_path`, `repo` | all three omissions confirmed against `resource-tools.ts:383-405` — `repo_unbound` (precisely the signal that this change's derivation-plus-fallback contract failed to bind), `planning_slug`, and the workflow metadata block | pre |
-| MM-22 | `statement-not-question` | `00-discover-session.yaml:96` | message ends in `?` and re-asks what the option labels at :99/:105 already carry | confirmed | pre |
-| MM-23 | `structure-backed-constraints` | `agent-conduct.md:96-98` | MUST/NEVER commit-location rule with no checkpoint, condition or validate backing it; `commit-and-persist.md:46` restates it, also unbacked | confirmed — a grep over `meta/activities/*.yaml` and `meta/workflow.yaml` finds no backing construct | new |
-| MM-25 | `hoist-shared-inputs` | `preflight.md:12,16`; `commit-and-persist.md:20,24` | the same input pair declared on two techniques in two different groups | confirmed: `meta/techniques/TECHNIQUE.md` is 8 lines of Capability only, with no `## Inputs`, despite claiming to hold "Shared Inputs, Outputs, Rules, and Errors" | new |
-| MM-26 | `state-contract-contribution` | `version-control/TECHNIQUE.md:8` | the group gained the `host-is-derived-component-is-named` invariant but the Capability is unchanged | diff-confirmed (version bump plus appended rule only). Re-cited — the advertisement is at `meta/README.md:3`, not :36, which is inside the Mermaid block | new |
-| MM-27 | step-gate-as-prose | `02-resolve-target.yaml:54-58` | "on a resume the saved client `repo_root` MUST name that same directory" is a conditional inside an unconditional `validate` | all three parts confirmed — the step carries no `when`/`condition`, `is_resuming` is declared at `meta/workflow.yaml:82`, and siblings at :25 and :28-38 use the formal gate | new |
-| MM-28 | `no-next-step-narration` | `00-discover-session.yaml:22,28`; `02-resolve-target.yaml:39` | routing narrated where `transitions` / `effect.transitionTo` / labels already own it | confirmed, including the factual error: :28 claims aborting means "no session and no planning folder is created", but `bootstrap-protocol.md:20` has already created and bound the meta session before this activity runs | new |
-| MM-29 | `no-user-env-mutation` | `work-package/activities/11-validate.yaml:33` | the bind site's message directs the mutating fix: "Install missing toolchain prerequisites before validation" | **narrowed to the bind site.** The `preflight.md` half is refuted — :30 says "Do NOT attempt installation … surface it to the user", and the technique's product is a diagnostic array, not an install. `work-package/workflow.yaml:20`'s boundary is scoped to git config, so it is adjacent rather than the exact converse | pre |
+| MH-4 | `no-duplicated-guidance` | `src/tools/resource-tools.ts:106`; `src/tools/workflow-tools.ts:326`; `src/utils/session/scope.ts:239` — all in the **server** repo | **Downgraded from High.** Three harness strings still teach the retired provenance ("pass `repo` … from the user or workspace AGENTS.md"). `workflow-tools.ts:326` sits inside the `discover` return, so the first surface an orchestrator reads contradicts the new contract | **Definition half closed**: full statements went 4 → 1. The rule now has one named home, `prose-sources-are-fallback-only` (`resolve-host-repo.md:49-51`); `bootstrap-protocol.md:17` and `start-session.md:22` are pointers; `meta/workflow.yaml:40` no longer states it. Downgraded because what remains is stale documentation outside the audited target surface, not duplicated guidance within it | new |
+| MM-4 | `readme-orients-not-transcribes` | `meta/activities/README.md:5,15,31` (and `:47`) | checkpoint roster with firing conditions (:15), near-verbatim restatement of activity `outcome` text (:31 vs `02-resolve-target.yaml:73`; :47 vs `04-end-workflow.yaml:45-46`), prose activity sequence duplicating the `meta/README.md:18-24` index table (:5) | **narrowed 5 sites → 3 homes, all in `meta/activities/README.md`.** Both `meta/README.md` sites are resolved: the rule-key inventory row no longer lists keys, and `grep -rn 'target-path-scope' meta/` returns nothing. Also re-cited: the restatement target is the activity **`outcome`** text, not an activity `rules:` block — MH-6's fix removed every such block library-wide | new |
+| MM-6 | `technique-ref-in-io-contract` | `commit-and-persist.md:22`; `start-session.md:22,34` | I/O entry descriptions hyperlink a producing or consuming technique | **narrowed 5 sites → 2 files.** `preflight.md`, `select-target-component.md:26` and `extract-identifying-context.md:24` are resolved — the latter two now use a bare-text rule reference with no link | new |
+| MM-8 | `io-agnostic-contract` | `commit-and-persist.md:22,30`; `start-session.md:22` | I/O entries naming a workflow-internal producer, or a flag described as coming "from the workflow bag" | **narrowed 4 sites → 2 files.** `preflight.md` names no producer in any entry; `select-target-component.md`'s remaining sources are external ("as derived from git"), which is the exempted origin | new / pre |
+| MM-15 | `contract-not-procedure` | `resolve-host-repo.md:42,43,45` | Protocol steps that are projections of already-produced Outputs. Step 6 (:45) is verbatim its own Output declaration at :36 | **re-cited and widened.** Round 0 cited steps 4 and 6 at :47/:49; the remediation renumbered the Protocol, and step 3 (:42, projecting :28) is a third instance | new |
+| MM-16 | `pass-orchestration-in-technique` | `commit-and-persist.md:34,35,38,39` | four `Apply` / `::` op invocations inside one technique bound as a single step at `03-dispatch-client-workflow.yaml:58`, so each op could be its own step | confirmed unchanged — round 1 did not touch this file | pre |
+| MM-17 | `constraint-as-blockquote` | `commit-and-persist.md:35` | an indented `-` sub-bullet, which the loader reads as a disconnected peer step | confirmed. Loader-backed: `markdown-technique-loader.ts:192` captures indentation and never reads it. The intended `>` continuation form exists in-tree at `start-session.md:53-54` | pre |
+| MM-20 | `describe-tool-value` | `start-session.md:36-48`; `bootstrap-protocol.md:20` | mechanics in place of value, and the declared Outputs are incomplete | confirmed against the actual response shape at `resource-tools.ts:382-403`, which returns a `workflow` metadata block, `planning_slug`, `repo_unbound`, `context_mode` and `migrated` beyond the three declared ids. `repo_unbound` is precisely the signal that this change's derivation-plus-fallback contract failed to bind, so its omission matters most | pre |
+| MM-23 | `structure-backed-constraints` | `agent-conduct.md:96-98`; restated at `commit-and-persist.md:46` | the `orchestrator-component-path-scope` MUST/NEVER commit-location rule has no checkpoint, `condition` or `validate` backing it | confirmed. The only `validate` actions in `meta` are `02-resolve-target.yaml:52-66` (binding agreement, resumed binding, git-tree presence) and `03-dispatch-client-workflow.yaml:10` — none constrains commit or branch location, and no checkpoint or condition references commit scope | new |
+| MM-25 | `hoist-shared-inputs` | `preflight.md:12-18`; `commit-and-persist.md:20-26` | the same `host_repo_path` + `component_path` pair declared on two techniques in two different groups | confirmed on all counts. `meta/techniques/TECHNIQUE.md` is 8 lines of Capability only, with no `## Inputs`, despite claiming to hold shared ones. Newly noted: the intermediate `cargo-operations/TECHNIQUE.md:10-18` *does* carry `## Inputs`, but declares `build_scope`/`features` — so the hoist target exists and simply omits this pair | new |
 
-#### Low
+#### Open — Low
 
-| # | Entry | Site(s) | Attr |
+| # | Entry | Site(s) — as confirmed in round 1 | Attr |
 |---|---|---|---|
-| MM-12 | `boolean-id-shape` — **downgraded from Medium.** `host_binding_mismatch` names the prohibited state and is approved by `setVariable … false`. Downgraded because the sibling-contrast premise is refuted: `workflow_match_ambiguous` (`meta/workflow.yaml:67`) has the same problem-state shape and the same `setVariable … false` approval, so this is not an outlier in its own activity family | `meta/workflow.yaml:54`; `resolve-host-repo.md:38` | new |
-| MM-21 | `no-technique-resource-dual-home` — **downgraded from Medium.** The dual home holds, but "character-for-character" is refuted: exactly one sentence is verbatim across `start-session.md:55` and `bootstrap-protocol.md:20`; the rest is paraphrase | `start-session.md:52-56` | pre |
-| ML-1 | `avoidance-voice-in-definitions` | `00-discover-session.yaml:125` outcome; `meta/README.md:9,14` | new / pre |
-| ML-2 | `procedure-in-capability` | `resolve-host-repo.md:8` — Protocol imperatives restated plus a hyperlink in Capability | new |
-| ML-3 | `technique-outputs-declared` | `preflight.md:30` returns `missing-prerequisites`; the declared output is `missing_prerequisites` | pre |
+| MM-12 | `boolean-id-shape` — downgraded from Medium in round 0. `host_binding_mismatch` names the prohibited state; not an outlier, since `workflow_match_ambiguous` shares both the shape and the `setVariable … false` approval | `meta/workflow.yaml:50-53`; `resolve-host-repo.md:34`; read at `00-discover-session.yaml:14`, set at `:25` | new |
+| MM-21 | `no-technique-resource-dual-home` — downgraded from Medium in round 0. The dual home holds and each side links the other; "character-for-character" was refuted | `bootstrap-protocol.md:20` / `start-session.md:52-55` | pre |
+| ML-1 | `avoidance-voice-in-definitions` | `00-discover-session.yaml:127` outcome ("no search performed otherwise"); `meta/README.md:52,90` ("do not restate that HOW here", "reference but do not restate them") | new / pre |
 | ML-4 | `paren-invocation-args` | `commit-and-persist.md:34,38` — argument lists outside parentheses with backticked parameter names | pre |
-| ML-5 | `no-one-step-rules` | `commit-and-persist.md:56-58` — `no-stale-remote` names the single step it constrains | pre |
-| ML-6 | `role-rules-not-description` | `meta/workflow.yaml:53,88` — agent-behaviour prescriptions inside variable descriptions | new / pre |
-| ML-7 | `complete-documentation-structure` | `meta/techniques/` has no `README.md`; 11 of 14 reference workflows carry one | pre |
+| ML-5 | `no-one-step-rules` | `commit-and-persist.md:56-58` — `no-stale-remote` names the single step it constrains ("push is mandatory whenever step 5 stages changes") | pre |
+| ML-7 | `complete-documentation-structure` | `meta/techniques/` has no `README.md`, while `work-package/techniques/README.md` does exist — so the asymmetry is in-repo, not only against the reference workflows | pre |
 
-#### Withdrawn by re-derivation
+#### Closed in round 1 — `meta`
 
-**MM-24 · `no-invented-naming` · `agent-conduct.md:96`** — **withdrawn** · drives no edit
+Each Critical and High row below was re-derived against the post-remediation file before being marked
+closed; Mediums and Lows were spot-confirmed.
 
-The rename is real: the base ref reads `### orchestrator-target-path-scope`, the branch reads
-`### orchestrator-component-path-scope`. But the cited class does not fit. The criteria entry carves
-out reuse of an already-established in-repo convention, and the new slug reuses both the existing
-`orchestrator-*-path-scope` pattern and the declared variable `component_path`
-(`meta/workflow.yaml:99`); a repo-wide grep finds **zero** surviving references to the old slug, so
-nothing was invented and nothing dangles. What remains is a rule-id rename, not an invented naming
-convention. Whether that rename sits inside this run's approval record is a scope matter for the
-[change brief](01-change-brief.md), and the incomplete-search evidence this row rested on is already
-carried by MH-1.
+| # | Severity | What closed it | Verification |
+|---|---|---|---|
+| MC-1 | Critical | `work-package/workflow.yaml:103,109` now declares `host_repo_path` and `component_path`, and both are produced in activity 01 (`derive-host-repo`, `resolve-repo-root`) before activity 11 runs | preflight's bare-string bind at `11-validate.yaml:28` now same-name binds against declared variables. `binding-fidelity`'s two `orphan-input` rejections are gone. Residual note, not a finding: `host_repo_path` carries no `defaultValue`, so it resolves via the runtime producer rather than statically |
+| MH-2 | High | `detect-repo-type.md` gained `## Inputs` declaring `host_repo_path`, its Capability was rescoped off "the working directory", and Protocol anchors `.gitmodules` at `{host_repo_path}`. The second site `list-submodules.md` received the same treatment | Both files re-read in full; both now declare the input and anchor the read at the derived host root, so a session opened inside a component no longer classifies the component's own structure |
+| MH-6 | High | The activity-level `rules:` block was deleted from `02-resolve-target.yaml` — entry 1 restated the formal `validate` 20 lines later, entry 2 restated what the bound techniques already apply | `grep -rn "rules:" */activities/*.yaml` across all 112 activity files returns **zero** hits library-wide, so the anomaly is gone rather than relocated |
+| MH-7 | High | `agent-conduct.md:96-98` no longer interpolates `{host_repo_path}/{component_path}`; the commit-location rule is stated relationally ("the component directory (the submodule) … the host repo where that directory lives") | The file interpolates neither name, so its absent `## Inputs` is now consistent. The seven consumer sites outside `meta` — four in `workflow-design`, three in `work-package` — no longer receive unresolvable reads |
+| MH-8 | High | `is_monorepo_host` was **deleted**: declaration, Output heading, and the Protocol step that set it | `grep -rn "is_monorepo_host"` returns zero hits. All three gates in `02-resolve-target.yaml` (:18, :22, :29) compare `is_monorepo`, which has a declared producer in `detect-repo-type` — and that producer's root is now the derived host (MH-2). The `dead-output` rejection is cleared |
+| MH-1 | Medium (downgraded from High in round 0) | The dangling `target-path-scope` citation and the rule-key inventory in `meta/README.md` were both rewritten | `grep -rn 'target-path-scope' meta/` returns nothing; the only surviving occurrence is the rule's own heading `agent-conduct.md:96`. Closed alongside MM-4's `meta/README.md` half |
+| MH-3 | Medium (downgraded from High in round 0) | `bootstrap-protocol.md` step 2's inlined derivation was completed with the origin-URL forms `owner/repo` correctness depends on | The pre-session surface now carries what it needs without loading a technique that requires a `session_index` not yet in existence |
+| MM-1, MM-2, MM-3, MM-5, MM-7, MM-9, MM-10, MM-11, MM-13, MM-14, MM-18, MM-19, MM-22, MM-26, MM-27, MM-28 | Medium | Description hygiene, brace-declared ids, prose-gate → formal gate, stage-agnostic technique text, next-step narration, and duplicated-guidance repairs across `meta/workflow.yaml`, `00-discover-session.yaml`, `02-resolve-target.yaml`, `resolve-host-repo.md`, `select-target-component.md`, `extract-identifying-context.md`, `match-saved-session.md`, `start-session.md`, `bootstrap-protocol.md` and both READMEs | Spot-confirmed against each cited construct |
+| ML-2, ML-3, ML-6 | Low | `procedure-in-capability`; the `missing-prerequisites` / `missing_prerequisites` output-name mismatch; role prescriptions inside variable descriptions | Spot-confirmed |
 
-#### Resolved during an earlier activity
-
-**MR-1 · input optionality and default form · `resolve-host-repo.md:12-18`** — `workspace_path`
-carried its default as trailing description prose with no optionality marker, diverging from the group
-sibling form (`push-branch.md:22`) and from the `#### default` sub-section used across the reference
-workflows. Rewritten to `*(optional)*` plus a `#### default` sub-section, which also cleared the
-guard's `orphan-input workspace_path` rejection since the loader recognises `#### default` as a
-producer. `check-technique-template` re-ran clean.
+**MM-24** remains **withdrawn** by round-0 re-derivation — the `agent-conduct.md` rule-id rename reuses an
+established in-repo convention and leaves nothing dangling — and **MR-1** was resolved during an earlier
+activity. Neither drives an edit.
 
 ---
 
 ### Target: `work-package`
 
-Consumer surface: the sweep ran over all 15 other workflow directories and found 50 references into
-16 `work-package` files, **none** of which resolves into a file this run changed. The three changed
-files are an activity YAML no other workflow borrows, a standalone technique bound only by
-`work-package`'s own `01-start-work-package`, and `workflow.yaml`. An empty changed-file consumer
-surface is the recorded result of the sweep, not an unrun sweep.
+Consumer surface: 50 references into 16 `work-package` files from the other 15 workflow directories.
+**Round 0 recorded none as reaching a changed file; round 1 refuted that** — see
+[Divergence 3](#divergence-3--round-0s-work-package-consumer-surface-was-wrong-and-round-1-acted-on-it).
 
-Counts: 1 Critical · 2 High · 5 Medium · 6 Low.
+Open: 0 Critical · 0 High · 0 Medium · 4 Low. Every `work-package` Critical, High and Medium is closed.
 
-#### Critical
+#### Open — Low
 
-**WC-1 · `bind-protocol-locals` · `work-package/activities/01-start-work-package.yaml:163`** — **confirmed** · **new**
-
-The `resolve-repo-root` step binds `discovered_path: "{host_repo_path}/{component_path}"`. Neither
-name is declared in `work-package/workflow.yaml` (which declares `target_path` :92, `repo_root` :95,
-`component_name` :98, `discovered_path` :514), neither is produced by any work-package step, and
-neither is inherited — a child session's bag is seeded from its own declared `variables[]` plus
-`user_request` alone, so a parent-session value cannot cross the boundary. The authored prose confirms
-the cross-session reach it depends on: `repo-root-resolution.md:14` says the value comes "from **the
-meta session's** `component_path`". Both interpolations therefore resolve to nothing. The co-change
-set for this seam was walked — all three files were edited — but the declaration gap was not closed;
-`work-package/workflow.yaml:516` only reworded `discovered_path`'s description.
-*Re-derived from*: the bind at :163, the `work-package/workflow.yaml` variable block, and a tree-wide
-grep showing both names appear in `work-package` only in description prose and this template.
-*Fix*: declare `host_repo_path` and `component_path` in `work-package/workflow.yaml` and seed them
-across the session boundary, or bind `discovered_path` from a value work-package already declares.
-
-#### High — confirmed
-
-**WH-1 · `duplicate-shared-capability` + `capability-group-placement` · `work-package/techniques/repo-root-resolution.md:29`** — **confirmed** · **new**
-
-Protocol step 2 re-authors the git superproject-ascent recipe for a capability this same change
-created as the shared meta op `version-control::resolve-host-repo`. The two texts are the same recipe:
-
-- `repo-root-resolution.md:29` — "the path is a monorepo component when its parent directory is itself a git repository whose `.gitmodules` declares the path's basename as a submodule `path`. Repeat the test from that parent and keep ascending while it holds, so a component nested more than one level deep resolves to the outermost superproject"
-- `resolve-host-repo.md:45` — "Ascend while the current toplevel's parent directory is itself a git repository whose `.gitmodules` declares the current toplevel's basename as a submodule `path`. Each successful test moves the current toplevel to that parent; the outermost superproject wins"
-
-The file names the shared home itself: "This is the same ascent `meta`'s
-`version-control::resolve-host-repo` performs at session bootstrap, where it is stated canonically."
-The local novelty is only output naming. The carve-out for "the activity binds the shared op as its
-own step" does not apply: `01-start-work-package.yaml:158-163` binds `name: repo-root-resolution`, the
-local technique, not the shared op. `resolve-host-repo.md` is new in this change (+49 lines, no
-base-ref ancestor), so the duplicate was authored knowingly.
-*Fix*: delete the local recipe, bind `version-control::resolve-host-repo`, and keep only
-caller-specific value assembly locally.
-
-**WH-3 · `worker-rule-reach` · `work-package/workflow.yaml:21-24`** — **confirmed** · **pre**
-
-Four rules — `safety-floor-never-simplified`, `report-before-apply`, `leanness-reported-honestly`,
-`complementary-not-duplicative-with-strategic-review` — all command the worker that runs the
-lean-coding audit, yet all four sit under `rules.workflow`. **The harness settles it**:
-`src/tools/workflow-tools.ts:965` states that a worker receives activity-scoped rules plus
-dual-audience `rules.universal`, and that "`rules.workflow` are orchestrator-only". So none of the
-four reaches the agent it commands, while the worker-facing `09-lean-coding-audit.yaml:76` says
-"Confirm the applied simplifications hold the safety floor" without the floor's definition ever
-arriving.
-*Correction to the sweep*: the claim that a library-wide grep returns this file alone holds for three
-of the four keys, not all four — `safety-floor-never-simplified` also appears at
-`ponytail/workflow.yaml:15`. That occurrence strengthens the finding rather than weakening it:
-ponytail's version is explicitly structure-backed ("Backed by the safety-floor-cleared blocking
-checkpoint and the safety_floor_cleared gate"), which is the shape this one lacks.
-*Fix*: move worker-directed rules to `rules.activity` or the owning technique's `## Rules`.
-
-#### Medium
-
-| # | Entry | Site(s) | Note | Attr |
-|---|---|---|---|---|
-| WH-2 | `io-agnostic-contract` | `repo-root-resolution.md:14`, mirrored at `work-package/workflow.yaml:516` | **downgraded from High.** Reproduced verbatim — the input description names the internal producer down to activity, step and session: "Bound explicitly by `01-start-work-package`'s `resolve-repo-root` step from the meta session's `component_path`, absolutized against `host_repo_path` — not a path the user typed", which is not the exempted intrinsic or external origin. Downgraded for consistency: MM-8 rates this same class Medium on comparable sites and no aggravating factor distinguishes this one. *Fix*: describe what the value is — an absolute path to the component directory under inspection — and drop the internal source naming | new |
-| WM-1 | `no-rationale-in-description` | `work-package/workflow.yaml:516`; `repo-root-resolution.md:14,29` | producer/consumer narration and cross-technique rationale where siblings at :505, :509, :512, :519, :522 are terse one-liners | new |
-| WM-2 | `variable-description-one-line` | `work-package/workflow.yaml:516` | three sentences on one `description:`, with a bind-site tail and "Its basename becomes `component_name`" | new |
-| WM-3 | `technique-stage-agnostic` | `repo-root-resolution.md:29` | "performs **at session bootstrap**" answers where in the workflow flow | new |
-| WM-4 | `encode-constraints-as-structure` | `01-start-work-package.yaml:158-163` | absoluteness is a precondition in text only (`repo-root-resolution.md:14`), and a legal state violates it: `component_path` carries `defaultValue: .` (`meta/workflow.yaml:99-102`) and `host_repo_path` has no default, so the template can interpolate to `/.` or an unresolved token. The available structural form sits two steps later at `verify-signing-precondition` (:181-185, `action: validate`) | new |
-
-#### Low
-
-| # | Entry | Site(s) | Attr |
+| # | Entry | Site(s) — as confirmed in round 1 | Attr |
 |---|---|---|---|
-| WL-1 | `avoidance-voice-in-definitions` | `repo-root-resolution.md:14` — "not a path the user typed", negating the superseded definition | new |
-| WL-2 | `procedure-in-capability` | `repo-root-resolution.md:8` — `{repo_root}` / `{component_name}` braces and a prohibition in Capability | pre |
-| WL-3 | `validate-message-economy` | `01-start-work-package.yaml:248` — trailing consequence essay | pre |
-| WL-4 | `no-valueless-control-set` | `01-start-work-package.yaml:147-157,538-543` — value-less control `set` carrying derivation HOW | pre |
-| WL-5 | `no-duplicate-technique-steps` | `01-start-work-package.yaml:562,574` — two adjacent steps bind `naming-conventions`, whose single run produces both outputs | pre |
-| WL-6 | `outcome-names-value` | `01-start-work-package.yaml:793` — pure-plumbing outcome | pre |
+| WL-3 | `validate-message-economy` | `01-start-work-package.yaml:248` — trailing consequence essay after the cause. Second instance newly noted at `:186` ("Configure git signing in your environment … before re-running.") | pre |
+| WL-4 | `no-valueless-control-set` | `01-start-work-package.yaml:154-157,541-543` — `action: set` steps carrying the whole derivation in `message:` with no `value:` | pre |
+| WL-5 | `no-duplicate-technique-steps` | `01-start-work-package.yaml:561-571,572-574` — `derive-branch-name` and `compute-canonical-target-path` both bind `naming-conventions`, whose single run produces both outputs | pre |
+| WL-6 | `outcome-names-value` | `01-start-work-package.yaml:793` — a plumbing fact (planning-folder binding) in outcome position among genuine deliverables | pre |
+
+All four are **pre**-existing, all four sit in one file, and none is in this run's scope manifest. They
+are recorded for a later pass over `01-start-work-package.yaml` rather than as residue of this change.
+
+#### Closed in round 1 — `work-package`
+
+| # | Severity | What closed it | Verification |
+|---|---|---|---|
+| WC-1 | Critical | The offending bind is **gone**. Rather than give `discovered_path` a source, round 1 retired the variable and split the step in two: `derive-host-repo` binds the shared `version-control::resolve-host-repo`, then `resolve-repo-root` assembles component identity | `grep -rn "discovered_path"` returns zero hits library-wide, and the declaration was removed from `work-package/workflow.yaml`. Every input the new pair declares — `host_repo_path`, `component_hint` — is declared in `work-package/workflow.yaml` and produced upstream, so no interpolation resolves to nothing |
+| WH-1 | High | `repo-root-resolution.md`'s Protocol no longer re-authors the superproject ascent; it delegates via its `host_repo_path` input and keeps only caller-specific component assembly | The duplicated recipe is gone from the Protocol, and `01-start-work-package.yaml:158-163` binds the shared meta op first, then the local technique — closing the round-0 objection that the carve-out did not apply because the activity bound the local name |
+| WH-3 | High | The four worker-directed rules — `safety-floor-never-simplified`, `report-before-apply`, `leanness-reported-honestly`, `complementary-not-duplicative-with-strategic-review` — moved from `rules.workflow` to `rules.activity` at `work-package/workflow.yaml:22-26` | **Harness-confirmed rather than assumed.** `src/tools/workflow-tools.ts:964-976` shows `rules.activity` is exactly the worker-facing channel, delivered as the `activity_rules` block on `get_activity`, while `rules.workflow` is orchestrator-only. The rules now reach the worker they command, and `09-lean-coding-audit.yaml` receives the safety floor's definition. Schema-valid: `workflow-yaml` reports 16 workflows valid |
+| WH-2 | Medium (downgraded from High in round 0) | The `repo-root-resolution.md` input description no longer names its internal producer down to activity, step and session | Spot-confirmed against the rewritten description |
+| WM-1, WM-2, WM-3 | Medium | Rationale in description; the three-sentence variable description at `work-package/workflow.yaml`; the "at session bootstrap" stage reference | Spot-confirmed |
+| WM-4 | Medium | Closed by the same edit as WC-1 — the `{host_repo_path}/{component_path}` template whose absoluteness was a text-only precondition no longer exists, so the legal-but-violating state (`component_path` defaulting to `.`) can no longer interpolate to `/.` | The bind was deleted, not merely re-worded, so the constraint has nothing left to encode |
+| WL-1, WL-2 | Low | Avoidance voice ("not a path the user typed") and `procedure-in-capability` in `repo-root-resolution.md` | Spot-confirmed |
+
+---
+
+## Accepted exclusions — not reachable from this edit surface
+
+This run's edit surface is a checkout of the `workflows` repository alone. Two open obligations lie
+outside it and **cannot close in this change**. The close-out will carry them forward as deferrals; they
+are recorded here as the exclusions the audit accepted.
+
+| Item | Location | Why it cannot close here |
+|---|---|---|
+| MH-4 residue — three strings teaching the retired prose provenance | `src/tools/resource-tools.ts:106`, `src/tools/workflow-tools.ts:326`, `src/utils/session/scope.ts:239` | Server source, outside the `workflows` checkout. `workflow-tools.ts:326` is inside the `discover` return, so an orchestrator reads the superseded rule before any session exists — the highest-value part of the fix is the part this change cannot make |
+| e2e walk snapshots | `tests/e2e/__snapshots__/corpus-sha.json`, `snapshot.test.ts.snap` | Re-baselining requires a submodule pointer bump, which only a server-repo change can make. Recorded as an accepted exclusion in the [scope manifest](06-scope-manifest.md); the walk stays red until then |
+
+Neither is a coverage gap: both were walked, both are understood, and both have a named home for the
+follow-up work.
 
 ---
 
 ## Coverage
 
-`walked` means the unit's criteria were applied to every file in scope — the 19 changed files across
-both targets, read in full and against the base-ref diff, plus the 11 consumer-surface sites, with
-sibling-convention comparison against the 14 reference workflows. Whole-surface mechanical coverage of
-both targets' 315 files comes from the guard suite, which runs tree-wide.
+`walked` means the unit's criteria were applied to every changed file across both targets, read in full
+and against the base-ref diff, plus the 11 consumer-surface sites, with sibling-convention comparison
+against the 14 reference workflows. Whole-surface mechanical coverage comes from the guard suite, which
+runs tree-wide.
 
-**No unit is `blocked`, so this walk records no missing coverage.** Two divergences follow.
+**No unit is `blocked`, so this walk records no missing coverage** and `has_coverage_gap` is false.
+Three divergences follow.
 
 ### Divergence 1 — the enumeration denominator was overstated by 2
 
-Cross-checking the ledger against the criteria homes themselves shows the `anti-patterns` unit count
-is wrong. `13` is the raw `## ` heading count, not the anti-pattern category count: it counts
-`Creation Rules` (authoring meta-guidance, sitting under `# Overview` rather than `# Catalog`) and
-`Authoring Guidance (MR)` (a separate 4-entry `MR-n` series) as if they were AP categories. The real
-figure is **11**. The other three homes match exactly.
+The `anti-patterns` unit count of `13` is the raw `## ` heading count, not the anti-pattern category
+count: it counts `Creation Rules` (authoring meta-guidance) and `Authoring Guidance (MR)` (a separate
+4-entry `MR-n` series) as if they were AP categories. The real figure is **11**. Re-verified in round 1
+directly against the criteria home.
 
 | Home | Units as swept | Real units | walked | not-applicable | blocked |
 |---|---:|---:|---:|---:|---:|
@@ -373,54 +208,80 @@ figure is **11**. The other three homes match exactly.
 | `workflow-design/convention-conformance` | 1 | 1 | 1 | 0 | 0 |
 | **Total** | **50** | **48** | **44** | **4** | **0** |
 
-The miscount is self-consistent in outcome — one of the two non-categories, `creation-rules`, is
-itself the unit the walk marked `not-applicable` — so no criteria surface went unexamined and no
-verdict above depends on the denominator. It is recorded because the ledger's arithmetic should be
-right before a later pass diffs against it. Two cautions for that pass: the `anti-patterns` figure is
-granularity-sensitive in a way the others are not (11 categories versus **130** individual `AP-nn`
-entries, so a per-anti-pattern claim would need a very different denominator), and
-`design-principles`' 30 is correct only at principle granularity — its raw `## ` count is 31, because
-`Overview` is not a principle.
+The miscount is self-consistent in outcome — one of the two non-categories, `creation-rules`, is itself
+the unit the walk marked `not-applicable` — so no criteria surface went unexamined and no verdict depends
+on the denominator. Two cautions for a later pass: the `anti-patterns` figure is granularity-sensitive in
+a way the others are not (11 categories versus **130** individual `AP-nn` entries, so a per-anti-pattern
+claim needs a different denominator), and `design-principles`' 30 is correct only at principle
+granularity — its raw `## ` count is 31, because `Overview` is not a principle.
 
 ### Divergence 2 — the four `not-applicable` units, each an evidenced negative
 
 | Unit | Reason it does not reach this surface |
 |---|---|
-| `anti-patterns#creation-rules` | Governs how anti-pattern entries themselves are authored. No file in scope is a criteria home: `grep -rn "^### AP-"` over the 19 changed files and 11 consumer sites returns zero hits; all 130 entries live in `workflow-design/resources/anti-patterns.md`, which this change does not touch and no changed file references. |
-| `design-principles#2-internalize-before-producing` | Governs the authoring session's order of work, not authored artefacts. No construct in scope carries evidence of pre- or post-internalisation ordering. |
-| `design-principles#23-close-the-loop` | No recommendation-shaped deliverable in scope; the one analysis-to-action seam the change adds (`host_binding_mismatch` → checkpoint) terminates in an explicit `abort-binding` stop gate. |
-| `design-principles#28-creation-guide-for-generated-documents` | No changed technique persists a planning artifact — no `#### artifact` declaration exists in any of the 19 changed files. |
+| `anti-patterns#creation-rules` | Governs how anti-pattern entries themselves are authored. No file in scope is a criteria home: `grep -rn "^### AP-"` over the changed files and consumer sites returns zero hits; all 130 entries live in `workflow-design/resources/anti-patterns.md`, which this change does not touch and no changed file references |
+| `design-principles#2-internalize-before-producing` | Governs the authoring session's order of work, not authored artefacts. No construct in scope carries evidence of pre- or post-internalisation ordering |
+| `design-principles#23-close-the-loop` | No recommendation-shaped deliverable in scope; the one analysis-to-action seam the change adds (`host_binding_mismatch` → checkpoint) terminates in an explicit `abort-binding` stop gate |
+| `design-principles#28-creation-guide-for-generated-documents` | No changed technique persists a planning artifact — no `#### artifact` declaration exists in any changed file |
+
+### Divergence 3 — round 0's `work-package` consumer surface was wrong, and round 1 acted on it
+
+Round 0 recorded that none of the 50 inbound references reached a file this run changed, and that
+`repo-root-resolution` was bound only by `work-package`'s own `01-start-work-package`. That is
+**refuted**: `remediate-vuln/activities/01-start.yaml:44` is a second consumer, binding
+`work-package::repo-root-resolution` through an `inputs` deviation.
+
+The consequence was live rather than theoretical. Round 1's WH-1 fix replaced that technique's
+`discovered_path` input with `host_repo_path`, which would have left the `remediate-vuln` bind supplying
+an input the technique no longer declares. The bind was corrected in the same round
+(`discovered_path: target_path` → `host_repo_path: target_path`).
+
+This is a **coverage divergence corrected inside the run**, not a coverage gap — the miss was found and
+repaired before commit, which is why no unit is marked `blocked`. Its *scope* consequence is separate: the
+repair edited a file the manifest listed as out of scope, on a rationale the change has since superseded.
+That belongs to the [scope manifest](06-scope-manifest.md) and is recorded there, not here.
 
 ---
 
 ## Guard results
 
-`npx tsx scripts/check-all.ts --root <target_path>` — 17 guards, 16 pass, 1 fail. Both positional
-validators pass per target: `validate-workflow-yaml.ts` against `meta` (5 activities, 133 technique
-files) and against `work-package` (111 technique files), and `validate-activities.ts` over the tree
-(112 passed, 0 failed).
+`npx tsx scripts/check-all.ts --root <target_path>` — 17 guards, **16 pass, 1 fail**, independently re-run
+in round 1. Both positional validators pass per target; `validate-activities.ts` reports 112 passed /
+0 failed; `workflow-yaml` reports 16 workflows valid.
 
-`binding-fidelity` rejects **3** definition files after the one resolvable failure was resolved
-(198 violations total: 70 harmless, 123 fix-later, 0 live bugs, 4 untriaged).
+`binding-fidelity` totals moved from 198 violations (70 harmless, 123 fix-later, 0 live bugs, 4 untriaged)
+to **194** (70 harmless, 123 fix-later, **0 live bugs**, **1 untriaged**).
 
-| Rejected file | Guard finding | Register entry |
-|---|---|---|
-| `meta/techniques/version-control/resolve-host-repo.md` | `dead-output is_monorepo_host` | MH-8 |
-| `meta/techniques/cargo-operations/preflight.md` (at its `work-package` bind) | `orphan-input component_path`, `orphan-input host_repo_path` | MC-1 / WC-1 |
-| `substrate-node-security-audit/techniques/write-report.md:90` | `read-resolution {target_path}` | outside both targets; pre-existing baseline drift, not attributable to this change |
+| Round 0 rejected file | Round 1 |
+|---|---|
+| `meta/techniques/version-control/resolve-host-repo.md` — `dead-output is_monorepo_host` | **cleared** (MH-8) |
+| `meta/techniques/cargo-operations/preflight.md` — `orphan-input component_path`, `orphan-input host_repo_path` | **cleared** (MC-1 / WC-1) |
+| `substrate-node-security-audit/techniques/write-report.md:90` — `read-resolution {target_path}` | **still rejected** |
 
-The two in-target rejections both require a design decision touching this run's open judgements — how
-the derived host values cross the meta → client session boundary, and whether `is_monorepo_host` gains
-a reader or is withdrawn. They are recorded here for disposition rather than suppressed into
-`scripts/binding-fidelity-triage.json`; no entry was added to that file.
+**In-target rejections went 3 → 0.** The one remaining rejection,
+`substrate-node-security-audit/techniques/write-report.md:90`, lies outside both targets, is pre-existing
+drift against the base ref, and is not fixable by this change.
+
+`scripts/binding-fidelity-triage.json` was verified **untouched**, so the improvement is a real repair and
+not a suppression.
+
+### On the non-zero `fail_count`
+
+`fail_count` is **1**, and it is **not** an in-target failure — it is the single out-of-target file above.
+
+No `condition`, gate or `transition` in this activity reads `fail_count`. It appears only in the
+`audit-disposition` checkpoint's message text. A non-zero value is therefore **informational here and does
+not block attestation on its own**; the blocking conditions are `has_critical_finding` (false) and
+`open_finding_count > 0` (true, at 21). This is recorded explicitly so the disposition is taken with the
+distinction visible, rather than the count being read as a silent blocker or waved through unexamined.
 
 ---
 
 ## Known
 
 74 keys were loaded and compared; **none matched a finding raised above**, so the decision surface is
-unchanged by them. They remain readable as suppressions so a later pass can ask whether each
-acceptance still holds.
+unchanged by them. They remain readable as suppressions so a later pass can ask whether each acceptance
+still holds.
 
 | Source | Keys | Class | Verdicts |
 |---|---|---|---|
@@ -429,8 +290,8 @@ acceptance still holds.
 | `scripts/check-review-mode-gating.ts` `ACCEPTED_HEADLESS_AUTO_ADVANCE` | 3 | `review-mode-headless-auto-advance` | `work-package::codebase-comprehension::comprehension-sufficient`, `work-package::requirements-elicitation::elicitation-complete`, `work-package::research::context-scope-declaration` |
 
 Keys are class-keyed rather than entry-keyed, because both sources name a violation class rather than a
-criteria entry. The `audience` and `identifier-qualification` guards are hard-zero with no baseline,
-and the planning folder held no prior findings register, so neither contributed keys.
+criteria entry. The `audience` and `identifier-qualification` guards are hard-zero with no baseline, and
+the planning folder held no prior findings register, so neither contributed keys.
 
 ---
 
@@ -442,5 +303,5 @@ and the planning folder held no prior findings register, so neither contributed 
 | Impact analysis | [`01-impact-analysis.md`](01-impact-analysis.md) |
 | Scope manifest | [`06-scope-manifest.md`](06-scope-manifest.md) |
 | Session index | [`README.md`](README.md) |
-| Edit surface | `/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-git-derived-host-repo-binding` |
+| Edit surface | `/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-git-derived-host-repo-binding` — remediation round 1 at `9eea56c6` |
 | Harness under co-change | `/home/mike1/projects/dev/workflow-server/src` — evidence for MH-4, MM-17, MM-19, MM-20, WH-3 |
