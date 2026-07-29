@@ -86,6 +86,7 @@
       "Bash(git verify-tag *)",
       "Bash(git worktree add *)",
       "Bash(git worktree list *)",
+      "Bash(git worktree remove __HOME__/projects/*/.worktrees/*)",
       "Bash(gpg --list-secret-keys *)",
       "Bash(gpg --list-keys *)",
       "Bash(gpg --list-public-keys *)",

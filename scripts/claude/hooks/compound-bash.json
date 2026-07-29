@@ -1,0 +1,13 @@
+{
+  "_comment": "Read by compound-bash-allow.py, which prefers this copy over ~/.claude/hooks/compound-bash.json. 'extraSafeCommands' ADDS to the hook's DEFAULT_SAFE_COMMANDS; use 'safeCommands' instead to replace that list outright. A safe-listed binary auto-approves with ANY arguments as one segment of a compound command, so the bar for adding one is: reads only, writes nothing, executes nothing, opens no socket. Every entry below is stdout-only. Counter-example worth keeping in mind: xxd is deliberately ABSENT, because 'xxd [infile [outfile]]' takes an output path as a bare positional and '-r' patches binary in place — it writes without a redirection operator, which breaks the invariant even though it looks like a dump tool.",
+  "extraSafeCommands": [
+    "strings",
+    "diff",
+    "cmp",
+    "od",
+    "comm",
+    "join",
+    "sha256sum",
+    "md5sum"
+  ]
+}
