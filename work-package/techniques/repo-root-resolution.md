@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-The product repo root and component identity for this work package, assembled from the derived host repository. Edits are never performed under `{repo_root}` — they use a separate worktree path.
+Component identity for this work package, assembled from the derived host repository. Edits are never performed under `{host_repo_path}` — they use a separate worktree path.
 
 ## Inputs
 
@@ -19,20 +19,15 @@ Absolute path of the host repository, as produced by [resolve-host-repo](../../m
 
 ## Outputs
 
-### repo_root
-
-Absolute path of the repo root used for comprehension, GitNexus indexing, read-only investigation, and as the git directory for `git worktree add`.
-
 ### component_name
 
-Basename of the component being worked on — the basename of `{repo_root}` when the session sits at the host root.
+Basename of the component being worked on — the basename of `{host_repo_path}` when the session sits at the host root.
 
 ### component_path
 
-Path of the component being worked on, relative to `{repo_root}` — `.` when the session sits at the host root.
+Path of the component being worked on, relative to `{host_repo_path}` — `.` when the session sits at the host root.
 
 ## Protocol
 
-1. Set `{repo_root}` to `{host_repo_path}` — the host derivation has already ascended to the outermost superproject, so no further ascent is performed here.
-2. When `{component_hint}` is unset, set `{component_path}` to `.` and `{component_name}` to the basename of `{repo_root}` — the session sits at the host root. Done.
-3. Read `{repo_root}/.gitmodules` and take the submodule `path` whose basename equals `{component_hint}`. Set `{component_path}` to that path and `{component_name}` to `{component_hint}`.
+1. When `{component_hint}` is unset, set `{component_path}` to `.` and `{component_name}` to the basename of `{host_repo_path}` — the session sits at the host root. Done.
+2. Read `{host_repo_path}/.gitmodules` and take the submodule `path` whose basename equals `{component_hint}`. Set `{component_path}` to that path and `{component_name}` to `{component_hint}`.

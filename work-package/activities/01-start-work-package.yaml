@@ -166,14 +166,14 @@ steps:
     technique: manage-git::update-repo-submodules
     condition:
       type: simple
-      variable: repo_root
+      variable: host_repo_path
       operator: exists
   - kind: technique
     id: analyze-repo-with-gitnexus
     technique:
       name: gitnexus-operations::analyze
       inputs:
-        repo_path: repo_root
+        repo_path: host_repo_path
     actions:
       - action: set
         target: gitnexus_indexed

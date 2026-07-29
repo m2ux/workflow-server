@@ -1,21 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
 
 Probe required toolchain prerequisites before running any workspace cargo command. Surfaces missing system dependencies (`protoc`, openssl headers, `pkg-config`, ...) as a structured environment finding so validation fails fast rather than mid-workspace-compile.
-
-## Inputs
-
-### host_repo_path
-
-Absolute path of the host repository.
-
-### component_path
-
-Path of the component whose cargo workspace is inspected, relative to `{host_repo_path}`.
 
 ## Outputs
 

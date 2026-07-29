@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.30.0
+version: 1.31.0
 title: DEPRECATED — use workflow-authoring — Workflow Design Workflow
 description: >-
   DEPRECATED — start `workflow-authoring` instead. This workflow remains only so sessions already
@@ -248,7 +248,7 @@ variables:
     description: The ordered design dimensions to elicit for this run's mode.
   - name: target_path
     type: string
-    description: Feature worktree path for edits, builds, and PR ops (not repo_root).
+    description: Feature worktree path for edits, builds, and PR ops (not host_repo_path).
     defaultValue: ""
   - name: worktree_created
     type: boolean

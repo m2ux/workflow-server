@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-authoring
-version: 1.0.0
+version: 1.1.0
 title: Workflow Authoring Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux

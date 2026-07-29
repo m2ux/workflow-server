@@ -92,17 +92,14 @@ variables:
     description: The user's free-form request that opened this work package.
   - name: target_path
     type: string
-    description: Feature worktree path for edits, builds, and PR ops (not repo_root).
-  - name: repo_root
-    type: string
-    description: Product repo root for comprehension, GitNexus, and worktree creation (monorepo root when the component is a submodule).
+    description: Feature worktree path for edits, builds, and PR ops (not host_repo_path).
   - name: component_name
     type: string
     description: "Basename of the component being worked on (e.g., 'midnight-node')."
     defaultValue: ""
   - name: host_repo_path
     type: string
-    description: Absolute path to the host repository the session belongs to.
+    description: Absolute path to the host repository the session belongs to — the outermost superproject when the component is a submodule, the checkout itself otherwise.
   - name: component_hint
     type: string
     description: Basename of the component the session was opened inside.
@@ -513,7 +510,7 @@ variables:
     defaultValue: false
   - name: gitnexus_indexed
     type: boolean
-    description: Whether repo_root has a usable GitNexus index.
+    description: Whether host_repo_path has a usable GitNexus index.
     defaultValue: false
   - name: problem_type
     type: string

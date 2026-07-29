@@ -16,8 +16,8 @@ steps:
         target: target_path != null
         message: target_path is unset. Re-enter start-work-package if its compute-canonical-target-path step was skipped.
       - action: validate
-        target: repo_root != null
-        message: repo_root is unset. Re-enter start-work-package if its resolve-repo-root step was skipped.
+        target: host_repo_path != null
+        message: host_repo_path is unset. Re-enter start-work-package if its resolve-repo-root step was skipped.
       - action: validate
         target: planning_folder_path.writable == true
         message: planning_folder_path is not writable. Confirm the path exists and is writable.

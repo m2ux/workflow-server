@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -17,26 +17,18 @@ Activity that just completed.
 
 Path to the planning folder.
 
-### host_repo_path
-
-Absolute path of the host repository, as derived by [resolve-host-repo](../version-control/resolve-host-repo.md). `{component_path}` is relative to it, so the two together locate the source-side directory.
-
-### component_path
-
-Path of the component where source-side changes live, relative to `{host_repo_path}` — typically the application submodule, `.` for a regular repo. The source-side directory is `{host_repo_path}/{component_path}`.
-
 ### mark_progress_na
 
-*(optional)* Flag from the workflow bag: true means the completing activity should be marked path-skip / cancel / N/A rather than complete.
+*(optional)* True when the completing activity should be marked path-skip / cancel / N/A rather than complete.
 
 ## Protocol
 
-1. **README Progress:** Resolve the Progress moment from [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites): if `{mark_progress_na}` is true, use path-skip / cancel / mark N/A; otherwise use `activity_complete`. Apply [sync-progress-status](./sync-progress-status.md) with `activity_id={activity_id}`, `planning_folder_path={planning_folder_path}`, and that moment's `{target_status}` / overwrite defaults ([Status transition policy](../../resources/planning-readme.md#status-transition-policy)); record `{rows_updated}` from that Apply. Do not restate [Status vocabulary](../../resources/planning-readme.md#status-vocabulary). When `{mark_progress_na}` was true, set it false after the Apply.
-   - Apply [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile) when `inspect_session` path/state for `{planning_folder_path}` or related critical variables disagrees with the just-completed worker's `activity_complete` envelope.
+1. **README Progress:** Resolve the Progress moment from [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites): if `{mark_progress_na}` is true, use path-skip / cancel / mark N/A; otherwise use `activity_complete`. Apply [sync-progress-status](./sync-progress-status.md)(*activity_id*={activity_id}, *planning_folder_path*={planning_folder_path}, *target_status*=that moment's status, with its overwrite defaults per [Status transition policy](../../resources/planning-readme.md#status-transition-policy)); record `{rows_updated}` from that Apply. Do not restate [Status vocabulary](../../resources/planning-readme.md#status-vocabulary). When `{mark_progress_na}` was true, set it false after the Apply.  
+   > Apply [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile) when `inspect_session` path/state for `{planning_folder_path}` or related critical variables disagrees with the just-completed worker's `activity_complete` envelope.
 2. Set the header-line `**Status:**` to the current lifecycle milestone for that workflow (text — distinct from Progress Status; see [Progress table](../../resources/planning-readme.md#progress-table)).
 3. If the README already matches after steps 1–2, leave content equivalent — still include the file in the engineering commit below so a prior local-only edit is pushed.
-4. If `{host_repo_path}/{component_path}` has uncommitted changes (`git status --porcelain` non-empty), apply [version-control](../version-control/TECHNIQUE.md)::[commit-submodule](../version-control/commit-submodule.md) with `paths=changed files`, `submodule_message='<type>(<workflow-id>): <activity-id> source changes'` (pick the Conventional Commits type that fits the activity — feat for implement, fix for post-impl-review fixes, refactor for cleanup, etc.), and `parent_branch=current parent branch`. Skip when the working tree is clean.
-5. **Engineering commit + push:** Apply [version-control](../version-control/TECHNIQUE.md)::[commit-regular-files](../version-control/commit-regular-files.md) for ALL changes under `.engineering/artifacts/` within `{planning_folder_path}` (including `README.md`, `session.json`, and `.session-token`) with message `docs(<workflow-id>): <activity-id> artifacts`. This post-activity hook **is** the commit request — do not wait for a separate user confirmation. Push must succeed before this operation returns.
+4. If `{host_repo_path}/{component_path}` has uncommitted changes (`git status --porcelain` non-empty), apply [version-control](../version-control/TECHNIQUE.md)::[commit-submodule](../version-control/commit-submodule.md)(*paths*=changed files, *submodule_message*=`'<type>(<workflow-id>): <activity-id> source changes'` with the Conventional Commits type that fits the activity — feat for implement, fix for post-impl-review fixes, refactor for cleanup, *parent_branch*=current parent branch). Skip when the working tree is clean.
+5. **Engineering commit + push:** Apply [version-control](../version-control/TECHNIQUE.md)::[commit-regular-files](../version-control/commit-regular-files.md)(*paths*=ALL changes under `.engineering/artifacts/` within `{planning_folder_path}`, including `README.md`, `session.json` and `.session-token`, *message*=`docs(<workflow-id>): <activity-id> artifacts`). This post-activity hook **is** the commit request — do not wait for a separate user confirmation. Push must succeed before this operation returns: Engineering links and resume assume the remote holds the commit, so a local-only README or artifact update does not satisfy this step.
 6. Confirm the engineering push landed (remote tracking branch includes the new commit). If push failed, retry once; if still failing, surface the error and do not advance to the next activity.
 
 ## Rules
@@ -52,7 +44,3 @@ Planning-folder `README.md` Progress Status updates for the completed activity g
 ### session-files-ride-along
 
 `session.json` and `.session-token` are written by the server on every authenticated tool call and so are always present in the planning folder by the time this operation runs. Stage them in the SAME engineering commit as the activity's other artifacts — do not produce a separate `state` commit.
-
-### no-stale-remote
-
-A local-only README or artifact update does not satisfy this operation. Engineering links and resume assume the remote has the commit; push is mandatory whenever step 5 stages changes.
