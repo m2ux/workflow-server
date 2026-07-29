@@ -1,15 +1,15 @@
 # Findings Register — git-derived host-repo binding
 
-**Date:** 2026-07-28 · **Mode:** Update · **Remediation round:** 1
+**Date:** 2026-07-29 · **Mode:** Update · **Remediation round:** 2 (final — the transition caps at `remediation_round < 3`)
 **Base ref:** `f84fe02b12f9617f401767b9b96f329d8c13225c` (merge base of `workflow/meta-git-derived-host-repo-binding` with `origin/workflows`)
-**Targets:** `meta`, `work-package` — one section each below
+**Targets:** `meta`, `work-package`, `workflow-design`, `workflow-authoring`, `remediate-vuln` — widened in round 2 by operator decision so MH-5 could complete; see [Divergence 4](#divergence-4--the-target-set-was-widened-in-round-2-to-complete-mh-5)
 
 Canonical home for this run's audit findings, coverage divergences and accepted exclusions.
 
-- **Edit surface**: `/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-git-derived-host-repo-binding` — **22** changed files vs the base ref, diff-confirmed; remediation round 1 landed as `9eea56c6`
-- **Changed by target**: `meta` 16 · `work-package` 4 · `remediate-vuln` 1 (consumer repair — see [Divergence 3](#divergence-3--round-0s-work-package-consumer-surface-was-wrong-and-round-1-acted-on-it))
+- **Edit surface**: `/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-git-derived-host-repo-binding` — **44** changed files vs the base ref, diff-confirmed; round 1 landed as `9eea56c6`, round 2 adds **34** (33 modified + 1 new)
+- **Changed by target (cumulative)**: `meta` 20 · `work-package` 20 · `workflow-design` 2 · `workflow-authoring` 2 · `remediate-vuln` 1
 - **Criteria units**: 44 walked, 4 not-applicable, 0 blocked
-- **Guard suite**: 16 of 17 pass; `binding-fidelity` rejects **1** file, and it lies outside both targets
+- **Guard suite**: 16 of 17 pass; `binding-fidelity` rejects **1** file, and it lies outside every target. In-target rejections stay at **0** across both remediation rounds
 - **Known findings**: 74 keys loaded, 0 matched a finding raised here
 
 Severity: `Critical` = schema-invalid or structurally broken construct that must not be committed.
@@ -23,27 +23,35 @@ rows were spot-confirmed against their cited constructs, which narrowed several 
 
 ## Summary
 
-| Severity | Open | Closed in R1 | Known |
-|----------|-----:|-------------:|------:|
-| Critical | 0 | 2 | 0 |
-| High     | 1 | 6 | 0 |
-| Medium   | 10 | 24 | 0 |
-| Low      | 10 | 5 | 0 |
-| **Total** | **21** | **37** | **0** |
+| Severity | Open | Closed in R1 | Closed in R2 | Known |
+|----------|-----:|-------------:|-------------:|------:|
+| Critical | 0 | 2 | 0 | 0 |
+| High     | 0 | 6 | 1 | 0 |
+| Medium   | 4 | 24 | 6 | 0 |
+| Low      | 6 | 5 | 4 | 0 |
+| **Total** | **10** | **37** | **11** | **0** |
 
-The decision surface entered round 1 at 58 and leaves it at **21 open, 37 closed**. **Both Criticals are
-closed by re-derivation rather than by assertion**, so no structurally broken construct remains and
-`has_critical_finding` is false.
+The decision surface entered round 1 at 58, left it at 21, and leaves round 2 at **10 open, 48 closed**.
+**Both Criticals were closed by re-derivation rather than by assertion**, and round 2 closes the last
+`High`, so `has_critical_finding` is false and no `High` remains.
 
-One round-1 recalibration moved a row between severities: **MH-4 is downgraded from High to Medium**,
-because the duplication it cited is gone from the definition surface and only a server-repo co-change gap
-remains. The open total is therefore unchanged at 21 while the mix shifts High 2 → 1 and Medium 9 → 10.
+Round 2 closed, in register order: **MH-5** (High), **MM-4 · MM-6 · MM-8 · MM-15 · MM-17 · MM-25**
+(Medium), **ML-1 · ML-4 · ML-5 · ML-7** (Low). Each is evidenced in
+[Closed in round 2](#closed-in-round-2).
 
-**Two open items are not reachable from this run's edit surface** and cannot close here — MH-4's three
-harness strings and the e2e walk snapshots. Both are recorded under
+**MH-5 completed library-wide**, not confined to the declared targets — a rename stopping at
+`work-package` would have left three other workflows reading an id that no longer exists. Completing it is
+what widened the target set ([Divergence 4](#divergence-4--the-target-set-was-widened-in-round-2-to-complete-mh-5)).
+
+**Three open items are not reachable from this run's edit surface** and cannot close here — MH-4's three
+harness strings, the e2e walk snapshots, and the Output half of MM-20. All are recorded under
 [Accepted exclusions](#accepted-exclusions--not-reachable-from-this-edit-surface). **This change is not
 self-contained**: it lands correct in the definition library and leaves obligations in the
 `workflow-server` repository.
+
+The six surviving `Low` rows and MM-16 / MM-23 ship **open** by design: round 2 is the last round the
+workflow grants, and each remaining row needs a structural decision (an activity split, a new formal gate,
+an id rename with its own blast radius) rather than a remediation edit. They are recorded, not lost.
 
 ---
 
@@ -54,32 +62,7 @@ self-contained**: it lands correct in the definition library and leaves obligati
 Consumer surface: 435 references from 115 files across 15 other workflow directories reach 78 `meta`
 files; 11 resolve into a file this run changed. Those 11 sites were walked.
 
-Open: 0 Critical · 1 High · 10 Medium · 6 Low.
-
-#### Open — High
-
-**MH-5 · `io-id-shape` · `meta/techniques/version-control/resolve-host-repo.md:26` vs `work-package/techniques/repo-root-resolution.md:22`** — **confirmed; evidence strengthened in round 1** · **new**
-
-One concept, two ids. `host_repo_path` is "the outermost repository that claims the workspace checkout"
-(`resolve-host-repo.md:28`); `repo_root` is the "repo root used for comprehension, GitNexus indexing …
-and as the git directory for `git worktree add`" (`repo-root-resolution.md:24`).
-
-Round 1 made the aliasing **explicit and unconditional**, which strengthens the finding rather than
-clearing it. `repo-root-resolution.md:36` now reads:
-
-> Set `{repo_root}` to `{host_repo_path}` — the host derivation has already ascended to the outermost
-> superproject, so no further ascent is performed here.
-
-A Protocol step now exists whose entire content is copying one id onto the other, with `host_repo_path`
-declared as that technique's own input (:12-14). The runtime equality assertion also survives, relocated
-into its own gated step at `meta/activities/02-resolve-target.yaml:56-61`. A single id would remove both
-the copy step and the assertion.
-
-*Why it stays open rather than being fixed*: the remedy is a library-wide rename of `repo_root` →
-`host_repo_path` across `work-package` and every consumer. Round 1 judged a half-completed rename more
-dangerous than the naming defect, and the surviving copy step keeps behaviour correct meanwhile. Recorded
-as an accepted open finding awaiting a dedicated rename pass.
-*Fix*: hoist the host-root concept to one shared id and drop the representation suffix, in one pass.
+Open: 0 Critical · 0 High · 4 Medium · 4 Low.
 
 #### Open — Medium
 
@@ -89,15 +72,9 @@ remediation closed some of a finding's sites but not all.
 | # | Entry | Site(s) — as confirmed in round 1 | Note | Correction | Attr |
 |---|---|---|---|---|---|
 | MH-4 | `no-duplicated-guidance` | `src/tools/resource-tools.ts:106`; `src/tools/workflow-tools.ts:326`; `src/utils/session/scope.ts:239` — all in the **server** repo | **Downgraded from High.** Three harness strings still teach the retired provenance ("pass `repo` … from the user or workspace AGENTS.md"). `workflow-tools.ts:326` sits inside the `discover` return, so the first surface an orchestrator reads contradicts the new contract | **Definition half closed**: full statements went 4 → 1. The rule now has one named home, `prose-sources-are-fallback-only` (`resolve-host-repo.md:49-51`); `bootstrap-protocol.md:17` and `start-session.md:22` are pointers; `meta/workflow.yaml:40` no longer states it. Downgraded because what remains is stale documentation outside the audited target surface, not duplicated guidance within it | new |
-| MM-4 | `readme-orients-not-transcribes` | `meta/activities/README.md:5,15,31` (and `:47`) | checkpoint roster with firing conditions (:15), near-verbatim restatement of activity `outcome` text (:31 vs `02-resolve-target.yaml:73`; :47 vs `04-end-workflow.yaml:45-46`), prose activity sequence duplicating the `meta/README.md:18-24` index table (:5) | **narrowed 5 sites → 3 homes, all in `meta/activities/README.md`.** Both `meta/README.md` sites are resolved: the rule-key inventory row no longer lists keys, and `grep -rn 'target-path-scope' meta/` returns nothing. Also re-cited: the restatement target is the activity **`outcome`** text, not an activity `rules:` block — MH-6's fix removed every such block library-wide | new |
-| MM-6 | `technique-ref-in-io-contract` | `commit-and-persist.md:22`; `start-session.md:22,34` | I/O entry descriptions hyperlink a producing or consuming technique | **narrowed 5 sites → 2 files.** `preflight.md`, `select-target-component.md:26` and `extract-identifying-context.md:24` are resolved — the latter two now use a bare-text rule reference with no link | new |
-| MM-8 | `io-agnostic-contract` | `commit-and-persist.md:22,30`; `start-session.md:22` | I/O entries naming a workflow-internal producer, or a flag described as coming "from the workflow bag" | **narrowed 4 sites → 2 files.** `preflight.md` names no producer in any entry; `select-target-component.md`'s remaining sources are external ("as derived from git"), which is the exempted origin | new / pre |
-| MM-15 | `contract-not-procedure` | `resolve-host-repo.md:42,43,45` | Protocol steps that are projections of already-produced Outputs. Step 6 (:45) is verbatim its own Output declaration at :36 | **re-cited and widened.** Round 0 cited steps 4 and 6 at :47/:49; the remediation renumbered the Protocol, and step 3 (:42, projecting :28) is a third instance | new |
-| MM-16 | `pass-orchestration-in-technique` | `commit-and-persist.md:34,35,38,39` | four `Apply` / `::` op invocations inside one technique bound as a single step at `03-dispatch-client-workflow.yaml:58`, so each op could be its own step | confirmed unchanged — round 1 did not touch this file | pre |
-| MM-17 | `constraint-as-blockquote` | `commit-and-persist.md:35` | an indented `-` sub-bullet, which the loader reads as a disconnected peer step | confirmed. Loader-backed: `markdown-technique-loader.ts:192` captures indentation and never reads it. The intended `>` continuation form exists in-tree at `start-session.md:53-54` | pre |
-| MM-20 | `describe-tool-value` | `start-session.md:36-48`; `bootstrap-protocol.md:20` | mechanics in place of value, and the declared Outputs are incomplete | confirmed against the actual response shape at `resource-tools.ts:382-403`, which returns a `workflow` metadata block, `planning_slug`, `repo_unbound`, `context_mode` and `migrated` beyond the three declared ids. `repo_unbound` is precisely the signal that this change's derivation-plus-fallback contract failed to bind, so its omission matters most | pre |
-| MM-23 | `structure-backed-constraints` | `agent-conduct.md:96-98`; restated at `commit-and-persist.md:46` | the `orchestrator-component-path-scope` MUST/NEVER commit-location rule has no checkpoint, `condition` or `validate` backing it | confirmed. The only `validate` actions in `meta` are `02-resolve-target.yaml:52-66` (binding agreement, resumed binding, git-tree presence) and `03-dispatch-client-workflow.yaml:10` — none constrains commit or branch location, and no checkpoint or condition references commit scope | new |
-| MM-25 | `hoist-shared-inputs` | `preflight.md:12-18`; `commit-and-persist.md:20-26` | the same `host_repo_path` + `component_path` pair declared on two techniques in two different groups | confirmed on all counts. `meta/techniques/TECHNIQUE.md` is 8 lines of Capability only, with no `## Inputs`, despite claiming to hold shared ones. Newly noted: the intermediate `cargo-operations/TECHNIQUE.md:10-18` *does* carry `## Inputs`, but declares `build_scope`/`features` — so the hoist target exists and simply omits this pair | new |
+| MM-16 | `pass-orchestration-in-technique` | `commit-and-persist.md` Protocol steps 1, 4, 5 | `Apply` / `::` op invocations inside one technique bound as a single step at `03-dispatch-client-workflow.yaml:58`, so each op could be its own step | confirmed unchanged through both rounds. **Not attempted in round 2**: the fix is an activity-level split of one bound step into several, which redesigns the post-activity hook's orchestration rather than editing a construct. Round 2's edits to this file (MM-6/8/17/25, ML-4/5) left the invocation count unchanged | pre |
+| MM-20 | `describe-tool-value` | `start-session.md` Outputs; `bootstrap-protocol.md:22-23` | mechanics in place of value, and the declared Outputs are incomplete | **Half closed in round 2, half structurally blocked.** The underselling half is closed: the Capability now names the value returned, and `bootstrap-protocol.md` documents the real response shape including `repo_unbound`. The Outputs half **cannot** close — declaring `workflow` / `context_mode` / `migrated` / `repo_unbound` as technique Outputs raised **4 new `dead-output` rejections**, because `start_session` runs *before* the session bag exists so nothing downstream can consume them. Suppressing them would require editing `scripts/binding-fidelity-triage.json`, which is outside the edit surface and is the suppression this run's guard-integrity check forbids. See [Accepted exclusions](#accepted-exclusions--not-reachable-from-this-edit-surface) | pre |
+| MM-23 | `structure-backed-constraints` | `agent-conduct.md:96-98`; restated at `commit-and-persist.md:46` | the `orchestrator-component-path-scope` MUST/NEVER commit-location rule has no checkpoint, `condition` or `validate` backing it | confirmed. The only `validate` actions in `meta` are `02-resolve-target.yaml:52-66` (binding agreement, resumed binding, git-tree presence) and `03-dispatch-client-workflow.yaml:10` — none constrains commit or branch location, and no checkpoint or condition references commit scope. **Not attempted in round 2**: backing it means authoring a new formal gate over commit location, a design addition the change brief does not carry | new |
 
 #### Open — Low
 
@@ -105,10 +82,53 @@ remediation closed some of a finding's sites but not all.
 |---|---|---|---|
 | MM-12 | `boolean-id-shape` — downgraded from Medium in round 0. `host_binding_mismatch` names the prohibited state; not an outlier, since `workflow_match_ambiguous` shares both the shape and the `setVariable … false` approval | `meta/workflow.yaml:50-53`; `resolve-host-repo.md:34`; read at `00-discover-session.yaml:14`, set at `:25` | new |
 | MM-21 | `no-technique-resource-dual-home` — downgraded from Medium in round 0. The dual home holds and each side links the other; "character-for-character" was refuted | `bootstrap-protocol.md:20` / `start-session.md:52-55` | pre |
-| ML-1 | `avoidance-voice-in-definitions` | `00-discover-session.yaml:127` outcome ("no search performed otherwise"); `meta/README.md:52,90` ("do not restate that HOW here", "reference but do not restate them") | new / pre |
-| ML-4 | `paren-invocation-args` | `commit-and-persist.md:34,38` — argument lists outside parentheses with backticked parameter names | pre |
-| ML-5 | `no-one-step-rules` | `commit-and-persist.md:56-58` — `no-stale-remote` names the single step it constrains ("push is mandatory whenever step 5 stages changes") | pre |
-| ML-7 | `complete-documentation-structure` | `meta/techniques/` has no `README.md`, while `work-package/techniques/README.md` does exist — so the asymmetry is in-repo, not only against the reference workflows | pre |
+
+Both surviving `meta` Lows need an id rename or the removal of one of two documentation homes — structural
+decisions, not remediation edits. **Not attempted in round 2** for that reason, and recorded here so a
+later pass inherits the citation rather than re-deriving it.
+
+#### Closed in round 2
+
+Every row below was verified against the post-edit construct, and the whole guard suite was re-run after
+the last edit: **16 of 17 pass, in-target rejections 0, `binding-fidelity` unchanged at 194 violations
+(70 harmless, 123 fix-later, 0 live bugs, 1 untriaged)**, with `scripts/binding-fidelity-triage.json`
+verified untouched.
+
+| # | Severity | What closed it | Verification |
+|---|---|---|---|
+| MH-5 | High | The `repo_root` → `host_repo_path` rename was completed **library-wide** — 80 occurrences across **23** files in 5 workflow directories. The alias is gone at its root: `work-package/workflow.yaml` declared *both* ids, so the fix was a **merge**, not a rename, and `repo-root-resolution.md` lost the Protocol step whose entire content was copying one id onto the other | `grep -rn '\brepo_root\b'` over the tree returns **one** hit, and it is not a reference to the id — see the exclusion note below. `repo-root-resolution.md` now declares `host_repo_path` as an input only (no input∩output collision), outputs just `component_name` / `component_path`, and its Capability is rescoped off the repo root it no longer produces. `identifier-qualification` passes, so `host_repo_path` is an accepted qualified id at every new site |
+| MM-4 | Medium | All four `meta/activities/README.md` sites rewritten: the checkpoint roster with firing conditions deleted (:15), both near-verbatim activity-`outcome` restatements deleted (02 and 04), and the prose activity sequence replaced by a pointer to the `meta/README.md` index table | The README now carries purpose and connections only. Each deleted block was the kind AP-40's test names — it would have had to be edited whenever the YAML changed |
+| MM-6 | Medium | Both remaining files cleared. `commit-and-persist.md:22`'s hyperlink vanished with the declaration itself (hoisted under MM-25); `start-session.md`'s `repo` entry now cites the origin remote instead of linking `resolve-host-repo`, and `context_mode` no longer links `dispatch-activity` | No I/O entry in either file hyperlinks a producing or consuming technique |
+| MM-8 | Medium | Same two files. `start-session.md`'s `repo` names an intrinsic origin (the host's origin remote), which AP-42 exempts; `mark_progress_na` no longer describes itself as a "Flag from the workflow bag" | No surviving I/O entry names a workflow-internal producer |
+| MM-15 | Medium | The three projection steps collapsed. Protocol went from 6 steps to 3 work phases, each emitting its ids **by reference** to the Output criteria — the form AP-111 explicitly permits — with the identity criteria left on the Outputs that own them | The verbatim duplication between step 6 and the `host_binding_mismatch` Output is gone, as is the standalone "Set `{host_repo_path}` to the final toplevel" projection |
+| MM-17 | Medium | The indented `-` sub-bullet became a `>` continuation note under its primary instruction, in the exact form AP-59 prescribes (two trailing spaces, then `> `) | The loader no longer reads the caveat as a disconnected peer step |
+| MM-25 | Medium | `host_repo_path` + `component_path` hoisted to `meta/techniques/TECHNIQUE.md`, which gained the `## Inputs` section it had been claiming to hold, and both cited per-technique declarations were deleted | Guard-verified rather than assumed: `binding-fidelity` held at 194 with 0 live bugs after the hoist, so inheritance supplies both ids to the 15 other workflows that bind `meta` ops. `technique-template` and `identifier-qualification` also pass. **Deliberately narrowed** — the `detect-repo-type.md` and `list-submodules.md` declarations were left in place because they are MH-2's round-1 closure evidence |
+| ML-1 | Low | All three avoidance-voice sites restated in positive present: the `00-discover-session` outcome drops "no search performed otherwise", and both `meta/README.md` clauses now say what owns the content rather than what not to do | No definition prose in the cited files frames itself against a prior design |
+| ML-4 | Low | Both invocations moved to parenthesised argument lists with *italic* argument names, per principle 16 | Measured before editing: only **4** lines library-wide used the offending form and 2 were these, so the fix introduces no lone-wolf convention |
+| ML-5 | Low | The one-step `no-stale-remote` rule was deleted and its unique content — that Engineering links and resume assume the remote holds the commit — folded into the step it constrained | AP-25's fix exactly: guidance into the step's prose, rule deleted. Nothing the rule said was lost |
+| ML-7 | Low | `meta/techniques/README.md` created, mirroring the `work-package/techniques/README.md` orientation shape | The in-repo asymmetry is gone. Written to orient and link only — no inventory counts, no duplication of the `meta/README.md` techniques table — so it does not trade ML-7 for an MM-4-class finding. `site-links` and `resource-anchors` confirm its `#techniques` anchor resolves |
+
+**MH-5's one surviving occurrence is a deliberate exclusion.**
+`workflow-design/resources/anti-patterns.md:716` keeps the token `` `repo_root` `` because it is an
+*illustrative bad example* inside AP-52 `brace-declared-ids` — the line demonstrating a "disguised id in
+backticks without braces". It is criteria-home content, not a reference to the id, and renaming it would
+corrupt the canon entry. This is why the rename covers **23** files, not the 24 that carry the string.
+
+**One clause of MH-5's prescribed fix was not taken.** The register's Fix read "hoist the host-root concept
+to one shared id **and drop the representation suffix**". The hoist is done; the suffix is not.
+`host_repo_path` retains a `_path` ending that AP-66's own Detect calls a representation proxy. Dropping it
+would mean renaming the id round 1 had *already* established across `meta`, widening the blast radius past
+the set the operator authorised, and `_path` endings are established library convention
+(`planning_folder_path`, `target_path`, `provenance_log_path`) which `identifier-qualification` accepts. The
+alias defect MH-5 was raised for — one concept under two ids, plus the copy step — is fully resolved. The
+residual suffix is recorded here as the open remainder rather than claimed closed.
+
+**MH-5's "and the assertion" clause was deliberately not taken either.** Round 1 recorded that a single id
+"would remove both the copy step and the assertion", citing `meta/activities/02-resolve-target.yaml:56-61`.
+Re-read at that location, the gated step is `validate-resumed-binding`: "The saved client session's repo
+root MUST name `{host_repo_path}`." That compares **external saved state** against the derived host, so a
+single id does not remove it — and it is precisely the stale-resume check the change request asked for
+(request item 4). Round 1's claim is **falsified on this sub-point**; the assertion stays.
 
 #### Closed in round 1 — `meta`
 
@@ -153,6 +173,14 @@ Open: 0 Critical · 0 High · 0 Medium · 4 Low. Every `work-package` Critical, 
 All four are **pre**-existing, all four sit in one file, and none is in this run's scope manifest. They
 are recorded for a later pass over `01-start-work-package.yaml` rather than as residue of this change.
 
+**Not attempted in round 2**, deliberately. Round 2 did edit this file — the MH-5 rename touched two
+lines (:169, :176) — so the file was in hand and the four rows were reachable. They were left open because
+each is a structural rewrite of a construct this change has no stake in (a validate message essay, two
+valueless `action: set` steps, a duplicated technique bind, an outcome-list entry), and `work-package`'s
+`01-start-work-package.yaml` is the single most consumer-exposed activity file in the library. Editing it
+beyond the rename would widen this change's risk surface to buy four `Low` closures. The rename's own two
+lines were re-validated: `validate-activities` reports 112 passed / 0 failed.
+
 #### Closed in round 1 — `work-package`
 
 | # | Severity | What closed it | Verification |
@@ -169,23 +197,24 @@ are recorded for a later pass over `01-start-work-package.yaml` rather than as r
 
 ## Accepted exclusions — not reachable from this edit surface
 
-This run's edit surface is a checkout of the `workflows` repository alone. Two open obligations lie
-outside it and **cannot close in this change**. The close-out will carry them forward as deferrals; they
-are recorded here as the exclusions the audit accepted.
+This run's edit surface is a checkout of the `workflows` repository alone. Three open obligations lie
+outside what it can resolve and **cannot close in this change**. The close-out will carry them forward as
+deferrals; they are recorded here as the exclusions the audit accepted.
 
 | Item | Location | Why it cannot close here |
 |---|---|---|
 | MH-4 residue — three strings teaching the retired prose provenance | `src/tools/resource-tools.ts:106`, `src/tools/workflow-tools.ts:326`, `src/utils/session/scope.ts:239` | Server source, outside the `workflows` checkout. `workflow-tools.ts:326` is inside the `discover` return, so an orchestrator reads the superseded rule before any session exists — the highest-value part of the fix is the part this change cannot make |
 | e2e walk snapshots | `tests/e2e/__snapshots__/corpus-sha.json`, `snapshot.test.ts.snap` | Re-baselining requires a submodule pointer bump, which only a server-repo change can make. Recorded as an accepted exclusion in the [scope manifest](06-scope-manifest.md); the walk stays red until then |
+| MM-20's Output half — `workflow`, `planning_slug`, `repo_unbound`, `context_mode`, `migrated` | `meta/techniques/workflow-engine/start-session.md` Outputs | **Tested, not assumed.** Declaring them raised 4 new `dead-output` rejections: `start_session` executes *before* the session bag exists, so no activity gate, condition or same-named input can consume them. Only `planning_slug` had a consumer and it is now declared. Closing the rest needs either a harness change or a new consumer — and suppressing them would mean editing `scripts/binding-fidelity-triage.json`, outside this surface and the suppression the guard-integrity check forbids. The **value** half closed instead: the real response shape, `repo_unbound` included, is documented in `bootstrap-protocol.md`, which is where a pre-session reader actually looks |
 
-Neither is a coverage gap: both were walked, both are understood, and both have a named home for the
-follow-up work.
+None is a coverage gap: all three were walked, all three are understood, and all three have a named home
+for the follow-up work.
 
 ---
 
 ## Coverage
 
-`walked` means the unit's criteria were applied to every changed file across both targets, read in full
+`walked` means the unit's criteria were applied to every changed file across the targets, read in full
 and against the base-ref diff, plus the 11 consumer-surface sites, with sibling-convention comparison
 against the 14 reference workflows. Whole-surface mechanical coverage comes from the guard suite, which
 runs tree-wide.
@@ -241,26 +270,75 @@ repaired before commit, which is why no unit is marked `blocked`. Its *scope* co
 repair edited a file the manifest listed as out of scope, on a rationale the change has since superseded.
 That belongs to the [scope manifest](06-scope-manifest.md) and is recorded there, not here.
 
+### Divergence 4 — the target set was widened in round 2 to complete MH-5
+
+`target_workflow_ids` entered round 2 as `[meta, work-package]` and leaves it as
+`[meta, work-package, workflow-design, workflow-authoring, remediate-vuln]`. The widening is an **operator
+decision**, taken specifically so MH-5 could complete, and it is sourced from this activity's envelope
+rather than written from the orchestrator.
+
+The reason is arithmetic, not preference. `repo_root` occupied 24 files: 19 in `work-package`, 3 in
+`workflow-design`, 1 in `workflow-authoring`, 1 in `remediate-vuln`. A rename confined to the declared
+targets would have left three workflows reading an id that no longer exists — strictly worse than the
+naming defect it was fixing. The 5 out-of-target files are **not** incidental drive-by edits; they are the
+consumer half of the same contract:
+
+| File | Why the rename reaches it |
+|---|---|
+| `workflow-design/techniques/prepare-workflow-branch.md` | Declares the id as an optional input and passes it into `work-package::manage-git::create-worktree` — a live cross-workflow bind on the renamed contract |
+| `workflow-design/workflow.yaml` | `target_path`'s description contrasts itself against the id by name |
+| `workflow-authoring/techniques/workflow-definition/derive-workflows-target-path.md` | Declares the id as an **output** and reads it twice; same host-root concept, derived from planning-folder ancestry |
+| `remediate-vuln/workflow.yaml` | Declares the id as a workflow variable, and `gitnexus_indexed`'s description names it |
+
+Each was read before editing and confirmed to denote the same host/outermost-repository concept, so the
+rename is a genuine hoist rather than a textual sweep. `workflow-design/resources/anti-patterns.md` was
+read and **excluded** — see the MH-5 closure note.
+
+**The pre-existing manifest divergences still ride in the envelope**, because `verify-scope-manifest` has
+now been gated off for three consecutive entries and no artifact has picked them up:
+
+1. `remediate-vuln/activities/01-start.yaml:44` — edited in round 1. **The manifest's out-of-scope
+   rationale for this line is falsified**: it rested on the claim that `repo-root-resolution` had no
+   consumer outside `work-package`, which [Divergence 3](#divergence-3--round-0s-work-package-consumer-surface-was-wrong-and-round-1-acted-on-it)
+   refuted. The line is in scope on the merits and the rationale needs restating, not re-justifying.
+2. `work-package/activities/11-validate.yaml:33` — edited in round 1, outside the manifest.
+3. `meta/techniques/version-control/list-submodules.md` — edited in round 1, outside the manifest.
+4. Manifest row 1 said declare `is_monorepo_host`; round 1 **deleted** it instead (MH-8).
+5. Manifest rows 2 / 9 / 16 said give `discovered_path` a source; round 1 **retired** the variable instead
+   (WC-1).
+6. **New in round 2**: the 5 out-of-target files above, plus `meta/techniques/README.md` created for ML-7,
+   none of which appear in the manifest's file list.
+
+All six are recorded divergences against the manifest, not undisclosed edits. The manifest itself is the
+canonical home for the file list and needs the reconciliation pass its own gate would have run.
+
 ---
 
 ## Guard results
 
 `npx tsx scripts/check-all.ts --root <target_path>` — 17 guards, **16 pass, 1 fail**, independently re-run
-in round 1. Both positional validators pass per target; `validate-activities.ts` reports 112 passed /
-0 failed; `workflow-yaml` reports 16 workflows valid.
+after round 2's final edit. `validate-activities.ts` reports 112 passed / 0 failed. `validate-workflow-yaml.ts`
+was run **per target** across all five (each reports 1 workflow valid), and tree-wide `workflow-yaml`
+reports 16 workflows valid.
 
-`binding-fidelity` totals moved from 198 violations (70 harmless, 123 fix-later, 0 live bugs, 4 untriaged)
-to **194** (70 harmless, 123 fix-later, **0 live bugs**, **1 untriaged**).
+`binding-fidelity` totals moved from 198 violations at round 0 (70 harmless, 123 fix-later, 0 live bugs,
+4 untriaged) to **194** at round 1, and **hold at 194** (70 harmless, 123 fix-later, **0 live bugs**,
+**1 untriaged**) through round 2 — across 34 further changed files, including an 80-occurrence rename and
+a shared-input hoist that 15 other workflows inherit.
 
-| Round 0 rejected file | Round 1 |
-|---|---|
-| `meta/techniques/version-control/resolve-host-repo.md` — `dead-output is_monorepo_host` | **cleared** (MH-8) |
-| `meta/techniques/cargo-operations/preflight.md` — `orphan-input component_path`, `orphan-input host_repo_path` | **cleared** (MC-1 / WC-1) |
-| `substrate-node-security-audit/techniques/write-report.md:90` — `read-resolution {target_path}` | **still rejected** |
+| Round 0 rejected file | Round 1 | Round 2 |
+|---|---|---|
+| `meta/techniques/version-control/resolve-host-repo.md` — `dead-output is_monorepo_host` | **cleared** (MH-8) | still clear |
+| `meta/techniques/cargo-operations/preflight.md` — `orphan-input component_path`, `orphan-input host_repo_path` | **cleared** (MC-1 / WC-1) | still clear after the MM-25 hoist deleted both declarations |
+| `substrate-node-security-audit/techniques/write-report.md:90` — `read-resolution {target_path}` | **still rejected** | **still rejected** — outside all five targets |
 
-**In-target rejections went 3 → 0.** The one remaining rejection,
-`substrate-node-security-audit/techniques/write-report.md:90`, lies outside both targets, is pre-existing
+**In-target rejections went 3 → 0 in round 1 and remain 0.** The one remaining rejection,
+`substrate-node-security-audit/techniques/write-report.md:90`, lies outside every target, is pre-existing
 drift against the base ref, and is not fixable by this change.
+
+Round 2 used the guard suite as a **decision instrument**, not only as a post-hoc check: the MM-20 Output
+declarations and the MM-25 hoist were each applied, measured, and then kept or reverted on the evidence.
+MM-20's additions raised 4 rejections and were withdrawn; the hoist raised none and was kept.
 
 `scripts/binding-fidelity-triage.json` was verified **untouched**, so the improvement is a real repair and
 not a suppression.
@@ -272,8 +350,11 @@ not a suppression.
 No `condition`, gate or `transition` in this activity reads `fail_count`. It appears only in the
 `audit-disposition` checkpoint's message text. A non-zero value is therefore **informational here and does
 not block attestation on its own**; the blocking conditions are `has_critical_finding` (false) and
-`open_finding_count > 0` (true, at 21). This is recorded explicitly so the disposition is taken with the
+`open_finding_count > 0` (true, at **10**). This is recorded explicitly so the disposition is taken with the
 distinction visible, rather than the count being read as a silent blocker or waved through unexamined.
+
+`fail_count` is unchanged at 1 across both remediation rounds, and it is the same out-of-target file each
+time, so the count carries no round-2 signal.
 
 ---
 
@@ -303,5 +384,5 @@ the planning folder held no prior findings register, so neither contributed keys
 | Impact analysis | [`01-impact-analysis.md`](01-impact-analysis.md) |
 | Scope manifest | [`06-scope-manifest.md`](06-scope-manifest.md) |
 | Session index | [`README.md`](README.md) |
-| Edit surface | `/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-git-derived-host-repo-binding` — remediation round 1 at `9eea56c6` |
+| Edit surface | `/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-git-derived-host-repo-binding` — round 1 at `9eea56c6`; round 2 uncommitted at hand-off (the orchestrator owns the commit) |
 | Harness under co-change | `/home/mike1/projects/dev/workflow-server/src` — evidence for MH-4, MM-17, MM-19, MM-20, WH-3 |

@@ -1,6 +1,6 @@
 # Git-Derived Host Repo Binding — July 2026
 
-> Update · Created 2026-07-28 · **Status:** Quality review — remediation round 1
+> Update · Created 2026-07-28 · **Status:** Quality review — remediation round 2
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
