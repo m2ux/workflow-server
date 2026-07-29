@@ -10,7 +10,9 @@
     "external-tool-syntax": "The brace belongs to an external tool's own syntax (a jq object constructor), not to the designator namespace.",
     "undeclared-seed": "No operation anywhere in the corpus declares this value as an output and no workflow variable holds it, so the executing agent improvises it at the point of use. Runs work today because the agent has the context; the value is simply not state. This is the seam that becomes prompt-stuffing (#324 A1), so it is debt to close \u2014 declare and seed it \u2014 not a false positive.",
     "terminal-product-unconsumed": "A declared output with no destination: nothing binds it, no gate reads it, and it carries no #### artifact block, so the value exists only in the producing worker's report. Either bind it to the step that needs it or declare the artifact that carries it.",
-    "verdict-component-of-composite": "A component verdict the operation folds into its own overall verdict, which the gates and transitions consume. The component stays declared because the artifact reports it; the composite is what routing reads."
+    "verdict-component-of-composite": "A component verdict the operation folds into its own overall verdict, which the gates and transitions consume. The component stays declared because the artifact reports it; the composite is what routing reads.",
+    "sub-agent-brief-seed": "Every bind site of the op sits in a Sub-Agent activity, dispatched by an orchestrator that composes its brief. The input arrives in that brief, so no workflow variable or sibling step produces it.",
+    "test-fixture-pins-the-defect": "A test pins this finding as its fixture for the UNRESOLVED provenance annotation. The wiring fix exists (rename the consumer to the declared variable holding the same value) but lands only together with a change to that fixture."
   },
   "entries": [
     {
@@ -470,13 +472,6 @@
     },
     {
       "check": "dead-output",
-      "site": "work-package/techniques/findings-classification.md",
-      "detail": "output 'classified_findings' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
       "site": "work-package/techniques/manage-git/artifact-commits.md",
       "detail": "output 'artifact_commit' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "fix-later",
@@ -708,13 +703,6 @@
     },
     {
       "check": "orphan-input",
-      "site": "meta :: orchestration-patterns::compose-worker-briefs",
-      "detail": "own input 'isolation_mode' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "pattern-library-seed"
-    },
-    {
-      "check": "orphan-input",
       "site": "meta :: orchestration-patterns::decompose-work-units",
       "detail": "own input 'work_goal' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
@@ -785,38 +773,24 @@
     },
     {
       "check": "orphan-input",
-      "site": "substrate-node-security-audit :: analyze-architecture",
-      "detail": "own input 'file_inventory' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "substrate-node-security-audit :: apply-checklist",
-      "detail": "own input 'checklist_source' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
       "site": "substrate-node-security-audit :: apply-checklist",
       "detail": "own input 'items' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
+      "verdict": "harmless",
+      "rationale": "sub-agent-brief-seed"
     },
     {
       "check": "orphan-input",
       "site": "substrate-node-security-audit :: apply-checklist",
       "detail": "own input 'scope_files' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
+      "verdict": "harmless",
+      "rationale": "sub-agent-brief-seed"
     },
     {
       "check": "orphan-input",
       "site": "substrate-node-security-audit :: build-function-registry",
       "detail": "own input 'source_files' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
+      "verdict": "harmless",
+      "rationale": "sub-agent-brief-seed"
     },
     {
       "check": "orphan-input",
@@ -829,13 +803,6 @@
       "check": "orphan-input",
       "site": "substrate-node-security-audit :: decompose-safety-claims",
       "detail": "own input 'source_files' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "substrate-node-security-audit :: dispatch-sub-agents::verify-output-files",
-      "detail": "own input 'expected_output_files' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "fix-later",
       "rationale": "undeclared-seed"
     },
@@ -857,27 +824,20 @@
       "check": "orphan-input",
       "site": "substrate-node-security-audit :: extract-invariants",
       "detail": "own input 'source_files' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
+      "verdict": "harmless",
+      "rationale": "sub-agent-brief-seed"
     },
     {
       "check": "orphan-input",
       "site": "substrate-node-security-audit :: map-codebase",
       "detail": "own input 'workspace_root' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
+      "verdict": "harmless",
+      "rationale": "sub-agent-brief-seed"
     },
     {
       "check": "orphan-input",
       "site": "substrate-node-security-audit :: merge-findings",
       "detail": "own input 'finding_sources' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "substrate-node-security-audit :: merge-findings",
-      "detail": "own input 'merge_strategy' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "fix-later",
       "rationale": "undeclared-seed"
     },
@@ -892,15 +852,15 @@
       "check": "orphan-input",
       "site": "substrate-node-security-audit :: scan-storage-lifecycle",
       "detail": "own input 'scan_scope' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
+      "verdict": "harmless",
+      "rationale": "sub-agent-brief-seed"
     },
     {
       "check": "orphan-input",
       "site": "substrate-node-security-audit :: search-pattern-catalog",
       "detail": "own input 'search_scope' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
+      "verdict": "harmless",
+      "rationale": "sub-agent-brief-seed"
     },
     {
       "check": "orphan-input",
@@ -927,20 +887,6 @@
       "check": "orphan-input",
       "site": "work-package :: assess-ticket-completeness",
       "detail": "own input 'ticket_details' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: codebase-comprehension::deep-dive",
-      "detail": "own input 'comprehension_dir' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: codebase-comprehension::survey",
-      "detail": "own input 'comprehension_dir' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "fix-later",
       "rationale": "undeclared-seed"
     },
@@ -995,20 +941,6 @@
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: design-philosophy::classify",
-      "detail": "own input 'issue_details' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: design-philosophy::define",
-      "detail": "own input 'issue_details' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
       "site": "work-package :: finalize-documentation::finalize-test-plan",
       "detail": "own input 'test_plan' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "fix-later",
@@ -1030,59 +962,31 @@
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: issue-reference-detection",
-      "detail": "own input 'issue_request' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: manage-artifacts::write-artifact",
-      "detail": "own input 'artifact_content' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: manage-artifacts::write-artifact",
-      "detail": "own input 'bare_filename' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
       "site": "work-package :: manage-git::artifact-commits",
       "detail": "own input 'activity_name' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
+      "verdict": "harmless",
+      "rationale": "shared-op-caller-argument"
     },
     {
       "check": "orphan-input",
       "site": "work-package :: manage-git::artifact-commits",
       "detail": "own input 'branch' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
+      "verdict": "harmless",
+      "rationale": "shared-op-caller-argument"
     },
     {
       "check": "orphan-input",
       "site": "work-package :: manage-git::artifact-commits",
       "detail": "own input 'files' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
+      "verdict": "harmless",
+      "rationale": "shared-op-caller-argument"
     },
     {
       "check": "orphan-input",
       "site": "work-package :: manage-git::artifact-commits",
       "detail": "own input 'issue_key' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: manage-git::create-worktree",
-      "detail": "own input 'create_branch' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
+      "verdict": "harmless",
+      "rationale": "shared-op-caller-argument"
     },
     {
       "check": "orphan-input",
@@ -1090,20 +994,6 @@
       "detail": "own input 'default_branch' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "fix-later",
       "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: meta::atlassian-operations::comment-jira-issue",
-      "detail": "own input 'commentBody' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: meta::atlassian-operations::comment-jira-issue",
-      "detail": "own input 'issueIdOrKey' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
     },
     {
       "check": "orphan-input",
@@ -1156,64 +1046,8 @@
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: plan-prepare::create-todos",
-      "detail": "own input 'tasks' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
       "site": "work-package :: plan-prepare::plan",
       "detail": "own input 'design_philosophy' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: respond-to-pr-review",
-      "detail": "own input 'review_comments' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: review-assumptions::collect",
-      "detail": "own input 'activity_context' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: review-assumptions::collect",
-      "detail": "own input 'assumption_categories' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: review-assumptions::record",
-      "detail": "own input 'assumption_decisions' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: review-baseline-state",
-      "detail": "own input 'base_branch' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: review-outcome-analysis",
-      "detail": "own input 'review_comments' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: review-summary",
-      "detail": "own input 'consolidated_findings' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "fix-later",
       "rationale": "undeclared-seed"
     },
@@ -1226,43 +1060,8 @@
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: stakeholder-overview",
-      "detail": "own input 'source_material' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: strategic-review::changes-folder",
-      "detail": "own input 'issue_url' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: strategic-review::verify-fragment",
-      "detail": "own input 'issue_url' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: update-pr::render",
-      "detail": "own input 'pr_template_variant' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
       "site": "work-packages :: assess-initiative-scope",
       "detail": "own input 'user_initiative_description' has no producer in workflow 'work-packages' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "workflow-design :: apply-audit-fixes",
-      "detail": "own input 'selected_findings' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "fix-later",
       "rationale": "undeclared-seed"
     },
@@ -1317,13 +1116,6 @@
     },
     {
       "check": "read-resolution",
-      "site": "substrate-node-security-audit/techniques/write-report.md:90",
-      "detail": "{target_path} has no producer (declared id / $-local / workflow var / set-target)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "read-resolution",
       "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
       "detail": "{display_name} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
@@ -1359,17 +1151,31 @@
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/review-summary.md:69",
+      "site": "work-package/techniques/review-summary.md:81",
       "detail": "{sha} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/review-summary.md:69",
+      "site": "work-package/techniques/review-summary.md:81",
       "detail": "{user} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
+    },
+    {
+      "check": "orphan-input",
+      "site": "work-package :: design-philosophy::classify",
+      "detail": "own input 'issue_details' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
+      "verdict": "fix-later",
+      "rationale": "test-fixture-pins-the-defect"
+    },
+    {
+      "check": "orphan-input",
+      "site": "work-package :: design-philosophy::define",
+      "detail": "own input 'issue_details' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
+      "verdict": "fix-later",
+      "rationale": "test-fixture-pins-the-defect"
     }
   ]
 }
