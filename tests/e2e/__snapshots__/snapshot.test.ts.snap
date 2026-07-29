@@ -53,6 +53,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "stepsExecuted": [
         "announce-start",
         "detect-review-mode",
+        "derive-host-repo",
         "resolve-repo-root",
         "analyze-repo-with-gitnexus",
         "verify-signing-precondition",
@@ -484,6 +485,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "stepsExecuted": [
         "announce-start",
         "detect-review-mode",
+        "derive-host-repo",
         "resolve-repo-root",
         "analyze-repo-with-gitnexus",
         "verify-signing-precondition",
@@ -982,6 +984,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "stepsExecuted": [
         "announce-start",
         "detect-review-mode",
+        "derive-host-repo",
         "resolve-repo-root",
         "analyze-repo-with-gitnexus",
         "verify-signing-precondition",
@@ -1507,6 +1510,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "stepsExecuted": [
         "announce-start",
         "detect-review-mode",
+        "derive-host-repo",
         "resolve-repo-root",
         "analyze-repo-with-gitnexus",
         "verify-signing-precondition",
@@ -1978,6 +1982,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "announce-derived-review-mode",
         "ingest-prior-feedback",
         "seed-review-mode-outcomes",
+        "derive-host-repo",
         "resolve-repo-root",
         "analyze-repo-with-gitnexus",
         "verify-signing-precondition",
@@ -2353,6 +2358,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "stepsExecuted": [
         "announce-start",
         "detect-review-mode",
+        "derive-host-repo",
         "resolve-repo-root",
         "analyze-repo-with-gitnexus",
         "verify-signing-precondition",

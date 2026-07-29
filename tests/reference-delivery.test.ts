@@ -219,11 +219,12 @@ describe('reference-not-repeat delivery (B1)', () => {
         expect(isUnchangedMarker(value), `expected marker for ${key}`).toBe(true);
       }
       expect(isUnchangedMarker(second.bundle['rules'])).toBe(true);
-      // The activity body itself is still delivered. (`work-package` declares only
-      // orchestrator-scoped `rules.workflow`, so it carries no inherited `activity_rules`
-      // block — that collapse is covered below against a workflow that declares them.)
+      // The activity body itself is still delivered. (`work-package` declares an
+      // activity-scoped rules bucket alongside its orchestrator-scoped `rules.workflow`, so
+      // `start-work-package` carries an inherited `activity_rules` block; on a byte-identical
+      // refetch that block collapses to a marker just like the technique bundle above.)
       const secondBody = parse(second.bodyText) as Record<string, unknown>;
-      expect(secondBody['activity_rules']).toBeUndefined();
+      expect(isUnchangedMarker(secondBody['activity_rules'])).toBe(true);
       expect(secondBody['id']).toBe('start-work-package');
       expect(secondBody['steps']).toBeDefined();
 
