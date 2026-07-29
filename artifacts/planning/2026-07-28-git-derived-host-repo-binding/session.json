@@ -341,6 +341,15 @@
             "optionId": "confirmed",
             "respondedAt": "2026-07-28T11:11:22.000Z"
           },
+          "validate-and-commit-approve-to-commit#2": {
+            "effects": {
+              "variablesSet": {
+                "commit_approved": true
+              }
+            },
+            "optionId": "approved",
+            "respondedAt": "2026-07-29T06:04:15.000Z"
+          },
           "validate-and-commit-audit-disposition#0": {
             "effects": {
               "transitionedTo": "quality-review",
@@ -360,6 +369,16 @@
             },
             "optionId": "remediate",
             "respondedAt": "2026-07-29T04:32:51.000Z"
+          },
+          "validate-and-commit-audit-disposition#2": {
+            "effects": {
+              "variablesSet": {
+                "has_critical_finding": false,
+                "remediation_selected": false
+              }
+            },
+            "optionId": "accept-and-record",
+            "respondedAt": "2026-07-29T05:45:53.000Z"
           }
         },
         "completedActivities": [
@@ -368,9 +387,9 @@
           "quality-review",
           "validate-and-commit"
         ],
-        "condition": "transition_override:quality-review — checkpoint audit-disposition#1 option 'remediate'; corroborated by the declared transition (remediation_selected == true && remediation_round 2 < 3). Operator has since widened the target set for MH-5's rename; the worker records that as a variable change.",
-        "currentActivity": "quality-review",
-        "currentTechnique": "workflow-definition::apply-audit-fixes",
+        "condition": "isDefault:validate-and-commit — DISCREPANCY LOGGED per distrust-then-reconcile: the round-2 envelope reported target_workflow_id='remediate-vuln', the last of five sweep-loop iterations. Intake established 'meta' as the primary target and nothing changed that, so the orchestrator relays 'meta'. target_workflow_ids carries the operator-authorised widened set.",
+        "currentActivity": "validate-and-commit",
+        "currentTechnique": "workflow-definition::create-completion-doc",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
@@ -380,10 +399,12 @@
             "bundle:workflow-engine::resume-from-checkpoint": "307478d460517c41",
             "bundle:workflow-engine::yield-checkpoint": "3d36e6b03c483346",
             "resource:change-brief#template": "1969a75a10653d54",
+            "resource:completion-artifact#template": "972d2fae504f2394",
             "resource:elicitation-guide#mode-dimension-sets": "8ecb743386cfc647",
             "resource:findings-register#template": "710987a3ffde1bc7",
             "resource:impact-analysis#template": "40510ba8607a0dc7",
             "resource:meta/planning-readme": "db338707e2d03446",
+            "resource:meta/planning-readme#template": "2581e8a3161a829f",
             "resource:scope-manifest": "1008957341b02f64",
             "resource:update-mode-guide#change-categories": "87894973441e9a60",
             "resource:workflow-authoring/readme-seed": "b789e3143d1609fd",
@@ -405,12 +426,18 @@
             "resource:workflow-design/convention-conformance#reference-conventions": "448f79b06617cbd3",
             "resource:workflow-design/design-principles": "d5138843b2f3534d",
             "resource:workflow-design/schema-construct-inventory": "4cacc0129b3fead7",
+            "technique:github-cli-protocol::create-pr": "e41245c9aee5c9da",
+            "technique:version-control::commit-regular-files": "b9a633bfc45edb90",
+            "technique:version-control::push-branch": "543572e6b17f1b02",
             "technique:work-package::manage-artifacts::write-artifact": "657861b28b614c28",
             "technique:work-package::manage-git::create-worktree": "af3a87aa65410f97",
             "technique:workflow-definition::apply-audit-fixes": "77891b7921b40d25",
             "technique:workflow-definition::audit-canon": "1410d942156f64d9",
             "technique:workflow-definition::audit-schema-validation": "d8414f3bfd12b972",
+            "technique:workflow-definition::commit-verification": "12e4ff026aae1a07",
             "technique:workflow-definition::compile-report": "38960bdb7f1bcaa2",
+            "technique:workflow-definition::compose-publication": "2123a1b264795177",
+            "technique:workflow-definition::create-completion-doc": "eeb7f14c18677f5c",
             "technique:workflow-definition::derive-workflow-branch": "d6c15a89164542d6",
             "technique:workflow-definition::derive-workflows-target-path": "9783ff568d465339",
             "technique:workflow-definition::impact-analysis": "1864a398fcab2a2c",
@@ -421,12 +448,14 @@
             "technique:workflow-definition::resolve-consumer-surface": "45113484e215e5d8",
             "technique:workflow-definition::review-drafted-file": "1453b00ff692b2ae",
             "technique:workflow-definition::scope-definition": "483414a68d3a0a66",
+            "technique:workflow-definition::scope-verification": "94575a4ea53de9f4",
             "technique:workflow-definition::synthesize-change-brief": "aa2d514a9967c52f",
             "technique:workflow-definition::verify-artifact-conforms": "1493620adb2741e0",
             "technique:workflow-definition::verify-high-findings": "63ce4cfaefee651f",
             "technique:workflow-definition::yaml-authoring": "00d1cfd054530207",
             "technique:workflow-engine::create-readme": "d02b1b4cc5a10853",
-            "technique:workflow-engine::list-workflows": "822ff399538ae84f"
+            "technique:workflow-engine::list-workflows": "822ff399538ae84f",
+            "technique:workflow-engine::verify-readme-conforms": "f8dc95f59592f5f9"
           }
         },
         "history": [
@@ -2272,20 +2301,453 @@
             },
             "timestamp": "2026-07-29T04:37:49.091Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "usage": {
+                "duration_ms": 1330847,
+                "subagent_tokens": 206018,
+                "tool_uses": 115
+              }
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "target_workflow_ids",
+              "source": "variables_changed",
+              "value": [
+                "meta",
+                "work-package",
+                "workflow-design",
+                "workflow-authoring",
+                "remediate-vuln"
+              ]
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "target_workflow_id",
+              "source": "variables_changed",
+              "value": "meta"
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "register_sections",
+              "source": "variables_changed",
+              "value": [
+                "meta",
+                "work-package",
+                "workflow-design",
+                "workflow-authoring",
+                "remediate-vuln"
+              ]
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "audit_findings",
+              "source": "variables_changed",
+              "value": "10 open after round 2 (0 Critical, 0 High, 4 Medium, 6 Low); 48 of 58 closed"
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "declaredType": "array",
+              "name": "verified_findings",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": "10 open / 48 closed of 58. Open: 4 Medium (MH-4 out-of-surface, MM-16, MM-20 half-blocked, MM-23), 6 Low (MM-12, MM-21, WL-3, WL-4, WL-5, WL-6). Zero Critical, zero High.",
+              "valueType": "string"
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "fixes_applied",
+              "source": "variables_changed",
+              "value": "11 closed in round 2. MH-5 completed library-wide as a merge, not a rename: 23 files / 80 occurrences. Excluded by design: anti-patterns.md:716 (AP-52 illustrative bad example). Two Fix clauses deliberately not taken: the _path suffix (would re-rename round 1's established meta id, past the authorised set) and the 02-resolve-target.yaml assertion (round 1's claim falsified — it guards external saved state, and is change-request item 4). Also closed: MM-4, MM-6, MM-8, MM-15, MM-17, MM-25, ML-1, ML-4, ML-5, ML-7. MM-20 half-closed: Output declarations withdrawn after measuring 4 new dead-output rejections (start_session runs pre-session-bag, so no consumer can exist); value half landed in bootstrap-protocol.md."
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "fail_count",
+              "source": "variables_changed",
+              "value": 1
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "open_finding_count",
+              "source": "variables_changed",
+              "value": 10
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "addressed_count",
+              "source": "variables_changed",
+              "value": 48
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "unaddressed_count",
+              "source": "variables_changed",
+              "value": 10
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "total_count",
+              "source": "variables_changed",
+              "value": 58
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "has_critical_finding",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "has_coverage_gap",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "known_finding_keys",
+              "source": "variables_changed",
+              "value": 74
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "coverage_ledger",
+              "source": "variables_changed",
+              "value": "unchanged — 48 real units, 44 walked, 4 not-applicable, 0 blocked; criteria homes were not modified"
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "changed_files",
+              "source": "variables_changed",
+              "value": "44 vs base ref; 34 this round (33 modified + 1 new: meta/techniques/README.md)"
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "file_count",
+              "source": "variables_changed",
+              "value": 44
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "consumer_surface",
+              "source": "variables_changed",
+              "value": "Renamed-contract consumers resolved and repaired in lockstep across workflow-design, workflow-authoring and remediate-vuln. A rename confined to work-package would have left all three reading an id that no longer exists."
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "base_ref",
+              "source": "variables_changed",
+              "value": "f84fe02b12f9617f401767b9b96f329d8c13225c"
+            },
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-29T05:04:08.250Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-audit-findings",
+              "techniqueId": "workflow-definition::verify-high-findings"
+            },
+            "timestamp": "2026-07-29T05:04:38.363Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "compile-register",
+              "techniqueId": "workflow-definition::compile-report"
+            },
+            "timestamp": "2026-07-29T05:04:38.363Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "persist-register",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-29T05:04:38.363Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "findings-register#template"
+            },
+            "timestamp": "2026-07-29T05:07:15.989Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "audit-disposition#2",
+            "timestamp": "2026-07-29T05:10:55.722Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "audit-disposition#2",
+            "data": {
+              "optionId": "accept-and-record"
+            },
+            "timestamp": "2026-07-29T05:45:53.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "remediation_selected",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-07-29T05:45:53.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "has_critical_finding",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-07-29T05:45:53.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-scope-manifest",
+              "techniqueId": "workflow-definition::scope-verification"
+            },
+            "timestamp": "2026-07-29T05:48:55.923Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-planning-readme",
+              "techniqueId": "workflow-engine::verify-readme-conforms"
+            },
+            "timestamp": "2026-07-29T05:53:23.589Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-authoring/readme-seed"
+            },
+            "timestamp": "2026-07-29T05:53:33.527Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "meta/planning-readme#template"
+            },
+            "timestamp": "2026-07-29T05:53:39.849Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "approve-to-commit#2",
+            "timestamp": "2026-07-29T05:54:24.036Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "approve-to-commit#2",
+            "data": {
+              "optionId": "approved"
+            },
+            "timestamp": "2026-07-29T06:04:15.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "commit_approved",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-29T06:04:15.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "compose-publication",
+              "techniqueId": "workflow-definition::compose-publication"
+            },
+            "timestamp": "2026-07-29T06:04:55.564Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "stage-and-commit",
+              "techniqueId": "version-control::commit-regular-files"
+            },
+            "timestamp": "2026-07-29T06:06:19.109Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "verify-commit",
+              "techniqueId": "workflow-definition::commit-verification"
+            },
+            "timestamp": "2026-07-29T06:06:19.289Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "push-branch",
+              "techniqueId": "version-control::push-branch"
+            },
+            "timestamp": "2026-07-29T06:06:51.168Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "open-pr",
+              "techniqueId": "github-cli-protocol::create-pr"
+            },
+            "timestamp": "2026-07-29T06:06:51.439Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "compose-close-out",
+              "techniqueId": "workflow-definition::create-completion-doc"
+            },
+            "timestamp": "2026-07-29T06:07:25.083Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "completion-artifact#template"
+            },
+            "timestamp": "2026-07-29T06:07:30.618Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 80,
+        "seq": 100,
         "sessionIndex": "7IE6G7",
         "skippedActivities": [],
         "startedAt": "2026-07-28T10:36:29.297Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785299869,
+        "ts": 1785305250,
         "variables": {
-          "addressed_count": 37,
-          "audit_findings": "21 open after remediation (0 Critical, 2 High, 9 Medium, 10 Low); 37 of 58 closed",
+          "addressed_count": 48,
+          "audit_findings": "10 open after round 2 (0 Critical, 0 High, 4 Medium, 6 Low); 48 of 58 closed",
           "base_ref": "f84fe02b12f9617f401767b9b96f329d8c13225c",
           "change_brief": "Persisted at 01-change-brief.md — purpose, 6 changed dimensions (activity model, checkpoints, variables, techniques, resources, rules), 6 open judgements",
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/01-change-brief.md",
@@ -2314,15 +2776,15 @@
             ]
           },
           "change_request_clear": true,
-          "changed_files": "22 vs base ref; 20 modified this round (committed as 9eea56c6)",
-          "commit_approved": false,
-          "consumer_surface": "CORRECTION to round 0 — remediate-vuln/activities/01-start.yaml:44 binds work-package::repo-root-resolution, which round 0 recorded as bound only by work-package's own 01-start-work-package. Bind updated so the contract change does not break it. New ref: work-package/activities/01-start-work-package.yaml:160 -> meta version-control::resolve-host-repo.",
-          "coverage_ledger": "unchanged from round 0 — 48 real units, 44 walked, 4 not-applicable, 0 blocked",
+          "changed_files": "44 vs base ref; 34 this round (33 modified + 1 new: meta/techniques/README.md)",
+          "commit_approved": true,
+          "consumer_surface": "Renamed-contract consumers resolved and repaired in lockstep across workflow-design, workflow-authoring and remediate-vuln. A rename confined to work-package would have left all three reading an id that no longer exists.",
+          "coverage_ledger": "unchanged — 48 real units, 44 walked, 4 not-applicable, 0 blocked; criteria homes were not modified",
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/README.md",
           "fail_count": 1,
-          "file_count": 19,
+          "file_count": 44,
           "findings_register": "Round-1 register body: severity summary with Closed-in-R1 column, per-target open + closed sections with verification evidence, accepted exclusions, three coverage divergences, guard results with explicit fail_count treatment, known keys, sources.",
-          "fixes_applied": "37 entries closed. Criticals MC-1/WC-1 closed by re-deriving host facts in the child session (dispatch_child is .strict(); seedDefaults + user_request is the only parent->child channel, so the register's 'seed across the boundary' option is not implementable in the definition library). Highs closed: MH-2, MH-6, MH-7, MH-8, WH-1, WH-3. Open: MH-4 (partial — 3 harness strings at src/tools/resource-tools.ts:106, src/tools/workflow-tools.ts:326, src/utils/session/scope.ts:239 lie outside the worktree edit surface), MH-5 (library-wide host_repo_path/repo_root rename — judged unsafe to half-complete). Mediums open: MM-4, MM-6, MM-8, MM-15, MM-16, MM-17, MM-20, MM-23, MM-25. Lows open: MM-12, MM-21, ML-1, ML-4, ML-5, ML-7, WL-3, WL-4, WL-5, WL-6.",
+          "fixes_applied": "11 closed in round 2. MH-5 completed library-wide as a merge, not a rename: 23 files / 80 occurrences. Excluded by design: anti-patterns.md:716 (AP-52 illustrative bad example). Two Fix clauses deliberately not taken: the _path suffix (would re-rename round 1's established meta id, past the authorised set) and the 02-resolve-target.yaml assertion (round 1's claim falsified — it guards external saved state, and is change-request item 4). Also closed: MM-4, MM-6, MM-8, MM-15, MM-17, MM-25, ML-1, ML-4, ML-5, ML-7. MM-20 half-closed: Output declarations withdrawn after measuring 4 new dead-output rejections (start_session runs pre-session-bag, so no consumer can exist); value half landed in bootstrap-protocol.md.",
           "has_coverage_gap": false,
           "has_critical_finding": false,
           "has_unflagged_removals": false,
@@ -2331,7 +2793,7 @@
           "impact_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/01-impact-analysis.md",
           "intent_needs_confirmation": false,
           "known_finding_keys": 74,
-          "open_finding_count": 21,
+          "open_finding_count": 10,
           "open_judgements_count": 6,
           "operation_type": "update",
           "operation_type_ambiguous": false,
@@ -2340,10 +2802,13 @@
           "pr_url": "",
           "register_sections": [
             "meta",
-            "work-package"
+            "work-package",
+            "workflow-design",
+            "workflow-authoring",
+            "remediate-vuln"
           ],
           "remediation_round": 2,
-          "remediation_selected": true,
+          "remediation_selected": false,
           "removal_count": 6,
           "removal_disposition": "",
           "removals_approved": true,
@@ -2379,13 +2844,16 @@
           "target_workflow_id": "meta",
           "target_workflow_ids": [
             "meta",
-            "work-package"
+            "work-package",
+            "workflow-design",
+            "workflow-authoring",
+            "remediate-vuln"
           ],
           "total_count": 58,
-          "unaddressed_count": 21,
+          "unaddressed_count": 10,
           "update_seeded_from_review": false,
           "user_request": "Start a workflow-authoring workflow to update the work-package and meta workflows so the monorepo host-repo binding is DERIVED FROM GIT instead of inferred from prose.\n\nMotivation: a session bound to midnightntwrk/midnight-node (taken from a PR URL) mapped through the server's basename-only multi-root mapping to /home/mike1/projects/dev/midnight-node/.engineering and silently created an empty, non-git directory. The real checkout is a submodule of the shieldedtech/midnight-agent-eng superproject at dev/midnight-agent-eng/midnight-node, so the commit+push hook had no repo and the reviewer had no source. The workflow already owns monorepo detection but runs it AFTER the binding is committed, and it answers a different question (which component, not which host repo).\n\nFixes to author:\n\n1. New technique version-control::resolve-host-repo, run in meta 00-discover-session before the transition to initialize-session. Protocol: git rev-parse --show-toplevel from the workspace cwd; ascend while the parent directory is itself a git repo whose .gitmodules lists the current basename as a submodule path (outermost superproject wins — this generalizes work-package repo-root-resolution.md's existing single-level test and moves it to where it can gate the binding); derive owner/repo from that host's origin remote. Outputs: target_repo, host_repo_path, is_monorepo_host, and component_hint (the innermost toplevel's basename when we ascended — a better component signal than a URL, feeding select-target-component's pre-selection). Assert basename(host_repo_path) == basename(target_repo), because the server's multi-root mapping is basename-only; a mismatch raises a checkpoint rather than diverging silently.\n\n2. Add mentioned_repo (from PR/issue URLs) to workflow-engine::extract-identifying-context and route it to version-control::select-target-component as component context only. State the invariant once in version-control::TECHNIQUE.md beside infrastructure-submodule-paths: a repo named in the request identifies the COMPONENT; the host binding is derived from git; they are never the same variable.\n\n3. Retire the prose sources: meta/resources/bootstrap-protocol.md step 2 and workflow-engine/start-session.md's repo input currently say the repo comes from workspace AGENTS.md/CLAUDE.md or the user. Rewrite both to derive via resolve-host-repo, with AGENTS.md/user demoted to fallback for when the workspace is not a git repo or has no origin remote.\n\n4. Close the loop in meta 02-resolve-target: add a validation that the repo_root resolved by work-package repo-root-resolution is the same directory the session bound, so a bad binding fails at activity 02 before artifacts exist. This also catches a resume carrying a stale saved binding, which resolve-host-repo alone will not.\n\n5. Fix two latent defects in the same seam: (a) meta's target_path (\"submodule path for monorepos\", default \".\") collides by name with work-package's target_path (\"feature worktree path for edits\"), which is overwritten by compute-canonical-target-path at step 570 and is safe only because resolve-repo-root happens to sit at step 159 — rename meta's output to component_path; (b) work-package repo-root-resolution's discovered_path input is never bound by anything and specifies an absolute path while meta's target_path defaults to relative \".\" — bind it explicitly from component_path, absolutized against host_repo_path.\n\nAll edited files live in the workflows submodule (branch: workflows). Touching the meta activities will likely require re-baselining the walk snapshots.",
-          "verified_findings": "21 open / 37 closed of 58 after round-1 re-derivation. Open: 1 High (MH-5 confirmed, evidence strengthened), 10 Medium (incl. MH-4 downgraded from High), 10 Low. Both Criticals closed by independent re-derivation. Only these entries are eligible to drive a fix.",
+          "verified_findings": "10 open / 48 closed of 58. Open: 4 Medium (MH-4 out-of-surface, MM-16, MM-20 half-blocked, MM-23), 6 Low (MM-12, MM-21, WL-3, WL-4, WL-5, WL-6). Zero Critical, zero High.",
           "workflow_branch": "workflow/meta-git-derived-host-repo-binding",
           "worktree_created": true
         },

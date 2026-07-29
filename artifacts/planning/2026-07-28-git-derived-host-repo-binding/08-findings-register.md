@@ -6,8 +6,10 @@
 
 Canonical home for this run's audit findings, coverage divergences and accepted exclusions.
 
-- **Edit surface**: `/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-git-derived-host-repo-binding` — **44** changed files vs the base ref, diff-confirmed; round 1 landed as `9eea56c6`, round 2 adds **34** (33 modified + 1 new)
-- **Changed by target (cumulative)**: `meta` 20 · `work-package` 20 · `workflow-design` 2 · `workflow-authoring` 2 · `remediate-vuln` 1
+- **Edit surface**: `/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-git-derived-host-repo-binding` — **45** changed files vs the base ref (**43** modified, **2** added), diff-confirmed at `87c26fff`; round 1 landed as `9eea56c6`, round 2 adds **34** (33 modified + 1 new) as `86920547`, and `87c26fff` closes WL-3 / WL-6 without adding a file
+- **Changed by target (cumulative)**: `meta` 19 · `work-package` 20 · `workflow-design` 2 · `workflow-authoring` 2 · `remediate-vuln` 2
+- **Count corrected in the round-2 verification pass.** The headline previously read **44** with a per-target line of `meta` 20 / `remediate-vuln` 1 — internally inconsistent, because that breakdown itself summed to 45. Re-counted from `git diff --name-status` against the base ref: `meta` is 19 (not 20) and `remediate-vuln` is 2 (not 1, because `01-start.yaml` from round 1 and `workflow.yaml` from round 2 are both changed). The two added files are `meta/techniques/version-control/resolve-host-repo.md` (the new technique, round 0) and `meta/techniques/README.md` (ML-7, round 2)
+- **Workflow versions**: every target whose files changed carries a minor bump — `meta` 5.11.0→5.12.0, `work-package` 3.36.0→3.37.0, `workflow-design` 1.30.0→1.31.0, `workflow-authoring` 1.0.0→1.1.0, `remediate-vuln` 2.0.0→2.1.0. Verified in round 2's pass; no changed target is missing a bump
 - **Criteria units**: 44 walked, 4 not-applicable, 0 blocked
 - **Guard suite**: 16 of 17 pass; `binding-fidelity` rejects **1** file, and it lies outside every target. In-target rejections stay at **0** across both remediation rounds
 - **Known findings**: 74 keys loaded, 0 matched a finding raised here
@@ -16,24 +18,30 @@ Severity: `Critical` = schema-invalid or structurally broken construct that must
 Attribution is measured against the base ref: **new** arrived with this change, **pre** pre-existed it.
 
 Every `Critical` and `High` row was **independently re-derived** from the construct it cites, refuting by
-default — in round 0, and again in round 1 against the post-remediation files. Verdicts: `confirmed`
-(reproduced), `downgraded` (evidence supports a lesser issue), `withdrawn` (not reproduced — drives no
-edit), `closed` (the cited construct no longer reproduces the violation). Surviving `Medium` and `Low`
-rows were spot-confirmed against their cited constructs, which narrowed several citations recorded below.
+default — in round 0, again in round 1 against the post-remediation files, and again in round 2. Verdicts:
+`confirmed` (reproduced), `downgraded` (evidence supports a lesser issue), `withdrawn` (not reproduced —
+drives no edit), `closed` (the cited construct no longer reproduces the violation). Surviving `Medium` and
+`Low` rows were spot-confirmed against their cited constructs, which narrowed several citations recorded
+below.
 
 ## Summary
 
-| Severity | Open | Closed in R1 | Closed in R2 | Known |
-|----------|-----:|-------------:|-------------:|------:|
-| Critical | 0 | 2 | 0 | 0 |
-| High     | 0 | 6 | 1 | 0 |
-| Medium   | 4 | 24 | 6 | 0 |
-| Low      | 6 | 5 | 4 | 0 |
-| **Total** | **10** | **37** | **11** | **0** |
+| Severity | Open | Closed in R1 | Closed in R2 | Closed outside sweep | Known |
+|----------|-----:|-------------:|-------------:|---------------------:|------:|
+| Critical | 0 | 2 | 0 | 0 | 0 |
+| High     | 0 | 6 | 1 | 0 | 0 |
+| Medium   | 4 | 24 | 6 | 0 | 0 |
+| Low      | 4 | 5 | 4 | 2 | 0 |
+| **Total** | **8** | **37** | **11** | **2** | **0** |
 
-The decision surface entered round 1 at 58, left it at 21, and leaves round 2 at **10 open, 48 closed**.
+The decision surface entered round 1 at 58, left it at 21, and left round 2 at 10. Two `Low` rows then
+closed **outside the sweep** — by direct user decision after the disposition, not through the criteria
+walk — so the surface closes at **8 open, 50 closed** of 58. Rows sum across the four columns to 58.
 **Both Criticals were closed by re-derivation rather than by assertion**, and round 2 closes the last
 `High`, so `has_critical_finding` is false and no `High` remains.
+
+The final 8: **4 `Medium`** (MH-4, MM-16, MM-20, MM-23 — all in `meta`) and **4 `Low`** (MM-12, MM-21 in
+`meta`; WL-4, WL-5 in `work-package`).
 
 Round 2 closed, in register order: **MH-5** (High), **MM-4 · MM-6 · MM-8 · MM-15 · MM-17 · MM-25**
 (Medium), **ML-1 · ML-4 · ML-5 · ML-7** (Low). Each is evidenced in
@@ -49,9 +57,35 @@ harness strings, the e2e walk snapshots, and the Output half of MM-20. All are r
 self-contained**: it lands correct in the definition library and leaves obligations in the
 `workflow-server` repository.
 
-The six surviving `Low` rows and MM-16 / MM-23 ship **open** by design: round 2 is the last round the
+The four surviving `Low` rows and MM-16 / MM-23 ship **open** by design: round 2 is the last round the
 workflow grants, and each remaining row needs a structural decision (an activity split, a new formal gate,
-an id rename with its own blast radius) rather than a remediation edit. They are recorded, not lost.
+an id rename with its own blast radius) rather than a remediation edit. They are recorded, not lost — and
+WL-4 / WL-5 now carry the investigated reason they cannot close, not a bare deferral.
+
+## Round-2 verification pass
+
+**No `High` row was open to re-derive** — round 2 closed the last one (MH-5), so the re-derivation set for
+this pass is empty and no finding was eligible to drive a further edit. What the pass did instead was
+verify the **closure claims** that this run's design reversals rest on, and re-confirm the four surviving
+`Medium` rows. Nothing was withdrawn, downgraded or raised; the decision surface is unchanged at **10**.
+
+| Claim verified | Method | Result |
+|---|---|---|
+| MH-5 — the `repo_root` alias is gone library-wide, one deliberate survivor | `grep -rnw repo_root` over the worktree | **Reproduced.** Exactly **1** hit, `workflow-design/resources/anti-patterns.md:716`, and it is the AP-52 illustrative bad-example line as claimed — criteria-home content, not a reference to the id |
+| MH-8 — `is_monorepo_host` was deleted, not declared | `grep -rn is_monorepo_host` | **Reproduced.** Zero hits |
+| WC-1 — `discovered_path` was retired, not given a source | `grep -rn discovered_path` | **Reproduced.** Zero hits |
+| MH-4 — three server strings still teach the retired provenance | read each cited line | **Reproduced verbatim.** All three still say "from the user or workspace AGENTS.md", and `workflow-tools.ts:326` is confirmed to sit inside the `discover` return assembly |
+| MM-16 · MM-20 · MM-23 | spot-confirm cited construct and finding class | **All three confirmed**; MM-23's citation narrowed below |
+
+The three grep-based closures matter beyond their own rows: MH-8 and WC-1 are the two **in-manifest design
+reversals**, so the manifest reconciliation depends on them being real deletions rather than renames that
+left residue. They are.
+
+**MM-23's citation was incomplete and is narrowed here.** The round-1 note said the only `validate` actions
+in `meta` are `02-resolve-target.yaml:52-66` and `03-dispatch-client-workflow.yaml:10`. A fourth exists at
+`meta/activities/patterns/04-isolated-fan-out.yaml:30`. It does not constrain commit or branch location
+either, so **the finding stands unchanged** — but the enumeration behind it was not exhaustive, and a later
+pass should inherit the corrected list rather than the original one.
 
 ---
 
@@ -62,7 +96,9 @@ an id rename with its own blast radius) rather than a remediation edit. They are
 Consumer surface: 435 references from 115 files across 15 other workflow directories reach 78 `meta`
 files; 11 resolve into a file this run changed. Those 11 sites were walked.
 
-Open: 0 Critical · 0 High · 4 Medium · 4 Low.
+Open: 0 Critical · 0 High · 4 Medium · **2** Low. (An earlier revision of this line read `4 Low`, which
+double-counted: `meta` carries two open `Low` rows, MM-12 and MM-21, and the other two sat in
+`work-package`. Corrected in the round-2 verification pass.)
 
 #### Open — Medium
 
@@ -159,27 +195,46 @@ Consumer surface: 50 references into 16 `work-package` files from the other 15 w
 **Round 0 recorded none as reaching a changed file; round 1 refuted that** — see
 [Divergence 3](#divergence-3--round-0s-work-package-consumer-surface-was-wrong-and-round-1-acted-on-it).
 
-Open: 0 Critical · 0 High · 0 Medium · 4 Low. Every `work-package` Critical, High and Medium is closed.
+Open: 0 Critical · 0 High · 0 Medium · **2** Low. Every `work-package` Critical, High and Medium is closed,
+and two of the four `Low` rows closed after the sweep ended — see
+[Closed outside the sweep](#closed-outside-the-sweep--wl-3-and-wl-6).
 
 #### Open — Low
 
-| # | Entry | Site(s) — as confirmed in round 1 | Attr |
+Both surviving rows were investigated after the disposition rather than deferred unexamined. **Each is open
+because closing it is a design change, not because nobody looked.** The evidence below is the reason, and it
+is what a later pass should inherit.
+
+| # | Entry | Site(s) — as confirmed in round 1 | Why it stays open | Attr |
+|---|---|---|---|---|
+| WL-4 | `no-valueless-control-set` | `01-start-work-package.yaml:154-157,541-543` — `action: set` steps carrying the whole derivation in `message:` with no `value:` | **No `value:` expression can carry these.** Both steps bind values that arrive from a *tool response* — `planning_folder_path` from the `get_workflow` summary, and the review-mode outcome list — not from an expression over the bag. Closing it means converting both steps to techniques (so the response has a declared producer) or accepting the prose as-is. A design change | pre |
+| WL-5 | `no-duplicate-technique-steps` | `01-start-work-package.yaml:561-571,572-574` — `derive-branch-name` and `compute-canonical-target-path` both bind `naming-conventions`, whose single run produces both outputs | **The duplication is load-bearing.** `derive-branch-name` is gated `is_review_mode != true`; `compute-canonical-target-path` is ungated. Merging them either loses `target_path` in review mode — which `06-plan-prepare.yaml:16` validates non-null — or lets `naming-conventions` overwrite the `branch_name` review mode took from the PR. Separately, `06-plan-prepare.yaml:17` names the `compute-canonical-target-path` step id in its message, so deleting that step dangles a cross-file reference | pre |
+
+Both are **pre**-existing, both sit in one file, and neither is in this run's scope manifest. `work-package`'s
+`01-start-work-package.yaml` is the single most consumer-exposed activity file in the library, which is why
+the bar for editing it beyond this change's own needs is high.
+
+#### Closed outside the sweep — WL-3 and WL-6
+
+**Provenance stated plainly: these two did not go through the criteria walk.** They were closed by direct
+user decision after `audit-disposition#2` resolved, outside the workflow's remediation loop, and are
+recorded here so the register remains the accurate decision surface rather than a snapshot of the sweep.
+Their evidence is the validator and guard suite only — no re-derivation and no criteria-walk pass stands
+behind them.
+
+| # | Severity | What closed it | Verification |
 |---|---|---|---|
-| WL-3 | `validate-message-economy` | `01-start-work-package.yaml:248` — trailing consequence essay after the cause. Second instance newly noted at `:186` ("Configure git signing in your environment … before re-running.") | pre |
-| WL-4 | `no-valueless-control-set` | `01-start-work-package.yaml:154-157,541-543` — `action: set` steps carrying the whole derivation in `message:` with no `value:` | pre |
-| WL-5 | `no-duplicate-technique-steps` | `01-start-work-package.yaml:561-571,572-574` — `derive-branch-name` and `compute-canonical-target-path` both bind `naming-conventions`, whose single run produces both outputs | pre |
-| WL-6 | `outcome-names-value` | `01-start-work-package.yaml:793` — a plumbing fact (planning-folder binding) in outcome position among genuine deliverables | pre |
+| WL-3 | Low | **Both** sites trimmed to cause plus action. The Jira `cloudId` message dropped its trailing "The cloudId is a runtime prerequisite … without first loading atlassian-operations"; the commit-signing message dropped "in your environment via your preferred scope (system, global, or local)" | Diff-verified at `87c26fff`: both `message:` strings now state the failure and the action and stop. `01-start-work-package.yaml` is the only file the commit touches (+2/−3) |
+| WL-6 | Low | The outcome line "A canonical, writable location is established for every artifact this work package will produce" was **removed** from the `outcome:` block, leaving three genuine deliverables | Diff-verified at `87c26fff`. The plumbing fact no longer sits in outcome position |
 
-All four are **pre**-existing, all four sit in one file, and none is in this run's scope manifest. They
-are recorded for a later pass over `01-start-work-package.yaml` rather than as residue of this change.
+Guard evidence for the pair, as reported by the orchestrator that applied them:
+`validate-workflow-yaml` against `work-package` **PASS**; `check-all` **16 pass / 0 fail / 1 unmeasured**
+(`workflow-yaml`, which needs a single workflow dir); `binding-fidelity` moved **194 → 193** triaged with
+**no live defects**, and `scripts/binding-fidelity-triage.json` was left untouched — so this pair is also a
+real repair rather than a suppression.
 
-**Not attempted in round 2**, deliberately. Round 2 did edit this file — the MH-5 rename touched two
-lines (:169, :176) — so the file was in hand and the four rows were reachable. They were left open because
-each is a structural rewrite of a construct this change has no stake in (a validate message essay, two
-valueless `action: set` steps, a duplicated technique bind, an outcome-list entry), and `work-package`'s
-`01-start-work-package.yaml` is the single most consumer-exposed activity file in the library. Editing it
-beyond the rename would widen this change's risk surface to buy four `Low` closures. The rename's own two
-lines were re-validated: `validate-activities` reports 112 passed / 0 failed.
+Because `01-start-work-package.yaml` was already in the changed set, these edits **do not widen the file
+count**: the change remains **45** files vs the base ref, now at `87c26fff`.
 
 #### Closed in round 1 — `work-package`
 
@@ -204,7 +259,7 @@ deferrals; they are recorded here as the exclusions the audit accepted.
 | Item | Location | Why it cannot close here |
 |---|---|---|
 | MH-4 residue — three strings teaching the retired prose provenance | `src/tools/resource-tools.ts:106`, `src/tools/workflow-tools.ts:326`, `src/utils/session/scope.ts:239` | Server source, outside the `workflows` checkout. `workflow-tools.ts:326` is inside the `discover` return, so an orchestrator reads the superseded rule before any session exists — the highest-value part of the fix is the part this change cannot make |
-| e2e walk snapshots | `tests/e2e/__snapshots__/corpus-sha.json`, `snapshot.test.ts.snap` | Re-baselining requires a submodule pointer bump, which only a server-repo change can make. Recorded as an accepted exclusion in the [scope manifest](06-scope-manifest.md); the walk stays red until then |
+| e2e walk snapshots | `tests/e2e/__snapshots__/corpus-sha.json`, `snapshot.test.ts.snap`; the walks themselves at `tests/e2e/all-paths-walk.test.ts` and `tests/e2e/all-workflows-walk.test.ts` | Re-baselining requires a submodule pointer bump, which only a server-repo change can make. **Verified in round 2's pass, not assumed:** `corpus-sha.json` pins `corpusSha: f84fe02b…` — byte-identical to this change's base ref — and `git submodule status` still reports the `workflows` submodule at `f84fe02b…`, not at the branch commit `86920547`. So the server repo has not yet seen any of these 45 files. Both walk tests enumerate `meta`, whose activity files this change edits, so the walk stays red until the pointer moves. `corpus-sha.json`'s own note names the procedure: update it "in the same commit that bumps the workflows submodule and re-baselines the walk (`npm run baseline:stamp`)". Recorded as an accepted exclusion in the [scope manifest](06-scope-manifest.md) |
 | MM-20's Output half — `workflow`, `planning_slug`, `repo_unbound`, `context_mode`, `migrated` | `meta/techniques/workflow-engine/start-session.md` Outputs | **Tested, not assumed.** Declaring them raised 4 new `dead-output` rejections: `start_session` executes *before* the session bag exists, so no activity gate, condition or same-named input can consume them. Only `planning_slug` had a consumer and it is now declared. Closing the rest needs either a harness change or a new consumer — and suppressing them would mean editing `scripts/binding-fidelity-triage.json`, outside this surface and the suppression the guard-integrity check forbids. The **value** half closed instead: the real response shape, `repo_unbound` included, is documented in `bootstrap-protocol.md`, which is where a pre-session reader actually looks |
 
 None is a coverage gap: all three were walked, all three are understood, and all three have a named home
@@ -280,19 +335,22 @@ rather than written from the orchestrator.
 The reason is arithmetic, not preference. `repo_root` occupied 24 files: 19 in `work-package`, 3 in
 `workflow-design`, 1 in `workflow-authoring`, 1 in `remediate-vuln`. A rename confined to the declared
 targets would have left three workflows reading an id that no longer exists — strictly worse than the
-naming defect it was fixing. The 5 out-of-target files are **not** incidental drive-by edits; they are the
-consumer half of the same contract:
+naming defect it was fixing. The 5 out-of-target files are **not** incidental drive-by edits. Round 2's
+verification pass separated them into **4 that carry the rename** — the consumer half of the same
+contract — and **1 that is a version bump only**, a distinction the earlier text collapsed by describing
+all 5 as rename sites:
 
-| File | Why the rename reaches it |
+| File | Why the change reaches it |
 |---|---|
-| `workflow-design/techniques/prepare-workflow-branch.md` | Declares the id as an optional input and passes it into `work-package::manage-git::create-worktree` — a live cross-workflow bind on the renamed contract |
-| `workflow-design/workflow.yaml` | `target_path`'s description contrasts itself against the id by name |
-| `workflow-authoring/techniques/workflow-definition/derive-workflows-target-path.md` | Declares the id as an **output** and reads it twice; same host-root concept, derived from planning-folder ancestry |
-| `remediate-vuln/workflow.yaml` | Declares the id as a workflow variable, and `gitnexus_indexed`'s description names it |
+| `workflow-design/techniques/prepare-workflow-branch.md` | **Rename.** Declares the id as an optional input and passes it into `work-package::manage-git::create-worktree` — a live cross-workflow bind on the renamed contract |
+| `workflow-design/workflow.yaml` | **Rename** (+ version bump). `target_path`'s description contrasts itself against the id by name |
+| `workflow-authoring/techniques/workflow-definition/derive-workflows-target-path.md` | **Rename.** Declares the id as an **output** and reads it twice; same host-root concept, derived from planning-folder ancestry |
+| `remediate-vuln/workflow.yaml` | **Rename** (+ version bump). Declares the id as a workflow variable, and `gitnexus_indexed`'s description names it |
+| `workflow-authoring/workflow.yaml` | **Version bump only** — `1.0.0`→`1.1.0`, carrying no rename. It changed because its sibling technique above did, under the library convention that a workflow's version rises when its files change. Diff-verified: the bump is the file's only changed line |
 
-Each was read before editing and confirmed to denote the same host/outermost-repository concept, so the
-rename is a genuine hoist rather than a textual sweep. `workflow-design/resources/anti-patterns.md` was
-read and **excluded** — see the MH-5 closure note.
+The four rename files were each read before editing and confirmed to denote the same host/outermost-repository
+concept, so the rename is a genuine hoist rather than a textual sweep.
+`workflow-design/resources/anti-patterns.md` was read and **excluded** — see the MH-5 closure note.
 
 **The pre-existing manifest divergences still ride in the envelope**, because `verify-scope-manifest` has
 now been gated off for three consecutive entries and no artifact has picked them up:
@@ -309,8 +367,19 @@ now been gated off for three consecutive entries and no artifact has picked them
 6. **New in round 2**: the 5 out-of-target files above, plus `meta/techniques/README.md` created for ML-7,
    none of which appear in the manifest's file list.
 
-All six are recorded divergences against the manifest, not undisclosed edits. The manifest itself is the
-canonical home for the file list and needs the reconciliation pass its own gate would have run.
+7. **The manifest's denominator is stale.** `06-scope-manifest.md` declares **19** entries; the change is
+   **45** files. The gap is not undisclosed work — every increment above is accounted for in this register —
+   but the manifest's file list no longer describes the change it governs.
+
+All seven are recorded divergences against the manifest, not undisclosed edits. The manifest is the
+canonical home for the file list, so this register states the divergences and does **not** carry the
+reconciled list: that is `verify-scope-manifest`'s output, and it belongs in `06-scope-manifest.md`.
+
+**Status of that gate.** `verify-scope-manifest` is gated on `remediation_selected != true`, which held
+false through the first two entries of this activity and therefore skipped it twice. It becomes reachable
+in this third entry only *after* the `audit-disposition#2` gate resolves the round to a non-remediating
+disposition. Until it runs, the divergences above are carried by this register alone — which is why they
+are recorded here in full rather than by reference.
 
 ---
 
@@ -336,6 +405,23 @@ a shared-input hoist that 15 other workflows inherit.
 `substrate-node-security-audit/techniques/write-report.md:90`, lies outside every target, is pre-existing
 drift against the base ref, and is not fixable by this change.
 
+#### Re-run at the branch tip `87c26fff`
+
+The suite was re-run tree-wide against the final commit, and the figures above **hold exactly**:
+`17 guard(s) — 16 pass, 1 fail, 0 unmeasured`, the single failure being `binding-fidelity`, whose sole
+untriaged violation is the same out-of-target `write-report.md:90`. `binding-fidelity` totals
+**194** (70 harmless, 123 fix-later, **0 live bugs**, 1 untriaged). `activities` reports 112 passed / 0
+failed and `workflow-yaml` reports 16 workflows valid.
+
+**One reported figure did not reproduce, and ground truth is recorded instead of it.** The orchestrator that
+applied the WL-3 / WL-6 closure reported `check-all` as *16 pass / 0 fail / 1 unmeasured* with
+`binding-fidelity` moving *194 → 193*. Re-run tree-wide, the result is 16 pass / **1 fail** / 0 unmeasured
+at **194**. The divergence is a scope artefact, not a disagreement about the files: that run passed a
+single-workflow-directory `--root`, which leaves `workflow-yaml` unmeasurable (it needs one workflow dir)
+and narrows `binding-fidelity`'s file set so the out-of-target `substrate-node-security-audit` rejection
+falls outside it. Tree-wide is the figure this register carries, because `fail_count` and the guard verdicts
+are claims about the whole library surface.
+
 Round 2 used the guard suite as a **decision instrument**, not only as a post-hoc check: the MM-20 Output
 declarations and the MM-25 hoist were each applied, measured, and then kept or reverted on the evidence.
 MM-20's additions raised 4 rejections and were withdrawn; the hoist raised none and was kept.
@@ -349,12 +435,15 @@ not a suppression.
 
 No `condition`, gate or `transition` in this activity reads `fail_count`. It appears only in the
 `audit-disposition` checkpoint's message text. A non-zero value is therefore **informational here and does
-not block attestation on its own**; the blocking conditions are `has_critical_finding` (false) and
-`open_finding_count > 0` (true, at **10**). This is recorded explicitly so the disposition is taken with the
-distinction visible, rather than the count being read as a silent blocker or waved through unexamined.
+not block attestation on its own**; the blocking conditions were `has_critical_finding` (false) and
+`open_finding_count > 0` (true, at 10 when the disposition was taken, now **8**). This is recorded
+explicitly so the disposition was taken with the distinction visible, rather than the count being read as a
+silent blocker or waved through unexamined.
 
-`fail_count` is unchanged at 1 across both remediation rounds, and it is the same out-of-target file each
-time, so the count carries no round-2 signal.
+`fail_count` is unchanged at 1 across both remediation rounds **and at the `87c26fff` tip**, and it is the
+same out-of-target file every time, so the count carries no signal about this change. It is **not fixable
+here** and is not carried forward as an obligation of this run: the file belongs to
+`substrate-node-security-audit`, which is outside all five targets.
 
 ---
 
@@ -384,5 +473,5 @@ the planning folder held no prior findings register, so neither contributed keys
 | Impact analysis | [`01-impact-analysis.md`](01-impact-analysis.md) |
 | Scope manifest | [`06-scope-manifest.md`](06-scope-manifest.md) |
 | Session index | [`README.md`](README.md) |
-| Edit surface | `/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-git-derived-host-repo-binding` — round 1 at `9eea56c6`; round 2 uncommitted at hand-off (the orchestrator owns the commit) |
+| Edit surface | `/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-git-derived-host-repo-binding` — round 1 at `9eea56c6`; round 2 at `86920547`; **WL-3 / WL-6 closure at `87c26fff`**, the branch tip. Pushed to `origin/workflow/meta-git-derived-host-repo-binding`. Verified directly: the worktree is clean and the branch is level with its upstream, so all 45 files are already published and no source work is pending a commit |
 | Harness under co-change | `/home/mike1/projects/dev/workflow-server/src` — evidence for MH-4, MM-17, MM-19, MM-20, WH-3 |
