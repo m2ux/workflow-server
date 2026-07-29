@@ -323,7 +323,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const lines = [
         `server: ${config.serverName}`,
         `version: ${config.serverVersion}`,
-        'repo_binding: required — pass repo: "owner/repo" on start_session (from user or workspace AGENTS.md)',
+        'repo_binding: required — pass repo: "owner/repo" on start_session, derived from git via version-control::resolve-host-repo (the origin remote of the outermost superproject that claims the workspace checkout). The user or workspace AGENTS.md is a fallback only where that derivation yields nothing: a workspace that is not a git repo, or a host with no origin remote.',
       ];
       if (bootstrapResult.success) {
         lines.push('', bootstrapResult.value.content);

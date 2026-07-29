@@ -49,7 +49,7 @@ Pass `session_index` from `start_session` on every authenticated workflow-server
 
 That is enough. `discover` returns the live bootstrap steps (schema fetch → bind `repo` → `start_session` → `get_workflow`). Do not copy the protocol into IDE rules.
 
-Always pass `repo: "owner/repo"` on `start_session` (from the user or workspace `AGENTS.md` / `CLAUDE.md`). Agents do not special-case server topology.
+Always pass `repo: "owner/repo"` on `start_session`, derived from git via `version-control::resolve-host-repo` — the origin remote of the outermost superproject that claims the workspace checkout. The user and the workspace `AGENTS.md` / `CLAUDE.md` are fallback sources only where that derivation yields nothing: a workspace that is not a git repo, or a host with no origin remote. Agents do not special-case server topology.
 
 ## Verify
 
