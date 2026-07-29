@@ -183,7 +183,7 @@ steps:
     actions:
       - action: validate
         target: signing.configured == true
-        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing in your environment via your preferred scope (system, global, or local) before re-running.
+        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing before re-running.
   - kind: technique
     id: detect-merge-strategy
     technique: manage-git::detect-merge-strategy
@@ -245,7 +245,7 @@ steps:
     actions:
       - action: validate
         target: jira_cloud_id != null
-        message: Atlassian cloudId not set. Load the atlassian-operations technique and call getAccessibleAtlassianResources before any Jira tool. The cloudId is a runtime prerequisite for every Jira API call; this guard catches the failure mode where another step invokes a Jira tool without first loading atlassian-operations.
+        message: Atlassian cloudId not set. Load the atlassian-operations technique and call getAccessibleAtlassianResources before any Jira tool.
   - kind: technique
     id: verify-github-issue
     technique:
@@ -790,4 +790,3 @@ outcome:
   - Feature branch created from main
   - Draft PR created, assigned to current GitHub user, and linked to issue
   - PR reference recorded on the issue via the platform's native PR linkage
-  - A canonical, writable location is established for every artifact this work package will produce
