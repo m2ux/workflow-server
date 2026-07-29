@@ -1,8 +1,8 @@
 ---
-name: complete-wp
-description: Template for the COMPLETE.md close-out document — the work package's single terminal artifact.
+name: complete-wp-guide
+description: Template and fill rules for the COMPLETE.md close-out document.
 metadata:
-  version: 2.1.0
+  version: 2.2.0
   order: 21
   legacy_id: 21
 ---
@@ -10,9 +10,9 @@ metadata:
 
 # Work Package Close-Out Guide
 
-`COMPLETE.md` is the **single terminal artifact** of a work package. It answers "what was actually delivered, what remains, and what did we learn?" — and it links to canonical artifacts rather than restating them. There is no separate retrospective, session-summary, or close-out-summary document.
+Template and fill rules for `COMPLETE.md`, the work package's close-out document. It is the **canonical home** for exactly one fact category: known limitations.
 
-It is the **canonical home** for exactly one thing: known limitations. Everything else it carries by link — deferred items live in the [deferred-items register](deferred-items.md).
+**Review-mode header:** the header line names the audited PR as the review subject, and the Summary states the verdict posted and links the review summary. A review run delivers a verdict, so that is what its close-out reports.
 
 ## Template
 
@@ -41,9 +41,16 @@ Link the [implementation plan](NN-work-package-plan.md) — do not restate its t
   implementation that are recorded nowhere else, each in the form
   Context / Decision / Rationale / Alternatives considered.]
 
-## Deferred Items
+## Open Work
 
-[One line, omit if no register exists: Deferred items: [register](NN-deferred-items.md) — N open, M raised as issues.]
+<!-- Link lines only. Neither register's rows are restated here — the register is the single statement of each item. -->
+[One line per register that exists:]
+- Follow-ups: [register](follow-ups.md) — N open.
+- Deferred items: [register](deferred-items.md) — N open, M raised as issues.
+
+## Cost
+
+[One line, omit if no usage was recorded: Token use and cost estimate: [token-usage](NN-token-usage.md).]
 
 ## Known Limitations
 
@@ -61,7 +68,8 @@ Link the [implementation plan](NN-work-package-plan.md) — do not restate its t
 
 ## Rules
 
-- **Link, don't restate.** Tasks live in the plan, test results in the validation report, files in the change-block index. A reader follows one link; a copy goes stale.
+- **Link, don't restate.** Tasks live in the plan, test results in the validation report, files in the change-block index, open work in its register, cost in `token-usage.md`. A reader follows one link; a copy goes stale.
+- **Open work by register, never by table.** Read `follow-ups.md` and `deferred-items.md` before writing Open Work, and emit one link line per register that exists. A close-out table of open items is a second home that drifts from the register the moment a row changes.
 - **Exception-only results.** "All N criteria met" is one line. A table appears only when a row diverges from its target.
 - **Omit null sections.** No "What Was NOT Implemented: none" — drop the heading.
 - **Update in place** if post-merge changes occur; the close-out reflects the final delivered state.

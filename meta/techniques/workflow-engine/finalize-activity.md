@@ -69,4 +69,4 @@ One-line summary from evaluate-transition of which transition matched (`transiti
 
 ### no-readme-persist-on-worker
 
-Planning-folder `README.md` Progress/Status sync and engineering commit/push are **not** worker duties. The orchestrator applies [commit-and-persist](./commit-and-persist.md) after `activity_complete`. Workers still report `{artifacts_produced}` in the envelope for activity evidence; Progress Status writes go through [sync-progress-status](./sync-progress-status.md) by activity-prefix field, not per envelope artifact entry.
+Planning-folder `README.md` Progress/Status sync and engineering commit/push are **not** worker duties. The orchestrator applies [commit-and-persist](./commit-and-persist.md) after `activity_complete`. Workers still report `{artifacts_produced}` in the envelope for activity evidence; Progress Status writes go through [sync-progress-status](./sync-progress-status.md) by owning activity, not per envelope artifact entry.

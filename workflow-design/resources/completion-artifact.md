@@ -1,13 +1,13 @@
 ---
 name: completion-artifact
-description: Template for the COMPLETE.md close-out document of a workflow-design session — the session's single terminal artifact.
+description: Template and fill rules for the COMPLETE.md close-out document of a workflow-design session.
 metadata:
   order: 6
 ---
 
 # Design Session Close-Out Guide
 
-`COMPLETE.md` is the **single terminal artifact** of a workflow-design session — the counterpart of the work-package [complete-wp](../../work-package/resources/complete-wp.md) guide, with design-authoring sections in place of code/test sections. It answers "what was delivered, what was decided, and what is left open?" There is no separate retrospective or session-summary artifact: the retrospective is a section of this document.
+Template and fill rules for `COMPLETE.md`, the close-out document of a workflow-design session. The run's retrospective is a section of it, written per [workflow-retrospective](../../work-package/resources/workflow-retrospective.md#output-section-template).
 
 ## Template
 

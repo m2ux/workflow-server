@@ -47,6 +47,9 @@ variables:
   - name: target_submodule
     type: string
     description: Path to the submodule being audited (e.g., midnight-node)
+  - name: file_inventory
+    type: string
+    description: Inventory of source files in scope, recorded at scope setup.
   - name: target_commit
     type: string
     description: Git commit hash to audit

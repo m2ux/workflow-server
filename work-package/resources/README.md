@@ -25,9 +25,9 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `test-suite-review` | Test Suite Review | Test suite quality assessment framework |
 | `strategic-review` | Strategic Review | Strategic review artifact template |
 | `architecture-summary` | Architecture Summary | Architecture summary template with UML diagram guidance |
-| `workflow-retrospective` | Workflow Retrospective | Retrospective section template (written into COMPLETE.md) |
+| `workflow-retrospective` | Workflow Retrospective | Retrospective methodology and section template |
 | `session-trace` | Session Trace | Lean mechanical session-trace artifact template (written at close-out) |
-| `complete-wp` | Complete Work Package | Close-out document template — the single terminal artifact |
+| `complete-wp-guide` | Complete Work Package | Close-out document template and fill rules |
 | `manual-diff-review` | Manual Diff Review | Lean-header and Block Rationale forms (`file:line` titles) — the report renders as a code-review.md section |
 | `deferred-items` | Deferred Items | Register template — the single canonical home for out-of-scope deferred work that every other artifact links to |
 | `follow-ups` | Follow-ups | In-task follow-ups register template (distinct from out-of-scope `deferred-items`) |

@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Read the matching domain index file from `.engineering/resources/`.
+Read the domain knowledge index matching a domain hint.
 
 ## Inputs
 

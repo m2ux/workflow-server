@@ -377,8 +377,16 @@ variables:
     defaultValue: ""
   - name: artifact_publish_ref
     type: string
-    description: Git ref that engineering-artifact hyperlinks in the consolidated review resolve against — a publish commit SHA, or the engineering checkout's current branch
+    description: Engineering checkout's branch name, the ref engineering-artifact hyperlinks in the consolidated review resolve against.
     defaultValue: ""
+  - name: reviewed_code_base_url
+    type: string
+    description: Permanent blob-URL prefix for reviewed-code citations, down to the full head sha.
+    defaultValue: ""
+  - name: summary_budget_overruns
+    type: array
+    description: "Consolidated-review slots over their format budget, each { slot, measured, budget }."
+    defaultValue: []
   - name: flagged_block_indices
     type: array
     description: List of change block indices flagged by user during manual diff review.
@@ -515,6 +523,10 @@ variables:
   - name: problem_type
     type: string
     description: Problem or inventive-goal classification (e.g. defect, inventive-improvement).
+  - name: issue_url
+    type: string
+    description: URL of the tracker issue for this work package (alongside issue_number).
+    defaultValue: ""
   - name: pr_url
     type: string
     description: URL of the pull request for this work package (alongside pr_number).
@@ -557,5 +569,25 @@ variables:
   - name: unsigned_commit_list_summary
     type: string
     description: Short human-readable summary of unsigned commits from the strategic-review signature scan; empty when all commits are signed.
+    defaultValue: ""
+  - name: completion_document_path
+    type: string
+    description: Path to the close-out document.
+    defaultValue: ""
+  - name: broken_artifact_links
+    type: array
+    description: "Planning-folder links that do not resolve, each { file, link, target, class }."
+    defaultValue: []
+  - name: assumption_decisions
+    type: array
+    description: "Recorded assumption resolutions, each { id, disposition, resolution }."
+    defaultValue: []
+  - name: issue_request
+    type: string
+    description: The issue key, URL, or surrounding text the user supplied when opening the work package.
+    defaultValue: ""
+  - name: comprehension_dir
+    type: string
+    description: Directory holding codebase-comprehension artifacts.
     defaultValue: ""
 initialActivity: start-work-package

@@ -1,8 +1,8 @@
 ---
 name: workflow-retrospective
-description: Methodology and section template for the workflow retrospective written into the COMPLETE.md close-out document.
+description: Methodology and section template for the workflow retrospective.
 metadata:
-  version: 2.1.1
+  version: 2.2.0
   order: 20
   legacy_id: 20
 ---
@@ -10,7 +10,7 @@ metadata:
 
 # Workflow Retrospective Guide
 
-Record the session's **non-checkpoint** user-interaction friction and, when a resolved session trace is available, its **mechanical** friction as the `## Workflow Retrospective` section of [COMPLETE.md](complete-wp.md). Complementary lean detail lives in `session-trace.md` when produced; join the planning-folder `token-usage.md` by link when present.
+Methodology and template for the `## Workflow Retrospective` section — an `##`-level section, so it nests inside a host close-out document rather than standing alone. It records the session's **non-checkpoint** user-interaction friction and, when a resolved session trace is available, its **mechanical** friction.
 
 ## Signals to Scan For
 
@@ -35,13 +35,19 @@ Priority: **high** = repeated corrections, frustration, missing guidance that ca
 
 **Friction → fix:** every mechanical observation maps to a prioritized recommendation that names the canonical technique, resource, or activity prose to change — never agent blame.
 
-## Interview Format
+## Item Budget
 
-Run the retrospective as a dedicated close-out interview in the same one-item-at-a-time shape as the post-impl block interview:
+The section is composed from the message history and the resolved trace, then reviewed as a whole at the close-out gate — there is no per-item interview, because the only interaction primitive the close-out path has is that one gate.
 
-1. Surface the next observation or recommendation candidate.
-2. Confirm with the reviewer before continuing to the next item.
-3. Do not batch multiple unresolved items into a single confirm.
+A whole-section review is readable only while the section is short, so the item count is the constraint that makes it work:
+
+| Slot | Budget |
+|------|--------|
+| Observations | at most 6 lines, highest-priority first |
+| Recommendations | at most 3, one line each |
+| Key takeaway | one sentence |
+
+Items above the budget are cut, not compressed: an observation that does not make the top six was not the run's real friction. Where a cut item still deserves to survive, it goes to the follow-ups register as a row and the section links it.
 
 ## Output Section Template
 
@@ -49,7 +55,7 @@ Run the retrospective as a dedicated close-out interview in the same one-item-at
 ## Workflow Retrospective
 
 [messages: N total, M non-checkpoint · session quality: Smooth / Minor friction / Significant issues]
-[trace: link session-trace.md when written · join token-usage.md when present]
+[trace: link session-trace.md when written · cost: link token-usage.md when present]
 
 ### Observations
 
@@ -75,9 +81,9 @@ Run the retrospective as a dedicated close-out interview in the same one-item-at
 
 ## Rules
 
-- **One item, then confirm** — interview loop presents a single observation or recommendation; confirm before the next.
+- **Within the item budget** — the section holds at most the counts in [Item Budget](#item-budget), reviewed whole at the close-out gate. Overflow goes to the follow-ups register, linked.
 - **Workflow improvements, never user or agent error:** users and mechanical traces reveal workflow gaps — analyze as defects in instructions, not blame.
 - **Exception-only:** include only signal categories with content; a smooth session's retrospective is the message counts, a takeaway, and "action required: no".
 - **State each lesson once.** No Summary/Lessons/Takeaway triple-statement — the takeaway line is the recap.
 - **Honest, specific, prioritized ruthlessly** — no generic positives, no recommendation lists longer than can be actioned.
-- **Join, don't duplicate cost** — session-trace never estimates cost; link `token-usage.md` when present.
+- **Cost by link only** — the retrospective states no token or cost figure; `token-usage.md` is the sole cost home and is linked.

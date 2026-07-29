@@ -9,11 +9,11 @@ Systematic response to PR review comments — analysis through posted replies.
 
 ## Inputs
 
+## Outputs
+
 ### review_comments
 
-Review comments fetched from PR
-
-## Outputs
+The reviewer comments and feedback on the PR, as the platform returned them.
 
 ### review_analysis
 

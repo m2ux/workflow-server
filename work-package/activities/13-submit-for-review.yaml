@@ -33,6 +33,10 @@ steps:
       variable: is_review_mode
       operator: ==
       value: true
+    actions:
+      - action: validate
+        target: summary_budget_overruns == []
+        message: "Consolidated review summary exceeds the review-mode format budget: {summary_budget_overruns}. Move the over-budget content into the report section that owns it, leave the link, and re-run."
   - kind: action
     id: present-summary-to-user
     condition:

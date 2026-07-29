@@ -87,7 +87,7 @@ Each field MUST be separated by a blank line (double newline) so that markdown r
 
 #### affected_files_hyperlink
 
-Every source reference in `**Affected Files:**` MUST be a markdown hyperlink to the exact file and line range in the target repository at the audited commit, so a reviewer is one click from the reviewed code. Construct `{$source_blob_base}` as `https://github.com/{$org}/{$repo}/blob/{target_commit}`, where `{org}/{repo}` is the target submodule's GitHub remote (from `git remote get-url origin` in `{target_path}`, normalised from SSH/HTTPS to `github.com/{org}/{repo}`) and `{target_commit}` is the audited revision recorded at scope-setup. Pin the links to `{target_commit}` — never to a mutable branch — so they always resolve to the reviewed source.
+Every source reference in `**Affected Files:**` MUST be a markdown hyperlink to the exact file and line range in the target repository at the audited commit, so a reviewer is one click from the reviewed code. Construct `{$source_blob_base}` as `https://github.com/{$org}/{$repo}/blob/{target_commit}`, where `{org}/{repo}` is the target submodule's GitHub remote (from `git remote get-url origin` in `{target_submodule}`, normalised from SSH/HTTPS to `github.com/{org}/{repo}`) and `{target_commit}` is the audited revision recorded at scope-setup. Pin the links to `{target_commit}` — never to a mutable branch — so they always resolve to the reviewed source.
 
 ## Protocol
 

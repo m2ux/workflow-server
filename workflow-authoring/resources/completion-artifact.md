@@ -1,6 +1,6 @@
 ---
 name: completion-artifact
-description: Creation guide for COMPLETE.md — the run's single terminal record, with the retrospective as a section.
+description: Template and fill rules for COMPLETE.md, with the run's retrospective as a section.
 metadata:
   version: 1.0.0
   order: 14
@@ -8,7 +8,7 @@ metadata:
 
 # Close-Out Guide
 
-`COMPLETE.md` is the **single terminal artifact** of a run. It answers what was delivered, what was decided, and what is left open. There is no separate retrospective document: the retrospective on the run itself is a section here.
+Template and fill rules for `COMPLETE.md`, a run's close-out document. The run's own retrospective is a section of it.
 
 ## Template
 

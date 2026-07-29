@@ -2,7 +2,7 @@
 name: review-mode
 description: Guidelines for using the work-package workflow in review mode to conduct structured PR reviews. Covers detection, adapted workflow behavior, and output generation. Organized by review category for per-section delivery to the technique that renders that category.
 metadata:
-  version: 1.12.1
+  version: 1.13.0
   order: 24
   legacy_id: 24
 ---
@@ -22,7 +22,9 @@ The sub-sections decompose the rules so a consumer fetches only the one it needs
 
 - [Header Fields](#header-fields) — the `PR` / `Plan` / `Reviewers` / `Reports` / `Date` header and the link conventions that govern it
 - [Table Format](#table-format) — the shared findings-table shape across all categories
-- [Reference, Don't Restate](#reference-dont-restate) — findings cited by ID, never reproduced
+- [Reference, Don't Restate](#reference-dont-restate) — findings cited by ID, never reproduced, within a declared budget
+- [Prose Register](#prose-register) — the sentence-level register every prose passage holds to
+- [Caveat Form](#caveat-form) — the one-line claim-plus-link shape for caveats
 - [Action Items](#action-items) — the prioritized checklist consolidation
 - [Skeleton](#skeleton) — the whole-document template itself
 - [Attribution Footer](#attribution-footer) — the posted-verbatim footer and its variable resolution
@@ -39,7 +41,15 @@ The summary header carries `PR`, `Plan`, `Reviewers`, `Reports`, and `Date` fiel
 https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/{ARTIFACT_PUBLISH_REF}/artifacts/planning/{PLANNING_FOLDER}/
 ```
 
-`{ARTIFACT_PUBLISH_REF}` is the git ref the linked artifacts are published on — the publish commit SHA (preferred, immutable permalink) or the artifacts checkout's current branch when the SHA is not yet available. Resolve `{ENG_REPO_OWNER}` and `{ENG_REPO_NAME}` from the artifacts checkout's remote; never hardcode `main`. The path after the ref is relative to the root of the checkout that ref belongs to: `artifacts/planning/…` when `.engineering/` is itself a checkout, and `.engineering/artifacts/planning/…` when the artifacts live directly in the product checkout. The set of reports and their artifact filenames are supplied by the rendering step — one entry per review category the run produced — not fixed by this template.
+`{ARTIFACT_PUBLISH_REF}` is the **branch** the linked artifacts are published on, so the linked tree carries whatever the run adds after the link is written — close-out, retrospective, session trace and follow-ups all land on that branch and resolve from the same URL. Resolve `{ENG_REPO_OWNER}` and `{ENG_REPO_NAME}` from the artifacts checkout's remote; never hardcode `main`. The path after the ref is relative to the root of the checkout that ref belongs to: `artifacts/planning/…` when `.engineering/` is itself a checkout, and `.engineering/artifacts/planning/…` when the artifacts live directly in the product checkout. The set of reports and their artifact filenames are supplied by the rendering step — one entry per review category the run produced — not fixed by this template.
+
+**Ref split — engineering artifacts by branch, reviewed code by sha:** every engineering-artifact link (`Plan`, `Reports`, a designator's report anchor) carries `{ARTIFACT_PUBLISH_REF}`. Every citation of the reviewed code carries the reviewed head sha instead, as a permanent blob URL under the reviewed repository:
+
+```
+{REVIEWED_CODE_BASE_URL}/{path}#L{line}
+```
+
+`{REVIEWED_CODE_BASE_URL}` is the permanent blob-URL prefix at the PR head commit the review verified, supplied by the rendering step. A code citation resolved against a branch moves under the reader; an engineering-artifact link pinned to a sha goes stale as soon as the run writes another report.
 
 Section titles (a per-category findings heading) must NOT be hyperlinks — the report links live in the header instead.
 
@@ -55,11 +65,67 @@ Resolve `{WORKFLOW_REPO_OWNER}`, `{WORKFLOW_REPO_NAME}`, and `{WORKFLOW_BRANCH}`
 
 ### Table Format
 
-Every findings table, across all categories, follows one shape: only non-passing findings — do not list passing or positive items. The `#` column value is the item designator (the category's prefix plus its number). When the finding has an associated report in the `Reports` header, the designator is hyperlinked to that finding's own section within its report, anchored to the finding's heading; when it has none, the designator is rendered as plain text. Every findings table must include `Source`, `Severity`, and `Disposition` columns (Disposition e.g. Fix now / Deferred → register ID / Noted). Every `Source` link MUST be validated against the actual source at the referenced commit before inclusion — do not carry over line numbers from earlier analysis without verification. (The Prior Feedback Triage table is the exception: its `#` links the prior comment thread, since each row is a prior comment rather than a finding with a report section.)
+Every findings table, across all categories, follows one shape — four columns in this order:
+
+| Column | Holds |
+|--------|-------|
+| `#` | The item designator (the category's prefix plus its number). Hyperlinked to the finding's own heading anchor within its report when the category has a report in the `Reports` header; plain text when it has none. |
+| `@` | The source locus, rendered as a hyperlinked ASCII `>` and nothing else. Position 2, immediately after `#`. |
+| `Finding` | One line naming the finding, within the [Reference, Don't Restate](#reference-dont-restate) budget. |
+| `Severity` | A value from [Severity Definitions](#severity-definitions). |
+
+Tables list only non-passing findings — positive items belong in [What This Change Gets Right](#what-this-change-gets-right).
+
+The `@` cell is `[>](url)`, never the filename, path, test name, or run label as link text: filename link text sets the column to the width of the longest path and wraps every other cell on the row. The link target is whatever locus the category declares (code blob URL, test, document, CI run, commit) and every one resolves at the ref the ref-split assigns it under [Header Fields](#header-fields). Validate each `@` target against the actual source at that ref before inclusion; line numbers carried over from earlier analysis are re-read, not trusted.
+
+The item column header is `Finding` in every category's table. Prior Feedback Triage is the one carve-out on shape: its `#` links the prior comment thread rather than a report section, it carries no `@` column, and it keeps a `Disposition` column as its right-most column. No other table carries `Disposition` — the [Action Items](#action-items) tiers already express it.
 
 ### Reference, Don't Restate
 
-The summary references each finding by ID, one-line title, severity, and disposition ONLY. Finding descriptions, evidence, and suggestions live in the linked report artifacts (`Reports` header) — the summary never reproduces them.
+The summary references each finding by designator, one-line title, `@` link, and severity ONLY. Descriptions, evidence, reproduction and suggestions live in the linked report artifacts (`Reports` header).
+
+Budget, so the rule is checkable rather than aspirational:
+
+| Slot | Budget |
+|------|--------|
+| A `Finding` cell | one line, at most 15 words, no sentence-ending punctuation, no code fence, no line-number list |
+| A category section's prose outside its table | at most 2 lines — the `Details:` report link, plus one optional line of scope |
+| Executive Summary | at most 2 sentences, plus the `Overall Rating` line |
+| An Action Items entry | one line naming the fix and its designator |
+| The whole summary | at most 120 lines |
+
+A passage that exceeds its budget is over-budget because it has absorbed content a report already owns; the fix is the link, never a shorter paraphrase of the same content.
+
+### Prose Register
+
+Every prose passage — Executive Summary, section scope lines, Action Items entries, caveats — holds to one register:
+
+- **Plain language.** The word a maintainer would use, not the more formal synonym.
+- **Short sentences.** One clause carrying one claim. A sentence needing a semicolon is two sentences.
+- **No stacked qualification.** One hedge per claim at most. "may, under some conditions, potentially" states less than "may".
+- **No dense symbol chains.** At most one code symbol and one location per sentence. A claim that needs three symbols and four line numbers is a report section, cited by link.
+- **Claim first.** The sentence opens with what is true, and any qualification follows it.
+
+### Caveat Form
+
+A caveat is one line: the claim, then a link to the report section holding its basis and any procedure that would confirm or refute it. The basis stays in the report — [Reference, Don't Restate](#reference-dont-restate) governs caveats exactly as it governs findings.
+
+```markdown
+- Storage growth is bounded only while the close path runs — [basis and confirmation procedure]({report-url}#storage-growth).
+```
+
+### What This Change Gets Right
+
+Findings tables carry only non-passing items, so this section is the home for what the change does well. It sits between Strategic Review and Action Items.
+
+One bullet per item: what the change gets right, in the [Prose Register](#prose-register), with an `@` link to the locus that shows it. Specific, not generic — "the close path clears the storage record it opened" earns a bullet; "code is well structured" does not. Omit the section when the review found nothing above that bar.
+
+```markdown
+### What This Change Gets Right
+
+- The governance-close path clears every record it opened — [>]({REVIEWED_CODE_BASE_URL}/src/governance.rs#L212)
+- Migration is idempotent, so a partial upgrade re-runs safely — [>]({REVIEWED_CODE_BASE_URL}/src/migration.rs#L44)
+```
 
 ### Action Items
 
@@ -153,6 +219,14 @@ The Overall Rating rendered in the summary maps to the posted review type:
 
 ---
 
+{strategic_review}
+
+---
+
+{what_this_change_gets_right}
+
+---
+
 ### Action Items
 
 **Must Address (Blocking)**:
@@ -221,99 +295,110 @@ Based on ticket [PM-XXXXX] requirements:
 
 Disposition of every prior comment and review on the PR (human and bot), determined before independent analysis. The `#` column links the prior comment thread (each row is a prior comment, not a finding with a report section). A Confirmed blocker-class entry caps the Overall Rating unless the review's own findings refute it (the rating-cap carve-in).
 
-**Population:** one row per prior comment with its Confirmed / Refuted / Superseded disposition and reasoning; carry each Confirmed blocker-class entry into Action Items as blocking.
+**Population:** one row per prior comment with its Confirmed / Refuted / Superseded disposition and reasoning; carry each Confirmed blocker-class entry into Action Items as blocking. This table is the [Table Format](#table-format) carve-out: no `@` column, and `Disposition` right-most.
 
 ```markdown
 ### Prior Feedback Triage
 
 Disposition of every prior comment and review on the PR (human and bot), determined before independent analysis.
 
-| # | Prior Comment | Author | Disposition | Reasoning |
-|---|---------------|--------|-------------|-----------|
-| [1](pr-comment-url) | Storage record never cleared on close | reviewer | Confirmed — caps rating | Unaddressed — clear missing on the governance-close path |
-| [2](pr-comment-url) | Naming nit on handler | bot | Refuted | Name follows the crate convention |
+| # | Finding | Author | Reasoning | Disposition |
+|---|---------|--------|-----------|-------------|
+| [1](pr-comment-url) | Storage record never cleared on close | reviewer | Clear missing on the governance-close path | Confirmed — caps rating |
+| [2](pr-comment-url) | Naming nit on handler | bot | Name follows the crate convention | Refuted |
 ```
 
 ## Code Review
 
 **Prefix:** `CR`
 
-**Population:** `Source` = file path and line or line range (link text is the source filename). Designator links to the finding's section in the code-review report when one exists.
+**Population:** `@` links a permanent blob URL at the reviewed sha, anchored to the line or line range, per the ref split in [Header Fields](#header-fields). Designator links to the finding's section in the code-review report when one exists.
 
 ```markdown
 ### Code Review Findings
 
 Details: [code review report]({report-url}).
 
-| # | Finding | Source | Severity | Disposition |
-|---|---------|--------|----------|-------------|
-| [CR-1]({report-url}#cr-1) | Missing null check in handler | [file.rs:42](src/file.rs#L42) | High | Fix now |
-| [CR-2]({report-url}#cr-2) | N+1 query pattern in loop | [handler.rs:78](src/handler.rs#L78) | Medium | Deferred → D-2 |
+| # | @ | Finding | Severity |
+|---|---|---------|----------|
+| [CR-1]({report-url}#cr-1) | [>]({REVIEWED_CODE_BASE_URL}/src/file.rs#L42) | Missing null check in handler | High |
+| [CR-2]({report-url}#cr-2) | [>]({REVIEWED_CODE_BASE_URL}/src/handler.rs#L78) | N+1 query pattern in loop | Medium |
 ```
 
 ## Test Review
 
 **Prefix:** `TR`
 
-**Population:** `Source` = test method. Designator links to the finding's section in the test-suite review report when one exists.
+**Population:** `@` links the test method at the reviewed sha, per the ref split in [Header Fields](#header-fields). Designator links to the finding's section in the test-suite review report when one exists.
 
 ```markdown
 ### Test Review Findings
 
 Details: [test suite review report]({report-url}).
 
-| # | Gap | Source | Severity | Disposition |
-|---|-----|--------|----------|-------------|
-| [TR-1]({report-url}#tr-1) | Missing edge case coverage | [module_test.rs:88](tests/module_test.rs#L88) | Medium | Fix now |
-| [TR-2]({report-url}#tr-2) | No error path tests | [module_test.rs:210-240](tests/module_test.rs#L210-L240) | High | Fix now |
+| # | @ | Finding | Severity |
+|---|---|---------|----------|
+| [TR-1]({report-url}#tr-1) | [>]({REVIEWED_CODE_BASE_URL}/tests/module_test.rs#L88) | Missing edge case coverage | Medium |
+| [TR-2]({report-url}#tr-2) | [>]({REVIEWED_CODE_BASE_URL}/tests/module_test.rs#L210-L240) | No error path tests | High |
 ```
 
 ## Documentation Review
 
 **Prefix:** `DR`
 
-**Population:** `Source` = document URL. No associated report — the designator renders as plain text.
+**Population:** `@` links the document. No associated report — the designator renders as plain text.
 
 ```markdown
 ### Documentation Review
 
-| # | Gap | Source | Severity | Disposition |
-|---|-----|--------|----------|-------------|
-| `DR-1` | Change file missing | [CHANGELOG.md](CHANGELOG.md) | High | Fix now |
+| # | @ | Finding | Severity |
+|---|---|---------|----------|
+| `DR-1` | [>]({REVIEWED_CODE_BASE_URL}/CHANGELOG.md) | Change file missing | High |
 ```
 
 ## Validation
 
 **Prefix:** `VF`
 
-**Population:** `Source` = CI run URL. No associated report — the designator renders as plain text.
+**Population:** `@` links the CI run. No associated report — the designator renders as plain text.
 
 ```markdown
 ### Validation Findings
 
-| # | Check | Source | Severity | Disposition |
-|---|-------|--------|----------|-------------|
-| `VF-1` | Lint — 3 clippy warnings | [CI run](ci-run-url) | Warning | Fix now |
+| # | @ | Finding | Severity |
+|---|---|---------|----------|
+| `VF-1` | [>](ci-run-url) | Lint — 3 clippy warnings | Low |
 ```
 
 ## Branch Hygiene
 
 **Prefix:** `BH`
 
-**Population:** `Source` = branch/commit. No associated report — the designator renders as plain text.
+**Population:** `@` links the branch or commit. No associated report — the designator renders as plain text.
 
 ```markdown
 ### Branch Hygiene
 
-| # | Item | Source | Severity | Disposition |
-|---|------|--------|----------|-------------|
-| `BH-1` | Branch freshness — behind main | [main@abc1234](commit-url) | Warning | Rebase before merge |
+| # | @ | Finding | Severity |
+|---|---|---------|----------|
+| `BH-1` | [>](commit-url) | Branch freshness — behind main | Low |
 ```
 
 ## Strategic Review
 
-**Prefix:** — (recommendations feed Action Items and the plan; no findings table in the comment)
+**Prefix:** `SR`
 
-Review-mode strategic review produces cleanup **recommendations** rather than applied cleanup. Its output feeds the Action Items tiers and the retrospective plan; it does not render a per-category findings table in the consolidated comment.
+Review-mode strategic review produces cleanup and scope-fit **recommendations** rather than applied cleanup — whether the change is minimal for the problem it states, and what it carries that the problem does not need. Strategic findings are routinely deferred to the author, so they render in the comment as a findings table on the shared [Table Format](#table-format), the same as the other five categories.
 
-**Population:** capture cleanup and scope-fit recommendations with their rationale; route actionable items into Action Items by priority.
+**Population:** one row per recommendation. `@` links the locus the recommendation acts on at the reviewed sha. Designator links to the finding's section in the strategic-review report when one exists. Recommendations also reach the Action Items tiers by severity.
+
+```markdown
+### Strategic Review
+
+Details: [strategic review report]({report-url}).
+
+| # | @ | Finding | Severity |
+|---|---|---------|----------|
+| [SR-1]({report-url}#sr-1) | [>]({REVIEWED_CODE_BASE_URL}/src/lib.rs#L1) | Trait abstraction carries one implementor | Medium |
+| [SR-2]({report-url}#sr-2) | [>]({REVIEWED_CODE_BASE_URL}/src/debug.rs#L60) | Debug scaffolding ships with the change | Low |
+```

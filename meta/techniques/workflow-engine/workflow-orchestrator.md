@@ -53,7 +53,7 @@ Pass `{session_index}` on every authenticated tool call ([session-index-passes-o
 
 ### orchestrator-worker-boundaries
 
-Honor [no-get-activity-from-orchestrator](./dispatch-activity.md#no-get-activity-from-orchestrator), [no-pre-load-techniques](./dispatch-activity.md#no-pre-load-techniques), [workers-need-full-delivery](./dispatch-activity.md#workers-need-full-delivery), [reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result), and [worker-bag-takes-precedence](./dispatch-activity.md#worker-bag-takes-precedence).
+Honor [no-get-activity-from-orchestrator](./dispatch-activity.md#no-get-activity-from-orchestrator), [no-pre-load-techniques](./dispatch-activity.md#no-pre-load-techniques), [workers-need-full-delivery](./dispatch-activity.md#workers-need-full-delivery), [reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result), and [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile).
 
 ### resolve-trace-at-close-out
 

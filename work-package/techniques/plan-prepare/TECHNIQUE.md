@@ -9,7 +9,7 @@ Implementation planning — design approach, work-package plan, and actionable T
 
 ## Inputs
 
-### design_philosophy
+### design_philosophy_doc
 
 Design philosophy [artifact](../../resources/design-framework.md#design-philosophy-artifact-template) with problem classification and workflow path
 

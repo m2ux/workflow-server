@@ -140,9 +140,10 @@ graph TD
 | `implement` | **SKIPPED** — `assumptions-review` carries a `is_review_mode == true → lean-coding-audit` transition that routes around the entire activity, so none of its steps or checkpoints (`switch-model-*`, assumption interview) are reached |
 | `lean-coding-audit` | Run the read-only over-engineering review, debt harvest, and gain report; the findings-confirmation checkpoint and simplification-apply-cycle are gated out so no code changes — findings become PR feedback |
 | `validate` | Document failures as findings, skip fix-failures |
-| `strategic-review` | Document recommendations, transition to submit-for-review; `review-findings` stays interactive but is bypassed — the unconditional `is_review_mode == true → submit-for-review` transition routes past it before its outcome can affect the review-mode path |
+| `strategic-review` | Document recommendations, transition to submit-for-review; `review-findings` stays interactive but is bypassed — the unconditional `is_review_mode == true → submit-for-review` transition routes past it before its outcome can affect the review-mode path. `unsigned-commits-prompt` and `resign-unsigned-commits` are gated `is_review_mode != true`: re-signing rewrites branch history, which on a third party's branch is theirs to decide |
 | `submit-for-review` | Consolidate findings, generate the review summary, post it to the PR, then transition to `complete`; the create-mode tail (DCO attestation, PR-body render/verify, push, mark-ready, reviewer-feedback loop) is gated `is_review_mode != true`. `review-summary-approval` stays interactive as the single confirmation before the review is posted to the PR |
 | `post-impl-review` | Compare changes against expected; `file-index-table` auto-advances to `rationale-confirmed` and `block-interview` to `issue-recorded` |
+| `complete` | Write the close-out, cost artifact, retrospective and session trace, verify planning-folder link integrity, then re-publish the folder so the branch the posted review links carries the close-out. `create-complete-doc` and `render-token-usage` run on both paths — a review run has a verdict to close out and a cost to report. The ADR, test-plan and docs steps stay gated `is_review_mode != true` |
 
 ---
 

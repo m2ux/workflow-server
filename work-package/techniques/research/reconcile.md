@@ -11,7 +11,7 @@ Research-reconcilable candidates closed until only irreconcilable residue remain
 
 ### research_candidates
 
-The running [inventory](../../resources/research-reconciliation.md#integration-with-research-artifact) of open and resolved candidates to reconcile. On the first pass this is the triaged set; on later passes it also carries any candidates a `request-more` reopened.
+The running [inventory](../../resources/research-reconciliation.md#inventory-shape) of open and resolved candidates to reconcile. On the first pass this is the triaged set; on later passes it also carries any candidates a `request-more` reopened.
 
 ### requirements
 
@@ -25,7 +25,7 @@ The work package problem statement, read alongside `{requirements}` to keep the 
 
 ### research_candidates
 
-The candidate [inventory](../../resources/research-reconciliation.md#integration-with-research-artifact) with every candidate closable by research this pass resolved (finding + citations recorded) and only irreconcilable candidates left open — the same inventory written back in place.
+The candidate [inventory](../../resources/research-reconciliation.md#inventory-shape) with every candidate closable by research this pass resolved (finding + citations recorded) and only irreconcilable candidates left open — the same inventory written back in place.
 
 ### has_reconcilable_research
 
@@ -50,7 +50,7 @@ The research [artifact](../../resources/knowledge-base-research.md#planning-arti
 
 ### 3. Update the Inventory
 
-- Write each resolution and its citations into the candidate's row in `{research_candidates}` per the [integration shape](../../resources/research-reconciliation.md#integration-with-research-artifact); remove resolved candidates from the open set
+- Write each resolution and its citations into the candidate's row in `{research_candidates}` per the [integration shape](../../resources/research-reconciliation.md#inventory-shape); remove resolved candidates from the open set
 - Append the gathered findings to `{research_document}`
 - Add any research gap newly surfaced during this pass as a new candidate, classified per [triage](./triage.md#rules)
 

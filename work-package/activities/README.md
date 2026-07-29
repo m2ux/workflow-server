@@ -376,14 +376,14 @@ graph TD
 
 ### 12. Strategic Review
 
-Reviews the change set to ensure it is minimal and focused — that the PR contains only what the solution requires — and produces the strategic review document and architecture summary. The scope review also scans the branch range for unsigned commits and offers a re-sign pass. In review mode it documents cleanup recommendations without applying them. In stealth mode the fragment issue-reference check is skipped. Leads to submit-for-review when the review passes, otherwise back to plan-prepare for rework.
+Reviews the change set to ensure it is minimal and focused — that the PR contains only what the solution requires — and produces the strategic review document and architecture summary. The scope review also scans the branch range for unsigned commits and, on the authoring path, offers a re-sign pass. In review mode it documents cleanup recommendations without applying them. In stealth mode the fragment issue-reference check is skipped. Leads to submit-for-review when the review passes, otherwise back to plan-prepare for rework.
 
 Definition: [`12-strategic-review.yaml`](./12-strategic-review.yaml)
 
 ```mermaid
 graph TD
     entryNode(["Entry"]) --> reviewScope["Review scope (changes, artifacts, signature scan)"]
-    reviewScope --> cpUnsigned{"unsigned-commits-prompt (when unsigned found)"}
+    reviewScope --> cpUnsigned{"unsigned-commits-prompt (authoring path, when unsigned found)"}
     cpUnsigned -->|"re-sign"| resign["Re-sign commits"]
     cpUnsigned -->|"decline"| verifyReadme
     resign --> verifyReadme["Verify README conformance"]
@@ -447,22 +447,34 @@ graph TD
 
 ### 14. Complete
 
-The terminal activity: creates an ADR for moderate or complex work, finalizes documentation, conducts a retrospective (written into `COMPLETE.md` — the single terminal artifact), removes the component worktree, and selects the next work package. In review mode it skips the documentation steps and ends after the retrospective and worktree removal.
+The terminal activity: creates an ADR for moderate or complex work, writes the close-out and cost artifacts, conducts a retrospective (written into `COMPLETE.md`), verifies that every planning-folder link resolves, removes the component worktree, and selects the next work package. Both paths get a close-out and a cost artifact; review mode additionally re-publishes the planning folder so the branch the posted review links carries the close-out, and skips the ADR, test-plan and inline-docs steps.
 
 Definition: [`14-complete.yaml`](./14-complete.yaml)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> checkADR{"Not review mode and moderate/complex?"}
+    entryNode(["Entry"]) --> adrGate{"Review mode?"}
+
+    adrGate -->|"no"| checkADR{"Moderate or complex?"}
     checkADR -->|"yes"| createADR["Create ADR"]
     createADR --> updateADR["Update ADR status to Accepted"]
     updateADR --> finalizeTestPlan
-    checkADR -->|"no"| retrospective
+    checkADR -->|"no"| finalizeTestPlan["Finalize test plan with source links"]
+    finalizeTestPlan --> createComplete
 
-    finalizeTestPlan["Finalize test plan with source links"] --> createComplete["Create COMPLETE.md"]
-    createComplete --> ensureDocs["Ensure inline docs on public APIs"]
-    ensureDocs --> retrospective["Conduct retrospective (written into COMPLETE.md, update status)"]
-    retrospective --> removeWorktree["Remove component worktree"]
+    adrGate -->|"yes"| createComplete["Create COMPLETE.md"]
+    createComplete --> tokenUsage["Render token usage and cost"]
+    tokenUsage --> docsGate{"Review mode?"}
+    docsGate -->|"no"| ensureDocs["Ensure inline docs on public APIs"]
+    ensureDocs --> retrospective
+    docsGate -->|"yes"| retrospective["Conduct retrospective (written into COMPLETE.md, update status)"]
+
+    retrospective --> announce["Retrospective written (informational message)"]
+    announce --> verifyLinks["Verify planning-folder link integrity"]
+    verifyLinks --> publishGate{"Review mode?"}
+    publishGate -->|"yes"| republish["Publish close-out artifacts on the publish branch"]
+    publishGate -->|"no"| removeWorktree
+    republish --> removeWorktree["Remove component worktree (when this run created one)"]
     removeWorktree --> selectNext["Select next work package"]
     selectNext --> doneNode(["End"])
 ```
