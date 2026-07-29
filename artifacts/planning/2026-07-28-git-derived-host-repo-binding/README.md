@@ -6,15 +6,19 @@
 
 ## 🎯 Executive Summary
 
-[2-3 sentences explaining what this delivers and why it matters]
+This change makes the workflow server work out which repository a work package belongs to by reading git, instead of inferring it from documentation or from a link someone pasted into a request. Previously a session bound from a pull request URL could create an empty, non-git directory and leave the code reviewer with nothing to read — and nothing errored, so the run looked healthy. Delivered as [PR #345](https://github.com/m2ux/workflow-server/pull/345) across five workflow definitions, with 50 of 58 audit findings closed and no Critical or High findings remaining open.
 
 ## Problem Overview
 
-*Populated by the producing step (a `stakeholder-overview` call).*
+When an agent begins a piece of work, it must first decide which repository that work belongs to. Until now that decision came from prose: a line in a project's documentation, or whichever repository name happened to appear in the request — often a pull request link. Nothing checked the answer against what was actually on disk, and the server's own directory lookup used only the last part of the repository name, so a plausible-looking wrong answer resolved to a plausible-looking wrong place.
+
+The consequence was a silent failure rather than an error. A session bound to the repository named in a pull request link was pointed at a directory that did not exist, so the server created it — empty, and not a git repository at all. The step that must record the work then had nothing to record into, and the reviewer had no source code to examine. Because no error was raised, the run appeared to be progressing normally while producing nothing usable.
 
 ## Solution Overview
 
-*Populated by the producing step (a `stakeholder-overview` call).*
+The answer is now derived rather than assumed. A new step reads the repository the agent is standing in, walks upward through any parent repository that claims it as a component, and takes the outermost one as the host — reading its address from git itself. Where a project is a collection of components rather than a single codebase, the host project and the component being worked on are now two separate facts with two separate names, so naming one can no longer be mistaken for the other. A repository mentioned in a request identifies the component; the host is always derived.
+
+Two safeguards sit behind it. The derived name is checked against the directory the server will actually use, and a mismatch stops the run for a decision instead of quietly diverging; and a resumed session is re-checked against the same derivation, which catches a stale binding saved by an earlier run. The [scope manifest](06-scope-manifest.md) carries the file-level breakdown, and the [close-out](09-COMPLETE.md) records what remains open — including two follow-ups that must land in the server's own repository before continuous integration will pass.
 
 ## 📊 Progress
 

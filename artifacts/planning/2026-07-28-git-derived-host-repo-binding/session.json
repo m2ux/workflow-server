@@ -5,23 +5,31 @@
   "workflowVersion": "5.11.0",
   "agentId": "orchestrator",
   "sessionIndex": "PUKGKZ",
-  "currentActivity": "dispatch-client-workflow",
+  "currentActivity": "end-workflow",
   "currentTechnique": "version-control::initialize-folder",
-  "condition": "isDefault:dispatch-client-workflow",
-  "seq": 12,
-  "ts": 1785236443,
+  "condition": "condition:current_activity == null — client activity loop exited on workflow_complete",
+  "activeCheckpoint": {
+    "activityId": "end-workflow",
+    "checkpointId": "completion-confirmed",
+    "yieldedAt": "2026-07-29T06:38:15.713Z"
+  },
+  "seq": 16,
+  "ts": 1785307095,
   "startedAt": "2026-07-28T10:33:19.694Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
-    "resolve-target"
+    "resolve-target",
+    "dispatch-client-workflow"
   ],
   "skippedActivities": [],
   "variables": {
     "abort_completion": false,
     "client_planning_slug": "2026-07-28-git-derived-host-repo-binding",
     "client_session_index": "7IE6G7",
-    "client_workflow_completed": false,
+    "client_state": "workflow-authoring session 7IE6G7 final state: operation_type=update, target_workflow_ids=[meta, work-package, workflow-design, workflow-authoring, remediate-vuln], file_count=45, total_count=45, addressed_count=45, unaddressed_count=0, open_finding_count=8 (0 Critical, 0 High, 4 Medium, 4 Low), has_critical_finding=false, has_coverage_gap=false, fail_count=1 (out-of-target), remediation_round=2, remediation_selected=false, commit_approved=true, readme_conformance.conforms=true, pr_number=345, pr_url=https://github.com/m2ux/workflow-server/pull/345, workflow_branch=workflow/meta-git-derived-host-repo-binding, worktree_created=true (deliberately retained)",
+    "client_trace": "No trace tokens accumulated: next_activity responses carried no _meta.trace_token, so per resolve-trace-at-close-out the resolve step is skipped rather than called with an empty list",
+    "client_workflow_completed": true,
     "component_selection_needed": false,
     "has_saved_state": false,
     "is_monorepo": false,
@@ -31,6 +39,7 @@
     "target_path": ".",
     "target_repo": "m2ux/workflow-server",
     "target_workflow_id": "workflow-authoring",
+    "target_workflow_outcomes": "workflow-authoring declared outcomes for an update run: the change is authored across its declared targets, audited against the criteria corpus, scope-reconciled, committed and published with a close-out recording delivery, limitations and retrospective",
     "user_request": "Start a workflow-authoring workflow to update the work-package and meta workflows so the monorepo host-repo binding is DERIVED FROM GIT instead of inferred from prose.\n\nMotivation: a session bound to midnightntwrk/midnight-node (taken from a PR URL) mapped through the server's basename-only multi-root mapping to /home/mike1/projects/dev/midnight-node/.engineering and silently created an empty, non-git directory. The real checkout is a submodule of the shieldedtech/midnight-agent-eng superproject at dev/midnight-agent-eng/midnight-node, so the commit+push hook had no repo and the reviewer had no source. The workflow already owns monorepo detection but runs it AFTER the binding is committed, and it answers a different question (which component, not which host repo).\n\nFixes to author:\n\n1. New technique version-control::resolve-host-repo, run in meta 00-discover-session before the transition to initialize-session. Protocol: git rev-parse --show-toplevel from the workspace cwd; ascend while the parent directory is itself a git repo whose .gitmodules lists the current basename as a submodule path (outermost superproject wins — this generalizes work-package repo-root-resolution.md's existing single-level test and moves it to where it can gate the binding); derive owner/repo from that host's origin remote. Outputs: target_repo, host_repo_path, is_monorepo_host, and component_hint (the innermost toplevel's basename when we ascended — a better component signal than a URL, feeding select-target-component's pre-selection). Assert basename(host_repo_path) == basename(target_repo), because the server's multi-root mapping is basename-only; a mismatch raises a checkpoint rather than diverging silently.\n\n2. Add mentioned_repo (from PR/issue URLs) to workflow-engine::extract-identifying-context and route it to version-control::select-target-component as component context only. State the invariant once in version-control::TECHNIQUE.md beside infrastructure-submodule-paths: a repo named in the request identifies the COMPONENT; the host binding is derived from git; they are never the same variable.\n\n3. Retire the prose sources: meta/resources/bootstrap-protocol.md step 2 and workflow-engine/start-session.md's repo input currently say the repo comes from workspace AGENTS.md/CLAUDE.md or the user. Rewrite both to derive via resolve-host-repo, with AGENTS.md/user demoted to fallback for when the workspace is not a git repo or has no origin remote.\n\n4. Close the loop in meta 02-resolve-target: add a validation that the repo_root resolved by work-package repo-root-resolution is the same directory the session bound, so a bad binding fails at activity 02 before artifacts exist. This also catches a resume carrying a stale saved binding, which resolve-host-repo alone will not.\n\n5. Fix two latent defects in the same seam: (a) meta's target_path (\"submodule path for monorepos\", default \".\") collides by name with work-package's target_path (\"feature worktree path for edits\"), which is overwritten by compute-canonical-target-path at step 570 and is safe only because resolve-repo-root happens to sit at step 159 — rename meta's output to component_path; (b) work-package repo-root-resolution's discovered_path input is never bound by anything and specifies an absolute path while meta's target_path defaults to relative \".\" — bind it explicitly from component_path, absolutized against host_repo_path.\n\nAll edited files live in the workflows submodule (branch: workflows). Touching the meta activities will likely require re-baselining the walk snapshots.",
     "workflow_match_ambiguous": false
   },
@@ -315,6 +324,103 @@
       },
       "timestamp": "2026-07-28T11:00:43.469Z",
       "type": "resource_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-07-29T06:35:24.277Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "usage": {
+          "duration_ms": 332817,
+          "subagent_tokens": 193052,
+          "tool_uses": 18
+        }
+      },
+      "timestamp": "2026-07-29T06:35:24.277Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_workflow_completed",
+        "source": "variables_changed",
+        "value": true
+      },
+      "timestamp": "2026-07-29T06:35:24.277Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_state",
+        "source": "variables_changed",
+        "value": "workflow-authoring session 7IE6G7 final state: operation_type=update, target_workflow_ids=[meta, work-package, workflow-design, workflow-authoring, remediate-vuln], file_count=45, total_count=45, addressed_count=45, unaddressed_count=0, open_finding_count=8 (0 Critical, 0 High, 4 Medium, 4 Low), has_critical_finding=false, has_coverage_gap=false, fail_count=1 (out-of-target), remediation_round=2, remediation_selected=false, commit_approved=true, readme_conformance.conforms=true, pr_number=345, pr_url=https://github.com/m2ux/workflow-server/pull/345, workflow_branch=workflow/meta-git-derived-host-repo-binding, worktree_created=true (deliberately retained)"
+      },
+      "timestamp": "2026-07-29T06:35:24.277Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_trace",
+        "source": "variables_changed",
+        "value": "No trace tokens accumulated: next_activity responses carried no _meta.trace_token, so per resolve-trace-at-close-out the resolve step is skipped rather than called with an empty list"
+      },
+      "timestamp": "2026-07-29T06:35:24.277Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "target_workflow_outcomes",
+        "source": "variables_changed",
+        "value": "workflow-authoring declared outcomes for an update run: the change is authored across its declared targets, audited against the criteria corpus, scope-reconciled, committed and published with a close-out recording delivery, limitations and retrospective"
+      },
+      "timestamp": "2026-07-29T06:35:24.277Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-07-29T06:35:24.277Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "verify-outcomes",
+        "techniqueId": "workflow-engine::verify-outcomes"
+      },
+      "timestamp": "2026-07-29T06:35:51.569Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "generate-summary",
+        "techniqueId": "workflow-engine::generate-summary"
+      },
+      "timestamp": "2026-07-29T06:35:51.569Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "resourceId": "session-summary-template#session-summary-template"
+      },
+      "timestamp": "2026-07-29T06:37:18.524Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "timestamp": "2026-07-29T06:38:15.713Z",
+      "type": "checkpoint_reached"
     }
   ],
   "triggeredWorkflows": [
@@ -387,7 +493,7 @@
           "quality-review",
           "validate-and-commit"
         ],
-        "condition": "isDefault:validate-and-commit — DISCREPANCY LOGGED per distrust-then-reconcile: the round-2 envelope reported target_workflow_id='remediate-vuln', the last of five sweep-loop iterations. Intake established 'meta' as the primary target and nothing changed that, so the orchestrator relays 'meta'. target_workflow_ids carries the operator-authorised widened set.",
+        "condition": "terminal-state persistence — the client workflow reached workflow_complete (next_activity_id null), which leaves no transition to carry the final worker's variables_changed. Relaying them here so the durable session record matches the delivered state; the engine exposes no terminal-transition call, so status remains 'running'.",
         "currentActivity": "validate-and-commit",
         "currentTechnique": "workflow-definition::create-completion-doc",
         "deliveredContent": {
@@ -2734,20 +2840,208 @@
             },
             "timestamp": "2026-07-29T06:07:30.618Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_number",
+              "source": "variables_changed",
+              "value": "345"
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/345"
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pushed_branch",
+              "source": "variables_changed",
+              "value": "origin/workflow/meta-git-derived-host-repo-binding"
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "open_finding_count",
+              "source": "variables_changed",
+              "value": 8
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "total_count",
+              "source": "variables_changed",
+              "value": 45
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "addressed_count",
+              "source": "variables_changed",
+              "value": 45
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "unaddressed_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "file_count",
+              "source": "variables_changed",
+              "value": 45
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "changed_files",
+              "source": "variables_changed",
+              "value": "45 vs base ref f84fe02b (43 modified, 2 added) at branch tip 87c26fff"
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "declaredType": "array",
+              "name": "verified_findings",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": "8 open / 50 closed of 58. Open: 4 Medium (MH-4 out-of-surface, MM-16, MM-20 half-blocked, MM-23) and 4 Low (MM-12, MM-21 in meta; WL-4, WL-5 in work-package). Zero Critical, zero High. WL-3 and WL-6 closed outside the criteria walk by user decision, on validator and guard evidence only.",
+              "valueType": "string"
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "audit_findings",
+              "source": "variables_changed",
+              "value": "8 open (0 Critical, 0 High, 4 Medium, 4 Low); 50 of 58 closed"
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "findings_register",
+              "source": "variables_changed",
+              "value": "Round-2 final register: severity summary with a Closed-outside-sweep column summing to 58, round-2 verification pass recording the reproduced closure greps, per-target open/closed sections, WL-4/WL-5 investigated reasons, accepted exclusions with submodule-pointer evidence, four coverage divergences, guard results with the tree-wide vs per-directory reconciliation"
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "readme_conformance",
+              "source": "variables_changed",
+              "value": {
+                "conforms": true,
+                "extra_top_level_headings": [],
+                "header_block_drift": [],
+                "missing_sections": []
+              }
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "completion_document",
+              "source": "variables_changed",
+              "value": "09-COMPLETE.md — delivery by construct kind, decisions linked to canonical homes, scope outcome as exceptions, limitations as canonical home (both server-repo obligations, 8 open findings, MM-20's blocked half, the outside-sweep caveat, fail_count), and an 8-point retrospective"
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "written_artifact",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/09-COMPLETE.md"
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "commit_approved",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "remediation_selected",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-29T06:39:18.464Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 100,
+        "seq": 101,
         "sessionIndex": "7IE6G7",
         "skippedActivities": [],
         "startedAt": "2026-07-28T10:36:29.297Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785305250,
+        "ts": 1785307158,
         "variables": {
-          "addressed_count": 48,
-          "audit_findings": "10 open after round 2 (0 Critical, 0 High, 4 Medium, 6 Low); 48 of 58 closed",
+          "addressed_count": 45,
+          "audit_findings": "8 open (0 Critical, 0 High, 4 Medium, 4 Low); 50 of 58 closed",
           "base_ref": "f84fe02b12f9617f401767b9b96f329d8c13225c",
           "change_brief": "Persisted at 01-change-brief.md — purpose, 6 changed dimensions (activity model, checkpoints, variables, techniques, resources, rules), 6 open judgements",
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/01-change-brief.md",
@@ -2776,14 +3070,15 @@
             ]
           },
           "change_request_clear": true,
-          "changed_files": "44 vs base ref; 34 this round (33 modified + 1 new: meta/techniques/README.md)",
+          "changed_files": "45 vs base ref f84fe02b (43 modified, 2 added) at branch tip 87c26fff",
           "commit_approved": true,
+          "completion_document": "09-COMPLETE.md — delivery by construct kind, decisions linked to canonical homes, scope outcome as exceptions, limitations as canonical home (both server-repo obligations, 8 open findings, MM-20's blocked half, the outside-sweep caveat, fail_count), and an 8-point retrospective",
           "consumer_surface": "Renamed-contract consumers resolved and repaired in lockstep across workflow-design, workflow-authoring and remediate-vuln. A rename confined to work-package would have left all three reading an id that no longer exists.",
           "coverage_ledger": "unchanged — 48 real units, 44 walked, 4 not-applicable, 0 blocked; criteria homes were not modified",
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/README.md",
           "fail_count": 1,
-          "file_count": 44,
-          "findings_register": "Round-1 register body: severity summary with Closed-in-R1 column, per-target open + closed sections with verification evidence, accepted exclusions, three coverage divergences, guard results with explicit fail_count treatment, known keys, sources.",
+          "file_count": 45,
+          "findings_register": "Round-2 final register: severity summary with a Closed-outside-sweep column summing to 58, round-2 verification pass recording the reproduced closure greps, per-target open/closed sections, WL-4/WL-5 investigated reasons, accepted exclusions with submodule-pointer evidence, four coverage divergences, guard results with the tree-wide vs per-directory reconciliation",
           "fixes_applied": "11 closed in round 2. MH-5 completed library-wide as a merge, not a rename: 23 files / 80 occurrences. Excluded by design: anti-patterns.md:716 (AP-52 illustrative bad example). Two Fix clauses deliberately not taken: the _path suffix (would re-rename round 1's established meta id, past the authorised set) and the 02-resolve-target.yaml assertion (round 1's claim falsified — it guards external saved state, and is change-request item 4). Also closed: MM-4, MM-6, MM-8, MM-15, MM-17, MM-25, ML-1, ML-4, ML-5, ML-7. MM-20 half-closed: Output declarations withdrawn after measuring 4 new dead-output rejections (start_session runs pre-session-bag, so no consumer can exist); value half landed in bootstrap-protocol.md.",
           "has_coverage_gap": false,
           "has_critical_finding": false,
@@ -2793,13 +3088,20 @@
           "impact_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/01-impact-analysis.md",
           "intent_needs_confirmation": false,
           "known_finding_keys": 74,
-          "open_finding_count": 10,
+          "open_finding_count": 8,
           "open_judgements_count": 6,
           "operation_type": "update",
           "operation_type_ambiguous": false,
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding",
-          "pr_number": "",
-          "pr_url": "",
+          "pr_number": "345",
+          "pr_url": "https://github.com/m2ux/workflow-server/pull/345",
+          "pushed_branch": "origin/workflow/meta-git-derived-host-repo-binding",
+          "readme_conformance": {
+            "conforms": true,
+            "extra_top_level_headings": [],
+            "header_block_drift": [],
+            "missing_sections": []
+          },
           "register_sections": [
             "meta",
             "work-package",
@@ -2849,13 +3151,14 @@
             "workflow-authoring",
             "remediate-vuln"
           ],
-          "total_count": 58,
-          "unaddressed_count": 10,
+          "total_count": 45,
+          "unaddressed_count": 0,
           "update_seeded_from_review": false,
           "user_request": "Start a workflow-authoring workflow to update the work-package and meta workflows so the monorepo host-repo binding is DERIVED FROM GIT instead of inferred from prose.\n\nMotivation: a session bound to midnightntwrk/midnight-node (taken from a PR URL) mapped through the server's basename-only multi-root mapping to /home/mike1/projects/dev/midnight-node/.engineering and silently created an empty, non-git directory. The real checkout is a submodule of the shieldedtech/midnight-agent-eng superproject at dev/midnight-agent-eng/midnight-node, so the commit+push hook had no repo and the reviewer had no source. The workflow already owns monorepo detection but runs it AFTER the binding is committed, and it answers a different question (which component, not which host repo).\n\nFixes to author:\n\n1. New technique version-control::resolve-host-repo, run in meta 00-discover-session before the transition to initialize-session. Protocol: git rev-parse --show-toplevel from the workspace cwd; ascend while the parent directory is itself a git repo whose .gitmodules lists the current basename as a submodule path (outermost superproject wins — this generalizes work-package repo-root-resolution.md's existing single-level test and moves it to where it can gate the binding); derive owner/repo from that host's origin remote. Outputs: target_repo, host_repo_path, is_monorepo_host, and component_hint (the innermost toplevel's basename when we ascended — a better component signal than a URL, feeding select-target-component's pre-selection). Assert basename(host_repo_path) == basename(target_repo), because the server's multi-root mapping is basename-only; a mismatch raises a checkpoint rather than diverging silently.\n\n2. Add mentioned_repo (from PR/issue URLs) to workflow-engine::extract-identifying-context and route it to version-control::select-target-component as component context only. State the invariant once in version-control::TECHNIQUE.md beside infrastructure-submodule-paths: a repo named in the request identifies the COMPONENT; the host binding is derived from git; they are never the same variable.\n\n3. Retire the prose sources: meta/resources/bootstrap-protocol.md step 2 and workflow-engine/start-session.md's repo input currently say the repo comes from workspace AGENTS.md/CLAUDE.md or the user. Rewrite both to derive via resolve-host-repo, with AGENTS.md/user demoted to fallback for when the workspace is not a git repo or has no origin remote.\n\n4. Close the loop in meta 02-resolve-target: add a validation that the repo_root resolved by work-package repo-root-resolution is the same directory the session bound, so a bad binding fails at activity 02 before artifacts exist. This also catches a resume carrying a stale saved binding, which resolve-host-repo alone will not.\n\n5. Fix two latent defects in the same seam: (a) meta's target_path (\"submodule path for monorepos\", default \".\") collides by name with work-package's target_path (\"feature worktree path for edits\"), which is overwritten by compute-canonical-target-path at step 570 and is safe only because resolve-repo-root happens to sit at step 159 — rename meta's output to component_path; (b) work-package repo-root-resolution's discovered_path input is never bound by anything and specifies an absolute path while meta's target_path defaults to relative \".\" — bind it explicitly from component_path, absolutized against host_repo_path.\n\nAll edited files live in the workflows submodule (branch: workflows). Touching the meta activities will likely require re-baselining the walk snapshots.",
-          "verified_findings": "10 open / 48 closed of 58. Open: 4 Medium (MH-4 out-of-surface, MM-16, MM-20 half-blocked, MM-23), 6 Low (MM-12, MM-21, WL-3, WL-4, WL-5, WL-6). Zero Critical, zero High.",
+          "verified_findings": "8 open / 50 closed of 58. Open: 4 Medium (MH-4 out-of-surface, MM-16, MM-20 half-blocked, MM-23) and 4 Low (MM-12, MM-21 in meta; WL-4, WL-5 in work-package). Zero Critical, zero High. WL-3 and WL-6 closed outside the criteria walk by user decision, on validator and guard evidence only.",
           "workflow_branch": "workflow/meta-git-derived-host-repo-binding",
-          "worktree_created": true
+          "worktree_created": true,
+          "written_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-git-derived-host-repo-binding/09-COMPLETE.md"
         },
         "workflowId": "workflow-authoring",
         "workflowVersion": "1.0.0"
@@ -2878,12 +3181,15 @@
       "bundle:workflow-engine::yield-checkpoint": "3d36e6b03c483346",
       "resource:planning-readme": "24ecdf3485d5520c",
       "resource:resume-intent-lexicon": "fe2c696d6164a469",
+      "resource:session-summary-template#session-summary-template": "3a8125c99f1f9cd8",
       "technique:version-control::detect-repo-type": "1925e5342a6df263",
       "technique:version-control::initialize-folder": "6f791161162a2830",
       "technique:workflow-engine::create-session": "510ee362d073890b",
       "technique:workflow-engine::detect-resume-intent": "0a9acae9915ea636",
+      "technique:workflow-engine::generate-summary": "ade4181f73ee9e20",
       "technique:workflow-engine::list-workflows": "53bfa6226bca72b3",
-      "technique:workflow-engine::match-target-workflow": "9dde5e2bc923dd59"
+      "technique:workflow-engine::match-target-workflow": "9dde5e2bc923dd59",
+      "technique:workflow-engine::verify-outcomes": "ff6b2ea394b388cf"
     }
   },
   "repo": "m2ux/workflow-server"
