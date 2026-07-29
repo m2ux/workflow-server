@@ -32,6 +32,11 @@ rule-checked, so `while true; do touch x; sleep 1; done` is judged on `true`,
 `touch x` and `sleep 1` rather than on `while`/`do`/`done`. Keywords are never
 safe-listed: `do rm -rf /` reduces to `rm -rf /` and is rejected.
 
+Grouped commands are unwrapped before analysis: the splitter deliberately keeps
+a subshell `( … )` intact, so `cat f || (echo missing; find . -name f)` would
+otherwise arrive as one segment whose apparent binary is `(echo`. Brace groups
+`{ …; }` are handled by treating the bare `{` / `}` tokens as shell punctuation.
+
 Heredocs with a quoted delimiter (`<<'EOF'` / `<<"EOF"`) are stripped before
 analysis: bash performs no expansion on such bodies, so they are inert stdin
 data. Unquoted heredocs (`<<EOF`, whose body IS expanded), herestrings, $(...),
@@ -509,15 +514,24 @@ def unwrap_runner(seg: str) -> str | None:
 # safe-listing `do` would auto-approve `do rm -rf /`, whereas stripping reduces
 # that segment to `rm -rf /`, which DENY_BINARIES rejects. Stripping can only
 # expose the real command to the existing checks; it can never grant more.
-_KW_PREFIX_RE = re.compile(r"^(?:!|if|then|elif|else|while|until|do)(?=\s|$)\s*")
+#
+# `{` is included because split_compound() does not track brace groups: it
+# shreds `{ echo a; }` into `{ echo a` and `}`, so the opening brace arrives as
+# a prefix and the closing one as a bare segment. A subshell `( … )` is the
+# other case — the splitter DOES keep that intact, so it is unwrapped whole by
+# strip_group_wrapper() rather than handled here.
+_KW_PREFIX_RE = re.compile(r"^(?:!|\{|if|then|elif|else|while|until|do)(?=\s|$)\s*")
 
 # Keywords that carry no command of their own — allowed only as a whole segment.
-_KW_BARE_RE = re.compile(r"^(fi|done|esac|else|do|then|break|continue)\b(.*)$", re.DOTALL)
+# `(?![\w-])` rather than `\b`, so the non-word `}` terminates correctly while
+# `donefoo` still fails to match `done`.
+_KW_BARE_RE = re.compile(
+    r"^(fi|done|esac|else|do|then|break|continue|\})(?![\w-])(.*)$", re.DOTALL)
 
-# `fi`/`done`/`esac` may carry loop redirections (`done < input`, `done >out
-# 2>&1`); `break`/`continue` may carry a loop level (`break 2`). Nothing else can
-# follow a bare keyword in valid bash, and neither a redirection target nor a
-# digit can execute anything.
+# `fi`/`done`/`esac`/`}` may carry loop or group redirections (`done < input`,
+# `{ … } >out 2>&1`); `break`/`continue` may carry a loop level (`break 2`).
+# Nothing else can follow a bare keyword in valid bash, and neither a
+# redirection target nor a digit can execute anything.
 _REDIR_TAIL_RE = re.compile(r"^(?:\s*\d*(?:>>|&>|>&|<&|>|<)\s*[^\s]+)+$")
 
 # `for NAME [in words...]` and `for ((init; cond; step))` headers run no command
@@ -536,7 +550,7 @@ def bare_keyword(seg: str) -> str | None:
     kw, tail = m.group(1), m.group(2).strip()
     if not tail:
         return kw
-    if kw in ("fi", "done", "esac") and _REDIR_TAIL_RE.match(tail):
+    if kw in ("fi", "done", "esac", "}") and _REDIR_TAIL_RE.match(tail):
         return kw
     if kw in ("break", "continue") and tail.isdigit():
         return kw
@@ -555,6 +569,91 @@ def strip_keyword_prefix(seg: str) -> str | None:
             return rest if stripped else None
         rest = rest[m.end():].strip()
         stripped = True
+
+
+# Redirections permitted to trail a group's closing delimiter, so
+# `(cd x && make) > log 2>&1` still unwraps. Redirection TARGETS are not
+# inspected here — no rule in this file inspects them (`Bash(cat:*)` already
+# matches `cat f > anywhere`), so scrutinizing them only for groups would be
+# inconsistent theatre.
+_TRAILING_REDIR = re.compile(
+    r"^(?:\s*(?:\d*>&\d*|\d*<&\d*|&>>?|\d*>>?|\d*<)\s*[^\s;&|]*)+\s*$"
+)
+
+
+def _iter_unquoted(cmd: str):
+    """Yield (index, char) for each character outside single/double quotes."""
+    in_s = in_d = False
+    i, n = 0, len(cmd)
+    while i < n:
+        c = cmd[i]
+        if in_s:
+            if c == "'":
+                in_s = False
+            i += 1
+            continue
+        if in_d:
+            if c == "\\" and i + 1 < n:
+                i += 2
+                continue
+            if c == '"':
+                in_d = False
+            i += 1
+            continue
+        if c == "\\" and i + 1 < n:
+            i += 2
+            continue
+        if c == "'":
+            in_s = True
+            i += 1
+            continue
+        if c == '"':
+            in_d = True
+            i += 1
+            continue
+        yield i, c
+        i += 1
+
+
+def strip_group_wrapper(seg: str) -> str | None:
+    """Unwrap a segment that is wholly a subshell `( … )`, returning its body.
+
+    split_compound() tracks paren depth and so keeps a subshell intact, which
+    means a fallback like `cat f || (echo missing; find . -name f)` reaches
+    is_segment_allowed() as ONE segment whose first token is `(echo` — a binary
+    that matches nothing. Unwrapping lets the real commands inside be split and
+    rule-checked individually.
+
+    Stripping is the safe direction, exactly as in strip_keyword_prefix():
+    `(rm -rf /)` reduces to `rm -rf /`, which DENY_BINARIES then rejects.
+    Safe-listing `(` would have allowed it outright.
+
+    Brace groups are NOT handled here — the splitter does not track `{`, so
+    `{ echo a; }` is already shredded into `{ echo a` and `}`, which the
+    keyword machinery handles via _KW_PREFIX_RE / _KW_BARE_RE.
+
+    Returns None when seg is not a subshell, the group is unterminated, or
+    anything other than redirections follows the closing paren.
+    """
+    s = seg.strip()
+    if not s or s[0] != "(":
+        return None
+    depth = 0
+    end = -1
+    for i, c in _iter_unquoted(s):
+        if c == "(":
+            depth += 1
+        elif c == ")":
+            depth -= 1
+            if depth == 0:
+                end = i
+                break
+    if end == -1:
+        return None  # unterminated / closing paren was quoted
+    rest = s[end + 1:].strip()
+    if rest and not _TRAILING_REDIR.match(rest):
+        return None
+    return s[1:end].strip() or None
 
 
 def matches_rule(seg: str, rule: str) -> bool:
@@ -608,6 +707,18 @@ def is_segment_allowed(seg: str, rules: list[str], safe: set[str], base_cwd: str
             return True, "shell-keywords-only"
         ok, why = is_segment_allowed(kw_rest, rules, safe, base_cwd)
         return ok, f"keyword-stripped -> {why}"
+    body = strip_group_wrapper(seg)
+    if body is not None:
+        inner = split_compound(body)
+        if inner is None:
+            return False, "group body has risky tokens"
+        if not inner:
+            return False, "group body empty"
+        for s in inner:
+            ok, why = is_segment_allowed(s, rules, safe, base_cwd)
+            if not ok:
+                return False, f"group body segment rejected: {s!r} ({why})"
+        return True, f"group-unwrapped ({len(inner)} inner segment(s) allowed)"
     binary = first_binary(seg)
     if binary in DENY_BINARIES:
         return False, f"deny-binary:{binary}"
@@ -685,6 +796,7 @@ def analyze(cmd: str, rules: list[str], safe: set[str], cwd: str | None = None) 
         debug(f"  single {seg!r} -> {ok} ({why})")
         if ok and ("env-stripped" in why or "git-normalized" in why
                    or "-wrapped" in why or "glob-rule" in why
+                   or "group-unwrapped" in why
                    or "project-local-script" in why):
             return True, f"single (normalized) — {why}"
         return False, "single command — let normal flow decide"

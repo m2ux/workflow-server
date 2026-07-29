@@ -16,6 +16,10 @@ read-write, rest read-only, no network):
     Rscript                  -e
     deno                     eval   (subcommand form)
 
+Also caught: the same interpreters reading their program from STDIN, which is
+inline eval by another spelling — `python3 - <<'EOF'`, `python3 <<'EOF'`,
+`cat x.py | node`, `deno run -`. See _reads_program_from_stdin().
+
 For a matching bare command the hook returns `deny` with a message telling the
 agent to re-issue it prefixed with `sbx`. The prefixed form is allowlisted
 (Bash(<workspace>/scripts/claude/bin/sbx *)) and auto-approves, so the user sees no
@@ -77,6 +81,21 @@ EVAL_FLAGS = {
 # Subcommand-style eval: basename -> first-arg subcommand that means eval.
 EVAL_SUBCOMMANDS = {"deno": ("eval",)}
 
+# Interpreters that take the program itself from stdin, given a bare `-` in the
+# program position or no program argument at all.
+STDIN_PROGRAM = frozenset({
+    "python", "python2", "python3",
+    "node", "nodejs",
+    "perl", "ruby", "php", "bun",
+})
+
+# Flag-only invocations that print and exit without reading a program. Excluded
+# so version/help probes fall through to the normal flow instead of a redirect.
+INFO_FLAGS = frozenset({
+    "-V", "--version", "-h", "--help", "-v",
+    "--v8-options", "--print-config",
+})
+
 ALREADY_WRAPPED = frozenset({"sbx", "bwrap"})
 
 
@@ -101,6 +120,35 @@ def _has_eval_flag(tokens: list[str], flags: tuple[str, ...]) -> bool:
     return False
 
 
+def _reads_program_from_stdin(tokens: list[str], binary: str) -> bool:
+    """True when this interpreter will read its program text from stdin.
+
+    Two spellings, both equivalent to -c/-e inline eval:
+      * bare `-` in the program position — `python3 - <<'EOF'`, `php -f -`
+      * no program argument at all       — `python3 <<'EOF'`, `cat x.py | node`
+
+    The allow hook excises a quoted heredoc body and splits on `|` before rule
+    matching, so the redirection itself is already gone by the time a segment
+    reaches this hook — the shape of interpreter+args is all there is to judge.
+
+    Position handling is deliberately coarse, erring toward the sandbox on the
+    dash form and toward the prompt on the no-program form:
+      * a bare `-` ANYWHERE counts, so a `-` that is really a script's own
+        argument (`python3 tool.py -`) gets redirected to sbx, where it runs
+        unchanged;
+      * an option consuming a SEPARATE value (`python3 -W ignore`) reads as
+        "has a program" and falls open to the normal prompt.
+    """
+    if binary not in STDIN_PROGRAM:
+        return False
+    args = tokens[1:]
+    if any(t == "-" for t in args):
+        return True
+    if any(t in INFO_FLAGS for t in args):
+        return False
+    return all(t.startswith("-") for t in args)
+
+
 def segment_needs_sandbox(seg: str, cba) -> bool:
     seg = cba.strip_env_prefix(seg)
     try:
@@ -114,8 +162,13 @@ def segment_needs_sandbox(seg: str, cba) -> bool:
         return False
     if binary in EVAL_FLAGS and _has_eval_flag(tokens, EVAL_FLAGS[binary]):
         return True
+    if _reads_program_from_stdin(tokens, binary):
+        return True
     subs = EVAL_SUBCOMMANDS.get(binary)
     if subs and len(tokens) > 1 and tokens[1] in subs:
+        return True
+    # `deno run -` is stdin eval; `deno run <file>` is a file the location hook vets.
+    if binary == "deno" and len(tokens) > 1 and tokens[1] == "run" and "-" in tokens[2:]:
         return True
     return False
 
@@ -134,10 +187,13 @@ def find_needs_sandbox(cmd: str) -> bool:
 def deny() -> None:
     reason = (
         "Blocked before the permission prompt: this runs an un-sandboxed inline "
-        "interpreter (python -c / node -e / perl -e ...), which is not "
+        "interpreter — either an eval flag (python -c / node -e / perl -e ...) "
+        "or a program read from stdin (`python3 - <<'EOF'`, `python3 <<'EOF'`, "
+        "`cat x.py | node`) — which is not "
         "allowlisted and has no safe un-sandboxed use. Re-issue the command "
         "prefixed with the sandbox launcher " + SBX + " — e.g. `" + SBX + " "
-        "node -e '...'` or `" + SBX + " python3 -c '...'`. It runs under "
+        "node -e '...'`, `" + SBX + " python3 -c '...'`, or `" + SBX + " "
+        "python3 - <<'EOF'`. It runs under "
         "bubblewrap with the active project and /tmp "
         "read-write, the rest of the filesystem read-only, and no network, and "
         "it auto-approves with no prompt. If the code needs the NETWORK, the "

@@ -18,6 +18,7 @@ scripts/claude/
     ├── block-dynamic-shell.py      # PreToolUse: deny $() / backticks / $VAR dynamic shell
     ├── block-gh-api-writes.py      # PreToolUse: ask on mutating gh api (keep GET/HEAD free)
     ├── compound-bash-allow.py      # PreToolUse: auto-allow safe compounds + normalized singles
+    ├── compound-bash.json          # extra side-effect-free commands for compound-bash-allow.py
     ├── curl-allow.json             # host/path allowlist config for curl-read-allow.py
     ├── curl-read-allow.py          # PreToolUse: auto-allow read-only curl to trusted hosts
     ├── redirect-inline-eval.py     # PreToolUse: deny bare python -c / node -e; redirect to sbx

@@ -1,0 +1,13 @@
+{
+  "_comment": "Read by compound-bash-allow.py (same directory first, then ~/.claude/hooks/). \"extraSafeCommands\" ADDS to the hook's built-in DEFAULT_SAFE_COMMANDS; a \"safeCommands\" list REPLACES it outright. Only add commands that are side-effect-free — a safe command auto-approves anywhere in a compound, with any arguments.",
+  "extraSafeCommands": [
+    "strings",
+    "diff",
+    "cmp",
+    "od",
+    "comm",
+    "join",
+    "sha256sum",
+    "md5sum"
+  ]
+}
