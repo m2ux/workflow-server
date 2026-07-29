@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Commit planning artifacts in the engineering checkout (under `{repo_root}/.engineering` when that path is a git checkout, otherwise `{repo_root}`) with the canonical message pattern, rebasing onto sibling work-package commits to avoid push rejections.
+Commit planning artifacts in the engineering checkout (under `{host_repo_path}/.engineering` when that path is a git checkout, otherwise `{host_repo_path}`) with the canonical message pattern, rebasing onto sibling work-package commits to avoid push rejections.
 
 ## Inputs
 
@@ -25,9 +25,9 @@ List of files to stage and commit
 
 Engineering branch to push to
 
-### repo_root
+### host_repo_path
 
-Path to the product repo root. Staging/commit/push run in `{repo_root}/.engineering` when that directory is a git checkout (install layout submodule); otherwise in `{repo_root}`.
+Path to the product repo root. Staging/commit/push run in `{host_repo_path}/.engineering` when that directory is a git checkout (install layout submodule); otherwise in `{host_repo_path}`.
 
 ## Outputs
 
@@ -39,7 +39,7 @@ The artifact commit pushed to `{branch}` on `origin` in `{eng_git_dir}`, carryin
 
 ### 1. Commit Artifacts
 
-- Resolve `{$eng_git_dir}`: `{repo_root}/.engineering` when that path is a git checkout (submodule or nested clone); otherwise `{repo_root}`.
+- Resolve `{$eng_git_dir}`: `{host_repo_path}/.engineering` when that path is a git checkout (submodule or nested clone); otherwise `{host_repo_path}`.
 - Stage the artifact files: `git -C {eng_git_dir} add {files}`.
 - Commit with the canonical pattern: `git commit -m "docs(work-package): {activity_name} artifacts for {issue_key}"`. Whether commits are GPG-signed is governed by the user's local git config — do NOT impose `--no-gpg-sign` or `--gpg-sign` overrides.
 

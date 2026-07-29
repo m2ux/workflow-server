@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.36.0
+version: 3.37.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first. Also supports review mode for auditing an existing PR or implementation end-to-end.
 author: m2ux
@@ -18,11 +18,12 @@ rules:
     - Explicit approval - Get clear 'yes' or 'proceed' before major actions (within activity checkpoints only — NOT between activities)
     - Decision points require user choice - When issues are found, user decides whether to proceed or loop back
     - Git configuration is user-owned. Validate-action messages describe a misconfiguration but never prescribe config-changing commands; the user fixes their own environment at whatever scope (system, global, local) they prefer.
+    - "review-mode-headless-auto-advance - Once is_review_mode == true the run is headless. Every review-reachable checkpoint that carries defaultOption + autoAdvanceMs is resolved by calling respond_checkpoint with auto_advance:true (which applies the default option's full side effects unchanged) and surfacing the outcome as a plain message — never as an AskUserQuestion dialog. A checkpoint gated is_review_mode != true is cleared with respond_checkpoint condition_not_met. Interactive in review mode only when their gap conditions fire — review-mode-detection (when review_mode_ambiguous) and review-pr-reference (when review_pr_missing). review-summary-approval remains always interactive in review mode."
+  activity:
     - safety-floor-never-simplified - The safety floor is never simplified away during the lean-coding audit - understanding the problem, input validation at trust boundaries, error handling that prevents data loss, security, accessibility, anything explicitly requested by the issue, and one runnable check for non-trivial logic. A simplification that would breach the floor is rejected; the simplification-apply-cycle validates the floor before resetting its driver flag.
     - report-before-apply - The over-engineering review, debt harvest, and gain report are read-only - they list findings into their artifacts and change no code. Code is only ever changed in the simplification-apply-cycle, and only on simplifications the user accepted at the audit-findings-confirmed gate.
     - leanness-reported-honestly - The net-lines scoreboard and gain figures are reported honestly - the harvested debt ledger is the source of the real per-change count; aggregate or benchmark figures never overstate the gain.
     - complementary-not-duplicative-with-strategic-review - The lean-coding audit applies the over-engineering and leanness lens; it does not re-adjudicate scope-vs-issue fit, which remains strategic-review's concern. The two stages stay complementary.
-    - "review-mode-headless-auto-advance - Once is_review_mode == true the run is headless. Every review-reachable checkpoint that carries defaultOption + autoAdvanceMs is resolved by calling respond_checkpoint with auto_advance:true (which applies the default option's full side effects unchanged) and surfacing the outcome as a plain message — never as an AskUserQuestion dialog. A checkpoint gated is_review_mode != true is cleared with respond_checkpoint condition_not_met. Interactive in review mode only when their gap conditions fire — review-mode-detection (when review_mode_ambiguous) and review-pr-reference (when review_pr_missing). review-summary-approval remains always interactive in review mode."
 fragments:
   rules:
     interaction-discipline:
@@ -91,14 +92,21 @@ variables:
     description: The user's free-form request that opened this work package.
   - name: target_path
     type: string
-    description: Feature worktree path for edits, builds, and PR ops (not repo_root).
-  - name: repo_root
-    type: string
-    description: Product repo root for comprehension, GitNexus, and worktree creation (monorepo root when the component is a submodule).
+    description: Feature worktree path for edits, builds, and PR ops (not host_repo_path).
   - name: component_name
     type: string
     description: "Basename of the component being worked on (e.g., 'midnight-node')."
     defaultValue: ""
+  - name: host_repo_path
+    type: string
+    description: Absolute path to the host repository the session belongs to — the outermost superproject when the component is a submodule, the checkout itself otherwise.
+  - name: component_hint
+    type: string
+    description: Basename of the component the session was opened inside.
+  - name: component_path
+    type: string
+    description: Path of the component being worked on, relative to the host repository.
+    defaultValue: .
   - name: worktree_created
     type: boolean
     description: True when a worktree at target_path was created or reused by this workflow run (only those worktrees are eligible for cleanup).
@@ -502,7 +510,7 @@ variables:
     defaultValue: false
   - name: gitnexus_indexed
     type: boolean
-    description: Whether repo_root has a usable GitNexus index.
+    description: Whether host_repo_path has a usable GitNexus index.
     defaultValue: false
   - name: problem_type
     type: string
@@ -511,9 +519,6 @@ variables:
     type: string
     description: URL of the pull request for this work package (alongside pr_number).
     defaultValue: ""
-  - name: discovered_path
-    type: string
-    description: Path the user originally pointed at before repo-root resolution.
   - name: issue_title
     type: string
     description: Tracker issue/ticket title; used by naming-conventions to derive the branch name.

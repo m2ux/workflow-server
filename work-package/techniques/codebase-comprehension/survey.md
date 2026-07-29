@@ -27,7 +27,7 @@ Working checkout surveyed for structure, build system, and entry points.
 
 ### gitnexus_indexed
 
-Whether `{repo_root}` has a usable GitNexus index; selects between gitnexus-operations and grep/read/glob for structural analysis.
+Whether `{host_repo_path}` has a usable GitNexus index; selects between gitnexus-operations and grep/read/glob for structural analysis.
 
 ## Outputs
 
@@ -59,7 +59,7 @@ Mapping of domain-specific terms to the technical modules/constructs that implem
 
 ### 2. Check Gitnexus
 
-- Honor the `{gitnexus_indexed}` flag resolved by start-work-package — it already determined whether `{repo_root}` has a usable GitNexus index; do not re-probe unless it is unset (if you must, read `gitnexus://repo/{name}/context` per `gitnexus-operations.index-freshness-first`)
+- Honor the `{gitnexus_indexed}` flag resolved by start-work-package — it already determined whether `{host_repo_path}` has a usable GitNexus index; do not re-probe unless it is unset (if you must, read `gitnexus://repo/{name}/context` per `gitnexus-operations.index-freshness-first`)
 - If `{gitnexus_indexed}` is true: structural analysis throughout this technique goes through the gitnexus-operations operations (`query`, `context`, `impact`, `cypher`) — they are REQUIRED for structural analysis here, the default over grep
 - Only when `{gitnexus_indexed}` is false (the codebase is genuinely not indexed or stale): fall back to grep/read/glob for all exploration steps
 

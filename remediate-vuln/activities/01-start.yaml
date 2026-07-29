@@ -41,7 +41,7 @@ steps:
     technique:
       name: work-package::repo-root-resolution
       inputs:
-        discovered_path: target_path
+        host_repo_path: target_path
   - kind: technique
     id: detect-project-type
     technique: work-package::project-type-detection

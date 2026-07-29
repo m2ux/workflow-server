@@ -10,16 +10,16 @@ For the activity-to-activity flow diagram, the feedback loops, and review-mode b
 
 ### 01. Start Work Package
 
-Initializes the work package: resolves `{repo_root}` (monorepo vs standalone), refreshes repo-root submodules and GitNexus, verifies or creates a tracker issue, materializes a dedicated git worktree at `{target_path}` (`<checkout>/.worktrees/<wp-slug>/`), sets up the feature branch and draft PR inside that worktree, and binds the server-resolved planning folder. In review mode it instead captures the existing PR reference and checks out the PR's branch. Entry activity; leads to design-philosophy.
+Initializes the work package: resolves `{host_repo_path}` (monorepo vs standalone), refreshes repo-root submodules and GitNexus, verifies or creates a tracker issue, materializes a dedicated git worktree at `{target_path}` (`<checkout>/.worktrees/<wp-slug>/`), sets up the feature branch and draft PR inside that worktree, and binds the server-resolved planning folder. In review mode it instead captures the existing PR reference and checks out the PR's branch. Entry activity; leads to design-philosophy.
 
 Definition: [`01-start-work-package.yaml`](./01-start-work-package.yaml)
 
 ```mermaid
 graph TD
     entryNode(["Entry"]) --> detectReview["Detect review mode"]
-    detectReview --> resolveRef["Resolve repo_root: monorepo or standalone"]
+    detectReview --> resolveRef["Resolve host_repo_path: monorepo or standalone"]
     resolveRef --> updateSubs["Update repo-root submodules to HEAD"]
-    updateSubs --> analyze["GitNexus analyze (repo_root)"]
+    updateSubs --> analyze["GitNexus analyze (host_repo_path)"]
     analyze --> verifySigning["Verify commit-signing pre-conditions"]
     verifySigning --> detectMerge["Detect merge strategy"]
     detectMerge --> detectProject["Detect project type"]

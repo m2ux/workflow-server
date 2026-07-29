@@ -1,11 +1,8 @@
 id: resolve-target
-version: 4.3.0
+version: 4.5.0
 name: Resolve Target
-description: Detect the target repository structure (regular directory vs. submodule monorepo) and resolve target_path — headlessly, prompting only when a monorepo has more than one target-component submodule.
+description: Detect the target repository structure (regular directory vs. submodule monorepo), resolve component_path, and confirm the session's host binding agrees with the derivation — headlessly, prompting only when a monorepo has more than one target-component submodule.
 required: true
-rules:
-  - target_path MUST resolve to a directory containing a working git tree
-  - Exclude infrastructure submodules per version-control::infrastructure-submodule-paths
 steps:
   - kind: action
     id: announce-start
@@ -36,11 +33,11 @@ steps:
           variable: component_selection_needed
           operator: ==
           value: true
-    message: This monorepo has more than one component submodule. Select the target submodule; target_path is set to the chosen submodule path. Or cancel to re-list components.
+    message: This monorepo has more than one component submodule. Select the target submodule.
     options:
       - id: submodule-chosen
         label: Submodule selected
-        description: Proceed with the chosen submodule as target_path
+        description: Proceed with the chosen submodule as `{component_path}`
         effect:
           setVariable:
             component_selection_needed: false
@@ -52,13 +49,25 @@ steps:
             component_selection_needed: true
           transitionTo: resolve-target
   - kind: action
+    id: validate-binding-agreement
+    actions:
+      - action: validate
+        message: "`{host_repo_path}` MUST be the directory the server resolved for `{target_repo}`, and the one `{planning_folder_path}` sits under. On a disagreement, re-run host derivation from the intended checkout before continuing."
+  - kind: action
+    id: validate-resumed-binding
+    when: is_resuming == true
+    actions:
+      - action: validate
+        message: "The saved client session's repo root MUST name `{host_repo_path}`. On a disagreement, discard the saved binding and start a fresh session."
+  - kind: action
     id: validate-git-tree
     actions:
       - action: validate
-        message: Confirm `{target_path}` resolves to a directory containing a working git tree (`.git` file or directory present) before dispatching the client workflow
+        message: "Confirm `{host_repo_path}/{component_path}` resolves to a directory containing a working git tree (`.git` file or directory present) before dispatching the client workflow"
 transitions:
   - to: dispatch-client-workflow
     isDefault: true
 outcome:
   - The orchestrator knows whether it is operating on a single repo or a submodule monorepo, and which submodule the user intends as the target — resolved without prompting except when a monorepo has multiple target components
   - Downstream git operations have a confirmed working git tree to act on, whether the repo root or a chosen submodule
+  - A session bound to a directory that is not the derived host repository fails here, before any planning artifact exists

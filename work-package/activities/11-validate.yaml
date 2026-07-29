@@ -30,7 +30,7 @@ steps:
     actions:
       - action: validate
         target: missing_prerequisites.length == 0
-        message: "Install missing toolchain prerequisites before validation: {missing_prerequisites}"
+        message: "Toolchain prerequisites are unmet, so the validation suite cannot run: {missing_prerequisites}"
   - kind: technique
     id: run-suite
     technique:

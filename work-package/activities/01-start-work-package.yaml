@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.14.0
+version: 3.15.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 required: true
@@ -156,6 +156,9 @@ steps:
         target: target_workflow_outcomes
         message: "Seed target_workflow_outcomes with the review-native plain list (no mode predicates in prose): (1) The review close-out (findings, disposition, retrospective) is recorded under the planning folder; (2) Lessons learned are captured to improve future work packages; (3) The temporary worktree this work package created is cleaned up, leaving no orphaned workspaces; (4) Reference monorepo left untouched; (5) Ready for next work package. Create path leaves this unset and uses activity outcome lists."
   - kind: technique
+    id: derive-host-repo
+    technique: version-control::resolve-host-repo
+  - kind: technique
     id: resolve-repo-root
     technique: repo-root-resolution
   - kind: technique
@@ -163,14 +166,14 @@ steps:
     technique: manage-git::update-repo-submodules
     condition:
       type: simple
-      variable: repo_root
+      variable: host_repo_path
       operator: exists
   - kind: technique
     id: analyze-repo-with-gitnexus
     technique:
       name: gitnexus-operations::analyze
       inputs:
-        repo_path: repo_root
+        repo_path: host_repo_path
     actions:
       - action: set
         target: gitnexus_indexed
@@ -180,7 +183,7 @@ steps:
     actions:
       - action: validate
         target: signing.configured == true
-        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing in your environment via your preferred scope (system, global, or local) before re-running.
+        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing before re-running.
   - kind: technique
     id: detect-merge-strategy
     technique: manage-git::detect-merge-strategy
@@ -242,7 +245,7 @@ steps:
     actions:
       - action: validate
         target: jira_cloud_id != null
-        message: Atlassian cloudId not set. Load the atlassian-operations technique and call getAccessibleAtlassianResources before any Jira tool. The cloudId is a runtime prerequisite for every Jira API call; this guard catches the failure mode where another step invokes a Jira tool without first loading atlassian-operations.
+        message: Atlassian cloudId not set. Load the atlassian-operations technique and call getAccessibleAtlassianResources before any Jira tool.
   - kind: technique
     id: verify-github-issue
     technique:
@@ -787,4 +790,3 @@ outcome:
   - Feature branch created from main
   - Draft PR created, assigned to current GitHub user, and linked to issue
   - PR reference recorded on the issue via the platform's native PR linkage
-  - A canonical, writable location is established for every artifact this work package will produce

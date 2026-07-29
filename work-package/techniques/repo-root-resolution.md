@@ -1,31 +1,33 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Resolve the product repo root used for comprehension, GitNexus indexing, read-only investigation, and as the git directory for `git worktree add`: determine whether the path the user pointed at is a standalone repository or a submodule inside a monorepo, and set `{repo_root}` and `{component_name}` accordingly. Edits are never performed under `{repo_root}` — they use a separate worktree path.
+Component identity for this work package, assembled from the derived host repository. Edits are never performed under `{host_repo_path}` — they use a separate worktree path.
 
 ## Inputs
 
-### discovered_path
+### host_repo_path
 
-The path the user originally pointed at (absolute filesystem path).
+Absolute path of the host repository, as produced by [resolve-host-repo](../../meta/techniques/version-control/resolve-host-repo.md).
+
+### component_hint
+
+*(optional)* Basename of the component the session was opened inside. Unset when the session sits at the host root.
 
 ## Outputs
 
-### repo_root
-
-The repo root: the monorepo root when the discovered path is a submodule, otherwise the discovered path itself. Used for comprehension, GitNexus, read-only investigation, and as the git directory for `git worktree add`. Under the install layout this is typically the app clone at `<install-root>/projects/<owner>/<repo>` (created by `init-repo.sh`).
-
 ### component_name
 
-Basename of the discovered path (e.g. `midnight-node`).
+Basename of the component being worked on — the basename of `{host_repo_path}` when the session sits at the host root.
+
+### component_path
+
+Path of the component being worked on, relative to `{host_repo_path}` — `.` when the session sits at the host root.
 
 ## Protocol
 
-1. Read `{discovered_path}` — the path the user originally pointed at.
-2. Determine the repository shape: it is a monorepo submodule when the parent directory has a `.gitmodules` file listing the path's basename; otherwise it is a standalone repository.
-3. Set `{repo_root}`: the monorepo root when `{discovered_path}` is a submodule, the discovered path itself when standalone.
-4. Set `{component_name}` to the basename of `{discovered_path}` (e.g. `midnight-node`) in both cases.
+1. When `{component_hint}` is unset, set `{component_path}` to `.` and `{component_name}` to the basename of `{host_repo_path}` — the session sits at the host root. Done.
+2. Read `{host_repo_path}/.gitmodules` and take the submodule `path` whose basename equals `{component_hint}`. Set `{component_path}` to that path and `{component_name}` to `{component_hint}`.

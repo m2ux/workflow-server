@@ -9,16 +9,16 @@ Git operations supporting work-package delivery — worktrees, path restore from
 
 ## Inputs
 
-### repo_root
+### host_repo_path
 
-Path to the product repo root (monorepo or standalone). Submodule refresh runs here; planning artifact commits may run in `{repo_root}/.engineering` when that path is a git checkout.
+Path to the product repo root (monorepo or standalone). Submodule refresh runs here; planning artifact commits may run in `{host_repo_path}/.engineering` when that path is a git checkout.
 
 
 ## Rules
 
 ### directory-scope
 
-Edit-side git operations (branch, PR, sync, push) run inside `{target_path}`. Submodule refresh runs inside `{repo_root}`. Planning artifact commits run in `{repo_root}/.engineering` when that path is a git checkout, otherwise `{repo_root}`. Branches and PRs are created against the target's upstream.
+Edit-side git operations (branch, PR, sync, push) run inside `{target_path}`. Submodule refresh runs inside `{host_repo_path}`. Planning artifact commits run in `{host_repo_path}/.engineering` when that path is a git checkout, otherwise `{host_repo_path}`. Branches and PRs are created against the target's upstream.
 
 ### code-commit-coauthor-trailer
 

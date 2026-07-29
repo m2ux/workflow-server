@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: remediate-vuln
-version: 2.0.0
+version: 2.1.0
 title: Security Vulnerability Remediation Workflow
 description: Remediate security vulnerabilities without public disclosure.
 author: m2ux
@@ -27,7 +27,7 @@ variables:
   - name: target_path
     type: string
     description: Private checkout for edits, builds, and pushes to the security remote.
-  - name: repo_root
+  - name: host_repo_path
     type: string
     description: Investigation root; equals target_path in this workflow.
   - name: component_name
@@ -215,7 +215,7 @@ variables:
     defaultValue: false
   - name: gitnexus_indexed
     type: boolean
-    description: Whether repo_root has a usable GitNexus index (kept false here).
+    description: Whether host_repo_path has a usable GitNexus index (kept false here).
     defaultValue: false
   - name: prism_artifact_paths
     type: array

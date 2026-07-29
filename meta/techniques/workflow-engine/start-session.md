@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.5.0
 ---
 
 ## Capability
 
-Obtain or resume the top-level workflow session via the `start_session` tool.
+The top-level workflow session, obtained or resumed: its stable index, the server's canonical planning path, the durable repository binding, and the running workflow's identity and version.
 
 ## Inputs
 
@@ -19,7 +19,7 @@ Optional. Absolute path whose basename is the planning slug. Omit for a transien
 
 ### repo
 
-Target repository as `owner/repo` (or GitHub URL). Identified by the user or the workspace `AGENTS.md` / `CLAUDE.md`. Also accepted implicitly when `planning_folder` already sits under `…/<owner>/<repo>/…`.
+Target repository as `owner/repo` (or GitHub URL), taken from the host repository's origin remote. Also accepted implicitly when `planning_folder` already sits under `…/<owner>/<repo>/…`.
 
 ### user_request
 
@@ -31,7 +31,7 @@ Agent identity stored on the session (default `orchestrator`).
 
 ### context_mode
 
-Optional. Omit or pass `"fresh"`. Client sessions use per-activity disposable workers ([dispatch-activity](./dispatch-activity.md)::workers-need-full-delivery).
+Optional. Omit or pass `"fresh"`.
 
 ## Outputs
 
@@ -41,11 +41,15 @@ Stable 6-character base32 index for every subsequent authenticated tool call.
 
 ### planning_folder_path
 
-Canonical absolute planning folder path as resolved by the server.
+Canonical absolute planning folder path as resolved by the server. Absent while the session is transient and no durable path has been resolved.
 
 ### repo
 
-Bound target repository as `owner/repo`.
+Bound target repository as `owner/repo`, echoing the durable session binding.
+
+### planning_slug
+
+Slug the session is keyed on — minted transitionally when no planning folder was supplied.
 
 ## Protocol
 

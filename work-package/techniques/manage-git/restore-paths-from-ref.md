@@ -56,4 +56,4 @@ Paths successfully restored from `{base_ref}` and staged in `{target_path}`. Emp
 
 ### edit-side-only
 
-Restores run only inside `{target_path}`. Never restore into `{repo_root}` or the planning folder via this op.
+Restores run only inside `{target_path}`. Never restore into `{host_repo_path}` or the planning folder via this op.

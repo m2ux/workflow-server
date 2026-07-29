@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.1
+  version: 2.1.0
 ---
 
 ## Capability
@@ -21,7 +21,7 @@ Workflow id used to name the feature branch (`workflow/{workflow_id}`, with an i
 
 Create or update.
 
-### repo_root
+### host_repo_path
 
 *(optional)* Monorepo or checkout that contains the shared `workflows` library component. Used when composing create-worktree to locate the component git directory.
 
@@ -50,7 +50,7 @@ True when the worktree at `{target_path}` on `{workflow_branch}` was created or 
   - `branch_name` = `{$branch_name}`
   - `create_branch` = true
   - `component_name` = `workflows`
-  - `{repo_root}` when supplied (otherwise create-worktree resolves the component from ambient context)
+  - `{host_repo_path}` when supplied (otherwise create-worktree resolves the component from ambient context)
   >
   > Compose only the declared create-worktree inputs — no parallel git recipe and no undeclared compose params. create-worktree bases the new branch on that component's `origin/HEAD` default; the workflows library's HEAD must resolve to `workflows` (intervene before compose when it does not).
 - Reuse when `{target_path}` is already a registered worktree on that branch; surface path conflicts to the user (do not delete)

@@ -33,7 +33,7 @@ The authored surface — the PR's changed-files set. Used to enforce the finding
 
 *(optional)* The git ref engineering-artifact hyperlinks resolve against — a publish commit SHA from `publish-review-artifacts`, or a branch name; empty when no publish ref has been produced.
 
-### repo_root
+### host_repo_path
 
 Path to the product repo root (monorepo or standalone); the `.engineering/` artifacts directory sits under it.
 
@@ -52,7 +52,7 @@ The structured consolidated review summary text, organized per the Review Commen
 
 ### 2. Resolve the Publish Ref
 
-- Resolve `{$eng_git_dir}`: `{repo_root}/.engineering` when that path is a git checkout (submodule or nested clone); otherwise `{repo_root}`.
+- Resolve `{$eng_git_dir}`: `{host_repo_path}/.engineering` when that path is a git checkout (submodule or nested clone); otherwise `{host_repo_path}`.
 - Resolve `{$eng_publish_ref}`: `{artifact_publish_ref}` when it is non-empty; otherwise `git -C {eng_git_dir} branch --show-current` — never hardcode `main`.
 - Use `{eng_publish_ref}` as the ref in every `Plan` and `Reports` hyperlink, built from the engineering-artifacts base URL defined in [Header Fields](../resources/review-mode.md#header-fields) — that section owns the URL and its slots; this step supplies only the ref.
 

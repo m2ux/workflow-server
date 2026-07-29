@@ -1,6 +1,6 @@
 # Meta Workflow
 
-> v5.9.0 — Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. The meta session runs five activities that identify a target client workflow, match any saved session when the request states resume intent, create or resume the client session as a child of meta, resolve target_path, drive the client workflow's activity loop and mediate its checkpoint yields, and close out. Provides the universal technique repository for all client workflows.
+> v5.12.0 — Top-level lifecycle workflow for the workflow-server. Bootstrap navigates here directly. The meta session runs five activities that derive the host repository from git and identify a target client workflow, match any saved session when the request states resume intent, create or resume the client session as a child of meta, resolve component_path, drive the client workflow's activity loop and mediate its checkpoint yields, and close out. Provides the universal technique repository for all client workflows.
 
 ---
 
@@ -17,9 +17,9 @@ The meta workflow is the structural home for the orchestration logic that used t
 
 | # | Activity | Role |
 |---|----------|------|
-| 00 | [**Discover Session**](./activities/README.md#00-discover-session) | Identify the target client workflow and, on stated resume intent, surface any saved session to resume |
+| 00 | [**Discover Session**](./activities/README.md#00-discover-session) | Derive the host repository from git, identify the target client workflow and, on stated resume intent, surface any saved session to resume |
 | 01 | [**Initialize Session**](./activities/README.md#01-initialize-session) | Give the work package a stable identity and create or resume the client session as a child of meta |
-| 02 | [**Resolve Target**](./activities/README.md#02-resolve-target) | Detect the repo structure (regular vs. submodule monorepo) and resolve `target_path` |
+| 02 | [**Resolve Target**](./activities/README.md#02-resolve-target) | Detect the repo structure (regular vs. submodule monorepo), resolve `component_path`, and confirm the host binding agrees with the derivation |
 | 03 | [**Dispatch Client Workflow**](./activities/README.md#03-dispatch-client-workflow) | Drive the client workflow end to end inline, mediating its checkpoints with the user |
 | 04 | [**End Workflow**](./activities/README.md#04-end-workflow) | Verify the client workflow's outcomes, summarise the session, and confirm closure |
 
@@ -37,9 +37,9 @@ The meta workflow is the structural home for the orchestration logic that used t
 ```mermaid
 graph TD
     startNode(["Bootstrap"]) -->|"start_session(workflow_id: meta)"| DS["00 discover-session"]
-    DS -->|"target_workflow_id, resume_intent_requested, has_saved_state, is_resuming"| INI["01 initialize-session"]
+    DS -->|"target_repo, host_repo_path, target_workflow_id, resume_intent_requested, has_saved_state, is_resuming"| INI["01 initialize-session"]
     INI -->|"client_session_index, client_planning_slug"| RT["02 resolve-target"]
-    RT -->|"target_path"| DSP["03 dispatch-client-workflow"]
+    RT -->|"component_path"| DSP["03 dispatch-client-workflow"]
     DSP -->|"current_activity == null"| END["04 end-workflow"]
     END -.->|"abort_completion == true"| DSP
     END --> doneNode(["Session closed"])
@@ -49,7 +49,7 @@ graph TD
 
 ## Hierarchical Orchestration Model
 
-Meta is the user-facing orchestrator; the client session is a child driven inline by [`03-dispatch-client-workflow`](./activities/03-dispatch-client-workflow.yaml). Dispatch, checkpoint mediation, and role boundaries live in [workflow-engine](./techniques/workflow-engine/TECHNIQUE.md) ([dispatch-activity](./techniques/workflow-engine/dispatch-activity.md), [workflow-orchestrator](./techniques/workflow-engine/workflow-orchestrator.md), [activity-worker](./techniques/workflow-engine/activity-worker.md)) and [agent-conduct](./techniques/agent-conduct.md) — do not restate that HOW here.
+Meta is the user-facing orchestrator; the client session is a child driven inline by [`03-dispatch-client-workflow`](./activities/03-dispatch-client-workflow.yaml). Dispatch, checkpoint mediation, and role boundaries live in [workflow-engine](./techniques/workflow-engine/TECHNIQUE.md) ([dispatch-activity](./techniques/workflow-engine/dispatch-activity.md), [workflow-orchestrator](./techniques/workflow-engine/workflow-orchestrator.md), [activity-worker](./techniques/workflow-engine/activity-worker.md)) and [agent-conduct](./techniques/agent-conduct.md), which own that HOW.
 
 ---
 
@@ -78,8 +78,8 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | Technique | Capability |
 |-----------|------------|
 | [`workflow-engine`](techniques/workflow-engine/TECHNIQUE.md) | Operations and rules for executing a workflow's structured flow — session lifecycle, activity dispatch, agent entry, transitions, planning Progress, and the checkpoint protocol. |
-| [`agent-conduct`](techniques/agent-conduct.md) | Cross-cutting behavioural boundaries — single source of truth for file sensitivity, communication tone, attribution, code commentary, operational discipline, checkpoint discipline (worker / workflow-orchestrator / meta-orchestrator role split), and orchestrator discipline (`no-domain-work`, `no-inline-on-resume`, `target-path-scope`, `automatic-transitions`, `no-ad-hoc-interaction`) |
-| [`version-control`](techniques/version-control/TECHNIQUE.md) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
+| [`agent-conduct`](techniques/agent-conduct.md) | Cross-cutting behavioural boundaries — single source of truth for file sensitivity, communication tone, attribution, code commentary, operational discipline, checkpoint discipline, and orchestrator discipline |
+| [`version-control`](techniques/version-control/TECHNIQUE.md) | Host-repository derivation from git, planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
 | [`github-cli-protocol`](techniques/github-cli-protocol/TECHNIQUE.md) | GitHub CLI usage with GraphQL-deprecation workarounds — REST API for mutations |
 | [`knowledge-base-search`](techniques/knowledge-base-search/TECHNIQUE.md) | Optimised concept-rag searches via pre-indexed domain maps |
 | [`atlassian-operations`](techniques/atlassian-operations/TECHNIQUE.md) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
@@ -87,7 +87,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | [`cargo-operations`](techniques/cargo-operations/TECHNIQUE.md) | Resource-constrained cargo subcommands (build, check, clippy, test, fmt, doc, preflight) with an inline resource budget |
 | [`harness-compat`](techniques/harness-compat/TECHNIQUE.md) | Harness-independent operations (`spawn-agent`, `continue-agent`, `spawn-concurrent`, `resolve-harness-operation`) abstracting cross-tool dispatch |
 
-> Cross-cutting rules live in `agent-conduct`. Capability techniques (`workflow-engine`, `version-control`, etc.) reference but do not restate them. This is the single-source-of-truth boundary anti-pattern 27 calls for.
+> Cross-cutting rules live in `agent-conduct`, and capability techniques (`workflow-engine`, `version-control`, etc.) reference it as their single source of truth.
 
 ---
 
@@ -124,9 +124,9 @@ workflows/meta/
 ├── workflow.yaml                            # Meta workflow definition
 ├── README.md                                # This file
 ├── activities/
-│   ├── 00-discover-session.yaml             # Match user request, scan saved sessions on resume intent
+│   ├── 00-discover-session.yaml             # Derive host repo from git, match user request, scan saved sessions on resume intent
 │   ├── 01-initialize-session.yaml           # Create or resume the client session
-│   ├── 02-resolve-target.yaml               # Detect repo type, set target_path
+│   ├── 02-resolve-target.yaml               # Detect repo type, set component_path, verify host binding
 │   ├── 03-dispatch-client-workflow.yaml     # Drive the client activity loop (while current_activity != null)
 │   └── 04-end-workflow.yaml                 # Outcome verification, summary
 ├── techniques/
