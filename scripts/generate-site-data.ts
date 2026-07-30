@@ -311,7 +311,7 @@ const TOOL_GROUPS: Array<{ title: string; note: string; tools: string[] }> = [
   { title: 'Workflow and activity navigation', note: 'Load workflow structure and advance through activities.', tools: ['get_workflow', 'next_activity', 'get_activity'] },
   { title: 'Checkpoint flow', note: 'Yield to the orchestrator, present decisions to the user, and resume.', tools: ['yield_checkpoint', 'resume_checkpoint', 'present_checkpoint', 'respond_checkpoint'] },
   { title: 'Techniques and resources', note: 'Fetch technique definitions and lazy-loaded reference material.', tools: ['get_technique', 'get_resource'] },
-  { title: 'Trace', note: 'Execution history for debugging and audit.', tools: ['get_trace'] },
+  { title: 'Trace', note: 'Execution history and per-dispatch cost accounting.', tools: ['get_trace', 'record_usage'] },
 ];
 
 /** Plain-language one-line summaries for the site (source descriptions stay authoritative for MCP). */
