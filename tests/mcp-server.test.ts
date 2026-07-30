@@ -1329,12 +1329,12 @@ describe('mcp-server integration', () => {
     it('respond_checkpoint with condition_not_met should reject unconditional checkpoint', async () => {
       const act = await client.callTool({
         name: 'next_activity',
-        arguments: { session_index: sessionToken, activity_id: 'validate' },
+        arguments: { session_index: sessionToken, activity_id: 'post-impl-review' },
       });
       const actMeta = act._meta as Record<string, unknown>;
       const tokenWithAct = actMeta['session_index'] as string;
       // A checkpoint declaring no `condition` — the rejection path under test.
-      const unconditionalCpId = 'local-validation-permission';
+      const unconditionalCpId = 'file-index-table';
 
       const yieldResult = await client.callTool({
         name: 'yield_checkpoint',

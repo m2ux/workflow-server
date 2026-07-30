@@ -15,13 +15,16 @@ export const HistoryEventTypeSchema = z.enum([
   // Fidelity observability (#166 B8): content-fetch events recorded by
   // get_technique / get_resource. `data` carries { techniqueId, stepId?,
   // agentId } / { resourceId, agentId }; `activity` is the activity current
-  // at fetch time (omitted before the first next_activity).
+  // at fetch time (omitted before the first next_activity). Both also carry
+  // the delivery MAGNITUDE (#353 §1.3): `chars` is the full payload size and
+  // `delivery` is 'full' | 'unchanged', so delivered and saved characters are
+  // both summable from the ledger.
   'technique_fetched', 'resource_fetched',
   // Hybrid bundling (#166 B11): a step-bound technique delivered inline by
   // get_activity for an activity that declares `bundleTechniques`. `data`
-  // carries { techniqueId, stepId, agentId }. Distinct from technique_fetched
-  // so the fidelity stream still separates agent-initiated fetches from
-  // server-pushed bundle deliveries; manifest validation accepts either.
+  // carries { techniqueId, stepId, agentId, chars, delivery }. Distinct from
+  // technique_fetched so the fidelity stream still separates agent-initiated
+  // fetches from server-pushed bundle deliveries; manifest validation accepts either.
   'technique_bundled',
   // Variable-model honesty (#166 B7): declared defaults seeded into the
   // session variable bag at session creation. ONE event per session; `data`
@@ -34,6 +37,12 @@ export const HistoryEventTypeSchema = z.enum([
   // row per pass. A worker cannot self-measure, so absence means the harness
   // surfaced nothing — never a zero.
   'activity_usage',
+  // Dispatch accounting (#353 §1.3): one event per dispatched context arriving
+  // at the server, recorded with no orchestrator cooperation — where
+  // activity_usage counts activity EXITS, this counts dispatches. `data`
+  // carries { agentId, dispatch: 'fresh' | 'resume', chars? }. See
+  // src/utils/dispatch.ts.
+  'activity_dispatched',
 ]);
 export type HistoryEventType = z.infer<typeof HistoryEventTypeSchema>;
 

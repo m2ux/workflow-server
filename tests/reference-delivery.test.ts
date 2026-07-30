@@ -1153,4 +1153,124 @@ describe('reference-not-repeat delivery (B1)', () => {
       expect(fetches.length).toBe(2);
     });
   });
+
+  /**
+   * Per-call `agent_id` scoping (#353 §1.1–§1.2).
+   *
+   * A dispatched worker authenticates against the ORCHESTRATOR's session_index, so before this the
+   * ledger keyed on `state.agentId` was shared by every worker of a session — which is why
+   * reference delivery was forbidden on workers outright. These tests pin the three properties the
+   * relaxation rests on: a fresh scope gets full delivery, the SAME scope resumed gets references,
+   * and one worker never sees another worker's markers.
+   */
+  describe('per-call agent_id scopes the delivery ledger (#353)', () => {
+    const RESOURCE_ID = 'pr-description';
+
+    async function getTechnique(idx: string, extra: Record<string, unknown>): Promise<Awaited<ReturnType<Client['callTool']>>> {
+      const result = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, ...extra },
+      });
+      expect(result.isError).toBeFalsy();
+      return result;
+    }
+
+    async function getResource(idx: string, extra: Record<string, unknown>): Promise<Awaited<ReturnType<Client['callTool']>>> {
+      const result = await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: idx, resource_id: RESOURCE_ID, ...extra },
+      });
+      expect(result.isError).toBeFalsy();
+      return result;
+    }
+
+    it('delivers a fresh worker scope in full and the same scope resumed as references', async () => {
+      const session = await startSession({ workflow_id: 'work-package', agent_id: 'orchestrator' });
+      const idx = session['session_index'] as string;
+      await enterActivity(idx, 'start-work-package');
+
+      // Fresh spawn: no prior deliveries under this scope, so asking for reference delivery still
+      // yields full content — the property that makes the opt-in safe to hand a worker.
+      const spawn = splitActivityResponse(await getActivity(idx, { agent_id: 'w-1', bundle: 'reference' }));
+      for (const [key, value] of Object.entries(spawn.bundle['techniques'] as Record<string, unknown>)) {
+        expect(isUnchangedMarker(value), `fresh spawn must deliver ${key} in full`).toBe(false);
+      }
+
+      // Same worker resumed under the same id: it holds those payloads, so they collapse.
+      const resumed = splitActivityResponse(await getActivity(idx, { agent_id: 'w-1', bundle: 'reference' }));
+      for (const [key, value] of Object.entries(resumed.bundle['techniques'] as Record<string, unknown>)) {
+        expect(isUnchangedMarker(value), `resumed worker must reference ${key}`).toBe(true);
+      }
+      expect(isUnchangedMarker(resumed.bundle['rules'])).toBe(true);
+    });
+
+    it('never hands one worker the markers of another worker on the same session', async () => {
+      const session = await startSession({ workflow_id: 'work-package', agent_id: 'orchestrator' });
+      const idx = session['session_index'] as string;
+      await enterActivity(idx, 'start-work-package');
+
+      await getActivity(idx, { agent_id: 'worker-a', bundle: 'reference' });
+      await getActivity(idx, { agent_id: 'worker-a', bundle: 'reference' });
+
+      // Worker B shares the session but not the context. It must get full content even though the
+      // session's ledger is populated — the defect the old shared-agentId ledger would have caused.
+      const workerB = splitActivityResponse(await getActivity(idx, { agent_id: 'worker-b', bundle: 'reference' }));
+      for (const [key, value] of Object.entries(workerB.bundle['techniques'] as Record<string, unknown>)) {
+        expect(isUnchangedMarker(value), `worker-b must receive ${key} in full`).toBe(false);
+      }
+      expect(isUnchangedMarker(workerB.bundle['rules'])).toBe(false);
+    });
+
+    it('scopes get_technique and get_resource on the same identity', async () => {
+      const session = await startSession({ workflow_id: 'work-package', agent_id: 'orchestrator' });
+      const idx = session['session_index'] as string;
+      await enterActivity(idx, 'start-work-package');
+      const stepId = await (async () => {
+        const parsed = splitActivityResponse(await getActivity(idx, { bundle: 'full' }));
+        const body = parse(parsed.bodyText) as { steps?: Array<{ id?: string; technique?: unknown }> };
+        const step = (body.steps ?? []).find(s => typeof s.technique === 'string' && s.id);
+        expect(step, 'expected a technique-bound step').toBeTruthy();
+        return step!.id!;
+      })();
+
+      // First fetch under worker-a is full; the refetch under the same id references.
+      expect((await getTechnique(idx, { agent_id: 'w-a', step_id: stepId, bundle: 'reference' }))._meta?.['delivery']).toBeUndefined();
+      expect((await getTechnique(idx, { agent_id: 'w-a', step_id: stepId, bundle: 'reference' }))._meta?.['delivery']).toBe('unchanged');
+      // A sibling worker on the same session is a different context: full content.
+      expect((await getTechnique(idx, { agent_id: 'w-b', step_id: stepId, bundle: 'reference' }))._meta?.['delivery']).toBeUndefined();
+
+      expect((await getResource(idx, { agent_id: 'w-a', bundle: 'reference' }))._meta?.['delivery']).toBeUndefined();
+      expect((await getResource(idx, { agent_id: 'w-a', bundle: 'reference' }))._meta?.['delivery']).toBe('unchanged');
+      expect((await getResource(idx, { agent_id: 'w-b', bundle: 'reference' }))._meta?.['delivery']).toBeUndefined();
+    });
+
+    it('leaves get_technique and get_resource in full delivery without the opt-in, and honours full: true over it', async () => {
+      const session = await startSession({ workflow_id: 'work-package', agent_id: 'orchestrator' });
+      const idx = session['session_index'] as string;
+
+      // No bundle, default (fresh) session: a byte-identical refetch still arrives in full.
+      await getResource(idx, { agent_id: 'w-1' });
+      expect((await getResource(idx, { agent_id: 'w-1' }))._meta?.['delivery']).toBeUndefined();
+
+      // Opt in, then force past it: `full: true` overrides `bundle: "reference"`.
+      expect((await getResource(idx, { agent_id: 'w-1', bundle: 'reference' }))._meta?.['delivery']).toBe('unchanged');
+      expect((await getResource(idx, { agent_id: 'w-1', bundle: 'reference', full: true }))._meta?.['delivery']).toBeUndefined();
+    });
+
+    it('keys the on-disk ledger under the passed agent_id, leaving the session agent untouched', async () => {
+      const slug = '2026-07-30-worker-scoped-ledger';
+      const session = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'orchestrator',
+        planning_folder: planningFolder(slug),
+      });
+      const idx = session['session_index'] as string;
+      await enterActivity(idx, 'start-work-package');
+      await getActivity(idx, { agent_id: 'worker-7' });
+
+      const onDisk = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
+      expect(onDisk.agentId).toBe('orchestrator');
+      expect(Object.keys(onDisk.deliveredContent)).toEqual(['worker-7']);
+    });
+  });
 });

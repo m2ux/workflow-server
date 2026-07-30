@@ -150,30 +150,119 @@ Under `context_mode: "persistent"`, a byte-identical refetch of the same exact `
 
 ## 11. Reference Delivery
 
-Full delivery on every call is the default: in disposable-worker topologies each `get_activity` lands in a fresh agent context, and the repeated bundle is load-bearing. A session in which a **single agent context** executes the whole walk can opt into reference delivery instead — content the session+agent has already received is replaced by a short marker rather than repeated.
+By default the server sends every payload in full, every time. A freshly spawned worker starts with an empty context, so that repetition is what gives it the content at all.
 
-- **Opt-in:** `start_session { context_mode: "persistent" }` (also accepted by `dispatch_child` for the child session), or per call via `get_activity { bundle: "reference" }`. The per-call opt-in exists only on `get_activity`; `get_technique` and `get_resource` delta mode follow the session's `context_mode`.
-- **Ledger:** the server records a per-agent hash of every `get_activity` bundle technique, rules block, `activity_rules` block, full `get_technique` payload, full `get_resource` payload, and `get_workflow` orchestrator ops bundle it delivers (in `session.json#deliveredContent`, keyed by `agentId`). Recording happens in every mode, so a per-call `bundle: "reference"` can refer back to content delivered under the default full mode. Content keys are namespaced by delivery channel (`bundle:*`, `technique:*`, `activity_rules:*`, `workflow_bundle:*`, `resource:*`) so a marker only ever references content delivered in that same channel.
-- **`get_workflow` ops-bundle slimming:** under `context_mode: "persistent"`, the orchestrator ops bundle (above the `---` separator) is content-keyed under `workflow_bundle:<hash>`; on a resume where this agent already holds it, the whole bundle collapses to a single `{ delivery: "unchanged", content_hash }` marker while the post-separator workflow summary stays full. Fresh/default sessions always receive the ops bundle in full.
-- **`get_activity` reference mode:** the response carries `bundle_mode: reference` plus a `bundle_note`; each bundle technique whose composed content is byte-identical to a prior delivery collapses to `{ delivery: "unchanged", content_hash }`, as do the `rules` and `activity_rules` blocks. Techniques new to the activity (or whose content changed) arrive in full, and within a full eagerly-inlined `step_techniques` entry the shared contract/rules blocks may themselves be markers (see Block-level delivery below). The activity body itself is always delivered.
-- **`get_technique` delta mode:** active when the session's `context_mode` is `"persistent"`; a byte-identical refetch returns `delivery: unchanged` + `content_hash` instead of the composed technique. Step-bound provenance annotations (`source:`/`destination:`) are part of the composed content; they are static per corpus and step, so a same-step refetch stays byte-identical and collapses, while fetching the same op from a *different* step (different binding context) re-delivers in full rather than answering with a stale reference.
-- **`get_resource` delta mode:** active when the session's `context_mode` is `"persistent"`; a byte-identical refetch of the same `resource_id` returns `delivery: unchanged` + `content_hash` instead of the body. The ledger key is the exact caller `resource_id`, including any `#section` anchor, so `pr-description` and `pr-description#templates` are independent slots. Fresh/default sessions always receive the full resource body.
-- **Block-level delivery:** finer-grained than the whole-technique collapse above. A not-yet-seen technique's shared blocks — the contract-inherited `inherited_inputs` / `inherited_outputs` and the merged `rules` — are content-keyed individually (`technique:<block>:<hash>`). When such a block was already delivered by a sibling technique that shares the workflow contract, it collapses to a `{ delivery: "unchanged", content_hash }` marker at its position in the payload while the technique-specific core stays full. This applies on both the `get_technique` full-delivery path and each eagerly-inlined `get_activity` `step_techniques` entry. Content-keying keeps it stale-free: a block annotated with binding-seam provenance hashes differently and correctly delivers in full. `get_technique { full: true }` / `get_activity { bundle: "full" }` re-deliver every block.
-- **Full-content escapes:** `get_activity { bundle: "full" }`, `get_technique { full: true }`, and `get_resource { full: true }` force full delivery — use them when the calling context no longer holds the earlier payload (e.g. it was summarized away).
-- **Agent scoping:** the ledger is keyed by the session's recorded `agentId`; resuming a session under a different `agent_id` starts that agent from an empty ledger, so its first deliveries are full even in reference mode.
-- **Benchmark:** to compare delivery cost on a fixed `work-package` walk against the frozen pre-optimisation A0 reference, run `npm run bench:token` ([`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts); see [development.md](development.md#token-delivery-benchmark)). Default output includes `vsReference.deliveryCostIndex` (A0 = 100, lower is better).
+An agent that already holds a payload can ask for **reference delivery** instead. The server replaces that payload with a short marker — `{ delivery: "unchanged", content_hash }` — and the agent reuses what it has.
+
+### What counts as "already holds"
+
+Reference delivery belongs to the **agent context**, not to the session:
+
+- A solo walk is one context for the whole walk.
+- A dispatched worker is one context from the moment it spawns until it finishes, including any harness resume along the way.
+- Two workers sharing one `session_index` are two contexts.
+
+A marker is only ever valid for the context that received the bytes it stands for.
+
+### Turning it on
+
+| How | Applies to |
+|---|---|
+| `start_session { context_mode: "persistent" }` | the whole session — also accepted by `dispatch_child` for the child session |
+| `bundle: "reference"` on `get_activity`, `get_technique`, `get_resource` | that one call |
+| `full: true` on `get_technique` / `get_resource` | overrides a per-call opt-in and forces the body |
+
+### What the server remembers
+
+The server hashes each payload it delivers and records it in `session.json#deliveredContent`. It records in every mode, so a call that opts in with `bundle: "reference"` can still refer back to content that arrived under the default full mode.
+
+Keys are namespaced by delivery channel — `bundle:*`, `technique:*`, `activity_rules:*`, `workflow_bundle:*`, `resource:*` — so a marker only ever points at content delivered through that same channel.
+
+The ledger is keyed on the **delivery scope**: the per-call `agent_id` when one is supplied, otherwise the session's recorded `agentId`. This matters because a dispatched worker authenticates against the orchestrator's `session_index`, and several workers can hold that index at once — the scope names the agent context a payload went to, rather than the session they share.
+
+The orchestrator mints an `agent_id` per dispatch and reuses it verbatim when it resumes that worker. So a fresh spawn reads an empty ledger and takes full delivery, the resumed worker reads its own entries and gets markers, and a sibling worker is unaffected either way. Starting a session under a different `agent_id` likewise begins from an empty ledger.
+
+### What collapses, call by call
+
+- **`get_activity`** — the response carries `bundle_mode: reference` and a `bundle_note`. Any bundled technique whose composed content is byte-identical to an earlier delivery collapses to a marker, as do the `rules` and `activity_rules` blocks. Techniques new to the activity, or whose content changed, arrive in full. The activity body itself is always delivered.
+- **`get_technique`** — a byte-identical refetch returns `delivery: unchanged` and a `content_hash` instead of the composed technique. Step-bound provenance annotations (`source:` / `destination:`) are part of that content. They are fixed for a given corpus and step, so refetching the same step collapses; fetching the same operation from a *different* step re-delivers in full rather than handing back a stale reference.
+- **`get_resource`** — a byte-identical refetch of the same `resource_id` returns `delivery: unchanged` and a `content_hash` instead of the body. The key is the caller's exact `resource_id`, anchor included, so `pr-description` and `pr-description#templates` occupy independent slots.
+- **`get_workflow`** — under `context_mode: "persistent"` the orchestrator ops bundle (everything above the `---` separator) is keyed under `workflow_bundle:<hash>`. On a resume where the agent already holds it, the whole bundle collapses to a single marker, while the workflow summary below the separator stays full.
+
+`get_technique` and `get_resource` collapse under either `bundle: "reference"` or a session-wide `context_mode: "persistent"`. Fresh and default sessions always receive full bodies.
+
+### Blocks inside a technique
+
+Collapsing can go finer than a whole technique. Techniques sharing a workflow contract share blocks: the contract-inherited `inherited_inputs` and `inherited_outputs`, and the merged `rules`. Each is hashed on its own, under `technique:<block>:<hash>`.
+
+So when a technique is new to the context but one of its shared blocks already arrived with a sibling technique, that block becomes a marker in place while the technique-specific core arrives in full. This happens both on the `get_technique` full-delivery path and inside each eagerly inlined `get_activity` `step_techniques` entry.
+
+Hashing the content is what keeps this from going stale: a block annotated with binding-seam provenance hashes differently, so it correctly arrives in full.
+
+### Forcing full delivery
+
+`get_activity { bundle: "full" }`, `get_technique { full: true }` and `get_resource { full: true }` each force the full payload, every block included. Reach for them when the calling context no longer holds the earlier payload — after it was summarized away, for instance.
+
+### What gets measured
+
+**Every dispatch is counted.** Each `get_activity` records an `activity_dispatched` history event carrying `{ agentId, dispatch: "fresh" | "resume", chars }`, and echoes the discriminator on `_meta.dispatch`. The server derives fresh-versus-resume from whether that scope already has a dispatch event for the activity, so the orchestrator does not have to declare it. A worker dispatched out of band, which never calls `get_activity`, records the same event on its first `get_technique` or `get_resource`. Where `activity_usage` counts activity exits, this counts dispatches.
+
+**Sizes are summable.** `technique_fetched`, `technique_bundled` and `resource_fetched` each carry `chars` — always the full payload size, on both paths — and `delivery: "full" | "unchanged"`. Characters delivered and characters saved are therefore both totals you can add up from the ledger.
+
+**Benchmarks.** `npm run bench:token` compares delivery cost per session mode over a fixed `work-package` walk, against the frozen pre-optimisation A0 reference ([`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts); `vsReference.deliveryCostIndex` reports A0 = 100, lower is better). `npm run bench:dispatch` measures the other axis — a fresh worker dispatch against the same worker resumed ([`scripts/run-dispatch-benchmark.ts`](../scripts/run-dispatch-benchmark.ts)). See [development.md](development.md#token-delivery-benchmark).
 
 ## 12. Hybrid Technique Bundling
 
-Eager step-technique bundling is **automatic and corpus-wide**: `get_activity` inlines the composed content of every activity's small, ungated step-bound techniques under a `step_techniques` map, so those steps execute without a fetch round-trip. There is no per-activity opt-in — the worker's REQUIRED `context_tokens` sizes the bundle.
+`get_activity` inlines the composed content of an activity's small, ungated step techniques under a `step_techniques` map, so those steps run without a fetch round-trip. This is automatic and corpus-wide — there is no per-activity opt-in. What sizes the bundle is the worker's REQUIRED `context_tokens`.
 
-- **Budget:** the eager-delivery budget is a **cumulative per-activity character budget** = `context_tokens × headroomFraction × charsPerToken`, where `headroomFraction` (default 0.80) and `charsPerToken` (default 4) are server config (env-overridable: `BUNDLE_HEADROOM_FRACTION`, `BUNDLE_CHARS_PER_TOKEN`). It governs **everything eagerly inlined**: technique bodies first, in document order, then any eagerly bundled resource bodies (which draw down the same counter). Each loop stops at the first entry that would overflow the remaining budget; the remainder stay lazy. Unchanged-reference markers cost effectively nothing and never draw it down. So `context_tokens` bounds the eager bundle — which is the budget policy's stated purpose in [`src/config.ts`](../src/config.ts).
-- **What is bundled:** each ungated technique-kind step, in document order, until the cumulative budget is exhausted. A `when`/`condition` on the step itself or on an enclosing loop keeps it lazy, so bundling never delivers content for a step that may not execute. A per-activity `bundleTechniques: { maxChars: <n> }` is an explicit **per-technique size cap** layered on the budget (any single technique larger than `maxChars` stays lazy); `maxChars: 0` opts the activity out of eager bundling entirely. Everything not inlined remains a `get_technique { step_id }` fetch.
-- **Eager resources — bodies only under reference delivery:** after step techniques are chosen, `get_activity` collects the unique `resource_id`s linked from those bundled techniques. What it then delivers depends on the delivery mode, because **the map only pays for itself when a repeat delivery can collapse it**.
-  - **Reference delivery** (`context_mode: "persistent"` or `bundle: "reference"`) — bodies arrive under a sibling ops `resources` map, keyed by exact `resource_id` including `#section`, deduped across steps. Entries share the `resource:<id>` ledger with `get_resource`, so a later delivery of the same body collapses to an unchanged marker. Bodies are **never** nested inside `step_techniques` (that would duplicate them per technique). `_meta.bundled_resources` lists the delivered ids; each records a `resource_fetched` history event.
-  - **Full delivery** (the fresh/disposable-worker default) — **no bodies**. Each `get_activity` lands in a fresh context with no earlier delivery to collapse against, so an inlined body ships in full again in every activity that links it: a measured +24.5% on `get_activity` ([#322](https://github.com/m2ux/workflow-server/issues/322)). The ids arrive under `resource_refs` instead, and the worker fetches the ones it reads via `get_resource`. No `resource:<id>` ledger key is written, since none could ever be read.
-  - **Not delivered in either mode** — an oversized single resource (default per-resource cap 80 000 chars) and everything past the cumulative eager-delivery budget. Their ids join `resource_refs`, so nothing linked ever becomes unreachable.
-- **Response shape:** bundled techniques arrive under `step_techniques`, keyed by step id. Each entry leads with a discrete `▼ STEP <step_id> · technique <name>` arrival marker, then the step's full composition — identical to the step-bound `get_technique` fetch. `step_techniques_note` states the stepping contract and points at `resources_note`, which is the single authority on how *this* response delivered the linked resources (bodies under `resources`, or ids under `resource_refs`). `_meta.bundled_steps`, `_meta.bundled_resources`, and `_meta.resource_refs` mirror the three id lists.
-- **Intentional stepping:** the *act* of calling `get_technique` is a deliberate "I now turn to this step" beat. Inlining removes that call, so the worker substitutes for it: process inlined `step_techniques` strictly in step order and, on reaching each step, EMIT a one-line `▶ step <step_id>` begin-beat before executing it. That emitted beat carries the intentional act and **is** the stepwise observability trace for bundled steps — the worker does NOT ping the server per bundled step; the delivery-time `technique_bundled` events already record coverage.
-- **Ledger interplay:** bundled entries share the `technique:<resolvedId>` ledger key with `get_technique`, so in a persistent-context session a bundled delivery collapses a later step-bound refetch to an unchanged-reference — and reference-mode re-delivery of the activity collapses already-delivered bundled entries to `{ delivery: "unchanged", content_hash }` markers (the `▼ STEP` marker rides along). `bundle: "full"` re-delivers everything.
-- **Fidelity:** each bundled step is recorded as a `technique_bundled` history event and counts as delivery coverage for `next_activity`'s manifest fidelity check — see [Workflow Fidelity](workflow-fidelity.md).
+### The budget
+
+One cumulative character budget per activity:
+
+```
+context_tokens × headroomFraction × charsPerToken
+```
+
+`headroomFraction` (default 0.80) and `charsPerToken` (default 4) are server config, overridable with `BUNDLE_HEADROOM_FRACTION` and `BUNDLE_CHARS_PER_TOKEN`.
+
+That budget governs everything inlined eagerly. Technique bodies draw on it first, in document order; eagerly bundled resource bodies then draw on the same counter. Each loop stops at the first entry that would overflow what remains, and the rest stay lazy. Unchanged-reference markers cost almost nothing and never draw it down.
+
+This is how `context_tokens` comes to bound the eager bundle, which is the budget policy's stated purpose in [`src/config.ts`](../src/config.ts).
+
+### Which steps get inlined
+
+Each ungated technique-kind step, in document order, until the budget runs out.
+
+A `when` or `condition` — on the step itself, or on a loop enclosing it — keeps that step lazy, so bundling never ships content for a step that might not run.
+
+An activity may also set `bundleTechniques: { maxChars: <n> }`, a per-technique size cap layered on the budget: any single technique larger than `maxChars` stays lazy. `maxChars: 0` opts the activity out of eager bundling altogether. Anything not inlined stays a `get_technique { step_id }` fetch.
+
+### Resources: bodies only under reference delivery
+
+Once the step techniques are chosen, `get_activity` collects the unique `resource_id`s they link. What happens next depends on the delivery mode, because the map only pays for itself when a repeat delivery can collapse it.
+
+**Under reference delivery** (`context_mode: "persistent"` or `bundle: "reference"`), bodies arrive in a sibling ops `resources` map, keyed by exact `resource_id` including any `#section`, deduped across steps. These entries share the `resource:<id>` ledger with `get_resource`, so a later delivery of the same body collapses to a marker. Bodies are never nested inside `step_techniques`, which would duplicate them once per technique. `_meta.bundled_resources` lists what was delivered, and each id records a `resource_fetched` history event.
+
+**Under full delivery** — the fresh, disposable-worker default — no bodies are sent. Each `get_activity` lands in a fresh context with nothing to collapse against, so an inlined body would ship in full again in every activity that links it: measured at +24.5% on `get_activity` ([#322](https://github.com/m2ux/workflow-server/issues/322)). The ids arrive under `resource_refs` instead, and the worker fetches the ones it reads via `get_resource`. No `resource:<id>` key is written, since nothing could ever read it.
+
+**Sent in neither mode:** a single oversized resource (per-resource cap 80 000 chars by default), and anything past the cumulative budget. Their ids join `resource_refs`, so nothing linked ever becomes unreachable.
+
+### What the response looks like
+
+Bundled techniques arrive under `step_techniques`, keyed by step id. Each entry opens with a discrete `▼ STEP <step_id> · technique <name>` arrival marker, then the step's full composition — identical to what a step-bound `get_technique` fetch returns.
+
+`step_techniques_note` states the stepping contract and points at `resources_note`, which is the single authority on how *this* response delivered the linked resources: bodies under `resources`, or ids under `resource_refs`. `_meta.bundled_steps`, `_meta.bundled_resources` and `_meta.resource_refs` mirror the three id lists.
+
+### Stepping stays deliberate
+
+Calling `get_technique` is itself a beat — *I now turn to this step*. Inlining removes the call, so the worker supplies the beat instead: it processes inlined `step_techniques` strictly in step order and, on reaching each one, EMITs a one-line `▶ step <step_id>` marker before executing it.
+
+That emitted line carries the intentional act, and it **is** the stepwise observability trace for bundled steps. The worker does not ping the server per bundled step — the `technique_bundled` events recorded at delivery time already record coverage.
+
+### Ledger interplay
+
+Bundled entries share the `technique:<resolvedId>` key with `get_technique`. So in a persistent-context session a bundled delivery collapses a later step-bound refetch to an unchanged reference; and a reference-mode re-delivery of the activity collapses already-delivered bundled entries to markers, with the `▼ STEP` marker riding along. `bundle: "full"` re-delivers everything.
+
+### Fidelity
+
+Each bundled step records a `technique_bundled` history event, and that counts as delivery coverage for `next_activity`'s manifest fidelity check — see [Workflow Fidelity](workflow-fidelity.md).

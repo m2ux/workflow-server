@@ -201,6 +201,12 @@ Run `npm test -- --run` for the live count and pass/fail summary.
 - **MCP Testing:** Uses `InMemoryTransport` for integration tests
 - **Schema Validation:** Tests all Zod schemas with valid/invalid inputs
 
+### Dispatch overhead benchmark
+
+[`scripts/run-dispatch-benchmark.ts`](../scripts/run-dispatch-benchmark.ts) (`npm run bench:dispatch`) prices a **re-dispatch**, where `bench:token` prices a session mode. For each sampled activity it runs two passes against the same worker `agent_id` — a fresh spawn (full delivery) and the same context resumed (`bundle: "reference"`) — fetching the activity payload plus every step-bound technique in both, so the pair is what a second cold dispatch would pay against what reusing the context pays. Figures come from the server's own `activity_dispatched` / `technique_fetched` / `technique_bundled` / `resource_fetched` events, so `chars` is the server's accounting and not the script's estimate.
+
+Stdout is one JSON object with per-activity fresh/resume characters and the aggregate `savingPct`; stderr carries a one-line summary and names any activity that failed to record a fresh/resume dispatch pair. `--gate --min-saving-pct=<n>` turns the saving into an exit-3 gate.
+
 ### Token delivery benchmark
 
 [`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts) measures payload-char and history/ledger cost for a fixed headless walk (`work-package` / e2e `skip-optional`), comparing `context_mode: fresh` vs `persistent` and resource reference delivery. It reuses the e2e harness/walker and probes `get_resource` for linked + hot templates (the robot walker does not call `get_resource` on its own).

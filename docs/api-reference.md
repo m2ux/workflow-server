@@ -47,7 +47,7 @@ Require `session_index`. Workflow identity comes from the session.
 |------|------------|---------|-------------|
 | `get_workflow` | `session_index` | Orchestrator technique bundle + workflow stubs | Orchestrator load: rules, variables, `initialActivity`, activity list. [Resolution](resource_resolution_model.md) |
 | `next_activity` | `session_index`, `activity_id`, manifests? | `activity_id`, `name`; trace in `_meta` | Advance to an activity (does not return its body). [Fidelity](workflow-fidelity.md) |
-| `get_activity` | `session_index`, `context_tokens`, `bundle?` | Worker bundle + activity body | Worker load for the current activity. `context_tokens` is required. [Bundling](resource_resolution_model.md#12-hybrid-technique-bundling) |
+| `get_activity` | `session_index`, `context_tokens`, `agent_id?`, `bundle?` | Worker bundle + activity body, `_meta.dispatch` | Worker load for the current activity. `context_tokens` is required; `agent_id` scopes delivery to this worker context. [Bundling](resource_resolution_model.md#12-hybrid-technique-bundling) · [Reference delivery](resource_resolution_model.md#11-reference-delivery) |
 | `yield_checkpoint` | `session_index`, `checkpoint_id` | `yielded` or `replayed` | Pause for a user decision (or replay a prior answer). [Checkpoints](checkpoint_model.md) |
 | `resume_checkpoint` | `session_index` | Status | Worker continues after the checkpoint is resolved. |
 | `present_checkpoint` | `session_index` | Message, options, effects | Load the active checkpoint for the user. |
@@ -57,8 +57,8 @@ Require `session_index`. Workflow identity comes from the session.
 
 | Tool | Parameters | Returns | Description |
 |------|------------|---------|-------------|
-| `get_technique` | `session_index`, `step_id?`, `full?` | Composed technique (or unchanged marker) | Load one technique on demand. [Resolution](resource_resolution_model.md) |
-| `get_resource` | `session_index`, `resource_id`, `full?` | Resource body (or unchanged marker) | Load reference material by slug (`workflow/id` or `#section`). |
+| `get_technique` | `session_index`, `step_id?`, `agent_id?`, `bundle?`, `full?` | Composed technique (or unchanged marker) | Load one technique on demand. [Resolution](resource_resolution_model.md) · [Reference delivery](resource_resolution_model.md#11-reference-delivery) |
+| `get_resource` | `session_index`, `resource_id`, `agent_id?`, `bundle?`, `full?` | Resource body (or unchanged marker) | Load reference material by slug (`workflow/id` or `#section`). |
 
 ### Trace
 

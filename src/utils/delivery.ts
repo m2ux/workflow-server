@@ -6,13 +6,13 @@ import { stringifyForResponse } from './serialization.js';
  * Reference-not-repeat delivery.
  *
  * The session file carries a delivery ledger (`deliveredContent`): per
- * agentId, a map of content key → hash of the payload last delivered in
- * full. When reference delivery is active (session `contextMode:
- * 'persistent'` or a per-call opt-in), a payload whose hash matches the
- * ledger is replaced by a short `{ delivery: 'unchanged', content_hash }`
- * marker — the receiving context already holds the bytes. This is the one
- * canonical unchanged-marker shape, emitted identically by the `get_activity`
- * bundle path, `get_technique`, and `get_resource`.
+ * delivery scope (see `deliveryScope`), a map of content key → hash of the
+ * payload last delivered in full. When reference delivery is active (session
+ * `contextMode: 'persistent'` or a per-call opt-in), a payload whose hash
+ * matches the ledger is replaced by a short `{ delivery: 'unchanged',
+ * content_hash }` marker — the receiving context already holds the bytes.
+ * This is the one canonical unchanged-marker shape, emitted identically by
+ * the `get_activity` bundle path, `get_technique`, and `get_resource`.
  *
  * Content keys are namespaced by delivery channel so the composition paths
  * never cross-reference each other's payloads:
@@ -38,19 +38,38 @@ export function contentHash(text: string): string {
   return createHash('sha256').update(text, 'utf8').digest('hex').slice(0, 16);
 }
 
-/** Ledger lookup: hash recorded for `key` under this session's agent, if any. */
-export function deliveredHash(state: SessionFile, key: string): string | undefined {
-  return state.deliveredContent?.[state.agentId]?.[key];
+/**
+ * Which context's deliveries a call reads and writes.
+ *
+ * One session serves many agent contexts: a dispatched worker authenticates against the
+ * ORCHESTRATOR's `session_index`, and several workers can hold that same index at once. The scope is
+ * therefore the per-call `agent_id` — the identity of the context a payload is delivered TO — and
+ * never the session, whose ledger all of those workers would share. Sharing it fails in one specific
+ * way: worker B receives an unchanged-marker for content only worker A holds, and a marker is
+ * unreadable to a context that never received the bytes.
+ *
+ * The orchestrator mints an id per dispatch and reuses it verbatim when it resumes that worker, so a
+ * fresh spawn reads an empty ledger and takes full delivery, while a resumed context reads its own
+ * prior deliveries and collapses them to markers. Omitted, the scope is the session's own agent id,
+ * which is the whole walk on a solo session.
+ */
+export function deliveryScope(state: SessionFile, agentId?: string): string {
+  return agentId ?? state.agentId;
+}
+
+/** Ledger lookup: hash recorded for `key` under `scope` (default: this session's agent), if any. */
+export function deliveredHash(state: SessionFile, key: string, scope: string = state.agentId): string | undefined {
+  return state.deliveredContent?.[scope]?.[key];
 }
 
 /**
  * Record delivered-content hashes onto a session draft (call inside an
- * `advanceSession` mutator). Entries merge over the agent's existing ledger.
+ * `advanceSession` mutator). Entries merge over that scope's existing ledger.
  */
-export function recordDeliveries(draft: SessionFile, agentId: string, entries: Record<string, string>): void {
+export function recordDeliveries(draft: SessionFile, scope: string, entries: Record<string, string>): void {
   if (Object.keys(entries).length === 0) return;
   const ledger = draft.deliveredContent ?? {};
-  ledger[agentId] = { ...(ledger[agentId] ?? {}), ...entries };
+  ledger[scope] = { ...(ledger[scope] ?? {}), ...entries };
   draft.deliveredContent = ledger;
 }
 
@@ -80,18 +99,20 @@ export const DEDUP_BLOCKS = ['inherited_inputs', 'inherited_outputs', 'rules'] a
  * @param projected   `projectTechnique` output.
  * @param state       session, for the delivery-ledger lookup.
  * @param newDeliveries accumulator of block-hashes to record.
+ * @param scope       delivery scope to look up (default: the session's agent).
  */
 export function dedupTechniqueBlocks(
   projected: Record<string, unknown>,
   state: SessionFile,
   newDeliveries: Record<string, string>,
+  scope: string = state.agentId,
 ): Record<string, unknown> {
   const out = { ...projected };
   for (const block of DEDUP_BLOCKS) {
     if (out[block] === undefined) continue;
     const hash = contentHash(stringifyForResponse({ [block]: out[block] }));
     const key = `technique:${block}:${hash}`;
-    if (deliveredHash(state, key) === hash || newDeliveries[key] === hash) {
+    if (deliveredHash(state, key, scope) === hash || newDeliveries[key] === hash) {
       out[block] = unchangedMarker(hash);
     } else {
       newDeliveries[key] = hash;
