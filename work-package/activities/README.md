@@ -17,7 +17,13 @@ Definition: [`01-start-work-package.yaml`](./01-start-work-package.yaml)
 ```mermaid
 graph TD
     entryNode(["Entry"]) --> detectReview["Detect review mode"]
-    detectReview --> resolveRef["Resolve host_repo_path: monorepo or standalone"]
+    detectReview -->|"intent ambiguous"| cpReviewMode{"review-mode-detection checkpoint"}
+    cpReviewMode -->|"review existing PR"| cpPrRef{"review-pr-reference checkpoint"}
+    cpReviewMode -->|"new implementation"| resolveRef
+    cpPrRef -->|"PR reference provided"| capturePR["Capture PR reference"]
+    cpPrRef -->|"cancel review mode"| resolveRef
+    capturePR --> resolveRef
+    detectReview -->|"intent unambiguous"| resolveRef["Resolve host_repo_path: monorepo or standalone"]
     resolveRef --> updateSubs["Update repo-root submodules to HEAD"]
     updateSubs --> analyze["GitNexus analyze (host_repo_path)"]
     analyze --> verifySigning["Verify commit-signing pre-conditions"]
@@ -30,7 +36,12 @@ graph TD
     cpIssue -->|"skip issue"| bindPlanning
 
     platformSelect -->|"GitHub"| createGitHub["Create GitHub issue"]
-    platformSelect -->|"Jira"| selectJiraProject{"jira-project-selection checkpoint"}
+    platformSelect -->|"Jira"| searchGitHub["Search for a GitHub issue linked to the Jira ticket"]
+    searchGitHub -->|"none found"| cpGhMissing{"github-issue-missing checkpoint (auto-advances to create)"}
+    cpGhMissing -->|"create"| createGhForJira["Create linked GitHub issue"]
+    cpGhMissing -->|"skip"| selectJiraProject{"jira-project-selection checkpoint"}
+    createGhForJira --> selectJiraProject
+    searchGitHub -->|"found"| selectJiraProject
     selectJiraProject --> selectIssueType{"issue-type-selection checkpoint"}
     selectIssueType --> createJira["Create Jira issue"]
 
@@ -418,17 +429,24 @@ graph TD
     cpSummaryApproval --> postReview["Post PR review"]
     postReview --> awaitReview
 
-    reviewMode -->|"no"| cpDco{"dco-sign-off checkpoint"}
+    reviewMode -->|"no"| cpDco{"dco-sign-off-confirmation checkpoint"}
     cpDco --> stealthMode{"Stealth mode?"}
-    stealthMode -->|"yes"| verifyRemote["Verify private remote + isolation confirmation + signature check"]
-    verifyRemote --> pushCommits
+    stealthMode -->|"yes"| verifyRemote["Verify private remote + signature check"]
+    verifyRemote --> cpPrivateRemote{"private-remote-confirmation checkpoint"}
+    cpPrivateRemote --> cpPush{"push-confirmation checkpoint"}
+    cpPush --> pushCommits
     stealthMode -->|"no"| pushCommits["Push all commits (push_remote)"]
     pushCommits --> stealthExit{"Stealth mode?"}
     stealthExit -->|"yes"| exitComplete
     stealthExit -->|"no"| updateDesc["Update PR description"]
-    updateDesc --> mergeGuidance["Merge-strategy guidance (informational message)"]
-    mergeGuidance --> buildArt{"Build-artifact check"}
-    buildArt -->|"regen needed"| userHandoff["Build-artifact hand-off"]
+    updateDesc --> rerenderLoop["verify-pr-body-rerender loop (re-render + verify, max 2)"]
+    rerenderLoop -->|"body conforms"| mergeGuidance["Merge-strategy guidance (informational message)"]
+    rerenderLoop -->|"still non-conformant"| cpBody{"body-non-conformant checkpoint"}
+    cpBody -->|"proceed with override"| mergeGuidance
+    cpBody -->|"provide missing input"| exitSubmitAgain(["submit-for-review"])
+    cpBody -->|"abort"| abortNode(["failed"])
+    mergeGuidance --> buildArt{"build-artifact-check checkpoint"}
+    buildArt -->|"regen needed"| userHandoff{"build-artifact-handoff checkpoint"}
     buildArt -->|"none needed"| markReady
     userHandoff --> markReady["Mark PR ready for review"]
     markReady --> awaitReview["Await manual review"]
