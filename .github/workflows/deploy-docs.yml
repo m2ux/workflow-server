@@ -48,10 +48,6 @@ jobs:
         run: npm run build:site
       - name: Fail if committed pages drifted from the source
         run: git diff --exit-code -- site
-      - name: Check site links and anchors
-        run: npm run check:site
-      - name: Check SVG diagram layout
-        run: npm run check:svg
 
   deploy:
     name: Deploy to GitHub Pages

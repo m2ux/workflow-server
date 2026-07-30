@@ -41,8 +41,10 @@ describe('guard registry', () => {
   it('separates corpus-scoped guards from repo-scoped ones', () => {
     expect(CORPUS_GUARDS.length).toBeGreaterThan(0);
     expect(CORPUS_GUARDS.every((g) => g.scope === 'corpus')).toBe(true);
-    // The site guards read `site/`, not the corpus, so a delta run must not aim them at a corpus root.
-    expect(GUARDS.filter((g) => g.scope === 'repo').map((g) => g.id).sort()).toEqual(['site-links', 'svg-layout']);
+    // The site guards read `site/` and the encoding guard reads this repo's own sources — neither
+    // reads the corpus, so a delta run must not aim them at a corpus root.
+    expect(GUARDS.filter((g) => g.scope === 'repo').map((g) => g.id).sort())
+      .toEqual(['site-links', 'source-encoding', 'svg-layout']);
   });
 
   it('covers every check:* script in package.json', () => {
