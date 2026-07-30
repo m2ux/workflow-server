@@ -61,7 +61,7 @@ Absolute path to the written analysis report.
 
 ### 5. Compile Analysis Report
 
-- Write `{requirements_analysis}` to `{planning_folder_path}` using the [requirements-analysis-report](../resources/requirements-analysis-report.md) structure: source reference, new / updated / deprecated requirements, the [source coverage matrix](../resources/requirements-analysis-report.md#source-coverage-matrix), document updates required, quality issues, and implementation notes; capture its written location as `{requirements_analysis_path}`.
+- Write `{requirements_analysis}` to `{planning_folder_path}` using the [Template](../resources/requirements-analysis-report.md#template) and its [Conventions](../resources/requirements-analysis-report.md#conventions): source reference, new / updated / deprecated requirements, the [source coverage matrix](../resources/requirements-analysis-report.md#source-coverage-matrix), document updates required, quality issues, and implementation notes; capture its written location as `{requirements_analysis_path}`.
 
 ## Rules
 

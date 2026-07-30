@@ -31,7 +31,7 @@ Whether the changes are significant enough to require substantial rework
 
 ### 1. Fetch Comments
 
-- Take the response format and review-document shapes from the [pr-review-response templates](../resources/pr-review-response.md); the rules below govern response content
+- Take the response shape from [Response Format Template](../resources/pr-review-response.md#response-format-template) and the document shape from [Review Document Template](../resources/pr-review-response.md#review-document-template); the rules below govern response content
 - Fetch the `{review_comments}` from the PR identified by `{pr_number}` using the `gh` API:
   ```bash
   gh api repos/<owner>/<repo>/pulls/{pr_number}/comments --paginate

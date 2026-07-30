@@ -22,7 +22,7 @@ Absolute path to the written design-specification artifact.
 ### 1. Assemble Specification
 
 - Assemble the specification from `{accumulated_design}` when bound (create elicitation or update synthesis); otherwise from the elicited dimensions that ran for this mode
-- Include only facts this artifact homes per the [canonical-home map](./TECHNIQUE.md#canonical-home-map) and [design-specification](../resources/design-specification.md) — purpose and dimension deltas
+- Include only facts this artifact homes per the [canonical-home map](./TECHNIQUE.md#canonical-home-map) and the sections it carries, [Template](../resources/design-specification.md#template) and [Rules](../resources/design-specification.md#rules) — purpose and dimension deltas
 - Link assumptions, impact, inventory, and other non-home content; do not restate them
 
 ### 2. Persist Specification Artifact
