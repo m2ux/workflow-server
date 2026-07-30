@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.4.0
 ---
 
 ## Capability
@@ -46,3 +46,7 @@ The resumed agent's next yield or final output
 ### resume-is-optimisation
 
 Harness-level resume preserves the context window. Useful, not required for correctness — workflows must be correct without it.
+
+### resume-preserves-delivery-scope
+
+A resumed agent is the same delivery context, so `{composed_prompt}` re-binds the workflow-server worker `agent_id` the dispatch bound — the identity the ledger is keyed on ([delivery-keys-on-agent-context](../workflow-engine/dispatch-activity.md#delivery-keys-on-agent-context)), distinct from the harness `{agent_id}` this operation resumes. Under that identity the resumed agent's refetches collapse to unchanged markers; a resume that did not preserve the window still holds the identity and takes [force-full-after-summarization](../workflow-engine/TECHNIQUE.md#force-full-after-summarization).

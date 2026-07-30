@@ -43,9 +43,9 @@ graph TD
     RO -->|"yes"| RES["05 resolution-dialogue"]
 
     RES -->|"per finding: propose + decide"| RES
-    RES --> AM["06 apply-mitigations"]
-    AM --> AC{"apply or plan-only?"}
-    AC -->|"apply / keep plan"| Done
+    RES --> AC{"apply or plan-only?"}
+    AC --> AM["06 apply-mitigations"]
+    AM --> Done
 ```
 
 The spine is linear — scope, plan, analyse, consolidate, deliver — and ends at `deliver-results` unless the user opts into the resolution dialogue, which then iterates through findings one at a time and applies the accepted mitigations. Two scope/plan checkpoints can loop back to re-scope or re-plan, and `execute-analysis` is a loop: each execution group triggers its own prism run.
@@ -63,8 +63,8 @@ User checkpoints gate the scope, the plan, the resolution offer, each finding's 
 | 02 | [**Execute Prism Analyses**](./activities/README.md#02-execute-prism-analyses) (`execute-analysis`) | Trigger a prism run per execution group and collect the results |
 | 03 | [**Consolidate Evaluation Report**](./activities/README.md#03-consolidate-evaluation-report) (`consolidate-report`) | Extract findings, identify cross-dimensional patterns, and compose the evaluation report |
 | 04 | [**Deliver Evaluation Results**](./activities/README.md#04-deliver-evaluation-results) (`deliver-results`) | Present the results and artifact index, then offer the optional resolution dialogue |
-| 05 | [**Resolution Dialogue**](./activities/README.md#05-resolution-dialogue) (`resolution-dialogue`) | Tier-classify findings and propose mitigations one finding at a time, compiling a mitigation plan |
-| 06 | [**Apply Accepted Mitigations**](./activities/README.md#06-apply-accepted-mitigations) (`apply-mitigations`) | Apply the accepted mitigations to the target after a final user confirmation |
+| 05 | [**Resolution Dialogue**](./activities/README.md#05-resolution-dialogue) (`resolution-dialogue`) | Tier-classify findings and propose mitigations one finding at a time, compiling a mitigation plan and collecting the final confirmation to apply it |
+| 06 | [**Apply Accepted Mitigations**](./activities/README.md#06-apply-accepted-mitigations) (`apply-mitigations`) | Apply the accepted mitigations to the target under the confirmation already collected |
 
 **Detailed documentation:** See [activities/README.md](./activities/README.md) for the per-activity orientation map. The authoritative step/checkpoint/transition definitions live in each activity YAML and are served by `get_activity`.
 

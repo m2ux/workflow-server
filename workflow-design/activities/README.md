@@ -20,7 +20,7 @@ Definition: [`01-intake-and-context.yaml`](./01-intake-and-context.yaml). Leads 
 
 ### 03. Requirements Refinement
 
-Guided specification: create mode runs an optional design-context soft gate, then a `forEach` over design dimensions (prepare → surface questions → capture); update mode synthesizes the specification from the change request (`synthesize-update-specification`) with no per-dimension elicitation. Both paths persist the design specification; `spec-confirmed` is a soft gate (stakeholder attestation at Gate 2). It then surfaces design assumptions (`work-package::review-assumptions::collect`), reconciles via `reconcile-design-assumptions` in a `while has_resolvable_assumptions` loop, and leaves open judgements in the assumptions log for Gate 2 — no per-assumption interview parade.
+Guided specification: create mode derives the design dimensions, runs an optional design-context soft gate, then a `forEach` over design dimensions (prepare → surface questions → capture); update mode synthesizes the specification from the change request (`synthesize-update-specification`) with no per-dimension elicitation. Both paths persist the design specification; `spec-confirmed` is a soft gate (stakeholder attestation at Gate 2). It then surfaces design assumptions (`work-package::review-assumptions::collect`), reconciles via `reconcile-design-assumptions` in a `while has_resolvable_assumptions` loop, and leaves open judgements in the assumptions log for Gate 2 — no per-assumption interview parade.
 
 Definition: [`03-requirements-refinement.yaml`](./03-requirements-refinement.yaml). Skipped in review mode; leads to [Pattern Analysis](#04-pattern-analysis) (create) or [Impact Analysis](#05-impact-analysis) (update).
 

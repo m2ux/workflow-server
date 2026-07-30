@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -59,3 +59,7 @@ Never call the workflow-server control-plane tools `next_activity` or `get_workf
 ### session-index-on-each-call
 
 Pass `{session_index}` on every authenticated tool call ([session-index-passes-on-each-call](./TECHNIQUE.md#session-index-passes-on-each-call)).
+
+### agent-id-on-delivery-calls
+
+Every `get_activity`, `get_technique` and `get_resource` call this worker makes carries `{agent_id}`, the identity its ledger is keyed on ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch holds no prior deliveries and takes full delivery; a resume under that same identity carries `bundle: "reference"`, so content this context already holds arrives as unchanged markers.
