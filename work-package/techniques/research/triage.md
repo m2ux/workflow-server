@@ -33,7 +33,7 @@ The work package problem statement, read alongside `{requirements}` to scope whi
 
 ### research_candidates
 
-The candidate [inventory](../../resources/research-reconciliation.md#integration-with-research-artifact) — one entry per open research gap, each carrying its statement, its classification (reconcilable-by-research or irreconcilable), the classification rationale, and, for irreconcilable candidates, the handoff target. Empty when synthesis left no open gaps.
+The candidate [inventory](../../resources/research-reconciliation.md#inventory-shape) — one entry per open research gap, each carrying its statement, its classification (reconcilable-by-research or irreconcilable), the classification rationale, and, for irreconcilable candidates, the handoff target. Empty when synthesis left no open gaps.
 
 ### has_reconcilable_research
 
@@ -54,7 +54,7 @@ Boolean gate driving the reconciliation loop — true when at least one candidat
 
 ### 3. Seed the Inventory
 
-- Write the candidates to `{research_candidates}` and into the research artifact's Open Research Candidates section per the [integration shape](../../resources/research-reconciliation.md#integration-with-research-artifact)
+- Write the candidates to `{research_candidates}` and into the research artifact's Open Research Candidates section per the [integration shape](../../resources/research-reconciliation.md#inventory-shape)
 - Set `{has_reconcilable_research}` true if any candidate is reconcilable-by-research, false otherwise
 
 

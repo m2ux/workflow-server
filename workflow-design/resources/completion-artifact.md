@@ -1,13 +1,13 @@
 ---
 name: completion-artifact
-description: Template for the COMPLETE.md close-out document of a workflow-design session — the session's single terminal artifact.
+description: Template and fill rules for the COMPLETE.md close-out document of a workflow-design session.
 metadata:
   order: 6
 ---
 
 # Design Session Close-Out Guide
 
-`COMPLETE.md` is the **single terminal artifact** of a workflow-design session — the counterpart of the work-package [complete-wp](../../work-package/resources/complete-wp.md) guide, with design-authoring sections in place of code/test sections. It answers "what was delivered, what was decided, and what is left open?" There is no separate retrospective or session-summary artifact: the retrospective is a section of this document.
+Template and fill rules for `COMPLETE.md`, the close-out document of a workflow-design session. The run's retrospective is a section of it, written per [workflow-retrospective](../../work-package/resources/workflow-retrospective.md#output-section-template).
 
 ## Template
 
@@ -33,13 +33,13 @@ metadata:
 
 Link the assumptions log and the planning README Design Decisions section.
 Record here ONLY drafting-time decisions with no other home (Context / Decision /
-Rationale / Alternatives). Keep this section short — no restated decision essay.
+Rationale / Alternatives).
 
 ## Scope Outcome
 
-[Exception-only, against the confirmed scope manifest: "All N manifest items delivered
-([manifest](NN-scope-manifest.md))" is one line. List rows only for drift — changes
-outside the manifest or unaddressed items — folding in the scope-discipline audit.]
+[Exception-only, against the confirmed scope manifest: "All N manifest items delivered",
+linking the manifest, is one line. List rows only for drift — changes outside the
+manifest or unaddressed items — folding in the scope-discipline audit.]
 
 ## Known Limitations & Deferrals
 
@@ -62,4 +62,4 @@ outside the manifest or unaddressed items — folding in the scope-discipline au
 - **Link, don't restate.** Decisions live in the assumptions log and README; scope lives in the manifest; COMPLETE stays a short close-out.
 - **Exception-only Scope Outcome.** All-✅ tables carry no information; only drift earns rows.
 - **Omit null sections** rather than writing "none".
-- **Keep close-out short.** Delivery + links + limitations; no design-decision / alternatives essay restatement.
+- **Line budget:** ~70 lines — delivery, links and limitations. A longer close-out is a sign a section belongs in its own home, not that it needs a restated design-decision essay.

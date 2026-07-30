@@ -2,7 +2,7 @@
 name: readme-seed
 description: Workflow-authoring planning-folder README seed profile — Progress inventory, classifier vocabulary, and mode-exclusion map for create-readme.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 22
 ---
 
@@ -26,19 +26,30 @@ Lifecycle **Status** values: `Planning`, `Drafting`, `Reviewing`, `Complete`.
 
 ## Progress inventory
 
-| # | @ | Item | Description | Estimate | Status |
-|---|---|------|-------------|----------|--------|
-| 1 | 01 | Intake and context | Mode, target, edit-surface path | 15-30m | ⬚ |
-| 2 | 01 | [Change brief](change-brief.md) | Purpose, dimension shape, open judgements | 20-40m | ⬚ |
-| 3 | 01 | [Impact analysis](impact-analysis.md) | Blast radius, integrity, removals | 20-40m | ⊘ |
-| 4 | 06 | Scope and draft | Worktree, manifest, per-file drafting | 30-60m | ⬚ |
-| 5 | 06 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |
-| 6 | 08 | Quality review | Criteria walk, consumer surface, guards | 30-60m | ⬚ |
-| 7 | 09 | [Findings register](findings-register.md) | Audit record, coverage, exclusions | 15-30m | ⬚ |
-| 8 | 09 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ⬚ |
-| 9 | 09 | [Close-out (COMPLETE.md)](COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |
+| # | Item | Description | Estimate | Status |
+|---|------|-------------|----------|--------|
+| 1 | Intake and context | Mode, target, edit-surface path | 15-30m | ⬚ |
+| 2 | [Change brief](change-brief.md) | Purpose, dimension shape, open judgements | 20-40m | ⬚ |
+| 3 | [Impact analysis](impact-analysis.md) | Blast radius, integrity, removals | 20-40m | ⊘ |
+| 4 | Scope and draft | Worktree, manifest, per-file drafting | 30-60m | ⬚ |
+| 5 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |
+| 6 | Quality review | Criteria walk, consumer surface, guards | 30-60m | ⬚ |
+| 7 | [Findings register](findings-register.md) | Audit record, coverage, exclusions | 15-30m | ⬚ |
+| 8 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ⬚ |
+| 9 | [Close-out](COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |
 
 Initial Status icons are from [Status vocabulary](../../meta/resources/planning-readme.md#status-vocabulary). The impact-analysis row starts cancelled/N/A because only an update run produces it.
+
+## Row ownership
+
+Which activity owns which rows, per [row-ownership map](../../meta/resources/planning-readme.md#row-ownership-map). Values are Item labels.
+
+| @ | Rows |
+|---|------|
+| 01 | Intake and context · Change brief · Impact analysis |
+| 06 | Scope and draft · Scope manifest |
+| 08 | Quality review |
+| 09 | Findings register · Validate and commit · Close-out |
 
 ## Mode exclusion map
 

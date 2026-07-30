@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.10.0
+version: 2.11.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 required: true
@@ -27,10 +27,16 @@ steps:
   - kind: checkpoint
     id: unsigned-commits-prompt
     condition:
-      type: simple
-      variable: unsigned_commits_in_pr
-      operator: ==
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: unsigned_commits_in_pr
+          operator: ==
+          value: true
     message: "Signature scan reports one or more commits without a valid GPG signature in this branch range: {unsigned_commit_list_summary}. Select whether to re-sign all unsigned commits now. Re-signing rewrites branch history and may require force-with-lease push."
     blocking: true
     options:
@@ -50,10 +56,16 @@ steps:
     id: resign-unsigned-commits
     technique: resign-commits
     condition:
-      type: simple
-      variable: resign_unsigned_commits_requested
-      operator: ==
-      value: true
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: resign_unsigned_commits_requested
+          operator: ==
+          value: true
   - kind: technique
     id: verify-readme
     technique:

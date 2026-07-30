@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 3.3.0
+  version: 3.4.0
 ---
 
 ## Capability
 
-Shared contract for planning-folder artifacts under `.engineering/artifacts/planning/` — prefixing, organization, and output discipline.
+Shared contract for a workflow's planning-folder artifacts — prefixing, organization, and output discipline.
 
 
 ## Rules
@@ -30,6 +30,8 @@ The canonical home for each shared fact category. Templates carry link-only slot
 | Review findings (code, test, structural, lean-coding, manual-diff) | `code-review.md` and the reviews' own artifacts — consolidated surfaces reference findings by ID + disposition |
 | In-task follow-ups | `follow-ups.md` (see [follow-ups](../../resources/follow-ups.md)) |
 | Out-of-scope deferred items | `deferred-items.md` (see [deferred-items](../../resources/deferred-items.md)) |
+| Token counts and cost estimates | `token-usage.md` — the close-out, retrospective and session trace link it and restate no figure, so one ledger produces one artifact |
+| Mechanical execution record (dispatches, tool calls, durations, errors) | `session-trace.md` (see [session-trace](../../resources/session-trace.md)) |
 
 ### exception-only-reporting
 
@@ -53,7 +55,17 @@ In a group of consecutive bold-label lines (`**Status:** value`), every line exc
 
 ### hyperlink-conventions
 
-Symbol and test references hyperlink to their definition line (`path#L<line>` — the definition, not the first usage or assertion); same-repo links use relative paths, external references use full URLs. Verify every link resolves before committing the artifact.
+Symbol and test references hyperlink to their definition line (the definition, not the first usage or assertion). Three link forms, by what the target is:
+
+| Target | Form |
+|---|---|
+| A sibling artifact in the same planning folder | relative path (`NN-code-review.md#anchor`) |
+| Code, a test, or a document in a repo under review | permanent blob URL at the cited commit — repository host, owner, name, `blob`, the full commit sha, the repo-relative path, and an `#L`-prefixed line anchor |
+| Anything else outside the planning folder | full URL |
+
+A path relative to a checkout is never a citation form: the checkout it resolves against is removed at close-out, so the link dies inside the run that wrote it. A resource or technique id is never a link target — ids address the loader, not the git host.
+
+[verify-artifact-links](./verify-artifact-links.md) resolves every link at the close-out boundary against the ref the published links point at, so a folder whose links break only in the published tree is caught rather than shipped.
 
 ### no-process-attribution
 

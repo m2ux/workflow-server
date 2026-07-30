@@ -13,10 +13,6 @@ Break the work package plan into actionable, atomic TODO tasks for implementatio
 
 Work package plan; its task breakdown, dependencies, and ordering are the source for the TODO list.
 
-### tasks
-
-Atomic tasks with dependencies and ordering carried on `{plan_document}`; broken out into individual TODO items.
-
 ## Outputs
 
 ### todo_tasks

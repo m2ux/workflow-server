@@ -41,7 +41,7 @@ A syntactically valid YAML file that passes schema validation
 ### 4. Draft Content
 
 - Write `{yaml_file}` per Rules below (block arrays/mappings, scalar quoting, multi-line scalars, field ordering, version format)
-- Description hygiene for prose fields: [design-principles](../resources/design-principles.md) §17 and Description Hygiene anti-patterns — do not bury procedure in `description` / `outcome` / `message` / option text
+- Description hygiene for prose fields: [Document in Positive Present](../resources/design-principles.md#17-document-in-positive-present) and Description Hygiene anti-patterns — do not bury procedure in `description` / `outcome` / `message` / option text
 
 ### 5. Validate Against Schema
 

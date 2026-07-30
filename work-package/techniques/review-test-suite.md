@@ -35,7 +35,7 @@ Test suite review [report](../resources/test-suite-review.md#report-template) do
 
 ### 1. Load Guidance
 
-- Use attached [test-suite-review](../resources/test-suite-review.md) for full review criteria
+- Review against the attached [Review Criteria](../resources/test-suite-review.md#review-criteria) and [Anti-Patterns](../resources/test-suite-review.md#anti-patterns)
 - From the `{changed_files}` set, identify all test files in the project related to the changed code
 - If no test files are found, document the missing tests as a critical finding and proceed
 

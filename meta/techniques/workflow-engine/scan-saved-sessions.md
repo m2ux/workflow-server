@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Find saved client sessions matching a target workflow under `.engineering/artifacts/planning/`.
+Find saved client sessions matching a target workflow, as resumable candidates.
 
 ## Inputs
 

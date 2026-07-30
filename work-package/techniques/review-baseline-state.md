@@ -9,10 +9,6 @@ Review-mode baseline for PR evaluation — expected changes against requirements
 
 ## Inputs
 
-### base_branch
-
-Base branch the PR targets (the pre-change baseline to check out and diff against)
-
 ### requirements
 
 The ticket requirements used to derive what changes the PR is expected to make
@@ -47,7 +43,8 @@ The base↔PR diff (fresh three-dot `{base_branch}...HEAD`), noted for later com
 
 ### 1. Checkout Baseline State
 
-- Check out the `{base_branch}` inside `{target_path}` to analyse the pre-change state: `git -C {target_path} checkout {base_branch}`.
+- Resolve the base branch the PR targets as `{$base_branch}`: `gh pr view {pr_number} --json baseRefName --jq .baseRefName`.
+- Check out `{base_branch}` inside `{target_path}` to analyse the pre-change state: `git -C {target_path} checkout {base_branch}`.
 - Capture the base commit SHA for reference and record it as `{base_sha}`: `git -C {target_path} rev-parse HEAD`.
 
 ### 2. Document Expected Changes

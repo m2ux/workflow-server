@@ -184,19 +184,30 @@ System-txn application; wildcard `_ =>` match arms; empty-vs-absent query ambigu
 ### Finding Entry
 
 ```markdown
-### Issue {ID}: {Title}
+### Issue {number}: {title}
 
-**Severity:** Critical | High | Medium | Low | Informational
-**Category:** {Consensus | Panic/DoS | Cryptographic | State Consistency | Input Validation | Resource Exhaustion | Information Leak | Arithmetic/Type Safety | Configuration | Error Handling | Concurrency | Dependencies | Access Control | Runtime Upgrade | Unsafe Code}
-**Affected Files:**
-- `{file_path}#{line_number(s)}`
+{description}
 
-**Description:**
-{What the code does, why it is problematic, what triggers it, what the impact is}
+**Impact:** {impact} — {justification}
 
-**Suggested Remediation:**
-{Specific fix recommendation}
+**Feasibility:** {feasibility} — {justification}
+
+**Severity:** {level} (I={impact}, F={feasibility}, avg={average})
+
+**Category:** {category}
+
+**Affected Files:** [{file}#L{start}-L{end}]({source_blob_base}/{file}#L{start}-L{end})
+
+**Suggested Remediation:** {remediation}
 ```
+
+Fill rules:
+
+- `{description}` is a brief explanatory paragraph — 1–3 sentences of plain prose stating what the code does, why it is problematic, what triggers it, and its impact. It comes first, immediately after the header and before `**Impact:**`, and every finding carries one at every severity including Informational and Undetermined.
+- `{category}` is one of: Consensus, Panic/DoS, Cryptographic, State Consistency, Input Validation, Resource Exhaustion, Information Leak, Arithmetic/Type Safety, Configuration, Error Handling, Concurrency, Dependencies, Access Control, Runtime Upgrade, Unsafe Code.
+- `{impact}` and `{feasibility}` carry a one-sentence justification each, scored per [Severity Scoring](#severity-scoring).
+- Fields are separated by blank lines so each renders as its own paragraph; single newlines between them collapse into one.
+- `**Affected Files:**` is a hyperlink resolving to the exact file and line range in the audited source at the audited commit — never plain `` `path`#lines `` text, and never a mutable branch, so a reviewer is one click from the reviewed code. Where a finding cites several files or extra ranges, each is hyperlinked the same way; a single line renders as `#L{n}` rather than a range, and trailing bare line numbers after the first range may stay plain text.
 
 ### Severity Scoring
 
