@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -13,6 +13,10 @@ Identify the next work package and prepare context for the transition.
 
 Path to the current work package's planning folder, read for follow-up items and carried context that inform what the next work package should be.
 
+### execution_trace
+
+*(optional)* Completed activities and the event history behind them.
+
 ## Outputs
 
 ### next_work_package_context
@@ -24,4 +28,4 @@ The identified next work package (when applicable) together with the context pre
 ### 1. Select Next
 
 - Identify next work package if applicable.
-- Prepare context for transition. When carried context depends on session record, use `inspect_session` per [generate-summary](../../../meta/techniques/workflow-engine/generate-summary.md) / [verify-outcomes](../../../meta/techniques/workflow-engine/verify-outcomes.md).
+- Prepare context for transition. Carried context that depends on the session record comes from `{execution_trace}`.

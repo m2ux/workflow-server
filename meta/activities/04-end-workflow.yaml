@@ -1,9 +1,12 @@
 id: end-workflow
-version: 4.3.0
+version: 4.4.0
 name: End Workflow
 description: Close out the client workflow.
 required: true
 steps:
+  - kind: technique
+    id: read-session
+    technique: workflow-engine::read-session
   - kind: technique
     id: verify-outcomes
     technique:

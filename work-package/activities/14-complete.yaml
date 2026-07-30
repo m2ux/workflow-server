@@ -1,5 +1,5 @@
 id: complete
-version: 1.8.0
+version: 1.9.0
 name: Complete Work Package
 description: Wrap up the work package after PR merge (or after review-mode close-out).
 required: true
@@ -66,6 +66,9 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
+  - kind: technique
+    id: read-session
+    technique: workflow-engine::read-session
   - kind: technique
     id: conduct-retrospective
     technique: conduct-retrospective::retrospective
