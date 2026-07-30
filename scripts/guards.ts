@@ -170,6 +170,14 @@ export const GUARDS: GuardSpec[] = [
     json: false,
     proves: 'site SVG diagrams stay within their geometric bounds',
   },
+  {
+    id: 'source-encoding',
+    script: 'scripts/check-source-encoding.ts',
+    npmScript: 'check:encoding',
+    scope: 'repo',
+    json: true,
+    proves: 'no text source carries a literal control character, so grep and git diff stay honest',
+  },
 ];
 
 export const CORPUS_GUARDS = GUARDS.filter((g) => g.scope === 'corpus');

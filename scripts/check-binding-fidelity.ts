@@ -541,7 +541,7 @@ export function collectViolations(): Violation[] {
     for (const [inputId, meta] of r.entry.own.inputs) {
       if (meta.hasDefault || meta.optional) continue;
       const opId = r.homeWf === s.wf ? r.key : `${r.homeWf}::${r.key}`;
-      const seam = `${s.wf} ${opId} ${inputId}`;
+      const seam = `${s.wf}\u0000${opId}\u0000${inputId}`;
       if (inputId in s.inputsMap) { callerSupplied.add(seam); continue; }
       if (producersOf(s.wf).has(inputId)) continue;
       orphans.set(seam, {
