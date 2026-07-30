@@ -316,15 +316,15 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
 
   // #324 B1: per-activity token accounting. The worker cannot self-measure, so
   // the orchestrator relays what the harness reported for the activity it exits.
-  describe('next_activity usage accounting (#324 B1)', () => {
+  describe('per-dispatch usage accounting (#324 B1, #346 DI-33)', () => {
     const usage = { input_tokens: 1200, output_tokens: 340, cache_read_input_tokens: 8000 };
 
-    it('records usage against the exited activity and surfaces it on the usage view', async () => {
+    it('records usage against the named activity and surfaces it on the usage view', async () => {
       const slug = '2026-07-28-usage-recorded';
       const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
       const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
       await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
-      await call('next_activity', { session_index: sessionIndex, activity_id: 'followup-activity', usage });
+      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage });
 
       const events = readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage');
       expect(events).toHaveLength(1);
@@ -337,19 +337,35 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       expect(rows[0]).toMatchObject({ activity: 'checkpoint-activity', usage });
     });
 
-    it('warns instead of dropping silently when usage rides the entry transition', async () => {
-      const slug = '2026-07-28-usage-entry';
+    it('records a dispatch the graph never transitions away from', async () => {
+      // The case the transition-keyed ledger could not reach: an activity is entered,
+      // dispatched, and the run ends there. Nothing exits it, so nothing could have
+      // carried its cost.
+      const slug = '2026-07-28-usage-terminal';
       const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
       const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
-      const result = await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity', usage });
+      await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
+      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage });
 
-      const validation = (result._meta as { validation: { status: string; warnings: string[] } }).validation;
-      expect(validation.status).toBe('warning');
-      expect(validation.warnings.join('\n')).toMatch(/usage supplied on the entry transition/);
-      expect(readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage')).toHaveLength(0);
+      const rows = readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage');
+      expect(rows).toHaveLength(1);
+      expect(rows[0].activity).toBe('checkpoint-activity');
     });
 
-    it('omitting usage records nothing and leaves the usage view empty', async () => {
+    it('keeps each dispatch of one activity as its own row', async () => {
+      const slug = '2026-07-28-usage-repeat';
+      const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
+      const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+      await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
+      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage: { total_tokens: 10 } });
+      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage: { total_tokens: 20 } });
+
+      const rows = readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage');
+      expect(rows).toHaveLength(2);
+      expect(rows.map((r: { data?: { usage?: { total_tokens?: number } } }) => r.data?.usage?.total_tokens)).toEqual([10, 20]);
+    });
+
+    it('recording nothing leaves the usage view empty', async () => {
       const slug = '2026-07-28-usage-absent';
       const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
       const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
