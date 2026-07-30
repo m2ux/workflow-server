@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.4.1
 ---
 
 ## Capability
@@ -53,7 +53,7 @@ total items, total reviewed, coverage percentage, gaps list
 - For §3.6 input validation, PASS requires evidence at the CONSUMPTION layer (pallet), not just the PRODUCTION layer. Raw bytes/strings without typed wrappers are FAIL with severity reduced by 1 level.
 - For every pallet with hooks, the sub-agent MUST read the `WeightInfo` implementation file (`weights.rs`). The 5 sub-actions (read return value, read body, trace chain, estimate work, check amplification) are REQUIRED outputs. §3.1 pallet hook and weight audit is INCOMPLETE without reading `weights.rs`.
 - For every `expect()`/`unwrap()` on an `Option` derived from configuration, runtime state, or database queries, enumerate ALL valid configuration variants (`InMemory`/`OnDisk`, pruned/archive, development/production presets); an unwrap that panics on any valid variant is a finding. Produce a configuration-variant triage table: | Site | Option Source | Variant that produces None | Severity |. This is MANDATORY for the node binary agent.
-- For every §3.1 flush/commit target, enumerate ALL state-modifying operations in execution order (including conditional paths). The flush/commit call must occur AFTER the last state-modifying operation; a flush followed by additional writes is FAIL. Finding one flush call alone is NOT sufficient — verify nothing writes after it.
+- For every §3.1 flush ordering target, enumerate ALL state-modifying operations in execution order (including conditional paths). The flush/commit call must occur AFTER the last state-modifying operation; a flush followed by additional writes is FAIL. Finding one flush call alone is NOT sufficient — verify nothing writes after it.
 - For every `into_rpc()` registration site (§3.8 concurrency and shared state safety), verify explicit per-connection or global subscriber limits. 'Framework handles it' is not a valid PASS.
 - For pallets processing external-chain inherent data (see [target profile](../resources/target-profile.md#cross-chain-pallets) cross-chain pallets list), `pallet_timestamp` usage in cross-chain event/payload construction is DEFAULT FAIL. Agent must prove usage is local-only to override. 'Design choice' is NOT a valid PASS when event content derives from external chain observations.
 - For §3.4 consensus path symmetry, every type in the proposer tuple but absent from the verifier tuple is FAIL UNLESS the agent cites a specific code path where the verifier independently recomputes the value from its own data source. Invalid PASS justifications: 'value in digest', 'by design', 'framework handles it', 'extracted from header'. Valid PASS requires: 'verifier recomputes X at [file:line] from its own [source]'.
