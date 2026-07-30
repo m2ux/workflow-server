@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.6.0
+  version: 2.7.0
 ---
 
 ## Capability
@@ -71,13 +71,7 @@ Typical binds: `plan-prepare` → `initial`; `strategic-review` and `submit-for-
 
 ### pr-body-conformance
 
-- all-mandated-sections-present: Every section the selected pr-description template variant mandates is present in the rendered body as a literal heading. The mandated sections are defined in the resource — [Template (Initial)](../../resources/pr-description.md#template-initial) or [Template (Final)](../../resources/pr-description.md#template-final) — and are checked by name (e.g. `grep -F` each `## <heading>` the template requires, plus the Issue/Engineering link row). Optional sections (`Migration Notes`, `Screenshots`) are never required. A missing mandated section is a finding naming that section — the intra-section rules below do not substitute for this check, since a body that omits a section passes them vacuously.
-- summary-max-two-sentences: Summary section is 1-2 sentences, leads with the outcome, and includes measurable impact when available.
-- engineering-link-mandatory: Engineering link is present, resolved from the remote and current branch of the checkout that holds the planning folder — never from the host repo's when that folder is a checkout of its own — and resolves to a committed file on the remote. [render](./render.md) owns that resolution.
-- issue-link-or-explicit-placeholder: Issue line is present. When `issue-skipped == true`, render `🐛 _Issue: skipped_` as an explicit placeholder rather than dropping the line or fabricating a number.
-- no-commit-headings-in-changes: Changes section groups bullets by component (bold component name), not by Conventional Commits header or commit message.
-- no-files-changed-list: Changes section does not enumerate file paths. File-level detail belongs in the PR's Files-changed tab.
-- no-code-in-changes: Changes section is plain-language summary bullets describing what changed and why; no fenced code blocks, code snippets, or pasted signatures, and no inline code beyond unavoidable bare identifiers. The diff is the source of truth for code.
+A rendered body satisfies every criterion in [Rules](../../resources/pr-description.md#rules), which is their home — the guide that lays out the body owns what a conforming body looks like. Each failure is one finding named by the criterion it breaks.
 
 ### draft-first
 

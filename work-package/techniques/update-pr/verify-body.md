@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.2.0
 ---
 
 ## Capability
@@ -17,7 +17,7 @@ Final-template PR body markdown ([Template (Final)](../../resources/pr-descripti
 
 ### body_conforms
 
-True when the rendered body passes every rule in `pr-body-conformance` against the [Final template](../../resources/pr-description.md#template-final) mandated sections and link row; false otherwise.
+True when the rendered body satisfies every criterion in [Rules](../../resources/pr-description.md#rules); false otherwise.
 
 ### body_findings
 
@@ -27,6 +27,6 @@ List of `{ rule_id, detail }` entries, one per failed conformance rule, in rule-
 ## Protocol
 
 1. Render the Final-template body to `/tmp/pr-body.md`.
-2. Evaluate `all-mandated-sections-present` first: check that each mandated section heading for the selected template variant appears literally in the rendered text, per the mandates of [Template (Initial)](../../resources/pr-description.md#template-initial) or [Template (Final)](../../resources/pr-description.md#template-final) (e.g. `grep -F` each `## <heading>` the template variant requires, plus the Issue/Engineering link row). Append a `{ rule_id: all-mandated-sections-present, detail }` finding naming every mandated section that is absent. Do not treat a matching `## Summary` as evidence the remaining sections exist.
-3. Evaluate each remaining rule in `pr-body-conformance` against the rendered text. For each failure append `{ rule_id, detail }` to `{body_findings}`.
+2. Evaluate [Mandated sections present](../../resources/pr-description.md#mandated-sections-present) first, against the variant's own template — [Template (Initial)](../../resources/pr-description.md#template-initial) or [Template (Final)](../../resources/pr-description.md#template-final). Append one finding naming every mandated section that is absent.
+3. Evaluate each remaining criterion in [Rules](../../resources/pr-description.md#rules) against the rendered text. For each failure append `{ rule_id, detail }` to `{body_findings}`.
 4. Set `{body_conforms}` = true when `{body_findings}` is empty after all rules are evaluated; false otherwise.
