@@ -1792,3 +1792,15 @@ A durable reference identifies a Protocol phase by its position, so it keeps res
 **Do not flag:** Ordinals inside the same `## Protocol` that owns the numbering, where the phases and the reference move in one edit. A link to the phase's heading anchor, which fails a guard rather than drifting when the heading changes. Rules cited by dotted address — a rule name is not a position (`dotted-rule-address`). An ordinal that is part of a declared id, heading text, or quoted output rather than a citation.
 
 **Fix:** Cite the owner, not the index — name the technique or op holding the phase and let the reader find it there; anchor the heading where the citation genuinely needs that one phase. Where the pointer exists only to explain how the cited work happens, the citing invariant rarely needs it: delete the pointer and keep the constraint. See also `no-rule-protocol-restatement`, `anchored-protocol-references`, `stale-restatement-after-change`.
+
+### AP-137. unowned-harness-capability
+
+"capture session history via `inspect_session` (same stance as [generate-summary] / [verify-outcomes])"
+
+Several techniques reach a harness capability directly because no operation owns it, so each re-derives the call and the newest cites a fellow caller as though a caller were a home.
+
+**Detect:** One harness/MCP tool is named for the same capability in two or more technique bodies, and no operation in the tree declares that capability's product as its own Outputs. Signals: the tool's permitted argument values enumerated at more than one site; a citation whose target is another *consumer* of the tool rather than an owner of the capability — the bridge phrasings `single-rule-authority` lists, pointing sideways. Test: name the operation a caller would bind to obtain the value. If no file answers, the capability is unowned and every site is a private re-derivation that drifts on its own.
+
+**Do not flag:** A single call site — one consumer is not duplication, and inventing a wrapper against a hypothetical second is premature (`duplicate-shared-capability`). Sites that already bind or Apply a wrapping op, and the wrapper itself, where naming the tool is the point (`canonical-technique-reference`). Surfaces whose domain is the harness — engine, conduct, bootstrap and agent-entry prompts. Distinct callers of one tool for genuinely different capabilities.
+
+**Fix:** Author the operation that owns the capability, declaring its product on `## Outputs`; bind it as an activity step ahead of its consumers and let them declare that product as an input — never a Protocol `Apply` from each consumer (`pass-orchestration-in-technique`). Repoint every sideways citation at the owner. See also `no-duplicated-guidance`, `tool-contract-restated-in-protocol`.
