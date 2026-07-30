@@ -1109,13 +1109,6 @@
     },
     {
       "check": "read-resolution",
-      "site": "substrate-node-security-audit/techniques/write-report.md:82",
-      "detail": "{file} has no producer (declared id / $-local / workflow var / set-target)",
-      "verdict": "harmless",
-      "rationale": "artifact-template-placeholder"
-    },
-    {
-      "check": "read-resolution",
       "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
       "detail": "{display_name} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
