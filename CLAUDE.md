@@ -22,12 +22,18 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 
 - TypeScript; follow existing patterns in `src/` and `schemas/`.
 - Use clear, professional language; no process attribution in code comments (e.g. “Added by agent”).
+- **Describe the design, not the change to it.** Definitions (workflow, activity, technique, resource prose), code comments, doc comments, and **commit subjects** state the system as it is. A reader next year has no memory of the previous design, so naming it makes them learn it just to parse the sentence. Write `account for token usage per dispatch`, not `move usage accounting off the transition and onto the dispatch`; write `cost travels on its own call`, not `a transition can only account for a dispatch it exits`. Same for a value's absence: say what holds when it is missing, not what the old path did.
+  - **PR and issue bodies are the exception.** They exist to explain a change against what preceded it, and stop being read once merged — a reviewer needs the before-state to judge the change. Keep the narrative there and out of everything that persists.
+  - After a behaviour change, sweep for surviving descriptions of the old behaviour: doc comments, tool descriptions, technique `## Rules`, resource prose, READMEs. A grep for the old phrasing finds most of them; a stale claim reads as current fact.
+- **Prefer removing the thing that needs a prohibition.** When a change leaves prose warning "do not also use X", that usually means two paths now do one job. Retire one and the warning has nothing left to say — along with any validation or edge-case handling that existed only to police the overlap.
+- **Keep `CLAUDE.md` and `AGENTS.md` in sync by merging, never by copying.** They have diverged before, each gaining content the other lacked; overwriting one with the other silently drops the difference.
 
 ## Task management
 
 - Complete **one** task at a time unless the user asks for multiple.
 - For multi-step work, use todos and mark them complete as you finish; only one todo in progress at a time.
 - Request permission before starting a new task or making changes outside the current request.
+- *ALWAYS* use a local work-tree when working on a branch
 
 ## Boundaries
 
@@ -48,6 +54,43 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
   ```
 
   Other ops: `gh api repos/...`, `gh api --method PATCH|POST|GET ...`. Never use `gh pr *`.
+
+### GitHub auth and agent shell (required)
+
+Host auth is normally **keyring + SSH** (`gh` logged in as the active user; `origin` is `git@github.com:...`). Most agent GitHub failures are environment mistakes, not a broken login.
+
+1. **Do not set `GH_TOKEN` or `GITHUB_TOKEN` unless you have a known-good PAT.**  
+   `gh` prefers those env vars over keyring. A wrong or garbage value (including accidentally exporting command output into `GH_TOKEN`) yields `Bad credentials` / HTTP 401 even when `gh auth status` still shows a valid keyring login as inactive.
+
+2. **If auth looks wrong, clear env overrides and retry:**
+
+   ```bash
+   unset GH_TOKEN GITHUB_TOKEN
+   gh auth status
+   gh api user --jq .login
+   ```
+
+   Prefer bare `gh` / `git` with keyring. Never scrape `~/.config/gh/hosts.yml` into `GH_TOKEN` (tokens live in the keyring, not that file).
+
+3. **Run real GitHub network/SSH ops outside the Cursor sandbox.**  
+   Default sandboxed shells remap UIDs and break OpenSSH system config checks, typically:
+
+   ```text
+   Bad owner or permissions on /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf
+   fatal: Could not read from remote repository.
+   ```
+
+   For `git fetch` / `pull` / `push` / `ls-remote`, `ssh -T git@github.com`, and `gh api` against github.com, request full host permissions (unsandboxed), e.g. Shell `required_permissions: ["all"]`. Sandbox + SSH remotes + keyring do not mix reliably here.
+
+4. **Quick health check** (unsandboxed):
+
+   ```bash
+   unset GH_TOKEN GITHUB_TOKEN
+   gh auth status
+   gh api user --jq .login
+   ssh -T git@github.com
+   git ls-remote origin HEAD
+   ```
 
 ## Where to look
 
