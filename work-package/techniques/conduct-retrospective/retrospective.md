@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -25,6 +25,10 @@ Path to the planning folder where the final outcome, session-trace, and retrospe
 
 *(optional)* Opaque trace tokens accumulated across the run.
 
+### execution_trace
+
+Completed activities, checkpoint decisions, and the event history behind them.
+
 ## Outputs
 
 ### retrospective_document
@@ -44,7 +48,7 @@ Lean mechanical summary of resolved trace events (dispatch counts, tool counts, 
 
 ### 1. Capture History
 
-- If metadata repository exists, capture session history via `inspect_session` (same stance as [generate-summary](../../../meta/techniques/workflow-engine/generate-summary.md) / [verify-outcomes](../../../meta/techniques/workflow-engine/verify-outcomes.md) — not by reading `session.json`).
+- If metadata repository exists, capture session history from `{execution_trace}`.
 
 ### 2. Resolve Session Trace
 

@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 5.12.0
+version: 5.14.0
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -53,13 +53,7 @@ variables:
     defaultValue: false
   - name: target_workflow_outcomes
     type: string
-    description: The client workflow's declared outcomes, read by verify-outcomes during end-workflow close-out
-  - name: client_state
-    type: string
-    description: The dispatched client workflow's final variable state, read by verify-outcomes during end-workflow
-  - name: client_trace
-    type: string
-    description: The dispatched client workflow's execution trace, read by generate-summary during end-workflow
+    description: The client workflow's own outcome list, seeded in its bag
   - name: workflow_match_ambiguous
     type: boolean
     description: Whether the user request matched multiple workflows — gates the workflow-selection checkpoint in discover-session

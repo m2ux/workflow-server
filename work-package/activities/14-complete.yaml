@@ -1,5 +1,5 @@
 id: complete
-version: 1.7.0
+version: 1.9.0
 name: Complete Work Package
 description: Wrap up the work package after PR merge (or after review-mode close-out).
 required: true
@@ -67,6 +67,9 @@ steps:
       operator: "!="
       value: true
   - kind: technique
+    id: read-session
+    technique: workflow-engine::read-session
+  - kind: technique
     id: conduct-retrospective
     technique: conduct-retrospective::retrospective
   - kind: action
@@ -82,11 +85,22 @@ steps:
         target: broken_artifact_links == []
         message: "Planning artifacts carry links that do not resolve: {broken_artifact_links}. Repoint each to a target that resolves at the publish ref, then re-run."
   - kind: technique
+    id: resolve-close-out-publish
+    technique: resolve-artifact-publish
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: ==
+      value: true
+  - kind: technique
     id: publish-close-out-artifacts
     technique:
-      name: publish-review-artifacts
+      name: manage-git::artifact-commits
       inputs:
-        publishing_activity: complete
+        activity_name: complete
+        issue_key: issue_number
+        files: publishable_files
+        branch: artifact_publish_ref
     condition:
       type: simple
       variable: is_review_mode

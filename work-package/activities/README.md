@@ -366,11 +366,10 @@ Definition: [`13-submit-for-review.yaml`](./13-submit-for-review.yaml)
 ```mermaid
 graph TD
     entryNode(["Entry"]) --> reviewMode{"Review mode?"}
-    reviewMode -->|"yes"| consolidate["Consolidate review findings"]
-    consolidate --> genSummary["Generate review summary"]
-    genSummary --> cpSummaryApproval{"review-summary-approval checkpoint"}
-    cpSummaryApproval --> postReview["Post PR review"]
-    postReview --> awaitReview
+    reviewMode -->|"yes"| consolidate["Consolidate review findings → resolve publish ref → commit artifacts → generate review summary"]
+    consolidate --> cpSummaryApproval{"review-summary-approval checkpoint"}
+    cpSummaryApproval --> persistSummary["Persist review summary → post PR review"]
+    persistSummary --> awaitReview
 
     reviewMode -->|"no"| cpDco{"dco-sign-off-confirmation checkpoint"}
     cpDco --> stealthMode{"Stealth mode?"}
@@ -431,7 +430,7 @@ graph TD
     docsGate -->|"yes"| retrospective["Conduct the retrospective into COMPLETE.md, then verify planning-folder links"]
 
     retrospective --> publishGate{"Review mode?"}
-    publishGate -->|"yes"| republish["Publish close-out artifacts on the publish branch"]
+    publishGate -->|"yes"| republish["Resolve the publish ref, then commit the close-out artifacts onto it"]
     publishGate -->|"no"| removeWorktree
     republish --> removeWorktree["Remove component worktree (when this run created one)"]
     removeWorktree --> selectNext["Select next work package"]

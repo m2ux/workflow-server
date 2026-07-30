@@ -2,7 +2,7 @@
 name: pr-description
 description: PR description templates and link-row rendering forms.
 metadata:
-  version: 1.6.0
+  version: 1.8.0
   order: 12
   legacy_id: 12
 ---
@@ -140,8 +140,10 @@ Optional sections (add when applicable): `## Migration Notes` (required steps fo
 **Standard link row** (Issue = the GitHub issue in the target repo, never the Jira ticket):
 
 ```markdown
-🐛 [Issue]({TARGET_REPO_URL}/issues/{GITHUB_ISSUE_NUMBER})  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)
+🐛 [Issue]({TARGET_REPO_URL}/issues/{GITHUB_ISSUE_NUMBER})  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/{ENG_PLANNING_PATH}/{PLANNING_FOLDER}/README.md)
 ```
+
+`{ENG_PLANNING_PATH}` is the planning root relative to the root of the checkout `{ENG_BRANCH}` belongs to, so it carries the `.engineering/` segment only when the artifacts live directly in that checkout.
 
 **Issue-skipped placeholder** (when `issue_skipped == true` — the line is rendered, italicised, no link, so reviewers can tell the omission was intentional):
 
@@ -156,3 +158,35 @@ _Jira: [{JIRA_ISSUE_KEY}](https://{JIRA_DOMAIN}/browse/{JIRA_ISSUE_KEY})_
 ```
 
 ADR and test-plan links are added to the row when those artifacts exist (see [architecture-review](architecture-review.md), [test-plan](test-plan.md)).
+
+## Rules
+
+Conformance criteria for a rendered body. Each is evaluated against the rendered text and yields one finding per failure, named by its heading here.
+
+### Mandated sections present
+
+Every section the selected template variant mandates appears in the rendered body as a literal heading, checked by name — each `## <heading>` the variant requires, plus the Issue and Engineering link row. `Migration Notes` and `Screenshots` are never required. A missing section is a finding naming that section, and the per-section criteria below do not substitute for this one: a body that omits a section passes them vacuously.
+
+### Summary length
+
+The Summary section is one or two sentences, leads with the outcome, and carries measurable impact where a figure is known.
+
+### Engineering link present
+
+The Engineering link is present and resolves to a committed file on the remote. Its ref and repository come from the checkout holding the planning folder, never from the host repo's when that folder is a checkout of its own.
+
+### Issue line present
+
+The Issue line is present. When `issue_skipped` is true it renders the [Issue-skipped placeholder](#link-row-forms) rather than dropping the line or carrying a fabricated number.
+
+### Changes grouped by component
+
+The Changes section groups bullets by component, the component name in bold — not by Conventional Commits header and not by commit message.
+
+### Changes carry no file list
+
+The Changes section does not enumerate file paths. File-level detail is already in the PR's Files-changed tab.
+
+### Changes carry no code
+
+The Changes section is plain-language bullets saying what changed and why: no fenced blocks, no snippets, no pasted signatures, and no inline code beyond an unavoidable bare identifier. The diff is the source of truth for code.

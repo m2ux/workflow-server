@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.37.0
+version: 3.40.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first. Also supports review mode for auditing an existing PR or implementation end-to-end.
 author: m2ux
@@ -502,11 +502,11 @@ variables:
     defaultValue: ""
   - name: body_conforms
     type: boolean
-    description: "True once the rendered PR body has passed every rule in update-pr::rules.pr-body-conformance."
+    description: "True once the rendered PR body satisfies every conformance criterion in the pr-description guide."
     defaultValue: false
   - name: body_findings
     type: array
-    description: List of pr-body-conformance violations.
+    description: List of PR-body conformance violations.
     defaultValue: []
   - name: body_override_recorded
     type: boolean

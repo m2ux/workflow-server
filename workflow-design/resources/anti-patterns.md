@@ -1780,3 +1780,27 @@ Protocol restates a tool parameter's shape, which the tool's own schema already 
 **Do not flag:** The call signature naming which arguments a step passes (`next_activity { session_index, activity_id, step_manifest }`) — that is routing, not shape. What the caller does with the response. A workflow-specific constraint on an argument's *value* rather than its form, such as relaying a worker's map verbatim; and an obligation the schema cannot express, such as which dispatches must carry the argument at all.
 
 **Fix:** Keep the obligation and the reason; drop the shape. The schema is its one home ([Match the Harness Surface](./design-principles.md#21-match-the-harness-surface), [One Authoritative Home](./design-principles.md#6-one-authoritative-home)), and a restatement drifts from it — a Protocol bullet describing "two string fields" contradicts a schema that also accepts a keyed object for multi-output steps, and the caller cannot tell which governs.
+
+### AP-136. phase-cited-by-ordinal
+
+"the primitive step 5 resolves for the layout" / "[render](./render.md) step 3 owns that resolution"
+
+A durable reference identifies a Protocol phase by its position, so it keeps resolving after a renumber and points at work it no longer names.
+
+**Detect:** A rule, I/O description, Capability, resource body, README, or another technique's Protocol cites a phase of some `## Protocol` by ordinal — "step N", "phase N", "the Nth step" — rather than by the technique or op that owns it. An ordinal is not a symbol: it survives insertion, deletion and reordering by silently addressing whichever phase now holds that index, so the claim goes false with nothing failing. Test: insert one phase above the cited one and re-read the citing sentence; if it now names the wrong work, flag it.
+
+**Do not flag:** Ordinals inside the same `## Protocol` that owns the numbering, where the phases and the reference move in one edit. A link to the phase's heading anchor, which fails a guard rather than drifting when the heading changes. Rules cited by dotted address — a rule name is not a position (`dotted-rule-address`). An ordinal that is part of a declared id, heading text, or quoted output rather than a citation.
+
+**Fix:** Cite the owner, not the index — name the technique or op holding the phase and let the reader find it there; anchor the heading where the citation genuinely needs that one phase. Where the pointer exists only to explain how the cited work happens, the citing invariant rarely needs it: delete the pointer and keep the constraint. See also `no-rule-protocol-restatement`, `anchored-protocol-references`, `stale-restatement-after-change`.
+
+### AP-137. unowned-harness-capability
+
+"capture session history via `inspect_session` (same stance as [generate-summary] / [verify-outcomes])"
+
+Several techniques reach a harness capability directly because no operation owns it, so each re-derives the call and the newest cites a fellow caller as though a caller were a home.
+
+**Detect:** One harness/MCP tool is named for the same capability in two or more technique bodies, and no operation in the tree declares that capability's product as its own Outputs. Signals: the tool's permitted argument values enumerated at more than one site; a citation whose target is another *consumer* of the tool rather than an owner of the capability — the bridge phrasings `single-rule-authority` lists, pointing sideways. Test: name the operation a caller would bind to obtain the value. If no file answers, the capability is unowned and every site is a private re-derivation that drifts on its own.
+
+**Do not flag:** A single call site — one consumer is not duplication, and inventing a wrapper against a hypothetical second is premature (`duplicate-shared-capability`). Sites that already bind or Apply a wrapping op, and the wrapper itself, where naming the tool is the point (`canonical-technique-reference`). Surfaces whose domain is the harness — engine, conduct, bootstrap and agent-entry prompts. Distinct callers of one tool for genuinely different capabilities.
+
+**Fix:** Author the operation that owns the capability, declaring its product on `## Outputs`; bind it as an activity step ahead of its consumers and let them declare that product as an input — never a Protocol `Apply` from each consumer (`pass-orchestration-in-technique`). Repoint every sideways citation at the owner. See also `no-duplicated-guidance`, `tool-contract-restated-in-protocol`.

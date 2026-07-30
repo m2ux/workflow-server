@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.4.0
+  version: 3.5.0
 ---
 
 ## Capability
@@ -79,10 +79,6 @@ Specific, plain technical language: no vague descriptions ("various improvements
 
 Artifact filenames are prefixed with the server-provided `artifactPrefix`. Techniques declare bare names (e.g., `code-review.md`); the prefix is applied at write time (e.g., `09-code-review.md`). This groups related artifacts and sorts them in workflow order.
 
-### committed-to-parent
-
-Planning artifacts are regular files in the parent repo (`.engineering/artifacts/`). They MUST be committed and pushed to the parent repo before any PR or issue references them via URL, otherwise the link will 404.
-
 ### push-before-linking
 
-Any engineering link included in a PR body (📐 Engineering) MUST resolve to a committed file on the remote. Commit and push the planning folder BEFORE creating or updating the PR.
+Any engineering link — in a PR body (📐 Engineering), an issue, or a posted review — MUST resolve to a committed file on the remote, or the reader gets a 404. Commit and push the planning folder BEFORE writing a URL that points into it, via [manage-git](../manage-git/TECHNIQUE.md)::[artifact-commits](../manage-git/artifact-commits.md), which owns the checkout the commit lands in.

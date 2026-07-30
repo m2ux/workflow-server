@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.14.0
+version: 1.15.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 required: true
@@ -18,8 +18,22 @@ steps:
       operator: ==
       value: true
   - kind: technique
-    id: publish-review-artifacts
-    technique: publish-review-artifacts
+    id: resolve-artifact-publish
+    technique: resolve-artifact-publish
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: ==
+      value: true
+  - kind: technique
+    id: commit-review-artifacts
+    technique:
+      name: manage-git::artifact-commits
+      inputs:
+        activity_name: submit-for-review
+        issue_key: issue_number
+        files: publishable_files
+        branch: artifact_publish_ref
     condition:
       type: simple
       variable: is_review_mode
