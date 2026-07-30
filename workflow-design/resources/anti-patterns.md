@@ -1780,3 +1780,15 @@ Protocol restates a tool parameter's shape, which the tool's own schema already 
 **Do not flag:** The call signature naming which arguments a step passes (`next_activity { session_index, activity_id, step_manifest }`) — that is routing, not shape. What the caller does with the response. A workflow-specific constraint on an argument's *value* rather than its form, such as relaying a worker's map verbatim; and an obligation the schema cannot express, such as which dispatches must carry the argument at all.
 
 **Fix:** Keep the obligation and the reason; drop the shape. The schema is its one home ([Match the Harness Surface](./design-principles.md#21-match-the-harness-surface), [One Authoritative Home](./design-principles.md#6-one-authoritative-home)), and a restatement drifts from it — a Protocol bullet describing "two string fields" contradicts a schema that also accepts a keyed object for multi-output steps, and the caller cannot tell which governs.
+
+### AP-136. phase-cited-by-ordinal
+
+"the primitive step 5 resolves for the layout" / "[render](./render.md) step 3 owns that resolution"
+
+A durable reference identifies a Protocol phase by its position, so it keeps resolving after a renumber and points at work it no longer names.
+
+**Detect:** A rule, I/O description, Capability, resource body, README, or another technique's Protocol cites a phase of some `## Protocol` by ordinal — "step N", "phase N", "the Nth step" — rather than by the technique or op that owns it. An ordinal is not a symbol: it survives insertion, deletion and reordering by silently addressing whichever phase now holds that index, so the claim goes false with nothing failing. Test: insert one phase above the cited one and re-read the citing sentence; if it now names the wrong work, flag it.
+
+**Do not flag:** Ordinals inside the same `## Protocol` that owns the numbering, where the phases and the reference move in one edit. A link to the phase's heading anchor, which fails a guard rather than drifting when the heading changes. Rules cited by dotted address — a rule name is not a position (`dotted-rule-address`). An ordinal that is part of a declared id, heading text, or quoted output rather than a citation.
+
+**Fix:** Cite the owner, not the index — name the technique or op holding the phase and let the reader find it there; anchor the heading where the citation genuinely needs that one phase. Where the pointer exists only to explain how the cited work happens, the citing invariant rarely needs it: delete the pointer and keep the constraint. See also `no-rule-protocol-restatement`, `anchored-protocol-references`, `stale-restatement-after-change`.
