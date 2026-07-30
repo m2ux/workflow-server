@@ -11,7 +11,7 @@ Given a checklist (from a resource) and a set of items (functions, crate compone
 
 ### checklist_source
 
-Resource containing the checklist entries (e.g., [toolkit-checklist](../resources/toolkit-checklist.md) for toolkit, or the `§3` manual-review checklist for crate review — see [audit-template-reference](../resources/audit-template-reference.md) for the `§X.Y` section index that every reference below resolves to)
+Resource containing the checklist entries (e.g., [toolkit-checklist](../resources/toolkit-checklist.md) for toolkit, or the `§3` manual-review checklist for crate review — see [§3 Systematic Manual Review Strategies](../resources/audit-template-reference.md#3-systematic-manual-review-strategies) for the `§X.Y` entries that every reference below resolves to)
 
 ### items
 

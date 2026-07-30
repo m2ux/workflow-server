@@ -3,7 +3,7 @@ metadata:
   version: 1.0.0
 ---
 
-> The `§X.Y` identifiers used throughout this technique refer to the audit checklist taxonomy indexed in [audit-template-reference](../resources/audit-template-reference.md).
+> The `§X.Y` identifiers used throughout this technique refer to the audit checklist taxonomy in [§3 Systematic Manual Review Strategies](../resources/audit-template-reference.md#3-systematic-manual-review-strategies).
 
 ## Capability
 
