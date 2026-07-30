@@ -1,5 +1,5 @@
 id: sub-crate-review
-version: 1.10.0
+version: 1.11.0
 name: "Sub-Agent: Crate Deep Review"
 description: Structured crate review for Group A sub-agents.
 required: false
@@ -12,7 +12,10 @@ steps:
     technique: extract-invariants
   - kind: technique
     id: apply-checklist
-    technique: apply-checklist
+    technique:
+      name: apply-checklist
+      inputs:
+        checklist_source: audit-template-reference#3-systematic-manual-review-strategies
   - kind: technique
     id: cross-function-comparison
     technique:
