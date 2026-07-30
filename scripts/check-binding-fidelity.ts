@@ -510,6 +510,12 @@ export function collectViolations(): Violation[] {
   // ONE defect (on the op ↔ workflow seam), so entries key on (binding workflow, resolved op,
   // input) — the baseline stays stable when steps move between activities.
   const orphans = new Map<string, Violation>();
+  // Findings key on the seam, not the step, so a bind site that DOES pass an input has to be able to
+  // clear one an earlier site raised. A caller-supplied input is the convention for shared ops —
+  // `write-artifact` takes `bare_filename` only where the caller overrides the producing technique's
+  // declared artifact name — and one site passing it proves the value reaches the op by design, so
+  // "has no producer" is a false claim about that seam. Collect the proofs and subtract them below.
+  const callerSupplied = new Set<string>();
   // (1) binding-resolution + arg-conformance + orphan-input
   for (const s of steps) {
     const r = resolve(s.technique, s.wf, s.activityId);
@@ -534,15 +540,17 @@ export function collectViolations(): Violation[] {
     // (root/group) entries are ambient session context — B2 marks them; not checked per step.
     for (const [inputId, meta] of r.entry.own.inputs) {
       if (meta.hasDefault || meta.optional) continue;
-      if (inputId in s.inputsMap) continue;
-      if (producersOf(s.wf).has(inputId)) continue;
       const opId = r.homeWf === s.wf ? r.key : `${r.homeWf}::${r.key}`;
-      orphans.set(`${s.wf} ${opId} ${inputId}`, {
+      const seam = `${s.wf} ${opId} ${inputId}`;
+      if (inputId in s.inputsMap) { callerSupplied.add(seam); continue; }
+      if (producersOf(s.wf).has(inputId)) continue;
+      orphans.set(seam, {
         check: 'orphan-input', site: `${s.wf} :: ${opId}`,
         detail: `own input '${inputId}' has no producer in workflow '${s.wf}' (no step-binding entry, workflow variable, step output, or default)`,
       });
     }
   }
+  for (const seam of callerSupplied) orphans.delete(seam);
   v.push(...orphans.values());
   // (2) read-resolution — workflow-scoped
   for (const r of reads) {
