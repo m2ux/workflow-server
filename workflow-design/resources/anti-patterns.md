@@ -1756,3 +1756,15 @@ Two rules' triggers intersect and their consequences differ, so on the overlap n
 **Do not flag:** Entries whose triggers cannot both hold. A pair already ordered, whether by an explicit precedence clause or a group key supplying the context (`rule-group-disambiguation`). One invariant stated twice (`single-rule-authority`), and prescriptions that are mutually exclusive outright (`no-contradictory-rules`) — those are the identical and the irreconcilable ends of the same axis, and each is one finding, not two. A carve-out that names the entry it excepts, since that naming *is* the ordering.
 
 **Fix:** Prefer consolidation — one entry covering both cases, the narrower behaviour expressed as a condition inside it. Where both must remain, state the precedence in the narrower entry and name what it overrides by dotted address (`dotted-rule-address`). Splitting the triggers so they no longer intersect is equally valid where the split reflects a real distinction rather than being drawn to dissolve the overlap.
+
+### AP-134. whole-resource-for-one-section
+
+"per the [Review Comment Template](../resources/review-mode.md)"
+
+A citation delivers a whole resource where the citing prose reads one section.
+
+**Detect:** A technique cites a multi-section resource with no `#anchor` while the prose around the citation names a single section — the tell is link text, or an immediately adjacent phrase, that matches one of that resource's headings. Also flag a bare citation in a technique that anchors the same resource elsewhere: both ids resolve and both are delivered, so the file arrives alongside its own sections and its size displaces other bundled content.
+
+**Do not flag:** A consumer that genuinely reads the body — a filler working a `## Template` together with the `## Rules` populating it, an audit walking every entry, a technique whose needed sections are most of the file. Single-section resources. A bare citation in overview prose that introduces the resource rather than consulting it.
+
+**Fix:** Point the citation at the section it reads — `../resources/example.md#section-title`, link text the section title — one citation per section needed. Where a bare citation coexists with anchored ones, anchor it or drop it. Where no single section covers the need and the resource is large, that is a split candidate under [Resources at the Abstract Level; Split for Section Delivery](./design-principles.md#30-resources-at-the-abstract-level-split-for-section-delivery). See [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain).
