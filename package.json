@@ -28,6 +28,7 @@
     "check:variable-model": "tsx scripts/check-variable-model.ts",
     "check:fragments": "tsx scripts/check-fragments.ts",
     "check:review-mode": "tsx scripts/check-review-mode-gating.ts",
+    "check:checkpoint-entry": "tsx scripts/check-checkpoint-entry.ts",
     "check:stealth": "tsx scripts/check-stealth-isolation.ts",
     "check:audience": "tsx scripts/check-audience.ts",
     "check:refs": "tsx scripts/check-all-refs.ts",
@@ -37,7 +38,8 @@
     "check:delta": "tsx scripts/check-delta.ts",
     "worktree:provision": "bash scripts/provision-worktree.sh",
     "baseline:stamp": "tsx scripts/stamp-corpus-baseline.ts",
-    "bench:token": "tsx scripts/run-token-benchmark.ts"
+    "bench:token": "tsx scripts/run-token-benchmark.ts",
+    "bench:dispatch": "tsx scripts/run-dispatch-benchmark.ts"
   },
   "license": "MIT",
   "devDependencies": {

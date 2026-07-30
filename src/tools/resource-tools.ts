@@ -8,6 +8,7 @@ import { readResourceStructured } from '../loaders/resource-loader.js';
 import { composeActivityTechnique, projectTechnique } from '../loaders/technique-loader.js';
 import {
   sessionIndexParam,
+  agentIdParam,
   assertNoActiveCheckpoint,
   loadSessionForTool,
   advanceSession,
@@ -48,7 +49,8 @@ import { buildProvenanceContext, decorateTechniqueProvenance } from '../utils/bi
 import { seedDefaults } from '../utils/variable-seed.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { stringifyForResponse } from '../utils/serialization.js';
-import { contentHash, deliveredHash, dedupTechniqueBlocks, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
+import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
+import { hasDispatch, recordDispatch } from '../utils/dispatch.js';
 import { extractMarkdownSection, parseResourceRef } from '../utils/resource-ref.js';
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
@@ -599,18 +601,21 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   server.tool(
     'get_technique',
     'Load one fully composed technique (step-bound when `step_id` is set; otherwise the activity\'s or workflow\'s first). ' +
-    'Under `context_mode: "persistent"`, a byte-identical refetch may return an unchanged-reference; pass `full: true` when earlier content was summarized away. ' +
-    'Workers in fresh contexts must not rely on reference collapse — use full delivery.',
+    'Under `context_mode: "persistent"` or `bundle: "reference"`, a byte-identical refetch to the SAME `agent_id` scope may return an unchanged-reference; pass `full: true` when earlier content was summarized away. ' +
+    'A fresh worker context must not ask for reference delivery — it holds no prior delivery to reference.',
     {
       ...sessionIndexParam,
+      ...agentIdParam,
       step_id: z.string().optional().describe('Optional. Step id whose bound technique to load; omit for the activity/workflow first technique.'),
-      full: z.boolean().optional().describe('Optional. Force full content when persistent mode would return an unchanged-reference (e.g. after summarization).'),
+      bundle: z.enum(['reference', 'full']).optional().describe('Optional. "reference" collapses a refetch already delivered to THIS agent_id scope. "full" forces full delivery. Defaults from context_mode.'),
+      full: z.boolean().optional().describe('Optional. Force full content when reference delivery would return an unchanged-reference (e.g. after summarization). Overrides bundle.'),
     },
-    withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, step_id, full }) => {
+    withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, agent_id, step_id, bundle, full }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
       const workflow_id = state.workflowId;
+      const scope = deliveryScope(state, agent_id);
 
       assertNoActiveCheckpoint(state);
 
@@ -715,7 +720,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // manifested technique step had no fetch during the activity. Recorded
       // on both delivery paths — an unchanged-reference answer is still a
       // fetch.
-      const recordFetch = (draft: SessionFile): void => {
+      // `chars` (the full composed size, on both delivery paths) and `delivery` make the payload
+      // cost of a fetch summable from the ledger (#353 §1.3).
+      const recordFetch = (draft: SessionFile, delivery: 'full' | 'unchanged'): void => {
         draft.history.push({
           timestamp: new Date().toISOString(),
           type: 'technique_fetched',
@@ -723,22 +730,35 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           data: {
             techniqueId: techniqueId as string,
             ...(boundStep?.id ? { stepId: boundStep.id } : {}),
-            agentId: state.agentId,
+            agentId: scope,
+            chars: text.length,
+            delivery,
           },
         });
       };
 
-      // Delta delivery for persistent-context sessions: a refetch whose composed
-      // content is byte-identical to what this session+agent already received
-      // returns a short unchanged-reference instead of the full payload. The
-      // ledger is keyed per agent and per technique id; `full: true` is the
-      // escape for a context that no longer holds the earlier delivery.
+      // An out-of-band dispatch may never call get_activity, so its dispatch would otherwise go
+      // unrecorded. It does mint its own `agent_id`, so the first server call bearing an unseen
+      // scope records the dispatch (#353 §1.3).
+      const recordFirstArrival = (draft: SessionFile): void => {
+        if (hasDispatch(state, scope)) return;
+        recordDispatch(draft, { scope, kind: 'fresh', activityId: state.currentActivity || undefined });
+      };
+
+      // Reference-not-repeat delivery: a refetch whose composed content is byte-identical to what
+      // this AGENT CONTEXT already received returns a short unchanged-reference instead of the full
+      // payload. Active via the per-call `bundle` opt-in (which a resumed worker uses — #353 §1.2)
+      // or the session's declared context mode; `full: true` overrides both, for a context that no
+      // longer holds the earlier delivery.
+      const referenceMode = full !== true
+        && (bundle ?? (state.contextMode === 'persistent' ? 'reference' : 'full')) === 'reference';
       const ledgerKey = `technique:${techniqueId}`;
       const hash = contentHash(text);
-      if (state.contextMode === 'persistent' && full !== true && deliveredHash(state, ledgerKey) === hash) {
+      if (referenceMode && deliveredHash(state, ledgerKey, scope) === hash) {
         const next = advanceSession(state, (draft) => {
           draft.currentTechnique = techniqueId as string;
-          recordFetch(draft);
+          recordFirstArrival(draft);
+          recordFetch(draft, 'unchanged');
         });
         await saveSessionForTool(loaded, next);
 
@@ -748,7 +768,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         const stub = stringifyForResponse({
           id: techniqueId,
           ...unchangedMarker(hash),
-          note: 'Byte-identical to the composed technique already delivered in this session — reuse it from your context. Pass full: true to re-fetch the full content.',
+          note: 'Byte-identical to the composed technique already delivered to this agent context — reuse it from your context. Pass full: true to re-fetch the full content.',
         });
         return {
           content: [{ type: 'text' as const, text: `session_index: ${session_index}\n\n${stub}` }],
@@ -761,14 +781,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // block hashes are recorded alongside the whole-technique key.
       let body = text;
       const blockDeliveries: Record<string, string> = {};
-      if (state.contextMode === 'persistent' && full !== true) {
-        const deduped = dedupTechniqueBlocks(ordered, state, blockDeliveries);
+      if (referenceMode) {
+        const deduped = dedupTechniqueBlocks(ordered, state, blockDeliveries, scope);
         body = stringifyForResponse(deduped);
       }
       const next = advanceSession(state, (draft) => {
         draft.currentTechnique = techniqueId as string;
-        recordDeliveries(draft, state.agentId, { [ledgerKey]: hash, ...blockDeliveries });
-        recordFetch(draft);
+        recordDeliveries(draft, scope, { [ledgerKey]: hash, ...blockDeliveries });
+        recordFirstArrival(draft);
+        recordFetch(draft, 'full');
       });
       await saveSessionForTool(loaded, next);
 
@@ -782,19 +803,22 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   server.tool(
     'get_resource',
     'Load a resource by id (optional `#section`). Bare slug = session workflow; `workflow/slug` = cross-workflow. ' +
-    'Under `context_mode: "persistent"`, a byte-identical refetch may return an unchanged-reference; pass `full: true` when content was summarized away. ' +
-    'Never use persistent/`bundle: "reference"` assumptions on disposable workers — they need fresh/full delivery.',
+    'Under `context_mode: "persistent"` or `bundle: "reference"`, a byte-identical refetch to the SAME `agent_id` scope may return an unchanged-reference; pass `full: true` when content was summarized away. ' +
+    'A freshly spawned worker must not ask for reference delivery — it holds no prior delivery to reference.',
     {
       ...sessionIndexParam,
+      ...agentIdParam,
       resource_id: z.string().describe('Resource ref: bare slug, `workflow/slug`, optional `#section` anchor.'),
-      full: z.boolean().optional().describe('Optional. Force full content when persistent mode would return an unchanged-reference (e.g. after summarization).'),
+      bundle: z.enum(['reference', 'full']).optional().describe('Optional. "reference" collapses a refetch already delivered to THIS agent_id scope. "full" forces full delivery. Defaults from context_mode.'),
+      full: z.boolean().optional().describe('Optional. Force full content when reference delivery would return an unchanged-reference (e.g. after summarization). Overrides bundle.'),
     },
-    withAuditLog('get_resource', withSessionStoreErrors(async ({ session_index, resource_id, full }) => {
+    withAuditLog('get_resource', withSessionStoreErrors(async ({ session_index, agent_id, resource_id, bundle, full }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
       assertNoActiveCheckpoint(state);
       const workflow_id = state.workflowId;
+      const scope = deliveryScope(state, agent_id);
 
       const parsed = parseResourceRef(resource_id);
       const targetWorkflow = parsed.workflowId ?? workflow_id;
@@ -820,13 +844,20 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // session history for observability only — the server cannot know which
       // resources an activity requires, so no validation reads these events.
       // Recorded on both delivery paths — an unchanged-reference answer is still a fetch.
-      const recordFetch = (draft: SessionFile): void => {
+      const recordFetch = (draft: SessionFile, delivery: 'full' | 'unchanged', chars: number): void => {
         draft.history.push({
           timestamp: new Date().toISOString(),
           type: 'resource_fetched',
           ...(state.currentActivity ? { activity: state.currentActivity } : {}),
-          data: { resourceId: resource_id, agentId: state.agentId },
+          data: { resourceId: resource_id, agentId: scope, chars, delivery },
         });
+      };
+
+      // As in get_technique: an out-of-band dispatch that never calls get_activity still announces
+      // itself on the first server call bearing its own, unseen scope (#353 §1.3).
+      const recordFirstArrival = (draft: SessionFile): void => {
+        if (hasDispatch(state, scope)) return;
+        recordDispatch(draft, { scope, kind: 'fresh', activityId: state.currentActivity || undefined });
       };
 
       const { content: resourceContent, ...meta } = result.value;
@@ -844,16 +875,19 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // bare and sectioned fetches never share a slot.
       const ledgerKey = `resource:${resource_id}`;
       const hash = contentHash(fullText);
-      if (state.contextMode === 'persistent' && full !== true && deliveredHash(state, ledgerKey) === hash) {
+      const referenceMode = full !== true
+        && (bundle ?? (state.contextMode === 'persistent' ? 'reference' : 'full')) === 'reference';
+      if (referenceMode && deliveredHash(state, ledgerKey, scope) === hash) {
         const next = advanceSession(state, (draft) => {
-          recordFetch(draft);
+          recordFirstArrival(draft);
+          recordFetch(draft, 'unchanged', fullText.length);
         });
         await saveSessionForTool(loaded, next);
 
         const stub = stringifyForResponse({
           resource_id,
           ...unchangedMarker(hash),
-          note: 'Byte-identical to the resource already delivered in this session — reuse it from your context. Pass full: true to re-fetch the full content.',
+          note: 'Byte-identical to the resource already delivered to this agent context — reuse it from your context. Pass full: true to re-fetch the full content.',
         });
         return {
           content: [{ type: 'text' as const, text: `session_index: ${session_index}\n\n${stub}` }],
@@ -862,8 +896,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       }
 
       const next = advanceSession(state, (draft) => {
-        recordDeliveries(draft, state.agentId, { [ledgerKey]: hash });
-        recordFetch(draft);
+        recordDeliveries(draft, scope, { [ledgerKey]: hash });
+        recordFirstArrival(draft);
+        recordFetch(draft, 'full', fullText.length);
       });
       await saveSessionForTool(loaded, next);
 

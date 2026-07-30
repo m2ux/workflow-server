@@ -284,6 +284,7 @@
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           <tr><td><code>context_tokens</code></td><td><code>integer</code></td><td>yes</td><td>Your worker context window in tokens. Required so the server can size inline technique bundling.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
           <tr><td><code>bundle</code></td><td><code>&quot;reference&quot; | &quot;full&quot;</code></td><td>no</td><td><code>reference</code>: return unchanged markers for content already delivered. <code>full</code>: always return complete text.</td></tr>
           </tbody>
         </table>
@@ -383,7 +384,9 @@
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
           <tr><td><code>step_id</code></td><td><code>string</code></td><td>no</td><td>Step within the current activity. Omit to get the first technique for the activity or workflow.</td></tr>
+          <tr><td><code>bundle</code></td><td><code>&quot;reference&quot; | &quot;full&quot;</code></td><td>no</td><td><code>reference</code>: return unchanged markers for content already delivered. <code>full</code>: always return complete text.</td></tr>
           <tr><td><code>full</code></td><td><code>boolean</code></td><td>no</td><td>Force full content even when persistent mode would return an unchanged marker (<code>get_technique</code> or <code>get_resource</code>).</td></tr>
           </tbody>
         </table>
@@ -405,7 +408,9 @@
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
           <tr><td><code>resource_id</code></td><td><code>string</code></td><td>yes</td><td>Resource slug, optionally workflow-prefixed (<code>meta/bootstrap-protocol</code>), optionally with <code>#section</code> anchor.</td></tr>
+          <tr><td><code>bundle</code></td><td><code>&quot;reference&quot; | &quot;full&quot;</code></td><td>no</td><td><code>reference</code>: return unchanged markers for content already delivered. <code>full</code>: always return complete text.</td></tr>
           <tr><td><code>full</code></td><td><code>boolean</code></td><td>no</td><td>Force full content even when persistent mode would return an unchanged marker (<code>get_technique</code> or <code>get_resource</code>).</td></tr>
           </tbody>
         </table>

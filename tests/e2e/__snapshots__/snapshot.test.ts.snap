@@ -267,6 +267,13 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           "option": "rationale-confirmed",
           "setVariable": undefined,
         },
+        {
+          "id": "local-validation-permission",
+          "option": "run-locally",
+          "setVariable": {
+            "run_local_validation": true,
+          },
+        },
       ],
       "manifestStatus": "valid",
       "next": "validate",
@@ -291,16 +298,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "artifactsWritten": [
         "10-test-suite-review.md",
       ],
-      "checkpoints": [
-        {
-          "id": "local-validation-permission",
-          "option": "run-locally",
-          "setVariable": {
-            "mark_progress_na": false,
-            "run_local_validation": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
@@ -763,6 +761,13 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           "option": "rationale-confirmed",
           "setVariable": undefined,
         },
+        {
+          "id": "local-validation-permission",
+          "option": "run-locally",
+          "setVariable": {
+            "run_local_validation": true,
+          },
+        },
       ],
       "manifestStatus": "valid",
       "next": "validate",
@@ -787,16 +792,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "artifactsWritten": [
         "10-test-suite-review.md",
       ],
-      "checkpoints": [
-        {
-          "id": "local-validation-permission",
-          "option": "run-locally",
-          "setVariable": {
-            "mark_progress_na": false,
-            "run_local_validation": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
@@ -1290,6 +1286,13 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           "option": "rationale-confirmed",
           "setVariable": undefined,
         },
+        {
+          "id": "local-validation-permission",
+          "option": "run-locally",
+          "setVariable": {
+            "run_local_validation": true,
+          },
+        },
       ],
       "manifestStatus": "valid",
       "next": "validate",
@@ -1314,16 +1317,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "artifactsWritten": [
         "10-test-suite-review.md",
       ],
-      "checkpoints": [
-        {
-          "id": "local-validation-permission",
-          "option": "run-locally",
-          "setVariable": {
-            "mark_progress_na": false,
-            "run_local_validation": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
@@ -1776,6 +1770,13 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           "option": "rationale-confirmed",
           "setVariable": undefined,
         },
+        {
+          "id": "local-validation-permission",
+          "option": "run-locally",
+          "setVariable": {
+            "run_local_validation": true,
+          },
+        },
       ],
       "manifestStatus": "valid",
       "next": "validate",
@@ -1800,16 +1801,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "artifactsWritten": [
         "10-test-suite-review.md",
       ],
-      "checkpoints": [
-        {
-          "id": "local-validation-permission",
-          "option": "run-locally",
-          "setVariable": {
-            "mark_progress_na": false,
-            "run_local_validation": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
@@ -2165,6 +2157,13 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
           "option": "rationale-confirmed",
           "setVariable": undefined,
         },
+        {
+          "id": "local-validation-permission",
+          "option": "run-locally",
+          "setVariable": {
+            "run_local_validation": true,
+          },
+        },
       ],
       "manifestStatus": "valid",
       "next": "validate",
@@ -2189,16 +2188,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "artifactsWritten": [
         "10-test-suite-review.md",
       ],
-      "checkpoints": [
-        {
-          "id": "local-validation-permission",
-          "option": "run-locally",
-          "setVariable": {
-            "mark_progress_na": false,
-            "run_local_validation": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],
@@ -2220,7 +2210,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "10-architecture-summary.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "warning",
+      "manifestStatus": "valid",
       "next": "submit-for-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2572,6 +2562,13 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           "option": "rationale-confirmed",
           "setVariable": undefined,
         },
+        {
+          "id": "local-validation-permission",
+          "option": "run-locally",
+          "setVariable": {
+            "run_local_validation": true,
+          },
+        },
       ],
       "manifestStatus": "valid",
       "next": "validate",
@@ -2596,16 +2593,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "artifactsWritten": [
         "10-test-suite-review.md",
       ],
-      "checkpoints": [
-        {
-          "id": "local-validation-permission",
-          "option": "run-locally",
-          "setVariable": {
-            "mark_progress_na": false,
-            "run_local_validation": true,
-          },
-        },
-      ],
+      "checkpoints": [],
       "manifestStatus": "warning",
       "next": "strategic-review",
       "orphanCheckpoints": [],

@@ -59,6 +59,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'every agent-audience artifact is JSON on disk',
   },
   {
+    id: 'checkpoint-entry',
+    script: 'scripts/check-checkpoint-entry.ts',
+    npmScript: 'check:checkpoint-entry',
+    scope: 'corpus',
+    json: true,
+    proves: 'no activity opens with a checkpoint, so no dispatch exists only to ask a question',
+  },
+  {
     id: 'self-provisioned-input',
     script: 'scripts/check-self-provisioned-input.ts',
     npmScript: 'check:self-input',

@@ -163,4 +163,152 @@ describe('fetch observability (#166 B8)', () => {
     expect(fidelity[0]).toContain('resolve-repo-root');
     expect(fidelity[0]).not.toContain('detect-review-mode');
   });
+
+  /**
+   * Dispatch accounting and delivery magnitude (#353 §1.3).
+   *
+   * The measured walk recorded 11 `activity_usage` events against 33 real dispatches, and its
+   * delivery events carried no size at all — so every payload figure in its analysis was an
+   * estimate. These tests pin the two instruments that make the same run measurable: one
+   * `activity_dispatched` event per dispatched context arriving, discriminated fresh vs resume,
+   * and a `chars` / `delivery` pair on every delivery event.
+   */
+  describe('dispatch accounting and delivery magnitude (#353)', () => {
+    it('records one activity_dispatched per get_activity, fresh then resume', async () => {
+      const slug = '2026-07-30-dispatch-events';
+      const idx = await startSession(slug, 'orchestrator');
+      await enterActivity(idx, 'start-work-package');
+
+      const spawn = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1' },
+      });
+      const resume = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1', bundle: 'reference' },
+      });
+      expect((spawn._meta as Record<string, unknown>)['dispatch']).toBe('fresh');
+      expect((resume._meta as Record<string, unknown>)['dispatch']).toBe('resume');
+
+      const dispatches = sessionHistory(slug).filter(h => h.type === 'activity_dispatched');
+      expect(dispatches.map(d => (d.data as { dispatch: string }).dispatch)).toEqual(['fresh', 'resume']);
+      expect(dispatches.every(d => d.activity === 'start-work-package')).toBe(true);
+      expect(dispatches.every(d => (d.data as { agentId: string }).agentId === 'w-1')).toBe(true);
+
+      // `chars` is the delivered payload size, so the fresh/resume pair measures what reference
+      // delivery on the resume path saved — the figure the success criteria ask for.
+      const [freshChars, resumeChars] = dispatches.map(d => (d.data as { chars: number }).chars);
+      expect(freshChars).toBeGreaterThan(0);
+      expect(resumeChars).toBeLessThan(freshChars!);
+    });
+
+    it('reads a second worker on the same session as its own fresh dispatch', async () => {
+      const slug = '2026-07-30-dispatch-two-workers';
+      const idx = await startSession(slug, 'orchestrator');
+      await enterActivity(idx, 'start-work-package');
+
+      for (const agent of ['w-a', 'w-b']) {
+        const result = await client.callTool({
+          name: 'get_activity',
+          arguments: { session_index: idx, context_tokens: 200_000, agent_id: agent, bundle: 'reference' },
+        });
+        expect((result._meta as Record<string, unknown>)['dispatch']).toBe('fresh');
+      }
+
+      const dispatches = sessionHistory(slug).filter(h => h.type === 'activity_dispatched');
+      expect(dispatches).toHaveLength(2);
+      expect(dispatches.every(d => (d.data as { dispatch: string }).dispatch === 'fresh')).toBe(true);
+    });
+
+    it('records an out-of-band dispatch that only ever fetches a technique or resource', async () => {
+      const slug = '2026-07-30-dispatch-out-of-band';
+      const idx = await startSession(slug, 'orchestrator');
+      await enterActivity(idx, 'start-work-package');
+
+      // No get_activity at all — the shape of the run's out-of-band prism analysis, which cost
+      // 176K tokens and left no server record. Its own agent_id is enough to record the dispatch.
+      for (let i = 0; i < 2; i++) {
+        const result = await client.callTool({
+          name: 'get_technique',
+          arguments: { session_index: idx, step_id: 'detect-review-mode', agent_id: 'prism-oob' },
+        });
+        expect(result.isError).toBeFalsy();
+      }
+      await client.callTool({
+        name: 'get_resource',
+        arguments: { session_index: idx, resource_id: 'review-mode', agent_id: 'prism-oob' },
+      });
+
+      // One event for the dispatch, not one per call.
+      const dispatches = sessionHistory(slug).filter(h => h.type === 'activity_dispatched');
+      expect(dispatches).toHaveLength(1);
+      expect((dispatches[0]!.data as { agentId: string; dispatch: string })).toMatchObject({
+        agentId: 'prism-oob',
+        dispatch: 'fresh',
+      });
+    });
+
+    it('carries chars and a full/unchanged discriminator on every delivery event', async () => {
+      const slug = '2026-07-30-delivery-magnitude';
+      const idx = await startSession(slug, 'orchestrator');
+      await enterActivity(idx, 'start-work-package');
+
+      for (const bundle of [undefined, 'reference']) {
+        await client.callTool({
+          name: 'get_technique',
+          arguments: { session_index: idx, step_id: 'detect-review-mode', agent_id: 'w-1', ...(bundle ? { bundle } : {}) },
+        });
+        await client.callTool({
+          name: 'get_resource',
+          arguments: { session_index: idx, resource_id: 'review-mode', agent_id: 'w-1', ...(bundle ? { bundle } : {}) },
+        });
+      }
+
+      const history = sessionHistory(slug);
+      const deliveries = history.filter(h => h.type === 'technique_fetched' || h.type === 'resource_fetched');
+      expect(deliveries.length).toBe(4);
+      for (const event of deliveries) {
+        const data = event.data as { chars?: number; delivery?: string };
+        expect(typeof data.chars, `${event.type} carries chars`).toBe('number');
+        expect(data.chars!).toBeGreaterThan(0);
+        expect(['full', 'unchanged']).toContain(data.delivery);
+      }
+      // `chars` is the FULL payload size on both paths, so delivered and saved are both summable:
+      // the same content collapsed on the second pass reports the same magnitude it saved.
+      const byType = (type: string): Array<{ chars: number; delivery: string }> =>
+        deliveries.filter(d => d.type === type).map(d => d.data as { chars: number; delivery: string });
+      for (const type of ['technique_fetched', 'resource_fetched']) {
+        const pair = byType(type);
+        expect(pair.map(p => p.delivery)).toEqual(['full', 'unchanged']);
+        expect(pair[1]!.chars).toBe(pair[0]!.chars);
+      }
+    });
+
+    it('counts a dispatch per bundled activity delivery alongside its per-step magnitudes', async () => {
+      const slug = '2026-07-30-bundled-magnitude';
+      const idx = await startSession(slug, 'orchestrator');
+      await enterActivity(idx, 'start-work-package');
+
+      await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1' },
+      });
+      await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1', bundle: 'reference' },
+      });
+
+      const bundled = sessionHistory(slug).filter(h => h.type === 'technique_bundled');
+      expect(bundled.length).toBeGreaterThan(0);
+      for (const event of bundled) {
+        const data = event.data as { chars?: number; delivery?: string; agentId?: string };
+        expect(typeof data.chars).toBe('number');
+        expect(data.agentId).toBe('w-1');
+        expect(['full', 'unchanged']).toContain(data.delivery);
+      }
+      // The second pass collapsed what the first delivered.
+      expect(bundled.some(e => (e.data as { delivery: string }).delivery === 'full')).toBe(true);
+      expect(bundled.some(e => (e.data as { delivery: string }).delivery === 'unchanged')).toBe(true);
+    });
+  });
 });

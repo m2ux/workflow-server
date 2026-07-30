@@ -30,6 +30,27 @@ export const contextTokensParam = {
 
 
 /**
+ * Zod parameter spread for the optional `agent_id` on the three delivery tools
+ * (`get_activity`, `get_technique`, `get_resource`).
+ *
+ * A dispatched worker authenticates against the ORCHESTRATOR's `session_index`,
+ * so the call itself has to say which context it is for the delivery ledger to
+ * tell one worker from another. `agent_id` is that identity: the orchestrator
+ * mints one per dispatch and reuses it verbatim when it resumes that worker, so
+ * a fresh spawn reads an empty ledger (full delivery) and a resumed context
+ * reads its own (unchanged-references). It scopes the ledger only — it never
+ * rebinds `session.agentId`. Omitted, the scope is the session's own agent id
+ * (see `deliveryScope` in src/utils/delivery.ts).
+ */
+export const agentIdParam = {
+  agent_id: z.string().min(1).optional().describe(
+    'Optional. Identity of the AGENT CONTEXT making this call — mint one per dispatched worker and reuse it verbatim when resuming that worker. '
+    + 'Scopes the delivery ledger (and the dispatch record) to that context: a fresh id gets full delivery, a reused id gets unchanged-references for what that context already received. '
+    + 'Omit for solo walks. Never rebinds the session agent.'),
+};
+
+
+/**
  * Throws if the SessionFile has an active checkpoint. Call this in every
  * authenticated tool handler EXCEPT `respond_checkpoint` (the resolution
  * mechanism) and `present_checkpoint` (which loads the checkpoint definition

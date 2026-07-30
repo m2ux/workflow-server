@@ -16,12 +16,14 @@ import { buildProvenanceContext, decorateTechniqueProvenance } from '../utils/bi
 import { withAuditLog, logWarn } from '../logging.js';
 import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
-import { contentHash, deliveredHash, dedupTechniqueBlocks, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
+import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
+import { dispatchKind, recordDispatch } from '../utils/dispatch.js';
 import { extractResourceIds } from '../utils/resource-ref.js';
 import { DEFAULT_MAX_EAGER_RESOURCE_CHARS, loadResourceDelivery } from '../utils/resource-delivery.js';
 import {
   sessionIndexParam,
   contextTokensParam,
+  agentIdParam,
   assertNoActiveCheckpoint,
   loadSessionForTool,
   advanceSession,
@@ -625,13 +627,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
   server.tool('get_activity', 'Worker tool: load the current activity definition (from session state — no activity_id). `context_tokens` is REQUIRED for eager step-technique bundling, and bounds the whole eager bundle (step technique bodies plus any bundled resource bodies). ' +
     'Under persistent/`bundle: "reference"`, already-delivered content may collapse to unchanged markers — ONLY valid when THIS agent received the earlier payloads; technique-linked resource BODIES also arrive under a sibling `resources` map. ' +
     'Under full delivery, that map is not sent: the linked ids arrive under `resource_refs` and you fetch the ones you need with get_resource. `resources_note` states which shape this response used. ' +
-    'Use `bundle: "full"` after summarization or for disposable workers (never `bundle: "reference"` on fresh workers).',
+    'Use `bundle: "full"` after summarization; a FRESH worker must not pass `bundle: "reference"` (it holds no prior delivery), but a RESUMED worker that passes its dispatch `agent_id` may.',
     {
       ...sessionIndexParam,
       ...contextTokensParam,
-      bundle: z.enum(['reference', 'full']).optional().describe('Optional. "reference" collapses already-delivered bundle content (solo only). "full" forces full delivery. Defaults from context_mode.'),
+      ...agentIdParam,
+      bundle: z.enum(['reference', 'full']).optional().describe('Optional. "reference" collapses content already delivered to THIS agent_id scope. "full" forces full delivery. Defaults from context_mode.'),
     },
-    withAuditLog('get_activity', withSessionStoreErrors(async ({ session_index, context_tokens, bundle }) => {
+    withAuditLog('get_activity', withSessionStoreErrors(async ({ session_index, context_tokens, agent_id, bundle }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -669,8 +672,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         : new Map<string, string>();
 
       // Reference-not-repeat delivery: active via per-call opt-in or the session's declared
-      // context mode. Full delivery stays the default — in disposable-worker topologies each
-      // call lands in a fresh context and the repeated bundle is load-bearing.
+      // context mode. Full delivery stays the default — a freshly spawned worker lands in an
+      // empty context and the repeated bundle is load-bearing. The ledger this reads and writes
+      // is scoped to the calling AGENT CONTEXT (#353 §1.1), so a resumed worker that passes its
+      // dispatch `agent_id` collapses only what THAT context already received.
+      const scope = deliveryScope(state, agent_id);
       const referenceMode = (bundle ?? (state.contextMode === 'persistent' ? 'reference' : 'full')) === 'reference';
       // Hashes of content delivered in full by THIS call, recorded to the session's delivery
       // ledger. Recorded in every mode so a later per-call reference opt-in can refer back to
@@ -695,7 +701,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         for (const [key, body] of Object.entries(bundleTechniques)) {
           const hash = contentHash(stringifyForResponse(body));
           const ledgerKey = `bundle:${key}`;
-          if (referenceMode && deliveredHash(state, ledgerKey) === hash) {
+          if (referenceMode && deliveredHash(state, ledgerKey, scope) === hash) {
             bundleTechniques[key] = unchangedMarker(hash);
           } else {
             newDeliveries[ledgerKey] = hash;
@@ -709,7 +715,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (bundleData['rules'] !== undefined) {
         const rulesHash = contentHash(stringifyForResponse(bundleData['rules']));
         const rulesKey = `bundle:rules:${rulesHash}`;
-        if (referenceMode && deliveredHash(state, rulesKey) === rulesHash) {
+        if (referenceMode && deliveredHash(state, rulesKey, scope) === rulesHash) {
           bundleData['rules'] = unchangedMarker(rulesHash);
         } else {
           newDeliveries[rulesKey] = rulesHash;
@@ -732,8 +738,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // ledger key with get_technique, so persistent-context refetches of bundled content collapse
       // to unchanged-references in either direction.
       const bundledStepTechniques: Record<string, unknown> = {};
-      const bundledSteps: Array<{ stepId: string; techniqueId: string }> = [];
-      const bundledResourceIds: string[] = [];
+      // `chars` is the FULL composed size on both paths and `delivery` says which path ran, so the
+      // technique_bundled / resource_fetched events below report delivered and saved characters
+      // (#353 §1.3).
+      const bundledSteps: Array<{ stepId: string; techniqueId: string; chars: number; delivery: 'full' | 'unchanged' }> = [];
+      const bundledResourceDeliveries: Array<{ resourceId: string; chars: number; delivery: 'full' | 'unchanged' }> = [];
       /** Linked resource ids this response does NOT deliver a body for — the worker fetches these. */
       const resourceRefIds: string[] = [];
       const linkedResourceIds = new Set<string>();
@@ -796,7 +805,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           if (text.length > perTechniqueCap) continue;
           const ledgerKey = `technique:${techniqueId}`;
           const hash = contentHash(text);
-          const alreadyDelivered = referenceMode && (deliveredHash(state, ledgerKey) === hash || newDeliveries[ledgerKey] === hash);
+          const alreadyDelivered = referenceMode && (deliveredHash(state, ledgerKey, scope) === hash || newDeliveries[ledgerKey] === hash);
           // ▼ STEP arrival marker: each entry is a discrete, self-describing unit that substitutes
           // for the intentional get_technique { step_id } call inlining removes (#189 C1c(C)1).
           const stepMarker = `▼ STEP ${step.id!} · technique ${techniqueId}`;
@@ -817,7 +826,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             // Under reference mode, collapse any shared contract/rules block already delivered (by a
             // sibling bundled step or an earlier fetch) to a marker while the core stays full.
             const projected = referenceMode
-              ? dedupTechniqueBlocks(projectTechnique(technique), state, newDeliveries)
+              ? dedupTechniqueBlocks(projectTechnique(technique), state, newDeliveries, scope)
               : projectTechnique(technique);
             bundledStepTechniques[step.id!] = { marker: stepMarker, ...projected };
           }
@@ -825,7 +834,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           // delivery collapses to an unchanged-marker (markers omit link text). Only for steps
           // actually included in the bundle (after the budget break above).
           for (const resourceId of extractResourceIds(text)) linkedResourceIds.add(resourceId);
-          bundledSteps.push({ stepId: step.id!, techniqueId });
+          bundledSteps.push({
+            stepId: step.id!, techniqueId,
+            chars: text.length, delivery: alreadyDelivered ? 'unchanged' : 'full',
+          });
           bundlingWarnings.push(...provenanceWarnings);
         }
 
@@ -852,14 +864,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               if (!loaded.success) continue;
               const { hash, content, id, version } = loaded.value;
               const ledgerKey = `resource:${resourceId}`;
-              if (deliveredHash(state, ledgerKey) === hash || newDeliveries[ledgerKey] === hash) {
+              if (deliveredHash(state, ledgerKey, scope) === hash || newDeliveries[ledgerKey] === hash) {
                 // A reference marker is near-zero cost — like a collapsed technique it does not
                 // draw down the eager budget, so it never displaces a body that still needs sending.
                 bundledResources[resourceId] = {
                   resource_id: resourceId,
                   ...unchangedMarker(hash),
                 };
-                bundledResourceIds.push(resourceId);
+                bundledResourceDeliveries.push({ resourceId, chars: content.length, delivery: 'unchanged' });
                 continue;
               }
               // Secondary guard, retained from R2: a single oversized body never eager-bundles,
@@ -885,7 +897,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
                 ...(version ? { version } : {}),
                 content,
               };
-              bundledResourceIds.push(resourceId);
+              bundledResourceDeliveries.push({ resourceId, chars: content.length, delivery: 'full' });
             }
           } else {
             // No map is delivered, so no `resource:<id>` ledger writes either — under full
@@ -896,10 +908,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           bundleData['step_techniques'] = bundledStepTechniques;
           bundleData['step_techniques_note'] =
             'Each step_techniques entry is a discrete ▼ STEP block whose composed technique is identical to a get_technique { step_id } fetch. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resource bodies are NEVER nested inside a step_techniques entry — `resources_note` states how this response delivers the technique-linked resources. Technique steps absent from this map (gated, or past the derived eager-delivery budget / a per-activity size cap) still require get_technique { step_id } before execution.';
-          if (bundledResourceIds.length > 0) bundleData['resources'] = bundledResources;
+          if (bundledResourceDeliveries.length > 0) bundleData['resources'] = bundledResources;
           if (resourceRefIds.length > 0) bundleData['resource_refs'] = resourceRefIds;
           if (linkedIds.length > 0) {
-            bundleData['resources_note'] = bundledResourceIds.length > 0
+            bundleData['resources_note'] = bundledResourceDeliveries.length > 0
               ? 'Bodies for technique-linked resources from eagerly bundled steps under `resources`, keyed by exact resource_id (including #section). Deduped across steps. Same delivery ledger as get_resource (resource:<id>). Reuse content or unchanged markers. Ids under `resource_refs` were NOT bundled (oversized, or past the eager-delivery budget) — call get_resource for those, or with full: true after summarization.'
               : 'Ids of the technique-linked resources for the eagerly bundled steps, under `resource_refs` (exact resource_id, including #section). No bodies are bundled in this mode — call get_resource for the ids you actually need to read.';
           }
@@ -969,7 +981,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (inheritedRules.length) {
         const inheritedRulesHash = contentHash(stringifyForResponse(inheritedRules));
         const inheritedRulesKey = `activity_rules:${inheritedRulesHash}`;
-        if (referenceMode && deliveredHash(state, inheritedRulesKey) === inheritedRulesHash) {
+        if (referenceMode && deliveredHash(state, inheritedRulesKey, scope) === inheritedRulesHash) {
           activityRulesBlock = `${stringifyForResponse({ activity_rules: unchangedMarker(inheritedRulesHash) })}\n\n`;
         } else {
           newDeliveries[inheritedRulesKey] = inheritedRulesHash;
@@ -977,14 +989,23 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
+      // Assembled before the save so the dispatch event can record what this dispatch actually
+      // cost — `chars` on an activity's fresh and resume events is the before/after measurement.
+      const responseText = `${opsSection}${header}\n\n${activityRulesBlock}${enforcementBlock}${activityBodyWithArtifacts}`;
+
       // Persist against a FRESH load, not the snapshot captured before composition: the session
       // store is last-writer-wins over the whole file, and composition awaits dozens of FS reads —
       // saving the pre-composition snapshot would silently revert any concurrent write (sibling
       // worker save, orchestrator checkpoint resolution) that landed in that window.
       const reloadOpts = await sessionLoadOpts();
       const reloaded = await loadSessionForTool(planningRootDir, session_index, reloadOpts);
+      // Dispatch accounting (#353 §1.3): get_activity is the call a dispatched worker makes to
+      // receive its payload, so it is where a dispatch announces itself. Derived from the reloaded
+      // history, which is what the save writes against.
+      const dispatch = dispatchKind(reloaded.state, scope, activity_id);
       const next = advanceSession(reloaded.state, (draft) => {
-        recordDeliveries(draft, reloaded.state.agentId, newDeliveries);
+        recordDeliveries(draft, scope, newDeliveries);
+        recordDispatch(draft, { scope, kind: dispatch, activityId: activity_id, chars: responseText.length });
         // Fidelity observability for bundled deliveries (#166 B11): one technique_bundled
         // event per bundled step, on both delivery paths (full and unchanged-marker) — the
         // bundle counterpart of get_technique's technique_fetched. next_activity's manifest
@@ -995,27 +1016,28 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             timestamp: bundledAt,
             type: 'technique_bundled',
             activity: activity_id,
-            data: { techniqueId: b.techniqueId, stepId: b.stepId, agentId: reloaded.state.agentId },
+            data: { techniqueId: b.techniqueId, stepId: b.stepId, agentId: scope, chars: b.chars, delivery: b.delivery },
           });
         }
         // Eager resource deliveries share get_resource's resource_fetched observability channel.
-        for (const resourceId of bundledResourceIds) {
+        for (const r of bundledResourceDeliveries) {
           draft.history.push({
             timestamp: bundledAt,
             type: 'resource_fetched',
             activity: activity_id,
-            data: { resourceId, agentId: reloaded.state.agentId, bundled: true },
+            data: { resourceId: r.resourceId, agentId: scope, bundled: true, chars: r.chars, delivery: r.delivery },
           });
         }
       });
       await saveSessionForTool(reloaded, next);
 
       return {
-        content: [{ type: 'text' as const, text: `${opsSection}${header}\n\n${activityRulesBlock}${enforcementBlock}${activityBodyWithArtifacts}` }],
+        content: [{ type: 'text' as const, text: responseText }],
         _meta: {
           session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules,
+          dispatch,
           ...(bundledSteps.length > 0 ? { bundled_steps: bundledSteps.map(b => b.stepId) } : {}),
-          ...(bundledResourceIds.length > 0 ? { bundled_resources: bundledResourceIds } : {}),
+          ...(bundledResourceDeliveries.length > 0 ? { bundled_resources: bundledResourceDeliveries.map(r => r.resourceId) } : {}),
           ...(resourceRefIds.length > 0 ? { resource_refs: resourceRefIds } : {}),
           ...(Object.keys(enforcementNotes).length > 0 ? { enforcement_notes: enforcementNotes } : {}),
         },
