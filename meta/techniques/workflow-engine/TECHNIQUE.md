@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 6.7.0
+  version: 6.7.1
 ---
 
 ## Capability
@@ -35,7 +35,7 @@ Variables mutate from two sources only: checkpoint option effects (`setVariable`
 
 ### agent-id-scopes-delivery
 
-The delivery ledger is keyed on agent context, not on the session. Pass `agent_id` — the worker agent identity bound into the dispatch stub — on `get_activity`, `get_technique` and `get_resource`, and that context reads and writes its own ledger. A first dispatch under a new `agent_id` holds no prior deliveries and takes full delivery; the same `agent_id` calling again is the same context resumed, and may pass `bundle: "reference"` to collapse what it already received to unchanged markers. Omit `agent_id` only on a solo walk, where the session's own agent is the one context.
+The delivery ledger is keyed on agent context, not on the session. `agent_id` on `get_activity`, `get_technique` and `get_resource` names that context — the worker agent identity bound into the dispatch stub — and each context reads and writes its own ledger. A first dispatch under a new `agent_id` holds no prior deliveries, so it takes full delivery; the same `agent_id` calling again is that context resumed, where `bundle: "reference"` collapses what it already received to unchanged markers. A solo walk is the one case carrying no `agent_id`, the session's own agent being its only context.
 
 ### force-full-after-summarization
 
@@ -47,4 +47,4 @@ Before executing any step, confirm the activity `id` returned by `get_activity` 
 
 ### progressive-step-technique-load
 
-Load each step's bound technique as you reach it — never pre-fetch the whole activity. Call `get_technique { session_index, step_id }` for steps not already inlined; when `get_activity` includes `step_techniques` / sibling `resources`, follow those response notes (begin-beat, reuse map, lazy remainder) rather than re-deriving bundling policy in prose.
+A step's bound technique loads as that step is reached; the whole activity is never pre-fetched. `get_technique { session_index, step_id }` serves steps not already inlined, and where `get_activity` carries `step_techniques` or a sibling `resources` map, those response notes govern — begin-beat, reuse map, lazy remainder — rather than bundling policy re-derived in prose.

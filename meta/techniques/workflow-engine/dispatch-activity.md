@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.11.0
+  version: 1.11.1
 ---
 
 ## Capability
@@ -85,7 +85,7 @@ NEVER call `get_technique` to pre-load techniques for the worker. Step technique
 
 ### delivery-keys-on-agent-context
 
-Delivery mode follows the agent context, not the session. Mint a worker `agent_id` per dispatch and reuse that same id when you resume that worker, so the server scopes its ledger to the one context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch is a fresh context holding no prior deliveries, so it takes full delivery; the resumed worker is the same context and collapses what it already received. A retry that spawns a NEW worker for the same activity mints a new `agent_id` and takes full delivery again. `context_mode: "persistent"` stays off worker-dispatched sessions — it is a session-wide declaration, and one session serves many worker contexts.
+Delivery mode follows the agent context, not the session: one worker `agent_id` per worker, and the server scopes its ledger to that context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch is a fresh context holding no prior deliveries, so it takes full delivery; the resumed worker is the same context and collapses what it already received. A retry that spawns a NEW worker for the same activity is a new context, and takes full delivery again. `context_mode: "persistent"` stays off worker-dispatched sessions — it is a session-wide declaration, and one session serves many worker contexts.
 
 ### reject-partial-worker-result
 
