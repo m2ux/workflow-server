@@ -20,6 +20,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 
 - TypeScript; follow existing patterns in `src/` and `schemas/`.
 - Use clear, professional language; no process attribution in code comments (e.g. “Added by agent”).
+- **Describe the design, not the change to it.** Definitions, code comments, doc comments and commit subjects state what the system *is* and why it holds — in the present tense, without naming the design it replaced. A reader a year from now has no memory of the previous design, so naming it makes them learn a dead design just to parse the sentence, and the sentence rots the moment the thing it contrasts against is gone. Cut “instead of”, “no longer”, “previously”, “unchanged behaviour”; cut examples that were true before the change and are false after it. Keep the hazard that is still live, stated as an invariant — *a marker is unreadable to a context that never received the bytes* survives; *this is why the old rule forbade it* does not. Two exceptions, both narrow: a commit **body** is a record of a change and may narrate one, and a measurement that is a tool's reason to exist may be cited with its provenance. The workflow canon states the same discipline for definition prose as [Document in Positive Present](workflows/workflow-design/resources/design-principles.md#17-document-in-positive-present).
 
 ## Task management
 
