@@ -54,7 +54,7 @@ Lean mechanical summary of resolved trace events (dispatch counts, tool counts, 
 ### 3. Conduct Retrospective
 
 - Count total user messages; separate prompted responses from substantive interactions; categorize and map to workflow sections.
-- From the resolved trace (when present), derive mechanical observations using [Mechanical classes](../../resources/workflow-retrospective.md#mechanical-classes-from-resolved-get_trace) — treat repeated patterns as instruction defects with prioritized fixes naming the canonical home to change.
+- From the resolved trace (when present), derive mechanical observations using [Mechanical classes](../../resources/workflow-retrospective.md#mechanical-classes-from-the-resolved-trace) — treat repeated patterns as instruction defects with prioritized fixes naming the canonical home to change.
 - Identify root causes / frequency; formulate prioritized recommendations (high / medium / low).
 - Cut the set to the counts in [Item Budget](../../resources/workflow-retrospective.md#item-budget), highest priority first; route each cut item that still deserves to survive to the follow-ups register and link it.
 - Write `{retrospective_document}` as the `## Workflow Retrospective` section of `COMPLETE.md` (update in place), using that resource's section template; include only categories with content; link `{session_trace_document}` when written, and `token-usage.md` when present as the sole cost home. Apply `skip-if-trivial` from the group base when mechanical friction is non-trivial even if user-message signals are empty.

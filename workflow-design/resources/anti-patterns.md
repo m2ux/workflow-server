@@ -1768,3 +1768,15 @@ A citation delivers a whole resource where the citing prose reads one section.
 **Do not flag:** A consumer that genuinely reads the body — a filler working a `## Template` together with the `## Rules` populating it, an audit walking every entry, a technique whose needed sections are most of the file. Single-section resources. A bare citation in overview prose that introduces the resource rather than consulting it.
 
 **Fix:** Point the citation at the section it reads — `../resources/example.md#section-title`, link text the section title — one citation per section needed. Where a bare citation coexists with anchored ones, anchor it or drop it. Where no single section covers the need and the resource is large, that is a split candidate under [Resources at the Abstract Level; Split for Section Delivery](./design-principles.md#30-resources-at-the-abstract-level-split-for-section-delivery). See [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain).
+
+### AP-135. tool-contract-restated-in-protocol
+
+"Each entry is an object with two string fields: `step_id` … and `output` … ; do not pass an empty array"
+
+Protocol restates a tool parameter's shape, which the tool's own schema already states.
+
+**Detect:** Protocol prose or a rule spelling out a tool argument's structure — field names, types, cardinality, required-vs-optional, permitted values, omit-versus-empty — for a tool whose schema the harness puts in front of the caller. The tell is a bullet that reads like schema documentation rather than an instruction: it says what the argument *is* rather than what the caller must *do*. It also sits oddly beside its siblings, which act on the call or on its response.
+
+**Do not flag:** The call signature naming which arguments a step passes (`next_activity { session_index, activity_id, step_manifest }`) — that is routing, not shape. What the caller does with the response. A workflow-specific constraint on an argument's *value* rather than its form, such as relaying a worker's map verbatim; and an obligation the schema cannot express, such as which dispatches must carry the argument at all.
+
+**Fix:** Keep the obligation and the reason; drop the shape. The schema is its one home ([Match the Harness Surface](./design-principles.md#21-match-the-harness-surface), [One Authoritative Home](./design-principles.md#6-one-authoritative-home)), and a restatement drifts from it — a Protocol bullet describing "two string fields" contradicts a schema that also accepts a keyed object for multi-output steps, and the caller cannot tell which governs.

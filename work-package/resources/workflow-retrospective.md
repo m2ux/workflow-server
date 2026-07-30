@@ -23,7 +23,7 @@ Methodology and template for the `## Workflow Retrospective` section — an `##`
 | Feature requests | "Can you also…" | Missing capability |
 | Skip requests | User asks to skip or abbreviate | Unnecessary ceremony |
 
-### Mechanical classes (from resolved `get_trace`)
+### Mechanical classes (from the resolved trace)
 
 | Class | Examples | Indicates |
 |-------|----------|-----------|
