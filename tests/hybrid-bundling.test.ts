@@ -144,6 +144,28 @@ describe('hybrid technique bundling (#189 C1c)', () => {
       '    technique: consult',
     ].join('\n'));
 
+    // A resource cited both whole and by section, for the delivery-grain tests below. `small`
+    // fits the eager cap; `oversized` exceeds it, so its file never lands and its section must.
+    writeFileSync(join(wf, 'resources', 'small-both.md'), [
+      '---', 'name: small-both', 'description: Fixture cited both ways', '---', '',
+      '# Small Both', '', '## Alpha', '', 'Alpha guidance.', '', '## Beta', '', 'Beta guidance.', '',
+    ].join('\n'));
+    const oversized = Array.from(
+      { length: 900 },
+      (_, i) => `Paragraph ${i}: ${'exhaustive policy detail '.repeat(5)}`,
+    ).join('\n\n');
+    writeFileSync(join(wf, 'resources', 'oversized-both.md'), [
+      '---', 'name: oversized-both', 'description: Fixture over the eager cap', '---', '',
+      '# Oversized Both', '', '## Slice', '', 'The one slice a technique reads.', '',
+      '## Bulk', '', oversized, '',
+    ].join('\n'));
+    for (const [num, id] of [['05', 'cite-small'], ['06', 'cite-oversized']] as const) {
+      writeFileSync(join(wf, 'activities', `${num}-${id}.yaml`), [
+        `id: ${id}`, 'version: 1.0.0', `name: ${id}`, 'steps:',
+        '  - kind: technique', `    id: ${id}`, `    technique: ${id}`,
+      ].join('\n'));
+    }
+
     const t = join(wf, 'techniques');
     writeFileSync(join(t, 'work', 'classify.md'), op('Classify.', '## Outputs\n\n### classified_intake\n\nThe classification.\n\n## Protocol\n\n### 1. Go\n\n- Classify it.\n'));
     writeFileSync(join(t, 'gather.md'), op(
@@ -158,6 +180,14 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     writeFileSync(join(t, 'consult.md'), op(
       'Consult.',
       '## Protocol\n\n### 1. Go\n\n- Apply [big-a](../resources/big-a.md), then [big-b](../resources/big-b.md).\n',
+    ));
+    writeFileSync(join(t, 'cite-small.md'), op(
+      'Cite small both ways.',
+      '## Protocol\n\n### 1. Go\n\n- Read [small-both](../resources/small-both.md), then [Alpha](../resources/small-both.md#alpha).\n',
+    ));
+    writeFileSync(join(t, 'cite-oversized.md'), op(
+      'Cite oversized both ways.',
+      '## Protocol\n\n### 1. Go\n\n- Read [oversized-both](../resources/oversized-both.md), then [Slice](../resources/oversized-both.md#slice).\n',
     ));
 
     const config = {
@@ -272,6 +302,36 @@ describe('hybrid technique bundling (#189 C1c)', () => {
       (h.data as { resourceId?: string; bundled?: boolean } | undefined)?.resourceId === 'guide#overview' &&
       (h.data as { bundled?: boolean } | undefined)?.bundled === true,
     )).toBe(true);
+  });
+
+  it('delivers the file alone when a technique cites a resource whole and by section', async () => {
+    const slug = 'b11-grain-small';
+    const idx = await startSession(slug, 'w1', 'persistent');
+    await enterActivity(idx, 'cite-small');
+    const { ops, meta } = await getActivity(idx);
+
+    const resources = ops['resources'] as Record<string, Record<string, unknown>>;
+    // The file body already contains Alpha, and the two ids ledger separately, so shipping
+    // both would send Alpha's text twice and charge the eager budget for it twice.
+    expect(Object.keys(resources)).toEqual(['small-both']);
+    expect(String(resources['small-both']!['content'])).toContain('Alpha guidance.');
+    expect(meta['bundled_resources']).toEqual(['small-both']);
+    // The section is already in context, so it is not something left for the worker to fetch.
+    expect(ops['resource_refs']).toBeUndefined();
+  });
+
+  it('still delivers the section when the file it belongs to is over the eager cap', async () => {
+    const slug = 'b11-grain-oversized';
+    const idx = await startSession(slug, 'w1', 'persistent');
+    await enterActivity(idx, 'cite-oversized');
+    const { ops, meta } = await getActivity(idx);
+
+    const resources = ops['resources'] as Record<string, Record<string, unknown>>;
+    expect(Object.keys(resources)).toEqual(['oversized-both#slice']);
+    expect(String(resources['oversized-both#slice']!['content'])).toContain('The one slice');
+    expect(meta['bundled_resources']).toEqual(['oversized-both#slice']);
+    // The file itself never lands, so it stays fetchable rather than becoming unreachable.
+    expect(ops['resource_refs']).toEqual(['oversized-both']);
   });
 
   it('under full delivery, ships linked resource IDS only — no bodies, no ledger writes (#323 T1)', async () => {

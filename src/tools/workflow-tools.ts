@@ -856,8 +856,23 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           const linkedIds = [...linkedResourceIds];
           if (referenceMode) {
             const maxResourceChars = DEFAULT_MAX_EAGER_RESOURCE_CHARS;
-            for (let i = 0; i < linkedIds.length; i += 1) {
-              const resourceId = linkedIds[i]!;
+            // A whole-resource body already carries every section of itself, and the two ids
+            // ledger separately, so a resource a technique cites both ways would deliver its
+            // file AND its own sections. The file governs where it lands: bare ids run first,
+            // and a section is skipped once its own file is in the bundle. Skipping it costs
+            // the worker nothing — the body it would have shipped is already there, and
+            // get_resource still serves the anchor alone. Order matters because an oversized
+            // or budget-displaced file never lands, and its sections must still ship.
+            const orderedIds = [...linkedIds]
+              .sort((a, b) => Number(a.includes('#')) - Number(b.includes('#')));
+            const deliveredWhole = new Set<string>();
+            const coveredByItsFile = (rid: string) => {
+              const anchorAt = rid.indexOf('#');
+              return anchorAt > 0 && deliveredWhole.has(rid.slice(0, anchorAt));
+            };
+            for (let i = 0; i < orderedIds.length; i += 1) {
+              const resourceId = orderedIds[i]!;
+              if (coveredByItsFile(resourceId)) continue;
               const loaded = await loadResourceDelivery(
                 config.workflowDir, sourceWorkflowId, resourceId, session_index,
               );
@@ -872,6 +887,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
                   ...unchangedMarker(hash),
                 };
                 bundledResourceDeliveries.push({ resourceId, chars: content.length, delivery: 'unchanged' });
+                // The marker means this context already holds the body, sections included.
+                if (!resourceId.includes('#')) deliveredWhole.add(resourceId);
                 continue;
               }
               // Secondary guard, retained from R2: a single oversized body never eager-bundles,
@@ -886,7 +903,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               // first body that would overflow (mirroring the technique loop's stop-and-break);
               // it and every id after it stay fetchable via get_resource.
               if (spentChars + content.length > eagerBudgetChars) {
-                resourceRefIds.push(...linkedIds.slice(i));
+                resourceRefIds.push(...orderedIds.slice(i).filter((rid) => !coveredByItsFile(rid)));
                 break;
               }
               spentChars += content.length;
@@ -898,6 +915,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
                 content,
               };
               bundledResourceDeliveries.push({ resourceId, chars: content.length, delivery: 'full' });
+              if (!resourceId.includes('#')) deliveredWhole.add(resourceId);
             }
           } else {
             // No map is delivered, so no `resource:<id>` ledger writes either — under full
