@@ -272,25 +272,47 @@ const steps: Step[] = [];
  * visible to the read scan, so an output whose only consumer was a `when` gate or a validate gate
  * read as dead — the opposite of dead (#327 R3).
  */
-const expressionConsumes: Array<{ rel: string; name: string }> = [];
+const expressionConsumes: Array<{ rel: string; stepId: string; name: string }> = [];
 
-/** Operators and literals in a condition expression are not bag names. */
-const EXPRESSION_LITERALS = new Set(['true', 'false', 'null', 'undefined', 'length', 'and', 'or', 'not']);
+/**
+ * Namespaces naming the ENVIRONMENT rather than the variable bag: `gh.auth.status == 0` asks the
+ * GitHub CLI, not the session. A probe head has no producer by construction, so resolution has to
+ * know them by name — dotted-ness cannot discriminate, since `planning_folder_path.writable` is a
+ * real bag name carrying a probed field.
+ */
+const ENV_PROBES = new Set(['gh', 'gpg', 'git', 'signing', 'workflows']);
 
-/** The head bag names an expression reads: `missing_prerequisites.length == 0` -> `missing_prerequisites`. */
-function expressionNames(expr: string): string[] {
+/**
+ * The bag names an expression READS — the left operand of each comparison, plus a bare clause read
+ * for truthiness.
+ *
+ * Only the left side. A right operand is a value, and an unquoted one is indistinguishable from an
+ * identifier by shape: `analysis_type == completion` would otherwise read `completion` as a bag name
+ * that nothing can ever produce. #327 collected every identifier in the string, which was safe while
+ * these names only MARKED consumption — a false name there costs nothing. Feeding them to
+ * resolution makes the extractor load-bearing, so it parses clauses instead of harvesting words.
+ */
+export function expressionReads(expr: string): string[] {
   const out: string[] = [];
-  for (const m of expr.matchAll(/[a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z0-9_]+)*/g)) {
-    const head = m[0]!.split('.')[0]!;
-    if (!EXPRESSION_LITERALS.has(head)) out.push(head);
+  for (const clause of expr.split(/&&|\|\|/)) {
+    const compared = clause.match(/^\s*([a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z0-9_]+)*)\s*(?:==|!=|>=|<=|>|<)/);
+    const bare = clause.match(/^\s*!?\s*([a-zA-Z_][a-zA-Z0-9_]*(?:\.[a-zA-Z0-9_]+)*)\s*$/);
+    const ref = compared?.[1] ?? bare?.[1];
+    if (!ref) continue;
+    const head = ref.split('.')[0]!;
+    if (!ENV_PROBES.has(head)) out.push(head);
   }
   return out;
 }
 
-function walkSteps(wf: string, rel: string, node: unknown, activityId: string): void {
+function walkSteps(wf: string, rel: string, node: unknown, activityId: string, stepId = '?'): void {
   if (!node || typeof node !== 'object') return;
-  if (Array.isArray(node)) { node.forEach((n) => walkSteps(wf, rel, n, activityId)); return; }
+  if (Array.isArray(node)) { node.forEach((n) => walkSteps(wf, rel, n, activityId, stepId)); return; }
   const o = node as Record<string, unknown>;
+  // A gate expression is reported at its enclosing step, not by line: the walk reads parsed YAML,
+  // which carries no line numbers, and a `validate` target sits inside `actions[]` where the step id
+  // is already out of scope.
+  const here = typeof o.id === 'string' ? o.id : stepId;
   // A step's technique binding is either a bare string (no deviations) or a structured object
   // `{ name, inputs?, outputs? }` — inputs are op-input deviations, outputs are op-output remaps.
   const t = o.technique;
@@ -306,16 +328,16 @@ function walkSteps(wf: string, rel: string, node: unknown, activityId: string): 
   // (`fragment_references_issue != false`, `has_debt_markers == true`) — the one place the value is
   // enforced or the gate that consumes it.
   if (o.action === 'validate' && typeof o.target === 'string') {
-    for (const name of expressionNames(o.target)) expressionConsumes.push({ rel, name });
+    for (const name of expressionReads(o.target)) expressionConsumes.push({ rel, stepId: here, name });
   }
   if (typeof o.when === 'string') {
-    for (const name of expressionNames(o.when)) expressionConsumes.push({ rel, name });
+    for (const name of expressionReads(o.when)) expressionConsumes.push({ rel, stepId: here, name });
   }
   if (o.setVariable && typeof o.setVariable === 'object') Object.keys(o.setVariable).forEach((k) => produced(wf).add(k));
   const eff = o.effect as { setVariable?: object } | undefined;
   if (eff?.setVariable) Object.keys(eff.setVariable).forEach((k) => produced(wf).add(k));
   if (typeof o.variable === 'string') produced(wf).add(o.variable);
-  for (const v of Object.values(o)) walkSteps(wf, rel, v, activityId);
+  for (const v of Object.values(o)) walkSteps(wf, rel, v, activityId, here);
 }
 
 type Read = { rel: string; line: number; full: string; head: string; kind: 'technique' | 'activity' };
@@ -497,6 +519,42 @@ function collectConsumedSites(): Map<string, Set<string>> {
   return consumed;
 }
 
+/**
+ * Which workflows genuinely reach into a home workflow's operations, from the bind sites themselves:
+ * `remediate-vuln` borrowing a `work-package` op can consume that op's outputs, and `meta` is the
+ * universal library every workflow binds ad hoc.
+ */
+const crossWorkflowConsumers = ((): Map<string, Set<string>> => {
+  const reach = new Map<string, Set<string>>();
+  for (const s of steps) {
+    const r = resolve(s.technique, s.wf, s.activityId);
+    if (!r || r.homeWf === s.wf) continue;
+    let into = reach.get(r.homeWf);
+    if (!into) { into = new Set(); reach.set(r.homeWf, into); }
+    into.add(s.wf);
+  }
+  return reach;
+})();
+
+/**
+ * Whether a consumer file can close a dead-output finding on a declaring file.
+ *
+ * Resolution used to be by bare name across the whole corpus, so an output in workflow A read as
+ * consumed when an unrelated workflow B happened to read a name of the same spelling — and B has no
+ * address for A's op, so it cannot bind it (#342). The masking presented as a STALE triage entry,
+ * which reads like progress, and forced real debt out of the ledger.
+ */
+function consumerReaches(consumerRel: string, declaringRel: string): boolean {
+  const consumerWf = consumerRel.split('/')[0]!;
+  const declaringWf = declaringRel.split('/')[0]!;
+  if (consumerWf === declaringWf) return true;
+  if (declaringWf === META) return true;
+  return crossWorkflowConsumers.get(declaringWf)?.has(consumerWf) ?? false;
+}
+
+/** Dead-output findings that a consumer closed: `<declaring rel> <output id>` -> satisfying file. */
+const deadOutputSatisfier = new Map<string, string>();
+
 /* --------------------------------- checks --------------------------------- */
 export interface Violation {
   check: 'arg-conformance' | 'read-resolution' | 'binding-resolution' | 'dead-output' | 'orphan-input';
@@ -561,12 +619,25 @@ export function collectViolations(): Violation[] {
     if (scopeOf(wf).has(r.head)) continue;
     v.push({ check: 'read-resolution', site: `${r.rel}:${r.line}`, detail: `{${r.full}} has no producer (declared id / $-local / workflow var / set-target)` });
   }
-  // (3) dead-output
+  // (2b) read-resolution over gate expressions — the same scope a `{token}` resolves against.
+  // #327 taught the guard to count a `when` and a `validate` target as CONSUMPTION, which stopped a
+  // gated value reading as dead. It never checked the other direction, so a gate naming a value
+  // nothing produces was accepted and could never fire (#341 R1, the #324 A2 class).
+  for (const e of expressionConsumes) {
+    if (PLACEHOLDER.has(e.name)) continue;
+    const wf = e.rel.split('/')[0]!;
+    if (scopeOf(wf).has(e.name)) continue;
+    v.push({
+      check: 'read-resolution', site: `${e.rel}[${e.stepId}]`,
+      detail: `gate expression reads '${e.name}', which has no producer (declared id / workflow var / set-target)`,
+    });
+  }
+  // (3) dead-output — consumer resolution scoped to the declaring workflow
   const consumed = collectConsumedSites();
   for (const site of declaredOutputSites) {
     if (site.hasArtifact) continue;
-    const consumers = consumed.get(site.id);
-    if (consumers && [...consumers].some((rel) => rel !== site.rel)) continue;
+    const satisfier = [...(consumed.get(site.id) ?? [])].find((rel) => rel !== site.rel && consumerReaches(rel, site.rel));
+    if (satisfier) { deadOutputSatisfier.set(`${site.rel}\u0000${site.id}`, satisfier); continue; }
     v.push({
       check: 'dead-output', site: site.rel,
       detail: `output '${site.id}' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)`,
@@ -640,10 +711,18 @@ export function applyTriage(violations: Violation[] = collectViolations()): Tria
   for (const [key, entry] of byKey) {
     if (seen.has(key)) continue;
     counts.stale++;
+    // "No longer occurs" has two causes a reader must be able to tell apart: the seam was CLOSED, or
+    // the guard stopped SEEING it. Naming what now satisfies the finding makes the second visible —
+    // a satisfier in another workflow is the #342 masking shape, and deleting the entry there would
+    // drop real debt out of the ledger.
+    const outputId = entry.check === 'dead-output' ? /output '([^']+)'/.exec(entry.detail)?.[1] : undefined;
+    const satisfier = outputId ? deadOutputSatisfier.get(`${entry.site}\u0000${outputId}`) : undefined;
     findings.push({
       check: 'stale-triage',
       site: entry.site,
-      detail: `triaged '${entry.check}' finding no longer occurs — delete the entry from scripts/binding-fidelity-triage.json`,
+      detail: satisfier
+        ? `triaged '${entry.check}' finding no longer occurs — now satisfied by ${satisfier}; delete the entry only if that is a real closure`
+        : `triaged '${entry.check}' finding no longer occurs — delete the entry from scripts/binding-fidelity-triage.json`,
     });
   }
   return { findings, counts, total: violations.length };
