@@ -79,7 +79,7 @@
         <li>Workflow and activity navigation: <a href="#get_workflow"><code>get_workflow</code></a>, <a href="#next_activity"><code>next_activity</code></a>, <a href="#get_activity"><code>get_activity</code></a></li>
         <li>Checkpoint flow: <a href="#yield_checkpoint"><code>yield_checkpoint</code></a>, <a href="#resume_checkpoint"><code>resume_checkpoint</code></a>, <a href="#present_checkpoint"><code>present_checkpoint</code></a>, <a href="#respond_checkpoint"><code>respond_checkpoint</code></a></li>
         <li>Techniques and resources: <a href="#get_technique"><code>get_technique</code></a>, <a href="#get_resource"><code>get_resource</code></a></li>
-        <li>Trace: <a href="#get_trace"><code>get_trace</code></a></li>
+        <li>Trace: <a href="#get_trace"><code>get_trace</code></a>, <a href="#record_usage"><code>record_usage</code></a></li>
       </ul>
       </nav>
       <h2>Bootstrap</h2>
@@ -247,7 +247,6 @@
           <tr><td><code>step_manifest</code></td><td><code>object[]</code></td><td>no</td><td>Steps completed in the previous activity, for example <code>[{ &quot;step_id&quot;: &quot;detect-review-mode&quot;, &quot;output&quot;: &quot;is_review_mode=false&quot; }]</code>. Omit if no steps ran.</td></tr>
           <tr><td><code>activity_manifest</code></td><td><code>object[]</code></td><td>no</td><td>History of completed activities with outcomes and transition conditions.</td></tr>
           <tr><td><code>variables_changed</code></td><td><code>object</code></td><td>no</td><td>Variable assignments the completing activity produced — relay the worker's <code>activity_complete</code> <code>variables_changed</code> map verbatim. The server writes them into the session variable bag and records one <code>variable_set</code> history event per name, so the bag a later get_workflow_status / inspect_session returns reflects worker outputs and survives a lost agent context. Declared types are validated warn-only: a mismatch is stored as written and surfaced in _meta.validation. Omit when the activity changed nothing.</td></tr>
-          <tr><td><code>usage</code></td><td><code>object</code></td><td>no</td><td>Harness-reported token usage for the activity this call EXITS — relay the figure the harness surfaced for the worker that just completed (subagent token counts plus any cache/model fields), as reported. Recorded as an <code>activity_usage</code> history event keyed to the exited activity, so inspect_session reports per-activity cost. Workers cannot self-measure: omit the parameter entirely when the harness surfaces nothing rather than passing zeros.</td></tr>
           </tbody>
         </table>
         </div>
@@ -417,7 +416,7 @@
         </div>
       </section>
       <h2>Trace</h2>
-      <p>Execution history for debugging and audit.</p>
+      <p>Execution history and per-dispatch cost accounting.</p>
       <section class="tool" id="get_trace">
         <h3><code>get_trace</code></h3>
         <p class="tool-summary">Retrieve the session execution trace.</p>
@@ -432,6 +431,24 @@
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           <tr><td><code>trace_tokens</code></td><td><code>string[]</code></td><td>no</td><td>Tokens collected from <code>next_activity</code> <code>_meta.trace_token</code> responses.</td></tr>
+          </tbody>
+        </table>
+        </div>
+      </section>
+      <section class="tool" id="record_usage">
+        <h3><code>record_usage</code></h3>
+        <p class="tool-summary">Orchestrator tool: record harness-reported token usage for ONE completed dispatch.</p>
+        <details class="tool-details">
+          <summary>Full description</summary>
+          <p>Orchestrator tool: record harness-reported token usage for ONE completed dispatch. Call as each dispatch finishes — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity.</p>
+        </details>
+        <div class="table-wrap">
+        <table class="param-table">
+          <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+          <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
+          <tr><td><code>activity</code></td><td><code>string</code></td><td>yes</td><td>Activity the dispatch ran, whether or not the session is still on it.</td></tr>
+          <tr><td><code>usage</code></td><td><code>object</code></td><td>yes</td><td>Harness-reported token usage for this ONE dispatch, as reported. Omit the call entirely when the harness surfaced nothing rather than passing zeros — the worker cannot self-measure, so absence must stay distinguishable from a measured zero.</td></tr>
           </tbody>
         </table>
         </div>

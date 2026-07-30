@@ -52,11 +52,11 @@ const activityManifestSchema = z.array(z.object({
   transition_condition: z.string().optional(),
 })).optional().describe('Orchestrator activity-completion manifest: [{activity_id, outcome, transition_condition?}].');
 
-const usageSchema = z.record(z.unknown()).optional().describe(
-  'Harness-reported token usage for the activity this call EXITS — relay the figure the harness surfaced for the worker that just completed ' +
-  '(subagent token counts plus any cache/model fields), as reported. Recorded as an `activity_usage` history event keyed to the exited activity, ' +
-  'so inspect_session reports per-activity cost. Workers cannot self-measure: omit the parameter entirely when the harness surfaces nothing rather ' +
-  'than passing zeros.',
+const usageSchema = z.record(z.unknown()).describe(
+  'Harness-reported token usage for ONE completed dispatch — subagent token counts plus any cache/model \n'
+  + 'fields, as reported. Recorded as an `activity_usage` history event keyed to the activity that ran, so \n'
+  + 'inspect_session reports cost per dispatch. Workers cannot self-measure: omit the record_usage call \n'
+  + 'entirely when the harness surfaces nothing rather than passing zeros.',
 );
 
 const variablesChangedSchema = z.record(z.unknown()).optional().describe(
@@ -247,11 +247,11 @@ export function projectChildren(s: SessionFile): Array<Record<string, unknown>> 
 }
 
 /**
- * Usage projection (#324 B1): one entry per `activity_usage` event, in the
- * order the orchestrator reported them. An activity appears once per exit, so
- * a resumed activity contributes a row per pass rather than a merged total —
- * summing is the caller's call, since harnesses differ on whether a resumed
- * worker re-reports cumulative figures.
+ * Usage projection (#324 B1, #346 DI-33): one entry per `activity_usage` event,
+ * in the order the orchestrator recorded them — one per dispatch. An activity
+ * dispatched several times contributes a row per dispatch, and summing is the
+ * caller's call, since harnesses differ on whether a resumed worker re-reports
+ * cumulative figures.
  */
 export function projectUsage(s: SessionFile): Array<Record<string, unknown>> {
   return (s.history ?? [])
@@ -442,9 +442,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       step_manifest: stepManifestSchema,
       activity_manifest: activityManifestSchema,
       variables_changed: variablesChangedSchema,
-      usage: usageSchema,
     },
-    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, variables_changed, usage }) => {
+    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, variables_changed }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -480,12 +479,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ? validateTransitionCondition(view, result.value, activity_id, transition_condition)
         : null;
 
-      // usage measures the activity being exited, so the entry transition has
-      // nothing to attribute it to. Say so rather than dropping it silently.
-      const usageWarning = (usage && !state.currentActivity)
-        ? `usage supplied on the entry transition to '${activity_id}', which exits no activity — not recorded. Pass usage on the call that leaves the measured activity.`
-        : null;
-
       const activityManifestWarnings: string[] = [];
       if (activity_manifest) {
         if (activity_manifest.length === 0) {
@@ -510,14 +503,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           draft.history.push({ timestamp: now, type: 'activity_exited', activity: exitingActivity });
           if (!draft.completedActivities.includes(exitingActivity)) {
             draft.completedActivities.push(exitingActivity);
-          }
-          // #324 B1: attribute the harness's usage figure to the activity being
-          // exited — it measures the worker that just finished, not the one
-          // about to start. Dropped on the first transition, which exits nothing.
-          if (usage) {
-            draft.history.push({
-              timestamp: now, type: 'activity_usage', activity: exitingActivity, data: { usage },
-            });
           }
         }
         // Persist the completing activity's worker outputs into the bag. These
@@ -555,7 +540,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         validateActivityTransition(view, result.value, activity_id),
         validateWorkflowVersion(view, result.value),
         condWarning,
-        usageWarning,
         ...manifestWarnings,
         ...activityManifestWarnings,
         ...variableWarnings,
@@ -1159,6 +1143,45 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           message: `Checkpoint '${checkpoint_id}' successfully yielded. Yield this session_index to the orchestrator using a <checkpoint_yield> block, then STOP execution and wait to be resumed.`
         }, null, 2) }],
         _meta: { session_index, validation },
+      };
+    }), traceOpts));
+
+  server.tool('record_usage', 'Orchestrator tool: record harness-reported token usage for ONE completed dispatch. Call as each dispatch finishes — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity.',
+    {
+      ...sessionIndexParam,
+      activity: z.string().describe('Activity the dispatch ran, whether or not the session is still on it.'),
+      usage: usageSchema.describe(
+        'Harness-reported token usage for this ONE dispatch, as reported. Omit the call entirely when the harness '
+        + 'surfaced nothing rather than passing zeros — the worker cannot self-measure, so absence must stay '
+        + 'distinguishable from a measured zero.',
+      ),
+    },
+    withAuditLog('record_usage', withSessionStoreErrors(async ({ session_index, activity, usage }) => {
+      const loadOpts = await sessionLoadOpts();
+      const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
+      const { state } = loaded;
+
+      const recordedAt = new Date().toISOString();
+      const next = advanceSession(state, (draft) => {
+        // One entry per dispatch, which is what projectUsage reports. Attribution is the
+        // caller's `activity`: the dispatch ran for it, whether or not the session is still
+        // there by the time the figure arrives.
+        draft.history.push({
+          timestamp: recordedAt, type: 'activity_usage', activity, data: { usage },
+        });
+      });
+      await saveSessionForTool(loaded, next);
+
+      const recorded = (next.history ?? []).filter(e => e.type === 'activity_usage').length;
+      return {
+        content: [{ type: 'text' as const, text: JSON.stringify({
+          status: 'recorded',
+          activity,
+          session_index,
+          usage_events: recorded,
+          message: `Usage recorded for one dispatch of '${activity}'. The session now carries ${recorded} usage event(s); the cost artifact reconciles that count against the run's actual dispatch count.`,
+        }, null, 2) }],
+        _meta: { session_index, validation: buildValidation() },
       };
     }), traceOpts));
 

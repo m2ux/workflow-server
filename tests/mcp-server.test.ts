@@ -869,6 +869,54 @@ describe('mcp-server integration', () => {
 
   // ============== Trace Integration ==============
 
+  describe('per-dispatch usage accounting (DI-33)', () => {
+    it('record_usage adds one usage event per call, for dispatches no transition exits', async () => {
+      const before = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      }));
+      const baseline = Array.isArray(before) ? before.length : (before.usage?.length ?? 0);
+
+      // Two dispatches of the SAME activity — a first pass and a resume after a
+      // checkpoint yield. next_activity could account for at most one of them,
+      // because only one transition exits the activity.
+      for (const total of [111, 222]) {
+        const res = await client.callTool({
+          name: 'record_usage',
+          arguments: {
+            session_index: sessionToken,
+            activity: 'start-work-package',
+            usage: { input_tokens: total, output_tokens: 7, total_tokens: total + 7 },
+          },
+        });
+        expect(res.isError).toBeFalsy();
+        expect(parseToolResponse(res).status).toBe('recorded');
+      }
+
+      const after = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      }));
+      const rows = Array.isArray(after) ? after : (after.usage ?? []);
+      expect(rows.length).toBe(baseline + 2);
+
+      // Both passes survive as separate rows rather than one overwriting the other:
+      // a merged total is what hid the missing third of the run.
+      const mine = rows.filter((r: { activity?: string }) => r.activity === 'start-work-package');
+      const totals = mine.map((r: { usage?: { input_tokens?: number } }) => r.usage?.input_tokens);
+      expect(totals).toContain(111);
+      expect(totals).toContain(222);
+    });
+
+    it('record_usage rejects an unknown session', async () => {
+      const res = await client.callTool({
+        name: 'record_usage',
+        arguments: { session_index: 'NOPE00', activity: 'x', usage: { total_tokens: 1 } },
+      });
+      expect(res.isError).toBeTruthy();
+    });
+  });
+
   describe('trace lifecycle', () => {
     it('session creation initializes trace (IT-6)', async () => {
       const result = await client.callTool({
