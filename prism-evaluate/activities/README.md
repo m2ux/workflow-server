@@ -65,7 +65,7 @@ Definition: [`04-deliver-results.yaml`](04-deliver-results.yaml). Leads to [Reso
 
 ### 05. Resolution Dialogue
 
-Load the findings from the report and tier-classify them by mitigation difficulty, then work through them one finding at a time — proposing a finding-specific mitigation and collecting the user's decision on each — and compile the dispositions into `MITIGATION-PLAN.md`. **Value:** every finding has a mitigation the user has explicitly decided on, preserving the nuance a batch review would lose.
+Load the findings from the report and tier-classify them by mitigation difficulty, then work through them one finding at a time — proposing a finding-specific mitigation and collecting the user's decision on each — compile the dispositions into `MITIGATION-PLAN.md`, and close with the final confirmation to apply them. **Value:** every finding has a mitigation the user has explicitly decided on, preserving the nuance a batch review would lose, and the plan carries the user's decision to apply it before any change reaches the target.
 
 Definition: [`05-resolution-dialogue.yaml`](05-resolution-dialogue.yaml). Leads to [Apply Accepted Mitigations](#06-apply-accepted-mitigations).
 
@@ -73,6 +73,6 @@ Definition: [`05-resolution-dialogue.yaml`](05-resolution-dialogue.yaml). Leads 
 
 ### 06. Apply Accepted Mitigations
 
-After a final user confirmation, the accepted mitigations are applied to the target in priority order and committed. **Value:** the target reflects every accepted mitigation, applied in priority order and committed, with verification confirming what changed.
+Under the confirmation resolution-dialogue collected, the accepted mitigations are applied to the target in priority order and committed. **Value:** the target reflects every accepted mitigation, applied in priority order and committed, with verification confirming what changed.
 
 Definition: [`06-apply-mitigations.yaml`](06-apply-mitigations.yaml). Terminal activity.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -32,7 +32,7 @@ Minimal stub string ready for the host spawn invoke.
 
 ### 2. Emit entry tools
 
-- When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens }` — `context_tokens` is the agent's context window size and is **required**
+- When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens, agent_id }` — `context_tokens` is the agent's context window size and is **required**; `agent_id` scopes delivery to this worker context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery))
 - When `{agent_technique}` is [workflow-orchestrator](./workflow-orchestrator.md): instruct `start_session { session_index, agent_id }` then `get_workflow { session_index }`
 
 ### 3. Direct Apply

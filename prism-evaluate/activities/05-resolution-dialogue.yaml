@@ -1,5 +1,5 @@
 id: resolution-dialogue
-version: 1.2.1
+version: 1.3.0
 name: Resolution Dialogue
 description: Propose mitigations for each evaluation finding one-by-one.
 techniques:
@@ -46,6 +46,17 @@ steps:
   - kind: technique
     id: compile-plan
     technique: resolve-findings::compile-plan
+  - kind: checkpoint
+    id: confirm-apply
+    message: Ready to apply {accepted_count} accepted mitigations to the target. Changes will be applied in priority order. Proceed?
+    options:
+      - id: apply
+        label: Apply all accepted mitigations
+        description: Apply changes to the target document
+      - id: plan-only
+        label: Keep plan only — do not modify target
+        description: Save the mitigation plan without applying changes to the target
+    blocking: true
 transitions:
   - to: apply-mitigations
     isDefault: true

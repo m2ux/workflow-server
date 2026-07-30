@@ -66,16 +66,17 @@ graph TD
 
 ### 2. [Folder Setup](activities/02-folder-setup.yaml)
 
-Creates the planning folder and its initial documentation skeletons (START-HERE.md and README.md), giving the initiative a canonical home before analysis begins.
+Creates the planning folder and its initial documentation skeletons (START-HERE.md and README.md), giving the initiative a canonical home before analysis begins, and settles which analysis the next activity performs.
 
 ```mermaid
 graph TD
     subgraph folder-setup[Planning Folder Setup]
         f1([create-folder → version-control::initialize-folder])
         f2([setup-planning-folder → setup-planning-folder])
+        cpType{Analysis type?}
         cp1{Folder setup complete?}
-        
-        f1 --> f2 --> cp1
+
+        f1 --> f2 --> cpType --> cp1
         cp1 -->|proceed| Next([→ analysis])
         cp1 -->|adjust| f1
     end
@@ -83,25 +84,22 @@ graph TD
 
 ### 3. [Analysis](activities/03-analysis.yaml)
 
-Establishes a validated understanding of the initiative's starting point — either completion analysis of existing progress when continuing previous work, or context analysis for a fresh start. The path is chosen at a user checkpoint so later planning rests on confirmed context.
+Establishes a validated understanding of the initiative's starting point — either completion analysis of existing progress when continuing previous work, or context analysis for a fresh start. The path follows the `{analysis_type}` folder-setup settled, so later planning rests on confirmed context.
 
 ```mermaid
 graph TD
     subgraph analysis[Analysis]
-        cpType{Analysis type?}
         d1{analysis_type?}
         a1([analyze-completion → analyze-initiative-context::analyze-completion])
         a2([analyze-context → analyze-initiative-context::analyze-context])
         cp1{Analysis confirmed?}
-        
-        cpType -->|continuing| d1
-        cpType -->|new initiative| d1
+
         d1 -->|completion| a1
         d1 -->|context| a2
         a1 --> cp1
         a2 --> cp1
         cp1 -->|proceed| Next([→ package-planning])
-        cp1 -->|revise| cpType
+        cp1 -->|revise| d1
     end
 ```
 

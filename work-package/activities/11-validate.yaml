@@ -1,28 +1,16 @@
 id: validate
-version: 3.6.0
+version: 3.7.0
 name: Verify & Validate Design
 description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
 required: true
 steps:
-  - kind: checkpoint
-    id: local-validation-permission
-    message: Is the local environment suitable to run the project's validation suite?
-    blocking: true
-    options:
-      - id: run-locally
-        label: Yes — run validation locally
-        description: Agent executes the project suite in-process
-        effect:
-          setVariable:
-            run_local_validation: true
-            mark_progress_na: false
-      - id: validation-unavailable
-        label: No — mark validation N/A
-        description: Skip the local suite; Progress Validation recorded as cancelled/N/A
-        effect:
-          setVariable:
-            run_local_validation: false
-            mark_progress_na: true
+  - kind: action
+    id: mark-validation-na
+    when: run_local_validation == false
+    actions:
+      - action: set
+        target: mark_progress_na
+        value: true
   - kind: technique
     id: preflight
     technique: cargo-operations::preflight

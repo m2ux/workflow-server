@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 6.5.0
+  version: 6.6.0
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ Check `_meta.validation` in each response. Warnings are advisory but should be a
 
 ### dispatch-topology
 
-Client walks use per-activity disposable workers via [dispatch-activity](./dispatch-activity.md). Do not set `context_mode: "persistent"` on worker-dispatched sessions — see [workers-need-full-delivery](./dispatch-activity.md#workers-need-full-delivery).
+Client walks use per-activity disposable workers via [dispatch-activity](./dispatch-activity.md). Do not set `context_mode: "persistent"` on worker-dispatched sessions — see [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context).
 
 ### resource-loading-via-tool
 
@@ -32,6 +32,10 @@ Choose bare vs `#section` `resource_id` by how much of the resource this agent c
 ### variable-mutation-source
 
 Variables mutate from two sources only: checkpoint option effects (`setVariable`) and worker `activity_complete` results (`variables-changed`). Never mutate state through ad-hoc reasoning.
+
+### agent-id-scopes-delivery
+
+The delivery ledger is keyed on agent context, not on the session. Pass `agent_id` — the worker agent identity bound into the dispatch stub — on `get_activity`, `get_technique` and `get_resource`, and that context reads and writes its own ledger. A first dispatch under a new `agent_id` holds no prior deliveries and takes full delivery; the same `agent_id` calling again is the same context resumed, and may pass `bundle: "reference"` to collapse what it already received to unchanged markers. Omit `agent_id` only on a solo walk, where the session's own agent is the one context.
 
 ### force-full-after-summarization
 

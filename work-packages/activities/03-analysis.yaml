@@ -1,25 +1,8 @@
 id: analysis
-version: 1.2.0
+version: 1.3.0
 name: Analysis
 description: Perform completion or context analysis depending on whether continuing previous work or starting new initiative
 steps:
-  - kind: checkpoint
-    id: analysis-type-selection
-    message: Is this continuing previous work or a new initiative?
-    options:
-      - id: continuing
-        label: Continuing previous work
-        description: Perform completion analysis of existing progress
-        effect:
-          setVariable:
-            analysis_type: completion
-      - id: new-initiative
-        label: New initiative
-        description: Perform context analysis for a fresh start
-        effect:
-          setVariable:
-            analysis_type: context
-    blocking: true
   - kind: technique
     id: analyze-completion
     technique: analyze-initiative-context::analyze-completion

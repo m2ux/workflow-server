@@ -315,7 +315,7 @@ graph TD
 
 ### 10. Post-Implementation Review
 
-Reviews implementation quality through manual diff review, code review, structural analysis, test-suite review, and an architecture summary, catching issues before validation. If a critical blocker is found it routes back to implement for remediation; otherwise leads to validate.
+Reviews implementation quality through manual diff review, code review, structural analysis, test-suite review, and an architecture summary, catching issues before validation. When no critical blocker is found it closes by settling whether the local environment can run the validation suite. If a critical blocker is found it routes back to implement for remediation; otherwise leads to validate.
 
 Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 
@@ -343,21 +343,23 @@ graph TD
     applyFixes --> fixCycle
     fixCycle -->|"no"| blockerGate{"has_critical_blocker?"}
     blockerGate -->|"yes"| exitImplement(["implement"])
-    blockerGate -->|"no"| exitValidate(["validate"])
+    blockerGate -->|"no"| cpLocalValidation{"local-validation-permission checkpoint"}
+    cpLocalValidation --> exitValidate(["validate"])
 ```
 
 ---
 
 ### 11. Validate
 
-Validates the implementation against tests, build, format, and lint checks when the local environment can run them. When it cannot, Progress for this activity is marked cancelled/N/A and the suite is skipped (no user-reported pass/fail hand-off). In review mode it documents failures as findings and assesses coverage rather than fixing. Suite-only — build-dependent artifact hand-off lives in submit-for-review. Leads to strategic-review.
+Validates the implementation against tests, build, format, and lint checks when `{run_local_validation}` says the local environment can run them, as post-impl-review determined. When it cannot, Progress for this activity is marked cancelled/N/A and the suite is skipped (no user-reported pass/fail hand-off). In review mode it documents failures as findings and assesses coverage rather than fixing. Suite-only — build-dependent artifact hand-off lives in submit-for-review. Leads to strategic-review.
 
 Definition: [`11-validate.yaml`](./11-validate.yaml)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> localGate{"Local validation available?"}
-    localGate -->|"no"| exitNode(["strategic-review"])
+    entryNode(["Entry"]) --> localGate{"run_local_validation?"}
+    localGate -->|"no"| markNa["Mark Progress cancelled/N/A"]
+    markNa --> exitNode(["strategic-review"])
     localGate -->|"yes"| preflight["Toolchain preflight"]
     preflight --> runSuite["Run validation suite (check + clippy + test + fmt-check)"]
     runSuite --> reviewMode{"Review mode?"}

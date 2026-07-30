@@ -1,19 +1,8 @@
 id: apply-mitigations
-version: 1.3.0
+version: 1.4.0
 name: Apply Accepted Mitigations
 description: Apply accepted mitigations to the target document.
 steps:
-  - kind: checkpoint
-    id: confirm-apply
-    message: Ready to apply {accepted_count} accepted mitigations to the target. Changes will be applied in priority order. Proceed?
-    options:
-      - id: apply
-        label: Apply all accepted mitigations
-        description: Apply changes to the target document
-      - id: plan-only
-        label: Keep plan only — do not modify target
-        description: Save the mitigation plan without applying changes to the target
-    blocking: true
   - kind: technique
     id: apply-changes
     technique: resolve-findings::apply-changes

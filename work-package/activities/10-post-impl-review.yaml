@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.17.1
+version: 1.18.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 required: true
@@ -147,6 +147,28 @@ steps:
   - kind: technique
     id: classify-and-route-findings
     technique: findings-classification
+  - kind: checkpoint
+    id: local-validation-permission
+    message: Is the local environment suitable to run the project's validation suite?
+    blocking: true
+    condition:
+      type: simple
+      variable: has_critical_blocker
+      operator: "!="
+      value: true
+    options:
+      - id: run-locally
+        label: Yes — run validation locally
+        description: The validate activity executes the project suite in-process
+        effect:
+          setVariable:
+            run_local_validation: true
+      - id: validation-unavailable
+        label: No — mark validation N/A
+        description: Skip the local suite; Progress Validation recorded as cancelled/N/A
+        effect:
+          setVariable:
+            run_local_validation: false
 decisions:
   - id: blocker-gate
     name: Critical Blocker Gate
