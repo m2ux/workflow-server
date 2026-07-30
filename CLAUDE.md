@@ -45,6 +45,9 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 - After code or schema changes, run `npm run typecheck` and `npm test` before committing.
 - After workflow-corpus changes, run `npm run check:all`. To see only what your change added, run `npm run check:delta`. Corpus debt is triaged per finding in `scripts/binding-fidelity-triage.json` — classify a new finding there (`harmless` / `fix-later` / `live-bug`) rather than suppressing it; there is no re-snapshot command.
 - Follow the repo’s PR/commit conventions.
+- **Commit incrementally. Do not amend or squash to tidy up.** Each change lands as its own commit with its own message, so the branch carries a readable record of how it was built. Push with plain `git push`; when a push will not fast-forward, stop and ask rather than rewriting.
+  - **`--force`/`--force-with-lease` has exactly one use:** correcting a genuine error in an earlier commit, on a branch with **no other contributors**. Not for squashing, not for rewording, not for folding a follow-up into the commit it fixes, and never on a shared branch.
+  - Repeated amending is the failure mode to avoid: it silently collapses distinct pieces of work into one commit, and the intermediate states survive only in a local reflog. Once collapsed, the history cannot be recovered — only reconstructed by hand, which is a rewrite of its own.
 - **GitHub CLI — REST only (no GraphQL).** `gh pr create`, `gh pr view`, `gh pr list`, and any call that hits `api.github.com/graphql` are **forbidden** here (GraphQL is deprecated/unreliable and fails). Create and manage PRs with REST only, e.g.:
 
   ```bash
