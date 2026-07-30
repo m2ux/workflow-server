@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -13,10 +13,6 @@ Compose the markdown session summary presented at workflow close.
 
 Workflow definition (id, title, outcomes)
 
-### execution_trace
-
-Completed activities, checkpoint decisions, artifacts produced
-
 ## Outputs
 
 ### completion_summary
@@ -25,8 +21,8 @@ Completed activities, checkpoint decisions, artifacts produced
 
 ## Protocol
 
-1. Draw from `{execution_trace}` to compose the summary sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items. Return the assembled markdown as `{completion_summary}`.
-   > Obtain the execution trace through the `inspect_session` tool — `view: activities` for completed activities, `view: checkpoints` for checkpoint decisions, `view: history` for the event trace, or `view: summary` for all of it — rather than reading `session.json` directly.
+1. Resolve `{$execution_trace}`: the session's completed activities, checkpoint decisions and artifacts produced. Draw from `{execution_trace}` to compose the summary sections: workflow id and title, start/completion timestamps, activities completed, key checkpoint decisions, artifacts with paths, outcomes satisfied vs. unmet, follow-up items. Return the assembled markdown as `{completion_summary}`.
+   > Obtain `{execution_trace}` through the `inspect_session` tool — `view: activities` for completed activities, `view: checkpoints` for checkpoint decisions, `view: history` for the event trace, or `view: summary` for all of it — rather than reading `session.json` directly. It is resolved here, never supplied by a caller.
 
 ## Rules
 

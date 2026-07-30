@@ -2,7 +2,7 @@
 name: review-mode
 description: Guidelines for using the work-package workflow in review mode to conduct structured PR reviews. Covers detection, adapted workflow behavior, and output generation. Organized by review category for per-section delivery to the technique that renders that category.
 metadata:
-  version: 1.13.0
+  version: 1.14.0
   order: 24
   legacy_id: 24
 ---
@@ -38,10 +38,10 @@ The summary header carries `PR`, `Plan`, `Reviewers`, `Reports`, and `Date` fiel
 **Reports list:** The header includes a `Reports` field naming each report the summary links to, as hyperlinks. Each entry links the report by name to its artifact, under the engineering-artifacts base URL:
 
 ```
-https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/{ARTIFACT_PUBLISH_REF}/artifacts/planning/{PLANNING_FOLDER}/
+https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/{ARTIFACT_PUBLISH_REF}/{ENG_PLANNING_PATH}/{PLANNING_FOLDER}/
 ```
 
-`{ARTIFACT_PUBLISH_REF}` is the **branch** the linked artifacts are published on, so the linked tree carries whatever the run adds after the link is written — close-out, retrospective, session trace and follow-ups all land on that branch and resolve from the same URL. Resolve `{ENG_REPO_OWNER}` and `{ENG_REPO_NAME}` from the artifacts checkout's remote; never hardcode `main`. The path after the ref is relative to the root of the checkout that ref belongs to: `artifacts/planning/…` when `.engineering/` is itself a checkout, and `.engineering/artifacts/planning/…` when the artifacts live directly in the product checkout. The set of reports and their artifact filenames are supplied by the rendering step — one entry per review category the run produced — not fixed by this template.
+`{ARTIFACT_PUBLISH_REF}` is the **branch** the linked artifacts are published on, so the linked tree carries whatever the run adds after the link is written — close-out, retrospective, session trace and follow-ups all land on that branch and resolve from the same URL. Resolve `{ENG_REPO_OWNER}` and `{ENG_REPO_NAME}` from the engineering checkout's remote; never hardcode `main`. `{ENG_PLANNING_PATH}` is relative to the root of the checkout that ref belongs to: `artifacts/planning` when `.engineering/` is itself a checkout, and `.engineering/artifacts/planning` when the artifacts live directly in the product checkout. The set of reports and their artifact filenames are supplied by the rendering step — one entry per review category the run produced — not fixed by this template.
 
 **Ref split — engineering artifacts by branch, reviewed code by sha:** every engineering-artifact link (`Plan`, `Reports`, a designator's report anchor) carries `{ARTIFACT_PUBLISH_REF}`. Every citation of the reviewed code carries the reviewed head sha instead, as a permanent blob URL under the reviewed repository:
 

@@ -1,5 +1,5 @@
 id: end-workflow
-version: 4.2.0
+version: 4.3.0
 name: End Workflow
 description: Close out the client workflow.
 required: true
@@ -10,14 +10,12 @@ steps:
       name: workflow-engine::verify-outcomes
       inputs:
         outcomes: target_workflow_outcomes
-        state: client_state
   - kind: technique
     id: generate-summary
     technique:
       name: workflow-engine::generate-summary
       inputs:
         workflow_definition: target_workflow_id
-        execution_trace: client_trace
   - kind: checkpoint
     id: completion-confirmed
     message: Session summary presented above. Confirm closure or return to the workflow to address remaining items.

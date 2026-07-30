@@ -2,7 +2,7 @@
 name: pr-description
 description: PR description templates and link-row rendering forms.
 metadata:
-  version: 1.6.0
+  version: 1.7.0
   order: 12
   legacy_id: 12
 ---
@@ -140,8 +140,10 @@ Optional sections (add when applicable): `## Migration Notes` (required steps fo
 **Standard link row** (Issue = the GitHub issue in the target repo, never the Jira ticket):
 
 ```markdown
-🐛 [Issue]({TARGET_REPO_URL}/issues/{GITHUB_ISSUE_NUMBER})  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/.engineering/artifacts/planning/{PLANNING_FOLDER}/README.md)
+🐛 [Issue]({TARGET_REPO_URL}/issues/{GITHUB_ISSUE_NUMBER})  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/{ENG_PLANNING_PATH}/{PLANNING_FOLDER}/README.md)
 ```
+
+`{ENG_PLANNING_PATH}` is the planning root relative to the root of the checkout `{ENG_BRANCH}` belongs to: `artifacts/planning` when `.engineering/` is a checkout of its own, and `.engineering/artifacts/planning` when the artifacts live directly in the host checkout. The rendering step resolves which, alongside the ref itself.
 
 **Issue-skipped placeholder** (when `issue_skipped == true` — the line is rendered, italicised, no link, so reviewers can tell the omission was intentional):
 
