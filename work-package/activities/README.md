@@ -23,11 +23,11 @@ graph TD
     cpPrRef -->|"PR reference provided"| capturePR["Capture PR reference"]
     cpPrRef -->|"cancel review mode"| resolveRef
     capturePR --> resolveRef
-    detectReview -->|"intent unambiguous"| resolveRef["Resolve repo context<br/>host_repo_path (monorepo or standalone) · repo-root submodules to HEAD<br/>GitNexus analyze · commit-signing pre-conditions<br/>merge strategy · project type · existing issue"]
+    detectReview -->|"intent unambiguous"| resolveRef["Establish repo context and preconditions"]
     resolveRef --> cpIssue{"issue-verification checkpoint"}
     cpIssue -->|"provide existing"| platformSelect
     cpIssue -->|"create new"| platformSelect{"platform-selection checkpoint"}
-    cpIssue -->|"skip issue"| bindPlanning
+    cpIssue -->|"skip issue"| setUpWorkspace
 
     platformSelect -->|"GitHub"| createGitHub["Create GitHub issue"]
     platformSelect -->|"Jira"| searchGitHub["Search for a GitHub issue linked to the Jira ticket"]
@@ -42,17 +42,9 @@ graph TD
     createGitHub --> reviewIssue{"issue-review checkpoint"}
     createJira --> reviewIssue
     reviewIssue --> assignIssue["Assign and transition issue"]
-    assignIssue --> bindPlanning["Bind planning folder path"]
+    assignIssue --> setUpWorkspace["Set up the planning folder and component worktree"]
 
-    bindPlanning --> initPlanning["Initialize planning folder README"]
-    initPlanning --> problemOverview["Present problem overview"]
-    problemOverview --> deriveBranch["Derive feature branch name"]
-    deriveBranch --> computePath["Compute canonical target_path"]
-    computePath --> createWorktree["Create component worktree (branch + worktree in one step)"]
-    createWorktree --> checkBranch["Check current branch"]
-    checkBranch --> checkPR["Check for existing PR (inside worktree)"]
-
-    checkPR --> cpPR{"pr-check checkpoint"}
+    setUpWorkspace --> cpPR{"pr-check checkpoint"}
     cpPR -->|"use existing"| linkPR
     cpPR -->|"create new"| createPR["Create draft PR"]
     createPR --> cpPRCreation{"pr-creation checkpoint"}
