@@ -11,7 +11,7 @@ Codebase intelligence via the GitNexus knowledge graph — indexing, structural 
 
 ### query-not-grep
 
-Apply [query](./query.md) / [context](./context.md) for execution flows and relationships. Grep is for text patterns and string literals only — when structure matters, use GitNexus.
+Apply [query](./query.md) / [context](./context.md) for execution flows and relationships among code symbols — that is what the graph holds. For a markdown tree it holds paths and no prose, so a question about which text states a claim is a grep question, and [query](./query.md) answers it with unrelated matches rather than nothing, which means a miss there does not read as a miss. Grep is also for text patterns and string literals in code.
 
 ### detect-changes-after-edit
 
@@ -20,10 +20,6 @@ Always apply [detect-changes](./detect-changes.md) after applying a rename or ba
 ### index-freshness-first
 
 Apply [verify-index](./verify-index.md) at the start of any GitNexus session, and again before any operation whose answer turns on the current tree — [impact](./impact.md), [detect-changes](./detect-changes.md), [orphan-scan](./orphan-scan.md), [diff-coverage-map](./diff-coverage-map.md). A stale index answers in the same shape as a fresh one and says nothing about its own age, so an unverified answer is indistinguishable from a correct one.
-
-### graph-answers-code-not-prose
-
-The graph holds code symbols and file paths. For a markdown tree — `workflows/`, `docs/`, `.engineering/` — it locates a file by path but cannot answer which text states a claim, and [query](./query.md) returns unrelated matches rather than an empty result, so a miss does not read as a miss. Reach for the graph by path (a [cypher](./cypher.md) `f.filePath` match) or for code structure; read the prose with grep and Read.
 
 ### keyword-shaped-queries
 

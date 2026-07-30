@@ -53,7 +53,7 @@ variables:
     defaultValue: false
   - name: target_workflow_outcomes
     type: string
-    description: The client workflow's own outcome list, seeded in its bag, read by verify-outcomes during end-workflow close-out
+    description: The client workflow's own outcome list, seeded in its bag
   - name: workflow_match_ambiguous
     type: boolean
     description: Whether the user request matched multiple workflows — gates the workflow-selection checkpoint in discover-session
