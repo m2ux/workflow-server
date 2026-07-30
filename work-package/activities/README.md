@@ -23,14 +23,8 @@ graph TD
     cpPrRef -->|"PR reference provided"| capturePR["Capture PR reference"]
     cpPrRef -->|"cancel review mode"| resolveRef
     capturePR --> resolveRef
-    detectReview -->|"intent unambiguous"| resolveRef["Resolve host_repo_path: monorepo or standalone"]
-    resolveRef --> updateSubs["Update repo-root submodules to HEAD"]
-    updateSubs --> analyze["GitNexus analyze (host_repo_path)"]
-    analyze --> verifySigning["Verify commit-signing pre-conditions"]
-    verifySigning --> detectMerge["Detect merge strategy"]
-    detectMerge --> detectProject["Detect project type"]
-    detectProject --> checkIssue["Check for existing issue"]
-    checkIssue --> cpIssue{"issue-verification checkpoint"}
+    detectReview -->|"intent unambiguous"| resolveRef["Resolve repo context<br/>host_repo_path (monorepo or standalone) · repo-root submodules to HEAD<br/>GitNexus analyze · commit-signing pre-conditions<br/>merge strategy · project type · existing issue"]
+    resolveRef --> cpIssue{"issue-verification checkpoint"}
     cpIssue -->|"provide existing"| platformSelect
     cpIssue -->|"create new"| platformSelect{"platform-selection checkpoint"}
     cpIssue -->|"skip issue"| bindPlanning
