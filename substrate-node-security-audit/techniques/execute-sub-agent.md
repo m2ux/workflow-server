@@ -11,7 +11,7 @@ Bootstrap the workflow-server, load an assigned activity, follow its steps seque
 
 ### sub_agent_output
 
-Structured JSON conforming to the [sub-agent-output-schema](../resources/sub-agent-output-schema.md).
+Structured JSON conforming to the [Schema](../resources/sub-agent-output-schema.md#schema).
 
 #### agent_id
 

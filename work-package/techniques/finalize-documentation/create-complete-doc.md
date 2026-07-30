@@ -34,7 +34,7 @@ Path to the written close-out document, for user-facing links.
 
 ## Protocol
 
-1. Create the `{completion_document}` at the `{planning_folder_path}` following the close-out template in [complete-wp-guide](../../resources/complete-wp-guide.md) — single terminal artifact; do not create separate session-summary, close-out-summary, or retrospective files (retrospective is inlined later by conduct-retrospective, or omitted per that group's skip rule). Emit its path as `{completion_document_path}`.
+1. Create the `{completion_document}` at the `{planning_folder_path}` following the close-out [Template](../../resources/complete-wp-guide.md#template) — single terminal artifact; do not create separate session-summary, close-out-summary, or retrospective files (retrospective is inlined later by conduct-retrospective, or omitted per that group's skip rule). Emit its path as `{completion_document_path}`.
 2. Summarize what was delivered (2-3 sentences) and link the plan — do not restate its task list.  
    > When `{is_review_mode}` is true, the delivered thing is a verdict: name the audited PR in the header, state the verdict posted, and link the review summary.
 3. Record known limitations — this document is their canonical home.

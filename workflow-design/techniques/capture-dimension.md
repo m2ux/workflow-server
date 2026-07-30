@@ -11,7 +11,7 @@ User answers for a single design dimension at the elicitation-guide capture dept
 
 ### current_dimension
 
-The design dimension just elicited — one of the dimensions listed in the [elicitation-guide](../resources/elicitation-guide.md).
+The design dimension just elicited — one of those listed under [Dimensions](../resources/elicitation-guide.md#dimensions).
 
 ### dimension_questions
 
@@ -27,7 +27,7 @@ The running design specification assembled from all dimensions elicited so far, 
 
 ### 1. Capture Dimension
 
-- From the user's replies to `{dimension_questions}`, record `{$dimension_capture}` at the depth the [elicitation-guide](../resources/elicitation-guide.md) Capture column describes for `{current_dimension}` — do not restate the per-dimension capture lists here
+- From the user's replies to `{dimension_questions}`, record `{$dimension_capture}` at the depth the [Dimensions](../resources/elicitation-guide.md#dimensions) Capture column describes for `{current_dimension}` — do not restate the per-dimension capture lists here
 
 ### 2. Fold Accumulated Design
 

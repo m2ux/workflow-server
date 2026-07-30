@@ -39,6 +39,7 @@ Stakeholder-facing architecture [summary](../resources/architecture-summary.md#a
 - Map each entry in `{changed_files}` to its modules and subsystems
 - Identify external interactions and boundaries
 - Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[diagram-source-select](../../meta/techniques/gitnexus-operations/diagram-source-select.md) to bound diagram scope to the affected processes and source diagram structure from graph resources.
+- Select which diagram types the change warrants, and their notation, per [Diagram Selection](../resources/architecture-summary.md#diagram-selection).
 - If the changes are too minor to warrant a full architectural summary, create a minimal summary noting the low architectural impact rather than the full set of diagrams.
 
 ### 2. Create Context Diagram
@@ -66,7 +67,7 @@ Stakeholder-facing architecture [summary](../resources/architecture-summary.md#a
 - Create the `{architecture_summary}` under `{planning_folder_path}`
 - Combine diagrams with narrative explanation
 - Focus on impact, scope, and risk, drawing scope and rationale from `{design_philosophy_doc}` when it is provided
-- Follow the architecture-summary template in [architecture-summary](../resources/architecture-summary.md)
+- Follow the [Architecture Summary Artifact Template](../resources/architecture-summary.md#architecture-summary-artifact-template)
 - Write for management stakeholders — not implementation details
 
 ## Rules
