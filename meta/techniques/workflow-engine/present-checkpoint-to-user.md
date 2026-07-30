@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -25,6 +25,7 @@ Load the active checkpoint's details and present them to the user.
 2. Apply [verify-auto-advance-capability](#verify-auto-advance-capability) against the `present_checkpoint` payload (and the activity definition when needed) before treating the checkpoint as auto-advanceable.
 3. Call `AskQuestion` with the checkpoint's message and `options[]`. This is the user's only opportunity to respond — it is MANDATORY for every checkpoint, including those with `autoAdvanceMs` set. If `autoAdvanceMs` is set (verified in step 2), configure `AskQuestion`'s timeout to that value with `defaultOption` as the timeout fallback; if the user does not respond within the timer, capture that as `auto_advance: true`. If the user responds, capture their `option_id`. When `autoAdvanceMs` / `defaultOption` are absent, do not auto-advance — wait for an explicit selection.
 4. Record the resolved `{user_selection}` — the user's `option_id` and its `effects` (or `auto_advance` / `condition_not_met`).
+5. Apply the effects carried on `{user_selection}` to internal state, then pass `{user_selection}` down to the orchestrator or worker awaiting the resolution.
 
 ## Rules
 
@@ -35,7 +36,3 @@ Load the active checkpoint's details and present them to the user.
 ### verify-auto-advance-capability
 
 Before treating a checkpoint as auto-advanceable, confirm whether `defaultOption` and `autoAdvanceMs` are actually present on the `present_checkpoint` payload (or the checkpoint definition it mirrors). Do not assert auto-advance from memory, prior runs, or prose alone when those fields are absent. Capability is verified, not assumed.
-
-### apply-effects-immediately
-
-Apply the resolved effects to internal state on receipt, then pass them down to the orchestrator/worker.

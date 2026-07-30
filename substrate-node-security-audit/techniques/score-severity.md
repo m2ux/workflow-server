@@ -48,7 +48,7 @@ The finding set annotated with per-finding Impact score, Feasibility score, comp
 
 ### rubric-required
 
-Severity MUST use the Impact x Feasibility rubric. Compare each finding against the calibration benchmark table in the [severity-rubric](../resources/severity-rubric.md) (and the [target-profile](../resources/target-profile.md) target-specific benchmarks if present) before finalizing. Do not assign severity intuitively.
+Severity MUST use the Impact x Feasibility rubric. Compare each finding against the calibration benchmark table in the [severity-rubric](../resources/severity-rubric.md) (and the target-specific [Severity Calibration Benchmark](../resources/target-profile.md#severity-calibration-benchmark) if present) before finalizing. Do not assign severity intuitively.
 
 ### under-rating
 

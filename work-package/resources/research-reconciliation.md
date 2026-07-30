@@ -11,9 +11,9 @@ metadata:
 
 Inventory shape and scorecard format for research candidates — open gaps between what findings establish and what requirements need. Status and handoff-target vocabulary below.
 
-## Integration with Research Artifact
+## Inventory shape
 
-The candidate inventory lives in an **Open Research Candidates** section of the research [artifact](knowledge-base-research.md#planning-artifact) (`kb-research.md`), one table row per candidate, updated in place across passes.
+The candidate inventory is an **Open Research Candidates** section — an `##`-level section carrying one table row per candidate, updated in place across passes rather than appended to. Its host document's own shape is [knowledge-base-research](knowledge-base-research.md#planning-artifact).
 
 ### Reconcilability statuses
 

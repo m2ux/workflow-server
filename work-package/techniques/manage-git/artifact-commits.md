@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Commit planning artifacts in the engineering checkout (under `{host_repo_path}/.engineering` when that path is a git checkout, otherwise `{host_repo_path}`) with the canonical message pattern, rebasing onto sibling work-package commits to avoid push rejections.
+Commit planning artifacts in the engineering checkout with the canonical message pattern, rebasing onto sibling work-package commits to avoid push rejections.
 
 ## Inputs
 
@@ -27,7 +27,7 @@ Engineering branch to push to
 
 ### host_repo_path
 
-Path to the product repo root. Staging/commit/push run in `{host_repo_path}/.engineering` when that directory is a git checkout (install layout submodule); otherwise in `{host_repo_path}`.
+Path to the product repo root (monorepo or standalone); the engineering checkout sits at or under it.
 
 ## Outputs
 

@@ -9,9 +9,9 @@ Applied-fix record for selected audit findings with post-edit schema-validation 
 
 ## Inputs
 
-### selected_findings
+### verified_findings
 
-The audit findings selected for repair — each naming the file, the construct, and the corrective action.
+The audit findings that survived verification — each naming the file, the construct, and the corrective action.
 
 ## Outputs
 
@@ -23,7 +23,7 @@ Per-finding record of the file edited and the change made, with the post-edit sc
 
 ### 1. Record Fixes Applied
 
-- Record `{fixes_applied}`: the file edited, the change made, and the post-edit validation result per finding in `{selected_findings}`
+- Record `{fixes_applied}`: the file edited, the change made, and the post-edit validation result per finding in `{verified_findings}`
 
 ## Rules
 

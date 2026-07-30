@@ -48,7 +48,7 @@ Targeted exploration subsections appended for the selected area: traced data flo
 
 ### 2. Artifact Management
 
-- Write the `{comprehension_artifact}` following the artifact structure and comprehension techniques in [codebase-comprehension](../../resources/codebase-comprehension.md)
+- Write the `{comprehension_artifact}` following the [Artifact Template](../../resources/codebase-comprehension.md#artifact-template) and the [Comprehension Techniques](../../resources/codebase-comprehension.md#comprehension-techniques)
 - Derive `{$codebase_area}` from the target project or subsystem name (slugified)
 - Artifact naming: `{codebase_area}.md` in `{comprehension_dir}`
 - When augmenting: add new sections, update existing sections with deeper detail, preserve prior content

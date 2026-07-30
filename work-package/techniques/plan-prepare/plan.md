@@ -48,14 +48,14 @@ Atomic tasks with explicit dependencies and ordering — each implementable, tes
 
 ### 1. Verify Inputs
 
-- Verify `{design_philosophy}` and `{requirements}` are available
+- Verify `{design_philosophy_doc}` and `{requirements}` are available
 - Confirm prerequisite inputs are present before proceeding
 - If design philosophy or analysis is not present, prompt the user to provide the prerequisite inputs before planning.
 
 ### 2. Load Guidance
 
 - Use attached [wp-plan](../../resources/wp-plan.md) for plan template and guidance
-- Review `{design_philosophy}`, `{requirements}`, `{analysis_findings}`, `{research_findings}`
+- Review `{design_philosophy_doc}`, `{requirements}`, `{analysis_findings}`, `{research_findings}`
 
 ### 3. Apply Design Framework
 

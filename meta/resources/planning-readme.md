@@ -7,7 +7,7 @@ description: Canonical Template and rules for the README.md entry-point of any w
 
 The `README.md` is the entry point for a workflow's planning folder (git hosting renders it when browsing). It is an **index** — a hub of links answering "what is this work, and what is its current status?" in under two minutes. Each linked artifact is the single home of its own content; the README links to it (single-source-and-link).
 
-This resource owns the **universal Template** and structure/policy. [create-readme](../techniques/workflow-engine/create-readme.md) seeds `README.md` from [Template](#template), then splices Progress rows (and optional append headings) from the workflow's **readme-seed** profile. [verify-readme-conforms](../techniques/workflow-engine/verify-readme-conforms.md) drift-checks against this Template (plus seed-declared appends). [sync-progress-status](../techniques/workflow-engine/sync-progress-status.md) mutates Progress Status cells per the policy below.
+This resource owns the **universal Template** and the policy around it, in three parts: the [Template](#template) plus [Rules](#rules) for the sections it lays out, [Status](#status) for the whole Progress status model, and [Matching](#matching) for how writers address rows. [create-readme](../techniques/workflow-engine/create-readme.md) seeds `README.md` from the Template, then splices Progress rows (and optional append headings) from the workflow's **readme-seed** profile; [verify-readme-conforms](../techniques/workflow-engine/verify-readme-conforms.md) drift-checks against it; [sync-progress-status](../techniques/workflow-engine/sync-progress-status.md) is the only writer of Progress Status cells.
 
 ## Template
 
@@ -32,11 +32,11 @@ This resource owns the **universal Template** and structure/policy. [create-read
 
 ## 📊 Progress
 
-| # | @ | Item | Description | Estimate | Status |
-|---|---|------|-------------|----------|--------|
-| 1 | NN | Activity or [Artifact](artifact.md) | 3-8 word summary | 15-30m | ⬚ |
+| # | Item | Description | Estimate | Status |
+|---|------|-------------|----------|--------|
+| 1 | Activity or [Artifact](NN-artifact.md) | 3-8 word summary | 15-30m | ⬚ |
 
-**Status:** ⬚ pending · ◐ in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
+**Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
 ## 🔗 Links
 
@@ -69,89 +69,116 @@ Plain-language sections for non-technical stakeholders, each exactly two paragra
 
 ### Progress table
 
-Tracks workflow **activities** (primary) and their planning artifacts (siblings under the same `@`).
+Tracks workflow **activities** (primary) and their planning artifacts (siblings owned by the same activity).
 
-- Columns: **`#`** (monotonic row index: 1, 2, 3, … — display/reading order only), **`@`** (activity `artifactPrefix`, two-digit), then Item, Description, Estimate, Status.
+- Columns: **`#`** (monotonic row index: 1, 2, 3, … — display/reading order only), then Item, Description, Estimate, Status. Five columns. The activity that owns each row is **not** a column: this is a reader-facing table, and which activity produced a row is bookkeeping the reader never needs. Writers get it from the [row-ownership map](#row-ownership-map) instead.
 - **Every activity** in the workflow gets at least one Progress row, including activities that produce no new planning artifact (plain milestone row: Implementation, Assumptions review, Validation, Submit for review, etc.).
-- When an activity produces artifacts, add artifact link rows under the same `@`. Pattern: optional activity milestone row plus artifact siblings, or let the first artifact row stand for the activity — apply one pattern consistently per workflow seed. Minimum bar: every activity's `@` appears at least once.
-- An artifact link row targets the **minted filename** — the row's own `@` value, a hyphen, then the technique-declared bare filename (`@` `06` plus `test-plan.md` gives `[Test plan](06-test-plan.md)`). That is the name write-artifact creates, so a seeded link resolves on arrival rather than 404ing until someone hand-corrects it. A cross-activity register that any activity may mint has no owning activity and so no prefix: link it bare and give its row the `@` of the activity that most often writes it first.
-- The **`@`** column is the activity's server `artifactPrefix` (from the activity filename — e.g. `08` from `08-implement.yaml`), including for non-artifact milestone rows. write-artifact keeps the first prefix sticky on later artifact updates. Reserve `—` in `@` only for items that are truly not activity-scoped.
-- The **`#`** column is display-only; writers match and update rows by `@` (and Item), never by `#`.
-- Seed optional-path activities and artifacts too. At seed, leave undecided optional-path rows as pending ([Status vocabulary](#status-vocabulary)). When the path later skips them, set cancelled/N/A — same status as seed-time mode exclusion.
-- **Seed-time exclusion** — rows excluded from the seeded mode / out of review for this run use cancelled/N/A per [Status vocabulary](#status-vocabulary) (e.g. review-only artifacts in an implement seed, or create-only activities when `is_review_mode`). Visible immediately; distinct from pending (still in contention).
-- Description: 3-8 word summary. Estimate: expected agentic time — adjust template defaults to the work's complexity.
+- When an activity produces artifacts, add artifact link rows for it. Pattern: optional activity milestone row plus artifact siblings, or let the first artifact row stand for the activity — apply one pattern consistently per workflow seed. Minimum bar: every activity owns at least one row.
+- **Seed the optional paths too**, including rows the current mode excludes. Undecided optional-path rows start pending; rows already out of scope for this run start cancelled/N/A (e.g. review-only artifacts in an implement seed, create-only activities when `is_review_mode`) so the exclusion is visible immediately rather than indistinguishable from work still in contention. A later path skip writes the same cancelled/N/A — [Status vocabulary](#status-vocabulary) covers both.
+- Estimate: expected agentic time — adjust template defaults to the work's complexity.
 - Distinct from the header-line `**Status:**` lifecycle field (Planning/Drafting/…), which remains text and is **not** mutated by Progress Status writers — lifecycle updates stay with [commit-and-persist](../techniques/workflow-engine/commit-and-persist.md).
 
-### Matching
+#### Item cell
 
-How Progress writers select rows and which cells they may change. Techniques cite this section; they do not restate column glyphs or geometry.
+The Item cell is the row's label and its only link slot.
 
-- **Select** rows by the **activity-prefix field** (table header currently `@`) equal to `{artifact_prefix}`.
-- **Do not select** by the **row-index field** (table header currently `#`) — that field is display-only reading order.
-- When `{item_match}` is bound, **further restrict** to rows whose **item field** contains that match.
-- **Mutate only** the **status field**. Leave row-index, activity-prefix, item, description, and estimate cells unchanged.
-- Table headers, column order, section chrome (including the Progress heading), and icon-key placement are layout owned by [Progress table](#progress-table) and [Icon key](#icon-key) — renaming or reordering columns that preserve the same fields must not require technique Protocol edits.
+- **Human name only.** `Close-out`, not `Close-out (COMPLETE.md)`. The filename is what the link points at, so a reader never needs it as text, and a label carrying it has to be edited whenever the file is renamed.
+- **Linked whenever the row's activity produced or amended a file.** That holds for artifact rows and for milestone rows alike: an activity that wrote or updated a file links the Item cell to it. A row that produced nothing stays plain text.
+- **An artifact link targets the minted filename** — the owning activity's prefix, a hyphen, then the technique-declared bare filename (prefix `06` plus `test-plan.md` gives `[Test plan](06-test-plan.md)`). That is the name write-artifact creates, so a seeded link resolves on arrival rather than 404ing until someone hand-corrects it; write-artifact keeps that first prefix sticky on later updates. A cross-activity register that any activity may mint has no owning activity and so no prefix: link it bare, and map its row to the activity that most often writes it first.
+- **Seeded links are provisional.** A seed pre-links every row to the file it *would* produce, so a row whose activity never ran points at a file that does not exist. [Status transition policy](#status-transition-policy) owns what a write does about that.
+
+#### Description cell
+
+A 3-8 word summary of what the row covers, in plain text. **No hyperlinks** — the Item cell is the row's link slot, and a second link in the same row splits a reader's attention between two targets for one item.
+
+#### Row-ownership map
+
+Which activity owns which Progress rows. This is the anchor Progress writers select on, and it is its own declaration in the workflow's **readme-seed profile** — a `## Row ownership` table keyed by activity `artifactPrefix` (two-digit, from the activity filename — `08` from `08-implement.yaml`), whose values are the Item labels that activity owns.
+
+Keeping it separate from the Progress inventory is what lets the inventory rows be the rendered rows: [create-readme](../techniques/workflow-engine/create-readme.md) splices them as authored, with no column to add or remove on the way through. A seed that carried ownership as a sixth inventory column would need every consumer to strip it.
+
+Key a run of rows under `—` when they are truly not activity-scoped.
+
+A row absent from the map is unselectable — a writer cannot resolve which activity owns it, so its status never advances. Every inventory row therefore appears in the map.
+
+### Links table
+
+Holds external references — tracker issue, parent epic, PR. Artifact links belong in the Progress table.
+
+## Status
+
+The whole status model: what each value means, how it renders, which writes are legal, and when writers fire.
 
 ### Status vocabulary
 
-Canonical Progress Status values — the single home for each status’s meaning and icon glyph. [Status column](#status-column), [Icon key](#icon-key), [Status transition policy](#status-transition-policy), and [Progress Status call sites](#progress-status-call-sites) cite this section; they do not invent alternate glyphs or meanings.
+Canonical Progress Status values — the single home for each status's meaning and icon glyph. Everything below cites this table; nothing invents a glyph or meaning outside it.
 
 | Status | Icon | Meaning |
 |--------|------|---------|
 | pending | `⬚` | Not started; still in contention (including undecided optional-path rows) |
-| in progress | `◐` | Activity entered; work underway |
-| complete | `✅` | Activity finished successfully |
+| in progress | `🟡` | Work underway on this row's deliverable |
+| complete | `✅` | The row's deliverable exists |
 | blocked | `❌` | Work blocked |
-| cancelled / N/A | `⊘` | Cancelled, skipped after path choice, or excluded / not applicable (including seed-time mode exclusion) |
+| cancelled / N/A | `⊘` | Dropped with nothing delivered — cancelled, excluded, or not applicable (covers both seed-time mode exclusion and a later path skip) |
 
-Status cells are **icon only** — never words such as Pending, Complete, or N/A in the cell.
+Status cells are **icon only** — never words such as Pending, Complete, or N/A in the cell. Every glyph is a full-colour emoji, so the row a reader most needs to find is as visible as the rest: an outline glyph beside full-colour siblings is the hardest cell to spot on a dark background, which inverts the attention the in-progress status exists for.
 
-### Status column
-
-Write only icons from [Status vocabulary](#status-vocabulary). Never put status words in the Status column cell.
+**Status tracks the deliverable, not the producer.** The question a Progress row answers is whether its deliverable exists, not whether the activity expected to produce it ran. So a step that was skipped whose content landed somewhere else is **complete**, with the Item cell linked where the content actually landed; and cancelled/N/A means nothing was delivered anywhere. Cancelled-with-a-link contradicts itself — it tells a reader both that the item was dropped and that here is the thing it produced.
 
 ### Icon key
 
-Place an icon key **underneath** the Progress table (not in the Status column) that renders [Status vocabulary](#status-vocabulary) for readers:
+Place an icon key **underneath** the Progress table (not in the Status column) rendering [Status vocabulary](#status-vocabulary) for readers, and add it when missing:
 
-`**Status:** ⬚ pending · ◐ in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A`
-
-Writers ensure this key is present when missing; they do not invent alternate keys or glyphs outside the vocabulary.
+`**Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A`
 
 ### Status transition policy
 
-Normative rules for which Progress Status values may overwrite which. Icons and meanings are those in [Status vocabulary](#status-vocabulary). [sync-progress-status](../techniques/workflow-engine/sync-progress-status.md) Applies this policy; it does not redefine it.
+Which Progress Status values may overwrite which, and what each write does to the row's Item link. [sync-progress-status](../techniques/workflow-engine/sync-progress-status.md) Applies this policy; it does not redefine it.
 
 For each candidate row (selected per [Matching](#matching)), given `{target_status}` and current status-field value:
 
 | `{target_status}` | May write when current Status is… | Must not overwrite… |
 |-------------------|-----------------------------------|---------------------|
-| in progress (`◐`) | pending (`⬚`) only | cancelled/N/A (`⊘`), complete (`✅`), blocked (`❌`), existing in progress |
+| in progress (`🟡`) | pending (`⬚`) only | cancelled/N/A (`⊘`), complete (`✅`), blocked (`❌`), existing in progress |
 | complete (`✅`) | pending, in progress, and (when overwrite-N/A allowed) cancelled/N/A | Unrelated rows outside the candidate set |
 | blocked (`❌`) | Any in-scope status except cancelled/N/A (unless overwrite-N/A allowed) | cancelled/N/A by default |
-| cancelled / N/A (`⊘`) | Any candidate (path skip, mode exclusion, or explicit cancel) | — |
+| cancelled / N/A (`⊘`) | Any candidate whose deliverable does not exist anywhere | A candidate whose content landed elsewhere — that is a complete write with a repointed link |
 | pending (`⬚`) | Re-open only when not cancelled/N/A (and typically not complete unless intentionally resetting) | cancelled/N/A unless overwrite-N/A allowed |
 
-**Overwrite-N/A (`allow_overwrite_na`):** when false (default for targets pending, in progress, blocked), never write onto a cell that is currently cancelled/N/A. When true (default for targets complete and explicit cancelled/N/A writes), a complete or cancel write may replace cancelled/N/A on the candidate set — e.g. an activity that actually ran may clear a mistaken seed exclusion on its own activity-prefix field.
+**Overwrite-N/A (`allow_overwrite_na`):** when false (default for targets pending, in progress, blocked), never write onto a cell that is currently cancelled/N/A. When true (default for targets complete and explicit cancelled/N/A writes), a complete or cancel write may replace cancelled/N/A on the candidate set — e.g. an activity that actually ran may clear a mistaken seed exclusion on its own rows.
 
-**Preserve unrelated N/A:** rows whose activity-prefix field is not in the candidate set are untouched, including unrelated cancelled/N/A cells.
+**Preserve unrelated N/A:** rows outside the candidate set are untouched, including unrelated cancelled/N/A cells. Optional-path rows stay pending until path selection.
 
-**Seed vs path skip:** seed-time mode exclusion and post-path skip both use cancelled/N/A (see seed bullets under [Progress table](#progress-table) and [Status vocabulary](#status-vocabulary)). Optional-path undecided rows stay pending until path selection.
+**Item link follows the status.** Because seeded links are provisional ([Item cell](#item-cell)), each write reconciles the link with what the status now asserts:
+
+| Write | Item link |
+|-------|-----------|
+| cancelled / N/A | Stripped to plain text — the seeded file was never created. The label stays. |
+| complete, deliverable at the seeded target | Left as seeded. |
+| complete, deliverable landed elsewhere | Repointed at the artifact that actually holds it. |
+
+A re-opened row that later gets its artifact written has the link restored by that complete write.
 
 ### Progress Status call sites
 
-Orchestrator guidance for when to Apply [sync-progress-status](../techniques/workflow-engine/sync-progress-status.md). `{target_status}` values are icons from [Status vocabulary](#status-vocabulary). Do not add per-activity client-workflow Status writers.
+Orchestrator guidance for when to Apply [sync-progress-status](../techniques/workflow-engine/sync-progress-status.md) — the only writer of Progress status fields. Do not add per-activity client-workflow Status writers.
 
 | Moment | `{target_status}` | Who Applies |
 |--------|-------------------|-------------|
-| About to dispatch an activity | in progress (`◐`) | Orchestrator loop / [dispatch-activity](../techniques/workflow-engine/dispatch-activity.md) preamble |
+| About to dispatch an activity | in progress (`🟡`) | Orchestrator loop / [dispatch-activity](../techniques/workflow-engine/dispatch-activity.md) preamble |
 | `activity_complete` (default) | complete (`✅`) | [commit-and-persist](../techniques/workflow-engine/commit-and-persist.md) |
 | `activity_complete` with `{mark_progress_na}` | cancelled / N/A (`⊘`) | [commit-and-persist](../techniques/workflow-engine/commit-and-persist.md) (e.g. validate when local suite unavailable) |
 | Worker/orchestrator signals blocked | blocked (`❌`) | Orchestrator when blocked is observed |
 | Path skip / cancel / mark N/A | cancelled / N/A (`⊘`) | Orchestrator when path excludes or cancels the activity |
 
-**Writer:** only [sync-progress-status](../techniques/workflow-engine/sync-progress-status.md) mutates Progress status fields — select per [Matching](#matching), apply [Status transition policy](#status-transition-policy). Activities that cannot produce a meaningful Progress complete (e.g. validate when local validation is unavailable) set `{mark_progress_na}` so commit-and-persist Applies cancelled/N/A instead of inventing user-reported suite hand-offs.
+An activity that cannot produce a meaningful Progress complete sets `{mark_progress_na}` — that is what routes it to the cancelled/N/A row above, rather than inventing a user-reported hand-off to claim completion with.
 
-### Links table
+## Matching
 
-Holds external references — tracker issue, parent epic, PR. Artifact links belong in the Progress table.
+How Progress writers select rows and which cells they may change. Techniques cite this section; they do not restate column glyphs or geometry.
+
+- **Select** rows by resolving `{artifact_prefix}` through the [row-ownership map](#row-ownership-map) to that activity's Item labels, then matching those labels against the table's **item field**. Several rows may belong to one activity; every one is a candidate.
+- **Do not select** by the **row-index field** (table header currently `#`) — that field is display-only reading order, and it renumbers whenever the seed inventory changes.
+- When `{item_match}` is bound, **further restrict** to rows whose **item field** contains that match.
+- **Mutate the status field** on every selected row, and the item field's link as [Status transition policy](#status-transition-policy) directs. Leave the row-index, description, and estimate cells, and the item **label**, unchanged.
+- Selection and mutation address **fields**, not positions: renaming or reordering columns that preserve the same fields must not require technique Protocol edits. Headers, column order, section chrome, and icon-key placement are layout, owned by [Progress table](#progress-table) and [Icon key](#icon-key).

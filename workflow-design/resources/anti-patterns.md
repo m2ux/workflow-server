@@ -309,15 +309,15 @@ Rule smells: protocol restatement, audience mis-bucket, contradiction, one-step 
 
 ### AP-19. no-rule-protocol-restatement
 
-"The rule restates the protocol"
+"The rule restates the protocol" / "a rule instructing work that no Protocol phase states"
 
-A rule verbatim copies a protocol phase and adds no novel constraint.
+A rule carries procedure — copied from a protocol phase, or work no phase states yet.
 
-**Detect:** A technique/activity/workflow rule restates a protocol bullet or phase without adding an invariant the steps do not already convey.
+**Detect:** A technique/activity/workflow rule restates a protocol bullet or phase without adding an invariant the steps do not already convey, or reads as an instruction to perform work rather than a constraint on it. Test: could the sentence stand as a numbered Protocol phase unaltered? A prohibition is a constraint by construction, and so is an invariant on a result; an imperative naming a step's work is not, and duplicates the phase that should own it — latently, when no phase states it yet.
 
-**Do not flag:** Rules that state cross-cutting constraints the protocol does not encode.
+**Do not flag:** Rules that state cross-cutting constraints the protocol does not encode, including positively-framed invariants on an outcome (`every finding carries evidence`) — those bound what a result must satisfy rather than sequencing work. A prohibition citing the home that owns the behaviour it forbids bypassing, which is the pointer that makes it checkable.
 
-**Fix:** Delete the redundant rule; keep protocol as the procedural source.
+**Fix:** Delete the rule where a phase already carries the work. Where the work is genuinely unstated, move it into `## Protocol` as a phase rather than leaving it in Rules — protocol is the procedural source either way. Keep any residual invariant the phases cannot express.
 
 ### AP-20. rule-group-disambiguation
 
@@ -345,15 +345,15 @@ Shared-prefix rules sprawl as flat keys instead of a grouped array.
 
 ### AP-22. single-rule-authority
 
-"This rule appears in the technique AND the activity AND the workflow"
+"This rule appears in the technique AND the activity AND the workflow" / "two entries in one `## Rules` block, bridged by `(same stance as …)`"
 
-The same rule is duplicated across technique/activity/workflow levels.
+The same rule has more than one home — across levels, or twice within one rules block.
 
-**Detect:** The same *orchestrator-only* rule (variable management, transitions, commit policy, mode handling) — or a rule that does not need worker reach — appears at multiple levels (workflow → activity → technique). Cross-level copies drift.
+**Detect:** One invariant, two homes. **Across levels:** the same *orchestrator-only* rule (variable management, transitions, commit policy, mode handling) — or a rule that does not need worker reach — appears at multiple levels (workflow → activity → technique); cross-level copies drift. **Within one rules block:** two entries whose trigger and consequence coincide, so applying either yields the same behaviour and neither can be edited alone. The written tell is a bridge between them — `(same stance as X)`, `as X already says`, `mirrors X` — a cross-reference that exists to reconcile two homes rather than to cite one; an author who needs it has already noticed the duplication.
 
 **Do not flag:** Worker-directed behavioural rules that must stay reachable on activity/technique surfaces — see `worker-rule-reach`.
 
-**Fix:** Keep one authoritative home at the level where the rule is enforced; delete the duplicates.
+**Fix:** Keep one authoritative home at the level where the rule is enforced; delete the duplicates. Within a block, keep the statement with the wider consumer set, fold in any rationale or extra tier the other carried, drop the bridge, and repoint every citation of the deleted entry.
 
 ### AP-23. worker-rule-reach
 
@@ -641,13 +641,13 @@ An opaque path array stands in for named artifact inputs.
 
 ### AP-46. no-resource-caller-backlink
 
-"Composed by [generate-summary]" / "activities bind [analyse-challenge]… via [interview]" / "live on the producing technique: [research]"
+"Composed by [generate-summary]" / "activities bind [analyse-challenge]… via [interview]" / "live on the producing technique: [research]" / "Outputs: the Manual Diff Review section written into `code-review.md`"
 
-A resource backlinks its callers or narrates host orchestration.
+A resource backlinks its callers, names where its content lands, or narrates host orchestration.
 
-**Detect:** A resource (template, schema, creation guide, reference — not a meta prompt whose domain is engine/conduct) names/links host callers or bind/gate topology. Signals include: `"produced by the X technique"`, `"live on the producing/consuming technique"`, `"Composed by [X]"`, `"Used by…"`, role-to-file tables, technique/activity FILE PATHS as link targets, bare host ids in Enforcement / "gated by" / "bound by" prose, **and** orchestration essays — `"activities bind…"`, `analyse:` / `::` bind recipes, residual gates (`{has_open_assumptions}`, `{has_open_questions}`), "via [interview]", checkpoint/batch routing that belongs in activity YAML. Reverse caller coupling and bind-topology narration both break reuse (see also `io-agnostic-contract`, `bind-site-is-orchestration-truth`, `resource-fills-not-does`).
+**Detect:** A resource (template, schema, creation guide, reference — not a meta prompt whose domain is engine/conduct) names/links host callers, destinations, or bind/gate topology. Signals include: `"produced by the X technique"`, `"live on the producing/consuming technique"`, `"Composed by [X]"`, `"Used by…"`, role-to-file tables, technique/activity FILE PATHS as link targets, bare host ids in Enforcement / "gated by" / "bound by" prose; **destination naming** — an `Outputs:` header, or prose placing this resource's content into a named artifact file (`"written into <file>"`, `"a section of <file>"`), which couples a reusable form to one consumer's artifact set; **and** orchestration essays — `"activities bind…"`, `analyse:` / `::` bind recipes, residual gates (`{has_open_assumptions}`, `{has_open_questions}`), "via [interview]", checkpoint/batch routing that belongs in activity YAML. Reverse caller coupling, destination coupling, and bind-topology narration all break reuse (see also `io-agnostic-contract`, `bind-site-is-orchestration-truth`, `resource-fills-not-does`).
 
-**Do not flag:** (1) Meta / bootstrap / agent-conduct / workflow-engine **prompt** resources whose domain IS instructing the reader to run engine techniques. (2) Sibling **resource** citations and catalog entry **names**. (3) A single "see also" to a shared **format** rule the filler applies while filling (e.g. markdown line-breaks, canonical-home map) — not a host op. (4) Generic technique-model ontology (Goal → Activity → Technique) with no host ids. Test: if deleting the passage would still leave a usable template/vocab/guide, and the deleted text named who binds/produces/gates this resource → flag.
+**Do not flag:** (1) Meta / bootstrap / agent-conduct / workflow-engine **prompt** resources whose domain IS instructing the reader to run engine techniques. (2) Sibling **resource** citations and catalog entry **names**. (3) A single "see also" to a shared **format** rule the filler applies while filling (e.g. markdown line-breaks, canonical-home map) — not a host op. (4) Generic technique-model ontology (Goal → Activity → Technique) with no host ids. (5) A creation guide naming the artifact it is the guide **for** — that mapping is what `no-template-creation-guide` requires — and filenames inside Template bodies, which are the text the filler emits. (6) Heading **level** as shape (`an ##-level section`), which the template needs, as distinct from naming the document that hosts it. Test: if deleting the passage would still leave a usable template/vocab/guide, and the deleted text named who binds/produces/gates this resource or where its output goes → flag.
 
 **Fix:** Describe the resource by what it IS (template, vocabulary, fill rules); drop caller/backlink/Enforcement inventories and bind/gate essays; move role→file and orchestration into the owning activity YAML or technique Protocol. See [Maximize Schema Expressiveness](./design-principles.md#5-maximize-schema-expressiveness) (portable contracts).
 
@@ -805,7 +805,7 @@ A caveat is a protocol sub-bullet instead of a blockquote note.
 
 **Do not flag:** Genuine enumerations or sequential sub-steps (per-harness branch tables, ordered sub-actions). Global/cross-step constraints belong in `## Rules` (`structure-backed-constraints`, `no-rule-protocol-restatement`). Single-block Rules misfiled as global — see `local-rule-as-note`. Distinct from `no-one-step-rules`.
 
-**Fix:** Convert to a `>` note under the primary instruction (two trailing spaces on the primary bullet, then `> ` on the next line). A `>` line is not a step — it folds into the parent.
+**Fix:** Convert to a `>` note under the primary instruction (two trailing spaces on the primary bullet, then `> ` on the next line). A `>` line is not a step — it folds into the parent. See [Isolate Conditional Branches as Notes](./design-principles.md#31-isolate-conditional-branches-as-notes).
 
 ### AP-60. local-rule-as-note
 
@@ -1720,3 +1720,63 @@ An `#### artifact` body holds text no file can be named, and the worker creates 
 **Do not flag:** A single literal (`01-audit-report.md`); a token-template whose `{placeholder}` resolves at runtime (`{package_name}-plan.md`, `subsystem-{code_subsystem.subsystem_name}.md`) — a placeholder standing where literal text would is part of the name, not prose.
 
 **Fix:** Branch on what the slot was holding. Several files from one technique → one `### <output>` per file, each with its own `#### artifact`. A name selected by a mode input → split into a group with one op per mode, each declaring its literal name, and gate the bind sites on the mode (`no-monolith-masking-steps`). A section written into a document another technique creates → declare no artifact; the creating technique owns the file. Files a bound sibling op produces → declare them there, never on the caller (`canonical-fact-home`).
+
+### AP-131. resource-id-names-its-content
+
+"`complete-wp` on the resource holding the close-out template"
+
+A consult resource's id is a verb phrase, so it reads as an operation to perform rather than content to consult.
+
+**Detect:** Read each id under `**/resources/**` as a phrase on its own, without the file body. For a resource a consumer *reads from* — template, creation guide, vocabulary, criteria, policy — flag an id whose head is a verb or whose grammar is imperative: it answers *what should I do?* where the file can only answer *what will I find here?*. Also flag a noun id that omits the kind word its sibling ids carry (`-guide`, `-template`, `-forms`, `-seed`) while the file holds a `## Template`, since kind is what separates the guide from the artifact it describes.
+
+**Do not flag:** Prompt resources whose body *is* an instruction the agent executes (lens prompts, bootstrap and agent-conduct prompts) — a verb phrase names their content correctly. Ids already naming their content (`session-trace`, `deferred-items`, `review-mode`); a bare noun id where no sibling in that folder carries a kind word, since the convention must exist before an id can break it; noun-modifier heads that only look verbal (`review-format`, `update-mode-guide`); technique and activity ids, which name operations by design.
+
+**Fix:** Rename to the content plus its kind, then update the `name:` frontmatter, the resources index row, and every relative and `::` reference in one edit. Where the verb phrase is the better name for an operation, that is a sign the file's content belongs in a technique — move it rather than renaming around it. See [Convention Over Invention](./design-principles.md#7-convention-over-invention); also `no-invented-naming`, `artifact-name-is-filename`.
+
+### AP-132. deployment-path-in-capability
+
+"Shared contract for planning-folder artifacts under `.engineering/artifacts/planning/`"
+
+`## Capability` locates the op in one deployment's directory layout, so a contract that is otherwise portable now reads as specific to that layout.
+
+**Detect:** A technique or container `## Capability` contains a filesystem path segment — a repo-relative directory (`.engineering/resources/`), a checkout-relative root, or an absolute path. Capability states what durable product the op contributes; where that product sits is a location, and a location belongs to a declared input's `default`, the consuming workflow's variable, or the Protocol step that resolves it. Test: could a workflow storing the same artifacts under a different root adopt this op with the Capability unchanged? If not, the path is doing contract work it cannot do.
+
+**Do not flag:** A path inside `## Protocol`, `## Rules`, or an I/O `#### default`, which are the locations' homes — repeated or host-specific ones there are `factor-repeated-paths` and `worktree-root-placeholders`. Naming an artifact *kind* or bare filename without a directory (`COMPLETE.md`, `session.json`). A path that is the op's subject rather than its storage location, as in an op whose product is a path resolution.
+
+**Fix:** Rewrite Capability to name the artifact class and what the op contributes, dropping the directory. Where a consumer genuinely needs the location, declare it as an input with a `default` and reference the designator from Protocol. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); also `procedure-in-capability`, `bag-value-as-literal`.
+
+### AP-133. overlapping-rule-scopes
+
+"a rule for every artifact and a second for large artifacts, each prescribing different handling"
+
+Two rules' triggers intersect and their consequences differ, so on the overlap neither entry says which governs.
+
+**Detect:** For each pair of entries in one bucket (technique `## Rules`, a `rules.*` array, or a resource's fill rules), ask whether an input exists that satisfies both triggers. Flag a pair where one does, the prescribed handling differs, and nothing in either entry orders them: a broad rule beside a narrower one that never declares itself the exception, two thresholds over the same measure, or two entries constraining one field by different criteria. Test: name a single input in the intersection and read the entries alone — if the correct behaviour cannot be determined, the overlap is unresolved.
+
+**Do not flag:** Entries whose triggers cannot both hold. A pair already ordered, whether by an explicit precedence clause or a group key supplying the context (`rule-group-disambiguation`). One invariant stated twice (`single-rule-authority`), and prescriptions that are mutually exclusive outright (`no-contradictory-rules`) — those are the identical and the irreconcilable ends of the same axis, and each is one finding, not two. A carve-out that names the entry it excepts, since that naming *is* the ordering.
+
+**Fix:** Prefer consolidation — one entry covering both cases, the narrower behaviour expressed as a condition inside it. Where both must remain, state the precedence in the narrower entry and name what it overrides by dotted address (`dotted-rule-address`). Splitting the triggers so they no longer intersect is equally valid where the split reflects a real distinction rather than being drawn to dissolve the overlap.
+
+### AP-134. whole-resource-for-one-section
+
+"per the [Review Comment Template](../resources/review-mode.md)"
+
+A citation delivers a whole resource where the citing prose reads one section.
+
+**Detect:** A technique cites a multi-section resource with no `#anchor` while the prose around the citation names a single section — the tell is link text, or an immediately adjacent phrase, that matches one of that resource's headings. Also flag a bare citation in a technique that anchors the same resource elsewhere: both ids resolve and both are delivered, so the file arrives alongside its own sections and its size displaces other bundled content.
+
+**Do not flag:** A consumer that genuinely reads the body — a filler working a `## Template` together with the `## Rules` populating it, an audit walking every entry, a technique whose needed sections are most of the file. Single-section resources. A bare citation in overview prose that introduces the resource rather than consulting it.
+
+**Fix:** Point the citation at the section it reads — `../resources/example.md#section-title`, link text the section title — one citation per section needed. Where a bare citation coexists with anchored ones, anchor it or drop it. Where no single section covers the need and the resource is large, that is a split candidate under [Resources at the Abstract Level; Split for Section Delivery](./design-principles.md#30-resources-at-the-abstract-level-split-for-section-delivery). See [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain).
+
+### AP-135. tool-contract-restated-in-protocol
+
+"Each entry is an object with two string fields: `step_id` … and `output` … ; do not pass an empty array"
+
+Protocol restates a tool parameter's shape, which the tool's own schema already states.
+
+**Detect:** Protocol prose or a rule spelling out a tool argument's structure — field names, types, cardinality, required-vs-optional, permitted values, omit-versus-empty — for a tool whose schema the harness puts in front of the caller. The tell is a bullet that reads like schema documentation rather than an instruction: it says what the argument *is* rather than what the caller must *do*. It also sits oddly beside its siblings, which act on the call or on its response.
+
+**Do not flag:** The call signature naming which arguments a step passes (`next_activity { session_index, activity_id, step_manifest }`) — that is routing, not shape. What the caller does with the response. A workflow-specific constraint on an argument's *value* rather than its form, such as relaying a worker's map verbatim; and an obligation the schema cannot express, such as which dispatches must carry the argument at all.
+
+**Fix:** Keep the obligation and the reason; drop the shape. The schema is its one home ([Match the Harness Surface](./design-principles.md#21-match-the-harness-surface), [One Authoritative Home](./design-principles.md#6-one-authoritative-home)), and a restatement drifts from it — a Protocol bullet describing "two string fields" contradicts a schema that also accepts a keyed object for multi-output steps, and the caller cannot tell which governs.

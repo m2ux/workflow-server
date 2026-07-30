@@ -17,7 +17,7 @@ The classified operation. When `update`, the summary frames the delivery as chan
 
 ### completion_document
 
-[Completion summary](../resources/completion-artifact.md): what was delivered, links to decisions/assumptions, scope outcome, and known limitations.
+[Completion summary](../resources/completion-artifact.md#template): what was delivered, links to decisions/assumptions, scope outcome, and known limitations.
 
 #### artifact
 
@@ -40,4 +40,4 @@ The classified operation. When `update`, the summary frames the delivery as chan
 
 ### 4. Persist Completion Document
 
-- Follow the [Completion Artifact Guide](../resources/completion-artifact.md#template) and record `{completion_document}` in `{planning_folder_path}` via the calling activity's bound `manage-artifacts::write-artifact` step
+- Follow the [Completion Artifact Guide](../resources/completion-artifact.md#template) and its [Rules](../resources/completion-artifact.md#rules), and record `{completion_document}` in `{planning_folder_path}` via the calling activity's bound `manage-artifacts::write-artifact` step

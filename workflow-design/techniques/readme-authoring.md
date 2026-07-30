@@ -28,4 +28,4 @@ The workflow root README (create: generate; update: revise for structural change
 ### 1. Generate Or Update README
 
 - Create: write `{workflow_readme}` fresh. Update: revise the existing README for structural changes (activities, modes, links).
-- Orientation stance: [design-principles](../resources/design-principles.md) §11 and `readme-orients-not-transcribes` — do not transcribe YAML.
+- Orientation stance: [Complete Documentation Structure](../resources/design-principles.md#11-complete-documentation-structure) and `readme-orients-not-transcribes` — do not transcribe YAML.

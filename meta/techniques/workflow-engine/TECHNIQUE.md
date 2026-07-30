@@ -23,7 +23,7 @@ Client walks use per-activity disposable workers via [dispatch-activity](./dispa
 
 ### resource-loading-via-tool
 
-Resource refs returned in operation bodies (e.g., [planning-readme](../../resources/planning-readme.md)) are lightweight pointers. When `get_activity` includes a sibling `resources` map, reuse those bodies (or unchanged markers). Otherwise load via `get_resource { session_index, resource_id }`.
+Resource refs returned in operation bodies (e.g. `planning-readme`) are lightweight pointers. When `get_activity` includes a sibling `resources` map, reuse those bodies (or unchanged markers). Otherwise load via `get_resource { session_index, resource_id }`.
 
 ### resource-section-or-whole
 
