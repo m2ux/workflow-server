@@ -45,6 +45,20 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   // these to actually dispatch instead of improvising / inlining.
   'harness-compat::spawn-agent',
   'harness-compat::continue-agent',
+  // The two hops spawn-agent/continue-agent Apply mid-Protocol: the kind → file
+  // map, then the resolved harness file's `spawn`/`resume`/`concurrent` Rules
+  // section. A technique named inside another technique's Protocol has no other
+  // delivery path — get_technique resolves only step-bound or first-declared
+  // techniques, and no tool loads a technique by id — so an orchestrator without
+  // these entries reaches the dispatch step with nothing to apply and improvises
+  // the invocation. All four harness files ship because nothing binds
+  // `{harness_kind}` server-side; the orchestrator selects its own through the
+  // map, which stays the single authoritative table.
+  'harness-compat::resolve-harness-operation',
+  'harness-compat::claude-code',
+  'harness-compat::cursor',
+  'harness-compat::cline',
+  'harness-compat::generic',
   // Cross-cutting orchestrator rules (group-prefix refs → all `<group>-*` rules)
   'agent-conduct::orchestrator',
   'agent-conduct::checkpoint-discipline',
