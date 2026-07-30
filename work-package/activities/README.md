@@ -68,11 +68,8 @@ graph TD
     classifyProblem --> determinePath["Determine workflow path"]
     determinePath --> cpClassPath{"classification-and-path-confirmed checkpoint"}
     cpClassPath -->|"revise-classification"| classifyProblem
-    cpClassPath -->|"path chosen"| docPhilosophy["Document design philosophy"]
-    docPhilosophy --> collectAssumptions["Collect assumptions"]
-    collectAssumptions --> createLog["Create assumptions log"]
-    createLog --> reconcile["Reconcile assumptions"]
-    reconcile --> reviewMode{"Review mode?"}
+    cpClassPath -->|"path chosen"| docPhilosophy["Document the design philosophy and reconcile its assumptions"]
+    docPhilosophy --> reviewMode{"Review mode?"}
     reviewMode -->|"yes"| ticketCompleteness{"ticket-completeness checkpoint"}
     reviewMode -->|"no"| exitComprehension(["codebase-comprehension"])
     ticketCompleteness --> exitComprehension
@@ -88,24 +85,14 @@ Definition: [`15-codebase-comprehension.yaml`](./15-codebase-comprehension.yaml)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> buildComprehension["Build comprehension (existing artifacts, architecture survey, key abstractions, design rationale, domain mapping)"]
-    buildComprehension --> createArtifact["Create/augment comprehension artifact"]
-
-    createArtifact --> initialDeepDive["Initial deep-dive (mandatory)"]
-    initialDeepDive --> initialLens["Apply portfolio lenses"]
-    initialLens --> updateInitial["Update artifact with initial findings"]
-    updateInitial --> reviseQuestions["Revise open questions"]
-    reviseQuestions --> hasOpen{"Open questions remain?"}
+    entryNode(["Entry"]) --> buildComprehension["Build the comprehension artifact and record the mandatory deep-dive"]
+    buildComprehension --> hasOpen{"Open questions remain?"}
     hasOpen -->|"no"| pathBranch
     hasOpen -->|"yes"| cpSufficient{"comprehension-sufficient checkpoint"}
     cpSufficient -->|"sufficient"| pathBranch{"Selected path?"}
-    cpSufficient -->|"dive deeper / different area"| selectArea["Select deep-dive area"]
+    cpSufficient -->|"dive deeper / different area"| selectArea["Run a targeted deep-dive on a selected area and revise open questions"]
 
-    selectArea --> targetedAnalysis["Targeted analysis"]
-    targetedAnalysis --> lensPass["Apply portfolio lenses"]
-    lensPass --> updateArtifact["Update comprehension artifact"]
-    updateArtifact --> reviseOpen["Revise open questions"]
-    reviseOpen --> cpSufficient
+    selectArea --> cpSufficient
 
     pathBranch -->|"needs elicitation"| exitElicit(["requirements-elicitation"])
     pathBranch -->|"needs research"| exitResearch(["research"])
@@ -131,12 +118,9 @@ graph TD
     askQuestion --> recordResponse["Record response"]
     recordResponse --> userIntent{"user-intent decision"}
     userIntent -->|"continue"| askQuestion
-    userIntent -->|"done"| collectAssumptions["Collect assumptions"]
+    userIntent -->|"done"| recordReqs["Record the requirements and reconcile assumptions"]
 
-    collectAssumptions --> createDoc["Create requirements document"]
-    createDoc --> updateLog["Update assumptions log"]
-    updateLog --> reconcile["Reconcile assumptions"]
-    reconcile --> cpComplete{"elicitation-complete checkpoint"}
+    recordReqs --> cpComplete{"elicitation-complete checkpoint"}
     cpComplete -->|"complete + research"| exitResearch(["research"])
     cpComplete -->|"complete, no research"| exitAnalysis(["implementation-analysis"])
     cpComplete -->|"revisit / add"| askQuestion
@@ -152,19 +136,13 @@ Definition: [`04-research.yaml`](./04-research.yaml)
 
 ```mermaid
 graph TD
-    entryNode(["Entry"]) --> kbResearch["Knowledge base and web research"]
-    kbResearch --> synthesize["Synthesize findings"]
-    synthesize --> triageRes["Triage research candidates (reconcilable | irreconcilable)"]
-    triageRes --> reconcileRes["Reconcile candidates (autonomous research pass)"]
+    entryNode(["Entry"]) --> kbResearch["Research the knowledge base and web, then triage the candidates"]
+    kbResearch --> reconcileRes["Reconcile candidates (autonomous research pass)"]
     reconcileRes --> cpConverge{"research-convergence checkpoint (fires only when converged)"}
     cpConverge -->|"not converged / request-more"| reconcileRes
-    cpConverge -->|"accept"| collectAssumptions["Collect assumptions"]
+    cpConverge -->|"accept"| recordResearch["Record the research and reconcile its assumptions"]
 
-    collectAssumptions --> createDoc["Create research document"]
-    createDoc --> updateLog["Update assumptions log"]
-    updateLog --> reconcile["Reconcile assumptions"]
-    reconcile --> presentResolved["Present resolved assumptions"]
-    presentResolved --> cpScope{"context-scope-declaration checkpoint"}
+    recordResearch --> cpScope{"context-scope-declaration checkpoint"}
     cpScope --> interviewLoop{"Next open assumption?"}
     interviewLoop -->|"yes"| cpInterview{"research-assumption-interview checkpoint"}
     cpInterview --> interviewLoop
@@ -186,13 +164,9 @@ graph TD
     reviewBaseline --> reviewImpl
     reviewMode -->|"no"| reviewImpl["Analyze implementation (review, evaluate effectiveness, establish baselines)"]
 
-    reviewImpl --> collectAssumptions["Collect assumptions"]
-    collectAssumptions --> createDoc["Create analysis document"]
-    createDoc --> updateLog["Update assumptions log"]
+    reviewImpl --> recordAnalysis["Record the analysis and reconcile its assumptions"]
 
-    updateLog --> reconcile["Reconcile assumptions"]
-    reconcile --> presentResolved["Present resolved assumptions"]
-    presentResolved --> interviewLoop{"Next open assumption?"}
+    recordAnalysis --> interviewLoop{"Next open assumption?"}
     interviewLoop -->|"yes"| cpInterview{"analysis-assumption-interview checkpoint"}
     cpInterview --> interviewLoop
     interviewLoop -->|"all done"| exitNode(["plan-prepare"])
@@ -209,16 +183,8 @@ Definition: [`06-plan-prepare.yaml`](./06-plan-prepare.yaml)
 ```mermaid
 graph TD
     entryNode(["Entry"]) --> envPrereqs["Verify environment prerequisites"]
-    envPrereqs --> createPlan["Create work package plan"]
-    createPlan --> createTestPlan["Create test plan"]
-    createTestPlan --> solutionOverview["Present solution overview"]
-    solutionOverview --> collectAssumptions["Collect assumptions"]
-    collectAssumptions --> updateLog["Update assumptions log"]
-    updateLog --> reconcile["Reconcile assumptions"]
-    reconcile --> createTodos["Create TODO list from plan"]
-    createTodos --> syncBranch["Sync branch with main"]
-    syncBranch --> updatePR["Update PR description (render initial)"]
-    updatePR --> cpApproach{"approach-confirmed checkpoint"}
+    envPrereqs --> createPlan["Plan the work and reconcile its assumptions, then prepare the branch and PR"]
+    createPlan --> cpApproach{"approach-confirmed checkpoint"}
     cpApproach -->|"confirmed"| exitNode(["assumptions-review"])
     cpApproach -->|"revise"| createPlan
 ```
@@ -266,12 +232,8 @@ Definition: [`08-implement.yaml`](./08-implement.yaml)
 graph TD
     entryNode(["Entry"]) --> verifyBranch["Verify feature branch"]
     verifyBranch --> nextTask{"Next task in plan?"}
-    nextTask -->|"yes"| implementTask["Implement task"]
-    implementTask --> runTests["Run tests"]
-    runTests --> commitChanges["Commit changes"]
-    commitChanges --> logProvenance["Log AI provenance"]
-    logProvenance --> selfReview["Self-review"]
-    selfReview --> cpSymbol{"symbol-provenance-confirmed checkpoint"}
+    nextTask -->|"yes"| implementTask["Implement, test, commit and self-review the task"]
+    implementTask --> cpSymbol{"symbol-provenance-confirmed checkpoint"}
     cpSymbol --> collectAssumptions["Collect assumptions"]
     collectAssumptions --> nextTask
 
@@ -330,12 +292,10 @@ graph TD
     codeReview --> structural{"problem_complexity == complex?"}
     structural -->|"no"| structuralInline["Structural analysis (single pass)"]
     structural -->|"yes"| dispatchPrism["Dispatch full prism pipeline"]
-    structuralInline --> testReview["Test suite review"]
+    structuralInline --> testReview["Review the test suite, summarise the architecture, then classify and route findings"]
     dispatchPrism --> testReview
-    testReview --> archSummary["Architecture summary"]
-    archSummary --> classify["Classify and route findings"]
 
-    classify --> fixCycle{"needs code fixes or test improvements?"}
+    testReview --> fixCycle{"needs code fixes or test improvements?"}
     fixCycle -->|"yes (max 3)"| applyFixes["Apply fixes, regenerate index, re-review"]
     applyFixes --> fixCycle
     fixCycle -->|"no"| blockerGate{"has_critical_blocker?"}
@@ -365,10 +325,8 @@ graph TD
     assessCoverage --> exitNode
     reviewMode -->|"no"| fixBranch{"validation_results.validation_passed == false?"}
     fixBranch -->|"no"| exitNode
-    fixBranch -->|"yes"| analyzeFailure["Analyze failure root cause"]
-    analyzeFailure --> applyFix["Apply fix"]
-    applyFix --> revalidate["Re-run validation"]
-    revalidate --> fixBranch
+    fixBranch -->|"yes"| analyzeFailure["Diagnose the failure, fix it, and re-run validation"]
+    analyzeFailure --> fixBranch
 ```
 
 ---
@@ -385,11 +343,8 @@ graph TD
     reviewScope --> cpUnsigned{"unsigned-commits-prompt (authoring path, when unsigned found)"}
     cpUnsigned -->|"re-sign"| resign["Re-sign commits"]
     cpUnsigned -->|"decline"| verifyReadme
-    resign --> verifyReadme["Verify README conformance"]
-    verifyReadme --> changesFrag["Ensure changes/ fragment if repo uses it"]
-    changesFrag --> verifyFragment["Verify fragment references issue"]
-    verifyFragment --> documentFindings["Document findings"]
-    documentFindings --> cleanupBranch{"Review mode?"}
+    resign --> verifyReadme["Verify the README and the changes fragment, then document findings"]
+    verifyReadme --> cleanupBranch{"Review mode?"}
     cleanupBranch -->|"yes"| docCleanup["Document cleanup recommendations"]
     cleanupBranch -->|"no"| applyCleanup["Apply cleanup"]
     docCleanup --> createArchSummary
@@ -473,11 +428,9 @@ graph TD
     tokenUsage --> docsGate{"Review mode?"}
     docsGate -->|"no"| ensureDocs["Ensure inline docs on public APIs"]
     ensureDocs --> retrospective
-    docsGate -->|"yes"| retrospective["Conduct retrospective (written into COMPLETE.md, update status)"]
+    docsGate -->|"yes"| retrospective["Conduct the retrospective into COMPLETE.md, then verify planning-folder links"]
 
-    retrospective --> announce["Retrospective written (informational message)"]
-    announce --> verifyLinks["Verify planning-folder link integrity"]
-    verifyLinks --> publishGate{"Review mode?"}
+    retrospective --> publishGate{"Review mode?"}
     publishGate -->|"yes"| republish["Publish close-out artifacts on the publish branch"]
     publishGate -->|"no"| removeWorktree
     republish --> removeWorktree["Remove component worktree (when this run created one)"]
