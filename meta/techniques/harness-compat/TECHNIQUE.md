@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.3.0
+  version: 3.4.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Abstract sub-agent dispatch operations — harness-independent vocabulary for sp
 
 ### harness_kind
 
-Identifier of the harness in use. Selects which harness-specific technique file supplies invocation details via resolve-harness-operation.
+Identifier of the harness in use.
 
 ## Rules
 
@@ -28,6 +28,10 @@ CRITICAL: every dispatch operation in this technique MUST be blocking-equivalent
 - Fire-and-forget dispatch with no completion wait is forbidden — that path silently drops checkpoint delivery.
 
 Harness-specific technique files document how each host expresses blocking-equivalent wait; this rule states only the contract.
+
+### harness-kind-from-host-surface
+
+`{harness_kind}` has no session-state producer — no workflow variable holds it and no step sets it. The executing agent determines it from its own host surface, the only place the fact is observable.
 
 ### index-in-prompt
 

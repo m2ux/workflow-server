@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
@@ -11,16 +11,15 @@ Harness-specific invoke details for `harness_kind: claude-code`. Catalogue of al
 
 ### spawn
 
-- Invoke `Task(subagent_type=<type>, description={description}, prompt={composed_prompt})`. Same primitive across CLI, IDE extensions (VSCode), and the web app.
-- Omit `run_in_background` or set it false when the host true-blocks.
+- Invoke `Agent(subagent_type=<type>, description={description}, prompt={composed_prompt}, run_in_background=false)`. Same primitive across CLI, IDE extensions (VSCode), and the web app.
+- Set `run_in_background` false explicitly. Omitting it dispatches in the background, which forfeits the blocking-equivalent wait [foreground-always](./TECHNIQUE.md#foreground-always) requires.
 
 ### resume
 
-- Invoke `Task(resume={agent_id})`. Preserves the agent's context window.
+- Invoke `SendMessage(<agent id or name>, {composed_prompt})`. Preserves the agent's context window; a fresh `Agent` call would start over instead.
 - Include `{session_index}` in the prompt ([index-in-prompt](./TECHNIQUE.md#index-in-prompt)).
-- Omit `run_in_background` or set it false when the host true-blocks.
 
 ### concurrent
 
-- Emit multiple `Task` calls in a single response turn; the harness executes them in parallel.
-- Wait until every Task yields or completes before treating the batch as finished.
+- Emit multiple `Agent` calls in a single response turn; the harness executes them in parallel.
+- Wait until every agent yields or completes before treating the batch as finished.
