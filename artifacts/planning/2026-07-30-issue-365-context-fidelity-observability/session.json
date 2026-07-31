@@ -436,6 +436,11 @@
     {
       "sessionIndex": "7Q54WJ",
       "state": {
+        "activeCheckpoint": {
+          "activityId": "requirements-elicitation",
+          "checkpointId": "elicitation-complete",
+          "yieldedAt": "2026-07-31T06:41:56.939Z"
+        },
         "agentId": "orchestrator",
         "checkpointResponses": {
           "codebase-comprehension-comprehension-sufficient": {
@@ -459,6 +464,15 @@
             "optionId": "full-workflow",
             "respondedAt": "2026-07-31T04:53:56.000Z"
           },
+          "requirements-elicitation-stakeholder-transcript": {
+            "effects": {
+              "variablesSet": {
+                "has_stakeholder_input": true
+              }
+            },
+            "optionId": "provide-transcript",
+            "respondedAt": "2026-07-31T06:26:26.000Z"
+          },
           "start-work-package-pr-creation": {
             "effects": {
               "variablesSet": {
@@ -471,10 +485,11 @@
         },
         "completedActivities": [
           "start-work-package",
-          "design-philosophy"
+          "design-philosophy",
+          "codebase-comprehension"
         ],
-        "condition": "isDefault: codebase-comprehension",
-        "currentActivity": "codebase-comprehension",
+        "condition": "condition: needs_elicitation == true",
+        "currentActivity": "requirements-elicitation",
         "currentTechnique": "analyse-challenge::run-loop",
         "deliveredContent": {
           "orchestrator": {
@@ -514,6 +529,24 @@
             "technique:design-philosophy::document": "ce81ff05f6007c55",
             "technique:review-assumptions::collect": "f79c5725888e0262",
             "technique:review-assumptions::record": "98b736a08185ac51"
+          },
+          "w-requirements-elicitation-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:assumptions-review": "5894a974b8f6fd92",
+            "resource:deferred-items": "4bb13759c0e75532",
+            "resource:requirements-elicitation": "7632fbc06540c468",
+            "technique:requirements-elicitation::ask-question": "dbd566ff6060570c",
+            "technique:requirements-elicitation::create-document": "52c6c7c22efcd4fe",
+            "technique:requirements-elicitation::discuss": "942fe3f8636aec54",
+            "technique:requirements-elicitation::elicit": "2836c65d832fa4f6",
+            "technique:review-assumptions::collect": "d4292b811da5cc3e",
+            "technique:review-assumptions::reconcile": "c12f9e9d7e597c8b",
+            "technique:review-assumptions::record": "15b4cdc7fa7d023d"
           },
           "w-start-work-package-1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -1836,18 +1869,302 @@
             },
             "timestamp": "2026-07-31T06:03:22.761Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "timestamp": "2026-07-31T06:04:23.354Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "comprehension_dir",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/"
+            },
+            "timestamp": "2026-07-31T06:04:23.354Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "comprehension_artifact",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/context-fidelity-observability.md"
+            },
+            "timestamp": "2026-07-31T06:04:23.354Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-31T06:04:23.354Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "has_open_questions",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-31T06:04:23.354Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "open_questions",
+              "source": "variables_changed",
+              "value": "10 questions, 8 resolved. Residue: Q9 (S2 warn-vs-block — stakeholder decision for requirements-elicitation) and Q10 (block dedup's per-walk share — a bench:dispatch run belonging to the implementation phase). Authoritative table lives in the comprehension artifact's Open Questions section."
+            },
+            "timestamp": "2026-07-31T06:04:23.354Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "architecture_overview",
+              "source": "variables_changed",
+              "value": "See the comprehension artifact's Architecture Overview section."
+            },
+            "timestamp": "2026-07-31T06:04:23.354Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "key_abstractions",
+              "source": "variables_changed",
+              "value": "See the comprehension artifact's Key Abstractions section."
+            },
+            "timestamp": "2026-07-31T06:04:23.354Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "design_rationale",
+              "source": "variables_changed",
+              "value": "See the comprehension artifact's Design Rationale section."
+            },
+            "timestamp": "2026-07-31T06:04:23.354Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "domain_glossary",
+              "source": "variables_changed",
+              "value": "See the comprehension artifact's Domain Concept Mapping section."
+            },
+            "timestamp": "2026-07-31T06:04:23.354Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "timestamp": "2026-07-31T06:04:23.354Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-1",
+              "chars": 68963,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T06:04:37.285Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-1",
+              "chars": 3803,
+              "delivery": "full",
+              "stepId": "stakeholder-discussion",
+              "techniqueId": "requirements-elicitation::discuss"
+            },
+            "timestamp": "2026-07-31T06:04:37.285Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-1",
+              "chars": 4675,
+              "delivery": "full",
+              "stepId": "elicit-requirements",
+              "techniqueId": "requirements-elicitation::elicit"
+            },
+            "timestamp": "2026-07-31T06:04:37.285Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-1",
+              "chars": 3775,
+              "delivery": "full",
+              "stepId": "ask-question",
+              "techniqueId": "requirements-elicitation::ask-question"
+            },
+            "timestamp": "2026-07-31T06:04:37.285Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-1",
+              "chars": 5144,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-31T06:04:37.285Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-1",
+              "chars": 3648,
+              "delivery": "full",
+              "stepId": "create-document",
+              "techniqueId": "requirements-elicitation::create-document"
+            },
+            "timestamp": "2026-07-31T06:04:37.285Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-1",
+              "chars": 4119,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-31T06:04:37.285Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-1",
+              "chars": 12373,
+              "delivery": "full",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-07-31T06:04:37.285Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-1",
+              "chars": 5632,
+              "delivery": "full",
+              "resourceId": "requirements-elicitation"
+            },
+            "timestamp": "2026-07-31T06:05:53.789Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "stakeholder-transcript",
+            "timestamp": "2026-07-31T06:06:08.864Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "usage": {
+                "duration_ms": 111595,
+                "subagent_tokens": 60842,
+                "tool_uses": 13
+              }
+            },
+            "timestamp": "2026-07-31T06:06:29.582Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "stakeholder-transcript",
+            "data": {
+              "optionId": "provide-transcript"
+            },
+            "timestamp": "2026-07-31T06:26:26.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "has_stakeholder_input",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-31T06:26:26.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-1",
+              "chars": 1878,
+              "delivery": "full",
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-31T06:28:41.939Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-1",
+              "chars": 5764,
+              "delivery": "full",
+              "resourceId": "assumptions-review"
+            },
+            "timestamp": "2026-07-31T06:28:46.680Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "elicitation-complete",
+            "timestamp": "2026-07-31T06:41:56.939Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "usage": {
+                "dispatch": "resume-after-checkpoint",
+                "duration_ms": 946350,
+                "subagent_tokens": 167870,
+                "tool_uses": 51
+              }
+            },
+            "timestamp": "2026-07-31T06:42:39.459Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 42,
+        "seq": 53,
         "sessionIndex": "7Q54WJ",
         "skippedActivities": [],
         "startedAt": "2026-07-30T19:48:00.082Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785477802,
+        "ts": 1785480159,
         "variables": {
+          "architecture_overview": "See the comprehension artifact's Architecture Overview section.",
           "artifact_name": "",
           "artifact_publish_ref": "",
           "assumption_batch_accepted": false,
@@ -1872,13 +2189,15 @@
           "completion_document_path": "",
           "component_name": "workflow-server",
           "component_path": ".",
-          "comprehension_artifact": "",
-          "comprehension_dir": "",
+          "comprehension_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/context-fidelity-observability.md",
+          "comprehension_dir": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/",
           "context_scope": "repo-only",
           "context_scope_uncertain": false,
           "current_block_index": 0,
           "current_branch": "",
           "design_philosophy_doc": "02-design-philosophy.md",
+          "design_rationale": "See the comprehension artifact's Design Rationale section.",
+          "domain_glossary": "See the comprehension artifact's Domain Concept Mapping section.",
           "elicitation_complete": false,
           "existing_pr_number": "",
           "github_issue_found": false,
@@ -1888,11 +2207,11 @@
           "has_deferred_assumptions": false,
           "has_flagged_blocks": false,
           "has_open_assumptions": true,
-          "has_open_questions": false,
+          "has_open_questions": true,
           "has_reconcilable_research": false,
           "has_resolvable_assumptions": false,
           "has_stakeholder_comment": false,
-          "has_stakeholder_input": false,
+          "has_stakeholder_input": true,
           "has_uncertain_symbols": false,
           "host_binding_mismatch": false,
           "host_repo_path": "/home/mike1/projects/dev/workflow-server",
@@ -1908,6 +2227,7 @@
           "issue_type_ambiguous": false,
           "issue_url": "https://github.com/m2ux/workflow-server/issues/365",
           "jira_issue_key": "",
+          "key_abstractions": "See the comprehension artifact's Key Abstractions section.",
           "mark_progress_na": false,
           "needs_cleanup": false,
           "needs_code_fixes": false,
@@ -1927,6 +2247,7 @@
             "DP-9",
             "DP-10"
           ],
+          "open_questions": "10 questions, 8 resolved. Residue: Q9 (S2 warn-vs-block — stakeholder decision for requirements-elicitation) and Q10 (block dedup's per-walk share — a bench:dispatch run belonging to the implementation phase). Authoritative table lives in the comprehension artifact's Open Questions section.",
           "path_rationale": "Full workflow. Elicitation for the open per-item success criteria; research for external precedent on resumed-turn usage reporting and current model pricing; comprehension mandatory and warranted across five coupled surfaces. Confirmed at the classification-and-path-confirmed checkpoint.",
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-30-issue-365-context-fidelity-observability",
           "post_jira_comment": false,

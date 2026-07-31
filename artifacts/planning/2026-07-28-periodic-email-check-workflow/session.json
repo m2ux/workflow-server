@@ -6,10 +6,10 @@
   "agentId": "orchestrator",
   "sessionIndex": "YMF5BE",
   "currentActivity": "dispatch-client-workflow",
-  "currentTechnique": "workflow-engine::commit-and-persist",
+  "currentTechnique": "workflow-engine::present-checkpoint-to-user",
   "condition": "isDefault: dispatch-client-workflow",
-  "seq": 15,
-  "ts": 1785245863,
+  "seq": 16,
+  "ts": 1785246458,
   "startedAt": "2026-07-28T13:24:33.084Z",
   "completedActivities": [
     "discover-session",
@@ -346,18 +346,35 @@
       },
       "timestamp": "2026-07-28T13:37:43.342Z",
       "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "present-yielded-checkpoint",
+        "techniqueId": "workflow-engine::present-checkpoint-to-user"
+      },
+      "timestamp": "2026-07-28T13:47:38.827Z",
+      "type": "technique_fetched"
     }
   ],
   "triggeredWorkflows": [
     {
       "sessionIndex": "JAEMUL",
       "state": {
+        "activeCheckpoint": {
+          "activityId": "scope-and-draft",
+          "checkpointId": "scope-confirmed#0",
+          "yieldedAt": "2026-07-28T13:47:05.600Z"
+        },
         "agentId": "orchestrator",
         "checkpointResponses": {},
-        "completedActivities": [],
-        "condition": "",
-        "currentActivity": "intake-and-context",
-        "currentTechnique": "work-package::manage-artifacts::write-artifact",
+        "completedActivities": [
+          "intake-and-context"
+        ],
+        "condition": "isDefault: operation_type == 'create' matched neither review transition, so the default transition to scope-and-draft applies",
+        "currentActivity": "scope-and-draft",
+        "currentTechnique": "workflow-definition::readme-authoring",
         "deliveredContent": {
           "orchestrator": {
             "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
@@ -369,11 +386,20 @@
             "resource:change-brief#template": "9ae6b6f770e8344e",
             "resource:elicitation-guide": "a79e15171c7e5041",
             "resource:meta/planning-readme": "d1c91ccded253c8e",
+            "resource:scope-manifest": "e95e064ab0b43ba0",
             "resource:workflow-authoring/readme-seed": "dbe5d35250f28992",
+            "resource:workflow-design/anti-patterns": "df7fe9c1b3bd2e2f",
+            "resource:workflow-design/anti-patterns#description-hygiene-anti-patterns": "c0a5c868685179ae",
+            "resource:workflow-design/anti-patterns#schema-expressiveness-anti-patterns": "cadcef28fe2f8a1b",
+            "resource:workflow-design/convention-conformance": "d553cb98d351772d",
             "technique:work-package::manage-artifacts::write-artifact": "f827a0549ba8368a",
+            "technique:work-package::manage-git::create-worktree": "af3a87aa65410f97",
+            "technique:workflow-definition::derive-workflow-branch": "d6c15a89164542d6",
             "technique:workflow-definition::derive-workflows-target-path": "9783ff568d465339",
             "technique:workflow-definition::elicit-change-brief": "c63af09e81fe3185",
             "technique:workflow-definition::intake-classification": "785d48688bb7ae2a",
+            "technique:workflow-definition::readme-authoring": "4c771ac925cbea85",
+            "technique:workflow-definition::scope-definition": "483414a68d3a0a66",
             "technique:workflow-engine::create-readme": "d02b1b4cc5a10853"
           }
         },
@@ -515,22 +541,288 @@
             },
             "timestamp": "2026-07-28T13:36:06.398Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "intake-and-context",
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "usage": {
+                "duration_ms": 340576,
+                "subagent_tokens": 80220,
+                "tool_uses": 30
+              }
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "planning_folder_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-periodic-email-check-workflow"
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "target_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-periodic-email-check-workflow/"
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "repo_root",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server"
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "operation_type",
+              "source": "variables_changed",
+              "value": "create"
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "operation_type_ambiguous",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "change_request_clear",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "intent_needs_confirmation",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "review_scope_confirmed",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "headless_mode",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "workflow_id",
+              "source": "variables_changed",
+              "value": "periodic-email-check"
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "target_workflow_id",
+              "source": "variables_changed",
+              "value": "periodic-email-check"
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "target_workflow_ids",
+              "source": "variables_changed",
+              "value": [
+                "periodic-email-check"
+              ]
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "open_judgements_count",
+              "source": "variables_changed",
+              "value": 8
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "change_brief_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-periodic-email-check-workflow/01-change-brief.md"
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "created_readme",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-periodic-email-check-workflow/README.md"
+            },
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-28T13:39:11.789Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "derive-workflow-branch",
+              "techniqueId": "workflow-definition::derive-workflow-branch"
+            },
+            "timestamp": "2026-07-28T13:39:38.632Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "ensure-worktree",
+              "techniqueId": "work-package::manage-git::create-worktree"
+            },
+            "timestamp": "2026-07-28T13:40:03.693Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "define-scope",
+              "techniqueId": "workflow-definition::scope-definition"
+            },
+            "timestamp": "2026-07-28T13:40:41.041Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "scope-manifest"
+            },
+            "timestamp": "2026-07-28T13:40:51.076Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/convention-conformance"
+            },
+            "timestamp": "2026-07-28T13:40:51.285Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns"
+            },
+            "timestamp": "2026-07-28T13:41:08.024Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#schema-expressiveness-anti-patterns"
+            },
+            "timestamp": "2026-07-28T13:41:17.175Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "resourceId": "workflow-design/anti-patterns#description-hygiene-anti-patterns"
+            },
+            "timestamp": "2026-07-28T13:41:20.569Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "author-workflow-readme",
+              "techniqueId": "workflow-definition::readme-authoring"
+            },
+            "timestamp": "2026-07-28T13:45:46.070Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-confirmed#0",
+            "timestamp": "2026-07-28T13:47:05.600Z",
+            "type": "checkpoint_reached"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 11,
+        "seq": 23,
         "sessionIndex": "JAEMUL",
         "skippedActivities": [],
         "startedAt": "2026-07-28T13:27:01.628Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785245766,
+        "ts": 1785246425,
         "variables": {
           "addressed_count": 0,
-          "change_brief_path": "",
+          "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-periodic-email-check-workflow/01-change-brief.md",
           "change_request_clear": true,
           "commit_approved": false,
+          "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-periodic-email-check-workflow/README.md",
           "fail_count": 0,
           "has_coverage_gap": false,
           "has_critical_finding": false,
@@ -539,8 +831,10 @@
           "impact_analysis_path": "",
           "intent_needs_confirmation": false,
           "open_finding_count": 0,
-          "open_judgements_count": 0,
+          "open_judgements_count": 8,
+          "operation_type": "create",
           "operation_type_ambiguous": false,
+          "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-28-periodic-email-check-workflow",
           "pr_number": "",
           "pr_url": "",
           "register_sections": [],
@@ -549,18 +843,24 @@
           "removal_count": 0,
           "removal_disposition": "",
           "removals_approved": false,
+          "repo_root": "/home/mike1/projects/dev/workflow-server",
           "report_path": "",
           "review_closed": false,
           "review_scope_confirmed": false,
           "scope_manifest_confirmed": false,
           "scope_manifest_path": "",
           "scope_round": 0,
-          "target_path": "",
+          "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-28-periodic-email-check-workflow/",
+          "target_workflow_id": "periodic-email-check",
+          "target_workflow_ids": [
+            "periodic-email-check"
+          ],
           "total_count": 0,
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
           "user_request": "start a workflow authoring workflow to check my email periodically",
           "workflow_branch": "",
+          "workflow_id": "periodic-email-check",
           "worktree_created": false
         },
         "workflowId": "workflow-authoring",
@@ -591,7 +891,8 @@
       "technique:workflow-engine::detect-resume-intent": "0a9acae9915ea636",
       "technique:workflow-engine::dispatch-activity": "a5eedcf8baefd4f4",
       "technique:workflow-engine::list-workflows": "53bfa6226bca72b3",
-      "technique:workflow-engine::match-target-workflow": "9dde5e2bc923dd59"
+      "technique:workflow-engine::match-target-workflow": "9dde5e2bc923dd59",
+      "technique:workflow-engine::present-checkpoint-to-user": "356768cb95516aa8"
     }
   },
   "repo": "m2ux/workflow-server"

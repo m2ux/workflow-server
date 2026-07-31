@@ -1,6 +1,6 @@
 # `workflow-authoring` — Build Specification
 
-> Build · Created 2026-07-28 · **Status:** Ready to author. S1 not started.
+> Build · Created 2026-07-28 · **Status:** S1–S6 landed, in PRs [#339](https://github.com/m2ux/workflow-server/pull/339) (corpus) and [#340](https://github.com/m2ux/workflow-server/pull/340) (server). All fourteen guards green at every step; the graph is closed, all three modes are reachable, and the delivery detector is verified by negative control. Two unresumable sessions are exempted on paper, so **the S8 gate is a census of 2, not 0** — see [`drain-log.md`](../2026-07-28-workflow-design-slim-down/drain-log.md). S7 drain checks accumulate there; S8 also needs the workflows submodule bump. See [05-build-log.md](05-build-log.md).
 
 Everything needed to author the `workflow-authoring` workflow from a cold start. Self-contained: you should not need to open the analysis folder to build, only to check provenance.
 
@@ -18,10 +18,11 @@ Everything needed to author the `workflow-authoring` workflow from a cold start.
 | [02-build-sequence.md](02-build-sequence.md) | 40 KB | S1–S8 with exact paths, rewires and copy-pasteable green-proof commands; registration mechanics; the 14-guard suite; drain-to-zero retirement |
 | [03-authoring-constraints.md](03-authoring-constraints.md) | 54 KB | 66 constraints as Do/Not + reason + citation + scope, grouped by when they bite |
 | [04-canon-and-platform-facts.md](04-canon-and-platform-facts.md) | 81 KB | 29 binding anti-pattern entries, ten principles with their tensions, 14 code-cited platform facts, schema shapes |
+| [05-build-log.md](05-build-log.md) | — | Per-step record: what landed, guard results, which open decisions closed, every deviation with its reason |
 
 ## State of the world
 
-`workflows` head is **`b9b1056a`** — PR #274 merged 2026-07-28T04:02:47Z. Nothing from that branch is outstanding.
+`workflows` head is **`2feda8da`** — PR #328 merged 2026-07-28. Nothing from that branch is outstanding. (An earlier draft of this file recorded `b9b1056a`/PR #274; the build is based on `2feda8da`.)
 
 **`workflow-design` must not be touched.** It carries **32 running sessions**, 21 of which would be stranded by any activity rename or deletion: `readActivityRaw` matches the filename-derived id with no fallback (`src/loaders/workflow-loader.ts:570`, error `:615`), and `validateActivityTransition` returns `null` on an empty valid set (`src/utils/validation.ts:45`) so `next_activity` succeeds *silently* — the failure surfaces only when `get_activity` throws. That is the entire reason this is a new workflow rather than a rewrite. The only sanctioned pre-retirement write to `workflow-design` is the S6 deprecation note, which touches no server-resolved definition file.
 
@@ -58,7 +59,7 @@ Established by reading the server this pass. The implementation plan's §3.4 and
 
 ## Open sub-decisions
 
-Three remain, each with a named one-command resolution in [03-authoring-constraints.md](03-authoring-constraints.md)'s closing section. None blocks S1.
+All three named in [03-authoring-constraints.md](03-authoring-constraints.md)'s closing section are now **closed**: the canon is cited cross-workflow rather than duplicated, technique-Input-only values stay technique-local, and `survey-reference-workflows` binds at `08` — which freezes CA-3's eager-eligibility figure at a measured **6**. Evidence and reasoning: [05-build-log.md](05-build-log.md).
 
 ## What was deliberately accepted
 
