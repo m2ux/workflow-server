@@ -1,6 +1,6 @@
 # Section Resource Grain (#358 / #359) — July 2026
 
-> Update · Created 2026-07-31 · **Status:** Planning
+> Update · Created 2026-07-31 · **Status:** Quality review complete (PR1) · validate-and-commit next
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -25,10 +25,10 @@ Two sequenced PRs close the pre-principle-32 citation tail (#358) and the sectio
 | 1 | Intake and context | Mode, target, edit-surface path | 15-30m | ✅ |
 | 2 | [Change brief](01-change-brief.md) | Purpose, dimension shape, open judgements | 20-40m | ✅ |
 | 3 | [Impact analysis](01-impact-analysis.md) | Blast radius, integrity, removals | 20-40m | ✅ |
-| 4 | Scope and draft | Worktree, manifest, per-file drafting | 30-60m | 🟡 wave 1a+1b done · post-loop / quality next |
-| 5 | [Scope manifest](06-scope-manifest.md) · [1a](06-wave-1a-ap134-verdicts.md) · [1b](06-wave-1b-ap134-verdicts.md) | File-level change inventory + AP-134 verdicts | 15-30m | 🟡 PR1 tail complete |
-| 6 | Quality review | Criteria walk, consumer surface, guards | 30-60m | ⬚ |
-| 7 | [Findings register](findings-register.md) | Audit record, coverage, exclusions | 15-30m | ⬚ |
+| 4 | Scope and draft | Worktree, manifest, per-file drafting | 30-60m | ✅ |
+| 5 | [Scope manifest](06-scope-manifest.md) · [1a](06-wave-1a-ap134-verdicts.md) · [1b](06-wave-1b-ap134-verdicts.md) | File-level change inventory + AP-134 verdicts | 15-30m | ✅ PR1 tail |
+| 6 | Quality review | Criteria walk, consumer surface, guards | 30-60m | ✅ PR1 clean |
+| 7 | [Findings register](08-findings-register.md) | Audit record, coverage, exclusions | 15-30m | ✅ 0 open |
 | 8 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ⬚ |
 | 9 | [Close-out](COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |
 
