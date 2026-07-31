@@ -42,7 +42,7 @@ Four operation-groups (one per authoring activity) plus one standalone technique
 | [`map-trust-boundaries`](compose-audit-prompt/map-trust-boundaries.md) | Map cross-community call edges and security-critical symbol blast radii (GitNexus only) |
 | [`map-audit-domains`](compose-audit-prompt/map-audit-domains.md) | Derive the evidence-based audit domains with risk levels and focus areas |
 | [`identify-cross-cutting-concerns`](compose-audit-prompt/identify-cross-cutting-concerns.md) | Identify cross-cutting concerns — error handling, feature flags, dependencies |
-| [`compose-prompt`](compose-audit-prompt/compose-prompt.md) | Assemble the self-contained audit prompt from the [template](../resources/audit-prompt-template.md) |
+| [`compose-prompt`](compose-audit-prompt/compose-prompt.md) | Assemble the self-contained audit prompt from the [audit prompt template](../resources/audit-prompt-template.md#audit-prompt-template) |
 | [`build-audit-scopes`](compose-audit-prompt/build-audit-scopes.md) | Partition the audit into the discrete scopes each prism run will cover |
 
 ### execute-analysis (Execute Prism Analysis)

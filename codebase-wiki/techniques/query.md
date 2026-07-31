@@ -49,7 +49,7 @@ Parts of the question the wiki does not cover, surfaced so the caller can decide
 
 ### 3. Synthesize The Answer
 
-- Compose an answer to `{wiki_question}` from the pages' claims, attributing each part of the answer to the page it came from with a `[[wikilink]]` citation per the [citation conventions](../resources/citation-conventions.md).
+- Compose an answer to `{wiki_question}` from the pages' claims, attributing each part of the answer to the page it came from with a `[[wikilink]]` citation per the [`[[wikilink]]` conventions](../resources/citation-conventions.md#wikilink-conventions).
 - Carry the confidence of the underlying claims into the answer — flag where the answer rests on `low`-confidence pages or where the wiki has no coverage.
 - Where pages disagree, surface the disagreement rather than picking a side silently — a contradiction is a lint finding, not a query decision.
 

@@ -25,11 +25,11 @@ The raw baseline is immutable — it is the source tree at the pinned `raw_basel
 
 ### every-claim-cites-a-source
 
-Every wiki claim cites a raw source path. No claim is recorded without a citation to the source it rests on, in the form defined by the [citation conventions](../resources/citation-conventions.md).
+Every wiki claim cites a raw source path. No claim is recorded without a citation to the source it rests on, in the form defined by the [raw-baseline citations](../resources/citation-conventions.md#raw-baseline-citations).
 
 ### every-claim-carries-confidence
 
-Every wiki claim carries a confidence score of `high`, `medium`, or `low`, per the confidence vocabulary in the [citation conventions](../resources/citation-conventions.md). A claim without a confidence score is not recorded.
+Every wiki claim carries a confidence score of `high`, `medium`, or `low`, per the [confidence vocabulary](../resources/citation-conventions.md#confidence-vocabulary). A claim without a confidence score is not recorded.
 
 ### index-and-log-on-every-mutation
 

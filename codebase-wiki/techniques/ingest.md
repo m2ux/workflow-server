@@ -58,13 +58,13 @@ A one-line description of this ingest for the log ledger — the area covered (`
 
 ### 3. Classify Into Typed Pages
 
-- Map what the area contains onto the four page types per the [wiki-format](../resources/wiki-format.md) taxonomy: `concept` (architectural concept, subsystem, or pattern), `entity` (a concrete code unit — module, package, class, service, endpoint), `source-summary` (a per-file or per-area digest of the raw source), `comparison` (a cross-cutting comparison of two or more units).
-- Choose a kebab-case page slug (`{$page_slug}`) per page; place each page under the subfolder for its type.
+- Map what the area contains onto the four page types per the [page-type taxonomy](../resources/wiki-format.md#page-type-taxonomy): `concept` (architectural concept, subsystem, or pattern), `entity` (a concrete code unit — module, package, class, service, endpoint), `source-summary` (a per-file or per-area digest of the raw source), `comparison` (a cross-cutting comparison of two or more units).
+- Choose a kebab-case page slug (`{$page_slug}`) per page; place each page under the subfolder for its type per the [wiki tree layout](../resources/wiki-format.md#wiki-tree-layout).
 
 ### 4. Draft Cited, Confidence-Scored Claims
 
-- Write each page from the matching template in [page-templates](../resources/page-templates.md), filling the frontmatter (`title`, `type`, `sources[]` at `{raw_baseline_commit}`, `related[]`, `created`, `updated`, `confidence`).
-- For every claim, attach a citation to the raw source path it rests on (and to the task when the claim derives from `{task_knowledge}`) per the [citation conventions](../resources/citation-conventions.md), and a confidence of `high`, `medium`, or `low`.
+- Write each page from the matching template in [page-templates](../resources/page-templates.md), filling the frontmatter (`title`, `type`, `sources[]` at `{raw_baseline_commit}`, `related[]`, `created`, `updated`, `confidence`) per the [page frontmatter schema](../resources/wiki-format.md#page-frontmatter-schema).
+- For every claim, attach a citation to the raw source path it rests on (and to the task when the claim derives from `{task_knowledge}`) per the [raw-baseline citations](../resources/citation-conventions.md#raw-baseline-citations) and [confidence vocabulary](../resources/citation-conventions.md#confidence-vocabulary), and a confidence of `high`, `medium`, or `low`.
 - When a claim contradicts an existing page, record both and leave the conflict for the lint pass — do not silently reconcile.
 - When augmenting an existing page, add or deepen sections and refresh `updated`; preserve prior content unless a cited source contradicts it.
 

@@ -55,7 +55,7 @@ agent-id, scope, specific check to perform
 
 ### 1. Check Dispatch Completeness
 
-- If a `{dispatch_manifest}` is provided, verify every agent in the `{agent_assignments}` was dispatched and returned. Produce a dispatch status table: crate, assigned-group, agent-dispatched (yes/no), structured-output-received (yes/no) — i.e. output conforming to the [sub-agent-output-schema](../resources/sub-agent-output-schema.md). If one or more assigned agents were not dispatched, flag as DISPATCH_INCOMPLETE. This is a HARD STOP — dispatch the missing agents and re-verify.
+- If a `{dispatch_manifest}` is provided, verify every agent in the `{agent_assignments}` was dispatched and returned. Produce a dispatch status table: crate, assigned-group, agent-dispatched (yes/no), structured-output-received (yes/no) — i.e. output conforming to the [sub-agent output schema](../resources/sub-agent-output-schema.md#schema) and [field requirements by agent group](../resources/sub-agent-output-schema.md#field-requirements-by-agent-group). If one or more assigned agents were not dispatched, flag as DISPATCH_INCOMPLETE. This is a HARD STOP — dispatch the missing agents and re-verify.
 
 ### 2. Check Coverage Gate
 

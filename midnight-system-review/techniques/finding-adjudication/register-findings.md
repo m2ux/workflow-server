@@ -31,7 +31,7 @@ The accepted subset in area order — the only findings the verdict computation 
 
 ### 1. Disposition
 
-- Apply the accepted-issue threshold from the [grading-rubric](../../resources/grading-rubric.md) to each entry in `{graded_findings}`: medium or high evidence confidence with a verified anchor is accepted; below threshold is an observation; evidence-contradicted candidates are dismissed with the contradicting anchor recorded.
+- Apply the [accepted-issue threshold](../../resources/grading-rubric.md#accepted-issue-threshold) to each entry in `{graded_findings}`: medium or high evidence confidence with a verified anchor is accepted; below threshold is an observation; evidence-contradicted candidates are dismissed with the contradicting anchor recorded.
 - Record a disposition rationale for every non-accepted candidate — the register preserves the full adjudication trail, not just the accepted slice.
 
 ### 2. Write Register

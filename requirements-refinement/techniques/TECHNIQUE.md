@@ -33,7 +33,7 @@ Count of correction passes performed so far; `0` on the initial update.
 
 ### specification-protocol-preserved
 
-The section structure, requirement-entry format, identifier schemes, and status conventions defined in [specification-protocol](../resources/specification-protocol.md) are preserved verbatim.
+The [section structure](../resources/specification-protocol.md#section-structure), [requirement-entry format](../resources/specification-protocol.md#requirement-entry-format), [identifier schemes](../resources/specification-protocol.md#identifier-schemes), and [status conventions](../resources/specification-protocol.md#status-conventions) are preserved verbatim.
 
 ### artifacts-confined-to-planning-folder
 

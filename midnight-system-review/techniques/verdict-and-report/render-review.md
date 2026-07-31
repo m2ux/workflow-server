@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Render the review in the canonical [review-format](../../resources/review-format.md) — verdict, per-area findings, grade tuples, blocked validations, and the Review Details accounting — producing both the report artifact and the summary text that publication posts verbatim.
+Render the review in the canonical [review structure](../../resources/review-format.md#structure) — verdict, per-area findings, grade tuples, blocked validations, and the Review Details accounting per the [accounting rules](../../resources/review-format.md#accounting-rules) — producing both the report artifact and the summary text that publication posts verbatim.
 
 ## Inputs
 
@@ -43,7 +43,7 @@ The rendered review text destined for the pull request — posted verbatim by th
 
 ### 1. Render
 
-- Render the report per the [review-format](../../resources/review-format.md): verdict header with `{merge_readiness_verdict}` and `{verdict_rationale}`, per-area sections in `{investigation_areas}` order presenting `{accepted_findings}` with their grade tuples and anchors, observations and blocked validations noted, and the Review Details accounting table (per area: probes planned, executed, blocked; findings raised, accepted).
+- Render the report per the [review structure](../../resources/review-format.md#structure): verdict header with `{merge_readiness_verdict}` and `{verdict_rationale}` (using [verdict phrases](../../resources/review-format.md#verdict-phrases) where the format names them), per-area sections in `{investigation_areas}` order presenting `{accepted_findings}` with their grade tuples and anchors, observations and blocked validations noted, and the Review Details accounting table (per area: probes planned, executed, blocked; findings raised, accepted) under the [accounting rules](../../resources/review-format.md#accounting-rules).
 
 ### 2. Reconcile and Emit
 

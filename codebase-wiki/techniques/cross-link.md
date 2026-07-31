@@ -31,7 +31,7 @@ The pages whose `[[wikilink]]` body links and `related[]` frontmatter were inser
 
 ### 2. Insert Links
 
-- Add a `[[wikilink]]` in the subject page body wherever it references a related page, using the slug form defined in the [citation conventions](../resources/citation-conventions.md).
+- Add a `[[wikilink]]` in the subject page body wherever it references a related page, using the slug form defined in the [`[[wikilink]]` conventions](../resources/citation-conventions.md#wikilink-conventions).
 - Add the reciprocal `[[wikilink]]` in the related page so the relationship is bidirectional — a link from A to B implies a link from B to A.
 
 ### 3. Sync Frontmatter
