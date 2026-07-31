@@ -90,6 +90,8 @@ Required MCP servers written into mcp.json (workflows depend on these):
 
 Claude baseline (workspace-local only):
   copies scripts/claude/ → <workspace>/scripts/claude/
+  copies .claude/skills/ → <workspace>/.claude/skills/ (per skill dir, so a
+    workspace keeps skills the template does not carry)
   writes .claude/settings.json from settings.template.json
 
 Workspace-owned (written when absent, kept as-is once present):
@@ -302,20 +304,33 @@ else
     cp -a "${TEMPLATE_DIR}/.claude/rules/." "${DEST_DIR}/.claude/rules/"
   fi
 
-  # Rules are copied verbatim, so expand the same placeholders the settings
-  # template uses. A rule naming an absolute path (the sbx launcher) has to
-  # match its allowlist entry, which is absolute after expansion.
+  rm -f \
+    "${DEST_DIR}/.claude/settings.template.json" \
+    "${DEST_DIR}/.claude/settings.example.json"
+  # Skills land per directory, so a workspace keeps skills the template does not
+  # carry (gitnexus, anything hand-written) while template skills refresh.
+  for skills_sub in .cursor/skills .claude/skills; do
+    if [[ -d "${TEMPLATE_DIR}/${skills_sub}" ]] \
+      && compgen -G "${TEMPLATE_DIR}/${skills_sub}/*" >/dev/null; then
+      mkdir -p "${DEST_DIR}/${skills_sub}"
+      cp -a "${TEMPLATE_DIR}/${skills_sub}/." "${DEST_DIR}/${skills_sub}/"
+    fi
+  done
+
+  # Rules and skills are copied verbatim, so expand the same placeholders the
+  # settings template uses. A rule naming an absolute path (the sbx launcher)
+  # has to match its allowlist entry, which is absolute after expansion.
   DEST_DIR="$DEST_DIR" HOME_DIR="$HOME_DIR" python3 - <<'PY'
 import os, pathlib
 
 workspace = os.environ["DEST_DIR"].rstrip("/")
 home = os.environ["HOME_DIR"].rstrip("/")
 
-for sub in (".claude/rules", ".cursor/rules"):
+for sub in (".claude/rules", ".cursor/rules", ".claude/skills", ".cursor/skills"):
     d = pathlib.Path(workspace) / sub
     if not d.is_dir():
         continue
-    for p in sorted(d.iterdir()):
+    for p in sorted(d.rglob("*")):
         if not p.is_file() or p.suffix not in (".md", ".mdc"):
             continue
         text = p.read_text(encoding="utf-8")
@@ -324,15 +339,6 @@ for sub in (".claude/rules", ".cursor/rules"):
             p.write_text(new, encoding="utf-8")
             print(f"  expanded placeholders: {p.relative_to(workspace)}")
 PY
-
-  rm -f \
-    "${DEST_DIR}/.claude/settings.template.json" \
-    "${DEST_DIR}/.claude/settings.example.json"
-  if [[ -d "${TEMPLATE_DIR}/.cursor/skills" ]] \
-    && compgen -G "${TEMPLATE_DIR}/.cursor/skills/*" >/dev/null; then
-    mkdir -p "${DEST_DIR}/.cursor/skills"
-    cp -a "${TEMPLATE_DIR}/.cursor/skills/." "${DEST_DIR}/.cursor/skills/"
-  fi
 fi
 
 # --- scripts/claude (hooks + sbx) — workspace-local only ----------------------

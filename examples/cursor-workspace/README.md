@@ -1,6 +1,6 @@
 # Cursor workspace Setup
 
-Multi-root kickoff template (MCP, bootstrap rules, Claude baseline, `AGENTS.md`).
+Multi-root kickoff template (MCP, bootstrap rules, Claude baseline, skills, `AGENTS.md`).
 
 ## Deploy
 
@@ -24,6 +24,17 @@ Requires a checkout (repo-name) under your projects root, and `$HOME` set.
 and `__HOME__`, which expand to absolute paths. Use them when a rule must name a
 path that also appears in the settings allowlist — `bash-composition.md` names
 the `sbx` launcher this way so the two stay in step.
+
+## Skills
+
+`.claude/skills/` deploys one directory per skill, under the same placeholder
+expansion as the rules. A skill the template does not carry stays in the
+workspace across a `--force` refresh, so deploying never removes locally added
+skills.
+
+| Skill | Use for |
+|-------|---------|
+| [`workflow-canon`](.claude/skills/workflow-canon/SKILL.md) | Authoring or auditing workflow definitions against the design canon and guard suite |
 
 ## See also
 

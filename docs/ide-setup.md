@@ -29,6 +29,7 @@ Then ask the agent to start a workflow. Prefer this over hand-rolling MCP config
 | `*.code-workspace` | Multi-root folders with absolute `$HOME/…` paths |
 | `.cursor/mcp.json`, `.mcp.json` | Required MCP servers (home-path tokens expanded) |
 | `.cursor/rules/`, `.claude/rules/` | Bootstrap / companion rules |
+| `.claude/skills/` | Skills shipped with the template (`workflow-canon`), one directory each; locally added skills stay |
 | `AGENTS.md` → `CLAUDE.md` | Target checkout + `owner/repo` placeholder — seeded when absent, then workspace-owned |
 | `scripts/claude/` | Portable hooks + `bin/sbx` (from repo [`scripts/claude/`](../scripts/claude/)) |
 | `.claude/settings.json` | Generated at deploy from [settings.template.json](../examples/cursor-workspace/.claude/settings.template.json) |
