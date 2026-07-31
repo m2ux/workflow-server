@@ -1,13 +1,13 @@
 # Scope Manifest — Section stratification / framing (#359)
 
 **Target:** `workflow-design` (canon) · corpus-wide resource surface · **Mode:** update
-**Basis:** [change brief](01-change-brief.md) · [impact analysis](01-impact-analysis.md)
+**Basis:** [change brief](01-change-brief.md) · [impact analysis](01-impact-analysis.md) · [framing classification](06-framing-classification.md)
 **Worktree:** `/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-31-section-stratification-359/` on `workflow/workflow-design-section-stratification-359` · folder layout **unchanged**
 **Base tip:** `8c12d0f5` (#358 wave 1b on PR1 branch) — **no #358 redo**
 
-PR2 for [#359](https://github.com/m2ux/workflow-server/issues/359) only. Intentional removals at intake: **0** ([impact §3](01-impact-analysis.md#3-removals-inventory)). Framing path-pins expand after classify.
+PR2 for [#359](https://github.com/m2ux/workflow-server/issues/359) only. Framing path-pins from full classify arithmetic (87 framed / 94 anchored-cited).
 
-`file_count` = **5** named definition paths this pass (fixed rows) · framing classify set expands ~69 further resource rows after arithmetic (not yet fully path-pinned).
+`file_count` = **11** definition paths (5 fixed + 6 framing path-pins). Orientation leave-set is verdict-only (no file rows).
 
 ---
 
@@ -15,13 +15,13 @@ PR2 for [#359](https://github.com/m2ux/workflow-server/issues/359) only. Intenti
 
 | PR | Issue | Rows | Surface | Must not |
 |----|-------|------|---------|----------|
-| **PR 2** | [#359](https://github.com/m2ux/workflow-server/issues/359) | 1–5 + framing set | Canon (principles 30/32 + AP-134 sibling); three cross-section anchor fixes; ~69 framing dispositions | Ship delivery variant **C** before classify; mix C into pure-corpus commits; re-do #358 |
+| **PR 2** | [#359](https://github.com/m2ux/workflow-server/issues/359) | 1–11 | Canon (principles 30/32 + AP-134 sibling); three cross-section anchor fixes; framing classify + path-pins | Ship delivery variant **C** (orientation-dominated arithmetic); mix C into pure-corpus commits; re-do #358 |
 
 ---
 
 ## File manifest
 
-### Fixed + canon (rows 1–5)
+### Fixed + canon (rows 1–5) — done
 
 | # | Path (under worktree root) | Type | Action | One-line change |
 |---|----------------------------|------|--------|-----------------|
@@ -31,20 +31,29 @@ PR2 for [#359](https://github.com/m2ux/workflow-server/issues/359) only. Intenti
 | 4 | `work-package/resources/architecture-summary.md` | resource | modify | `#diagram-selection` → anchored artifact-template section |
 | 5 | `work-package/resources/pr-description.md` | resource | modify | Glyph key inside `#link-row-forms` for section consumers |
 
-### Framing classify set (path-pin after classify)
+### Framing path-pins (rows 6–11)
 
-Not fully path-enumerated until the read-and-decide pass names each of the ~69 resources. Per site: delete duplicate / mint `##` for operative unique / leave orientation. **Removals inventory must refresh before any framing body is deleted.**
+| # | Path (under worktree root) | Type | Action | Class | One-line change |
+|---|----------------------------|------|--------|-------|-----------------|
+| 6 | `work-package/resources/complete-wp-guide.md` | resource | modify | duplicate | Delete framing that restates `create-complete-doc` Protocol + in-body Rules |
+| 7 | `workflow-design/resources/schema-construct-inventory.md` | resource | modify | operative-unique | Mint `## Universal obligation` for inventory check + schema table |
+| 8 | `meta/resources/planning-readme.md` | resource | modify | operative-unique | Mint `## Index role` (same file as row 3; framing after cross-section fix) |
+| 9 | `work-package/resources/workflow-retrospective.md` | resource | modify | operative-unique | Mint `## Host nesting` for close-out section constraint |
+| 10 | `prism/resources/definitive-findings-template.md` | resource | modify | pre-heading | Mint H1 + `## Artifact contract` for pre-heading prose |
+| 11 | `prism/resources/final-output-template.md` | resource | modify | pre-heading | Mint H1 + `## Artifact contract` for pre-heading prose |
 
-Seed classification log: [06-framing-classification.md](06-framing-classification.md).
+### Orientation leave-set (verdict only)
 
-**Variant C** (`src/utils/resource-delivery.ts` + tests + corpus-sha): **only** if classify arithmetic is mostly operative-and-unique — separate commit; never mixed into rows 1–5 pure-corpus commits.
+**81** resources — purpose/role framing; operative detail already under cited `##` sections. Full table: [06-framing-classification.md](06-framing-classification.md). No file edits.
+
+**Variant C** (`src/utils/resource-delivery.ts` + tests + corpus-sha): **not taken** — orientation dominates (81/87). Recommendation recorded in framing classification; no `src/` slice.
 
 **Out of scope this pass:**
 
 - #358 citation tail / top-20 pairs
-- Anti-patterns body size / eager-bundle exclusion
+- Anti-patterns body size / eager-bundle exclusion (AP-134b sibling only)
 - All `workflow.yaml` / `activities/*.yaml` topology
-- `src/` under default path (unless post-classify C)
+- `src/` delivery variant C
 
 ---
 
@@ -54,28 +63,33 @@ Seed classification log: [06-framing-classification.md](06-framing-classificatio
 .worktrees/2026-07-31-section-stratification-359/   # workflows worktree — layout unchanged
 ├── workflow-design/resources/
 │   ├── design-principles.md          # principle 30/32 clause
-│   └── anti-patterns.md              # AP-134 sibling only
-├── meta/resources/planning-readme.md
+│   ├── anti-patterns.md              # AP-134 sibling only
+│   └── schema-construct-inventory.md # ## Universal obligation
+├── meta/resources/planning-readme.md # cross-section + ## Index role
 ├── work-package/resources/
 │   ├── architecture-summary.md
-│   └── pr-description.md
-└── …                                 # framing path-pins after classify
+│   ├── pr-description.md
+│   ├── complete-wp-guide.md          # framing deleted
+│   └── workflow-retrospective.md     # ## Host nesting
+└── prism/resources/
+    ├── definitive-findings-template.md
+    └── final-output-template.md
 ```
 
 **Flow:** Topology unchanged on every workflow.
 
 | Pattern | This change |
 |---------|-------------|
-| Section-scoped reads are self-sufficient | Framing classify + principle clause + AP sibling |
+| Section-scoped reads are self-sufficient | Framing classify + principle clause + AP sibling + path-pins |
 | Cross-section deps use anchors | Three named resources in rows 3–5 |
-| Classify before delivery-layer C | Open judgement 1; C never in pure-corpus commits |
+| Classify before delivery-layer C | Arithmetic: orientation-heavy → **no C** |
 
 ---
 
 ## Drafting order
 
-1. **Rows 1–5** — canon + three cross-section fixes (this wave).
-2. **Framing classify → path-pinned edits** — delete / section / leave per resource; refresh removals inventory before deletes.
-3. **Variant C only if arithmetic supports** — separate `src/` slice after classify.
+1. **Rows 1–5** — canon + three cross-section fixes — **done** (`b7afc864`).
+2. **Framing classify → path-pinned edits** — rows 6–11 — **this wave**.
+3. **Variant C** — **skipped** (orientation-dominated).
 
-**Rationale:** Fixed anchors and canon ship without waiting on full framing; classify before C so delivery never cements duplicates.
+**Rationale:** Fixed anchors and canon ship without waiting on full framing; classify before C so delivery never cements duplicates; C deferred when orientation dominates.

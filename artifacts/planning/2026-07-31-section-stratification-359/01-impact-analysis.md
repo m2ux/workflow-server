@@ -11,15 +11,15 @@
 
 ## Summary
 
-Corpus-wide **resource structure/canon** updates for #359 as PR2. No activity graph, transition, variable, or checkpoint topology changes. Integrity risk is **content self-sufficiency** under section fetch and **anchor resolution** for the three cross-section sites — not transition reachability. Material body deletions (duplicate framing) are **deferred** until the classify pass names sites; none are inventoried as approved removals at intake.
+Corpus-wide **resource structure/canon** updates for #359 as PR2. No activity graph, transition, variable, or checkpoint topology changes. Integrity risk is **content self-sufficiency** under section fetch and **anchor resolution** for the three cross-section sites — not transition reachability. Classify arithmetic (87 framed sites) is **orientation-dominated**; delivery variant C is **not** taken. One approved framing deletion is inventoried below.
 
-**removal_count:** 0
+**removal_count:** 1
 
 **PR blast radius:**
 
 | PR | Touches | Integrity focus |
 |----|---------|-----------------|
-| 2 · #359 | Resource framing/`##` structure; design-principles; anti-patterns sibling; 3 cross-section link fixes; optional `src/` only for C | Section spans self-sufficient; no duplicate framing cemented by C |
+| 2 · #359 | Resource framing/`##` structure; design-principles; anti-patterns sibling; 3 cross-section link fixes; 6 framing path-pins; **no** `src/` C | Section spans self-sufficient; duplicate framing removed where technique already owns the obligation |
 
 ---
 
@@ -34,16 +34,22 @@ Corpus-wide **resource structure/canon** updates for #359 as PR2. No activity gr
 | `workflows/meta/resources/planning-readme.md` | Cross-section fix at `#progress-status-call-sites` → `#status` (or equivalent) |
 | `workflows/work-package/resources/architecture-summary.md` | `#diagram-selection` → artifact template section |
 | `workflows/work-package/resources/pr-description.md` | Glyph key available to `#link-row-forms` consumers |
-| ~69 resources with framing outside any `##` | Delete / name section / leave per classification |
+| `workflows/work-package/resources/complete-wp-guide.md` | Duplicate framing deleted |
+| `workflows/workflow-design/resources/schema-construct-inventory.md` | `## Universal obligation` minted |
+| `workflows/meta/resources/planning-readme.md` | Also `## Index role` (framing path-pin after cross-section fix) |
+| `workflows/work-package/resources/workflow-retrospective.md` | `## Host nesting` minted |
+| `workflows/prism/resources/definitive-findings-template.md` | H1 + `## Artifact contract` |
+| `workflows/prism/resources/final-output-template.md` | H1 + `## Artifact contract` |
+| 81 orientation resources | Verdict leave — no edit |
 
 ### Possibly touched (draft-time)
 
 | File / class | Why |
 |--------------|-----|
 | Technique prose that restates framing | May absorb unique operative framing moved out of resources |
-| `src/utils/resource-delivery.ts` and delivery tests | **Only** if classification supports variant C — separate commit/PR slice |
-| Corpus snapshots / `corpus-sha` | If C changes section payload bytes |
-| Meta / work-package techniques citing renamed sections | Citation updates after framing/section renames |
+| `src/utils/resource-delivery.ts` and delivery tests | **Not this PR** — classify does not support C |
+| Corpus snapshots / `corpus-sha` | Unchanged without C |
+| Meta / work-package techniques citing renamed sections | New section slugs available; existing anchors on Template/Rules/construct tables unchanged |
 
 ### Unaffected (summary)
 
@@ -67,14 +73,19 @@ Corpus-wide **resource structure/canon** updates for #359 as PR2. No activity gr
 
 ## 3. Removals inventory
 
-None at intake. Planned **candidate** reductions (not approved rows):
+**removal_count:** 1 (approved after classify)
 
-| Candidate class | When inventoried | Notes |
-|-----------------|------------------|-------|
-| Duplicate framing prose | After classify of all ~69 | Delete only when technique already states the same obligation |
-| Framing left as orientation | N/A | No removal |
+| # | Removed | Preserved / replacement | Why safe |
+|---|---------|-------------------------|----------|
+| 1 | `complete-wp-guide.md` framing (canonical-home + review-mode header prose before `## Template`) | `create-complete-doc` Protocol steps 1–3; resource `## Template` and `## Rules` | Technique already requires template follow, known-limitations canonical home, and review-mode header behaviour; section-scoped citers use `#template` |
 
-A later scope or impact refresh must add removed-versus-preserved rows before any framing body is deleted.
+**Preserved (not removed):**
+
+| Class | Count | Disposition |
+|-------|------:|-------------|
+| operative-unique framing | 3 | Moved under named `##` (Universal obligation, Index role, Host nesting) |
+| pre-heading prose | 2 | Moved under H1 + `## Artifact contract` |
+| orientation framing | 81 | Left in place |
 
 ---
 
@@ -96,4 +107,4 @@ A later scope or impact refresh must add removed-versus-preserved rows before an
 
 ## Decision ask
 
-Confirm impact scope: **zero inventoried removals at intake**; framing + canon + three anchors; topology intact; `src/` only behind post-classify C as a separate slice. Framing deletions require a fresh removals inventory before draft deletes land.
+Confirm impact scope: **one inventoried framing deletion** (`complete-wp-guide`); five mint-section path-pins; canon + three anchors; topology intact; **no `src/` C** (orientation-dominated classify).

@@ -613,6 +613,20 @@
           }
         ],
         "deliveredContent": {
+          "worker-B53HRA-framing": {
+            "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
+            "bundle:rules:dcc74273fdf2ad82": "dcc74273fdf2ad82",
+            "bundle:variable-binding": "4de9bd403344076e",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "technique:workflow-definition::audit-canon": "1410d942156f64d9",
+            "technique:workflow-definition::audit-schema-validation": "d8414f3bfd12b972",
+            "technique:workflow-definition::load-known-findings": "bc12b59eea4f2f00",
+            "technique:workflow-definition::reload-workflow": "7b1ad19b43c57b6c",
+            "technique:workflow-definition::resolve-consumer-surface": "45113484e215e5d8",
+            "technique:workflow-engine::list-workflows": "822ff399538ae84f"
+          },
           "worker-intake-359": {
             "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
             "bundle:rules:dcc74273fdf2ad82": "dcc74273fdf2ad82",
@@ -1419,17 +1433,153 @@
             "activity": "quality-review",
             "timestamp": "2026-07-31T19:21:01.355Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-B53HRA-framing",
+              "chars": 62957,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T19:27:48.442Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-B53HRA-framing",
+              "chars": 4594,
+              "delivery": "full",
+              "stepId": "load-known-findings",
+              "techniqueId": "workflow-definition::load-known-findings"
+            },
+            "timestamp": "2026-07-31T19:27:48.442Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-B53HRA-framing",
+              "stepId": "load-known-findings"
+            },
+            "timestamp": "2026-07-31T19:27:48.442Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-B53HRA-framing",
+              "chars": 3178,
+              "delivery": "full",
+              "stepId": "survey-reference-workflows",
+              "techniqueId": "workflow-engine::list-workflows"
+            },
+            "timestamp": "2026-07-31T19:27:48.442Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-B53HRA-framing",
+              "stepId": "survey-reference-workflows"
+            },
+            "timestamp": "2026-07-31T19:27:48.442Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-B53HRA-framing",
+              "chars": 4728,
+              "delivery": "full",
+              "stepId": "rebind-target-baseline",
+              "techniqueId": "workflow-definition::reload-workflow"
+            },
+            "timestamp": "2026-07-31T19:27:48.442Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-B53HRA-framing",
+              "stepId": "rebind-target-baseline"
+            },
+            "timestamp": "2026-07-31T19:27:48.442Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-B53HRA-framing",
+              "chars": 4633,
+              "delivery": "full",
+              "stepId": "resolve-consumer-surface",
+              "techniqueId": "workflow-definition::resolve-consumer-surface"
+            },
+            "timestamp": "2026-07-31T19:27:48.442Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-B53HRA-framing",
+              "stepId": "resolve-consumer-surface"
+            },
+            "timestamp": "2026-07-31T19:27:48.442Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-B53HRA-framing",
+              "chars": 9621,
+              "delivery": "full",
+              "stepId": "sweep-canon",
+              "techniqueId": "workflow-definition::audit-canon"
+            },
+            "timestamp": "2026-07-31T19:27:48.442Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-B53HRA-framing",
+              "stepId": "sweep-canon"
+            },
+            "timestamp": "2026-07-31T19:27:48.442Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-B53HRA-framing",
+              "chars": 6384,
+              "delivery": "full",
+              "stepId": "validate-schema",
+              "techniqueId": "workflow-definition::audit-schema-validation"
+            },
+            "timestamp": "2026-07-31T19:27:48.442Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-B53HRA-framing",
+              "stepId": "validate-schema"
+            },
+            "timestamp": "2026-07-31T19:27:48.442Z",
+            "type": "step_started"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 19,
+        "seq": 20,
         "sessionIndex": "B53HRA",
         "skippedActivities": [],
         "startedAt": "2026-07-31T19:13:41.875Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785525661,
+        "ts": 1785526068,
         "variables": {
           "addressed_count": 0,
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-stratification-359/01-change-brief.md",
