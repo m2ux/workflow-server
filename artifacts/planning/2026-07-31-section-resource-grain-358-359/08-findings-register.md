@@ -1,7 +1,7 @@
 # Findings Register — Section resource grain PR1 (#358)
 
 **Date:** 2026-07-31 · **Mode:** Update · **Remediation round:** 0  
-**Session:** `TNUCFN` · **Activity:** `quality-review`  
+**Session:** `TNUCFN` · **Activity:** `validate-and-commit` (re-derived after `quality-review`)  
 **Base ref:** `4196c853` (merge base of `workflow/workflow-design-section-resource-grain-358-359` with `origin/workflows`)  
 **HEAD under review:** `8c12d0f5` (wave 1b) · prior wave 1a `cc5f4a29`
 
@@ -40,6 +40,8 @@ Attribution: **new** arrived with this change; **pre** pre-existed at `{base_ref
 | Leave-whole sites (recorded, not defects) | waves 1a+1b tables |
 
 **Decision surface:** clean for PR1. No remediation round required from this pass.
+
+**validate-and-commit re-derivation:** No High/Critical findings existed to re-derive. Medium/Low surface empty. Coverage ledger spot-check: no blocked units. `open_finding_count=0`, `has_critical_finding=false`, `has_coverage_gap=false`, `fail_count=0`.
 
 ---
 

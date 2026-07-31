@@ -1,6 +1,6 @@
 # Section Resource Grain (#358 / #359) — July 2026
 
-> Update · Created 2026-07-31 · **Status:** Quality review complete (PR1) · validate-and-commit next
+> Update · Created 2026-07-31 · **Status:** PR1 published — [#370](https://github.com/m2ux/workflow-server/pull/370) · #359 deferred
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -29,8 +29,8 @@ Two sequenced PRs close the pre-principle-32 citation tail (#358) and the sectio
 | 5 | [Scope manifest](06-scope-manifest.md) · [1a](06-wave-1a-ap134-verdicts.md) · [1b](06-wave-1b-ap134-verdicts.md) | File-level change inventory + AP-134 verdicts | 15-30m | ✅ PR1 tail |
 | 6 | Quality review | Criteria walk, consumer surface, guards | 30-60m | ✅ PR1 clean |
 | 7 | [Findings register](08-findings-register.md) | Audit record, coverage, exclusions | 15-30m | ✅ 0 open |
-| 8 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ⬚ |
-| 9 | [Close-out](COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |
+| 8 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ✅ [#370](https://github.com/m2ux/workflow-server/pull/370) |
+| 9 | [Close-out](09-COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ✅ |
 
 **Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
@@ -41,5 +41,6 @@ Two sequenced PRs close the pre-principle-32 citation tail (#358) and the sectio
 | GitHub Issue #358 | [#358](https://github.com/m2ux/workflow-server/issues/358) |
 | GitHub Issue #359 | [#359](https://github.com/m2ux/workflow-server/issues/359) |
 | Target (canon) | `workflows/workflow-design/` |
-| Edit surface | `.worktrees/2026-07-31-section-resource-grain-358-359/` |
+| Edit surface | worktree removed after publish (branch retained on origin) |
 | Session | `TNUCFN` |
+| Pull request (PR1 / #358) | [#370](https://github.com/m2ux/workflow-server/pull/370) |
