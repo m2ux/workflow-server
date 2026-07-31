@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { applyTriage, loadTriage, expressionReads } from '../scripts/check-binding-fidelity.js';
+import { applyTriage, loadTriage, expressionReads, collectViolations, consumerReaches, deadOutputSatisfier } from '../scripts/check-binding-fidelity.js';
 
 /**
  * Binding-fidelity gate. The corpus carries triaged debt, recorded per finding with a verdict and a
@@ -72,20 +72,28 @@ describe('gate-expression reads', () => {
 });
 
 /**
- * #342: a consumer in an unrelated workflow used to close a dead-output finding by bare name, and
- * the masking presented as a STALE entry — which reads like progress and forced real debt out of the
- * ledger. These two are the entries commit b41aaacc pruned for exactly that reason.
+ * #342: a consumer in an unrelated workflow used to close a dead-output finding by bare name, and the
+ * masking presented as a STALE entry — which reads like progress and forced real debt out of the
+ * ledger.
+ *
+ * This asserts the RULE rather than pinning two corpus instances of it. Instances get paid down —
+ * both original fixtures were legitimately closed by #336 — and a fixture that goes green on a real
+ * fix tests the corpus, not the guard.
  */
 describe('dead-output scoping', () => {
-  it('keeps the seams that a same-named read in another workflow was masking', () => {
-    const declared = loadTriage().entries.filter((e) => e.check === 'dead-output');
-    const masked = [
-      ['workflow-design/techniques/apply-audit-fixes.md', 'fixes_applied'],
-      ['workflow-design/techniques/yaml-authoring.md', 'yaml_file'],
-    ];
-    for (const [site, output] of masked) {
-      expect(declared.some((e) => e.site === site && e.detail.includes(`'${output}'`)),
-        `${site} :: ${output} must stay in the ledger — workflow-authoring's same-named read cannot consume it`).toBe(true);
+  it('closes a dead output only from a workflow that can reach the declaring file', () => {
+    collectViolations();
+    const unreachable: string[] = [];
+    for (const [key, satisfier] of deadOutputSatisfier) {
+      const declaringRel = key.split('\u0000')[0]!;
+      if (!consumerReaches(satisfier, declaringRel)) unreachable.push(`${declaringRel} <- ${satisfier}`);
     }
+    expect(unreachable, 'every closure comes from the declaring workflow, meta, a borrow, or a dispatch').toEqual([]);
+  });
+
+  it('does not let a bare same-named read in an unrelated workflow reach across', () => {
+    // `codebase-wiki` neither binds a `prism` op nor dispatches it, and vice versa.
+    expect(consumerReaches('prism/techniques/present-result.md', 'codebase-wiki/techniques/query.md')).toBe(false);
+    expect(consumerReaches('codebase-wiki/techniques/query.md', 'prism/techniques/present-result.md')).toBe(false);
   });
 });

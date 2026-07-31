@@ -2,46 +2,47 @@
   "note": "One-time triage of the binding-fidelity findings the retired baseline had suppressed (issue #327 R3). Every finding carries a verdict and a named rationale, so \"harmless\" and \"live bug\" are no longer the same silence. harmless = correct by design, suppressed. fix-later = real debt, suppressed but counted. live-bug = REPORTED, so the guard stays red until it is fixed. A finding absent from this file is untriaged and reported; an entry that matches nothing is stale and reported. There is no regenerate flag — an entry is a human judgement, which is exactly what the baseline never required. The triage also found and FIXED three live defects, so they appear here as history rather than as entries: work-package auto-created GitHub/Jira issues in a headless review run (two review-reachable checkpoints with a create default); substrate-node-security-audit required user_request without declaring it; and the stealth push path computed push_remote_verified and commits_signed without gating on either.",
   "corpusSha": "6bc46faf346b9ac18ac9922a96ad7feff6201d4c",
   "rationales": {
-    "shared-op-return-contract": "A shared meta operation declares what it returns. Library ops are bound ad hoc by any workflow, so having no consumer inside the corpus is the expected state of a library, not a broken seam; the caller that binds the op consumes the value in its own context.",
+    "shared-op-return-contract": "A shared library operation declares what it returns — one under meta/, or one a workflow publishes for reuse in its own README and workflow description. Library ops are bound ad hoc by any workflow, so having no consumer inside the corpus is the expected state of a library, not a broken seam; the caller that binds the op consumes the value in its own context. This is the first do-not-flag carve-out of `output-without-destination`.",
     "shared-op-caller-argument": "A shared meta operation input that the binding step supplies as a deviation when it needs a non-default value. No workflow-level producer is expected: callers that need it bind it, and callers that do not take the op default path.",
     "pattern-library-seed": "A borrowable pattern activity binds an op whose input the BORROWING workflow seeds — the contract documented in meta/activities/patterns/README.md. Producers resolve per-workflow, so the library home can never show one.",
     "artifact-template-placeholder": "The brace names a field of a rendered artifact or commit-trailer template, not a value read from the variable bag.",
     "documentation-notation": "The brace is metasyntax or an illustrative example inside a spec sentence, not a read.",
     "external-tool-syntax": "The brace belongs to an external tool's own syntax (a jq object constructor), not to the designator namespace.",
     "undeclared-seed": "No operation anywhere in the corpus declares this value as an output and no workflow variable holds it, so the executing agent improvises it at the point of use. Runs work today because the agent has the context; the value is simply not state. This is the seam that becomes prompt-stuffing (#324 A1), so it is debt to close — declare and seed it — not a false positive.",
-    "terminal-product-unconsumed": "A declared output with no destination: nothing binds it, no gate reads it, and it carries no #### artifact block, so the value exists only in the producing worker's report. Either bind it to the step that needs it or declare the artifact that carries it.",
+    "terminal-product-unconsumed": "A declared output with no destination: nothing binds it, no gate reads it, and it carries no #### artifact block, so the value exists only in the producing worker's report. The design-time home for this smell is `output-without-destination` in workflow-design/resources/anti-patterns.md, which also names the four dispositions — declare the artifact, fold the value into a sibling output as a #### component, bind it at the step that needs it, or surface it from the binding activity. Being the last step of a workflow is not itself a licence: the delivery is, and a terminal activity that surfaces {id} closes the finding honestly.",
+    "container-contract-shape": "A workflow-root or group TECHNIQUE.md output naming the shape the whole group contributes to, not a value one step produces and another remaps. No single bind site can consume it — the descendants each fill part of it — so having no consumer is what the contract looks like when it is correct. The second do-not-flag carve-out of `output-without-destination`.",
     "verdict-component-of-composite": "A component verdict the operation folds into its own overall verdict, which the gates and transitions consume. The component stays declared because the artifact reports it; the composite is what routing reads.",
     "sub-agent-brief-seed": "Every bind site of the op sits in a Sub-Agent activity, dispatched by an orchestrator that composes its brief. The input arrives in that brief, so no workflow variable or sibling step produces it.",
     "test-fixture-pins-the-defect": "A test pins this finding as its fixture for the UNRESOLVED provenance annotation. The wiring fix exists (rename the consumer to the declared variable holding the same value) but lands only together with a change to that fixture."
   },
   "entries": [
     {
-      "check": "dead-output",
-      "site": "codebase-wiki/techniques/collect-scope.md",
-      "detail": "output 'ingest_scope' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
+      "check": "read-resolution",
+      "site": "prism-update/workflow.yaml:15",
+      "detail": "{NN} has no producer (declared id / $-local / workflow var / set-target)",
+      "verdict": "harmless",
+      "rationale": "documentation-notation"
+    },
+    {
+      "check": "read-resolution",
+      "site": "substrate-node-security-audit/workflow.yaml:67",
+      "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)",
+      "verdict": "harmless",
+      "rationale": "artifact-template-placeholder"
     },
     {
       "check": "dead-output",
       "site": "codebase-wiki/techniques/cross-link.md",
       "detail": "output 'linked_pages' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "codebase-wiki/techniques/lint.md",
-      "detail": "output 'lint_findings' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
       "site": "codebase-wiki/techniques/query.md",
       "detail": "output 'wiki_answer' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
     },
     {
       "check": "dead-output",
@@ -269,290 +270,10 @@
     },
     {
       "check": "dead-output",
-      "site": "ponytail/techniques/report-gain.md",
-      "detail": "output 'gain_scoreboard' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "prism-audit/techniques/compose-audit-prompt/compose-prompt.md",
-      "detail": "output 'audit_prompt_path' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "prism-evaluate/techniques/compose-evaluation-report/compile-and-present.md",
-      "detail": "output 'evaluation_metrics' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "prism-evaluate/techniques/resolve-findings/present-and-collect-per-finding.md",
-      "detail": "output 'finding_decision' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "prism-update/techniques/submit-update.md",
-      "detail": "output 'pull_request_url' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "prism/techniques/emit-run-manifest.md",
-      "detail": "output 'run_status' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "prism/techniques/subsystem-analysis/calibrate.md",
-      "detail": "output 'subsystem_assignments' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "remediate-vuln/techniques/security-setup/present-security-overview.md",
-      "detail": "output 'security_overview' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
       "site": "requirements-refinement/techniques/validate-specification.md",
       "detail": "output 'source_coverage_complete' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "verdict-component-of-composite"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/apply-review-fixes.md",
-      "detail": "output 'applied_fixes' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/codebase-comprehension/survey.md",
-      "detail": "output 'architecture_overview' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/codebase-comprehension/survey.md",
-      "detail": "output 'design_rationale' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/codebase-comprehension/survey.md",
-      "detail": "output 'domain_glossary' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/codebase-comprehension/survey.md",
-      "detail": "output 'key_abstractions' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/conduct-retrospective/select-next.md",
-      "detail": "output 'next_work_package_context' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/create-issue.md",
-      "detail": "output 'created_issue' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/finalize-documentation/ensure-docs.md",
-      "detail": "output 'documented_apis' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/finalize-documentation/finalize-test-plan.md",
-      "detail": "output 'finalized_test_plan' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/finalize-documentation/update-adr.md",
-      "detail": "output 'finalized_adr' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/manage-git/artifact-commits.md",
-      "detail": "output 'artifact_commit' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/manage-git/instruct-merge-strategy.md",
-      "detail": "output 'presented_merge_guidance' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/manage-git/squash-merge.md",
-      "detail": "output 'squash_merge_commit' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/manage-git/sync-branch.md",
-      "detail": "output 'synced_branch' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/manage-git/update-repo-submodules.md",
-      "detail": "output 'refreshed_submodules' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/plan-prepare/create-todos.md",
-      "detail": "output 'todo_tasks' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/requirements-elicitation/ask-question.md",
-      "detail": "output 'elicitation_log' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/requirements-elicitation/elicit.md",
-      "detail": "output 'elicitation_log' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/review-baseline-state.md",
-      "detail": "output 'base_pr_diff' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/review-baseline-state.md",
-      "detail": "output 'base_sha' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/review-baseline-state.md",
-      "detail": "output 'expected_changes' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/review-diff.md",
-      "detail": "output 'manual_diff_review_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/review-mode-detection.md",
-      "detail": "output 'review_ticket_ref' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/stakeholder-overview.md",
-      "detail": "output 'stakeholder_overview' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/strategic-review/TECHNIQUE.md",
-      "detail": "output 'architecture_summary_doc' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/strategic-review/apply-cleanup.md",
-      "detail": "output 'cleanup_commit' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/strategic-review/changes-folder.md",
-      "detail": "output 'changes_fragment' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/update-pr/mark-ready.md",
-      "detail": "output 'updated_pr' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/validate-build/analyze-failure.md",
-      "detail": "output 'root_cause' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/validate-build/apply-fix.md",
-      "detail": "output 'fix_applied' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-design/techniques/review-draft-yaml.md",
-      "detail": "output 'draft_attestation' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-design/techniques/scope-audit.md",
-      "detail": "output 'scope_drift_findings' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
     },
     {
       "check": "orphan-input",
@@ -710,90 +431,6 @@
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: assess-ticket-completeness",
-      "detail": "own input 'ticket_details' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: create-issue",
-      "detail": "own input 'target_submodule' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: create-test-plan",
-      "detail": "own input 'plan_tasks' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: dco-provenance::append-task-row",
-      "detail": "own input 'task_description' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: dco-provenance::append-task-row",
-      "detail": "own input 'task_id' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: dco-provenance::record-attestation",
-      "detail": "own input 'certifier_email' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: dco-provenance::record-attestation",
-      "detail": "own input 'certifier_name' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: dco-provenance::record-attestation",
-      "detail": "own input 'legal_review_note' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: finalize-documentation::finalize-test-plan",
-      "detail": "own input 'test_plan' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: findings-classification",
-      "detail": "own input 'findings_to_classify' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: implementation-analysis::analyze",
-      "detail": "own input 'target_submodule' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: manage-git::sync-branch",
-      "detail": "own input 'default_branch' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
       "site": "work-package :: meta::atlassian-operations::transition-jira-issue",
       "detail": "own input 'status_transition' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
@@ -843,20 +480,6 @@
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: plan-prepare::plan",
-      "detail": "own input 'design_philosophy' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: review-summary",
-      "detail": "own input 'review_mode_resource' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
       "site": "workflow-design :: meta::version-control::commit-regular-files",
       "detail": "own input 'branch' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
@@ -875,20 +498,6 @@
       "detail": "own input 'paths' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
-    },
-    {
-      "check": "orphan-input",
-      "site": "workflow-design :: review-draft-yaml",
-      "detail": "own input 'drafted_files' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "workflow-design :: yaml-authoring",
-      "detail": "own input 'schema_type' has no producer in workflow 'workflow-design' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
     },
     {
       "check": "read-resolution",
@@ -947,186 +556,11 @@
       "rationale": "artifact-template-placeholder"
     },
     {
-      "check": "orphan-input",
-      "site": "work-package :: design-philosophy::classify",
-      "detail": "own input 'issue_details' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "test-fixture-pins-the-defect"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: design-philosophy::define",
-      "detail": "own input 'issue_details' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "fix-later",
-      "rationale": "test-fixture-pins-the-defect"
-    },
-    {
-      "check": "read-resolution",
-      "site": "work-package/activities/01-start-work-package.yaml[verify-jira-issue]",
-      "detail": "gate expression reads 'jira_cloud_id', which has no producer (declared id / workflow var / set-target)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "read-resolution",
-      "site": "work-package/activities/09-lean-coding-audit.yaml[validate-safety-floor]",
-      "detail": "gate expression reads 'safety_floor', which has no producer (declared id / workflow var / set-target)",
-      "verdict": "fix-later",
-      "rationale": "undeclared-seed"
-    },
-    {
-      "check": "dead-output",
-      "site": "cicd-pipeline-security-audit/techniques/execute-sub-agent.md",
-      "detail": "output 'sub_agent_output' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "midnight-system-review/techniques/verdict-and-report/render-review.md",
-      "detail": "output 'review_summary' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "prism-audit/techniques/execute-analysis/compose-trigger-context.md",
-      "detail": "output 'target' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "prism-audit/techniques/execute-analysis/compose-trigger-context.md",
-      "detail": "output 'target_description' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "prism-audit/techniques/execute-analysis/compose-trigger-context.md",
-      "detail": "output 'analysis_focus' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "prism-audit/techniques/scope-definition/summarize-scope.md",
-      "detail": "output 'scope_summary' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "prism-evaluate/techniques/plan-evaluation/summarize-scope.md",
-      "detail": "output 'scope_summary' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "prism-update/techniques/verify-prism-consistency.md",
-      "detail": "output 'verification_report' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "work-package/techniques/repo-root-resolution.md",
-      "detail": "output 'component_path' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-authoring/techniques/workflow-definition/compose-publication.md",
-      "detail": "output 'paths' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-authoring/techniques/workflow-definition/compose-publication.md",
-      "detail": "output 'commit_message' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-authoring/techniques/workflow-definition/compose-publication.md",
-      "detail": "output 'title' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-authoring/techniques/workflow-definition/compose-publication.md",
-      "detail": "output 'body' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-authoring/techniques/workflow-definition/derive-workflows-target-path.md",
-      "detail": "output 'host_repo_path' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-authoring/techniques/workflow-definition/intake-classification.md",
-      "detail": "output 'headless_mode' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
       "check": "dead-output",
       "site": "workflow-design/techniques/TECHNIQUE.md",
       "detail": "output 'workflow_files' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-design/techniques/apply-audit-fixes.md",
-      "detail": "output 'fixes_applied' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-design/techniques/publish-workflow-pr.md",
-      "detail": "output 'title' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-design/techniques/publish-workflow-pr.md",
-      "detail": "output 'body' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-design/techniques/reconcile-design-assumptions.md",
-      "detail": "output 'open_assumptions' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-design/techniques/verify-artifact-conforms.md",
-      "detail": "output 'artifact_conformance' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
-    },
-    {
-      "check": "dead-output",
-      "site": "workflow-design/techniques/yaml-authoring.md",
-      "detail": "output 'yaml_file' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
-      "verdict": "fix-later",
-      "rationale": "terminal-product-unconsumed"
+      "verdict": "harmless",
+      "rationale": "container-contract-shape"
     }
   ]
 }
