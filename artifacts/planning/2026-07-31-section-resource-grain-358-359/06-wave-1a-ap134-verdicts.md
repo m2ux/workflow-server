@@ -57,7 +57,7 @@ Per site: **section** = citation retargeted to `#anchor`(s); **leave-whole** = b
 |-------|------|--------|
 | 1a section retargets | listed above | done this run |
 | 1a leave-whole prism + small resources | 16–37, 5/6/8/9/40 | recorded |
-| 1b | 46–63 | remaining |
+| 1b | 46–63 | done — see [06-wave-1b-ap134-verdicts.md](06-wave-1b-ap134-verdicts.md) |
 | PR2 | 64–68 + framing | remaining |
 
 Commits land on `workflow/workflow-design-section-resource-grain-358-359` under the worktree only.

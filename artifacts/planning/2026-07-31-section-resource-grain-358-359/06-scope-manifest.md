@@ -176,10 +176,12 @@ Host (optional, outside this worktree): `scripts/check-*.ts` bare+anchor guard.
 - Bare+anchor same-resource sites remaining: **1** (`requirements-refinement/validate-specification` → `validation-rubric`) — already in the #358 deliberate exclusion set; guard still valuable for regression.
 - No PR1 site identified that cannot be correctly cited until its resource is stratified under #359.
 
-## Wave 1a drafting status (session `TNUCFN`)
+## Wave drafting status (session `TNUCFN`)
 
-- **Verdict log:** [06-wave-1a-ap134-verdicts.md](06-wave-1a-ap134-verdicts.md) — section retargets + leave-whole rationales for rows 1–45.
-- **Definition commit:** `cc5f4a29` — 19 technique files section-grain retargeted; prism lens full-body cites left bare with recorded verdicts.
-- **Remaining for PR1:** wave **1b** rows 46–63 (work-package remainder, workflow-design, workflow-authoring).
+- **Verdict log 1a:** [06-wave-1a-ap134-verdicts.md](06-wave-1a-ap134-verdicts.md) — rows 1–45.
+- **Verdict log 1b:** [06-wave-1b-ap134-verdicts.md](06-wave-1b-ap134-verdicts.md) — rows 46–63.
+- **Definition commit 1a:** `cc5f4a29` — 19 technique files section-grain retargeted; prism lens full-body cites left bare.
+- **Definition commit 1b:** `8c12d0f5` — 6 technique files section-grain retargeted; leave-whole for full-body / single-section / two-section register guides.
+- **PR1 citation tail (rows 1–63):** complete after 1b lands.
 - **Not started:** PR2 rows 64–68 + framing classify.
-- `workflow-design` root README: no topology/activity-table change this wave — citation-only corpus edits.
+- `workflow-design` root README: no topology/activity-table change — citation-only corpus edits (author-workflow-readme no-op).
