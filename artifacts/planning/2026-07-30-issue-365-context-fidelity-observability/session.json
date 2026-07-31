@@ -494,6 +494,19 @@
             "optionId": "confirmed",
             "respondedAt": "2026-07-31T08:52:30.000Z"
           },
+          "post-impl-review-file-index-table": {
+            "optionId": "rationale-confirmed",
+            "respondedAt": "2026-07-31T09:37:33.000Z"
+          },
+          "post-impl-review-local-validation-permission": {
+            "effects": {
+              "variablesSet": {
+                "run_local_validation": true
+              }
+            },
+            "optionId": "run-locally",
+            "respondedAt": "2026-07-31T09:45:52.000Z"
+          },
           "requirements-elicitation-elicitation-complete": {
             "effects": {
               "variablesSet": {
@@ -554,11 +567,12 @@
           "plan-prepare",
           "assumptions-review",
           "implement",
-          "lean-coding-audit"
+          "lean-coding-audit",
+          "post-impl-review"
         ],
         "condition": "",
-        "currentActivity": "post-impl-review",
-        "currentTechnique": "ponytail/apply-ladder",
+        "currentActivity": "validate",
+        "currentTechnique": "summarize-architecture",
         "deliveredContent": {
           "orchestrator": {
             "resource:meta/planning-readme#row-ownership-map": "e883775cc8b06d33",
@@ -690,6 +704,32 @@
             "technique:review-assumptions::record": "486a01a83c7e4cf0",
             "technique:stakeholder-overview": "158fd2624938e7fb",
             "technique:update-pr::render": "dbcd73eb5501d3d1"
+          },
+          "w-post-impl-review-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:architecture-summary": "8dfddad37065769c",
+            "resource:manual-diff-review#file-index-generation": "542a3f3ec1cb8dd8",
+            "resource:manual-diff-review#manual-diff-review-section-template": "1060567f69bc3a27",
+            "resource:manual-diff-review#permanent-blob-citations": "8002f3d6d399bc4c",
+            "resource:prism/l12": "5aef4cd505a3bf5a",
+            "resource:rust-substrate-code-review#report-template": "d4ff5605d9c99476",
+            "resource:rust-substrate-code-review#review-criteria": "1c3f6bde55559b8d",
+            "resource:tdd-concepts-rust": "492e2b16a4dc6a7d",
+            "resource:test-suite-review": "3e3bc5d8df98012a",
+            "resource:test-suite-review#anti-patterns": "3b36daec304fe23c",
+            "resource:test-suite-review#report-template": "c32907fbfdda8d57",
+            "resource:test-suite-review#review-criteria": "108fdc171981d496",
+            "technique:findings-classification": "f38ce1ed47f9fbd1",
+            "technique:prism/structural-analysis": "bdf0c9ce8e9c6ace",
+            "technique:review-code": "675efd4dadde5e84",
+            "technique:review-diff": "3331aeff98c87002",
+            "technique:review-test-suite": "df0f5419d33693b7",
+            "technique:summarize-architecture": "18a4ad3fa8f9eb97"
           },
           "w-requirements-elicitation-1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -4514,17 +4554,403 @@
             "activity": "post-impl-review",
             "timestamp": "2026-07-31T09:31:47.147Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 60727,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T09:32:28.360Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 8893,
+              "delivery": "full",
+              "stepId": "manual-diff-review",
+              "techniqueId": "review-diff"
+            },
+            "timestamp": "2026-07-31T09:32:28.360Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 6444,
+              "delivery": "full",
+              "stepId": "code-review",
+              "techniqueId": "review-code"
+            },
+            "timestamp": "2026-07-31T09:32:28.360Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 5827,
+              "delivery": "full",
+              "stepId": "test-suite-review",
+              "techniqueId": "review-test-suite"
+            },
+            "timestamp": "2026-07-31T09:32:28.360Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 6452,
+              "delivery": "full",
+              "stepId": "classify-and-route-findings",
+              "techniqueId": "findings-classification"
+            },
+            "timestamp": "2026-07-31T09:32:28.360Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 629,
+              "delivery": "full",
+              "resourceId": "manual-diff-review#permanent-blob-citations"
+            },
+            "timestamp": "2026-07-31T09:32:43.278Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 1403,
+              "delivery": "full",
+              "resourceId": "manual-diff-review#file-index-generation"
+            },
+            "timestamp": "2026-07-31T09:32:44.453Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 764,
+              "delivery": "full",
+              "resourceId": "manual-diff-review#manual-diff-review-section-template"
+            },
+            "timestamp": "2026-07-31T09:32:44.574Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "checkpoint": "file-index-table",
+            "timestamp": "2026-07-31T09:35:04.829Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "post-impl-review",
+            "checkpoint": "file-index-table",
+            "data": {
+              "optionId": "rationale-confirmed"
+            },
+            "timestamp": "2026-07-31T09:37:33.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 40674,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-07-31T09:37:41.943Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 8893,
+              "delivery": "unchanged",
+              "stepId": "manual-diff-review",
+              "techniqueId": "review-diff"
+            },
+            "timestamp": "2026-07-31T09:37:41.943Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 6444,
+              "delivery": "unchanged",
+              "stepId": "code-review",
+              "techniqueId": "review-code"
+            },
+            "timestamp": "2026-07-31T09:37:41.943Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 5827,
+              "delivery": "unchanged",
+              "stepId": "test-suite-review",
+              "techniqueId": "review-test-suite"
+            },
+            "timestamp": "2026-07-31T09:37:41.943Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 6452,
+              "delivery": "unchanged",
+              "stepId": "classify-and-route-findings",
+              "techniqueId": "findings-classification"
+            },
+            "timestamp": "2026-07-31T09:37:41.943Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "bundled": true,
+              "chars": 13533,
+              "delivery": "full",
+              "resourceId": "tdd-concepts-rust"
+            },
+            "timestamp": "2026-07-31T09:37:41.943Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "bundled": true,
+              "chars": 511,
+              "delivery": "unchanged",
+              "resourceId": "manual-diff-review#permanent-blob-citations"
+            },
+            "timestamp": "2026-07-31T09:37:41.943Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "bundled": true,
+              "chars": 1288,
+              "delivery": "unchanged",
+              "resourceId": "manual-diff-review#file-index-generation"
+            },
+            "timestamp": "2026-07-31T09:37:41.943Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "bundled": true,
+              "chars": 635,
+              "delivery": "unchanged",
+              "resourceId": "manual-diff-review#manual-diff-review-section-template"
+            },
+            "timestamp": "2026-07-31T09:37:41.943Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "bundled": true,
+              "chars": 1236,
+              "delivery": "full",
+              "resourceId": "rust-substrate-code-review#report-template"
+            },
+            "timestamp": "2026-07-31T09:37:41.943Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "bundled": true,
+              "chars": 4725,
+              "delivery": "full",
+              "resourceId": "rust-substrate-code-review#review-criteria"
+            },
+            "timestamp": "2026-07-31T09:37:41.943Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "bundled": true,
+              "chars": 1892,
+              "delivery": "full",
+              "resourceId": "test-suite-review#review-criteria"
+            },
+            "timestamp": "2026-07-31T09:37:41.943Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "bundled": true,
+              "chars": 1802,
+              "delivery": "full",
+              "resourceId": "test-suite-review#anti-patterns"
+            },
+            "timestamp": "2026-07-31T09:37:41.943Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "bundled": true,
+              "chars": 3425,
+              "delivery": "full",
+              "resourceId": "test-suite-review#report-template"
+            },
+            "timestamp": "2026-07-31T09:37:41.943Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 4850,
+              "delivery": "full",
+              "resourceId": "rust-substrate-code-review#review-criteria"
+            },
+            "timestamp": "2026-07-31T09:37:49.632Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 1361,
+              "delivery": "full",
+              "resourceId": "rust-substrate-code-review#report-template"
+            },
+            "timestamp": "2026-07-31T09:37:50.181Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 7402,
+              "delivery": "full",
+              "resourceId": "test-suite-review"
+            },
+            "timestamp": "2026-07-31T09:37:50.971Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 8929,
+              "delivery": "full",
+              "stepId": "structural-analysis-inline",
+              "techniqueId": "prism/structural-analysis"
+            },
+            "timestamp": "2026-07-31T09:37:51.616Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 5112,
+              "delivery": "full",
+              "stepId": "architecture-summary",
+              "techniqueId": "summarize-architecture"
+            },
+            "timestamp": "2026-07-31T09:37:51.951Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 6712,
+              "delivery": "full",
+              "resourceId": "architecture-summary"
+            },
+            "timestamp": "2026-07-31T09:38:15.736Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "w-post-impl-review-1",
+              "chars": 2215,
+              "delivery": "full",
+              "resourceId": "prism/l12"
+            },
+            "timestamp": "2026-07-31T09:40:40.012Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "checkpoint": "local-validation-permission",
+            "timestamp": "2026-07-31T09:42:56.151Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "post-impl-review",
+            "checkpoint": "local-validation-permission",
+            "data": {
+              "optionId": "run-locally"
+            },
+            "timestamp": "2026-07-31T09:45:52.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "name": "run_local_validation",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-31T09:45:52.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-impl-review",
+            "timestamp": "2026-07-31T11:08:07.063Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate",
+            "timestamp": "2026-07-31T11:08:07.063Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 124,
+        "seq": 143,
         "sessionIndex": "7Q54WJ",
         "skippedActivities": [],
         "startedAt": "2026-07-30T19:48:00.082Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785490307,
+        "ts": 1785496087,
         "variables": {
           "architecture_overview": "See the comprehension artifact's Architecture Overview section.",
           "artifact_name": "",
@@ -4634,7 +5060,7 @@
           "review_requires_changes": false,
           "review_type": "",
           "reviewed_code_base_url": "",
-          "run_local_validation": false,
+          "run_local_validation": true,
           "skip_architecture_summary": false,
           "skip_assumption_review": false,
           "skip_optional_activities": false,

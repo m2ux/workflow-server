@@ -42,12 +42,12 @@ What changes for people who rely on the system is trust and legibility, not the 
 | 16 | [Code review](09-code-review.md) | Consolidated review findings home | 15-30m | ✅ |
 | 17 | [Debt ledger](09-debt-ledger.md) | Harvested ponytail debt markers | 10-20m | ✅ |
 | 18 | [Lean change](09-lean-change.md) | Applied lean simplifications record | 10-20m | ✅ |
-| 19 | Post-implementation review | Quality review before validation | 30-60m | 🟡 |
-| 20 | [Change block index](10-change-block-index.md) | Indexed diff hunks for review | 5-10m | ⬚ |
-| 21 | [Test suite review](10-test-suite-review.md) | Test quality and coverage | 10-20m | ⬚ |
-| 22 | [Structural analysis](10-structural-analysis.md) | Prism L12 when written standalone | 15-30m | ⬚ |
-| 23 | [Architecture summary](10-architecture-summary.md) | Stakeholder architecture overview | 15-30m | ⬚ |
-| 24 | Validation | Build, test, lint verification | 15-30m | ⬚ |
+| 19 | Post-implementation review | Quality review before validation | 30-60m | ✅ |
+| 20 | [Change block index](10-change-block-index.md) | Indexed diff hunks for review | 5-10m | ✅ |
+| 21 | [Test suite review](10-test-suite-review.md) | Test quality and coverage | 10-20m | ✅ |
+| 22 | [Structural analysis](10-structural-analysis.md) | Prism L12 when written standalone | 15-30m | ✅ |
+| 23 | [Architecture summary](10-architecture-summary.md) | Stakeholder architecture overview | 15-30m | ✅ |
+| 24 | Validation | Build, test, lint verification | 15-30m | 🟡 |
 | 25 | [Strategic review](12-strategic-review-1.md) | Scope/minimality series (`strategic-review-{n}`) | 15-30m | ⬚ |
 | 26 | Submit for review | PR review lifecycle / stealth push | 30-60m | ⬚ |
 | 27 | [Close-out](14-COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | ⬚ |
