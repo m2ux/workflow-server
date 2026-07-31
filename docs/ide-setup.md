@@ -29,13 +29,13 @@ Then ask the agent to start a workflow. Prefer this over hand-rolling MCP config
 | `*.code-workspace` | Multi-root folders with absolute `$HOME/…` paths |
 | `.cursor/mcp.json`, `.mcp.json` | Required MCP servers (home-path tokens expanded) |
 | `.cursor/rules/`, `.claude/rules/` | Bootstrap / companion rules |
-| `AGENTS.md` → `CLAUDE.md` | Target checkout + `owner/repo` placeholder |
+| `AGENTS.md` → `CLAUDE.md` | Target checkout + `owner/repo` placeholder — seeded when absent, then workspace-owned |
 | `scripts/claude/` | Portable hooks + `bin/sbx` (from repo [`scripts/claude/`](../scripts/claude/)) |
 | `.claude/settings.json` | Generated at deploy from [settings.template.json](../examples/cursor-workspace/.claude/settings.template.json) |
 
 `install.sh` places `deploy-cursor-workspace.sh`, `examples/cursor-workspace/`, and `scripts/claude/` under the install dir so deploy works without a full checkout.
 
-Deploy expands `__HOME__` / `__WORKSPACE__` in the template. Re-run with `--force` after template or hook changes.
+Deploy expands `__HOME__` / `__WORKSPACE__` in the template. Re-run with `--force` after template or hook changes; `AGENTS.md` and `CLAUDE.md` survive that refresh, so edits describing the target repo stay put.
 
 ## Bootstrap rule (reference)
 

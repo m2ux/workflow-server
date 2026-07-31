@@ -67,7 +67,7 @@ cursor ~/.local/share/cursor/workspaces/workflow-server/workflow-server.code-wor
 | `REPO_NAME` or `--repo=NAME` | **Required.** Checkout / workspace basename (no `owner/repo`) |
 | `--home=PATH` | Build paths under this home (default `$HOME`) |
 | `--projects-root=PATH` | Default `$HOST_PROJECTS_ROOT` or `$HOME/projects/dev` |
-| `--force` | Refresh managed files; merge `mcp.json` without dropping other servers; refresh Claude hooks/settings |
+| `--force` | Refresh managed files; merge `mcp.json` without dropping other servers; refresh Claude hooks/settings; keep an existing `AGENTS.md` / `CLAUDE.md` |
 | `--dry-run` / `--open` / no args / `--help` | Preview, launch Cursor, or print help |
 
 Flags: `deploy-cursor-workspace.sh --help` · [examples/cursor-workspace/README.md](examples/cursor-workspace/README.md) · [docs/ide-setup.md](docs/ide-setup.md).
@@ -75,7 +75,7 @@ Flags: `deploy-cursor-workspace.sh --help` · [examples/cursor-workspace/README.
 Deploy installs:
 
 - MCP (`concept-rag`, `atlassian`, `gitnexus`, `workflow-server` via `mcp-remote`)
-- Bootstrap rules and `AGENTS.md` / `CLAUDE.md` for `repo: "owner/repo"`
+- Bootstrap rules, and `AGENTS.md` / `CLAUDE.md` for `repo: "owner/repo"` when the workspace has none (a workspace that already has them keeps them)
 - Multi-root `.code-workspace` with absolute `$HOME/…` paths
 - **Claude baseline (kickoff only):** `scripts/claude/` + generated `.claude/settings.json`
 

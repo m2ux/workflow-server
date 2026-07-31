@@ -654,6 +654,13 @@
     },
     {
       "check": "orphan-input",
+      "site": "substrate-node-security-audit :: execute-sub-agent",
+      "detail": "own input 'agent_id' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
+      "verdict": "harmless",
+      "rationale": "sub-agent-brief-seed"
+    },
+    {
+      "check": "orphan-input",
       "site": "substrate-node-security-audit :: apply-checklist",
       "detail": "own input 'items' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",

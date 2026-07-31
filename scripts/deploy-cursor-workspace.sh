@@ -78,7 +78,8 @@ Options:
   --claude-scripts=DIR       Claude hooks source (default: scripts/claude next to this
                              script, or \$INSTALL/scripts/claude)
   --force                    Refresh managed files in an existing workspace dir
-                             (upserts required MCP servers; keeps any extras)
+                             (upserts required MCP servers; keeps any extras;
+                             keeps an existing AGENTS.md / CLAUDE.md)
   --dry-run                  Print actions only
   --open                     Run \`cursor <workspace-file>\` after deploy (if on PATH)
   --skip-mkdir               Do not create .worktrees / planning parents on the checkout
@@ -90,6 +91,10 @@ Required MCP servers written into mcp.json (workflows depend on these):
 Claude baseline (workspace-local only):
   copies scripts/claude/ → <workspace>/scripts/claude/
   writes .claude/settings.json from settings.template.json
+
+Workspace-owned (written when absent, kept as-is once present):
+  AGENTS.md      target-repo notes for agents
+  CLAUDE.md      symlink → AGENTS.md
 
 Path substitution (all MCP servers — command and args):
   \${HOME}  \$HOME  __USER_HOME__  /home/<name>/…  → \$HOME/…
@@ -551,6 +556,14 @@ PY
 write_file "$WORKSPACE_FILE" "$WORKSPACE_JSON"
 
 # --- AGENTS.md / CLAUDE.md ----------------------------------------------------
+# Workspace-owned: seeded on the first deploy, then left alone. The file accrues
+# repo-specific instructions an operator or agent wrote for this checkout, so a
+# generated copy is only ever a starting point. CLAUDE.md follows AGENTS.md as a
+# symlink when neither exists; a workspace that keeps them as two distinct files
+# keeps them.
+AGENTS_MD="${DEST_DIR}/AGENTS.md"
+CLAUDE_MD="${DEST_DIR}/CLAUDE.md"
+
 AGENTS_BODY=$(cat <<EOF
 # Target repository
 
@@ -590,12 +603,18 @@ Replace with your project (for example \`m2ux/${REPO_BASENAME}\`).
 EOF
 )
 
-write_file "${DEST_DIR}/AGENTS.md" "${AGENTS_BODY}"$'\n'
+if [[ -e "$AGENTS_MD" || -L "$AGENTS_MD" ]]; then
+  log "keep workspace AGENTS.md: ${AGENTS_MD}"
+else
+  write_file "$AGENTS_MD" "${AGENTS_BODY}"$'\n'
+fi
 
-if [[ "$DRY_RUN" -eq 1 ]]; then
+if [[ -e "$CLAUDE_MD" || -L "$CLAUDE_MD" ]]; then
+  log "keep workspace CLAUDE.md: ${CLAUDE_MD}"
+elif [[ "$DRY_RUN" -eq 1 ]]; then
   log "symlink CLAUDE.md → AGENTS.md"
 else
-  ln -sfn AGENTS.md "${DEST_DIR}/CLAUDE.md"
+  ln -sfn AGENTS.md "$CLAUDE_MD"
 fi
 
 # --- ensure checkout mount points --------------------------------------------
