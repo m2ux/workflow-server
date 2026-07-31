@@ -446,6 +446,12 @@ function activityFiles(dir: string): string[] {
 
 for (const wf of allWf) {
   collectWorkflowVars(wf);
+  // workflow.yaml is a reader too: its `rules` and `description` prose interpolates declared ids
+  // (`When {headless_mode} is true, a checkpoint declaring both resolves to its defaultOption`), and
+  // that is the value's one authoritative consumer. Scanning only activities left those reads
+  // invisible, so the id they name read as dead.
+  const wfYaml = join(ROOT, wf, 'workflow.yaml');
+  if (existsSync(wfYaml)) collectReads(relative(ROOT, wfYaml), readFileSync(wfYaml, 'utf-8'), 'activity');
   const adir = join(ROOT, wf, 'activities');
   if (!existsSync(adir)) continue;
   for (const path of activityFiles(adir)) {
@@ -568,6 +574,25 @@ const crossWorkflowConsumers = ((): Map<string, Set<string>> => {
 })();
 
 /**
+ * Which workflows a workflow DISPATCHES as a child: a step whose binding supplies a literal
+ * `workflow_id` naming another workflow in the corpus. The child inherits the parent's variable bag,
+ * so the parent's declared outputs are consumed inside the child — `prism-audit` composes
+ * `analysis_focus` and `target_description`, and `prism` declares both as variables and reads them in
+ * its analysis ops. That edge is a dispatch, not an op borrow, so bind-site resolution cannot see it.
+ */
+const dispatchedWorkflows = ((): Map<string, Set<string>> => {
+  const out = new Map<string, Set<string>>();
+  for (const s of steps) {
+    const child = s.inputsMap.workflow_id;
+    if (typeof child !== 'string' || !allWf.has(child) || child === s.wf) continue;
+    let into = out.get(s.wf);
+    if (!into) { into = new Set(); out.set(s.wf, into); }
+    into.add(child);
+  }
+  return out;
+})();
+
+/**
  * Whether a consumer file can close a dead-output finding on a declaring file.
  *
  * Resolution used to be by bare name across the whole corpus, so an output in workflow A read as
@@ -580,11 +605,20 @@ function consumerReaches(consumerRel: string, declaringRel: string): boolean {
   const declaringWf = declaringRel.split('/')[0]!;
   if (consumerWf === declaringWf) return true;
   if (declaringWf === META) return true;
-  return crossWorkflowConsumers.get(declaringWf)?.has(consumerWf) ?? false;
+  if (crossWorkflowConsumers.get(declaringWf)?.has(consumerWf)) return true;
+  if (dispatchedWorkflows.get(declaringWf)?.has(consumerWf)) return true;
+  // The BORROW direction. `midnight-system-review` binds `work-package::post-review-comment`, whose
+  // declared `review_summary` input is what its own `render-review` output feeds — name-match
+  // chaining across the borrow. Reach is symmetric on a bind: a borrowed op's file is a real
+  // consumer of the borrowing workflow's values, and only the home direction was covered.
+  return crossWorkflowConsumers.get(consumerWf)?.has(declaringWf) ?? false;
 }
 
 /** Dead-output findings that a consumer closed: `<declaring rel> <output id>` -> satisfying file. */
-const deadOutputSatisfier = new Map<string, string>();
+export const deadOutputSatisfier = new Map<string, string>();
+
+/** Exported for the scoping test: the reach rule every closure must satisfy (#342). */
+export { consumerReaches };
 
 /* --------------------------------- checks --------------------------------- */
 export interface Violation {

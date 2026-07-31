@@ -509,7 +509,12 @@ describe('reference-not-repeat delivery (B1)', () => {
       return step!.id!;
     }
 
-    it('a step-bound fetch annotates own inputs, noteworthy inherited ones, and warns on UNRESOLVED', async () => {
+    // The UNRESOLVED warn path is unit-covered in binding-provenance.test.ts against a synthetic
+    // fixture. It used to be asserted here against `design-philosophy::define`'s `issue_details`,
+    // which #336 closed by renaming the input to the `issue_record` its producers already declare —
+    // a corpus fixture for a defect state goes green the moment the defect is fixed, so this case
+    // now pins the RESOLVED annotation instead: a producer in an earlier activity, named.
+    it('a step-bound fetch annotates own inputs and noteworthy inherited ones', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
       await enterActivity(idx, 'design-philosophy');
@@ -531,7 +536,7 @@ describe('reference-not-repeat delivery (B1)', () => {
         expect(input.source, `expected a source on own input '${input.id}'`).toBeDefined();
       }
       const own = new Map((technique.inputs ?? []).map((i) => [i.id, i.source]));
-      expect(own.get('issue_details')).toMatch(/^UNRESOLVED/);
+      expect(own.get('issue_record')).toMatch(/output of step '.+' \(activity '.+'\)/);
       expect(own.get('problem_context')).toContain('optional input');
       // Inherited entries carry a source only where it says something the block note does not
       // (e.g. a later-positioned producer); settled ambient constants stay bare.
@@ -543,10 +548,10 @@ describe('reference-not-repeat delivery (B1)', () => {
           expect(item.source).toMatch(/produced later in the workflow|step-binding/);
         }
       }
-      // The UNRESOLVED own input surfaces as a warn-only validation entry.
+      // Every own input resolves at this seam, so the fetch validates clean with no warnings.
       const validation = (result._meta as Record<string, unknown>)['validation'] as { status: string; warnings: string[] };
-      expect(validation.status).toBe('warning');
-      expect(validation.warnings.some((w) => w.includes("'issue_details'"))).toBe(true);
+      expect(validation.status).toBe('valid');
+      expect(validation.warnings).toEqual([]);
     });
 
     it('a fetch without step context carries no provenance', async () => {
