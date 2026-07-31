@@ -9,8 +9,8 @@
   "currentActivity": "dispatch-client-workflow",
   "currentTechnique": "workflow-engine::dispatch-activity",
   "condition": "isDefault: dispatch-client-workflow",
-  "seq": 19,
-  "ts": 1785482612,
+  "seq": 20,
+  "ts": 1785486594,
   "startedAt": "2026-07-30T19:43:33.456Z",
   "completedActivities": [
     "discover-session",
@@ -498,6 +498,28 @@
             "optionId": "provide-transcript",
             "respondedAt": "2026-07-31T06:26:26.000Z"
           },
+          "research-research-assumption-decision#RE-4": {
+            "effects": {
+              "variablesSet": {
+                "assumption_resolved_inline": true
+              }
+            },
+            "optionId": "resolve-inline",
+            "respondedAt": "2026-07-31T07:58:49.000Z"
+          },
+          "research-research-assumption-interview": {
+            "effects": {
+              "variablesSet": {
+                "needs_individual_interview": true
+              }
+            },
+            "optionId": "interview-individually",
+            "respondedAt": "2026-07-31T07:56:32.000Z"
+          },
+          "research-research-convergence": {
+            "optionId": "accept-research",
+            "respondedAt": "2026-07-31T07:37:09.000Z"
+          },
           "start-work-package-pr-creation": {
             "effects": {
               "variablesSet": {
@@ -512,11 +534,12 @@
           "start-work-package",
           "design-philosophy",
           "codebase-comprehension",
-          "requirements-elicitation"
+          "requirements-elicitation",
+          "research"
         ],
         "condition": "",
-        "currentActivity": "research",
-        "currentTechnique": "analyse-challenge::run-loop",
+        "currentActivity": "implementation-analysis",
+        "currentTechnique": "scatter-gather",
         "deliveredContent": {
           "orchestrator": {
             "resource:meta/planning-readme#row-ownership-map": "e883775cc8b06d33",
@@ -588,6 +611,34 @@
             "technique:review-assumptions::collect": "d4292b811da5cc3e",
             "technique:review-assumptions::reconcile": "c12f9e9d7e597c8b",
             "technique:review-assumptions::record": "15b4cdc7fa7d023d"
+          },
+          "w-research-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
+            "bundle:scatter-gather": "972acb177d168c94",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:assumptions-review#assumptions-log-template": "10d2a53ee1b5ffd8",
+            "resource:assumptions-review#classification-vocabulary": "bacd5372dd12e61b",
+            "resource:assumptions-review#probe-vocabulary": "461bffb4ce7d3ac6",
+            "resource:deferred-items": "4bb13759c0e75532",
+            "resource:knowledge-base-research": "637b849a8da63998",
+            "resource:knowledge-base-research#planning-artifact": "2afada6ddbf86aff",
+            "resource:research-reconciliation#inventory-shape": "072759cb7da18bdf",
+            "resource:web-research#planning-artifact": "41605e4c9819862c",
+            "technique:analyse-challenge::run-loop": "1ca166b5d262fc90",
+            "technique:inherited_inputs:99a12ad9de0c43ae": "99a12ad9de0c43ae",
+            "technique:research::document": "99ac9dda5628481c",
+            "technique:research::research": "f8ece58f3842d46f",
+            "technique:research::synthesize": "176e52909f8f197c",
+            "technique:research::triage": "6d9400167f67d2aa",
+            "technique:review-assumptions::collect": "862f2eb20b8d6391",
+            "technique:review-assumptions::interview": "8116c7428f18bcc2",
+            "technique:review-assumptions::record": "d36715f5da33c7dd",
+            "technique:rules:1312287948d72037": "1312287948d72037",
+            "technique:scatter-gather": "17c19c51954fcaea"
           },
           "w-start-work-package-1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -2316,17 +2367,1071 @@
             "activity": "research",
             "timestamp": "2026-07-31T07:29:32.498Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 84416,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T07:30:14.361Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 5895,
+              "delivery": "full",
+              "stepId": "research-knowledge-base",
+              "techniqueId": "research::research"
+            },
+            "timestamp": "2026-07-31T07:30:14.361Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 3708,
+              "delivery": "full",
+              "stepId": "synthesize",
+              "techniqueId": "research::synthesize"
+            },
+            "timestamp": "2026-07-31T07:30:14.361Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 7584,
+              "delivery": "full",
+              "stepId": "triage-research-candidates",
+              "techniqueId": "research::triage"
+            },
+            "timestamp": "2026-07-31T07:30:14.361Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 5125,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-31T07:30:14.361Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 3548,
+              "delivery": "full",
+              "stepId": "document",
+              "techniqueId": "research::document"
+            },
+            "timestamp": "2026-07-31T07:30:14.361Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 4103,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-31T07:30:14.361Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 7585,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-31T07:30:14.361Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 6317,
+              "delivery": "full",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::interview"
+            },
+            "timestamp": "2026-07-31T07:30:14.361Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 5895,
+              "delivery": "full",
+              "stepId": "research-knowledge-base",
+              "techniqueId": "research::research"
+            },
+            "timestamp": "2026-07-31T07:30:26.454Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 2757,
+              "delivery": "full",
+              "resourceId": "knowledge-base-research"
+            },
+            "timestamp": "2026-07-31T07:30:32.707Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 1297,
+              "delivery": "full",
+              "resourceId": "web-research#planning-artifact"
+            },
+            "timestamp": "2026-07-31T07:30:33.429Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 1711,
+              "delivery": "full",
+              "resourceId": "knowledge-base-research#planning-artifact"
+            },
+            "timestamp": "2026-07-31T07:30:33.679Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 2037,
+              "delivery": "full",
+              "resourceId": "research-reconciliation#inventory-shape"
+            },
+            "timestamp": "2026-07-31T07:33:49.696Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 2570,
+              "delivery": "full",
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-07-31T07:33:50.297Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-convergence",
+            "timestamp": "2026-07-31T07:35:41.740Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-convergence",
+            "data": {
+              "optionId": "accept-research"
+            },
+            "timestamp": "2026-07-31T07:37:09.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 18246,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 5895,
+              "delivery": "unchanged",
+              "stepId": "research-knowledge-base",
+              "techniqueId": "research::research"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 3708,
+              "delivery": "unchanged",
+              "stepId": "synthesize",
+              "techniqueId": "research::synthesize"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 7584,
+              "delivery": "unchanged",
+              "stepId": "triage-research-candidates",
+              "techniqueId": "research::triage"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 5125,
+              "delivery": "unchanged",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 3548,
+              "delivery": "unchanged",
+              "stepId": "document",
+              "techniqueId": "research::document"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 4103,
+              "delivery": "unchanged",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 7585,
+              "delivery": "unchanged",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 6317,
+              "delivery": "unchanged",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::interview"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 2654,
+              "delivery": "unchanged",
+              "resourceId": "knowledge-base-research"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1793,
+              "delivery": "full",
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1198,
+              "delivery": "unchanged",
+              "resourceId": "web-research#planning-artifact"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1918,
+              "delivery": "unchanged",
+              "resourceId": "research-reconciliation#inventory-shape"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 2452,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1038,
+              "delivery": "full",
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1159,
+              "delivery": "full",
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-07-31T07:37:15.915Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 7585,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-31T07:37:42.579Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-assumption-interview",
+            "timestamp": "2026-07-31T07:39:34.055Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-assumption-interview",
+            "data": {
+              "optionId": "interview-individually"
+            },
+            "timestamp": "2026-07-31T07:56:32.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "needs_individual_interview",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-31T07:56:32.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 14092,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 5895,
+              "delivery": "unchanged",
+              "stepId": "research-knowledge-base",
+              "techniqueId": "research::research"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 3708,
+              "delivery": "unchanged",
+              "stepId": "synthesize",
+              "techniqueId": "research::synthesize"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 7584,
+              "delivery": "unchanged",
+              "stepId": "triage-research-candidates",
+              "techniqueId": "research::triage"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 5125,
+              "delivery": "unchanged",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 3548,
+              "delivery": "unchanged",
+              "stepId": "document",
+              "techniqueId": "research::document"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 4103,
+              "delivery": "unchanged",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 7585,
+              "delivery": "unchanged",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 6317,
+              "delivery": "unchanged",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::interview"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 2654,
+              "delivery": "unchanged",
+              "resourceId": "knowledge-base-research"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1793,
+              "delivery": "unchanged",
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1198,
+              "delivery": "unchanged",
+              "resourceId": "web-research#planning-artifact"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1918,
+              "delivery": "unchanged",
+              "resourceId": "research-reconciliation#inventory-shape"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 2452,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1038,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1159,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-07-31T07:56:38.633Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-assumption-decision#RE-4",
+            "timestamp": "2026-07-31T07:56:53.058Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-assumption-decision#RE-4",
+            "data": {
+              "optionId": "resolve-inline"
+            },
+            "timestamp": "2026-07-31T07:58:49.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "assumption_resolved_inline",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-31T07:58:49.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 14092,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-07-31T07:58:54.674Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 5895,
+              "delivery": "unchanged",
+              "stepId": "research-knowledge-base",
+              "techniqueId": "research::research"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 3708,
+              "delivery": "unchanged",
+              "stepId": "synthesize",
+              "techniqueId": "research::synthesize"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 7584,
+              "delivery": "unchanged",
+              "stepId": "triage-research-candidates",
+              "techniqueId": "research::triage"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 5125,
+              "delivery": "unchanged",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 3548,
+              "delivery": "unchanged",
+              "stepId": "document",
+              "techniqueId": "research::document"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 4103,
+              "delivery": "unchanged",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 7585,
+              "delivery": "unchanged",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 6317,
+              "delivery": "unchanged",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::interview"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 2654,
+              "delivery": "unchanged",
+              "resourceId": "knowledge-base-research"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1793,
+              "delivery": "unchanged",
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1198,
+              "delivery": "unchanged",
+              "resourceId": "web-research#planning-artifact"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1918,
+              "delivery": "unchanged",
+              "resourceId": "research-reconciliation#inventory-shape"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 2452,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1038,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1159,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-07-31T07:58:54.675Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 4355,
+              "delivery": "full",
+              "techniqueId": "scatter-gather"
+            },
+            "timestamp": "2026-07-31T08:01:44.189Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 4105,
+              "delivery": "full",
+              "stepId": "record-response",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-31T08:02:00.476Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 18320,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 5895,
+              "delivery": "unchanged",
+              "stepId": "research-knowledge-base",
+              "techniqueId": "research::research"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 3708,
+              "delivery": "unchanged",
+              "stepId": "synthesize",
+              "techniqueId": "research::synthesize"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 7584,
+              "delivery": "unchanged",
+              "stepId": "triage-research-candidates",
+              "techniqueId": "research::triage"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 5125,
+              "delivery": "unchanged",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 3548,
+              "delivery": "unchanged",
+              "stepId": "document",
+              "techniqueId": "research::document"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 4103,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 7585,
+              "delivery": "unchanged",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 6317,
+              "delivery": "unchanged",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::interview"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 2654,
+              "delivery": "unchanged",
+              "resourceId": "knowledge-base-research"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1793,
+              "delivery": "unchanged",
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1198,
+              "delivery": "unchanged",
+              "resourceId": "web-research#planning-artifact"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1918,
+              "delivery": "unchanged",
+              "resourceId": "research-reconciliation#inventory-shape"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 2452,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1038,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "bundled": true,
+              "chars": 1159,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-07-31T08:31:17.920Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "w-research-1",
+              "chars": 4355,
+              "delivery": "full",
+              "techniqueId": "scatter-gather"
+            },
+            "timestamp": "2026-07-31T08:31:31.306Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "research",
+            "timestamp": "2026-07-31T08:32:41.088Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "implementation-analysis",
+            "timestamp": "2026-07-31T08:32:41.088Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 57,
+        "seq": 82,
         "sessionIndex": "7Q54WJ",
         "skippedActivities": [],
         "startedAt": "2026-07-30T19:48:00.082Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785482972,
+        "ts": 1785486761,
         "variables": {
           "architecture_overview": "See the comprehension artifact's Architecture Overview section.",
           "artifact_name": "",
@@ -2334,7 +3439,7 @@
           "assumption_batch_accepted": false,
           "assumption_decisions": [],
           "assumption_deferred": false,
-          "assumption_resolved_inline": false,
+          "assumption_resolved_inline": true,
           "assumptions_log": "02-assumptions-log.md",
           "audit_confirmed": false,
           "awaiting_review": false,
@@ -2399,7 +3504,7 @@
           "needs_elicitation": true,
           "needs_further_discussion": false,
           "needs_github_issue_creation": false,
-          "needs_individual_interview": false,
+          "needs_individual_interview": true,
           "needs_issue_creation": false,
           "needs_plan_revision": false,
           "needs_research": true,
