@@ -96,7 +96,12 @@ export const DEDUP_BLOCKS = ['inherited_inputs', 'inherited_outputs', 'rules', '
 /** Inherited blocks whose `note` is content-keyed separately from `items`. */
 const INHERITED_SPLIT_BLOCKS = ['inherited_inputs', 'inherited_outputs'] as const;
 
-function stageOrCollapse(
+/**
+ * Content-key a field: collapse to an unchanged-marker when already delivered,
+ * otherwise stage the hash. When `assignFull` is true, also write the full value
+ * on first delivery (top-level blocks); nested note/items keep the spread value.
+ */
+function stageField(
   out: Record<string, unknown>,
   field: string,
   value: unknown,
@@ -104,6 +109,7 @@ function stageOrCollapse(
   newDeliveries: Record<string, string>,
   scope: string,
   keyPrefix: string,
+  assignFull = false,
 ): void {
   const hash = contentHash(stringifyForResponse({ [field]: value }));
   const key = `${keyPrefix}:${hash}`;
@@ -111,7 +117,7 @@ function stageOrCollapse(
     out[field] = unchangedMarker(hash);
   } else {
     newDeliveries[key] = hash;
-    out[field] = value;
+    if (assignFull) out[field] = value;
   }
 }
 
@@ -137,7 +143,7 @@ export function dedupTechniqueBlocks(
   const out = { ...projected };
 
   if (out['provenance_note'] !== undefined) {
-    stageOrCollapse(out, 'provenance_note', out['provenance_note'], state, newDeliveries, scope, 'technique:provenance_note');
+    stageField(out, 'provenance_note', out['provenance_note'], state, newDeliveries, scope, 'technique:provenance_note', true);
   }
 
   for (const block of INHERITED_SPLIT_BLOCKS) {
@@ -147,22 +153,10 @@ export function dedupTechniqueBlocks(
       const rec = value as Record<string, unknown>;
       const next: Record<string, unknown> = { ...rec };
       if (rec['note'] !== undefined) {
-        const noteHash = contentHash(stringifyForResponse({ note: rec['note'] }));
-        const noteKey = `technique:${block}.note:${noteHash}`;
-        if (deliveredHash(state, noteKey, scope) === noteHash || newDeliveries[noteKey] === noteHash) {
-          next['note'] = unchangedMarker(noteHash);
-        } else {
-          newDeliveries[noteKey] = noteHash;
-        }
+        stageField(next, 'note', rec['note'], state, newDeliveries, scope, `technique:${block}.note`);
       }
       if (rec['items'] !== undefined) {
-        const itemsHash = contentHash(stringifyForResponse({ items: rec['items'] }));
-        const itemsKey = `technique:${block}.items:${itemsHash}`;
-        if (deliveredHash(state, itemsKey, scope) === itemsHash || newDeliveries[itemsKey] === itemsHash) {
-          next['items'] = unchangedMarker(itemsHash);
-        } else {
-          newDeliveries[itemsKey] = itemsHash;
-        }
+        stageField(next, 'items', rec['items'], state, newDeliveries, scope, `technique:${block}.items`);
       }
       // Whole-block key still recorded when both halves are full (first delivery), so a
       // reader that only understands whole-block markers keeps working.
@@ -175,12 +169,12 @@ export function dedupTechniqueBlocks(
         out[block] = next;
       }
     } else {
-      stageOrCollapse(out, block, value, state, newDeliveries, scope, `technique:${block}`);
+      stageField(out, block, value, state, newDeliveries, scope, `technique:${block}`, true);
     }
   }
 
   if (out['rules'] !== undefined) {
-    stageOrCollapse(out, 'rules', out['rules'], state, newDeliveries, scope, 'technique:rules');
+    stageField(out, 'rules', out['rules'], state, newDeliveries, scope, 'technique:rules', true);
   }
 
   return out;

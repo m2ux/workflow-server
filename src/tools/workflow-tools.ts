@@ -18,10 +18,11 @@ import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { dispatchKind, recordDispatch } from '../utils/dispatch.js';
-import { extractResourceIds, parseResourceRef, qualifyResourceId } from '../utils/resource-ref.js';
+import { extractResourceIds, qualifyResourceId } from '../utils/resource-ref.js';
 import { readdir } from 'node:fs/promises';
 import { join as pathJoin } from 'node:path';
 import { DEFAULT_MAX_EAGER_RESOURCE_CHARS, loadResourceDelivery } from '../utils/resource-delivery.js';
+import { appendStepStartedIfAbsent } from '../utils/step-events.js';
 import {
   sessionIndexParam,
   contextTokensParam,
@@ -645,21 +646,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         try {
           const entries = await readdir(planningFolder, { withFileTypes: true });
           const files = entries.filter(e => e.isFile() && e.name !== 'session.json' && e.name !== 'session.json.seal' && e.name !== 'README.md' && !e.name.startsWith('.')).map(e => e.name);
-          // Join on id: a file is covered when some declared entry's id equals the basename stem
-          // or declared name equals the file name.
+          // Join on id: basename stem, declared name/id, or id embedded after a numeric/date prefix.
           const coveredNames = new Set<string>();
           for (const a of declared) {
-            coveredNames.add(a.name);
-            coveredNames.add(a.id);
-            // common pattern: prefix-id.md
-            coveredNames.add(`${a.id}.md`);
-            coveredNames.add(a.name.endsWith('.md') ? a.name : `${a.name}.md`);
+            for (const key of [a.name, a.id, `${a.id}.md`, a.name.endsWith('.md') ? a.name : `${a.name}.md`]) {
+              coveredNames.add(key);
+            }
           }
           const undeclared = files.filter(f => {
-            if (coveredNames.has(f)) return false;
             const stem = f.replace(/\.md$/, '');
-            if (declaredIds.has(stem) || coveredNames.has(stem)) return false;
-            // id may be embedded after a numeric/date prefix
+            if (coveredNames.has(f) || coveredNames.has(stem) || declaredIds.has(stem)) return false;
             for (const id of declaredIds) {
               if (f.includes(id)) return false;
             }
@@ -1183,22 +1179,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             activity: activity_id,
             data: { techniqueId: b.techniqueId, stepId: b.stepId, agentId: scope, chars: b.chars, delivery: b.delivery },
           });
-          // Hybrid step_started (RE-8): delivery time is the earliest server-known start.
-          // Idempotent per (activity visit, stepId, agentId).
-          const alreadyStarted = (draft.history ?? []).some(e =>
-            e.type === 'step_started'
-            && e.activity === activity_id
-            && e.data?.['stepId'] === b.stepId
-            && e.data?.['agentId'] === scope,
-          );
-          if (!alreadyStarted) {
-            draft.history.push({
-              timestamp: bundledAt,
-              type: 'step_started',
-              activity: activity_id,
-              data: { stepId: b.stepId, agentId: scope },
-            });
-          }
+          appendStepStartedIfAbsent(draft, {
+            activity: activity_id, stepId: b.stepId, agentId: scope, timestamp: bundledAt,
+          });
         }
         // Eager resource deliveries share get_resource's resource_fetched observability channel.
         for (const r of bundledResourceDeliveries) {

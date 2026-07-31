@@ -1096,8 +1096,6 @@ describe('mcp-server integration', () => {
       expect(aids.has('worker-aid-b')).toBe(true);
       expect(filteredA.events.length).toBeLessThanOrEqual(all.events.length);
       expect(filteredB.events.length).toBeLessThanOrEqual(all.events.length);
-      expect((filteredA.events as Array<{ aid?: string }>).every(e => e.aid === 'worker-aid-a' || e.aid === undefined)).toBe(true);
-      // filtered events with aid must match
       expect((filteredA.events as Array<{ aid?: string }>).filter(e => e.aid).every(e => e.aid === 'worker-aid-a')).toBe(true);
       expect((filteredB.events as Array<{ aid?: string }>).filter(e => e.aid).every(e => e.aid === 'worker-aid-b')).toBe(true);
     });

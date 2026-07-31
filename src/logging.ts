@@ -95,8 +95,7 @@ async function appendTraceEvent(
     const opts: { err?: string; vw?: string[] } = {};
     if (errorMessage !== undefined) opts.err = errorMessage;
     if (vw !== undefined) opts.vw = vw;
-    // Prefer the per-call agent_id (worker context) so multi-worker traces separate;
-    // fall back to the session agent when the call carries none (solo walk).
+    // Call agent_id when present (multi-worker); else session agent (solo).
     const callAgentId = typeof params['agent_id'] === 'string' && params['agent_id'].length > 0
       ? params['agent_id']
       : state.agentId;

@@ -52,6 +52,7 @@ import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { hasDispatch, recordDispatch } from '../utils/dispatch.js';
 import { extractMarkdownSection, parseResourceRef } from '../utils/resource-ref.js';
+import { appendStepStartedIfAbsent } from '../utils/step-events.js';
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
 import { basename, isAbsolute, resolve } from 'node:path';
@@ -736,22 +737,10 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             delivery,
           },
         });
-        // Hybrid step_started (RE-8) for step-bound fetches — idempotent per visit/agent.
         if (boundStep?.id && state.currentActivity) {
-          const alreadyStarted = (draft.history ?? []).some(e =>
-            e.type === 'step_started'
-            && e.activity === state.currentActivity
-            && e.data?.['stepId'] === boundStep.id
-            && e.data?.['agentId'] === scope,
-          );
-          if (!alreadyStarted) {
-            draft.history.push({
-              timestamp: ts,
-              type: 'step_started',
-              activity: state.currentActivity,
-              data: { stepId: boundStep.id, agentId: scope },
-            });
-          }
+          appendStepStartedIfAbsent(draft, {
+            activity: state.currentActivity, stepId: boundStep.id, agentId: scope, timestamp: ts,
+          });
         }
       };
 

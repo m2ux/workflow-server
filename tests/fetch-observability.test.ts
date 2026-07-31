@@ -374,10 +374,8 @@ describe('fetch observability (#166 B8)', () => {
         arguments: { session_index: idx, step_id: 'resolve-repo-root', agent_id: 'w-1' },
       });
       const started = sessionHistory(slug).filter(h => h.type === 'step_started' && (h.data as { agentId?: string }).agentId === 'w-1');
+      // Distinct timestamps are allowed when the clock advances; equal is ok if coarse — contract is "can".
       expect(started.length).toBeGreaterThanOrEqual(2);
-      const stamps = started.map(e => e.timestamp);
-      // Distinct timestamps are allowed; if clock is coarse, equal is still ok — contract is "can".
-      expect(stamps.length).toBeGreaterThanOrEqual(2);
     });
 
     it('PR366-TC-24/25: undeclared planning file warned; outside-folder unknown; success', async () => {
