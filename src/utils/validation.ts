@@ -143,6 +143,12 @@ export function validateTechniqueFetches(
   workflow: Workflow,
   activityId: string,
   history: HistoryEntry[],
+  /**
+   * When set, only technique deliveries whose `data.agentId` matches credit
+   * the manifest — a sibling worker's fetch does not cover this agent.
+   * Omit to credit any agent (solo walks and legacy rows without agentId).
+   */
+  agentId?: string,
 ): string[] {
   const activity = getActivity(workflow, activityId);
   if (!activity) return [];
@@ -166,7 +172,8 @@ export function validateTechniqueFetches(
   for (let i = visitStart; i < history.length; i++) {
     const entry = history[i]!;
     if ((entry.type !== 'technique_fetched' && entry.type !== 'technique_bundled') || entry.activity !== activityId) continue;
-    const data = entry.data as { stepId?: string; techniqueId?: string } | undefined;
+    const data = entry.data as { stepId?: string; techniqueId?: string; agentId?: string } | undefined;
+    if (agentId !== undefined && data?.agentId !== agentId) continue;
     if (typeof data?.stepId === 'string') fetchedStepIds.add(data.stepId);
     if (typeof data?.techniqueId === 'string') fetchedTechniqueIds.add(data.techniqueId);
   }

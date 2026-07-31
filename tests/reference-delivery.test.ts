@@ -930,6 +930,63 @@ describe('reference-not-repeat delivery (B1)', () => {
       expect(fullBlockSeen, 'at least one shared block delivered full').toBe(true);
       expect(markerBlockSeen, 'at least one sibling shared block collapsed to a marker').toBe(true);
     });
+
+    it('PR366-TC-08: provenance_note collapses to marker on second sibling technique', async () => {
+      const session = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'solo',
+        planning_folder: planningFolder('2026-07-31-block-dedup-provenance-note'),
+        context_mode: 'persistent',
+      });
+      const idx = session['session_index'] as string;
+      const [stepA, stepB] = await findTwoTechniqueStepIds('implement');
+      await enterActivity(idx, 'implement');
+      const first = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, step_id: stepA },
+      });
+      expect(first.isError).toBeFalsy();
+      const bodyA = parseTechniqueBody(first as never);
+      if (bodyA['provenance_note'] === undefined) return; // corpus without provenance is out of scope
+      expect(isUnchangedMarker(bodyA['provenance_note'])).toBe(false);
+      const second = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, step_id: stepB },
+      });
+      expect(second.isError).toBeFalsy();
+      const bodyB = parseTechniqueBody(second as never);
+      if (bodyB['provenance_note'] !== undefined) {
+        expect(isUnchangedMarker(bodyB['provenance_note'])).toBe(true);
+      }
+    });
+
+    it('PR366-TC-09: inherited note may marker while items stay full when items differ', async () => {
+      const session = await startSession({
+        workflow_id: 'work-package',
+        agent_id: 'solo',
+        planning_folder: planningFolder('2026-07-31-block-dedup-split-note-items'),
+        context_mode: 'persistent',
+      });
+      const idx = session['session_index'] as string;
+      const [stepA, stepB] = await findTwoTechniqueStepIds('implement');
+      await enterActivity(idx, 'implement');
+      await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepA } });
+      const second = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, step_id: stepB },
+      });
+      expect(second.isError).toBeFalsy();
+      const bodyB = parseTechniqueBody(second as never);
+      const inh = bodyB['inherited_inputs'];
+      if (inh && typeof inh === 'object' && !isUnchangedMarker(inh)) {
+        const rec = inh as Record<string, unknown>;
+        // When note collapsed and items differ, items remain a full array/object.
+        if (rec['note'] !== undefined && isUnchangedMarker(rec['note'])) {
+          expect(rec['items']).toBeDefined();
+          expect(isUnchangedMarker(rec['items'])).toBe(false);
+        }
+      }
+    });
   });
 
   // get_workflow orchestrator ops-bundle slimming. Under persistent mode the ops bundle

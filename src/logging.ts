@@ -95,9 +95,13 @@ async function appendTraceEvent(
     const opts: { err?: string; vw?: string[] } = {};
     if (errorMessage !== undefined) opts.err = errorMessage;
     if (vw !== undefined) opts.vw = vw;
+    // Call agent_id when present (multi-worker); else session agent (solo).
+    const callAgentId = typeof params['agent_id'] === 'string' && params['agent_id'].length > 0
+      ? params['agent_id']
+      : state.agentId;
     const event = createTraceEvent(
       state.sessionIndex, toolName, durationMs, status,
-      state.workflowId, state.currentActivity, state.agentId,
+      state.workflowId, state.currentActivity, callAgentId,
       opts,
     );
     traceStore.append(state.sessionIndex, event);

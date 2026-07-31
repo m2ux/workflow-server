@@ -22,6 +22,9 @@ import { stringifyForResponse } from './serialization.js';
  *   - `technique:<id>`           — a full `get_technique` composed payload
  *   - `technique:<block>:<hash>` — one shared block (`inherited_inputs` /
  *     `inherited_outputs` / `rules`) of a composed technique
+ *   - `technique:provenance_note:<hash>` — the step-bound provenance preamble
+ *   - `technique:inherited_inputs.note:<hash>` / `…items:<hash>` (and the same
+ *     for `inherited_outputs`) — invariant note vs items of an inherited block
  *   - `workflow_bundle:<hash>`   — the `get_workflow` orchestrator ops bundle
  *   - `resource:<resource_id>`   — a full `get_resource` payload (exact caller
  *     `resource_id`, including any `#section` anchor)
@@ -83,18 +86,48 @@ export function unchangedMarker(hash: string): { delivery: 'unchanged'; content_
 }
 
 /**
- * Projected-technique keys eligible for block-level dedup — the contract-inherited
- * blocks shared across a workflow's techniques. These mirror `projectTechnique`'s
- * key strings, so renaming those keys must update this list.
+ * Projected-technique keys eligible for whole-block dedup — the contract-inherited
+ * blocks and the step-bound provenance preamble shared across a workflow's techniques.
+ * These mirror `projectTechnique`'s key strings, so renaming those keys must update this list.
+ * Inherited `note` / `items` are also hashed separately (see `dedupTechniqueBlocks`).
  */
-export const DEDUP_BLOCKS = ['inherited_inputs', 'inherited_outputs', 'rules'] as const;
+export const DEDUP_BLOCKS = ['inherited_inputs', 'inherited_outputs', 'rules', 'provenance_note'] as const;
+
+/** Inherited blocks whose `note` is content-keyed separately from `items`. */
+const INHERITED_SPLIT_BLOCKS = ['inherited_inputs', 'inherited_outputs'] as const;
+
+/**
+ * Content-key a field: collapse to an unchanged-marker when already delivered,
+ * otherwise stage the hash. When `assignFull` is true, also write the full value
+ * on first delivery (top-level blocks); nested note/items keep the spread value.
+ */
+function stageField(
+  out: Record<string, unknown>,
+  field: string,
+  value: unknown,
+  state: SessionFile,
+  newDeliveries: Record<string, string>,
+  scope: string,
+  keyPrefix: string,
+  assignFull = false,
+): void {
+  const hash = contentHash(stringifyForResponse({ [field]: value }));
+  const key = `${keyPrefix}:${hash}`;
+  if (deliveredHash(state, key, scope) === hash || newDeliveries[key] === hash) {
+    out[field] = unchangedMarker(hash);
+  } else {
+    newDeliveries[key] = hash;
+    if (assignFull) out[field] = value;
+  }
+}
 
 /**
  * Replace already-delivered shared blocks of a projected technique record with
- * unchanged-markers, hashing each block over the single-key projection the reader
- * hashes so hashes match across techniques sharing a contract. Returns a shallow
- * copy (input not mutated); newly-delivered hashes are staged into `newDeliveries`
- * for the caller to commit, and a block already staged there collapses too.
+ * unchanged-markers. For `inherited_inputs` / `inherited_outputs`, the invariant
+ * `note` and the `items` list are hashed separately so a shared preamble collapses
+ * across techniques whose own-input sets differ. `provenance_note` and `rules` are
+ * whole-value candidates. Returns a shallow copy (input not mutated); newly-delivered
+ * hashes are staged into `newDeliveries` for the caller to commit.
  *
  * @param projected   `projectTechnique` output.
  * @param state       session, for the delivery-ledger lookup.
@@ -108,15 +141,41 @@ export function dedupTechniqueBlocks(
   scope: string = state.agentId,
 ): Record<string, unknown> {
   const out = { ...projected };
-  for (const block of DEDUP_BLOCKS) {
-    if (out[block] === undefined) continue;
-    const hash = contentHash(stringifyForResponse({ [block]: out[block] }));
-    const key = `technique:${block}:${hash}`;
-    if (deliveredHash(state, key, scope) === hash || newDeliveries[key] === hash) {
-      out[block] = unchangedMarker(hash);
+
+  if (out['provenance_note'] !== undefined) {
+    stageField(out, 'provenance_note', out['provenance_note'], state, newDeliveries, scope, 'technique:provenance_note', true);
+  }
+
+  for (const block of INHERITED_SPLIT_BLOCKS) {
+    const value = out[block];
+    if (value === undefined) continue;
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      const rec = value as Record<string, unknown>;
+      const next: Record<string, unknown> = { ...rec };
+      if (rec['note'] !== undefined) {
+        stageField(next, 'note', rec['note'], state, newDeliveries, scope, `technique:${block}.note`);
+      }
+      if (rec['items'] !== undefined) {
+        stageField(next, 'items', rec['items'], state, newDeliveries, scope, `technique:${block}.items`);
+      }
+      // Whole-block key still recorded when both halves are full (first delivery), so a
+      // reader that only understands whole-block markers keeps working.
+      const wholeHash = contentHash(stringifyForResponse({ [block]: value }));
+      const wholeKey = `technique:${block}:${wholeHash}`;
+      if (deliveredHash(state, wholeKey, scope) === wholeHash || newDeliveries[wholeKey] === wholeHash) {
+        out[block] = unchangedMarker(wholeHash);
+      } else {
+        newDeliveries[wholeKey] = wholeHash;
+        out[block] = next;
+      }
     } else {
-      newDeliveries[key] = hash;
+      stageField(out, block, value, state, newDeliveries, scope, `technique:${block}`, true);
     }
   }
+
+  if (out['rules'] !== undefined) {
+    stageField(out, 'rules', out['rules'], state, newDeliveries, scope, 'technique:rules', true);
+  }
+
   return out;
 }

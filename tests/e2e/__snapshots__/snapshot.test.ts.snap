@@ -97,7 +97,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "codebase-comprehension",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -120,7 +120,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "15-codebase_area.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -153,7 +153,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -179,7 +179,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -200,7 +200,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -275,7 +275,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "validate",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -372,7 +372,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "complete",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -406,7 +406,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "14-session-trace.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": null,
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -527,7 +527,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "codebase-comprehension",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -550,7 +550,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "15-codebase_area.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "requirements-elicitation",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -590,7 +590,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "implementation-analysis",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -647,7 +647,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -673,7 +673,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -694,7 +694,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -769,7 +769,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "validate",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -866,7 +866,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "complete",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -900,7 +900,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "14-session-trace.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": null,
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1024,7 +1024,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "codebase-comprehension",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1047,7 +1047,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "15-codebase_area.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "requirements-elicitation",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1087,7 +1087,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "research",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1140,7 +1140,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1172,7 +1172,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1198,7 +1198,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1219,7 +1219,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1294,7 +1294,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "validate",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1391,7 +1391,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "complete",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1425,7 +1425,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "14-session-trace.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": null,
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1548,7 +1548,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "codebase-comprehension",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1571,7 +1571,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "15-codebase_area.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "research",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1596,7 +1596,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "implementation-analysis",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1624,7 +1624,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1656,7 +1656,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1682,7 +1682,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1703,7 +1703,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1778,7 +1778,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "validate",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1875,7 +1875,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "complete",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -1909,7 +1909,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "14-session-trace.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": null,
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2003,7 +2003,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "codebase-comprehension",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2028,7 +2028,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "15-codebase_area.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "implementation-analysis",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2053,7 +2053,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2080,7 +2080,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2105,7 +2105,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2126,7 +2126,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "09-lean-change.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "post-impl-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2165,7 +2165,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "validate",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2210,7 +2210,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "10-architecture-summary.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "submit-for-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2244,7 +2244,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "complete",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2275,7 +2275,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "14-session-trace.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": null,
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2394,7 +2394,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "codebase-comprehension",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2417,7 +2417,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "15-codebase_area.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "plan-prepare",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2450,7 +2450,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           "setVariable": undefined,
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "assumptions-review",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2476,7 +2476,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "implement",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2497,7 +2497,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "02-assumptions-log.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "lean-coding-audit",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2572,7 +2572,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "validate",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2669,7 +2669,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           },
         },
       ],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": "complete",
       "orphanCheckpoints": [],
       "stepsExecuted": [
@@ -2703,7 +2703,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "14-session-trace.md",
       ],
       "checkpoints": [],
-      "manifestStatus": "valid",
+      "manifestStatus": "warning",
       "next": null,
       "orphanCheckpoints": [],
       "stepsExecuted": [

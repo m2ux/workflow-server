@@ -155,13 +155,26 @@ const SessionFileBaseSchema = z.object({
   /**
    * Delivery ledger for reference-not-repeat payloads: agentId → content
    * key → hash of the content most recently delivered in full. Content keys
-   * are namespaced by channel (`bundle:<technique-ref>`, `bundle:rules`,
-   * `activity_rules`, `technique:<technique-id>`). Always recorded so a
-   * per-call reference opt-in can follow full deliveries; consulted only
-   * when reference delivery is active (session `contextMode: 'persistent'`
-   * or a per-call opt-in).
+   * are namespaced by channel — see `src/utils/delivery.ts` for the full list
+   * (`bundle:…`, `bundle:rules:…`, `activity_rules:…`, `technique:…`,
+   * `technique:<block>:…`, `technique:provenance_note:…`,
+   * `technique:inherited_*.note|items:…`, `workflow_bundle:…`, `resource:…`).
+   * Always recorded so a per-call reference opt-in can follow full deliveries;
+   * consulted only when reference delivery is active (session
+   * `contextMode: 'persistent'` or a per-call opt-in).
    */
   deliveredContent: z.record(z.record(z.string())).optional(),
+
+  /**
+   * Declared artifacts accumulated across activities for this session.
+   * Each entry is `{ id, name, path? }` joined on **id** at `next_activity`
+   * when reconciling the planning folder (warn-only undeclared files).
+   */
+  declaredArtifacts: z.array(z.object({
+    id: z.string().min(1),
+    name: z.string().min(1),
+    path: z.string().optional(),
+  })).optional(),
 });
 
 /**
@@ -193,6 +206,7 @@ export interface SessionFile {
   repo?: string;
   contextMode?: 'persistent' | 'fresh';
   deliveredContent?: Record<string, Record<string, string>>;
+  declaredArtifacts?: Array<{ id: string; name: string; path?: string }>;
 }
 
 /**

@@ -174,9 +174,10 @@
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot; | &quot;usage&quot;</code></td><td>no</td><td>Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-activity token cost as the orchestrator reported it on next_activity). Default: <code>&quot;summary&quot;</code></td></tr>
+          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot; | &quot;usage&quot;</code></td><td>no</td><td>Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-dispatch token rows and plain-sum totals from record_usage). Default: <code>&quot;summary&quot;</code></td></tr>
           <tr><td><code>child_index</code></td><td><code>integer</code></td><td>no</td><td>Optional. Project triggeredWorkflows[child_index].state instead of the parent session.</td></tr>
           <tr><td><code>variable</code></td><td><code>string</code></td><td>no</td><td>Optional. With view=variables, return a single variable by name.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
           </tbody>
         </table>
         </div>
@@ -247,6 +248,8 @@
           <tr><td><code>step_manifest</code></td><td><code>object[]</code></td><td>no</td><td>Steps completed in the previous activity, for example <code>[{ &quot;step_id&quot;: &quot;detect-review-mode&quot;, &quot;output&quot;: &quot;is_review_mode=false&quot; }]</code>. Omit if no steps ran.</td></tr>
           <tr><td><code>activity_manifest</code></td><td><code>object[]</code></td><td>no</td><td>History of completed activities with outcomes and transition conditions.</td></tr>
           <tr><td><code>variables_changed</code></td><td><code>object</code></td><td>no</td><td>Variable assignments the completing activity produced — relay the worker's <code>activity_complete</code> <code>variables_changed</code> map verbatim. The server writes them into the session variable bag and records one <code>variable_set</code> history event per name, so the bag a later get_workflow_status / inspect_session returns reflects worker outputs and survives a lost agent context. Declared types are validated warn-only: a mismatch is stored as written and surfaced in _meta.validation. Omit when the activity changed nothing.</td></tr>
+          <tr><td><code>artifacts_produced</code></td><td><code>object[]</code></td><td>no</td><td>Artifacts the completing activity produced: [{id, name, path?}]. Merged by id into the session declared-artifact accumulation; planning-folder reconciliation joins on id (warn-only).</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
           </tbody>
         </table>
         </div>
@@ -262,6 +265,9 @@
           <tr class="param-row--nested param-row--group-start"><td class="param-scope" rowspan="3"><code>activity_manifest[]</code></td><td><code>activity_id</code></td><td><code>string</code></td><td>yes</td><td>Completed activity id.</td></tr>
           <tr class="param-row--nested"><td><code>outcome</code></td><td><code>string</code></td><td>yes</td><td>Short outcome summary for that activity.</td></tr>
           <tr class="param-row--nested"><td><code>transition_condition</code></td><td><code>string</code></td><td>no</td><td>Condition that led out of that activity, if any.</td></tr>
+          <tr class="param-row--nested param-row--group-start"><td class="param-scope" rowspan="3"><code>artifacts_produced[]</code></td><td><code>id</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
+          <tr class="param-row--nested"><td><code>name</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
+          <tr class="param-row--nested"><td><code>path</code></td><td><code>string</code></td><td>no</td><td>-</td></tr>
           </tbody>
         </table>
         </div>
@@ -431,16 +437,17 @@
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           <tr><td><code>trace_tokens</code></td><td><code>string[]</code></td><td>no</td><td>Tokens collected from <code>next_activity</code> <code>_meta.trace_token</code> responses.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
           </tbody>
         </table>
         </div>
       </section>
       <section class="tool" id="record_usage">
         <h3><code>record_usage</code></h3>
-        <p class="tool-summary">Orchestrator tool: record harness-reported token usage for ONE completed dispatch.</p>
+        <p class="tool-summary">Orchestrator tool: record harness-reported token usage for ONE completed dispatch (DELTA for that dispatch).</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Orchestrator tool: record harness-reported token usage for ONE completed dispatch. Call as each dispatch finishes — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity.</p>
+          <p>Orchestrator tool: record harness-reported token usage for ONE completed dispatch (DELTA for that dispatch). Call as each dispatch finishes — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity. Optional <code>agent_id</code> attributes the row to a worker context.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
@@ -448,7 +455,8 @@
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           <tr><td><code>activity</code></td><td><code>string</code></td><td>yes</td><td>Activity the dispatch ran, whether or not the session is still on it.</td></tr>
-          <tr><td><code>usage</code></td><td><code>object</code></td><td>yes</td><td>Harness-reported token usage for this ONE dispatch, as reported. Omit the call entirely when the harness surfaced nothing rather than passing zeros — the worker cannot self-measure, so absence must stay distinguishable from a measured zero.</td></tr>
+          <tr><td><code>usage</code></td><td><code>object</code></td><td>yes</td><td>Harness-reported token DELTA for this ONE dispatch, as reported. Omit the call entirely when the harness surfaced nothing rather than passing zeros — the worker cannot self-measure, so absence must stay distinguishable from a measured zero.</td></tr>
+          <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
           </tbody>
         </table>
         </div>

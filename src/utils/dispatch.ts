@@ -3,10 +3,10 @@ import type { SessionFile } from '../schema/session.schema.js';
 /**
  * Dispatch accounting (#353 §1.3).
  *
- * Two events measure a dispatch from opposite ends. `activity_usage` carries what one COST, and only
- * the orchestrator can supply it — a worker cannot self-measure — so it arrives on the
- * `next_activity` that EXITS the activity, one event per exit. `activity_dispatched` records that a
- * dispatch HAPPENED, emitted by the server when the dispatched context first reaches it: it needs no
+ * Two events measure a dispatch from opposite ends. `activity_usage` carries what one dispatch COST
+ * in tokens — the orchestrator supplies it via `record_usage` as each dispatch finishes (a worker
+ * cannot self-measure), one DELTA row per dispatch. `activity_dispatched` records that a dispatch
+ * HAPPENED, emitted by the server when the dispatched context first reaches it: it needs no
  * orchestrator cooperation, and it counts dispatches rather than exits, so resumed workers,
  * out-of-band workers and abandoned sessions all appear.
  *

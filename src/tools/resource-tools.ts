@@ -52,6 +52,7 @@ import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { hasDispatch, recordDispatch } from '../utils/dispatch.js';
 import { extractMarkdownSection, parseResourceRef } from '../utils/resource-ref.js';
+import { appendStepStartedIfAbsent } from '../utils/step-events.js';
 import { createTraceEvent } from '../trace.js';
 import { randomUUID } from 'node:crypto';
 import { basename, isAbsolute, resolve } from 'node:path';
@@ -723,8 +724,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // `chars` (the full composed size, on both delivery paths) and `delivery` make the payload
       // cost of a fetch summable from the ledger (#353 §1.3).
       const recordFetch = (draft: SessionFile, delivery: 'full' | 'unchanged'): void => {
+        const ts = new Date().toISOString();
         draft.history.push({
-          timestamp: new Date().toISOString(),
+          timestamp: ts,
           type: 'technique_fetched',
           ...(state.currentActivity ? { activity: state.currentActivity } : {}),
           data: {
@@ -735,6 +737,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
             delivery,
           },
         });
+        if (boundStep?.id && state.currentActivity) {
+          appendStepStartedIfAbsent(draft, {
+            activity: state.currentActivity, stepId: boundStep.id, agentId: scope, timestamp: ts,
+          });
+        }
       };
 
       // An out-of-band dispatch may never call get_activity, so its dispatch would otherwise go

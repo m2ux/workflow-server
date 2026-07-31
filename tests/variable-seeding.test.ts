@@ -332,9 +332,11 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       expect(events[0].data).toEqual({ usage });
 
       const view = await call('inspect_session', { session_index: sessionIndex, view: 'usage' });
-      const rows = JSON.parse((view.content as { text: string }[])[0]!.text);
+      const projected = JSON.parse((view.content as { text: string }[])[0]!.text);
+      const rows = projected.rows ?? projected;
       expect(rows).toHaveLength(1);
       expect(rows[0]).toMatchObject({ activity: 'checkpoint-activity', usage });
+      expect(projected.totals).toBeDefined();
     });
 
     it('records a dispatch the graph never transitions away from', async () => {

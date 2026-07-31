@@ -92,3 +92,23 @@ export function extractResourceIds(text: string): string[] {
   }
   return [...ids];
 }
+
+/**
+ * When a bare resource id was extracted from a technique authored under a
+ * different workflow than the delivering session, prefix it with that technique
+ * workflow so parseResourceRef / loaders resolve the correct resources/ tree.
+ * Already-qualified ids (`workflow/slug`) and same-workflow bare ids pass through.
+ */
+export function qualifyResourceId(
+  resourceId: string,
+  techniqueWorkflowId: string,
+  deliveryWorkflowId: string,
+): string {
+  const parsed = parseResourceRef(resourceId);
+  if (parsed.workflowId) return resourceId;
+  if (techniqueWorkflowId && techniqueWorkflowId !== deliveryWorkflowId) {
+    const section = parsed.section ? `#${parsed.section}` : '';
+    return `${techniqueWorkflowId}/${parsed.id}${section}`;
+  }
+  return resourceId;
+}

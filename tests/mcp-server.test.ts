@@ -875,7 +875,8 @@ describe('mcp-server integration', () => {
         name: 'inspect_session',
         arguments: { session_index: sessionToken, view: 'usage' },
       }));
-      const baseline = Array.isArray(before) ? before.length : (before.usage?.length ?? 0);
+      const baselineRows = Array.isArray(before) ? before : (before.rows ?? before.usage ?? []);
+      const baseline = baselineRows.length;
 
       // Two dispatches of the SAME activity — a first pass and a resume after a
       // checkpoint yield. next_activity could account for at most one of them,
@@ -897,7 +898,7 @@ describe('mcp-server integration', () => {
         name: 'inspect_session',
         arguments: { session_index: sessionToken, view: 'usage' },
       }));
-      const rows = Array.isArray(after) ? after : (after.usage ?? []);
+      const rows = Array.isArray(after) ? after : (after.rows ?? after.usage ?? []);
       expect(rows.length).toBe(baseline + 2);
 
       // Both passes survive as separate rows rather than one overwriting the other:
@@ -914,6 +915,79 @@ describe('mcp-server integration', () => {
         arguments: { session_index: 'NOPE00', activity: 'x', usage: { total_tokens: 1 } },
       });
       expect(res.isError).toBeTruthy();
+    });
+
+    it('PR366-TC-01/02: optional agent_id attributes rows; omit stays unattributed', async () => {
+      await client.callTool({
+        name: 'record_usage',
+        arguments: {
+          session_index: sessionToken,
+          activity: 'start-work-package',
+          usage: { input_tokens: 10, output_tokens: 2, total_tokens: 12 },
+          agent_id: 'worker-a',
+        },
+      });
+      await client.callTool({
+        name: 'record_usage',
+        arguments: {
+          session_index: sessionToken,
+          activity: 'start-work-package',
+          usage: { input_tokens: 3, output_tokens: 1, total_tokens: 4 },
+        },
+      });
+      const all = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      }));
+      expect(all.rows.some((r: { agentId?: string }) => r.agentId === 'worker-a')).toBe(true);
+      expect(all.rows.some((r: { agentId?: string }) => r.agentId === undefined)).toBe(true);
+      const filtered = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage', agent_id: 'worker-a' },
+      }));
+      expect(filtered.rows.every((r: { agentId?: string }) => r.agentId === 'worker-a')).toBe(true);
+      expect(filtered.rows.length).toBeGreaterThanOrEqual(1);
+    });
+
+    it('PR366-TC-03/05: projectUsage plain-sum equals arithmetic sum; no cost field', async () => {
+      const view = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      }));
+      expect(view.rows).toBeDefined();
+      expect(view.totals).toBeDefined();
+      expect(view.cost).toBeUndefined();
+      expect(view.price).toBeUndefined();
+      let sumIn = 0;
+      for (const r of view.rows as Array<{ usage?: { input_tokens?: number } }>) {
+        if (typeof r.usage?.input_tokens === 'number') sumIn += r.usage.input_tokens;
+      }
+      if (sumIn > 0) expect(view.totals.input_tokens).toBe(sumIn);
+    });
+
+    it('PR366-TC-06: stale usage-on-next_activity phrases are absent from tool surface', async () => {
+      const { readFileSync } = await import('node:fs');
+      const { resolve } = await import('node:path');
+      const src = readFileSync(resolve(import.meta.dirname, '../src/tools/workflow-tools.ts'), 'utf8');
+      const dispatch = readFileSync(resolve(import.meta.dirname, '../src/utils/dispatch.ts'), 'utf8');
+      expect(src).not.toMatch(/optional `usage` records the exited activity/);
+      expect(src).not.toMatch(/as the orchestrator reported it on next_activity/);
+      expect(dispatch).not.toMatch(/arrives on the\n \* `next_activity` that EXITS/);
+      expect(dispatch).not.toMatch(/arrives on the\s+`next_activity` that EXITS/);
+    });
+
+    it('PR366-TC-07: delivery-ledger namespace comment matches delivery.ts keys', async () => {
+      const { readFileSync } = await import('node:fs');
+      const { resolve } = await import('node:path');
+      const schema = readFileSync(resolve(import.meta.dirname, '../src/schema/session.schema.ts'), 'utf8');
+      const delivery = readFileSync(resolve(import.meta.dirname, '../src/utils/delivery.ts'), 'utf8');
+      expect(schema).toMatch(/technique:provenance_note/);
+      expect(schema).toMatch(/inherited_\*\.note\|items/);
+      expect(schema).toMatch(/bundle:/);
+      expect(schema).toMatch(/resource:/);
+      expect(delivery).toMatch(/technique:provenance_note/);
+      expect(delivery).toMatch(/inherited_inputs\.note/);
+      expect(delivery).toMatch(/DEDUP_BLOCKS.*provenance_note|provenance_note.*DEDUP_BLOCKS/s);
     });
   });
 
@@ -994,6 +1068,36 @@ describe('mcp-server integration', () => {
       const trace = parseToolResponse(result);
       const traceNames = trace.events.map((e: { name: string }) => e.name);
       expect(traceNames).not.toContain('get_trace');
+    });
+
+    it('PR366-TC-12/13: per-call agent_id sets aid; get_trace filter is subset', async () => {
+      await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: sessionToken, context_tokens: 200_000, agent_id: 'worker-aid-a' },
+      });
+      await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: sessionToken, context_tokens: 200_000, agent_id: 'worker-aid-b' },
+      });
+      const all = parseToolResponse(await client.callTool({
+        name: 'get_trace',
+        arguments: { session_index: sessionToken },
+      }));
+      const filteredA = parseToolResponse(await client.callTool({
+        name: 'get_trace',
+        arguments: { session_index: sessionToken, agent_id: 'worker-aid-a' },
+      }));
+      const filteredB = parseToolResponse(await client.callTool({
+        name: 'get_trace',
+        arguments: { session_index: sessionToken, agent_id: 'worker-aid-b' },
+      }));
+      const aids = new Set((all.events as Array<{ aid?: string }>).map(e => e.aid).filter(Boolean));
+      expect(aids.has('worker-aid-a')).toBe(true);
+      expect(aids.has('worker-aid-b')).toBe(true);
+      expect(filteredA.events.length).toBeLessThanOrEqual(all.events.length);
+      expect(filteredB.events.length).toBeLessThanOrEqual(all.events.length);
+      expect((filteredA.events as Array<{ aid?: string }>).filter(e => e.aid).every(e => e.aid === 'worker-aid-a')).toBe(true);
+      expect((filteredB.events as Array<{ aid?: string }>).filter(e => e.aid).every(e => e.aid === 'worker-aid-b')).toBe(true);
     });
 
     it('error events are captured (IT-12)', async () => {
@@ -2561,7 +2665,9 @@ describe('mcp-server integration', () => {
       const runReference = (args: string[]): unknown =>
         JSON.parse(execFileSync(python!, [scriptPath, jsonPath, ...args], { encoding: 'utf8' }));
 
-      for (const view of ['summary', 'identity', 'variables', 'checkpoints', 'activities', 'history', 'children']) {
+      // Derive the parity loop from the server export so a missing oracle view fails loud (SC-12).
+      const { INSPECT_SESSION_VIEWS } = await import('../src/tools/workflow-tools.js');
+      for (const view of INSPECT_SESSION_VIEWS) {
         const reference = runReference([view]);
         const ours = parseToolResponse(await callInspect({ view }));
         expect(ours, `view '${view}' must match the reference script`).toEqual(reference);
