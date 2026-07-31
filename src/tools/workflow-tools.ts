@@ -18,7 +18,9 @@ import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { dispatchKind, recordDispatch } from '../utils/dispatch.js';
-import { extractResourceIds } from '../utils/resource-ref.js';
+import { extractResourceIds, parseResourceRef, qualifyResourceId } from '../utils/resource-ref.js';
+import { readdir } from 'node:fs/promises';
+import { join as pathJoin } from 'node:path';
 import { DEFAULT_MAX_EAGER_RESOURCE_CHARS, loadResourceDelivery } from '../utils/resource-delivery.js';
 import {
   sessionIndexParam,
@@ -53,10 +55,20 @@ const activityManifestSchema = z.array(z.object({
 })).optional().describe('Orchestrator activity-completion manifest: [{activity_id, outcome, transition_condition?}].');
 
 const usageSchema = z.record(z.unknown()).describe(
-  'Harness-reported token usage for ONE completed dispatch — subagent token counts plus any cache/model \n'
-  + 'fields, as reported. Recorded as an `activity_usage` history event keyed to the activity that ran, so \n'
-  + 'inspect_session reports cost per dispatch. Workers cannot self-measure: omit the record_usage call \n'
-  + 'entirely when the harness surfaces nothing rather than passing zeros.',
+  'Harness-reported token usage for ONE completed dispatch (DELTA for that dispatch only — not a \n'
+  + 'cumulative session total). Include numeric token fields the harness reports (`input_tokens`, \n'
+  + '`output_tokens`, `total_tokens`, `subagent_tokens`, cache/model fields). Recorded as an \n'
+  + '`activity_usage` history event keyed to the activity that ran; inspect_session view:usage \n'
+  + 'projects each row and plain-sums known token keys across rows. Workers cannot self-measure: \n'
+  + 'omit the record_usage call entirely when the harness surfaces nothing rather than passing zeros.',
+);
+
+const artifactsProducedSchema = z.array(z.object({
+  id: z.string().min(1),
+  name: z.string().min(1),
+  path: z.string().optional(),
+})).optional().describe(
+  'Artifacts the completing activity produced: [{id, name, path?}]. Merged by id into the session declared-artifact accumulation; planning-folder reconciliation joins on id (warn-only).',
 );
 
 const variablesChangedSchema = z.record(z.unknown()).optional().describe(
@@ -209,10 +221,15 @@ export function projectActivities(s: SessionFile): Record<string, unknown> {
 /**
  * History projection: total event count, a per-type tally, and the milestone
  * sub-sequence (each milestone carries only its non-empty type/activity/checkpoint
- * keys, matching the reference script's dict comprehension).
+ * keys, matching the reference script's dict comprehension). When `agentId` is
+ * set, only events whose `data.agentId` matches are included (events without
+ * agentId are excluded from a filtered view).
  */
-export function projectHistory(s: SessionFile): Record<string, unknown> {
-  const events = s.history ?? [];
+export function projectHistory(s: SessionFile, agentId?: string): Record<string, unknown> {
+  const all = s.history ?? [];
+  const events = agentId === undefined
+    ? all
+    : all.filter(e => e.data?.['agentId'] === agentId);
   const byType: Record<string, number> = {};
   const milestones: Array<Record<string, unknown>> = [];
   for (const e of events) {
@@ -246,17 +263,54 @@ export function projectChildren(s: SessionFile): Array<Record<string, unknown>> 
   });
 }
 
+/** Numeric token keys summed into the usage-view aggregate when present on a row. */
+export const USAGE_TOKEN_KEYS = [
+  'input_tokens',
+  'output_tokens',
+  'total_tokens',
+  'subagent_tokens',
+] as const;
+
 /**
- * Usage projection (#324 B1, #346 DI-33): one entry per `activity_usage` event,
- * in the order the orchestrator recorded them — one per dispatch. An activity
- * dispatched several times contributes a row per dispatch, and summing is the
- * caller's call, since harnesses differ on whether a resumed worker re-reports
- * cumulative figures.
+ * Usage projection (#324 B1, #346 DI-33, #365 S3): one entry per `activity_usage`
+ * event in record order (one per dispatch), plus a plain-sum token aggregate over
+ * those rows. Rows are DELTA figures for each dispatch; the aggregate is the
+ * arithmetic sum of known numeric token keys across the projected rows. When
+ * `agentId` is set, only rows whose `data.agentId` matches are included
+ * (unattributed rows — no agentId — are excluded from a filtered view).
  */
-export function projectUsage(s: SessionFile): Array<Record<string, unknown>> {
-  return (s.history ?? [])
-    .filter(e => e.type === 'activity_usage')
-    .map(e => ({ activity: e.activity, timestamp: e.timestamp, usage: e.data?.['usage'] }));
+export function projectUsage(
+  s: SessionFile,
+  agentId?: string,
+): { rows: Array<Record<string, unknown>>; totals: Record<string, number> } {
+  const events = (s.history ?? []).filter(e => e.type === 'activity_usage');
+  const filtered = agentId === undefined
+    ? events
+    : events.filter(e => e.data?.['agentId'] === agentId);
+  const rows = filtered.map(e => {
+    const row: Record<string, unknown> = {
+      activity: e.activity,
+      timestamp: e.timestamp,
+      usage: e.data?.['usage'],
+    };
+    if (typeof e.data?.['agentId'] === 'string') {
+      row['agentId'] = e.data['agentId'];
+    }
+    return row;
+  });
+  const totals: Record<string, number> = {};
+  for (const row of rows) {
+    const usage = row['usage'];
+    if (!usage || typeof usage !== 'object') continue;
+    const u = usage as Record<string, unknown>;
+    for (const key of USAGE_TOKEN_KEYS) {
+      const v = u[key];
+      if (typeof v === 'number' && Number.isFinite(v)) {
+        totals[key] = (totals[key] ?? 0) + v;
+      }
+    }
+  }
+  return { rows, totals };
 }
 
 /** Summary (default) view: the composite of all projections for the addressed session. */
@@ -277,13 +331,15 @@ export function projectSummary(
 /**
  * Dispatch a view against the addressed session. For `variables`, an optional
  * `variable` narrows the bag to a single key's value (matching the reference
- * script's `--variable KEY`); otherwise the whole bag is returned.
+ * script's `--variable KEY`); otherwise the whole bag is returned. Optional
+ * `agentId` narrows `history` and `usage` to rows/events for that agent context.
  */
 export function projectSessionView(
   s: SessionFile,
   view: InspectSessionView,
   variable?: string,
   pathPresentation?: PathPresentationMap,
+  agentId?: string,
 ): unknown {
   switch (view) {
     case 'identity': return projectIdentity(s, pathPresentation);
@@ -293,9 +349,9 @@ export function projectSessionView(
     }
     case 'checkpoints': return projectCheckpoints(s);
     case 'activities': return projectActivities(s);
-    case 'history': return projectHistory(s);
+    case 'history': return projectHistory(s, agentId);
     case 'children': return projectChildren(s);
-    case 'usage': return projectUsage(s);
+    case 'usage': return projectUsage(s, agentId);
     case 'summary':
     default:
       return projectSummary(s, pathPresentation);
@@ -434,7 +490,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: an id from the current activity\'s transitions. Optional manifests enable advisory validation; optional `usage` records the exited activity\'s token cost.',
+  server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: an id from the current activity\'s transitions. Optional manifests enable advisory validation.',
     {
       ...sessionIndexParam,
       activity_id: z.string().describe('Target activity id. First call: initialActivity from get_workflow; later: from current activity transitions.'),
@@ -442,8 +498,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       step_manifest: stepManifestSchema,
       activity_manifest: activityManifestSchema,
       variables_changed: variablesChangedSchema,
+      artifacts_produced: artifactsProducedSchema,
+      agent_id: z.string().min(1).optional().describe(
+        'Optional. Worker context that completed the exiting activity — scopes technique-fetch fidelity and step_completed attribution.',
+      ),
     },
-    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, variables_changed }) => {
+    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, variables_changed, artifacts_produced, agent_id }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -470,7 +530,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // Fidelity observability (#166 B8): advisory cross-check of the
         // manifest against the technique_fetched events get_technique
         // recorded into the session history during this activity.
-        manifestWarnings.push(...validateTechniqueFetches(step_manifest as StepManifestEntry[], result.value, state.currentActivity, state.history));
+        manifestWarnings.push(...validateTechniqueFetches(step_manifest as StepManifestEntry[], result.value, state.currentActivity, state.history, agent_id));
       } else if (!step_manifest && state.currentActivity) {
         manifestWarnings.push(`No step_manifest provided for previous activity '${state.currentActivity}'. Include a manifest to enable step completion validation.`);
       }
@@ -517,6 +577,36 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             source: 'variables_changed',
           }));
         }
+        // Hybrid step_completed (RE-8): one event per step_manifest entry with non-empty output.
+        if (step_manifest && exitingActivity) {
+          for (const entry of step_manifest as StepManifestEntry[]) {
+            if (!entry.output || entry.output.length === 0) continue;
+            draft.history.push({
+              timestamp: now,
+              type: 'step_completed',
+              activity: exitingActivity,
+              data: {
+                stepId: entry.step_id,
+                ...(agent_id !== undefined ? { agentId: agent_id } : {}),
+              },
+            });
+          }
+        }
+        // Accumulate declared artifacts by id (S2).
+        if (artifacts_produced && artifacts_produced.length > 0) {
+          const byId = new Map((draft.declaredArtifacts ?? []).map(a => [a.id, a]));
+          for (const a of artifacts_produced) {
+            const prev = byId.get(a.id);
+            byId.set(a.id, {
+              id: a.id,
+              name: a.name,
+              ...(a.path !== undefined
+                ? { path: a.path }
+                : (prev?.path !== undefined ? { path: prev.path } : {})),
+            });
+          }
+          draft.declaredArtifacts = [...byId.values()];
+        }
         draft.currentActivity = activity_id;
         draft.condition = transition_condition ?? '';
         delete draft.activeCheckpoint;
@@ -536,6 +626,56 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         logWarn('next_activity: variables_changed type mismatch', { session_index, warnings: variableWarnings });
       }
 
+      // S2: planning-folder vs accumulated declared artifact ids (warn-only).
+      const artifactWarnings: string[] = [];
+      const planningFolder = next.planningFolderPath ?? loaded.folderAbsPath;
+      if (planningFolder) {
+        const declared = next.declaredArtifacts ?? [];
+        const declaredIds = new Set(declared.map(a => a.id));
+        // Outside-folder declared paths → unknown (not missing).
+        for (const a of declared) {
+          if (!a.path) continue;
+          const abs = a.path.startsWith('/') ? a.path : pathJoin(planningFolder, a.path);
+          if (!abs.startsWith(planningFolder + '/') && abs !== planningFolder) {
+            artifactWarnings.push(
+              `Declared artifact id '${a.id}' (name '${a.name}') writes outside the planning folder — status unknown (not missing).`,
+            );
+          }
+        }
+        try {
+          const entries = await readdir(planningFolder, { withFileTypes: true });
+          const files = entries.filter(e => e.isFile() && e.name !== 'session.json' && e.name !== 'session.json.seal' && e.name !== 'README.md' && !e.name.startsWith('.')).map(e => e.name);
+          // Join on id: a file is covered when some declared entry's id equals the basename stem
+          // or declared name equals the file name.
+          const coveredNames = new Set<string>();
+          for (const a of declared) {
+            coveredNames.add(a.name);
+            coveredNames.add(a.id);
+            // common pattern: prefix-id.md
+            coveredNames.add(`${a.id}.md`);
+            coveredNames.add(a.name.endsWith('.md') ? a.name : `${a.name}.md`);
+          }
+          const undeclared = files.filter(f => {
+            if (coveredNames.has(f)) return false;
+            const stem = f.replace(/\.md$/, '');
+            if (declaredIds.has(stem) || coveredNames.has(stem)) return false;
+            // id may be embedded after a numeric/date prefix
+            for (const id of declaredIds) {
+              if (f.includes(id)) return false;
+            }
+            return true;
+          });
+          if (undeclared.length > 0) {
+            artifactWarnings.push(
+              `Undeclared planning-folder file(s) (no matching declared artifact id): [${undeclared.join(', ')}]. ` +
+              `Report them via next_activity artifacts_produced [{id, name}] or remove them — advisory only; transition succeeds.`,
+            );
+          }
+        } catch {
+          // Folder unreadable — skip folder diff; accumulation still stands.
+        }
+      }
+
       const validation = buildValidation(
         validateActivityTransition(view, result.value, activity_id),
         validateWorkflowVersion(view, result.value),
@@ -543,6 +683,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ...manifestWarnings,
         ...activityManifestWarnings,
         ...variableWarnings,
+        ...artifactWarnings,
       );
 
       // If this child just reached its terminal activity, notify the parent
@@ -817,7 +958,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           // Collect linked resource ids from the full composed technique text even when this
           // delivery collapses to an unchanged-marker (markers omit link text). Only for steps
           // actually included in the bundle (after the budget break above).
-          for (const resourceId of extractResourceIds(text)) linkedResourceIds.add(resourceId);
+          for (const rawId of extractResourceIds(text)) {
+            linkedResourceIds.add(qualifyResourceId(rawId, sourceWorkflowId, workflow_id));
+          }
           bundledSteps.push({
             stepId: step.id!, techniqueId,
             chars: text.length, delivery: alreadyDelivered ? 'unchanged' : 'full',
@@ -858,9 +1001,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               const resourceId = orderedIds[i]!;
               if (coveredByItsFile(resourceId)) continue;
               const loaded = await loadResourceDelivery(
-                config.workflowDir, sourceWorkflowId, resourceId, session_index,
+                config.workflowDir, workflow_id, resourceId, session_index,
               );
-              if (!loaded.success) continue;
+              if (!loaded.success) {
+                // Warn and continue — unresolvable refs must not abort get_activity (SC-13).
+                bundlingWarnings.push(
+                  `Unresolvable resource ref '${resourceId}' linked from bundled step techniques: ${loaded.error.message}`,
+                );
+                continue;
+              }
               const { hash, content, id, version } = loaded.value;
               const ledgerKey = `resource:${resourceId}`;
               if (deliveredHash(state, ledgerKey, scope) === hash || newDeliveries[ledgerKey] === hash) {
@@ -902,9 +1051,23 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               if (!resourceId.includes('#')) deliveredWhole.add(resourceId);
             }
           } else {
-            // No map is delivered, so no `resource:<id>` ledger writes either — under full
-            // delivery those keys were written and never read (62–98 stale keys per session).
+            // Full mode: ids only under resource_refs; still resolve each id so unresolvable
+            // refs surface as validation warnings (SC-13) without failing the call.
             resourceRefIds.push(...linkedIds);
+          }
+          // Full-mode unresolvable resource check (SC-13): reference mode already warns
+          // inside the load loop; full mode only pushes ids, so resolve here.
+          if (!referenceMode) {
+            for (const resourceId of linkedIds) {
+              const loaded = await loadResourceDelivery(
+                config.workflowDir, workflow_id, resourceId, session_index,
+              );
+              if (!loaded.success) {
+                bundlingWarnings.push(
+                  `Unresolvable resource ref '${resourceId}' linked from bundled step techniques: ${loaded.error.message}`,
+                );
+              }
+            }
           }
 
           bundleData['step_techniques'] = bundledStepTechniques;
@@ -1020,6 +1183,22 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             activity: activity_id,
             data: { techniqueId: b.techniqueId, stepId: b.stepId, agentId: scope, chars: b.chars, delivery: b.delivery },
           });
+          // Hybrid step_started (RE-8): delivery time is the earliest server-known start.
+          // Idempotent per (activity visit, stepId, agentId).
+          const alreadyStarted = (draft.history ?? []).some(e =>
+            e.type === 'step_started'
+            && e.activity === activity_id
+            && e.data?.['stepId'] === b.stepId
+            && e.data?.['agentId'] === scope,
+          );
+          if (!alreadyStarted) {
+            draft.history.push({
+              timestamp: bundledAt,
+              type: 'step_started',
+              activity: activity_id,
+              data: { stepId: b.stepId, agentId: scope },
+            });
+          }
         }
         // Eager resource deliveries share get_resource's resource_fetched observability channel.
         for (const r of bundledResourceDeliveries) {
@@ -1146,17 +1325,22 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('record_usage', 'Orchestrator tool: record harness-reported token usage for ONE completed dispatch. Call as each dispatch finishes — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity.',
+  server.tool('record_usage', 'Orchestrator tool: record harness-reported token usage for ONE completed dispatch (DELTA for that dispatch). Call as each dispatch finishes — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity. Optional `agent_id` attributes the row to a worker context.',
     {
       ...sessionIndexParam,
       activity: z.string().describe('Activity the dispatch ran, whether or not the session is still on it.'),
       usage: usageSchema.describe(
-        'Harness-reported token usage for this ONE dispatch, as reported. Omit the call entirely when the harness '
+        'Harness-reported token DELTA for this ONE dispatch, as reported. Omit the call entirely when the harness '
         + 'surfaced nothing rather than passing zeros — the worker cannot self-measure, so absence must stay '
         + 'distinguishable from a measured zero.',
       ),
+      agent_id: z.string().min(1).optional().describe(
+        'Optional. Worker context that incurred this usage — the same identity used on get_activity for that dispatch. '
+        + 'Stored as data.agentId on the activity_usage event so inspect_session can filter and attribute rows. '
+        + 'Omit when attribution is unknown; the row remains valid as an unattributed bucket.',
+      ),
     },
-    withAuditLog('record_usage', withSessionStoreErrors(async ({ session_index, activity, usage }) => {
+    withAuditLog('record_usage', withSessionStoreErrors(async ({ session_index, activity, usage, agent_id }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -1165,9 +1349,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const next = advanceSession(state, (draft) => {
         // One entry per dispatch, which is what projectUsage reports. Attribution is the
         // caller's `activity`: the dispatch ran for it, whether or not the session is still
-        // there by the time the figure arrives.
+        // there by the time the figure arrives. Optional agent_id scopes the row to a worker.
+        const data: Record<string, unknown> = { usage };
+        if (agent_id !== undefined) data['agentId'] = agent_id;
         draft.history.push({
-          timestamp: recordedAt, type: 'activity_usage', activity, data: { usage },
+          timestamp: recordedAt, type: 'activity_usage', activity, data,
         });
       });
       await saveSessionForTool(loaded, next);
@@ -1179,7 +1365,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           activity,
           session_index,
           usage_events: recorded,
-          message: `Usage recorded for one dispatch of '${activity}'. The session now carries ${recorded} usage event(s); the cost artifact reconciles that count against the run's actual dispatch count.`,
+          message: `Usage recorded for one dispatch of '${activity}'. The session now carries ${recorded} usage event(s); inspect_session view usage reconciles that count against the run's actual dispatch count.`,
         }, null, 2) }],
         _meta: { session_index, validation: buildValidation() },
       };
@@ -1420,12 +1606,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('get_trace', 'Retrieve the session execution trace. With `trace_tokens`, decode those segments; otherwise return the in-memory session trace (if tracing is enabled).',
+  server.tool('get_trace', 'Retrieve the session execution trace. With `trace_tokens`, decode those segments; otherwise return the in-memory session trace (if tracing is enabled). Optional `agent_id` keeps only events whose `aid` matches.',
     {
       ...sessionIndexParam,
       trace_tokens: z.array(z.string()).optional().describe('Optional. Trace tokens from next_activity `_meta.trace_token`; omit for the full in-memory session trace.'),
+      agent_id: z.string().min(1).optional().describe(
+        'Optional. Keep only trace events whose aid equals this worker context.',
+      ),
     },
-    withAuditLog('get_trace', withSessionStoreErrors(async ({ session_index, trace_tokens }) => {
+    withAuditLog('get_trace', withSessionStoreErrors(async ({ session_index, trace_tokens, agent_id }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -1444,7 +1633,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             errors.push(e instanceof Error ? e.message : String(e));
           }
         }
-        const result: Record<string, unknown> = { traceId: state.sessionIndex, source: 'tokens', event_count: allEvents.length, events: allEvents, session_index };
+        const filteredTokenEvents = agent_id ? allEvents.filter(e => e.aid === agent_id) : allEvents;
+        const result: Record<string, unknown> = { traceId: state.sessionIndex, source: 'tokens', event_count: filteredTokenEvents.length, events: filteredTokenEvents, session_index };
         if (errors.length > 0) result['token_errors'] = errors;
         return {
           content: [{ type: 'text' as const, text: JSON.stringify(result, null, 2) }],
@@ -1459,7 +1649,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         };
       }
 
-      const events = config.traceStore.getEvents(state.sessionIndex);
+      const eventsRaw = config.traceStore.getEvents(state.sessionIndex);
+      const events = agent_id ? eventsRaw.filter(e => e.aid === agent_id) : eventsRaw;
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({ traceId: state.sessionIndex, source: 'memory', tracing_enabled: true, event_count: events.length, events, session_index }, null, 2) }],
         _meta: { session_index, validation: buildValidation() },
@@ -1568,13 +1759,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     {
       ...sessionIndexParam,
       view: z.enum(INSPECT_SESSION_VIEWS).default('summary')
-        .describe('Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-activity token cost as the orchestrator reported it on next_activity).'),
+        .describe('Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-dispatch token rows and plain-sum totals from record_usage).'),
       child_index: z.number().int().nonnegative().optional()
         .describe('Optional. Project triggeredWorkflows[child_index].state instead of the parent session.'),
       variable: z.string().optional()
         .describe('Optional. With view=variables, return a single variable by name.'),
+      agent_id: z.string().min(1).optional().describe(
+        'Optional. Narrow history and usage projections to events/rows whose data.agentId matches this worker context.',
+      ),
     },
-    withAuditLog('inspect_session', withSessionStoreErrors(async ({ session_index, view, child_index, variable }) => {
+    withAuditLog('inspect_session', withSessionStoreErrors(async ({ session_index, view, child_index, variable, agent_id }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       // Positional one-level descent into the addressed session's children, matching the
@@ -1589,6 +1783,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         view,
         variable,
         config.pathPresentation,
+        agent_id,
       );
 
       // Read-only: no advanceSession / saveSessionForTool — the on-disk state stays untouched.
