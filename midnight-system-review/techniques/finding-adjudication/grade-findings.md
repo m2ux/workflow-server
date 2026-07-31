@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Grade every candidate finding with the complete grade tuple defined by the [grading-rubric](../../resources/grading-rubric.md) — verifying each candidate's evidence anchor first, then assigning every tuple dimension from the rubric's definitions, never from intuition.
+Grade every candidate finding with the complete grade tuple defined by the [grade tuple](../../resources/grading-rubric.md#the-grade-tuple) — verifying each candidate's evidence anchor first, then assigning every tuple dimension from the rubric's definitions and [calibration anchors](../../resources/grading-rubric.md#calibration-anchors), never from intuition.
 
 ## Inputs
 
@@ -51,6 +51,6 @@ How the finding was validated — which probe class produced the evidence, or bl
 
 ### 2. Grade
 
-- Assign every tuple dimension for each candidate from the [grading-rubric](../../resources/grading-rubric.md) definitions and calibration anchors, recording a one-line rationale per dimension that cites the rubric line applied.
+- Assign every tuple dimension for each candidate from the [grade tuple](../../resources/grading-rubric.md#the-grade-tuple) definitions and [calibration anchors](../../resources/grading-rubric.md#calibration-anchors), recording a one-line rationale per dimension that cites the rubric line applied.
 - Grade every candidate independently before any disposition thinking — acceptance is registration's decision, not grading's.
 - Emit `{graded_findings}`.

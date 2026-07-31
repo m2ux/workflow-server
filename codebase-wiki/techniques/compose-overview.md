@@ -22,7 +22,7 @@ The composed `overview.md` completion summary — areas covered, page counts by 
 ### 2. Compose The Summary
 
 - Compose `{wiki_overview}` covering: the areas the build covered, the page counts by type (`concept`, `entity`, `source-summary`, `comparison`), the `{raw_baseline_commit}` every citation is relative to, and any lint findings the user accepted at the lint pass.
-- Follow the overview section of the [wiki-format](../resources/wiki-format.md) resource for structure.
+- Follow the [wiki tree layout](../resources/wiki-format.md#wiki-tree-layout) for where `overview.md` sits in the tree and what it records.
 
 ## Rules
 

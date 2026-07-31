@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Compute the 1-5 merge-readiness verdict from the accepted findings — mechanically, per the [verdict-rubric](../../resources/verdict-rubric.md) scale and calibration anchors — and derive the review type from the verdict per the rubric's mapping, so publishing never relies on a downstream default.
+Compute the 1-5 merge-readiness verdict from the accepted findings — mechanically, per the [verdict scale](../../resources/verdict-rubric.md#the-scale) and [calibration anchors](../../resources/verdict-rubric.md#calibration-anchors) — and derive the review type from the verdict per the [verdict-to-review-type](../../resources/verdict-rubric.md#verdict-to-review-type) mapping, so publishing never relies on a downstream default.
 
 ## Inputs
 
@@ -31,9 +31,9 @@ The rubric lines applied and the accepted findings that drove the verdict — th
 
 ### 1. Compute Verdict
 
-- Score `{accepted_findings}` against the [verdict-rubric](../../resources/verdict-rubric.md): apply the scale's level definitions and calibration anchors to the accepted set's risk/impact and category profile; record which rubric lines fired in `{verdict_rationale}`.
+- Score `{accepted_findings}` against the [verdict scale](../../resources/verdict-rubric.md#the-scale): apply the scale's level definitions and [calibration anchors](../../resources/verdict-rubric.md#calibration-anchors) to the accepted set's risk/impact and category profile; record which rubric lines fired in `{verdict_rationale}`.
 - Compute from the accepted set only. An empty accepted set scores per the rubric's clean-run anchor — observations may be noted in the rationale but never lower the score.
 
 ### 2. Derive Review Type
 
-- Map `{merge_readiness_verdict}` to `{review_type}` using the rubric's mapping table, and emit both with `{verdict_rationale}`.
+- Map `{merge_readiness_verdict}` to `{review_type}` using the [verdict-to-review-type](../../resources/verdict-rubric.md#verdict-to-review-type) mapping table, and emit both with `{verdict_rationale}`.

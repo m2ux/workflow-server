@@ -31,4 +31,4 @@ The strategic review [document](../../resources/strategic-review.md#strategic-re
 - Document all findings in the `{strategic_review_doc}`, written under `{planning_folder_path}`
 - Categorize each finding per the group's [finding-categories](./TECHNIQUE.md#finding-categories), assigning each a stable ID (SR-1, SR-2 …) that downstream surfaces reference
 - Report exceptions only: a clean review result is one line ("all changes justified — no findings"), never a per-section template fill; findings from other reviews are referenced by ID
-- Record any deferred finding as a deferred-items register row ([deferred-items](../../resources/deferred-items.md)) linked from the finding
+- Record any deferred finding as a deferred-items register row (shape per the [deferred-items template](../../resources/deferred-items.md#template)) linked from the finding

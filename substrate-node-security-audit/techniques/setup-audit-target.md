@@ -85,7 +85,7 @@ Session overview with audit target, commit, methodology, and artifact index.
 ### 7. Create Planning Folder
 
 - Create `{planning_folder_path}` following the naming pattern `YYYY-MM-DD-NN-{target_submodule}-security-audit`, where `NN` continues the numbering of existing audit folders at the same root.
-- Initialize the `{start_here}` overview inside `{planning_folder_path}` from the [start-here](../resources/start-here.md) orientation, recording audit target, commit, methodology, and artifact index.
+- Initialize the `{start_here}` overview inside `{planning_folder_path}` from the [start-here overview](../resources/start-here.md#overview), [key artifacts](../resources/start-here.md#key-artifacts-produced), and [options at setup](../resources/start-here.md#options-at-setup), recording audit target, commit, methodology, and artifact index.
 
 ### 8. Load Template
 

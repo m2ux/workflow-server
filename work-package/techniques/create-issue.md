@@ -51,7 +51,7 @@ URL of the verified or newly created issue.
 
 ### 2. Create Github Issue
 
-- Runs when `{issue_platform}` is github and `{needs_issue_creation}` is true. Use attached [github-issue-creation](../resources/github-issue-creation.md) for guidance.
+- Runs when `{issue_platform}` is github and `{needs_issue_creation}` is true. Use the [issue template](../resources/github-issue-creation.md#issue-template) and [section rules](../resources/github-issue-creation.md#section-rules) (and [anti-patterns](../resources/github-issue-creation.md#anti-patterns) when checking the draft).
 - Gather title, description, and acceptance criteria from user context, scoping the issue to the `{component_name}` the work package targets
 - Map `{issue_type}` to GitHub labels using the label mapping below
 - Create the issue, then verify creation succeeded, capturing `{issue_number}` and `{issue_url}` from the verified issue.
@@ -60,7 +60,7 @@ URL of the verified or newly created issue.
 
 ### 3. Create Jira Issue
 
-- Runs when `{issue_platform}` is jira and `{needs_issue_creation}` is true. Use attached [jira-issue-creation](../resources/jira-issue-creation.md) for guidance.
+- Runs when `{issue_platform}` is jira and `{needs_issue_creation}` is true. Use the [issue structure](../resources/jira-issue-creation.md#issue-structure) and [issue types](../resources/jira-issue-creation.md#issue-types) (and [anti-patterns](../resources/jira-issue-creation.md#anti-patterns) when checking the draft).
 - Obtain Atlassian cloud ID via `getAccessibleAtlassianResources` and preserve as `{$jira_cloud_id}`. This MUST be the first Jira tool call.
 - Create the issue in the `{jira_project}` chosen at the `jira-project-selection` gate; if it is unset, list available projects via `getVisibleJiraProjects` and obtain the user's project selection. Resolve available issue types for the selected project.
 - Gather summary, description, and acceptance criteria, scoping the issue to the `{component_name}` the work package targets. Resolve assignee account ID if specified.
