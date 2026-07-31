@@ -345,7 +345,9 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         {
           "id": "dco-sign-off-confirmation",
           "option": "certify",
-          "setVariable": undefined,
+          "setVariable": {
+            "attestation_option": "certify",
+          },
         },
         {
           "id": "body-non-conformant",
@@ -381,6 +383,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "rerender-body",
         "verify-body",
         "instruct-merge-strategy",
+        "merge-strategy-guidance",
         "mark-ready",
         "process-review-comments",
         "analyze-review-outcome",
@@ -411,6 +414,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "create-complete-doc",
         "render-token-usage",
         "ensure-docs",
+        "read-session",
         "conduct-retrospective",
         "announce-retrospective",
         "verify-artifact-links",
@@ -835,7 +839,9 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         {
           "id": "dco-sign-off-confirmation",
           "option": "certify",
-          "setVariable": undefined,
+          "setVariable": {
+            "attestation_option": "certify",
+          },
         },
         {
           "id": "body-non-conformant",
@@ -871,6 +877,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "rerender-body",
         "verify-body",
         "instruct-merge-strategy",
+        "merge-strategy-guidance",
         "mark-ready",
         "process-review-comments",
         "analyze-review-outcome",
@@ -903,6 +910,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "create-complete-doc",
         "render-token-usage",
         "ensure-docs",
+        "read-session",
         "conduct-retrospective",
         "announce-retrospective",
         "verify-artifact-links",
@@ -1356,7 +1364,9 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         {
           "id": "dco-sign-off-confirmation",
           "option": "certify",
-          "setVariable": undefined,
+          "setVariable": {
+            "attestation_option": "certify",
+          },
         },
         {
           "id": "body-non-conformant",
@@ -1392,6 +1402,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "rerender-body",
         "verify-body",
         "instruct-merge-strategy",
+        "merge-strategy-guidance",
         "mark-ready",
         "process-review-comments",
         "analyze-review-outcome",
@@ -1424,6 +1435,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "create-complete-doc",
         "render-token-usage",
         "ensure-docs",
+        "read-session",
         "conduct-retrospective",
         "announce-retrospective",
         "verify-artifact-links",
@@ -1836,7 +1848,9 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         {
           "id": "dco-sign-off-confirmation",
           "option": "certify",
-          "setVariable": undefined,
+          "setVariable": {
+            "attestation_option": "certify",
+          },
         },
         {
           "id": "body-non-conformant",
@@ -1872,6 +1886,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "rerender-body",
         "verify-body",
         "instruct-merge-strategy",
+        "merge-strategy-guidance",
         "mark-ready",
         "process-review-comments",
         "analyze-review-outcome",
@@ -1904,6 +1919,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "create-complete-doc",
         "render-token-usage",
         "ensure-docs",
+        "read-session",
         "conduct-retrospective",
         "announce-retrospective",
         "verify-artifact-links",
@@ -2234,7 +2250,8 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "stepsExecuted": [
         "announce-start",
         "consolidate-review-findings",
-        "publish-review-artifacts",
+        "resolve-artifact-publish",
+        "commit-review-artifacts",
         "generate-review-summary",
         "present-summary-to-user",
         "persist-review-summary",
@@ -2264,9 +2281,11 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "stepsExecuted": [
         "create-complete-doc",
         "render-token-usage",
+        "read-session",
         "conduct-retrospective",
         "announce-retrospective",
         "verify-artifact-links",
+        "resolve-close-out-publish",
         "publish-close-out-artifacts",
         "select-next",
         "announce-completion",
@@ -2623,7 +2642,9 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         {
           "id": "dco-sign-off-confirmation",
           "option": "certify",
-          "setVariable": undefined,
+          "setVariable": {
+            "attestation_option": "certify",
+          },
         },
         {
           "id": "body-non-conformant",
@@ -2659,6 +2680,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "rerender-body",
         "verify-body",
         "instruct-merge-strategy",
+        "merge-strategy-guidance",
         "mark-ready",
         "process-review-comments",
         "analyze-review-outcome",
@@ -2689,6 +2711,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "create-complete-doc",
         "render-token-usage",
         "ensure-docs",
+        "read-session",
         "conduct-retrospective",
         "announce-retrospective",
         "verify-artifact-links",
