@@ -5,23 +5,24 @@
   "workflowVersion": "5.14.0",
   "agentId": "orchestrator",
   "sessionIndex": "ASODCH",
-  "currentActivity": "dispatch-client-workflow",
+  "currentActivity": "end-workflow",
   "currentTechnique": "workflow-engine::dispatch-activity",
-  "condition": "isDefault:dispatch-client-workflow",
-  "seq": 13,
-  "ts": 1785516625,
+  "condition": "client_workflow_completed",
+  "seq": 14,
+  "ts": 1785521969,
   "startedAt": "2026-07-31T16:44:46.390Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
-    "resolve-target"
+    "resolve-target",
+    "dispatch-client-workflow"
   ],
   "skippedActivities": [],
   "variables": {
     "abort_completion": false,
     "client_planning_slug": "2026-07-31-section-resource-grain-358-359",
     "client_session_index": "TNUCFN",
-    "client_workflow_completed": false,
+    "client_workflow_completed": true,
     "component_path": ".",
     "component_selection_needed": false,
     "has_saved_state": false,
@@ -30,6 +31,7 @@
     "is_monorepo": false,
     "is_resuming": false,
     "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-resource-grain-358-359",
+    "pr_url": "https://github.com/m2ux/workflow-server/pull/370",
     "resume_intent_requested": false,
     "target_repo": "m2ux/workflow-server",
     "target_workflow_id": "workflow-authoring",
@@ -523,6 +525,55 @@
       },
       "timestamp": "2026-07-31T16:50:25.154Z",
       "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-07-31T18:19:29.718Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_workflow_completed",
+        "source": "variables_changed",
+        "value": true
+      },
+      "timestamp": "2026-07-31T18:19:29.718Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_session_index",
+        "source": "variables_changed",
+        "value": "TNUCFN"
+      },
+      "timestamp": "2026-07-31T18:19:29.718Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "pr_url",
+        "source": "variables_changed",
+        "value": "https://github.com/m2ux/workflow-server/pull/370"
+      },
+      "timestamp": "2026-07-31T18:19:29.718Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-ASODCH",
+        "stepId": "dispatch-client"
+      },
+      "timestamp": "2026-07-31T18:19:29.718Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-07-31T18:19:29.718Z",
+      "type": "activity_entered"
     }
   ],
   "triggeredWorkflows": [
@@ -557,10 +608,11 @@
         "completedActivities": [
           "intake-and-context",
           "scope-and-draft",
-          "quality-review"
+          "quality-review",
+          "validate-and-commit"
         ],
-        "condition": "isDefault: validate-and-commit",
-        "currentActivity": "validate-and-commit",
+        "condition": "isDefault:__terminal__",
+        "currentActivity": "__terminal__",
         "currentTechnique": "work-package::manage-git::remove-worktree",
         "declaredArtifacts": [
           {
@@ -595,6 +647,16 @@
           },
           {
             "id": "findings-register",
+            "name": "08-findings-register.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-resource-grain-358-359/08-findings-register.md"
+          },
+          {
+            "id": "completion_document",
+            "name": "COMPLETE.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-resource-grain-358-359/09-COMPLETE.md"
+          },
+          {
+            "id": "findings_register",
             "name": "08-findings-register.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-resource-grain-358-359/08-findings-register.md"
           }
@@ -2508,19 +2570,250 @@
             },
             "timestamp": "2026-07-31T18:16:21.570Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "commit_approved",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_number",
+              "source": "variables_changed",
+              "value": "370"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/370"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "addressed_count",
+              "source": "variables_changed",
+              "value": 63
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "total_count",
+              "source": "variables_changed",
+              "value": 63
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "unaddressed_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "open_finding_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "has_critical_finding",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "has_coverage_gap",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-TNUCFN-validate-commit",
+              "stepId": "verify-audit-findings"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-TNUCFN-validate-commit",
+              "stepId": "compile-register"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-TNUCFN-validate-commit",
+              "stepId": "persist-register"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-TNUCFN-validate-commit",
+              "stepId": "verify-scope-manifest"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-TNUCFN-validate-commit",
+              "stepId": "verify-planning-readme"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-TNUCFN-validate-commit",
+              "stepId": "approve-to-commit"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-TNUCFN-validate-commit",
+              "stepId": "compose-publication"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-TNUCFN-validate-commit",
+              "stepId": "stage-and-commit"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-TNUCFN-validate-commit",
+              "stepId": "push-branch"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-TNUCFN-validate-commit",
+              "stepId": "open-pr"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-TNUCFN-validate-commit",
+              "stepId": "compose-close-out"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-TNUCFN-validate-commit",
+              "stepId": "persist-close-out"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-TNUCFN-validate-commit",
+              "stepId": "remove-worktree"
+            },
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "__terminal__",
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-07-31T18:19:22.446Z",
+            "type": "workflow_completed"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 72,
+        "seq": 73,
         "sessionIndex": "TNUCFN",
         "skippedActivities": [],
         "startedAt": "2026-07-31T16:48:04.712Z",
-        "status": "running",
+        "status": "completed",
         "triggeredWorkflows": [],
-        "ts": 1785521781,
+        "ts": 1785521962,
         "variables": {
-          "addressed_count": 0,
+          "addressed_count": 63,
           "base_ref": "4196c853",
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-resource-grain-358-359/01-change-brief.md",
           "change_request_clear": true,
@@ -2538,8 +2831,8 @@
           "operation_type": "update",
           "operation_type_ambiguous": false,
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-resource-grain-358-359",
-          "pr_number": "",
-          "pr_url": "",
+          "pr_number": "370",
+          "pr_url": "https://github.com/m2ux/workflow-server/pull/370",
           "register_sections": [],
           "remediation_round": 0,
           "remediation_selected": false,
@@ -2571,14 +2864,14 @@
             "work-packages",
             "remediate-vuln"
           ],
-          "total_count": 0,
+          "total_count": 63,
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
           "user_request": "Start a workflow authoring workflow for the changes specified in https://github.com/m2ux/workflow-server/issues/358 and https://github.com/m2ux/workflow-server/issues/359. Decide if these are 1 PR or 2.",
           "workflow_branch": "workflow/workflow-design-section-resource-grain-358-359",
           "workflow_id": "workflow-design",
           "workflow_readme": "unchanged — citation-only pass",
-          "worktree_created": true
+          "worktree_created": false
         },
         "workflowId": "workflow-authoring",
         "workflowVersion": "1.1.0"
