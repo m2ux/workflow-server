@@ -1,6 +1,6 @@
 # Section Stratification (#359) — July 2026
 
-> Update · Created 2026-07-31 · **Status:** Drafting
+> Update · Created 2026-07-31 · **Status:** Reviewing
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -25,7 +25,7 @@ PR2 for [#359](https://github.com/m2ux/workflow-server/issues/359): classify ~69
 | 3 | [Impact analysis](01-impact-analysis.md) | Blast radius, integrity, removals | 20-40m | ✅ |
 | 4 | Scope and draft | Worktree, manifest, per-file drafting | 30-60m | ✅ |
 | 5 | [Scope manifest](06-scope-manifest.md) · [framing](06-framing-classification.md) | File-level inventory; framing classify open | 15-30m | 🟡 |
-| 6 | Quality review | Criteria walk, consumer surface, guards | 30-60m | ⬚ |
+| 6 | Quality review | Criteria walk, consumer surface, guards | 30-60m | 🟡 |
 | 7 | [Findings register](08-findings-register.md) | Audit record, coverage, exclusions | 15-30m | ⬚ |
 | 8 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ⬚ |
 | 9 | [Close-out](09-COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |

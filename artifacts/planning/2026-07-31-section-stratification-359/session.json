@@ -572,12 +572,23 @@
       "sessionIndex": "B53HRA",
       "state": {
         "agentId": "orchestrator",
-        "checkpointResponses": {},
+        "checkpointResponses": {
+          "scope-and-draft-scope-confirmed#1": {
+            "effects": {
+              "variablesSet": {
+                "scope_manifest_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-07-31T19:20:38.000Z"
+          }
+        },
         "completedActivities": [
-          "intake-and-context"
+          "intake-and-context",
+          "scope-and-draft"
         ],
         "condition": "isDefault",
-        "currentActivity": "scope-and-draft",
+        "currentActivity": "quality-review",
         "currentTechnique": "workflow-definition::scope-definition",
         "declaredArtifacts": [
           {
@@ -594,6 +605,11 @@
             "id": "impact_analysis",
             "name": "impact-analysis.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-stratification-359/01-impact-analysis.md"
+          },
+          {
+            "id": "scope_manifest",
+            "name": "scope-manifest.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-stratification-359/06-scope-manifest.md"
           }
         ],
         "deliveredContent": {
@@ -1226,17 +1242,194 @@
             },
             "timestamp": "2026-07-31T19:16:46.686Z",
             "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-confirmed#1",
+            "timestamp": "2026-07-31T19:19:51.309Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-confirmed#1",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-31T19:20:38.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-31T19:20:38.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "workflow_branch",
+              "source": "variables_changed",
+              "value": "workflow/workflow-design-section-stratification-359"
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "target_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-31-section-stratification-359/"
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "file_count",
+              "source": "variables_changed",
+              "value": 5
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-stratification-359/06-scope-manifest.md"
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_round",
+              "source": "variables_changed",
+              "value": 1
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "stepId": "derive-workflow-branch"
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "stepId": "ensure-worktree"
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "stepId": "define-scope"
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "stepId": "persist-scope-manifest"
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "stepId": "scope-confirmed#1"
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "stepId": "file-drafting-loop"
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "stepId": "author-workflow-readme"
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "stepId": "verify-planning-artifacts"
+            },
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-07-31T19:21:01.355Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 15,
+        "seq": 19,
         "sessionIndex": "B53HRA",
         "skippedActivities": [],
         "startedAt": "2026-07-31T19:13:41.875Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785525406,
+        "ts": 1785525661,
         "variables": {
           "addressed_count": 0,
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-stratification-359/01-change-brief.md",
@@ -1258,6 +1451,7 @@
           "change_request_clear": true,
           "commit_approved": false,
           "fail_count": 0,
+          "file_count": 5,
           "has_coverage_gap": false,
           "has_critical_finding": false,
           "has_unflagged_removals": false,
@@ -1281,9 +1475,9 @@
           "report_path": "",
           "review_closed": false,
           "review_scope_confirmed": false,
-          "scope_manifest_confirmed": false,
-          "scope_manifest_path": "",
-          "scope_round": 0,
+          "scope_manifest_confirmed": true,
+          "scope_manifest_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-stratification-359/06-scope-manifest.md",
+          "scope_round": 1,
           "structural_inventory": "Canon home workflow-design; corpus-wide resources under workflows/; ~69 framing sites + 5 fixed PR2 paths; no topology change",
           "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-07-31-section-stratification-359/",
           "target_workflow_id": "workflow-design",
@@ -1294,9 +1488,9 @@
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
           "user_request": "Start workflow-authoring for https://github.com/m2ux/workflow-server/issues/359 (section stratification / framing). This is PR2 of the two-PR split after PR1 #358 landed as https://github.com/m2ux/workflow-server/pull/370. Scope: classify ~69 framings (delete duplicate / name ## for operative unique / leave orientation); fix 3 cross-section deps with anchored links; extend principle 30 or 32 with clause that content a section-scoped reader depends on lives in a section; add AP-134 sibling framing-outside-any-section; delivery variant C only after classification arithmetic supports it (separate src/ slice if needed). Prefer fresh planning folder for #359; may reference prior planning 2026-07-31-section-resource-grain-358-359 for context. Do not re-do #358 citation tail.",
-          "workflow_branch": "",
+          "workflow_branch": "workflow/workflow-design-section-stratification-359",
           "workflow_id": "workflow-design",
-          "worktree_created": false
+          "worktree_created": true
         },
         "workflowId": "workflow-authoring",
         "workflowVersion": "1.1.0"
