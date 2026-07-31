@@ -9,6 +9,10 @@ metadata:
   type: template
 ---
 
+# Final Output Template
+
+## Artifact contract
+
 This resource defines the faithful structure of the final report artifact. The report carries a
 `report_path`, a `finding_count`, and a `core_finding`. Findings are written in factual declarative
 voice with no attribution to passes, lenses, or analytical process.

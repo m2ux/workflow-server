@@ -5,6 +5,8 @@ description: Canonical Template and rules for the README.md entry-point of any w
 
 # Planning Folder README Guide
 
+## Index role
+
 The `README.md` is the entry point for a workflow's planning folder (git hosting renders it when browsing). It is an **index** — a hub of links answering "what is this work, and what is its current status?" in under two minutes. Each linked artifact is the single home of its own content; the README links to it (single-source-and-link).
 
 This resource owns the **universal Template** and the policy around it, in three parts: the [Template](#template) plus [Rules](#rules) for the sections it lays out, [Status](#status) for the whole Progress status model, and [Matching](#matching) for how writers address rows. [create-readme](../techniques/workflow-engine/create-readme.md) seeds `README.md` from the Template, then splices Progress rows (and optional append headings) from the workflow's **readme-seed** profile; [verify-readme-conforms](../techniques/workflow-engine/verify-readme-conforms.md) drift-checks against it; [sync-progress-status](../techniques/workflow-engine/sync-progress-status.md) is the only writer of Progress Status cells.
