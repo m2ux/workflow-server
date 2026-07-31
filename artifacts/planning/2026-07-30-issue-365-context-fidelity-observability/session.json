@@ -556,6 +556,15 @@
             "optionId": "proceed",
             "respondedAt": "2026-07-31T04:28:21.000Z"
           },
+          "strategic-review-review-findings": {
+            "effects": {
+              "variablesSet": {
+                "needs_strategic_fixes": true
+              }
+            },
+            "optionId": "fix-findings",
+            "respondedAt": "2026-07-31T11:30:28.000Z"
+          },
           "strategic-review-unsigned-commits-prompt": {
             "effects": {
               "variablesSet": {
@@ -843,9 +852,17 @@
             "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
             "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
             "resource:architecture-review": "2b892c2e43015d16",
+            "resource:architecture-review#architectural-significance": "ca67ef89ae35c539",
+            "resource:architecture-review#decision-making-discipline": "e5a89514ce0be97a",
             "resource:architecture-summary": "8dfddad37065769c",
+            "resource:architecture-summary#architecture-summary-artifact-template": "4960c9bb4acfbd53",
+            "resource:architecture-summary#diagram-selection": "871a852f3461902e",
+            "resource:deferred-items": "4bb13759c0e75532",
+            "resource:design-framework#design-philosophy-artifact-template": "4ab6abbb473163ba",
+            "resource:follow-ups": "c070f4f8c7386158",
             "resource:meta/planning-readme#template": "53fdedb8a4da0bb0",
             "resource:pr-description": "2bec41cba59ef62d",
+            "resource:session-trace": "efe712bc937a4832",
             "resource:strategic-review#strategic-review-artifact-template": "00f2039f527538c2",
             "resource:work-package/readme-seed": "daa50e4f8a129511",
             "technique:manage-artifacts::verify-artifact-conforms": "9c422b022581b8f3",
@@ -5223,17 +5240,470 @@
             },
             "timestamp": "2026-07-31T11:21:00.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 26424,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 9458,
+              "delivery": "unchanged",
+              "stepId": "review-strategy",
+              "techniqueId": "strategic-review::review-scope"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 3483,
+              "delivery": "unchanged",
+              "stepId": "verify-readme",
+              "techniqueId": "workflow-engine::verify-readme-conforms"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 9816,
+              "delivery": "unchanged",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "manage-artifacts::verify-artifact-conforms"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 6010,
+              "delivery": "unchanged",
+              "stepId": "ensure-changes-folder-entry",
+              "techniqueId": "strategic-review::changes-folder"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 5682,
+              "delivery": "unchanged",
+              "stepId": "verify-change-fragment",
+              "techniqueId": "strategic-review::verify-fragment"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 4770,
+              "delivery": "unchanged",
+              "stepId": "document-findings",
+              "techniqueId": "strategic-review::document-findings"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 5112,
+              "delivery": "unchanged",
+              "stepId": "create-architecture-summary",
+              "techniqueId": "summarize-architecture"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 4840,
+              "delivery": "unchanged",
+              "stepId": "analyze-strategic-findings",
+              "techniqueId": "strategic-findings-analysis"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 1304,
+              "delivery": "full",
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 1793,
+              "delivery": "full",
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 1643,
+              "delivery": "full",
+              "resourceId": "session-trace"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 1107,
+              "delivery": "full",
+              "resourceId": "architecture-review#architectural-significance"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 438,
+              "delivery": "full",
+              "resourceId": "architecture-review#decision-making-discipline"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 3930,
+              "delivery": "full",
+              "resourceId": "architecture-summary#architecture-summary-artifact-template"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 2545,
+              "delivery": "unchanged",
+              "resourceId": "strategic-review#strategic-review-artifact-template"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 2039,
+              "delivery": "full",
+              "resourceId": "design-framework#design-philosophy-artifact-template"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 1358,
+              "delivery": "full",
+              "resourceId": "architecture-summary#diagram-selection"
+            },
+            "timestamp": "2026-07-31T11:21:24.603Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "checkpoint": "review-findings",
+            "timestamp": "2026-07-31T11:29:10.620Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "strategic-review",
+            "checkpoint": "review-findings",
+            "data": {
+              "optionId": "fix-findings"
+            },
+            "timestamp": "2026-07-31T11:30:28.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "needs_strategic_fixes",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-31T11:30:28.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 11209,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 9458,
+              "delivery": "unchanged",
+              "stepId": "review-strategy",
+              "techniqueId": "strategic-review::review-scope"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 3483,
+              "delivery": "unchanged",
+              "stepId": "verify-readme",
+              "techniqueId": "workflow-engine::verify-readme-conforms"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 9816,
+              "delivery": "unchanged",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "manage-artifacts::verify-artifact-conforms"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 6010,
+              "delivery": "unchanged",
+              "stepId": "ensure-changes-folder-entry",
+              "techniqueId": "strategic-review::changes-folder"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 5682,
+              "delivery": "unchanged",
+              "stepId": "verify-change-fragment",
+              "techniqueId": "strategic-review::verify-fragment"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 4770,
+              "delivery": "unchanged",
+              "stepId": "document-findings",
+              "techniqueId": "strategic-review::document-findings"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 5112,
+              "delivery": "unchanged",
+              "stepId": "create-architecture-summary",
+              "techniqueId": "summarize-architecture"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 4840,
+              "delivery": "unchanged",
+              "stepId": "analyze-strategic-findings",
+              "techniqueId": "strategic-findings-analysis"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 1304,
+              "delivery": "unchanged",
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 1793,
+              "delivery": "unchanged",
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 1643,
+              "delivery": "unchanged",
+              "resourceId": "session-trace"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 1107,
+              "delivery": "unchanged",
+              "resourceId": "architecture-review#architectural-significance"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 438,
+              "delivery": "unchanged",
+              "resourceId": "architecture-review#decision-making-discipline"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 3930,
+              "delivery": "unchanged",
+              "resourceId": "architecture-summary#architecture-summary-artifact-template"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 2545,
+              "delivery": "unchanged",
+              "resourceId": "strategic-review#strategic-review-artifact-template"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 2039,
+              "delivery": "unchanged",
+              "resourceId": "design-framework#design-philosophy-artifact-template"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "bundled": true,
+              "chars": 1358,
+              "delivery": "unchanged",
+              "resourceId": "architecture-summary#diagram-selection"
+            },
+            "timestamp": "2026-07-31T11:30:36.450Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 156,
+        "seq": 162,
         "sessionIndex": "7Q54WJ",
         "skippedActivities": [],
         "startedAt": "2026-07-30T19:48:00.082Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785496860,
+        "ts": 1785497436,
         "variables": {
           "architecture_overview": "See the comprehension artifact's Architecture Overview section.",
           "artifact_name": "",
@@ -5311,7 +5781,7 @@
           "needs_plan_revision": false,
           "needs_research": true,
           "needs_simplification": true,
-          "needs_strategic_fixes": false,
+          "needs_strategic_fixes": true,
           "needs_test_improvements": false,
           "open_assumptions": [
             "DP-7",
