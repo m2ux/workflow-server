@@ -9,9 +9,9 @@ Current-implementation effectiveness analysis — baseline metrics, gaps, and do
 
 ## Inputs
 
-### target_submodule
+### component_name
 
-Target submodule for the work package (e.g., midnight-node, midnight-ledger)
+Basename of the component the work package targets (e.g., midnight-node, midnight-ledger)
 
 ## Outputs
 

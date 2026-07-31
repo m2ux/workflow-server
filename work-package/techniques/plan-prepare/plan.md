@@ -9,10 +9,6 @@ Work-package plan artifact — task breakdown, dependencies, ordering, and recor
 
 ## Inputs
 
-### design_philosophy
-
-Design philosophy artifact with problem classification and workflow path.
-
 ### requirements
 
 Work package requirements, driving the task breakdown and success-criteria alignment.

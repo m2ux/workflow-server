@@ -44,6 +44,9 @@ steps:
   - kind: technique
     id: compose-prompt
     technique: compose-audit-prompt::compose-prompt
+    actions:
+      - action: message
+        message: "Audit prompt written to {audit_prompt_path} — every prism run for this audit reads it."
   - kind: technique
     id: build-audit-scopes
     technique: compose-audit-prompt::build-audit-scopes

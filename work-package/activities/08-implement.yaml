@@ -33,7 +33,11 @@ steps:
         technique: manage-git::artifact-commits
       - kind: technique
         id: log-provenance
-        technique: dco-provenance::append-task-row
+        technique:
+          name: dco-provenance::append-task-row
+          inputs:
+            task_id: "{current_task.id}"
+            task_description: "{current_task.description}"
       - kind: technique
         id: self-review
         technique: task-completion-review

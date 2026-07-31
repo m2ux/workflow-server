@@ -7,11 +7,25 @@ metadata:
 
 Bootstrap the workflow-server, load an assigned activity, follow its steps sequentially, and return structured output
 
+## Inputs
+
+### agent_id
+
+Designator for this agent instance (e.g., 'a1-nto', 'b-static-analysis', 'd2-toolkit'), which also names the persisted output file.
+
+### step_products
+
+The declared products of the activity's preceding steps — the tables and verdict sets folded into the structured output.
+
 ## Outputs
 
 ### sub_agent_output
 
 Structured JSON conforming to the [Schema](../resources/sub-agent-output-schema.md#schema).
+
+#### artifact
+
+`{agent_id}.json`
 
 #### agent_id
 
@@ -63,7 +77,7 @@ observations not formal findings but for orchestrator review (optional)
 
 ### 3. Verify Output
 
-- Assemble `{sub_agent_output}` and verify it against the checks below before returning it.
+- Assemble `{sub_agent_output}` by folding every entry of `{step_products}` into its `mandatory_tables`, `checklist_coverage`, and `findings` fields, then verify it against the checks below before returning it.
 - `{sub_agent_output.steps_completed}` matches the activity's step IDs — no steps omitted.
 - Every FAIL in `{sub_agent_output.checklist_coverage}` has a corresponding finding in `{sub_agent_output.findings}`.
 - Every `{sub_agent_output.mandatory_tables}` entry is either populated or null with justification.

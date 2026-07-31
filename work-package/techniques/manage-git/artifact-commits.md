@@ -29,12 +29,6 @@ Engineering branch to push to
 
 Path to the product repo root (monorepo or standalone); the engineering checkout sits at or under it.
 
-## Outputs
-
-### artifact_commit
-
-The artifact commit pushed to `{branch}` on `origin` in `{eng_git_dir}`, carrying the canonical `docs(work-package): {activity_name} artifacts for {issue_key}` message and rebased onto sibling work-package commits. A side-effect op; the pushed commit is its product.
-
 ## Protocol
 
 ### 1. Commit Artifacts

@@ -103,7 +103,10 @@ steps:
             description: Drafting approach for this file requires revision.
       - kind: technique
         id: yaml-authoring
-        technique: yaml-authoring
+        technique:
+          name: yaml-authoring
+          inputs:
+            schema_type: "{current_file.type}"
       - kind: technique
         id: review-drafted-file
         technique: review-drafted-file

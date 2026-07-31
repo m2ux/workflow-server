@@ -20,7 +20,10 @@ steps:
     technique: plan-evaluation::summarize-scope
   - kind: checkpoint
     id: confirm-scope
-    message: Please confirm the evaluation scope, dimensions, and configuration before proceeding to dimension planning.
+    message: |-
+      The evaluation scope, dimensions, and configuration, for confirmation before dimension planning:
+
+      {scope_summary}
     options:
       - id: accept
         label: Proceed

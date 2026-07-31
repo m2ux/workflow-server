@@ -11,7 +11,11 @@ steps:
     technique: survey
   - kind: technique
     id: create-comprehension-artifact
-    technique: manage-artifacts::write-artifact
+    technique:
+      name: manage-artifacts::write-artifact
+      inputs:
+        artifact_content: comprehension_survey
+        target_dir: comprehension_dir
     actions:
       - action: message
         message: Comprehension artifact recorded for reference.

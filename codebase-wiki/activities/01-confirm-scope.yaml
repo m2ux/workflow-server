@@ -24,7 +24,10 @@ steps:
         description: The wiki root or the pinned commit needs adjustment before ingest begins.
   - kind: checkpoint
     id: ingest-scope-confirmed
-    message: "Here is the ingest plan derived from the scope — the ordered list of areas to ingest. Confirm before the build pass runs."
+    message: |-
+      The ingest plan derived from the scope '{ingest_scope}' — the ordered list of areas this build pass covers:
+
+      {ingest_plan}
     blocking: true
     options:
       - id: confirmed

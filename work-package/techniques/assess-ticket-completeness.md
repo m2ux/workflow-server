@@ -9,7 +9,7 @@ Tracker-ticket quality across problem, goal, scope, acceptance criteria, and use
 
 ## Inputs
 
-### ticket_details
+### issue_record
 
 Summary, description, and context of the tracker ticket being assessed (the linked issue's fields).
 
@@ -27,7 +27,7 @@ True once any identified gaps have been recorded (in the assumptions log) so the
 
 ### 1. Assess the Dimensions
 
-- Evaluate the `{ticket_details}` across five issue-quality dimensions: problem statement, goal, scope, acceptance criteria, and user stories.
+- Evaluate the `{issue_record}` across five issue-quality dimensions: problem statement, goal, scope, acceptance criteria, and user stories.
 - Judge each dimension as present and sufficient, present but weak, or missing.
 
 ### 2. Document Gaps

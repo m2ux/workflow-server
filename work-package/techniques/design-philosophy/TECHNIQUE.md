@@ -9,7 +9,7 @@ Structured design framework — problem classification, complexity, and workflow
 
 ## Inputs
 
-### issue_details
+### issue_record
 
 Summary, description, and context from the linked issue
 

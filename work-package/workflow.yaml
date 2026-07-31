@@ -143,6 +143,17 @@ variables:
   - name: branch_name
     type: string
     description: Feature branch name.
+  - name: default_branch
+    type: string
+    description: The repository's default branch, which feature branches sync from and merge into.
+  - name: attestation_option
+    type: string
+    description: "The human's DCO certification selection: 'certify' or 'flag-legal'."
+    defaultValue: certify
+  - name: safety_floor_cleared
+    type: boolean
+    description: Whether the applied simplifications hold the ponytail safety floor.
+    defaultValue: false
   - name: review_pr_url
     type: string
     description: URL of the PR being reviewed (review mode only).

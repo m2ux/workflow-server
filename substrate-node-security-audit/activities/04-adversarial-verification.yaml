@@ -11,7 +11,11 @@ steps:
         message: Starting adversarial verification of PASS items
   - kind: technique
     id: decompose-pass-claims
-    technique: decompose-safety-claims
+    technique:
+      name: decompose-safety-claims
+      inputs:
+        pass_items: dispatch_results
+        source_files: file_inventory
   - kind: action
     id: finalize-activity
     actions:

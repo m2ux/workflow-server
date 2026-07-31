@@ -46,7 +46,10 @@ steps:
         readme_section_heading: "## Solution Overview"
     actions:
       - action: message
-        message: "**Solution Overview** (plain-language summary for stakeholder reference)"
+        message: |-
+          **Solution Overview** — plain-language summary for stakeholder reference
+
+          {stakeholder_overview}
   - kind: technique
     id: collect-assumptions
     technique:

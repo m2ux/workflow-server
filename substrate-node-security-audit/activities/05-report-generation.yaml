@@ -37,8 +37,10 @@ steps:
           value: true
         message: Report generation is blocked until the merge sub-agent (M) has run and set merge_complete
       - action: validate
+        target: verification_report
         message: Report generation is blocked until every .rs file >200 lines in priority-1/2 crates has been read by at least one §3-applying sub-agent (coverage gate)
       - action: validate
+        target: reconciliation_table.unaccounted == 0
         message: Report generation is blocked until the merge reconciliation table shows zero Unaccounted findings for every agent (finding-count reconciliation gate)
   - kind: technique
     id: integrate-adversarial-results
@@ -46,12 +48,18 @@ steps:
       name: merge-findings
       inputs:
         merge_strategy: integrate
+        finding_sources: decomposition_results
+        existing_table: merge_table
   - kind: technique
     id: apply-severity
     technique: score-severity
   - kind: technique
     id: coverage-gate
-    technique: verify-sub-agent-output
+    technique:
+      name: verify-sub-agent-output
+      inputs:
+        agent_results: dispatch_results
+        expected_outputs: domain_map
   - kind: technique
     id: write-report
     condition:
@@ -69,7 +77,10 @@ steps:
           variable: merge_complete
           operator: ==
           value: true
-    technique: write-report
+    technique:
+      name: write-report
+      inputs:
+        merge_table: scored_findings
   - kind: action
     id: finalize-activity
     actions:

@@ -72,7 +72,7 @@ steps:
         id: validate-safety-floor
         actions:
           - action: validate
-            target: safety_floor
+            target: safety_floor_cleared == true
             message: Confirm the applied simplifications hold the safety floor — reject any simplification that breaches it.
       - kind: action
         id: reassess-simplification

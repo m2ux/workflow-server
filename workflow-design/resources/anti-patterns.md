@@ -1804,3 +1804,15 @@ Several techniques reach a harness capability directly because no operation owns
 **Do not flag:** A single call site — one consumer is not duplication, and inventing a wrapper against a hypothetical second is premature (`duplicate-shared-capability`). Sites that already bind or Apply a wrapping op, and the wrapper itself, where naming the tool is the point (`canonical-technique-reference`). Surfaces whose domain is the harness — engine, conduct, bootstrap and agent-entry prompts. Distinct callers of one tool for genuinely different capabilities.
 
 **Fix:** Author the operation that owns the capability, declaring its product on `## Outputs`; bind it as an activity step ahead of its consumers and let them declare that product as an input — never a Protocol `Apply` from each consumer (`pass-orchestration-in-technique`). Repoint every sideways citation at the owner. See also `no-duplicated-guidance`, `tool-contract-restated-in-protocol`.
+
+### AP-138. output-without-destination
+
+"`dependency_graph` and `prioritization_rationale` declared beside the ranking document whose sections they are"
+
+A declared output has nowhere to go, so the value exists only in the producing worker's report.
+
+**Detect:** For each `### <id>` under a technique's `## Outputs`, name where the value lands. A destination is an `#### artifact` on that entry; a step binding, output remap, gate, `validate` target, or same-named input reachable from a workflow that can bind this op; or a `{id}` interpolation in the binding activity's message or checkpoint text. Flag an entry with none — including one whose only mention is its own Protocol ("return `{id}`"), and one backed by a workflow `variables[]` slot that nothing reads. Test: name the reader; if the answer is the worker's own report, the entry is not a bind contract.
+
+**Do not flag:** An operation whose callers resolve outside the declaring tree — a shared library op, or one bound cross-workflow — where having no in-tree consumer is the expected state of a library. An output whose consumer is a sibling `#### artifact` token-template on the same technique, which resolves when the artifact contract is synthesised. A terminal activity's product that the binding activity surfaces: position at the end of the graph is not the licence, the delivery is.
+
+**Fix:** Give the value the destination it has. A file → `#### artifact` on the entry (`artifact-not-buried`, `artifact-name-is-filename`). A field of a sibling output's document → a `####` component of that output rather than a sibling `###` entry. A value a later step needs → bind it at the step and let the consumer declare it as an input. A value the run must show a human → interpolate `{id}` from the binding activity (`session-interaction-in-technique`). Where none applies the declaration is dead weight: delete it, and the variable that shadowed it. See [Output Economy](./design-principles.md#12-output-economy) and [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); the inverse smell is `technique-outputs-declared`.

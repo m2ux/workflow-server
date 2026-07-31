@@ -23,10 +23,6 @@ The classified operation — `create` or `update`.
 
 The block-indexed review table following the [Draft Attestation Guide](../resources/draft-attestation.md#template).
 
-### draft_attestation
-
-Record in the planning folder that every drafted block has been reviewed and is understood and intentional (closing line of the [draft-attestation](../resources/draft-attestation.md#template) template).
-
 ### draft_attestation_path
 
 Absolute path to the written draft-attestation artifact (includes the block-indexed review).
@@ -34,6 +30,10 @@ Absolute path to the written draft-attestation artifact (includes the block-inde
 #### artifact
 
 `draft-attestation.md`
+
+#### draft_attestation
+
+Closing line of the [draft-attestation](../resources/draft-attestation.md#template) template, recording that every drafted block has been reviewed and is understood and intentional.
 
 ## Protocol
 
@@ -48,5 +48,5 @@ Absolute path to the written draft-attestation artifact (includes the block-inde
 
 ### 3. Record Draft Attestation
 
-- Record `{draft_attestation}` in that artifact once every block is marked understood and intentional; flag any block marked for revision
+- Record `{draft_attestation_path.draft_attestation}` in that artifact once every block is marked understood and intentional; flag any block marked for revision
 - Binding-fidelity pass: for each drafted activity step that persists a planning artifact, confirm `manage-artifacts::write-artifact` (or equivalent) is a bound `steps[]` entry — not protocol-only prose — and that every technique input marked required has a producer in the same activity (or an explicit step-binding). Flag gaps for revision before attestation closes.

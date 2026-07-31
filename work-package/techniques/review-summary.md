@@ -13,13 +13,13 @@ Consolidated review summary in the consolidated review format.
 
 The findings gathered and classified across code review, test review, validation, and strategic review — the content the summary renders.
 
-### review_mode_resource
-
-The attached [review-mode](../resources/review-mode.md) resource. Read the whole-document skeleton from [Review Comment Template](../resources/review-mode.md#review-comment-template) and each category's findings fragment from that category's own section (e.g. [#code-review](../resources/review-mode.md#code-review), [#test-review](../resources/review-mode.md#test-review), [#strategic-review](../resources/review-mode.md#strategic-review)).
-
 ### prior_feedback_triage
 
 The triage of prior PR feedback — each prior comment dispositioned Confirmed / Refuted / Superseded — rendered as the summary's Prior Feedback Triage section.
+
+### review_ticket_ref
+
+*(optional)* The tracker ticket the reviewed PR addresses, named in the summary so the review is traceable to the work it judges.
 
 ### rating_cap
 
@@ -56,7 +56,7 @@ Every slot in `{review_summary}` whose measured size exceeds its budget in the f
 
 ### 1. Load the Format
 
-- Read the whole-document skeleton from [Review Comment Template](../resources/review-mode.md#review-comment-template) in the attached `{review_mode_resource}`. Read each category's findings fragment from that category's own section as it is populated (e.g. [#prior-feedback-triage](../resources/review-mode.md#prior-feedback-triage), [#code-review](../resources/review-mode.md#code-review), [#test-review](../resources/review-mode.md#test-review), [#documentation-review](../resources/review-mode.md#documentation-review), [#validation](../resources/review-mode.md#validation), [#branch-hygiene](../resources/review-mode.md#branch-hygiene), [#strategic-review](../resources/review-mode.md#strategic-review)).
+- Read the whole-document skeleton from [Review Comment Template](../resources/review-mode.md#review-comment-template). Read each category's findings fragment from that category's own section as it is populated (e.g. [#prior-feedback-triage](../resources/review-mode.md#prior-feedback-triage), [#code-review](../resources/review-mode.md#code-review), [#test-review](../resources/review-mode.md#test-review), [#documentation-review](../resources/review-mode.md#documentation-review), [#validation](../resources/review-mode.md#validation), [#branch-hygiene](../resources/review-mode.md#branch-hygiene), [#strategic-review](../resources/review-mode.md#strategic-review)).
 
 ### 2. Resolve the Two Refs
 

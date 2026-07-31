@@ -44,6 +44,9 @@ variables:
   - name: user_request
     type: string
     description: The user's free-form request that opened this audit.
+  - name: workspace_root
+    type: string
+    description: Absolute path to the repository root the audit runs against.
   - name: target_submodule
     type: string
     description: Path to the submodule being audited (e.g., midnight-node)

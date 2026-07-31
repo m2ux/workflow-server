@@ -13,6 +13,10 @@ Rust/Substrate code review of implementation changes for architecture, error han
 
 The authored surface — the PR's changed-files set, produced canonically by `review-baseline-state`.
 
+### expected_changes
+
+*(optional)* The changes the PR was expected to make, when a review-mode baseline derived them — the yardstick the authored surface is judged against.
+
 ### project_type
 
 *(optional)* Detected project type (rust-substrate or other)

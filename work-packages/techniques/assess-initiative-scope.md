@@ -9,9 +9,9 @@ Identify and categorize work packages from a multi-package initiative descriptio
 
 ## Inputs
 
-### user_initiative_description
+### user_request
 
-Free-form description of the initiative from the user
+The user's free-form description of the initiative.
 
 ## Outputs
 
@@ -31,7 +31,7 @@ Total number of identified packages
 
 ### 1. Confirm Multi Package
 
-- Read `{user_initiative_description}` and assess whether it involves multiple distinct deliverables or a single work package  
+- Read `{user_request}` and assess whether it involves multiple distinct deliverables or a single work package  
   > If it is a single package, recommend the `work-package` workflow instead and stop.
 - If multiple packages, proceed with decomposition
 
@@ -43,11 +43,10 @@ Total number of identified packages
 - Name each package descriptively using the domain language from the user's description
 - Capture a one-sentence description for each package
 
-### 3. Present Scope
+### 3. Size and Name
 
-- Present the `{work_packages}` as a numbered table of the identified packages with name and description
-- Highlight any packages that seem too large (should be split) or too small (should be merged)  
-  > Packages should be 2-8 hours of agentic work. Larger packages should be split; smaller ones merged.
+- Assemble `{work_packages}` as a numbered table of the identified packages with name and description, and `{package_count}` as its row count
+- Split any package larger than 8 hours of agentic work along a natural boundary, and merge any smaller than 2 hours into its nearest sibling
 - Set `{initiative_name}` based on the overall theme of the packages, per the [planning-folder-template](../resources/planning-folder-template.md#folder-location)
 
 ## Rules

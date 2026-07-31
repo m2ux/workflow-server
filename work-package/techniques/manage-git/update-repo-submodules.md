@@ -13,12 +13,6 @@ Refresh the monorepo's submodules to their tracked remote HEADs, with locking an
 
 Path to the repo root (monorepo whose submodules are refreshed); the gate, lock, freshness sentinel, and `git submodule update` all operate inside it. The op is a no-op when this is empty or the repo root is a standalone repo with no `.gitmodules`.
 
-## Outputs
-
-### refreshed_submodules
-
-The monorepo's submodules advanced to their tracked branches' remote HEADs (or a silent skip when gated out / skip-if-recent), with the `.workflow-submodule-refresh` freshness sentinel touched on success. Pointer changes are NOT committed. A side-effect op; repo-root freshness is its product.
-
 ## Protocol
 
 ### 1. Gate and Lock

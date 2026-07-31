@@ -64,7 +64,3 @@ Overall timeline span for the initiative, derived from phase durations
 
 - Define initiative-level success criteria (all packages complete, domain-specific criteria)
 - Reference per-package criteria from individual plan documents
-
-### 5. Present Roadmap
-
-- Present the completed `{start_here}` roadmap to the user for final review

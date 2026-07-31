@@ -8,7 +8,7 @@ steps:
     technique: document-roadmap
   - kind: checkpoint
     id: roadmap-complete
-    message: Roadmap complete. Ready to begin implementation?
+    message: The roadmap is complete — packages sequenced with navigation and success criteria, over an estimated span of {timeline_estimate}.
     options:
       - id: begin
         label: Begin implementation

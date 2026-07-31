@@ -27,7 +27,10 @@ steps:
     technique: verify-sub-agent-output
   - kind: technique
     id: format-output
-    technique: execute-sub-agent
+    technique:
+      name: execute-sub-agent
+      inputs:
+        step_products: "{verdict_matrix}, {invariant_table}, {storage_lifecycle}, {verification_report}"
 outcome:
   - The whole crate has been read, so no source file is silently left unreviewed
   - Every §3 checklist item has an evidence-backed verdict the orchestrator can trust without re-deriving it

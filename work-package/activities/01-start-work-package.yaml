@@ -244,7 +244,7 @@ steps:
       value: jira
     actions:
       - action: validate
-        target: jira_cloud_id != null
+        target: cloudId != null
         message: Atlassian cloudId not set. Load the atlassian-operations technique and call getAccessibleAtlassianResources before any Jira tool.
   - kind: technique
     id: verify-github-issue
@@ -557,7 +557,10 @@ steps:
         source_material: issue details, ticket description, and any context gathered during this activity
     actions:
       - action: message
-        message: "**Problem Overview** (plain-language summary for stakeholder reference)"
+        message: |-
+          **Problem Overview** — plain-language summary for stakeholder reference
+
+          {stakeholder_overview}
   - kind: technique
     id: derive-branch-name
     technique:

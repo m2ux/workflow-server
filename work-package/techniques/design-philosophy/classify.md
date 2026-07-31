@@ -13,7 +13,7 @@ Classify the problem as specific (cause known/unknown) or inventive (improvement
 
 The problem definition, classified into a problem type and assessed for complexity.
 
-### issue_details
+### issue_record
 
 Summary, description, and context from the linked issue, used to infer the problem type and any preliminary target symbols.
 

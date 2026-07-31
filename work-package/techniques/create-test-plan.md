@@ -9,7 +9,7 @@ Create test strategy and test plan with cases and acceptance criteria
 
 ## Inputs
 
-### plan_tasks
+### todo_tasks
 
 Atomic task breakdown with dependencies and ordering for the work package
 
@@ -31,7 +31,7 @@ Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance cr
 
 ### 2. Define Strategy
 
-- Define test strategy for the work package (unit, integration, e2e), using the `{plan_tasks}` breakdown to scope coverage to each task and its dependencies
+- Define test strategy for the work package (unit, integration, e2e), using the `{todo_tasks}` breakdown to scope coverage to each task and its dependencies
 - If `{requirements}` are not available, prompt the user to complete elicitation before continuing with test planning
 - Identify which `{requirements}` need which types of tests
 - Determine test infrastructure needs (fixtures, mocks, test doubles)

@@ -21,13 +21,6 @@ The feature branch brought current with the default branch.
 
 The default branch (typically `main`) fetched and rebased/merged into `{branch_name}`.
 
-## Outputs
-
-### synced_branch
-
-`{branch_name}` updated to include the latest default-branch commits, with any conflicts resolved. A side-effect op; the current feature branch is its product.
-
-
 ## Protocol
 
 1. From `{target_path}`, fetch the default branch and rebase or merge it into `{branch_name}` to bring the feature branch current.

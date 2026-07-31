@@ -9,7 +9,7 @@ Define a clear problem statement with system understanding, impact, success crit
 
 ## Inputs
 
-### issue_details
+### issue_record
 
 Summary, description, and context from the linked issue, reviewed to ground the problem statement.
 
@@ -27,7 +27,7 @@ A clear problem definition with system understanding, impact assessment, success
 
 ### 1. Review Context
 
-- Review `{issue_details}` and `{problem_context}`; the solution-space methodology (conventional-first, inventive principles) lives in the [design-framework](../../resources/design-framework.md#design-framework-trizics-approach) and is applied later at plan time — this operation defines the problem only
+- Review `{issue_record}` and `{problem_context}`; the solution-space methodology (conventional-first, inventive principles) lives in the [design-framework](../../resources/design-framework.md#design-framework-trizics-approach) and is applied later at plan time — this operation defines the problem only
 
 ### 2. Define Problem
 
