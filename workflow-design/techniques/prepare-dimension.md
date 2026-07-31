@@ -11,7 +11,7 @@ Markdown-ready elicitation prompt for a single design dimension from the elicita
 
 ### current_dimension
 
-The design dimension to elicit — one of the dimensions listed in the [elicitation-guide](../resources/elicitation-guide.md).
+The design dimension to elicit — one of the dimensions listed in [Dimensions](../resources/elicitation-guide.md#dimensions).
 
 ## Outputs
 
@@ -23,7 +23,7 @@ Markdown prompt for `{current_dimension}`: the guide's questions for that dimens
 
 ### 1. Load Dimension Guide
 
-- Load the [elicitation-guide](../resources/elicitation-guide.md) entry for `{current_dimension}` — sole source of questions and capture depth for this dimension
+- Load the [Dimensions](../resources/elicitation-guide.md#dimensions) entry for `{current_dimension}` — sole source of questions and capture depth for this dimension
 
 ### 2. Assemble Questions
 

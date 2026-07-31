@@ -40,7 +40,7 @@ The assembled update specification covering **changed** members of the update di
 
 ### 2. Assemble Changed Dimensions Only
 
-- From the update dimension set in [elicitation-guide](../resources/elicitation-guide.md) `## Mode Dimension Sets`, emit only dimensions that change relative to the baseline and change request
+- From the update dimension set in [Mode Dimension Sets](../resources/elicitation-guide.md#mode-dimension-sets), emit only dimensions that change relative to the baseline and change request
 - Omit unchanged dimensions from `{accumulated_design}` — do not assemble the full five every update
 - Derive each included dimension from the change sources and baseline; prefer additive edits named by findings or the change request; do not invent unrelated structural changes
 
