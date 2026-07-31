@@ -5,11 +5,12 @@
   "workflowVersion": "5.14.0",
   "agentId": "orchestrator",
   "sessionIndex": "6F7FMZ",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-07-30-issue-365-context-fidelity-observability",
   "currentActivity": "dispatch-client-workflow",
   "currentTechnique": "workflow-engine::dispatch-activity",
   "condition": "isDefault: dispatch-client-workflow",
-  "seq": 17,
-  "ts": 1785471259,
+  "seq": 19,
+  "ts": 1785482612,
   "startedAt": "2026-07-30T19:43:33.456Z",
   "completedActivities": [
     "discover-session",
@@ -34,7 +35,7 @@
     "resume_intent_requested": false,
     "target_repo": "m2ux/workflow-server",
     "target_workflow_id": "work-package",
-    "user_request": "Plan and implement the server-side changes for github.com/m2ux/workflow-server/issues/365, scoped by the user to items S2, S3 tail, S4 and S5 (excluding S7 which the issue requires on an isolated branch, S8 which is conditional on a measurement, and S9 which waits for a schema major). S2: reconcile artifacts_produced against the planning folder — diff the planning folder against the accumulated manifest at next_activity and surface undeclared files instead of silently staging them. S3 tail: pick and document the resumed-worker usage convention (cumulative vs delta), add a per-workflow usage aggregate across activities, and derive a cost estimate from it. S4: block-level dedup ledger for repeated contract/rules blocks inside technique payloads, measured against the fresh-mode gate. S5: close the fidelity-observability gaps — resource validation, step-granularity events, per-agent filtering. Deliver on a new branch in a git worktree and open a pull request. The user also asked that the workflow-canon skill be applied.",
+    "user_request": "Resume workflow for issue 365 context fidelity observability planning package",
     "workflow_match_ambiguous": false
   },
   "checkpointResponses": {},
@@ -430,17 +431,32 @@
       },
       "timestamp": "2026-07-31T04:14:19.393Z",
       "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-07-31T07:23:32.157Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 14928,
+        "delivery": "full",
+        "resourceId": "planning-readme"
+      },
+      "timestamp": "2026-07-31T07:23:32.157Z",
+      "type": "resource_fetched"
     }
   ],
   "triggeredWorkflows": [
     {
       "sessionIndex": "7Q54WJ",
       "state": {
-        "activeCheckpoint": {
-          "activityId": "requirements-elicitation",
-          "checkpointId": "elicitation-complete",
-          "yieldedAt": "2026-07-31T06:41:56.939Z"
-        },
         "agentId": "orchestrator",
         "checkpointResponses": {
           "codebase-comprehension-comprehension-sufficient": {
@@ -464,6 +480,15 @@
             "optionId": "full-workflow",
             "respondedAt": "2026-07-31T04:53:56.000Z"
           },
+          "requirements-elicitation-elicitation-complete": {
+            "effects": {
+              "variablesSet": {
+                "elicitation_complete": true
+              }
+            },
+            "optionId": "complete",
+            "respondedAt": "2026-07-31T07:26:38.000Z"
+          },
           "requirements-elicitation-stakeholder-transcript": {
             "effects": {
               "variablesSet": {
@@ -486,10 +511,11 @@
         "completedActivities": [
           "start-work-package",
           "design-philosophy",
-          "codebase-comprehension"
+          "codebase-comprehension",
+          "requirements-elicitation"
         ],
-        "condition": "condition: needs_elicitation == true",
-        "currentActivity": "requirements-elicitation",
+        "condition": "",
+        "currentActivity": "research",
         "currentTechnique": "analyse-challenge::run-loop",
         "deliveredContent": {
           "orchestrator": {
@@ -544,6 +570,21 @@
             "technique:requirements-elicitation::create-document": "52c6c7c22efcd4fe",
             "technique:requirements-elicitation::discuss": "942fe3f8636aec54",
             "technique:requirements-elicitation::elicit": "2836c65d832fa4f6",
+            "technique:review-assumptions::collect": "d4292b811da5cc3e",
+            "technique:review-assumptions::reconcile": "c12f9e9d7e597c8b",
+            "technique:review-assumptions::record": "15b4cdc7fa7d023d"
+          },
+          "w-requirements-elicitation-2": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "technique:requirements-elicitation::ask-question": "6f7025e23c1cd845",
+            "technique:requirements-elicitation::create-document": "0e0dae60fafebd1b",
+            "technique:requirements-elicitation::discuss": "942fe3f8636aec54",
+            "technique:requirements-elicitation::elicit": "813660991738f094",
             "technique:review-assumptions::collect": "d4292b811da5cc3e",
             "technique:review-assumptions::reconcile": "c12f9e9d7e597c8b",
             "technique:review-assumptions::record": "15b4cdc7fa7d023d"
@@ -2152,17 +2193,140 @@
             },
             "timestamp": "2026-07-31T06:42:39.459Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "elicitation-complete",
+            "data": {
+              "optionId": "complete"
+            },
+            "timestamp": "2026-07-31T07:26:38.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "elicitation_complete",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-31T07:26:38.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-2",
+              "chars": 69485,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T07:28:07.126Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-2",
+              "chars": 3803,
+              "delivery": "full",
+              "stepId": "stakeholder-discussion",
+              "techniqueId": "requirements-elicitation::discuss"
+            },
+            "timestamp": "2026-07-31T07:28:07.126Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-2",
+              "chars": 4676,
+              "delivery": "full",
+              "stepId": "elicit-requirements",
+              "techniqueId": "requirements-elicitation::elicit"
+            },
+            "timestamp": "2026-07-31T07:28:07.126Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-2",
+              "chars": 4025,
+              "delivery": "full",
+              "stepId": "ask-question",
+              "techniqueId": "requirements-elicitation::ask-question"
+            },
+            "timestamp": "2026-07-31T07:28:07.126Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-2",
+              "chars": 5144,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-31T07:28:07.126Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-2",
+              "chars": 3895,
+              "delivery": "full",
+              "stepId": "create-document",
+              "techniqueId": "requirements-elicitation::create-document"
+            },
+            "timestamp": "2026-07-31T07:28:07.126Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-2",
+              "chars": 4119,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-31T07:28:07.126Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "w-requirements-elicitation-2",
+              "chars": 12373,
+              "delivery": "full",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-07-31T07:28:07.126Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "timestamp": "2026-07-31T07:29:32.498Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "research",
+            "timestamp": "2026-07-31T07:29:32.498Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 53,
+        "seq": 57,
         "sessionIndex": "7Q54WJ",
         "skippedActivities": [],
         "startedAt": "2026-07-30T19:48:00.082Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785480159,
+        "ts": 1785482972,
         "variables": {
           "architecture_overview": "See the comprehension artifact's Architecture Overview section.",
           "artifact_name": "",
@@ -2198,7 +2362,7 @@
           "design_philosophy_doc": "02-design-philosophy.md",
           "design_rationale": "See the comprehension artifact's Design Rationale section.",
           "domain_glossary": "See the comprehension artifact's Domain Concept Mapping section.",
-          "elicitation_complete": false,
+          "elicitation_complete": true,
           "existing_pr_number": "",
           "github_issue_found": false,
           "gitnexus_indexed": true,
@@ -2308,6 +2472,9 @@
     }
   ],
   "deliveredContent": {
+    "orchestrator": {
+      "resource:planning-readme": "eea6f7819224dcea"
+    },
     "w-discover-session-1": {
       "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
       "bundle:variable-binding": "780a3e5bb26aea8d",
