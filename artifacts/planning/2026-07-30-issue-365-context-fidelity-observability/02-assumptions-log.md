@@ -44,6 +44,7 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | PL-3 | Plan & Prepare | Test Strategy | L | Initial test plan is objective-level placeholders (lifecycle phase 1); source hyperlinks land at finalize-documentation after implement. Rationale: create-test-plan lifecycle-phases rule. | Technique: create-test-plan | Validated |
 | PL-4 | Plan & Prepare | Dependency Assumptions | M | Plan-prepare can complete without live `gh`/GPG: PR body update and signed push are best-effort; failure is documented, not invented success. Rationale: env-prerequisites found invalid hosts.yml token and unreachable gpg-agent; technique allows document-and-continue when blocked. Alternatives: hard-stop activity (blocks planning artifacts already written). | Env: `gh auth status` fail; `gpg-connect-agent` permission denied | Validated |
 | PL-5 | Plan & Prepare | Scope Decisions | L | No new deferred rows beyond D-1…D-4; plan does not reopen price capture, corpus persist, or S8. Rationale: stakeholder scope + deferred-items register. | deferred-items.md D-1…D-4 | Validated |
+| AR-1 | Assumptions Review | — | — | No significant assumptions (Open section empty after plan confirmed; RE-4 closed with D-4; stale bag ids DP-7/DP-9/DP-10 already Confirmed/Corrected in-log; R-1 is a retrospective finding, not an assumption) | — | — |
 
 Resolution: how it was settled — `Code:` with file:line evidence, `User` (checkpoint or
 interview), or `—` while open; implementation-task rows append the commit hash for
@@ -55,8 +56,8 @@ statement) in the rationale.
 
 ## Open Assumptions
 
-*(none — plan-phase PL-1…PL-5 code/env-validated; no stakeholder residue)*
+*(none)*
 
 ## Wrap-Up
 
-Plan-prepare pass: 5 new assumptions (PL-1…PL-5) — all validated. Prior IA/RE-8 closed. Deferred items remain D-1…D-4 only.
+Assumptions-review pass: AR-1 null row — no open residue; no stakeholder checkpoint. Prior rows closed (including RE-4 → D-4). Deferred items remain D-1…D-4 only. Ready for implement.
