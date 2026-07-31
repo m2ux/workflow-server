@@ -555,6 +555,15 @@
             },
             "optionId": "proceed",
             "respondedAt": "2026-07-31T04:28:21.000Z"
+          },
+          "strategic-review-unsigned-commits-prompt": {
+            "effects": {
+              "variablesSet": {
+                "resign_unsigned_commits_requested": false
+              }
+            },
+            "optionId": "decline-resign",
+            "respondedAt": "2026-07-31T11:21:00.000Z"
           }
         },
         "completedActivities": [
@@ -568,11 +577,12 @@
           "assumptions-review",
           "implement",
           "lean-coding-audit",
-          "post-impl-review"
+          "post-impl-review",
+          "validate"
         ],
         "condition": "",
-        "currentActivity": "validate",
-        "currentTechnique": "summarize-architecture",
+        "currentActivity": "strategic-review",
+        "currentTechnique": "strategic-review::apply-cleanup",
         "deliveredContent": {
           "orchestrator": {
             "resource:meta/planning-readme#row-ownership-map": "e883775cc8b06d33",
@@ -824,6 +834,38 @@
             "technique:update-pr::create-pr": "34002ae3f5e942df",
             "technique:version-control::resolve-host-repo": "bb4592e21095bc0b",
             "technique:workflow-engine::create-readme": "2b6c1f530ae5701a"
+          },
+          "w-strategic-review-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:architecture-review": "2b892c2e43015d16",
+            "resource:architecture-summary": "8dfddad37065769c",
+            "resource:meta/planning-readme#template": "53fdedb8a4da0bb0",
+            "resource:pr-description": "2bec41cba59ef62d",
+            "resource:strategic-review#strategic-review-artifact-template": "00f2039f527538c2",
+            "resource:work-package/readme-seed": "daa50e4f8a129511",
+            "technique:manage-artifacts::verify-artifact-conforms": "9c422b022581b8f3",
+            "technique:strategic-findings-analysis": "b75bbaaf17f770aa",
+            "technique:strategic-review::apply-cleanup": "a543cd6ef1293561",
+            "technique:strategic-review::changes-folder": "79a2b141660145c1",
+            "technique:strategic-review::document-findings": "4c4952af31d02dcc",
+            "technique:strategic-review::review-scope": "fef30af10a9603af",
+            "technique:strategic-review::verify-fragment": "df7b1bc3990d2ca3",
+            "technique:summarize-architecture": "18a4ad3fa8f9eb97",
+            "technique:update-pr::render": "598bb0291b20e14c",
+            "technique:workflow-engine::verify-readme-conforms": "992ad3120855445b"
+          },
+          "w-validate-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09"
           }
         },
         "history": [
@@ -4940,17 +4982,258 @@
             "activity": "validate",
             "timestamp": "2026-07-31T11:08:07.063Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "validate",
+            "data": {
+              "agentId": "w-validate-1",
+              "chars": 26253,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T11:08:21.241Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "validate",
+            "timestamp": "2026-07-31T11:13:34.138Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "strategic-review",
+            "timestamp": "2026-07-31T11:13:34.138Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 82353,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T11:14:08.370Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 9458,
+              "delivery": "full",
+              "stepId": "review-strategy",
+              "techniqueId": "strategic-review::review-scope"
+            },
+            "timestamp": "2026-07-31T11:14:08.370Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 3483,
+              "delivery": "full",
+              "stepId": "verify-readme",
+              "techniqueId": "workflow-engine::verify-readme-conforms"
+            },
+            "timestamp": "2026-07-31T11:14:08.370Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 9816,
+              "delivery": "full",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "manage-artifacts::verify-artifact-conforms"
+            },
+            "timestamp": "2026-07-31T11:14:08.370Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 6010,
+              "delivery": "full",
+              "stepId": "ensure-changes-folder-entry",
+              "techniqueId": "strategic-review::changes-folder"
+            },
+            "timestamp": "2026-07-31T11:14:08.370Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 5682,
+              "delivery": "full",
+              "stepId": "verify-change-fragment",
+              "techniqueId": "strategic-review::verify-fragment"
+            },
+            "timestamp": "2026-07-31T11:14:08.370Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 4770,
+              "delivery": "full",
+              "stepId": "document-findings",
+              "techniqueId": "strategic-review::document-findings"
+            },
+            "timestamp": "2026-07-31T11:14:08.370Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 5112,
+              "delivery": "full",
+              "stepId": "create-architecture-summary",
+              "techniqueId": "summarize-architecture"
+            },
+            "timestamp": "2026-07-31T11:14:08.370Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 4840,
+              "delivery": "full",
+              "stepId": "analyze-strategic-findings",
+              "techniqueId": "strategic-findings-analysis"
+            },
+            "timestamp": "2026-07-31T11:14:08.370Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 2669,
+              "delivery": "full",
+              "resourceId": "strategic-review#strategic-review-artifact-template"
+            },
+            "timestamp": "2026-07-31T11:14:33.454Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 8623,
+              "delivery": "full",
+              "resourceId": "architecture-review"
+            },
+            "timestamp": "2026-07-31T11:14:33.557Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 6712,
+              "delivery": "full",
+              "resourceId": "architecture-summary"
+            },
+            "timestamp": "2026-07-31T11:15:10.027Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 7726,
+              "delivery": "full",
+              "stepId": "refresh-pr-body",
+              "techniqueId": "update-pr::render"
+            },
+            "timestamp": "2026-07-31T11:15:18.467Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 6299,
+              "delivery": "full",
+              "resourceId": "pr-description"
+            },
+            "timestamp": "2026-07-31T11:15:36.443Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 5486,
+              "delivery": "full",
+              "resourceId": "work-package/readme-seed"
+            },
+            "timestamp": "2026-07-31T11:16:07.316Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 5561,
+              "delivery": "full",
+              "stepId": "apply-cleanup",
+              "techniqueId": "strategic-review::apply-cleanup"
+            },
+            "timestamp": "2026-07-31T11:16:07.810Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "w-strategic-review-1",
+              "chars": 1250,
+              "delivery": "full",
+              "resourceId": "meta/planning-readme#template"
+            },
+            "timestamp": "2026-07-31T11:16:40.461Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "checkpoint": "unsigned-commits-prompt",
+            "timestamp": "2026-07-31T11:18:36.355Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "strategic-review",
+            "checkpoint": "unsigned-commits-prompt",
+            "data": {
+              "optionId": "decline-resign"
+            },
+            "timestamp": "2026-07-31T11:21:00.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "resign_unsigned_commits_requested",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-07-31T11:21:00.000Z",
+            "type": "variable_set"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 143,
+        "seq": 156,
         "sessionIndex": "7Q54WJ",
         "skippedActivities": [],
         "startedAt": "2026-07-30T19:48:00.082Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785496087,
+        "ts": 1785496860,
         "variables": {
           "architecture_overview": "See the comprehension artifact's Architecture Overview section.",
           "artifact_name": "",

@@ -6,7 +6,7 @@
 
 ## 🎯 Executive Summary
 
-[2-3 sentences explaining what this delivers and why it matters]
+Closes #365 items S2, S3 (token aggregate; price deferred), S4, and S5 on the workflow MCP server: undeclared planning files are named before staging, run token spend is a plain-sum total with optional per-worker attribution, shared technique preamble collapses under block dedup, and multi-worker traces are filterable with resource and step-level diagnostics. Implementation is on `feat/365-context-fidelity-observability` / PR #366; validation reports 787 tests passing.
 
 ## Problem Overview
 
@@ -47,8 +47,8 @@ What changes for people who rely on the system is trust and legibility, not the 
 | 21 | [Test suite review](10-test-suite-review.md) | Test quality and coverage | 10-20m | ✅ |
 | 22 | [Structural analysis](10-structural-analysis.md) | Prism L12 when written standalone | 15-30m | ✅ |
 | 23 | [Architecture summary](10-architecture-summary.md) | Stakeholder architecture overview | 15-30m | ✅ |
-| 24 | Validation | Build, test, lint verification | 15-30m | 🟡 |
-| 25 | [Strategic review](12-strategic-review-1.md) | Scope/minimality series (`strategic-review-{n}`) | 15-30m | ⬚ |
+| 24 | Validation | Build, test, lint verification | 15-30m | ✅ |
+| 25 | [Strategic review](12-strategic-review-1.md) | Scope/minimality series (`strategic-review-{n}`) | 15-30m | 🟡 |
 | 26 | Submit for review | PR review lifecycle / stealth push | 30-60m | ⬚ |
 | 27 | [Close-out](14-COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | ⬚ |
 | 28 | [Token usage](14-token-usage.md) | Session token and cost summary | 5-10m | ⬚ |
