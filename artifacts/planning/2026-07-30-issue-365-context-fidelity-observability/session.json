@@ -6,16 +6,17 @@
   "agentId": "orchestrator",
   "sessionIndex": "6F7FMZ",
   "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-07-30-issue-365-context-fidelity-observability",
-  "currentActivity": "dispatch-client-workflow",
+  "currentActivity": "end-workflow",
   "currentTechnique": "workflow-engine::dispatch-activity",
-  "condition": "isDefault: dispatch-client-workflow",
-  "seq": 20,
-  "ts": 1785486594,
+  "condition": "",
+  "seq": 27,
+  "ts": 1785499930,
   "startedAt": "2026-07-30T19:43:33.456Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
-    "resolve-target"
+    "resolve-target",
+    "dispatch-client-workflow"
   ],
   "skippedActivities": [],
   "variables": {
@@ -38,7 +39,17 @@
     "user_request": "Resume workflow for issue 365 context fidelity observability planning package",
     "workflow_match_ambiguous": false
   },
-  "checkpointResponses": {},
+  "checkpointResponses": {
+    "end-workflow-completion-confirmed": {
+      "effects": {
+        "variablesSet": {
+          "abort_completion": false
+        }
+      },
+      "optionId": "confirm",
+      "respondedAt": "2026-07-31T12:12:04.000Z"
+    }
+  },
   "history": [
     {
       "timestamp": "2026-07-30T19:43:33.456Z",
@@ -450,6 +461,156 @@
         "resourceId": "planning-readme"
       },
       "timestamp": "2026-07-31T07:23:32.157Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-07-31T12:10:13.542Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-07-31T12:10:13.542Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "w-end-workflow-1",
+        "chars": 47863,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-07-31T12:10:31.139Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "w-end-workflow-1",
+        "chars": 6602,
+        "delivery": "full",
+        "stepId": "read-session",
+        "techniqueId": "workflow-engine::read-session"
+      },
+      "timestamp": "2026-07-31T12:10:31.139Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "w-end-workflow-1",
+        "chars": 6625,
+        "delivery": "full",
+        "stepId": "verify-outcomes",
+        "techniqueId": "workflow-engine::verify-outcomes"
+      },
+      "timestamp": "2026-07-31T12:10:31.139Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "w-end-workflow-1",
+        "chars": 6579,
+        "delivery": "full",
+        "stepId": "generate-summary",
+        "techniqueId": "workflow-engine::generate-summary"
+      },
+      "timestamp": "2026-07-31T12:10:31.139Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "w-end-workflow-1",
+        "chars": 1054,
+        "delivery": "full",
+        "resourceId": "session-summary-template#session-summary-template"
+      },
+      "timestamp": "2026-07-31T12:10:39.740Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "timestamp": "2026-07-31T12:11:17.581Z",
+      "type": "checkpoint_reached"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "data": {
+        "optionId": "confirm"
+      },
+      "timestamp": "2026-07-31T12:12:04.000Z",
+      "type": "checkpoint_response"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "name": "abort_completion",
+        "source": "setVariable",
+        "value": false
+      },
+      "timestamp": "2026-07-31T12:12:04.000Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "w-end-workflow-1",
+        "chars": 4806,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-07-31T12:12:10.936Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "w-end-workflow-1",
+        "chars": 6602,
+        "delivery": "unchanged",
+        "stepId": "read-session",
+        "techniqueId": "workflow-engine::read-session"
+      },
+      "timestamp": "2026-07-31T12:12:10.936Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "w-end-workflow-1",
+        "chars": 6625,
+        "delivery": "unchanged",
+        "stepId": "verify-outcomes",
+        "techniqueId": "workflow-engine::verify-outcomes"
+      },
+      "timestamp": "2026-07-31T12:12:10.936Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "w-end-workflow-1",
+        "chars": 6579,
+        "delivery": "unchanged",
+        "stepId": "generate-summary",
+        "techniqueId": "workflow-engine::generate-summary"
+      },
+      "timestamp": "2026-07-31T12:12:10.936Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "w-end-workflow-1",
+        "bundled": true,
+        "chars": 939,
+        "delivery": "unchanged",
+        "resourceId": "session-summary-template#session-summary-template"
+      },
+      "timestamp": "2026-07-31T12:12:10.936Z",
       "type": "resource_fetched"
     }
   ],
@@ -6423,6 +6584,18 @@
       "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
       "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
       "technique:workflow-engine::dispatch-activity": "6266bff59688554b"
+    },
+    "w-end-workflow-1": {
+      "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
+      "bundle:variable-binding": "780a3e5bb26aea8d",
+      "bundle:workflow-engine::activity-worker": "5d153b783337a2fc",
+      "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+      "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+      "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+      "resource:session-summary-template#session-summary-template": "5c7e15fe34d1c9ec",
+      "technique:workflow-engine::generate-summary": "73edd447137f04eb",
+      "technique:workflow-engine::read-session": "95a74ea9b8a1b559",
+      "technique:workflow-engine::verify-outcomes": "5f6dcf795f601330"
     },
     "w-initialize-session-1": {
       "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
