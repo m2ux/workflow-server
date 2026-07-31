@@ -38,11 +38,11 @@ What changes for people who rely on the system is trust and legibility, not the 
 | 12 | Assumptions review | Converge open assumptions | 20-40m | ✅ |
 | 13 | Implementation | Code changes per plan | 1-4h | ✅ |
 | 14 | [Provenance log](08-provenance-log.md) | Per-task AI-assistance provenance | 5-15m | ✅ |
-| 15 | Lean-coding audit | Ponytail lean lens on the change | 15-30m | 🟡 |
-| 16 | [Code review](09-code-review.md) | Consolidated review findings home | 15-30m | ⬚ |
-| 17 | [Debt ledger](09-debt-ledger.md) | Harvested ponytail debt markers | 10-20m | ⬚ |
-| 18 | [Lean change](09-lean-change.md) | Applied lean simplifications record | 10-20m | ⬚ |
-| 19 | Post-implementation review | Quality review before validation | 30-60m | ⬚ |
+| 15 | Lean-coding audit | Ponytail lean lens on the change | 15-30m | ✅ |
+| 16 | [Code review](09-code-review.md) | Consolidated review findings home | 15-30m | ✅ |
+| 17 | [Debt ledger](09-debt-ledger.md) | Harvested ponytail debt markers | 10-20m | ✅ |
+| 18 | [Lean change](09-lean-change.md) | Applied lean simplifications record | 10-20m | ✅ |
+| 19 | Post-implementation review | Quality review before validation | 30-60m | 🟡 |
 | 20 | [Change block index](10-change-block-index.md) | Indexed diff hunks for review | 5-10m | ⬚ |
 | 21 | [Test suite review](10-test-suite-review.md) | Test quality and coverage | 10-20m | ⬚ |
 | 22 | [Structural analysis](10-structural-analysis.md) | Prism L12 when written standalone | 15-30m | ⬚ |

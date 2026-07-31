@@ -480,6 +480,16 @@
             "optionId": "full-workflow",
             "respondedAt": "2026-07-31T04:53:56.000Z"
           },
+          "lean-coding-audit-audit-findings-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "audit_confirmed": true,
+                "needs_simplification": true
+              }
+            },
+            "optionId": "apply-simplifications",
+            "respondedAt": "2026-07-31T09:27:40.000Z"
+          },
           "plan-prepare-approach-confirmed": {
             "optionId": "confirmed",
             "respondedAt": "2026-07-31T08:52:30.000Z"
@@ -543,15 +553,19 @@
           "implementation-analysis",
           "plan-prepare",
           "assumptions-review",
-          "implement"
+          "implement",
+          "lean-coding-audit"
         ],
         "condition": "",
-        "currentActivity": "lean-coding-audit",
-        "currentTechnique": "task-completion-review",
+        "currentActivity": "post-impl-review",
+        "currentTechnique": "ponytail/apply-ladder",
         "deliveredContent": {
           "orchestrator": {
             "resource:meta/planning-readme#row-ownership-map": "e883775cc8b06d33",
             "resource:meta/planning-readme#status-transition-policy": "5c79d22cf0ad157f",
+            "resource:ponytail/ponytail-marker-convention": "43f5846ba77b2e97",
+            "resource:ponytail/review-taxonomy": "d13ce92ef2805b99",
+            "resource:ponytail/the-ladder": "e9de4f14410c7852",
             "resource:readme-seed": "61cd9d882fcb2b29"
           },
           "w-assumptions-review-1": {
@@ -637,6 +651,22 @@
             "technique:review-assumptions::collect": "48d15f5bb3c2413d",
             "technique:review-assumptions::interview": "cf9da511be3727c4",
             "technique:review-assumptions::record": "6a577b358226ece3"
+          },
+          "w-lean-coding-audit-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:ponytail/ponytail-marker-convention#convention": "3ba9070cf695a1e6",
+            "resource:ponytail/ponytail-marker-convention#no-trigger": "549680d805e04ec4",
+            "resource:ponytail/review-taxonomy#comment-proportionality": "7b8b34c2d4be734e",
+            "resource:ponytail/review-taxonomy#tags": "aecd310fd20a9df1",
+            "resource:ponytail/the-ladder#safety-floor": "cb4bf92929095ebe",
+            "technique:ponytail/apply-ladder": "ff9e107b8ae166c2",
+            "technique:ponytail/harvest-debt": "eeae192617658e25",
+            "technique:ponytail/review-over-engineering": "13aabd4c079068b8"
           },
           "w-plan-prepare-1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -4266,17 +4296,235 @@
             "activity": "lean-coding-audit",
             "timestamp": "2026-07-31T09:24:06.687Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "w-lean-coding-audit-1",
+              "chars": 37413,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T09:24:35.353Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "w-lean-coding-audit-1",
+              "chars": 5168,
+              "delivery": "full",
+              "stepId": "review-over-engineering",
+              "techniqueId": "ponytail/review-over-engineering"
+            },
+            "timestamp": "2026-07-31T09:24:35.354Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "w-lean-coding-audit-1",
+              "chars": 4130,
+              "delivery": "full",
+              "stepId": "harvest-debt",
+              "techniqueId": "ponytail/harvest-debt"
+            },
+            "timestamp": "2026-07-31T09:24:35.354Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 3519,
+              "delivery": "full",
+              "resourceId": "ponytail/review-taxonomy"
+            },
+            "timestamp": "2026-07-31T09:24:41.793Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 2379,
+              "delivery": "full",
+              "resourceId": "ponytail/ponytail-marker-convention"
+            },
+            "timestamp": "2026-07-31T09:24:41.927Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 4974,
+              "delivery": "full",
+              "resourceId": "ponytail/the-ladder"
+            },
+            "timestamp": "2026-07-31T09:24:43.809Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "checkpoint": "audit-findings-confirmed",
+            "timestamp": "2026-07-31T09:26:51.753Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "checkpoint": "audit-findings-confirmed",
+            "data": {
+              "optionId": "apply-simplifications"
+            },
+            "timestamp": "2026-07-31T09:27:40.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "name": "audit_confirmed",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-31T09:27:40.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "name": "needs_simplification",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-07-31T09:27:40.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "w-lean-coding-audit-1",
+              "chars": 13661,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-07-31T09:27:48.199Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "w-lean-coding-audit-1",
+              "chars": 5168,
+              "delivery": "unchanged",
+              "stepId": "review-over-engineering",
+              "techniqueId": "ponytail/review-over-engineering"
+            },
+            "timestamp": "2026-07-31T09:27:48.199Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "w-lean-coding-audit-1",
+              "chars": 4130,
+              "delivery": "unchanged",
+              "stepId": "harvest-debt",
+              "techniqueId": "ponytail/harvest-debt"
+            },
+            "timestamp": "2026-07-31T09:27:48.199Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "w-lean-coding-audit-1",
+              "bundled": true,
+              "chars": 2276,
+              "delivery": "full",
+              "resourceId": "ponytail/review-taxonomy#tags"
+            },
+            "timestamp": "2026-07-31T09:27:48.199Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "w-lean-coding-audit-1",
+              "bundled": true,
+              "chars": 1771,
+              "delivery": "full",
+              "resourceId": "ponytail/the-ladder#safety-floor"
+            },
+            "timestamp": "2026-07-31T09:27:48.199Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "w-lean-coding-audit-1",
+              "bundled": true,
+              "chars": 282,
+              "delivery": "full",
+              "resourceId": "ponytail/review-taxonomy#comment-proportionality"
+            },
+            "timestamp": "2026-07-31T09:27:48.199Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "w-lean-coding-audit-1",
+              "bundled": true,
+              "chars": 1388,
+              "delivery": "full",
+              "resourceId": "ponytail/ponytail-marker-convention#convention"
+            },
+            "timestamp": "2026-07-31T09:27:48.199Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "w-lean-coding-audit-1",
+              "bundled": true,
+              "chars": 580,
+              "delivery": "full",
+              "resourceId": "ponytail/ponytail-marker-convention#no-trigger"
+            },
+            "timestamp": "2026-07-31T09:27:48.199Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "w-lean-coding-audit-1",
+              "chars": 5358,
+              "delivery": "full",
+              "stepId": "apply-simplifications",
+              "techniqueId": "ponytail/apply-ladder"
+            },
+            "timestamp": "2026-07-31T09:27:54.262Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "timestamp": "2026-07-31T09:31:47.147Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "post-impl-review",
+            "timestamp": "2026-07-31T09:31:47.147Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 114,
+        "seq": 124,
         "sessionIndex": "7Q54WJ",
         "skippedActivities": [],
         "startedAt": "2026-07-30T19:48:00.082Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785489846,
+        "ts": 1785490307,
         "variables": {
           "architecture_overview": "See the comprehension artifact's Architecture Overview section.",
           "artifact_name": "",
@@ -4286,7 +4534,7 @@
           "assumption_deferred": false,
           "assumption_resolved_inline": true,
           "assumptions_log": "02-assumptions-log.md",
-          "audit_confirmed": false,
+          "audit_confirmed": true,
           "awaiting_review": false,
           "block_line_range": "",
           "block_path": "",
@@ -4353,7 +4601,7 @@
           "needs_issue_creation": false,
           "needs_plan_revision": false,
           "needs_research": true,
-          "needs_simplification": false,
+          "needs_simplification": true,
           "needs_strategic_fixes": false,
           "needs_test_improvements": false,
           "open_assumptions": [
