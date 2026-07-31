@@ -2,7 +2,7 @@
 
 > strategic-review · #365 context-fidelity-observability · main → feat/365-context-fidelity-observability · 2026-07-31 · agent
 
-**Diff:** 18 files on tip vs `origin/main`, including validation tip `ae69b3bb` (site tools.html + e2e snapshots). Feature surface +753/−82 before tip; tip adds snapshot/docs regen.
+**Diff:** tip `b5cc8985` on `feat/365-context-fidelity-observability` (package 0.2.0 + validation tip + feature commits).
 
 ## Findings Summary
 
@@ -12,33 +12,34 @@
 | Over-Engineering | 0 | — |
 | Orphaned Infrastructure | 0 | — |
 | Scope creep | 0 | — |
-| PR body conformance | 0 | Final body PATCHed on #366 |
-| Commit signatures | noted | decline-resign — keep history; five `N` commits remain |
-| Version policy | 1 | Confirm whether node minor bump is required (still 0.1.0) |
-| **Total** | **2** | |
+| PR body conformance | 0 | Final body current |
+| Commit signatures | 0 open | Closed — accepted at decline-resign |
+| Version policy | 0 open | Closed — bumped 0.1.0 → 0.2.0 |
+| **Total open** | **0** | |
 
 ## Scope Assessment
 
 All changes in scope — minimal and focused.
 
-Committed surface maps to S2 / S3-token-aggregate / S4 / S5 only: session `declaredArtifacts` + `next_activity` warn path; `record_usage` optional `agent_id` + `projectUsage` plain-sum; `DEDUP_BLOCKS` / `stageField` delivery; trace `aid`, filters, resource qualify/warn, hybrid step events; tests, inspect oracle, site reference, e2e snapshots for S2 warnings. No price/cost field (D-4). No debug leftovers. Lean audit applied (`a9c3ea2d`). No root `changes/` convention — fragment steps N/A (`fragment_references_issue` = null).
+Committed surface maps to S2 / S3-token-aggregate / S4 / S5 only: session `declaredArtifacts` + `next_activity` warn path; `record_usage` optional `agent_id` + `projectUsage` plain-sum; `DEDUP_BLOCKS` / `stageField` delivery; trace `aid`, filters, resource qualify/warn, hybrid step events; tests, inspect oracle, site reference, e2e snapshots for S2 warnings; package minor bump for the feature. No price/cost field (D-4). No debug leftovers. Lean audit applied (`a9c3ea2d`). No root `changes/` convention — fragment steps N/A (`fragment_references_issue` = null).
 
 ## PR Body Conformance
 
 Body conforms — no findings.
 
-Final template rendered and applied via `gh api --method PATCH repos/m2ux/workflow-server/pulls/366` (2026-07-31T11:28:28Z). Includes Summary, Motivation, component-grouped Changes, AI Assistance, checklists, Fork Strategy, TODO (validation tip and signature decision checked; Ready for review open; node minor bump left unchecked for policy confirm).
+Final template on #366 updated after the fix cycle (version bump noted; checklist item checked).
 
 ## Minimality Assessment
 
-All 5 minimality checks pass. Lean cycle removed seven over-engineering items; validation tip lands required snapshot/doc alignment only.
+All 5 minimality checks pass. Lean cycle removed seven over-engineering items; validation tip and version bump are checklist-required landings only.
 
 ## Commit signatures
 
-User selected **decline-resign** at `unsigned-commits-prompt` (`resign_unsigned_commits_requested: false`). History kept as-is.
+User selected **decline-resign** at `unsigned-commits-prompt` (`resign_unsigned_commits_requested: false`). At **fix-findings**, history was **not** rewritten: the signature finding is closed as **accepted at decline-resign**. Prior unsigned commits remain on the branch; the version-bump tip commit is GPG-signed (`b5cc8985` G).
 
 | Hash | %G? | Subject |
 |------|-----|---------|
+| b5cc8985 | G | chore(server): bump package minor to 0.2.0 for #365 |
 | ae69b3bb | N | test(server): refresh site and E2E snapshots for S2 validation |
 | a9c3ea2d | N | refactor(server): apply lean-coding audit shrinks for #365 |
 | a6b970b0 | N | test(server): PR366 coverage for context fidelity and observability |
@@ -51,16 +52,23 @@ User selected **decline-resign** at `unsigned-commits-prompt` (`resign_unsigned_
 
 | Action | Files Affected | Commit |
 |--------|----------------|--------|
-| Land validation tip (site + e2e snapshots) | `site/api/tools.html`, `tests/e2e/__snapshots__/snapshot.test.ts.snap` | `ae69b3bb` (already on tip / origin) |
-| Final PR body | PR #366 description | REST PATCH 2026-07-31T11:28:28Z |
-| Planning strategic-review artifacts | `12-strategic-review-1.md`, `12-architecture-summary.md`, README exec summary | `6b746be` on `engineering` |
+| Land validation tip (site + e2e snapshots) | `site/api/tools.html`, `tests/e2e/__snapshots__/snapshot.test.ts.snap` | `ae69b3bb` |
+| Bump node package minor 0.1.0 → 0.2.0 | `package.json`, `package-lock.json` | `b5cc8985` (G, signed) |
+| Close signature finding without rewrite | — | Accepted at decline-resign; no force-push |
+| Final PR body | PR #366 description | REST PATCH after fix cycle |
+| Planning strategic-review artifacts | `12-strategic-review-1.md`, `12-architecture-summary.md`, README | `engineering` branch |
 
-No source cleanup required (no investigation/over-engineering findings).
+## Fix cycle (review-findings → fix-findings)
+
+| Finding | Disposition | Evidence |
+|---------|-------------|----------|
+| Node package still 0.1.0 | **Fixed** | `package.json` / `package-lock.json` → **0.2.0**; commit `b5cc8985` pushed to `feat/365-context-fidelity-observability` |
+| Unsigned commits in range | **Closed accepted** | decline-resign already applied; no history rewrite; finding closed without re-open of resign gate |
 
 ## Review Result
 
-**Outcome:** Minor observations only — implementation scope clean; signatures declined; open node-version policy checkbox.
+**Outcome:** Passed after fix cycle — open strategic findings cleared.
 
-**Rationale:** Feature commits stay inside #365 S2/S3/S4/S5; lean applied; tip and Final PR body landed. Residual items are process notes (unsigned history accepted; package version still 0.1.0), not design bloat.
+**Rationale:** Version bump satisfies the PR checklist. Signature finding remains documented history accepted by the user at decline-resign; new tip is signed. Implementation scope stays inside #365 S2/S3/S4/S5.
 
-**Next Step:** User disposition at review-findings checkpoint; then submit-for-review when `review_passed`.
+**Next Step:** Proceed to submit-for-review (`review_passed: true`).
