@@ -5,15 +5,16 @@
   "workflowVersion": "5.14.0",
   "agentId": "orchestrator",
   "sessionIndex": "6F7FMZ",
-  "currentActivity": "resolve-target",
-  "currentTechnique": "version-control::initialize-folder",
-  "condition": "isDefault: resolve-target",
-  "seq": 13,
-  "ts": 1785470993,
+  "currentActivity": "dispatch-client-workflow",
+  "currentTechnique": "workflow-engine::dispatch-activity",
+  "condition": "isDefault: dispatch-client-workflow",
+  "seq": 17,
+  "ts": 1785471259,
   "startedAt": "2026-07-30T19:43:33.456Z",
   "completedActivities": [
     "discover-session",
-    "initialize-session"
+    "initialize-session",
+    "resolve-target"
   ],
   "skippedActivities": [],
   "variables": {
@@ -365,6 +366,70 @@
       },
       "timestamp": "2026-07-31T04:09:53.490Z",
       "type": "activity_usage"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-07-31T04:10:28.912Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "is_monorepo",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-07-31T04:10:28.912Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "component_path",
+        "source": "variables_changed",
+        "value": "."
+      },
+      "timestamp": "2026-07-31T04:10:28.912Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-07-31T04:10:28.912Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "w-dispatch-client-workflow-1",
+        "chars": 27225,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-07-31T04:10:51.894Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "w-dispatch-client-workflow-1",
+        "chars": 12803,
+        "delivery": "full",
+        "stepId": "dispatch-activity",
+        "techniqueId": "workflow-engine::dispatch-activity"
+      },
+      "timestamp": "2026-07-31T04:11:35.192Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "usage": {
+          "duration_ms": 195795,
+          "subagent_tokens": 56856,
+          "tool_uses": 17
+        }
+      },
+      "timestamp": "2026-07-31T04:14:19.393Z",
+      "type": "activity_usage"
     }
   ],
   "triggeredWorkflows": [
@@ -372,11 +437,61 @@
       "sessionIndex": "7Q54WJ",
       "state": {
         "agentId": "orchestrator",
-        "checkpointResponses": {},
+        "checkpointResponses": {
+          "start-work-package-pr-creation": {
+            "effects": {
+              "variablesSet": {
+                "pr_skipped": false
+              }
+            },
+            "optionId": "proceed",
+            "respondedAt": "2026-07-31T04:28:21.000Z"
+          }
+        },
         "completedActivities": [],
         "condition": "",
-        "currentActivity": "",
-        "currentTechnique": "",
+        "currentActivity": "start-work-package",
+        "currentTechnique": "github-cli-protocol::view-issue",
+        "deliveredContent": {
+          "orchestrator": {
+            "resource:meta/planning-readme#row-ownership-map": "e883775cc8b06d33",
+            "resource:meta/planning-readme#status-transition-policy": "5c79d22cf0ad157f",
+            "resource:readme-seed": "61cd9d882fcb2b29"
+          },
+          "w-start-work-package-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:meta/planning-readme": "7ecbec064ae362e4",
+            "resource:pr-description": "2bec41cba59ef62d",
+            "resource:work-package/readme-seed": "daa50e4f8a129511",
+            "technique:github-cli-protocol::assign-issue": "a60caa128e513abd",
+            "technique:github-cli-protocol::list-prs": "83ad4509b46a2405",
+            "technique:github-cli-protocol::view-issue": "ca0f27f3945b6d47",
+            "technique:gitnexus-operations::analyze": "99cdd2573e0ddebf",
+            "technique:inherited_inputs:3aa69f696dab9dae": "3aa69f696dab9dae",
+            "technique:inherited_inputs:4624f562befb9ee4": "4624f562befb9ee4",
+            "technique:inherited_outputs:2b847433bfdf20b8": "2b847433bfdf20b8",
+            "technique:issue-reference-detection": "1c822b41f3d1a2fe",
+            "technique:issue-type-detection": "d8bd5bb3ffeaa9b9",
+            "technique:manage-git::create-worktree": "2a1d3124d3a09c1c",
+            "technique:manage-git::detect-merge-strategy": "af0eff9791d803fc",
+            "technique:manage-git::update-repo-submodules": "05c036e5d376bcfc",
+            "technique:manage-git::verify-feature-branch": "3d78a91369f7f6cd",
+            "technique:naming-conventions": "e4533b01f1766529",
+            "technique:project-type-detection": "1c0a05efab4a064e",
+            "technique:repo-root-resolution": "28862edd4b18cbf9",
+            "technique:review-mode-detection": "8feeeabbd6b67777",
+            "technique:rules:a608014e1e0b823a": "a608014e1e0b823a",
+            "technique:stakeholder-overview": "6548550cd546e329",
+            "technique:update-pr::create-pr": "34002ae3f5e942df",
+            "technique:version-control::resolve-host-repo": "bb4592e21095bc0b",
+            "technique:workflow-engine::create-readme": "2b6c1f530ae5701a"
+          }
+        },
         "history": [
           {
             "timestamp": "2026-07-30T19:48:00.082Z",
@@ -491,17 +606,397 @@
             },
             "timestamp": "2026-07-30T19:48:00.082Z",
             "type": "variables_seeded"
+          },
+          {
+            "activity": "start-work-package",
+            "timestamp": "2026-07-31T04:15:04.488Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 101613,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T04:15:18.787Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 5954,
+              "delivery": "full",
+              "stepId": "detect-review-mode",
+              "techniqueId": "review-mode-detection"
+            },
+            "timestamp": "2026-07-31T04:15:18.787Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 5141,
+              "delivery": "full",
+              "stepId": "derive-host-repo",
+              "techniqueId": "version-control::resolve-host-repo"
+            },
+            "timestamp": "2026-07-31T04:15:18.787Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 3730,
+              "delivery": "full",
+              "stepId": "resolve-repo-root",
+              "techniqueId": "repo-root-resolution"
+            },
+            "timestamp": "2026-07-31T04:15:18.787Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 5544,
+              "delivery": "full",
+              "stepId": "analyze-repo-with-gitnexus",
+              "techniqueId": "gitnexus-operations::analyze"
+            },
+            "timestamp": "2026-07-31T04:15:18.787Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 4601,
+              "delivery": "full",
+              "stepId": "detect-merge-strategy",
+              "techniqueId": "manage-git::detect-merge-strategy"
+            },
+            "timestamp": "2026-07-31T04:15:18.787Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 3555,
+              "delivery": "full",
+              "stepId": "detect-project-type",
+              "techniqueId": "project-type-detection"
+            },
+            "timestamp": "2026-07-31T04:15:18.787Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 3607,
+              "delivery": "full",
+              "stepId": "check-issue",
+              "techniqueId": "issue-reference-detection"
+            },
+            "timestamp": "2026-07-31T04:15:18.787Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 5135,
+              "delivery": "full",
+              "stepId": "initialize-planning-folder",
+              "techniqueId": "workflow-engine::create-readme"
+            },
+            "timestamp": "2026-07-31T04:15:18.787Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 3966,
+              "delivery": "full",
+              "stepId": "present-problem-overview",
+              "techniqueId": "stakeholder-overview"
+            },
+            "timestamp": "2026-07-31T04:15:18.787Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 5192,
+              "delivery": "full",
+              "stepId": "compute-canonical-target-path",
+              "techniqueId": "naming-conventions"
+            },
+            "timestamp": "2026-07-31T04:15:18.787Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 4069,
+              "delivery": "full",
+              "stepId": "check-branch",
+              "techniqueId": "manage-git::verify-feature-branch"
+            },
+            "timestamp": "2026-07-31T04:15:18.787Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 6071,
+              "delivery": "full",
+              "stepId": "update-repo-submodules",
+              "techniqueId": "manage-git::update-repo-submodules"
+            },
+            "timestamp": "2026-07-31T04:17:33.757Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 3114,
+              "delivery": "full",
+              "stepId": "verify-github-issue",
+              "techniqueId": "github-cli-protocol::view-issue"
+            },
+            "timestamp": "2026-07-31T04:21:52.915Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 3799,
+              "delivery": "full",
+              "stepId": "derive-issue-type",
+              "techniqueId": "issue-type-detection"
+            },
+            "timestamp": "2026-07-31T04:22:01.175Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 2818,
+              "delivery": "full",
+              "stepId": "assign-issue-github",
+              "techniqueId": "github-cli-protocol::assign-issue"
+            },
+            "timestamp": "2026-07-31T04:22:09.016Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 5486,
+              "delivery": "full",
+              "resourceId": "work-package/readme-seed"
+            },
+            "timestamp": "2026-07-31T04:22:35.287Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 14933,
+              "delivery": "full",
+              "resourceId": "meta/planning-readme"
+            },
+            "timestamp": "2026-07-31T04:22:44.989Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 5386,
+              "delivery": "full",
+              "stepId": "derive-branch-name",
+              "techniqueId": "naming-conventions"
+            },
+            "timestamp": "2026-07-31T04:25:04.535Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 6357,
+              "delivery": "full",
+              "stepId": "create-component-worktree",
+              "techniqueId": "manage-git::create-worktree"
+            },
+            "timestamp": "2026-07-31T04:25:14.913Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 2234,
+              "delivery": "full",
+              "stepId": "check-pr",
+              "techniqueId": "github-cli-protocol::list-prs"
+            },
+            "timestamp": "2026-07-31T04:25:52.595Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "pr-creation",
+            "timestamp": "2026-07-31T04:26:09.825Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "usage": {
+                "duration_ms": 698655,
+                "subagent_tokens": 136552,
+                "tool_uses": 49
+              }
+            },
+            "timestamp": "2026-07-31T04:26:59.699Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "pr-creation",
+            "data": {
+              "optionId": "proceed"
+            },
+            "timestamp": "2026-07-31T04:28:21.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "pr_skipped",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-07-31T04:28:21.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 5929,
+              "delivery": "full",
+              "stepId": "create-pr",
+              "techniqueId": "update-pr::create-pr"
+            },
+            "timestamp": "2026-07-31T04:28:58.059Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 6299,
+              "delivery": "full",
+              "resourceId": "pr-description"
+            },
+            "timestamp": "2026-07-31T04:29:10.950Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "w-start-work-package-1",
+              "chars": 2745,
+              "delivery": "full",
+              "stepId": "link-pr-to-ticket-github",
+              "techniqueId": "github-cli-protocol::view-issue"
+            },
+            "timestamp": "2026-07-31T04:40:32.909Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "usage": {
+                "dispatch": "resume-after-checkpoint",
+                "duration_ms": 785533,
+                "subagent_tokens": 156898,
+                "tool_uses": 17
+              }
+            },
+            "timestamp": "2026-07-31T04:41:59.048Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "orchestrator",
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T04:42:14.361Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 1053,
+              "delivery": "full",
+              "resourceId": "meta/planning-readme#row-ownership-map"
+            },
+            "timestamp": "2026-07-31T04:42:14.361Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 5473,
+              "delivery": "full",
+              "resourceId": "readme-seed"
+            },
+            "timestamp": "2026-07-31T04:42:19.246Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 2485,
+              "delivery": "full",
+              "resourceId": "meta/planning-readme#status-transition-policy"
+            },
+            "timestamp": "2026-07-31T04:42:19.685Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 0,
+        "seq": 24,
         "sessionIndex": "7Q54WJ",
         "skippedActivities": [],
         "startedAt": "2026-07-30T19:48:00.082Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785440880,
+        "ts": 1785472939,
         "variables": {
           "artifact_name": "",
           "artifact_publish_ref": "",
@@ -630,6 +1125,15 @@
       "technique:workflow-engine::detect-resume-intent": "4f7ede12a03a16a1",
       "technique:workflow-engine::list-workflows": "199f025ea70aa8e5",
       "technique:workflow-engine::match-target-workflow": "9ff4bb378051a6d3"
+    },
+    "w-dispatch-client-workflow-1": {
+      "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
+      "bundle:variable-binding": "780a3e5bb26aea8d",
+      "bundle:workflow-engine::activity-worker": "5d153b783337a2fc",
+      "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+      "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+      "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+      "technique:workflow-engine::dispatch-activity": "6266bff59688554b"
     },
     "w-initialize-session-1": {
       "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
