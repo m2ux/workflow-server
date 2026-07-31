@@ -39,6 +39,11 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | IA-3 | Implementation Analysis | Baseline Interpretation | M | SC-5 token aggregate should sum known numeric token keys (`input_tokens`, `output_tokens`, `total_tokens`, and `subagent_tokens` when present) and ignore unknown keys; missing model/price is correct. Rationale: `usageSchema` is open; live rows use harness-specific keys; D-4 forbids cost. Alternatives: require a closed usage schema (breaking). | Code: `usageSchema`; comprehension live rows; D-4 | Validated — exact key inventory refined at implement (RC-4) |
 | IA-4 | Implementation Analysis | Dependency Understanding | L | GitNexus CRITICAL on `projectUsage` / `dedupTechniqueBlocks` must not size the work — real d=1 fan-out is one projection caller and two tool registrations. Rationale: DP-3 partial validation reconfirmed. | GitNexus impact upstream | Validated |
 | IA-5 | Implementation Analysis | Gap Identification | M | SC-12 is blocked until the parity loop is derived from `INSPECT_SESSION_VIEWS`; extending the oracle alone is insufficient while the test never invokes `usage`. Rationale: RE-6 invalidation; `:2564` seven-literal. | Code: `mcp-server.test.ts:2564`; `INSPECT_SESSION_VIEWS` length 8 | Validated |
+| PL-1 | Plan & Prepare | Design Approach | L | Implement order S3 write → S3 read/oracle → S5 agent → S5 resource → S5 steps → S2 → S4 maximises dependency readiness (usage attribution before filters; agent dimension before resource/step; S2 independent; S4 last so benches measure final coverage). Rationale: [analysis ordered surface](05-implementation-analysis.md#recommended-change-surface-for-plan-prepare). Alternatives: S2 first (independent but blocks no one); S4 before S5 (ok but benches thrash if later edits touch delivery). | Code: analysis §Recommended change surface | Validated |
+| PL-2 | Plan & Prepare | Task Breakdown | L | Eight implementation tasks (plus docs-touch) are atomic enough for task-cycle: each lands as its own commit group without verification-as-task. Rationale: G1–G16 cluster into those write surfaces; tests listed in [06-test-plan.md](06-test-plan.md). | Code: plan tasks 1–8 | Validated |
+| PL-3 | Plan & Prepare | Test Strategy | L | Initial test plan is objective-level placeholders (lifecycle phase 1); source hyperlinks land at finalize-documentation after implement. Rationale: create-test-plan lifecycle-phases rule. | Technique: create-test-plan | Validated |
+| PL-4 | Plan & Prepare | Dependency Assumptions | M | Plan-prepare can complete without live `gh`/GPG: PR body update and signed push are best-effort; failure is documented, not invented success. Rationale: env-prerequisites found invalid hosts.yml token and unreachable gpg-agent; technique allows document-and-continue when blocked. Alternatives: hard-stop activity (blocks planning artifacts already written). | Env: `gh auth status` fail; `gpg-connect-agent` permission denied | Validated |
+| PL-5 | Plan & Prepare | Scope Decisions | L | No new deferred rows beyond D-1…D-4; plan does not reopen price capture, corpus persist, or S8. Rationale: stakeholder scope + deferred-items register. | deferred-items.md D-1…D-4 | Validated |
 
 Resolution: how it was settled — `Code:` with file:line evidence, `User` (checkpoint or
 interview), or `—` while open; implementation-task rows append the commit hash for
@@ -50,8 +55,8 @@ statement) in the rationale.
 
 ## Open Assumptions
 
-*(none — RE-8 closed at implementation-analysis; IA-1…IA-5 code-validated; no stakeholder residue)*
+*(none — plan-phase PL-1…PL-5 code/env-validated; no stakeholder residue)*
 
 ## Wrap-Up
 
-Implementation-analysis pass: 5 new assumptions (IA-1…IA-5) — all validated; RE-8 corrected to hybrid step-event emission. No open stakeholder assumptions. Deferred items remain D-1…D-4 only.
+Plan-prepare pass: 5 new assumptions (PL-1…PL-5) — all validated. Prior IA/RE-8 closed. Deferred items remain D-1…D-4 only.

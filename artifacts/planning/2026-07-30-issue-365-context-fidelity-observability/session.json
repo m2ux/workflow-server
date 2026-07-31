@@ -457,6 +457,11 @@
     {
       "sessionIndex": "7Q54WJ",
       "state": {
+        "activeCheckpoint": {
+          "activityId": "plan-prepare",
+          "checkpointId": "approach-confirmed",
+          "yieldedAt": "2026-07-31T08:46:15.248Z"
+        },
         "agentId": "orchestrator",
         "checkpointResponses": {
           "codebase-comprehension-comprehension-sufficient": {
@@ -540,7 +545,7 @@
         ],
         "condition": "",
         "currentActivity": "plan-prepare",
-        "currentTechnique": "analyse-challenge::run-loop",
+        "currentTechnique": "update-pr::render",
         "deliveredContent": {
           "orchestrator": {
             "resource:meta/planning-readme#row-ownership-map": "e883775cc8b06d33",
@@ -598,6 +603,29 @@
             "technique:review-assumptions::collect": "48d15f5bb3c2413d",
             "technique:review-assumptions::interview": "cf9da511be3727c4",
             "technique:review-assumptions::record": "6a577b358226ece3"
+          },
+          "w-plan-prepare-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
+            "bundle:scatter-gather": "972acb177d168c94",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:deferred-items": "4bb13759c0e75532",
+            "resource:design-framework": "92de9c063c11f3be",
+            "resource:pr-description": "2bec41cba59ef62d",
+            "resource:test-plan": "14592de4e3b4b9fc",
+            "resource:wp-plan": "91210d5f6d483637",
+            "technique:analyse-challenge::run-loop": "ef2350068a0a7fba",
+            "technique:create-test-plan": "c959a5e433f297e2",
+            "technique:manage-git::sync-branch": "5a1b012eb7c7fa47",
+            "technique:plan-prepare::create-todos": "3f7d8c996cc90011",
+            "technique:plan-prepare::plan": "e5919fff83099010",
+            "technique:review-assumptions::collect": "c8e3901a0afff2e3",
+            "technique:review-assumptions::record": "486a01a83c7e4cf0",
+            "technique:stakeholder-overview": "158fd2624938e7fb",
+            "technique:update-pr::render": "dbcd73eb5501d3d1"
           },
           "w-requirements-elicitation-1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -3589,17 +3617,196 @@
             "activity": "plan-prepare",
             "timestamp": "2026-07-31T08:41:18.977Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 76619,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T08:42:34.928Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 5711,
+              "delivery": "full",
+              "stepId": "create-plan",
+              "techniqueId": "plan-prepare::plan"
+            },
+            "timestamp": "2026-07-31T08:42:34.928Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 6670,
+              "delivery": "full",
+              "stepId": "create-test-plan",
+              "techniqueId": "create-test-plan"
+            },
+            "timestamp": "2026-07-31T08:42:34.928Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 3512,
+              "delivery": "full",
+              "stepId": "present-solution-overview",
+              "techniqueId": "stakeholder-overview"
+            },
+            "timestamp": "2026-07-31T08:42:34.928Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 5130,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-31T08:42:34.928Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 4107,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-31T08:42:34.928Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 7597,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-31T08:42:34.928Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 4187,
+              "delivery": "full",
+              "stepId": "create-todos",
+              "techniqueId": "plan-prepare::create-todos"
+            },
+            "timestamp": "2026-07-31T08:42:34.928Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 3857,
+              "delivery": "full",
+              "stepId": "sync-branch",
+              "techniqueId": "manage-git::sync-branch"
+            },
+            "timestamp": "2026-07-31T08:42:34.928Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 3927,
+              "delivery": "full",
+              "resourceId": "wp-plan"
+            },
+            "timestamp": "2026-07-31T08:42:49.533Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 6002,
+              "delivery": "full",
+              "resourceId": "design-framework"
+            },
+            "timestamp": "2026-07-31T08:42:50.174Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 3988,
+              "delivery": "full",
+              "resourceId": "test-plan"
+            },
+            "timestamp": "2026-07-31T08:42:50.717Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 1878,
+              "delivery": "full",
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-31T08:43:20.719Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 7728,
+              "delivery": "full",
+              "stepId": "update-pr",
+              "techniqueId": "update-pr::render"
+            },
+            "timestamp": "2026-07-31T08:45:21.749Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "w-plan-prepare-1",
+              "chars": 6299,
+              "delivery": "full",
+              "resourceId": "pr-description"
+            },
+            "timestamp": "2026-07-31T08:45:36.408Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "checkpoint": "approach-confirmed",
+            "timestamp": "2026-07-31T08:46:15.248Z",
+            "type": "checkpoint_reached"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 89,
+        "seq": 97,
         "sessionIndex": "7Q54WJ",
         "skippedActivities": [],
         "startedAt": "2026-07-30T19:48:00.082Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785487278,
+        "ts": 1785487575,
         "variables": {
           "architecture_overview": "See the comprehension artifact's Architecture Overview section.",
           "artifact_name": "",

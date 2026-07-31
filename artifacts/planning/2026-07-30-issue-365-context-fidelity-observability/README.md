@@ -16,7 +16,9 @@ Left alone, these gaps cost money and trust. Undeclared files reaching the saved
 
 ## Solution Overview
 
-*Populated by the producing step (a `stakeholder-overview` call).*
+This work teaches the workflow server to check what workers claim against what is actually on disk, to add up each stage’s token use into a single readable total for a run, and to tag that evidence with which worker produced it. When a worker finishes a stage, the server can name any planning files that were never declared, still without blocking the run. When usage is recorded, an optional worker identity travels with the numbers so a parallel run can be split apart later. When the server looks up reference material for a worker, a missing or mis-addressed reference becomes a clear warning instead of a silent skip, and the timeline can show steps as they are delivered and closed rather than only whole stages.
+
+What changes for people who rely on the system is trust and legibility, not the shape of a normal successful run. Reviewers and orchestrators see undeclared files before anything is staged for commit. Operators can compare two approaches by total tokens without inventing a price table in this package. Maintainers get an honest before-and-after measure of how much repeated contract wording is still being paid for on the wire, plus a small fix so identical preamble text collapses across sibling techniques. Debuggers can filter traces and session history to one worker, and the fidelity check stops treating one worker’s fetch as proof that another worker did its homework.
 
 ## 📊 Progress
 
@@ -29,10 +31,10 @@ Left alone, these gaps cost money and trust. Undeclared files reaching the saved
 | 5 | [Requirements elicitation](03-requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ✅ |
 | 6 | [KB research](04-kb-research.md) | Knowledge-base and web synthesis | 20-45m | ✅ |
 | 7 | [Implementation analysis](05-implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ✅ |
-| 8 | [Work package plan](06-work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ⬚ |
-| 9 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ |
+| 8 | [Work package plan](06-work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | 🟡 |
+| 9 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | 🟡 |
 | 10 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ✅ |
-| 11 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | ⬚ |
+| 11 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | ✅ |
 | 12 | Assumptions review | Converge open assumptions | 20-40m | ⬚ |
 | 13 | Implementation | Code changes per plan | 1-4h | ⬚ |
 | 14 | [Provenance log](08-provenance-log.md) | Per-task AI-assistance provenance | 5-15m | ⬚ |
