@@ -615,11 +615,12 @@
           "lean-coding-audit",
           "post-impl-review",
           "validate",
-          "strategic-review"
+          "strategic-review",
+          "submit-for-review"
         ],
         "condition": "",
-        "currentActivity": "submit-for-review",
-        "currentTechnique": "review-outcome-analysis",
+        "currentActivity": "complete",
+        "currentTechnique": "manage-git::remove-worktree",
         "deliveredContent": {
           "orchestrator": {
             "resource:meta/planning-readme#row-ownership-map": "e883775cc8b06d33",
@@ -657,6 +658,31 @@
             "technique:codebase-comprehension::revise-questions": "2dcc44eba9471a95",
             "technique:codebase-comprehension::survey": "7308ec9e0716987b",
             "technique:manage-artifacts::write-artifact": "ba57b2382aed4d4e"
+          },
+          "w-complete-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:architecture-review#adr-template": "50299ba5f69acf73",
+            "resource:complete-wp-guide#template": "2ea0cabeb62f3aa6",
+            "resource:deferred-items": "4bb13759c0e75532",
+            "resource:follow-ups": "c070f4f8c7386158",
+            "resource:session-trace#template": "21db4feb6a356f11",
+            "resource:workflow-retrospective": "9639e15fb35f3e21",
+            "technique:conduct-retrospective::retrospective": "c19e90800991f989",
+            "technique:conduct-retrospective::select-next": "523b338811c9027f",
+            "technique:create-adr": "e95a55df62f612bc",
+            "technique:finalize-documentation::create-complete-doc": "0d9792eb88986f14",
+            "technique:finalize-documentation::ensure-docs": "4f85cf80d206a515",
+            "technique:finalize-documentation::finalize-test-plan": "eb757ae5f5cd65b2",
+            "technique:finalize-documentation::render-token-usage": "ac81942fc4404e4f",
+            "technique:finalize-documentation::update-adr": "0fbeca4b96decb38",
+            "technique:manage-artifacts::verify-artifact-links": "600fe39587e712cf",
+            "technique:manage-git::remove-worktree": "8576d0d1bf257412",
+            "technique:workflow-engine::read-session": "0a96fdb822c14da5"
           },
           "w-design-philosophy-1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -5994,17 +6020,239 @@
             },
             "timestamp": "2026-07-31T12:00:38.320Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-07-31T12:03:04.933Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "complete",
+            "timestamp": "2026-07-31T12:03:04.933Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-07-31T12:03:04.933Z",
+            "type": "workflow_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 65850,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T12:03:17.667Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 5347,
+              "delivery": "full",
+              "stepId": "create-complete-doc",
+              "techniqueId": "finalize-documentation::create-complete-doc"
+            },
+            "timestamp": "2026-07-31T12:03:17.667Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 6352,
+              "delivery": "full",
+              "stepId": "render-token-usage",
+              "techniqueId": "finalize-documentation::render-token-usage"
+            },
+            "timestamp": "2026-07-31T12:03:17.667Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 2952,
+              "delivery": "full",
+              "stepId": "read-session",
+              "techniqueId": "workflow-engine::read-session"
+            },
+            "timestamp": "2026-07-31T12:03:17.667Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 6323,
+              "delivery": "full",
+              "stepId": "conduct-retrospective",
+              "techniqueId": "conduct-retrospective::retrospective"
+            },
+            "timestamp": "2026-07-31T12:03:17.667Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 9944,
+              "delivery": "full",
+              "stepId": "verify-artifact-links",
+              "techniqueId": "manage-artifacts::verify-artifact-links"
+            },
+            "timestamp": "2026-07-31T12:03:17.667Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 4019,
+              "delivery": "full",
+              "stepId": "select-next",
+              "techniqueId": "conduct-retrospective::select-next"
+            },
+            "timestamp": "2026-07-31T12:03:17.667Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 2065,
+              "delivery": "full",
+              "resourceId": "complete-wp-guide#template"
+            },
+            "timestamp": "2026-07-31T12:03:26.343Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 685,
+              "delivery": "full",
+              "resourceId": "session-trace#template"
+            },
+            "timestamp": "2026-07-31T12:03:27.610Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 5162,
+              "delivery": "full",
+              "resourceId": "workflow-retrospective"
+            },
+            "timestamp": "2026-07-31T12:03:27.913Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 1381,
+              "delivery": "full",
+              "resourceId": "follow-ups"
+            },
+            "timestamp": "2026-07-31T12:03:28.583Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 1878,
+              "delivery": "full",
+              "resourceId": "deferred-items"
+            },
+            "timestamp": "2026-07-31T12:03:29.208Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 3965,
+              "delivery": "full",
+              "stepId": "create-adr",
+              "techniqueId": "create-adr"
+            },
+            "timestamp": "2026-07-31T12:03:38.507Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 3834,
+              "delivery": "full",
+              "stepId": "update-adr-status",
+              "techniqueId": "finalize-documentation::update-adr"
+            },
+            "timestamp": "2026-07-31T12:03:38.741Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 3862,
+              "delivery": "full",
+              "stepId": "finalize-test-plan",
+              "techniqueId": "finalize-documentation::finalize-test-plan"
+            },
+            "timestamp": "2026-07-31T12:03:39.421Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 3708,
+              "delivery": "full",
+              "stepId": "ensure-docs",
+              "techniqueId": "finalize-documentation::ensure-docs"
+            },
+            "timestamp": "2026-07-31T12:03:40.008Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 4107,
+              "delivery": "full",
+              "stepId": "remove-worktree",
+              "techniqueId": "manage-git::remove-worktree"
+            },
+            "timestamp": "2026-07-31T12:03:40.616Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "w-complete-1",
+              "chars": 1282,
+              "delivery": "full",
+              "resourceId": "architecture-review#adr-template"
+            },
+            "timestamp": "2026-07-31T12:03:53.407Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 187,
+        "seq": 201,
         "sessionIndex": "7Q54WJ",
         "skippedActivities": [],
         "startedAt": "2026-07-30T19:48:00.082Z",
-        "status": "running",
+        "status": "completed",
         "triggeredWorkflows": [],
-        "ts": 1785499238,
+        "ts": 1785499433,
         "variables": {
           "architecture_overview": "See the comprehension artifact's Architecture Overview section.",
           "artifact_name": "",

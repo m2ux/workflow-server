@@ -1,12 +1,14 @@
 # Context Fidelity and Observability — July 2026
 
-> Enhancement · Created 2026-07-30 · **Status:** Planning
+> Enhancement · Created 2026-07-30 · **Status:** Complete (PR #366 open, draft — human undraft before merge)
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
+> Token use and cost estimate (floor): [14-token-usage.md](14-token-usage.md).
+
 ## 🎯 Executive Summary
 
-Closes #365 items S2, S3 (token aggregate; price deferred), S4, and S5 on the workflow MCP server: undeclared planning files are named before staging, run token spend is a plain-sum total with optional per-worker attribution, shared technique preamble collapses under block dedup, and multi-worker traces are filterable with resource and step-level diagnostics. Implementation is on `feat/365-context-fidelity-observability` / PR #366; validation reports 787 tests passing.
+Closes #365 items S2, S3 (token aggregate; price deferred), S4, and S5 on the workflow MCP server: undeclared planning files are named before staging, run token spend is a plain-sum total with optional per-worker attribution, shared technique preamble collapses under block dedup, and multi-worker traces are filterable with resource and step-level diagnostics. Implementation is on `feat/365-context-fidelity-observability` / PR #366 (package 0.2.0); validation reports 787 tests passing; stakeholder review pass.
 
 ## Problem Overview
 
@@ -50,9 +52,9 @@ What changes for people who rely on the system is trust and legibility, not the 
 | 24 | Validation | Build, test, lint verification | 15-30m | ✅ |
 | 25 | [Strategic review](12-strategic-review-1.md) | Scope/minimality series (`strategic-review-{n}`) | 15-30m | ✅ |
 | 26 | Submit for review | PR review lifecycle / stealth push | 30-60m | ✅ |
-| 27 | [Close-out](14-COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | 🟡 |
-| 28 | [Token usage](14-token-usage.md) | Session token and cost summary | 5-10m | ⬚ |
-| 29 | [Session trace](14-session-trace.md) | Lean mechanical execution trace | 5-10m | ⬚ |
+| 27 | [Close-out](14-COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | ✅ |
+| 28 | [Token usage](14-token-usage.md) | Session token and cost summary | 5-10m | ✅ |
+| 29 | [Session trace](14-session-trace.md) | Lean mechanical execution trace | 5-10m | ✅ |
 | 30 | [Codebase comprehension](../../comprehension/context-fidelity-observability.md) | Persistent knowledge under comprehension/ | 20-45m | ✅ |
 
 **Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
