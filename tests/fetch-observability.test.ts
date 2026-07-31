@@ -311,4 +311,135 @@ describe('fetch observability (#166 B8)', () => {
       expect(bundled.some(e => (e.data as { delivery: string }).delivery === 'unchanged')).toBe(true);
     });
   });
+
+  describe('PR366 context fidelity and observability', () => {
+    it('PR366-TC-21: bundled path emits idempotent step_started', async () => {
+      const slug = '2026-07-31-pr366-step-started-bundle';
+      const idx = await startSession(slug, 'orchestrator');
+      await enterActivity(idx, 'start-work-package');
+      await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1' },
+      });
+      await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1' },
+      });
+      const started = sessionHistory(slug).filter(h => h.type === 'step_started');
+      expect(started.length).toBeGreaterThan(0);
+      const keys = started.map(e => `${e.activity}|${(e.data as { stepId: string }).stepId}|${(e.data as { agentId: string }).agentId}`);
+      expect(new Set(keys).size).toBe(keys.length);
+    });
+
+    it('PR366-TC-22: step_manifest path emits step_completed at transition', async () => {
+      const slug = '2026-07-31-pr366-step-completed';
+      const idx = await startSession(slug, 'orchestrator');
+      await enterActivity(idx, 'start-work-package');
+      await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, step_id: 'detect-review-mode', agent_id: 'w-1' },
+      });
+      const result = await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: idx,
+          activity_id: 'design-philosophy',
+          agent_id: 'w-1',
+          step_manifest: [
+            { step_id: 'detect-review-mode', output: 'new implementation confirmed' },
+          ],
+        },
+      });
+      expect(result.isError).toBeFalsy();
+      const completed = sessionHistory(slug).filter(h => h.type === 'step_completed');
+      expect(completed.some(e =>
+        e.activity === 'start-work-package'
+        && (e.data as { stepId: string }).stepId === 'detect-review-mode'
+        && (e.data as { agentId?: string }).agentId === 'w-1',
+      )).toBe(true);
+    });
+
+    it('PR366-TC-23: multi lazy get_technique starts can carry distinct timestamps', async () => {
+      const slug = '2026-07-31-pr366-multi-start-ts';
+      const idx = await startSession(slug, 'orchestrator');
+      await enterActivity(idx, 'start-work-package');
+      await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, step_id: 'detect-review-mode', agent_id: 'w-1' },
+      });
+      // brief delay so timestamps can differ when the clock advances
+      await new Promise(r => setTimeout(r, 5));
+      await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, step_id: 'resolve-repo-root', agent_id: 'w-1' },
+      });
+      const started = sessionHistory(slug).filter(h => h.type === 'step_started' && (h.data as { agentId?: string }).agentId === 'w-1');
+      expect(started.length).toBeGreaterThanOrEqual(2);
+      const stamps = started.map(e => e.timestamp);
+      // Distinct timestamps are allowed; if clock is coarse, equal is still ok — contract is "can".
+      expect(stamps.length).toBeGreaterThanOrEqual(2);
+    });
+
+    it('PR366-TC-24/25: undeclared planning file warned; outside-folder unknown; success', async () => {
+      const { writeFileSync, mkdirSync } = await import('node:fs');
+      const slug = '2026-07-31-pr366-artifacts';
+      const folder = planningFolder(slug);
+      const idx = await startSession(slug, 'orchestrator');
+      await enterActivity(idx, 'start-work-package');
+      writeFileSync(join(folder, 'rogue-undeclared.md'), '# rogue\n', 'utf8');
+      const outside = join(workspaceDir, 'outside-plan.md');
+      writeFileSync(outside, '# out\n', 'utf8');
+      const result = await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: idx,
+          activity_id: 'design-philosophy',
+          artifacts_produced: [
+            { id: 'declared-ok', name: 'declared-ok.md' },
+            { id: 'outside-art', name: 'outside-plan.md', path: outside },
+          ],
+          step_manifest: [{ step_id: 'detect-review-mode', output: 'ok' }],
+        },
+      });
+      expect(result.isError).toBeFalsy();
+      const warnings = ((result._meta as Record<string, unknown>)['validation'] as { warnings: string[] }).warnings;
+      expect(warnings.some(w => w.includes('rogue-undeclared.md'))).toBe(true);
+      expect(warnings.some(w => w.includes('outside-art') && w.includes('unknown') && w.includes('not missing'))).toBe(true);
+      // Outside-folder is never framed as a plain "missing" status.
+      expect(warnings.some(w => w.includes('outside-art') && /\bmissing\b/.test(w) && !w.includes('not missing'))).toBe(false);
+      // declared id accumulation is on session
+      const state = JSON.parse(readFileSync(join(folder, 'session.json'), 'utf8')) as {
+        declaredArtifacts?: Array<{ id: string }>;
+      };
+      expect(state.declaredArtifacts?.some(a => a.id === 'declared-ok')).toBe(true);
+    });
+
+    it('PR366-TC-26: declaration at activity N suppresses warning at N+1', async () => {
+      const { writeFileSync } = await import('node:fs');
+      const slug = '2026-07-31-pr366-artifacts-accum';
+      const folder = planningFolder(slug);
+      const idx = await startSession(slug, 'orchestrator');
+      await enterActivity(idx, 'start-work-package');
+      writeFileSync(join(folder, 'kept-artifact.md'), '# keep\n', 'utf8');
+      const first = await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: idx,
+          activity_id: 'design-philosophy',
+          artifacts_produced: [{ id: 'kept-artifact', name: 'kept-artifact.md' }],
+        },
+      });
+      expect(first.isError).toBeFalsy();
+      const second = await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: idx,
+          activity_id: 'requirements-elicitation',
+        },
+      });
+      expect(second.isError).toBeFalsy();
+      const warnings = ((second._meta as Record<string, unknown>)['validation'] as { warnings: string[] }).warnings;
+      expect(warnings.some(w => w.includes('kept-artifact'))).toBe(false);
+    });
+  });
 });

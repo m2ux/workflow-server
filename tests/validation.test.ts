@@ -490,6 +490,27 @@ describe('validation', () => {
       ];
       expect(validateTechniqueFetches(fullManifest, makeFetchWorkflow(), 'work', history)).toEqual([]);
     });
+
+    it('PR366-TC-14: sibling agent fetch does not credit this agent (SC-11)', () => {
+      const manifest = [{ step_id: 'qualified-step', output: 'done' }];
+      const history = [
+        entered('work'),
+        {
+          timestamp: '2026-07-07T10:01:00.000Z',
+          type: 'technique_fetched' as const,
+          activity: 'work',
+          data: { techniqueId: 'grp::qualified-step', stepId: 'qualified-step', agentId: 'worker-a' },
+        },
+      ];
+      // Without agent filter, sibling still credits (legacy).
+      expect(validateTechniqueFetches(manifest, makeFetchWorkflow(), 'work', history)).toEqual([]);
+      // With agent_id worker-b, worker-a's fetch does not cover.
+      const warnings = validateTechniqueFetches(manifest, makeFetchWorkflow(), 'work', history, 'worker-b');
+      expect(warnings).toHaveLength(1);
+      expect(warnings[0]).toContain('qualified-step');
+      // Matching agent is credited.
+      expect(validateTechniqueFetches(manifest, makeFetchWorkflow(), 'work', history, 'worker-a')).toEqual([]);
+    });
   });
 
   describe('buildValidation', () => {

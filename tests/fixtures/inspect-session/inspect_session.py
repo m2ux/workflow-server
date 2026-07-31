@@ -1,26 +1,30 @@
 #!/usr/bin/env python3
 """Read-only projection of a workflow-server session.json.
 
-Reference implementation and behavioral spec for the proposed `inspect_session`
+Reference implementation and behavioral spec for the `inspect_session`
 MCP tool (see ../README.md). It exists to remove the ad-hoc `python3 -c` session
 introspection that close-out activities otherwise fall back to; the preferred
 delivery is the server tool, with this script as the fallback and output contract.
 
 Usage:
-    inspect_session.py <session.json> [view] [--child N] [--variable KEY]
+    inspect_session.py <session.json> [view] [--child N] [--variable KEY] [--agent ID]
 
     view: summary (default) | identity | variables | checkpoints | activities
-          | history | children
+          | history | children | usage
 
 Targets the root session by default; --child N targets triggeredWorkflows[N].state.
 Under --child N, `children` follows the ADDRESSED (descended) session — it lists
 that child's own triggeredWorkflows, not the root's.
+Optional --agent ID narrows history and usage to data.agentId matches.
 """
 
 import argparse
 import json
 import sys
 from collections import Counter
+
+
+USAGE_TOKEN_KEYS = ("input_tokens", "output_tokens", "total_tokens", "subagent_tokens")
 
 
 def load(path):
@@ -67,8 +71,10 @@ def activities(s):
     }
 
 
-def history(s):
+def history(s, agent_id=None):
     events = s.get("history") or []
+    if agent_id is not None:
+        events = [e for e in events if (e.get("data") or {}).get("agentId") == agent_id]
     tally = Counter(e.get("type") for e in events)
     milestones = [
         {k: e.get(k) for k in ("type", "activity", "checkpoint") if e.get(k)}
@@ -83,12 +89,7 @@ def history(s):
 
 
 def children(s):
-    """One-line digest per triggeredWorkflows entry of the ADDRESSED session.
-
-    Operates on the resolved session `s`, so under --child N it lists that
-    child's own triggeredWorkflows — matching the tool's addressed-session
-    semantics — rather than the root document's.
-    """
+    """One-line digest per triggeredWorkflows entry of the ADDRESSED session."""
     out = []
     for i, c in enumerate(s.get("triggeredWorkflows") or []):
         st = c.get("state") or {}
@@ -101,6 +102,27 @@ def children(s):
             "completed": st.get("completedActivities") or [],
         })
     return out
+
+
+def usage(s, agent_id=None):
+    events = [e for e in (s.get("history") or []) if e.get("type") == "activity_usage"]
+    if agent_id is not None:
+        events = [e for e in events if (e.get("data") or {}).get("agentId") == agent_id]
+    rows = []
+    totals = {}
+    for e in events:
+        data = e.get("data") or {}
+        u = data.get("usage")
+        row = {"activity": e.get("activity"), "timestamp": e.get("timestamp"), "usage": u}
+        if isinstance(data.get("agentId"), str):
+            row["agentId"] = data["agentId"]
+        rows.append(row)
+        if isinstance(u, dict):
+            for k in USAGE_TOKEN_KEYS:
+                v = u.get(k)
+                if isinstance(v, (int, float)) and not isinstance(v, bool):
+                    totals[k] = totals.get(k, 0) + v
+    return {"rows": rows, "totals": totals}
 
 
 def summary(s):
@@ -120,6 +142,7 @@ def main():
     ap.add_argument("view", nargs="?", default="summary")
     ap.add_argument("--child", type=int, default=None)
     ap.add_argument("--variable", default=None)
+    ap.add_argument("--agent", default=None, help="Filter history/usage by data.agentId")
     args = ap.parse_args()
 
     doc = load(args.session_json)
@@ -135,9 +158,11 @@ def main():
     elif args.view == "activities":
         result = activities(s)
     elif args.view == "history":
-        result = history(s)
+        result = history(s, args.agent)
     elif args.view == "children":
         result = children(s)
+    elif args.view == "usage":
+        result = usage(s, args.agent)
     elif args.view == "summary":
         result = summary(s)
     else:
