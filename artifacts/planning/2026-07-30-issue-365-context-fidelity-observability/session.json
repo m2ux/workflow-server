@@ -457,11 +457,6 @@
     {
       "sessionIndex": "7Q54WJ",
       "state": {
-        "activeCheckpoint": {
-          "activityId": "plan-prepare",
-          "checkpointId": "approach-confirmed",
-          "yieldedAt": "2026-07-31T08:46:15.248Z"
-        },
         "agentId": "orchestrator",
         "checkpointResponses": {
           "codebase-comprehension-comprehension-sufficient": {
@@ -484,6 +479,10 @@
             },
             "optionId": "full-workflow",
             "respondedAt": "2026-07-31T04:53:56.000Z"
+          },
+          "plan-prepare-approach-confirmed": {
+            "optionId": "confirmed",
+            "respondedAt": "2026-07-31T08:52:30.000Z"
           },
           "requirements-elicitation-elicitation-complete": {
             "effects": {
@@ -541,10 +540,11 @@
           "codebase-comprehension",
           "requirements-elicitation",
           "research",
-          "implementation-analysis"
+          "implementation-analysis",
+          "plan-prepare"
         ],
         "condition": "",
-        "currentActivity": "plan-prepare",
+        "currentActivity": "assumptions-review",
         "currentTechnique": "update-pr::render",
         "deliveredContent": {
           "orchestrator": {
@@ -3796,17 +3796,36 @@
             "checkpoint": "approach-confirmed",
             "timestamp": "2026-07-31T08:46:15.248Z",
             "type": "checkpoint_reached"
+          },
+          {
+            "activity": "plan-prepare",
+            "checkpoint": "approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-07-31T08:52:30.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "plan-prepare",
+            "timestamp": "2026-07-31T08:52:52.783Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "assumptions-review",
+            "timestamp": "2026-07-31T08:52:52.783Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 97,
+        "seq": 99,
         "sessionIndex": "7Q54WJ",
         "skippedActivities": [],
         "startedAt": "2026-07-30T19:48:00.082Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785487575,
+        "ts": 1785487972,
         "variables": {
           "architecture_overview": "See the comprehension artifact's Architecture Overview section.",
           "artifact_name": "",

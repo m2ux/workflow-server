@@ -31,8 +31,8 @@ What changes for people who rely on the system is trust and legibility, not the 
 | 5 | [Requirements elicitation](03-requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ✅ |
 | 6 | [KB research](04-kb-research.md) | Knowledge-base and web synthesis | 20-45m | ✅ |
 | 7 | [Implementation analysis](05-implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ✅ |
-| 8 | [Work package plan](06-work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | 🟡 |
-| 9 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | 🟡 |
+| 8 | [Work package plan](06-work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ✅ |
+| 9 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ✅ |
 | 10 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ✅ |
 | 11 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | ✅ |
 | 12 | Assumptions review | Converge open assumptions | 20-40m | ⬚ |
