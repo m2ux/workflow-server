@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
-Sole cost home for a run — the token-use and cost-estimate artifact, reconciled against the run's actual dispatch count, with a one-line README link.
+Sole cost home for a run — the token-use and cost-estimate artifact, reconciled against the run's actual dispatch count, with a one-line README link. A draft written mid-`complete` is revised after the client exits by [workflow-engine::revise-session-metrics](../../../meta/techniques/workflow-engine/revise-session-metrics.md) so the terminal activity is included.
 
 ## Inputs
 
@@ -47,10 +47,11 @@ Share of the run's dispatches the ledger accounts for: ledger entry count, actua
 
 - Create `{token_usage_document}` at `{planning_folder_path}` per [artifact-prefix](../manage-artifacts/TECHNIQUE.md#artifact-prefix) containing:
   - A title identifying this as a token-use and cost **estimate** for the work package.
-  - A per-activity table: activity id, input/output/total tokens, cache-read and cache-write columns when present, model, `priceTableVersion`, and per-activity cost (or `unknown` when `cost_usd` is null).
-  - A per-workflow totals section with input/output/total tokens and total cost (or `unknown` when unpriced activities contributed).
+  - A per-activity table: activity id, input/output/total tokens, cache-read and cache-write columns when present, **Duration (min)** (convert harness `duration_ms` with `min = ms / 60000`, one decimal), model, `priceTableVersion`, and per-activity cost (or `unknown` when `cost_usd` is null).
+  - A per-workflow totals section with input/output/total tokens, total wall duration in minutes, and total cost (or `unknown` when unpriced activities contributed).
   - The reconciliation from `{token_usage_document.usage_coverage}`: ledger entries, actual dispatches, and the unaccounted count. When the unaccounted count is above zero, state the totals as a floor rather than a total.
   - A caveat that cost is an **estimate** meaningful for API-key per-token billing; on Pro/Max subscriptions the figure is not a bill.
+- A mid-`complete` write is a **draft**: it cannot yet include the terminal activity's own dispatch figure. [workflow-engine::revise-session-metrics](../../../meta/techniques/workflow-engine/revise-session-metrics.md) (meta `end-workflow`) rewrites the same artifact after client exit.
 
 ### 4. Link From the README
 
