@@ -382,13 +382,44 @@ function collectReads(rel: string, raw: string, kind: 'technique' | 'activity'):
   });
 }
 
+/**
+ * Output ids a technique's OWN `#### artifact` bodies interpolate — the `{package_name}` in
+ * `` `{package_name}-plan.md` ``. Those tokens resolve out of the bag when the server synthesizes the
+ * activity artifact contract, which is the same consumer that exempts an artifact-CARRYING output
+ * from dead-output. The value is therefore consumed, even though its only mention sits inside the
+ * declaring file, where the dead-output check deliberately does not look for consumers.
+ */
+const artifactTemplateTokens = new Map<string, Set<string>>();
+
+function collectArtifactTemplateTokens(rel: string, raw: string): void {
+  const token = new RegExp(`\\{(${IDENTIFIER_PATTERN})(?:\\.[a-zA-Z0-9_]+)*\\}`, 'g');
+  const names = new Set<string>();
+  let inOutputs = false;
+  let inArtifact = false;
+  for (const line of raw.split('\n')) {
+    const h2 = /^##\s+(.+?)\s*$/.exec(line);
+    if (h2) { inOutputs = h2[1]!.trim() === 'Outputs'; inArtifact = false; continue; }
+    if (!inOutputs) continue;
+    if (/^###\s/.test(line)) { inArtifact = false; continue; }
+    const h4 = /^####\s+(\S+)\s*$/.exec(line);
+    if (h4) { inArtifact = h4[1]!.trim() === 'artifact'; continue; }
+    if (!inArtifact) continue;
+    for (const m of line.matchAll(token)) names.add(m[1]!);
+  }
+  if (names.size) artifactTemplateTokens.set(rel, names);
+}
+
 // techniques
 for (const wf of workflows) {
   const walk = (dir: string): void => {
     for (const e of readdirSync(dir)) {
       const p = join(dir, e); const st = statSync(p);
       if (st.isDirectory()) { if (e !== 'resources') walk(p); }
-      else if (e.endsWith('.md')) collectReads(relative(ROOT, p), readFileSync(p, 'utf-8'), 'technique');
+      else if (e.endsWith('.md')) {
+        const raw = readFileSync(p, 'utf-8');
+        collectReads(relative(ROOT, p), raw, 'technique');
+        collectArtifactTemplateTokens(relative(ROOT, p), raw);
+      }
     }
   };
   walk(join(ROOT, wf, 'techniques'));
@@ -636,6 +667,7 @@ export function collectViolations(): Violation[] {
   const consumed = collectConsumedSites();
   for (const site of declaredOutputSites) {
     if (site.hasArtifact) continue;
+    if (artifactTemplateTokens.get(site.rel)?.has(site.id)) continue;
     const satisfier = [...(consumed.get(site.id) ?? [])].find((rel) => rel !== site.rel && consumerReaches(rel, site.rel));
     if (satisfier) { deadOutputSatisfier.set(`${site.rel}\u0000${site.id}`, satisfier); continue; }
     v.push({

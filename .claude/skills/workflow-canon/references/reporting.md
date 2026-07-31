@@ -1,0 +1,92 @@
+# Reporting
+
+Severity, row shapes, and which report the run owes.
+
+## Severity
+
+| Severity | Fires when |
+|----------|-----------|
+| `Critical` | A schema-invalid or structurally broken construct — it must not be committed. Every guard failure is Critical on sight. |
+| `High` | A criteria entry fires against a construct the change ships, and the defect propagates: a broken contract, a second home for an owned fact, a constraint with no structural backing. Subject to adversarial re-derivation before it drives a fix. |
+| `Medium` | A criteria entry fires and the defect is contained to the construct it sits in. Spot-confirmed, not re-derived. |
+| `Low` | Hygiene with no consumer consequence. |
+
+A guard that exits 2 has not measured. That is `blocked` coverage, not a pass, and never rolls up as one.
+
+## Finding rows
+
+| Column | Carries |
+|--------|---------|
+| ID | Stable within the report, so a disposition can name a row |
+| Severity | Per the scale above |
+| Entry | The criteria entry by its kebab-case **name** — never a bare `AP-XX`, never a count of the catalog |
+| Location | File and field, at the depth the evidence sits |
+| Evidence | The construct the entry's Detect keys on, quoted or named |
+| Origin | `diff` when the violation arrived with this change, `pre-existing` when it was already there at the base ref |
+| Known | Set when a prior pass accepted this key |
+| Fix | The action the entry prescribes, in one line |
+
+**A row whose Evidence cannot name a construct is not a finding** and does not belong in the table. Inferred intent is not evidence. Where the entry keys on the harness tool surface or an authoritative bootstrap resource, the evidence is that surface read directly.
+
+## Coverage ledger
+
+Divergences only. A unit walked cleanly gets no row — the absence of a row is the positive result.
+
+| Column | Carries |
+|--------|---------|
+| Home | The criteria home the unit belongs to |
+| Unit | The unit's own section title or anchor |
+| Status | `not-applicable` with the reason it does not reach this surface, or `blocked` with what prevented the walk |
+
+Only `blocked` represents missing coverage. `not-applicable` is an evidenced negative and must carry its reason; a bare skip is not one.
+
+The obligation is one row per unwalked unit of every home in the inventory. If the ledger cannot account for all thirteen anti-pattern units, the six inventory units, the thirty principles, and the conformance unit, the walk was partial — say so rather than reporting a clean sweep.
+
+## Which report
+
+**Inside a workflow-authoring or workflow-design run** — that run's creation guides own the layout and this skill defers to them. Do not invent a shape alongside them:
+
+| Artifact | Guide |
+|----------|-------|
+| `findings-register.md` | `workflows/workflow-authoring/resources/findings-register.md` |
+| `compliance-review.md` / `post-update-review.md` | `workflows/workflow-design/resources/compliance-report.md` |
+| per-pass `*-findings.md` satellites | `workflows/workflow-design/resources/findings-satellite.md` |
+
+Fetch the guide's `## Template` section and fill it; persist through the activity's bound `manage-artifacts::write-artifact` step, not by hand.
+
+**Standalone** — no planning folder, no run. Report in the chat, or to a file the user named, at this shape:
+
+~~~markdown
+# Canon Audit — `{target}`
+
+**Base ref:** `{ref}` · **Surface:** N files · **Guards:** clean | N findings | N unmeasured
+
+| Severity | Open | Known |
+|----------|-----:|------:|
+| Critical | N | N |
+| High     | N | N |
+| Medium   | N | N |
+| Low      | N | N |
+
+## Findings
+
+| ID | Severity | Entry | Location | Evidence | Origin | Fix |
+|----|----------|-------|----------|----------|--------|-----|
+
+## Coverage
+
+[Divergences only. Omit the section when every unit was walked.]
+
+## Known
+
+[Findings a prior pass accepted, excluded from the decision surface. Omit when empty.]
+~~~
+
+## Rules
+
+- **Rows, not prose.** A section that reads as narrative belongs somewhere else.
+- **Omit an empty section** rather than emitting it with a "none" row.
+- **Severity order** Critical → High → Medium → Low.
+- **No criteria prose in the report.** Link the entry; the catalog is its home.
+- **Cite entries by name.** Never a bare designator, never any count of the catalog's entries.
+- **Report the verify pass honestly.** Say which Highs were withdrawn or downgraded on re-derivation; a register that silently drops them reads as a walk that never found them.
