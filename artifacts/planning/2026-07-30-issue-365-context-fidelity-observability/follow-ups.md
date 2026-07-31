@@ -6,7 +6,7 @@ In-task remainders still inside this package (not out-of-scope — those live in
 
 | ID | Opened at | Item | Owner / next |
 |----|-----------|------|----------------|
-| — | — | *(none open)* | Plan-prepare sync-branch and update-pr completed on host (unsandboxed keyring + SSH per AGENTS.md). |
+| F-1 | submit-for-review | **PR #366 still draft after mark-ready.** REST `PATCH repos/…/pulls/366` with `draft=false` returns 200 but leaves `draft: true`. GitHub only undrafts via GraphQL `markPullRequestReadyForReview` or `gh pr ready`; AGENTS.md forbids GraphQL and `gh pr *`. Review is a pass; undraft is a host/human one-liner before merge visibility. | Human: `gh pr ready 366` (or UI Ready for review) once before merge; optional workflow fix later for REST-capable undraft docs |
 
 ## Retrospective findings (harvest into close-out)
 
