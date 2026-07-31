@@ -438,6 +438,15 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "codebase-comprehension-comprehension-sufficient": {
+            "effects": {
+              "variablesSet": {
+                "needs_comprehension": false
+              }
+            },
+            "optionId": "sufficient",
+            "respondedAt": "2026-07-31T06:00:37.000Z"
+          },
           "design-philosophy-classification-and-path-confirmed": {
             "effects": {
               "variablesSet": {
@@ -461,16 +470,32 @@
           }
         },
         "completedActivities": [
-          "start-work-package"
+          "start-work-package",
+          "design-philosophy"
         ],
-        "condition": "isDefault:design-philosophy",
-        "currentActivity": "design-philosophy",
-        "currentTechnique": "github-cli-protocol::view-issue",
+        "condition": "isDefault: codebase-comprehension",
+        "currentActivity": "codebase-comprehension",
+        "currentTechnique": "analyse-challenge::run-loop",
         "deliveredContent": {
           "orchestrator": {
             "resource:meta/planning-readme#row-ownership-map": "e883775cc8b06d33",
             "resource:meta/planning-readme#status-transition-policy": "5c79d22cf0ad157f",
             "resource:readme-seed": "61cd9d882fcb2b29"
+          },
+          "w-codebase-comprehension-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
+            "bundle:scatter-gather": "972acb177d168c94",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:codebase-comprehension": "cd6b1edac680c319",
+            "technique:analyse-challenge::run-loop": "1dcafa7bd889a72e",
+            "technique:codebase-comprehension::deep-dive": "dbb1d321f45b4343",
+            "technique:codebase-comprehension::revise-questions": "2dcc44eba9471a95",
+            "technique:codebase-comprehension::survey": "7308ec9e0716987b",
+            "technique:manage-artifacts::write-artifact": "ba57b2382aed4d4e"
           },
           "w-design-philosophy-1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -1504,17 +1529,324 @@
             },
             "timestamp": "2026-07-31T05:04:54.500Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "design-philosophy",
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_type",
+              "source": "variables_changed",
+              "value": "inventive-improvement"
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_complexity",
+              "source": "variables_changed",
+              "value": "complex"
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_elicitation",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_research",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "skip_optional_activities",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "design_philosophy_doc",
+              "source": "variables_changed",
+              "value": "02-design-philosophy.md"
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "value": "02-assumptions-log.md"
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": [
+                "DP-7",
+                "DP-9",
+                "DP-10"
+              ]
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_statement",
+              "source": "variables_changed",
+              "value": "Four follow-through items from the #189/#232/#322-#324 epics remain unbuilt in the server's context-fidelity machinery: S2 artifact reconciliation, S3 usage aggregate + cost, S4 block-dedup measurement, S5 three observability gaps. Scope fixed by the user to S2, S3 tail, S4, S5. Record of truth: 02-design-philosophy.md."
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "classification_rationale",
+              "source": "variables_changed",
+              "value": "Inventive/improvement because the affected subsystems work as built and what is missing is reconciliation and rollup never written; complex on open architectural decisions, a hard cost gate, requirement contradictions, and benchmark/oracle coupling across five surfaces. The gitnexus CRITICAL rating was discounted as graph shape (DP-3) and must not be quoted as plan evidence."
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "path_rationale",
+              "source": "variables_changed",
+              "value": "Full workflow. Elicitation for the open per-item success criteria; research for external precedent on resumed-turn usage reporting and current model pricing; comprehension mandatory and warranted across five coupled surfaces. Confirmed at the classification-and-path-confirmed checkpoint."
+            },
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "timestamp": "2026-07-31T05:05:46.793Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-codebase-comprehension-1",
+              "chars": 75992,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T05:06:03.104Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-codebase-comprehension-1",
+              "chars": 9135,
+              "delivery": "full",
+              "stepId": "build-comprehension",
+              "techniqueId": "codebase-comprehension::survey"
+            },
+            "timestamp": "2026-07-31T05:06:03.104Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-codebase-comprehension-1",
+              "chars": 10462,
+              "delivery": "full",
+              "stepId": "create-comprehension-artifact",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-31T05:06:03.104Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-codebase-comprehension-1",
+              "chars": 6095,
+              "delivery": "full",
+              "stepId": "initial-deep-dive",
+              "techniqueId": "codebase-comprehension::deep-dive"
+            },
+            "timestamp": "2026-07-31T05:06:03.104Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-codebase-comprehension-1",
+              "chars": 10462,
+              "delivery": "full",
+              "stepId": "update-artifact-initial",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-07-31T05:06:03.104Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-codebase-comprehension-1",
+              "chars": 5221,
+              "delivery": "full",
+              "stepId": "revise-initial-questions",
+              "techniqueId": "codebase-comprehension::revise-questions"
+            },
+            "timestamp": "2026-07-31T05:06:03.104Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-codebase-comprehension-1",
+              "chars": 12160,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension"
+            },
+            "timestamp": "2026-07-31T05:07:27.056Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "w-codebase-comprehension-1",
+              "chars": 7427,
+              "delivery": "full",
+              "stepId": "analyse-challenge-pass",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-31T05:26:01.669Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "checkpoint": "comprehension-sufficient",
+            "timestamp": "2026-07-31T05:31:45.772Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "usage": {
+                "duration_ms": 1575989,
+                "subagent_tokens": 313561,
+                "tool_uses": 111
+              }
+            },
+            "timestamp": "2026-07-31T05:32:21.159Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "checkpoint": "comprehension-sufficient",
+            "data": {
+              "optionId": "sufficient"
+            },
+            "timestamp": "2026-07-31T06:00:37.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-07-31T06:00:37.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "usage": {
+                "dispatch": "resume-after-checkpoint",
+                "duration_ms": 132745,
+                "subagent_tokens": 317108,
+                "tool_uses": 6
+              }
+            },
+            "timestamp": "2026-07-31T06:03:22.761Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 33,
+        "seq": 42,
         "sessionIndex": "7Q54WJ",
         "skippedActivities": [],
         "startedAt": "2026-07-30T19:48:00.082Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785474294,
+        "ts": 1785477802,
         "variables": {
           "artifact_name": "",
           "artifact_publish_ref": "",
@@ -1522,6 +1854,7 @@
           "assumption_decisions": [],
           "assumption_deferred": false,
           "assumption_resolved_inline": false,
+          "assumptions_log": "02-assumptions-log.md",
           "audit_confirmed": false,
           "awaiting_review": false,
           "block_line_range": "",
@@ -1535,6 +1868,7 @@
           "build_dependent_artifact_commands": "",
           "build_dependent_artifacts_pending": false,
           "change_block_index": "",
+          "classification_rationale": "Inventive/improvement because the affected subsystems work as built and what is missing is reconciliation and rollup never written; complex on open architectural decisions, a hard cost gate, requirement contradictions, and benchmark/oracle coupling across five surfaces. The gitnexus CRITICAL rating was discounted as graph shape (DP-3) and must not be quoted as plan evidence.",
           "completion_document_path": "",
           "component_name": "workflow-server",
           "component_path": ".",
@@ -1544,6 +1878,7 @@
           "context_scope_uncertain": false,
           "current_block_index": 0,
           "current_branch": "",
+          "design_philosophy_doc": "02-design-philosophy.md",
           "elicitation_complete": false,
           "existing_pr_number": "",
           "github_issue_found": false,
@@ -1552,7 +1887,7 @@
           "has_debt_markers": false,
           "has_deferred_assumptions": false,
           "has_flagged_blocks": false,
-          "has_open_assumptions": false,
+          "has_open_assumptions": true,
           "has_open_questions": false,
           "has_reconcilable_research": false,
           "has_resolvable_assumptions": false,
@@ -1576,7 +1911,7 @@
           "mark_progress_na": false,
           "needs_cleanup": false,
           "needs_code_fixes": false,
-          "needs_comprehension": true,
+          "needs_comprehension": false,
           "needs_elicitation": true,
           "needs_further_discussion": false,
           "needs_github_issue_creation": false,
@@ -1587,6 +1922,12 @@
           "needs_simplification": false,
           "needs_strategic_fixes": false,
           "needs_test_improvements": false,
+          "open_assumptions": [
+            "DP-7",
+            "DP-9",
+            "DP-10"
+          ],
+          "path_rationale": "Full workflow. Elicitation for the open per-item success criteria; research for external precedent on resumed-turn usage reporting and current model pricing; comprehension mandatory and warranted across five coupled surfaces. Confirmed at the classification-and-path-confirmed checkpoint.",
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-30-issue-365-context-fidelity-observability",
           "post_jira_comment": false,
           "pr_exists": true,
@@ -1594,6 +1935,8 @@
           "pr_skipped": false,
           "pr_url": "https://github.com/m2ux/workflow-server/pull/366",
           "problem_complexity": "complex",
+          "problem_statement": "Four follow-through items from the #189/#232/#322-#324 epics remain unbuilt in the server's context-fidelity machinery: S2 artifact reconciliation, S3 usage aggregate + cost, S4 block-dedup measurement, S5 three observability gaps. Scope fixed by the user to S2, S3 tail, S4, S5. Record of truth: 02-design-philosophy.md.",
+          "problem_type": "inventive-improvement",
           "project_type": "other",
           "provenance_log_path": "",
           "push_remote": "origin",
