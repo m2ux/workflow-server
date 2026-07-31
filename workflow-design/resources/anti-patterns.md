@@ -1769,6 +1769,16 @@ A citation delivers a whole resource where the citing prose reads one section.
 
 **Fix:** Point the citation at the section it reads — `../resources/example.md#section-title`, link text the section title — one citation per section needed. Where a bare citation coexists with anchored ones, anchor it or drop it. Where no single section covers the need and the resource is large, that is a split candidate under [Resources at the Abstract Level; Split for Section Delivery](./design-principles.md#30-resources-at-the-abstract-level-split-for-section-delivery). See [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain).
 
+### AP-134b. framing-outside-any-section
+
+A resource carries operative prose in a span no `##` anchor reaches, while techniques cite that resource by section.
+
+**Detect:** After stripping frontmatter and ignoring fenced blocks, the resource has at least one anchored citer, and either (a) the leading H1 carries substantial framing (roughly 100+ characters of body before the first `##`) whose only reachable anchor spans the whole file, or (b) prose sits before any heading. Mechanical: measure prose before the first `##` against the span of the leading H1 and against every `##` span.
+
+**Do not flag:** Orientation-only framing a section consumer does not need (record the verdict). Single-section resources with no anchored citers. Framing already under a named `##` that citers can request.
+
+**Fix:** Classify the framing — delete when it duplicates the citing technique; mint a `##` section (or move the obligation into the technique) when it is operative and unique; leave when it is orientation only. Cross-section deixis becomes an anchored link. Canon: [Resources at the Abstract Level; Split for Section Delivery](./design-principles.md#30-resources-at-the-abstract-level-split-for-section-delivery) (section-scoped reader dependencies live in a section) and [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain). Sibling of `whole-resource-for-one-section`.
+
 ### AP-135. tool-contract-restated-in-protocol
 
 "Each entry is an object with two string fields: `step_id` … and `output` … ; do not pass an empty array"

@@ -171,7 +171,7 @@ Orchestrator guidance for when to Apply [sync-progress-status](../techniques/wor
 | Worker/orchestrator signals blocked | blocked (`❌`) | Orchestrator when blocked is observed |
 | Path skip / cancel / mark N/A | cancelled / N/A (`⊘`) | Orchestrator when path excludes or cancels the activity |
 
-An activity that cannot produce a meaningful Progress complete sets `{mark_progress_na}` — that is what routes it to the cancelled/N/A row above, rather than inventing a user-reported hand-off to claim completion with.
+An activity that cannot produce a meaningful Progress complete sets `{mark_progress_na}` — that is what routes it to the cancelled/N/A row in [Status vocabulary](#status-vocabulary), rather than inventing a user-reported hand-off to claim completion with.
 
 ## Matching
 

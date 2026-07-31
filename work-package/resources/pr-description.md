@@ -137,7 +137,14 @@ Optional sections (add when applicable): `## Migration Notes` (required steps fo
 
 ## Link Row Forms
 
-**Standard link row** (Issue = the GitHub issue in the target repo, never the Jira ticket):
+**Glyph key** (shared by every form in this section):
+
+| Glyph | Meaning |
+|-------|---------|
+| 🐛 | Issue — the GitHub issue in the target repo (never the Jira ticket) |
+| 📐 | Engineering — planning-folder README on the engineering remote |
+
+**Standard link row**:
 
 ```markdown
 🐛 [Issue]({TARGET_REPO_URL}/issues/{GITHUB_ISSUE_NUMBER})  📐 [Engineering]({ENG_REPO_URL}/blob/{ENG_BRANCH}/{ENG_PLANNING_PATH}/{PLANNING_FOLDER}/README.md)
