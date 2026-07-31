@@ -5,18 +5,21 @@
   "workflowVersion": "5.14.0",
   "agentId": "orchestrator",
   "sessionIndex": "6F7FMZ",
-  "currentActivity": "initialize-session",
+  "currentActivity": "resolve-target",
   "currentTechnique": "version-control::initialize-folder",
-  "condition": "isDefault: transitions[0] → initialize-session",
-  "seq": 10,
-  "ts": 1785440908,
+  "condition": "isDefault: resolve-target",
+  "seq": 13,
+  "ts": 1785470993,
   "startedAt": "2026-07-30T19:43:33.456Z",
   "completedActivities": [
-    "discover-session"
+    "discover-session",
+    "initialize-session"
   ],
   "skippedActivities": [],
   "variables": {
     "abort_completion": false,
+    "client_planning_slug": "2026-07-30-issue-365-context-fidelity-observability",
+    "client_session_index": "7Q54WJ",
     "client_workflow_completed": false,
     "component_path": ".",
     "component_selection_needed": false,
@@ -25,6 +28,8 @@
     "host_repo_path": "/home/mike1/projects/dev/workflow-server",
     "is_monorepo": false,
     "is_resuming": false,
+    "meta_session_index": "6F7FMZ",
+    "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-30-issue-365-context-fidelity-observability",
     "resume_intent_requested": false,
     "target_repo": "m2ux/workflow-server",
     "target_workflow_id": "work-package",
@@ -275,6 +280,90 @@
         }
       },
       "timestamp": "2026-07-30T19:48:28.192Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-07-31T04:08:41.834Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "meta_session_index",
+        "source": "variables_changed",
+        "value": "6F7FMZ"
+      },
+      "timestamp": "2026-07-31T04:08:41.834Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_planning_slug",
+        "source": "variables_changed",
+        "value": "2026-07-30-issue-365-context-fidelity-observability"
+      },
+      "timestamp": "2026-07-31T04:08:41.834Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_session_index",
+        "source": "variables_changed",
+        "value": "7Q54WJ"
+      },
+      "timestamp": "2026-07-31T04:08:41.834Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "planning_folder_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-30-issue-365-context-fidelity-observability"
+      },
+      "timestamp": "2026-07-31T04:08:41.834Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-07-31T04:08:41.834Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "w-resolve-target-1",
+        "chars": 33670,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-07-31T04:08:53.991Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "w-resolve-target-1",
+        "chars": 4793,
+        "delivery": "full",
+        "stepId": "detect-monorepo",
+        "techniqueId": "version-control::detect-repo-type"
+      },
+      "timestamp": "2026-07-31T04:08:53.991Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "usage": {
+          "duration_ms": 57703,
+          "subagent_tokens": 39656,
+          "tool_uses": 7
+        }
+      },
+      "timestamp": "2026-07-31T04:09:53.490Z",
       "type": "activity_usage"
     }
   ],
@@ -551,6 +640,15 @@
       "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
       "technique:version-control::initialize-folder": "efa8c85064983982",
       "technique:workflow-engine::create-session": "93309bd14687f8af"
+    },
+    "w-resolve-target-1": {
+      "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
+      "bundle:variable-binding": "780a3e5bb26aea8d",
+      "bundle:workflow-engine::activity-worker": "5d153b783337a2fc",
+      "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+      "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+      "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+      "technique:version-control::detect-repo-type": "266f375b35ddca07"
     }
   },
   "repo": "m2ux/workflow-server"
