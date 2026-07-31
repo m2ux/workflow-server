@@ -1,5 +1,5 @@
 id: end-workflow
-version: 4.4.0
+version: 4.5.0
 name: End Workflow
 description: Close out the client workflow.
 required: true
@@ -7,6 +7,20 @@ steps:
   - kind: technique
     id: read-session
     technique: workflow-engine::read-session
+  - kind: technique
+    id: revise-session-metrics
+    technique: workflow-engine::revise-session-metrics
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: client_workflow_completed
+          operator: ==
+          value: true
+        - type: simple
+          variable: planning_folder_path
+          operator: "!="
+          value: ""
   - kind: technique
     id: verify-outcomes
     technique:
@@ -44,4 +58,5 @@ steps:
         message: Workflow session closed
 outcome:
   - The user can decide whether the work is truly done — every target outcome is shown as met or flagged as a gap to address
+  - Session-trace and token-usage artifacts include the client terminal activity after that activity has exited
   - The completed session can be resumed or audited later because its final state is durably preserved

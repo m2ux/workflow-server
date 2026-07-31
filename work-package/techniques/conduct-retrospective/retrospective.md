@@ -53,7 +53,7 @@ Lean mechanical summary of resolved trace events (dispatch counts, tool counts, 
 ### 2. Resolve Session Trace
 
 - Resolve `{trace_tokens}` once at close-out per [resolve-trace-at-close-out](../../../meta/techniques/workflow-engine/dispatch-activity.md#resolve-trace-at-close-out); skip when empty (no fabrication).
-- Write `{session_trace_document}` under `{planning_folder_path}` via find-or-update ([artifact-prefix](../manage-artifacts/TECHNIQUE.md#artifact-prefix)) following [session-trace](session-trace#template) — mechanical execution only, no token or cost figure.
+- Write `{session_trace_document}` under `{planning_folder_path}` via find-or-update ([artifact-prefix](../manage-artifacts/TECHNIQUE.md#artifact-prefix)) following [session-trace](session-trace#template) — mechanical execution only, no token or cost figure. This mid-`complete` write is a **draft**; meta `end-workflow` rewrites it via [revise-session-metrics](../../../meta/techniques/workflow-engine/revise-session-metrics.md) after the client exits so the terminal activity is included.
 
 ### 3. Conduct Retrospective
 
