@@ -7,11 +7,21 @@ metadata:
 
 Bootstrap the workflow-server MCP from a dispatched session, load an assigned activity definition (from the activity_id passed in the spawn prompt), follow its steps sequentially with verifiable outputs, and return structured output.
 
+## Inputs
+
+### scanner_id
+
+Designator for this agent instance (e.g., 'S1', 'S2', 'V', 'M'), which also names the persisted output file.
+
 ## Outputs
 
 ### sub_agent_output
 
 Structured JSON conforming to the [sub-agent output schema](../resources/sub-agent-output-schema.md#schema).
+
+#### artifact
+
+`{scanner_id}.json`
 
 #### scanner_id
 

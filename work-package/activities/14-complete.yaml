@@ -117,6 +117,12 @@ steps:
   - kind: technique
     id: select-next
     technique: conduct-retrospective::select-next
+    actions:
+      - action: message
+        message: |-
+          Hand-off for the next work package:
+
+          {next_work_package_context}
   - kind: action
     id: announce-completion
     actions:

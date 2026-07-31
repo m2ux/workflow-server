@@ -12,7 +12,10 @@ steps:
         checklist_source: toolkit-checklist
   - kind: technique
     id: format-output
-    technique: execute-sub-agent
+    technique:
+      name: execute-sub-agent
+      inputs:
+        step_products: "{verdict_matrix}"
 outcome:
   - Every toolkit function is reviewed against all 8 checklist items, so benign-looking helpers can no longer be skimmed past
   - State, arithmetic, and I/O bugs are surfaced per function rather than only on representative samples

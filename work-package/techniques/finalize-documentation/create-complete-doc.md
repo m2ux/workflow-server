@@ -17,6 +17,18 @@ Path to the planning folder where the completion document is created.
 
 *(optional)* True when the run audited an external change; false or unset when it produced an implementation.
 
+### finalized_adr
+
+*(optional)* The ADR as accepted, with the implementation outcome recorded — absent when the work package created no ADR.
+
+### finalized_test_plan
+
+*(optional)* The test plan with each case linked to its test source file and line.
+
+### documented_apis
+
+*(optional)* The public APIs in the diff that the documentation pass covered.
+
 ## Outputs
 
 ### completion_document

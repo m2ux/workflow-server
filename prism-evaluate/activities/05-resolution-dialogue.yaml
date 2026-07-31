@@ -25,6 +25,7 @@ steps:
         actions:
           - action: set
             target: accepted_mitigations
+            value: "{finding_decision}"
             description: Append the finding's recorded decision.
       - kind: checkpoint
         id: finding-decision

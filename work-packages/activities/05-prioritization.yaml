@@ -8,7 +8,10 @@ steps:
     technique: prioritize-packages
   - kind: checkpoint
     id: priority-confirmed
-    message: Here's the proposed priority order. Adjust as needed?
+    message: |-
+      The proposed execution order, with the dependency graph and per-package rationale behind it:
+
+      {priority_order}
     options:
       - id: accept
         label: Accept priority order

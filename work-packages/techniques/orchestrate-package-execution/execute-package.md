@@ -31,9 +31,9 @@ Progress indicator (e.g., '3/7 complete'), written into the updated START-HERE.m
 
 `START-HERE.md`
 
-### package_planning_paths
+#### package_planning_paths
 
-Map of package name to the child work-package's planning-folder path, captured as each child workflow completes
+Map of package name to the child work-package's planning-folder path, rendered as the planning-folder link in each status row
 
 ## Protocol
 
@@ -50,8 +50,8 @@ Map of package name to the child work-package's planning-folder path, captured a
 
 ### 3. Update Status
 
-- Capture the completed package's `{planning_folder_path}` from the child workflow's `returnedContext` and store it in `{package_planning_paths}` keyed by package name
-- Update the `START-HERE.md` status table: mark the completed package as done, add its PR link, and add a link to the package's planning-folder `README.md`
+- Capture the completed package's `{planning_folder_path}` from the child workflow's `returnedContext` as `{$package_planning_paths}`, keyed by package name
+- Update the `START-HERE.md` status table: mark the completed package as done, add its PR link, and add the package's planning-folder link from `{package_planning_paths}`
 - Recompute `{overall_progress}` to reflect the completed count
 
 ### 4. Check Remaining

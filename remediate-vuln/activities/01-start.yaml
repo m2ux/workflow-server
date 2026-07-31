@@ -113,6 +113,12 @@ steps:
   - kind: technique
     id: present-security-overview
     technique: security-setup::present-security-overview
+    actions:
+      - action: message
+        message: |-
+          **Security Overview** — what this vulnerability puts at risk, in plain language
+
+          {security_overview}
   - kind: technique
     id: finalize-setup
     technique: security-setup::verify-origin-untracked

@@ -9,7 +9,10 @@ steps:
     technique: verify-prism-consistency
   - kind: checkpoint
     id: verification-result
-    message: Verification complete. Results presented above. Proceeding in 30s unless you intervene.
+    message: |-
+      Consistency verification across resources, techniques, and documentation:
+
+      {verification_report}
     options:
       - id: accept
         label: Accept — proceed to submit

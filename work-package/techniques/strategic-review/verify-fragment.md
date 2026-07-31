@@ -13,6 +13,10 @@ Whether the work-package change fragment under the target path references the is
 
 Target repository root, checked for a `changes/` folder and the located fragment.
 
+### changes_fragment
+
+*(optional)* The changelog fragment written for this work package, when one was produced — the body checked for the issue reference.
+
 ### issue_url
 
 The full issue URL whose verbatim (or equivalent GitHub-reference) presence in the fragment body is verified.

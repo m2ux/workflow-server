@@ -38,14 +38,14 @@ steps:
             state: variables
       - kind: technique
         id: present-yielded-checkpoint
-        when: worker_yielded_checkpoint == true
+        when: worker_result.result_type == "checkpoint_pending"
         technique:
           name: workflow-engine::present-checkpoint-to-user
           inputs:
             session_index: client_session_index
       - kind: technique
         id: respond-yielded-checkpoint
-        when: worker_yielded_checkpoint == true
+        when: worker_result.result_type == "checkpoint_pending"
         technique:
           name: workflow-engine::respond-checkpoint
           inputs:
@@ -53,14 +53,14 @@ steps:
             checkpoint_resolution: user_selection
       - kind: technique
         id: commit-activity-artifacts
-        when: worker_yielded_checkpoint == false
+        when: worker_result.result_type == "activity_complete"
         technique:
           name: workflow-engine::commit-and-persist
           inputs:
             activity_id: current_activity
       - kind: action
         id: advance-activity
-        when: worker_yielded_checkpoint == false
+        when: worker_result.result_type == "activity_complete"
         actions:
           - action: set
             target: current_activity

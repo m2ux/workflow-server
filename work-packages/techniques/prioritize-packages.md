@@ -27,41 +27,35 @@ Ordered list of work packages by execution priority, with prioritization rationa
 
 `priority-ranking.md`
 
-### dependency_graph
+#### dependency_graph
 
-Dependency graph representation
+Dependency graph representation, showing which packages block or depend on which others
 
-### prioritization_rationale
+#### prioritization_rationale
 
-Per-package rationale for the ordering
+Per-package rationale for the ordering, with the value, risk, and effort assessments behind it
 
 ## Protocol
 
 ### 1. Analyze Dependencies
 
 - Apply the [prioritization-framework](../resources/prioritization-framework.md#step-1-dependency-graph) evaluation methodology
-- Build a dependency graph from the dependency sections of all `{package_plans}`, cross-checking against `{dependency_map}` to confirm which packages block or depend on which others
-- Perform topological sort to identify valid orderings
-- If the dependency graph contains cycles, present the cycle to the user and recommend decomposition or dependency removal
+- Build the dependency graph from the dependency sections of all `{package_plans}`, cross-checking against `{dependency_map}` to confirm which packages block or depend on which others
+- Perform topological sort to identify valid orderings  
+  > A cycle is a decomposition problem: record the cycle and the packages in it, and recommend extracting the shared component or removing the dependency.
 
 ### 2. Evaluate Criteria
 
 - For each package, assess: business value (High/Medium/Low), risk (High/Medium/Low), effort (High/Medium/Low)
 - Use the [scoring guidance](../resources/prioritization-framework.md#scoring-guidance) from the prioritization framework
-- Document the rationale for each assessment
+- Record the rationale for each assessment
 
-### 3. Propose Order
+### 3. Assemble Ranking
 
 - Apply priority ordering rules: dependency-first, then high-value/low-effort, then high-risk-early
 - Identify packages that could be parallelized (independent, no shared resources)
-- Generate the priority table with package, value, risk, effort, and rationale
+- Write `{priority_order}` as the ranking document: the priority table with package, value, risk, effort, and rationale, the dependency graph as text or a mermaid diagram, and any alternative valid sequences
 - If all packages evaluate identically on every criterion, ask the user which dimension matters most for their context to break the tie
-
-### 4. Present Prioritization
-
-- Present the `{dependency_graph}` (text or mermaid diagram)
-- Present the priority table with `{prioritization_rationale}` for the proposed order, forming `{priority_order}`
-- Note alternative orderings if multiple valid sequences exist
 
 ## Rules
 

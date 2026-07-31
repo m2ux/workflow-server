@@ -14,7 +14,10 @@ steps:
       variable: lint_findings_count
       operator: ">"
       value: 0
-    message: "Lint surfaced {lint_findings_count} finding(s) — see the report above. Re-ingest to fix them, or accept and publish as-is?"
+    message: |-
+      Lint surfaced {lint_findings_count} finding(s):
+
+      {lint_findings}
     blocking: true
     options:
       - id: reingest

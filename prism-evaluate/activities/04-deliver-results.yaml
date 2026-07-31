@@ -6,6 +6,12 @@ steps:
   - kind: technique
     id: compile-and-present
     technique: compose-evaluation-report::compile-and-present
+    actions:
+      - action: message
+        message: |-
+          Evaluation complete — {evaluation_report.core_finding}
+
+          {evaluation_metrics}
   - kind: checkpoint
     id: resolution-offer
     message: Evaluation complete. Would you like to proceed with a resolution dialogue? This will iterate through each finding, propose mitigations, and collect your decisions — producing a mitigation plan and optionally applying changes to the target.

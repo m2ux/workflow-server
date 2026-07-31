@@ -21,6 +21,10 @@ Filesystem path to DEFINITIVE-FINDINGS.md — the detailed companion where each 
 
 Filesystem path to RUN-MANIFEST.md — the manifest recording the run's artifacts and completion status.
 
+### run_status
+
+Completion status of the run — `complete`, `partial`, or `error` — reported alongside the artifacts so an incomplete run is never presented as a finished one.
+
 ### all_artifact_paths
 
 The accumulated artifact paths produced across the analysis run, listed for reference.
@@ -39,4 +43,4 @@ The accumulated artifact paths produced across the analysis run, listed for refe
 
 ### 3. Present Result
 
-- Present the report to the caller, including the `{report_path}`, the `{definitive_findings_path}`, the `{run_manifest_path}`, and every path in `{all_artifact_paths}` for reference.
+- Present the report to the caller, leading with the `{run_status}` and including the `{report_path}`, the `{definitive_findings_path}`, the `{run_manifest_path}`, and every path in `{all_artifact_paths}` for reference.

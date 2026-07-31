@@ -13,11 +13,15 @@ Single-question unit of the domain-iteration elicitation loop.
 
 The question domain for this iteration; one question is posed from it per [requirements-elicitation](../../resources/requirements-elicitation.md).
 
+### elicitation_log
+
+The record of questions asked and responses given so far, which this iteration extends.
+
 ## Outputs
 
 ### elicitation_log
 
-The record of questions asked and responses given, with this iteration's question/response appended.
+The record of questions asked and responses given, carried in from the prior iteration with this one's question and response appended.
 
 ### elicitation_complete
 

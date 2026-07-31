@@ -19,9 +19,9 @@ Which schema applies to this file — one of: workflow (`schemas/workflow.schema
 
 ## Outputs
 
-### yaml_file
+### drafted_files
 
-A syntactically valid YAML file that passes schema validation
+The set of files drafted for this workflow so far, extended with the one just written — each syntactically valid and passing schema validation for its type.
 
 ## Protocol
 
@@ -40,7 +40,7 @@ A syntactically valid YAML file that passes schema validation
 
 ### 4. Draft Content
 
-- Write `{yaml_file}` per Rules below (block arrays/mappings, scalar quoting, multi-line scalars, field ordering, version format)
+- Write the file per Rules below (block arrays/mappings, scalar quoting, multi-line scalars, field ordering, version format), adding it to `{drafted_files}`
 - Description hygiene for prose fields: [Document in Positive Present](../resources/design-principles.md#17-document-in-positive-present) and Description Hygiene anti-patterns — do not bury procedure in `description` / `outcome` / `message` / option text
 
 ### 5. Validate Against Schema

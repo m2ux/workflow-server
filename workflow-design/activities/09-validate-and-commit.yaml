@@ -205,6 +205,8 @@ steps:
         repo_path: target_path
         branch: workflow_branch
         base_branch: workflows
+        title: title
+        body: body
         as_draft: true
     condition:
       type: simple

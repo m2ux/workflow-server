@@ -25,12 +25,6 @@ Target repository root — restore and commit scope for source cleanup and the `
 
 The strategic review document listing the identified artifacts to remove when the user approves.
 
-## Outputs
-
-### cleanup_commit
-
-SHA of the feature-branch commit carrying the applied cleanup (identified artifacts removed when approved) and the `changes/` changelog fragment when present. Empty when there was nothing to commit.
-
 ## Protocol
 
 ### 1. Apply Cleanup

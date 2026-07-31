@@ -7,6 +7,16 @@ metadata:
 
 Severity-rated summary of post-update audit findings.
 
+## Inputs
+
+### scope_drift_findings
+
+Severity-rated drift findings — files changed outside the manifest, and manifest items with no corresponding change. Empty on a clean pass.
+
+### fixes_applied
+
+*(optional)* Per-finding record of what the remediation pass edited, when one ran.
+
 ## Outputs
 
 ### findings_summary

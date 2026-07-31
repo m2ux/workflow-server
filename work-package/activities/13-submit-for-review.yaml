@@ -130,14 +130,6 @@ steps:
           variable: review_posted
           operator: ==
           value: true
-  - kind: technique
-    id: dco-sign-off
-    technique: dco-provenance::record-attestation
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
   - kind: checkpoint
     id: dco-sign-off-confirmation
     condition:
@@ -157,9 +149,23 @@ steps:
       - id: certify
         label: I certify all of the above — proceed
         description: DCO attestation recorded. Timestamp and identity logged to the [provenance log]({provenance_log_path}).
+        effect:
+          setVariable:
+            attestation_option: certify
       - id: flag-legal
         label: I have reservations — flag for legal review
         description: Document concern in the [provenance log]({provenance_log_path}) before proceeding. Consider escalating to legal or OSS program review.
+        effect:
+          setVariable:
+            attestation_option: flag-legal
+  - kind: technique
+    id: dco-sign-off
+    technique: dco-provenance::record-attestation
+    condition:
+      type: simple
+      variable: is_review_mode
+      operator: "!="
+      value: true
   - kind: technique
     id: verify-push-remote
     technique: manage-git::verify-remote-private
@@ -333,26 +339,12 @@ steps:
           variable: stealth_mode
           operator: "!="
           value: true
-        - type: simple
-          variable: squash_merge_supported
-          operator: ==
-          value: true
     actions:
       - action: message
         message: |-
           PR is ready for review. Merge strategy guidance (informational — no response needed):
 
-          **Squash merge available — use squash merge with signed commit.**
-          To get a GPG-signed + DCO-attested merge commit, merge locally:
-          ```
-          git checkout main && git pull
-          git merge --squash {branch_name}
-          git commit -s -S -m 'feat: description (#{pr_number})'
-          git push
-          ```
-          Note: GitHub web UI squash merge is not GPG-signed. Use the local flow above for a verified commit.
-
-          If squash merge is not available on this repo, branch commits land as-is — no signing required.
+          {presented_merge_guidance}
   - kind: checkpoint
     id: build-artifact-check
     condition:
@@ -423,6 +415,9 @@ steps:
   - kind: technique
     id: mark-ready
     technique: update-pr::mark-ready
+    actions:
+      - action: message
+        message: "Pull request marked ready for review — {updated_pr.pr_status}: {updated_pr.pr_url}"
     condition:
       type: and
       conditions:

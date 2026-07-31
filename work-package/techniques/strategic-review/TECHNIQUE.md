@@ -47,7 +47,7 @@ Strategic review [findings](../../resources/strategic-review.md#strategic-review
 
 Architecture [summary](../../resources/architecture-summary.md#architecture-summary-artifact-template) with diagrams for stakeholders
 
-#### architecture_summary_artifact
+#### artifact
 
 `architecture-summary.md`
 

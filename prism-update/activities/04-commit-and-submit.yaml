@@ -7,5 +7,8 @@ steps:
   - kind: technique
     id: submit-update
     technique: submit-update
+    actions:
+      - action: message
+        message: "The prism update is open for review: {pull_request_url}"
 outcome:
   - The prism update is in front of a reviewer as an open pull request — ready for review and merge

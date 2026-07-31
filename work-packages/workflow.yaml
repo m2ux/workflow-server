@@ -22,6 +22,9 @@ techniques:
   activity:
     - variable-binding
 variables:
+  - name: user_request
+    type: string
+    description: The user's free-form description of the initiative that opened this session.
   - name: initiative_name
     type: string
     description: Name of the overall multi-package initiative
@@ -64,12 +67,6 @@ variables:
   - name: dependency_map
     type: object
     description: Map of inter-package dependencies identified during package planning
-  - name: dependency_graph
-    type: string
-    description: Visual or structured dependency graph representation
-  - name: prioritization_rationale
-    type: string
-    description: Reasoning for the chosen priority order
   - name: roadmap_complete
     type: boolean
     description: Whether the roadmap has been finalized and approved
@@ -80,7 +77,4 @@ variables:
   - name: parent_workflow
     type: string
     description: Reference back to work-packages context when triggering work-package workflow
-  - name: package_planning_paths
-    type: object
-    description: Map of package name/index to the child work-package's planning_folder_path. Populated from returnedContext after each child workflow completes. Used to link the initiative README to each WP's independent planning folder.
 initialActivity: scope-assessment

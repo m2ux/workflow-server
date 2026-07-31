@@ -10,5 +10,11 @@ steps:
     id: report-gain
     technique: report-gain
     when: has_debt_markers == true
+    actions:
+      - action: message
+        message: |-
+          Honest gain from the deliberate simplifications recorded in this pass:
+
+          {gain_scoreboard}
 outcome:
   - Every deliberate simplification is recorded as trackable debt with its upgrade trigger, and the honest gain is shown

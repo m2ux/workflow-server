@@ -27,25 +27,25 @@ The target component name used to build the planning-folder name.
 
 ## Outputs
 
-### audit_target
+### target_commit
 
-Initialized target ready for analysis.
+The exact revision the target component is checked out at, recorded for reproducibility.
 
-#### confirmed_target
+### file_inventory
 
-Confirmed target component and revision
+Every in-scope source file with its line count, sorted largest first.
 
-#### dependency_scan_results
+### reference_report
 
-Dependency scan results or fallback manifest
+Path to any reference document the user supplied, recorded without being read so later phases can quarantine it.
 
-#### file_inventory
+### dependency_scan_results
 
-File inventory sorted by size
+Known-vulnerable dependency report, or the extracted dependency manifest when no scanner is available.
 
-#### reference_documents
+#### artifact
 
-Reference document paths (if any, quarantined for later phases)
+`dependency-scan.json`
 
 ### start_here
 
@@ -63,11 +63,11 @@ Session overview with audit target, commit, methodology, and artifact index.
 
 ### 2. Extract Revision
 
-- Extract the git commit hash or branch from the `{user_request}`. If not specified, default to the component's current `HEAD`. Record the exact revision for reproducibility.
+- Extract the git commit hash or branch from the `{user_request}`. If not specified, default to the component's current `HEAD`. Record the exact revision as `{target_commit}`.
 
 ### 3. Extract Reference
 
-- If the user specified any reference documents (e.g., professional audit reports, prior reviews), record their paths without loading or reading them. Set corresponding workflow variables for later phases.
+- If the user specified a reference document (e.g., a professional audit report or prior review), record its path as `{reference_report}` without loading or reading it, so later phases can quarantine it.
 
 ### 4. Checkout Revision
 
@@ -75,11 +75,12 @@ Session overview with audit target, commit, methodology, and artifact index.
 
 ### 5. Scan Dependencies
 
-- Attempt to run dependency scanning tools (e.g., `cargo audit`, `cargo deny`, `npm audit`). Save outputs to the `{planning_folder_path}`. If the scanning tools cannot be executed, fall back to manual dependency manifest extraction: extract the dependency manifest (e.g., `Cargo.lock`, `package-lock.json`) and set a flag indicating manual inspection is needed.
+- Attempt to run dependency scanning tools (e.g., `cargo audit`, `cargo deny`, `npm audit`) and record the result as `{dependency_scan_results}` in the `{planning_folder_path}`.  
+  > If the scanning tools cannot be executed, extract the dependency manifest (e.g., `Cargo.lock`, `package-lock.json`) instead and mark the result as requiring manual inspection.
 
 ### 6. Generate Inventory
 
-- Produce a sorted file inventory listing all source files with line counts, largest first. Save to the `{planning_folder_path}`. Together with the confirmed target, revision, and dependency scan results, this completes the `{audit_target}` ready for analysis.
+- Produce `{file_inventory}` listing every in-scope source file with its line count, largest first, and save it to the `{planning_folder_path}`.
 
 ### 7. Create Planning Folder
 

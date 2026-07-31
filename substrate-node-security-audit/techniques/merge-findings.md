@@ -47,17 +47,17 @@ total agent findings, total report findings, merged count, promoted count
 
 for union-merge: consensus/single-source/escalated classification per finding
 
-### reconciliation_table
-
-Per-agent finding-count reconciliation with zero Unaccounted.
-
-### calibration_crosscheck
+#### calibration_crosscheck
 
 Per-finding calibration comparison: our score, benchmark match, benchmark score, delta, action.
 
-### observation_dispositions
+#### observation_dispositions
 
 Per-observation table: source, agent, observation, disposition, finding reference.
+
+### reconciliation_table
+
+Per-agent finding-count reconciliation, carrying an `unaccounted` count that is zero when the merge is lossless.
 
 ## Protocol
 
@@ -71,7 +71,7 @@ Per-observation table: source, agent, observation, disposition, finding referenc
 
 ### 3. Elevate Observations
 
-- Review every reconnaissance lead and additional observation across `{finding_sources}`, plus every emergent vulnerability domain and reconnaissance lead in `{observation_sources}`. Each must be dispositioned as captured by an existing finding, elevated to a new finding, or not-applicable with justification, recording the `{observation_dispositions}` table. Observations describing divergent code paths, missing validation, error-path state persistence, silent error consumption, or trust boundary amplification are always security-relevant and are elevated.
+- Review every reconnaissance lead and additional observation across `{finding_sources}`, plus every emergent vulnerability domain and reconnaissance lead in `{observation_sources}`. Each must be dispositioned as captured by an existing finding, elevated to a new finding, or not-applicable with justification, recording the `{merge_table.observation_dispositions}` table. Observations describing divergent code paths, missing validation, error-path state persistence, silent error consumption, or trust boundary amplification are always security-relevant and are elevated.
 
 ### 4. Apply Strategy
 
@@ -79,11 +79,11 @@ Per-observation table: source, agent, observation, disposition, finding referenc
 
 ### 5. Score With Calibration
 
-- Score every finding using the [severity rubric](../resources/severity-rubric.md). For every finding (not just High/Critical), search the [calibration benchmarks](../resources/target-profile.md#severity-calibration-benchmark) for a matching pattern; flag a divergence of one level and treat a divergence of two or more levels as a floor at the benchmark severity. Record the `{calibration_crosscheck}` table.
+- Score every finding using the [severity rubric](../resources/severity-rubric.md). For every finding (not just High/Critical), search the [calibration benchmarks](../resources/target-profile.md#severity-calibration-benchmark) for a matching pattern; flag a divergence of one level and treat a divergence of two or more levels as a floor at the benchmark severity. Record the `{merge_table.calibration_crosscheck}` table.
 
 ### 6. Reconcile
 
-- For each agent compute Findings Submitted, In Merge Table, Explicitly Deduplicated, Elevated from Observations, and Unaccounted, recording the `{reconciliation_table}`. Unaccounted must equal zero for every agent.
+- For each agent compute Findings Submitted, In Merge Table, Explicitly Deduplicated, Elevated from Observations, and Unaccounted, recording the `{reconciliation_table}` with its `unaccounted` total. Unaccounted must equal zero for every agent.
 
 ### 7. Verify Completeness
 

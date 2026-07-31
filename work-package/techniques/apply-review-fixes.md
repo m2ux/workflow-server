@@ -29,12 +29,6 @@ Path to the target repository.
 
 The feature branch that receives the fix commits.
 
-## Outputs
-
-### applied_fixes
-
-One or more fix commits on `{branch_name}` that apply the selected `{review_findings}` in `{target_path}` (empty when nothing was committed).
-
 ## Protocol
 
 ### 1. Select Fixes
@@ -51,7 +45,7 @@ One or more fix commits on `{branch_name}` that apply the selected `{review_find
 
 ### 3. Commit Changes
 
-- Apply [manage-git](./manage-git/TECHNIQUE.md)::[commit-paths](./manage-git/commit-paths.md) with `{target_path}`, `{branch_name}`, the fixed source paths, and a Conventional Commits message for the fix cycle. Capture `{commit_sha}` from that Apply and emit `{applied_fixes}` as the resulting fix commit(s) on `{branch_name}` (empty when there was nothing to commit). This is the technique's final phase; no separate source commit step follows. Do not use [artifact-commits](./manage-git/artifact-commits.md) here — that op is planning-folder / engineering-repo only.
+- Apply [manage-git](./manage-git/TECHNIQUE.md)::[commit-paths](./manage-git/commit-paths.md) with `{target_path}`, `{branch_name}`, the fixed source paths, and a Conventional Commits message for the fix cycle, noting the `{commit_sha}` it returns against the findings the cycle addressed. This is the technique's final phase; no separate source commit step follows. Do not use [artifact-commits](./manage-git/artifact-commits.md) here — that op is planning-folder / engineering-repo only.
 
 
 ## Rules

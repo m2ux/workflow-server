@@ -9,16 +9,6 @@ metadata:
 
 Run a second independent audit pass over the priority-1/2 components, verifying known blind spots first, and emit a second-pass findings artifact whose existence attests that the pass actually executed.
 
-## Inputs
-
-### blind_spot_items
-
-The universal blind-spot checklist items plus the target-specific items from the [target profile](../resources/target-profile.md#target-specific-ensemble-blind-spot-items).
-
-### ensemble_supplementary_files
-
-Supplementary files per the [target profile](../resources/target-profile.md#supplementary-file-assignments), ensuring blind-spot items can be mechanically verified.
-
 ## Outputs
 
 ### second_pass_findings
@@ -33,12 +23,12 @@ Findings from the second independent pass, including at least one sub-agent resu
 
 ### 1. Configure Pass
 
-- Scope the second pass to the priority-1/2 components, including `{blind_spot_items}` and `{ensemble_supplementary_files}`.
+- Scope the second pass to the priority-1/2 components, taking the supplementary files each blind-spot item needs from the [Supplementary File Assignments](../resources/target-profile.md#supplementary-file-assignments).
 - Use a different model or temperature when available; the same model with a different system prompt is acceptable.
 
 ### 2. Verify Blind Spots
 
-- Verify the universal blind-spot items first — (1) §3.1 weight accounting (non-zero `on_finalize` weight), (2) §3.3 event filtering (trace every event field independently on partial success), (3) §3.2 pagination counter (trace first-iteration behavior), (4) §2.10 serialization pairing (produce the size/serialize pairing table) — then the target-specific items from `{blind_spot_items}`, recording a CONFIRMED / REFUTED / INSUFFICIENT verdict for each.
+- Verify the universal blind-spot items first — (1) §3.1 weight accounting (non-zero `on_finalize` weight), (2) §3.3 event filtering (trace every event field independently on partial success), (3) §3.2 pagination counter (trace first-iteration behavior), (4) §2.10 serialization pairing (produce the size/serialize pairing table) — then the [Target-Specific Ensemble Blind Spot Items](../resources/target-profile.md#target-specific-ensemble-blind-spot-items), recording a CONFIRMED / REFUTED / INSUFFICIENT verdict for each.
 
 ### 3. Execute Second Pass
 

@@ -24,7 +24,10 @@ steps:
     technique: summarize-scope
   - kind: checkpoint
     id: confirm-scope
-    message: Please confirm the audit scope and configuration before proceeding to prompt generation.
+    message: |-
+      The audit scope and configuration, for confirmation before prompt generation:
+
+      {scope_summary}
     options:
       - id: accept
         label: Proceed

@@ -33,12 +33,6 @@ The feature branch whose commits are squashed onto `{default_branch}`.
 
 The pull-request number, interpolated into the merge commit subject (`(#{pr_number})`).
 
-## Outputs
-
-### squash_merge_commit
-
-A single signed, sign-off-trailered squash commit (`{type}: {commit_description} (#{pr_number})`) landed on `{default_branch}` and pushed to `origin`. A side-effect op; the merged default-branch history is its product.
-
 ## Protocol
 
 1. From `{target_path}`, check out and update the default branch: `git checkout {default_branch} && git pull`.

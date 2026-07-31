@@ -28,7 +28,10 @@ steps:
     when: project_type == 'rust-substrate' && run_local_validation == true
   - kind: technique
     id: document-failures
-    technique: findings-classification
+    technique:
+      name: findings-classification
+      inputs:
+        findings_to_classify: "{validation_results.failed_checks}"
     condition:
       type: simple
       variable: is_review_mode

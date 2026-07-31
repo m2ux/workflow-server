@@ -31,19 +31,23 @@ Whether `{host_repo_path}` has a usable GitNexus index; selects between gitnexus
 
 ## Outputs
 
-### architecture_overview
+### comprehension_survey
+
+Initial survey of the codebase area, taking the shape and fill rules of the [Artifact Template](../../resources/codebase-comprehension.md#artifact-template).
+
+#### architecture_overview
 
 Module structure, boundaries and responsibilities, dependency relationships, and overarching patterns (layered, event-driven, actor, plugin, etc.) for the surveyed area.
 
-### key_abstractions
+#### key_abstractions
 
 Core types, traits/interfaces, and data structures forming the domain model, with type hierarchies, error-handling strategy, and state-management approach.
 
-### design_rationale
+#### design_rationale
 
 Inferred rationale for significant design choices and their trade-offs, framed as hypotheses for user validation.
 
-### domain_glossary
+#### domain_glossary
 
 Mapping of domain-specific terms to the technical modules/constructs that implement them, connected to the problem statement.
 
@@ -94,3 +98,7 @@ Mapping of domain-specific terms to the technical modules/constructs that implem
 - Map technical modules to domain concepts: what real-world problem does each subsystem solve?
 - Build a glossary of domain-specific terms found in code, comments, and documentation
 - Connect domain concepts to the problem statement to highlight relevant areas
+
+### 7. Assemble Survey
+
+- Fold the architecture overview, key abstractions, design rationale, and domain glossary into `{comprehension_survey}`, in the section order the [Artifact Template](../../resources/codebase-comprehension.md#artifact-template) defines
