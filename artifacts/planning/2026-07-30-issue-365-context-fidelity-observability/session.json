@@ -546,7 +546,7 @@
         ],
         "condition": "",
         "currentActivity": "implement",
-        "currentTechnique": "scatter-gather",
+        "currentTechnique": "task-completion-review",
         "deliveredContent": {
           "orchestrator": {
             "resource:meta/planning-readme#row-ownership-map": "e883775cc8b06d33",
@@ -599,6 +599,24 @@
             "technique:design-philosophy::document": "ce81ff05f6007c55",
             "technique:review-assumptions::collect": "f79c5725888e0262",
             "technique:review-assumptions::record": "98b736a08185ac51"
+          },
+          "w-implement-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
+            "bundle:scatter-gather": "972acb177d168c94",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "technique:analyse-challenge::run-loop": "849d8ae42c80af7d",
+            "technique:cargo-operations::test": "a1e780e37aeb62d7",
+            "technique:dco-provenance::append-task-row": "bcffd009a62b64fa",
+            "technique:implement-task": "0e02f17c5a8adf84",
+            "technique:manage-git::artifact-commits": "243dc4803702967f",
+            "technique:review-assumptions::collect": "c9b214e6ed0c7e6a",
+            "technique:review-assumptions::interview": "4a4a6505993b1d45",
+            "technique:review-assumptions::record": "a40cc7ac1f00a215",
+            "technique:task-completion-review": "edc928b72c579856"
           },
           "w-implementation-analysis-1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -3965,17 +3983,289 @@
             "activity": "implement",
             "timestamp": "2026-07-31T08:55:10.695Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 83953,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T08:56:02.894Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 4720,
+              "delivery": "full",
+              "stepId": "implement-task",
+              "techniqueId": "implement-task"
+            },
+            "timestamp": "2026-07-31T08:56:02.894Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 3308,
+              "delivery": "full",
+              "stepId": "run-tests",
+              "techniqueId": "cargo-operations::test"
+            },
+            "timestamp": "2026-07-31T08:56:02.894Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 5043,
+              "delivery": "full",
+              "stepId": "commit",
+              "techniqueId": "manage-git::artifact-commits"
+            },
+            "timestamp": "2026-07-31T08:56:02.894Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 3404,
+              "delivery": "full",
+              "stepId": "log-provenance",
+              "techniqueId": "dco-provenance::append-task-row"
+            },
+            "timestamp": "2026-07-31T08:56:02.894Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 6289,
+              "delivery": "full",
+              "stepId": "self-review",
+              "techniqueId": "task-completion-review"
+            },
+            "timestamp": "2026-07-31T08:56:02.894Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 5124,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-31T08:56:02.894Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 7585,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-31T08:56:02.894Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 6316,
+              "delivery": "full",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::interview"
+            },
+            "timestamp": "2026-07-31T08:56:02.894Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 4100,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-31T08:56:02.894Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 83953,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-07-31T09:13:07.018Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 4720,
+              "delivery": "full",
+              "stepId": "implement-task",
+              "techniqueId": "implement-task"
+            },
+            "timestamp": "2026-07-31T09:13:07.018Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 3308,
+              "delivery": "full",
+              "stepId": "run-tests",
+              "techniqueId": "cargo-operations::test"
+            },
+            "timestamp": "2026-07-31T09:13:07.018Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 5043,
+              "delivery": "full",
+              "stepId": "commit",
+              "techniqueId": "manage-git::artifact-commits"
+            },
+            "timestamp": "2026-07-31T09:13:07.018Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 3404,
+              "delivery": "full",
+              "stepId": "log-provenance",
+              "techniqueId": "dco-provenance::append-task-row"
+            },
+            "timestamp": "2026-07-31T09:13:07.018Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 6289,
+              "delivery": "full",
+              "stepId": "self-review",
+              "techniqueId": "task-completion-review"
+            },
+            "timestamp": "2026-07-31T09:13:07.018Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 5124,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-07-31T09:13:07.018Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 7585,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-07-31T09:13:07.018Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 6316,
+              "delivery": "full",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::interview"
+            },
+            "timestamp": "2026-07-31T09:13:07.018Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 4100,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-07-31T09:13:07.018Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 5043,
+              "delivery": "full",
+              "stepId": "commit",
+              "techniqueId": "manage-git::artifact-commits"
+            },
+            "timestamp": "2026-07-31T09:20:51.395Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 3404,
+              "delivery": "full",
+              "stepId": "log-provenance",
+              "techniqueId": "dco-provenance::append-task-row"
+            },
+            "timestamp": "2026-07-31T09:20:51.630Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "w-implement-1",
+              "chars": 6289,
+              "delivery": "full",
+              "stepId": "self-review",
+              "techniqueId": "task-completion-review"
+            },
+            "timestamp": "2026-07-31T09:21:15.615Z",
+            "type": "technique_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 108,
+        "seq": 113,
         "sessionIndex": "7Q54WJ",
         "skippedActivities": [],
         "startedAt": "2026-07-30T19:48:00.082Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785488110,
+        "ts": 1785489675,
         "variables": {
           "architecture_overview": "See the comprehension artifact's Architecture Overview section.",
           "artifact_name": "",
