@@ -578,7 +578,7 @@
         ],
         "condition": "isDefault",
         "currentActivity": "scope-and-draft",
-        "currentTechnique": "work-package::manage-artifacts::write-artifact",
+        "currentTechnique": "workflow-definition::scope-definition",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -613,6 +613,17 @@
             "technique:workflow-definition::intake-classification": "785d48688bb7ae2a",
             "technique:workflow-definition::synthesize-change-brief": "aa2d514a9967c52f",
             "technique:workflow-engine::create-readme": "c52c58d5248145b7"
+          },
+          "worker-scope-359": {
+            "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
+            "bundle:rules:dcc74273fdf2ad82": "dcc74273fdf2ad82",
+            "bundle:variable-binding": "4de9bd403344076e",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "technique:work-package::manage-git::create-worktree": "de5ec67eb441164e",
+            "technique:workflow-definition::derive-workflow-branch": "d6c15a89164542d6",
+            "technique:workflow-definition::scope-definition": "483414a68d3a0a66"
           }
         },
         "history": [
@@ -1142,17 +1153,90 @@
             "activity": "scope-and-draft",
             "timestamp": "2026-07-31T19:16:24.483Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "chars": 28340,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-07-31T19:16:35.684Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "chars": 4122,
+              "delivery": "full",
+              "stepId": "derive-workflow-branch",
+              "techniqueId": "workflow-definition::derive-workflow-branch"
+            },
+            "timestamp": "2026-07-31T19:16:46.081Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "stepId": "derive-workflow-branch"
+            },
+            "timestamp": "2026-07-31T19:16:46.081Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "chars": 6320,
+              "delivery": "full",
+              "stepId": "ensure-worktree",
+              "techniqueId": "work-package::manage-git::create-worktree"
+            },
+            "timestamp": "2026-07-31T19:16:46.578Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "stepId": "ensure-worktree"
+            },
+            "timestamp": "2026-07-31T19:16:46.578Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "chars": 6466,
+              "delivery": "full",
+              "stepId": "define-scope",
+              "techniqueId": "workflow-definition::scope-definition"
+            },
+            "timestamp": "2026-07-31T19:16:46.686Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-359",
+              "stepId": "define-scope"
+            },
+            "timestamp": "2026-07-31T19:16:46.686Z",
+            "type": "step_started"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 11,
+        "seq": 15,
         "sessionIndex": "B53HRA",
         "skippedActivities": [],
         "startedAt": "2026-07-31T19:13:41.875Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785525384,
+        "ts": 1785525406,
         "variables": {
           "addressed_count": 0,
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-stratification-359/01-change-brief.md",

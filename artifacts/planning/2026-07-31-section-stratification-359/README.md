@@ -23,8 +23,8 @@ PR2 for [#359](https://github.com/m2ux/workflow-server/issues/359): classify ~69
 | 1 | Intake and context | Mode, target, edit-surface path | 15-30m | ✅ |
 | 2 | [Change brief](01-change-brief.md) | Purpose, dimension shape, open judgements | 20-40m | ✅ |
 | 3 | [Impact analysis](01-impact-analysis.md) | Blast radius, integrity, removals | 20-40m | ✅ |
-| 4 | Scope and draft | Worktree, manifest, per-file drafting | 30-60m | 🟡 |
-| 5 | [Scope manifest](06-scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |
+| 4 | Scope and draft | Worktree, manifest, per-file drafting | 30-60m | ✅ |
+| 5 | [Scope manifest](06-scope-manifest.md) · [framing](06-framing-classification.md) | File-level inventory; framing classify open | 15-30m | 🟡 |
 | 6 | Quality review | Criteria walk, consumer surface, guards | 30-60m | ⬚ |
 | 7 | [Findings register](08-findings-register.md) | Audit record, coverage, exclusions | 15-30m | ⬚ |
 | 8 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ⬚ |
@@ -40,6 +40,6 @@ PR2 for [#359](https://github.com/m2ux/workflow-server/issues/359): classify ~69
 | Prior planning (#358/#359 seed) | [2026-07-31-section-resource-grain-358-359](../2026-07-31-section-resource-grain-358-359/README.md) |
 | PR1 (#358) | [#370](https://github.com/m2ux/workflow-server/pull/370) |
 | Target (canon) | `workflows/workflow-design/` |
-| Edit surface | `.worktrees/2026-07-31-section-stratification-359/` |
+| Edit surface | `.worktrees/2026-07-31-section-stratification-359/` on `workflow/workflow-design-section-stratification-359` |
 | Meta session | `CTDGEC` |
 | Client session | `B53HRA` |
