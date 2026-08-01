@@ -19,7 +19,7 @@ Path to the target checkout where the git operations run
 
 ### pr_number
 
-PR identifier, used to read the authoritative changed-files list via `gh pr view`
+PR identifier, used to read the authoritative changed-files list via REST `gh api`
 
 ## Outputs
 
@@ -43,7 +43,7 @@ The base↔PR diff (fresh three-dot `{base_branch}...HEAD`), noted for later com
 
 ### 1. Checkout Baseline State
 
-- Resolve the base branch the PR targets as `{$base_branch}`: `gh pr view {pr_number} --json baseRefName --jq .baseRefName`.
+- Resolve the base branch the PR targets as `{$base_branch}`: `gh api repos/{owner}/{repo}/pulls/{pr_number} --jq .base.ref`.
 - Check out `{base_branch}` inside `{target_path}` to analyse the pre-change state: `git -C {target_path} checkout {base_branch}`.
 - Capture the base commit SHA for reference and record it as `{base_sha}`: `git -C {target_path} rev-parse HEAD`.
 
@@ -55,7 +55,7 @@ The base↔PR diff (fresh three-dot `{base_branch}...HEAD`), noted for later com
 ### 3. Capture Authored Surface
 
 - Check out the PR branch to continue the workflow.
-- Record the authoritative changed-files list as `{changed_files}`: `gh pr view {pr_number} --json files --jq '.files[].path'`.
+- Record the authoritative changed-files list as `{changed_files}`: `gh api repos/{owner}/{repo}/pulls/{pr_number}/files --paginate --jq '.[].filename'`.
 - Note the base↔PR diff as `{base_pr_diff}` using a fresh three-dot range: `git -C {target_path} diff {base_branch}...HEAD`.
 
 ### 4. Merge-In Guard
@@ -71,7 +71,7 @@ This technique applies only when the work package is in review mode. In normal (
 
 ### authoritative-authored-surface
 
-`{changed_files}` comes from GitHub's changed-files list (`gh pr view --json files`). This list is authoritative: it defines the PR's authored surface, and downstream scoping uses it as-is.
+`{changed_files}` comes from GitHub's pull files list (`gh api …/pulls/{pr_number}/files`). This list is authoritative: it defines the PR's authored surface, and downstream scoping uses it as-is.
 
 ### merge-in-guard
 

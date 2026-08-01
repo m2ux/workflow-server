@@ -43,7 +43,7 @@ True when the target resolves to a pull request with a postable review surface; 
 
 ### 2. Resolve PR Surface
 
-- In PR mode, resolve the changed-file set from GitHub: `gh pr view` for head/base metadata and `gh pr diff --name-only` (equivalently the API file list) for the authoritative authored surface.
+- In PR mode, resolve the changed-file set from GitHub REST: `gh api repos/{owner}/{repo}/pulls/{pr_number}` for head/base metadata and `gh api repos/{owner}/{repo}/pulls/{pr_number}/files --paginate --jq '.[].filename'` for the authoritative authored surface.
 - Record the head and base SHAs, set `{has_pr_surface}` true, and emit `{pr_number}`.
   > If the PR cannot be resolved (not found, auth failure), report the failure and stop — a review against a guessed surface is worse than no review.
 

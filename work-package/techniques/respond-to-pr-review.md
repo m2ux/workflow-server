@@ -34,14 +34,14 @@ Whether the changes are significant enough to require substantial rework
 - Take the response shape from [Response Format Template](../resources/pr-review-response.md#response-format-template) and the document shape from [Review Document Template](../resources/pr-review-response.md#review-document-template); the rules below govern response content
 - Fetch the `{review_comments}` from the PR identified by `{pr_number}` using the `gh` API:
   ```bash
-  gh api repos/<owner>/<repo>/pulls/{pr_number}/comments --paginate
+  gh api repos/{owner}/{repo}/pulls/{pr_number}/comments --paginate
   ```
   - If the `gh` API returns an error fetching comments, check authentication and PR access, then retry.
   - If no review comments are found, verify the PR has been reviewed and check comment visibility before proceeding.
 - Filter to unresolved comments from the latest review round (avoid re-answering resolved threads): derive `{$latest_review_date}` from the review timeline, then keep only comments from reviewers (not the PR author) whose GitHub `` `updated_at` `` field is at or after `{$latest_review_date}`. Project each surviving comment to its `.id`, `.body`, `` `html_url` `` (as `url`), `.path`, and `.line`, and save the filtered set to `/tmp/unresolved.json`. Run the pipeline with the `` `updated_at` `` timestamp key and the `` `html_url` `` link key substituted for the bracketed placeholders:
   ```bash
-  gh pr view {pr_number} --json reviews | jq '.reviews[] | {author: .author.login, state: .state, submittedAt: .submittedAt}' | tail -5
-  gh api repos/<owner>/<repo>/pulls/{pr_number}/comments --paginate | jq --arg since "{$latest_review_date}" '.[] | select(.user.login != "<pr-author>" and .["<timestamp-key>"] >= $since) | {id, body, url: .["<link-key>"], path, line}' > /tmp/unresolved.json
+  gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews --paginate --jq '.[] | {author: .user.login, state: .state, submittedAt: .submitted_at}' | tail -5
+  gh api repos/{owner}/{repo}/pulls/{pr_number}/comments --paginate | jq --arg since "{$latest_review_date}" '.[] | select(.user.login != "<pr-author>" and .["<timestamp-key>"] >= $since) | {id, body, url: .["<link-key>"], path, line}' > /tmp/unresolved.json
   ```
 - Identify question-type comments:
   ```bash

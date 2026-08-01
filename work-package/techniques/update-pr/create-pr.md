@@ -38,5 +38,5 @@ URL to the PR
 ### 2. Create Draft PR
 
 - Apply [create-pr](../../../meta/techniques/github-cli-protocol/create-pr.md) with `repo_path` `{target_path}`, `branch` `{branch_name}`, `base_branch` the repo default (or the configured base), `title` and `body` from step 1, and `draft` true; capture `{pr_number}` and `{pr_url}`
-- Assign the PR to the current GitHub user via REST (`gh api` assignee endpoint) — do not use `gh pr edit` (`no-graphql-mutations`)
+- Assign the PR to the current GitHub user: resolve login with `gh api user --jq .login`, then `gh api repos/{owner}/{repo}/issues/{pr_number}/assignees -f "assignees[]={login}"`
 - Keep the PR as draft until implementation and review complete

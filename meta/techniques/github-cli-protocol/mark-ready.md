@@ -1,17 +1,25 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Mark an existing pull request ready for review.
+Mark an existing pull request ready for review via REST.
 
 ## Inputs
 
+### owner
+
+*(optional when `{repo_path}` is set)* Repo owner.
+
+### repo
+
+*(optional when `{repo_path}` is set)* Repo name.
+
 ### repo_path
 
-Working tree of the repository that owns the PR (cwd for `gh`).
+*(optional when `{owner}` and `{repo}` are set)* Working tree used to derive `{owner}/{repo}` from `origin` when those inputs are unset.
 
 ### pr_number
 
@@ -31,5 +39,6 @@ Status after the update (ready for review).
 
 ### 1. Mark Ready
 
-- From `{repo_path}`, mark `{pr_number}` ready for review: `gh pr ready {pr_number}`
-- Capture `{pr_url}` and `{pr_status}` from the resulting PR view
+- When `{owner}` or `{repo}` is unset, derive both from `git -C {repo_path} remote get-url origin` (SSH or HTTPS form; strip trailing `.git`).
+- `gh api repos/{owner}/{repo}/pulls/{pr_number} -X PATCH -F draft=false`
+- Capture `{pr_url}` from `.html_url` and set `{pr_status}` to ready for review.

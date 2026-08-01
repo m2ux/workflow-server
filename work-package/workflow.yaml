@@ -384,7 +384,7 @@ variables:
     defaultValue: false
   - name: review_type
     type: string
-    description: gh pr review flag (approve | request-changes | comment) chosen at review-summary-approval; bound to update-pr::post-review-comment
+    description: PR review event (approve | request-changes | comment) chosen at review-summary-approval; bound to update-pr::post-review-comment
     defaultValue: ""
   - name: artifact_publish_ref
     type: string
@@ -466,7 +466,7 @@ variables:
     defaultValue: ""
   - name: existing_pr_number
     type: string
-    description: PR number returned by gh pr list when an existing draft PR is detected during issue/branch initialization.
+    description: PR number returned by the pulls list API when an existing draft PR is detected during issue/branch initialization.
     defaultValue: ""
   - name: jira_issue_key
     type: string

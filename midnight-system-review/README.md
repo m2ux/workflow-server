@@ -69,7 +69,7 @@ flowchart LR
 | `meta::variable-binding` | strategy | Step input/output binding against the session variable bag (workflow-level) |
 | `meta::scatter-gather` | strategy | Sequential per-area scatter with ordered gather and delegated combine (declared on `evidence-probes`) |
 | `meta::gitnexus-operations` | reuse | Code-graph probes when `gitnexus_available` is true |
-| `work-package::update-pr::post-review-comment` | reuse | Posts `review_summary` to the PR verbatim as a `gh pr review` with the verdict-derived `review_type` |
+| `work-package::update-pr::post-review-comment` | reuse | Posts `review_summary` to the PR verbatim as a REST pull-request review with the verdict-derived `review_type` |
 
 ## Resources
 

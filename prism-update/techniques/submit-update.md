@@ -35,7 +35,7 @@ URL of the opened pull request.
 
 ### 3. Create Pull Request
 
-- Open a pull request against the `workflows` branch with a change-summary title and body, recording its URL as `{pull_request_url}`: `gh pr create --base workflows`.
+- Open a pull request against the `workflows` branch with a change-summary title and body via [create-pr](../../../meta/techniques/github-cli-protocol/create-pr.md) (`base_branch` `workflows`); record `{pr_url}` as `{pull_request_url}`.
 
 ### 4. Report Completion
 

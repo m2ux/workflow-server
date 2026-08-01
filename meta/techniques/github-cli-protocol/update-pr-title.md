@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -21,6 +21,10 @@ Repo name
 
 PR number
 
+### title
+
+New PR title.
+
 ## Protocol
 
-1. `gh api repos/{owner}/{repo}/pulls/{number} -X PATCH -f title=<title>`.
+1. `gh api repos/{owner}/{repo}/pulls/{number} -X PATCH -f title="{title}"`.

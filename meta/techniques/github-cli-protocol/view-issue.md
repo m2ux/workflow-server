@@ -1,28 +1,36 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
 
-View an existing issue (read-only — safe via `gh` CLI).
+View an existing issue via REST.
 
 ## Inputs
 
-### issue_identifier
+### owner
 
-Issue number or URL
+Repo owner.
 
-### fields
+### repo
 
-*(optional)* Comma-separated `gh` field names to return. Default `number,title,body,state,labels,url,author,assignees,createdAt`.
+Repo name.
+
+### number
+
+Issue number.
+
+### jq
+
+*(optional)* `gh api --jq` expression selecting fields from the issue object. Default: full issue JSON.
 
 ## Outputs
 
 ### issue_record
 
-The issue as a JSON object carrying the requested `{fields}`.
+The issue as a JSON object (full body, or the `{jq}` projection).
 
 ## Protocol
 
-1. `gh issue view {issue_identifier} --json {fields}` per [json-on-single-item-views](./TECHNIQUE.md#json-on-single-item-views); return the parsed object as `{issue_record}`.
+1. `gh api repos/{owner}/{repo}/issues/{number}` with `--jq {jq}` when `{jq}` is set; return the parsed object as `{issue_record}`.

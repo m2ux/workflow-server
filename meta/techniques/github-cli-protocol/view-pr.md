@@ -1,22 +1,30 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
-View an existing PR (read-only — safe via `gh` CLI).
+View an existing PR via REST.
 
 ## Inputs
 
-### pr_identifier
+### owner
 
-PR number or URL
+Repo owner.
 
-### fields
+### repo
 
-*(optional)* Comma-separated `gh` field names to return. Default `number,title,body,state,isDraft,url,headRefName,baseRefName,author,labels`.
+Repo name.
+
+### number
+
+PR number.
+
+### jq
+
+*(optional)* `gh api --jq` expression selecting fields from the pull object. Default: full pull JSON.
 
 ## Protocol
 
-1. `gh pr view {pr_identifier} --json {fields}` per [json-on-single-item-views](./TECHNIQUE.md#json-on-single-item-views).
+1. `gh api repos/{owner}/{repo}/pulls/{number}` with `--jq {jq}` when `{jq}` is set.

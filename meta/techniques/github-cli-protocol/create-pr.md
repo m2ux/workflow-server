@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -9,9 +9,17 @@ Open a draft (or ready) pull request for a feature branch, or reuse the existing
 
 ## Inputs
 
+### owner
+
+*(optional when `{repo_path}` is set)* Repo owner.
+
+### repo
+
+*(optional when `{repo_path}` is set)* Repo name.
+
 ### repo_path
 
-Working tree of the repository in which to create the PR (cwd for `gh`).
+*(optional when `{owner}` and `{repo}` are set)* Working tree used to derive `{owner}/{repo}` from `origin` when those inputs are unset.
 
 ### branch
 
@@ -31,7 +39,7 @@ PR body markdown.
 
 ### as_draft
 
-*(optional, default: true)* When true, open as a draft (`--draft`). When false, open ready for review.
+*(optional, default: true)* When true, open as a draft. When false, open ready for review.
 
 ## Outputs
 
@@ -47,11 +55,6 @@ URL of the pull request.
 
 ### 1. Resolve Existing Or Create
 
-- From `{repo_path}`, if a PR already exists for `{branch}`, capture its `{pr_number}` and `{pr_url}` and update its body via [update-pr-description](./update-pr-description.md) (resolve `{owner}` / `{repo}` / `{number}` from `gh` context for that PR)
-- Otherwise open the PR: `gh pr create --base {base_branch} --title "{title}" --body "{body}"` with `--draft` when `{as_draft}` is true; capture `{pr_number}` and `{pr_url}` from the command output
-
-## Rules
-
-### no-graphql-create-path
-
-Do not use `gh pr edit` or other GraphQL mutations for assignee/body updates — use REST via [update-pr-description](./update-pr-description.md) / sibling ops (`no-graphql-mutations` on the group contract).
+- When `{owner}` or `{repo}` is unset, derive both from `git -C {repo_path} remote get-url origin` (SSH or HTTPS form; strip trailing `.git`).
+- List open pulls for the head: `gh api "repos/{owner}/{repo}/pulls?state=open&head={owner}:{branch}" --jq '.[0]'`. When a PR exists, capture `{pr_number}` and `{pr_url}` from `.number` / `.html_url` and refresh the body via [update-pr-description](./update-pr-description.md).
+- Otherwise create: `gh api repos/{owner}/{repo}/pulls -f title="{title}" -f head="{branch}" -f base="{base_branch}" -f body="{body}" -F draft={as_draft}`; capture `{pr_number}` from `.number` and `{pr_url}` from `.html_url`.

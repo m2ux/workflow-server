@@ -31,8 +31,10 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
 
 ### 1. Ingest All Prior Feedback
 
-- Read every top-level comment and review on `{review_pr_url}` with `gh pr view {pr_number} --json comments,reviews`.
-- Read every inline review thread with `gh api repos/{owner}/{repo}/pulls/{pr_number}/comments`, resolving `{owner}` and `{repo}` from `{review_pr_url}`.
+- Resolve `{owner}` and `{repo}` from `{review_pr_url}` (or `{target_repo}`).
+- Read every top-level issue comment: `gh api repos/{owner}/{repo}/issues/{pr_number}/comments --paginate`.
+- Read every PR review: `gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews --paginate`.
+- Read every inline review thread: `gh api repos/{owner}/{repo}/pulls/{pr_number}/comments --paginate`.
 - Include both human and bot authors — a bot finding is signal, not noise. Do this before any independent code, structural, or test analysis, so the existing signal frames the review rather than being reconciled after a verdict is formed.
 
 ### 2. Triage Each Prior Finding
