@@ -41,6 +41,14 @@ The authored surface — the PR's changed-files set. Used to enforce the finding
 
 Path to the product repo root (monorepo or standalone); the `.engineering/` artifacts directory sits under it.
 
+### pr_number
+
+*(optional)* PR number used to compose `{reviewed_code_base_url}` when `{reviewed_code_base_url}` is empty.
+
+### target_repo
+
+*(optional)* GitHub repository as `owner/repo` for REST `gh api` paths when composing the citation base from the PR head.
+
 ## Outputs
 
 ### review_summary
@@ -62,7 +70,7 @@ Every slot in `{review_summary}` whose measured size exceeds its budget in the f
 
 - Resolve `{$eng_git_dir}`: `{host_repo_path}/.engineering` when that path is a git checkout (submodule or nested clone); otherwise `{host_repo_path}`.
 - Resolve `{$eng_publish_ref}`: `{artifact_publish_ref}` when it is non-empty; otherwise `git -C {eng_git_dir} branch --show-current` — never hardcode `main`. This is a branch, so the linked tree carries every artifact the run writes after this render.
-- Resolve `{$reviewed_code_base}`: `{reviewed_code_base_url}` when it is non-empty; otherwise compose it from `gh api repos/{owner}/{repo}/pulls/{pr_number} --jq '{headRefOid:.head.sha,headRepository:.head.repo.name,headRepositoryOwner:.head.repo.owner.login}'`.
+- Resolve `{$reviewed_code_base}`: `{reviewed_code_base_url}` when it is non-empty; otherwise split `{target_repo}` into `{$owner}` / `{$repo}` and compose it from `gh api repos/{$owner}/{$repo}/pulls/{pr_number} --jq '{headRefOid:.head.sha,headRepository:.head.repo.name,headRepositoryOwner:.head.repo.owner.login}'`.
 - Supply `{eng_publish_ref}` as the ref in every engineering-artifact hyperlink and `{reviewed_code_base}` as the prefix of every reviewed-code citation, per the ref split in [Header Fields](../resources/review-mode.md#header-fields) — that section owns the URL shapes and their slots; this step supplies only the two refs.
 
 ### 3. Render the Summary

@@ -100,6 +100,9 @@ variables:
   - name: host_repo_path
     type: string
     description: Absolute path to the host repository the session belongs to — the outermost superproject when the component is a submodule, the checkout itself otherwise.
+  - name: target_repo
+    type: string
+    description: GitHub repository as owner/repo for REST gh api paths.
   - name: component_hint
     type: string
     description: Basename of the component the session was opened inside.

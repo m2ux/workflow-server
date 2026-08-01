@@ -1,27 +1,15 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
 
-Open a draft (or ready) pull request for a feature branch, or reuse the existing PR for that branch and refresh its body.
+Open a draft or ready pull request for a feature branch, or refresh the body of the existing open PR for that branch.
 
 ## Inputs
 
-### owner
-
-*(optional when `{repo_path}` is set)* Repo owner.
-
-### repo
-
-*(optional when `{repo_path}` is set)* Repo name.
-
-### repo_path
-
-*(optional when `{owner}` and `{repo}` are set)* Working tree used to derive `{owner}/{repo}` from `origin` when those inputs are unset.
-
-### branch
+### branch_name
 
 Head branch to open the PR from.
 
@@ -53,8 +41,16 @@ URL of the pull request.
 
 ## Protocol
 
-### 1. Resolve Existing Or Create
+### 1. Resolve Coordinates
 
-- When `{owner}` or `{repo}` is unset, derive both from `git -C {repo_path} remote get-url origin` (SSH or HTTPS form; strip trailing `.git`).
-- List open pulls for the head: `gh api "repos/{owner}/{repo}/pulls?state=open&head={owner}:{branch}" --jq '.[0]'`. When a PR exists, capture `{pr_number}` and `{pr_url}` from `.number` / `.html_url` and refresh the body via [update-pr-description](./update-pr-description.md).
-- Otherwise create: `gh api repos/{owner}/{repo}/pulls -f title="{title}" -f head="{branch}" -f base="{base_branch}" -f body="{body}" -F draft={as_draft}`; capture `{pr_number}` from `.number` and `{pr_url}` from `.html_url`.
+1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
+
+### 2. Reuse Existing Pull
+
+1. `gh api "repos/{$owner}/{$repo}/pulls?state=open&head={$owner}:{branch_name}" --jq '.[0]'`.
+2. When a pull exists, set `{pr_number}` from `.number` and `{pr_url}` from `.html_url`, write `{body}` to a temp file, and `gh api repos/{$owner}/{$repo}/pulls/{pr_number} -X PATCH -F body=@<file>`; stop.
+
+### 3. Create Pull
+
+1. `gh api repos/{$owner}/{$repo}/pulls -f title="{title}" -f head="{branch_name}" -f base="{base_branch}" -f body="{body}" -F draft={as_draft}`.
+2. Set `{pr_number}` from `.number` and `{pr_url}` from `.html_url`.

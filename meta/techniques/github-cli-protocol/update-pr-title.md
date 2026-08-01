@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -9,17 +9,9 @@ Update the title of an existing PR via REST.
 
 ## Inputs
 
-### owner
+### pr_number
 
-Repo owner
-
-### repo
-
-Repo name
-
-### number
-
-PR number
+PR number.
 
 ### title
 
@@ -27,4 +19,7 @@ New PR title.
 
 ## Protocol
 
-1. `gh api repos/{owner}/{repo}/pulls/{number} -X PATCH -f title="{title}"`.
+### 1. Patch Title
+
+1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
+2. `gh api repos/{$owner}/{$repo}/pulls/{pr_number} -X PATCH -f title="{title}"`.

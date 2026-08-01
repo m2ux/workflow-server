@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -9,23 +9,22 @@ Assign a user to a GitHub issue via REST.
 
 ## Inputs
 
-### owner
-
-Repo owner.
-
-### repo
-
-Repo name.
-
-### number
+### issue_number
 
 Issue number.
 
 ### assignee
 
-Assignee login. When the caller means the authenticated user, resolve login first with `gh api user --jq .login` and pass that login as `{assignee}`.
+Assignee login, or the literal `@me` for the authenticated user.
 
 ## Protocol
 
-1. `gh api repos/{owner}/{repo}/issues/{number}/assignees -f "assignees[]={assignee}"`.
-   - If the issue is already assigned to `{assignee}`, this is a no-op — skip silently.
+### 1. Resolve Assignee Login
+
+1. When `{assignee}` is `@me`, set `{$assignee_login}` from `gh api user --jq .login`; otherwise set `{$assignee_login}` to `{assignee}`.
+
+### 2. Assign
+
+1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
+2. `gh api repos/{$owner}/{$repo}/issues/{issue_number}/assignees -f "assignees[]={$assignee_login}"`.
+   - When the issue is already assigned to `{$assignee_login}`, this is a no-op — skip silently.

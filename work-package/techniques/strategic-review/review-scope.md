@@ -25,6 +25,10 @@ List of files changed in the work package, passed to the orphan scan.
 
 *(optional)* PR identifier for the PR under review. Absent when no PR exists (stealth mode).
 
+### target_repo
+
+*(optional)* GitHub repository as `owner/repo` for REST `gh api` paths when `{pr_number}` is set.
+
 ## Outputs
 
 ### strategic_review_doc
@@ -44,7 +48,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 ### 1. Load Guidance
 
 - Judge the change against [Architectural Significance](../../resources/architecture-review.md#architectural-significance) and [Decision-Making Discipline](../../resources/architecture-review.md#decision-making-discipline); the rules below govern the review findings
-- Identify the base branch (`{$base_branch}`): the PR's target branch via `gh api repos/{owner}/{repo}/pulls/{pr_number} --jq .base.ref` when `{pr_number}` is set; otherwise (no PR — stealth mode) the default branch of the configured push remote.
+- Identify the base branch (`{$base_branch}`): when `{pr_number}` is set, split `{target_repo}` into `{$owner}` / `{$repo}` and read `gh api repos/{$owner}/{$repo}/pulls/{pr_number} --jq .base.ref`; otherwise (no PR — stealth mode) the default branch of the configured push remote.
 - Examine the authored surface `{changed_files}` on the feature branch `{branch_name}` using three-dot diffs against the base branch (`{$base_branch}`):
   - Consume the canonical `{changed_files}` when it is established (review mode, produced by `review-baseline-state`); otherwise (create mode, no PR baseline) derive it from the local working-tree diff against `{$base_branch}`.
 
@@ -86,7 +90,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 ### 8. Verify Pr Body Conformance
 
 - Skip this phase when `{pr_number}` is unset (no PR exists — stealth mode).
-- Read the live PR body via `gh api repos/{owner}/{repo}/pulls/{pr_number} --jq .body`.
+- Read the live PR body via `gh api repos/{$owner}/{$repo}/pulls/{pr_number} --jq .body`.
 - Run [update-pr](../update-pr/TECHNIQUE.md)::[verify-body](../update-pr/verify-body.md) against the live body.
 - If `body_conforms == false`, record each `body_findings` entry in the `{strategic_review_doc}` under 'PR body conformance'.
 

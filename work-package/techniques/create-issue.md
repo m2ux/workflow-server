@@ -25,6 +25,10 @@ Basename of the component the work package targets (e.g., midnight-node, midnigh
 
 *(optional)* Jira project chosen at the `jira-project-selection` gate — the project the new Jira issue is created in. Absent for GitHub issues.
 
+### target_repo
+
+*(optional)* GitHub repository as `owner/repo` for REST verification of an existing GitHub issue.
+
 ## Outputs
 
 ### needs_issue_creation
@@ -44,7 +48,7 @@ URL of the verified or newly created issue.
 ### 1. Verify Existing Issue
 
 - Runs only when the user provides an existing issue key. Detect the platform from key format: `#N` or bare number → GitHub, `PROJ-N` → Jira. Set `{issue_platform}`.
-- For GitHub: run `gh api repos/{owner}/{repo}/issues/{number}` to confirm the issue exists. Capture `{issue_number}` from `.number` and `{issue_url}` from `.html_url`.
+- For GitHub: split `{target_repo}` into `{$owner}` / `{$repo}`, then `gh api repos/{$owner}/{$repo}/issues/{issue_number}` to confirm the issue exists. Capture `{issue_number}` from `.number` and `{issue_url}` from `.html_url`.
 - For Jira: call `getAccessibleAtlassianResources` FIRST to obtain cloudId, preserve as `{$jira_cloud_id}`. THEN call `getJiraIssue` with cloudId and the issue key. Do NOT call `getJiraIssue` before cloudId is resolved.
 - Capture `{issue_number}` and `{issue_url}` from the verification result. Set `{needs_issue_creation}` to false.
 

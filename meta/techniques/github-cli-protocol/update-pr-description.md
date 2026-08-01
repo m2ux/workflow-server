@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -9,22 +9,17 @@ Update the body of an existing PR via REST.
 
 ## Inputs
 
-### owner
+### pr_number
 
-Repo owner (e.g., `m2ux`)
-
-### repo
-
-Repo name
-
-### number
-
-PR number
+PR number.
 
 ### body
 
-*(optional when supplied via file)* PR body markdown. Prefer `-F body=@<file>` for multi-line bodies.
+PR body markdown. Multi-line bodies may be supplied from a file via `-F body=@<file>`.
 
 ## Protocol
 
-1. `gh api repos/{owner}/{repo}/pulls/{number} -X PATCH -f body="{body}"` (or `-F body=@<file>` when the body is on disk).
+### 1. Patch Body
+
+1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
+2. `gh api repos/{$owner}/{$repo}/pulls/{pr_number} -X PATCH -f body="{body}"` (or `-F body=@<file>` when the body is on disk).

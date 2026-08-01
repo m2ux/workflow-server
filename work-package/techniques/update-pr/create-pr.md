@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -16,6 +16,18 @@ Issue identifier (GitHub `#N` or Jira `KEY-N`)
 ### issue_platform
 
 Platform where the issue lives (`github` or `jira`)
+
+### target_repo
+
+*(optional)* GitHub repository as `owner/repo`. When unset, derived from `origin` on `{target_path}`.
+
+### target_path
+
+Working tree of the repository in which to create the PR.
+
+### branch_name
+
+Head branch to open the PR from.
 
 ## Outputs
 
@@ -37,6 +49,11 @@ URL to the PR
 
 ### 2. Create Draft PR
 
-- Apply [create-pr](../../../meta/techniques/github-cli-protocol/create-pr.md) with `repo_path` `{target_path}`, `branch` `{branch_name}`, `base_branch` the repo default (or the configured base), `title` and `body` from step 1, and `draft` true; capture `{pr_number}` and `{pr_url}`
-- Assign the PR to the current GitHub user: resolve login with `gh api user --jq .login`, then `gh api repos/{owner}/{repo}/issues/{pr_number}/assignees -f "assignees[]={login}"`
+- Apply [create-pr](../../../meta/techniques/github-cli-protocol/create-pr.md) with `repo_path` `{target_path}`, `branch_name` `{branch_name}`, `base_branch` the repo default (or the configured base), `title` and `body` from step 1, and `as_draft` true; capture `{pr_number}` and `{pr_url}`
+
+### 3. Assign Current User
+
+- Set `{$assignee_login}` from `gh api user --jq .login`.
+- Split `{target_repo}` into `{$owner}` / `{$repo}` (or derive from `origin` on `{target_path}`).
+- `gh api repos/{$owner}/{$repo}/issues/{pr_number}/assignees -f "assignees[]={$assignee_login}"`.
 - Keep the PR as draft until implementation and review complete

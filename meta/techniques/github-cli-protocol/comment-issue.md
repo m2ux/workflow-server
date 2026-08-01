@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -9,15 +9,7 @@ Post a markdown comment to a GitHub issue via REST.
 
 ## Inputs
 
-### owner
-
-Repo owner.
-
-### repo
-
-Repo name.
-
-### number
+### issue_number
 
 Issue number.
 
@@ -27,4 +19,7 @@ Markdown comment body.
 
 ## Protocol
 
-1. `gh api repos/{owner}/{repo}/issues/{number}/comments -f body="{body}"`.
+### 1. Post Comment
+
+1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
+2. `gh api repos/{$owner}/{$repo}/issues/{issue_number}/comments -f body="{body}"`.

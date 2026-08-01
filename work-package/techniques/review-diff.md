@@ -29,6 +29,10 @@ Folder where the change block index and manual diff review report are written
 
 PR identifier, used to resolve the authoritative base branch via REST `gh api`
 
+### target_repo
+
+GitHub repository as `owner/repo` for REST `gh api` paths
+
 ## Outputs
 
 ### change_block_index
@@ -65,7 +69,7 @@ True if any block marked as critical blocker
 
 - Run `git pull` on the `{branch_name}` feature branch to ensure it is up to date
 - Resolve merge conflicts before proceeding if any
-- Identify the base branch (`{$base_branch}`) as the PR's target branch: `gh api repos/{owner}/{repo}/pulls/{pr_number} --jq .base.ref`
+- Split `{target_repo}` into `{$owner}` / `{$repo}`. Identify the base branch (`{$base_branch}`) as the PR's target branch: `gh api repos/{$owner}/{$repo}/pulls/{pr_number} --jq .base.ref`
 - If HEAD is a merge commit or the branch has merged `{$base_branch}` in, the three-dot range against the merge-base already scopes to the authored diff; log that a merge-in was detected
 
 ### 2. Parse Diff
@@ -77,7 +81,7 @@ True if any block marked as critical blocker
 
 ### 3. Pin the Citation Base
 
-- Read the head commit and its repository: `gh api repos/{owner}/{repo}/pulls/{pr_number} --jq '{headRefOid:.head.sha,headRepository:.head.repo.name,headRepositoryOwner:.head.repo.owner.login}'`.  
+- Read the head commit and its repository: `gh api repos/{$owner}/{$repo}/pulls/{pr_number} --jq '{headRefOid:.head.sha,headRepository:.head.repo.name,headRepositoryOwner:.head.repo.owner.login}'`.  
   > When no PR exists yet, take the repository from `{push_remote}` and the sha from that remote's tip of the branch (`git -C {target_path} ls-remote {push_remote} {branch_name}`); push the branch first when the remote does not carry it, so the sha the citations name is reachable.
 - Compose `{reviewed_code_base_url}` from that owner, repository name, and full head sha. Every Block title and finding citation this technique writes is built on it, per [permanent-blob-citations](../resources/manual-diff-review.md#permanent-blob-citations).
 

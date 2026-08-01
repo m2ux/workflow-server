@@ -1,30 +1,25 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
 
-View an existing PR via REST.
+View an existing pull request via REST.
 
 ## Inputs
 
-### owner
+### pr_number
 
-Repo owner.
+Pull request number.
 
-### repo
+### field_projection
 
-Repo name.
-
-### number
-
-PR number.
-
-### jq
-
-*(optional)* `gh api --jq` expression selecting fields from the pull object. Default: full pull JSON.
+*(optional)* `gh api --jq` expression selecting fields from the pull object. When unset, the full pull JSON is returned.
 
 ## Protocol
 
-1. `gh api repos/{owner}/{repo}/pulls/{number}` with `--jq {jq}` when `{jq}` is set.
+### 1. Fetch Pull
+
+1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
+2. `gh api repos/{$owner}/{$repo}/pulls/{pr_number}` with `--jq {field_projection}` when `{field_projection}` is set.

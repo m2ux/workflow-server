@@ -13,6 +13,14 @@ Prior PR feedback accounted for in the review verdict — dispositions and block
 
 The URL of the PR under review, captured during PR-reference detection. Identifies the PR whose existing comments and reviews are ingested.
 
+### pr_number
+
+PR number whose comments and reviews are ingested.
+
+### target_repo
+
+*(optional)* GitHub repository as `owner/repo`. When unset, owner and repo are parsed from `{review_pr_url}`.
+
 ## Outputs
 
 ### prior_feedback_triage
@@ -31,10 +39,10 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
 
 ### 1. Ingest All Prior Feedback
 
-- Resolve `{owner}` and `{repo}` from `{review_pr_url}` (or `{target_repo}`).
-- Read every top-level issue comment: `gh api repos/{owner}/{repo}/issues/{pr_number}/comments --paginate`.
-- Read every PR review: `gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews --paginate`.
-- Read every inline review thread: `gh api repos/{owner}/{repo}/pulls/{pr_number}/comments --paginate`.
+- Split `{target_repo}` into `{$owner}` / `{$repo}` (or parse owner/repo from `{review_pr_url}` when `{target_repo}` is unset).
+- Read every top-level issue comment: `gh api repos/{$owner}/{$repo}/issues/{pr_number}/comments --paginate`.
+- Read every PR review: `gh api repos/{$owner}/{$repo}/pulls/{pr_number}/reviews --paginate`.
+- Read every inline review thread: `gh api repos/{$owner}/{$repo}/pulls/{pr_number}/comments --paginate`.
 - Include both human and bot authors — a bot finding is signal, not noise. Do this before any independent code, structural, or test analysis, so the existing signal frames the review rather than being reconciled after a verdict is formed.
 
 ### 2. Triage Each Prior Finding

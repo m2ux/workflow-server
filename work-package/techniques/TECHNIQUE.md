@@ -32,3 +32,7 @@ The work package's feature branch
 ### pr_number
 
 The work package's pull request number
+
+### target_repo
+
+GitHub repository as `owner/repo` for REST `gh api` paths
