@@ -1,0 +1,535 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "5.14.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "MKKY45",
+  "currentActivity": "initialize-session",
+  "currentTechnique": "version-control::initialize-folder",
+  "condition": "isDefault:true -> initialize-session",
+  "seq": 10,
+  "ts": 1785564462,
+  "startedAt": "2026-08-01T06:02:03.143Z",
+  "completedActivities": [
+    "discover-session"
+  ],
+  "skippedActivities": [],
+  "variables": {
+    "abort_completion": false,
+    "client_workflow_completed": false,
+    "component_path": ".",
+    "component_selection_needed": false,
+    "has_saved_state": false,
+    "host_binding_mismatch": false,
+    "host_repo_path": "/home/mike1/projects/dev/workflow-server",
+    "is_monorepo": false,
+    "is_resuming": false,
+    "mentioned_repo": "m2ux/workflow-server",
+    "resume_intent_requested": false,
+    "target_repo": "m2ux/workflow-server",
+    "target_workflow_id": "workflow-authoring",
+    "user_request": "start a workflow authoring workflow for: https://github.com/m2ux/workflow-server/pull/372",
+    "workflow_match_ambiguous": false
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-08-01T06:02:03.143Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "abort_completion": false,
+          "client_workflow_completed": false,
+          "component_path": ".",
+          "component_selection_needed": false,
+          "has_saved_state": false,
+          "host_binding_mismatch": false,
+          "is_monorepo": false,
+          "is_resuming": false,
+          "resume_intent_requested": false,
+          "user_request": "start a workflow authoring workflow for: https://github.com/m2ux/workflow-server/pull/372",
+          "workflow_match_ambiguous": false
+        }
+      },
+      "timestamp": "2026-08-01T06:02:03.143Z",
+      "type": "variables_seeded"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-08-01T06:02:46.611Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "chars": 57012,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-01T06:03:11.705Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "chars": 6695,
+        "delivery": "full",
+        "stepId": "resolve-host-repo",
+        "techniqueId": "version-control::resolve-host-repo"
+      },
+      "timestamp": "2026-08-01T06:03:11.705Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "stepId": "resolve-host-repo"
+      },
+      "timestamp": "2026-08-01T06:03:11.705Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "chars": 5777,
+        "delivery": "full",
+        "stepId": "list-available-workflows",
+        "techniqueId": "workflow-engine::list-workflows"
+      },
+      "timestamp": "2026-08-01T06:03:11.705Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "stepId": "list-available-workflows"
+      },
+      "timestamp": "2026-08-01T06:03:11.705Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "chars": 7174,
+        "delivery": "full",
+        "stepId": "match-target",
+        "techniqueId": "workflow-engine::match-target-workflow"
+      },
+      "timestamp": "2026-08-01T06:03:11.705Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "stepId": "match-target"
+      },
+      "timestamp": "2026-08-01T06:03:11.705Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "chars": 6093,
+        "delivery": "full",
+        "stepId": "detect-resume-intent",
+        "techniqueId": "workflow-engine::detect-resume-intent"
+      },
+      "timestamp": "2026-08-01T06:03:11.705Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "stepId": "detect-resume-intent"
+      },
+      "timestamp": "2026-08-01T06:03:11.705Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "chars": 1426,
+        "delivery": "full",
+        "resourceId": "resume-intent-lexicon"
+      },
+      "timestamp": "2026-08-01T06:04:16.031Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "usage": {
+          "duration_ms": 123122,
+          "subagent_tokens": 54645,
+          "tool_uses": 10
+        }
+      },
+      "timestamp": "2026-08-01T06:05:21.206Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "target_repo",
+        "source": "variables_changed",
+        "value": "m2ux/workflow-server"
+      },
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "host_repo_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server"
+      },
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "host_binding_mismatch",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "mentioned_repo",
+        "source": "variables_changed",
+        "value": "m2ux/workflow-server"
+      },
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "target_workflow_id",
+        "source": "variables_changed",
+        "value": "workflow-authoring"
+      },
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "workflow_match_ambiguous",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "resume_intent_requested",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "has_saved_state",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "stepId": "resolve-host-repo"
+      },
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "stepId": "list-available-workflows"
+      },
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "stepId": "match-target"
+      },
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "stepId": "detect-resume-intent"
+      },
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-discover-session-1",
+        "stepId": "record-no-match"
+      },
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-08-01T06:05:31.253Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-initialize-session-1",
+        "chars": 34932,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-01T06:05:54.886Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-initialize-session-1",
+        "chars": 7510,
+        "delivery": "full",
+        "stepId": "start-or-resume-session",
+        "techniqueId": "workflow-engine::create-session"
+      },
+      "timestamp": "2026-08-01T06:05:54.886Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-initialize-session-1",
+        "stepId": "start-or-resume-session"
+      },
+      "timestamp": "2026-08-01T06:05:54.886Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-initialize-session-1",
+        "chars": 4874,
+        "delivery": "full",
+        "stepId": "derive-planning-slug",
+        "techniqueId": "version-control::initialize-folder"
+      },
+      "timestamp": "2026-08-01T06:06:31.340Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-initialize-session-1",
+        "stepId": "derive-planning-slug"
+      },
+      "timestamp": "2026-08-01T06:06:31.340Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "sessionIndex": "WEGGYY",
+        "workflowId": "workflow-authoring"
+      },
+      "timestamp": "2026-08-01T06:07:03.879Z",
+      "type": "workflow_triggered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-initialize-session-1",
+        "usage": {
+          "duration_ms": 99823,
+          "subagent_tokens": 44515,
+          "tool_uses": 7
+        }
+      },
+      "timestamp": "2026-08-01T06:07:42.669Z",
+      "type": "activity_usage"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "WEGGYY",
+      "state": {
+        "agentId": "orchestrator",
+        "checkpointResponses": {},
+        "completedActivities": [],
+        "condition": "",
+        "currentActivity": "",
+        "currentTechnique": "",
+        "history": [
+          {
+            "timestamp": "2026-08-01T06:07:03.881Z",
+            "type": "workflow_started"
+          },
+          {
+            "data": {
+              "variables": {
+                "addressed_count": 0,
+                "change_brief_path": "",
+                "change_request_clear": true,
+                "commit_approved": false,
+                "fail_count": 0,
+                "has_coverage_gap": false,
+                "has_critical_finding": false,
+                "has_unflagged_removals": false,
+                "headless_mode": true,
+                "impact_analysis_path": "",
+                "intent_needs_confirmation": false,
+                "open_finding_count": 0,
+                "open_judgements_count": 0,
+                "operation_type_ambiguous": false,
+                "pr_number": "",
+                "pr_url": "",
+                "register_sections": [],
+                "remediation_round": 0,
+                "remediation_selected": false,
+                "removal_count": 0,
+                "removal_disposition": "",
+                "removals_approved": false,
+                "report_path": "",
+                "review_closed": false,
+                "review_scope_confirmed": false,
+                "scope_manifest_confirmed": false,
+                "scope_manifest_path": "",
+                "scope_round": 0,
+                "target_path": "",
+                "total_count": 0,
+                "unaddressed_count": 0,
+                "update_seeded_from_review": false,
+                "user_request": "start a workflow authoring workflow for: https://github.com/m2ux/workflow-server/pull/372",
+                "workflow_branch": "",
+                "worktree_created": false
+              }
+            },
+            "timestamp": "2026-08-01T06:07:03.881Z",
+            "type": "variables_seeded"
+          }
+        ],
+        "repo": "m2ux/workflow-server",
+        "schemaVersion": 1,
+        "seq": 0,
+        "sessionIndex": "WEGGYY",
+        "skippedActivities": [],
+        "startedAt": "2026-08-01T06:07:03.881Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1785564423,
+        "variables": {
+          "addressed_count": 0,
+          "change_brief_path": "",
+          "change_request_clear": true,
+          "commit_approved": false,
+          "fail_count": 0,
+          "has_coverage_gap": false,
+          "has_critical_finding": false,
+          "has_unflagged_removals": false,
+          "headless_mode": true,
+          "impact_analysis_path": "",
+          "intent_needs_confirmation": false,
+          "open_finding_count": 0,
+          "open_judgements_count": 0,
+          "operation_type_ambiguous": false,
+          "pr_number": "",
+          "pr_url": "",
+          "register_sections": [],
+          "remediation_round": 0,
+          "remediation_selected": false,
+          "removal_count": 0,
+          "removal_disposition": "",
+          "removals_approved": false,
+          "report_path": "",
+          "review_closed": false,
+          "review_scope_confirmed": false,
+          "scope_manifest_confirmed": false,
+          "scope_manifest_path": "",
+          "scope_round": 0,
+          "target_path": "",
+          "total_count": 0,
+          "unaddressed_count": 0,
+          "update_seeded_from_review": false,
+          "user_request": "start a workflow authoring workflow for: https://github.com/m2ux/workflow-server/pull/372",
+          "workflow_branch": "",
+          "worktree_created": false
+        },
+        "workflowId": "workflow-authoring",
+        "workflowVersion": "1.1.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-08-01T06:07:03.879Z",
+      "triggeredFrom": {
+        "activityId": "initialize-session"
+      },
+      "workflowId": "workflow-authoring"
+    }
+  ],
+  "deliveredContent": {
+    "worker-discover-session-1": {
+      "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
+      "bundle:variable-binding": "780a3e5bb26aea8d",
+      "bundle:workflow-engine::activity-worker": "5d153b783337a2fc",
+      "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+      "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+      "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+      "resource:resume-intent-lexicon": "d6dca779ec20fd6f",
+      "technique:version-control::resolve-host-repo": "eb9e8e34dc09c294",
+      "technique:workflow-engine::detect-resume-intent": "4f7ede12a03a16a1",
+      "technique:workflow-engine::list-workflows": "199f025ea70aa8e5",
+      "technique:workflow-engine::match-target-workflow": "9ff4bb378051a6d3"
+    },
+    "worker-initialize-session-1": {
+      "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
+      "bundle:variable-binding": "780a3e5bb26aea8d",
+      "bundle:workflow-engine::activity-worker": "5d153b783337a2fc",
+      "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+      "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+      "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+      "technique:version-control::initialize-folder": "efa8c85064983982",
+      "technique:workflow-engine::create-session": "93309bd14687f8af"
+    }
+  },
+  "repo": "m2ux/workflow-server"
+}
