@@ -59,6 +59,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'every agent-audience artifact is JSON on disk',
   },
   {
+    id: 'description-hygiene',
+    script: 'scripts/check-description-hygiene.ts',
+    npmScript: 'check:description-hygiene',
+    scope: 'corpus',
+    json: true,
+    proves: 'activity YAML descriptions stay WHAT-only; bound technique steps carry no description/name',
+  },
+  {
     id: 'checkpoint-entry',
     script: 'scripts/check-checkpoint-entry.ts',
     npmScript: 'check:checkpoint-entry',
