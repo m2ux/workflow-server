@@ -32,6 +32,7 @@
     "check:checkpoint-entry": "tsx scripts/check-checkpoint-entry.ts",
     "check:stealth": "tsx scripts/check-stealth-isolation.ts",
     "check:audience": "tsx scripts/check-audience.ts",
+    "check:description-hygiene": "tsx scripts/check-description-hygiene.ts",
     "check:refs": "tsx scripts/check-all-refs.ts",
     "check:activities": "tsx scripts/validate-activities.ts",
     "check:workflow-yaml": "tsx scripts/validate-workflow-yaml.ts",
