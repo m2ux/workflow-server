@@ -10,17 +10,7 @@ steps:
   - kind: technique
     id: revise-session-metrics
     technique: workflow-engine::revise-session-metrics
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: client_workflow_completed
-          operator: ==
-          value: true
-        - type: simple
-          variable: planning_folder_path
-          operator: "!="
-          value: ""
+    when: client_workflow_completed == true && planning_folder_path != ''
   - kind: technique
     id: verify-outcomes
     technique:

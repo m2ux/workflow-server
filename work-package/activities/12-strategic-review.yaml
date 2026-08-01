@@ -13,17 +13,7 @@ steps:
       name: update-pr::render
       inputs:
         pr_template_variant: final
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
+    when: is_review_mode != true && stealth_mode != true
   - kind: checkpoint
     id: unsigned-commits-prompt
     condition:
@@ -55,17 +45,7 @@ steps:
   - kind: technique
     id: resign-unsigned-commits
     technique: resign-commits
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: resign_unsigned_commits_requested
-          operator: ==
-          value: true
+    when: is_review_mode != true && resign_unsigned_commits_requested == true
   - kind: technique
     id: verify-readme
     technique:
@@ -96,19 +76,11 @@ steps:
   - kind: technique
     id: document-cleanup-recommendations
     technique: recommend-cleanup
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+    when: is_review_mode == true
   - kind: technique
     id: apply-cleanup
     technique: apply-cleanup
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+    when: is_review_mode != true
   - kind: technique
     id: create-architecture-summary
     technique: summarize-architecture

@@ -94,11 +94,7 @@ steps:
         description: true only when run evidence cannot decide among repo-only / web-retrieval / mixed; false when context_scope was derived confidently
   - kind: action
     id: announce-derived-context-scope
-    condition:
-      type: simple
-      variable: context_scope_uncertain
-      operator: "!="
-      value: true
+    when: context_scope_uncertain != true
     actions:
       - action: message
         message: "Research context scope derived as `{context_scope}`."
@@ -141,17 +137,7 @@ steps:
   - kind: technique
     id: record-batch-response
     technique: review-assumptions::record
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: has_open_assumptions
-          operator: ==
-          value: true
-        - type: simple
-          variable: needs_individual_interview
-          operator: "!="
-          value: true
+    when: has_open_assumptions == true && needs_individual_interview != true
   - kind: loop
     id: assumption-interview
     name: Individual Assumption Interview Loop
@@ -159,17 +145,7 @@ steps:
     variable: current_assumption
     over: open_assumptions
     maxIterations: 20
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: needs_individual_interview
-          operator: ==
-          value: true
-        - type: simple
-          variable: has_open_assumptions
-          operator: ==
-          value: true
+    when: needs_individual_interview == true && has_open_assumptions == true
     steps:
       - kind: technique
         id: present-assumption

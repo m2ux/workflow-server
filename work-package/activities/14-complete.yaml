@@ -47,11 +47,7 @@ steps:
   - kind: technique
     id: finalize-test-plan
     technique: finalize-documentation::finalize-test-plan
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+    when: is_review_mode != true
   - kind: technique
     id: create-complete-doc
     technique: finalize-documentation::create-complete-doc
@@ -61,11 +57,7 @@ steps:
   - kind: technique
     id: ensure-docs
     technique: finalize-documentation::ensure-docs
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+    when: is_review_mode != true
   - kind: technique
     id: read-session
     technique: workflow-engine::read-session
@@ -87,11 +79,7 @@ steps:
   - kind: technique
     id: resolve-close-out-publish
     technique: resolve-artifact-publish
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+    when: is_review_mode == true
   - kind: technique
     id: publish-close-out-artifacts
     technique:
@@ -101,19 +89,11 @@ steps:
         issue_key: issue_number
         files: publishable_files
         branch: artifact_publish_ref
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+    when: is_review_mode == true
   - kind: technique
     id: remove-worktree
     technique: manage-git::remove-worktree
-    condition:
-      type: simple
-      variable: worktree_created
-      operator: ==
-      value: true
+    when: worktree_created == true
   - kind: technique
     id: select-next
     technique: conduct-retrospective::select-next

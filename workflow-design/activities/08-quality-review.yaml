@@ -11,11 +11,7 @@ steps:
     variable: target_workflow_id
     over: target_workflow_ids
     maxIterations: 20
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: review
+    when: operation_type == 'review'
     steps:
       - kind: technique
         id: load-all-workflow-files
@@ -69,11 +65,7 @@ steps:
         target_dir: planning_folder_path
       outputs:
         written_artifact: report_path
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: review
+    when: operation_type == 'review'
   - kind: checkpoint
     id: review-disposition
     condition:
@@ -106,17 +98,7 @@ steps:
   - kind: technique
     id: audit-expressiveness
     technique: audit-expressiveness
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
+    when: operation_type != 'review' && scope_manifest_confirmed == true
   - kind: technique
     id: persist-expressiveness-findings
     technique:
@@ -125,75 +107,23 @@ steps:
         bare_filename: expressiveness-findings.md
         artifact_content: expressiveness_findings
         target_dir: planning_folder_path
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
-        - type: simple
-          variable: expressiveness_finding_count
-          operator: ">"
-          value: 0
+    when: operation_type != 'review' && scope_manifest_confirmed == true && expressiveness_finding_count > 0
   - kind: action
     id: expressiveness-clean
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
-        - type: simple
-          variable: expressiveness_finding_count
-          operator: ==
-          value: 0
+    when: operation_type != 'review' && scope_manifest_confirmed == true && expressiveness_finding_count == 0
     actions:
       - action: message
         message: Schema expressiveness review complete — 0 findings.
   - kind: action
     id: expressiveness-findings-flagged
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
-        - type: simple
-          variable: expressiveness_finding_count
-          operator: ">"
-          value: 0
+    when: operation_type != 'review' && scope_manifest_confirmed == true && expressiveness_finding_count > 0
     actions:
       - action: message
         message: "Schema expressiveness review complete. {expressiveness_finding_count} findings ([expressiveness findings]({expressiveness_findings_path}))."
   - kind: technique
     id: audit-conformance
     technique: audit-conformance
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
+    when: operation_type != 'review' && scope_manifest_confirmed == true
   - kind: technique
     id: persist-conformance-findings
     technique:
@@ -202,75 +132,23 @@ steps:
         bare_filename: conformance-findings.md
         artifact_content: conformance_findings
         target_dir: planning_folder_path
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
-        - type: simple
-          variable: conformance_finding_count
-          operator: ">"
-          value: 0
+    when: operation_type != 'review' && scope_manifest_confirmed == true && conformance_finding_count > 0
   - kind: action
     id: conformance-clean
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
-        - type: simple
-          variable: conformance_finding_count
-          operator: ==
-          value: 0
+    when: operation_type != 'review' && scope_manifest_confirmed == true && conformance_finding_count == 0
     actions:
       - action: message
         message: Convention conformance review complete — 0 divergences.
   - kind: action
     id: conformance-findings-flagged
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
-        - type: simple
-          variable: conformance_finding_count
-          operator: ">"
-          value: 0
+    when: operation_type != 'review' && scope_manifest_confirmed == true && conformance_finding_count > 0
     actions:
       - action: message
         message: "Convention conformance review complete. {conformance_finding_count} divergences ([conformance findings]({conformance_findings_path}))."
   - kind: technique
     id: audit-rule-hygiene
     technique: audit-rule-hygiene
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
+    when: operation_type != 'review' && scope_manifest_confirmed == true
   - kind: technique
     id: persist-rule-hygiene-findings
     technique:
@@ -279,75 +157,23 @@ steps:
         bare_filename: rule-hygiene-findings.md
         artifact_content: rule_hygiene_findings
         target_dir: planning_folder_path
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
-        - type: simple
-          variable: rule_hygiene_finding_count
-          operator: ">"
-          value: 0
+    when: operation_type != 'review' && scope_manifest_confirmed == true && rule_hygiene_finding_count > 0
   - kind: action
     id: rule-hygiene-clean
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
-        - type: simple
-          variable: rule_hygiene_finding_count
-          operator: ==
-          value: 0
+    when: operation_type != 'review' && scope_manifest_confirmed == true && rule_hygiene_finding_count == 0
     actions:
       - action: message
         message: Rule hygiene audit complete — 0 findings.
   - kind: action
     id: rule-hygiene-findings-flagged
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
-        - type: simple
-          variable: rule_hygiene_finding_count
-          operator: ">"
-          value: 0
+    when: operation_type != 'review' && scope_manifest_confirmed == true && rule_hygiene_finding_count > 0
     actions:
       - action: message
         message: "Rule hygiene audit complete. {rule_hygiene_finding_count} findings ([rule hygiene findings]({rule_hygiene_findings_path}))."
   - kind: technique
     id: audit-rule-enforcement
     technique: audit-rule-enforcement
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
+    when: operation_type != 'review' && scope_manifest_confirmed == true
   - kind: technique
     id: persist-enforcement-findings
     technique:
@@ -356,75 +182,23 @@ steps:
         bare_filename: enforcement-findings.md
         artifact_content: enforcement_findings
         target_dir: planning_folder_path
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
-        - type: simple
-          variable: enforcement_finding_count
-          operator: ">"
-          value: 0
+    when: operation_type != 'review' && scope_manifest_confirmed == true && enforcement_finding_count > 0
   - kind: action
     id: enforcement-clean
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
-        - type: simple
-          variable: enforcement_finding_count
-          operator: ==
-          value: 0
+    when: operation_type != 'review' && scope_manifest_confirmed == true && enforcement_finding_count == 0
     actions:
       - action: message
         message: Rule-to-structure audit complete — 0 text-only rules.
   - kind: action
     id: enforcement-findings-flagged
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
-        - type: simple
-          variable: enforcement_finding_count
-          operator: ">"
-          value: 0
+    when: operation_type != 'review' && scope_manifest_confirmed == true && enforcement_finding_count > 0
     actions:
       - action: message
         message: "Rule-to-structure audit complete. {enforcement_finding_count} text-only rules ([enforcement findings]({enforcement_findings_path}))."
   - kind: technique
     id: verify-high-findings
     technique: verify-high-findings
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
+    when: operation_type != 'review' && scope_manifest_confirmed == true
   - kind: technique
     id: persist-verified-findings
     technique:
@@ -433,30 +207,10 @@ steps:
         bare_filename: verified-findings.md
         artifact_content: verified_findings
         target_dir: planning_folder_path
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
+    when: operation_type != 'review' && scope_manifest_confirmed == true
   - kind: action
     id: classify-audit-findings
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: scope_manifest_confirmed
-          operator: ==
-          value: true
+    when: operation_type != 'review' && scope_manifest_confirmed == true
     actions:
       - action: set
         target: needs_audit_fixes

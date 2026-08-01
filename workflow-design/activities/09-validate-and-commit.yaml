@@ -14,40 +14,18 @@ steps:
         target_dir: planning_folder_path
       outputs:
         written_artifact: report_path
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: review
+    when: operation_type == 'review'
   - kind: technique
     id: commit-report
     technique: version-control::commit-regular-files
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: review
+    when: operation_type == 'review'
   - kind: technique
     id: run-schema-validation
     technique: audit-schema-validation
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: action
     id: validation-clean
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: fail_count
-          operator: ==
-          value: 0
+    when: operation_type != 'review' && fail_count == 0
     actions:
       - action: message
         message: "Schema validation passed — {pass_count} file(s), 0 failed."
@@ -78,24 +56,10 @@ steps:
   - kind: technique
     id: verify-scope-manifest
     technique: scope-verification
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: action
     id: scope-complete
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
-        - type: simple
-          variable: unaddressed_count
-          operator: ==
-          value: 0
+    when: operation_type != 'review' && unaddressed_count == 0
     actions:
       - action: message
         message: "Scope manifest verification complete — {addressed_count}/{total_count} items addressed ([scope manifest]({scope_manifest_path}))."
@@ -129,19 +93,11 @@ steps:
       name: workflow-engine::verify-readme-conforms
       inputs:
         seed_profile: workflow-design/readme-seed
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: technique
     id: readme-authoring
     technique: readme-authoring
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: checkpoint
     id: approve-to-commit
     condition:
@@ -168,11 +124,7 @@ steps:
   - kind: technique
     id: stage-and-commit
     technique: version-control::commit-regular-files
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: technique
     id: verify-commit
     technique: commit-verification
@@ -184,19 +136,11 @@ steps:
         repo_path: target_path
         branch: workflow_branch
         remote_name: origin
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: technique
     id: compose-workflow-pr-description
     technique: publish-workflow-pr
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: technique
     id: create-pr
     technique:
@@ -208,22 +152,14 @@ steps:
         title: title
         body: body
         as_draft: true
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: technique
     id: mark-ready
     technique:
       name: github-cli-protocol::mark-ready
       inputs:
         repo_path: target_path
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: action
     id: announce-completion
     actions:

@@ -24,11 +24,7 @@ steps:
           - action: set
             target: all_artifact_paths
             description: Accumulated artifact paths across units.
-        condition:
-          type: simple
-          variable: current_unit.pipeline_mode
-          operator: ==
-          value: full-prism
+        when: current_unit.pipeline_mode == 'full-prism'
 transitions:
   - to: generate-report
     isDefault: true

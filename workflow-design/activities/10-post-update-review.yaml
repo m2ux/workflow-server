@@ -18,11 +18,7 @@ steps:
         bare_filename: expressiveness-findings.md
         artifact_content: expressiveness_findings
         target_dir: planning_folder_path
-    condition:
-      type: simple
-      variable: expressiveness_finding_count
-      operator: ">"
-      value: 0
+    when: expressiveness_finding_count > 0
   - kind: technique
     id: audit-conformance
     technique: audit-conformance
@@ -34,11 +30,7 @@ steps:
         bare_filename: conformance-findings.md
         artifact_content: conformance_findings
         target_dir: planning_folder_path
-    condition:
-      type: simple
-      variable: conformance_finding_count
-      operator: ">"
-      value: 0
+    when: conformance_finding_count > 0
   - kind: technique
     id: audit-principles
     technique: audit-principles
@@ -82,11 +74,7 @@ steps:
         written_artifact: report_path
   - kind: action
     id: post-update-clean
-    condition:
-      type: simple
-      variable: review_findings_count
-      operator: ==
-      value: 0
+    when: review_findings_count == 0
     actions:
       - action: set
         target: needs_audit_fixes
@@ -98,11 +86,7 @@ steps:
         message: "Post-update review complete — 0 findings ([post-update review]({report_path}))."
   - kind: action
     id: classify-post-update-fixes
-    condition:
-      type: simple
-      variable: review_findings_count
-      operator: ">"
-      value: 0
+    when: review_findings_count > 0
     actions:
       - action: set
         target: needs_audit_fixes
@@ -158,11 +142,7 @@ steps:
             message: After re-running the audits and summarize-findings, set true iff review_findings_count is still greater than 0; false when every pass comes back at 0 findings.
   - kind: action
     id: remedia-still-dirty
-    condition:
-      type: simple
-      variable: needs_audit_fixes
-      operator: ==
-      value: true
+    when: needs_audit_fixes == true
     actions:
       - action: message
         message: "Post-update remedia exhausted with findings remaining ([post-update review]({report_path}))."

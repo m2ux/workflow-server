@@ -9,19 +9,11 @@ steps:
   - kind: technique
     id: derive-workflows-target-path
     technique: derive-workflows-target-path
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: technique
     id: ensure-workflow-worktree
     technique: prepare-workflow-branch
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: technique
     id: scope-definition
     technique: scope-definition
@@ -66,11 +58,7 @@ steps:
     variable: current_file
     over: scope_manifest
     maxIterations: 50
-    condition:
-      type: simple
-      variable: scope_manifest_confirmed
-      operator: ==
-      value: true
+    when: scope_manifest_confirmed == true
     steps:
       - kind: technique
         id: assemble-file-approach
@@ -180,26 +168,14 @@ steps:
   - kind: technique
     id: pre-attestation-audit-principles
     technique: audit-principles
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "=="
-      value: update
+    when: operation_type == 'update'
   - kind: technique
     id: pre-attestation-audit-anti-patterns
     technique: audit-anti-patterns
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "=="
-      value: update
+    when: operation_type == 'update'
   - kind: action
     id: classify-pre-attestation-findings
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "=="
-      value: update
+    when: operation_type == 'update'
     actions:
       - action: set
         target: principle_finding_count
@@ -250,17 +226,7 @@ steps:
             message: After re-running the pre-attestation audits, set true iff any remaining finding is Critical severity.
   - kind: action
     id: pre-attestation-findings-remain
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: "=="
-          value: update
-        - type: simple
-          variable: needs_audit_fixes
-          operator: "=="
-          value: true
+    when: operation_type == 'update' && needs_audit_fixes == true
     actions:
       - action: message
         message: "Pre-attestation audit: {principle_finding_count} principle + {anti_pattern_finding_count} anti-pattern findings remain after the fix cycle — [principle findings]({principle_findings_path}), [anti-pattern findings]({anti_pattern_findings_path})."

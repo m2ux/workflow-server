@@ -100,11 +100,7 @@ steps:
   - kind: technique
     id: assess-ticket-completeness
     technique: assess-ticket-completeness
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+    when: is_review_mode == true
   - kind: checkpoint
     id: ticket-completeness
     condition:
@@ -143,11 +139,7 @@ steps:
             ticket_refactor_needed: false
   - kind: action
     id: set-review-mode-path
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+    when: is_review_mode == true
     actions:
       - action: set
         target: needs_elicitation

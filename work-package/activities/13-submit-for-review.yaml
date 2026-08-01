@@ -12,19 +12,11 @@ steps:
   - kind: technique
     id: consolidate-review-findings
     technique: findings-classification
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+    when: is_review_mode == true
   - kind: technique
     id: resolve-artifact-publish
     technique: resolve-artifact-publish
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+    when: is_review_mode == true
   - kind: technique
     id: commit-review-artifacts
     technique:
@@ -34,30 +26,18 @@ steps:
         issue_key: issue_number
         files: publishable_files
         branch: artifact_publish_ref
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+    when: is_review_mode == true
   - kind: technique
     id: generate-review-summary
     technique: review-summary
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+    when: is_review_mode == true
     actions:
       - action: validate
         target: summary_budget_overruns == []
         message: "Consolidated review summary exceeds the review-mode format budget: {summary_budget_overruns}. Move the over-budget content into the report section that owns it, leave the link, and re-run."
   - kind: action
     id: present-summary-to-user
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+    when: is_review_mode == true
     actions: []
   - kind: checkpoint
     id: review-summary-approval
@@ -105,31 +85,11 @@ steps:
       inputs:
         bare_filename: review-summary.md
         artifact_content: review_summary
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: ==
-          value: true
-        - type: simple
-          variable: review_posted
-          operator: ==
-          value: true
+    when: is_review_mode == true && review_posted == true
   - kind: technique
     id: post-pr-review
     technique: update-pr::post-review-comment
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: ==
-          value: true
-        - type: simple
-          variable: review_posted
-          operator: ==
-          value: true
+    when: is_review_mode == true && review_posted == true
   - kind: checkpoint
     id: dco-sign-off-confirmation
     condition:
@@ -161,19 +121,11 @@ steps:
   - kind: technique
     id: dco-sign-off
     technique: dco-provenance::record-attestation
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+    when: is_review_mode != true
   - kind: technique
     id: verify-push-remote
     technique: manage-git::verify-remote-private
-    condition:
-      type: simple
-      variable: stealth_mode
-      operator: ==
-      value: true
+    when: stealth_mode == true
     actions:
       - action: validate
         target: push_remote_verified != false
@@ -197,11 +149,7 @@ steps:
   - kind: technique
     id: verify-push-signatures
     technique: manage-git::verify-commit-signatures
-    condition:
-      type: simple
-      variable: stealth_mode
-      operator: ==
-      value: true
+    when: stealth_mode == true
     actions:
       - action: validate
         target: commits_signed != false
@@ -225,25 +173,11 @@ steps:
   - kind: technique
     id: push-commits
     technique: manage-git::push-commits
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+    when: is_review_mode != true
   - kind: technique
     id: update-description
     technique: update-pr::render
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
+    when: is_review_mode != true && stealth_mode != true
   - kind: loop
     id: verify-pr-body-rerender
     name: PR Body Verification Re-render Loop
@@ -315,30 +249,10 @@ steps:
   - kind: technique
     id: instruct-merge-strategy
     technique: manage-git::instruct-merge-strategy
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
+    when: is_review_mode != true && stealth_mode != true
   - kind: action
     id: merge-strategy-guidance
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
+    when: is_review_mode != true && stealth_mode != true
     actions:
       - action: message
         message: |-
@@ -418,17 +332,7 @@ steps:
     actions:
       - action: message
         message: "Pull request marked ready for review — {updated_pr.pr_status}: {updated_pr.pr_url}"
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
+    when: is_review_mode != true && stealth_mode != true
   - kind: loop
     id: await-review-loop
     name: Await Review Loop
@@ -473,31 +377,11 @@ steps:
   - kind: technique
     id: process-review-comments
     technique: respond-to-pr-review
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
+    when: is_review_mode != true && stealth_mode != true
   - kind: technique
     id: analyze-review-outcome
     technique: review-outcome-analysis
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
+    when: is_review_mode != true && stealth_mode != true
   - kind: checkpoint
     id: review-outcome
     condition:
