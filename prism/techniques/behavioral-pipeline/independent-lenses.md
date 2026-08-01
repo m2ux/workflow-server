@@ -56,7 +56,7 @@ What the code promises outward: the public surface and its callers. Role label P
 
 ### 3. Apply Independent Lenses
 
-- Run each of the four lenses against the target content; per `independent-lenses-parallel`, dispatch them concurrently (up to four at once)
+- Run each of the four lenses against the target content as independent agent/lens workers. Per `independent-lenses-parallel`, Apply [scatter-gather](../../../meta/techniques/scatter-gather.md) in parallel mode (and/or [harness-compat](../../../meta/techniques/harness-compat/TECHNIQUE.md)::[spawn-concurrent](../../../meta/techniques/harness-compat/spawn-concurrent.md) as that mode's batch dispatch) over the four lens work units — wait-all, ordered gather, then continue.
 - Execute every operation completely — the analytical depth comes from the full chain
 
 ### 4. Augment With Graph
@@ -76,4 +76,4 @@ What the code promises outward: the public surface and its callers. Role label P
 
 ### independent-lenses-parallel
 
-The four independent behavioral lenses (`error-resilience`, `optimize`, `evolution`, `api-surface`) share no context and may be dispatched concurrently, up to four at once. Only the synthesis pass depends on their outputs.
+The four independent behavioral lenses (`error-resilience`, `optimize`, `evolution`, `api-surface`) share no context. Dispatch them as agent/lens work units under [scatter-gather](../../../meta/techniques/scatter-gather.md) parallel mode and/or [spawn-concurrent](../../../meta/techniques/harness-compat/spawn-concurrent.md) (up to four at once). Only the synthesis pass depends on their outputs. Honor [Prefer Parallel Independent Work via Formal Fan-Out](../../../workflow-design/resources/design-principles.md#33-prefer-parallel-independent-work-via-formal-fan-out).

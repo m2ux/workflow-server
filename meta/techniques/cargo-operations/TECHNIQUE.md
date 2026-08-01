@@ -34,3 +34,7 @@ During inner loops (TDD red/green in implement-task) prefer build_scope=`-p <cra
 ### fmt-uses-only-nice
 
 [fmt-check](./fmt-check.md) and [fmt-fix](./fmt-fix.md) do not compile, so only `nice -n 19` applies; do not paste the full env budget there — it is misleading.
+
+### multi-op-concurrent-fan-out
+
+When a cargo-operations Protocol fans out two or more independent process/shell units concurrently (wait-all, ordered gather), Apply [unit-fan-out](../unit-fan-out.md). Keep domain envelope — resource budgets, RAM backoff, sequential `{dispatch_concurrency} = 1` fallback, product-specific combine — on the caller. Free concurrent-shell recipes that re-teach wait-all without that Apply are out of contract ([Prefer Parallel Independent Work via Formal Fan-Out](../../../workflow-design/resources/design-principles.md#33-prefer-parallel-independent-work-via-formal-fan-out); `prose-based-dispatch-patterns`).
