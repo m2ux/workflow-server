@@ -42,7 +42,7 @@ Ship a single reference `when` expression module (parentheses, C-style precedenc
 | 17 | [Debt ledger](09-debt-ledger.md) | Harvested ponytail debt markers | 10-20m | ✅ |
 | 18 | [Lean change](09-lean-change.md) | Applied lean simplifications record | 10-20m | ✅ |
 | 19 | Post-implementation review | Quality review before validation | 30-60m | 🟡 |
-| 20 | [Change block index](10-change-block-index.md) | Indexed diff hunks for review | 5-10m | ⬚ |
+| 20 | [Change block index](10-change-block-index.md) | Indexed diff hunks for review | 5-10m | 🟡 |
 | 21 | [Test suite review](10-test-suite-review.md) | Test quality and coverage | 10-20m | ⬚ |
 | 22 | [Structural analysis](10-structural-analysis.md) | Prism L12 when written standalone | 15-30m | ⬚ |
 | 23 | [Architecture summary](10-architecture-summary.md) | Stakeholder architecture overview | 15-30m | ⬚ |
