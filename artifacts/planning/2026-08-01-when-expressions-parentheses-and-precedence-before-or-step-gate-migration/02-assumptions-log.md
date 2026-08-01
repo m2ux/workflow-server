@@ -39,8 +39,8 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 
 ## Open Assumptions
 
-None — plan-prepare residue empty after analyse-challenge. Approach awaits user confirmation at `approach-confirmed`.
+None — plan-prepare residue empty after analyse-challenge. Approach confirmed at `approach-confirmed` → confirmed.
 
 ## Wrap-Up
 
-27 assumptions through plan-prepare — all confirmed/validated; no residual stakeholder interview before approach gate. Deferred multi-agent harness and server-authority move tracked in [deferred-items](deferred-items.md).
+27 assumptions through plan-prepare — all confirmed/validated; approach gate confirmed. Deferred multi-agent harness and server-authority move tracked in [deferred-items](deferred-items.md).

@@ -725,11 +725,6 @@
     {
       "sessionIndex": "PBEHLM",
       "state": {
-        "activeCheckpoint": {
-          "activityId": "plan-prepare",
-          "checkpointId": "approach-confirmed",
-          "yieldedAt": "2026-08-01T10:57:11.488Z"
-        },
         "agentId": "orchestrator",
         "checkpointResponses": {
           "design-philosophy-classification-and-path-confirmed": {
@@ -743,6 +738,10 @@
             },
             "optionId": "full-workflow",
             "respondedAt": "2026-08-01T10:22:22.000Z"
+          },
+          "plan-prepare-approach-confirmed": {
+            "optionId": "confirmed",
+            "respondedAt": "2026-08-01T10:59:43.000Z"
           },
           "requirements-elicitation-elicitation-complete": {
             "effects": {
@@ -782,11 +781,12 @@
           "codebase-comprehension",
           "requirements-elicitation",
           "research",
-          "implementation-analysis"
+          "implementation-analysis",
+          "plan-prepare"
         ],
-        "condition": "isDefault → plan-prepare",
-        "currentActivity": "plan-prepare",
-        "currentTechnique": "update-pr::render",
+        "condition": "isDefault",
+        "currentActivity": "assumptions-review",
+        "currentTechnique": "scatter-gather",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -817,9 +817,37 @@
             "id": "analysis_document",
             "name": "implementation-analysis.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/05-implementation-analysis.md"
+          },
+          {
+            "id": "plan_document",
+            "name": "work-package-plan.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/06-work-package-plan.md"
+          },
+          {
+            "id": "test_plan_document",
+            "name": "test-plan.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/06-test-plan.md"
           }
         ],
         "deliveredContent": {
+          "plan-prepare-worker": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
+            "bundle:scatter-gather": "972acb177d168c94",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "technique:analyse-challenge::run-loop": "ef2350068a0a7fba",
+            "technique:create-test-plan": "c959a5e433f297e2",
+            "technique:manage-git::sync-branch": "5a1b012eb7c7fa47",
+            "technique:plan-prepare::create-todos": "3f7d8c996cc90011",
+            "technique:plan-prepare::plan": "e5919fff83099010",
+            "technique:review-assumptions::collect": "c8e3901a0afff2e3",
+            "technique:review-assumptions::record": "80a7e8962cc8cc3e",
+            "technique:scatter-gather": "17c19c51954fcaea",
+            "technique:stakeholder-overview": "158fd2624938e7fb"
+          },
           "worker-codebase-comprehension-PBEHLM": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
             "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
@@ -5145,17 +5173,422 @@
             "checkpoint": "approach-confirmed",
             "timestamp": "2026-08-01T10:57:11.488Z",
             "type": "checkpoint_reached"
+          },
+          {
+            "activity": "plan-prepare",
+            "checkpoint": "approach-confirmed",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-08-01T10:59:43.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "chars": 76660,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "chars": 5711,
+              "delivery": "full",
+              "stepId": "create-plan",
+              "techniqueId": "plan-prepare::plan"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "create-plan"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "chars": 6670,
+              "delivery": "full",
+              "stepId": "create-test-plan",
+              "techniqueId": "create-test-plan"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "create-test-plan"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "chars": 3512,
+              "delivery": "full",
+              "stepId": "present-solution-overview",
+              "techniqueId": "stakeholder-overview"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "present-solution-overview"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "chars": 5130,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "chars": 4139,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "chars": 7597,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "chars": 4187,
+              "delivery": "full",
+              "stepId": "create-todos",
+              "techniqueId": "plan-prepare::create-todos"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "create-todos"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "chars": 3857,
+              "delivery": "full",
+              "stepId": "sync-branch",
+              "techniqueId": "manage-git::sync-branch"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "sync-branch"
+            },
+            "timestamp": "2026-08-01T11:00:02.544Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "chars": 4355,
+              "delivery": "full",
+              "techniqueId": "scatter-gather"
+            },
+            "timestamp": "2026-08-01T11:00:28.468Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "plan_document",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/06-work-package-plan.md"
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "test_plan_document",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/06-test-plan.md"
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "stakeholder_overview",
+              "source": "variables_changed",
+              "value": "Ship a single reference when expression module next to the structured condition evaluator; wire the e2e walker fail-closed; prove four nested OR keep-sites; migrate those gates to parenthesized when. Agents remain production gate evaluators with a matching grammar rule. Multi-agent harnesses and MCP gate authority stay out of scope."
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/02-assumptions-log.md"
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "todo_tasks",
+              "source": "variables_changed",
+              "value": [
+                "T1 module",
+                "T2 fixtures",
+                "T3 walker",
+                "T4 schema/rule",
+                "T5 guard",
+                "T6 four-site migrate",
+                "T7 optional stealth"
+              ]
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "env-prerequisites"
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "create-plan"
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "create-test-plan"
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "present-solution-overview"
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "create-todos"
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "sync-branch"
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "update-pr"
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "plan-prepare-worker",
+              "stepId": "approach-confirmed"
+            },
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "assumptions-review",
+            "timestamp": "2026-08-01T11:04:45.505Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 71,
+        "seq": 77,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785581831,
+        "ts": 1785582285,
         "variables": {
           "analysis_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/05-implementation-analysis.md",
           "artifact_name": "",
@@ -5237,6 +5670,7 @@
           "open_assumptions": [],
           "open_questions": [],
           "path_rationale": "Full workflow (elicitation + research) confirmed at classification-and-path-confirmed.",
+          "plan_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/06-work-package-plan.md",
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration",
           "post_jira_comment": false,
           "pr_exists": true,
@@ -5268,7 +5702,7 @@
           "skip_assumption_review": false,
           "skip_optional_activities": false,
           "squash_merge_supported": true,
-          "stakeholder_overview": "Today the workflow corpus can express simple step gates and flat AND compounds as inline when: expressions, but any gate that needs OR still has to stay in the older structured condition: form. That split exists because parentheses, operator precedence, and a full boolean evaluator for mixed && / || were not validated when the plain gates moved over — so authors cannot safely write the nested shapes the remaining sites need. Until those rules and the evaluator land, OR-shaped gates stay stranded on the structured path, docs that already describe boolean algebra over-promise what the walker can enforce, and a naive OR migration would risk running or skipping steps differently from the structured trees.",
+          "stakeholder_overview": "Ship a single reference when expression module next to the structured condition evaluator; wire the e2e walker fail-closed; prove four nested OR keep-sites; migrate those gates to parenthesized when. Agents remain production gate evaluators with a matching grammar rule. Multi-agent harnesses and MCP gate authority stay out of scope.",
           "stakeholder_review_complete": false,
           "stealth_mode": false,
           "strategic_findings_deferred": false,
@@ -5277,8 +5711,18 @@
           "submission_aborted": false,
           "summary_budget_overruns": [],
           "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration",
+          "test_plan_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/06-test-plan.md",
           "ticket_gaps_documented": false,
           "ticket_refactor_needed": false,
+          "todo_tasks": [
+            "T1 module",
+            "T2 fixtures",
+            "T3 walker",
+            "T4 schema/rule",
+            "T5 guard",
+            "T6 four-site migrate",
+            "T7 optional stealth"
+          ],
           "uncertain_symbols": "",
           "unsigned_commit_list_summary": "",
           "unsigned_commits_in_pr": false,
