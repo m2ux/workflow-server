@@ -1,6 +1,6 @@
 # Corpus Condition-to-When Migration — August 2026
 
-> Update · Created 2026-08-01 · **Status:** Quality review
+> Update · Created 2026-08-01 · **Status:** Complete
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -26,9 +26,9 @@ Migrates every legacy structured step `condition:` block with a plain comparison
 | 4 | Scope and draft | Worktree, manifest, per-file drafting | 30-60m | ✅ |
 | 5 | [Scope manifest](06-scope-manifest.md) | File-level change inventory | 15-30m | ✅ |
 | 6 | Quality review | Criteria walk, consumer surface, guards | 30-60m | ✅ |
-| 7 | [Findings register](findings-register.md) | Audit record, coverage, exclusions | 15-30m | ⬚ |
-| 8 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ⬚ |
-| 9 | [Close-out](COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |
+| 7 | [Findings register](09-findings-register.md) | Audit record, coverage, exclusions | 15-30m | ✅ |
+| 8 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ✅ |
+| 9 | [Close-out](09-COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ✅ |
 
 **Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
@@ -37,5 +37,5 @@ Migrates every legacy structured step `condition:` block with a plain comparison
 | Resource | Link |
 |----------|------|
 | Issue | [#338](https://github.com/m2ux/workflow-server/issues/338) |
-| PR | [#374](https://github.com/m2ux/workflow-server/pull/374) |
-| Work branch | [workflow/338-when-migration](https://github.com/m2ux/workflow-server/tree/workflow/338-when-migration) |
+| PR | [#378](https://github.com/m2ux/workflow-server/pull/378) |
+| Work branch | [workflow/corpus-when-migration](https://github.com/m2ux/workflow-server/tree/workflow/corpus-when-migration) |
