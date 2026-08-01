@@ -676,6 +676,18 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "design-philosophy-classification-and-path-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "needs_elicitation": true,
+                "needs_research": true,
+                "problem_complexity": "complex",
+                "skip_optional_activities": false
+              }
+            },
+            "optionId": "full-workflow",
+            "respondedAt": "2026-08-01T10:22:22.000Z"
+          },
           "start-work-package-pr-creation": {
             "effects": {
               "variablesSet": {
@@ -691,7 +703,7 @@
         ],
         "condition": "isDefault:design-philosophy",
         "currentActivity": "design-philosophy",
-        "currentTechnique": "github-cli-protocol::view-issue",
+        "currentTechnique": "scatter-gather",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -700,6 +712,27 @@
           }
         ],
         "deliveredContent": {
+          "worker-design-philosophy-PBEHLM": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
+            "bundle:scatter-gather": "972acb177d168c94",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:assumptions-review": "9ea3e2cb6fc19eb4",
+            "resource:deferred-items#template": "c4137fd96f194670",
+            "resource:design-framework": "8b988c342ec6d4c7",
+            "resource:design-framework#design-philosophy-artifact-template": "381198d1e364ff58",
+            "technique:analyse-challenge::run-loop": "bd60f65b9422a43b",
+            "technique:design-philosophy::classify": "93355f9306ada98b",
+            "technique:design-philosophy::define": "37de33dd3541dd5c",
+            "technique:design-philosophy::determine-path": "9af0dc0890dc075d",
+            "technique:design-philosophy::document": "3615eb3f2e26bab2",
+            "technique:review-assumptions::collect": "f79c5725888e0262",
+            "technique:review-assumptions::record": "d8609c38930657cb",
+            "technique:scatter-gather": "17c19c51954fcaea"
+          },
           "worker-start-wp-PBEHLM": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
             "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
@@ -2221,17 +2254,470 @@
             "activity": "design-philosophy",
             "timestamp": "2026-08-01T10:20:12.703Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 72906,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 4671,
+              "delivery": "full",
+              "stepId": "define-problem",
+              "techniqueId": "design-philosophy::define"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "stepId": "define-problem"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 5209,
+              "delivery": "full",
+              "stepId": "classify-problem",
+              "techniqueId": "design-philosophy::classify"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "stepId": "classify-problem"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 4700,
+              "delivery": "full",
+              "stepId": "determine-path",
+              "techniqueId": "design-philosophy::determine-path"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "stepId": "determine-path"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 3685,
+              "delivery": "full",
+              "stepId": "document-philosophy",
+              "techniqueId": "design-philosophy::document"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "stepId": "document-philosophy"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 5237,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 4438,
+              "delivery": "full",
+              "stepId": "create-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "stepId": "create-assumptions-log"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 7866,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-01T10:20:49.663Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 4671,
+              "delivery": "full",
+              "stepId": "define-problem",
+              "techniqueId": "design-philosophy::define"
+            },
+            "timestamp": "2026-08-01T10:21:04.478Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 5209,
+              "delivery": "full",
+              "stepId": "classify-problem",
+              "techniqueId": "design-philosophy::classify"
+            },
+            "timestamp": "2026-08-01T10:21:12.337Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 4700,
+              "delivery": "full",
+              "stepId": "determine-path",
+              "techniqueId": "design-philosophy::determine-path"
+            },
+            "timestamp": "2026-08-01T10:21:13.113Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 6002,
+              "delivery": "full",
+              "resourceId": "design-framework"
+            },
+            "timestamp": "2026-08-01T10:21:13.744Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "checkpoint": "classification-and-path-confirmed",
+            "timestamp": "2026-08-01T10:21:25.174Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "design-philosophy",
+            "checkpoint": "classification-and-path-confirmed",
+            "data": {
+              "optionId": "full-workflow"
+            },
+            "timestamp": "2026-08-01T10:22:22.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_complexity",
+              "source": "setVariable",
+              "value": "complex"
+            },
+            "timestamp": "2026-08-01T10:22:22.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_elicitation",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:22:22.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_research",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:22:22.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "skip_optional_activities",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:22:22.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 72906,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-01T10:22:44.274Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 4671,
+              "delivery": "full",
+              "stepId": "define-problem",
+              "techniqueId": "design-philosophy::define"
+            },
+            "timestamp": "2026-08-01T10:22:44.274Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 5209,
+              "delivery": "full",
+              "stepId": "classify-problem",
+              "techniqueId": "design-philosophy::classify"
+            },
+            "timestamp": "2026-08-01T10:22:44.274Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 4700,
+              "delivery": "full",
+              "stepId": "determine-path",
+              "techniqueId": "design-philosophy::determine-path"
+            },
+            "timestamp": "2026-08-01T10:22:44.274Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 3685,
+              "delivery": "full",
+              "stepId": "document-philosophy",
+              "techniqueId": "design-philosophy::document"
+            },
+            "timestamp": "2026-08-01T10:22:44.274Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 5237,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-01T10:22:44.274Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 4438,
+              "delivery": "full",
+              "stepId": "create-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-01T10:22:44.274Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 7866,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-01T10:22:44.274Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 2164,
+              "delivery": "full",
+              "resourceId": "design-framework#design-philosophy-artifact-template"
+            },
+            "timestamp": "2026-08-01T10:23:03.059Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 5764,
+              "delivery": "full",
+              "resourceId": "assumptions-review"
+            },
+            "timestamp": "2026-08-01T10:23:03.601Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 410,
+              "delivery": "full",
+              "resourceId": "deferred-items#template"
+            },
+            "timestamp": "2026-08-01T10:23:04.050Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 4355,
+              "delivery": "full",
+              "techniqueId": "scatter-gather"
+            },
+            "timestamp": "2026-08-01T10:23:46.140Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 4355,
+              "delivery": "full",
+              "techniqueId": "scatter-gather"
+            },
+            "timestamp": "2026-08-01T10:23:46.668Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 4355,
+              "delivery": "full",
+              "techniqueId": "scatter-gather"
+            },
+            "timestamp": "2026-08-01T10:23:46.811Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 7866,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-01T10:23:57.802Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 4355,
+              "delivery": "full",
+              "techniqueId": "scatter-gather"
+            },
+            "timestamp": "2026-08-01T10:24:08.216Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "chars": 4355,
+              "delivery": "full",
+              "techniqueId": "scatter-gather"
+            },
+            "timestamp": "2026-08-01T10:24:14.994Z",
+            "type": "technique_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 16,
+        "seq": 34,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785579612,
+        "ts": 1785579854,
         "variables": {
           "artifact_name": "",
           "artifact_publish_ref": "",
@@ -2295,13 +2781,13 @@
           "needs_cleanup": false,
           "needs_code_fixes": false,
           "needs_comprehension": true,
-          "needs_elicitation": false,
+          "needs_elicitation": true,
           "needs_further_discussion": false,
           "needs_github_issue_creation": false,
           "needs_individual_interview": false,
           "needs_issue_creation": false,
           "needs_plan_revision": false,
-          "needs_research": false,
+          "needs_research": true,
           "needs_simplification": false,
           "needs_strategic_fixes": false,
           "needs_test_improvements": false,
@@ -2312,6 +2798,7 @@
           "pr_number": "383",
           "pr_skipped": false,
           "pr_url": "https://github.com/m2ux/workflow-server/pull/383",
+          "problem_complexity": "complex",
           "project_type": "typescript-node",
           "provenance_log_path": "",
           "push_remote": "origin",
