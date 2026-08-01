@@ -725,11 +725,6 @@
     {
       "sessionIndex": "PBEHLM",
       "state": {
-        "activeCheckpoint": {
-          "activityId": "lean-coding-audit",
-          "checkpointId": "audit-findings-confirmed",
-          "yieldedAt": "2026-08-01T11:13:22.811Z"
-        },
         "agentId": "orchestrator",
         "checkpointResponses": {
           "design-philosophy-classification-and-path-confirmed": {
@@ -743,6 +738,16 @@
             },
             "optionId": "full-workflow",
             "respondedAt": "2026-08-01T10:22:22.000Z"
+          },
+          "lean-coding-audit-audit-findings-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "audit_confirmed": true,
+                "needs_simplification": true
+              }
+            },
+            "optionId": "apply-simplifications",
+            "respondedAt": "2026-08-01T11:17:06.000Z"
           },
           "plan-prepare-approach-confirmed": {
             "optionId": "confirmed",
@@ -789,11 +794,12 @@
           "implementation-analysis",
           "plan-prepare",
           "assumptions-review",
-          "implement"
+          "implement",
+          "lean-coding-audit"
         ],
-        "condition": "isDefault",
-        "currentActivity": "lean-coding-audit",
-        "currentTechnique": "scatter-gather",
+        "condition": "isDefault:post-impl-review",
+        "currentActivity": "post-impl-review",
+        "currentTechnique": "ponytail/review-over-engineering",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -839,6 +845,21 @@
             "id": "provenance_log",
             "name": "provenance-log.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/08-provenance-log.md"
+          },
+          {
+            "id": "debt_ledger",
+            "name": "debt-ledger.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/09-debt-ledger.md"
+          },
+          {
+            "id": "lean_change",
+            "name": "lean-change.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/09-lean-change.md"
+          },
+          {
+            "id": "review_findings",
+            "name": "code-review.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/09-code-review.md"
           }
         ],
         "deliveredContent": {
@@ -879,8 +900,9 @@
             "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
             "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
             "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "technique:ponytail/apply-ladder": "ff9e107b8ae166c2",
             "technique:ponytail/harvest-debt": "eeae192617658e25",
-            "technique:ponytail/review-over-engineering": "13aabd4c079068b8"
+            "technique:ponytail/review-over-engineering": "5fee8b42dac017f9"
           },
           "plan-prepare-worker": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -6173,17 +6195,265 @@
             "checkpoint": "audit-findings-confirmed",
             "timestamp": "2026-08-01T11:13:22.811Z",
             "type": "checkpoint_reached"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "checkpoint": "audit-findings-confirmed",
+            "data": {
+              "optionId": "apply-simplifications"
+            },
+            "timestamp": "2026-08-01T11:17:06.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "name": "audit_confirmed",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-01T11:17:06.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "name": "needs_simplification",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-01T11:17:06.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "chars": 37413,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-01T11:17:47.646Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "chars": 5168,
+              "delivery": "full",
+              "stepId": "review-over-engineering",
+              "techniqueId": "ponytail/review-over-engineering"
+            },
+            "timestamp": "2026-08-01T11:17:47.646Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "chars": 4130,
+              "delivery": "full",
+              "stepId": "harvest-debt",
+              "techniqueId": "ponytail/harvest-debt"
+            },
+            "timestamp": "2026-08-01T11:17:47.646Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "chars": 5358,
+              "delivery": "full",
+              "stepId": "apply-simplifications",
+              "techniqueId": "ponytail/apply-ladder"
+            },
+            "timestamp": "2026-08-01T11:17:53.267Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "stepId": "apply-simplifications"
+            },
+            "timestamp": "2026-08-01T11:17:53.267Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "chars": 5116,
+              "delivery": "full",
+              "stepId": "re-review-over-engineering",
+              "techniqueId": "ponytail/review-over-engineering"
+            },
+            "timestamp": "2026-08-01T11:20:02.038Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "stepId": "re-review-over-engineering"
+            },
+            "timestamp": "2026-08-01T11:20:02.038Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "name": "audit_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "name": "needs_simplification",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "name": "safety_floor_cleared",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "name": "has_debt_markers",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "name": "review_findings",
+              "source": "variables_changed",
+              "value": "Lean already. Ship. net: 0 after getVar trim"
+            },
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "name": "debt_ledger",
+              "source": "variables_changed",
+              "value": "No ponytail: debt. Clean ledger."
+            },
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "name": "lean_change",
+              "source": "variables_changed",
+              "value": "Removed unused walker getVar (−8 lines)"
+            },
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "stepId": "review-over-engineering"
+            },
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "stepId": "harvest-debt"
+            },
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "stepId": "audit-findings-confirmed"
+            },
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "stepId": "apply-simplifications"
+            },
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "stepId": "re-review-over-engineering"
+            },
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "stepId": "validate-safety-floor"
+            },
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "stepId": "reassess-simplification"
+            },
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "post-impl-review",
+            "timestamp": "2026-08-01T11:20:21.460Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 83,
+        "seq": 89,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785582802,
+        "ts": 1785583221,
         "variables": {
           "analysis_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/05-implementation-analysis.md",
           "artifact_name": "",
@@ -6194,7 +6464,7 @@
           "assumption_resolved_inline": false,
           "assumptions_log": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/02-assumptions-log.md",
           "attestation_option": "certify",
-          "audit_confirmed": false,
+          "audit_confirmed": true,
           "awaiting_review": false,
           "block_line_range": "",
           "block_path": "",
@@ -6217,6 +6487,7 @@
           "context_scope_uncertain": false,
           "current_block_index": 0,
           "current_branch": "",
+          "debt_ledger": "No ponytail: debt. Clean ledger.",
           "design_philosophy_doc": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/02-design-philosophy.md",
           "elicitation_complete": true,
           "existing_pr_number": "",
@@ -6247,6 +6518,7 @@
           "issue_type_ambiguous": false,
           "issue_url": "https://github.com/m2ux/workflow-server/issues/379",
           "jira_issue_key": "",
+          "lean_change": "Removed unused walker getVar (−8 lines)",
           "mark_progress_na": false,
           "needs_cleanup": false,
           "needs_code_fixes": false,
@@ -6283,6 +6555,7 @@
           "research_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/04-kb-research.md",
           "resign_unsigned_commits_requested": false,
           "review_comments_summary": "",
+          "review_findings": "Lean already. Ship. net: 0 after getVar trim",
           "review_mode_ambiguous": false,
           "review_passed": false,
           "review_posted": false,
@@ -6292,7 +6565,7 @@
           "review_type": "",
           "reviewed_code_base_url": "",
           "run_local_validation": false,
-          "safety_floor_cleared": false,
+          "safety_floor_cleared": true,
           "skip_architecture_summary": false,
           "skip_assumption_review": false,
           "skip_optional_activities": false,
