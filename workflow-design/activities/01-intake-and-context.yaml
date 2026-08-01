@@ -21,17 +21,7 @@ steps:
         bare_filename: structural-inventory.md
         artifact_content: structural_inventory
         target_dir: planning_folder_path
-    condition:
-      type: or
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: ==
-          value: update
-        - type: simple
-          variable: operation_type
-          operator: ==
-          value: review
+    when: operation_type == "update" || operation_type == "review"
   - kind: checkpoint
     id: design-intent-batch
     condition:
@@ -88,37 +78,13 @@ steps:
             intent_needs_confirmation: false
   - kind: action
     id: announce-certain-intent
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: intent_needs_confirmation
-          operator: ==
-          value: false
-        - type: simple
-          variable: update_seeded_from_review
-          operator: "!="
-          value: true
-        - type: simple
-          variable: operation_type
-          operator: "!="
-          value: review
+    when: intent_needs_confirmation == false && update_seeded_from_review != true && operation_type != 'review'
     actions:
       - action: message
         message: "Classified as a {operation_type} operation for workflow `{workflow_id}` — proceeding without Gate 1."
   - kind: action
     id: announce-certain-review-scope
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: ==
-          value: review
-        - type: simple
-          variable: intent_needs_confirmation
-          operator: ==
-          value: false
+    when: operation_type == 'review' && intent_needs_confirmation == false
     actions:
       - action: set
         target: review_scope_confirmed
@@ -127,31 +93,19 @@ steps:
         message: "Compliance review target set: {target_workflow_ids} ([structural inventory]({structural_inventory_path}))."
   - kind: action
     id: announce-review-seeded-update
-    condition:
-      type: simple
-      variable: update_seeded_from_review
-      operator: ==
-      value: true
+    when: update_seeded_from_review == true
     actions:
       - action: message
         message: "Update seeded from compliance review — mode is update; findings in the [compliance report]({report_path}) are the change specification."
   - kind: action
     id: announce-headless
-    condition:
-      type: simple
-      variable: headless_mode
-      operator: ==
-      value: true
+    when: headless_mode == true
     actions:
       - action: message
         message: "Headless by default — soft mid-flow gates auto-resolve. Gate 2 (`approve-to-commit`) and safety gaps stay interactive. Say \"interactive\", \"not headless\", or \"with checkpoints\" to opt out."
   - kind: action
     id: announce-interactive
-    condition:
-      type: simple
-      variable: headless_mode
-      operator: ==
-      value: false
+    when: headless_mode == false
     actions:
       - action: message
         message: "Interactive mode — soft mid-flow gates may present AskQuestion. Gate 2 (`approve-to-commit`) and safety gaps stay interactive."
@@ -163,11 +117,7 @@ steps:
         entity_context: "entity_title={workflow_id}; entity_type={operation_type}; status=Planning"
         seed_profile: workflow-design/readme-seed
         operation_type: "{operation_type}"
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: technique
     id: context-loading
     technique: context-loading
@@ -187,11 +137,7 @@ steps:
         bare_filename: applicable-constructs.md
         artifact_content: applicable_constructs
         target_dir: planning_folder_path
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: create
+    when: operation_type == 'create'
   - kind: technique
     id: present-problem-overview
     technique:
@@ -202,18 +148,10 @@ steps:
     actions:
       - action: message
         message: "Problem Overview for `{workflow_id}` — plain-language summary ([planning README]({planning_folder_path}/README.md#problem-overview))"
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: action
     id: auto-confirm-literacy
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
     actions:
       - action: set
         target: format_literacy_confirmed
@@ -223,11 +161,7 @@ steps:
         value: true
   - kind: action
     id: clear-review-seed-flag
-    condition:
-      type: simple
-      variable: update_seeded_from_review
-      operator: ==
-      value: true
+    when: update_seeded_from_review == true
     actions:
       - action: set
         target: update_seeded_from_review

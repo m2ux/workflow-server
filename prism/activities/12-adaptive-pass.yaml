@@ -15,22 +15,14 @@ steps:
       name: adaptive-analysis::stage-2-l12
       inputs:
         target_content: "{target}"
-    condition:
-      type: simple
-      variable: adaptive_signal_quality
-      operator: ==
-      value: insufficient
+    when: adaptive_signal_quality == 'insufficient'
   - kind: technique
     id: run-stage-3
     technique:
       name: adaptive-analysis::stage-3-full
       inputs:
         target_content: "{target}"
-    condition:
-      type: simple
-      variable: adaptive_signal_quality
-      operator: ==
-      value: insufficient
+    when: adaptive_signal_quality == 'insufficient'
   - kind: action
     id: collect-paths
     actions:

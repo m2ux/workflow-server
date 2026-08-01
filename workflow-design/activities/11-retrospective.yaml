@@ -7,11 +7,7 @@ steps:
   - kind: technique
     id: create-completion-doc
     technique: create-completion-doc
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: technique
     id: persist-completion-doc
     technique:
@@ -20,11 +16,7 @@ steps:
         bare_filename: completion.md
         artifact_content: completion_document
         target_dir: planning_folder_path
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: review
+    when: operation_type != 'review'
   - kind: technique
     id: conduct-retrospective
     technique: conduct-retrospective
@@ -42,11 +34,7 @@ steps:
       name: work-package::manage-git::remove-worktree
       inputs:
         component_name: workflows
-    condition:
-      type: simple
-      variable: worktree_created
-      operator: ==
-      value: true
+    when: worktree_created == true
 outcome:
   - A completion summary records what the session delivered, the key design decisions and alternatives rejected, and known limitations
   - A session retrospective captures friction points and prioritized workflow improvements before the work ends

@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.18.0
+version: 1.19.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 required: true
@@ -45,11 +45,7 @@ steps:
     variable: current_block_index
     over: flagged_block_indices
     maxIterations: 50
-    condition:
-      type: simple
-      variable: has_flagged_blocks
-      operator: ==
-      value: true
+    when: has_flagged_blocks == true
     steps:
       - kind: checkpoint
         id: block-interview#{current_block_index}
@@ -79,20 +75,10 @@ steps:
       name: prism/structural-analysis
       inputs:
         findings_destination: code-review.md
-    condition:
-      type: not
-      condition:
-        type: simple
-        variable: problem_complexity
-        operator: ==
-        value: complex
+    when: problem_complexity != 'complex'
   - kind: action
     id: dispatch-prism
-    condition:
-      type: simple
-      variable: problem_complexity
-      operator: ==
-      value: complex
+    when: problem_complexity == 'complex'
     actions: []
   - kind: technique
     id: test-suite-review
@@ -139,11 +125,7 @@ steps:
     id: architecture-summary
     technique: summarize-architecture
     required: false
-    condition:
-      type: simple
-      variable: skip_architecture_summary
-      operator: "!="
-      value: true
+    when: skip_architecture_summary != true
   - kind: technique
     id: classify-and-route-findings
     technique:

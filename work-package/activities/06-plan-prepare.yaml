@@ -82,17 +82,7 @@ steps:
       name: update-pr::render
       inputs:
         pr_template_variant: initial
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
+    when: is_review_mode != true && stealth_mode != true
   - kind: checkpoint
     id: approach-confirmed
     condition:

@@ -62,21 +62,7 @@ steps:
         expected_outputs: domain_map
   - kind: technique
     id: write-report
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: dispatch_complete
-          operator: ==
-          value: true
-        - type: simple
-          variable: verification_complete
-          operator: ==
-          value: true
-        - type: simple
-          variable: merge_complete
-          operator: ==
-          value: true
+    when: dispatch_complete == true && verification_complete == true && merge_complete == true
     technique:
       name: write-report
       inputs:

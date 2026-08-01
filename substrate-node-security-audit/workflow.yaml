@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 4.19.0
+version: 4.20.0
 title: Security Audit Workflow
 description: Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases.
 author: m2ux

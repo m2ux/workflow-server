@@ -27,11 +27,7 @@ steps:
     variable: current_step
     over: execution_plan.steps
     maxIterations: 50
-    condition:
-      type: simple
-      variable: plan_needs_replan
-      operator: "!="
-      value: true
+    when: plan_needs_replan != true
     steps:
       - kind: technique
         id: execute-step

@@ -30,11 +30,7 @@ steps:
   - kind: technique
     id: map-trust-boundaries
     technique: compose-audit-prompt::map-trust-boundaries
-    condition:
-      type: simple
-      variable: gitnexus_available
-      operator: ==
-      value: true
+    when: gitnexus_available == true
   - kind: technique
     id: map-audit-domains
     technique: compose-audit-prompt::map-audit-domains

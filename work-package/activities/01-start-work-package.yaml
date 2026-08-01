@@ -14,17 +14,7 @@ steps:
     technique: review-mode-detection
   - kind: action
     id: announce-derived-review-mode
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: ==
-          value: true
-        - type: simple
-          variable: review_mode_ambiguous
-          operator: "!="
-          value: true
+    when: is_review_mode == true && review_mode_ambiguous != true
     actions:
       - action: message
         message: "Review mode derived from the request."
@@ -139,18 +129,10 @@ steps:
   - kind: technique
     id: ingest-prior-feedback
     technique: review-existing-feedback
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+    when: is_review_mode == true
   - kind: action
     id: seed-review-mode-outcomes
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+    when: is_review_mode == true
     actions:
       - action: set
         target: target_workflow_outcomes
@@ -237,11 +219,7 @@ steps:
       name: atlassian-operations::get-jira-issue
       inputs:
         issueIdOrKey: "{issue_number}"
-    condition:
-      type: simple
-      variable: issue_platform
-      operator: ==
-      value: jira
+    when: issue_platform == 'jira'
     actions:
       - action: validate
         target: cloudId != null
@@ -252,22 +230,14 @@ steps:
       name: github-cli-protocol::view-issue
       inputs:
         issue_identifier: "{issue_number}"
-    condition:
-      type: simple
-      variable: issue_platform
-      operator: ==
-      value: github
+    when: issue_platform == 'github'
   - kind: technique
     id: search-github-issue
     technique:
       name: github-cli-protocol::list-issues
       inputs:
         filters: --search '{jira_issue_key}' --json number,title,url --limit 5
-    condition:
-      type: simple
-      variable: issue_platform
-      operator: ==
-      value: jira
+    when: issue_platform == 'jira'
     actions:
       - action: set
         target: github_issue_found
@@ -319,11 +289,7 @@ steps:
       name: create-issue
       inputs:
         issue_platform: github
-    condition:
-      type: simple
-      variable: needs_github_issue_creation
-      operator: ==
-      value: true
+    when: needs_github_issue_creation == true
   - kind: checkpoint
     id: jira-project-selection
     condition:
@@ -348,21 +314,7 @@ steps:
   - kind: technique
     id: derive-issue-type
     technique: issue-type-detection
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: needs_issue_creation
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_skipped
-          operator: "!="
-          value: true
+    when: is_review_mode != true && needs_issue_creation != true && issue_skipped != true
   - kind: checkpoint
     id: issue-type-selection
     condition:
@@ -452,11 +404,7 @@ steps:
   - kind: technique
     id: create-issue
     technique: create-issue
-    condition:
-      type: simple
-      variable: needs_issue_creation
-      operator: ==
-      value: true
+    when: needs_issue_creation == true
   - kind: checkpoint
     id: platform-selection
     condition:
@@ -489,34 +437,14 @@ steps:
       inputs:
         issueIdOrKey: "{issue_number}"
         fields: "{ assignee: { accountId: {accountId} } }"
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: issue_skipped
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_platform
-          operator: ==
-          value: jira
+    when: issue_skipped != true && issue_platform == 'jira'
   - kind: technique
     id: transition-issue-jira
     technique:
       name: atlassian-operations::transition-jira-issue
       inputs:
         issueIdOrKey: "{issue_number}"
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: issue_skipped
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_platform
-          operator: ==
-          value: jira
+    when: issue_skipped != true && issue_platform == 'jira'
   - kind: technique
     id: assign-issue-github
     technique:
@@ -524,17 +452,7 @@ steps:
       inputs:
         number: "{issue_number}"
         assignee: "@me"
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: issue_skipped
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_platform
-          operator: ==
-          value: github
+    when: issue_skipped != true && issue_platform == 'github'
   - kind: action
     id: bind-planning-folder-path
     actions:
@@ -567,33 +485,21 @@ steps:
       name: naming-conventions
       inputs:
         issue_title: "{issue_title}"
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+    when: is_review_mode != true
   - kind: technique
     id: compute-canonical-target-path
     technique: naming-conventions
   - kind: technique
     id: create-component-worktree
     technique: manage-git::create-worktree
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+    when: is_review_mode != true
   - kind: technique
     id: create-review-worktree
     technique:
       name: manage-git::create-worktree
       inputs:
         create_branch: false
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
+    when: is_review_mode == true
   - kind: technique
     id: check-branch
     technique: manage-git::verify-feature-branch
@@ -607,11 +513,7 @@ steps:
       name: github-cli-protocol::list-prs
       inputs:
         filters: --head {branch_name} --json number,url --limit 1
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: "!="
-      value: true
+    when: is_review_mode != true
     actions:
       - action: set
         target: pr_exists
@@ -627,17 +529,7 @@ steps:
         description: When use_existing_pr was set true by a pr_number/existing_pr_number match, bind pr_number from existing_pr_number; otherwise leave unchanged
   - kind: action
     id: announce-auto-use-existing-pr
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: pr_exists
-          operator: ==
-          value: true
-        - type: simple
-          variable: use_existing_pr
-          operator: ==
-          value: true
+    when: pr_exists == true && use_existing_pr == true
     actions:
       - action: message
         message: "Continuing with existing PR #{existing_pr_number} (already bound for this branch)."
@@ -710,21 +602,7 @@ steps:
       inputs:
         issue_number: "{issue_number}"
         issue_platform: "{issue_platform}"
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: use_existing_pr
-          operator: ==
-          value: false
-        - type: simple
-          variable: pr_skipped
-          operator: "!="
-          value: true
+    when: is_review_mode != true && use_existing_pr == false && pr_skipped != true
     actions:
       - action: set
         target: pr_exists

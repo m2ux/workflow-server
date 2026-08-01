@@ -30,11 +30,7 @@ steps:
   - kind: technique
     id: synthesize-update-specification
     technique: synthesize-update-specification
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: update
+    when: operation_type == 'update'
   - kind: loop
     id: dimension-elicitation-loop
     name: Dimension Elicitation Loop
@@ -42,11 +38,7 @@ steps:
     variable: current_dimension
     over: design_dimensions
     maxIterations: 12
-    condition:
-      type: simple
-      variable: operation_type
-      operator: "!="
-      value: update
+    when: operation_type != 'update'
     steps:
       - kind: technique
         id: prepare-dimension
@@ -113,11 +105,7 @@ steps:
         technique: reconcile-design-assumptions
   - kind: action
     id: announce-open-judgements
-    condition:
-      type: simple
-      variable: has_open_assumptions
-      operator: ==
-      value: true
+    when: has_open_assumptions == true
     actions:
       - action: message
         message: "Open design judgements remain after reconcile — batched into Gate 2 (`approve-to-commit`), not interviewed mid-flow."

@@ -7,11 +7,7 @@ steps:
   - kind: technique
     id: impact-analysis
     technique: impact-analysis
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: update
+    when: operation_type == 'update'
   - kind: technique
     id: persist-impact-analysis
     technique:
@@ -20,18 +16,10 @@ steps:
         bare_filename: impact-analysis.md
         artifact_content: impact_analysis
         target_dir: planning_folder_path
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: update
+    when: operation_type == 'update'
   - kind: action
     id: impact-no-removals
-    condition:
-      type: simple
-      variable: removal_count
-      operator: ==
-      value: 0
+    when: removal_count == 0
     actions:
       - action: message
         message: "Impact analysis complete — no content removals flagged ([impact analysis]({impact_analysis_path}))."

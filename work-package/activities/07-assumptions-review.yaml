@@ -26,59 +26,21 @@ steps:
       name: review-assumptions::interview
       inputs:
         assembly_mode: batch
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: has_open_assumptions
-          operator: ==
-          value: true
+    when: is_review_mode != true && has_open_assumptions == true
   - kind: checkpoint
     id: residual-assumption-batch
     ref: assumption-interview
   - kind: technique
     id: record-batch-decision
     technique: review-assumptions::record
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: has_open_assumptions
-          operator: ==
-          value: true
-        - type: simple
-          variable: needs_individual_interview
-          operator: "!="
-          value: true
+    when: is_review_mode != true && has_open_assumptions == true && needs_individual_interview != true
   - kind: loop
     id: assumption-interview-loop
     name: Individual Assumption Interview Loop
     loopType: forEach
     variable: current_assumption
     over: open_assumptions
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: needs_individual_interview
-          operator: ==
-          value: true
-        - type: simple
-          variable: has_open_assumptions
-          operator: ==
-          value: true
+    when: is_review_mode != true && needs_individual_interview == true && has_open_assumptions == true
     steps:
       - kind: technique
         id: present-assumption
@@ -124,29 +86,7 @@ steps:
   - kind: technique
     id: post-summary-jira
     technique: atlassian-operations::comment-jira-issue
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_platform
-          operator: ==
-          value: jira
-        - type: simple
-          variable: has_deferred_assumptions
-          operator: ==
-          value: true
-        - type: simple
-          variable: post_jira_comment
-          operator: "!="
-          value: false
+    when: stealth_mode != true && is_review_mode != true && issue_platform == 'jira' && has_deferred_assumptions == true && post_jira_comment != false
   - kind: checkpoint
     id: post-summary-review
     condition:
@@ -184,25 +124,7 @@ steps:
   - kind: technique
     id: post-summary-github
     technique: github-cli-protocol::comment-issue
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: stealth_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: simple
-          variable: issue_platform
-          operator: ==
-          value: github
-        - type: simple
-          variable: has_deferred_assumptions
-          operator: ==
-          value: true
+    when: stealth_mode != true && is_review_mode != true && issue_platform == 'github' && has_deferred_assumptions == true
 transitions:
   - to: codebase-comprehension
     condition:

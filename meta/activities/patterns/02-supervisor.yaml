@@ -26,11 +26,7 @@ steps:
         expected_ids: worker_briefs
   - kind: action
     id: announce-escalation
-    condition:
-      type: simple
-      variable: lane_id
-      operator: ==
-      value: escalate
+    when: lane_id == 'escalate'
     actions:
       - action: message
         message: "Supervisor escalation — no lane matched. Rationale: {classification_rationale}"
