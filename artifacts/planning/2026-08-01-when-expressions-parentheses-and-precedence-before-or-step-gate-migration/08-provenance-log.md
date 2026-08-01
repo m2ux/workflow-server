@@ -9,3 +9,9 @@
 | T5 | Cursor Agent | GPT-class coding agent | implement | mixed | Added `scripts/check-when-expression.ts`, registered in guards/package.json as `check:when` |
 | T6 | Cursor Agent | GPT-class coding agent | implement | mixed | Migrated four OR keep-sites to parenthesized `when`; bumped workflows submodule pin |
 | T7 | Cursor Agent | GPT-class coding agent | implement | mixed | Stealth isolation guard imports shared when-expression module |
+
+## Attestation
+
+- **Timestamp:** 2026-08-01T14:58:47Z
+- **Certifier:** Mike Clay <mike.clay@shielded.io>
+- **Option:** certify
