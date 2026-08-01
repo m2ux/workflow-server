@@ -33,7 +33,7 @@ True when any surviving finding is `Critical` severity: a schema-invalid or stru
 
 ### has_coverage_gap
 
-True when any row of `{coverage_ledger}` carries status `blocked`. Rows carrying `not-applicable` are evidenced negatives and do not set it.
+True when any row of `{coverage_ledger}` carries status `blocked`, or when any row carries status `walked` while intersecting the change surface yet omits the required `evidence` list. Rows carrying `not-applicable` are evidenced negatives and do not set it.
 
 ## Protocol
 
@@ -53,6 +53,7 @@ True when any row of `{coverage_ledger}` carries status `blocked`. Rows carrying
 ### 4. Cross-Check the Coverage and Count the Surface
 
 - Check `{coverage_ledger}` against the enumeration inventory the walking operation holds — [Enumerate the Criteria Units](./audit-canon.md#1-enumerate-the-criteria-units) — and declare no inventory here
+- Treat a `walked` row that reaches changed files without `evidence` as a coverage gap (same weight as `blocked`)
 - Emit `{verified_findings}`, `{open_finding_count}`, `{has_critical_finding}` and `{has_coverage_gap}` at the shapes their Output declarations state
 
 ## Rules
@@ -68,3 +69,7 @@ The re-derivation reads the cited construct and nothing else. The originating pa
 ### remediation-needs-a-re-derived-claim
 
 Do not emit a remediation instruction for a row whose claim has not been re-derived. A withdrawn or unexamined finding drives no edit, whatever its original severity said.
+
+### empty-evidence-is-a-gap
+
+A coverage row marked `walked` without the evidence list [walked-requires-evidence](./audit-canon.md#walked-requires-evidence) demands sets `{has_coverage_gap}` true. Narrative completeness is not coverage.
