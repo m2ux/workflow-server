@@ -39,6 +39,7 @@ import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
 import { composeActivityTechnique } from '../src/loaders/technique-loader.js';
 import { stringifyForResponse } from '../src/utils/serialization.js';
 import type { Activity, Step, Condition } from '../src/schema/index.js';
+import { evaluateWhenExpression, parseWhen } from '../src/schema/when-expression.js';
 import { requireRootOrExit } from './guard-protocol.js';
 
 /* ----------------------------------- CLI ----------------------------------- */
@@ -112,21 +113,13 @@ function evalCondition(c: Condition | undefined, bag: Bag): boolean | undefined 
   return undefined;
 }
 
-/** Evaluate a `when` expression of the simple `a == b [&& c != d ...]` shape the corpus uses. */
+/** Evaluate a `when` expression via the shared reference dialect. Unparseable
+ * expressions return undefined (reachable) so the guard stays conservative. */
 function evalWhen(expr: string | undefined, bag: Bag): boolean | undefined {
   if (!expr) return undefined;
-  const clauses = expr.split('&&').map((s) => s.trim());
-  let result = true;
-  for (const clause of clauses) {
-    const m = /^([a-z_][a-z0-9_.]*)\s*(==|!=)\s*(.+)$/.exec(clause);
-    if (!m) return undefined;
-    const raw = m[3]!.trim().replace(/^['"]|['"]$/g, '');
-    const value: unknown = raw === 'true' ? true : raw === 'false' ? false : raw;
-    const got = evalCondition({ type: 'simple', variable: m[1]!, operator: m[2] as '==', value: value as never }, bag);
-    if (got === undefined) return undefined;
-    result &&= got;
-  }
-  return result;
+  const parsed = parseWhen(expr);
+  if (!parsed.ok) return undefined;
+  return evaluateWhenExpression(expr, bag);
 }
 
 /** A step is EXCLUDED (provably not executed) when any of its own or enclosing gates

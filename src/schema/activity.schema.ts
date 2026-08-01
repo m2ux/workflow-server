@@ -71,7 +71,9 @@ export type TechniqueBinding = z.infer<typeof TechniqueBindingSchema>;
 // lives in the bound technique's protocol (AP-64), so no step kind carries a `description`.
 // `required` is declared only when false — omitting it means the step is required (the default).
 const stepCommonFields = {
-  when: z.string().optional().describe('Inline boolean expression that gates this step. Examples: "has_saved_state == true", "is_monorepo == true", "client_workflow_completed == false". Evaluated by the executing agent against current variable state; the server never evaluates gates. On a checkpoint step, only `condition` (not `when`) enables condition_not_met dismissal.'),
+  when: z.string().optional().describe(
+    'Inline boolean expression that gates this step. Operators: ==, !=, >, <, >=, <=, bare identifier truthiness, unary !, &&, ||, and parentheses. Precedence (C-style, tightest first): () > ! > comparisons > && > ||. Mixing && and || at the same nesting depth requires parentheses. Examples: "has_saved_state == true", "remediation_round > 0", "a == true && b != false", "(a && b) || c", "is_review_mode != true && (problem_complexity == \\"moderate\\" || problem_complexity == \\"complex\\")". Evaluated by the executing agent against current variable state; the server never evaluates gates. Mechanical nets (e2e walker, guards) use the shared reference evaluator and treat invalid expressions as false (step does not run). On a checkpoint step, only `condition` (not `when`) enables condition_not_met dismissal.',
+  ),
   condition: ConditionSchema.optional().describe('LEGACY: Structured condition that must be true for this step to execute, evaluated by the executing agent. Prefer the `when` inline expression for simple comparisons — except on a checkpoint step, where the `condition` field is what makes the checkpoint dismissible via respond_checkpoint condition_not_met.'),
   required: z.literal(false).optional().describe('Declared only when false (an optional step). An omitted `required` means the step is required; `required: true` is redundant and rejected (AP-64). A worker hint — the server does not check it.'),
 };
