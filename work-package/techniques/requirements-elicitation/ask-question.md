@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Single-question unit of the domain-iteration elicitation loop.
 
 ### current_domain
 
-The question domain for this iteration; one question is posed from it per [requirements-elicitation](../../resources/requirements-elicitation.md).
+The question domain for this iteration; one question is posed from it per [requirements-elicitation](../../resources/requirements-elicitation.md#question-domain-reference).
 
 ### elicitation_log
 
@@ -32,7 +32,7 @@ Boolean signal — set true when the user signals completion; otherwise elicitat
 
 ### 1. Ask Question
 
-- Pose one question from the current domain (per [requirements-elicitation](../../resources/requirements-elicitation.md))
+- Pose one question from the current domain (per [requirements-elicitation](../../resources/requirements-elicitation.md#question-domain-reference))
 - Record the response and adapt the follow-up based on the answer
 - Skip irrelevant follow-ups; probe deeper when needed
 - Skip option always available — user can say 'skip' to move to the next question

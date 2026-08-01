@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -21,11 +21,11 @@ Optional `--features` flags (empty string when none)
 
 ### resource-budget
 
-Every cargo invocation MUST use one of these operations. Do NOT call bare `cargo ...` from technique protocols. The inline budget — `nice -n 19`, `CARGO_BUILD_JOBS=\${CARGO_BUILD_JOBS:-4}`, `RUST_TEST_THREADS=\${RUST_TEST_THREADS:-4}`, `SKIP_WASM_BUILD=1` (non-release only) — is what prevents host hang on ≤32 GiB hosts. Override caps via env on larger hosts.
+Every cargo invocation MUST use one of these operations. Do NOT call bare `cargo ...` from technique protocols. The inline budget — env assignments before `nice -n 19`, `CARGO_BUILD_JOBS=\${CARGO_BUILD_JOBS:-4}`, `SKIP_WASM_BUILD=1` (non-release only) — is what prevents host hang on ≤32 GiB hosts. Override caps via env on larger hosts. Test operations also apply `RUST_TEST_THREADS=\${RUST_TEST_THREADS:-4}` (see [test](./test.md)).
 
 ### foreground-only
 
-Cargo operations MUST run synchronously in the foreground of the caller. Never invoke them with `run_in_background` inside a worker — when the worker exits, the OS process group is killed and the build is lost (this is what forced the worker re-spawn pattern observed in past runs). If the wall-clock budget cannot accommodate a foreground run, the orchestrator (not the worker) owns the invocation; spawn a new worker only AFTER the cargo result is in hand.
+Cargo operations MUST run as foreground shell invocations owned by the caller. Never dispatch them with `run_in_background` inside a worker — when the worker exits, the OS process group is killed and the build is lost. Concurrent foreground shells in one caller (as [run-suite](./run-suite.md) does) stay within this rule; backgrounded worker dispatches do not. If the wall-clock budget cannot accommodate a foreground run, the orchestrator (not the worker) owns the invocation; spawn a new worker only AFTER the cargo result is in hand.
 
 ### scope-narrow-then-wide
 

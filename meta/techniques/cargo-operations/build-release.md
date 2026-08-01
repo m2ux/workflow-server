@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -25,7 +25,7 @@ The optimized release binary for `{build_scope}` AND the runtime wasm artifact, 
 
 ## Protocol
 
-1. `nice -n 19 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} cargo build --release {build_scope} {features}`
+1. `CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} nice -n 19 cargo build --release {build_scope} {features}`
    - If the build runs out of memory (release link/LTO plus the nested wasm build together exceed available RAM), halve `CARGO_BUILD_JOBS`; on tight hosts, run `-p <crate>` for the binary first, then a separate workspace pass for the runtime.
 
 ## Rules
