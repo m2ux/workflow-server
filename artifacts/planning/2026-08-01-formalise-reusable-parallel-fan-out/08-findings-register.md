@@ -24,6 +24,7 @@
 | High | AP-114 pass-orchestration-in-technique | `cargo-operations/run-suite.md` Protocol `Apply [unit-fan-out]`; cargo `TECHNIQUE.md` multi-op rule | Protocol Apply of strategy technique for suite fan-out | quality-review false-negative; redesign | **addressed** — run-suite is pure combine over `unit_results`; validate activity steps bind unit-fan-out then run-suite |
 | High | AP-68 technique-stage-agnostic | `run-suite.md` rule `activity-owns-fan-out`; `unit-fan-out.md` Protocol/Rules naming binding activity; cargo `TECHNIQUE.md`; `scatter-gather.md` | Technique prose named activity graph actors / sibling-step ownership | user catch after AP-114 redesign | **addressed** — activity-blind I/O and peer-contract cites only; rule renamed `combine-only` |
 | Medium | AP-141 container-names-inheriting-ops | cargo `TECHNIQUE.md` `fmt-uses-only-nice`; multi-op rule citing `run-suite` | Group contract named/carved-out inheriting child ops | user catch | **addressed** — `resource-budget` by invocation class; child carve-out deleted; multi-op names no descendant |
+| High | AP-142 technique-references-technique | `scatter-gather` Protocol cites harness-compat/variable-binding; `independent-lenses` Protocol cites gitnexus-operations; scope Rules naming peer owners | Technique→technique refs on PR surface | user catch (generalised hard rule) | **addressed on PR surface** — harness/tool prose; graph tools unnamed; bare scope; canon AP-142. Corpus-wide debt out of scope |
 
 **Changed files (redesign + AP-68 scrub):**
 

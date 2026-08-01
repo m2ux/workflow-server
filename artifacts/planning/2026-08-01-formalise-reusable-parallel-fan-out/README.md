@@ -6,7 +6,7 @@
 
 ## 🎯 Executive Summary
 
-Formalise parallel fan-out as named contracts bound in **activity structure** (**unit-fan-out** for process/shell units; **scatter-gather** / **spawn-concurrent** for agents). Techniques do not Protocol-Apply techniques for work (AP-114), stay **activity-blind** (AP-68), and containers do not name inheriting descendants (AP-141). `run-suite` is pure combine; validate activity steps bind fan-out then combine. Canon: **§20**, **§27**, **§33**, **AP-68**, **AP-140**, **AP-141**. False-negative audit: [10-ap114-redesign-note.md](10-ap114-redesign-note.md). Primary bag `meta`; co-edits: workflow-design, prism, **work-package**.
+Formalise parallel fan-out as named contracts bound in **activity structure** (**unit-fan-out** for process/shell units; **scatter-gather** parallel for agents). Techniques never reference other techniques (**AP-142**); AP-114 is the work-invoke subset. Also: activity-blind (AP-68), containers do not name inheriting descendants (AP-141). `run-suite` is pure combine; validate activity steps bind fan-out then combine. Canon: **§20**, **§25–27**, **§33**, **AP-68**, **AP-140–142**. PR surface scrubbed; corpus-wide AP-142 debt out of scope. False-negative audit: [10-ap114-redesign-note.md](10-ap114-redesign-note.md).
 
 ## Problem Overview
 
