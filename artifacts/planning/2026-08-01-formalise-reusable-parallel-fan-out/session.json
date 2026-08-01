@@ -570,14 +570,34 @@
             },
             "optionId": "approve-removals",
             "respondedAt": "2026-08-01T10:43:02.000Z"
+          },
+          "scope-and-draft-scope-confirmed#0": {
+            "effects": {
+              "transitionedTo": "scope-and-draft",
+              "variablesSet": {
+                "scope_manifest_confirmed": false
+              }
+            },
+            "optionId": "revise",
+            "respondedAt": "2026-08-01T10:50:00.000Z"
+          },
+          "scope-and-draft-scope-confirmed#1": {
+            "effects": {
+              "variablesSet": {
+                "scope_manifest_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-08-01T10:55:26.000Z"
           }
         },
         "completedActivities": [
-          "intake-and-context"
+          "intake-and-context",
+          "scope-and-draft"
         ],
-        "condition": "isDefault → scope-and-draft",
-        "currentActivity": "scope-and-draft",
-        "currentTechnique": "work-package::manage-git::create-worktree",
+        "condition": "isDefault: quality-review",
+        "currentActivity": "quality-review",
+        "currentTechnique": "workflow-definition::verify-artifact-conforms",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -623,8 +643,36 @@
             "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
             "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
             "resource:meta/planning-readme": "42d2b5e77ffc2f9c",
+            "resource:scope-manifest": "8436a17becf97830",
+            "technique:work-package::manage-artifacts::write-artifact": "1c352aad9968529a",
             "technique:work-package::manage-git::create-worktree": "de5ec67eb441164e",
-            "technique:workflow-definition::derive-workflow-branch": "d6c15a89164542d6"
+            "technique:workflow-definition::derive-workflow-branch": "d6c15a89164542d6",
+            "technique:workflow-definition::scope-definition": "483414a68d3a0a66"
+          },
+          "worker-scope-and-draft-draft-36S3PI": {
+            "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
+            "bundle:rules:dcc74273fdf2ad82": "dcc74273fdf2ad82",
+            "bundle:variable-binding": "4de9bd403344076e",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "technique:workflow-definition::readme-authoring": "4c771ac925cbea85",
+            "technique:workflow-definition::review-drafted-file": "1453b00ff692b2ae",
+            "technique:workflow-definition::verify-artifact-conforms": "1493620adb2741e0",
+            "technique:workflow-definition::yaml-authoring": "dd9430c3658d7cc3"
+          },
+          "worker-scope-and-draft-r1-36S3PI": {
+            "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
+            "bundle:rules:dcc74273fdf2ad82": "dcc74273fdf2ad82",
+            "bundle:variable-binding": "4de9bd403344076e",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:scope-manifest": "8436a17becf97830",
+            "technique:work-package::manage-artifacts::write-artifact": "1c352aad9968529a",
+            "technique:work-package::manage-git::create-worktree": "de5ec67eb441164e",
+            "technique:workflow-definition::derive-workflow-branch": "d6c15a89164542d6",
+            "technique:workflow-definition::scope-definition": "483414a68d3a0a66"
           }
         },
         "history": [
@@ -1242,17 +1290,415 @@
             },
             "timestamp": "2026-08-01T10:44:25.289Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-36S3PI",
+              "chars": 6466,
+              "delivery": "full",
+              "stepId": "define-scope",
+              "techniqueId": "workflow-definition::scope-definition"
+            },
+            "timestamp": "2026-08-01T10:45:39.373Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-36S3PI",
+              "stepId": "define-scope"
+            },
+            "timestamp": "2026-08-01T10:45:39.373Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-36S3PI",
+              "chars": 5786,
+              "delivery": "full",
+              "stepId": "persist-scope-manifest",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-01T10:45:41.970Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-36S3PI",
+              "stepId": "persist-scope-manifest"
+            },
+            "timestamp": "2026-08-01T10:45:41.970Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-36S3PI",
+              "chars": 2018,
+              "delivery": "full",
+              "resourceId": "scope-manifest"
+            },
+            "timestamp": "2026-08-01T10:45:57.433Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-confirmed#0",
+            "timestamp": "2026-08-01T10:47:00.053Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-confirmed#0",
+            "data": {
+              "optionId": "revise"
+            },
+            "timestamp": "2026-08-01T10:50:00.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:50:00.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-r1-36S3PI",
+              "chars": 28340,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T10:50:40.720Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-r1-36S3PI",
+              "chars": 6466,
+              "delivery": "full",
+              "stepId": "define-scope",
+              "techniqueId": "workflow-definition::scope-definition"
+            },
+            "timestamp": "2026-08-01T10:51:09.992Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-r1-36S3PI",
+              "stepId": "define-scope"
+            },
+            "timestamp": "2026-08-01T10:51:09.992Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-r1-36S3PI",
+              "chars": 6320,
+              "delivery": "full",
+              "stepId": "ensure-worktree",
+              "techniqueId": "work-package::manage-git::create-worktree"
+            },
+            "timestamp": "2026-08-01T10:51:10.774Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-r1-36S3PI",
+              "stepId": "ensure-worktree"
+            },
+            "timestamp": "2026-08-01T10:51:10.774Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-r1-36S3PI",
+              "chars": 4122,
+              "delivery": "full",
+              "stepId": "derive-workflow-branch",
+              "techniqueId": "workflow-definition::derive-workflow-branch"
+            },
+            "timestamp": "2026-08-01T10:51:11.477Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-r1-36S3PI",
+              "stepId": "derive-workflow-branch"
+            },
+            "timestamp": "2026-08-01T10:51:11.477Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-r1-36S3PI",
+              "chars": 5786,
+              "delivery": "full",
+              "stepId": "persist-scope-manifest",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-01T10:51:14.656Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-r1-36S3PI",
+              "stepId": "persist-scope-manifest"
+            },
+            "timestamp": "2026-08-01T10:51:14.656Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-r1-36S3PI",
+              "chars": 2018,
+              "delivery": "full",
+              "resourceId": "scope-manifest"
+            },
+            "timestamp": "2026-08-01T10:51:48.113Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-confirmed#1",
+            "timestamp": "2026-08-01T10:54:39.136Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-confirmed#1",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-08-01T10:55:26.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:55:26.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-draft-36S3PI",
+              "chars": 28340,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T10:55:58.146Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-draft-36S3PI",
+              "chars": 7474,
+              "delivery": "full",
+              "stepId": "author-yaml",
+              "techniqueId": "workflow-definition::yaml-authoring"
+            },
+            "timestamp": "2026-08-01T10:56:02.482Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-draft-36S3PI",
+              "stepId": "author-yaml"
+            },
+            "timestamp": "2026-08-01T10:56:02.482Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-draft-36S3PI",
+              "chars": 4968,
+              "delivery": "full",
+              "stepId": "review-file",
+              "techniqueId": "workflow-definition::review-drafted-file"
+            },
+            "timestamp": "2026-08-01T10:56:03.175Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-draft-36S3PI",
+              "stepId": "review-file"
+            },
+            "timestamp": "2026-08-01T10:56:03.175Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-draft-36S3PI",
+              "chars": 4682,
+              "delivery": "full",
+              "stepId": "author-workflow-readme",
+              "techniqueId": "workflow-definition::readme-authoring"
+            },
+            "timestamp": "2026-08-01T10:56:03.954Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-draft-36S3PI",
+              "stepId": "author-workflow-readme"
+            },
+            "timestamp": "2026-08-01T10:56:03.954Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-draft-36S3PI",
+              "chars": 4559,
+              "delivery": "full",
+              "stepId": "verify-planning-artifacts",
+              "techniqueId": "workflow-definition::verify-artifact-conforms"
+            },
+            "timestamp": "2026-08-01T10:56:04.264Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-draft-36S3PI",
+              "stepId": "verify-planning-artifacts"
+            },
+            "timestamp": "2026-08-01T10:56:04.264Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-08-01T11:00:11.571Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T11:00:11.571Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "yaml_file",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-formalise-reusable-parallel-fan-out/meta/techniques/unit-fan-out.md"
+            },
+            "timestamp": "2026-08-01T11:00:11.571Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "has_unflagged_removals",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:00:11.571Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "workflow_readme",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-formalise-reusable-parallel-fan-out/meta/README.md"
+            },
+            "timestamp": "2026-08-01T11:00:11.571Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "file_count",
+              "source": "variables_changed",
+              "value": 10
+            },
+            "timestamp": "2026-08-01T11:00:11.571Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-draft-36S3PI",
+              "stepId": "author-yaml"
+            },
+            "timestamp": "2026-08-01T11:00:11.571Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-draft-36S3PI",
+              "stepId": "review-file"
+            },
+            "timestamp": "2026-08-01T11:00:11.571Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-draft-36S3PI",
+              "stepId": "author-workflow-readme"
+            },
+            "timestamp": "2026-08-01T11:00:11.571Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-draft-36S3PI",
+              "stepId": "verify-planning-artifacts"
+            },
+            "timestamp": "2026-08-01T11:00:11.571Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-08-01T11:00:11.571Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 22,
+        "seq": 41,
         "sessionIndex": "36S3PI",
         "skippedActivities": [],
         "startedAt": "2026-08-01T10:26:16.663Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785581065,
+        "ts": 1785582011,
         "variables": {
           "addressed_count": 0,
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-formalise-reusable-parallel-fan-out/01-change-brief.md",
@@ -1260,6 +1706,7 @@
           "change_request_clear": true,
           "commit_approved": false,
           "fail_count": 0,
+          "file_count": 10,
           "has_coverage_gap": false,
           "has_critical_finding": false,
           "has_unflagged_removals": false,
@@ -1283,7 +1730,7 @@
           "report_path": "",
           "review_closed": false,
           "review_scope_confirmed": false,
-          "scope_manifest_confirmed": false,
+          "scope_manifest_confirmed": true,
           "scope_manifest_path": "",
           "scope_round": 0,
           "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-formalise-reusable-parallel-fan-out/",
@@ -1297,7 +1744,9 @@
           "user_request": "Start a workflow authoring workflow for https://github.com/m2ux/workflow-server/issues/382 — feat(meta): formalise reusable parallel fan-out (evaluate scatter-gather / spawn-concurrent). Design decision and binding so cargo-operations::run-suite and peers Apply a named meta technique contract for parallel fan-out rather than free protocol prose.",
           "workflow_branch": "",
           "workflow_id": "meta",
-          "worktree_created": false
+          "workflow_readme": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-formalise-reusable-parallel-fan-out/meta/README.md",
+          "worktree_created": false,
+          "yaml_file": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-formalise-reusable-parallel-fan-out/meta/techniques/unit-fan-out.md"
         },
         "workflowId": "workflow-authoring",
         "workflowVersion": "1.1.0"
