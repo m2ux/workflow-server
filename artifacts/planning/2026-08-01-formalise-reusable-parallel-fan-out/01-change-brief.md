@@ -1,11 +1,13 @@
 # Change Brief — Formalise reusable parallel fan-out
 
-**Workflows:** `meta` (primary) · `workflow-design` · `prism`  
+**Workflows:** `meta` (primary) · `workflow-design` · `prism` · **`work-package`** (validate co-edit)  
 **Mode:** Update (multi-workflow edit under one worktree; bag keeps single-target update shape — see Scope)  
 **Date:** 2026-08-01  
-**Change categories:** Technique · Resource (canon)  
-**Change request:** Bind `cargo-operations::run-suite` (and peers) to a named meta technique contract for parallel fan-out; extend workflow-design canon (anti-pattern + design principle); migrate free-prose concurrent dispatch under prism where inventory flags it.  
-**Baseline / edit surface:** `.worktrees/2026-08-01-formalise-reusable-parallel-fan-out/` on `workflow/meta-formalise-reusable-parallel-fan-out` (full workflows orphan checkout — meta, workflow-design, prism, and siblings)
+**Change categories:** Technique · Resource (canon) · Activity (validate bind graph)  
+**Change request:** Formalise reusable parallel fan-out as **activity-bound** parameterized contracts (`unit-fan-out` for process units; scatter-gather / spawn-concurrent for agents). Techniques do **not** Protocol-Apply techniques for work (AP-114). Extend workflow-design §33 + AP-140 (Fix = activity step bind). Co-change work-package validate. Document quality-review AP-114 false negative ([10-ap114-redesign-note.md](10-ap114-redesign-note.md)).  
+**Baseline / edit surface:** `.worktrees/2026-08-01-formalise-reusable-parallel-fan-out/` on `workflow/meta-formalise-reusable-parallel-fan-out` (full workflows orphan checkout — meta, workflow-design, prism, work-package, and siblings)
+
+> **Redesign (AP-114):** The first draft had techniques Apply fan-out contracts (run-suite → unit-fan-out; independent-lenses → scatter-gather). That violated AP-114 and passed quality-review as a false negative. Correct composition: **activities bind** fan-out steps; atomic techniques own unit bodies or pure combine only.
 
 ---
 
