@@ -688,6 +688,24 @@
             "optionId": "full-workflow",
             "respondedAt": "2026-08-01T10:22:22.000Z"
           },
+          "requirements-elicitation-elicitation-complete": {
+            "effects": {
+              "variablesSet": {
+                "elicitation_complete": true
+              }
+            },
+            "optionId": "complete",
+            "respondedAt": "2026-08-01T10:41:25.000Z"
+          },
+          "requirements-elicitation-stakeholder-transcript": {
+            "effects": {
+              "variablesSet": {
+                "has_stakeholder_input": false
+              }
+            },
+            "optionId": "skip-discussion",
+            "respondedAt": "2026-08-01T10:32:34.000Z"
+          },
           "start-work-package-pr-creation": {
             "effects": {
               "variablesSet": {
@@ -701,11 +719,12 @@
         "completedActivities": [
           "start-work-package",
           "design-philosophy",
-          "codebase-comprehension"
+          "codebase-comprehension",
+          "requirements-elicitation"
         ],
-        "condition": "condition:needs_elicitation == true",
-        "currentActivity": "requirements-elicitation",
-        "currentTechnique": "scatter-gather",
+        "condition": "elicitation_complete==true && needs_research==true",
+        "currentActivity": "research",
+        "currentTechnique": "review-assumptions::reconcile",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -763,6 +782,29 @@
             "technique:review-assumptions::collect": "f79c5725888e0262",
             "technique:review-assumptions::record": "d8609c38930657cb",
             "technique:scatter-gather": "17c19c51954fcaea"
+          },
+          "worker-requirements-elicitation-PBEHLM": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:assumption-reconciliation#integration-with-assumptions-log": "689afb08f4b05867",
+            "resource:assumption-reconciliation#scorecard": "463ead371104dc13",
+            "resource:assumptions-review#assumptions-log-template": "5c4fc5cefef2bb57",
+            "resource:assumptions-review#classification-vocabulary": "7f27d1c0af8cfb9e",
+            "resource:assumptions-review#probe-vocabulary": "fcef6ec1ef114c0f",
+            "resource:codebase-comprehension#artifact-template": "7cf4da85300ea7d1",
+            "resource:deferred-items#template": "c4137fd96f194670",
+            "resource:requirements-elicitation": "5055b0133744c717",
+            "technique:requirements-elicitation::ask-question": "6f7025e23c1cd845",
+            "technique:requirements-elicitation::create-document": "0e0dae60fafebd1b",
+            "technique:requirements-elicitation::discuss": "942fe3f8636aec54",
+            "technique:requirements-elicitation::elicit": "fd20b873cd005fb6",
+            "technique:review-assumptions::collect": "d4292b811da5cc3e",
+            "technique:review-assumptions::reconcile": "c12f9e9d7e597c8b",
+            "technique:review-assumptions::record": "178bd05d2882b09c"
           },
           "worker-start-wp-PBEHLM": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -3198,17 +3240,711 @@
             "activity": "requirements-elicitation",
             "timestamp": "2026-08-01T10:27:10.690Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 69626,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 3803,
+              "delivery": "full",
+              "stepId": "stakeholder-discussion",
+              "techniqueId": "requirements-elicitation::discuss"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "stepId": "stakeholder-discussion"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 4721,
+              "delivery": "full",
+              "stepId": "elicit-requirements",
+              "techniqueId": "requirements-elicitation::elicit"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "stepId": "elicit-requirements"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 4025,
+              "delivery": "full",
+              "stepId": "ask-question",
+              "techniqueId": "requirements-elicitation::ask-question"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "stepId": "ask-question"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 5144,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 3895,
+              "delivery": "full",
+              "stepId": "create-document",
+              "techniqueId": "requirements-elicitation::create-document"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "stepId": "create-document"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 4151,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 12373,
+              "delivery": "full",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "stepId": "reconcile-assumptions"
+            },
+            "timestamp": "2026-08-01T10:27:18.488Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "stakeholder-transcript",
+            "timestamp": "2026-08-01T10:27:24.734Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "stakeholder-transcript",
+            "data": {
+              "optionId": "skip-discussion"
+            },
+            "timestamp": "2026-08-01T10:32:34.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "has_stakeholder_input",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:32:34.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 69626,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-01T10:32:58.037Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 3803,
+              "delivery": "full",
+              "stepId": "stakeholder-discussion",
+              "techniqueId": "requirements-elicitation::discuss"
+            },
+            "timestamp": "2026-08-01T10:32:58.037Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 4721,
+              "delivery": "full",
+              "stepId": "elicit-requirements",
+              "techniqueId": "requirements-elicitation::elicit"
+            },
+            "timestamp": "2026-08-01T10:32:58.037Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 4025,
+              "delivery": "full",
+              "stepId": "ask-question",
+              "techniqueId": "requirements-elicitation::ask-question"
+            },
+            "timestamp": "2026-08-01T10:32:58.037Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 5144,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-01T10:32:58.037Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 3895,
+              "delivery": "full",
+              "stepId": "create-document",
+              "techniqueId": "requirements-elicitation::create-document"
+            },
+            "timestamp": "2026-08-01T10:32:58.037Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 4151,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-01T10:32:58.037Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 12373,
+              "delivery": "full",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-08-01T10:32:58.037Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 5632,
+              "delivery": "full",
+              "resourceId": "requirements-elicitation"
+            },
+            "timestamp": "2026-08-01T10:33:24.363Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 2570,
+              "delivery": "full",
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-08-01T10:33:48.459Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "elicitation-complete",
+            "timestamp": "2026-08-01T10:37:48.988Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "elicitation-complete",
+            "data": {
+              "optionId": "complete"
+            },
+            "timestamp": "2026-08-01T10:41:25.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "elicitation_complete",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:41:25.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 17177,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 3803,
+              "delivery": "unchanged",
+              "stepId": "stakeholder-discussion",
+              "techniqueId": "requirements-elicitation::discuss"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 4721,
+              "delivery": "unchanged",
+              "stepId": "elicit-requirements",
+              "techniqueId": "requirements-elicitation::elicit"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 4025,
+              "delivery": "unchanged",
+              "stepId": "ask-question",
+              "techniqueId": "requirements-elicitation::ask-question"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 5144,
+              "delivery": "unchanged",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 3895,
+              "delivery": "unchanged",
+              "stepId": "create-document",
+              "techniqueId": "requirements-elicitation::create-document"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 4151,
+              "delivery": "unchanged",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 12373,
+              "delivery": "unchanged",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "bundled": true,
+              "chars": 5527,
+              "delivery": "unchanged",
+              "resourceId": "requirements-elicitation"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "bundled": true,
+              "chars": 2452,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "bundled": true,
+              "chars": 1038,
+              "delivery": "full",
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "bundled": true,
+              "chars": 1159,
+              "delivery": "full",
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "bundled": true,
+              "chars": 316,
+              "delivery": "full",
+              "resourceId": "deferred-items#template"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "bundled": true,
+              "chars": 1542,
+              "delivery": "full",
+              "resourceId": "assumption-reconciliation#integration-with-assumptions-log"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "bundled": true,
+              "chars": 2674,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension#artifact-template"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "bundled": true,
+              "chars": 202,
+              "delivery": "full",
+              "resourceId": "assumption-reconciliation#scorecard"
+            },
+            "timestamp": "2026-08-01T10:41:53.202Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-PBEHLM",
+              "chars": 12373,
+              "delivery": "full",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-08-01T10:41:58.977Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "elicitation_complete",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "has_stakeholder_input",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "open_questions",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "has_open_questions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "needs_research",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "needs_elicitation",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "stepId": "stakeholder-discussion"
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "stepId": "elicit-requirements"
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "stepId": "ask-question"
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "stepId": "create-document"
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "stepId": "reconcile-assumptions"
+            },
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "timestamp": "2026-08-01T10:42:48.416Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "usage": {
+                "cache_read": 0,
+                "cache_write": 0,
+                "input": 85000,
+                "output": 12000
+              }
+            },
+            "timestamp": "2026-08-01T10:43:03.596Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 38,
+        "seq": 51,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785580030,
+        "ts": 1785580983,
         "variables": {
           "artifact_name": "",
           "artifact_publish_ref": "",
@@ -3242,7 +3978,7 @@
           "current_block_index": 0,
           "current_branch": "",
           "design_philosophy_doc": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/02-design-philosophy.md",
-          "elicitation_complete": false,
+          "elicitation_complete": true,
           "existing_pr_number": "",
           "github_issue_found": true,
           "gitnexus_indexed": true,
@@ -3250,8 +3986,8 @@
           "has_debt_markers": false,
           "has_deferred_assumptions": false,
           "has_flagged_blocks": false,
-          "has_open_assumptions": true,
-          "has_open_questions": true,
+          "has_open_assumptions": false,
+          "has_open_questions": false,
           "has_reconcilable_research": false,
           "has_resolvable_assumptions": false,
           "has_stakeholder_comment": false,
@@ -3286,14 +4022,8 @@
           "needs_strategic_fixes": false,
           "needs_test_improvements": false,
           "on_feature_branch": true,
-          "open_assumptions": [
-            "DP-4",
-            "DP-5",
-            "DP-6"
-          ],
-          "open_questions": [
-            "Q5: Should production evaluation move server-side?"
-          ],
+          "open_assumptions": [],
+          "open_questions": [],
           "path_rationale": "Full workflow (elicitation + research) confirmed at classification-and-path-confirmed.",
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration",
           "post_jira_comment": false,
