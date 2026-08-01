@@ -699,19 +699,50 @@
           }
         },
         "completedActivities": [
-          "start-work-package"
+          "start-work-package",
+          "design-philosophy",
+          "codebase-comprehension"
         ],
-        "condition": "isDefault:design-philosophy",
-        "currentActivity": "design-philosophy",
+        "condition": "condition:needs_elicitation == true",
+        "currentActivity": "requirements-elicitation",
         "currentTechnique": "scatter-gather",
         "declaredArtifacts": [
           {
             "id": "created_readme",
             "name": "README.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/README.md"
+          },
+          {
+            "id": "design_philosophy_doc",
+            "name": "design-philosophy.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/02-design-philosophy.md"
+          },
+          {
+            "id": "assumptions_log",
+            "name": "assumptions-log.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/02-assumptions-log.md"
+          },
+          {
+            "id": "comprehension_artifact",
+            "name": "when-step-gates.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/when-step-gates.md"
           }
         ],
         "deliveredContent": {
+          "worker-codebase-comprehension-PBEHLM": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
+            "bundle:scatter-gather": "972acb177d168c94",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:codebase-comprehension": "e9fd88defd6ea2dd",
+            "technique:codebase-comprehension::deep-dive": "dbb1d321f45b4343",
+            "technique:codebase-comprehension::revise-questions": "2dcc44eba9471a95",
+            "technique:codebase-comprehension::survey": "70000fc1f651ba91",
+            "technique:manage-artifacts::write-artifact": "ba57b2382aed4d4e"
+          },
           "worker-design-philosophy-PBEHLM": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
             "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
@@ -2707,17 +2738,477 @@
             },
             "timestamp": "2026-08-01T10:24:14.994Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_statement",
+              "source": "variables_changed",
+              "value": "Today the workflow corpus can express simple step gates and flat AND compounds as inline when: expressions, but any gate that needs OR still has to stay in the older structured condition: form. That split exists because parentheses, operator precedence, and a full boolean evaluator for mixed && / || were not validated when the plain gates moved over — so authors cannot safely write the nested shapes the remaining sites need. Until those rules and the evaluator land, OR-shaped gates stay stranded on the structured path, docs that already describe boolean algebra over-promise what the walker can enforce, and a naive OR migration would risk running or skipping steps differently from the structured trees."
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_type",
+              "source": "variables_changed",
+              "value": "inventive-improvement"
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_complexity",
+              "source": "variables_changed",
+              "value": "complex"
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "classification_rationale",
+              "source": "variables_changed",
+              "value": "Inventive improvement of when dialect + evaluator fidelity; complex due to grammar/precedence, fail-closed policy, four nested fixtures, packaging, and open section-0 execution-model decision."
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_elicitation",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_research",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "skip_optional_activities",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "path_rationale",
+              "source": "variables_changed",
+              "value": "Full workflow (elicitation + research) confirmed at classification-and-path-confirmed."
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "design_philosophy_doc",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/02-design-philosophy.md"
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/02-assumptions-log.md"
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": [
+                "DP-4",
+                "DP-5",
+                "DP-6"
+              ]
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "stepId": "define-problem"
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "stepId": "classify-problem"
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "stepId": "determine-path"
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "stepId": "document-philosophy"
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "stepId": "create-assumptions-log"
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-PBEHLM",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "timestamp": "2026-08-01T10:25:24.664Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "chars": 76504,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T10:25:28.829Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "chars": 9524,
+              "delivery": "full",
+              "stepId": "build-comprehension",
+              "techniqueId": "codebase-comprehension::survey"
+            },
+            "timestamp": "2026-08-01T10:25:28.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "stepId": "build-comprehension"
+            },
+            "timestamp": "2026-08-01T10:25:28.829Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "chars": 10466,
+              "delivery": "full",
+              "stepId": "create-comprehension-artifact",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-01T10:25:28.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "stepId": "create-comprehension-artifact"
+            },
+            "timestamp": "2026-08-01T10:25:28.829Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "chars": 6095,
+              "delivery": "full",
+              "stepId": "initial-deep-dive",
+              "techniqueId": "codebase-comprehension::deep-dive"
+            },
+            "timestamp": "2026-08-01T10:25:28.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "stepId": "initial-deep-dive"
+            },
+            "timestamp": "2026-08-01T10:25:28.829Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "chars": 10462,
+              "delivery": "full",
+              "stepId": "update-artifact-initial",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-01T10:25:28.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "stepId": "update-artifact-initial"
+            },
+            "timestamp": "2026-08-01T10:25:28.829Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "chars": 5221,
+              "delivery": "full",
+              "stepId": "revise-initial-questions",
+              "techniqueId": "codebase-comprehension::revise-questions"
+            },
+            "timestamp": "2026-08-01T10:25:28.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "stepId": "revise-initial-questions"
+            },
+            "timestamp": "2026-08-01T10:25:28.829Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "chars": 12160,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension"
+            },
+            "timestamp": "2026-08-01T10:25:35.498Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "timestamp": "2026-08-01T10:27:10.690Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "comprehension_dir",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension"
+            },
+            "timestamp": "2026-08-01T10:27:10.690Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "comprehension_artifact",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/when-step-gates.md"
+            },
+            "timestamp": "2026-08-01T10:27:10.690Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:27:10.690Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "has_open_questions",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:27:10.690Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "open_questions",
+              "source": "variables_changed",
+              "value": [
+                "Q5: Should production evaluation move server-side?"
+              ]
+            },
+            "timestamp": "2026-08-01T10:27:10.690Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "stepId": "build-comprehension"
+            },
+            "timestamp": "2026-08-01T10:27:10.690Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "stepId": "create-comprehension-artifact"
+            },
+            "timestamp": "2026-08-01T10:27:10.690Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "stepId": "initial-deep-dive"
+            },
+            "timestamp": "2026-08-01T10:27:10.690Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "stepId": "update-artifact-initial"
+            },
+            "timestamp": "2026-08-01T10:27:10.690Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-PBEHLM",
+              "stepId": "revise-initial-questions"
+            },
+            "timestamp": "2026-08-01T10:27:10.690Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "timestamp": "2026-08-01T10:27:10.690Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 34,
+        "seq": 38,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785579854,
+        "ts": 1785580030,
         "variables": {
           "artifact_name": "",
           "artifact_publish_ref": "",
@@ -2725,6 +3216,7 @@
           "assumption_decisions": [],
           "assumption_deferred": false,
           "assumption_resolved_inline": false,
+          "assumptions_log": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/02-assumptions-log.md",
           "attestation_option": "certify",
           "audit_confirmed": false,
           "awaiting_review": false,
@@ -2739,15 +3231,17 @@
           "build_dependent_artifact_commands": "",
           "build_dependent_artifacts_pending": false,
           "change_block_index": "",
+          "classification_rationale": "Inventive improvement of when dialect + evaluator fidelity; complex due to grammar/precedence, fail-closed policy, four nested fixtures, packaging, and open section-0 execution-model decision.",
           "completion_document_path": "",
           "component_name": "workflow-server",
           "component_path": ".",
-          "comprehension_artifact": "",
-          "comprehension_dir": "",
+          "comprehension_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/when-step-gates.md",
+          "comprehension_dir": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension",
           "context_scope": "repo-only",
           "context_scope_uncertain": false,
           "current_block_index": 0,
           "current_branch": "",
+          "design_philosophy_doc": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/02-design-philosophy.md",
           "elicitation_complete": false,
           "existing_pr_number": "",
           "github_issue_found": true,
@@ -2756,8 +3250,8 @@
           "has_debt_markers": false,
           "has_deferred_assumptions": false,
           "has_flagged_blocks": false,
-          "has_open_assumptions": false,
-          "has_open_questions": false,
+          "has_open_assumptions": true,
+          "has_open_questions": true,
           "has_reconcilable_research": false,
           "has_resolvable_assumptions": false,
           "has_stakeholder_comment": false,
@@ -2780,7 +3274,7 @@
           "mark_progress_na": false,
           "needs_cleanup": false,
           "needs_code_fixes": false,
-          "needs_comprehension": true,
+          "needs_comprehension": false,
           "needs_elicitation": true,
           "needs_further_discussion": false,
           "needs_github_issue_creation": false,
@@ -2792,6 +3286,15 @@
           "needs_strategic_fixes": false,
           "needs_test_improvements": false,
           "on_feature_branch": true,
+          "open_assumptions": [
+            "DP-4",
+            "DP-5",
+            "DP-6"
+          ],
+          "open_questions": [
+            "Q5: Should production evaluation move server-side?"
+          ],
+          "path_rationale": "Full workflow (elicitation + research) confirmed at classification-and-path-confirmed.",
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration",
           "post_jira_comment": false,
           "pr_exists": true,
@@ -2799,6 +3302,8 @@
           "pr_skipped": false,
           "pr_url": "https://github.com/m2ux/workflow-server/pull/383",
           "problem_complexity": "complex",
+          "problem_statement": "Today the workflow corpus can express simple step gates and flat AND compounds as inline when: expressions, but any gate that needs OR still has to stay in the older structured condition: form. That split exists because parentheses, operator precedence, and a full boolean evaluator for mixed && / || were not validated when the plain gates moved over — so authors cannot safely write the nested shapes the remaining sites need. Until those rules and the evaluator land, OR-shaped gates stay stranded on the structured path, docs that already describe boolean algebra over-promise what the walker can enforce, and a naive OR migration would risk running or skipping steps differently from the structured trees.",
+          "problem_type": "inventive-improvement",
           "project_type": "typescript-node",
           "provenance_log_path": "",
           "push_remote": "origin",
