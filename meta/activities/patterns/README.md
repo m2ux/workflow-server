@@ -107,4 +107,4 @@ Research-question planning, parallel dispatch, synthesise, then `while has_resea
 
 ### 06 Process Unit Fan Out
 
-Same-context process/shell/tool suites (not agent instances). Seed `{work_units}` and `{dispatch_concurrency}` → execute under that bound → wait-all → ordered `{unit_results}`. Consumer binds a pure-combine technique after the spine when a domain envelope is required (e.g. cargo `run-suite`). Fixed-name leaf suites may bind consecutive capability ops and assemble `{unit_results}` from their outputs in roster order.
+Same-context process/shell/tool suites (not agent instances). Produces ordered `{unit_results}` under activity-owned `{work_units}` and `{dispatch_concurrency}`. A consumer may bind a pure-combine technique afterward when a domain envelope is required (e.g. cargo `run-suite`).

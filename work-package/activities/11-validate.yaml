@@ -1,5 +1,5 @@
 id: validate
-version: 3.8.0
+version: 3.8.1
 name: Verify & Validate Design
 description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
 required: true
@@ -27,17 +27,12 @@ steps:
       - action: set
         target: work_units
         description: >-
-          Ordered cargo suite units (process-unit pattern): check, clippy, test,
-          fmt-check — each an invocation spec against build_scope `--workspace`
-          (and features when set), carrying that op's resource budget (nice -n 19
-          + CARGO_BUILD_JOBS cap; fmt-check uses nice only). On tight RAM, lower
-          CARGO_BUILD_JOBS across compiling units or set dispatch_concurrency to 1.
+          Ordered cargo suite units check, clippy, test, fmt-check — each an
+          invocation spec against build_scope with that op's resource budget.
       - action: set
         target: dispatch_concurrency
         description: >-
-          Prefer concurrent same-context cargo units when the host can absorb four;
-          use 1 when RAM or shared mutation requires sequential
-          check/clippy/test/fmt-check. Activity owns this bound.
+          Positive integer bounding concurrent cargo units for this suite.
   - kind: action
     id: execute-and-gather-cargo-units
     when: project_type == 'rust-substrate' && run_local_validation == true
@@ -45,10 +40,7 @@ steps:
       - action: set
         target: unit_results
         description: >-
-          Run every cargo unit in work_units under dispatch_concurrency (concurrent
-          same-context process when greater than one; sequential when one). Wait
-          for all four. Append each outcome into unit_results in suite order with
-          unit keys check, clippy, test, fmt-check (ordered gather; never overwrite).
+          Ordered cargo unit outcomes keyed check, clippy, test, fmt-check.
   - kind: action
     id: require-cargo-unit-results
     when: project_type == 'rust-substrate' && run_local_validation == true
@@ -117,20 +109,19 @@ steps:
           - action: set
             target: work_units
             description: >-
-              Recompose the ordered cargo suite units (check, clippy, test, fmt-check)
-              against build_scope `--workspace` with the same resource-budget envelope
-              as seed-cargo-process-suite.
+              Ordered cargo suite units check, clippy, test, fmt-check — each an
+              invocation spec against build_scope with that op's resource budget.
           - action: set
             target: dispatch_concurrency
-            description: Same concurrency policy as the initial process-unit suite.
+            description: >-
+              Positive integer bounding concurrent cargo units for this suite.
       - kind: action
         id: re-execute-and-gather-cargo-units
         actions:
           - action: set
             target: unit_results
             description: >-
-              Re-run every cargo unit under dispatch_concurrency; wait-all; ordered
-              gather into unit_results (same contract as execute-and-gather-cargo-units).
+              Ordered cargo unit outcomes keyed check, clippy, test, fmt-check.
       - kind: action
         id: require-recargo-unit-results
         actions:

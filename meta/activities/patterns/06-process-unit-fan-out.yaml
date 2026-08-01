@@ -1,11 +1,9 @@
 id: process-unit-fan-out
-version: 1.0.0
+version: 1.0.1
 name: Process Unit Fan Out
 description: >-
-  Same-context process, shell, or tool suite coordination — seed the unit roster
-  and concurrency bound, run every unit under that bound, wait-all, ordered gather
-  into unit_results. Pure combine (when needed) is a consumer-bound technique step
-  after this spine. Borrowable mid-phase process-unit pattern.
+  Same-context process, shell, or tool suite coordination into ordered
+  unit_results — borrowable mid-phase process-unit pattern.
 required: false
 steps:
   - kind: action
@@ -14,34 +12,20 @@ steps:
       - action: set
         target: work_units
         description: >-
-          Ordered same-context process, shell, or tool units. Each entry is an
-          invocation spec (argv / shell form / tool call), optional per-unit
-          resource budget, and optional key the gather must preserve. Consumer may
-          pre-seed before this step runs. Fixed-name capability suites may omit a
-          roster and instead bind one technique step per unit after seed, then
-          assemble unit_results from those outputs in roster order.
+          Ordered same-context process, shell, or tool units — each an invocation
+          spec with optional key and per-unit resource budget.
       - action: set
         target: dispatch_concurrency
         description: >-
-          Positive integer bounding how many independent units run at once.
-          Prefer greater than one when units are independent and the host can
-          absorb the load. One is sequential execution of the same gather contract
-          (always correct). Activity owns this bound.
+          Positive integer bounding how many independent units may run at once.
   - kind: action
     id: execute-and-gather-units
     actions:
       - action: set
         target: unit_results
         description: >-
-          Run every unit in work_units in the caller context under
-          dispatch_concurrency (concurrent same-context process/shell/tool when
-          greater than one; one-at-a-time in roster order when one). Wait until
-          every unit finishes — do not short-circuit on the first failure.
-          Append each outcome into unit_results in roster order, attaching the
-          unit key when supplied (ordered gather; never overwrite). When the
-          suite is fixed named capability ops bound as consecutive technique
-          steps, those steps are the execute path — this action only assembles
-          unit_results from their products in the same order.
+          Ordered outcomes for every work unit, attaching the unit key when
+          supplied.
   - kind: action
     id: require-gathered
     actions:
