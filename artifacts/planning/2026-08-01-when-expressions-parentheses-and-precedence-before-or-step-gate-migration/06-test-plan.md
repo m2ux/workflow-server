@@ -14,25 +14,25 @@ Key changes to validate:
 
 ## Planned Test Cases
 
-| Test ID | Objective | Type |
-|---------|-----------|------|
-| PR383-TC-01 | Flat `a \|\| b` truth table (TT/TF/FT/FF) | Unit |
-| PR383-TC-02 | `&&` binds tighter than `\|\|` when parentheses force both groupings | Unit |
-| PR383-TC-03 | Bare mixed `a && b \|\| c` rejected by authoring/parse policy | Unit |
-| PR383-TC-04 | Unary `!` and parentheses nesting | Unit |
-| PR383-TC-05 | Comparisons `==`/`!=`, quoted strings, bools, null, numbers, dotted paths | Unit |
-| PR383-TC-06 | Bare identifier truthiness (existing walker semantics) | Unit |
-| PR383-TC-07 | Invalid / unparseable expression fails closed (does not execute) | Unit |
-| PR383-TC-08 | 14-complete nested shape bag matrix (moderate/complex × review mode) | Unit |
-| PR383-TC-09 | Prism run-structural nested shape bag matrix | Unit |
-| PR383-TC-10 | Side-by-side: four keep-site structured trees vs `when` on identical bags | Unit |
-| PR383-TC-11 | Existing flat-`&&` expressions still evaluate as before | Unit |
-| PR383-TC-12 | Walker `evaluateWhen` uses shared module (integration smoke) | Integration |
-| PR383-TC-13 | Guard rejects bare mixed ops; accepts parenthesized mixed forms | Guard |
-| PR383-TC-14 | After migration: four YAML sites use `when`; structured OR removed at those steps | Corpus / guard |
-| PR383-TC-15 | `check:all` / targeted guards clean on touched workflows | Guard |
+| Test ID | Objective | Type | Source |
+|---------|-----------|------|--------|
+| [PR383-TC-01](https://github.com/m2ux/workflow-server/blob/main/tests/when-expression.test.ts#L10) | Flat `a \|\| b` truth table (TT/TF/FT/FF) | Unit | `tests/when-expression.test.ts:10` |
+| [PR383-TC-02](https://github.com/m2ux/workflow-server/blob/main/tests/when-expression.test.ts#L22) | `&&` binds tighter than `\|\|` when parentheses force both groupings | Unit | `tests/when-expression.test.ts:22` |
+| [PR383-TC-03](https://github.com/m2ux/workflow-server/blob/main/tests/when-expression.test.ts#L30) | Bare mixed `a && b \|\| c` rejected by authoring/parse policy | Unit | `tests/when-expression.test.ts:30` |
+| [PR383-TC-04](https://github.com/m2ux/workflow-server/blob/main/tests/when-expression.test.ts#L41) | Unary `!` and parentheses nesting | Unit | `tests/when-expression.test.ts:41` |
+| [PR383-TC-05](https://github.com/m2ux/workflow-server/blob/main/tests/when-expression.test.ts#L50) | Comparisons `==`/`!=`, quoted strings, bools, null, numbers, dotted paths | Unit | `tests/when-expression.test.ts:50` |
+| [PR383-TC-06](https://github.com/m2ux/workflow-server/blob/main/tests/when-expression.test.ts#L63) | Bare identifier truthiness (existing walker semantics) | Unit | `tests/when-expression.test.ts:63` |
+| [PR383-TC-07](https://github.com/m2ux/workflow-server/blob/main/tests/when-expression.test.ts#L72) | Invalid / unparseable expression fails closed (does not execute) | Unit | `tests/when-expression.test.ts:72` |
+| [PR383-TC-08](https://github.com/m2ux/workflow-server/blob/main/tests/when-expression.test.ts#L81) | 14-complete nested shape bag matrix (moderate/complex × review mode) | Unit | `tests/when-expression.test.ts:81` |
+| [PR383-TC-09](https://github.com/m2ux/workflow-server/blob/main/tests/when-expression.test.ts#L95) | Prism run-structural nested shape bag matrix | Unit | `tests/when-expression.test.ts:95` |
+| [PR383-TC-10](https://github.com/m2ux/workflow-server/blob/main/tests/when-expression.test.ts#L108) | Side-by-side: four keep-site structured trees vs `when` on identical bags | Unit | `tests/when-expression.test.ts:108` |
+| [PR383-TC-11](https://github.com/m2ux/workflow-server/blob/main/tests/when-expression.test.ts#L182) | Existing flat-`&&` expressions still evaluate as before | Unit | `tests/when-expression.test.ts:182` |
+| PR383-TC-12 | Walker `evaluateWhen` uses shared module (integration smoke) | Integration | `tests/e2e/walker.ts` + TC suite |
+| PR383-TC-13 | Guard rejects bare mixed ops; accepts parenthesized mixed forms | Guard | `scripts/check-when-expression.ts` |
+| PR383-TC-14 | After migration: four YAML sites use `when`; structured OR removed at those steps | Corpus / guard | migrated YAML keep-sites |
+| PR383-TC-15 | `check:all` / targeted guards clean on touched workflows | Guard | CI / local `check:all` |
 
-Implementation sources: `tests/when-expression.test.ts`, `scripts/check-when-expression.ts`, four migrated YAML keep-sites.
+Implementation sources: [`tests/when-expression.test.ts`](https://github.com/m2ux/workflow-server/blob/main/tests/when-expression.test.ts), [`scripts/check-when-expression.ts`](https://github.com/m2ux/workflow-server/blob/main/scripts/check-when-expression.ts), four migrated YAML keep-sites.
 
 ## Acceptance Criteria Matrix
 

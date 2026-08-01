@@ -5,11 +5,12 @@
   "workflowVersion": "5.14.0",
   "agentId": "orchestrator",
   "sessionIndex": "QQKD2D",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration",
   "currentActivity": "dispatch-client-workflow",
   "currentTechnique": "workflow-engine::dispatch-activity",
   "condition": "isDefault:dispatch-client-workflow",
-  "seq": 17,
-  "ts": 1785581470,
+  "seq": 18,
+  "ts": 1785605365,
   "startedAt": "2026-08-01T09:32:07.029Z",
   "completedActivities": [
     "discover-session",
@@ -34,7 +35,7 @@
     "resume_intent_requested": false,
     "target_repo": "m2ux/workflow-server",
     "target_workflow_id": "work-package",
-    "user_request": "start a work package workflow for issue 379",
+    "user_request": "continue #383 with review = pass",
     "workflow_match_ambiguous": false
   },
   "checkpointResponses": {},
@@ -725,11 +726,6 @@
     {
       "sessionIndex": "PBEHLM",
       "state": {
-        "activeCheckpoint": {
-          "activityId": "submit-for-review",
-          "checkpointId": "review-received",
-          "yieldedAt": "2026-08-01T15:07:06.594Z"
-        },
         "agentId": "orchestrator",
         "checkpointResponses": {
           "design-philosophy-classification-and-path-confirmed": {
@@ -828,6 +824,24 @@
             },
             "optionId": "certify",
             "respondedAt": "2026-08-01T14:58:00.000Z"
+          },
+          "submit-for-review-review-outcome": {
+            "effects": {
+              "variablesSet": {
+                "review_requires_changes": false
+              }
+            },
+            "optionId": "approved",
+            "respondedAt": "2026-08-01T17:31:10.000Z"
+          },
+          "submit-for-review-review-received": {
+            "effects": {
+              "variablesSet": {
+                "awaiting_review": false
+              }
+            },
+            "optionId": "yes-review",
+            "respondedAt": "2026-08-01T17:29:53.000Z"
           }
         },
         "completedActivities": [
@@ -843,10 +857,11 @@
           "lean-coding-audit",
           "post-impl-review",
           "validate",
-          "strategic-review"
+          "strategic-review",
+          "submit-for-review"
         ],
-        "condition": "condition: review_passed == true",
-        "currentActivity": "submit-for-review",
+        "condition": "isDefault:complete",
+        "currentActivity": "complete",
         "currentTechnique": "update-pr::mark-ready",
         "declaredArtifacts": [
           {
@@ -981,6 +996,18 @@
             "technique:ponytail/apply-ladder": "ff9e107b8ae166c2",
             "technique:ponytail/harvest-debt": "eeae192617658e25",
             "technique:ponytail/review-over-engineering": "5fee8b42dac017f9"
+          },
+          "orchestrator": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "technique:conduct-retrospective::retrospective": "7fc5c925b894fd8a",
+            "technique:finalize-documentation::create-complete-doc": "c2c6e6f9a8240299",
+            "technique:finalize-documentation::render-token-usage": "2ccd85f04bc9109a",
+            "technique:workflow-engine::read-session": "0a96fdb822c14da5"
           },
           "plan-prepare-worker": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -8180,17 +8207,585 @@
             "checkpoint": "review-received",
             "timestamp": "2026-08-01T15:07:06.594Z",
             "type": "checkpoint_reached"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "review-received",
+            "data": {
+              "optionId": "yes-review"
+            },
+            "timestamp": "2026-08-01T17:29:53.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "awaiting_review",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-01T17:29:53.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 40468,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T17:30:26.939Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-08-01T17:30:56.745Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "awaiting_review",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T17:30:56.745Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "review_passed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T17:30:56.745Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "review_requires_changes",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T17:30:56.745Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "review_comments_summary",
+              "source": "variables_changed",
+              "value": "(none) Operator directed review=pass; empty review surface; CI green on head."
+            },
+            "timestamp": "2026-08-01T17:30:56.745Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "recommended_outcome",
+              "source": "variables_changed",
+              "value": "approved"
+            },
+            "timestamp": "2026-08-01T17:30:56.745Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "process-review-comments"
+            },
+            "timestamp": "2026-08-01T17:30:56.745Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "analyze-review-outcome"
+            },
+            "timestamp": "2026-08-01T17:30:56.745Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-08-01T17:30:56.745Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "review-outcome",
+            "timestamp": "2026-08-01T17:31:03.137Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "review-outcome",
+            "data": {
+              "optionId": "approved"
+            },
+            "timestamp": "2026-08-01T17:31:10.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "review_requires_changes",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-01T17:31:10.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-08-01T17:31:19.979Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "review_requires_changes",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T17:31:19.979Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "awaiting_review",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T17:31:19.979Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "review_passed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T17:31:19.979Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "review-outcome"
+            },
+            "timestamp": "2026-08-01T17:31:19.979Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "announce-completion"
+            },
+            "timestamp": "2026-08-01T17:31:19.979Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-08-01T17:31:19.979Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 40468,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-01T17:31:29.491Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-08-01T17:32:07.426Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "review_requires_changes",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T17:32:07.426Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "awaiting_review",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T17:32:07.426Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "review_passed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T17:32:07.426Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "recommended_outcome",
+              "source": "variables_changed",
+              "value": "approved"
+            },
+            "timestamp": "2026-08-01T17:32:07.426Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "announce-completion"
+            },
+            "timestamp": "2026-08-01T17:32:07.426Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-08-01T17:32:07.426Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-08-01T17:33:00.957Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "review_requires_changes",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T17:33:00.957Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "awaiting_review",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T17:33:00.957Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "review_passed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T17:33:00.957Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "recommended_outcome",
+              "source": "variables_changed",
+              "value": "approved"
+            },
+            "timestamp": "2026-08-01T17:33:00.957Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/383"
+            },
+            "timestamp": "2026-08-01T17:33:00.957Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "mark-ready"
+            },
+            "timestamp": "2026-08-01T17:33:00.957Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "await-review-loop"
+            },
+            "timestamp": "2026-08-01T17:33:00.957Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "process-review-comments"
+            },
+            "timestamp": "2026-08-01T17:33:00.957Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "analyze-review-outcome"
+            },
+            "timestamp": "2026-08-01T17:33:00.957Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "review-outcome"
+            },
+            "timestamp": "2026-08-01T17:33:00.957Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "announce-completion"
+            },
+            "timestamp": "2026-08-01T17:33:00.957Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-08-01T17:33:00.957Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-08-01T17:33:33.481Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "review_requires_changes",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T17:33:33.481Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "awaiting_review",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T17:33:33.481Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "review_passed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T17:33:33.481Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "recommended_outcome",
+              "source": "variables_changed",
+              "value": "approved"
+            },
+            "timestamp": "2026-08-01T17:33:33.481Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/383"
+            },
+            "timestamp": "2026-08-01T17:33:33.481Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "mark-ready"
+            },
+            "timestamp": "2026-08-01T17:33:33.481Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "await-review-loop"
+            },
+            "timestamp": "2026-08-01T17:33:33.481Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "process-review-comments"
+            },
+            "timestamp": "2026-08-01T17:33:33.481Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "analyze-review-outcome"
+            },
+            "timestamp": "2026-08-01T17:33:33.481Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "review-outcome"
+            },
+            "timestamp": "2026-08-01T17:33:33.481Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "stepId": "announce-completion"
+            },
+            "timestamp": "2026-08-01T17:33:33.481Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "complete",
+            "timestamp": "2026-08-01T17:33:33.481Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-08-01T17:33:33.481Z",
+            "type": "workflow_completed"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 52111,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T17:33:40.244Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 5430,
+              "delivery": "full",
+              "stepId": "create-complete-doc",
+              "techniqueId": "finalize-documentation::create-complete-doc"
+            },
+            "timestamp": "2026-08-01T17:33:40.244Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "create-complete-doc"
+            },
+            "timestamp": "2026-08-01T17:33:40.244Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 6984,
+              "delivery": "full",
+              "stepId": "render-token-usage",
+              "techniqueId": "finalize-documentation::render-token-usage"
+            },
+            "timestamp": "2026-08-01T17:33:40.244Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "render-token-usage"
+            },
+            "timestamp": "2026-08-01T17:33:40.244Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 2952,
+              "delivery": "full",
+              "stepId": "read-session",
+              "techniqueId": "workflow-engine::read-session"
+            },
+            "timestamp": "2026-08-01T17:33:40.244Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "read-session"
+            },
+            "timestamp": "2026-08-01T17:33:40.244Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "chars": 6555,
+              "delivery": "full",
+              "stepId": "conduct-retrospective",
+              "techniqueId": "conduct-retrospective::retrospective"
+            },
+            "timestamp": "2026-08-01T17:33:40.244Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "complete",
+            "data": {
+              "agentId": "orchestrator",
+              "stepId": "conduct-retrospective"
+            },
+            "timestamp": "2026-08-01T17:33:40.244Z",
+            "type": "step_started"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 141,
+        "seq": 152,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
-        "status": "running",
+        "status": "completed",
         "triggeredWorkflows": [],
-        "ts": 1785596826,
+        "ts": 1785605620,
         "variables": {
           "analysis_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/05-implementation-analysis.md",
           "architecture_summary": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-architecture-summary.md",
@@ -8302,11 +8897,12 @@
             "header_block_drift": [],
             "missing_sections": []
           },
+          "recommended_outcome": "approved",
           "recommended_strategic_option": "acceptable",
           "research_candidates": [],
           "research_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/04-kb-research.md",
           "resign_unsigned_commits_requested": false,
-          "review_comments_summary": "",
+          "review_comments_summary": "(none) Operator directed review=pass; empty review surface; CI green on head.",
           "review_findings": "Lean already. Ship. net: 0 after getVar trim",
           "review_mode_ambiguous": false,
           "review_passed": true,
