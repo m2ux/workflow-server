@@ -6,12 +6,7 @@
 
 ## Findings Summary
 
-| Category | Items Found | Action Required |
-|----------|-------------|-----------------|
-| Investigation Artifacts | 0 | — |
-| Over-Engineering | 0 | — |
-| Orphaned Infrastructure | 0 | — |
-| **Total** | **0** | |
+All changes justified — no findings.
 
 ## Scope Assessment
 
@@ -19,7 +14,7 @@ All changes in scope — minimal and focused.
 
 ## PR Body Conformance
 
-Body conforms after final-template refresh (test plan marks full suite complete).
+Body conforms — no findings.
 
 ## Minimality Assessment
 
@@ -29,6 +24,6 @@ All 5 minimality checks pass.
 
 **Outcome:** Passed
 
-**Rationale:** Authored surface is the reference `when` module, tests, walker/guard wiring, schema card, corpus pin, and four keep-site migrations — each maps to #379 acceptance. No investigation leftovers, unused abstractions, or orphaned infra. Signature scan: 12 commits in `main..HEAD` report `%G? = N` (unsigned); gated at `unsigned-commits-prompt`.
+**Rationale:** Authored surface is the reference `when` module, tests, walker/guard wiring, schema card, corpus pin, and four keep-site migrations — each maps to #379 acceptance. No investigation leftovers, unused abstractions, or orphaned infra. Signature scan: 12 commits in `main..HEAD` report `%G? = N` (unsigned); user declined re-sign at `unsigned-commits-prompt` (`decline-resign`).
 
-**Next Step:** Resolve unsigned-commits gate, then proceed to submit-for-review when `review_passed`.
+**Next Step:** Proceed to submit-for-review.

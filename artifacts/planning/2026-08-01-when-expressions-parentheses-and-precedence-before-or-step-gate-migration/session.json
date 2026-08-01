@@ -725,11 +725,6 @@
     {
       "sessionIndex": "PBEHLM",
       "state": {
-        "activeCheckpoint": {
-          "activityId": "strategic-review",
-          "checkpointId": "unsigned-commits-prompt",
-          "yieldedAt": "2026-08-01T11:42:00.233Z"
-        },
         "agentId": "orchestrator",
         "checkpointResponses": {
           "design-philosophy-classification-and-path-confirmed": {
@@ -801,6 +796,15 @@
             },
             "optionId": "proceed",
             "respondedAt": "2026-08-01T10:06:29.000Z"
+          },
+          "strategic-review-unsigned-commits-prompt": {
+            "effects": {
+              "variablesSet": {
+                "resign_unsigned_commits_requested": false
+              }
+            },
+            "optionId": "decline-resign",
+            "respondedAt": "2026-08-01T11:47:44.000Z"
           }
         },
         "completedActivities": [
@@ -815,11 +819,12 @@
           "implement",
           "lean-coding-audit",
           "post-impl-review",
-          "validate"
+          "validate",
+          "strategic-review"
         ],
-        "condition": "isDefault: strategic-review",
-        "currentActivity": "strategic-review",
-        "currentTechnique": "update-pr::render",
+        "condition": "condition: review_passed == true",
+        "currentActivity": "submit-for-review",
+        "currentTechnique": "strategic-review::apply-cleanup",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -903,8 +908,13 @@
           },
           {
             "id": "architecture_summary",
-            "name": "architecture-summary.md",
+            "name": "10-architecture-summary.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-architecture-summary.md"
+          },
+          {
+            "id": "strategic_review_doc",
+            "name": "12-strategic-review-1.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/12-strategic-review-1.md"
           }
         ],
         "deliveredContent": {
@@ -1003,6 +1013,27 @@
             "technique:strategic-review::verify-fragment": "df7b1bc3990d2ca3",
             "technique:summarize-architecture": "18a4ad3fa8f9eb97",
             "technique:update-pr::render": "598bb0291b20e14c",
+            "technique:workflow-engine::verify-readme-conforms": "992ad3120855445b"
+          },
+          "strategic-review-worker-resume-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:architecture-summary": "a94291da61218ce5",
+            "resource:meta/planning-readme#template": "76b16d2d30a255e4",
+            "resource:strategic-review#strategic-review-artifact-template": "6b75b017d310fa24",
+            "resource:work-package/readme-seed": "c5ced93b9c2f599a",
+            "technique:manage-artifacts::verify-artifact-conforms": "9c422b022581b8f3",
+            "technique:strategic-findings-analysis": "b75bbaaf17f770aa",
+            "technique:strategic-review::apply-cleanup": "a543cd6ef1293561",
+            "technique:strategic-review::changes-folder": "79a2b141660145c1",
+            "technique:strategic-review::document-findings": "8bc2a446ce298649",
+            "technique:strategic-review::review-scope": "fef30af10a9603af",
+            "technique:strategic-review::verify-fragment": "df7b1bc3990d2ca3",
+            "technique:summarize-architecture": "18a4ad3fa8f9eb97",
             "technique:workflow-engine::verify-readme-conforms": "992ad3120855445b"
           },
           "validate-worker": {
@@ -7368,19 +7399,507 @@
             "checkpoint": "unsigned-commits-prompt",
             "timestamp": "2026-08-01T11:42:00.233Z",
             "type": "checkpoint_reached"
+          },
+          {
+            "activity": "strategic-review",
+            "checkpoint": "unsigned-commits-prompt",
+            "data": {
+              "optionId": "decline-resign"
+            },
+            "timestamp": "2026-08-01T11:47:44.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "resign_unsigned_commits_requested",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:47:44.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "chars": 82413,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "chars": 9458,
+              "delivery": "full",
+              "stepId": "review-strategy",
+              "techniqueId": "strategic-review::review-scope"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "review-strategy"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "chars": 3483,
+              "delivery": "full",
+              "stepId": "verify-readme",
+              "techniqueId": "workflow-engine::verify-readme-conforms"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "verify-readme"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "chars": 9816,
+              "delivery": "full",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "manage-artifacts::verify-artifact-conforms"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "verify-artifact-conformance"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "chars": 6010,
+              "delivery": "full",
+              "stepId": "ensure-changes-folder-entry",
+              "techniqueId": "strategic-review::changes-folder"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "ensure-changes-folder-entry"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "chars": 5682,
+              "delivery": "full",
+              "stepId": "verify-change-fragment",
+              "techniqueId": "strategic-review::verify-fragment"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "verify-change-fragment"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "chars": 4802,
+              "delivery": "full",
+              "stepId": "document-findings",
+              "techniqueId": "strategic-review::document-findings"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "document-findings"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "chars": 5112,
+              "delivery": "full",
+              "stepId": "create-architecture-summary",
+              "techniqueId": "summarize-architecture"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "create-architecture-summary"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "chars": 4840,
+              "delivery": "full",
+              "stepId": "analyze-strategic-findings",
+              "techniqueId": "strategic-findings-analysis"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "analyze-strategic-findings"
+            },
+            "timestamp": "2026-08-01T11:48:18.014Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "chars": 2669,
+              "delivery": "full",
+              "resourceId": "strategic-review#strategic-review-artifact-template"
+            },
+            "timestamp": "2026-08-01T11:48:36.032Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "chars": 6770,
+              "delivery": "full",
+              "resourceId": "architecture-summary"
+            },
+            "timestamp": "2026-08-01T11:48:36.659Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "chars": 5561,
+              "delivery": "full",
+              "stepId": "apply-cleanup",
+              "techniqueId": "strategic-review::apply-cleanup"
+            },
+            "timestamp": "2026-08-01T11:48:37.374Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "apply-cleanup"
+            },
+            "timestamp": "2026-08-01T11:48:37.374Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "chars": 5486,
+              "delivery": "full",
+              "resourceId": "work-package/readme-seed"
+            },
+            "timestamp": "2026-08-01T11:48:37.755Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "chars": 1250,
+              "delivery": "full",
+              "resourceId": "meta/planning-readme#template"
+            },
+            "timestamp": "2026-08-01T11:48:46.582Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "strategic_review_doc",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/12-strategic-review-1.md"
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "architecture_summary",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-architecture-summary.md"
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "architecture_summary_doc",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-architecture-summary.md"
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "readme_conformance",
+              "source": "variables_changed",
+              "value": {
+                "conforms": true,
+                "extra_top_level_headings": [],
+                "header_block_drift": [],
+                "missing_sections": []
+              }
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "artifact_conformance",
+              "source": "variables_changed",
+              "value": {
+                "conforms": true,
+                "violations": []
+              }
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "fragment_references_issue",
+              "source": "variables_changed",
+              "value": null
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "changes_fragment",
+              "source": "variables_changed",
+              "value": null
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "recommended_strategic_option",
+              "source": "variables_changed",
+              "value": "acceptable"
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "strategic_findings_summary",
+              "source": "variables_changed",
+              "value": ""
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "review_passed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "needs_cleanup",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "needs_strategic_fixes",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "name": "resign_unsigned_commits_requested",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "verify-readme"
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "verify-artifact-conformance"
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "ensure-changes-folder-entry"
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "verify-change-fragment"
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "document-findings"
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "apply-cleanup"
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "create-architecture-summary"
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker-resume-1",
+              "stepId": "analyze-strategic-findings"
+            },
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "submit-for-review",
+            "timestamp": "2026-08-01T11:50:04.316Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 114,
+        "seq": 124,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785584520,
+        "ts": 1785585004,
         "variables": {
           "analysis_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/05-implementation-analysis.md",
+          "architecture_summary": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-architecture-summary.md",
+          "architecture_summary_doc": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-architecture-summary.md",
+          "artifact_conformance": {
+            "conforms": true,
+            "violations": []
+          },
           "artifact_name": "",
           "artifact_publish_ref": "",
           "assumption_batch_accepted": false,
@@ -7402,6 +7921,7 @@
           "build_dependent_artifact_commands": "",
           "build_dependent_artifacts_pending": false,
           "change_block_index": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-change-block-index.md",
+          "changes_fragment": null,
           "classification_rationale": "Inventive improvement of when dialect + evaluator fidelity; complex due to grammar/precedence, fail-closed policy, four nested fixtures, packaging, and open section-0 execution-model decision.",
           "completion_document_path": "",
           "component_name": "workflow-server",
@@ -7416,6 +7936,7 @@
           "design_philosophy_doc": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/02-design-philosophy.md",
           "elicitation_complete": true,
           "existing_pr_number": "",
+          "fragment_references_issue": null,
           "github_issue_found": true,
           "gitnexus_indexed": true,
           "has_critical_blocker": false,
@@ -7476,13 +7997,20 @@
           "provenance_log_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/08-provenance-log.md",
           "push_remote": "origin",
           "push_remote_url": "",
+          "readme_conformance": {
+            "conforms": true,
+            "extra_top_level_headings": [],
+            "header_block_drift": [],
+            "missing_sections": []
+          },
+          "recommended_strategic_option": "acceptable",
           "research_candidates": [],
           "research_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/04-kb-research.md",
           "resign_unsigned_commits_requested": false,
           "review_comments_summary": "",
           "review_findings": "Lean already. Ship. net: 0 after getVar trim",
           "review_mode_ambiguous": false,
-          "review_passed": false,
+          "review_passed": true,
           "review_posted": false,
           "review_pr_captured": false,
           "review_pr_missing": false,
@@ -7501,6 +8029,7 @@
           "strategic_findings_deferred": false,
           "strategic_findings_summary": "",
           "strategic_fixes_selective": false,
+          "strategic_review_doc": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/12-strategic-review-1.md",
           "submission_aborted": false,
           "summary_budget_overruns": [],
           "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration",
