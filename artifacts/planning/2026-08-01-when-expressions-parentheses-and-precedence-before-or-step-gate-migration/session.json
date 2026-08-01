@@ -727,8 +727,8 @@
       "state": {
         "activeCheckpoint": {
           "activityId": "submit-for-review",
-          "checkpointId": "build-artifact-check",
-          "yieldedAt": "2026-08-01T14:59:54.419Z"
+          "checkpointId": "review-received",
+          "yieldedAt": "2026-08-01T15:07:06.594Z"
         },
         "agentId": "orchestrator",
         "checkpointResponses": {
@@ -811,6 +811,15 @@
             "optionId": "decline-resign",
             "respondedAt": "2026-08-01T11:47:44.000Z"
           },
+          "submit-for-review-build-artifact-check": {
+            "effects": {
+              "variablesSet": {
+                "build_dependent_artifacts_pending": false
+              }
+            },
+            "optionId": "none-needed",
+            "respondedAt": "2026-08-01T15:05:34.000Z"
+          },
           "submit-for-review-dco-sign-off-confirmation": {
             "effects": {
               "variablesSet": {
@@ -838,7 +847,7 @@
         ],
         "condition": "condition: review_passed == true",
         "currentActivity": "submit-for-review",
-        "currentTechnique": "update-pr::verify-body",
+        "currentTechnique": "update-pr::mark-ready",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -1081,6 +1090,15 @@
             "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
             "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
             "technique:cargo-operations::run-suite": "5c8b799b383130e7"
+          },
+          "worker": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "technique:update-pr::mark-ready": "822c9a4f0f48ac57"
           },
           "worker-codebase-comprehension-PBEHLM": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -8106,17 +8124,73 @@
             "checkpoint": "build-artifact-check",
             "timestamp": "2026-08-01T14:59:54.419Z",
             "type": "checkpoint_reached"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "build-artifact-check",
+            "data": {
+              "optionId": "none-needed"
+            },
+            "timestamp": "2026-08-01T15:05:34.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "name": "build_dependent_artifacts_pending",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-01T15:05:34.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "worker",
+              "chars": 40468,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T15:05:57.337Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "worker",
+              "chars": 4841,
+              "delivery": "full",
+              "stepId": "mark-ready",
+              "techniqueId": "update-pr::mark-ready"
+            },
+            "timestamp": "2026-08-01T15:06:16.530Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "submit-for-review",
+            "data": {
+              "agentId": "worker",
+              "stepId": "mark-ready"
+            },
+            "timestamp": "2026-08-01T15:06:16.530Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "submit-for-review",
+            "checkpoint": "review-received",
+            "timestamp": "2026-08-01T15:07:06.594Z",
+            "type": "checkpoint_reached"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 136,
+        "seq": 141,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785596394,
+        "ts": 1785596826,
         "variables": {
           "analysis_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/05-implementation-analysis.md",
           "architecture_summary": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-architecture-summary.md",

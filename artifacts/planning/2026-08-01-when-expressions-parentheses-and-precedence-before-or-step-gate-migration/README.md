@@ -48,7 +48,7 @@ Ship a single reference `when` expression module (parentheses, C-style precedenc
 | 23 | [Architecture summary](10-architecture-summary.md) | Stakeholder architecture overview | 15-30m | ✅ |
 | 24 | Validation | Build, test, lint verification | 15-30m | ✅ |
 | 25 | [Strategic review](12-strategic-review-1.md) | Scope/minimality series (`strategic-review-{n}`) | 15-30m | ✅ |
-| 26 | Submit for review | PR review lifecycle / stealth push | 30-60m | ⬚ |
+| 26 | Submit for review | PR review lifecycle / stealth push | 30-60m | 🟡 |
 | 27 | [Close-out](14-COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | ⬚ |
 | 28 | [Token usage](14-token-usage.md) | Session token and cost summary | 5-10m | ⬚ |
 | 29 | [Session trace](14-session-trace.md) | Lean mechanical execution trace | 5-10m | ⬚ |
