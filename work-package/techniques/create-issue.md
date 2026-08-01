@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.1.0
+  version: 3.1.1
 ---
 
 ## Capability
@@ -43,13 +43,17 @@ URL of the verified or newly created issue.
 
 ### 1. Verify Existing Issue
 
-- Runs when user provides an existing issue key. Detect the platform from key format: `#N` or bare number → GitHub, `PROJ-N` → Jira. Set `{issue_platform}`.
-- If no issue key was given and the platform is ambiguous (user did not select GitHub or Jira), obtain the user's platform selection before proceeding.
+- Runs only when the user provides an existing issue key. Detect the platform from key format: `#N` or bare number → GitHub, `PROJ-N` → Jira. Set `{issue_platform}`.
 - For GitHub: run `gh issue view <number>` to confirm the issue exists. Capture `{issue_number}` and `{issue_url}`.
 - For Jira: call `getAccessibleAtlassianResources` FIRST to obtain cloudId, preserve as `{$jira_cloud_id}`. THEN call `getJiraIssue` with cloudId and the issue key. Do NOT call `getJiraIssue` before cloudId is resolved.
 - Capture `{issue_number}` and `{issue_url}` from the verification result. Set `{needs_issue_creation}` to false.
 
-### 2. Create Github Issue
+### 2. Resolve Platform For Creation
+
+- Runs when no existing issue key was given. Set `{needs_issue_creation}` to true.
+- If the platform is ambiguous (user did not select GitHub or Jira), obtain the user's platform selection and set `{issue_platform}` before creating.
+
+### 3. Create Github Issue
 
 - Runs when `{issue_platform}` is github and `{needs_issue_creation}` is true. Use the [issue template](../resources/github-issue-creation.md#issue-template) and [section rules](../resources/github-issue-creation.md#section-rules) (and [anti-patterns](../resources/github-issue-creation.md#anti-patterns) when checking the draft).
 - Gather title, description, and acceptance criteria from user context, scoping the issue to the `{component_name}` the work package targets
@@ -58,7 +62,7 @@ URL of the verified or newly created issue.
 - GitHub label mapping: `feature->enhancement`, `bug->bug`, `task->chore`, `enhancement->enhancement`
 - If a `gh` CLI command fails (auth, permissions, or network — including the `gh issue view` verification in step 1), verify `gh` auth status and repository access, then retry or prompt the user to create the issue manually.
 
-### 3. Create Jira Issue
+### 4. Create Jira Issue
 
 - Runs when `{issue_platform}` is jira and `{needs_issue_creation}` is true. Use the [issue structure](../resources/jira-issue-creation.md#issue-structure) and [issue types](../resources/jira-issue-creation.md#issue-types) (and [anti-patterns](../resources/jira-issue-creation.md#anti-patterns) when checking the draft).
 - Obtain Atlassian cloud ID via `getAccessibleAtlassianResources` and preserve as `{$jira_cloud_id}`. This MUST be the first Jira tool call.
