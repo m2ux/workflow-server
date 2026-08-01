@@ -529,13 +529,6 @@
     },
     {
       "check": "read-resolution",
-      "site": "work-package/techniques/manage-git/detect-merge-strategy.md:26",
-      "detail": "{allow_squash_merge} has no producer (declared id / $-local / workflow var / set-target)",
-      "verdict": "harmless",
-      "rationale": "external-tool-syntax"
-    },
-    {
-      "check": "read-resolution",
       "site": "work-package/techniques/review-summary.md:81",
       "detail": "{sha} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
