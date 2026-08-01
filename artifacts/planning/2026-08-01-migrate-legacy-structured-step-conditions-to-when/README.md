@@ -10,7 +10,7 @@
 
 Migrates every legacy structured step `condition:` block with a plain comparison to the equivalent inline `when:` expression across the workflow corpus (#338 W7 / #189 C8), closing the last duplicate-declaration duality between the two step-gate dialects. Checkpoint steps and exists-shaped predicates stay structured, with every site's disposition recorded in a migration register, so the corpus matches the schema's stated direction without any semantic change.
 
-**[PR #383](https://github.com/m2ux/workflow-server/pull/383) reconcile:** the four OR keep-sites this run originally left structured now use parenthesized `when:` (cherry-pick `d891ed73` onto `workflow/338-when-migration`). Host evaluator + `check:when` are the authority for mixed `&&`/`||`. Register totals: **149 migrated**, 0 OR-kept, 1 NOT-kept.
+**[PR #383](https://github.com/m2ux/workflow-server/pull/383) reconcile:** the four OR keep-sites this run originally left structured now use parenthesized `when:` (cherry-pick `d891ed73`); the NOT keep-site `structural-analysis-inline` is `when: problem_complexity != 'complex'`. Host evaluator + `check:when` are the authority for mixed `&&`/`||` and `!=`. Register totals: **150 migrated**, 0 OR-kept, 0 NOT-kept.
 
 ## Problem Overview
 

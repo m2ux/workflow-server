@@ -33,7 +33,7 @@ Manifest delivered exactly — 38 of 38 entries addressed; no unplanned files on
 
 - **Checkpoint `condition` blocks stay structured** — migration gated on server work that makes `when` enable `condition_not_met` dismissal; see change brief out-of-scope.
 - **Exists-shaped and `while`/`doWhile` continuation predicates stay structured** — no live `when` form / not step gates.
-- **OR-shaped compound step gates** — originally kept structured (no live `||` precedent at draft time); after [PR #383](https://github.com/m2ux/workflow-server/pull/383) they migrate to parenthesized `when:` on this branch. **NOT-shaped** compound remains structured (`structural-analysis-inline`).
+- **OR- and NOT-shaped compound step gates** — originally kept structured at draft time; after [PR #383](https://github.com/m2ux/workflow-server/pull/383) all five migrate on this branch (parenthesized `||`; `structural-analysis-inline` as `when: problem_complexity != 'complex'`).
 - **Delivery PR is #374** on `workflow/338-when-migration` at the migration tip; #378 was a sibling head opened mid-run and is closed as duplicate.
 - **Edit worktree** must remain until meta closure is confirmed (premature `remove-worktree` was reversed this session; see retrospective).
 - **Planning artifacts** (including this close-out and the findings register) live on the engineering branch; host main submodule pointers are out of this activity’s commit surface.

@@ -23,7 +23,7 @@ Site counts are candidate sites from the [impact analysis](01-impact-analysis.md
 | 5 | `work-package/activities/06-plan-prepare.yaml` | activity | modify | 1 plain step gate becomes `when:` |
 | 6 | `work-package/activities/07-assumptions-review.yaml` | activity | modify | 5 step gates become `when:` (incl. 1 forEach entry gate) |
 | 7 | `work-package/activities/08-implement.yaml` | activity | modify | 2 step gates become `when:` (incl. 1 forEach entry gate) |
-| 8 | `work-package/activities/10-post-impl-review.yaml` | activity | modify | 3 step gates become `when:` (incl. 1 forEach entry gate; 1 NOT-shaped kept) |
+| 8 | `work-package/activities/10-post-impl-review.yaml` | activity | modify | 4 step gates become `when:` (incl. 1 forEach entry gate; NOT-shaped `structural-analysis-inline` migrated after #383) |
 | 9 | `work-package/activities/11-validate.yaml` | activity | modify | 4 plain/compound step gates become `when:` |
 | 10 | `work-package/activities/12-strategic-review.yaml` | activity | modify | 4 plain/compound step gates become `when:` |
 | 11 | `work-package/activities/13-submit-for-review.yaml` | activity | modify | 17 plain/compound step gates become `when:` |

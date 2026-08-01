@@ -36,7 +36,7 @@ None of the update dimension set's members (purpose, activity list, checkpoints,
 
 | Dimension | This run's shape |
 |-----------|------------------|
-| Step gates (cross-cutting) | Up to 152 candidate sites in 31 activity files across 6 workflows become `when:` — `work-package` 71, `workflow-design` 66, `prism` 9, `meta` 4, `prism-audit` 1, `substrate-node-security-audit` 1. Includes 9 `forEach`-loop entry gates (`over` drives iteration, so their `condition` is a pure gate). Compound sites: `&&` was already precedented; after [PR #383](https://github.com/m2ux/workflow-server/pull/383), parenthesized `\|\|` is also live — the four OR keep-sites migrate to `when:`; NOT-shaped compounds stay structured |
+| Step gates (cross-cutting) | Up to 152 candidate sites in 31 activity files across 6 workflows become `when:` — `work-package` 71, `workflow-design` 66, `prism` 9, `meta` 4, `prism-audit` 1, `substrate-node-security-audit` 1. Includes 9 `forEach`-loop entry gates (`over` drives iteration, so their `condition` is a pure gate). Compound sites: `&&` was already precedented; after [PR #383](https://github.com/m2ux/workflow-server/pull/383), parenthesized `\|\|` and unary/`!=` NOT forms are live — the four OR keep-sites and the one NOT keep-site migrate to `when:` |
 | Kept sites | 86 sites stay structured with a reason each: 63 checkpoint gates, 6 exists-shaped predicates, 17 `while`/`doWhile` continuation predicates |
 
 ---

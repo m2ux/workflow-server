@@ -10,17 +10,17 @@ Every structured step-condition site in the corpus — a `condition:` block on a
 
 | Disposition | Count |
 |-------------|-------|
-| Migrated to `when:` | 149 |
+| Migrated to `when:` | 150 |
 | Kept — checkpoint gate (dismissal seam) | 63 |
 | Kept — `while`/`doWhile` continuation predicate | 17 |
 | Kept — exists-shaped predicate | 8 |
 | Kept — OR-shaped compound (no live `when` precedent) | 0 |
-| Kept — NOT-shaped compound (no live `when` precedent) | 1 |
+| Kept — NOT-shaped compound (no live `when` precedent) | 0 |
 | **Total structured step-condition sites** | **238** |
 
 Kept-class reasons are the [change brief](01-change-brief.md)'s Out-of-scope rulings; each row restates only its class. Checkpoint sites stay structured until server PR `feat/when-merge-rule-fragments-ap134-guard` merges (co-change constraint).
 
-**PR [#383](https://github.com/m2ux/workflow-server/pull/383) accounting:** the four OR-shaped step gates that this register originally kept (no live `||` precedent) are now migrated to parenthesized `when:` via cherry-pick of `d891ed73` (`feat(workflows): migrate four OR step gates to parenthesized when`). Host carries the shared `when-expression` evaluator and `check:when` guard; mixed `&&`/`||` without parentheses is a hard fail. The NOT-shaped keep on `structural-analysis-inline` is unchanged.
+**PR [#383](https://github.com/m2ux/workflow-server/pull/383) accounting:** the four OR-shaped step gates that this register originally kept (no live `||` precedent) are now migrated to parenthesized `when:` via cherry-pick of `d891ed73` (`feat(workflows): migrate four OR step gates to parenthesized when`). Host carries the shared `when-expression` evaluator and `check:when` guard; mixed `&&`/`||` without parentheses is a hard fail. The former NOT-shaped keep on `structural-analysis-inline` is migrated to `when: problem_complexity != 'complex'`.
 
 ## Reconciliation with the impact analysis
 
@@ -28,7 +28,7 @@ The [impact analysis](01-impact-analysis.md) estimated 152 migratable candidates
 
 - `meta/activities/00-discover-session.yaml` — estimated 1 plain step gate; actually holds only kept-class sites (3 checkpoint gates, 2 exists action gates), so the file drops out of the edit set (30 activity files edited, not 31).
 - Exists-shaped sites number 8 (6 in `work-package`, 2 in `meta`), two more than estimated; they were counted inside the 152.
-- 5 compound sites were OR/NOT-shaped at first draft (4 OR + 1 NOT). After [PR #383](https://github.com/m2ux/workflow-server/pull/383), the 4 OR sites migrate to parenthesized `when:`; the NOT-shaped site stays structured.
+- 5 compound sites were OR/NOT-shaped at first draft (4 OR + 1 NOT). After [PR #383](https://github.com/m2ux/workflow-server/pull/383), all five migrate to `when:` (parenthesized `||` for OR; `!=` for the NOT-shaped site).
 
 ## Dispositions
 
@@ -99,7 +99,7 @@ The [impact analysis](01-impact-analysis.md) estimated 152 migratable candidates
 | 61 | `activities/09-lean-coding-audit.yaml` | `audit-findings-confirmed` | checkpoint gate | kept — checkpoint gate: only structured `condition` enables `condition_not_met` dismissal — was `is_review_mode != true` |
 | 62 | `activities/09-lean-coding-audit.yaml` | `simplification-apply-cycle` | loop continuation | kept — `while`/`doWhile` continuation predicate, not a step gate — was `needs_simplification == true` |
 | 63 | `activities/10-post-impl-review.yaml` | `block-interview-loop` | forEach entry gate | migrated -> `when: has_flagged_blocks == true` |
-| 64 | `activities/10-post-impl-review.yaml` | `structural-analysis-inline` | step gate | kept — NOT combinator has no live `when` precedent — was `!(problem_complexity == "complex")` |
+| 64 | `activities/10-post-impl-review.yaml` | `structural-analysis-inline` | step gate | migrated -> `when: problem_complexity != 'complex'` — NOT keep-site via unary/`!=` dialect from [PR #383](https://github.com/m2ux/workflow-server/pull/383) |
 | 65 | `activities/10-post-impl-review.yaml` | `dispatch-prism` | step gate | migrated -> `when: problem_complexity == 'complex'` |
 | 66 | `activities/10-post-impl-review.yaml` | `review-fix-cycle` | loop continuation | kept — `while`/`doWhile` continuation predicate, not a step gate — was `needs_code_fixes == true || needs_test_improvements == true` |
 | 67 | `activities/10-post-impl-review.yaml` | `architecture-summary` | step gate | migrated -> `when: skip_architecture_summary != true` |
