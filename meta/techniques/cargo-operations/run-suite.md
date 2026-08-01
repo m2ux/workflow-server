@@ -57,4 +57,4 @@ aggregate verdict — true iff all four per-op statuses passed (equivalently, `f
 
 ### combine-only
 
-This technique folds gathered `{unit_results}` into `{validation_results}`. It does not scatter process units, wait-all, or gather — those verbs belong to [unit-fan-out](../unit-fan-out.md). It does not Protocol-Apply unit-fan-out or other techniques ([pass-orchestration-in-technique](../../../workflow-design/resources/anti-patterns.md#ap-114-pass-orchestration-in-technique)).
+Folds gathered `{unit_results}` into `{validation_results}`. Does not scatter process units, wait-all, gather, or Protocol-Apply techniques.

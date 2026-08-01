@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Run the four independent behavioral lenses over the target, each augmented with graph evidence where the graph can measure its claims. This technique is atomic lens work — load prompts, run lens operations, augment, write artifacts. Agent/lens parallel dispatch is the verb of [scatter-gather](../../../meta/techniques/scatter-gather.md) (parallel mode) and [spawn-concurrent](../../../meta/techniques/harness-compat/spawn-concurrent.md), not of this Protocol.
+Run the four independent behavioral lenses over the target, each augmented with graph evidence where the graph can measure its claims. Atomic lens work: load prompts, run lens operations, augment, write artifacts.
 
 ## Outputs
 
@@ -56,17 +56,17 @@ What the code promises outward: the public surface and its callers. Role label P
 
 ### 3. Apply Independent Lenses
 
-- Run each of the four lenses against the target content as independent lens work units. The four lenses share no context; only a later synthesis pass depends on their outputs. When this op is bound once per lens unit (after scatter under scatter-gather parallel mode or spawn-concurrent), execute the lens body for that unit; when bound once over all four, execute each lens body in turn and emit the four analysis products.
+- Run each of the four lenses against the target content as independent lens work units. The four lenses share no context; only a later synthesis pass depends on their outputs. When bound once per lens unit, execute the lens body for that unit; when bound once over all four, execute each lens body in turn and emit the four analysis products.
 - Execute every operation completely — the analytical depth comes from the full chain
 
 ### 4. Augment With Graph
 
-- After lens execution, check GitNexus availability via [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../../meta/techniques/gitnexus-operations/verify-index.md). If unavailable, skip graph augmentation.
-- `{error_resilience_analysis}`: Use [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../../meta/techniques/gitnexus-operations/context.md) on error-returning functions identified by the lens to check whether all callers handle the error. Append a 'Graph Evidence: Error Propagation' section with measured error-handling completeness per function.
-- `{evolution_analysis}`: Use [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../../meta/techniques/gitnexus-operations/impact.md)`(direction: 'upstream')` on coupling points identified by the lens to measure blast radius quantitatively. Append a 'Graph Evidence: Coupling Measurement' section with measured affected-symbol and affected-process counts.
-- `{api_surface_analysis}`: Use [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../../meta/techniques/gitnexus-operations/cypher.md) to enumerate exported/public symbols with caller counts (`MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(fn) RETURN fn.name, fn.filePath, count(caller) ORDER BY count(caller) DESC`). Append a 'Graph Evidence: Measured API Surface' section with the actual public surface from the graph.
+- After lens execution, when a symbol/call graph index for the target is available, append measured graph evidence; when it is not, skip this phase.
+- `{error_resilience_analysis}`: On error-returning functions the lens identified, measure caller error-handling completeness from the graph. Append a 'Graph Evidence: Error Propagation' section per function.
+- `{evolution_analysis}`: On coupling points the lens identified, measure upstream blast radius (affected symbols and processes). Append a 'Graph Evidence: Coupling Measurement' section.
+- `{api_surface_analysis}`: Enumerate exported/public symbols with caller counts from the graph. Append a 'Graph Evidence: Measured API Surface' section.
 - `{cost_analysis}`: No graph augmentation — optimization analysis concerns algorithmic complexity, not graph structure.
-- GitNexus data is appended as a 'Graph Evidence' section at the end of each behavioral artifact. The lens output stands alone; graph data provides supplementary measurement that the synthesis pass can reference.
+- Graph data is a 'Graph Evidence' section at the end of each behavioral artifact. The lens output stands alone; graph data is supplementary measurement for later synthesis.
 
 ### 5. Write Artifacts
 
@@ -76,4 +76,4 @@ What the code promises outward: the public surface and its callers. Role label P
 
 ### independent-lenses-atomic
 
-This technique is atomic lens work: load prompts, run lens operations, augment, write artifacts. It does not scatter agent instances, wait-all, or gather — those verbs belong to [scatter-gather](../../../meta/techniques/scatter-gather.md) and [spawn-concurrent](../../../meta/techniques/harness-compat/spawn-concurrent.md). Protocol does not Apply those homes ([pass-orchestration-in-technique](../../../workflow-design/resources/anti-patterns.md#ap-114-pass-orchestration-in-technique); [Prefer Parallel Independent Work via Formal Fan-Out](../../../workflow-design/resources/design-principles.md#33-prefer-parallel-independent-work-via-formal-fan-out)).
+Atomic lens work: load prompts, run lens operations, augment, write artifacts. Does not scatter agent instances, wait-all, gather, or Protocol-Apply techniques.

@@ -36,6 +36,6 @@ Cargo operations MUST run synchronously in the foreground of the caller. Never i
 
 During inner loops (TDD red/green in implement-task) prefer build_scope=`-p <crate>`. Run `--workspace` once during final validation to match CI.
 
-### multi-op-concurrent-fan-out
+### one-invocation-per-leaf
 
-When two or more independent cargo process/shell units must run as a concurrent suite (wait-all, ordered gather), use [unit-fan-out](../unit-fan-out.md) for scatter/wait-all/gather with the unit roster, `{dispatch_concurrency}`, and per-unit resource budgets on that contract's inputs, then a pure combine op that folds `{unit_results}` into the product envelope. Cargo technique Protocols do not Apply unit-fan-out or other techniques for that fan-out ([pass-orchestration-in-technique](../../../workflow-design/resources/anti-patterns.md#ap-114-pass-orchestration-in-technique); [Prefer Parallel Independent Work via Formal Fan-Out](../../../workflow-design/resources/design-principles.md#33-prefer-parallel-independent-work-via-formal-fan-out); `prose-based-dispatch-patterns`).
+Each cargo leaf Protocol runs one cargo invocation (or pure combine over already-gathered unit outcomes). Does not scatter multi-op process suites, wait-all, gather, or Protocol-Apply techniques.

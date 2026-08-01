@@ -701,15 +701,15 @@ Prose prescribes a harness/MCP tool-call recipe.
 
 ### AP-51. canonical-technique-reference
 
-"Use `gitnexus_context` on the symbol"
+"Use `gitnexus_context` on the symbol" (from a peer technique that is not the wrap)
 
-A raw harness tool name is used where a wrapping op exists.
+A raw harness tool name is used for a capability that already has a wrapping technique, **or** a peer technique cites that wrap by name/link/Apply (forbidden under `technique-references-technique`).
 
-**Detect:** Protocol names a raw harness/MCP tool for a capability that another technique wraps. Must use the canonical hyperlink (`[op](path)` or `[group](path)::[op](path)`), resolved by the server to `::`. Raw names couple to a harness and bypass the navigable reference model (also `consistent-tool-names`).
+**Detect:** (a) Protocol on a non-wrapper technique names a raw harness/MCP tool whose capability is owned by a wrapping technique elsewhere; or (b) any technique body references another technique to reach that capability. Wrappers own the tool name; peers neither call the raw tool nor cite the wrapper.
 
-**Do not flag:** The operation that wraps the primitive — naming the raw tool IS that technique's purpose.
+**Do not flag:** The wrapping technique itself — naming the raw tool IS that op's purpose. Activity `steps[]` that bind the wrapper. Resource cites.
 
-**Fix:** Replace the raw tool name with the canonical hyperlinked wrapping op; preserve arguments.
+**Fix:** Bind the wrapping technique as an **activity step** where the capability is needed; delete peer Protocol tool recipes and every technique→technique cite (`technique-references-technique`). Do not "fix" a peer by hyperlinking the wrapper.
 
 ### AP-52. brace-declared-ids
 
@@ -1479,13 +1479,13 @@ A technique performs or prescribes human/session interaction.
 
 "`run-audit-passes`: Apply audit-expressiveness…" / "`publish-workflow-pr`: Apply push-branch, then create-pr…" / "`run-suite`: Apply unit-fan-out…"
 
-A technique's Protocol invokes other techniques to do work — sequencing sibling or shared operations the activity should bind as consecutive steps.
+A technique's Protocol invokes other techniques to do work — the work-invoke form of `technique-references-technique` (AP-142).
 
-**Detect:** Technique Capability or Protocol applies, invokes, or runs another technique/operation for work via Protocol `Apply [technique]` / `::` op invocation (one or many). Signals: numbered phases that are each "Apply […]"; Capability that names a multi-pass audit/pipeline or a façade over shared ops; Outputs that only re-export children. Test: if moving each invoked op to its own activity `steps[]` entry (keeping any local value-assembly technique separate) preserves behavior, flag it.
+**Detect:** Technique Capability or Protocol applies, invokes, or runs another technique/operation for work via Protocol `Apply [technique]` / `::` op invocation (one or many). Signals: numbered phases that are each "Apply […]"; Capability that names a multi-pass audit/pipeline or a façade over shared ops; Outputs that only re-export children. Test: if moving each invoked op to its own activity `steps[]` entry (keeping any local value-assembly technique separate) preserves behavior, flag it. Any non-invoke technique cite is still AP-142.
 
-**Do not flag:** Citing resources (including creation-guide Templates); non-invoking technique hyperlinks used as documentation/canonical reference; loader `Initial`/`Final` wrap and container I/O merge; activity `steps[]` technique binds; activity borrow/bind/include of reusable orchestration patterns; tools; a single capability whose protocol phases are facets of one produce path over tools and resources (load → derive → persist *one* product bag) with no Protocol Apply/`::` work invoke; stage/gate locus without an op inventory (`technique-stage-agnostic`).
+**Do not flag:** Citing resources (including creation-guide Templates); loader `Initial`/`Final` wrap and container I/O merge; activity `steps[]` technique binds; activity borrow/bind/include of reusable orchestration patterns; tools; a single capability whose protocol phases are facets of one produce path over tools and resources (load → derive → persist *one* product bag) with **no** technique name, link, or Apply; stage/gate locus without an op inventory (`technique-stage-agnostic`).
 
-**Fix:** Delete the façade or strip Apply/`::` work invokes from the Protocol; bind each sibling or shared operation as its own activity step in the order required; keep only distinct local value assembly (if any) as a separate atomic technique. See [Bind Sibling Operations as Steps](./design-principles.md#25-bind-sibling-operations-as-steps), [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`. Related: `prose-based-dispatch-patterns` (AP-140) — free concurrent recipes belong on activity-bound formal contracts, not Protocol Apply façades.
+**Fix:** Strip every technique reference (Apply, `::`, hyperlink, prose name); bind each needed op as its own activity step in the order required; keep only distinct local value assembly (if any) as a separate atomic technique over tools and resources. See AP-142, [Bind Sibling Operations as Steps](./design-principles.md#25-bind-sibling-operations-as-steps), [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities). Related: `prose-based-dispatch-patterns` (AP-140).
 
 ### AP-115. platform-semantics-in-capability
 
@@ -1611,13 +1611,13 @@ Mutually exclusive operation variants — or standing host-invoke policy — are
 
 "`challenge_findings` — Ordered per-perspective findings from [challenge](./challenge.md)" / "`applied_fixes` … via [manage-git](…)::[commit-paths](…)" / "`concurrency` … parallel fan-out via [spawn-concurrent](…)"
 
-An Input or Output description hyperlinks or otherwise associates the bind slot with a **technique** (sibling op, group, or cross-workflow technique), as if the agent should Apply or consult that technique to understand the value.
+An Input or Output description names or hyperlinks a **technique** — the I/O form of `technique-references-technique` (AP-142).
 
-**Detect:** A technique `## Inputs` or `## Outputs` entry description contains a markdown hyperlink to a technique file (`**/techniques/**/*.md`, group `TECHNIQUE.md`, or equivalent `::` technique citation), or prose that names another technique as the producer/consumer/executor of the value ("from [challenge]", "via [commit-paths]", "ready for [dispatch-workers]", "folded by [run-suite]"). Inputs/Outputs are bind contracts — what the value *is* — not an invitation to execute another op. Test: if following the link would take the agent into another technique's Protocol/Rules to interpret the slot, flag it.
+**Detect:** A technique `## Inputs` or `## Outputs` entry description contains a markdown hyperlink to a technique file, a `::` technique citation, or prose that names another technique as producer/consumer/executor of the value. Inputs/Outputs are bind contracts — what the value *is*.
 
-**Do not flag:** Resource hyperlinks (templates, guides, policy sections under `**/resources/**`) that clarify value shape or vocabulary — e.g. "one question is posed from it per [requirements-elicitation](…/resources/requirements-elicitation.md)"; bare technique *id strings* when the slot's value *is* a technique id (`agent_technique`, `harness_technique`) without a navigable technique hyperlink; Protocol/Rules that correctly Apply or cite techniques; I/O HOW without a technique association (`procedure-in-io-contract`).
+**Do not flag:** Resource hyperlinks under `**/resources/**`; bare technique *id strings* when the slot's value *is* a technique id (`agent_technique`, `harness_technique`) with no navigable technique hyperlink and no invitation to open that op; I/O HOW without a technique association (`procedure-in-io-contract`).
 
-**Fix:** Rewrite the I/O description as bind-contract meaning/shape only (no technique hyperlink). Move producer/consumer/Apply relationships into Protocol (or activity `steps[]` binds). See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); also `procedure-in-io-contract`, `io-agnostic-contract`, `canonical-technique-reference` (Protocol-side).
+**Fix:** Rewrite the I/O description as bind-contract meaning/shape only. Composition lives in activity `steps[]`. See AP-142, [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); also `io-agnostic-contract`.
 
 ## Authoring Guidance (MR)
 
@@ -1849,6 +1849,18 @@ A container technique (group or workflow-root `TECHNIQUE.md`) names, links, or c
 
 **Detect:** On a container `TECHNIQUE.md` (or equivalent group/root contract file), Capability, Inputs/Outputs descriptions, Protocol, or Rules (a) hyperlink or path-cite a technique file under the same group/folder tree, (b) name a descendant op as actor, exception, exemplar, or "do not apply X there", or (c) restate a leaf Protocol duty that only one inheriting op needs. Test: if the sentence must be edited when a child is added, renamed, or removed — or only makes sense because that child inherits this file — flag it. Containers state **shared** domain contract; descendants own their own Protocol and any leaf-only carve-outs. Leaves already receive container Rules/I/O via loader merge — the parent does not address them by name.
 
-**Do not flag:** Leaf techniques that cite peer or external ops for work they actually perform (still subject to `pass-orchestration-in-technique`, `technique-ref-in-io-contract`, `canonical-technique-reference`). Container prose that states domain classes without naming folder children ("format-only cargo invocations use only nice"; "compile invocations carry the full env budget"). Indexes and READMEs that catalogue ops (`readme-orients-not-transcribes`, `capability-as-op-inventory` for Capability inventories). Design-time homes (this catalogue, design principles, creation guides). Activity YAML binds. Shared I/O/Rules that apply uniformly to every descendant without naming who.
+**Do not flag:** Container prose that states domain classes without naming folder children ("format-only cargo invocations use only nice"; "compile invocations carry the full env budget"). Indexes and READMEs that catalogue ops (`readme-orients-not-transcribes`, `capability-as-op-inventory` for Capability inventories). Design-time homes (this catalogue, design principles, creation guides). Activity YAML binds. Shared I/O/Rules that apply uniformly to every descendant without naming who. Any leaf→peer technique cite is `technique-references-technique`, not a container carve-out.
 
 **Fix:** Delete the child name, link, and carve-out. Put shared policy in domain terms every inheritor can apply (predicate on the work, not on the op id). Put leaf-only Protocol, budgets, and exceptions on the leaf that owns that invocation. Prefer removing a parent exception that exists only because a blanket parent rule was too wide — narrow the shared rule so the exception disappears. See [State Contract Contribution](./design-principles.md#27-state-contract-contribution); also `capability-as-op-inventory`, `platform-semantics-in-capability`, `overlapping-rule-scopes`, `single-rule-authority`.
+
+### AP-142. technique-references-technique
+
+"Apply [unit-fan-out]" / "via [harness-compat]::[spawn-concurrent]" / "those verbs belong to [scatter-gather]" / "per [variable-binding]" / "`fix_strategy` from [analyze-failure]" / "Honor [scatter-gather]::parallelism-is-optimisation"
+
+A technique's definition prose — Capability, Inputs, Outputs, Protocol, or Rules — names, hyperlinks, `::`-cites, or Protocol-Applies **another technique** (sibling, group, cross-workflow, or meta op).
+
+**Detect:** Anywhere in a technique markdown body (including container `TECHNIQUE.md` Rules), a reference whose target is another technique file or op: markdown link to `**/techniques/**`, `group::op` / `[group]::[op]`, Protocol `Apply [technique]`, dotted rule address into another technique, or bare prose that identifies another technique as producer, consumer, owner, dependency, or next step. Test: if understanding or executing this op requires resolving another technique's definition, the wrong layer is composing — that graph belongs in **activity** `steps[]` (and checkpoints/loops). Techniques take inputs, process over **tools and resources**, and emit outputs. They do not form a technique call graph.
+
+**Do not flag:** Resource hyperlinks (`**/resources/**`, creation guides, design principles, this catalogue). Tool / MCP / shell names on the harness surface. Brace `{id}` bag designators. Activity YAML `technique:` binds and strategy lists. Indexes and READMEs that catalogue ops without embedding call graphs in op bodies (`readme-orients-not-transcribes`). Loader container→leaf **merge** of shared I/O/Rules (platform composition — not a prose reference from leaf to sibling). A technique that is itself the leaf home for a tool may name that tool (`canonical-technique-reference` on the wrapper only).
+
+**Fix:** Delete every technique→technique reference. If the missing edge is real work sequencing, bind each op as its own activity step in order. If the missing edge is shared vocabulary or policy, put it in a **resource** and cite the resource. If the missing edge is only scope colour ("not me — X does"), keep a bare negation or positive capability with no peer name. See [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities), [Bind Sibling Operations as Steps](./design-principles.md#25-bind-sibling-operations-as-steps). Subsumes and strengthens: `pass-orchestration-in-technique` (Apply is one form), `technique-ref-in-io-contract`, `foreign-owner` / scope-negation peer names, `container-names-inheriting-ops` when the named child is cited as a peer technique from the container body.
