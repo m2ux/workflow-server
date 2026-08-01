@@ -7,43 +7,11 @@ steps:
   - kind: technique
     id: create-adr
     technique: create-adr
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: or
-          conditions:
-            - type: simple
-              variable: problem_complexity
-              operator: ==
-              value: moderate
-            - type: simple
-              variable: problem_complexity
-              operator: ==
-              value: complex
+    when: is_review_mode != true && (problem_complexity == "moderate" || problem_complexity == "complex")
   - kind: technique
     id: update-adr-status
     technique: finalize-documentation::update-adr
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_review_mode
-          operator: "!="
-          value: true
-        - type: or
-          conditions:
-            - type: simple
-              variable: problem_complexity
-              operator: ==
-              value: moderate
-            - type: simple
-              variable: problem_complexity
-              operator: ==
-              value: complex
+    when: is_review_mode != true && (problem_complexity == "moderate" || problem_complexity == "complex")
   - kind: technique
     id: finalize-test-plan
     technique: finalize-documentation::finalize-test-plan
