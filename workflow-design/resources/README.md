@@ -65,7 +65,7 @@ Each creation guide has a **Template** section and **Rules** for lean, decision-
 
 ### 00 — Design Principles
 
-*Prefer / before / only after* stance — broader than any one defect; avoids families of smells. No Detect triad here; specific bad instances live in the anti-pattern catalog. Includes **§1 Workflows Ossify Patterns** (why workflows exist — reuse of fixed patterns vs on-the-fly novelty), **§26 Atomic Techniques; Compose at Activities**, **§28 Creation Guide for Generated Documents** (every persisted planning artifact maps to a Template+Rules guide), **§29 Cite Resource Policy; Do Not Restate It** (technique Protocol cites resource policy; does not re-author the matrix), and **§30 Resources at the Abstract Level; Split for Section Delivery** (resources describe abstract kinds/roles and template skeletons — concrete artifact names and variable bindings live in the technique — and multi-part resources split into per-category sections, with shared scales/mappings grouped under one shared section, so a consumer fetches only the unit it needs).
+*Prefer / before / only after* stance — broader than any one defect; avoids families of smells. No Detect triad here; specific bad instances live in the anti-pattern catalog. Includes **§1 Workflows Ossify Patterns** (why workflows exist — reuse of fixed patterns vs on-the-fly novelty), **§26 Atomic Techniques; Compose at Activities**, **§28 Creation Guide for Generated Documents** (every persisted planning artifact maps to a Template+Rules guide), **§29 Cite Resource Policy; Do Not Restate It** (technique Protocol cites resource policy; does not re-author the matrix), **§30 Resources at the Abstract Level; Split for Section Delivery** (resources describe abstract kinds/roles and template skeletons — concrete artifact names and variable bindings live in the technique — multi-part resources split into per-category sections; content a section-scoped reader depends on lives in a section), and **§32 Cite Resources at Section Grain** (citations name the narrowest deliverable section).
 
 ### 01 — Schema Construct Inventory
 
@@ -73,7 +73,7 @@ Four mapping tables that translate informal prose patterns into formal schema eq
 
 ### 02 — Anti-Patterns
 
-Specific smell instances — Detect / Do not flag / Fix. Cite by kebab-case smell **name**.
+Specific smell instances — Detect / Do not flag / Fix. Cite by kebab-case smell **name**. Section-delivery family includes `whole-resource-for-one-section` and `framing-outside-any-section`.
 
 ### 03 — Update Mode Guide
 
