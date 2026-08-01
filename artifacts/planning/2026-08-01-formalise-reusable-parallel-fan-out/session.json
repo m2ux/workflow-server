@@ -5,23 +5,25 @@
   "workflowVersion": "5.14.0",
   "agentId": "orchestrator",
   "sessionIndex": "PWHY6O",
-  "currentActivity": "dispatch-client-workflow",
+  "currentActivity": "end-workflow",
   "currentTechnique": "workflow-engine::dispatch-activity",
-  "condition": "isDefault:dispatch-client-workflow",
-  "seq": 14,
-  "ts": 1785580095,
+  "condition": "client_workflow_completed",
+  "seq": 15,
+  "ts": 1785583893,
   "startedAt": "2026-08-01T10:23:47.525Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
-    "resolve-target"
+    "resolve-target",
+    "dispatch-client-workflow"
   ],
   "skippedActivities": [],
   "variables": {
     "abort_completion": false,
     "client_planning_slug": "2026-08-01-formalise-reusable-parallel-fan-out",
+    "client_pr_url": "https://github.com/m2ux/workflow-server/pull/385",
     "client_session_index": "36S3PI",
-    "client_workflow_completed": false,
+    "client_workflow_completed": true,
     "component_path": ".",
     "component_selection_needed": false,
     "has_saved_state": false,
@@ -554,6 +556,64 @@
       },
       "timestamp": "2026-08-01T10:28:15.190Z",
       "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-08-01T11:31:33.668Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_workflow_completed",
+        "source": "variables_changed",
+        "value": true
+      },
+      "timestamp": "2026-08-01T11:31:33.668Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_session_index",
+        "source": "variables_changed",
+        "value": "36S3PI"
+      },
+      "timestamp": "2026-08-01T11:31:33.668Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_pr_url",
+        "source": "variables_changed",
+        "value": "https://github.com/m2ux/workflow-server/pull/385"
+      },
+      "timestamp": "2026-08-01T11:31:33.668Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-PWHY6O",
+        "stepId": "dispatch-client"
+      },
+      "timestamp": "2026-08-01T11:31:33.668Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-PWHY6O",
+        "stepId": "await-client"
+      },
+      "timestamp": "2026-08-01T11:31:33.668Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-08-01T11:31:33.668Z",
+      "type": "activity_entered"
     }
   ],
   "triggeredWorkflows": [
@@ -589,6 +649,15 @@
             },
             "optionId": "confirmed",
             "respondedAt": "2026-08-01T10:55:26.000Z"
+          },
+          "validate-and-commit-approve-to-commit#0": {
+            "effects": {
+              "variablesSet": {
+                "commit_approved": true
+              }
+            },
+            "optionId": "approved",
+            "respondedAt": "2026-08-01T11:28:44.000Z"
           }
         },
         "completedActivities": [
@@ -598,7 +667,7 @@
         ],
         "condition": "isDefault:validate-and-commit",
         "currentActivity": "validate-and-commit",
-        "currentTechnique": "workflow-definition::yaml-authoring",
+        "currentTechnique": "work-package::manage-artifacts::write-artifact",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -703,6 +772,28 @@
             "technique:work-package::manage-git::create-worktree": "de5ec67eb441164e",
             "technique:workflow-definition::derive-workflow-branch": "d6c15a89164542d6",
             "technique:workflow-definition::scope-definition": "483414a68d3a0a66"
+          },
+          "worker-validate-and-commit-36S3PI": {
+            "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
+            "bundle:rules:dcc74273fdf2ad82": "dcc74273fdf2ad82",
+            "bundle:variable-binding": "4de9bd403344076e",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:completion-artifact#template": "5bf3922ec154b107",
+            "resource:findings-register#template": "e3022e9bfe3efa44",
+            "resource:meta/planning-readme#template": "4c7d824bf698624f",
+            "resource:workflow-authoring/readme-seed": "570e96bedce54367",
+            "technique:github-cli-protocol::create-pr": "ace7f89544a668a7",
+            "technique:version-control::commit-regular-files": "2126aa52360d56f2",
+            "technique:version-control::push-branch": "543572e6b17f1b02",
+            "technique:work-package::manage-artifacts::write-artifact": "46be4ca83845a9e7",
+            "technique:workflow-definition::commit-verification": "12e4ff026aae1a07",
+            "technique:workflow-definition::compile-report": "38960bdb7f1bcaa2",
+            "technique:workflow-definition::compose-publication": "2123a1b264795177",
+            "technique:workflow-definition::scope-verification": "94575a4ea53de9f4",
+            "technique:workflow-definition::verify-high-findings": "63ce4cfaefee651f",
+            "technique:workflow-engine::verify-readme-conforms": "f8dc95f59592f5f9"
           }
         },
         "history": [
@@ -2124,23 +2215,379 @@
             "activity": "validate-and-commit",
             "timestamp": "2026-08-01T11:15:17.608Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 52651,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T11:15:36.272Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 6558,
+              "delivery": "full",
+              "stepId": "verify-audit-findings",
+              "techniqueId": "workflow-definition::verify-high-findings"
+            },
+            "timestamp": "2026-08-01T11:15:36.272Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "stepId": "verify-audit-findings"
+            },
+            "timestamp": "2026-08-01T11:15:36.272Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 6355,
+              "delivery": "full",
+              "stepId": "compile-register",
+              "techniqueId": "workflow-definition::compile-report"
+            },
+            "timestamp": "2026-08-01T11:15:36.272Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "stepId": "compile-register"
+            },
+            "timestamp": "2026-08-01T11:15:36.272Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 5789,
+              "delivery": "full",
+              "stepId": "persist-register",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-01T11:15:36.272Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "stepId": "persist-register"
+            },
+            "timestamp": "2026-08-01T11:15:36.272Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 802,
+              "delivery": "full",
+              "resourceId": "findings-register#template"
+            },
+            "timestamp": "2026-08-01T11:15:59.633Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 4651,
+              "delivery": "full",
+              "stepId": "verify-scope-manifest",
+              "techniqueId": "workflow-definition::scope-verification"
+            },
+            "timestamp": "2026-08-01T11:16:10.333Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "stepId": "verify-scope-manifest"
+            },
+            "timestamp": "2026-08-01T11:16:10.333Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 4635,
+              "delivery": "full",
+              "stepId": "verify-planning-readme",
+              "techniqueId": "workflow-engine::verify-readme-conforms"
+            },
+            "timestamp": "2026-08-01T11:16:35.431Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "stepId": "verify-planning-readme"
+            },
+            "timestamp": "2026-08-01T11:16:35.431Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 2770,
+              "delivery": "full",
+              "resourceId": "workflow-authoring/readme-seed"
+            },
+            "timestamp": "2026-08-01T11:16:58.287Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 1250,
+              "delivery": "full",
+              "resourceId": "meta/planning-readme#template"
+            },
+            "timestamp": "2026-08-01T11:17:01.268Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "approve-to-commit#0",
+            "timestamp": "2026-08-01T11:17:08.614Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "approve-to-commit#0",
+            "data": {
+              "optionId": "approved"
+            },
+            "timestamp": "2026-08-01T11:28:44.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "commit_approved",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-01T11:28:44.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 52651,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-01T11:29:06.376Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 6558,
+              "delivery": "full",
+              "stepId": "verify-audit-findings",
+              "techniqueId": "workflow-definition::verify-high-findings"
+            },
+            "timestamp": "2026-08-01T11:29:06.376Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 6355,
+              "delivery": "full",
+              "stepId": "compile-register",
+              "techniqueId": "workflow-definition::compile-report"
+            },
+            "timestamp": "2026-08-01T11:29:06.376Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 5789,
+              "delivery": "full",
+              "stepId": "persist-register",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-01T11:29:06.376Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 5447,
+              "delivery": "full",
+              "stepId": "compose-publication",
+              "techniqueId": "workflow-definition::compose-publication"
+            },
+            "timestamp": "2026-08-01T11:29:13.210Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "stepId": "compose-publication"
+            },
+            "timestamp": "2026-08-01T11:29:13.210Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 4415,
+              "delivery": "full",
+              "stepId": "stage-and-commit",
+              "techniqueId": "version-control::commit-regular-files"
+            },
+            "timestamp": "2026-08-01T11:29:24.255Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "stepId": "stage-and-commit"
+            },
+            "timestamp": "2026-08-01T11:29:24.255Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 3530,
+              "delivery": "full",
+              "stepId": "verify-commit",
+              "techniqueId": "workflow-definition::commit-verification"
+            },
+            "timestamp": "2026-08-01T11:29:24.893Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "stepId": "verify-commit"
+            },
+            "timestamp": "2026-08-01T11:29:24.893Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 3757,
+              "delivery": "full",
+              "stepId": "push-branch",
+              "techniqueId": "version-control::push-branch"
+            },
+            "timestamp": "2026-08-01T11:29:25.729Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "stepId": "push-branch"
+            },
+            "timestamp": "2026-08-01T11:29:25.729Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 4814,
+              "delivery": "full",
+              "stepId": "open-pr",
+              "techniqueId": "github-cli-protocol::create-pr"
+            },
+            "timestamp": "2026-08-01T11:29:26.319Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "stepId": "open-pr"
+            },
+            "timestamp": "2026-08-01T11:29:26.319Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 5703,
+              "delivery": "full",
+              "stepId": "persist-close-out",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-01T11:29:26.926Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "stepId": "persist-close-out"
+            },
+            "timestamp": "2026-08-01T11:29:26.926Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 1438,
+              "delivery": "full",
+              "resourceId": "completion-artifact#template"
+            },
+            "timestamp": "2026-08-01T11:29:31.592Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 54,
+        "seq": 70,
         "sessionIndex": "36S3PI",
         "skippedActivities": [],
         "startedAt": "2026-08-01T10:26:16.663Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785582917,
+        "ts": 1785583771,
         "variables": {
           "addressed_count": 0,
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-formalise-reusable-parallel-fan-out/01-change-brief.md",
           "change_request": "Bind cargo-operations::run-suite (and peers) to a named meta technique contract for parallel fan-out — evaluate scatter-gather / spawn-concurrent or a new meta technique — and retire free protocol prose for that shape under workflows/meta/.",
           "change_request_clear": true,
-          "commit_approved": false,
+          "commit_approved": true,
           "fail_count": 0,
           "file_count": 10,
           "has_coverage_gap": false,

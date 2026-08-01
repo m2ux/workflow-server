@@ -1,6 +1,6 @@
 # Formalise reusable parallel fan-out — August 2026
 
-> Update · Created 2026-08-01 · **Status:** Validate and commit
+> Update · Created 2026-08-01 · **Status:** Complete
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -28,8 +28,8 @@ Formalise parallel fan-out as **named meta contracts** (new same-context **unit-
 | 6 | [Scope manifest](06-scope-manifest.md) | File-level change inventory (10 of 11; dispute out) | 15-30m | ✅ |
 | 7 | Quality review | Criteria walk, consumer surface, guards | 30-60m | ✅ |
 | 8 | [Findings register](08-findings-register.md) | Audit record, coverage, exclusions | 15-30m | ✅ |
-| 9 | Validate and commit | Scope re-check, commit, pull request | 20-40m | 🟡 |
-| 10 | [Close-out](09-COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |
+| 9 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ✅ |
+| 10 | [Close-out](09-COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ✅ |
 
 **Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
@@ -41,3 +41,4 @@ Formalise parallel fan-out as **named meta contracts** (new same-context **unit-
 | Primary target | `workflows/meta/` |
 | Co-edit | `workflows/workflow-design/`, `workflows/prism/` |
 | Worktree | `.worktrees/2026-08-01-formalise-reusable-parallel-fan-out/` |
+| PR | [#385](https://github.com/m2ux/workflow-server/pull/385) |
