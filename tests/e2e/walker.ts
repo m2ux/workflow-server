@@ -16,6 +16,7 @@ import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { evaluateCondition, type Condition } from '../../src/schema/condition.schema.js';
+import { evaluateWhenExpression } from '../../src/schema/when-expression.js';
 import { TERMINAL_SENTINEL } from '../../src/loaders/workflow-loader.js';
 import { parseToolResponse, parseWorkflowResponse, parseBundle, isError, type Harness } from './harness.js';
 
@@ -301,28 +302,10 @@ function getVar(path: string, vars: Record<string, unknown>): unknown {
   return cur;
 }
 
-/** Evaluate a step's inline `when` expression. Compound `a == x && b != y` expressions
- * evaluate clause-by-clause (all must pass). Unparseable expressions don't gate (execute). */
+/** Evaluate a step's inline `when` expression via the shared reference dialect.
+ * Unparseable expressions fail closed (skip the step). */
 function evaluateWhen(expr: string, vars: Record<string, unknown>): boolean {
-  if (expr.includes('&&')) {
-    return expr.split('&&').every((clause) => evaluateWhen(clause.trim(), vars));
-  }
-  const m = expr.match(/^\s*([\w.]+)\s*(==|!=)\s*(.+?)\s*$/);
-  if (!m) {
-    // Bare variable → truthiness.
-    const bare = expr.trim().match(/^[\w.]+$/);
-    if (bare) return Boolean(getVar(expr.trim(), vars));
-    return true;
-  }
-  const [, key, op, raw] = m;
-  let expected: unknown = raw;
-  if (raw === 'true') expected = true;
-  else if (raw === 'false') expected = false;
-  else if (raw === 'null') expected = null;
-  else if (/^["'].*["']$/.test(raw)) expected = raw.slice(1, -1);
-  else if (/^-?\d+$/.test(raw)) expected = Number(raw);
-  const actual = getVar(key, vars);
-  return op === '==' ? actual === expected : actual !== expected;
+  return evaluateWhenExpression(expr, vars);
 }
 
 interface StepExecution {
