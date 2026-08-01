@@ -725,11 +725,6 @@
     {
       "sessionIndex": "PBEHLM",
       "state": {
-        "activeCheckpoint": {
-          "activityId": "post-impl-review",
-          "checkpointId": "file-index-table",
-          "yieldedAt": "2026-08-01T11:21:57.254Z"
-        },
         "agentId": "orchestrator",
         "checkpointResponses": {
           "design-philosophy-classification-and-path-confirmed": {
@@ -757,6 +752,19 @@
           "plan-prepare-approach-confirmed": {
             "optionId": "confirmed",
             "respondedAt": "2026-08-01T10:59:43.000Z"
+          },
+          "post-impl-review-file-index-table": {
+            "optionId": "rationale-confirmed",
+            "respondedAt": "2026-08-01T11:32:08.000Z"
+          },
+          "post-impl-review-local-validation-permission": {
+            "effects": {
+              "variablesSet": {
+                "run_local_validation": true
+              }
+            },
+            "optionId": "run-locally",
+            "respondedAt": "2026-08-01T11:36:28.000Z"
           },
           "requirements-elicitation-elicitation-complete": {
             "effects": {
@@ -800,11 +808,12 @@
           "plan-prepare",
           "assumptions-review",
           "implement",
-          "lean-coding-audit"
+          "lean-coding-audit",
+          "post-impl-review"
         ],
-        "condition": "isDefault:post-impl-review",
-        "currentActivity": "post-impl-review",
-        "currentTechnique": "ponytail/review-over-engineering",
+        "condition": "isDefault: validate (no critical blocker)",
+        "currentActivity": "validate",
+        "currentTechnique": "cargo-operations::run-suite",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -865,6 +874,31 @@
             "id": "review_findings",
             "name": "code-review.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/09-code-review.md"
+          },
+          {
+            "id": "change_block_index",
+            "name": "change-block-index.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-change-block-index.md"
+          },
+          {
+            "id": "code_review_report",
+            "name": "code-review.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/09-code-review.md"
+          },
+          {
+            "id": "structural_analysis",
+            "name": "structural-analysis.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-structural-analysis.md"
+          },
+          {
+            "id": "test_suite_review_report",
+            "name": "test-suite-review.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-test-suite-review.md"
+          },
+          {
+            "id": "architecture_summary",
+            "name": "architecture-summary.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-architecture-summary.md"
           }
         ],
         "deliveredContent": {
@@ -934,11 +968,26 @@
             "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
             "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
             "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:architecture-summary": "a94291da61218ce5",
             "resource:manual-diff-review": "bff4f94fdc6aee05",
+            "resource:manual-diff-review#manual-diff-review-section-template": "12ac00bcc78ae502",
+            "resource:rust-substrate-code-review#report-template": "47a0563ccb6c6880",
+            "resource:rust-substrate-code-review#review-criteria": "1c0fe2a8940de1d3",
+            "resource:test-suite-review": "7609a800f9a56344",
             "technique:findings-classification": "f38ce1ed47f9fbd1",
             "technique:review-code": "675efd4dadde5e84",
             "technique:review-diff": "3331aeff98c87002",
-            "technique:review-test-suite": "df0f5419d33693b7"
+            "technique:review-test-suite": "df0f5419d33693b7",
+            "technique:summarize-architecture": "18a4ad3fa8f9eb97"
+          },
+          "validate-worker": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "technique:cargo-operations::run-suite": "5c8b799b383130e7"
           },
           "worker-codebase-comprehension-PBEHLM": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -6572,17 +6621,444 @@
             "checkpoint": "file-index-table",
             "timestamp": "2026-08-01T11:21:57.254Z",
             "type": "checkpoint_reached"
+          },
+          {
+            "activity": "post-impl-review",
+            "checkpoint": "file-index-table",
+            "data": {
+              "optionId": "rationale-confirmed"
+            },
+            "timestamp": "2026-08-01T11:32:08.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 60727,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-01T11:32:34.523Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 8893,
+              "delivery": "full",
+              "stepId": "manual-diff-review",
+              "techniqueId": "review-diff"
+            },
+            "timestamp": "2026-08-01T11:32:34.523Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 6444,
+              "delivery": "full",
+              "stepId": "code-review",
+              "techniqueId": "review-code"
+            },
+            "timestamp": "2026-08-01T11:32:34.523Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 5827,
+              "delivery": "full",
+              "stepId": "test-suite-review",
+              "techniqueId": "review-test-suite"
+            },
+            "timestamp": "2026-08-01T11:32:34.523Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 6452,
+              "delivery": "full",
+              "stepId": "classify-and-route-findings",
+              "techniqueId": "findings-classification"
+            },
+            "timestamp": "2026-08-01T11:32:34.523Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 4850,
+              "delivery": "full",
+              "resourceId": "rust-substrate-code-review#review-criteria"
+            },
+            "timestamp": "2026-08-01T11:32:56.078Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 1361,
+              "delivery": "full",
+              "resourceId": "rust-substrate-code-review#report-template"
+            },
+            "timestamp": "2026-08-01T11:32:57.050Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 764,
+              "delivery": "full",
+              "resourceId": "manual-diff-review#manual-diff-review-section-template"
+            },
+            "timestamp": "2026-08-01T11:32:57.562Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 7402,
+              "delivery": "full",
+              "resourceId": "test-suite-review"
+            },
+            "timestamp": "2026-08-01T11:32:57.752Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 5112,
+              "delivery": "full",
+              "stepId": "architecture-summary",
+              "techniqueId": "summarize-architecture"
+            },
+            "timestamp": "2026-08-01T11:33:06.935Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "stepId": "architecture-summary"
+            },
+            "timestamp": "2026-08-01T11:33:06.935Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 6770,
+              "delivery": "full",
+              "resourceId": "architecture-summary"
+            },
+            "timestamp": "2026-08-01T11:33:30.985Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "post-impl-review",
+            "checkpoint": "local-validation-permission",
+            "timestamp": "2026-08-01T11:34:48.661Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "post-impl-review",
+            "checkpoint": "local-validation-permission",
+            "data": {
+              "optionId": "run-locally"
+            },
+            "timestamp": "2026-08-01T11:36:28.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "name": "run_local_validation",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-01T11:36:28.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 60727,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-01T11:37:00.685Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 8893,
+              "delivery": "full",
+              "stepId": "manual-diff-review",
+              "techniqueId": "review-diff"
+            },
+            "timestamp": "2026-08-01T11:37:00.685Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 6444,
+              "delivery": "full",
+              "stepId": "code-review",
+              "techniqueId": "review-code"
+            },
+            "timestamp": "2026-08-01T11:37:00.685Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 5827,
+              "delivery": "full",
+              "stepId": "test-suite-review",
+              "techniqueId": "review-test-suite"
+            },
+            "timestamp": "2026-08-01T11:37:00.685Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "chars": 6452,
+              "delivery": "full",
+              "stepId": "classify-and-route-findings",
+              "techniqueId": "findings-classification"
+            },
+            "timestamp": "2026-08-01T11:37:00.685Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "post-impl-review",
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "name": "run_local_validation",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "name": "needs_code_fixes",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "name": "needs_test_improvements",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "name": "has_critical_blocker",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "name": "has_flagged_blocks",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "name": "reviewed_code_base_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/blob/8c96d33f51fe35759a5fceca4513dcb634403775"
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "name": "change_block_index",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-change-block-index.md"
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "stepId": "announce-start"
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "stepId": "gitnexus-detect-changes-preflight"
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "stepId": "manual-diff-review"
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "stepId": "file-index-table"
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "stepId": "code-review"
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "stepId": "dispatch-prism"
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "stepId": "test-suite-review"
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "stepId": "architecture-summary"
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "stepId": "classify-and-route-findings"
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "post-impl-review",
+            "data": {
+              "agentId": "post-impl-review-worker",
+              "stepId": "local-validation-permission"
+            },
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate",
+            "timestamp": "2026-08-01T11:37:40.276Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate",
+            "data": {
+              "agentId": "validate-worker",
+              "chars": 26253,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T11:37:44.493Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "validate",
+            "data": {
+              "agentId": "validate-worker",
+              "chars": 6002,
+              "delivery": "full",
+              "stepId": "run-suite",
+              "techniqueId": "cargo-operations::run-suite"
+            },
+            "timestamp": "2026-08-01T11:38:07.848Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "validate",
+            "data": {
+              "agentId": "validate-worker",
+              "stepId": "run-suite"
+            },
+            "timestamp": "2026-08-01T11:38:07.848Z",
+            "type": "step_started"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 92,
+        "seq": 108,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785583317,
+        "ts": 1785584287,
         "variables": {
           "analysis_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/05-implementation-analysis.md",
           "artifact_name": "",
@@ -6605,7 +7081,7 @@
           "build_artifact_user_owned": false,
           "build_dependent_artifact_commands": "",
           "build_dependent_artifacts_pending": false,
-          "change_block_index": "",
+          "change_block_index": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/10-change-block-index.md",
           "classification_rationale": "Inventive improvement of when dialect + evaluator fidelity; complex due to grammar/precedence, fail-closed policy, four nested fixtures, packaging, and open section-0 execution-model decision.",
           "completion_document_path": "",
           "component_name": "workflow-server",
@@ -6692,8 +7168,8 @@
           "review_pr_missing": false,
           "review_requires_changes": false,
           "review_type": "",
-          "reviewed_code_base_url": "",
-          "run_local_validation": false,
+          "reviewed_code_base_url": "https://github.com/m2ux/workflow-server/blob/8c96d33f51fe35759a5fceca4513dcb634403775",
+          "run_local_validation": true,
           "safety_floor_cleared": true,
           "skip_architecture_summary": false,
           "skip_assumption_review": false,
