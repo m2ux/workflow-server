@@ -23,7 +23,7 @@ Until those rules and the evaluator land, OR-shaped gates stay stranded on the s
 
 | # | Item | Description | Estimate | Status |
 |---|------|-------------|----------|--------|
-| 1 | Start work package | Issue, branch, worktree, planning folder | 20-40m | 🟡 |
+| 1 | Start work package | Issue, branch, worktree, planning folder | 20-40m | ✅ |
 | 2 | [Prior feedback triage](01-prior-feedback-triage.md) | Review-mode prior feedback ingest | 15-30m | ⊘ |
 | 3 | [Design philosophy](02-design-philosophy.md) | Problem classification, workflow path | 15-30m | ⬚ |
 | 4 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across activities | 10-15m | ⬚ |
@@ -61,4 +61,4 @@ Until those rules and the evaluator land, OR-shaped gates stay stranded on the s
 | Resource | Link |
 |----------|------|
 | GitHub Issue | [#379](https://github.com/m2ux/workflow-server/issues/379) |
-| PR | _pending_ |
+| PR | [#383](https://github.com/m2ux/workflow-server/pull/383) |
