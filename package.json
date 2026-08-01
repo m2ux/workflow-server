@@ -31,6 +31,7 @@
     "check:review-mode": "tsx scripts/check-review-mode-gating.ts",
     "check:checkpoint-entry": "tsx scripts/check-checkpoint-entry.ts",
     "check:stealth": "tsx scripts/check-stealth-isolation.ts",
+    "check:when": "tsx scripts/check-when-expression.ts",
     "check:audience": "tsx scripts/check-audience.ts",
     "check:refs": "tsx scripts/check-all-refs.ts",
     "check:activities": "tsx scripts/validate-activities.ts",

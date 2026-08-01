@@ -131,6 +131,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'no static leakage path out of a stealth-mode workflow',
   },
   {
+    id: 'when-expression',
+    script: 'scripts/check-when-expression.ts',
+    npmScript: 'check:when',
+    scope: 'corpus',
+    json: false,
+    proves: 'every when: gate parses under the reference dialect and parenthesizes mixed &&/||',
+  },
+  {
     id: 'refs',
     script: 'scripts/check-all-refs.ts',
     npmScript: 'check:refs',
