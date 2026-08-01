@@ -1,10 +1,20 @@
-# Findings Register — Quality Review
+# Findings Register — 358-338-corpus-batch
 
-**Session:** WEGGYY · **Activity:** quality-review · **Base ref:** `46bc1811dbc265179e8b62055adb6aaad2b0974b` (merge-base with `workflows`)
+**Date:** 2026-08-01 · **Mode:** Update
+**Base ref:** `46bc1811dbc265179e8b62055adb6aaad2b0974b` · **Targets:** nine (rows below)
 **Edit surface:** `/home/mike1/projects/dev/workflow-server/.worktrees/pr1-corpus-batch/` · branch `workflow/358-338-corpus-batch`
 **Scope:** [06-scope-manifest.md](06-scope-manifest.md) · **Impact:** [01-impact-analysis.md](01-impact-analysis.md)
 
 ## Summary
+
+| Severity | Open | Known |
+|----------|-----:|------:|
+| Critical | 0 | 0 |
+| High     | 0 | 0 |
+| Medium   | 0 | 0 |
+| Low      | 0 | 0 |
+
+Known class-keyed baselines in scope (not severity-bucketed open findings): 45 (`binding-fidelity-triage` + `ACCEPTED_HEADLESS_AUTO_ADVANCE`).
 
 | Metric | Value |
 |--------|-------|
@@ -13,126 +23,147 @@
 | Definition guards | all green (`fail_count` = 0 per target) |
 | Change-introduced open findings | 0 |
 | Coverage blocked units | 0 |
-| Known/baselined keys in scope | 45 |
+| Independent High re-derivation | n/a (zero High rows) |
 
-## Guard suite (entire library root `--root` target_path)
-
-All of: validate-workflow-yaml (per target), validate-activities, check-all-refs, check-binding-fidelity, check-resource-anchors, check-variable-model, check-fragments, check-technique-template, check-activity-technique-overlap, check-audience, check-self-provisioned-input, check-identifier-qualification, check-review-mode-gating, check-stealth-isolation — **OK**.
-
-binding-fidelity: 78 triaged harmless (0 live / 0 untriaged).
-
-## Co-change and collision checks
-
-- **Fragment co-change:** prism + remediate-vuln local fragments declared; prism-audit home retained; prism-evaluate ref survives — satisfied.
-- **Budget-claim co-change:** RUST_TEST_THREADS claim on TECHNIQUE.md points at test.md; test.md carries the env — satisfied.
-- **Reconciliation co-change:** foreground-only and run-suite step 1 agree on concurrent foreground shells — satisfied.
-- **Anchor co-change:** retarget anchors resolve; no resource body edits required — satisfied.
-- **Identifier collisions:** new keys `pass-output-forwarding`, `inline-orchestration-model` clear of taken set — satisfied.
-
-## Per-target sections
+## Findings
 
 ### `work-package`
 
-- Surface files: 164; changed vs base: 3 (`work-package/activities/02-design-philosophy.yaml`, `work-package/techniques/create-issue.md`, `work-package/techniques/requirements-elicitation/ask-question.md`)
-- Consumer references into target: 42 (touching changed files: 0)
-- Coverage: 53 walked, 0 n/a, 0 blocked
-- Guard fail_count: 0
-- Open audit findings (decision surface): 0
-- Known suppressed (class-keyed baselines in target): 10
-- Notes: Changed: design-philosophy checkpoint message drops render-time-unavailable {problem_complexity}; create-issue step 1 rescoped and platform-for-creation extracted as step 2; ask-question retargets requirements-elicitation to #question-domain-reference (heading exists). Review-mode action message still reads {problem_complexity} after classify path — pre-existing, out of this change's scope, not a new Detect hit on the edited checkpoint message.
+| Field | Value |
+|-------|-------|
+| Surface files | 164 |
+| Changed vs base | 3 (`work-package/activities/02-design-philosophy.yaml`, `work-package/techniques/create-issue.md`, `work-package/techniques/requirements-elicitation/ask-question.md`) |
+| Consumer refs into target | 42 (touching changed files: 0) |
+| Coverage | 53 walked, 0 n/a, 0 blocked |
+| Guard fail_count | 0 |
+| Open findings | _(none)_ |
+| Known suppressed | 10 |
+| Notes | Classification checkpoint message drops render-time-unavailable `{problem_complexity}`; create-issue step 1 rescoped and platform-for-creation extracted as step 2; ask-question retargets requirements-elicitation to `#question-domain-reference` (heading exists). |
 
 ### `meta`
 
-- Surface files: 156; changed vs base: 8 (`meta/techniques/cargo-operations/TECHNIQUE.md`, `meta/techniques/cargo-operations/build-dev.md`, `meta/techniques/cargo-operations/build-release.md`, `meta/techniques/cargo-operations/check.md`, `meta/techniques/cargo-operations/clippy.md`, `meta/techniques/cargo-operations/doc.md`, `meta/techniques/cargo-operations/run-suite.md`, `meta/techniques/cargo-operations/test.md`)
-- Consumer references into target: 19 (touching changed files: 0)
-- Coverage: 53 walked, 0 n/a, 0 blocked
-- Guard fail_count: 0
-- Open audit findings (decision surface): 0
-- Known suppressed (class-keyed baselines in target): 33
-- Notes: Changed: cargo-operations env-before-nice on six ops; resource-budget narrows RUST_TEST_THREADS to test ops with cite to test.md; foreground-only reconciled with run-suite concurrent foreground shells. Co-change sets (budget-claim, reconciliation) satisfied. Binding-fidelity dead-output keys on cargo ops remain known/harmless.
+| Field | Value |
+|-------|-------|
+| Surface files | 156 |
+| Changed vs base | 8 (cargo-operations TECHNIQUE.md + six ops + run-suite.md) |
+| Consumer refs into target | 19 (touching changed files: 0) |
+| Coverage | 53 walked, 0 n/a, 0 blocked |
+| Guard fail_count | 0 |
+| Open findings | _(none)_ |
+| Known suppressed | 33 |
+| Notes | Env-before-nice on six ops; resource-budget narrows `RUST_TEST_THREADS` to test ops; foreground-only reconciled with run-suite concurrent foreground shells. Co-change sets satisfied. |
 
 ### `workflow-design`
 
-- Surface files: 75; changed vs base: 0 (none)
-- Consumer references into target: 1 (touching changed files: 0)
-- Coverage: 53 walked, 0 n/a, 0 blocked
-- Guard fail_count: 0
-- Open audit findings (decision surface): 0
-- Known suppressed (class-keyed baselines in target): 1
-- Notes: No files changed on branch. Surface walked; no change-introduced findings. Consumer refs into target recorded.
+| Field | Value |
+|-------|-------|
+| Surface files | 75 |
+| Changed vs base | 0 |
+| Consumer refs into target | 1 (touching changed files: 0) |
+| Coverage | 53 walked, 0 n/a, 0 blocked |
+| Guard fail_count | 0 |
+| Open findings | _(none)_ |
+| Known suppressed | 1 |
+| Notes | No files changed on branch. Surface walked; no change-introduced findings. |
 
 ### `cicd-pipeline-security-audit`
 
-- Surface files: 66; changed vs base: 0 (none)
-- Consumer references into target: 0 (touching changed files: 0)
-- Coverage: 53 walked, 0 n/a, 0 blocked
-- Guard fail_count: 0
-- Open audit findings (decision surface): 0
-- Known suppressed (class-keyed baselines in target): 0
-- Notes: No files changed. Surface walked; empty consumer surface.
+| Field | Value |
+|-------|-------|
+| Surface files | 66 |
+| Changed vs base | 0 |
+| Consumer refs into target | 0 |
+| Coverage | 53 walked, 0 n/a, 0 blocked |
+| Guard fail_count | 0 |
+| Open findings | _(none)_ |
+| Known suppressed | 0 |
+| Notes | No files changed. Surface walked; empty consumer surface. |
 
 ### `midnight-system-review`
 
-- Surface files: 34; changed vs base: 0 (none)
-- Consumer references into target: 0 (touching changed files: 0)
-- Coverage: 53 walked, 0 n/a, 0 blocked
-- Guard fail_count: 0
-- Open audit findings (decision surface): 0
-- Known suppressed (class-keyed baselines in target): 0
-- Notes: No files changed. Surface walked; empty consumer surface.
+| Field | Value |
+|-------|-------|
+| Surface files | 34 |
+| Changed vs base | 0 |
+| Consumer refs into target | 0 |
+| Coverage | 53 walked, 0 n/a, 0 blocked |
+| Guard fail_count | 0 |
+| Open findings | _(none)_ |
+| Known suppressed | 0 |
+| Notes | No files changed. Surface walked; empty consumer surface. |
 
 ### `prism`
 
-- Surface files: 116; changed vs base: 1 (`prism/workflow.yaml`)
-- Consumer references into target: 5 (touching changed files: 0)
-- Coverage: 53 walked, 0 n/a, 0 blocked
-- Guard fail_count: 0
-- Open audit findings (decision surface): 0
-- Known suppressed (class-keyed baselines in target): 0
-- Notes: Changed: inline ORCHESTRATION MODEL → ref prism-audit::orchestration-model + local fragment pass-output-forwarding. fragments guard green; prism-evaluate still holds prism-audit::orchestration-model.
+| Field | Value |
+|-------|-------|
+| Surface files | 116 |
+| Changed vs base | 1 (`prism/workflow.yaml`) |
+| Consumer refs into target | 5 (touching changed files: 0) |
+| Coverage | 53 walked, 0 n/a, 0 blocked |
+| Guard fail_count | 0 |
+| Open findings | _(none)_ |
+| Known suppressed | 0 |
+| Notes | Inline ORCHESTRATION MODEL → ref `prism-audit::orchestration-model` + local fragment `pass-output-forwarding`. Fragments guard green; prism-evaluate still holds home ref. |
 
 ### `substrate-node-security-audit`
 
-- Surface files: 54; changed vs base: 1 (`substrate-node-security-audit/techniques/score-severity.md`)
-- Consumer references into target: 2 (touching changed files: 0)
-- Coverage: 53 walked, 0 n/a, 0 blocked
-- Guard fail_count: 0
-- Open audit findings (decision surface): 0
-- Known suppressed (class-keyed baselines in target): 1
-- Notes: Changed: score-severity six severity-rubric citations retargeted to #computing-severity, #calibration-benchmark-table, #severity-crosscheck-highcritical-findings — all resolve. resource-anchors guard green.
+| Field | Value |
+|-------|-------|
+| Surface files | 54 |
+| Changed vs base | 1 (`substrate-node-security-audit/techniques/score-severity.md`) |
+| Consumer refs into target | 2 (touching changed files: 0) |
+| Coverage | 53 walked, 0 n/a, 0 blocked |
+| Guard fail_count | 0 |
+| Open findings | _(none)_ |
+| Known suppressed | 1 |
+| Notes | Six severity-rubric citations retargeted to resolving section anchors. resource-anchors guard green. |
 
 ### `prism-audit`
 
-- Surface files: 35; changed vs base: 0 (none)
-- Consumer references into target: 2 (touching changed files: 0)
-- Coverage: 53 walked, 0 n/a, 0 blocked
-- Guard fail_count: 0
-- Open audit findings (decision surface): 0
-- Known suppressed (class-keyed baselines in target): 0
-- Notes: No files changed (fragment home retained verbatim per judgements). orchestration-model fragment body present; consumers prism + prism-evaluate reference it.
+| Field | Value |
+|-------|-------|
+| Surface files | 35 |
+| Changed vs base | 0 |
+| Consumer refs into target | 2 (touching changed files: 0) |
+| Coverage | 53 walked, 0 n/a, 0 blocked |
+| Guard fail_count | 0 |
+| Open findings | _(none)_ |
+| Known suppressed | 0 |
+| Notes | Fragment home retained verbatim per judgements. Consumers prism + prism-evaluate reference it. |
 
 ### `remediate-vuln`
 
-- Surface files: 14; changed vs base: 1 (`remediate-vuln/workflow.yaml`)
-- Consumer references into target: 0 (touching changed files: 0)
-- Coverage: 53 walked, 0 n/a, 0 blocked
-- Guard fail_count: 0
-- Open audit findings (decision surface): 0
-- Known suppressed (class-keyed baselines in target): 0
-- Notes: Changed: inline ORCHESTRATION MODEL → local fragment inline-orchestration-model. fragments guard green.
+| Field | Value |
+|-------|-------|
+| Surface files | 14 |
+| Changed vs base | 1 (`remediate-vuln/workflow.yaml`) |
+| Consumer refs into target | 0 |
+| Coverage | 53 walked, 0 n/a, 0 blocked |
+| Guard fail_count | 0 |
+| Open findings | _(none)_ |
+| Known suppressed | 0 |
+| Notes | Inline ORCHESTRATION MODEL → local fragment `inline-orchestration-model`. Fragments guard green. |
 
-## Coverage ledger (enumeration units)
+## Known
 
-Every unit below was applied once per target against that target's `{surface_files}` and `{consumer_surface}`. Status is `walked` for all units × targets (no blocked coverage).
+| Key class | Count | Source |
+|-----------|------:|--------|
+| binding-fidelity-triage (harmless) | 78 triaged corpus-wide; 45 class-keyed baselines in this run's target set | `scripts/binding-fidelity-triage.json` + quality-review load-known-findings |
+| ACCEPTED_HEADLESS_AUTO_ADVANCE | included in the 45 | quality-review known set |
 
-| Home | Units |
-|------|-------|
-| design-principles | 32 (`##` 1–32) |
-| schema-construct-inventory | 7 |
-| convention-conformance | 1 |
-| anti-patterns (enumerated family sections) | 13 |
-| **Total units × targets** | 477 |
+No prior findings-register exclusions beyond class-keyed baselines. Decision surface carries zero open rows.
+
+## Sources
+
+| Label | Path |
+|-------|------|
+| Change brief | `/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372/01-change-brief.md` |
+| Impact analysis | `/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372/01-impact-analysis.md` |
+| Scope manifest | `/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372/06-scope-manifest.md` |
+| Quality-review register (prior pass body rolled up here) | same path — find-or-update in place |
+| Edit surface | `/home/mike1/projects/dev/workflow-server/.worktrees/pr1-corpus-batch/` |
+| Base ref | `46bc1811dbc265179e8b62055adb6aaad2b0974b` |
 
 ## Decision surface
 
-No open findings require remediation. `has_critical_finding=false`, `has_coverage_gap=false`, `open_finding_count=0`, `fail_count=0`.
+No open findings require remediation. Independent re-derivation: zero High rows to confirm. `has_critical_finding=false`, `has_coverage_gap=false`, `open_finding_count=0`, `fail_count=0`.

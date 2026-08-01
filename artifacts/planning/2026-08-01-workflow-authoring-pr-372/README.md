@@ -1,6 +1,6 @@
 # Workflows Corpus Batch — Top-20 Citation Grain, C3 Defects, Fragments — August 2026
 
-> Update · Created 2026-08-01 · **Status:** Reviewing
+> Update · Created 2026-08-01 · **Status:** Complete
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -26,9 +26,9 @@ Closes the remaining unblocked corpus debt from #358 and #338 in one batch on th
 | 4 | Scope and draft | Worktree, manifest, per-file drafting | 30-60m | ✅ |
 | 5 | [Scope manifest](06-scope-manifest.md) | File-level change inventory | 15-30m | ✅ |
 | 6 | Quality review | Criteria walk, consumer surface, guards | 30-60m | ✅ |
-| 7 | [Findings register](findings-register.md) | Audit record, coverage, exclusions | 15-30m | ⬚ |
-| 8 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ⬚ |
-| 9 | [Close-out](09-COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |
+| 7 | [Findings register](08-findings-register.md) | Audit record, coverage, exclusions | 15-30m | ✅ |
+| 8 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ✅ |
+| 9 | [Close-out](09-COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ✅ |
 
 **Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
