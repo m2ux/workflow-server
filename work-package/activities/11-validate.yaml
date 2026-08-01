@@ -19,27 +19,45 @@ steps:
       - action: validate
         target: missing_prerequisites.length == 0
         message: "Toolchain prerequisites are unmet, so the validation suite cannot run: {missing_prerequisites}"
+  # Process-unit suite spine mirrors meta/patterns/06-process-unit-fan-out.yaml
   - kind: action
-    id: compose-cargo-suite-units
+    id: seed-cargo-process-suite
     when: project_type == 'rust-substrate' && run_local_validation == true
     actions:
       - action: set
         target: work_units
         description: >-
-          Ordered cargo suite units for unit-fan-out: check, clippy, test, fmt-check —
-          each an invocation spec against build_scope `--workspace` (and features when set),
-          carrying that op's resource budget (nice -n 19 + CARGO_BUILD_JOBS cap; fmt-check
-          uses nice only). On tight RAM, lower CARGO_BUILD_JOBS across compiling units or
-          set dispatch_concurrency to 1 for the following fan-out step.
+          Ordered cargo suite units (process-unit pattern): check, clippy, test,
+          fmt-check — each an invocation spec against build_scope `--workspace`
+          (and features when set), carrying that op's resource budget (nice -n 19
+          + CARGO_BUILD_JOBS cap; fmt-check uses nice only). On tight RAM, lower
+          CARGO_BUILD_JOBS across compiling units or set dispatch_concurrency to 1.
       - action: set
         target: dispatch_concurrency
         description: >-
-          Prefer concurrent scatter when the host can absorb four cargo units; use 1 when
-          RAM or shared mutation requires sequential check/clippy/test/fmt-check.
-  - kind: technique
-    id: fan-out-cargo-suite
-    technique: unit-fan-out
+          Prefer concurrent same-context cargo units when the host can absorb four;
+          use 1 when RAM or shared mutation requires sequential
+          check/clippy/test/fmt-check. Activity owns this bound.
+  - kind: action
+    id: execute-and-gather-cargo-units
     when: project_type == 'rust-substrate' && run_local_validation == true
+    actions:
+      - action: set
+        target: unit_results
+        description: >-
+          Run every cargo unit in work_units under dispatch_concurrency (concurrent
+          same-context process when greater than one; sequential when one). Wait
+          for all four. Append each outcome into unit_results in suite order with
+          unit keys check, clippy, test, fmt-check (ordered gather; never overwrite).
+  - kind: action
+    id: require-cargo-unit-results
+    when: project_type == 'rust-substrate' && run_local_validation == true
+    actions:
+      - action: validate
+        target: unit_results
+        message: >-
+          unit_results must hold ordered check/clippy/test/fmt-check outcomes
+          before the validation combine runs.
   - kind: technique
     id: combine-validation-results
     technique: cargo-operations::run-suite
@@ -120,20 +138,33 @@ steps:
           inputs:
             check_id: "{validation_results.first_failure.check_id}"
       - kind: action
-        id: recompose-cargo-suite-units
+        id: reseed-cargo-process-suite
         actions:
           - action: set
             target: work_units
             description: >-
               Recompose the ordered cargo suite units (check, clippy, test, fmt-check)
               against build_scope `--workspace` with the same resource-budget envelope
-              as compose-cargo-suite-units.
+              as seed-cargo-process-suite.
           - action: set
             target: dispatch_concurrency
-            description: Same concurrency policy as the initial fan-out step.
-      - kind: technique
-        id: refan-out-cargo-suite
-        technique: unit-fan-out
+            description: Same concurrency policy as the initial process-unit suite.
+      - kind: action
+        id: re-execute-and-gather-cargo-units
+        actions:
+          - action: set
+            target: unit_results
+            description: >-
+              Re-run every cargo unit under dispatch_concurrency; wait-all; ordered
+              gather into unit_results (same contract as execute-and-gather-cargo-units).
+      - kind: action
+        id: require-recargo-unit-results
+        actions:
+          - action: validate
+            target: unit_results
+            message: >-
+              unit_results must hold ordered check/clippy/test/fmt-check outcomes
+              before the validation recombine runs.
       - kind: technique
         id: recombine-validation-results
         technique: cargo-operations::run-suite
