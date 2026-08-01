@@ -16,6 +16,6 @@ Strategy techniques at this root (standalone `.md` peers of the capability group
 |-----------|------------|
 | [`variable-binding`](./variable-binding.md) | Map a step's bound operation onto the variable bag by the operation's `inputs[]`/`outputs[]` signature |
 | [`scatter-gather`](./scatter-gather.md) | Scatter agent work units (sequential or parallel), gather ordered keyed results, combine |
-| [`unit-fan-out`](./unit-fan-out.md) | Scatter same-context process/shell/tool units, wait-all, ordered gather, combine |
+| [`unit-fan-out`](./unit-fan-out.md) | Scatter same-context process/shell/tool units, wait-all, ordered gather (activity-bound strategy) |
 
 For the group-by-group capability summary, see the [workflow README](../README.md#techniques).

@@ -1,5 +1,5 @@
 id: validate
-version: 3.7.0
+version: 3.8.0
 name: Verify & Validate Design
 description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
 required: true
@@ -19,12 +19,30 @@ steps:
       - action: validate
         target: missing_prerequisites.length == 0
         message: "Toolchain prerequisites are unmet, so the validation suite cannot run: {missing_prerequisites}"
+  - kind: action
+    id: compose-cargo-suite-units
+    when: project_type == 'rust-substrate' && run_local_validation == true
+    actions:
+      - action: set
+        target: work_units
+        description: >-
+          Ordered cargo suite units for unit-fan-out: check, clippy, test, fmt-check —
+          each an invocation spec against build_scope `--workspace` (and features when set),
+          carrying that op's resource budget (nice -n 19 + CARGO_BUILD_JOBS cap; fmt-check
+          uses nice only). On tight RAM, lower CARGO_BUILD_JOBS across compiling units or
+          set dispatch_concurrency to 1 for the following fan-out step.
+      - action: set
+        target: dispatch_concurrency
+        description: >-
+          Prefer concurrent scatter when the host can absorb four cargo units; use 1 when
+          RAM or shared mutation requires sequential check/clippy/test/fmt-check.
   - kind: technique
-    id: run-suite
-    technique:
-      name: cargo-operations::run-suite
-      inputs:
-        build_scope: --workspace
+    id: fan-out-cargo-suite
+    technique: unit-fan-out
+    when: project_type == 'rust-substrate' && run_local_validation == true
+  - kind: technique
+    id: combine-validation-results
+    technique: cargo-operations::run-suite
     when: project_type == 'rust-substrate' && run_local_validation == true
   - kind: technique
     id: document-failures
@@ -101,12 +119,24 @@ steps:
           name: validate-build::apply-fix
           inputs:
             check_id: "{validation_results.first_failure.check_id}"
+      - kind: action
+        id: recompose-cargo-suite-units
+        actions:
+          - action: set
+            target: work_units
+            description: >-
+              Recompose the ordered cargo suite units (check, clippy, test, fmt-check)
+              against build_scope `--workspace` with the same resource-budget envelope
+              as compose-cargo-suite-units.
+          - action: set
+            target: dispatch_concurrency
+            description: Same concurrency policy as the initial fan-out step.
       - kind: technique
-        id: revalidate
-        technique:
-          name: cargo-operations::run-suite
-          inputs:
-            build_scope: --workspace
+        id: refan-out-cargo-suite
+        technique: unit-fan-out
+      - kind: technique
+        id: recombine-validation-results
+        technique: cargo-operations::run-suite
 transitions:
   - to: strategic-review
     isDefault: true

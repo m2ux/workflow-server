@@ -7,7 +7,7 @@ metadata:
 
 Scatter work units (sequential or parallel), gather an ordered keyed collection, then combine — one primitive, two scatter modes.
 
-Parallel mode dispatches agent instances (isolation, per-instance prompts, no auto-bind of instance scalars into the parent bag). Same-context process, shell, or tool units fan out under unit-fan-out — not this contract's parallel mode.
+Parallel mode dispatches agent instances (isolation, per-instance prompts, no auto-bind of instance scalars into the parent bag). Same-context process, shell, or tool units fan out when the **binding activity** binds [unit-fan-out](./unit-fan-out.md) as a step — not this contract's parallel mode, and not via Protocol Apply from another technique.
 
 ## Protocol
 
@@ -43,4 +43,4 @@ Sequential mode is always valid for correctness; parallel mode is an optimisatio
 
 ### agent-instances-vs-process-units
 
-Parallel scatter here is agent-instance fan-out via [spawn-concurrent](./harness-compat/spawn-concurrent.md). Same-context process, shell, or tool units Apply [unit-fan-out](./unit-fan-out.md). Prefer parallel independent work via the unit-kind-correct formal home ([Prefer Parallel Independent Work via Formal Fan-Out](../../workflow-design/resources/design-principles.md#33-prefer-parallel-independent-work-via-formal-fan-out)).
+Parallel scatter here is agent-instance fan-out via [spawn-concurrent](./harness-compat/spawn-concurrent.md). Same-context process, shell, or tool units bind [unit-fan-out](./unit-fan-out.md) at the **activity** layer (step bind with unit roster and concurrency inputs). Techniques do not Protocol-Apply unit-fan-out for that work. Prefer parallel independent work via the unit-kind-correct formal home ([Prefer Parallel Independent Work via Formal Fan-Out](../../workflow-design/resources/design-principles.md#33-prefer-parallel-independent-work-via-formal-fan-out)).

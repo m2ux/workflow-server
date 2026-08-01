@@ -150,15 +150,15 @@ Grain is a property of the resource across the whole technique, not of one link.
 
 ## 33. Prefer Parallel Independent Work via Formal Fan-Out
 
-Prefer parallelising independent work where feasible, using the formal fan-out and dispatch contracts that already own the unit kind — before inventing a free concurrent recipe in Protocol or Rules, and only after independence, shared-mutation safety, and host capacity are clear.
+Prefer parallelising independent work where feasible, using the formal fan-out and dispatch contracts that already own the unit kind — bound as **activity steps** — before inventing a free concurrent recipe in technique Protocol or Rules, and only after independence, shared-mutation safety, and host capacity are clear.
 
 Formal homes (unit-kind split):
 
-| Unit kind | Contract home |
-|-----------|---------------|
-| Agent instances / lens workers | [`scatter-gather`](../../meta/techniques/scatter-gather.md) (parallel mode), [`harness-compat::spawn-concurrent`](../../meta/techniques/harness-compat/spawn-concurrent.md), and mid-phase composition under [`orchestration-patterns`](../../meta/techniques/orchestration-patterns/TECHNIQUE.md) |
-| Same-context process, shell, or tool units | [`unit-fan-out`](../../meta/techniques/unit-fan-out.md) |
+| Unit kind | Contract home | Bind locus |
+|-----------|---------------|------------|
+| Agent instances / lens workers | [`scatter-gather`](../../meta/techniques/scatter-gather.md) (parallel mode), [`harness-compat::spawn-concurrent`](../../meta/techniques/harness-compat/spawn-concurrent.md), and mid-phase composition under [`orchestration-patterns`](../../meta/techniques/orchestration-patterns/TECHNIQUE.md) | Activity `steps[]` / activity `techniques[]` strategy declaration |
+| Same-context process, shell, or tool units | [`unit-fan-out`](../../meta/techniques/unit-fan-out.md) | Activity `steps[]` with unit roster, concurrency, and domain envelope as step inputs |
 
-Serial execution remains correct when units depend on each other, share mutable state that concurrency would race, or the host cannot absorb concurrent load — not as the default when independence is already clear. Domain envelopes (resource budgets, backoff, product-specific composition) stay with the caller; the shared contract owns ordered scatter, wait-all, ordered gather, and the combine hook.
+Serial execution remains correct when units depend on each other, share mutable state that concurrency would race, or the host cannot absorb concurrent load — not as the default when independence is already clear. Domain envelopes (resource budgets, backoff, product-specific composition) stay on the binding activity; the shared contract owns ordered scatter, wait-all, and ordered gather. Techniques do not Protocol-Apply fan-out contracts for work ([Atomic Techniques; Compose at Activities](#26-atomic-techniques-compose-at-activities); `pass-orchestration-in-technique`).
 
-Avoids `prose-based-dispatch-patterns`. Complements [Prefer Shared Capability](#18-prefer-shared-capability) (reuse the named home) and [Maximize Schema Expressiveness](#5-maximize-schema-expressiveness) (bind the formal contract rather than restating concurrency HOW in free prose).
+Avoids `prose-based-dispatch-patterns` and `pass-orchestration-in-technique`. Complements [Prefer Shared Capability](#18-prefer-shared-capability) (reuse the named home) and [Maximize Schema Expressiveness](#5-maximize-schema-expressiveness) (bind the formal contract at the activity rather than restating concurrency HOW in free prose).

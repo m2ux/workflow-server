@@ -88,7 +88,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | [`harness-compat`](techniques/harness-compat/TECHNIQUE.md) | Harness-independent operations (`spawn-agent`, `continue-agent`, `spawn-concurrent`, `resolve-harness-operation`) abstracting cross-tool dispatch |
 | [`variable-binding`](techniques/variable-binding.md) | Strategy technique — bind step inputs/outputs to the variable bag by operation signature |
 | [`scatter-gather`](techniques/scatter-gather.md) | Strategy technique — sequential or parallel agent-unit scatter, ordered gather, combine |
-| [`unit-fan-out`](techniques/unit-fan-out.md) | Strategy technique — same-context process/shell/tool unit scatter, wait-all, ordered gather, combine |
+| [`unit-fan-out`](techniques/unit-fan-out.md) | Strategy technique — same-context process/shell/tool unit scatter, wait-all, ordered gather (activity-bound) |
 
 > Cross-cutting rules live in `agent-conduct`, and capability techniques (`workflow-engine`, `version-control`, etc.) reference it as their single source of truth.
 
@@ -137,7 +137,7 @@ workflows/meta/
 │   ├── agent-conduct.md                     # Cross-cutting rules (single source of truth)
 │   ├── variable-binding.md                  # Strategy technique — bind step inputs/outputs to variables
 │   ├── scatter-gather.md                    # Strategy technique — agent-unit scatter / gather / combine
-│   ├── unit-fan-out.md                      # Strategy technique — process/shell/tool unit fan-out / gather
+│   ├── unit-fan-out.md                      # Strategy technique — process/shell/tool unit fan-out (activity step) |
 │   ├── workflow-engine/                     # Session lifecycle, dispatch, transitions, checkpoint protocol
 │   │   ├── TECHNIQUE.md                     #   group index / base contract
 │   │   └── {op}.md                          #   one file per operation (start-session, create-session, dispatch-activity, ...)
