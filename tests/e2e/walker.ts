@@ -292,16 +292,6 @@ async function transition(
   return { manifestStatus: validation?.status };
 }
 
-/** Resolve a dot-path against the variable bag. */
-function getVar(path: string, vars: Record<string, unknown>): unknown {
-  let cur: unknown = vars;
-  for (const part of path.split('.')) {
-    if (cur === null || cur === undefined || typeof cur !== 'object') return undefined;
-    cur = (cur as Record<string, unknown>)[part];
-  }
-  return cur;
-}
-
 /** Evaluate a step's inline `when` expression via the shared reference dialect.
  * Unparseable expressions fail closed (skip the step). */
 function evaluateWhen(expr: string, vars: Record<string, unknown>): boolean {
