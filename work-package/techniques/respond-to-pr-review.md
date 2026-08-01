@@ -13,10 +13,6 @@ Systematic response to PR review comments — analysis through posted replies.
 
 PR number whose review comments are fetched and answered.
 
-### target_repo
-
-GitHub repository as `owner/repo` for REST `gh api` paths.
-
 ## Outputs
 
 ### review_comments
@@ -40,22 +36,10 @@ Whether the changes are significant enough to require substantial rework
 ### 1. Fetch Comments
 
 - Take the response shape from [Response Format Template](../resources/pr-review-response.md#response-format-template) and the document shape from [Review Document Template](../resources/pr-review-response.md#review-document-template); the rules below govern response content
-- Fetch the `{review_comments}` from the PR identified by `{pr_number}` using the `gh` API:
-  ```bash
-  # after splitting {target_repo} into {$owner}/{$repo}
-  gh api repos/{$owner}/{$repo}/pulls/{pr_number}/comments --paginate
-  ```
-  - If the `gh` API returns an error fetching comments, check authentication and PR access, then retry.
+- Apply [list-pr-review-comments](../../meta/techniques/github-cli-protocol/list-pr-review-comments.md); set `{review_comments}` from `{pr_review_comments}`.
   - If no review comments are found, verify the PR has been reviewed and check comment visibility before proceeding.
-- Filter to unresolved comments from the latest review round (avoid re-answering resolved threads): derive `{$latest_review_date}` from the review timeline, then keep only comments from reviewers (not the PR author) whose GitHub `` `updated_at` `` field is at or after `{$latest_review_date}`. Project each surviving comment to its `.id`, `.body`, `` `html_url` `` (as `url`), `.path`, and `.line`, and save the filtered set to `/tmp/unresolved.json`. Run the pipeline with the `` `updated_at` `` timestamp key and the `` `html_url` `` link key substituted for the bracketed placeholders:
-  ```bash
-  gh api repos/{$owner}/{$repo}/pulls/{pr_number}/reviews --paginate --jq '.[] | {author: .user.login, state: .state, submittedAt: .submitted_at}' | tail -5
-  gh api repos/{$owner}/{$repo}/pulls/{pr_number}/comments --paginate | jq --arg since "{$latest_review_date}" '.[] | select(.user.login != "<pr-author>" and .["<timestamp-key>"] >= $since) | {id, body, url: .["<link-key>"], path, line}' > /tmp/unresolved.json
-  ```
-- Identify question-type comments:
-  ```bash
-  jq -r '.body' /tmp/unresolved.json | grep -i "what\|how\|why\|which" | nl
-  ```
+- Apply [list-pr-reviews](../../meta/techniques/github-cli-protocol/list-pr-reviews.md). Filter to unresolved comments from the latest review round (avoid re-answering resolved threads): derive `{$latest_review_date}` from `{pr_reviews}`, then keep only comments from reviewers (not the PR author) whose `` `updated_at` `` is at or after `{$latest_review_date}`. Project each surviving comment to its `.id`, `.body`, `` `html_url` `` (as `url`), `.path`, and `.line`.
+- Identify question-type comments from the filtered set (bodies matching what/how/why/which).
 - Before proceeding: total comment count confirmed; unresolved comments filtered to the latest review round; question-type comments identified; comments saved for analysis
 
 ### 2. Categorize

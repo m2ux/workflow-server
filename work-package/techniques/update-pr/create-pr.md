@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.2.0
 ---
 
 ## Capability
@@ -16,10 +16,6 @@ Issue identifier (GitHub `#N` or Jira `KEY-N`)
 ### issue_platform
 
 Platform where the issue lives (`github` or `jira`)
-
-### target_repo
-
-*(optional)* GitHub repository as `owner/repo`. When unset, derived from `origin` on `{target_path}`.
 
 ### target_path
 
@@ -53,7 +49,5 @@ URL to the PR
 
 ### 3. Assign Current User
 
-- Set `{$assignee_login}` from `gh api user --jq .login`.
-- Split `{target_repo}` into `{$owner}` / `{$repo}` (or derive from `origin` on `{target_path}`).
-- `gh api repos/{$owner}/{$repo}/issues/{pr_number}/assignees -f "assignees[]={$assignee_login}"`.
+- Apply [assign-issue](../../../meta/techniques/github-cli-protocol/assign-issue.md) with `issue_number` `{pr_number}` and `assignee` `@me` (PR numbers share the issues assignees endpoint).
 - Keep the PR as draft until implementation and review complete

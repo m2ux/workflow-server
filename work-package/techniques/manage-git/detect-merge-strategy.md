@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -13,6 +13,10 @@ Query GitHub for the repo's allowed merge strategies (specifically, whether squa
 
 *(optional)* Basename of the component when nested under `{host_repo_path}`
 
+### host_repo_path
+
+Path to the product repo root (monorepo or standalone).
+
 ## Outputs
 
 ### squash_merge_supported
@@ -22,6 +26,4 @@ Boolean — true if the repo allows squash merges
 ## Protocol
 
 1. Identify the component git directory `{$component_git_dir}`: `{host_repo_path}/{component_name}` when that path exists, otherwise `{host_repo_path}`. Any checkout of the component repo carries the same remote.
-2. Resolve `{$owner_repo}` via `git -C {component_git_dir} remote get-url origin` (convert SSH to HTTPS if needed, strip the `.git` suffix).
-3. Query the GitHub API: `gh api repos/{owner_repo} --jq '{allow_squash_merge}'`.
-4. Set `{squash_merge_supported}` = true if `allow_squash_merge` is true; false otherwise.
+2. Apply [view-repo](../../../meta/techniques/github-cli-protocol/view-repo.md) with `repo_path` `{$component_git_dir}`; set `{squash_merge_supported}` from the op.

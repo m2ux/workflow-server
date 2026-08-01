@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ PR reference (number or URL) or local diff spec identifying the change-set under
 ### base_ref
 
 Base ref for the three-dot merge-base diff when the target is a local change-set, and the cross-check base for PR targets.
+
+### target_repo_path
+
+Path to the checkout under review; supplies `repo_path` to github-cli-protocol when PR mode needs origin-derived coordinates.
 
 ## Outputs
 
@@ -43,7 +47,9 @@ True when the target resolves to a pull request with a postable review surface; 
 
 ### 2. Resolve PR Surface
 
-- In PR mode, resolve `{$owner}` / `{$repo}` from the PR URL in `{review_target}` when present, otherwise from `git -C {target_repo_path} remote get-url origin`. Then resolve the changed-file set from GitHub REST: `gh api repos/{$owner}/{$repo}/pulls/{pr_number}` for head/base metadata and `gh api repos/{$owner}/{$repo}/pulls/{pr_number}/files --paginate --jq '.[].filename'` for the authoritative authored surface.
+- In PR mode, set `{pr_number}` from the number in `{review_target}`.
+- Apply [view-pr](../../../meta/techniques/github-cli-protocol/view-pr.md) with `repo_path` `{target_repo_path}` when `{target_repo}` is unset; retain head/base metadata from the op.
+- Apply [list-pr-files](../../../meta/techniques/github-cli-protocol/list-pr-files.md); take `{changed_files}` as the authoritative authored surface.
 - Record the head and base SHAs, set `{has_pr_surface}` true, and emit `{pr_number}`.
   > If the PR cannot be resolved (not found, auth failure), report the failure and stop — a review against a guessed surface is worse than no review.
 

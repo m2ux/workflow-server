@@ -29,10 +29,6 @@ Path to the repo root; used with `.engineering/` (in-tree or submodule) to resol
 
 Path to the target checkout (where the PR lives), from which the target repo URL is resolved
 
-### target_repo
-
-GitHub repository as `owner/repo` for REST `gh api` paths
-
 ### is_review_mode
 
 *(optional)* True when the PR is being annotated with a consolidated review comment rather than updated with implementation detail
@@ -83,7 +79,7 @@ Create PRs as drafts initially. Convert to ready-for-review only when a later st
 
 ### posting
 
-- review-comment-verbatim: The `post-review-comment` op posts the confirmed `{review_summary}` to the PR byte-for-byte via REST `…/pulls/{pr_number}/reviews` — never re-rendering, paraphrasing, or summarizing it. The summary is authored to [review-mode](../../resources/review-mode.md#review-comment-template); posting is a transport step, not a re-authoring one. This is distinct from `render`, which PATCHes the PR description body from a template.
+- review-comment-verbatim: The `post-review-comment` op posts the confirmed `{review_summary}` to the PR byte-for-byte via [post-pr-review](../../../meta/techniques/github-cli-protocol/post-pr-review.md) — never re-rendering, paraphrasing, or summarizing it. The summary is authored to [review-mode](../../resources/review-mode.md#review-comment-template); posting is a transport step, not a re-authoring one. This is distinct from `render`, which updates the PR description body from a template.
 
 ### tool-usage
 

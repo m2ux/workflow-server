@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -16,10 +16,6 @@ The URL of the PR under review, captured during PR-reference detection. Identifi
 ### pr_number
 
 PR number whose comments and reviews are ingested.
-
-### target_repo
-
-*(optional)* GitHub repository as `owner/repo`. When unset, owner and repo are parsed from `{review_pr_url}`.
 
 ## Outputs
 
@@ -39,10 +35,9 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
 
 ### 1. Ingest All Prior Feedback
 
-- Split `{target_repo}` into `{$owner}` / `{$repo}` (or parse owner/repo from `{review_pr_url}` when `{target_repo}` is unset).
-- Read every top-level issue comment: `gh api repos/{$owner}/{$repo}/issues/{pr_number}/comments --paginate`.
-- Read every PR review: `gh api repos/{$owner}/{$repo}/pulls/{pr_number}/reviews --paginate`.
-- Read every inline review thread: `gh api repos/{$owner}/{$repo}/pulls/{pr_number}/comments --paginate`.
+- Apply [list-issue-comments](../../meta/techniques/github-cli-protocol/list-issue-comments.md) with `issue_number` `{pr_number}`; retain `{issue_comments}`.
+- Apply [list-pr-reviews](../../meta/techniques/github-cli-protocol/list-pr-reviews.md); retain `{pr_reviews}`.
+- Apply [list-pr-review-comments](../../meta/techniques/github-cli-protocol/list-pr-review-comments.md); retain `{pr_review_comments}`.
 - Include both human and bot authors — a bot finding is signal, not noise. Do this before any independent code, structural, or test analysis, so the existing signal frames the review rather than being reconciled after a verdict is formed.
 
 ### 2. Triage Each Prior Finding

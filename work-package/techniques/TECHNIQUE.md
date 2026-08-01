@@ -35,4 +35,4 @@ The work package's pull request number
 
 ### target_repo
 
-GitHub repository as `owner/repo` for REST `gh api` paths
+GitHub repository as `owner/repo`. Bound into github-cli-protocol ops by name-match; domain techniques do not split it.

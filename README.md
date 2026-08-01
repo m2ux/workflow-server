@@ -73,7 +73,7 @@ Techniques are referenced by canonical ID (the file/folder slug). Standalone tec
 | [`workflow-engine`](meta/techniques/workflow-engine/TECHNIQUE.md) | Protocol and rules for workflow execution: session lifecycle (resume or create), activity dispatch, transition evaluation, checkpoint protocol. State persistence is server-managed (atomic `session.json` + `.session-token` seal write on every authenticated call). |
 | [`agent-conduct`](meta/techniques/agent-conduct.md) | Cross-cutting behavioural boundaries: file sensitivity, communication tone, attribution prohibition, operational discipline, checkpoint discipline, orchestrator discipline |
 | [`version-control`](meta/techniques/version-control/TECHNIQUE.md) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
-| [`github-cli-protocol`](meta/techniques/github-cli-protocol/TECHNIQUE.md) | GitHub PR and issue tasks via `gh api` REST only |
+| [`github-cli-protocol`](meta/techniques/github-cli-protocol/TECHNIQUE.md) | GitHub PR and issue tasks; sole home of REST `gh api` recipes |
 | [`knowledge-base-search`](meta/techniques/knowledge-base-search/TECHNIQUE.md) | Optimised concept-rag searches via pre-indexed domain maps |
 | [`atlassian-operations`](meta/techniques/atlassian-operations/TECHNIQUE.md) | Atlassian Jira and Confluence operations via the Atlassian MCP server |
 | [`gitnexus-operations`](meta/techniques/gitnexus-operations/TECHNIQUE.md) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |

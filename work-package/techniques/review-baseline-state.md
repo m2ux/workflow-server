@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -19,11 +19,7 @@ Path to the target checkout where the git operations run
 
 ### pr_number
 
-PR identifier, used to read the authoritative changed-files list via REST `gh api`
-
-### target_repo
-
-GitHub repository as `owner/repo` for REST `gh api` paths
+PR identifier for the pull under review
 
 ## Outputs
 
@@ -47,8 +43,8 @@ The base↔PR diff (fresh three-dot `{base_branch}...HEAD`), noted for later com
 
 ### 1. Checkout Baseline State
 
-- Split `{target_repo}` into `{$owner}` / `{$repo}`. Resolve the base branch the PR targets as `{$base_branch}`: `gh api repos/{$owner}/{$repo}/pulls/{pr_number} --jq .base.ref`.
-- Check out `{base_branch}` inside `{target_path}` to analyse the pre-change state: `git -C {target_path} checkout {base_branch}`.
+- Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md); set `{$base_branch}` from `{base_branch}`.
+- Check out `{$base_branch}` inside `{target_path}` to analyse the pre-change state: `git -C {target_path} checkout {$base_branch}`.
 - Capture the base commit SHA for reference and record it as `{base_sha}`: `git -C {target_path} rev-parse HEAD`.
 
 ### 2. Document Expected Changes
@@ -59,12 +55,12 @@ The base↔PR diff (fresh three-dot `{base_branch}...HEAD`), noted for later com
 ### 3. Capture Authored Surface
 
 - Check out the PR branch to continue the workflow.
-- Record the authoritative changed-files list as `{changed_files}`: `gh api repos/{$owner}/{$repo}/pulls/{pr_number}/files --paginate --jq '.[].filename'`.
-- Note the base↔PR diff as `{base_pr_diff}` using a fresh three-dot range: `git -C {target_path} diff {base_branch}...HEAD`.
+- Apply [list-pr-files](../../meta/techniques/github-cli-protocol/list-pr-files.md); set `{changed_files}` from the op output.
+- Note the base↔PR diff as `{base_pr_diff}` using a fresh three-dot range: `git -C {target_path} diff {$base_branch}...HEAD`.
 
 ### 4. Merge-In Guard
 
-- When HEAD is a merge commit or the branch contains merges of `{base_branch}`, recompute the three-dot set against a freshly resolved merge-base and **log** the merge-in.
+- When HEAD is a merge commit or the branch contains merges of `{$base_branch}`, recompute the three-dot set against a freshly resolved merge-base and **log** the merge-in.
 
 
 ## Rules
@@ -75,11 +71,11 @@ This technique applies only when the work package is in review mode. In normal (
 
 ### authoritative-authored-surface
 
-`{changed_files}` comes from GitHub's pull files list (`gh api …/pulls/{pr_number}/files`). This list is authoritative: it defines the PR's authored surface, and downstream scoping uses it as-is.
+`{changed_files}` comes from [list-pr-files](../../meta/techniques/github-cli-protocol/list-pr-files.md). This list is authoritative: it defines the PR's authored surface, and downstream scoping uses it as-is.
 
 ### merge-in-guard
 
-When HEAD is a merge commit or the branch has merged `{base_branch}` in, recompute the diff with a fresh three-dot range against the merge-base and log that a merge-in was detected. The guard's sole action is to log.
+When HEAD is a merge commit or the branch has merged `{$base_branch}` in, recompute the diff with a fresh three-dot range against the merge-base and log that a merge-in was detected. The guard's sole action is to log.
 
 ### baseline-before-evaluation
 
