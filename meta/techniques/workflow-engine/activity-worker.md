@@ -43,7 +43,7 @@ Worker agent identity for this dispatch.
 - Execute each activity step in document order
 - For `kind: technique` steps, load the bound operation on reach per [progressive-step-technique-load](./TECHNIQUE.md#progressive-step-technique-load)
 - Apply each bound operation via [variable-binding](../variable-binding.md)
-- Honor `when:` gates against the variable bag
+- Honor `when:` gates against the variable bag — operators `==`/`!=`/`>`/`<`/`>=`/`<=`, bare truthiness, unary `!`, `&&`, `||`, parentheses; C-style precedence (`()` > `!` > comparisons > `&&` > `||`); mixed `&&`/`||` at one depth requires parentheses; match the reference evaluator in `src/schema/when-expression.ts` (invalid expressions do not run the step)
 - When a step reaches a checkpoint, apply [yield-checkpoint](./yield-checkpoint.md)
 
 ## Rules
