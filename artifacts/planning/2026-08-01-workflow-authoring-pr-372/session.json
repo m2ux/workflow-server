@@ -702,8 +702,8 @@
           "intake-and-context",
           "scope-and-draft"
         ],
-        "condition": "",
-        "currentActivity": "scope-and-draft",
+        "condition": "isDefault:quality-review",
+        "currentActivity": "quality-review",
         "currentTechnique": "workflow-definition::verify-artifact-conforms",
         "declaredArtifacts": [
           {
@@ -720,6 +720,11 @@
             "id": "impact_analysis",
             "name": "impact-analysis.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372/01-impact-analysis.md"
+          },
+          {
+            "id": "scope_manifest",
+            "name": "scope-manifest.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372/06-scope-manifest.md"
           }
         ],
         "deliveredContent": {
@@ -745,6 +750,27 @@
             "technique:workflow-definition::intake-classification": "785d48688bb7ae2a",
             "technique:workflow-definition::synthesize-change-brief": "aa2d514a9967c52f",
             "technique:workflow-engine::create-readme": "c52c58d5248145b7"
+          },
+          "worker-quality-review-1": {
+            "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
+            "bundle:rules:dcc74273fdf2ad82": "dcc74273fdf2ad82",
+            "bundle:variable-binding": "4de9bd403344076e",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:workflow-design/anti-patterns#coupling-anti-patterns": "abcb477ffaa82968",
+            "resource:workflow-design/anti-patterns#description-hygiene-anti-patterns": "27c352c0cbaa3d17",
+            "resource:workflow-design/anti-patterns#schema-expressiveness-anti-patterns": "6fbbab5aa818ebab",
+            "resource:workflow-design/anti-patterns#structural-anti-patterns": "36f4e2acdeeb24ba",
+            "resource:workflow-design/anti-patterns#technique-protocol-anti-patterns": "b6e88fc1128e425a",
+            "resource:workflow-design/convention-conformance": "1716509f3cbc4710",
+            "resource:workflow-design/design-principles": "ae9933fbb54135d8",
+            "technique:workflow-definition::audit-canon": "1410d942156f64d9",
+            "technique:workflow-definition::audit-schema-validation": "d8414f3bfd12b972",
+            "technique:workflow-definition::load-known-findings": "bc12b59eea4f2f00",
+            "technique:workflow-definition::reload-workflow": "7b1ad19b43c57b6c",
+            "technique:workflow-definition::resolve-consumer-surface": "45113484e215e5d8",
+            "technique:workflow-engine::list-workflows": "822ff399538ae84f"
           },
           "worker-scope-and-draft-1": {
             "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
@@ -1736,17 +1762,396 @@
             },
             "timestamp": "2026-08-01T08:10:14.943Z",
             "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "workflow_branch",
+              "source": "variables_changed",
+              "value": "workflow/358-338-corpus-batch"
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "target_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.worktrees/pr1-corpus-batch/"
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "declaredType": "array",
+              "name": "scope_manifest",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": "14-file update manifest for multi-target corpus batch (top-20 citation grain, C3 defects, ORCHESTRATION MODEL fragments); layout unchanged; drafting order roots → activity → techniques",
+              "valueType": "string"
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "file_count",
+              "source": "variables_changed",
+              "value": 14
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372/06-scope-manifest.md"
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "has_unflagged_removals",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "removal_disposition",
+              "source": "variables_changed",
+              "value": ""
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "derive-workflow-branch"
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "ensure-worktree"
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "define-scope"
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "persist-scope-manifest"
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "file-drafting-loop"
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "author-workflow-readme"
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-1",
+              "stepId": "verify-planning-artifacts"
+            },
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-08-01T08:13:06.380Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 62957,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T08:13:24.673Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 4594,
+              "delivery": "full",
+              "stepId": "load-known-findings",
+              "techniqueId": "workflow-definition::load-known-findings"
+            },
+            "timestamp": "2026-08-01T08:13:24.673Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "stepId": "load-known-findings"
+            },
+            "timestamp": "2026-08-01T08:13:24.673Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 3178,
+              "delivery": "full",
+              "stepId": "survey-reference-workflows",
+              "techniqueId": "workflow-engine::list-workflows"
+            },
+            "timestamp": "2026-08-01T08:13:24.673Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "stepId": "survey-reference-workflows"
+            },
+            "timestamp": "2026-08-01T08:13:24.673Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 4728,
+              "delivery": "full",
+              "stepId": "rebind-target-baseline",
+              "techniqueId": "workflow-definition::reload-workflow"
+            },
+            "timestamp": "2026-08-01T08:13:24.673Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "stepId": "rebind-target-baseline"
+            },
+            "timestamp": "2026-08-01T08:13:24.673Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 4633,
+              "delivery": "full",
+              "stepId": "resolve-consumer-surface",
+              "techniqueId": "workflow-definition::resolve-consumer-surface"
+            },
+            "timestamp": "2026-08-01T08:13:24.673Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "stepId": "resolve-consumer-surface"
+            },
+            "timestamp": "2026-08-01T08:13:24.673Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 9621,
+              "delivery": "full",
+              "stepId": "sweep-canon",
+              "techniqueId": "workflow-definition::audit-canon"
+            },
+            "timestamp": "2026-08-01T08:13:24.673Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "stepId": "sweep-canon"
+            },
+            "timestamp": "2026-08-01T08:13:24.673Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 6384,
+              "delivery": "full",
+              "stepId": "validate-schema",
+              "techniqueId": "workflow-definition::audit-schema-validation"
+            },
+            "timestamp": "2026-08-01T08:13:24.673Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "stepId": "validate-schema"
+            },
+            "timestamp": "2026-08-01T08:13:24.673Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 7008,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#schema-expressiveness-anti-patterns"
+            },
+            "timestamp": "2026-08-01T08:17:27.686Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 14076,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#description-hygiene-anti-patterns"
+            },
+            "timestamp": "2026-08-01T08:17:27.822Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 29936,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#technique-protocol-anti-patterns"
+            },
+            "timestamp": "2026-08-01T08:17:28.626Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 2400,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#structural-anti-patterns"
+            },
+            "timestamp": "2026-08-01T08:17:29.271Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 28016,
+              "delivery": "full",
+              "resourceId": "workflow-design/anti-patterns#coupling-anti-patterns"
+            },
+            "timestamp": "2026-08-01T08:17:38.514Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 15513,
+              "delivery": "full",
+              "resourceId": "workflow-design/design-principles"
+            },
+            "timestamp": "2026-08-01T08:17:59.351Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-1",
+              "chars": 1485,
+              "delivery": "full",
+              "resourceId": "workflow-design/convention-conformance"
+            },
+            "timestamp": "2026-08-01T08:18:02.073Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 45,
+        "seq": 54,
         "sessionIndex": "WEGGYY",
         "skippedActivities": [],
         "startedAt": "2026-08-01T06:07:03.881Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785571814,
+        "ts": 1785572282,
         "variables": {
           "addressed_count": 0,
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372/01-change-brief.md",
@@ -1759,6 +2164,7 @@
           "change_request_clear": true,
           "commit_approved": false,
           "fail_count": 0,
+          "file_count": 14,
           "has_coverage_gap": false,
           "has_critical_finding": false,
           "has_unflagged_removals": false,
@@ -1782,10 +2188,11 @@
           "report_path": "",
           "review_closed": false,
           "review_scope_confirmed": false,
+          "scope_manifest": "14-file update manifest for multi-target corpus batch (top-20 citation grain, C3 defects, ORCHESTRATION MODEL fragments); layout unchanged; drafting order roots → activity → techniques",
           "scope_manifest_confirmed": true,
-          "scope_manifest_path": "",
+          "scope_manifest_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372/06-scope-manifest.md",
           "scope_round": 0,
-          "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-workflow-authoring-pr-372/",
+          "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/pr1-corpus-batch/",
           "target_workflow_id": "work-package",
           "target_workflow_ids": [
             "work-package",
@@ -1802,9 +2209,9 @@
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
           "user_request": "start a workflow authoring workflow for: https://github.com/m2ux/workflow-server/pull/372",
-          "workflow_branch": "",
+          "workflow_branch": "workflow/358-338-corpus-batch",
           "workflow_id": "358-338-corpus-batch",
-          "worktree_created": false
+          "worktree_created": true
         },
         "workflowId": "workflow-authoring",
         "workflowVersion": "1.1.0"
