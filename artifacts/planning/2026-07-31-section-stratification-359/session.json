@@ -5,23 +5,29 @@
   "workflowVersion": "5.14.0",
   "agentId": "orchestrator",
   "sessionIndex": "CTDGEC",
-  "currentActivity": "dispatch-client-workflow",
-  "currentTechnique": "workflow-engine::commit-and-persist",
-  "condition": "isDefault",
-  "seq": 15,
-  "ts": 1785525384,
+  "currentActivity": "end-workflow",
+  "currentTechnique": "workflow-engine::revise-session-metrics",
+  "condition": "client_workflow_completed",
+  "activeCheckpoint": {
+    "activityId": "end-workflow",
+    "checkpointId": "completion-confirmed",
+    "yieldedAt": "2026-07-31T20:34:18.388Z"
+  },
+  "seq": 20,
+  "ts": 1785530058,
   "startedAt": "2026-07-31T19:11:59.251Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
-    "resolve-target"
+    "resolve-target",
+    "dispatch-client-workflow"
   ],
   "skippedActivities": [],
   "variables": {
     "abort_completion": false,
     "client_planning_slug": "2026-07-31-section-stratification-359",
     "client_session_index": "B53HRA",
-    "client_workflow_completed": false,
+    "client_workflow_completed": true,
     "component_path": ".",
     "component_selection_needed": false,
     "has_saved_state": false,
@@ -565,6 +571,156 @@
       },
       "timestamp": "2026-07-31T19:16:24.598Z",
       "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-07-31T20:32:41.320Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_workflow_completed",
+        "source": "variables_changed",
+        "value": true
+      },
+      "timestamp": "2026-07-31T20:32:41.320Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_session_index",
+        "source": "variables_changed",
+        "value": "B53HRA"
+      },
+      "timestamp": "2026-07-31T20:32:41.320Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client",
+        "stepId": "dispatch-client"
+      },
+      "timestamp": "2026-07-31T20:32:41.320Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-07-31T20:32:41.320Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-CTDGEC",
+        "chars": 48353,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-07-31T20:33:02.832Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-CTDGEC",
+        "chars": 6602,
+        "delivery": "full",
+        "stepId": "read-session",
+        "techniqueId": "workflow-engine::read-session"
+      },
+      "timestamp": "2026-07-31T20:33:02.832Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-CTDGEC",
+        "stepId": "read-session"
+      },
+      "timestamp": "2026-07-31T20:33:02.832Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-CTDGEC",
+        "chars": 6625,
+        "delivery": "full",
+        "stepId": "verify-outcomes",
+        "techniqueId": "workflow-engine::verify-outcomes"
+      },
+      "timestamp": "2026-07-31T20:33:02.832Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-CTDGEC",
+        "stepId": "verify-outcomes"
+      },
+      "timestamp": "2026-07-31T20:33:02.832Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-CTDGEC",
+        "chars": 6579,
+        "delivery": "full",
+        "stepId": "generate-summary",
+        "techniqueId": "workflow-engine::generate-summary"
+      },
+      "timestamp": "2026-07-31T20:33:02.832Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-CTDGEC",
+        "stepId": "generate-summary"
+      },
+      "timestamp": "2026-07-31T20:33:02.832Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-CTDGEC",
+        "chars": 8975,
+        "delivery": "full",
+        "stepId": "revise-session-metrics",
+        "techniqueId": "workflow-engine::revise-session-metrics"
+      },
+      "timestamp": "2026-07-31T20:33:26.817Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-CTDGEC",
+        "stepId": "revise-session-metrics"
+      },
+      "timestamp": "2026-07-31T20:33:26.817Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-CTDGEC",
+        "chars": 1054,
+        "delivery": "full",
+        "resourceId": "session-summary-template#session-summary-template"
+      },
+      "timestamp": "2026-07-31T20:33:28.753Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "timestamp": "2026-07-31T20:34:18.388Z",
+      "type": "checkpoint_reached"
     }
   ],
   "triggeredWorkflows": [
@@ -595,10 +751,11 @@
         "completedActivities": [
           "intake-and-context",
           "scope-and-draft",
-          "quality-review"
+          "quality-review",
+          "validate-and-commit"
         ],
-        "condition": "isDefault",
-        "currentActivity": "validate-and-commit",
+        "condition": "",
+        "currentActivity": "__terminal__",
         "currentTechnique": "work-package::manage-git::remove-worktree",
         "declaredArtifacts": [
           {
@@ -630,6 +787,11 @@
             "id": "framing_classification",
             "name": "framing-classification.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-stratification-359/06-framing-classification.md"
+          },
+          {
+            "id": "completion_document",
+            "name": "COMPLETE.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-stratification-359/09-COMPLETE.md"
           }
         ],
         "deliveredContent": {
@@ -2192,17 +2354,207 @@
             },
             "timestamp": "2026-07-31T20:31:04.749Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_number",
+              "source": "variables_changed",
+              "value": "371"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/371"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "commit_approved",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pushed_branch",
+              "source": "variables_changed",
+              "value": "origin/workflow/workflow-design-section-stratification-359"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-B53HRA-validate",
+              "stepId": "verify-audit-findings"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-B53HRA-validate",
+              "stepId": "compile-register"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-B53HRA-validate",
+              "stepId": "persist-register"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-B53HRA-validate",
+              "stepId": "verify-scope-manifest"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-B53HRA-validate",
+              "stepId": "verify-planning-readme"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-B53HRA-validate",
+              "stepId": "approve-to-commit#0"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-B53HRA-validate",
+              "stepId": "compose-publication"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-B53HRA-validate",
+              "stepId": "stage-and-commit"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-B53HRA-validate",
+              "stepId": "verify-commit"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-B53HRA-validate",
+              "stepId": "push-branch"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-B53HRA-validate",
+              "stepId": "open-pr"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-B53HRA-validate",
+              "stepId": "compose-close-out"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-B53HRA-validate",
+              "stepId": "persist-close-out"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-B53HRA-validate",
+              "stepId": "remove-worktree"
+            },
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "__terminal__",
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-07-31T20:32:16.512Z",
+            "type": "workflow_completed"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 37,
+        "seq": 38,
         "sessionIndex": "B53HRA",
         "skippedActivities": [],
         "startedAt": "2026-07-31T19:13:41.875Z",
-        "status": "running",
+        "status": "completed",
         "triggeredWorkflows": [],
-        "ts": 1785529864,
+        "ts": 1785529936,
         "variables": {
           "addressed_count": 0,
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-stratification-359/01-change-brief.md",
@@ -2237,8 +2589,9 @@
           "operation_type": "update",
           "operation_type_ambiguous": false,
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-07-31-section-stratification-359",
-          "pr_number": "",
-          "pr_url": "",
+          "pr_number": "371",
+          "pr_url": "https://github.com/m2ux/workflow-server/pull/371",
+          "pushed_branch": "origin/workflow/workflow-design-section-stratification-359",
           "register_sections": [
             "workflow-design: 0 open findings; fail_count=0; coverage N/A rows only for bulk-AP and convention homes"
           ],
@@ -2265,7 +2618,7 @@
           "user_request": "Start workflow-authoring for https://github.com/m2ux/workflow-server/issues/359 (section stratification / framing). This is PR2 of the two-PR split after PR1 #358 landed as https://github.com/m2ux/workflow-server/pull/370. Scope: classify ~69 framings (delete duplicate / name ## for operative unique / leave orientation); fix 3 cross-section deps with anchored links; extend principle 30 or 32 with clause that content a section-scoped reader depends on lives in a section; add AP-134 sibling framing-outside-any-section; delivery variant C only after classification arithmetic supports it (separate src/ slice if needed). Prefer fresh planning folder for #359; may reference prior planning 2026-07-31-section-resource-grain-358-359 for context. Do not re-do #358 citation tail.",
           "workflow_branch": "workflow/workflow-design-section-stratification-359",
           "workflow_id": "workflow-design",
-          "worktree_created": true
+          "worktree_created": false
         },
         "workflowId": "workflow-authoring",
         "workflowVersion": "1.1.0"
@@ -2297,6 +2650,19 @@
       "technique:workflow-engine::extract-identifying-context": "8625d4feee9444a1",
       "technique:workflow-engine::list-workflows": "199f025ea70aa8e5",
       "technique:workflow-engine::match-target-workflow": "9ff4bb378051a6d3"
+    },
+    "worker-end-CTDGEC": {
+      "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
+      "bundle:variable-binding": "780a3e5bb26aea8d",
+      "bundle:workflow-engine::activity-worker": "5d153b783337a2fc",
+      "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+      "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+      "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+      "resource:session-summary-template#session-summary-template": "0b89df8393b73c92",
+      "technique:workflow-engine::generate-summary": "73edd447137f04eb",
+      "technique:workflow-engine::read-session": "95a74ea9b8a1b559",
+      "technique:workflow-engine::revise-session-metrics": "7ead650263bfb183",
+      "technique:workflow-engine::verify-outcomes": "5f6dcf795f601330"
     }
   },
   "repo": "m2ux/workflow-server"

@@ -16,7 +16,7 @@
 
 ### workflow-design
 
-No open findings. Independent re-derivation: zero High/Critical from quality-review; nothing to re-derive. Spot-confirm of authored spans (principle 30/32 section-scoped-reader clause, AP-134b `framing-outside-any-section`, `## Universal obligation`): anchors resolve; positive-present prose; no schema-expressiveness or description-hygiene Detect hits on those spans.
+No open findings. Independent re-derivation: zero High/Critical from quality-review; nothing to re-derive. Spot-confirm of authored spans (principle 30/32 section-scoped-reader clause, AP-139 `framing-outside-any-section`, `## Universal obligation`): anchors resolve; positive-present prose; no schema-expressiveness or description-hygiene Detect hits on those spans.
 
 ### meta / work-package / prism (path-pins)
 
@@ -26,7 +26,7 @@ No open findings. Path-pin edits are resource structure only (`## Index role`, `
 
 | Home | Unit | Status |
 |------|------|--------|
-| anti-patterns | family sections other than structural / creation (bulk AP rewrite) | not-applicable — PR2 adds only AP-134b sibling; no bulk anti-patterns body rewrite |
+| anti-patterns | family sections other than structural / creation (bulk AP rewrite) | not-applicable — PR2 adds only AP-139 sibling; no bulk anti-patterns body rewrite |
 | convention-conformance | full home | not-applicable — no convention checklist edits this pass |
 | schema-construct-inventory | construct tables beyond Universal obligation | walked — new `## Universal obligation` only; tables unchanged |
 | design-principles | principles other than 30/32 | not-applicable — only 30/32 extended |

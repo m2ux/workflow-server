@@ -3,7 +3,7 @@
 **Status:** complete
 **Method:** Enumerate resources with ≥1 anchored technique citation (`](...resources/....md#...)`). Measure framing outside any `##` span (prose under leading H1 before first `##`, or prose before any heading). Sample citing techniques for obligation overlap. Classify **duplicate** / **operative-unique** / **orientation** / **pre-heading**.
 **Worktree tip at classify:** post-edit path-pins on known samples; orientation left in place.
-**anti-patterns.md:** included when cited; excluded from eager-size work (no body rewrite beyond AP-134b already shipped).
+**anti-patterns.md:** included when cited; excluded from eager-size work (no body rewrite beyond AP-139 already shipped).
 
 ## Arithmetic (final)
 

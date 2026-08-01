@@ -51,7 +51,7 @@ PR2 for [#359](https://github.com/m2ux/workflow-server/issues/359) only. Framing
 **Out of scope this pass:**
 
 - #358 citation tail / top-20 pairs
-- Anti-patterns body size / eager-bundle exclusion (AP-134b sibling only)
+- Anti-patterns body size / eager-bundle exclusion (AP-139 sibling only)
 - All `workflow.yaml` / `activities/*.yaml` topology
 - `src/` delivery variant C
 

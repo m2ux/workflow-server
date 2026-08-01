@@ -4,7 +4,7 @@
 
 ## Summary
 
-PR2 for [#359](https://github.com/m2ux/workflow-server/issues/359) closed the section-stratification / framing audit after the #358 citation tail in [#370](https://github.com/m2ux/workflow-server/pull/370). Canon now states that content a section-scoped reader depends on lives in a section (principles 30/32) and records AP-134b `framing-outside-any-section`; three cross-section deps are anchored; framing path-pins ship on the corpus branch.
+PR2 for [#359](https://github.com/m2ux/workflow-server/issues/359) closed the section-stratification / framing audit after the #358 citation tail in [#370](https://github.com/m2ux/workflow-server/pull/370). Canon now states that content a section-scoped reader depends on lives in a section (principles 30/32) and records AP-139 `framing-outside-any-section`; three cross-section deps are anchored; framing path-pins ship on the corpus branch.
 
 ## What Was Delivered
 
@@ -12,7 +12,7 @@ PR2 for [#359](https://github.com/m2ux/workflow-server/issues/359) closed the se
 - **Techniques:** none
 - **Resources (modified):**
   - `workflow-design/resources/design-principles.md` — principle 30/32 section-scoped-reader clause
-  - `workflow-design/resources/anti-patterns.md` — AP-134b `framing-outside-any-section`
+  - `workflow-design/resources/anti-patterns.md` — AP-139 `framing-outside-any-section`
   - `meta/resources/planning-readme.md` — cross-section anchor + `## Index role`
   - `work-package/resources/architecture-summary.md` — cross-section anchor
   - `work-package/resources/pr-description.md` — glyph key under `#link-row-forms`
