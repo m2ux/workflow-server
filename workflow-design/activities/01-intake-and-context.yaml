@@ -21,17 +21,7 @@ steps:
         bare_filename: structural-inventory.md
         artifact_content: structural_inventory
         target_dir: planning_folder_path
-    condition:
-      type: or
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: ==
-          value: update
-        - type: simple
-          variable: operation_type
-          operator: ==
-          value: review
+    when: operation_type == "update" || operation_type == "review"
   - kind: checkpoint
     id: design-intent-batch
     condition:
