@@ -13,7 +13,7 @@
 | Medium   | 0 | 0 |
 | Low      | 0 | 0 |
 
-> **Remediation round:** Prior quality-review closed with a **false negative** on AP-114 (see [10-ap114-redesign-note.md](10-ap114-redesign-note.md)). Redesign applied; second Detect walk on changed surface finds **zero** Protocol `Apply [technique]` for work. High AP-114 on prior design sites is **addressed**.
+> **Remediation rounds:** (1) AP-114 false negative — see [10-ap114-redesign-note.md](10-ap114-redesign-note.md). (2) AP-68: redesign technique prose used “binding activity owns…” as composition instruction — techniques are **activity-blind**; AP-68 Detect tightened; redesign surface scrubbed.
 
 ## Findings
 
@@ -21,33 +21,37 @@
 
 | Severity | Entry | Location | Evidence | Origin | Status |
 |----------|-------|----------|----------|--------|--------|
-| High | AP-114 pass-orchestration-in-technique | `cargo-operations/run-suite.md` Protocol `Apply [unit-fan-out]`; cargo `TECHNIQUE.md` multi-op rule | Protocol Apply of strategy technique for suite fan-out | quality-review false-negative; redesign | **addressed** — run-suite is pure combine over `unit_results`; activity binds unit-fan-out |
-| — | — | — | No open audit findings on redesigned surface | redesign Detect | clean |
+| High | AP-114 pass-orchestration-in-technique | `cargo-operations/run-suite.md` Protocol `Apply [unit-fan-out]`; cargo `TECHNIQUE.md` multi-op rule | Protocol Apply of strategy technique for suite fan-out | quality-review false-negative; redesign | **addressed** — run-suite is pure combine over `unit_results`; validate activity steps bind unit-fan-out then run-suite |
+| High | AP-68 technique-stage-agnostic | `run-suite.md` rule `activity-owns-fan-out`; `unit-fan-out.md` Protocol/Rules naming binding activity; cargo `TECHNIQUE.md`; `scatter-gather.md` | Technique prose named activity graph actors / sibling-step ownership | user catch after AP-114 redesign | **addressed** — activity-blind I/O and peer-contract cites only; rule renamed `combine-only` |
+| Medium | AP-141 container-names-inheriting-ops | cargo `TECHNIQUE.md` `fmt-uses-only-nice`; multi-op rule citing `run-suite` | Group contract named/carved-out inheriting child ops | user catch | **addressed** — `resource-budget` by invocation class; child carve-out deleted; multi-op names no descendant |
 
-**Changed files (redesign):**
+**Changed files (redesign + AP-68 scrub):**
 
 | Path | Role |
 |------|------|
-| `meta/techniques/unit-fan-out.md` | strategy — invocation-spec units; gather → `unit_results` only |
-| `meta/techniques/cargo-operations/run-suite.md` | pure combine `unit_results` → `validation_results` |
-| `meta/techniques/cargo-operations/TECHNIQUE.md` | multi-op suites bound via **activity steps** |
-| `meta/techniques/scatter-gather.md` | process units bind unit-fan-out at activity layer |
+| `meta/techniques/unit-fan-out.md` | strategy — invocation-spec units; gather → `unit_results`; no activity actors |
+| `meta/techniques/cargo-operations/run-suite.md` | pure combine; `combine-only` rule |
+| `meta/techniques/cargo-operations/TECHNIQUE.md` | multi-op: use unit-fan-out then combine op (no “binding activity”) |
+| `meta/techniques/scatter-gather.md` | process units → unit-fan-out peer contract |
 | `meta/techniques/README.md` / `meta/README.md` | indexes |
 
 ### workflow-design (co-edit)
 
 | Severity | Entry | Location | Evidence | Origin | Status |
 |----------|-------|----------|----------|--------|--------|
-| High | AP-140 Fix steered into AP-114 | AP-140 Fix text | “Apply the unit-kind-correct contract” from technique façade | redesign | **addressed** — Fix: bind as activity step; cross-link AP-114 |
+| High | AP-140 Fix steered into AP-114 | AP-140 Fix text | “Apply the unit-kind-correct contract” from technique façade | redesign | **addressed** — Fix: bind in activity structure; cross-link AP-114 |
+| Medium | AP-68 Detect under-specified | AP-68 Detect/examples | “binding activity” euphemism not listed; Fix elsewhere taught the phrase into techniques | user catch | **addressed** — Detect includes binding activity / activity-owned; §20 activity-blind; AP-140 Fix no longer names binding activity in technique-facing text |
+| Medium | AP-141 new | anti-patterns + §27 | container must not name inheriting descendants | user catch | **addressed** — AP-141 + §27 |
 | — | AP-114 exemplar | AP-114 title line | added `run-suite: Apply unit-fan-out` | redesign | clean (exemplar of smell) |
 
-**Changed files:** `design-principles.md` §33 (activity bind locus), `anti-patterns.md` AP-114/AP-140, `resources/README.md`.
+**Changed files:** `design-principles.md` §20 + §27 + §33, `anti-patterns.md` AP-68/AP-140/AP-141, `resources/README.md`.
 
 ### prism (co-edit)
 
 | Severity | Entry | Location | Evidence | Origin | Status |
 |----------|-------|----------|----------|--------|--------|
-| High | AP-114 | `independent-lenses.md` Apply scatter-gather | Protocol technique→technique Apply | false-negative | **addressed** — atomic lens work; activity owns parallel |
+| High | AP-114 | `independent-lenses.md` Apply scatter-gather | Protocol technique→technique Apply | false-negative | **addressed** — atomic lens work; peer fan-out contracts named without activity actors |
+| High | AP-68 | `independent-lenses.md` Capability/Protocol/Rules | “binding activity owns parallel” | user catch | **addressed** — activity-blind |
 
 ### work-package (co-edit — scope expansion)
 
