@@ -1,0 +1,86 @@
+{
+  "base_ref": "9922b20cd4ac5b25debd7d0efa4913ecf566ca2c",
+  "primary_target": "meta",
+  "co_edit_surfaces": ["workflow-design", "prism"],
+  "fail_count": 0,
+  "open_finding_count": 0,
+  "has_critical_finding": false,
+  "has_coverage_gap": false,
+  "known_finding_keys": [
+    {
+      "class": "dead-output",
+      "entry": "binding-fidelity-triage",
+      "location": "meta/techniques/unit-fan-out.md",
+      "detail": "combined_result",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "class": "dead-output",
+      "entry": "binding-fidelity-triage",
+      "location": "meta/techniques/unit-fan-out.md",
+      "detail": "unit_results",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    }
+  ],
+  "register_sections": [
+    {
+      "target_workflow_id": "meta",
+      "audit_findings": [],
+      "coverage_divergences": [],
+      "fail_count": 0,
+      "consumer_surface_summary": "work-package 11-validate binds cargo-operations::run-suite; validation_results envelope byte-stable. Other meta consumers hit scatter-gather / orchestration-patterns / harness-compat / gitnexus-operations — agent homes retained.",
+      "changed_files": [
+        "meta/techniques/unit-fan-out.md",
+        "meta/techniques/cargo-operations/run-suite.md",
+        "meta/techniques/cargo-operations/TECHNIQUE.md",
+        "meta/techniques/scatter-gather.md",
+        "meta/techniques/README.md",
+        "meta/README.md"
+      ]
+    },
+    {
+      "target_workflow_id": "workflow-design",
+      "note": "co-edit under shared worktree; not in bag target_workflow_ids",
+      "audit_findings": [],
+      "coverage_divergences": [],
+      "fail_count": 0,
+      "changed_files": [
+        "workflow-design/resources/design-principles.md",
+        "workflow-design/resources/anti-patterns.md",
+        "workflow-design/resources/README.md"
+      ]
+    },
+    {
+      "target_workflow_id": "prism",
+      "note": "co-edit under shared worktree; not in bag target_workflow_ids",
+      "audit_findings": [],
+      "coverage_divergences": [],
+      "fail_count": 0,
+      "changed_files": [
+        "prism/techniques/behavioral-pipeline/independent-lenses.md"
+      ],
+      "deferred": ["prism/techniques/dispute-analysis.md"]
+    }
+  ],
+  "guards": {
+    "total_fails": 0,
+    "suite": [
+      "validate-workflow-yaml",
+      "validate-activities",
+      "check-all-refs",
+      "check-binding-fidelity",
+      "check-resource-anchors",
+      "check-variable-model",
+      "check-fragments",
+      "check-technique-template",
+      "check-activity-technique-overlap",
+      "check-audience",
+      "check-self-provisioned-input",
+      "check-identifier-qualification",
+      "check-review-mode-gating",
+      "check-stealth-isolation"
+    ]
+  }
+}

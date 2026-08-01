@@ -1,6 +1,6 @@
 # Formalise reusable parallel fan-out — August 2026
 
-> Update · Created 2026-08-01 · **Status:** Quality review
+> Update · Created 2026-08-01 · **Status:** Validate and commit
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -26,9 +26,9 @@ Formalise parallel fan-out as **named meta contracts** (new same-context **unit-
 | 4 | [Migration candidates](06-migration-candidates.md) | Full-corpus candidate / clean / N/A | 15-30m | ✅ |
 | 5 | Scope and draft | Worktree, manifest, per-file drafting | 45-90m | ✅ |
 | 6 | [Scope manifest](06-scope-manifest.md) | File-level change inventory (10 of 11; dispute out) | 15-30m | ✅ |
-| 7 | Quality review | Criteria walk, consumer surface, guards | 30-60m | 🟡 |
-| 8 | [Findings register](09-findings-register.md) | Audit record, coverage, exclusions | 15-30m | ⬚ |
-| 9 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ⬚ |
+| 7 | Quality review | Criteria walk, consumer surface, guards | 30-60m | ✅ |
+| 8 | [Findings register](08-findings-register.md) | Audit record, coverage, exclusions | 15-30m | ✅ |
+| 9 | Validate and commit | Scope re-check, commit, pull request | 20-40m | 🟡 |
 | 10 | [Close-out](09-COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |
 
 **Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
