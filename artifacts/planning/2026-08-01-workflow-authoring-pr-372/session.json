@@ -751,10 +751,11 @@
         "completedActivities": [
           "intake-and-context",
           "scope-and-draft",
-          "quality-review"
+          "quality-review",
+          "validate-and-commit"
         ],
-        "condition": "isDefault: validate-and-commit",
-        "currentActivity": "validate-and-commit",
+        "condition": "isDefault:__terminal__",
+        "currentActivity": "__terminal__",
         "currentTechnique": "github-cli-protocol::create-pr",
         "declaredArtifacts": [
           {
@@ -781,6 +782,16 @@
             "id": "findings-register",
             "name": "08-findings-register.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372/08-findings-register.md"
+          },
+          {
+            "id": "findings_register",
+            "name": "findings-register.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372/08-findings-register.md"
+          },
+          {
+            "id": "completion_document",
+            "name": "COMPLETE.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372/09-COMPLETE.md"
           }
         ],
         "deliveredContent": {
@@ -2832,19 +2843,410 @@
             },
             "timestamp": "2026-08-01T08:45:26.126Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "commit_approved",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "verified_findings",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "open_finding_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "has_critical_finding",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "has_coverage_gap",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "report_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372/08-findings-register.md"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "total_count",
+              "source": "variables_changed",
+              "value": 14
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "addressed_count",
+              "source": "variables_changed",
+              "value": 14
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "unaddressed_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pushed_branch",
+              "source": "variables_changed",
+              "value": "origin/workflow/358-338-corpus-batch"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_number",
+              "source": "variables_changed",
+              "value": "372"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/372"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "completion_document",
+              "source": "variables_changed",
+              "value": "09-COMPLETE.md"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "remediation_selected",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "review_closed",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "update_seeded_from_review",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-1",
+              "stepId": "verify-audit-findings"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-1",
+              "stepId": "compile-register"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-1",
+              "stepId": "persist-register"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-1",
+              "stepId": "verify-scope-manifest"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-1",
+              "stepId": "verify-planning-readme"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-1",
+              "stepId": "compose-publication"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-1",
+              "stepId": "stage-and-commit"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-1",
+              "stepId": "verify-commit"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-1",
+              "stepId": "push-branch"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-1",
+              "stepId": "open-pr"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-1",
+              "stepId": "compose-close-out"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-1",
+              "stepId": "persist-close-out"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-1",
+              "stepId": "remove-worktree"
+            },
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-08-01T09:04:15.092Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-08-01T09:04:54.038Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "commit_approved",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T09:04:54.038Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_number",
+              "source": "variables_changed",
+              "value": "372"
+            },
+            "timestamp": "2026-08-01T09:04:54.038Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/372"
+            },
+            "timestamp": "2026-08-01T09:04:54.038Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T09:04:54.038Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "completion_document",
+              "source": "variables_changed",
+              "value": "09-COMPLETE.md"
+            },
+            "timestamp": "2026-08-01T09:04:54.038Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "open_finding_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-01T09:04:54.038Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "addressed_count",
+              "source": "variables_changed",
+              "value": 14
+            },
+            "timestamp": "2026-08-01T09:04:54.038Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "total_count",
+              "source": "variables_changed",
+              "value": 14
+            },
+            "timestamp": "2026-08-01T09:04:54.038Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "__terminal__",
+            "timestamp": "2026-08-01T09:04:54.038Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-08-01T09:04:54.038Z",
+            "type": "workflow_completed"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 74,
+        "seq": 76,
         "sessionIndex": "WEGGYY",
         "skippedActivities": [],
         "startedAt": "2026-08-01T06:07:03.881Z",
-        "status": "running",
+        "status": "completed",
         "triggeredWorkflows": [],
-        "ts": 1785573926,
+        "ts": 1785575094,
         "variables": {
-          "addressed_count": 0,
+          "addressed_count": 14,
           "audit_findings": [],
           "base_ref": "46bc1811dbc265179e8b62055adb6aaad2b0974b",
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372/01-change-brief.md",
@@ -2872,6 +3274,7 @@
             "work-package/techniques/requirements-elicitation/ask-question.md"
           ],
           "commit_approved": true,
+          "completion_document": "09-COMPLETE.md",
           "consumer_surface": "cross-workflow refs resolved per target; 0 consumer refs resolve into this run's changed files",
           "coverage_ledger": "53 enumeration units × 9 targets all status=walked; blocked=0; not-applicable=0",
           "fail_count": 0,
@@ -2889,8 +3292,9 @@
           "operation_type": "update",
           "operation_type_ambiguous": false,
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372",
-          "pr_number": "",
-          "pr_url": "",
+          "pr_number": "372",
+          "pr_url": "https://github.com/m2ux/workflow-server/pull/372",
+          "pushed_branch": "origin/workflow/358-338-corpus-batch",
           "reference_workflows": "15 catalog entries from list_workflows (cicd-pipeline-security-audit … workflow-design)",
           "register_sections": "9 target sections appended (work-package, meta, workflow-design, cicd-pipeline-security-audit, midnight-system-review, prism, substrate-node-security-audit, prism-audit, remediate-vuln) — each with findings=[], fail_count=0, coverage walked",
           "remediation_round": 0,
@@ -2898,7 +3302,7 @@
           "removal_count": 4,
           "removal_disposition": "",
           "removals_approved": true,
-          "report_path": "",
+          "report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-workflow-authoring-pr-372/08-findings-register.md",
           "review_closed": false,
           "review_scope_confirmed": false,
           "scope_manifest": "14-file update manifest for multi-target corpus batch (top-20 citation grain, C3 defects, ORCHESTRATION MODEL fragments); layout unchanged; drafting order roots → activity → techniques",
@@ -2919,13 +3323,14 @@
             "prism-audit",
             "remediate-vuln"
           ],
-          "total_count": 0,
+          "total_count": 14,
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
           "user_request": "start a workflow authoring workflow for: https://github.com/m2ux/workflow-server/pull/372",
+          "verified_findings": [],
           "workflow_branch": "workflow/358-338-corpus-batch",
           "workflow_id": "358-338-corpus-batch",
-          "worktree_created": true
+          "worktree_created": false
         },
         "workflowId": "workflow-authoring",
         "workflowVersion": "1.1.0"
