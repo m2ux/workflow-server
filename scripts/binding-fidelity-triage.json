@@ -459,13 +459,6 @@
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: meta::github-cli-protocol::comment-issue",
-      "detail": "own input 'number' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
-    },
-    {
-      "check": "orphan-input",
       "site": "work-package :: meta::gitnexus-operations::analyze",
       "detail": "own input 'force_rebuild' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
