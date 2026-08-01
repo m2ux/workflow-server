@@ -26,3 +26,4 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
 4. `get_workflow { session_index }`. The response carries the workflow's resolved operations bundle ahead of the workflow's metadata and activity roster (separated by `\n\n---\n\n`). Follow the operations and rules in the bundle — ongoing delivery policy lives there ([workflow-engine](../techniques/workflow-engine/TECHNIQUE.md)).
 
    - Pass `session_index` on every subsequent authenticated tool call ([session-index-passes-on-each-call](../techniques/workflow-engine/TECHNIQUE.md#session-index-passes-on-each-call)).
+   - Every worker spawn from here on is blocking-equivalent under [foreground-always](../techniques/harness-compat/TECHNIQUE.md#foreground-always): on Cursor set `run_in_background=false` explicitly and await the worker envelope before the next orchestrator step ([cursor](../techniques/harness-compat/cursor.md)).
