@@ -28,7 +28,7 @@ Consumer surface: remediate-vuln borrows 11 activity files — paths/ids unchang
 |----------|-------|----------|----------|--------|--------|
 | — | — | — | No audit findings on this target | quality-review | clean |
 
-Consumer surface: empty. Fail count: 0. Migration: +~65 `when` sites; 1 residual OR-shaped step gate kept. Guards: all definition guards PASS against worktree `--root`.
+Consumer surface: empty. Fail count: 0. Migration: +~65 `when` sites; residual OR-shaped step gates migrated after [PR #383](https://github.com/m2ux/workflow-server/pull/383). Guards: all definition guards PASS against worktree `--root`.
 
 ### prism v2.4.0
 
@@ -36,7 +36,7 @@ Consumer surface: empty. Fail count: 0. Migration: +~65 `when` sites; 1 residual
 |----------|-------|----------|----------|--------|--------|
 | — | — | — | No audit findings on this target | quality-review | clean |
 
-Consumer surface: prism-update prose path refs — no break risk. Fail count: 0. Migration: +8 `when`; 1 residual OR-shaped step gate kept on run-structural. Guards: all definition guards PASS against worktree `--root`.
+Consumer surface: prism-update prose path refs — no break risk. Fail count: 0. Migration: +8 `when`; residual OR on `run-structural` migrated after [PR #383](https://github.com/m2ux/workflow-server/pull/383). Guards: all definition guards PASS against worktree `--root`.
 
 ### meta v5.15.0
 

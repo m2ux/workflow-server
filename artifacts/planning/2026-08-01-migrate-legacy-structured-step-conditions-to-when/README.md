@@ -1,6 +1,6 @@
 # Corpus Condition-to-When Migration — August 2026
 
-> Update · Created 2026-08-01 · **Status:** Complete
+> Update · Created 2026-08-01 · **Status:** Complete (post-#383 reconcile)
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -9,6 +9,8 @@
 ## 🎯 Executive Summary
 
 Migrates every legacy structured step `condition:` block with a plain comparison to the equivalent inline `when:` expression across the workflow corpus (#338 W7 / #189 C8), closing the last duplicate-declaration duality between the two step-gate dialects. Checkpoint steps and exists-shaped predicates stay structured, with every site's disposition recorded in a migration register, so the corpus matches the schema's stated direction without any semantic change.
+
+**[PR #383](https://github.com/m2ux/workflow-server/pull/383) reconcile:** the four OR keep-sites this run originally left structured now use parenthesized `when:` (cherry-pick `d891ed73` onto `workflow/338-when-migration`). Host evaluator + `check:when` are the authority for mixed `&&`/`||`. Register totals: **149 migrated**, 0 OR-kept, 1 NOT-kept.
 
 ## Problem Overview
 
@@ -41,5 +43,6 @@ Migrates every legacy structured step `condition:` block with a plain comparison
 | Issue | [#338](https://github.com/m2ux/workflow-server/issues/338) |
 | PR | [#374](https://github.com/m2ux/workflow-server/pull/374) |
 | Work branch | [workflow/338-when-migration](https://github.com/m2ux/workflow-server/tree/workflow/338-when-migration) |
+| Dependency (OR dialect) | [#383](https://github.com/m2ux/workflow-server/pull/383) when parentheses / precedence / OR keep-sites |
 | Duplicate PR (closed) | [#378](https://github.com/m2ux/workflow-server/pull/378) |
 | Dead-link retrospective | [09-retrospective-dead-pr-links.md](09-retrospective-dead-pr-links.md) |

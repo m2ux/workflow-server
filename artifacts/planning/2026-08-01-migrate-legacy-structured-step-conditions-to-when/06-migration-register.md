@@ -10,15 +10,17 @@ Every structured step-condition site in the corpus — a `condition:` block on a
 
 | Disposition | Count |
 |-------------|-------|
-| Migrated to `when:` | 145 |
+| Migrated to `when:` | 149 |
 | Kept — checkpoint gate (dismissal seam) | 63 |
 | Kept — `while`/`doWhile` continuation predicate | 17 |
 | Kept — exists-shaped predicate | 8 |
-| Kept — OR-shaped compound (no live `when` precedent) | 4 |
+| Kept — OR-shaped compound (no live `when` precedent) | 0 |
 | Kept — NOT-shaped compound (no live `when` precedent) | 1 |
 | **Total structured step-condition sites** | **238** |
 
 Kept-class reasons are the [change brief](01-change-brief.md)'s Out-of-scope rulings; each row restates only its class. Checkpoint sites stay structured until server PR `feat/when-merge-rule-fragments-ap134-guard` merges (co-change constraint).
+
+**PR [#383](https://github.com/m2ux/workflow-server/pull/383) accounting:** the four OR-shaped step gates that this register originally kept (no live `||` precedent) are now migrated to parenthesized `when:` via cherry-pick of `d891ed73` (`feat(workflows): migrate four OR step gates to parenthesized when`). Host carries the shared `when-expression` evaluator and `check:when` guard; mixed `&&`/`||` without parentheses is a hard fail. The NOT-shaped keep on `structural-analysis-inline` is unchanged.
 
 ## Reconciliation with the impact analysis
 
@@ -26,7 +28,7 @@ The [impact analysis](01-impact-analysis.md) estimated 152 migratable candidates
 
 - `meta/activities/00-discover-session.yaml` — estimated 1 plain step gate; actually holds only kept-class sites (3 checkpoint gates, 2 exists action gates), so the file drops out of the edit set (30 activity files edited, not 31).
 - Exists-shaped sites number 8 (6 in `work-package`, 2 in `meta`), two more than estimated; they were counted inside the 152.
-- 5 compound sites are OR/NOT-shaped and stay structured, as the estimate anticipated for OR shapes.
+- 5 compound sites were OR/NOT-shaped at first draft (4 OR + 1 NOT). After [PR #383](https://github.com/m2ux/workflow-server/pull/383), the 4 OR sites migrate to parenthesized `when:`; the NOT-shaped site stays structured.
 
 ## Dispositions
 
@@ -141,8 +143,8 @@ The [impact analysis](01-impact-analysis.md) estimated 152 migratable candidates
 | 105 | `activities/13-submit-for-review.yaml` | `process-review-comments` | step gate | migrated -> `when: is_review_mode != true && stealth_mode != true` |
 | 106 | `activities/13-submit-for-review.yaml` | `analyze-review-outcome` | step gate | migrated -> `when: is_review_mode != true && stealth_mode != true` |
 | 107 | `activities/13-submit-for-review.yaml` | `review-outcome` | checkpoint gate | kept — checkpoint gate: only structured `condition` enables `condition_not_met` dismissal — was `is_review_mode != true && stealth_mode != true` |
-| 108 | `activities/14-complete.yaml` | `create-adr` | step gate | kept — nested OR combinator has no live `when` precedent — was `is_review_mode != true && (problem_complexity == "moderate" || problem_complexity == "complex")` |
-| 109 | `activities/14-complete.yaml` | `update-adr-status` | step gate | kept — nested OR combinator has no live `when` precedent — was `is_review_mode != true && (problem_complexity == "moderate" || problem_complexity == "complex")` |
+| 108 | `activities/14-complete.yaml` | `create-adr` | step gate | migrated -> `when: is_review_mode != true && (problem_complexity == "moderate" \|\| problem_complexity == "complex")` — OR keep-site via [PR #383](https://github.com/m2ux/workflow-server/pull/383) / `d891ed73` |
+| 109 | `activities/14-complete.yaml` | `update-adr-status` | step gate | migrated -> `when: is_review_mode != true && (problem_complexity == "moderate" \|\| problem_complexity == "complex")` — OR keep-site via [PR #383](https://github.com/m2ux/workflow-server/pull/383) / `d891ed73` |
 | 110 | `activities/14-complete.yaml` | `finalize-test-plan` | step gate | migrated -> `when: is_review_mode != true` |
 | 111 | `activities/14-complete.yaml` | `ensure-docs` | step gate | migrated -> `when: is_review_mode != true` |
 | 112 | `activities/14-complete.yaml` | `resolve-close-out-publish` | step gate | migrated -> `when: is_review_mode == true` |
@@ -155,7 +157,7 @@ The [impact analysis](01-impact-analysis.md) estimated 152 migratable candidates
 
 | # | File | Site | Class | Disposition |
 |---|------|------|-------|-------------|
-| 1 | `activities/01-intake-and-context.yaml` | `persist-structural-inventory` | step gate | kept — OR combinator has no live `when` precedent — was `operation_type == "update" || operation_type == "review"` |
+| 1 | `activities/01-intake-and-context.yaml` | `persist-structural-inventory` | step gate | migrated -> `when: operation_type == "update" \|\| operation_type == "review"` — OR keep-site via [PR #383](https://github.com/m2ux/workflow-server/pull/383) / `d891ed73` |
 | 2 | `activities/01-intake-and-context.yaml` | `design-intent-batch` | checkpoint gate | kept — checkpoint gate: only structured `condition` enables `condition_not_met` dismissal — was `intent_needs_confirmation == true && update_seeded_from_review != true` |
 | 3 | `activities/01-intake-and-context.yaml` | `announce-certain-intent` | step gate | migrated -> `when: intent_needs_confirmation == false && update_seeded_from_review != true && operation_type != 'review'` |
 | 4 | `activities/01-intake-and-context.yaml` | `announce-certain-review-scope` | step gate | migrated -> `when: operation_type == 'review' && intent_needs_confirmation == false` |
@@ -244,7 +246,7 @@ The [impact analysis](01-impact-analysis.md) estimated 152 migratable candidates
 | # | File | Site | Class | Disposition |
 |---|------|------|-------|-------------|
 | 1 | `activities/00-select-mode.yaml` | `confirm-mode` | checkpoint gate | kept — checkpoint gate: only structured `condition` enables `condition_not_met` dismissal — was `pipeline_mode notExists` |
-| 2 | `activities/01-structural-pass.yaml` | `run-structural` | step gate | kept — OR combinator has no live `when` precedent — was `(current_unit.pipeline_mode == "single" && current_unit.lens_name == "l12") || current_unit.pipeline_mode == "full-prism"` |
+| 2 | `activities/01-structural-pass.yaml` | `run-structural` | step gate | migrated -> `when: (current_unit.pipeline_mode == "single" && current_unit.lens_name == "l12") \|\| current_unit.pipeline_mode == "full-prism"` — OR keep-site via [PR #383](https://github.com/m2ux/workflow-server/pull/383) / `d891ed73` |
 | 3 | `activities/01-structural-pass.yaml` | `run-single-lens` | step gate | migrated -> `when: current_unit.pipeline_mode == 'single' && current_unit.lens_name != 'l12'` |
 | 4 | `activities/01-structural-pass.yaml` | `run-portfolio` | step gate | migrated -> `when: current_unit.pipeline_mode == 'portfolio'` |
 | 5 | `activities/01-structural-pass.yaml` | `dispatch-behavioral-lenses` | step gate | migrated -> `when: current_unit.pipeline_mode == 'behavioral'` |

@@ -12,7 +12,7 @@ The impact analysis's "possibly touched" question on the six `workflow.yaml` fil
 
 ## File manifest
 
-Site counts are candidate sites from the [impact analysis](01-impact-analysis.md); an OR-shaped compound found at draft time stays structured with a register row, so a file's migrated count may fall below its candidate count.
+Site counts are candidate sites from the [impact analysis](01-impact-analysis.md). At draft time OR-shaped compounds stayed structured; after [PR #383](https://github.com/m2ux/workflow-server/pull/383) those four sites migrate to parenthesized `when:` (see [migration register](06-migration-register.md)).
 
 | # | Path (under the edit surface) | Kind | Action | One-line change |
 |---|-------------------------------|------|--------|-----------------|
