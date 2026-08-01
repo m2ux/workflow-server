@@ -32,7 +32,7 @@ Key changes to validate:
 | PR383-TC-14 | After migration: four YAML sites use `when`; structured OR removed at those steps | Corpus / guard |
 | PR383-TC-15 | `check:all` / targeted guards clean on touched workflows | Guard |
 
-*Detailed steps, expected results, and source links will be added after implementation.*
+Implementation sources: `tests/when-expression.test.ts`, `scripts/check-when-expression.ts`, four migrated YAML keep-sites.
 
 ## Acceptance Criteria Matrix
 
@@ -48,12 +48,12 @@ Key changes to validate:
 
 ## Running Tests
 
-*Commands will be added after implementation. Expected shape:*
-
 ```bash
 npm run typecheck
 npm test -- --run when-expression
+npm run check:when
+npm run check:stealth
 npm run test:ci
-npm run check:delta   # after corpus touch
-npm run check:all     # full guard table when ready
+npm run check:delta
+npm run check:all
 ```
