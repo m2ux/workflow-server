@@ -725,6 +725,11 @@
     {
       "sessionIndex": "PBEHLM",
       "state": {
+        "activeCheckpoint": {
+          "activityId": "lean-coding-audit",
+          "checkpointId": "audit-findings-confirmed",
+          "yieldedAt": "2026-08-01T11:13:22.811Z"
+        },
         "agentId": "orchestrator",
         "checkpointResponses": {
           "design-philosophy-classification-and-path-confirmed": {
@@ -783,10 +788,11 @@
           "research",
           "implementation-analysis",
           "plan-prepare",
-          "assumptions-review"
+          "assumptions-review",
+          "implement"
         ],
         "condition": "isDefault",
-        "currentActivity": "implement",
+        "currentActivity": "lean-coding-audit",
         "currentTechnique": "scatter-gather",
         "declaredArtifacts": [
           {
@@ -828,6 +834,11 @@
             "id": "test_plan_document",
             "name": "test-plan.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/06-test-plan.md"
+          },
+          {
+            "id": "provenance_log",
+            "name": "provenance-log.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/08-provenance-log.md"
           }
         ],
         "deliveredContent": {
@@ -860,6 +871,16 @@
             "technique:review-assumptions::interview": "4a4a6505993b1d45",
             "technique:review-assumptions::record": "5f050e625814ab90",
             "technique:task-completion-review": "edc928b72c579856"
+          },
+          "lean-coding-audit-worker": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "technique:ponytail/harvest-debt": "eeae192617658e25",
+            "technique:ponytail/review-over-engineering": "13aabd4c079068b8"
           },
           "plan-prepare-worker": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -5998,17 +6019,171 @@
             },
             "timestamp": "2026-08-01T11:05:28.042Z",
             "type": "step_started"
+          },
+          {
+            "activity": "implement",
+            "timestamp": "2026-08-01T11:12:42.884Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "name": "provenance_log_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/08-provenance-log.md"
+            },
+            "timestamp": "2026-08-01T11:12:42.884Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:12:42.884Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:12:42.884Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:12:42.884Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-01T11:12:42.884Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "implement-worker",
+              "stepId": "task-cycle"
+            },
+            "timestamp": "2026-08-01T11:12:42.884Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "implement-worker",
+              "stepId": "present-resolved-assumptions"
+            },
+            "timestamp": "2026-08-01T11:12:42.884Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "implement-worker",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-01T11:12:42.884Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "implement-worker",
+              "stepId": "log-provenance"
+            },
+            "timestamp": "2026-08-01T11:12:42.884Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "timestamp": "2026-08-01T11:12:42.884Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "chars": 37413,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T11:12:57.573Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "chars": 5168,
+              "delivery": "full",
+              "stepId": "review-over-engineering",
+              "techniqueId": "ponytail/review-over-engineering"
+            },
+            "timestamp": "2026-08-01T11:12:57.573Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "stepId": "review-over-engineering"
+            },
+            "timestamp": "2026-08-01T11:12:57.573Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "chars": 4130,
+              "delivery": "full",
+              "stepId": "harvest-debt",
+              "techniqueId": "ponytail/harvest-debt"
+            },
+            "timestamp": "2026-08-01T11:12:57.573Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "data": {
+              "agentId": "lean-coding-audit-worker",
+              "stepId": "harvest-debt"
+            },
+            "timestamp": "2026-08-01T11:12:57.573Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "lean-coding-audit",
+            "checkpoint": "audit-findings-confirmed",
+            "timestamp": "2026-08-01T11:13:22.811Z",
+            "type": "checkpoint_reached"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 80,
+        "seq": 83,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785582328,
+        "ts": 1785582802,
         "variables": {
           "analysis_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/05-implementation-analysis.md",
           "artifact_name": "",
@@ -6101,7 +6276,7 @@
           "problem_statement": "Today the workflow corpus can express simple step gates and flat AND compounds as inline when: expressions, but any gate that needs OR still has to stay in the older structured condition: form. That split exists because parentheses, operator precedence, and a full boolean evaluator for mixed && / || were not validated when the plain gates moved over — so authors cannot safely write the nested shapes the remaining sites need. Until those rules and the evaluator land, OR-shaped gates stay stranded on the structured path, docs that already describe boolean algebra over-promise what the walker can enforce, and a naive OR migration would risk running or skipping steps differently from the structured trees.",
           "problem_type": "inventive-improvement",
           "project_type": "typescript-node",
-          "provenance_log_path": "",
+          "provenance_log_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/08-provenance-log.md",
           "push_remote": "origin",
           "push_remote_url": "",
           "research_candidates": [],
