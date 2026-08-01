@@ -8,8 +8,8 @@
   "currentActivity": "dispatch-client-workflow",
   "currentTechnique": "workflow-engine::dispatch-activity",
   "condition": "isDefault:dispatch-client-workflow",
-  "seq": 15,
-  "ts": 1785578501,
+  "seq": 17,
+  "ts": 1785581470,
   "startedAt": "2026-08-01T09:32:07.029Z",
   "completedActivities": [
     "discover-session",
@@ -668,6 +668,57 @@
       },
       "timestamp": "2026-08-01T10:01:41.522Z",
       "type": "resource_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-01T10:51:09.949Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 11221,
+        "delivery": "full",
+        "stepId": "commit-activity-artifacts",
+        "techniqueId": "workflow-engine::commit-and-persist"
+      },
+      "timestamp": "2026-08-01T10:51:09.949Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "commit-activity-artifacts"
+      },
+      "timestamp": "2026-08-01T10:51:09.949Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "chars": 12803,
+        "delivery": "full",
+        "stepId": "dispatch-activity",
+        "techniqueId": "workflow-engine::dispatch-activity"
+      },
+      "timestamp": "2026-08-01T10:51:10.997Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "orchestrator",
+        "stepId": "dispatch-activity"
+      },
+      "timestamp": "2026-08-01T10:51:10.997Z",
+      "type": "step_started"
     }
   ],
   "triggeredWorkflows": [
@@ -706,6 +757,10 @@
             "optionId": "skip-discussion",
             "respondedAt": "2026-08-01T10:32:34.000Z"
           },
+          "research-research-convergence": {
+            "optionId": "accept-research",
+            "respondedAt": "2026-08-01T10:50:01.000Z"
+          },
           "start-work-package-pr-creation": {
             "effects": {
               "variablesSet": {
@@ -720,11 +775,12 @@
           "start-work-package",
           "design-philosophy",
           "codebase-comprehension",
-          "requirements-elicitation"
+          "requirements-elicitation",
+          "research"
         ],
-        "condition": "elicitation_complete==true && needs_research==true",
-        "currentActivity": "research",
-        "currentTechnique": "review-assumptions::reconcile",
+        "condition": "isDefault → implementation-analysis",
+        "currentActivity": "implementation-analysis",
+        "currentTechnique": "review-assumptions::interview",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -745,6 +801,11 @@
             "id": "comprehension_artifact",
             "name": "when-step-gates.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/when-step-gates.md"
+          },
+          {
+            "id": "research_document",
+            "name": "kb-research.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/04-kb-research.md"
           }
         ],
         "deliveredContent": {
@@ -805,6 +866,25 @@
             "technique:review-assumptions::collect": "d4292b811da5cc3e",
             "technique:review-assumptions::reconcile": "c12f9e9d7e597c8b",
             "technique:review-assumptions::record": "178bd05d2882b09c"
+          },
+          "worker-research-PBEHLM": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
+            "bundle:scatter-gather": "972acb177d168c94",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:research-reconciliation#inventory-shape": "2aeef0178da71e7e",
+            "resource:web-research#planning-artifact": "66dae1601024f6ed",
+            "technique:analyse-challenge::run-loop": "1ca166b5d262fc90",
+            "technique:research::document": "99ac9dda5628481c",
+            "technique:research::research": "f8ece58f3842d46f",
+            "technique:research::synthesize": "176e52909f8f197c",
+            "technique:research::triage": "6d9400167f67d2aa",
+            "technique:review-assumptions::collect": "862f2eb20b8d6391",
+            "technique:review-assumptions::interview": "8116c7428f18bcc2",
+            "technique:review-assumptions::record": "67f668977bcdb1cb"
           },
           "worker-start-wp-PBEHLM": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -3934,17 +4014,603 @@
             },
             "timestamp": "2026-08-01T10:43:03.596Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 84457,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T10:43:33.288Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 5895,
+              "delivery": "full",
+              "stepId": "research-knowledge-base",
+              "techniqueId": "research::research"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "research-knowledge-base"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 3708,
+              "delivery": "full",
+              "stepId": "synthesize",
+              "techniqueId": "research::synthesize"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "synthesize"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 7584,
+              "delivery": "full",
+              "stepId": "triage-research-candidates",
+              "techniqueId": "research::triage"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "triage-research-candidates"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 5125,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 3548,
+              "delivery": "full",
+              "stepId": "document",
+              "techniqueId": "research::document"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "document"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 4135,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 7585,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 6317,
+              "delivery": "full",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::interview"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "present-resolved-assumptions"
+            },
+            "timestamp": "2026-08-01T10:43:33.289Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 1297,
+              "delivery": "full",
+              "resourceId": "web-research#planning-artifact"
+            },
+            "timestamp": "2026-08-01T10:44:23.200Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 2037,
+              "delivery": "full",
+              "resourceId": "research-reconciliation#inventory-shape"
+            },
+            "timestamp": "2026-08-01T10:46:23.656Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-convergence",
+            "timestamp": "2026-08-01T10:48:33.317Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "usage": {
+                "cache_read": 0,
+                "cache_write": 0,
+                "input": 120000,
+                "output": 25000
+              }
+            },
+            "timestamp": "2026-08-01T10:48:44.899Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "research",
+            "checkpoint": "research-convergence",
+            "data": {
+              "optionId": "accept-research"
+            },
+            "timestamp": "2026-08-01T10:50:01.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 84457,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-01T10:50:30.125Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 5895,
+              "delivery": "full",
+              "stepId": "research-knowledge-base",
+              "techniqueId": "research::research"
+            },
+            "timestamp": "2026-08-01T10:50:30.125Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 3708,
+              "delivery": "full",
+              "stepId": "synthesize",
+              "techniqueId": "research::synthesize"
+            },
+            "timestamp": "2026-08-01T10:50:30.125Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 7584,
+              "delivery": "full",
+              "stepId": "triage-research-candidates",
+              "techniqueId": "research::triage"
+            },
+            "timestamp": "2026-08-01T10:50:30.125Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 5125,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-01T10:50:30.125Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 3548,
+              "delivery": "full",
+              "stepId": "document",
+              "techniqueId": "research::document"
+            },
+            "timestamp": "2026-08-01T10:50:30.125Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 4135,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-01T10:50:30.125Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 7585,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-01T10:50:30.125Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 6317,
+              "delivery": "full",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::interview"
+            },
+            "timestamp": "2026-08-01T10:50:30.125Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 7585,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-01T10:50:40.706Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "chars": 6317,
+              "delivery": "full",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::interview"
+            },
+            "timestamp": "2026-08-01T10:50:51.727Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "research",
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "research_document",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/04-kb-research.md"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/02-assumptions-log.md"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_reconcilable_research",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "research_candidates",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "context_scope",
+              "source": "variables_changed",
+              "value": "mixed"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "context_scope_uncertain",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "needs_research",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "research-knowledge-base"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "synthesize"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "triage-research-candidates"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "reconcile-research-candidates"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "research-convergence"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "document"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "present-resolved-assumptions"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "derive-context-scope"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-PBEHLM",
+              "stepId": "announce-derived-context-scope"
+            },
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "implementation-analysis",
+            "timestamp": "2026-08-01T10:51:40.320Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 51,
+        "seq": 63,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785580983,
+        "ts": 1785581500,
         "variables": {
           "artifact_name": "",
           "artifact_publish_ref": "",
@@ -3973,7 +4639,7 @@
           "component_path": ".",
           "comprehension_artifact": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension/when-step-gates.md",
           "comprehension_dir": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension",
-          "context_scope": "repo-only",
+          "context_scope": "mixed",
           "context_scope_uncertain": false,
           "current_block_index": 0,
           "current_branch": "",
@@ -4017,7 +4683,7 @@
           "needs_individual_interview": false,
           "needs_issue_creation": false,
           "needs_plan_revision": false,
-          "needs_research": true,
+          "needs_research": false,
           "needs_simplification": false,
           "needs_strategic_fixes": false,
           "needs_test_improvements": false,
@@ -4038,6 +4704,8 @@
           "provenance_log_path": "",
           "push_remote": "origin",
           "push_remote_url": "",
+          "research_candidates": [],
+          "research_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/04-kb-research.md",
           "resign_unsigned_commits_requested": false,
           "review_comments_summary": "",
           "review_mode_ambiguous": false,
@@ -4085,6 +4753,10 @@
     }
   ],
   "deliveredContent": {
+    "orchestrator": {
+      "technique:workflow-engine::commit-and-persist": "6efcb6f07e07638f",
+      "technique:workflow-engine::dispatch-activity": "6266bff59688554b"
+    },
     "worker-discover-session-QQKD2D": {
       "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
       "bundle:variable-binding": "780a3e5bb26aea8d",

@@ -22,11 +22,16 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | RE-4 | Requirements Elicitation | Success Criteria Interpretation | M | Side-by-side parity with structured `evaluateCondition` on the four keep-sites is the migration safety bar (SC-11), not only isolated `when` unit tests. | Issue hazard framing + inventory nested shapes | Confirmed |
 | RE-5 | Requirements Elicitation | Scope Boundaries | L | Checkpoint/loop/exists OR work stays deferred unless a companion track unblocks `condition_not_met` on `when`. | Issue §5 out of scope; companion server track noted | Confirmed |
 | RE-6 | Requirements Elicitation | Requirement Interpretation | M | Moving production evaluation into MCP tools is **not** a success criterion for unlocking OR migration in this package (open product Q5 answered provisionally for this delivery). | Comprehension Q5 + agent-evaluated schema; SC-1 documents model without requiring server authority move | Confirmed |
+| RS-1 | Research | Pattern Applicability | H | A single shared parse/eval module (recursive-descent or Pratt) is the right shape vs extending `split('&&')` clones in walker and stealth. | Code: dual incomplete evaluators; MDN/Pratt practice; catalog operator-precedence parsing | Validated |
+| RS-2 | Research | Source Relevance | M | concept-rag has little usable boolean-parser chunk text for this topic; codebase + MDN are sufficient authorities for this package. | concept_search empty chunks; broad_chunks noise; catalog titles only | Validated |
+| RS-3 | Research | Synthesis Decisions | L | Short-circuit evaluation is optional for pure bag lookups; truth-table outcome must match full boolean evaluation of both sides. | Gate vars have no side effects; MDN short-circuit note | Confirmed |
+| RS-4 | Research | Risk Assessment | M | Fail-closed walker is an intentional behavior change for currently unparseable expressions that execute today. | walker.ts return true on junk; SC-6 | Confirmed |
+| RS-5 | Research | Pattern Applicability | L | Module path, lint home, and same-vs-sequential PR packaging remain plan/implementation choices (RC-1, RC-3, RC-4). | Analyse-challenge: not stakeholder-judgement; packaging defaults from DP-6 (evaluator + fixtures first, four-site corpus immediately after). Exact path/lint home = implementation-analysis. | Handoff (IA/plan) |
 
 ## Open Assumptions
 
-_None — residual product confirmation of agent-led §0/packaging is owned by the elicitation-complete checkpoint, not by open assumption rows._
+None — research residue empty after analyse-challenge. RS-5 is an implementation/plan handoff, not a stakeholder open.
 
 ## Wrap-Up
 
-13 assumptions in log after requirements elicitation — all validated or confirmed (agent-led §0 split and packaging; user confirmed at elicitation-complete → complete). Deferred multi-agent harness and server-authority move tracked in [deferred-items](deferred-items.md).
+18 assumptions after research — RS-1–RS-4 validated/confirmed; RS-5 handed to implementation-analysis / plan-prepare (no residual interview). Deferred multi-agent harness and server-authority move tracked in [deferred-items](deferred-items.md).
