@@ -725,6 +725,11 @@
     {
       "sessionIndex": "PBEHLM",
       "state": {
+        "activeCheckpoint": {
+          "activityId": "strategic-review",
+          "checkpointId": "unsigned-commits-prompt",
+          "yieldedAt": "2026-08-01T11:42:00.233Z"
+        },
         "agentId": "orchestrator",
         "checkpointResponses": {
           "design-philosophy-classification-and-path-confirmed": {
@@ -809,11 +814,12 @@
           "assumptions-review",
           "implement",
           "lean-coding-audit",
-          "post-impl-review"
+          "post-impl-review",
+          "validate"
         ],
-        "condition": "isDefault: validate (no critical blocker)",
-        "currentActivity": "validate",
-        "currentTechnique": "cargo-operations::run-suite",
+        "condition": "isDefault: strategic-review",
+        "currentActivity": "strategic-review",
+        "currentTechnique": "update-pr::render",
         "declaredArtifacts": [
           {
             "id": "created_readme",
@@ -979,6 +985,25 @@
             "technique:review-diff": "3331aeff98c87002",
             "technique:review-test-suite": "df0f5419d33693b7",
             "technique:summarize-architecture": "18a4ad3fa8f9eb97"
+          },
+          "strategic-review-worker": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:pr-description#template-final": "53f46110b0d3f3c8",
+            "resource:strategic-review#strategic-review-artifact-template": "6b75b017d310fa24",
+            "technique:manage-artifacts::verify-artifact-conforms": "9c422b022581b8f3",
+            "technique:strategic-findings-analysis": "b75bbaaf17f770aa",
+            "technique:strategic-review::changes-folder": "79a2b141660145c1",
+            "technique:strategic-review::document-findings": "8bc2a446ce298649",
+            "technique:strategic-review::review-scope": "fef30af10a9603af",
+            "technique:strategic-review::verify-fragment": "df7b1bc3990d2ca3",
+            "technique:summarize-architecture": "18a4ad3fa8f9eb97",
+            "technique:update-pr::render": "598bb0291b20e14c",
+            "technique:workflow-engine::verify-readme-conforms": "992ad3120855445b"
           },
           "validate-worker": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -7048,17 +7073,312 @@
             },
             "timestamp": "2026-08-01T11:38:07.848Z",
             "type": "step_started"
+          },
+          {
+            "activity": "validate",
+            "timestamp": "2026-08-01T11:41:08.616Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate",
+            "data": {
+              "name": "validation_passed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T11:41:08.616Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate",
+            "data": {
+              "name": "validation_results",
+              "source": "variables_changed",
+              "value": {
+                "check_all_status": {
+                  "check_id": "check:all",
+                  "diagnostics": "20 guard(s) — 20 pass, 0 fail",
+                  "passed": true
+                },
+                "failed_checks": [],
+                "first_failure": null,
+                "test_status": {
+                  "check_id": "test:ci",
+                  "diagnostics": "Test Files 55 passed | 1 skipped (56); Tests 811 passed | 14 skipped (825)",
+                  "passed": true
+                },
+                "typecheck_status": {
+                  "check_id": "typecheck",
+                  "diagnostics": "tsc --noEmit clean",
+                  "passed": true
+                },
+                "validation_passed": true
+              }
+            },
+            "timestamp": "2026-08-01T11:41:08.616Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate",
+            "data": {
+              "name": "mark_progress_na",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T11:41:08.616Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate",
+            "data": {
+              "agentId": "validate-worker",
+              "stepId": "run-suite"
+            },
+            "timestamp": "2026-08-01T11:41:08.616Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "strategic-review",
+            "timestamp": "2026-08-01T11:41:08.616Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "chars": 82413,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "chars": 9458,
+              "delivery": "full",
+              "stepId": "review-strategy",
+              "techniqueId": "strategic-review::review-scope"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "stepId": "review-strategy"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "chars": 3483,
+              "delivery": "full",
+              "stepId": "verify-readme",
+              "techniqueId": "workflow-engine::verify-readme-conforms"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "stepId": "verify-readme"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "chars": 9816,
+              "delivery": "full",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "manage-artifacts::verify-artifact-conforms"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "stepId": "verify-artifact-conformance"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "chars": 6010,
+              "delivery": "full",
+              "stepId": "ensure-changes-folder-entry",
+              "techniqueId": "strategic-review::changes-folder"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "stepId": "ensure-changes-folder-entry"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "chars": 5682,
+              "delivery": "full",
+              "stepId": "verify-change-fragment",
+              "techniqueId": "strategic-review::verify-fragment"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "stepId": "verify-change-fragment"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "chars": 4802,
+              "delivery": "full",
+              "stepId": "document-findings",
+              "techniqueId": "strategic-review::document-findings"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "stepId": "document-findings"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "chars": 5112,
+              "delivery": "full",
+              "stepId": "create-architecture-summary",
+              "techniqueId": "summarize-architecture"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "stepId": "create-architecture-summary"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "chars": 4840,
+              "delivery": "full",
+              "stepId": "analyze-strategic-findings",
+              "techniqueId": "strategic-findings-analysis"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "stepId": "analyze-strategic-findings"
+            },
+            "timestamp": "2026-08-01T11:41:12.465Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "chars": 7726,
+              "delivery": "full",
+              "stepId": "refresh-pr-body",
+              "techniqueId": "update-pr::render"
+            },
+            "timestamp": "2026-08-01T11:41:32.957Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "stepId": "refresh-pr-body"
+            },
+            "timestamp": "2026-08-01T11:41:32.957Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "chars": 2669,
+              "delivery": "full",
+              "resourceId": "strategic-review#strategic-review-artifact-template"
+            },
+            "timestamp": "2026-08-01T11:41:35.171Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "data": {
+              "agentId": "strategic-review-worker",
+              "chars": 1347,
+              "delivery": "full",
+              "resourceId": "pr-description#template-final"
+            },
+            "timestamp": "2026-08-01T11:41:48.116Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "strategic-review",
+            "checkpoint": "unsigned-commits-prompt",
+            "timestamp": "2026-08-01T11:42:00.233Z",
+            "type": "checkpoint_reached"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 108,
+        "seq": 114,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785584287,
+        "ts": 1785584520,
         "variables": {
           "analysis_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/05-implementation-analysis.md",
           "artifact_name": "",
@@ -7201,7 +7521,27 @@
           "unsigned_commits_in_pr": false,
           "use_existing_pr": false,
           "user_request": "start a work package workflow for issue 379",
-          "validation_passed": false,
+          "validation_passed": true,
+          "validation_results": {
+            "check_all_status": {
+              "check_id": "check:all",
+              "diagnostics": "20 guard(s) — 20 pass, 0 fail",
+              "passed": true
+            },
+            "failed_checks": [],
+            "first_failure": null,
+            "test_status": {
+              "check_id": "test:ci",
+              "diagnostics": "Test Files 55 passed | 1 skipped (56); Tests 811 passed | 14 skipped (825)",
+              "passed": true
+            },
+            "typecheck_status": {
+              "check_id": "typecheck",
+              "diagnostics": "tsc --noEmit clean",
+              "passed": true
+            },
+            "validation_passed": true
+          },
           "worktree_created": true
         },
         "workflowId": "work-package",
