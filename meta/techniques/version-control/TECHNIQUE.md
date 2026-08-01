@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.3.0
+  version: 5.4.0
 ---
 
 ## Capability
@@ -40,3 +40,7 @@ A submodule is infrastructure when its `path` equals `workflows`, equals `.engin
 ### host-is-derived-component-is-named
 
 The host repository a session belongs to and the component being worked on are two facts, never one variable. The host is DERIVED from git by [resolve-host-repo](./resolve-host-repo.md) — the outermost superproject that claims the workspace checkout — and lands as `{host_repo_path}` and `{target_repo}`. A repository named in the user's request, such as the `owner/repo` in a PR or issue URL, identifies the COMPONENT and lands as `{mentioned_repo}`; it is component context for [select-target-component](./select-target-component.md) alone and never binds the session. Binding a session to a repository merely because the request mentioned it is what produces a checkout that does not exist.
+
+### host-shell-for-remote-git
+
+Run every git invocation that contacts a remote (`fetch`, `pull`, `push`, `ls-remote`, network `clone`, and `ssh` to the git host) in a shell with full host permissions (Cursor Shell `required_permissions: ["all"]`, or the harness equivalent outside the agent sandbox). Local-only git may use the default shell. Sandbox-denial signatures (`Bad owner or permissions on …/ssh_config.d/…`, TCP via `127.0.0.1`, connection reset / `unexpected EOF` to the git host) mean re-run once under full host permissions — not that credentials or keys failed.

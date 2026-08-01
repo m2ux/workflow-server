@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.1.0
+  version: 3.2.0
 ---
 
 ## Capability
@@ -24,3 +24,7 @@ Single-item views MUST pass `--json <fields>`. The default (field-less) view of 
 ### ask-before-replying
 
 Ask the user before replying to PR comments or review feedback.
+
+### host-shell-for-gh
+
+Run every `gh` invocation in a shell with full host permissions (Cursor Shell `required_permissions: ["all"]`, or the harness equivalent outside the agent sandbox). Leave `GH_TOKEN` and `GITHUB_TOKEN` unset unless a known-good PAT is intentionally supplied. Sandbox-denial signatures (`Bad owner or permissions on …/ssh_config.d/…`, TCP via `127.0.0.1`, `unexpected EOF` on `api.github.com`) mean re-run once under full host permissions — not that host credentials failed.
