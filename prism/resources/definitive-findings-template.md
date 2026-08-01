@@ -9,6 +9,10 @@ metadata:
   type: template
 ---
 
+# Definitive Findings Template
+
+## Artifact contract
+
 This resource defines the structure of DEFINITIVE-FINDINGS.md, the detailed companion to the lean
 REPORT.md. It carries a `definitive_findings_path`. Every finding present in REPORT.md appears here with
 its complete field set, and finding IDs match REPORT.md exactly. Consumer workflows (prism-audit,

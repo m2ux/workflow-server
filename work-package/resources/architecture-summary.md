@@ -29,7 +29,7 @@ Skip for: bug fixes with no architectural impact, internal refactoring invisible
 
 Mermaid node shapes: `([text])` actor, `[text]` internal system, `[(text)]` database, `[[text]]` external service.
 
-Container diagram example (the artifact template below embeds examples for the other types):
+Container diagram example (the [Architecture Summary Artifact Template](#architecture-summary-artifact-template) embeds examples for the other types):
 
 ```mermaid
 ---

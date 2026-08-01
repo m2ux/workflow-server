@@ -10,10 +10,6 @@ metadata:
 
 # Work Package Close-Out Guide
 
-Template and fill rules for `COMPLETE.md`, the work package's close-out document. It is the **canonical home** for exactly one fact category: known limitations.
-
-**Review-mode header:** the header line names the audited PR as the review subject, and the Summary states the verdict posted and links the review summary. A review run delivers a verdict, so that is what its close-out reports.
-
 ## Template
 
 ```markdown

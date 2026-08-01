@@ -10,6 +10,8 @@ metadata:
 
 # Workflow Retrospective Guide
 
+## Host nesting
+
 Methodology and template for the `## Workflow Retrospective` section — an `##`-level section, so it nests inside a host close-out document rather than standing alone. It records the session's **non-checkpoint** user-interaction friction and, when a resolved session trace is available, its **mechanical** friction.
 
 ## Signals to Scan For

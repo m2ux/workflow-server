@@ -1816,3 +1816,15 @@ A declared output has nowhere to go, so the value exists only in the producing w
 **Do not flag:** An operation whose callers resolve outside the declaring tree — a shared library op, or one bound cross-workflow — where having no in-tree consumer is the expected state of a library. An output whose consumer is a sibling `#### artifact` token-template on the same technique, which resolves when the artifact contract is synthesised. A terminal activity's product that the binding activity surfaces: position at the end of the graph is not the licence, the delivery is.
 
 **Fix:** Give the value the destination it has. A file → `#### artifact` on the entry (`artifact-not-buried`, `artifact-name-is-filename`). A field of a sibling output's document → a `####` component of that output rather than a sibling `###` entry. A value a later step needs → bind it at the step and let the consumer declare it as an input. A value the run must show a human → interpolate `{id}` from the binding activity (`session-interaction-in-technique`). Where none applies the declaration is dead weight: delete it, and the variable that shadowed it. See [Output Economy](./design-principles.md#12-output-economy) and [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); the inverse smell is `technique-outputs-declared`.
+
+### AP-139. framing-outside-any-section
+
+"# Schema Construct Inventory — Every piece of prose must be checked against this inventory… [then `##` mapping tables only]"
+
+A resource carries operative prose in a span no `##` anchor reaches, while techniques cite that resource by section.
+
+**Detect:** After stripping frontmatter and ignoring fenced blocks, the resource has at least one anchored citer, and either (a) the leading H1 carries substantial framing (roughly 100+ characters of body before the first `##`) whose only reachable anchor spans the whole file, or (b) prose sits before any heading. Mechanical: measure prose before the first `##` against the span of the leading H1 and against every `##` span. A section-scoped `get_resource` returns only the matched heading's span, so that framing is silently absent for every section consumer.
+
+**Do not flag:** Orientation-only framing a section consumer does not need (record the verdict). Single-section resources with no anchored citers. Framing already under a named `##` that citers can request. Whole-resource citations where the consumer loads the full file (`whole-resource-for-one-section` Do-not-flag carve-outs).
+
+**Fix:** Classify the framing — delete when it duplicates the citing technique; mint a `##` section (or move the obligation into the technique) when it is operative and unique; leave when it is orientation only. Cross-section deixis becomes an anchored link. See [Resources at the Abstract Level; Split for Section Delivery](./design-principles.md#30-resources-at-the-abstract-level-split-for-section-delivery) (content a section-scoped reader depends on lives in a section) and [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain). Related: `whole-resource-for-one-section`.

@@ -5,6 +5,8 @@ description: Canonical Template and rules for the README.md entry-point of any w
 
 # Planning Folder README Guide
 
+## Index role
+
 The `README.md` is the entry point for a workflow's planning folder (git hosting renders it when browsing). It is an **index** — a hub of links answering "what is this work, and what is its current status?" in under two minutes. Each linked artifact is the single home of its own content; the README links to it (single-source-and-link).
 
 This resource owns the **universal Template** and the policy around it, in three parts: the [Template](#template) plus [Rules](#rules) for the sections it lays out, [Status](#status) for the whole Progress status model, and [Matching](#matching) for how writers address rows. [create-readme](../techniques/workflow-engine/create-readme.md) seeds `README.md` from the Template, then splices Progress rows (and optional append headings) from the workflow's **readme-seed** profile; [verify-readme-conforms](../techniques/workflow-engine/verify-readme-conforms.md) drift-checks against it; [sync-progress-status](../techniques/workflow-engine/sync-progress-status.md) is the only writer of Progress Status cells.
@@ -171,7 +173,7 @@ Orchestrator guidance for when to Apply [sync-progress-status](../techniques/wor
 | Worker/orchestrator signals blocked | blocked (`❌`) | Orchestrator when blocked is observed |
 | Path skip / cancel / mark N/A | cancelled / N/A (`⊘`) | Orchestrator when path excludes or cancels the activity |
 
-An activity that cannot produce a meaningful Progress complete sets `{mark_progress_na}` — that is what routes it to the cancelled/N/A row above, rather than inventing a user-reported hand-off to claim completion with.
+An activity that cannot produce a meaningful Progress complete sets `{mark_progress_na}` — that is what routes it to the cancelled/N/A row in [Status vocabulary](#status-vocabulary), rather than inventing a user-reported hand-off to claim completion with.
 
 ## Matching
 
