@@ -1,0 +1,2188 @@
+{
+  "register_sections": [
+    {
+      "target_workflow_id": "work-package",
+      "version": "3.41.0",
+      "base_ref": "e2e70e68",
+      "changed_files": [
+        "activities/01-start-work-package.yaml",
+        "activities/02-design-philosophy.yaml",
+        "activities/04-research.yaml",
+        "activities/05-implementation-analysis.yaml",
+        "activities/06-plan-prepare.yaml",
+        "activities/07-assumptions-review.yaml",
+        "activities/08-implement.yaml",
+        "activities/10-post-impl-review.yaml",
+        "activities/11-validate.yaml",
+        "activities/12-strategic-review.yaml",
+        "activities/13-submit-for-review.yaml",
+        "activities/14-complete.yaml",
+        "workflow.yaml"
+      ],
+      "audit_findings": [],
+      "coverage_ledger": [
+        {
+          "home": "design-principles",
+          "unit": "1-workflows-ossify-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "2-internalize-before-producing",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "3-define-complete-scope-before-execution",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "4-clarify-before-assuming",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "5-maximize-schema-expressiveness",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "6-one-authoritative-home",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "7-convention-over-invention",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "8-confirm-before-irreversible-changes",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "9-encode-constraints-as-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "10-non-destructive-updates",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "11-complete-documentation-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "12-output-economy",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "13-separate-contract-from-procedure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "14-single-source-of-truth",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "15-phase-by-sequenced-outcome",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "16-distinguish-designators-from-parameters",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "17-document-in-positive-present",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "18-prefer-shared-capability",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "19-name-symbols-affirmatively",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "20-keep-orchestration-in-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "21-match-the-harness-surface",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "22-modular-over-inline",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "23-close-the-loop",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "24-keep-session-interaction-in-activities",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "25-bind-sibling-operations-as-steps",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "26-atomic-techniques-compose-at-activities",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "27-state-contract-contribution",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "28-creation-guide-for-generated-documents",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "29-cite-resource-policy-do-not-restate-it",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "30-resources-at-the-abstract-level-split-for-section-delivery",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "31-isolate-conditional-branches-as-notes",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "32-cite-resources-at-section-grain",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "activity-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "workflow-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "technique-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "condition-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "checkpoint-effects",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "action-types",
+          "status": "walked"
+        },
+        {
+          "home": "convention-conformance",
+          "unit": "reference-conventions",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "creation-rules",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "structural-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "interaction-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "schema-expressiveness-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "rule-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "description-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "coupling-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "tool-technique-doc-consistency-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "execution-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "output-economy-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "canon-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "technique-protocol-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "authoring-guidance-mr",
+          "status": "walked"
+        }
+      ],
+      "coverage_divergences": [],
+      "fail_count": 0,
+      "consumer_surface": [
+        {
+          "from": "remediate-vuln/workflow.yaml",
+          "refs": "borrows 11 work-package activity files",
+          "changed_target": true,
+          "break_risk": "none \u2014 gate dialect only; activity ids/paths unchanged"
+        }
+      ],
+      "notes": {
+        "migration": "this target +~65 when; residual non-ckpt condition=6 kept (exists/OR/NOT)",
+        "guards": "all definition guards PASS against worktree --root",
+        "dual_when_condition_loops": "entry when + continuation condition on while/doWhile is schema-correct (not dual step gates)"
+      }
+    },
+    {
+      "target_workflow_id": "workflow-design",
+      "version": "1.32.0",
+      "base_ref": "e2e70e68",
+      "changed_files": [
+        "activities/01-intake-and-context.yaml",
+        "activities/03-requirements-refinement.yaml",
+        "activities/05-impact-analysis.yaml",
+        "activities/06-scope-and-draft.yaml",
+        "activities/08-quality-review.yaml",
+        "activities/09-validate-and-commit.yaml",
+        "activities/10-post-update-review.yaml",
+        "activities/11-retrospective.yaml",
+        "workflow.yaml"
+      ],
+      "audit_findings": [],
+      "coverage_ledger": [
+        {
+          "home": "design-principles",
+          "unit": "1-workflows-ossify-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "2-internalize-before-producing",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "3-define-complete-scope-before-execution",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "4-clarify-before-assuming",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "5-maximize-schema-expressiveness",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "6-one-authoritative-home",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "7-convention-over-invention",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "8-confirm-before-irreversible-changes",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "9-encode-constraints-as-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "10-non-destructive-updates",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "11-complete-documentation-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "12-output-economy",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "13-separate-contract-from-procedure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "14-single-source-of-truth",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "15-phase-by-sequenced-outcome",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "16-distinguish-designators-from-parameters",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "17-document-in-positive-present",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "18-prefer-shared-capability",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "19-name-symbols-affirmatively",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "20-keep-orchestration-in-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "21-match-the-harness-surface",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "22-modular-over-inline",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "23-close-the-loop",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "24-keep-session-interaction-in-activities",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "25-bind-sibling-operations-as-steps",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "26-atomic-techniques-compose-at-activities",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "27-state-contract-contribution",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "28-creation-guide-for-generated-documents",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "29-cite-resource-policy-do-not-restate-it",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "30-resources-at-the-abstract-level-split-for-section-delivery",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "31-isolate-conditional-branches-as-notes",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "32-cite-resources-at-section-grain",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "activity-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "workflow-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "technique-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "condition-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "checkpoint-effects",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "action-types",
+          "status": "walked"
+        },
+        {
+          "home": "convention-conformance",
+          "unit": "reference-conventions",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "creation-rules",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "structural-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "interaction-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "schema-expressiveness-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "rule-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "description-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "coupling-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "tool-technique-doc-consistency-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "execution-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "output-economy-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "canon-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "technique-protocol-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "authoring-guidance-mr",
+          "status": "walked"
+        }
+      ],
+      "coverage_divergences": [],
+      "fail_count": 0,
+      "consumer_surface": [],
+      "notes": {
+        "migration": "+~65 when sites; 1 residual OR-shaped step gate kept",
+        "guards": "all definition guards PASS against worktree --root",
+        "dual_when_condition_loops": "entry when + continuation condition on while/doWhile is schema-correct (not dual step gates)"
+      }
+    },
+    {
+      "target_workflow_id": "prism",
+      "version": "2.4.0",
+      "base_ref": "e2e70e68",
+      "changed_files": [
+        "activities/01-structural-pass.yaml",
+        "activities/02-adversarial-pass.yaml",
+        "activities/03-synthesis-pass.yaml",
+        "activities/05-behavioral-synthesis-pass.yaml",
+        "activities/12-adaptive-pass.yaml",
+        "workflow.yaml"
+      ],
+      "audit_findings": [],
+      "coverage_ledger": [
+        {
+          "home": "design-principles",
+          "unit": "1-workflows-ossify-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "2-internalize-before-producing",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "3-define-complete-scope-before-execution",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "4-clarify-before-assuming",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "5-maximize-schema-expressiveness",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "6-one-authoritative-home",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "7-convention-over-invention",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "8-confirm-before-irreversible-changes",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "9-encode-constraints-as-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "10-non-destructive-updates",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "11-complete-documentation-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "12-output-economy",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "13-separate-contract-from-procedure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "14-single-source-of-truth",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "15-phase-by-sequenced-outcome",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "16-distinguish-designators-from-parameters",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "17-document-in-positive-present",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "18-prefer-shared-capability",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "19-name-symbols-affirmatively",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "20-keep-orchestration-in-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "21-match-the-harness-surface",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "22-modular-over-inline",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "23-close-the-loop",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "24-keep-session-interaction-in-activities",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "25-bind-sibling-operations-as-steps",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "26-atomic-techniques-compose-at-activities",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "27-state-contract-contribution",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "28-creation-guide-for-generated-documents",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "29-cite-resource-policy-do-not-restate-it",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "30-resources-at-the-abstract-level-split-for-section-delivery",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "31-isolate-conditional-branches-as-notes",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "32-cite-resources-at-section-grain",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "activity-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "workflow-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "technique-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "condition-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "checkpoint-effects",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "action-types",
+          "status": "walked"
+        },
+        {
+          "home": "convention-conformance",
+          "unit": "reference-conventions",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "creation-rules",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "structural-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "interaction-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "schema-expressiveness-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "rule-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "description-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "coupling-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "tool-technique-doc-consistency-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "execution-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "output-economy-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "canon-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "technique-protocol-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "authoring-guidance-mr",
+          "status": "walked"
+        }
+      ],
+      "coverage_divergences": [],
+      "fail_count": 0,
+      "consumer_surface": [
+        {
+          "from": "prism-update/techniques/verify-prism-consistency.md",
+          "refs": "mentions prism/activities/",
+          "changed_target": true,
+          "break_risk": "none \u2014 prose path refs; ids unchanged"
+        }
+      ],
+      "notes": {
+        "migration": "+8 when; 1 residual OR-shaped step gate kept on run-structural",
+        "guards": "all definition guards PASS against worktree --root",
+        "dual_when_condition_loops": "entry when + continuation condition on while/doWhile is schema-correct (not dual step gates)"
+      }
+    },
+    {
+      "target_workflow_id": "meta",
+      "version": "5.15.0",
+      "base_ref": "e2e70e68",
+      "changed_files": [
+        "activities/04-end-workflow.yaml",
+        "activities/patterns/02-supervisor.yaml",
+        "activities/patterns/03-plan-and-execute.yaml",
+        "workflow.yaml"
+      ],
+      "audit_findings": [],
+      "coverage_ledger": [
+        {
+          "home": "design-principles",
+          "unit": "1-workflows-ossify-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "2-internalize-before-producing",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "3-define-complete-scope-before-execution",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "4-clarify-before-assuming",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "5-maximize-schema-expressiveness",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "6-one-authoritative-home",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "7-convention-over-invention",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "8-confirm-before-irreversible-changes",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "9-encode-constraints-as-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "10-non-destructive-updates",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "11-complete-documentation-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "12-output-economy",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "13-separate-contract-from-procedure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "14-single-source-of-truth",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "15-phase-by-sequenced-outcome",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "16-distinguish-designators-from-parameters",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "17-document-in-positive-present",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "18-prefer-shared-capability",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "19-name-symbols-affirmatively",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "20-keep-orchestration-in-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "21-match-the-harness-surface",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "22-modular-over-inline",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "23-close-the-loop",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "24-keep-session-interaction-in-activities",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "25-bind-sibling-operations-as-steps",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "26-atomic-techniques-compose-at-activities",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "27-state-contract-contribution",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "28-creation-guide-for-generated-documents",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "29-cite-resource-policy-do-not-restate-it",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "30-resources-at-the-abstract-level-split-for-section-delivery",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "31-isolate-conditional-branches-as-notes",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "32-cite-resources-at-section-grain",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "activity-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "workflow-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "technique-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "condition-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "checkpoint-effects",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "action-types",
+          "status": "walked"
+        },
+        {
+          "home": "convention-conformance",
+          "unit": "reference-conventions",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "creation-rules",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "structural-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "interaction-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "schema-expressiveness-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "rule-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "description-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "coupling-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "tool-technique-doc-consistency-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "execution-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "output-economy-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "canon-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "technique-protocol-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "authoring-guidance-mr",
+          "status": "walked"
+        }
+      ],
+      "coverage_divergences": [],
+      "fail_count": 0,
+      "consumer_surface": [
+        {
+          "from": "workflow-design/resources/*",
+          "refs": "pattern activity path citations",
+          "changed_target": true,
+          "break_risk": "none \u2014 paths stable"
+        }
+      ],
+      "notes": {
+        "migration": "+3 when; 00-discover-session kept exists-shaped (no edit); patterns/03 keeps loop continuation condition",
+        "guards": "all definition guards PASS against worktree --root",
+        "dual_when_condition_loops": "entry when + continuation condition on while/doWhile is schema-correct (not dual step gates)"
+      }
+    },
+    {
+      "target_workflow_id": "prism-audit",
+      "version": "1.3.0",
+      "base_ref": "e2e70e68",
+      "changed_files": [
+        "activities/01-prompt-generation.yaml",
+        "workflow.yaml"
+      ],
+      "audit_findings": [],
+      "coverage_ledger": [
+        {
+          "home": "design-principles",
+          "unit": "1-workflows-ossify-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "2-internalize-before-producing",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "3-define-complete-scope-before-execution",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "4-clarify-before-assuming",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "5-maximize-schema-expressiveness",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "6-one-authoritative-home",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "7-convention-over-invention",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "8-confirm-before-irreversible-changes",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "9-encode-constraints-as-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "10-non-destructive-updates",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "11-complete-documentation-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "12-output-economy",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "13-separate-contract-from-procedure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "14-single-source-of-truth",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "15-phase-by-sequenced-outcome",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "16-distinguish-designators-from-parameters",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "17-document-in-positive-present",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "18-prefer-shared-capability",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "19-name-symbols-affirmatively",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "20-keep-orchestration-in-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "21-match-the-harness-surface",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "22-modular-over-inline",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "23-close-the-loop",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "24-keep-session-interaction-in-activities",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "25-bind-sibling-operations-as-steps",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "26-atomic-techniques-compose-at-activities",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "27-state-contract-contribution",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "28-creation-guide-for-generated-documents",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "29-cite-resource-policy-do-not-restate-it",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "30-resources-at-the-abstract-level-split-for-section-delivery",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "31-isolate-conditional-branches-as-notes",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "32-cite-resources-at-section-grain",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "activity-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "workflow-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "technique-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "condition-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "checkpoint-effects",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "action-types",
+          "status": "walked"
+        },
+        {
+          "home": "convention-conformance",
+          "unit": "reference-conventions",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "creation-rules",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "structural-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "interaction-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "schema-expressiveness-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "rule-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "description-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "coupling-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "tool-technique-doc-consistency-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "execution-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "output-economy-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "canon-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "technique-protocol-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "authoring-guidance-mr",
+          "status": "walked"
+        }
+      ],
+      "coverage_divergences": [],
+      "fail_count": 0,
+      "consumer_surface": [],
+      "notes": {
+        "migration": "+1 when",
+        "guards": "all definition guards PASS against worktree --root",
+        "dual_when_condition_loops": "entry when + continuation condition on while/doWhile is schema-correct (not dual step gates)"
+      }
+    },
+    {
+      "target_workflow_id": "substrate-node-security-audit",
+      "version": "4.20.0",
+      "base_ref": "e2e70e68",
+      "changed_files": [
+        "activities/05-report-generation.yaml",
+        "workflow.yaml"
+      ],
+      "audit_findings": [],
+      "coverage_ledger": [
+        {
+          "home": "design-principles",
+          "unit": "1-workflows-ossify-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "2-internalize-before-producing",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "3-define-complete-scope-before-execution",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "4-clarify-before-assuming",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "5-maximize-schema-expressiveness",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "6-one-authoritative-home",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "7-convention-over-invention",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "8-confirm-before-irreversible-changes",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "9-encode-constraints-as-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "10-non-destructive-updates",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "11-complete-documentation-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "12-output-economy",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "13-separate-contract-from-procedure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "14-single-source-of-truth",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "15-phase-by-sequenced-outcome",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "16-distinguish-designators-from-parameters",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "17-document-in-positive-present",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "18-prefer-shared-capability",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "19-name-symbols-affirmatively",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "20-keep-orchestration-in-structure",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "21-match-the-harness-surface",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "22-modular-over-inline",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "23-close-the-loop",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "24-keep-session-interaction-in-activities",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "25-bind-sibling-operations-as-steps",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "26-atomic-techniques-compose-at-activities",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "27-state-contract-contribution",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "28-creation-guide-for-generated-documents",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "29-cite-resource-policy-do-not-restate-it",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "30-resources-at-the-abstract-level-split-for-section-delivery",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "31-isolate-conditional-branches-as-notes",
+          "status": "walked"
+        },
+        {
+          "home": "design-principles",
+          "unit": "32-cite-resources-at-section-grain",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "activity-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "workflow-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "technique-level-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "condition-constructs",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "checkpoint-effects",
+          "status": "walked"
+        },
+        {
+          "home": "schema-construct-inventory",
+          "unit": "action-types",
+          "status": "walked"
+        },
+        {
+          "home": "convention-conformance",
+          "unit": "reference-conventions",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "creation-rules",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "structural-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "interaction-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "schema-expressiveness-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "rule-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "description-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "coupling-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "tool-technique-doc-consistency-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "execution-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "output-economy-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "canon-hygiene-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "technique-protocol-anti-patterns",
+          "status": "walked"
+        },
+        {
+          "home": "anti-patterns",
+          "unit": "authoring-guidance-mr",
+          "status": "walked"
+        }
+      ],
+      "coverage_divergences": [],
+      "fail_count": 0,
+      "consumer_surface": [],
+      "notes": {
+        "migration": "+1 compound when with && (precedented)",
+        "guards": "all definition guards PASS against worktree --root",
+        "dual_when_condition_loops": "entry when + continuation condition on while/doWhile is schema-correct (not dual step gates)"
+      }
+    }
+  ],
+  "fail_count": 0,
+  "has_critical_finding": false,
+  "open_finding_count": 0,
+  "has_coverage_gap": false,
+  "addressed_count": 0,
+  "unaddressed_count": 0,
+  "total_count": 0,
+  "known_finding_keys": [
+    {
+      "class": "binding-fidelity-triage",
+      "check": "read-resolution",
+      "site": "prism-update/workflow.yaml:15",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "read-resolution",
+      "site": "substrate-node-security-audit/workflow.yaml:67",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/atlassian-operations/create-jira-issue.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/cargo-operations/build-dev.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/cargo-operations/build-release.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/cargo-operations/doc.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/cargo-operations/fmt-fix.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/complexity-signal.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/context.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/cypher.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/detect-changes.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/diagram-source-select.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/diff-coverage-map.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/diff-coverage-map.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/impact.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/orphan-scan.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/public-api-enum.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/query.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/rename.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/reversibility-signal.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/scope-discipline-check.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/gitnexus-operations/verify-index.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/harness-compat/spawn-concurrent.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/knowledge-base-search/load-domain-index.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/orchestration-patterns/compose-worker-brief.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/orchestration-patterns/execute-plan-step.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/orchestration-patterns/invoke-as-tool.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/version-control/identify-path-type.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/workflow-engine/dispatch-activity.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/workflow-engine/finalize-activity.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/workflow-engine/generate-summary.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/workflow-engine/handle-sub-workflow.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/workflow-engine/verify-outcomes.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "meta/techniques/workflow-engine/yield-checkpoint.md",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "meta :: orchestration-patterns::assess-research-gaps",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "meta :: orchestration-patterns::classify-request",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "meta :: orchestration-patterns::classify-request",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "meta :: orchestration-patterns::compose-worker-brief",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "meta :: orchestration-patterns::decompose-work-units",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "meta :: orchestration-patterns::plan-research-questions",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "meta :: orchestration-patterns::plan-steps",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "meta :: orchestration-patterns::replan",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "meta :: orchestration-patterns::synthesise-results",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "meta :: version-control::initialize-folder",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "prism :: meta::gitnexus-operations::verify-index",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "prism-audit :: meta::gitnexus-operations::analyze",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "prism-audit :: meta::workflow-engine::handle-sub-workflow",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "prism-evaluate :: meta::workflow-engine::handle-sub-workflow",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "substrate-node-security-audit :: execute-sub-agent",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "substrate-node-security-audit :: apply-checklist",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "substrate-node-security-audit :: apply-checklist",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "substrate-node-security-audit :: build-function-registry",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "substrate-node-security-audit :: extract-invariants",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "substrate-node-security-audit :: meta::gitnexus-operations::analyze",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "substrate-node-security-audit :: scan-storage-lifecycle",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "substrate-node-security-audit :: search-pattern-catalog",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "work-package :: meta::atlassian-operations::transition-jira-issue",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "work-package :: meta::cargo-operations::run-suite",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "work-package :: meta::cargo-operations::test",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "work-package :: meta::github-cli-protocol::comment-issue",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "work-package :: meta::github-cli-protocol::comment-issue",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "work-package :: meta::gitnexus-operations::analyze",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "work-package :: meta::gitnexus-operations::detect-changes",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "workflow-design :: meta::version-control::commit-regular-files",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "workflow-design :: meta::version-control::commit-regular-files",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "orphan-input",
+      "site": "workflow-design :: meta::version-control::commit-regular-files",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "read-resolution",
+      "site": "meta/techniques/variable-binding.md:31",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "read-resolution",
+      "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "read-resolution",
+      "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "read-resolution",
+      "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "read-resolution",
+      "site": "work-package/techniques/manage-git/TECHNIQUE.md:25",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "read-resolution",
+      "site": "work-package/techniques/manage-git/detect-merge-strategy.md:26",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "read-resolution",
+      "site": "work-package/techniques/review-summary.md:81",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "read-resolution",
+      "site": "work-package/techniques/review-summary.md:81",
+      "verdict": "harmless"
+    },
+    {
+      "class": "binding-fidelity-triage",
+      "check": "dead-output",
+      "site": "workflow-design/techniques/TECHNIQUE.md",
+      "verdict": "harmless"
+    }
+  ]
+}
