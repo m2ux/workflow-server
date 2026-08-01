@@ -58,7 +58,15 @@
 
 | Severity | Entry | Location | Evidence | Origin | Status |
 |----------|-------|----------|----------|--------|--------|
-| — | — | `activities/11-validate.yaml` | compose units → `unit-fan-out` → `run-suite` combine | redesign | clean |
+| — | — | `activities/11-validate.yaml` | process-unit pattern spine + pure `run-suite`; step gates on inline `when:` | redesign + #383 dialect | clean |
+| Medium | Divergent OR keep-sites vs #383 | `14-complete` create-adr / update-adr (and peer keep-sites on co-edit surfaces) | Fan-out branch still carried structured OR trees while [PR #383](https://github.com/m2ux/workflow-server/pull/383) migrated them to parenthesized `when:` | resume accounting for #383 | **addressed** — merge workflows pin `d891ed73` onto `workflow/meta-formalise-reusable-parallel-fan-out` |
+
+### Cross-cutting (PR #383)
+
+| Severity | Entry | Location | Evidence | Origin | Status |
+|----------|-------|----------|----------|--------|--------|
+| Medium | Host guard dependency | `check:when` + shared evaluator live on server PR, not this orphan branch | Definition branch alone cannot run the new guard until host has the module | resume | **known** — validate/commit on host after #383 or against the #383 worktree |
+| Low | Loop gates remain structured | `11-validate` `fix-revalidate-cycle` | Schema loop field is `condition:`; not a step `when:` | #383 scope | **known** — correct dialect split |
 
 ## Coverage ledger (redesign Detect)
 

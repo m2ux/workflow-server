@@ -25,14 +25,15 @@ Formalise parallel fan-out as **activity coordination**. Reusable spines live un
 | 3 | [Impact analysis](01-impact-analysis.md) | Blast radius meta + design + prism | 20-40m | ✅ |
 | 4 | [Migration candidates](06-migration-candidates.md) | Full-corpus candidate / clean / N/A | 15-30m | ✅ |
 | 5 | Scope and draft | Worktree, manifest, per-file drafting | 45-90m | ✅ |
-| 6 | [Scope manifest](06-scope-manifest.md) | File-level change inventory | 15-30m | 🟡 (retargeted to patterns) |
-| 7 | Quality review | Criteria walk, consumer surface, guards | 30-60m | 🟡 |
-| 8 | [Findings register](08-findings-register.md) | Audit record + AP-114 retrospective | 15-30m | 🟡 |
+| 6 | [Scope manifest](06-scope-manifest.md) | File-level change inventory + #383 keep-site integrate | 15-30m | ✅ |
+| 7 | Quality review | Criteria walk, consumer surface, guards (`check:when` when host has #383) | 30-60m | 🟡 |
+| 8 | [Findings register](08-findings-register.md) | Audit record + AP-114 retrospective + #383 divergence | 15-30m | 🟡 |
 | 9 | [AP-114 redesign note](10-ap114-redesign-note.md) | False-negative root cause + correct bind graph | 20-40m | ✅ |
 | 10 | Canon layer model | §2, §34, inventory, AP-140–143, contradiction scrub | 45-90m | ✅ |
 | 11 | Pattern library + validate | `06-process-unit-fan-out`, delete unit-fan-out technique, rewire 11-validate | 30-60m | ✅ |
-| 12 | Validate and commit | Scope re-check, commit, pull request | 20-40m | 🟡 |
-| 13 | [Close-out](09-COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |
+| 12 | PR #383 keep-site integrate | Merge four OR `when:` migrations + validate step-gate dialect | 15-30m | ✅ |
+| 13 | Validate and commit | Scope re-check, commit, pull request | 20-40m | 🟡 |
+| 14 | [Close-out](09-COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |
 
 **Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
@@ -45,4 +46,5 @@ Formalise parallel fan-out as **activity coordination**. Reusable spines live un
 | Co-edit | `workflows/workflow-design/`, `workflows/prism/`, `workflows/work-package/` |
 | Worktree | `.worktrees/2026-08-01-formalise-reusable-parallel-fan-out/` |
 | PR | [#385](https://github.com/m2ux/workflow-server/pull/385) |
+| Dependency | [#383](https://github.com/m2ux/workflow-server/pull/383) when-expression / OR keep-sites (merged into workflows branch) |
 | AP-114 note | [10-ap114-redesign-note.md](10-ap114-redesign-note.md) |
