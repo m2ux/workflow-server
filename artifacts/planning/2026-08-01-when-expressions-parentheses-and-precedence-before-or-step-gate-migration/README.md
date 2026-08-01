@@ -17,7 +17,7 @@ Until those rules and the evaluator land, OR-shaped gates stay stranded on the s
 
 ## Solution Overview
 
-*Populated by the producing step (a `stakeholder-overview` call).*
+Ship a single reference `when` expression module (parentheses, C-style precedence, `||` / `&&` / `!`) next to the existing structured condition evaluator, point the e2e walker at it with fail-closed invalid input, prove the four nested OR keep-site shapes with truth tables, then rewrite those four step gates from structured `condition:` to parenthesized `when:` without changing which bag states run or skip. Production gates stay agent-evaluated; agents get a short grammar rule that matches the module. Multi-agent harnesses and moving gate authority into MCP tools stay out of this package.
 
 ## 📊 Progress
 
@@ -29,10 +29,10 @@ Until those rules and the evaluator land, OR-shaped gates stay stranded on the s
 | 4 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across activities | 10-15m | ✅ |
 | 5 | [Requirements elicitation](03-requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ✅ |
 | 6 | [KB research](04-kb-research.md) | Knowledge-base and web synthesis | 20-45m | ✅ |
-| 7 | [Implementation analysis](05-implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ⬚ |
-| 8 | [Work package plan](06-work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ⬚ |
-| 9 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ |
-| 10 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ⬚ |
+| 7 | [Implementation analysis](05-implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ✅ |
+| 8 | [Work package plan](06-work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | 🟡 |
+| 9 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | 🟡 |
+| 10 | [Deferred items](deferred-items.md) | Out-of-scope deferral register | 5-10m | ✅ |
 | 11 | [Follow-ups](follow-ups.md) | In-task follow-ups register | 5-10m | ⬚ |
 | 12 | Assumptions review | Converge open assumptions | 20-40m | ⬚ |
 | 13 | Implementation | Code changes per plan | 1-4h | ⬚ |

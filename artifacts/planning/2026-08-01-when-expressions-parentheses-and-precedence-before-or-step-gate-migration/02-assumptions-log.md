@@ -27,11 +27,20 @@ One row per assumption, updated in place. IDs: two-letter phase prefix + sequenc
 | RS-3 | Research | Synthesis Decisions | L | Short-circuit evaluation is optional for pure bag lookups; truth-table outcome must match full boolean evaluation of both sides. | Gate vars have no side effects; MDN short-circuit note | Confirmed |
 | RS-4 | Research | Risk Assessment | M | Fail-closed walker is an intentional behavior change for currently unparseable expressions that execute today. | walker.ts return true on junk; SC-6 | Confirmed |
 | RS-5 | Research | Pattern Applicability | L | Module path, lint home, and same-vs-sequential PR packaging remain plan/implementation choices (RC-1, RC-3, RC-4). | Analyse-challenge: not stakeholder-judgement; packaging defaults from DP-6 (evaluator + fixtures first, four-site corpus immediately after). Exact path/lint home = implementation-analysis. | Handoff (IA/plan) |
+| IA-1 | Implementation Analysis | Gap Identification | M | Shared module path is `src/schema/when-expression.ts` co-located with `condition.schema.ts`; walker already imports schema from that tree. | Code: walker import of condition.schema; packaging table in 05-implementation-analysis | Confirmed |
+| IA-2 | Implementation Analysis | Current Behavior | M | Fail-closed invalid `when` maps to walker step skip (`continue` on false), not throw aborting the walk. | walker.ts false-gate path at executeActivitySteps | Confirmed |
+| IA-3 | Implementation Analysis | Baseline Interpretation | L | v1 `when` operators stay `==`/`!=`, bare truthiness, `!`, `&&`, `\|\|`, parentheses — no `exists`/`>` required for four keep-sites. | Keep-site YAML; RE-3; evaluateWhen comparison surface | Confirmed |
+| IA-4 | Implementation Analysis | Dependency Understanding | L | Single PR preferred (module+fixtures+walker+rule+four YAML); sequential evaluator-then-corpus acceptable per DP-6. | Requirements DP-6; IA packaging table | Confirmed |
+| IA-5 | Implementation Analysis | Current Behavior | L | Replacing walker `evaluateWhen` body is LOW blast radius (GitNexus upstream impact LOW; direct caller `walk`). | gitnexus impact evaluateWhen | Validated |
+| PL-1 | Plan Prepare | Design Approach | M | Single PR carrying module + fixtures + walker + rule + guard + four YAML migrations is the default delivery shape. | DP-6; IA packaging; plan alternatives table | Confirmed |
+| PL-2 | Plan Prepare | Task Breakdown | L | Seven tasks (module→fixtures→walker→docs→guard→corpus→optional stealth) are atomic and ordered by dependency. | Plan task list; IA recommended sequence | Confirmed |
+| PL-3 | Plan Prepare | Test Strategy | M | Unit truth tables + SC-11 side-by-side before YAML migrate are sufficient; multi-agent harness not required. | SC-5–SC-11; D-1 deferred | Confirmed |
+| PL-4 | Plan Prepare | Scope Decisions | L | Stealth rewire is optional same-PR polish, not a merge blocker for evaluator+corpus. | IA G9; SA-4 | Confirmed |
 
 ## Open Assumptions
 
-None — research residue empty after analyse-challenge. RS-5 is an implementation/plan handoff, not a stakeholder open.
+None — plan-prepare residue empty after analyse-challenge. Approach awaits user confirmation at `approach-confirmed`.
 
 ## Wrap-Up
 
-18 assumptions after research — RS-1–RS-4 validated/confirmed; RS-5 handed to implementation-analysis / plan-prepare (no residual interview). Deferred multi-agent harness and server-authority move tracked in [deferred-items](deferred-items.md).
+27 assumptions through plan-prepare — all confirmed/validated; no residual stakeholder interview before approach gate. Deferred multi-agent harness and server-authority move tracked in [deferred-items](deferred-items.md).

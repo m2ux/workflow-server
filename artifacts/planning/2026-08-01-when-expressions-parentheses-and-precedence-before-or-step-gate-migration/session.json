@@ -776,10 +776,11 @@
           "design-philosophy",
           "codebase-comprehension",
           "requirements-elicitation",
-          "research"
+          "research",
+          "implementation-analysis"
         ],
-        "condition": "isDefault → implementation-analysis",
-        "currentActivity": "implementation-analysis",
+        "condition": "isDefault → plan-prepare",
+        "currentActivity": "plan-prepare",
         "currentTechnique": "review-assumptions::interview",
         "declaredArtifacts": [
           {
@@ -806,6 +807,11 @@
             "id": "research_document",
             "name": "kb-research.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/04-kb-research.md"
+          },
+          {
+            "id": "analysis_document",
+            "name": "implementation-analysis.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/05-implementation-analysis.md"
           }
         ],
         "deliveredContent": {
@@ -843,6 +849,41 @@
             "technique:review-assumptions::collect": "f79c5725888e0262",
             "technique:review-assumptions::record": "d8609c38930657cb",
             "technique:scatter-gather": "17c19c51954fcaea"
+          },
+          "worker-ia-PBEHLM": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
+            "bundle:scatter-gather": "972acb177d168c94",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:implementation-analysis": "fd394d62a776dce5",
+            "technique:analyse-challenge::run-loop": "82a8bfe8bd9720ac",
+            "technique:implementation-analysis::analyze": "f5cbe54bb79b805d",
+            "technique:implementation-analysis::document": "0751af38be70a27b",
+            "technique:review-assumptions::collect": "48d15f5bb3c2413d",
+            "technique:review-assumptions::interview": "cf9da511be3727c4",
+            "technique:review-assumptions::record": "e5ba1d55b3dbcfc2"
+          },
+          "worker-plan-PBEHLM": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
+            "bundle:scatter-gather": "972acb177d168c94",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:test-plan": "df51dbee434e3d7c",
+            "resource:wp-plan": "0146536648b4e680",
+            "technique:analyse-challenge::run-loop": "ef2350068a0a7fba",
+            "technique:create-test-plan": "c959a5e433f297e2",
+            "technique:manage-git::sync-branch": "5a1b012eb7c7fa47",
+            "technique:plan-prepare::create-todos": "3f7d8c996cc90011",
+            "technique:plan-prepare::plan": "e5919fff83099010",
+            "technique:review-assumptions::collect": "c8e3901a0afff2e3",
+            "technique:review-assumptions::record": "80a7e8962cc8cc3e",
+            "technique:stakeholder-overview": "158fd2624938e7fb"
           },
           "worker-requirements-elicitation-PBEHLM": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -4600,18 +4641,490 @@
             "activity": "implementation-analysis",
             "timestamp": "2026-08-01T10:51:40.320Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "chars": 69417,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T10:51:52.075Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "chars": 6289,
+              "delivery": "full",
+              "stepId": "analyze-implementation",
+              "techniqueId": "implementation-analysis::analyze"
+            },
+            "timestamp": "2026-08-01T10:51:52.075Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "stepId": "analyze-implementation"
+            },
+            "timestamp": "2026-08-01T10:51:52.075Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "chars": 5115,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-01T10:51:52.075Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-01T10:51:52.075Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "chars": 3689,
+              "delivery": "full",
+              "stepId": "document",
+              "techniqueId": "implementation-analysis::document"
+            },
+            "timestamp": "2026-08-01T10:51:52.075Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "stepId": "document"
+            },
+            "timestamp": "2026-08-01T10:51:52.075Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "chars": 4150,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-01T10:51:52.075Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-01T10:51:52.075Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "chars": 7630,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-01T10:51:52.075Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-01T10:51:52.075Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "chars": 6347,
+              "delivery": "full",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::interview"
+            },
+            "timestamp": "2026-08-01T10:51:52.075Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "stepId": "present-resolved-assumptions"
+            },
+            "timestamp": "2026-08-01T10:51:52.075Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "chars": 4692,
+              "delivery": "full",
+              "resourceId": "implementation-analysis"
+            },
+            "timestamp": "2026-08-01T10:52:18.027Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "implementation-analysis",
+            "timestamp": "2026-08-01T10:54:48.818Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "analysis_document",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/05-implementation-analysis.md"
+            },
+            "timestamp": "2026-08-01T10:54:48.818Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/02-assumptions-log.md"
+            },
+            "timestamp": "2026-08-01T10:54:48.818Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:54:48.818Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:54:48.818Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-01T10:54:48.818Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:54:48.818Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "stepId": "analyze-implementation"
+            },
+            "timestamp": "2026-08-01T10:54:48.818Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-01T10:54:48.818Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "stepId": "document"
+            },
+            "timestamp": "2026-08-01T10:54:48.818Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-01T10:54:48.818Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-01T10:54:48.818Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-ia-PBEHLM",
+              "stepId": "present-resolved-assumptions"
+            },
+            "timestamp": "2026-08-01T10:54:48.818Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "timestamp": "2026-08-01T10:54:48.818Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "chars": 76660,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "chars": 5711,
+              "delivery": "full",
+              "stepId": "create-plan",
+              "techniqueId": "plan-prepare::plan"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "stepId": "create-plan"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "chars": 6670,
+              "delivery": "full",
+              "stepId": "create-test-plan",
+              "techniqueId": "create-test-plan"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "stepId": "create-test-plan"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "chars": 3512,
+              "delivery": "full",
+              "stepId": "present-solution-overview",
+              "techniqueId": "stakeholder-overview"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "stepId": "present-solution-overview"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "chars": 5130,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "chars": 4139,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "chars": 7597,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "chars": 4187,
+              "delivery": "full",
+              "stepId": "create-todos",
+              "techniqueId": "plan-prepare::create-todos"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "stepId": "create-todos"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "chars": 3857,
+              "delivery": "full",
+              "stepId": "sync-branch",
+              "techniqueId": "manage-git::sync-branch"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "stepId": "sync-branch"
+            },
+            "timestamp": "2026-08-01T10:55:01.878Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "chars": 3927,
+              "delivery": "full",
+              "resourceId": "wp-plan"
+            },
+            "timestamp": "2026-08-01T10:55:31.365Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-plan-PBEHLM",
+              "chars": 3988,
+              "delivery": "full",
+              "resourceId": "test-plan"
+            },
+            "timestamp": "2026-08-01T10:55:31.924Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 63,
+        "seq": 69,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785581500,
+        "ts": 1785581731,
         "variables": {
+          "analysis_document": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/05-implementation-analysis.md",
           "artifact_name": "",
           "artifact_publish_ref": "",
           "assumption_batch_accepted": false,
