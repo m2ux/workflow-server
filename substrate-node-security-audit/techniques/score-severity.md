@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -34,26 +34,26 @@ The finding set annotated with per-finding Impact score, Feasibility score, comp
 
 ### 3. Map To Severity
 
-- Compute the average and map it to a severity level using the [severity-rubric](../resources/severity-rubric.md) scale, recording the result on each finding in `{scored_findings}`
+- Compute the average and map it to a severity level using the [severity-rubric](../resources/severity-rubric.md#computing-severity) scale, recording the result on each finding in `{scored_findings}`
 
 ### 4. Compare Calibration
 
-- Compare against the calibration benchmark table in the [severity-rubric](../resources/severity-rubric.md) to verify the rating makes sense
+- Compare against the calibration benchmark table in the [severity-rubric](../resources/severity-rubric.md#calibration-benchmark-table) to verify the rating makes sense
 
 ### 5. Apply Crosscheck
 
-- For each finding in `{scored_findings}` with Impact >= 3, apply the severity crosscheck procedure in the [severity-rubric](../resources/severity-rubric.md)
+- For each finding in `{scored_findings}` with Impact >= 3, apply the severity crosscheck procedure in the [severity-rubric](../resources/severity-rubric.md#severity-crosscheck-highcritical-findings)
 
 ## Rules
 
 ### rubric-required
 
-Severity MUST use the Impact x Feasibility rubric. Compare each finding against the calibration benchmark table in the [severity-rubric](../resources/severity-rubric.md) (and the target-specific [Severity Calibration Benchmark](../resources/target-profile.md#severity-calibration-benchmark) if present) before finalizing. Do not assign severity intuitively.
+Severity MUST use the Impact x Feasibility rubric. Compare each finding against the calibration benchmark table in the [severity-rubric](../resources/severity-rubric.md#calibration-benchmark-table) (and the target-specific [Severity Calibration Benchmark](../resources/target-profile.md#severity-calibration-benchmark) if present) before finalizing. Do not assign severity intuitively.
 
 ### under-rating
 
-Infrastructure and availability findings (pool sharing, SSL, genesis consistency, panics under normal operation) are systematically under-rated. Use the calibration benchmark table in the [severity-rubric](../resources/severity-rubric.md).
+Infrastructure and availability findings (pool sharing, SSL, genesis consistency, panics under normal operation) are systematically under-rated. Use the calibration benchmark table in the [severity-rubric](../resources/severity-rubric.md#calibration-benchmark-table).
 
 ### over-rating
 
-Configuration/toggle findings (mock data source, feature flags, InMemory keystore) are systematically over-rated. Use the calibration benchmark table in the [severity-rubric](../resources/severity-rubric.md).
+Configuration/toggle findings (mock data source, feature flags, InMemory keystore) are systematically over-rated. Use the calibration benchmark table in the [severity-rubric](../resources/severity-rubric.md#calibration-benchmark-table).
