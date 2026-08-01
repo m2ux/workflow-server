@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Scatter same-context process, shell, or tool units (heterogeneous or homogeneous), wait for every unit, and gather an ordered keyed collection — one primitive for in-context unit fan-out. Activities bind this strategy as a step; unit bodies are process/shell/tool invocation specs, not nested technique Applies.
+Scatter same-context process, shell, or tool units (heterogeneous or homogeneous), wait for every unit, and gather an ordered keyed collection — one primitive for in-context unit fan-out. Unit bodies are process/shell/tool invocation specs on `{work_units}`, not nested technique Applies.
 
 Agent-instance parallel lives in scatter-gather (parallel mode) and harness-compat spawn-concurrent. This contract covers units that run in the caller's context as processes, shells, or tools.
 
@@ -13,7 +13,7 @@ Agent-instance parallel lives in scatter-gather (parallel mode) and harness-comp
 
 ### work_units
 
-Ordered list of work units. Each entry is a process, shell, or tool **invocation spec**: the command or tool call to run (argv, cargo op shell form, or equivalent), any per-unit resource budget, and any per-unit key the gather must preserve. Homogeneous suites share one shape; heterogeneous suites mix shapes in one ordered list. Units are not technique Protocol Applies — cargo and peer ops appear as invocation specs the activity composed into this list.
+Ordered list of work units. Each entry is a process, shell, or tool **invocation spec**: the command or tool call to run (argv, cargo op shell form, or equivalent), any per-unit resource budget, and any per-unit key the gather must preserve. Homogeneous suites share one shape; heterogeneous suites mix shapes in one ordered list. Units are not technique Protocol Applies — cargo and peer ops appear as invocation specs already listed here.
 
 ### dispatch_concurrency
 
@@ -32,7 +32,7 @@ Ordered keyed collection of per-unit outcomes in input order. Each entry carries
    - When `{dispatch_concurrency}` is `1`, or independence / shared mutation / host limits require serial execution: run the units one at a time in input order — the same gather applies.
 2. Wait-all. Block until every unit has finished. Do not short-circuit on the first failure — collect every per-unit outcome so a single pass surfaces the full set.
 3. Gather, ordered and keyed. Accumulate each unit's outcome into `{unit_results}` in input order, attaching the unit key when supplied. Accumulation APPENDS.
-4. When the binding activity supplies a following combine step, that step consumes `{unit_results}`; this Protocol ends at the ordered gather.
+4. This Protocol ends at the ordered gather. Downstream combine or report ops consume `{unit_results}` as their input.
 
 ## Rules
 
@@ -42,7 +42,7 @@ Units are same-context process, shell, or tool invocations. Agent-instance scatt
 
 ### units-are-invocation-specs
 
-Each work unit is a process/shell/tool invocation the activity listed in `{work_units}`. This Protocol does not Apply techniques or cargo ops as nested technique work; it runs the specs and gathers their outcomes.
+Each work unit is a process/shell/tool invocation listed in `{work_units}`. This Protocol does not Apply techniques or cargo ops as nested technique work; it runs the specs and gathers their outcomes.
 
 ### one-gather-contract-any-concurrency
 
@@ -64,6 +64,6 @@ Every unit finishes before a downstream combine or consumer runs. Partial gather
 
 When the host cannot absorb the requested concurrency, or units share mutable state concurrency would race, set `{dispatch_concurrency}` to `1` (or run the suite sequentially under the same gather). Sequential execution remains correct; concurrency is an optimisation over the same contract.
 
-### activity-owns-domain-envelope
+### domain-envelope-outside-this-contract
 
-Resource budgets, product-specific backoff, suite composition, and public I/O envelopes stay with the **binding activity** (step inputs and any following combine step). This contract owns ordered scatter, wait-all, and ordered gather only.
+Resource budgets, product-specific backoff, suite composition, and public product envelopes are inputs to this contract or work of adjacent ops. This contract owns ordered scatter, wait-all, and ordered gather only.

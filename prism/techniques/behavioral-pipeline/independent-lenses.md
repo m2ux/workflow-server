@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Run the four independent behavioral lenses over the target, each augmented with graph evidence where the graph can measure its claims. Parallel dispatch of lens workers is owned by the binding activity (scatter-gather / spawn-concurrent step binds), not by this technique's Protocol.
+Run the four independent behavioral lenses over the target, each augmented with graph evidence where the graph can measure its claims. This technique is atomic lens work — load prompts, run lens operations, augment, write artifacts. Agent/lens parallel dispatch is the verb of [scatter-gather](../../../meta/techniques/scatter-gather.md) (parallel mode) and [spawn-concurrent](../../../meta/techniques/harness-compat/spawn-concurrent.md), not of this Protocol.
 
 ## Outputs
 
@@ -56,7 +56,7 @@ What the code promises outward: the public surface and its callers. Role label P
 
 ### 3. Apply Independent Lenses
 
-- Run each of the four lenses against the target content as independent lens work units. The four lenses share no context; only a later synthesis pass depends on their outputs. When the binding activity has already fanned the four units out under scatter-gather parallel mode or spawn-concurrent, execute the lens body assigned to this unit; when this technique runs as a single step over all four, execute each lens body in turn and emit the four analysis products.
+- Run each of the four lenses against the target content as independent lens work units. The four lenses share no context; only a later synthesis pass depends on their outputs. When this op is bound once per lens unit (after scatter under scatter-gather parallel mode or spawn-concurrent), execute the lens body for that unit; when bound once over all four, execute each lens body in turn and emit the four analysis products.
 - Execute every operation completely — the analytical depth comes from the full chain
 
 ### 4. Augment With Graph
@@ -76,4 +76,4 @@ What the code promises outward: the public surface and its callers. Role label P
 
 ### independent-lenses-atomic
 
-This technique is atomic lens work: load prompts, run lens operations, augment, write artifacts. Parallel agent/lens dispatch is **activity-owned** — the binding activity declares scatter-gather (and may bind spawn-concurrent) with the four lens units as work units. Protocol does not Apply scatter-gather or spawn-concurrent ([pass-orchestration-in-technique](../../../workflow-design/resources/anti-patterns.md#ap-114-pass-orchestration-in-technique); [Prefer Parallel Independent Work via Formal Fan-Out](../../../workflow-design/resources/design-principles.md#33-prefer-parallel-independent-work-via-formal-fan-out)).
+This technique is atomic lens work: load prompts, run lens operations, augment, write artifacts. It does not scatter agent instances, wait-all, or gather — those verbs belong to [scatter-gather](../../../meta/techniques/scatter-gather.md) and [spawn-concurrent](../../../meta/techniques/harness-compat/spawn-concurrent.md). Protocol does not Apply those homes ([pass-orchestration-in-technique](../../../workflow-design/resources/anti-patterns.md#ap-114-pass-orchestration-in-technique); [Prefer Parallel Independent Work via Formal Fan-Out](../../../workflow-design/resources/design-principles.md#33-prefer-parallel-independent-work-via-formal-fan-out)).

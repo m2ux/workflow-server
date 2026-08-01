@@ -92,7 +92,7 @@ Symbol ids state what the value *is* in affirmative, head-noun-last `snake_case`
 
 ## 20. Keep Orchestration in Structure
 
-Activities own stage, checkpoints, transitions, and graph progress. Techniques stay stage-agnostic: they produce values and durable evidence — they do not name the surrounding activity flow or the gates that consume their outputs.
+Activities own stage, checkpoints, transitions, and graph progress. Techniques stay stage-agnostic and **activity-blind**: they take inputs, process over tools and resources, and emit outputs — they do not name activities, "binding activity", sibling steps, or the gates that consume their outputs. Composition of techniques lives only in activity structure (`steps[]`, `when`, loops, transitions). Avoids `technique-stage-agnostic`.
 
 ## 21. Match the Harness Surface
 
@@ -120,7 +120,7 @@ Techniques are small, relatively atomic capabilities: a short produce path over 
 
 ## 27. State Contract Contribution
 
-Capability on a container `TECHNIQUE.md` (workflow-root or group) names what shared Inputs, Outputs, Rules, or domain invariants the contract contributes. Loader composition — inheritance merge, `Initial`/`Final` wrap, renumbering, folder-implied membership — lives in workflow-canonical and the schema construct inventory, not in the contract's Capability.
+Capability on a container `TECHNIQUE.md` (workflow-root or group) names what shared Inputs, Outputs, Rules, or domain invariants the contract contributes. Shared Rules speak in domain predicates every inheritor can apply; they do not name, link, or carve out descendant ops that already inherit this contract — leaf Protocol owns leaf-only duty. Loader composition — inheritance merge, `Initial`/`Final` wrap, renumbering, folder-implied membership — lives in workflow-canonical and the schema construct inventory, not in the contract's Capability. Avoids `container-names-inheriting-ops`, `capability-as-op-inventory`, `platform-semantics-in-capability`.
 
 ## 28. Creation Guide for Generated Documents
 
@@ -159,6 +159,6 @@ Formal homes (unit-kind split):
 | Agent instances / lens workers | [`scatter-gather`](../../meta/techniques/scatter-gather.md) (parallel mode), [`harness-compat::spawn-concurrent`](../../meta/techniques/harness-compat/spawn-concurrent.md), and mid-phase composition under [`orchestration-patterns`](../../meta/techniques/orchestration-patterns/TECHNIQUE.md) | Activity `steps[]` / activity `techniques[]` strategy declaration |
 | Same-context process, shell, or tool units | [`unit-fan-out`](../../meta/techniques/unit-fan-out.md) | Activity `steps[]` with unit roster, concurrency, and domain envelope as step inputs |
 
-Serial execution remains correct when units depend on each other, share mutable state that concurrency would race, or the host cannot absorb concurrent load — not as the default when independence is already clear. Domain envelopes (resource budgets, backoff, product-specific composition) stay on the binding activity; the shared contract owns ordered scatter, wait-all, and ordered gather. Techniques do not Protocol-Apply fan-out contracts for work ([Atomic Techniques; Compose at Activities](#26-atomic-techniques-compose-at-activities); `pass-orchestration-in-technique`).
+Serial execution remains correct when units depend on each other, share mutable state that concurrency would race, or the host cannot absorb concurrent load — not as the default when independence is already clear. Domain envelopes (resource budgets, backoff, product-specific composition) are step inputs and adjacent steps on the activity that composes the suite; the shared fan-out contract owns ordered scatter, wait-all, and ordered gather. Techniques do not Protocol-Apply fan-out contracts for work ([Atomic Techniques; Compose at Activities](#26-atomic-techniques-compose-at-activities); `pass-orchestration-in-technique`). Technique definition prose stays activity-blind ([Keep Orchestration in Structure](#20-keep-orchestration-in-structure); `technique-stage-agnostic`).
 
-Avoids `prose-based-dispatch-patterns` and `pass-orchestration-in-technique`. Complements [Prefer Shared Capability](#18-prefer-shared-capability) (reuse the named home) and [Maximize Schema Expressiveness](#5-maximize-schema-expressiveness) (bind the formal contract at the activity rather than restating concurrency HOW in free prose).
+Avoids `prose-based-dispatch-patterns`, `pass-orchestration-in-technique`, and `technique-stage-agnostic`. Complements [Prefer Shared Capability](#18-prefer-shared-capability) (reuse the named home) and [Maximize Schema Expressiveness](#5-maximize-schema-expressiveness) (bind the formal contract in activity structure rather than restating concurrency HOW in free prose).

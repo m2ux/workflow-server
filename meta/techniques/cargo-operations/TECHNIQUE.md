@@ -21,7 +21,12 @@ Optional `--features` flags (empty string when none)
 
 ### resource-budget
 
-Every cargo invocation MUST use one of these operations. Do NOT call bare `cargo ...` from technique protocols. The inline budget — `nice -n 19`, `CARGO_BUILD_JOBS=\${CARGO_BUILD_JOBS:-4}`, `RUST_TEST_THREADS=\${RUST_TEST_THREADS:-4}`, `SKIP_WASM_BUILD=1` (non-release only) — is what prevents host hang on ≤32 GiB hosts. Override caps via env on larger hosts.
+Every cargo invocation MUST go through a cargo-operations technique. Do NOT call bare `cargo ...` from technique protocols. Budget by what the invocation does:
+
+- **Compile or test** (type-check, lint-with-compile, build, test runners): `nice -n 19`, `CARGO_BUILD_JOBS=\${CARGO_BUILD_JOBS:-4}`, `RUST_TEST_THREADS=\${RUST_TEST_THREADS:-4}` when tests run, and `SKIP_WASM_BUILD=1` on non-release passes — the envelope that prevents host hang on ≤32 GiB hosts. Override caps via env on larger hosts.
+- **Format-only** (no rustc): `nice -n 19` alone. Compile-time env caps do not apply and must not appear on the invocation.
+
+Each leaf Protocol states the budget line that matches its invocation class.
 
 ### foreground-only
 
@@ -31,10 +36,6 @@ Cargo operations MUST run synchronously in the foreground of the caller. Never i
 
 During inner loops (TDD red/green in implement-task) prefer build_scope=`-p <crate>`. Run `--workspace` once during final validation to match CI.
 
-### fmt-uses-only-nice
-
-[fmt-check](./fmt-check.md) and [fmt-fix](./fmt-fix.md) do not compile, so only `nice -n 19` applies; do not paste the full env budget there — it is misleading.
-
 ### multi-op-concurrent-fan-out
 
-When two or more independent cargo process/shell units must run as a concurrent suite (wait-all, ordered gather), the **binding activity** binds [unit-fan-out](../unit-fan-out.md) as a step with the unit roster, `{dispatch_concurrency}`, resource budgets, RAM backoff, and a combine step (for example [run-suite](./run-suite.md)) that folds `{unit_results}` into the product envelope. Cargo technique Protocols do not Apply unit-fan-out or other techniques for that fan-out ([pass-orchestration-in-technique](../../../workflow-design/resources/anti-patterns.md#ap-114-pass-orchestration-in-technique); [Prefer Parallel Independent Work via Formal Fan-Out](../../../workflow-design/resources/design-principles.md#33-prefer-parallel-independent-work-via-formal-fan-out); `prose-based-dispatch-patterns`).
+When two or more independent cargo process/shell units must run as a concurrent suite (wait-all, ordered gather), use [unit-fan-out](../unit-fan-out.md) for scatter/wait-all/gather with the unit roster, `{dispatch_concurrency}`, and per-unit resource budgets on that contract's inputs, then a pure combine op that folds `{unit_results}` into the product envelope. Cargo technique Protocols do not Apply unit-fan-out or other techniques for that fan-out ([pass-orchestration-in-technique](../../../workflow-design/resources/anti-patterns.md#ap-114-pass-orchestration-in-technique); [Prefer Parallel Independent Work via Formal Fan-Out](../../../workflow-design/resources/design-principles.md#33-prefer-parallel-independent-work-via-formal-fan-out); `prose-based-dispatch-patterns`).

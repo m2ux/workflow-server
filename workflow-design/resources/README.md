@@ -73,7 +73,7 @@ Four mapping tables that translate informal prose patterns into formal schema eq
 
 ### 02 — Anti-Patterns
 
-Specific smell instances — Detect / Do not flag / Fix. Cite by kebab-case smell **name**. Section-delivery family includes `whole-resource-for-one-section` and `framing-outside-any-section`. Dispatch family includes `prose-based-dispatch-patterns` (free concurrent fan-out recipes that re-teach shells, agents, Tasks, wait-all, or ordered gather without an activity-bound unit-kind contract) and the AP-114 exemplar `run-suite: Apply unit-fan-out` under `pass-orchestration-in-technique`.
+Specific smell instances — Detect / Do not flag / Fix. Cite by kebab-case smell **name**. Section-delivery family includes `whole-resource-for-one-section` and `framing-outside-any-section`. Technique locus family includes `technique-stage-agnostic` (activity-blind technique prose) and `container-names-inheriting-ops` (group/root contracts do not name descendant ops that inherit them). Dispatch family includes `prose-based-dispatch-patterns` and the AP-114 exemplar `run-suite: Apply unit-fan-out` under `pass-orchestration-in-technique`.
 
 ### 03 — Update Mode Guide
 
