@@ -4,6 +4,8 @@
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
+> Token use and cost estimate (floor): [09-token-usage.md](09-token-usage.md).
+
 ## 🎯 Executive Summary
 
 Migrates every legacy structured step `condition:` block with a plain comparison to the equivalent inline `when:` expression across the workflow corpus (#338 W7 / #189 C8), closing the last duplicate-declaration duality between the two step-gate dialects. Checkpoint steps and exists-shaped predicates stay structured, with every site's disposition recorded in a migration register, so the corpus matches the schema's stated direction without any semantic change.
@@ -37,5 +39,7 @@ Migrates every legacy structured step `condition:` block with a plain comparison
 | Resource | Link |
 |----------|------|
 | Issue | [#338](https://github.com/m2ux/workflow-server/issues/338) |
-| PR | [#378](https://github.com/m2ux/workflow-server/pull/378) |
-| Work branch | [workflow/corpus-when-migration](https://github.com/m2ux/workflow-server/tree/workflow/corpus-when-migration) |
+| PR | [#374](https://github.com/m2ux/workflow-server/pull/374) |
+| Work branch | [workflow/338-when-migration](https://github.com/m2ux/workflow-server/tree/workflow/338-when-migration) |
+| Duplicate PR (closed) | [#378](https://github.com/m2ux/workflow-server/pull/378) |
+| Dead-link retrospective | [09-retrospective-dead-pr-links.md](09-retrospective-dead-pr-links.md) |

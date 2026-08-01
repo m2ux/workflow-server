@@ -6,25 +6,32 @@
   "agentId": "orchestrator",
   "sessionIndex": "6R3YO2",
   "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-08-01-migrate-legacy-structured-step-conditions-to-when",
-  "currentActivity": "dispatch-client-workflow",
-  "currentTechnique": "workflow-engine::dispatch-activity",
-  "condition": "isDefault:dispatch-client-workflow",
-  "seq": 18,
-  "ts": 1785571342,
+  "currentActivity": "end-workflow",
+  "currentTechnique": "workflow-engine::revise-session-metrics",
+  "condition": "current_activity == null",
+  "activeCheckpoint": {
+    "activityId": "end-workflow",
+    "checkpointId": "completion-confirmed",
+    "yieldedAt": "2026-08-01T08:24:41.642Z"
+  },
+  "seq": 23,
+  "ts": 1785572681,
   "startedAt": "2026-08-01T06:03:06.341Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
-    "resolve-target"
+    "resolve-target",
+    "dispatch-client-workflow"
   ],
   "skippedActivities": [],
   "variables": {
     "abort_completion": false,
     "client_planning_slug": "2026-08-01-migrate-legacy-structured-step-conditions-to-when",
     "client_session_index": "ZR4PDX",
-    "client_workflow_completed": false,
+    "client_workflow_completed": true,
     "component_path": ".",
     "component_selection_needed": false,
+    "current_activity": null,
     "has_saved_state": false,
     "host_binding_mismatch": false,
     "host_repo_path": "/home/mike1/projects/dev/workflow-server",
@@ -758,6 +765,211 @@
       },
       "timestamp": "2026-08-01T06:17:18.031Z",
       "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-08-01T08:21:40.620Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_workflow_completed",
+        "source": "variables_changed",
+        "value": true
+      },
+      "timestamp": "2026-08-01T08:21:40.620Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "current_activity",
+        "source": "variables_changed",
+        "value": null
+      },
+      "timestamp": "2026-08-01T08:21:40.620Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "verify-preconditions"
+      },
+      "timestamp": "2026-08-01T08:21:40.620Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "prime-initial-activity"
+      },
+      "timestamp": "2026-08-01T08:21:40.620Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "client-activity-loop"
+      },
+      "timestamp": "2026-08-01T08:21:40.620Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "dispatch-activity"
+      },
+      "timestamp": "2026-08-01T08:21:40.620Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "present-yielded-checkpoint"
+      },
+      "timestamp": "2026-08-01T08:21:40.620Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "respond-yielded-checkpoint"
+      },
+      "timestamp": "2026-08-01T08:21:40.620Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "commit-activity-artifacts"
+      },
+      "timestamp": "2026-08-01T08:21:40.620Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "advance-activity"
+      },
+      "timestamp": "2026-08-01T08:21:40.620Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-08-01T08:21:40.620Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "end-workflow-worker-6R3YO2-1",
+        "chars": 48353,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-01T08:21:52.190Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "end-workflow-worker-6R3YO2-1",
+        "chars": 6602,
+        "delivery": "full",
+        "stepId": "read-session",
+        "techniqueId": "workflow-engine::read-session"
+      },
+      "timestamp": "2026-08-01T08:21:52.190Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "end-workflow-worker-6R3YO2-1",
+        "stepId": "read-session"
+      },
+      "timestamp": "2026-08-01T08:21:52.190Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "end-workflow-worker-6R3YO2-1",
+        "chars": 6625,
+        "delivery": "full",
+        "stepId": "verify-outcomes",
+        "techniqueId": "workflow-engine::verify-outcomes"
+      },
+      "timestamp": "2026-08-01T08:21:52.190Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "end-workflow-worker-6R3YO2-1",
+        "stepId": "verify-outcomes"
+      },
+      "timestamp": "2026-08-01T08:21:52.190Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "end-workflow-worker-6R3YO2-1",
+        "chars": 6579,
+        "delivery": "full",
+        "stepId": "generate-summary",
+        "techniqueId": "workflow-engine::generate-summary"
+      },
+      "timestamp": "2026-08-01T08:21:52.190Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "end-workflow-worker-6R3YO2-1",
+        "stepId": "generate-summary"
+      },
+      "timestamp": "2026-08-01T08:21:52.190Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "end-workflow-worker-6R3YO2-1",
+        "chars": 8975,
+        "delivery": "full",
+        "stepId": "revise-session-metrics",
+        "techniqueId": "workflow-engine::revise-session-metrics"
+      },
+      "timestamp": "2026-08-01T08:22:00.729Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "end-workflow-worker-6R3YO2-1",
+        "stepId": "revise-session-metrics"
+      },
+      "timestamp": "2026-08-01T08:22:00.729Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "end-workflow-worker-6R3YO2-1",
+        "chars": 1054,
+        "delivery": "full",
+        "resourceId": "session-summary-template#session-summary-template"
+      },
+      "timestamp": "2026-08-01T08:22:00.829Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "timestamp": "2026-08-01T08:24:41.642Z",
+      "type": "checkpoint_reached"
     }
   ],
   "triggeredWorkflows": [
@@ -788,9 +1000,10 @@
         "completedActivities": [
           "intake-and-context",
           "scope-and-draft",
-          "quality-review"
+          "quality-review",
+          "validate-and-commit"
         ],
-        "condition": "isDefault: validate-and-commit",
+        "condition": "",
         "currentActivity": "validate-and-commit",
         "currentTechnique": "work-package::manage-git::remove-worktree",
         "declaredArtifacts": [
@@ -823,6 +1036,16 @@
             "id": "quality-review-register-sections",
             "name": "08-quality-review-register-sections.json",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-migrate-legacy-structured-step-conditions-to-when/08-quality-review-register-sections.json"
+          },
+          {
+            "id": "findings_register",
+            "name": "findings-register.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-migrate-legacy-structured-step-conditions-to-when/09-findings-register.md"
+          },
+          {
+            "id": "completion_document",
+            "name": "COMPLETE.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-migrate-legacy-structured-step-conditions-to-when/09-COMPLETE.md"
           }
         ],
         "deliveredContent": {
@@ -3000,19 +3223,305 @@
             },
             "timestamp": "2026-08-01T08:15:56.085Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "commit_approved",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "commit_message",
+              "source": "variables_changed",
+              "value": "refactor(corpus): migrate plain step condition gates to when"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "title",
+              "source": "variables_changed",
+              "value": "workflow(corpus): migrate legacy structured step conditions to when"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pushed_branch",
+              "source": "variables_changed",
+              "value": "origin/workflow/corpus-when-migration"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_number",
+              "source": "variables_changed",
+              "value": "378"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/378"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "completion_document",
+              "source": "variables_changed",
+              "value": "Persisted at 09-COMPLETE.md"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "open_finding_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "has_critical_finding",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "has_coverage_gap",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "total_count",
+              "source": "variables_changed",
+              "value": 38
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "addressed_count",
+              "source": "variables_changed",
+              "value": 38
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "unaddressed_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "report_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-migrate-legacy-structured-step-conditions-to-when/09-findings-register.md"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "validate-and-commit-worker-ZR4PDX-1",
+              "stepId": "verify-audit-findings"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "validate-and-commit-worker-ZR4PDX-1",
+              "stepId": "compile-register"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "validate-and-commit-worker-ZR4PDX-1",
+              "stepId": "persist-register"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "validate-and-commit-worker-ZR4PDX-1",
+              "stepId": "verify-scope-manifest"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "validate-and-commit-worker-ZR4PDX-1",
+              "stepId": "verify-planning-readme"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "validate-and-commit-worker-ZR4PDX-1",
+              "stepId": "approve-to-commit"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "validate-and-commit-worker-ZR4PDX-1",
+              "stepId": "compose-publication"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "validate-and-commit-worker-ZR4PDX-1",
+              "stepId": "stage-and-commit"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "validate-and-commit-worker-ZR4PDX-1",
+              "stepId": "verify-commit"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "validate-and-commit-worker-ZR4PDX-1",
+              "stepId": "push-branch"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "validate-and-commit-worker-ZR4PDX-1",
+              "stepId": "open-pr"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "validate-and-commit-worker-ZR4PDX-1",
+              "stepId": "compose-close-out"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "validate-and-commit-worker-ZR4PDX-1",
+              "stepId": "persist-close-out"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "validate-and-commit-worker-ZR4PDX-1",
+              "stepId": "remove-worktree"
+            },
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-08-01T08:21:15.779Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 66,
+        "seq": 68,
         "sessionIndex": "ZR4PDX",
         "skippedActivities": [],
         "startedAt": "2026-08-01T06:08:50.437Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785572156,
+        "ts": 1785572532,
         "variables": {
-          "addressed_count": 0,
+          "addressed_count": 38,
           "base_ref": "e2e70e68",
           "change_brief": "Persisted at 01-change-brief.md (canonical home; path in change_brief_path)",
           "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-migrate-legacy-structured-step-conditions-to-when/01-change-brief.md",
@@ -3031,6 +3540,8 @@
           },
           "change_request_clear": true,
           "commit_approved": true,
+          "commit_message": "refactor(corpus): migrate plain step condition gates to when",
+          "completion_document": "Persisted at 09-COMPLETE.md",
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-migrate-legacy-structured-step-conditions-to-when/README.md",
           "fail_count": 0,
           "file_count": 38,
@@ -3050,8 +3561,9 @@
           "operation_type": "update",
           "operation_type_ambiguous": false,
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-migrate-legacy-structured-step-conditions-to-when",
-          "pr_number": "",
-          "pr_url": "",
+          "pr_number": "378",
+          "pr_url": "https://github.com/m2ux/workflow-server/pull/378",
+          "pushed_branch": "origin/workflow/corpus-when-migration",
           "reference_workflows": [
             "cicd-pipeline-security-audit",
             "codebase-wiki",
@@ -3124,7 +3636,7 @@
           "removal_count": 0,
           "removal_disposition": "",
           "removals_approved": false,
-          "report_path": "",
+          "report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-migrate-legacy-structured-step-conditions-to-when/09-findings-register.md",
           "review_closed": false,
           "review_scope_confirmed": false,
           "scope_manifest": "Persisted at 06-scope-manifest.md (canonical home; path in scope_manifest_path)",
@@ -3206,13 +3718,14 @@
             "prism-audit",
             "substrate-node-security-audit"
           ],
-          "total_count": 0,
+          "title": "workflow(corpus): migrate legacy structured step conditions to when",
+          "total_count": 38,
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
           "user_request": "start a workflow authoring workflow for: https://github.com/m2ux/workflow-server/pull/374",
           "workflow_branch": "workflow/corpus-when-migration",
           "workflow_id": "corpus-when-migration",
-          "worktree_created": true
+          "worktree_created": false
         },
         "workflowId": "workflow-authoring",
         "workflowVersion": "1.1.0"
@@ -3226,6 +3739,19 @@
     }
   ],
   "deliveredContent": {
+    "end-workflow-worker-6R3YO2-1": {
+      "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
+      "bundle:variable-binding": "780a3e5bb26aea8d",
+      "bundle:workflow-engine::activity-worker": "5d153b783337a2fc",
+      "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+      "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+      "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+      "resource:session-summary-template#session-summary-template": "fe7937895e5384ac",
+      "technique:workflow-engine::generate-summary": "73edd447137f04eb",
+      "technique:workflow-engine::read-session": "95a74ea9b8a1b559",
+      "technique:workflow-engine::revise-session-metrics": "7ead650263bfb183",
+      "technique:workflow-engine::verify-outcomes": "5f6dcf795f601330"
+    },
     "worker-discover-session-1": {
       "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
       "bundle:variable-binding": "780a3e5bb26aea8d",

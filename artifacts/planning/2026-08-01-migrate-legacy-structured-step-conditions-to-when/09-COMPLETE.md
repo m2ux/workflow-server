@@ -4,7 +4,7 @@
 
 ## Summary
 
-Migrated plain-comparison structured step `condition:` blocks to inline `when:` across six corpus workflows, with checkpoint, exists-shaped, and loop-continuation sites kept structured and every site disposition recorded. Semantics preserved; definition guards clean; published as [PR #378](https://github.com/m2ux/workflow-server/pull/378) on `workflow/corpus-when-migration`.
+Migrated plain-comparison structured step `condition:` blocks to inline `when:` across six corpus workflows, with checkpoint, exists-shaped, and loop-continuation sites kept structured and every site disposition recorded. Semantics preserved; definition guards clean; published as [PR #374](https://github.com/m2ux/workflow-server/pull/374) on `workflow/338-when-migration` (migration tip `6e12c4c1`). Duplicate [PR #378](https://github.com/m2ux/workflow-server/pull/378) was closed after head consolidation — see [09-retrospective-dead-pr-links.md](09-retrospective-dead-pr-links.md).
 
 ## What Was Delivered
 
@@ -34,11 +34,13 @@ Manifest delivered exactly — 38 of 38 entries addressed; no unplanned files on
 - **Checkpoint `condition` blocks stay structured** — migration gated on server work that makes `when` enable `condition_not_met` dismissal; see change brief out-of-scope.
 - **Exists-shaped and `while`/`doWhile` continuation predicates stay structured** — no live `when` form / not step gates.
 - **OR-shaped compound step gates stay structured** — `||` has no live `when` precedent; `&&` compounds migrated.
-- **Related baseline PR #374** remains on `workflow/338-when-migration`; this run’s delivery is PR #378 on `workflow/corpus-when-migration`.
+- **Delivery PR is #374** on `workflow/338-when-migration` at the migration tip; #378 was a sibling head opened mid-run and is closed as duplicate.
+- **Edit worktree** must remain until meta closure is confirmed (premature `remove-worktree` was reversed this session; see retrospective).
 - **Planning artifacts** (including this close-out and the findings register) live on the engineering branch; host main submodule pointers are out of this activity’s commit surface.
 
 ## Run Retrospective
 
 - Quality-review left a clean decision surface (0 open findings), so validate-and-commit did not need a remediation round — the commit gate was the only interactive stop after scope confirmation.
 - Corpus edits were already committed on the worktree branch before this activity’s stage step; the activity verified the commit (36 definition files), confirmed push up-to-date, and opened the PR rather than re-committing.
-- PR #374 and this branch’s head differ (`workflow/338-when-migration` vs `workflow/corpus-when-migration`); create-pr correctly opened a new PR (#378) instead of overwriting #374’s head.
+- create-pr opened #378 on `workflow/corpus-when-migration` while #374 stayed on an empty scaffold tip — that split produced “dead” delivery links; fixed by fast-forwarding #374’s head and closing #378 (see retrospective).
+- Worktree was removed inside validate-and-commit before meta completion-confirmed; restored for operator verification.
