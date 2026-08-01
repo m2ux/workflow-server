@@ -5,15 +5,16 @@
   "workflowVersion": "5.14.0",
   "agentId": "orchestrator",
   "sessionIndex": "QQKD2D",
-  "currentActivity": "resolve-target",
-  "currentTechnique": "version-control::initialize-folder",
-  "condition": "isDefault: resolve-target",
-  "seq": 9,
-  "ts": 1785576919,
+  "currentActivity": "dispatch-client-workflow",
+  "currentTechnique": "workflow-engine::dispatch-activity",
+  "condition": "isDefault:dispatch-client-workflow",
+  "seq": 15,
+  "ts": 1785578501,
   "startedAt": "2026-08-01T09:32:07.029Z",
   "completedActivities": [
     "discover-session",
-    "initialize-session"
+    "initialize-session",
+    "resolve-target"
   ],
   "skippedActivities": [],
   "variables": {
@@ -480,6 +481,193 @@
       "activity": "resolve-target",
       "timestamp": "2026-08-01T09:35:19.260Z",
       "type": "activity_entered"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-resolve-target-QQKD2D",
+        "chars": 34250,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-01T09:35:43.375Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-resolve-target-QQKD2D",
+        "chars": 5369,
+        "delivery": "full",
+        "stepId": "detect-monorepo",
+        "techniqueId": "version-control::detect-repo-type"
+      },
+      "timestamp": "2026-08-01T09:35:43.375Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-resolve-target-QQKD2D",
+        "stepId": "detect-monorepo"
+      },
+      "timestamp": "2026-08-01T09:35:43.375Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-08-01T09:36:35.332Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "is_monorepo",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-01T09:36:35.332Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "component_path",
+        "source": "variables_changed",
+        "value": "."
+      },
+      "timestamp": "2026-08-01T09:36:35.332Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-resolve-target-QQKD2D",
+        "stepId": "announce-start"
+      },
+      "timestamp": "2026-08-01T09:36:35.332Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-resolve-target-QQKD2D",
+        "stepId": "detect-monorepo"
+      },
+      "timestamp": "2026-08-01T09:36:35.332Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-resolve-target-QQKD2D",
+        "stepId": "list-submodules"
+      },
+      "timestamp": "2026-08-01T09:36:35.332Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-resolve-target-QQKD2D",
+        "stepId": "select-component"
+      },
+      "timestamp": "2026-08-01T09:36:35.332Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-resolve-target-QQKD2D",
+        "stepId": "submodule-selection"
+      },
+      "timestamp": "2026-08-01T09:36:35.332Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-resolve-target-QQKD2D",
+        "stepId": "validate-binding-agreement"
+      },
+      "timestamp": "2026-08-01T09:36:35.332Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-resolve-target-QQKD2D",
+        "stepId": "validate-resumed-binding"
+      },
+      "timestamp": "2026-08-01T09:36:35.332Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-resolve-target-QQKD2D",
+        "stepId": "validate-git-tree"
+      },
+      "timestamp": "2026-08-01T09:36:35.332Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-08-01T09:36:35.332Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-QQKD2D",
+        "chars": 27285,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-01T10:01:18.551Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-QQKD2D",
+        "chars": 12803,
+        "delivery": "full",
+        "stepId": "dispatch-activity",
+        "techniqueId": "workflow-engine::dispatch-activity"
+      },
+      "timestamp": "2026-08-01T10:01:29.795Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-QQKD2D",
+        "stepId": "dispatch-activity"
+      },
+      "timestamp": "2026-08-01T10:01:29.795Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-QQKD2D",
+        "chars": 12803,
+        "delivery": "full",
+        "stepId": "dispatch-activity",
+        "techniqueId": "workflow-engine::dispatch-activity"
+      },
+      "timestamp": "2026-08-01T10:01:35.831Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-QQKD2D",
+        "chars": 14980,
+        "delivery": "full",
+        "resourceId": "planning-readme"
+      },
+      "timestamp": "2026-08-01T10:01:41.522Z",
+      "type": "resource_fetched"
     }
   ],
   "triggeredWorkflows": [
@@ -487,11 +675,57 @@
       "sessionIndex": "PBEHLM",
       "state": {
         "agentId": "orchestrator",
-        "checkpointResponses": {},
-        "completedActivities": [],
-        "condition": "",
-        "currentActivity": "",
-        "currentTechnique": "",
+        "checkpointResponses": {
+          "start-work-package-pr-creation": {
+            "effects": {
+              "variablesSet": {
+                "pr_skipped": false
+              }
+            },
+            "optionId": "proceed",
+            "respondedAt": "2026-08-01T10:06:29.000Z"
+          }
+        },
+        "completedActivities": [
+          "start-work-package"
+        ],
+        "condition": "isDefault:design-philosophy",
+        "currentActivity": "design-philosophy",
+        "currentTechnique": "github-cli-protocol::view-issue",
+        "declaredArtifacts": [
+          {
+            "id": "created_readme",
+            "name": "README.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration/README.md"
+          }
+        ],
+        "deliveredContent": {
+          "worker-start-wp-PBEHLM": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:837eb0d2608b4b07": "837eb0d2608b4b07",
+            "bundle:variable-binding": "436a3edd74d2b7be",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "resource:pr-description": "b4b7d12e2c245dd1",
+            "resource:pr-description#template-initial": "9b9e6b72cba14dfe",
+            "technique:github-cli-protocol::list-prs": "83ad4509b46a2405",
+            "technique:github-cli-protocol::view-issue": "73d13066527b25a3",
+            "technique:gitnexus-operations::analyze": "99cdd2573e0ddebf",
+            "technique:issue-reference-detection": "1c822b41f3d1a2fe",
+            "technique:manage-git::create-worktree": "2a1d3124d3a09c1c",
+            "technique:manage-git::detect-merge-strategy": "af0eff9791d803fc",
+            "technique:manage-git::verify-feature-branch": "3d78a91369f7f6cd",
+            "technique:naming-conventions": "55bbaf151c58d0cd",
+            "technique:project-type-detection": "1c0a05efab4a064e",
+            "technique:repo-root-resolution": "28862edd4b18cbf9",
+            "technique:review-mode-detection": "8feeeabbd6b67777",
+            "technique:stakeholder-overview": "6548550cd546e329",
+            "technique:update-pr::create-pr": "5cc25f26a6c41983",
+            "technique:version-control::resolve-host-repo": "bb4592e21095bc0b",
+            "technique:workflow-engine::create-readme": "2b6c1f530ae5701a"
+          }
+        },
         "history": [
           {
             "timestamp": "2026-08-01T09:34:57.163Z",
@@ -608,17 +842,1396 @@
             },
             "timestamp": "2026-08-01T09:34:57.163Z",
             "type": "variables_seeded"
+          },
+          {
+            "activity": "start-work-package",
+            "timestamp": "2026-08-01T10:01:54.723Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 101653,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 5954,
+              "delivery": "full",
+              "stepId": "detect-review-mode",
+              "techniqueId": "review-mode-detection"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "detect-review-mode"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 5141,
+              "delivery": "full",
+              "stepId": "derive-host-repo",
+              "techniqueId": "version-control::resolve-host-repo"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "derive-host-repo"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 3730,
+              "delivery": "full",
+              "stepId": "resolve-repo-root",
+              "techniqueId": "repo-root-resolution"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "resolve-repo-root"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 5544,
+              "delivery": "full",
+              "stepId": "analyze-repo-with-gitnexus",
+              "techniqueId": "gitnexus-operations::analyze"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "analyze-repo-with-gitnexus"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 4601,
+              "delivery": "full",
+              "stepId": "detect-merge-strategy",
+              "techniqueId": "manage-git::detect-merge-strategy"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "detect-merge-strategy"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 3555,
+              "delivery": "full",
+              "stepId": "detect-project-type",
+              "techniqueId": "project-type-detection"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "detect-project-type"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 3607,
+              "delivery": "full",
+              "stepId": "check-issue",
+              "techniqueId": "issue-reference-detection"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "check-issue"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 5135,
+              "delivery": "full",
+              "stepId": "initialize-planning-folder",
+              "techniqueId": "workflow-engine::create-readme"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "initialize-planning-folder"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 3966,
+              "delivery": "full",
+              "stepId": "present-problem-overview",
+              "techniqueId": "stakeholder-overview"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "present-problem-overview"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 5193,
+              "delivery": "full",
+              "stepId": "compute-canonical-target-path",
+              "techniqueId": "naming-conventions"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "compute-canonical-target-path"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 4069,
+              "delivery": "full",
+              "stepId": "check-branch",
+              "techniqueId": "manage-git::verify-feature-branch"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "check-branch"
+            },
+            "timestamp": "2026-08-01T10:02:11.558Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 6357,
+              "delivery": "full",
+              "stepId": "create-component-worktree",
+              "techniqueId": "manage-git::create-worktree"
+            },
+            "timestamp": "2026-08-01T10:03:27.561Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "create-component-worktree"
+            },
+            "timestamp": "2026-08-01T10:03:27.561Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 5930,
+              "delivery": "full",
+              "stepId": "create-pr",
+              "techniqueId": "update-pr::create-pr"
+            },
+            "timestamp": "2026-08-01T10:03:28.275Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "create-pr"
+            },
+            "timestamp": "2026-08-01T10:03:28.275Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 2234,
+              "delivery": "full",
+              "stepId": "check-pr",
+              "techniqueId": "github-cli-protocol::list-prs"
+            },
+            "timestamp": "2026-08-01T10:03:28.422Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "check-pr"
+            },
+            "timestamp": "2026-08-01T10:03:28.422Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 970,
+              "delivery": "full",
+              "resourceId": "pr-description#template-initial"
+            },
+            "timestamp": "2026-08-01T10:04:05.845Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "pr-creation",
+            "timestamp": "2026-08-01T10:04:29.707Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "start-work-package",
+            "checkpoint": "pr-creation",
+            "data": {
+              "optionId": "proceed"
+            },
+            "timestamp": "2026-08-01T10:06:29.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "pr_skipped",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:06:29.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 101653,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-01T10:07:03.940Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 5954,
+              "delivery": "full",
+              "stepId": "detect-review-mode",
+              "techniqueId": "review-mode-detection"
+            },
+            "timestamp": "2026-08-01T10:07:03.940Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 5141,
+              "delivery": "full",
+              "stepId": "derive-host-repo",
+              "techniqueId": "version-control::resolve-host-repo"
+            },
+            "timestamp": "2026-08-01T10:07:03.940Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 3730,
+              "delivery": "full",
+              "stepId": "resolve-repo-root",
+              "techniqueId": "repo-root-resolution"
+            },
+            "timestamp": "2026-08-01T10:07:03.940Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 5544,
+              "delivery": "full",
+              "stepId": "analyze-repo-with-gitnexus",
+              "techniqueId": "gitnexus-operations::analyze"
+            },
+            "timestamp": "2026-08-01T10:07:03.940Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 4601,
+              "delivery": "full",
+              "stepId": "detect-merge-strategy",
+              "techniqueId": "manage-git::detect-merge-strategy"
+            },
+            "timestamp": "2026-08-01T10:07:03.940Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 3555,
+              "delivery": "full",
+              "stepId": "detect-project-type",
+              "techniqueId": "project-type-detection"
+            },
+            "timestamp": "2026-08-01T10:07:03.940Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 3607,
+              "delivery": "full",
+              "stepId": "check-issue",
+              "techniqueId": "issue-reference-detection"
+            },
+            "timestamp": "2026-08-01T10:07:03.940Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 5135,
+              "delivery": "full",
+              "stepId": "initialize-planning-folder",
+              "techniqueId": "workflow-engine::create-readme"
+            },
+            "timestamp": "2026-08-01T10:07:03.940Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 3966,
+              "delivery": "full",
+              "stepId": "present-problem-overview",
+              "techniqueId": "stakeholder-overview"
+            },
+            "timestamp": "2026-08-01T10:07:03.940Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 5193,
+              "delivery": "full",
+              "stepId": "compute-canonical-target-path",
+              "techniqueId": "naming-conventions"
+            },
+            "timestamp": "2026-08-01T10:07:03.940Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 4069,
+              "delivery": "full",
+              "stepId": "check-branch",
+              "techniqueId": "manage-git::verify-feature-branch"
+            },
+            "timestamp": "2026-08-01T10:07:03.940Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 5930,
+              "delivery": "full",
+              "stepId": "create-pr",
+              "techniqueId": "update-pr::create-pr"
+            },
+            "timestamp": "2026-08-01T10:07:23.337Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 6475,
+              "delivery": "full",
+              "resourceId": "pr-description"
+            },
+            "timestamp": "2026-08-01T10:07:36.674Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "chars": 2746,
+              "delivery": "full",
+              "stepId": "link-pr-to-ticket-github",
+              "techniqueId": "github-cli-protocol::view-issue"
+            },
+            "timestamp": "2026-08-01T10:17:53.828Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "link-pr-to-ticket-github"
+            },
+            "timestamp": "2026-08-01T10:17:53.828Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "start-work-package",
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "is_review_mode",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "review_mode_ambiguous",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "review_pr_missing",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "review_pr_captured",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "host_repo_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "component_path",
+              "source": "variables_changed",
+              "value": "."
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "component_name",
+              "source": "variables_changed",
+              "value": "workflow-server"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "gitnexus_indexed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "squash_merge_supported",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "project_type",
+              "source": "variables_changed",
+              "value": "typescript-node"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "issue_present",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "issue_number",
+              "source": "variables_changed",
+              "value": "379"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "issue_platform",
+              "source": "variables_changed",
+              "value": "github"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "issue_title",
+              "source": "variables_changed",
+              "value": "when expressions: ||, parentheses, and precedence before OR step-gate migration"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "issue_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/issues/379"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "issue_type",
+              "source": "variables_changed",
+              "value": "enhancement"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "issue_skipped",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "issue_cancelled",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "needs_issue_creation",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "github_issue_found",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "planning_folder_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "branch_name",
+              "source": "variables_changed",
+              "value": "chore/379-when-expressions-parentheses-precedence"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "target_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "on_feature_branch",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "pr_exists",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "pr_skipped",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "use_existing_pr",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "pr_number",
+              "source": "variables_changed",
+              "value": "383"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/383"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "existing_pr_number",
+              "source": "variables_changed",
+              "value": ""
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "body_conforms",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "body_findings",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "stakeholder_overview",
+              "source": "variables_changed",
+              "value": "Today the workflow corpus can express simple step gates and flat AND compounds as inline when: expressions, but any gate that needs OR still has to stay in the older structured condition: form. That split exists because parentheses, operator precedence, and a full boolean evaluator for mixed && / || were not validated when the plain gates moved over — so authors cannot safely write the nested shapes the remaining sites need. Until those rules and the evaluator land, OR-shaped gates stay stranded on the structured path, docs that already describe boolean algebra over-promise what the walker can enforce, and a naive OR migration would risk running or skipping steps differently from the structured trees."
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "user_request",
+              "source": "variables_changed",
+              "value": "start a work package workflow for issue 379"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "push_remote",
+              "source": "variables_changed",
+              "value": "origin"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "announce-start"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "detect-review-mode"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "announce-derived-review-mode"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "announce-derived-review-pr"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "review-mode-detection"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "mark-review-pr-captured"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "review-pr-reference"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "capture-pr-reference"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "ingest-prior-feedback"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "seed-review-mode-outcomes"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "derive-host-repo"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "resolve-repo-root"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "update-repo-submodules"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "analyze-repo-with-gitnexus"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "verify-signing-precondition"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "detect-merge-strategy"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "detect-project-type"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "announce-project-type"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "check-issue"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "issue-verification"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "verify-jira-issue"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "verify-github-issue"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "search-github-issue"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "check-github-issue"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "github-issue-missing"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "create-github-issue-for-jira"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "jira-project-selection"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "derive-issue-type"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "issue-type-selection"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "issue-review"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "create-issue"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "platform-selection"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "lookup-current-user"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "assign-issue-jira"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "transition-issue-jira"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "assign-issue-github"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "bind-planning-folder-path"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "initialize-planning-folder"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "present-problem-overview"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "derive-branch-name"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "compute-canonical-target-path"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "create-component-worktree"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "create-review-worktree"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "check-branch"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "check-pr"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "announce-auto-use-existing-pr"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "pr-check"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "pr-creation"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "create-pr"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "link-pr-to-ticket-jira"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "link-pr-to-ticket-github"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "worker-start-wp-PBEHLM",
+              "stepId": "announce-completion"
+            },
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "timestamp": "2026-08-01T10:20:12.703Z",
+            "type": "activity_entered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 0,
+        "seq": 16,
         "sessionIndex": "PBEHLM",
         "skippedActivities": [],
         "startedAt": "2026-08-01T09:34:57.163Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785576897,
+        "ts": 1785579612,
         "variables": {
           "artifact_name": "",
           "artifact_publish_ref": "",
@@ -631,16 +2244,17 @@
           "awaiting_review": false,
           "block_line_range": "",
           "block_path": "",
-          "body_conforms": false,
+          "body_conforms": true,
           "body_findings": [],
           "body_override_recorded": false,
+          "branch_name": "chore/379-when-expressions-parentheses-precedence",
           "broken_artifact_links": [],
           "build_artifact_user_owned": false,
           "build_dependent_artifact_commands": "",
           "build_dependent_artifacts_pending": false,
           "change_block_index": "",
           "completion_document_path": "",
-          "component_name": "",
+          "component_name": "workflow-server",
           "component_path": ".",
           "comprehension_artifact": "",
           "comprehension_dir": "",
@@ -650,8 +2264,8 @@
           "current_branch": "",
           "elicitation_complete": false,
           "existing_pr_number": "",
-          "github_issue_found": false,
-          "gitnexus_indexed": false,
+          "github_issue_found": true,
+          "gitnexus_indexed": true,
           "has_critical_blocker": false,
           "has_debt_markers": false,
           "has_deferred_assumptions": false,
@@ -663,13 +2277,19 @@
           "has_stakeholder_comment": false,
           "has_stakeholder_input": false,
           "has_uncertain_symbols": false,
+          "host_repo_path": "/home/mike1/projects/dev/workflow-server",
+          "is_review_mode": false,
           "issue_approved": false,
           "issue_cancelled": false,
-          "issue_present": false,
+          "issue_number": "379",
+          "issue_platform": "github",
+          "issue_present": true,
           "issue_request": "",
           "issue_skipped": false,
+          "issue_title": "when expressions: ||, parentheses, and precedence before OR step-gate migration",
+          "issue_type": "enhancement",
           "issue_type_ambiguous": false,
-          "issue_url": "",
+          "issue_url": "https://github.com/m2ux/workflow-server/issues/379",
           "jira_issue_key": "",
           "mark_progress_na": false,
           "needs_cleanup": false,
@@ -685,10 +2305,14 @@
           "needs_simplification": false,
           "needs_strategic_fixes": false,
           "needs_test_improvements": false,
+          "on_feature_branch": true,
+          "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration",
           "post_jira_comment": false,
-          "pr_exists": false,
+          "pr_exists": true,
+          "pr_number": "383",
           "pr_skipped": false,
-          "pr_url": "",
+          "pr_url": "https://github.com/m2ux/workflow-server/pull/383",
+          "project_type": "typescript-node",
           "provenance_log_path": "",
           "push_remote": "origin",
           "push_remote_url": "",
@@ -707,7 +2331,8 @@
           "skip_architecture_summary": false,
           "skip_assumption_review": false,
           "skip_optional_activities": false,
-          "squash_merge_supported": false,
+          "squash_merge_supported": true,
+          "stakeholder_overview": "Today the workflow corpus can express simple step gates and flat AND compounds as inline when: expressions, but any gate that needs OR still has to stay in the older structured condition: form. That split exists because parentheses, operator precedence, and a full boolean evaluator for mixed && / || were not validated when the plain gates moved over — so authors cannot safely write the nested shapes the remaining sites need. Until those rules and the evaluator land, OR-shaped gates stay stranded on the structured path, docs that already describe boolean algebra over-promise what the walker can enforce, and a naive OR migration would risk running or skipping steps differently from the structured trees.",
           "stakeholder_review_complete": false,
           "stealth_mode": false,
           "strategic_findings_deferred": false,
@@ -715,6 +2340,7 @@
           "strategic_fixes_selective": false,
           "submission_aborted": false,
           "summary_budget_overruns": [],
+          "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-when-expressions-parentheses-and-precedence-before-or-step-gate-migration",
           "ticket_gaps_documented": false,
           "ticket_refactor_needed": false,
           "uncertain_symbols": "",
@@ -723,7 +2349,7 @@
           "use_existing_pr": false,
           "user_request": "start a work package workflow for issue 379",
           "validation_passed": false,
-          "worktree_created": false
+          "worktree_created": true
         },
         "workflowId": "work-package",
         "workflowVersion": "3.40.0"
@@ -750,6 +2376,16 @@
       "technique:workflow-engine::list-workflows": "199f025ea70aa8e5",
       "technique:workflow-engine::match-target-workflow": "9ff4bb378051a6d3"
     },
+    "worker-dispatch-client-QQKD2D": {
+      "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
+      "bundle:variable-binding": "780a3e5bb26aea8d",
+      "bundle:workflow-engine::activity-worker": "5d153b783337a2fc",
+      "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+      "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+      "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+      "resource:planning-readme": "ddaa9212fb3fd5ed",
+      "technique:workflow-engine::dispatch-activity": "6266bff59688554b"
+    },
     "worker-initialize-session-QQKD2D": {
       "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
       "bundle:variable-binding": "780a3e5bb26aea8d",
@@ -759,6 +2395,15 @@
       "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
       "technique:version-control::initialize-folder": "a6503250ef9aa764",
       "technique:workflow-engine::create-session": "93309bd14687f8af"
+    },
+    "worker-resolve-target-QQKD2D": {
+      "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
+      "bundle:variable-binding": "780a3e5bb26aea8d",
+      "bundle:workflow-engine::activity-worker": "5d153b783337a2fc",
+      "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+      "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+      "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+      "technique:version-control::detect-repo-type": "520e8b01ef1876f3"
     }
   },
   "repo": "m2ux/workflow-server"

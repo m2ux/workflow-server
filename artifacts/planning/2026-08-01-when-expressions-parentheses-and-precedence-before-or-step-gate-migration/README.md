@@ -1,6 +1,6 @@
 # when expressions: parentheses and precedence before OR step-gate migration — August 2026
 
-> Enhancement · Created 2026-08-01 · **Status:** Planning
+> Enhancement · Created 2026-08-01 · **Status:** Design
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -25,7 +25,7 @@ Until those rules and the evaluator land, OR-shaped gates stay stranded on the s
 |---|------|-------------|----------|--------|
 | 1 | Start work package | Issue, branch, worktree, planning folder | 20-40m | ✅ |
 | 2 | [Prior feedback triage](01-prior-feedback-triage.md) | Review-mode prior feedback ingest | 15-30m | ⊘ |
-| 3 | [Design philosophy](02-design-philosophy.md) | Problem classification, workflow path | 15-30m | ⬚ |
+| 3 | [Design philosophy](02-design-philosophy.md) | Problem classification, workflow path | 15-30m | 🟡 |
 | 4 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across activities | 10-15m | ⬚ |
 | 5 | [Requirements elicitation](03-requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ⬚ |
 | 6 | [KB research](04-kb-research.md) | Knowledge-base and web synthesis | 20-45m | ⬚ |
