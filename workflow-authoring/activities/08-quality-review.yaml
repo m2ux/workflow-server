@@ -1,7 +1,7 @@
 id: quality-review
-version: 1.0.0
+version: 1.1.0
 name: Quality Review
-description: "Walk every criteria home against each target's definition surface in one pass, extend that walk to the references other workflows hold into the target, and run the repository's definition guards against the tree the run edits."
+description: "Criteria walk with field-level coverage evidence per target, consumer-surface reach, and definition guards as a separate mechanical net."
 required: true
 steps:
   - kind: technique
@@ -42,6 +42,9 @@ steps:
         id: resolve-consumer-surface
         technique: workflow-definition::resolve-consumer-surface
       - kind: technique
+        id: inventory-prose-fields
+        technique: workflow-definition::inventory-prose-fields
+      - kind: technique
         id: sweep-canon
         technique: workflow-definition::audit-canon
       - kind: technique
@@ -50,7 +53,7 @@ steps:
         actions:
           - action: set
             target: register_sections
-            message: "This target's register section appended to the sections already gathered: `{target_workflow_id}` with `{audit_findings}`, the divergences in `{coverage_ledger}`, and `{fail_count}`. Appends; never replaces a prior target's section."
+            message: "This target's register section appended to the sections already gathered: `{target_workflow_id}` with `{audit_findings}`, `{coverage_ledger}` (divergences and evidence), and `{fail_count}`. Appends; never replaces a prior target's section."
 transitions:
   - to: validate-and-commit
     isDefault: true
@@ -58,4 +61,5 @@ outcome:
   - Every criteria home is walked once per target against the working tree, so a finding is attributed to this change rather than to the catalogue it came from
   - A violation reachable only through another workflow's reference into the target is reachable, because the consumer surface is part of what the walk covers
   - Every enumeration unit the walk could not apply is recorded with the reason, so absent coverage is visible rather than indistinguishable from a clean result
-  - The definition guards run against the tree this run edits, not against a checkout it never touched
+  - Walked units that reach the change surface carry field-level evidence, so a narrative "walked" claim without Detect is a coverage gap
+  - The definition guards run against the tree this run edits as a mechanical net separate from canon coverage

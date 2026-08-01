@@ -37,6 +37,10 @@ The sibling workflows whose established conventions the target is compared again
 
 *(optional)* The co-change set and the identifier-collision set for this change. Absent on a run with no impact pass behind it.
 
+### prose_field_inventory
+
+*(optional)* The inventory of definition-prose fields on `{changed_files}` that Description Hygiene and bound-step criteria reach. Required before Description Hygiene may be marked `walked` when `{changed_files}` includes activity YAML, technique markdown, or other definition prose. Absent only when no such file is in the change set.
+
 ## Outputs
 
 ### audit_findings
@@ -45,7 +49,7 @@ One entry per violation: the criteria entry by its kebab-case name, the file and
 
 ### coverage_ledger
 
-One row per enumeration unit walked, each carrying the unit's home, the unit's anchor, and one of three statuses. `walked` means the unit's criteria were applied to every file in scope. `not-applicable` carries the reason the unit does not reach this surface and is an evidenced negative, not a skip. `blocked` carries what prevented the walk and is the only status representing missing coverage.
+One row per enumeration unit walked, each carrying the unit's home, the unit's anchor, one of three statuses, and — when status is `walked` and the unit reaches any file in `{changed_files}` — a non-empty `evidence` list. `walked` means the unit's criteria were applied to every file in scope **and** each changed file the unit reaches has at least one evidence row naming the field (or construct locus) inspected and a short quote or path:line. `not-applicable` carries the reason the unit does not reach this surface and is an evidenced negative, not a skip. `blocked` carries what prevented the walk and is the only status representing missing coverage. A unit may not be recorded as `walked` with an empty `evidence` list when it intersects `{changed_files}`.
 
 ## Protocol
 
@@ -75,6 +79,8 @@ One row per enumeration unit walked, each carrying the unit's home, the unit's a
 - Extend the same criteria to `{consumer_surface}` — a reference another workflow holds is part of the surface this change can break, and a violation reachable only from there is reachable
 - Compare against `{reference_workflows}` wherever a unit states its criteria relative to established sibling convention
 - When `{change_constraints}` is present, check each authored identifier against its collision set and each file against its co-change set
+- When walking [Description Hygiene Anti-Patterns](../../../workflow-design/resources/anti-patterns.md#description-hygiene-anti-patterns) or bound-step description criteria, apply Detect to every row of `{prose_field_inventory}` and to the same field classes on the rest of `{surface_files}`. When `{prose_field_inventory}` is required and absent or incomplete for `{changed_files}`, record the unit as `blocked` with that gap — never as `walked`
+- For every unit marked `walked` that reaches `{changed_files}`, attach `evidence` rows: each row is `(file, field-or-locus, entry-or-clean, quote-or-path)`. A clean field still gets a row with disposition `clean`
 - Record every violation into `{audit_findings}` and every unit's disposition into `{coverage_ledger}`, at the shapes their Output declarations state
 
 ### 3. Attribute and Exclude
@@ -87,3 +93,11 @@ One row per enumeration unit walked, each carrying the unit's home, the unit's a
 ### structural-evidence-first
 
 A finding names the structural evidence its entry's Detect keys on — the field, shape or phrase that entry itself names — and inferred intent is never that evidence. Where an entry keys on the harness tool surface or on an authoritative bootstrap resource, the evidence is that surface read directly, not the authored claim about it. A finding that cannot point at the construct is not a finding.
+
+### walked-requires-evidence
+
+Status `walked` on a unit that intersects `{changed_files}` requires a non-empty `evidence` list covering each changed file the unit reaches. A narrative claim that the unit was considered, without field-level evidence, is recorded as `blocked` (missing evidence), not `walked`.
+
+### guards-are-not-canon-coverage
+
+A clean definition-guard suite is not evidence that any canon enumeration unit was walked. Guard results land only under schema-validation; they never set a coverage_ledger row to `walked`.

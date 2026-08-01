@@ -52,7 +52,9 @@ The register body: the severity summary, one findings section per target, the co
 
 ### 2. Record the Divergences and the Exclusions
 
-- Take the rows of `{coverage_ledger}` that carry `blocked` or `not-applicable` into the coverage section, and omit that section entirely when every unit was walked
+- Take the rows of `{coverage_ledger}` that carry `blocked` or `not-applicable` into the coverage section
+- When any `walked` unit that intersects the change surface carries `evidence`, include a **Coverage evidence** subsection with those rows (file, field, entry-or-clean, quote) — required for Description Hygiene and every other unit that reached changed files; omit the subsection only when no unit required evidence
+- Omit the coverage section entirely only when every unit was walked with no divergences and no evidence obligation
 - Take the entries excluded by `{known_finding_keys}` into the known section, and omit it when nothing is excluded
 - When `{fixes_applied}` is present, record what the remediation round changed against the findings it resolved
 
