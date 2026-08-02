@@ -21,16 +21,21 @@ Optional `--features` flags (empty string when none)
 
 ### resource-budget
 
-Every cargo invocation MUST use one of these operations. Do NOT call bare `cargo ...` from technique protocols. The inline budget — env assignments before `nice -n 19`, `CARGO_BUILD_JOBS=\${CARGO_BUILD_JOBS:-4}`, `SKIP_WASM_BUILD=1` (non-release only) — is what prevents host hang on ≤32 GiB hosts. Override caps via env on larger hosts. Test operations also apply `RUST_TEST_THREADS=\${RUST_TEST_THREADS:-4}` (see [test](./test.md)).
+Every cargo invocation MUST go through a cargo-operations technique. Do NOT call bare `cargo ...` from technique protocols. Budget by what the invocation does:
+
+- **Compile or test** (type-check, lint-with-compile, build, test runners): `nice -n 19`, `CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4}`, `RUST_TEST_THREADS=${RUST_TEST_THREADS:-4}` when tests run, and `SKIP_WASM_BUILD=1` on non-release passes — the envelope that prevents host hang on ≤32 GiB hosts. Override caps via env on larger hosts.
+- **Format-only** (no rustc): `nice -n 19` alone. Compile-time env caps do not apply and must not appear on the invocation.
+
+Each leaf Protocol states the budget line that matches its invocation class.
 
 ### foreground-only
 
-Cargo operations MUST run as foreground shell invocations owned by the caller. Never dispatch them with `run_in_background` inside a worker — when the worker exits, the OS process group is killed and the build is lost. Concurrent foreground shells in one caller (as [run-suite](./run-suite.md) does) stay within this rule; backgrounded worker dispatches do not. If the wall-clock budget cannot accommodate a foreground run, the orchestrator (not the worker) owns the invocation; spawn a new worker only AFTER the cargo result is in hand.
+Cargo operations MUST run as foreground shell invocations owned by the caller. Never dispatch them with `run_in_background` inside a worker — when the worker exits, the OS process group is killed and the build is lost. Concurrent foreground shells in one caller stay within this rule; backgrounded worker dispatches do not. If the wall-clock budget cannot accommodate a foreground run, the orchestrator (not the worker) owns the invocation; spawn a new worker only AFTER the cargo result is in hand.
 
 ### scope-narrow-then-wide
 
 During inner loops (TDD red/green in implement-task) prefer build_scope=`-p <crate>`. Run `--workspace` once during final validation to match CI.
 
-### fmt-uses-only-nice
+### one-invocation-per-leaf
 
-[fmt-check](./fmt-check.md) and [fmt-fix](./fmt-fix.md) do not compile, so only `nice -n 19` applies; do not paste the full env budget there — it is misleading.
+Each cargo leaf Protocol runs one cargo invocation (or pure combine over already-gathered unit outcomes). Multi-op process suites (wait-all, ordered gather) prefer the process-unit pattern activity ([process-unit-fan-out](../../activities/patterns/06-process-unit-fan-out.yaml)); cargo technique Protocols do not Apply multi-op fan-out façades ([pass-orchestration-in-technique](../../../workflow-design/resources/anti-patterns.md#ap-114-pass-orchestration-in-technique); [Prefer Parallel Independent Work via Formal Fan-Out](../../../workflow-design/resources/design-principles.md#34-prefer-parallel-independent-work-via-formal-fan-out)).

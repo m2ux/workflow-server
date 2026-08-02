@@ -10,4 +10,13 @@ Techniques in this library are bound by the meta activities and are also referen
 
 Cross-cutting conduct rules live in [`agent-conduct`](./agent-conduct.md); capability groups reference it as their single source of truth rather than restating it.
 
+Strategy techniques at this root (standalone `.md` peers of the capability groups):
+
+| Technique | Capability |
+|-----------|------------|
+| [`variable-binding`](./variable-binding.md) | Map a step's bound operation onto the variable bag by the operation's `inputs[]`/`outputs[]` signature |
+| [`scatter-gather`](./scatter-gather.md) | Scatter agent work units (sequential or parallel), gather ordered keyed results, combine |
+
+Same-context process/shell/tool suite coordination is an **activity pattern**, not a strategy technique: [`activities/patterns/06-process-unit-fan-out.yaml`](../activities/patterns/06-process-unit-fan-out.yaml).
+
 For the group-by-group capability summary, see the [workflow README](../README.md#techniques).

@@ -1,0 +1,39 @@
+id: process-unit-fan-out
+version: 1.0.1
+name: Process Unit Fan Out
+description: >-
+  Same-context process, shell, or tool suite coordination into ordered
+  unit_results — borrowable mid-phase process-unit pattern.
+required: false
+steps:
+  - kind: action
+    id: seed-process-suite
+    actions:
+      - action: set
+        target: work_units
+        description: >-
+          Ordered same-context process, shell, or tool units — each an invocation
+          spec with optional key and per-unit resource budget.
+      - action: set
+        target: dispatch_concurrency
+        description: >-
+          Positive integer bounding how many independent units may run at once.
+  - kind: action
+    id: execute-and-gather-units
+    actions:
+      - action: set
+        target: unit_results
+        description: >-
+          Ordered outcomes for every work unit, attaching the unit key when
+          supplied.
+  - kind: action
+    id: require-gathered
+    actions:
+      - action: validate
+        target: unit_results
+        message: >-
+          unit_results must hold one ordered entry per work unit before any
+          pure-combine or downstream consumer runs.
+outcome:
+  - Process/shell/tool units ran under activity-owned concurrency
+  - Ordered unit_results gather is in the bag for pure combine or report

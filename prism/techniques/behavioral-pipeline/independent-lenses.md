@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Run the four independent behavioral lenses over the target concurrently, each augmented with graph evidence where the graph can measure its claims
+Run the four independent behavioral lenses over the target, each augmented with graph evidence where the graph can measure its claims. Atomic lens work: load prompts, run lens operations, augment, write artifacts. Agent/lens parallel dispatch prefers activity coordination (pattern activities; scatter-gather parallel mode and [spawn-concurrent](../../../meta/techniques/harness-compat/spawn-concurrent.md) as capability leaves the activity binds).
 
 ## Outputs
 
@@ -56,7 +56,7 @@ What the code promises outward: the public surface and its callers. Role label P
 
 ### 3. Apply Independent Lenses
 
-- Run each of the four lenses against the target content; per `independent-lenses-parallel`, dispatch them concurrently (up to four at once)
+- Run each of the four lenses against the target content as independent lens work units. The four lenses share no context; only a later synthesis pass depends on their outputs. When this op is bound once per lens unit (after scatter under activity-owned agent fan-out), execute the lens body for that unit; when bound once over all four, execute each lens body in turn and emit the four analysis products.
 - Execute every operation completely — the analytical depth comes from the full chain
 
 ### 4. Augment With Graph
@@ -74,6 +74,6 @@ What the code promises outward: the public surface and its callers. Role label P
 
 ## Rules
 
-### independent-lenses-parallel
+### independent-lenses-atomic
 
-The four independent behavioral lenses (`error-resilience`, `optimize`, `evolution`, `api-surface`) share no context and may be dispatched concurrently, up to four at once. Only the synthesis pass depends on their outputs.
+This technique is atomic lens work: load prompts, run lens operations, augment, write artifacts. It does not scatter agent instances, wait-all, or gather — those verbs prefer activity coordination (pattern activities under [`meta/activities/patterns/`](../../../meta/activities/patterns/README.md); agent capability leaves include [scatter-gather](../../../meta/techniques/scatter-gather.md) parallel mode and [spawn-concurrent](../../../meta/techniques/harness-compat/spawn-concurrent.md)). Protocol does not Apply multi-op fan-out façades ([pass-orchestration-in-technique](../../../workflow-design/resources/anti-patterns.md#ap-114-pass-orchestration-in-technique); [Prefer Parallel Independent Work via Formal Fan-Out](../../../workflow-design/resources/design-principles.md#34-prefer-parallel-independent-work-via-formal-fan-out)).

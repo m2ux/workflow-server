@@ -86,6 +86,9 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | [`gitnexus-operations`](techniques/gitnexus-operations/TECHNIQUE.md) | Codebase queries via the GitNexus knowledge graph: explore, impact, debug, refactor |
 | [`cargo-operations`](techniques/cargo-operations/TECHNIQUE.md) | Resource-constrained cargo subcommands (build, check, clippy, test, fmt, doc, preflight) with an inline resource budget |
 | [`harness-compat`](techniques/harness-compat/TECHNIQUE.md) | Harness-independent operations (`spawn-agent`, `continue-agent`, `spawn-concurrent`, `resolve-harness-operation`) abstracting cross-tool dispatch |
+| [`variable-binding`](techniques/variable-binding.md) | Strategy technique — bind step inputs/outputs to the variable bag by operation signature |
+| [`scatter-gather`](techniques/scatter-gather.md) | Strategy technique — sequential or parallel agent-unit scatter, ordered gather, combine |
+| [`process-unit-fan-out`](activities/patterns/06-process-unit-fan-out.yaml) | Pattern activity — same-context process/shell/tool suite seed → execute/wait-all → ordered gather |
 
 > Cross-cutting rules live in `agent-conduct`, and capability techniques (`workflow-engine`, `version-control`, etc.) reference it as their single source of truth.
 
@@ -128,12 +131,16 @@ workflows/meta/
 │   ├── 01-initialize-session.yaml           # Create or resume the client session
 │   ├── 02-resolve-target.yaml               # Detect repo type, set component_path, verify host binding
 │   ├── 03-dispatch-client-workflow.yaml     # Drive the client activity loop (while current_activity != null)
-│   └── 04-end-workflow.yaml                 # Outcome verification, summary
+│   ├── 04-end-workflow.yaml                 # Outcome verification, summary
+│   └── patterns/                            # Borrowable mid-phase coordination (library-only; not lifecycle graph)
+│       ├── 01-orchestrator-workers.yaml
+│       ├── …                                # 02–05 agent patterns
+│       └── 06-process-unit-fan-out.yaml     # Same-context process/shell/tool suite coordination
 ├── techniques/
 │   ├── TECHNIQUE.md                         # Root base contract (inherited by every meta technique)
 │   ├── agent-conduct.md                     # Cross-cutting rules (single source of truth)
 │   ├── variable-binding.md                  # Strategy technique — bind step inputs/outputs to variables
-│   ├── scatter-gather.md                    # Strategy technique — forEach fan-out / gather
+│   ├── scatter-gather.md                    # Strategy technique — agent-unit scatter / gather / combine
 │   ├── workflow-engine/                     # Session lifecycle, dispatch, transitions, checkpoint protocol
 │   │   ├── TECHNIQUE.md                     #   group index / base contract
 │   │   └── {op}.md                          #   one file per operation (start-session, create-session, dispatch-activity, ...)

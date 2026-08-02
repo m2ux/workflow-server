@@ -89,7 +89,7 @@ Content is embedded in a parent file instead of living in its own file.
 
 **Do not flag:** Short inline literals that the schema requires on the parent (e.g. a one-line `description:` field); hyperlinks to separate files.
 
-**Fix:** Extract into its own file under the correct directory; replace the inline body with a reference/bind the schema expects. See [Modular Over Inline](./design-principles.md#22-modular-over-inline).
+**Fix:** Extract into its own file under the correct directory; replace the inline body with a reference/bind the schema expects. See [Modular Over Inline](./design-principles.md#23-modular-over-inline).
 
 ### AP-02. schema-is-constraint
 
@@ -487,7 +487,7 @@ An activity set duplicates a bound technique's output.
 
 **Detect:** Step has `technique` and a `set` whose `target` is a value the bound technique computes (assessment, classification, derived structure, artifact path). Bound-technique outputs already land via `variable-binding`; the `set` re-encodes them on the activity.
 
-**Do not flag:** (a) cross-iteration accumulator / scatter-gather gather over a `forEach`; (b) caller-specific derivation from a generic tool-wrapper op (keep on activity — `io-agnostic-contract`); (c) value-BEARING `set` on a pure control step recording orchestration/flow state. Value-LESS procedural control sets — see `no-valueless-control-set`.
+**Do not flag:** (a) cross-iteration accumulator / ordered gather over a `forEach` (activity coordination appends each unit's product); (b) caller-specific derivation from a generic tool-wrapper op (keep on activity — `io-agnostic-contract`); (c) value-BEARING `set` on a pure control step recording orchestration/flow state. Value-LESS procedural control sets — see `no-valueless-control-set`.
 
 **Fix:** Declare `### <target>` on the bound technique's `## Outputs` (same id), fold the `set` description into `## Protocol`, delete the activity `set`.
 
@@ -511,7 +511,7 @@ A step set feeds that same step's own inputs.
 
 **Detect:** A bound step's `technique.inputs` interpolates a variable that the SAME step's `set` actions write. Inputs resolve at invocation; `set`s are side-effects with no before-input contract → ordering hazard / self-reference (input-side counterpart of `no-set-of-technique-output`).
 
-**Do not flag:** A `set` whose `target` is NOT interpolated by that step's `technique.inputs` — scatter-gather gather (`no-set-of-technique-output` excl. a), value for a later step, or pure control-step orchestration.
+**Do not flag:** A `set` whose `target` is NOT interpolated by that step's `technique.inputs` — ordered gather over a loop (`no-set-of-technique-output` excl. a), value for a later step, or pure control-step orchestration.
 
 **Fix:** Hoist the derivation to where its source is first established (or declare it as an earlier producing technique's output per `no-set-of-technique-output`); delete the `set` from the consuming step, leaving a pure binding.
 
@@ -521,11 +521,11 @@ A step set feeds that same step's own inputs.
 
 Activity techniques[] overlaps step technique binds.
 
-**Detect:** An entry in activity-level `techniques[]` is also bound by any step (top-level or loop) via `step.technique`. Activity `techniques[]` is for cross-cutting STRATEGY/capability techniques (`variable-binding`, `scatter-gather`) spanning the whole activity — not per-step operations. Lists must be DISJOINT (see also `bound-step-no-description`).
+**Detect:** An entry in activity-level `techniques[]` is also bound by any step (top-level or loop) via `step.technique`. Activity `techniques[]` is for cross-cutting STRATEGY techniques that span the whole activity without owning multi-unit coordination (e.g. `variable-binding`) — not per-step operations, and not fan-out/dispatch homes (`coordination-in-technique`; those live as pattern activities or `steps[]`). Lists must be DISJOINT (see also `bound-step-no-description`).
 
 **Do not flag:** Strategy techniques listed at activity level that no step binds. (Inverse smell — binding a cross-cutting strategy as a step operation — is separate; THIS fix always removes the activity-level duplicate.)
 
-**Fix:** Remove every overlapping entry from activity `techniques[]`; keep only cross-cutting strategies; delete the block if none remain.
+**Fix:** Remove every overlapping entry from activity `techniques[]`; keep only cross-cutting strategies; delete the block if none remain. Multi-unit fan-out belongs on a pattern activity or activity step spine — not as a strategy list entry.
 
 ### AP-37. rule-audience-bucket
 
@@ -557,11 +557,11 @@ N steps bind one technique without structural reason to split.
 
 A universal technique is not hoisted to workflow.techniques.activity.
 
-**Detect:** A strategy technique appears on (nearly) every activity's `techniques[]`. Audience split mirrors rules (`rule-audience-bucket`): `techniques.workflow` = orchestrator (`get_workflow`); `techniques.activity` = inherited by every activity (`get_activity` inject). No `universal` bucket for techniques. Coverage discriminator: nearly-all → hoist; only some (e.g. `scatter-gather` on fan-out activities) → stay activity-local. Composes with `techniques-list-disjoint` (step-binding duplicates leave first).
+**Detect:** A strategy technique appears on (nearly) every activity's `techniques[]`. Audience split mirrors rules (`rule-audience-bucket`): `techniques.workflow` = orchestrator (`get_workflow`); `techniques.activity` = inherited by every activity (`get_activity` inject). No `universal` bucket for techniques. Coverage discriminator: nearly-all → hoist; only some true strategies (e.g. a bind/policy strategy used on a minority of activities) → stay activity-local. Fan-out and worker dispatch are **not** strategy-list coverage — they are pattern activities or local `steps[]` spines (`coordination-in-technique`, [Prefer Parallel Independent Work via Formal Fan-Out](./design-principles.md#34-prefer-parallel-independent-work-via-formal-fan-out)). Composes with `techniques-list-disjoint` (step-binding duplicates leave first).
 
-**Do not flag:** Activity-specific strategy techniques used by only some activities.
+**Do not flag:** Activity-specific strategy techniques used by only some activities (non-coordination). Pattern activities borrowed or mirrored for fan-out.
 
-**Fix:** Declare once under `workflow.techniques.activity`; delete from every activity `techniques[]`; drop emptied activity blocks.
+**Fix:** Declare once under `workflow.techniques.activity`; delete from every activity `techniques[]`; drop emptied activity blocks. Do not hoist or localize multi-unit scatter/wait-all/gather as a strategy technique — author or borrow a pattern under `meta/activities/patterns/`.
 
 ### AP-40. readme-orients-not-transcribes
 
@@ -573,7 +573,7 @@ README transcribes YAML structure, inventory counts, or loader packaging instead
 
 **Do not flag:** Mermaid/ASCII flow diagrams (activity- or step-flow); orientation the YAML lacks — PURPOSE, at-a-glance activity sequence (name + one-line role + connections), outcomes/value, file structure overview without counts, techniques overview, links to authoritative YAMLs, a purpose sentence plus index table of ids. A third checklist of which audit/technique passes run (drifting from activity binds) is `bind-site-is-orchestration-truth`.
 
-**Fix:** Delete prose/table enumerations of steps/checkpoints/loops/decisions/transitions/bindings, Variables/Rules/estimated-time sections, inventory counts, and loader HOW; KEEP diagrams and purpose orientation. Readers open the YAML definition or index table for the rest. See [Complete Documentation Structure](./design-principles.md#11-complete-documentation-structure).
+**Fix:** Delete prose/table enumerations of steps/checkpoints/loops/decisions/transitions/bindings, Variables/Rules/estimated-time sections, inventory counts, and loader HOW; KEEP diagrams and purpose orientation. Readers open the YAML definition or index table for the rest. See [Complete Documentation Structure](./design-principles.md#12-complete-documentation-structure).
 
 ### AP-41. avoidance-voice-in-definitions
 
@@ -585,7 +585,7 @@ Definition prose uses avoidance or comparative voice.
 
 **Do not flag:** Planning artifacts under `artifacts/planning/` (evolution by design); true runtime constraints in `rules.*` / technique `## Rules` ("must not write secrets"); schema/condition operators; negative examples inside this catalogue; `validate` messages that name a misconfiguration and fix command (`validate-message-economy`).
 
-**Fix:** Rewrite to current behaviour. See [Document in Positive Present](./design-principles.md#17-document-in-positive-present).
+**Fix:** Rewrite to current behaviour. See [Document in Positive Present](./design-principles.md#18-document-in-positive-present).
 
 ## Coupling Anti-Patterns
 
@@ -601,7 +601,7 @@ An I/O id or description names a specific caller.
 
 **Do not flag:** Protocol/Capability utilisation ("use technique X", "go through cargo-operations::fmt-fix"); intrinsic/external origin ("git diff output", "the user's request", "provided by the server"); I/O links to a resource/template section (shape of the value).
 
-**Fix:** Rewrite the entry generically; drop workflow-internal source/destination naming. See [Maximize Schema Expressiveness](./design-principles.md#5-maximize-schema-expressiveness) (portable I/O).
+**Fix:** Rewrite the entry generically; drop workflow-internal source/destination naming. See [Maximize Schema Expressiveness](./design-principles.md#6-maximize-schema-expressiveness) (portable I/O).
 
 ### AP-43. canonical-artifact-ids
 
@@ -649,7 +649,7 @@ A resource backlinks its callers, names where its content lands, or narrates hos
 
 **Do not flag:** (1) Meta / bootstrap / agent-conduct / workflow-engine **prompt** resources whose domain IS instructing the reader to run engine techniques. (2) Sibling **resource** citations and catalog entry **names**. (3) A single "see also" to a shared **format** rule the filler applies while filling (e.g. markdown line-breaks, canonical-home map) — not a host op. (4) Generic technique-model ontology (Goal → Activity → Technique) with no host ids. (5) A creation guide naming the artifact it is the guide **for** — that mapping is what `no-template-creation-guide` requires — and filenames inside Template bodies, which are the text the filler emits. (6) Heading **level** as shape (`an ##-level section`), which the template needs, as distinct from naming the document that hosts it. Test: if deleting the passage would still leave a usable template/vocab/guide, and the deleted text named who binds/produces/gates this resource or where its output goes → flag.
 
-**Fix:** Describe the resource by what it IS (template, vocabulary, fill rules); drop caller/backlink/Enforcement inventories and bind/gate essays; move role→file and orchestration into the owning activity YAML or technique Protocol. See [Maximize Schema Expressiveness](./design-principles.md#5-maximize-schema-expressiveness) (portable contracts).
+**Fix:** Describe the resource by what it IS (template, vocabulary, fill rules); drop caller/backlink/Enforcement inventories and bind/gate essays; move role→file and orchestration into the owning activity YAML or technique Protocol. See [Maximize Schema Expressiveness](./design-principles.md#6-maximize-schema-expressiveness) (portable contracts).
 
 ### AP-47. no-redundant-link-label
 
@@ -769,7 +769,7 @@ Invocation argument names or lists use the wrong typographic namespace.
 
 **Do not flag:** Brace objects that are not invocation arg lists (query/template/JSON payloads, raw tool-doc object shapes); italic emphasis that is ordinary English, not an op parameter name; correctly braced/backticked argument *values* (`backtick-code-tokens`, `brace-declared-ids`).
 
-**Fix:** Align with [Distinguish Designators from Parameters](./design-principles.md#16-distinguish-designators-from-parameters).
+**Fix:** Align with [Distinguish Designators from Parameters](./design-principles.md#17-distinguish-designators-from-parameters).
 
 ### AP-57. escape-literal-dollar
 
@@ -805,7 +805,7 @@ A caveat is a protocol sub-bullet instead of a blockquote note.
 
 **Do not flag:** Genuine enumerations or sequential sub-steps (per-harness branch tables, ordered sub-actions). Global/cross-step constraints belong in `## Rules` (`structure-backed-constraints`, `no-rule-protocol-restatement`). Single-block Rules misfiled as global — see `local-rule-as-note`. Distinct from `no-one-step-rules`.
 
-**Fix:** Convert to a `>` note under the primary instruction (two trailing spaces on the primary bullet, then `> ` on the next line). A `>` line is not a step — it folds into the parent. See [Isolate Conditional Branches as Notes](./design-principles.md#31-isolate-conditional-branches-as-notes).
+**Fix:** Convert to a `>` note under the primary instruction (two trailing spaces on the primary bullet, then `> ` on the next line). A `>` line is not a step — it folds into the parent. See [Isolate Conditional Branches as Notes](./design-principles.md#32-isolate-conditional-branches-as-notes).
 
 ### AP-60. local-rule-as-note
 
@@ -865,7 +865,7 @@ A boolean id is not an affirmative predicate.
 
 **Do not flag:** Conformant unprefixed affirmatives; `is_`/`has_`/`can_`/`should_` only when the prefix sharpens an already-affirmative stem.
 
-**Fix:** Rename to an affirmative predicate shape. See also [Name Symbols Affirmatively](./design-principles.md#19-name-symbols-affirmatively).
+**Fix:** Rename to an affirmative predicate shape. See also [Name Symbols Affirmatively](./design-principles.md#20-name-symbols-affirmatively).
 
 ### AP-65. collection-id-shape
 
@@ -889,7 +889,7 @@ An I/O id encodes representation or direction.
 
 **Do not flag:** External tool/schema field spellings; bare plural collection item-nouns (`collection-id-shape`); head-noun-last qualified phrases (`reconciled_assumptions`, `completion_summary`).
 
-**Fix:** Rename; hoist one concept to one shared id (`hoist-shared-inputs`); drop representation/direction encoding from I/O ids. See also [Name Symbols Affirmatively](./design-principles.md#19-name-symbols-affirmatively).
+**Fix:** Rename; hoist one concept to one shared id (`hoist-shared-inputs`); drop representation/direction encoding from I/O ids. See also [Name Symbols Affirmatively](./design-principles.md#20-name-symbols-affirmatively).
 
 ### AP-67. rule-slug-shape
 
@@ -901,19 +901,19 @@ A rule slug is negation or narration instead of a positive invariant.
 
 **Do not flag:** Clear intentional negations; NAME-class kebab identities that are not symbol ids.
 
-**Fix:** Rename toward a positive invariant when clearer; keep kebab. See also [Name Symbols Affirmatively](./design-principles.md#19-name-symbols-affirmatively).
+**Fix:** Rename toward a positive invariant when clearer; keep kebab. See also [Name Symbols Affirmatively](./design-principles.md#20-name-symbols-affirmatively).
 
 ### AP-68. technique-stage-agnostic
 
-"return to the planning stage" / "at the validate activity" / "present the … checkpoint" / "after each task, before confirmation" / "flag every removal for explicit confirmation with a diff-style view"
+"return to the planning stage" / "at the validate activity" / "The binding activity owns process-unit scatter" / "present the … checkpoint" / "after each task, before confirmation" / "flag every removal for explicit confirmation with a diff-style view"
 
-A technique encodes workflow stage, graph position, or a decision gate it cannot own.
+A technique encodes workflow stage, graph position, the surrounding activity graph, or a decision gate it cannot own. Techniques have **no knowledge of activities** — they take inputs, process over tools and resources, and emit outputs.
 
-**Detect:** Technique Capability/Protocol/Rules (a) mention stage/activity (named or "calling/consuming/producing activity"), checkpoint, loop/iteration, transition/decision routing, or position/timing in the activity flow ("after each task", "before user confirmation", "before the next step"), or (b) prescribe user confirmation, approval, or choice ("confirm with the user", "explicit confirmation", "require the user to…") as if the technique itself owns that gate. Test: if the sentence answers *where/when in the workflow?*, *which checkpoint surrounds me?*, or *how does the user decide?*, flag it. Techniques answer only *what value do I produce?* — gateable outputs and durable artifacts; activities own checkpoints that link those artifacts (`structure-backed-constraints`, `link-named-artifacts`).
+**Detect:** Technique Capability, Inputs/Outputs descriptions, Protocol, or Rules (a) mention stage, activity, or the activity graph — including named activities, "calling/consuming/producing activity", **"binding activity"**, "activity-owned", "the activity binds…", "following combine/dispatch step" as an actor in the workflow, checkpoint, loop/iteration ownership, transition/decision routing, or position/timing in the activity flow ("after each task", "before user confirmation", "before the next step"), or (b) prescribe user confirmation, approval, or choice ("confirm with the user", "explicit confirmation", "require the user to…") as if the technique itself owns that gate. Test: if the sentence answers *where/when in the workflow?*, *which activity or step surrounds me?*, *who binds or owns a sibling step?*, *which checkpoint surrounds me?*, or *how does the user decide?*, flag it. Techniques answer only *what value do I produce?* — gateable outputs and durable artifacts. Composition (which steps bind which ops, in what order) lives only in activity YAML.
 
-**Do not flag:** Purpose-phrased work with no orchestration locus ("final validation", "no separate commit step follows"); values the technique emits for the activity to route (counts, paths, severity, recommended option id); inventoring decisions *into* an artifact the activity will gate on; bare present/surface-to-user with no stage or gate named (`session-interaction-in-technique`).
+**Do not flag:** Purpose-phrased work with no orchestration locus ("final validation", "no separate commit step follows"); I/O that names **value** identity only ("ordered unit outcomes in suite order") without naming who produced or consumes them in the graph; inventoring decisions *into* an artifact; bare present/surface-to-user with no stage or gate named (`session-interaction-in-technique`). Design-time homes (design principles, this catalogue, creation guides) may name activities when teaching authors how to compose — that is not technique definition prose.
 
-**Fix:** Migrate user-facing decisions to activity `kind: checkpoint` steps gated on technique outputs; migrate other orchestration to activity transitions/`when`/loops. Rewrite the technique to produce the durable evidence (artifact section, count, path) without naming the gate. See [Keep Orchestration in Structure](./design-principles.md#20-keep-orchestration-in-structure); also `no-activity-prose-rules`, `session-interaction-in-technique`.
+**Fix:** Delete activity-graph actors from the technique. State what **this** op does with its inputs and what it emits. Migrate user-facing decisions to activity `kind: checkpoint` steps gated on technique outputs; migrate composition (fan-out then combine, dispatch then gather) to activity `steps[]` / transitions / `when` / loops. Do not replace a stage name with the euphemism "binding activity" — that is the same smell. See [Keep Orchestration in Structure](./design-principles.md#21-keep-orchestration-in-structure); also `no-activity-prose-rules`, `session-interaction-in-technique`, `pass-orchestration-in-technique`, `io-agnostic-contract`.
 
 ### AP-69. no-activity-prose-rules
 
@@ -925,7 +925,7 @@ An activity carries prose rules: instead of pure mechanics.
 
 **Do not flag:** N/A — activity `rules:` should be empty; behavioral guidance belongs on bound techniques.
 
-**Fix:** (a) restates structure already enforced → **delete**; (b) technique-behavioral constraint → **migrate** to the owning technique (`single-rule-authority`); (c) genuine unenforced constraint → **encode** as `when`/`condition`, transition, decision, checkpoint, or `required: false` (hard gates use `when`/`condition`; step `required` is a worker hint only). End state: no activity `rules:` block. See [Keep Orchestration in Structure](./design-principles.md#20-keep-orchestration-in-structure).
+**Fix:** (a) restates structure already enforced → **delete**; (b) technique-behavioral constraint → **migrate** to the owning technique (`single-rule-authority`); (c) genuine unenforced constraint → **encode** as `when`/`condition`, transition, decision, checkpoint, or `required: false` (hard gates use `when`/`condition`; step `required` is a worker hint only). End state: no activity `rules:` block. See [Keep Orchestration in Structure](./design-principles.md#21-keep-orchestration-in-structure).
 
 ### AP-70. capability-group-placement
 
@@ -953,7 +953,7 @@ A surface claims a tool return shape that is not accurate.
 
 **Do not flag:** Accurate descriptions; non-engine surfaces that correctly avoid tool recipes (`no-tool-usage-prescription`).
 
-**Fix:** Align the claim with actual tool behaviour, or delete the claim if the surface should not describe tools. See [Match the Harness Surface](./design-principles.md#21-match-the-harness-surface).
+**Fix:** Align the claim with actual tool behaviour, or delete the claim if the surface should not describe tools. See [Match the Harness Surface](./design-principles.md#22-match-the-harness-surface).
 
 ### AP-72. complete-bootstrap-path
 
@@ -989,7 +989,7 @@ The same behavioural guidance is multi-homed across techniques and tool docs.
 
 **Do not flag:** A single authoritative home with pointers elsewhere; meta surfaces whose domain is tool usage.
 
-**Fix:** Keep one authoritative location; replace duplicates with references to it. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home); harness claims also under [Match the Harness Surface](./design-principles.md#21-match-the-harness-surface).
+**Fix:** Keep one authoritative location; replace duplicates with references to it. See [One Authoritative Home](./design-principles.md#7-one-authoritative-home); harness claims also under [Match the Harness Surface](./design-principles.md#22-match-the-harness-surface).
 
 ### AP-75. describe-tool-value
 
@@ -1029,7 +1029,7 @@ Implementation starts before the approach is confirmed.
 
 **Do not flag:** Trivial typos/formatting the user already authorized; continuing an explicitly approved plan.
 
-**Fix:** Present the approach; wait for confirmation; then modify. See [Confirm Before Irreversible Changes](./design-principles.md#8-confirm-before-irreversible-changes).
+**Fix:** Present the approach; wait for confirmation; then modify. See [Confirm Before Irreversible Changes](./design-principles.md#9-confirm-before-irreversible-changes).
 
 ### AP-78. follow-through-on-recommend
 
@@ -1041,7 +1041,7 @@ A recommendation is presented without follow-through implementation.
 
 **Do not flag:** Pure advisory requests where the user asked for analysis only.
 
-**Fix:** After recommending, implement (or explicitly checkpoint the implement-or-stop decision). See [Close the Loop](./design-principles.md#23-close-the-loop).
+**Fix:** After recommending, implement (or explicitly checkpoint the implement-or-stop decision). See [Close the Loop](./design-principles.md#24-close-the-loop).
 
 ### AP-79. structure-backed-constraints
 
@@ -1053,7 +1053,7 @@ A critical constraint is text-only with no structural enforcement.
 
 **Do not flag:** Explicitly guidance-only / non-critical rules; rules already backed by structure on the same construct or a parent the actor always receives.
 
-**Fix:** Add structural enforcement (checkpoint, condition, validate, decision), or reclassify as non-critical guidance if structural backing is inappropriate. See [Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure).
+**Fix:** Add structural enforcement (checkpoint, condition, validate, decision), or reclassify as non-critical guidance if structural backing is inappropriate. See [Encode Constraints as Structure](./design-principles.md#10-encode-constraints-as-structure).
 
 ### AP-80. preserve-readme-content
 
@@ -1089,7 +1089,7 @@ Work bypasses defined activities via informal combination of results.
 
 **Do not flag:** In-activity orchestration that still goes through declared steps/checkpoints.
 
-**Fix:** Route work through the defined activities; do not informally merge outside the graph. See [Keep Orchestration in Structure](./design-principles.md#20-keep-orchestration-in-structure).
+**Fix:** Route work through the defined activities; do not informally merge outside the graph. See [Keep Orchestration in Structure](./design-principles.md#21-keep-orchestration-in-structure).
 
 ### AP-83. accept-correction
 
@@ -1213,7 +1213,7 @@ A resource owns DOES procedure (session cadence or operational HOW) instead of f
 
 **Do not flag:** Artifact templates/anchors, format skeletons, category/risk/status **labels**, probe lists framed as fill vocabulary (not "Ask after each…"), reference lexicons, calibration benchmarks, and fill Rules that constrain row/section **shape** (null-row format, one-row-per-item) without prescribing when to interview or which activity runs next.
 
-**Fix:** Move does-sections to the owning technique as protocol phases or named rules; leave templates + consult vocabulary; dissolve the resource when nothing template-shaped remains. Retarget stranded heading anchors; ensure every moved `{token}` resolves under guard coverage (declared id / `{$local}` / workflow variable). See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Move does-sections to the owning technique as protocol phases or named rules; leave templates + consult vocabulary; dissolve the resource when nothing template-shaped remains. Retarget stranded heading anchors; ensure every moved `{token}` resolves under guard coverage (declared id / `{$local}` / workflow variable). See [One Authoritative Home](./design-principles.md#7-one-authoritative-home).
 
 ### AP-93. canonical-fact-home
 
@@ -1333,7 +1333,7 @@ Operative criteria are dual-homed in technique and resource.
 
 **Do not flag:** A one-line pointer to the resource; technique-owned HOW the resource does not define; scan-scope paraphrase without repeating criteria. See also `operative-criteria-need-a-home`, `cited-home-owns-claim`, `no-shadow-audit-pass`.
 
-**Fix:** Choose one home (usually the resource for reusable criteria, the technique for procedure); delete the duplicate. Migrate unique technique-only criteria into the resource before deleting them from the technique. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Choose one home (usually the resource for reusable criteria, the technique for procedure); delete the duplicate. Migrate unique technique-only criteria into the resource before deleting them from the technique. See [One Authoritative Home](./design-principles.md#7-one-authoritative-home).
 
 ## Canon Hygiene Anti-Patterns
 
@@ -1361,7 +1361,7 @@ Reusable criteria live only in a technique with no catalog/resource home.
 
 **Do not flag:** One-off orchestration (order of steps, which files to open, how to present findings); thin walkers that only name a home and apply it (`no-technique-resource-dual-home` carve-out); criteria already homed in a resource/catalog even if the technique is still fat (that is dual-home, not missing-home).
 
-**Fix:** Migrate the criteria into a resource or this catalogue; leave the technique as a walker (load home → apply → present). Prefer a catalog entry when the criterion is a prohibited pattern; prefer a resource when it is a positive checklist/convention. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Migrate the criteria into a resource or this catalogue; leave the technique as a walker (load home → apply → present). Prefer a catalog entry when the criterion is a prohibited pattern; prefer a resource when it is a positive checklist/convention. See [One Authoritative Home](./design-principles.md#7-one-authoritative-home).
 
 ### AP-105. no-shadow-audit-pass
 
@@ -1385,7 +1385,7 @@ An upper canon layer restates Detect/Fix already owned below.
 
 **Do not flag:** Short Rule statements plus named citations; Enforcement pointers to activities/checkpoints; a single clarifying sentence that does not repeat Detect steps; layers that are themselves the sole home (`operative-criteria-need-a-home`).
 
-**Fix:** Keep the upper layer as short principle stance prose; delete restated Detect, Detect-routing blocks, and host Enforcement inventories (`no-resource-caller-backlink`). If the upper layer held unique criteria, migrate them down before deleting. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Keep the upper layer as short principle stance prose; delete restated Detect, Detect-routing blocks, and host Enforcement inventories (`no-resource-caller-backlink`). If the upper layer held unique criteria, migrate them down before deleting. See [One Authoritative Home](./design-principles.md#7-one-authoritative-home).
 
 ### AP-107. bind-site-is-orchestration-truth
 
@@ -1397,7 +1397,7 @@ A pass inventory disagrees with authoritative YAML bind sites.
 
 **Do not flag:** Purpose/value orientation without a pass inventory; pointers to the YAML; at-a-glance activity names with one-line roles (`readme-orients-not-transcribes`); a technique that only applies a sibling without listing a parallel set.
 
-**Fix:** Delete the third checklist, or replace it with a pointer to the binding activity/technique. If a summary is required, generate it from the YAML binds. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Delete the third checklist, or replace it with a pointer to the binding activity/technique. If a summary is required, generate it from the YAML binds. See [One Authoritative Home](./design-principles.md#7-one-authoritative-home).
 
 ## Technique Protocol Anti-Patterns
 
@@ -1413,7 +1413,7 @@ Discrete sequential protocol phases are collapsed into one numbered step.
 
 **Do not flag:** Multiple bullets that elaborate a single phase (how-to for one write, constraints on one apply, loop body over one entry, mode branches of one action); `>` caveats under a primary instruction; a single-bullet step.
 
-**Fix:** Split into consecutive numbered `### N. Title` steps — one phase per heading. Keep elaborating bullets only under the phase they refine. See also [Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome).
+**Fix:** Split into consecutive numbered `### N. Title` steps — one phase per heading. Keep elaborating bullets only under the phase they refine. See also [Phase by Sequenced Outcome](./design-principles.md#16-phase-by-sequenced-outcome).
 
 ### AP-109. technique-outputs-declared
 
@@ -1433,11 +1433,11 @@ Capability or Protocol produces a value that is not declared on Outputs.
 
 A workflow-local technique re-implements a capability a meta or shared-workflow technique already offers.
 
-**Detect:** A non-meta technique's Protocol embeds a harness recipe (git push, `gh pr create`, `gh pr ready`, commit/stage, issue mutate, …) for a capability that already exists as a meta or cross-workflow shared op. Also flag local re-teaching of concurrent `Task` / spawn-concurrent / dispatch-then-merge pipelines when [`orchestration-patterns`](../../meta/techniques/orchestration-patterns/TECHNIQUE.md) or a borrowable [`meta/activities/patterns/`](../../meta/activities/patterns/README.md) activity already covers the shape. Test: the local novelty is only parameters or caller-specific composition (title/body/path wiring, domain roster, calibration); the verb/recipe is already owned elsewhere. Near-misses count — an existing shared op that almost fits but lacks an input, optional flag, or output still owns the capability.
+**Detect:** A non-meta technique's Protocol embeds a harness recipe (git push, `gh pr create`, `gh pr ready`, commit/stage, issue mutate, …) for a capability that already exists as a meta or cross-workflow shared **atomic** op. Also flag local re-teaching of concurrent `Task` / spawn / dispatch-then-merge **pipelines** when a borrowable [`meta/activities/patterns/`](../../meta/activities/patterns/README.md) activity (or an equivalent local activity step spine) already covers the coordination shape — mid-phase fan-out is activity coordination, not a technique-group home (`coordination-in-technique`, `prose-based-dispatch-patterns`). Test: the local novelty is only parameters or caller-specific composition (title/body/path wiring, domain roster, calibration); the verb/recipe or coordination spine is already owned elsewhere. Near-misses count — an existing shared atomic op that almost fits but lacks an input, optional flag, or output still owns that capability.
 
-**Do not flag:** Parameterization or minor refactor of the shared/meta op itself to accommodate a new caller's diversity (new optional inputs, defaults, outputs, or small protocol branches) while preserving existing callers; adding a new shared op when no shared capability exists yet; a local technique that only assembles caller-specific values (title/body/path wiring, domain roster assignment, severity calibration) while the activity binds the shared op as its own step; session-level `dispatch-activity` (graph orchestrator/worker — different layer from mid-phase fan-out).
+**Do not flag:** Parameterization or minor refactor of the shared/meta **atomic** op itself to accommodate a new caller's diversity (new optional inputs, defaults, outputs, or small protocol branches) while preserving existing callers; adding a new shared atomic op when no shared capability exists yet; a local technique that only assembles caller-specific values (title/body/path wiring, domain roster assignment, severity calibration) while the activity binds the shared op as its own step; session-level `dispatch-activity` (graph orchestrator/worker — different layer from mid-phase fan-out); pattern activities and activity `steps[]` that coordinate fan-out by binding capability leaves.
 
-**Fix:** Delete the local harness recipe; bind the shared/meta op from the activity (or borrow an activity that already binds it); keep only caller-specific value assembly in a local technique if needed (`canonical-technique-reference`, `no-duplicated-guidance`, `pass-orchestration-in-technique`). Remediation order under [Prefer Shared Capability](./design-principles.md#18-prefer-shared-capability) and [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities).
+**Fix:** Delete the local harness or concurrent-pipeline recipe. For **atomic** harness verbs, bind the shared/meta op from the activity. For **mid-phase fan-out / dispatch-then-merge**, borrow or mirror a pattern under `meta/activities/patterns/` (those activities bind the capability ops). Keep only caller-specific value assembly in a local technique if needed (`canonical-technique-reference`, `no-duplicated-guidance`, `pass-orchestration-in-technique`). Remediation order under [Prefer Shared Capability](./design-principles.md#19-prefer-shared-capability), [Activities Coordinate; Techniques Endow](./design-principles.md#2-activities-coordinate-techniques-endow), and [Atomic Techniques; Compose at Activities](./design-principles.md#27-atomic-techniques-compose-at-activities).
 
 ### AP-111. contract-not-procedure
 
@@ -1449,7 +1449,7 @@ Protocol carries identity criteria or a trailing "Set …" phase that belongs on
 
 **Do not flag:** Protocol that determines or emits `{id}` by reference to Output criteria without restating the tree ("classify `{operation_type}` per the Output criteria"); emitting a count or path in the same phase that already produced the bag/artifact; mode branches that *use* an already-bound value; missing Outputs entirely (`technique-outputs-declared`).
 
-**Fix:** Move identity criteria onto the owning Output; collapse pure projections to one-line Output descriptions; keep Protocol as work phases that emit `{id}`. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure). Workflow-variable shadows are `no-derived-state-shadow`.
+**Fix:** Move identity criteria onto the owning Output; collapse pure projections to one-line Output descriptions; keep Protocol as work phases that emit `{id}`. See [Separate Contract from Procedure](./design-principles.md#14-separate-contract-from-procedure). Workflow-variable shadows are `no-derived-state-shadow`.
 
 ### AP-112. no-derived-state-shadow
 
@@ -1461,7 +1461,7 @@ A derived shadow variable duplicates an authoritative state variable.
 
 **Do not flag:** Distinct facts that merely correlate; Output prose that defines a projection without declaring a second workflow variable (`contract-not-procedure`); mode encoded only as rules/prose with no state variable (`mode-as-state`).
 
-**Fix:** Keep the authoritative variable; rewrite conditions, technique inputs, and effects to compare it directly; delete the shadow declarations and every write to them. See also [Single Source of Truth](./design-principles.md#14-single-source-of-truth).
+**Fix:** Keep the authoritative variable; rewrite conditions, technique inputs, and effects to compare it directly; delete the shadow declarations and every write to them. See also [Single Source of Truth](./design-principles.md#15-single-source-of-truth).
 
 ### AP-113. session-interaction-in-technique
 
@@ -1473,19 +1473,19 @@ A technique performs or prescribes human/session interaction.
 
 **Do not flag:** Assembling or persisting a declared output the activity will surface; an activity binding a tool/op whose domain is external delivery (push, open PR, send); naming "the user's request" as an input origin (`io-agnostic-contract`); stage/gate locus smells (`technique-stage-agnostic`).
 
-**Fix:** Delete Present/surface/show-to-user phases; keep assemble/derive/persist that emit `{id}`. Put human-facing delivery on the binding activity (`action: message` and/or checkpoint message linking `{id}` / path). See [Keep Session Interaction in Activities](./design-principles.md#24-keep-session-interaction-in-activities).
+**Fix:** Delete Present/surface/show-to-user phases; keep assemble/derive/persist that emit `{id}`. Put human-facing delivery on the binding activity (`action: message` and/or checkpoint message linking `{id}` / path). See [Keep Session Interaction in Activities](./design-principles.md#25-keep-session-interaction-in-activities).
 
 ### AP-114. pass-orchestration-in-technique
 
-"`run-audit-passes`: Apply audit-expressiveness…" / "`publish-workflow-pr`: Apply push-branch, then create-pr…"
+"`run-audit-passes`: Apply audit-expressiveness…" / "`publish-workflow-pr`: Apply push-branch, then create-pr…" / "`run-suite`: Apply process-unit fan-out…"
 
-A technique's Protocol invokes other techniques to do work — sequencing sibling or shared operations the activity should bind as consecutive steps.
+A technique's Protocol sequences sibling or shared operations for work that the activity should bind as consecutive steps — a multi-op façade whose only job is composition.
 
 **Detect:** Technique Capability or Protocol applies, invokes, or runs another technique/operation for work via Protocol `Apply [technique]` / `::` op invocation (one or many). Signals: numbered phases that are each "Apply […]"; Capability that names a multi-pass audit/pipeline or a façade over shared ops; Outputs that only re-export children. Test: if moving each invoked op to its own activity `steps[]` entry (keeping any local value-assembly technique separate) preserves behavior, flag it.
 
-**Do not flag:** Citing resources (including creation-guide Templates); non-invoking technique hyperlinks used as documentation/canonical reference; loader `Initial`/`Final` wrap and container I/O merge; activity `steps[]` technique binds; activity borrow/bind/include of reusable orchestration patterns; tools; a single capability whose protocol phases are facets of one produce path over tools and resources (load → derive → persist *one* product bag) with no Protocol Apply/`::` work invoke; stage/gate locus without an op inventory (`technique-stage-agnostic`).
+**Do not flag:** Citing resources (including creation-guide Templates); non-invoking technique hyperlinks used as documentation or canonical reference (`canonical-technique-reference`); loader `Initial`/`Final` wrap and container I/O merge; activity `steps[]` technique binds; activity borrow/bind/include of reusable orchestration patterns; tools; a single capability whose protocol phases are facets of one produce path over tools and resources (load → derive → persist *one* product bag) with no Protocol Apply/`::` work invoke that is itself a multi-op façade; stage/gate locus without an op inventory (`technique-stage-agnostic`).
 
-**Fix:** Delete the façade or strip Apply/`::` work invokes from the Protocol; bind each sibling or shared operation as its own activity step in the order required; keep only distinct local value assembly (if any) as a separate atomic technique. See [Bind Sibling Operations as Steps](./design-principles.md#25-bind-sibling-operations-as-steps), [Atomic Techniques; Compose at Activities](./design-principles.md#26-atomic-techniques-compose-at-activities); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`.
+**Fix:** Delete the façade or strip Apply/`::` work invokes from the Protocol; bind each sibling or shared operation as its own activity step in the order required; keep only distinct local value assembly (if any) as a separate atomic technique. See [Bind Sibling Operations as Steps](./design-principles.md#26-bind-sibling-operations-as-steps), [Atomic Techniques; Compose at Activities](./design-principles.md#27-atomic-techniques-compose-at-activities); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`. Related: `prose-based-dispatch-patterns`, `coordination-in-technique` — free concurrent recipes and multi-unit dispatch coordination belong on activity structure (prefer pattern activities), not Protocol Apply façades.
 
 ### AP-115. platform-semantics-in-capability
 
@@ -1497,7 +1497,7 @@ Capability (or a techniques-folder README) teaches loader composition instead of
 
 **Do not flag:** Authoritative platform homes — [schema-construct-inventory](./schema-construct-inventory.md), [workflow-canonical](../../meta/resources/workflow-canonical.md) (Base-contract inheritance), design-principles, this catalogue, or meta harness/engine resources whose domain is the platform; a one-line contribution statement (shared domain inputs/invariants) with no merge/wrap lecture; README notes that `techniques.activity` strategy techniques apply to every activity without teaching container protocol wrap rules; delivery/tool recipes (`no-delivery-mechanism-narration`, `no-tool-usage-prescription`).
 
-**Fix:** Delete composition, placement, and inherit-trailer prose. Leave a short contribution statement (what shared I/O/rules/invariants this contract holds). Loader HOW stays in workflow-canonical / the schema construct inventory. See [State Contract Contribution](./design-principles.md#27-state-contract-contribution).
+**Fix:** Delete composition, placement, and inherit-trailer prose. Leave a short contribution statement (what shared I/O/rules/invariants this contract holds). Loader HOW stays in workflow-canonical / the schema construct inventory. See [State Contract Contribution](./design-principles.md#28-state-contract-contribution).
 
 ### AP-116. no-template-creation-guide
 
@@ -1509,7 +1509,7 @@ A planning artifact is persisted without a creation-guide Template, or the techn
 
 **Do not flag:** Non-planning outputs (variables, PRs, commits); citing an existing Template with short when/which bullets only; `no-guide-wrapper-ceremony` (too much wrapper around a template — opposite pole); fill content that lives correctly in the resource Template while Protocol only orders persist.
 
-**Fix:** Author or extend a creation-guide resource with `## Template` + `## Rules`; map the bare filename in the resources index; replace Protocol layout essays with a cite to `#template`. See [Creation Guide for Generated Documents](./design-principles.md#28-creation-guide-for-generated-documents); also `resource-fills-not-does`, `no-technique-resource-dual-home`.
+**Fix:** Author or extend a creation-guide resource with `## Template` + `## Rules`; map the bare filename in the resources index; replace Protocol layout essays with a cite to `#template`. See [Creation Guide for Generated Documents](./design-principles.md#29-creation-guide-for-generated-documents); also `resource-fills-not-does`, `no-technique-resource-dual-home`.
 
 ### AP-117. no-engine-mechanics-as-rules
 
@@ -1545,7 +1545,7 @@ An Input or Output description holds HOW instead of the bind contract — Inputs
 
 **Do not flag:** Meaning/shape/allowed-value identity (including brief shape examples); Output derivation/recognition criteria that define the value without narrating work steps; declared `default` / optional/required; bind-resolution prose (`no-bind-mechanics-as-prose`); Protocol steps or cross-cutting Rules that correctly own the HOW; Protocol that wrongly holds identity criteria (`contract-not-procedure` — inverse); naming a specific producer/consumer without a duty (`io-agnostic-contract`); technique hyperlinks in I/O (`technique-ref-in-io-contract`).
 
-**Fix:** Rewrite the I/O entry as the bind contract only. Migrate every associated HOW into a dedicated Protocol step that references `{id}` (prefer a numbered phase per [Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome)); use a Rule only when the constraint is truly cross-cutting for the technique. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure) and [Maximize Schema Expressiveness](./design-principles.md#5-maximize-schema-expressiveness) (portable I/O).
+**Fix:** Rewrite the I/O entry as the bind contract only. Migrate every associated HOW into a dedicated Protocol step that references `{id}` (prefer a numbered phase per [Phase by Sequenced Outcome](./design-principles.md#16-phase-by-sequenced-outcome)); use a Rule only when the constraint is truly cross-cutting for the technique. See [Separate Contract from Procedure](./design-principles.md#14-separate-contract-from-procedure) and [Maximize Schema Expressiveness](./design-principles.md#6-maximize-schema-expressiveness) (portable I/O).
 
 ### AP-120. procedure-in-capability
 
@@ -1557,7 +1557,7 @@ An Input or Output description holds HOW instead of the bind contract — Inputs
 
 **Do not flag:** A compact product/purpose statement with no hyperlinks and no `{id}` designators (bare technique/resource names as plain words are fine when they name the product); container Capability naming shared contract contribution (`platform-semantics-in-capability`); Protocol/Rules/I/O that correctly own HOW, `{id}` designators, and authoritative cites; bind-resolution prose (`procedure-in-io-contract` / `no-bind-mechanics-as-prose` / `brace-declared-ids`).
 
-**Fix:** Rewrite Capability as insight only — no hyperlinks, no `{id}` braces; migrate HOW, designators, and authoritative cites into Protocol, Rules, or I/O. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); also `procedure-in-io-contract`, `brace-declared-ids`.
+**Fix:** Rewrite Capability as insight only — no hyperlinks, no `{id}` braces; migrate HOW, designators, and authoritative cites into Protocol, Rules, or I/O. See [Separate Contract from Procedure](./design-principles.md#14-separate-contract-from-procedure); also `procedure-in-io-contract`, `brace-declared-ids`.
 
 ### AP-121. rule-as-protocol-step
 
@@ -1593,7 +1593,7 @@ A worker/orchestrator spawn stub or agent-entry technique restates delivery, bin
 
 **Do not flag:** A one- or two-clause purpose statement that names the domain without listing children (`harness-compat`, `cargo-operations`); leaf Capability that names the single product (`procedure-in-capability` for HOW); container contribution statements for shared I/O/rules (`platform-semantics-in-capability`); README orientation that points at an index table without restating every op (`readme-orients-not-transcribes`).
 
-**Fix:** Rewrite Capability as a succinct overview of the shared domain. Leave the op catalogue to the folder / techniques index / YAML binds. See [State Contract Contribution](./design-principles.md#27-state-contract-contribution); also `platform-semantics-in-capability`, `procedure-in-capability`.
+**Fix:** Rewrite Capability as a succinct overview of the shared domain. Leave the op catalogue to the folder / techniques index / YAML binds. See [State Contract Contribution](./design-principles.md#28-state-contract-contribution); also `platform-semantics-in-capability`, `procedure-in-capability`.
 
 ### AP-124. alternate-ops-as-protocol-sequence
 
@@ -1603,9 +1603,9 @@ Mutually exclusive operation variants — or standing host-invoke policy — are
 
 **Detect:** A technique `## Protocol` lists alternate modes of the same op surface that a caller selects exactly one of (e.g. spawn vs resume vs concurrent; create vs update) and never walks in order; or Protocol bullets whose only job is standing host policy (blocking-equivalent wait, depth-1, index-in-prompt, prefer/omit flags) with no distinct produce/transform/persist outcome for that step. Test: if renumbering the phases would not change runtime behavior because only one phase applies per call, flag it.
 
-**Do not flag:** True sequential phases ([Phase by Sequenced Outcome](./design-principles.md#15-phase-by-sequenced-outcome) / `numbered-protocol-phases`); a single Protocol phase whose bullets are mode branches of one invoke; Rules catalogues for host/compat files (agent-conduct pattern); generic ops whose Protocol is resolve → dispatch → await ([spawn-agent](../../meta/techniques/harness-compat/spawn-agent.md)).
+**Do not flag:** True sequential phases ([Phase by Sequenced Outcome](./design-principles.md#16-phase-by-sequenced-outcome) / `numbered-protocol-phases`); a single Protocol phase whose bullets are mode branches of one invoke; Rules catalogues for host/compat files (agent-conduct pattern); generic ops whose Protocol is resolve → dispatch → await ([spawn-agent](../../meta/techniques/harness-compat/spawn-agent.md)).
 
-**Fix:** Move alternate op slices and standing host policy into `## Rules` (name slices by `operation_kind` when a resolver selects them). Keep `## Protocol` only for ordered outcomes. Callers Apply the selected rule section via the resolve map — they do not walk Protocol. See also `rule-as-protocol-step`, `no-one-step-rules`.
+**Fix:** Move alternate op slices and standing host policy into `## Rules` (name slices by `operation_kind` when a resolver selects them). Keep `## Protocol` only for ordered outcomes. Callers select and follow the resolved Rules section via the resolve map — they do not walk alternate modes as Protocol phases. See also `rule-as-protocol-step`, `no-one-step-rules`.
 
 ### AP-125. technique-ref-in-io-contract
 
@@ -1613,11 +1613,11 @@ Mutually exclusive operation variants — or standing host-invoke policy — are
 
 An Input or Output description hyperlinks or otherwise associates the bind slot with a **technique** (sibling op, group, or cross-workflow technique), as if the agent should Apply or consult that technique to understand the value.
 
-**Detect:** A technique `## Inputs` or `## Outputs` entry description contains a markdown hyperlink to a technique file (`**/techniques/**/*.md`, group `TECHNIQUE.md`, or equivalent `::` technique citation), or prose that names another technique as the producer/consumer/executor of the value ("from [challenge]", "via [commit-paths]", "ready for [dispatch-workers]", "folded by [run-suite]"). Inputs/Outputs are bind contracts — what the value *is* — not an invitation to execute another op. Test: if following the link would take the agent into another technique's Protocol/Rules to interpret the slot, flag it.
+**Detect:** A technique `## Inputs` or `## Outputs` entry description contains a markdown hyperlink to a technique file (`**/techniques/**/*.md`, group `TECHNIQUE.md`, or equivalent `::` technique citation), or prose that names another technique as the producer/consumer/executor of the value. Inputs/Outputs are bind contracts — what the value *is*.
 
-**Do not flag:** Resource hyperlinks (templates, guides, policy sections under `**/resources/**`) that clarify value shape or vocabulary — e.g. "one question is posed from it per [requirements-elicitation](…/resources/requirements-elicitation.md)"; bare technique *id strings* when the slot's value *is* a technique id (`agent_technique`, `harness_technique`) without a navigable technique hyperlink; Protocol/Rules that correctly Apply or cite techniques; I/O HOW without a technique association (`procedure-in-io-contract`).
+**Do not flag:** Resource hyperlinks under `**/resources/**`; bare technique *id strings* when the slot's value *is* a technique id (`agent_technique`, `harness_technique`) with no navigable technique hyperlink and no invitation to open that op; I/O HOW without a technique association (`procedure-in-io-contract`); Protocol-side technique cites (`canonical-technique-reference`).
 
-**Fix:** Rewrite the I/O description as bind-contract meaning/shape only (no technique hyperlink). Move producer/consumer/Apply relationships into Protocol (or activity `steps[]` binds). See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); also `procedure-in-io-contract`, `io-agnostic-contract`, `canonical-technique-reference` (Protocol-side).
+**Fix:** Rewrite the I/O description as bind-contract meaning/shape only (no technique hyperlink). Move producer/consumer/Apply relationships into Protocol (or activity `steps[]` binds). See [Separate Contract from Procedure](./design-principles.md#14-separate-contract-from-procedure); also `procedure-in-io-contract`, `io-agnostic-contract`, `canonical-technique-reference` (Protocol-side).
 
 ## Authoring Guidance (MR)
 
@@ -1707,7 +1707,7 @@ A change updates some restatements of a behaviour it altered and leaves others a
 
 **Do not flag:** Restatements already accurate and unaffected by the change; planning-folder artifacts that record the before state deliberately; a claim held once in a single authoritative home. Restatement that duplicates a Detect body an existing entry owns is `canon-layer-cites-not-restates`.
 
-**Fix:** Update every occurrence in one edit and record the count in the change's file manifest so the sweep is auditable. Where the claim needs only one home, delete the restatements instead of updating them — see [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Update every occurrence in one edit and record the count in the change's file manifest so the sweep is auditable. Where the claim needs only one home, delete the restatements instead of updating them — see [One Authoritative Home](./design-principles.md#7-one-authoritative-home).
 
 ### AP-130. artifact-name-is-filename
 
@@ -1731,7 +1731,7 @@ A consult resource's id is a verb phrase, so it reads as an operation to perform
 
 **Do not flag:** Prompt resources whose body *is* an instruction the agent executes (lens prompts, bootstrap and agent-conduct prompts) — a verb phrase names their content correctly. Ids already naming their content (`session-trace`, `deferred-items`, `review-mode`); a bare noun id where no sibling in that folder carries a kind word, since the convention must exist before an id can break it; noun-modifier heads that only look verbal (`review-format`, `update-mode-guide`); technique and activity ids, which name operations by design.
 
-**Fix:** Rename to the content plus its kind, then update the `name:` frontmatter, the resources index row, and every relative and `::` reference in one edit. Where the verb phrase is the better name for an operation, that is a sign the file's content belongs in a technique — move it rather than renaming around it. See [Convention Over Invention](./design-principles.md#7-convention-over-invention); also `no-invented-naming`, `artifact-name-is-filename`.
+**Fix:** Rename to the content plus its kind, then update the `name:` frontmatter, the resources index row, and every relative and `::` reference in one edit. Where the verb phrase is the better name for an operation, that is a sign the file's content belongs in a technique — move it rather than renaming around it. See [Convention Over Invention](./design-principles.md#8-convention-over-invention); also `no-invented-naming`, `artifact-name-is-filename`.
 
 ### AP-132. deployment-path-in-capability
 
@@ -1743,7 +1743,7 @@ A consult resource's id is a verb phrase, so it reads as an operation to perform
 
 **Do not flag:** A path inside `## Protocol`, `## Rules`, or an I/O `#### default`, which are the locations' homes — repeated or host-specific ones there are `factor-repeated-paths` and `worktree-root-placeholders`. Naming an artifact *kind* or bare filename without a directory (`COMPLETE.md`, `session.json`). A path that is the op's subject rather than its storage location, as in an op whose product is a path resolution.
 
-**Fix:** Rewrite Capability to name the artifact class and what the op contributes, dropping the directory. Where a consumer genuinely needs the location, declare it as an input with a `default` and reference the designator from Protocol. See [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); also `procedure-in-capability`, `bag-value-as-literal`.
+**Fix:** Rewrite Capability to name the artifact class and what the op contributes, dropping the directory. Where a consumer genuinely needs the location, declare it as an input with a `default` and reference the designator from Protocol. See [Separate Contract from Procedure](./design-principles.md#14-separate-contract-from-procedure); also `procedure-in-capability`, `bag-value-as-literal`.
 
 ### AP-133. overlapping-rule-scopes
 
@@ -1767,7 +1767,7 @@ A citation delivers a whole resource where the citing prose reads one section.
 
 **Do not flag:** A consumer that genuinely reads the body — a filler working a `## Template` together with the `## Rules` populating it, an audit walking every entry, a technique whose needed sections are most of the file. Single-section resources. A bare citation in overview prose that introduces the resource rather than consulting it.
 
-**Fix:** Point the citation at the section it reads — `../resources/example.md#section-title`, link text the section title — one citation per section needed. Where a bare citation coexists with anchored ones, anchor it or drop it. Where no single section covers the need and the resource is large, that is a split candidate under [Resources at the Abstract Level; Split for Section Delivery](./design-principles.md#30-resources-at-the-abstract-level-split-for-section-delivery). See [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain).
+**Fix:** Point the citation at the section it reads — `../resources/example.md#section-title`, link text the section title — one citation per section needed. Where a bare citation coexists with anchored ones, anchor it or drop it. Where no single section covers the need and the resource is large, that is a split candidate under [Resources at the Abstract Level; Split for Section Delivery](./design-principles.md#31-resources-at-the-abstract-level-split-for-section-delivery). See [Cite Resources at Section Grain](./design-principles.md#33-cite-resources-at-section-grain).
 
 ### AP-135. tool-contract-restated-in-protocol
 
@@ -1779,7 +1779,7 @@ Protocol restates a tool parameter's shape, which the tool's own schema already 
 
 **Do not flag:** The call signature naming which arguments a step passes (`next_activity { session_index, activity_id, step_manifest }`) — that is routing, not shape. What the caller does with the response. A workflow-specific constraint on an argument's *value* rather than its form, such as relaying a worker's map verbatim; and an obligation the schema cannot express, such as which dispatches must carry the argument at all.
 
-**Fix:** Keep the obligation and the reason; drop the shape. The schema is its one home ([Match the Harness Surface](./design-principles.md#21-match-the-harness-surface), [One Authoritative Home](./design-principles.md#6-one-authoritative-home)), and a restatement drifts from it — a Protocol bullet describing "two string fields" contradicts a schema that also accepts a keyed object for multi-output steps, and the caller cannot tell which governs.
+**Fix:** Keep the obligation and the reason; drop the shape. The schema is its one home ([Match the Harness Surface](./design-principles.md#22-match-the-harness-surface), [One Authoritative Home](./design-principles.md#7-one-authoritative-home)), and a restatement drifts from it — a Protocol bullet describing "two string fields" contradicts a schema that also accepts a keyed object for multi-output steps, and the caller cannot tell which governs.
 
 ### AP-136. phase-cited-by-ordinal
 
@@ -1815,7 +1815,7 @@ A declared output has nowhere to go, so the value exists only in the producing w
 
 **Do not flag:** An operation whose callers resolve outside the declaring tree — a shared library op, or one bound cross-workflow — where having no in-tree consumer is the expected state of a library. An output whose consumer is a sibling `#### artifact` token-template on the same technique, which resolves when the artifact contract is synthesised. A terminal activity's product that the binding activity surfaces: position at the end of the graph is not the licence, the delivery is.
 
-**Fix:** Give the value the destination it has. A file → `#### artifact` on the entry (`artifact-not-buried`, `artifact-name-is-filename`). A field of a sibling output's document → a `####` component of that output rather than a sibling `###` entry. A value a later step needs → bind it at the step and let the consumer declare it as an input. A value the run must show a human → interpolate `{id}` from the binding activity (`session-interaction-in-technique`). Where none applies the declaration is dead weight: delete it, and the variable that shadowed it. See [Output Economy](./design-principles.md#12-output-economy) and [Separate Contract from Procedure](./design-principles.md#13-separate-contract-from-procedure); the inverse smell is `technique-outputs-declared`.
+**Fix:** Give the value the destination it has. A file → `#### artifact` on the entry (`artifact-not-buried`, `artifact-name-is-filename`). A field of a sibling output's document → a `####` component of that output rather than a sibling `###` entry. A value a later step needs → bind it at the step and let the consumer declare it as an input. A value the run must show a human → interpolate `{id}` from the binding activity (`session-interaction-in-technique`). Where none applies the declaration is dead weight: delete it, and the variable that shadowed it. See [Output Economy](./design-principles.md#13-output-economy) and [Separate Contract from Procedure](./design-principles.md#14-separate-contract-from-procedure); the inverse smell is `technique-outputs-declared`.
 
 ### AP-139. framing-outside-any-section
 
@@ -1827,4 +1827,41 @@ A resource carries operative prose in a span no `##` anchor reaches, while techn
 
 **Do not flag:** Orientation-only framing a section consumer does not need (record the verdict). Single-section resources with no anchored citers. Framing already under a named `##` that citers can request. Whole-resource citations where the consumer loads the full file (`whole-resource-for-one-section` Do-not-flag carve-outs).
 
-**Fix:** Classify the framing — delete when it duplicates the citing technique; mint a `##` section (or move the obligation into the technique) when it is operative and unique; leave when it is orientation only. Cross-section deixis becomes an anchored link. See [Resources at the Abstract Level; Split for Section Delivery](./design-principles.md#30-resources-at-the-abstract-level-split-for-section-delivery) (content a section-scoped reader depends on lives in a section) and [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain). Related: `whole-resource-for-one-section`.
+**Fix:** Classify the framing — delete when it duplicates the citing technique; mint a `##` section (or move the obligation into the technique) when it is operative and unique; leave when it is orientation only. Cross-section deixis becomes an anchored link. See [Resources at the Abstract Level; Split for Section Delivery](./design-principles.md#31-resources-at-the-abstract-level-split-for-section-delivery) (content a section-scoped reader depends on lives in a section) and [Cite Resources at Section Grain](./design-principles.md#33-cite-resources-at-section-grain). Related: `whole-resource-for-one-section`.
+
+### AP-140. prose-based-dispatch-patterns
+
+"Fan out four concurrent shells… Wait for ALL four…" / "dispatch them concurrently (up to four at once)" as free Protocol or Rules without activity-structure coordination
+
+A technique re-teaches concurrent fan-out — shells, agents, Tasks, wait-all, ordered gather — in free Protocol or Rules prose instead of leaving that verb to **activity** coordination (pattern activity or equivalent step spine) for the unit kind.
+
+**Detect:** Technique `## Protocol` or `## Rules` embeds a concurrency recipe (concurrent shells/processes, concurrent agent or Task dispatch, wait-all, ordered gather, combine-after-fan-out) that is multi-unit coordination rather than a single capability's produce path, and the technique is not limited to non-dispatch work (e.g. pure combine over already-gathered results). Test: strip the free concurrency HOW and the remaining novelty is only the unit roster, domain budgets, or product-specific combine; who-runs-when / how-many / when-merge belongs on an activity. See also `coordination-in-technique` when the whole Capability is scatter/wait-all/gather.
+
+**Do not flag:** Pattern activities and activity YAML that coordinate fan-out in `steps[]` / loops. Plan or inventory metadata that records parallelism intent without teaching runtime dispatch. Coordination locks, flocks, and rebase sibling races (mutual exclusion, not fan-out). Graph or complexity metrics that use "fan-out" as a structural measure. Atomic techniques that only fold or analyse already-bound inputs without teaching fan-out. Capability leaves and dispatch ops bound as activity steps. Non-invoking documentation cites of peer ops (`canonical-technique-reference`).
+
+**Fix:** Lift coordination to **activity** structure — borrow or mirror a pattern under `meta/activities/patterns/` (or compose the same spine locally); delete the free concurrent recipe from the technique Protocol/Rules; keep domain envelope as activity step inputs or adjacent steps; leave unit-body or pure-combine work on atomic techniques. Technique prose states only this op's inputs → work → outputs — it does not name activities or who binds sibling steps (`technique-stage-agnostic`). Do **not** Protocol-Apply a multi-op fan-out façade — that is `pass-orchestration-in-technique`. See [Prefer Parallel Independent Work via Formal Fan-Out](./design-principles.md#34-prefer-parallel-independent-work-via-formal-fan-out), [Activities Coordinate; Techniques Endow](./design-principles.md#2-activities-coordinate-techniques-endow), [Keep Orchestration in Structure](./design-principles.md#21-keep-orchestration-in-structure), [Atomic Techniques; Compose at Activities](./design-principles.md#27-atomic-techniques-compose-at-activities), [Prefer Shared Capability](./design-principles.md#19-prefer-shared-capability). Related: `coordination-in-technique`, `duplicate-shared-capability`, `pass-orchestration-in-technique`, `technique-stage-agnostic`.
+
+### AP-141. container-names-inheriting-ops
+
+"[fmt-check] and [fmt-fix] do not compile, so only `nice -n 19` applies; do not paste the full env budget there" / "for example [run-suite] folds `{unit_results}`" on a group `TECHNIQUE.md`
+
+A container technique (group or workflow-root `TECHNIQUE.md`) names, links, or carves out descendant operations that already inherit that container's Rules and I/O contract.
+
+**Detect:** On a container `TECHNIQUE.md` (or equivalent group/root contract file), Capability, Inputs/Outputs descriptions, Protocol, or Rules (a) hyperlink or path-cite a technique file under the same group/folder tree, (b) name a descendant op as actor, exception, exemplar, or "do not apply X there", or (c) restate a leaf Protocol duty that only one inheriting op needs. Test: if the sentence must be edited when a child is added, renamed, or removed — or only makes sense because that child inherits this file — flag it. Containers state **shared** domain contract; descendants own their own Protocol and any leaf-only carve-outs. Leaves already receive container Rules/I/O via loader merge — the parent does not address them by name.
+
+**Do not flag:** Leaf techniques that cite peer or external ops for work they actually perform (still subject to `pass-orchestration-in-technique`, `technique-ref-in-io-contract`, `canonical-technique-reference`). Container prose that states domain classes without naming folder children ("format-only cargo invocations use only nice"; "compile invocations carry the full env budget"). Indexes and READMEs that catalogue ops (`readme-orients-not-transcribes`, `capability-as-op-inventory` for Capability inventories). Design-time homes (this catalogue, design principles, creation guides). Activity YAML binds. Shared I/O/Rules that apply uniformly to every descendant without naming who.
+
+**Fix:** Delete the child name, link, and carve-out. Put shared policy in domain terms every inheritor can apply (predicate on the work, not on the op id). Put leaf-only Protocol, budgets, and exceptions on the leaf that owns that invocation. Prefer removing a parent exception that exists only because a blanket parent rule was too wide — narrow the shared rule so the exception disappears. See [State Contract Contribution](./design-principles.md#28-state-contract-contribution); also `capability-as-op-inventory`, `platform-semantics-in-capability`, `overlapping-rule-scopes`, `single-rule-authority`.
+
+### AP-142. coordination-in-technique
+
+"Capability: scatter work units, wait for all, gather ordered results" / a strategy technique whose Protocol is multi-unit dispatch coordination
+
+A technique body owns **multi-unit coordination** — N independent units, concurrency bound, wait-all, ordered gather of peers — rather than a single capability product. Fan-out and worker dispatch prefer **activity** constructs (pattern activities under `meta/activities/patterns/`).
+
+**Detect:** Technique Capability, Protocol, or Rules defines scatter/dispatch of multiple independent units, a concurrency bound across those units, wait-all, and/or ordered gather of peer results as *this* op's job. Signals: strategy technique whose sole purpose is fan-out; Protocol phases that are only "dispatch all → wait → collect"; Outputs that are solely the gathered bag of peer runs with no domain product of one capability. Test: apply the placement test in [Activities Coordinate; Techniques Endow](./design-principles.md#2-activities-coordinate-techniques-endow) — if deleting the prose breaks who-runs-when / how-many / when-merge, the preferred home is an activity. Distinct from a pure-combine technique that only folds already-gathered `{unit_results}`. Distinct from a leaf that cites another op for a single capability product without owning multi-unit coordination.
+
+**Do not flag:** Atomic single-unit invoke (one process, one tool call, one worker body). Pure combine/fold/synthesise over inputs already produced by prior activity steps. Pattern activities and activity `steps[]` / loops that coordinate fan-out. Capability leaves bound *by* those activities. Documentation or canonical cites of peer ops that do not make this technique the coordination home (`canonical-technique-reference`). Free concurrent prose without claiming a coordination Capability is `prose-based-dispatch-patterns`. Multi-op composition façades are `pass-orchestration-in-technique`.
+
+**Fix:** Prefer deleting or refusing the coordination technique. Author or borrow a pattern activity (or local activity spine) under `meta/activities/patterns/` that owns roster, concurrency, wait-all, and gather; bind atomic unit-body and pure-combine techniques as steps. See [Activities Coordinate; Techniques Endow](./design-principles.md#2-activities-coordinate-techniques-endow), [Prefer Parallel Independent Work via Formal Fan-Out](./design-principles.md#34-prefer-parallel-independent-work-via-formal-fan-out), [Atomic Techniques; Compose at Activities](./design-principles.md#27-atomic-techniques-compose-at-activities). Related: `prose-based-dispatch-patterns`, `pass-orchestration-in-technique`, `technique-stage-agnostic`.
+

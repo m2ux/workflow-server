@@ -41,7 +41,7 @@ The set of files drafted for this workflow so far, extended with the one just wr
 ### 4. Draft Content
 
 - Write the file per Rules below (block arrays/mappings, scalar quoting, multi-line scalars, field ordering, version format), adding it to `{drafted_files}`
-- Description hygiene for prose fields: [Document in Positive Present](../resources/design-principles.md#17-document-in-positive-present) and Description Hygiene anti-patterns — do not bury procedure in `description` / `outcome` / `message` / option text
+- Description hygiene for prose fields: [Document in Positive Present](../resources/design-principles.md#18-document-in-positive-present) and Description Hygiene anti-patterns — do not bury procedure in `description` / `outcome` / `message` / option text
 
 ### 5. Validate Against Schema
 

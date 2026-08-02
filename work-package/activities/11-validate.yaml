@@ -1,5 +1,5 @@
 id: validate
-version: 3.7.0
+version: 3.8.1
 name: Verify & Validate Design
 description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
 required: true
@@ -19,12 +19,40 @@ steps:
       - action: validate
         target: missing_prerequisites.length == 0
         message: "Toolchain prerequisites are unmet, so the validation suite cannot run: {missing_prerequisites}"
+  # Process-unit suite spine mirrors meta/patterns/06-process-unit-fan-out.yaml
+  - kind: action
+    id: seed-cargo-process-suite
+    when: project_type == 'rust-substrate' && run_local_validation == true
+    actions:
+      - action: set
+        target: work_units
+        description: >-
+          Ordered cargo suite units check, clippy, test, fmt-check — each an
+          invocation spec against build_scope with that op's resource budget.
+      - action: set
+        target: dispatch_concurrency
+        description: >-
+          Positive integer bounding concurrent cargo units for this suite.
+  - kind: action
+    id: execute-and-gather-cargo-units
+    when: project_type == 'rust-substrate' && run_local_validation == true
+    actions:
+      - action: set
+        target: unit_results
+        description: >-
+          Ordered cargo unit outcomes keyed check, clippy, test, fmt-check.
+  - kind: action
+    id: require-cargo-unit-results
+    when: project_type == 'rust-substrate' && run_local_validation == true
+    actions:
+      - action: validate
+        target: unit_results
+        message: >-
+          unit_results must hold ordered check/clippy/test/fmt-check outcomes
+          before the validation combine runs.
   - kind: technique
-    id: run-suite
-    technique:
-      name: cargo-operations::run-suite
-      inputs:
-        build_scope: --workspace
+    id: combine-validation-results
+    technique: cargo-operations::run-suite
     when: project_type == 'rust-substrate' && run_local_validation == true
   - kind: technique
     id: document-failures
@@ -75,12 +103,36 @@ steps:
           name: validate-build::apply-fix
           inputs:
             check_id: "{validation_results.first_failure.check_id}"
+      - kind: action
+        id: reseed-cargo-process-suite
+        actions:
+          - action: set
+            target: work_units
+            description: >-
+              Ordered cargo suite units check, clippy, test, fmt-check — each an
+              invocation spec against build_scope with that op's resource budget.
+          - action: set
+            target: dispatch_concurrency
+            description: >-
+              Positive integer bounding concurrent cargo units for this suite.
+      - kind: action
+        id: re-execute-and-gather-cargo-units
+        actions:
+          - action: set
+            target: unit_results
+            description: >-
+              Ordered cargo unit outcomes keyed check, clippy, test, fmt-check.
+      - kind: action
+        id: require-recargo-unit-results
+        actions:
+          - action: validate
+            target: unit_results
+            message: >-
+              unit_results must hold ordered check/clippy/test/fmt-check outcomes
+              before the validation recombine runs.
       - kind: technique
-        id: revalidate
-        technique:
-          name: cargo-operations::run-suite
-          inputs:
-            build_scope: --workspace
+        id: recombine-validation-results
+        technique: cargo-operations::run-suite
 transitions:
   - to: strategic-review
     isDefault: true

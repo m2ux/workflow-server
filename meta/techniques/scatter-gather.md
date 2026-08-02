@@ -7,6 +7,8 @@ metadata:
 
 Scatter work units (sequential or parallel), gather an ordered keyed collection, then combine — one primitive, two scatter modes.
 
+Parallel mode dispatches agent instances (isolation, per-instance prompts, no auto-bind of instance scalars into the parent bag). Same-context process, shell, or tool unit suites prefer the process-unit pattern activity under [`meta/activities/patterns/06-process-unit-fan-out`](../activities/patterns/06-process-unit-fan-out.yaml) — not this contract's parallel mode.
+
 ## Protocol
 
 1. Scatter, by mode:
@@ -38,3 +40,7 @@ The gathered collection is in work-unit/iteration order — in parallel mode inh
 ### parallelism-is-optimisation
 
 Sequential mode is always valid for correctness; parallel mode is an optimisation that adds concurrency and isolation. Where genuine parallel fan-out is not needed, sequential mode (the `concurrency = 1` case) is the correct default.
+
+### agent-instances-vs-process-units
+
+Parallel scatter here is agent-instance fan-out via [spawn-concurrent](./harness-compat/spawn-concurrent.md). Same-context process, shell, or tool unit suites prefer [process-unit-fan-out](../activities/patterns/06-process-unit-fan-out.yaml) (activity coordination). Prefer parallel independent work via the unit-kind-correct formal home ([Prefer Parallel Independent Work via Formal Fan-Out](../../workflow-design/resources/design-principles.md#34-prefer-parallel-independent-work-via-formal-fan-out)). Multi-op composition façades remain activity-bound ([pass-orchestration-in-technique](../../workflow-design/resources/anti-patterns.md#ap-114-pass-orchestration-in-technique)).
