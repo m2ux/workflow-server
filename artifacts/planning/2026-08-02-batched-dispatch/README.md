@@ -61,3 +61,35 @@ The good candidates are the analysis runs in the middle of the walk, whose work 
 ## Enabler
 
 The premise that resuming a worker is cheap holds only because the per-agent delivery ledger shipped. Before it, resumed workers were forced into full delivery: one measured run paid over a million tokens across twelve resumes, about a quarter of the whole run.
+
+---
+
+## Correction and forensic follow-up, 2 August 2026
+
+Two findings from a forensic pass over the nine profiled runs and the sealed session records. Both change the numbers above.
+
+### The token figures were double-counted
+
+The analyser summed cache-write once per transcript record, but the harness repeats one usage object across every content block of a request. Counted once per request id, the profiled run's total falls from 7,751,699 to 3,717,424 — **2.09× overall, 2.42× across the startup window**. Corrected, the four ceremony workers cost **124,036 tokens, not 307,272**, and the five pre-work workers **402,586, not 974,517**. Per-dispatch establishment for a ceremony worker is **23 to 42 thousand tokens, not 60 to 100 thousand**.
+
+**What that does to the case for batching.** The saving is roughly half the ceremony walk rather than 65%, and in absolute terms about **60 thousand tokens per run rather than 200 thousand**. Still worth having, since it is paid on every session, but it is no longer an order-of-magnitude argument. It also narrows the gap with the server-side bootstrap considerably: that item removes about 17 thousand tokens of delivered content, which against a corrected 124-thousand ceremony walk is roughly 14% — not the 2.5% of a headline figure quoted when the denominator was inflated.
+
+### Worker failure is not the problem; losing the delivery identity on resume is
+
+The two data sources appear to disagree, and the disagreement is the finding.
+
+**From the transcripts:** worker failure is rare. One genuine replacement in 186 workers. Every worker termination in the corpus traces to an external cause — the organisation's monthly spend limit in five of nine runs, one dropped connection — never to a tool error, a validation failure, or a bad definition. Discarded worker context totals 0.5% of all worker spend. In-place resumption **succeeded 72 times out of 72**. The one run whose harness had no resume primitive paid 13 respawns instead, costing 21.8% of that run's worker budget — which is what the absence of resume costs, and a real risk on harnesses that lack it.
+
+**From the session records:** a third of checkpoints look like the worker was replaced. Of 38 checkpoints followed by another dispatch, 12 were taken over by a different server-side agent identity, and nine of those re-received a full payload.
+
+**Both are true.** The harness worker really is resumed with its context intact; what does not survive is the workflow-server agent identity the delivery ledger is keyed on. The orchestrator composes the resume prompt with a freshly minted identity, so the server sees an unseen scope and re-delivers everything. Two of the replacement identities are named literally for the thing that failed to happen — one ends in "scope-resume", another in "resume-1". The rule requiring a resumed agent to re-bind the identity the dispatch bound is being violated roughly a third of the time.
+
+The cost: **677,132 characters re-delivered** on identity changes, plus **1,109,551 characters** on same-agent resumes that re-delivered a byte-identical payload instead of collapsing. When the ledger does engage it saves 70.3% — so around 780,000 of those characters are avoidable. Nothing is recorded as an error: there are no error events and no aborted workflows anywhere in the corpus. A lost delivery scope leaves no trace except a second full delivery.
+
+**Why this gates batching.** Batching's dedupe benefit depends on one delivery scope spanning several activities. Thirteen of fifteen activities in the main workflow contain a gate, so the scope must survive a yield to be worth anything — and today it survives about two thirds of the time. Fixing the identity re-binding is a precondition for the mechanism paying what it promises, and it is a small fix to prose that already says what to do.
+
+### Where re-warming actually goes
+
+Resuming a paused worker re-writes its context rather than reading it from cache: across 72 resumes, 7.2 million cache-write against 578 thousand cache-read (both on the per-record basis, so roughly halve them — the share is unaffected). That is **about a quarter of all worker context spend**, the single largest addressable line in the corpus, and it is not a defect. Checkpoint waits routinely run to hours, and a prompt cache does not survive that, so the context is genuinely cold when the answer arrives.
+
+The consequence for batching is a scoping one. A boundary crossed in seconds — an activity boundary pausing for the orchestrator's commit — is cheap, because the cache is still warm. A boundary that waits on a human is not, and batching across it saves nothing, because the re-warm is paid either way. **Batching should span boundaries with short gaps and stop at boundaries that wait for a person.**

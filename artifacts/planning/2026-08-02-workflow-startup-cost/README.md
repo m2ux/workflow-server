@@ -13,6 +13,24 @@ Each run's transcript (JSONL, one record per message) was parsed to reconstruct 
 
 Token figures are split between the orchestrator's main context and the workers' contexts. "Cache-write" is `cache_creation_input_tokens` — input paid at the cache-write rate to build context that wasn't already cached; it dominates because every fresh worker rebuilds its context from nothing. Checkpoint wait is the span between presenting a question to the user and receiving the answer, and is excluded from "active" durations.
 
+> ## ⚠️ Correction, 2 August 2026 — the worker cache-write figures below are inflated
+>
+> The original analyser summed `cache_creation_input_tokens` once per transcript record. The harness writes one record per content block and repeats the same usage object on each, so a figure must be counted **once per request id**, not once per record. Re-counted that way, the whole of the profiled 27 July run comes to 3,717,424 rather than 7,751,699 — an inflation factor of **2.09×** overall, and **2.42×** across the startup window specifically.
+>
+> Output-token figures are unaffected (streaming partials are negligible) and the main-context column is close enough to stand, so **only the worker cache-write column below is wrong**. The corrected startup-window figures are:
+>
+> | Worker | As published | Corrected |
+> |---|---:|---:|
+> | discover-session | — | 41,509 |
+> | initialize-session | — | 28,626 |
+> | resolve-target | — | 23,328 |
+> | dispatch-client-workflow | — | 30,573 |
+> | **the four ceremony workers** | **307,272** | **124,036** |
+> | start-work-package | — | 278,550 |
+> | **five pre-work workers** | **974,517** | **402,586** |
+>
+> So the headline should read **roughly 400 thousand tokens of fresh worker context before real work begins, not 974 thousand**, and per-dispatch context establishment for a ceremony worker is **23 to 42 thousand tokens, not 60 to 100 thousand**. Proportions and rankings in the analysis below are unaffected, because the error scales everything alike; absolute magnitudes are roughly halved. Every downstream claim that quoted these figures has been restated — see the batched-dispatch record.
+
 ## Per-run results
 
 | Run | Date | Request | Meta ceremony done | Real work begins | Checkpoint wait | Workers | Main out / cache-write | Worker out / cache-write |
