@@ -147,7 +147,7 @@ steps:
       name: github-cli-protocol::create-pr
       inputs:
         repo_path: target_path
-        branch: workflow_branch
+        branch_name: workflow_branch
         base_branch: workflows
         title: title
         body: body
@@ -159,6 +159,7 @@ steps:
       name: github-cli-protocol::mark-ready
       inputs:
         repo_path: target_path
+        pr_number: pr_number
     when: operation_type != 'review'
   - kind: action
     id: announce-completion

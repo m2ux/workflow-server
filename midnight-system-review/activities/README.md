@@ -12,7 +12,7 @@ This file is an orientation map. The authoritative definition of each activity â
 
 | # | Activity | Role |
 |---|----------|------|
-| 01 | [`scope-intake`](01-scope-intake.yaml) | Resolve the authoritative change surface and PR metadata, probe toolchain availability, confirm scope (non-blocking, 30s auto-advance) |
+| 01 | [`scope-intake`](01-scope-intake.yaml) | Classify target, bind transport leaves (PR files or three-dot), assemble inventory, probe toolchain, confirm scope (non-blocking, 30s auto-advance) |
 | 02 | [`area-derivation`](02-area-derivation.yaml) | Derive investigation areas from the change surface and subsystem map; approve the plan through a blocking amendment loop |
 | 03 | [`evidence-probes`](03-evidence-probes.yaml) | forEach over the approved areas: bounded catalog probes with graceful toolchain degradation, then ordered consolidation into the evidence log |
 | 04 | [`finding-adjudication`](04-finding-adjudication.yaml) | Grade every candidate with the complete tuple, disposition against the accepted-issue threshold, enforce tuple completeness structurally |

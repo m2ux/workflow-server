@@ -1,17 +1,13 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.1
 ---
 
 ## Capability
 
-Mark an existing pull request ready for review.
+Mark an existing pull request ready for review via REST.
 
 ## Inputs
-
-### repo_path
-
-Working tree of the repository that owns the PR (cwd for `gh`).
 
 ### pr_number
 
@@ -31,5 +27,6 @@ Status after the update (ready for review).
 
 ### 1. Mark Ready
 
-- From `{repo_path}`, mark `{pr_number}` ready for review: `gh pr ready {pr_number}`
-- Capture `{pr_url}` and `{pr_status}` from the resulting PR view
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo}/pulls/{pr_number} -X PATCH -F draft=false`.
+3. Set `{pr_url}` from `.html_url` and `{pr_status}` to ready for review.

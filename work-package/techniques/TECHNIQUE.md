@@ -32,3 +32,7 @@ The work package's feature branch
 ### pr_number
 
 The work package's pull request number
+
+### target_repo
+
+GitHub repository as `owner/repo`. Bound into github-cli-protocol ops by name-match; domain techniques do not split it.

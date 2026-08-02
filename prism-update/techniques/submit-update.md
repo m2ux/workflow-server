@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
 
-Submit the applied changes for review on a feature branch as a pull request against the `workflows` branch, reporting its URL.
+Submit the applied changes for review on a feature branch as a pull request against the `workflows` branch, recording its URL.
 
 ## Inputs
 
@@ -35,8 +35,4 @@ URL of the opened pull request.
 
 ### 3. Create Pull Request
 
-- Open a pull request against the `workflows` branch with a change-summary title and body, recording its URL as `{pull_request_url}`: `gh pr create --base workflows`.
-
-### 4. Report Completion
-
-- Present `{pull_request_url}` and a summary of the applied changes.
+- Apply [create-pr](../../../meta/techniques/github-cli-protocol/create-pr.md) with `branch_name` `{branch_name}`, `base_branch` `workflows`, a change-summary `title` and `body`, and `as_draft` false; set `{pull_request_url}` from the returned `{pr_url}`.

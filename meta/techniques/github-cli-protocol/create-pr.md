@@ -1,19 +1,15 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.1
 ---
 
 ## Capability
 
-Open a draft (or ready) pull request for a feature branch, or reuse the existing PR for that branch and refresh its body.
+Open a draft or ready pull request for a feature branch, or refresh the body of the existing open PR for that branch.
 
 ## Inputs
 
-### repo_path
-
-Working tree of the repository in which to create the PR (cwd for `gh`).
-
-### branch
+### branch_name
 
 Head branch to open the PR from.
 
@@ -31,7 +27,7 @@ PR body markdown.
 
 ### as_draft
 
-*(optional, default: true)* When true, open as a draft (`--draft`). When false, open ready for review.
+*(optional, default: true)* When true, open as a draft. When false, open ready for review.
 
 ## Outputs
 
@@ -45,13 +41,16 @@ URL of the pull request.
 
 ## Protocol
 
-### 1. Resolve Existing Or Create
+### 1. Resolve Coordinates
 
-- From `{repo_path}`, if a PR already exists for `{branch}`, capture its `{pr_number}` and `{pr_url}` and update its body via [update-pr-description](./update-pr-description.md) (resolve `{owner}` / `{repo}` / `{number}` from `gh` context for that PR)
-- Otherwise open the PR: `gh pr create --base {base_branch} --title "{title}" --body "{body}"` with `--draft` when `{as_draft}` is true; capture `{pr_number}` and `{pr_url}` from the command output
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
 
-## Rules
+### 2. Reuse Existing Pull
 
-### no-graphql-create-path
+1. `gh api "repos/{owner}/{repo}/pulls?state=open&head={owner}:{branch_name}" --jq '.[0]'`.
+2. When a pull exists, set `{pr_number}` from `.number` and `{pr_url}` from `.html_url`, write `{body}` to a temp file, and `gh api repos/{owner}/{repo}/pulls/{pr_number} -X PATCH -F body=@<file>`; stop.
 
-Do not use `gh pr edit` or other GraphQL mutations for assignee/body updates — use REST via [update-pr-description](./update-pr-description.md) / sibling ops (`no-graphql-mutations` on the group contract).
+### 3. Create Pull
+
+1. `gh api repos/{owner}/{repo}/pulls -f title="{title}" -f head="{branch_name}" -f base="{base_branch}" -f body="{body}" -F draft={as_draft}`.
+2. Set `{pr_number}` from `.number` and `{pr_url}` from `.html_url`.

@@ -27,7 +27,7 @@ Folder where the change block index and manual diff review report are written
 
 ### pr_number
 
-PR identifier, used to resolve the authoritative base branch via `gh pr view`
+PR identifier, used to resolve the authoritative base branch and citation base via github-cli-protocol.
 
 ## Outputs
 
@@ -65,7 +65,7 @@ True if any block marked as critical blocker
 
 - Run `git pull` on the `{branch_name}` feature branch to ensure it is up to date
 - Resolve merge conflicts before proceeding if any
-- Identify the base branch (`{$base_branch}`) as the PR's target branch: `gh pr view {pr_number} --json baseRefName --jq .baseRefName`
+- Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md); set `{$base_branch}` from `{base_branch}`
 - If HEAD is a merge commit or the branch has merged `{$base_branch}` in, the three-dot range against the merge-base already scopes to the authored diff; log that a merge-in was detected
 
 ### 2. Parse Diff
@@ -77,9 +77,9 @@ True if any block marked as critical blocker
 
 ### 3. Pin the Citation Base
 
-- Read the head commit and its repository: `gh pr view {pr_number} --json headRefOid,headRepository,headRepositoryOwner`.  
+- Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md); set `{reviewed_code_base_url}` from the op output.  
   > When no PR exists yet, take the repository from `{push_remote}` and the sha from that remote's tip of the branch (`git -C {target_path} ls-remote {push_remote} {branch_name}`); push the branch first when the remote does not carry it, so the sha the citations name is reachable.
-- Compose `{reviewed_code_base_url}` from that owner, repository name, and full head sha. Every Block title and finding citation this technique writes is built on it, per [permanent-blob-citations](../resources/manual-diff-review.md#permanent-blob-citations).
+- Every Block title and finding citation this technique writes is built on `{reviewed_code_base_url}`, per [permanent-blob-citations](../resources/manual-diff-review.md#permanent-blob-citations).
 
 ### 4. Create Index
 

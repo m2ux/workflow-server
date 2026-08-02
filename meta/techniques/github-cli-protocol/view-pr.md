@@ -1,22 +1,52 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.4.0
 ---
 
 ## Capability
 
-View an existing PR (read-only — safe via `gh` CLI).
+View an existing pull request via REST.
 
 ## Inputs
 
-### pr_identifier
+### pr_number
 
-PR number or URL
+Pull request number.
 
-### fields
+### field_projection
 
-*(optional)* Comma-separated `gh` field names to return. Default `number,title,body,state,isDraft,url,headRefName,baseRefName,author,labels`.
+*(optional)* `gh api --jq` expression selecting fields from the pull object. When set, only that slice is fetched and structured outputs below that depend on the full object are left unset.
+
+## Outputs
+
+### base_branch
+
+Base branch ref the PR targets (`.base.ref`).
+
+### base_sha
+
+Full base commit SHA (`.base.sha`).
+
+### head_sha
+
+Full head commit SHA (`.head.sha`).
+
+### pr_body
+
+PR description body (`.body`).
+
+### pr_url
+
+HTML URL of the pull (`.html_url`).
+
+### reviewed_code_base_url
+
+Permanent blob-URL prefix for citing the head commit — `https://github.com/` plus head owner login, head repo name, `/blob/`, and the full head SHA.
 
 ## Protocol
 
-1. `gh pr view {pr_identifier} --json {fields}` per [json-on-single-item-views](./TECHNIQUE.md#json-on-single-item-views).
+### 1. Fetch Pull
+
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo}/pulls/{pr_number}` with `--jq {field_projection}` when `{field_projection}` is set.
+3. When `{field_projection}` is unset, set `{base_branch}` from `.base.ref`, `{base_sha}` from `.base.sha`, `{head_sha}` from `.head.sha`, `{pr_body}` from `.body`, `{pr_url}` from `.html_url`, and `{reviewed_code_base_url}` to `https://github.com/{.head.repo.owner.login}/{.head.repo.name}/blob/{.head.sha}`.

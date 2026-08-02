@@ -226,17 +226,14 @@ steps:
         message: Atlassian cloudId not set. Load the atlassian-operations technique and call getAccessibleAtlassianResources before any Jira tool.
   - kind: technique
     id: verify-github-issue
-    technique:
-      name: github-cli-protocol::view-issue
-      inputs:
-        issue_identifier: "{issue_number}"
+    technique: github-cli-protocol::view-issue
     when: issue_platform == 'github'
   - kind: technique
     id: search-github-issue
     technique:
       name: github-cli-protocol::list-issues
       inputs:
-        filters: --search '{jira_issue_key}' --json number,title,url --limit 5
+        search_text: "{jira_issue_key}"
     when: issue_platform == 'jira'
     actions:
       - action: set
@@ -450,7 +447,6 @@ steps:
     technique:
       name: github-cli-protocol::assign-issue
       inputs:
-        number: "{issue_number}"
         assignee: "@me"
     when: issue_skipped != true && issue_platform == 'github'
   - kind: action
@@ -509,10 +505,7 @@ steps:
         message: "The worktree at {target_path} is on a default branch, not a feature branch, so subsequent commits would land there. Check out {branch_name} in {target_path} and re-run."
   - kind: technique
     id: check-pr
-    technique:
-      name: github-cli-protocol::list-prs
-      inputs:
-        filters: --head {branch_name} --json number,url --limit 1
+    technique: github-cli-protocol::list-prs
     when: is_review_mode != true
     actions:
       - action: set
@@ -635,10 +628,7 @@ steps:
           value: jira
   - kind: technique
     id: link-pr-to-ticket-github
-    technique:
-      name: github-cli-protocol::view-issue
-      inputs:
-        issue_identifier: "{issue_number}"
+    technique: github-cli-protocol::view-issue
     condition:
       type: and
       conditions:

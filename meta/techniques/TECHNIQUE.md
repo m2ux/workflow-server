@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.1.1
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Shared Inputs, Outputs, Rules, and Errors for every technique in this set.
 
 ### host_repo_path
 
-Absolute path to the host repository the session belongs to — the outermost superproject when the component is a submodule, the checkout itself otherwise.
+Absolute path of the outermost git host for the workspace checkout — the outermost superproject when the component is a submodule, the checkout itself otherwise.
 
 ### component_path
 

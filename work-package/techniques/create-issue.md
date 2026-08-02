@@ -44,7 +44,7 @@ URL of the verified or newly created issue.
 ### 1. Verify Existing Issue
 
 - Runs only when the user provides an existing issue key. Detect the platform from key format: `#N` or bare number → GitHub, `PROJ-N` → Jira. Set `{issue_platform}`.
-- For GitHub: run `gh issue view <number>` to confirm the issue exists. Capture `{issue_number}` and `{issue_url}`.
+- For GitHub: Apply [view-issue](../../meta/techniques/github-cli-protocol/view-issue.md); capture `{issue_number}` and `{issue_url}` from the op.
 - For Jira: call `getAccessibleAtlassianResources` FIRST to obtain cloudId, preserve as `{$jira_cloud_id}`. THEN call `getJiraIssue` with cloudId and the issue key. Do NOT call `getJiraIssue` before cloudId is resolved.
 - Capture `{issue_number}` and `{issue_url}` from the verification result. Set `{needs_issue_creation}` to false.
 
@@ -60,7 +60,7 @@ URL of the verified or newly created issue.
 - Map `{issue_type}` to GitHub labels using the label mapping below
 - Create the issue, then verify creation succeeded, capturing `{issue_number}` and `{issue_url}` from the verified issue.
 - GitHub label mapping: `feature->enhancement`, `bug->bug`, `task->chore`, `enhancement->enhancement`
-- If a `gh` CLI command fails (auth, permissions, or network — including the `gh issue view` verification in step 1), verify `gh` auth status and repository access, then retry or prompt the user to create the issue manually.
+- If a github-cli-protocol op fails (auth, permissions, or network — including the issue verification in step 1), verify `gh` auth status and repository access, then retry or prompt the user to create the issue manually.
 
 ### 4. Create Jira Issue
 
