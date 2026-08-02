@@ -1,5 +1,5 @@
 id: scope-intake
-version: 1.1.0
+version: 1.2.0
 name: Scope Intake
 description: Resolve the authoritative change surface for the review target, establish toolchain availability, and confirm the review scope.
 required: true
@@ -11,6 +11,30 @@ steps:
     actions:
       - action: log
         message: Starting system review scope intake — resolving the change surface
+  - kind: technique
+    id: classify-review-target
+    technique: classify-review-target
+  - kind: technique
+    id: view-pr
+    technique:
+      name: github-cli-protocol::view-pr
+      inputs:
+        repo_path: target_repo_path
+    when: has_pr_surface == true
+  - kind: technique
+    id: list-pr-files
+    technique:
+      name: github-cli-protocol::list-pr-files
+      inputs:
+        repo_path: target_repo_path
+    when: has_pr_surface == true
+  - kind: technique
+    id: three-dot-name-status
+    technique:
+      name: version-control::three-dot-name-status
+      inputs:
+        repo_path: target_repo_path
+    when: has_pr_surface != true
   - kind: technique
     id: resolve-change-surface
     technique: resolve-change-surface
@@ -43,3 +67,4 @@ outcome:
   - Publish eligibility is established up front, so the conditional publish tail is decided by data recorded at intake
   - Toolchain availability gates are set structurally, letting every downstream probe degrade gracefully while the run completes
   - A confirmed scope record exists before any investigation effort is spent
+  - Transport leaves (view-pr, list-pr-files, three-dot-name-status) run as activity steps; resolve-change-surface only assembles the inventory artifact

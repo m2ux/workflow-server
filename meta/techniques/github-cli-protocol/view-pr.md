@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.4.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ Pull request number.
 ### base_branch
 
 Base branch ref the PR targets (`.base.ref`).
+
+### base_sha
+
+Full base commit SHA (`.base.sha`).
 
 ### head_sha
 
@@ -45,4 +49,4 @@ Permanent blob-URL prefix for citing the head commit — `https://github.com/` p
 
 1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
 2. `gh api repos/{owner}/{repo}/pulls/{pr_number}` with `--jq {field_projection}` when `{field_projection}` is set.
-3. When `{field_projection}` is unset, set `{base_branch}` from `.base.ref`, `{head_sha}` from `.head.sha`, `{pr_body}` from `.body`, `{pr_url}` from `.html_url`, and `{reviewed_code_base_url}` to `https://github.com/{.head.repo.owner.login}/{.head.repo.name}/blob/{.head.sha}`.
+3. When `{field_projection}` is unset, set `{base_branch}` from `.base.ref`, `{base_sha}` from `.base.sha`, `{head_sha}` from `.head.sha`, `{pr_body}` from `.body`, `{pr_url}` from `.html_url`, and `{reviewed_code_base_url}` to `https://github.com/{.head.repo.owner.login}/{.head.repo.name}/blob/{.head.sha}`.

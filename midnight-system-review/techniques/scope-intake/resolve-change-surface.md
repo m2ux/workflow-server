@@ -1,63 +1,87 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Resolve the review target into the authoritative changed-file surface — the GitHub-listed file set for a pull request, or the three-dot merge-base diff for a local change-set — and record it as the change-surface inventory every downstream activity reads.
+Assemble the review's authoritative changed-file inventory artifact from already-resolved surface data. Does not call GitHub or run git diffs — the binding activity supplies PR leaves or the three-dot leaf first.
 
 ## Inputs
 
 ### review_target
 
-PR reference (number or URL) or local diff spec identifying the change-set under review.
+PR reference or local diff spec identifying the change-set under review (identity only; classification already ran).
 
 ### base_ref
 
-Base ref for the three-dot merge-base diff when the target is a local change-set, and the cross-check base for PR targets.
+Base ref recorded on the inventory (three-dot base, or the PR cross-check base).
+
+### has_pr_surface
+
+Whether the target is a pull request with a postable review surface.
+
+### pr_number
+
+*(optional when `{has_pr_surface}` is false)* Pull-request number when the surface is a PR.
+
+### head_sha
+
+Head commit SHA of the authored surface.
+
+### base_sha
+
+*(optional)* Base or merge-base SHA when the producing leaf emitted it.
+
+### base_branch
+
+*(optional)* Base branch name when the PR leaf emitted it.
+
+### changed_files
+
+Ordered path list of the authoritative authored surface.
+
+### changed_file_entries
+
+*(optional)* Per-path status and line counts when the producing leaf emitted them; when unset, the inventory records paths from `{changed_files}` without per-file stats.
+
+### planning_folder_path
+
+Folder that receives `change-surface.md`.
 
 ### target_repo_path
 
-Path to the checkout under review; supplies `repo_path` to github-cli-protocol when PR mode needs origin-derived coordinates.
+Checkout under review — used only to map paths to crates and pallets for the preliminary inventory column.
 
 ## Outputs
 
 ### change_surface_inventory
 
-The authoritative changed-file inventory: target identity, base and head refs, each changed file with its change kind and line counts, and a preliminary mapping of changed paths to crates and pallets.
+The authoritative changed-file inventory: target identity, base and head refs, each changed file with its change kind and line counts when known, and a preliminary mapping of changed paths to crates and pallets.
 
 #### artifact
 
 `change-surface.md`
 
-### pr_number
-
-The pull-request number, emitted when the target resolves to a PR. Consumed by the publish operations via implicit same-name binding.
-
 ### has_pr_surface
 
-True when the target resolves to a pull request with a postable review surface; false for local change-sets. Gates the publish-decision checkpoint and the publish-review activity.
+Echo of the intake classification so publish gates keep a single name.
+
+### pr_number
+
+*(optional when `{has_pr_surface}` is false)* Echo of the PR number for publish ops.
 
 ## Protocol
 
-### 1. Classify Target
+### 1. Require Surface Data
 
-- Parse `{review_target}`: a PR number or GitHub PR URL selects PR mode; anything else (branch, ref range, working tree) selects local-diff mode.
+1. Require `{changed_files}` non-empty, or an explicit empty authored surface with `{head_sha}` set. When `{has_pr_surface}` is true, require `{pr_number}` and `{head_sha}`. When the surface is missing after the activity's transport steps, stop — a review against a guessed surface is worse than no review.
 
-### 2. Resolve PR Surface
+### 2. Map Paths
 
-- In PR mode, set `{pr_number}` from the number in `{review_target}`.
-- Apply [view-pr](../../../meta/techniques/github-cli-protocol/view-pr.md) with `repo_path` `{target_repo_path}` when `{target_repo}` is unset; retain head/base metadata from the op.
-- Apply [list-pr-files](../../../meta/techniques/github-cli-protocol/list-pr-files.md); take `{changed_files}` as the authoritative authored surface.
-- Record the head and base SHAs, set `{has_pr_surface}` true, and emit `{pr_number}`.
-  > If the PR cannot be resolved (not found, auth failure), report the failure and stop — a review against a guessed surface is worse than no review.
+1. For each path in `{changed_files}` (and each row of `{changed_file_entries}` when present), derive change kind and line counts from the entry when available.
+2. Map each path to a preliminary crate/pallet using layout under `{target_repo_path}` (seeds area derivation).
 
-### 3. Resolve Local Surface
+### 3. Record Inventory
 
-- In local-diff mode, compute the three-dot merge-base diff against `{base_ref}` (`git diff {base_ref}...HEAD --name-status` plus per-file stats) from `{target_repo_path}`.
-- Set `{has_pr_surface}` false.
-
-### 4. Record Inventory
-
-- Write `{change_surface_inventory}` to the planning folder: target identity, refs, the changed-file table (path, change kind, lines added/removed), and the preliminary path-to-crate/pallet mapping that seeds area derivation.
+1. Write `{change_surface_inventory}` under `{planning_folder_path}` as `change-surface.md`: target identity from `{review_target}`, `{has_pr_surface}`, `{pr_number}` when set, `{base_ref}`, `{base_branch}` when set, `{base_sha}` when set, `{head_sha}`, the changed-file table, and the path-to-crate/pallet column.
