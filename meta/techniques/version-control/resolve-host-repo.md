@@ -1,17 +1,17 @@
 ---
 metadata:
-  version: 2.0.1
+  version: 2.0.2
 ---
 
 ## Capability
 
-The host repository a session belongs to, derived from git rather than from prose. Answers *which repository the session belongs to*, never *which component is being worked on* — version-control.host-is-derived-component-is-named.
+Outermost git host repository for a workspace path, derived from git rather than from prose. Answers *which repository owns this checkout*, never *which component is being worked on* — version-control.host-is-derived-component-is-named.
 
 ## Inputs
 
 ### workspace_path
 
-*(optional)* Directory the session was opened in — the starting point for the ascent.
+*(optional)* Directory that is the starting point for the ascent.
 
 #### default
 
@@ -29,7 +29,7 @@ Absolute path of the outermost repository that claims the workspace checkout —
 
 ### component_hint
 
-Basename of the innermost toplevel when the ascent crossed a non-infrastructure submodule boundary — the component the session is already inside. Unset when the ascent crossed nothing, or crossed only infrastructure submodules.
+Basename of the innermost toplevel when the ascent crossed a non-infrastructure submodule boundary — the component the workspace path already sits inside. Unset when the ascent crossed nothing, or crossed only infrastructure submodules.
 
 ### host_binding_mismatch
 

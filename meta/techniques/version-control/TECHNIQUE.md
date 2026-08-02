@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 5.4.0
+  version: 5.4.1
 ---
 
 ## Capability
 
-Version-control operations for planning folders and artifacts — parent repos, submodules, and branch push. Owns the host-versus-component distinction that keeps a session bound to the repository git resolves rather than one prose names.
+Version-control operations for planning folders and artifacts — parent repos, submodules, and branch push. Owns the host-versus-component distinction: host path and `owner/repo` come from git; a repository name in request prose identifies a component only.
 
 ## Rules
 
@@ -39,7 +39,7 @@ A submodule is infrastructure when its `path` equals `workflows`, equals `.engin
 
 ### host-is-derived-component-is-named
 
-The host repository a session belongs to and the component being worked on are two facts, never one variable. The host is DERIVED from git by [resolve-host-repo](./resolve-host-repo.md) — the outermost superproject that claims the workspace checkout — and lands as `{host_repo_path}` and `{target_repo}`. A repository named in the user's request, such as the `owner/repo` in a PR or issue URL, identifies the COMPONENT and lands as `{mentioned_repo}`; it is component context for [select-target-component](./select-target-component.md) alone and never binds the session. Binding a session to a repository merely because the request mentioned it is what produces a checkout that does not exist.
+Host repository and component under work are two facts, never one variable. The host is DERIVED from git by [resolve-host-repo](./resolve-host-repo.md) — the outermost superproject that claims the workspace checkout — and lands as `{host_repo_path}` and `{target_repo}`. A repository named in the user's request, such as the `owner/repo` in a PR or issue URL, identifies the COMPONENT and lands as `{mentioned_repo}`; it is component context for [select-target-component](./select-target-component.md) alone and never substitutes for the derived host. Treating a prose-named repository as the host is what produces a checkout that does not exist.
 
 ### host-shell-for-remote-git
 

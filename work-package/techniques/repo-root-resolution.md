@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.0.1
 ---
 
 ## Capability
@@ -15,19 +15,19 @@ Absolute path of the host repository, as produced by [resolve-host-repo](../../m
 
 ### component_hint
 
-*(optional)* Basename of the component the session was opened inside. Unset when the session sits at the host root.
+*(optional)* Basename of the component the workspace path already sits inside. Unset when the path is at the host root.
 
 ## Outputs
 
 ### component_name
 
-Basename of the component being worked on — the basename of `{host_repo_path}` when the session sits at the host root.
+Basename of the component being worked on — the basename of `{host_repo_path}` when the path is at the host root.
 
 ### component_path
 
-Path of the component being worked on, relative to `{host_repo_path}` — `.` when the session sits at the host root.
+Path of the component being worked on, relative to `{host_repo_path}` — `.` when the path is at the host root.
 
 ## Protocol
 
-1. When `{component_hint}` is unset, set `{component_path}` to `.` and `{component_name}` to the basename of `{host_repo_path}` — the session sits at the host root. Done.
+1. When `{component_hint}` is unset, set `{component_path}` to `.` and `{component_name}` to the basename of `{host_repo_path}` — the path is at the host root. Done.
 2. Read `{host_repo_path}/.gitmodules` and take the submodule `path` whose basename equals `{component_hint}`. Set `{component_path}` to that path and `{component_name}` to `{component_hint}`.
