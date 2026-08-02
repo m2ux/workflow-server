@@ -54,6 +54,7 @@ const EAGER_STEP_IDS = [
   'survey-reference-workflows',
   'rebind-target-baseline',
   'resolve-consumer-surface',
+  'inventory-prose-fields',
   'sweep-canon',
   'validate-schema',
 ];
