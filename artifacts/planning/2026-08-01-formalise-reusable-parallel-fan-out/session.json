@@ -5,25 +5,33 @@
   "workflowVersion": "5.14.0",
   "agentId": "orchestrator",
   "sessionIndex": "L5PXLI",
-  "currentActivity": "dispatch-client-workflow",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-08-01-formalise-reusable-parallel-fan-out",
+  "currentActivity": "end-workflow",
   "currentTechnique": "workflow-engine::match-saved-session",
   "condition": "",
-  "seq": 19,
-  "ts": 1785585309,
+  "activeCheckpoint": {
+    "activityId": "end-workflow",
+    "checkpointId": "completion-confirmed",
+    "yieldedAt": "2026-08-01T16:31:03.297Z"
+  },
+  "seq": 24,
+  "ts": 1785601863,
   "startedAt": "2026-08-01T11:40:52.090Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
-    "resolve-target"
+    "resolve-target",
+    "dispatch-client-workflow"
   ],
   "skippedActivities": [],
   "variables": {
     "abort_completion": false,
     "client_planning_slug": "2026-08-01-formalise-reusable-parallel-fan-out",
     "client_session_index": "36S3PI",
-    "client_workflow_completed": false,
+    "client_workflow_completed": true,
     "component_path": ".",
     "component_selection_needed": false,
+    "current_activity": null,
     "has_saved_state": true,
     "host_binding_mismatch": false,
     "host_repo_path": "/home/mike1/projects/dev/workflow-server",
@@ -34,7 +42,7 @@
     "saved_planning_slug": "2026-08-01-formalise-reusable-parallel-fan-out",
     "target_repo": "m2ux/workflow-server",
     "target_workflow_id": "workflow-authoring",
-    "user_request": "Resume workflow-authoring for planning folder 2026-08-01-formalise-reusable-parallel-fan-out / issue #382 / PR #385. Redesign the solution so it does NOT violate AP-114 pass-orchestration-in-technique: techniques must not Apply techniques. Parallel fan-out must be activity-bound and parameterized (unit roster, concurrency, combine criteria as step inputs), not Protocol Apply of unit-fan-out/scatter-gather from run-suite or independent-lenses. Also document why quality-review falsely passed with AP-114 present (false-negative audit). Keep §33 and AP-140 if sound; fix AP-140 Fix text so it does not steer into AP-114.",
+    "user_request": "Resume workflow-authoring for planning folder 2026-08-01-formalise-reusable-parallel-fan-out / issue #382 / PR #385. Account for implications of https://github.com/m2ux/workflow-server/pull/383 (when expressions: parentheses, precedence, OR keep-site migration — shared when-expression module, check:when guard, four OR keep-sites migrated to parenthesized when:, fail-closed nets). Redesign so parallel fan-out is activity-bound (patterns 01-06); techniques atomic (AP-114/AP-142/AP-143). Quality review, findings, validate/commit remaining.",
     "workflow_match_ambiguous": false
   },
   "checkpointResponses": {
@@ -862,6 +870,159 @@
       },
       "timestamp": "2026-08-01T11:55:09.870Z",
       "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-L5PXLI",
+        "chars": 27285,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-08-01T16:30:41.529Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-08-01T16:30:48.677Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_workflow_completed",
+        "source": "variables_changed",
+        "value": true
+      },
+      "timestamp": "2026-08-01T16:30:48.677Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "current_activity",
+        "source": "variables_changed",
+        "value": null
+      },
+      "timestamp": "2026-08-01T16:30:48.677Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "name": "client_session_index",
+        "source": "variables_changed",
+        "value": "36S3PI"
+      },
+      "timestamp": "2026-08-01T16:30:48.677Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "verify-preconditions"
+      },
+      "timestamp": "2026-08-01T16:30:48.677Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "prime-initial-activity"
+      },
+      "timestamp": "2026-08-01T16:30:48.677Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "stepId": "client-activity-loop"
+      },
+      "timestamp": "2026-08-01T16:30:48.677Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-08-01T16:30:48.677Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-workflow-L5PXLI",
+        "chars": 48353,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-01T16:30:52.060Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-workflow-L5PXLI",
+        "chars": 6602,
+        "delivery": "full",
+        "stepId": "read-session",
+        "techniqueId": "workflow-engine::read-session"
+      },
+      "timestamp": "2026-08-01T16:30:52.060Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-workflow-L5PXLI",
+        "stepId": "read-session"
+      },
+      "timestamp": "2026-08-01T16:30:52.060Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-workflow-L5PXLI",
+        "chars": 6625,
+        "delivery": "full",
+        "stepId": "verify-outcomes",
+        "techniqueId": "workflow-engine::verify-outcomes"
+      },
+      "timestamp": "2026-08-01T16:30:52.060Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-workflow-L5PXLI",
+        "stepId": "verify-outcomes"
+      },
+      "timestamp": "2026-08-01T16:30:52.060Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-workflow-L5PXLI",
+        "chars": 6579,
+        "delivery": "full",
+        "stepId": "generate-summary",
+        "techniqueId": "workflow-engine::generate-summary"
+      },
+      "timestamp": "2026-08-01T16:30:52.060Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "agentId": "worker-end-workflow-L5PXLI",
+        "stepId": "generate-summary"
+      },
+      "timestamp": "2026-08-01T16:30:52.060Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "end-workflow",
+      "checkpoint": "completion-confirmed",
+      "timestamp": "2026-08-01T16:31:03.297Z",
+      "type": "checkpoint_reached"
     }
   ],
   "triggeredWorkflows": [
@@ -869,11 +1030,71 @@
       "sessionIndex": "36S3PI",
       "state": {
         "agentId": "orchestrator",
-        "checkpointResponses": {},
-        "completedActivities": [],
+        "checkpointResponses": {
+          "scope-and-draft-scope-confirmed#0": {
+            "effects": {
+              "variablesSet": {
+                "scope_manifest_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-08-01T16:24:14.000Z"
+          },
+          "validate-and-commit-approve-to-commit#0": {
+            "effects": {
+              "variablesSet": {
+                "commit_approved": true
+              }
+            },
+            "optionId": "approved",
+            "respondedAt": "2026-08-01T16:29:46.000Z"
+          }
+        },
+        "completedActivities": [
+          "scope-and-draft",
+          "quality-review",
+          "validate-and-commit"
+        ],
         "condition": "",
-        "currentActivity": "scope-and-draft",
-        "currentTechnique": "",
+        "currentActivity": "__terminal__",
+        "currentTechnique": "workflow-definition::verify-artifact-conforms",
+        "deliveredContent": {
+          "worker-quality-review-36S3PI": {
+            "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
+            "bundle:rules:dcc74273fdf2ad82": "dcc74273fdf2ad82",
+            "bundle:variable-binding": "4de9bd403344076e",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "technique:workflow-definition::audit-canon": "1410d942156f64d9",
+            "technique:workflow-definition::audit-schema-validation": "d8414f3bfd12b972",
+            "technique:workflow-definition::load-known-findings": "bc12b59eea4f2f00",
+            "technique:workflow-definition::reload-workflow": "7b1ad19b43c57b6c",
+            "technique:workflow-definition::resolve-consumer-surface": "45113484e215e5d8",
+            "technique:workflow-engine::list-workflows": "822ff399538ae84f"
+          },
+          "worker-scope-and-draft-36S3PI": {
+            "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
+            "bundle:rules:dcc74273fdf2ad82": "dcc74273fdf2ad82",
+            "bundle:variable-binding": "4de9bd403344076e",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "technique:workflow-definition::derive-workflow-branch": "d6c15a89164542d6",
+            "technique:workflow-definition::verify-artifact-conforms": "1493620adb2741e0"
+          },
+          "worker-validate-and-commit-36S3PI": {
+            "activity_rules:05643bf1e1cf2092": "05643bf1e1cf2092",
+            "bundle:rules:dcc74273fdf2ad82": "dcc74273fdf2ad82",
+            "bundle:variable-binding": "4de9bd403344076e",
+            "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+            "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+            "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+            "technique:work-package::manage-artifacts::write-artifact": "657861b28b614c28",
+            "technique:workflow-definition::compile-report": "38960bdb7f1bcaa2",
+            "technique:workflow-definition::verify-high-findings": "63ce4cfaefee651f"
+          }
+        },
         "history": [
           {
             "timestamp": "2026-08-01T11:51:13.742Z",
@@ -1011,60 +1232,1178 @@
             "activity": "scope-and-draft",
             "timestamp": "2026-08-01T11:56:00.118Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-08-01T16:06:23.751Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-08-01T16:06:23.751Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-36S3PI",
+              "chars": 28340,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T16:06:45.327Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-36S3PI",
+              "chars": 4122,
+              "delivery": "full",
+              "stepId": "derive-workflow-branch",
+              "techniqueId": "workflow-definition::derive-workflow-branch"
+            },
+            "timestamp": "2026-08-01T16:07:13.118Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-36S3PI",
+              "stepId": "derive-workflow-branch"
+            },
+            "timestamp": "2026-08-01T16:07:13.118Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-36S3PI",
+              "chars": 4559,
+              "delivery": "full",
+              "stepId": "verify-planning-artifacts",
+              "techniqueId": "workflow-definition::verify-artifact-conforms"
+            },
+            "timestamp": "2026-08-01T16:09:17.960Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-scope-and-draft-36S3PI",
+              "stepId": "verify-planning-artifacts"
+            },
+            "timestamp": "2026-08-01T16:09:17.960Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-confirmed#0",
+            "timestamp": "2026-08-01T16:09:27.141Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-confirmed#0",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-08-01T16:24:14.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-01T16:24:14.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "workflow_branch",
+              "source": "variables_changed",
+              "value": "workflow/meta-formalise-reusable-parallel-fan-out"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "target_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-formalise-reusable-parallel-fan-out"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-formalise-reusable-parallel-fan-out/06-scope-manifest.md"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_round",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "operation_type",
+              "source": "variables_changed",
+              "value": "update"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "workflow_id",
+              "source": "variables_changed",
+              "value": "meta"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "change_brief_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-formalise-reusable-parallel-fan-out/01-change-brief.md"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "impact_analysis_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-formalise-reusable-parallel-fan-out/01-impact-analysis.md"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "has_critical_finding",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "open_finding_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "pr_number",
+              "source": "variables_changed",
+              "value": "385"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/385"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "user_request",
+              "source": "variables_changed",
+              "value": "Resume workflow-authoring for planning folder 2026-08-01-formalise-reusable-parallel-fan-out / issue #382 / PR #385. Account for implications of https://github.com/m2ux/workflow-server/pull/383 (when expressions: parentheses, precedence, OR keep-site migration). Parallel fan-out activity-bound (patterns 01-06); techniques atomic. Quality review next."
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "stepId": "derive-workflow-branch"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "stepId": "ensure-worktree"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "stepId": "define-scope"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "stepId": "persist-scope-manifest"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "stepId": "scope-confirmed#0"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "stepId": "file-drafting-loop"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "stepId": "author-workflow-readme"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "stepId": "verify-planning-artifacts"
+            },
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-08-01T16:24:43.606Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-36S3PI",
+              "chars": 62957,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T16:24:48.560Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-36S3PI",
+              "chars": 4594,
+              "delivery": "full",
+              "stepId": "load-known-findings",
+              "techniqueId": "workflow-definition::load-known-findings"
+            },
+            "timestamp": "2026-08-01T16:24:48.560Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-36S3PI",
+              "stepId": "load-known-findings"
+            },
+            "timestamp": "2026-08-01T16:24:48.560Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-36S3PI",
+              "chars": 3178,
+              "delivery": "full",
+              "stepId": "survey-reference-workflows",
+              "techniqueId": "workflow-engine::list-workflows"
+            },
+            "timestamp": "2026-08-01T16:24:48.560Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-36S3PI",
+              "stepId": "survey-reference-workflows"
+            },
+            "timestamp": "2026-08-01T16:24:48.560Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-36S3PI",
+              "chars": 4728,
+              "delivery": "full",
+              "stepId": "rebind-target-baseline",
+              "techniqueId": "workflow-definition::reload-workflow"
+            },
+            "timestamp": "2026-08-01T16:24:48.560Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-36S3PI",
+              "stepId": "rebind-target-baseline"
+            },
+            "timestamp": "2026-08-01T16:24:48.560Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-36S3PI",
+              "chars": 4633,
+              "delivery": "full",
+              "stepId": "resolve-consumer-surface",
+              "techniqueId": "workflow-definition::resolve-consumer-surface"
+            },
+            "timestamp": "2026-08-01T16:24:48.560Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-36S3PI",
+              "stepId": "resolve-consumer-surface"
+            },
+            "timestamp": "2026-08-01T16:24:48.560Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-36S3PI",
+              "chars": 9621,
+              "delivery": "full",
+              "stepId": "sweep-canon",
+              "techniqueId": "workflow-definition::audit-canon"
+            },
+            "timestamp": "2026-08-01T16:24:48.560Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-36S3PI",
+              "stepId": "sweep-canon"
+            },
+            "timestamp": "2026-08-01T16:24:48.560Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-36S3PI",
+              "chars": 6384,
+              "delivery": "full",
+              "stepId": "validate-schema",
+              "techniqueId": "workflow-definition::audit-schema-validation"
+            },
+            "timestamp": "2026-08-01T16:24:48.560Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "agentId": "worker-quality-review-36S3PI",
+              "stepId": "validate-schema"
+            },
+            "timestamp": "2026-08-01T16:24:48.560Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "quality-review",
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "fail_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "open_finding_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "has_critical_finding",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "has_coverage_gap",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "remediation_round",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "review_closed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "register_sections",
+              "source": "variables_changed",
+              "value": [
+                {
+                  "fail_count": 0,
+                  "target": "meta"
+                },
+                {
+                  "fail_count": 0,
+                  "target": "workflow-design"
+                },
+                {
+                  "fail_count": 0,
+                  "target": "prism"
+                },
+                {
+                  "fail_count": 0,
+                  "target": "work-package"
+                }
+              ]
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "name": "report_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-formalise-reusable-parallel-fan-out/08-findings-register.md"
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "stepId": "load-known-findings"
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "stepId": "survey-reference-workflows"
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "stepId": "target-sweep-loop"
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "stepId": "rebind-target-baseline"
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "stepId": "resolve-consumer-surface"
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "stepId": "sweep-canon"
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "quality-review",
+            "data": {
+              "stepId": "validate-schema"
+            },
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-08-01T16:27:20.241Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 52651,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-01T16:27:28.247Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 6558,
+              "delivery": "full",
+              "stepId": "verify-audit-findings",
+              "techniqueId": "workflow-definition::verify-high-findings"
+            },
+            "timestamp": "2026-08-01T16:27:28.247Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "stepId": "verify-audit-findings"
+            },
+            "timestamp": "2026-08-01T16:27:28.247Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 6355,
+              "delivery": "full",
+              "stepId": "compile-register",
+              "techniqueId": "workflow-definition::compile-report"
+            },
+            "timestamp": "2026-08-01T16:27:28.247Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "stepId": "compile-register"
+            },
+            "timestamp": "2026-08-01T16:27:28.247Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "chars": 5789,
+              "delivery": "full",
+              "stepId": "persist-register",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-01T16:27:28.247Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "agentId": "worker-validate-and-commit-36S3PI",
+              "stepId": "persist-register"
+            },
+            "timestamp": "2026-08-01T16:27:28.247Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "review_closed",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "addressed_count",
+              "source": "variables_changed",
+              "value": 23
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "total_count",
+              "source": "variables_changed",
+              "value": 23
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "unaddressed_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "open_finding_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "has_critical_finding",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "fail_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "has_coverage_gap",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "remediation_selected",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "operation_type",
+              "source": "variables_changed",
+              "value": "update"
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "report_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-formalise-reusable-parallel-fan-out/08-findings-register.md"
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "change_brief_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-formalise-reusable-parallel-fan-out/01-change-brief.md"
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "scope_manifest_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-formalise-reusable-parallel-fan-out/06-scope-manifest.md"
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "workflow_branch",
+              "source": "variables_changed",
+              "value": "workflow/meta-formalise-reusable-parallel-fan-out"
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "target_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-formalise-reusable-parallel-fan-out"
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_number",
+              "source": "variables_changed",
+              "value": "385"
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/385"
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "verify-audit-findings"
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "compile-register"
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "persist-register"
+            },
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-08-01T16:28:19.901Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "approve-to-commit#0",
+            "timestamp": "2026-08-01T16:28:24.236Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "validate-and-commit",
+            "checkpoint": "approve-to-commit#0",
+            "data": {
+              "optionId": "approved"
+            },
+            "timestamp": "2026-08-01T16:29:46.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "commit_approved",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-01T16:29:46.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "commit_approved",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "review_closed",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_number",
+              "source": "variables_changed",
+              "value": "385"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/385"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "name": "client_workflow_completed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "verify-audit-findings"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "compile-register"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "persist-register"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "approve-to-commit#0"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "verify-scope-manifest"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "verify-planning-readme"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "compose-publication"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "stage-and-commit"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "verify-commit"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "push-branch"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "open-pr"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "compose-close-out"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "persist-close-out"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "validate-and-commit",
+            "data": {
+              "stepId": "remove-worktree"
+            },
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "__terminal__",
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "activity_entered"
+          },
+          {
+            "timestamp": "2026-08-01T16:30:36.622Z",
+            "type": "workflow_completed"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 1,
+        "seq": 18,
         "sessionIndex": "36S3PI",
         "skippedActivities": [],
         "startedAt": "2026-08-01T11:51:13.742Z",
-        "status": "running",
+        "status": "completed",
         "triggeredWorkflows": [],
-        "ts": 1785585360,
+        "ts": 1785601836,
         "variables": {
-          "addressed_count": 0,
-          "change_brief_path": "",
+          "addressed_count": 23,
+          "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-formalise-reusable-parallel-fan-out/01-change-brief.md",
           "change_request": "AP-114 redesign: activity-bound unit-fan-out and scatter-gather; run-suite pure combine; document quality-review false negative",
           "change_request_clear": true,
-          "commit_approved": false,
+          "client_workflow_completed": true,
+          "commit_approved": true,
           "fail_count": 0,
           "has_coverage_gap": false,
-          "has_critical_finding": true,
+          "has_critical_finding": false,
           "has_unflagged_removals": false,
           "headless_mode": true,
-          "impact_analysis_path": "",
+          "impact_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-formalise-reusable-parallel-fan-out/01-impact-analysis.md",
           "intent_needs_confirmation": false,
-          "open_finding_count": 1,
+          "open_finding_count": 0,
           "open_judgements_count": 0,
+          "operation_type": "update",
           "operation_type_ambiguous": false,
-          "pr_number": "",
-          "pr_url": "",
-          "register_sections": [],
+          "pr_number": "385",
+          "pr_url": "https://github.com/m2ux/workflow-server/pull/385",
+          "register_sections": [
+            {
+              "fail_count": 0,
+              "target": "meta"
+            },
+            {
+              "fail_count": 0,
+              "target": "workflow-design"
+            },
+            {
+              "fail_count": 0,
+              "target": "prism"
+            },
+            {
+              "fail_count": 0,
+              "target": "work-package"
+            }
+          ],
           "remediation_round": 0,
           "remediation_selected": false,
           "removal_count": 0,
           "removal_disposition": "",
           "removals_approved": false,
-          "report_path": "",
+          "report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-formalise-reusable-parallel-fan-out/08-findings-register.md",
           "review_closed": false,
           "review_scope_confirmed": false,
-          "scope_manifest_confirmed": false,
-          "scope_manifest_path": "",
+          "scope_manifest_confirmed": true,
+          "scope_manifest_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-01-formalise-reusable-parallel-fan-out/06-scope-manifest.md",
           "scope_round": 0,
-          "target_path": "",
+          "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-01-formalise-reusable-parallel-fan-out",
           "target_workflow_ids": [
             "meta",
             "workflow-design",
             "prism",
             "work-package"
           ],
-          "total_count": 0,
+          "total_count": 23,
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
-          "user_request": "Resume workflow-authoring for planning folder 2026-08-01-formalise-reusable-parallel-fan-out / issue #382 / PR #385. Redesign the solution so it does NOT violate AP-114 pass-orchestration-in-technique: techniques must not Apply techniques. Parallel fan-out must be activity-bound and parameterized (unit roster, concurrency, combine criteria as step inputs), not Protocol Apply of unit-fan-out/scatter-gather from run-suite or independent-lenses. Also document why quality-review falsely passed with AP-114 present (false-negative audit). Keep §33 and AP-140 if sound; fix AP-140 Fix text so it does not steer into AP-114.",
-          "workflow_branch": "",
-          "worktree_created": false
+          "user_request": "Resume workflow-authoring for planning folder 2026-08-01-formalise-reusable-parallel-fan-out / issue #382 / PR #385. Account for implications of https://github.com/m2ux/workflow-server/pull/383 (when expressions: parentheses, precedence, OR keep-site migration). Parallel fan-out activity-bound (patterns 01-06); techniques atomic. Quality review next.",
+          "workflow_branch": "workflow/meta-formalise-reusable-parallel-fan-out",
+          "workflow_id": "meta",
+          "worktree_created": true
         },
         "workflowId": "workflow-authoring",
         "workflowVersion": "1.1.0"
@@ -1101,6 +2440,17 @@
       "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
       "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
       "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09"
+    },
+    "worker-end-workflow-L5PXLI": {
+      "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",
+      "bundle:variable-binding": "780a3e5bb26aea8d",
+      "bundle:workflow-engine::activity-worker": "5d153b783337a2fc",
+      "bundle:workflow-engine::finalize-activity": "89b8f33f4f5daac8",
+      "bundle:workflow-engine::resume-from-checkpoint": "a7178b786d980099",
+      "bundle:workflow-engine::yield-checkpoint": "c04f4e2638c26f09",
+      "technique:workflow-engine::generate-summary": "73edd447137f04eb",
+      "technique:workflow-engine::read-session": "95a74ea9b8a1b559",
+      "technique:workflow-engine::verify-outcomes": "5f6dcf795f601330"
     },
     "worker-initialize-session-L5PXLI": {
       "bundle:rules:64883dff7c3ca1c0": "64883dff7c3ca1c0",

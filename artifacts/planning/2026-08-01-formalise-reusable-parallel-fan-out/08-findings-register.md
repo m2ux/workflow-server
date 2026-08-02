@@ -24,7 +24,7 @@
 | High | AP-114 pass-orchestration-in-technique | `cargo-operations/run-suite.md` Protocol `Apply [unit-fan-out]`; cargo `TECHNIQUE.md` multi-op rule | Protocol Apply of strategy technique for suite fan-out | quality-review false-negative; redesign | **addressed** — run-suite is pure combine over `unit_results`; validate activity steps bind unit-fan-out then run-suite |
 | High | AP-68 technique-stage-agnostic | `run-suite.md` rule `activity-owns-fan-out`; `unit-fan-out.md` Protocol/Rules naming binding activity; cargo `TECHNIQUE.md`; `scatter-gather.md` | Technique prose named activity graph actors / sibling-step ownership | user catch after AP-114 redesign | **addressed** — activity-blind I/O and peer-contract cites only; rule renamed `combine-only` |
 | Medium | AP-141 container-names-inheriting-ops | cargo `TECHNIQUE.md` `fmt-uses-only-nice`; multi-op rule citing `run-suite` | Group contract named/carved-out inheriting child ops | user catch | **addressed** — `resource-budget` by invocation class; child carve-out deleted; multi-op names no descendant |
-| High | AP-142 technique-references-technique | `scatter-gather` Protocol cites harness-compat/variable-binding; `independent-lenses` Protocol cites gitnexus-operations; scope Rules naming peer owners | Technique→technique refs on PR surface | user catch (generalised hard rule) | **addressed on PR surface** — harness/tool prose; graph tools unnamed; bare scope; canon AP-142. Corpus-wide debt out of scope |
+| — | AP-142 technique-references-technique (retired) | generalised hard ban on any technique→technique cite | User later reversed: cites remain permissible; server parser will resolve them | design reversal | **retired** — AP-142 deleted; peer cites restored on PR surface; activity-layer dispatch preference kept (AP-114 / AP-140 / AP-143) |
 
 **Changed files (redesign + AP-68 scrub):**
 
@@ -60,6 +60,8 @@
 |----------|-------|----------|----------|--------|--------|
 | — | — | `activities/11-validate.yaml` | process-unit pattern spine + pure `run-suite`; step gates on inline `when:` | redesign + #383 dialect | clean |
 | Medium | Divergent OR keep-sites vs #383 | `14-complete` create-adr / update-adr (and peer keep-sites on co-edit surfaces) | Fan-out branch still carried structured OR trees while [PR #383](https://github.com/m2ux/workflow-server/pull/383) migrated them to parenthesized `when:` | resume accounting for #383 | **addressed** — merge workflows pin `d891ed73` onto `workflow/meta-formalise-reusable-parallel-fan-out` |
+| High | Stale principle anchors after § renumber | `yaml-authoring`, `readme-authoring`, `audit-rule-enforcement`, `workflow-authoring/.../readme-authoring` | `check-resource-anchors` failed on `#9-encode…` / `#11-complete…` / `#17-document…` after inserting §2 | quality-review guards | **addressed** — anchors → `#10` / `#12` / `#18` |
+| High | AP-15 / AP-26 / AP-28 procedure in activity prose | `06-process-unit-fan-out.yaml` activity + set `description`s; `11-validate.yaml` set `description`s | Activity/set descriptions held seed→run→wait-all→gather HOW and concurrency policy essays | user catch after false-green quality-review | **addressed** — WHAT-only one-liners; structure owns procedure |
 
 ### Cross-cutting (PR #383)
 
@@ -98,7 +100,17 @@ Root causes in brief:
 
 ## Definition guards
 
-All run with `--root` = edit worktree. **TOTAL_FAILS=0** (19 pass).
+All run with `--root` = edit worktree (resume quality-review). **TOTAL_FAILS=0** after anchor retarget.
+
+| Guard | Result |
+|-------|--------|
+| validate-workflow-yaml (meta, work-package, workflow-design, prism) | PASS |
+| validate-activities | PASS (112) |
+| check-all-refs | PASS |
+| check-binding-fidelity | PASS (77 triaged debt) |
+| check-resource-anchors | PASS (was 4 fail → fixed) |
+| check-variable-model … check-stealth-isolation | PASS |
+| check-when-expression (via [PR #383](https://github.com/m2ux/workflow-server/pull/383) tree + `WORKFLOWS_DIR`=edit surface) | PASS |
 
 ## Sources
 

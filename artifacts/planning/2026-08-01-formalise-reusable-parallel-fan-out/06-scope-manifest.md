@@ -31,6 +31,10 @@ Paths under the worktree root.
 | 17 | `workflow-design/activities/01-intake-and-context.yaml` | activity | integrate | `persist-structural-inventory` OR gate → `when:` (PR #383) |
 | 18 | `prism/activities/01-structural-pass.yaml` | activity | integrate | `run-structural` nested OR gate → parenthesized `when:` (PR #383) |
 | 19 | `meta/techniques/workflow-engine/activity-worker.md` | technique | integrate | Walker/docs alignment with shared when-expression (PR #383 pin) |
+| 20 | `workflow-design/techniques/yaml-authoring.md` | technique | modify | Retarget Document-in-Positive-Present anchor after § renumber |
+| 21 | `workflow-design/techniques/readme-authoring.md` | technique | modify | Retarget Complete-Documentation-Structure anchor after § renumber |
+| 22 | `workflow-design/techniques/audit-rule-enforcement.md` | technique | modify | Retarget Encode-Constraints-as-Structure anchor after § renumber |
+| 23 | `workflow-authoring/techniques/workflow-definition/readme-authoring.md` | technique | modify | Retarget Complete-Documentation-Structure anchor after § renumber |
 
 **PR #383 implications (host server track — not authored here):**
 
@@ -44,7 +48,7 @@ Paths under the worktree root.
 
 **Out of scope this pass:**
 
-- Full corpus AP-142 cleanup of `orchestration-patterns/*` technique→technique cites
+- Server-side technique→technique reference resolution (host parser follow-up)
 - Migrating live `scatter-gather.md` body off coordination Capability (definition debt)
 - Server `src/` / `schemas/` (owned by [PR #383](https://github.com/m2ux/workflow-server/pull/383) / #379)
 - Full corpus structured→`when` migration beyond co-touched validate steps and the four #383 keep-sites

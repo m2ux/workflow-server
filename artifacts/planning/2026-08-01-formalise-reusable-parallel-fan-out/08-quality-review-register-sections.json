@@ -1,27 +1,23 @@
 {
   "base_ref": "9922b20cd4ac5b25debd7d0efa4913ecf566ca2c",
   "primary_target": "meta",
-  "co_edit_surfaces": ["workflow-design", "prism"],
+  "co_edit_surfaces": ["workflow-design", "prism", "work-package", "workflow-authoring"],
   "fail_count": 0,
   "open_finding_count": 0,
   "has_critical_finding": false,
   "has_coverage_gap": false,
+  "pr_383_accounted": true,
   "known_finding_keys": [
     {
-      "class": "dead-output",
-      "entry": "binding-fidelity-triage",
-      "location": "meta/techniques/unit-fan-out.md",
-      "detail": "combined_result",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
+      "class": "binding-fidelity-triage",
+      "count": 77,
+      "verdict": "harmless"
     },
     {
-      "class": "dead-output",
-      "entry": "binding-fidelity-triage",
-      "location": "meta/techniques/unit-fan-out.md",
-      "detail": "unit_results",
-      "verdict": "harmless",
-      "rationale": "shared-op-return-contract"
+      "class": "host-guard-dependency",
+      "entry": "check-when-expression",
+      "detail": "Module lives on server PR #383; validated by running that worktree's script against this edit surface",
+      "verdict": "known"
     }
   ],
   "register_sections": [
@@ -30,42 +26,76 @@
       "audit_findings": [],
       "coverage_divergences": [],
       "fail_count": 0,
-      "consumer_surface_summary": "work-package 11-validate binds cargo-operations::run-suite; validation_results envelope byte-stable. Other meta consumers hit scatter-gather / orchestration-patterns / harness-compat / gitnexus-operations — agent homes retained.",
+      "consumer_surface_summary": "work-package 11-validate mirrors process-unit pattern + pure run-suite. Agent patterns 01-05 retained. activity-worker.md integrated from #383 pin.",
       "changed_files": [
-        "meta/techniques/unit-fan-out.md",
+        "meta/activities/patterns/06-process-unit-fan-out.yaml",
+        "meta/activities/patterns/README.md",
         "meta/techniques/cargo-operations/run-suite.md",
         "meta/techniques/cargo-operations/TECHNIQUE.md",
         "meta/techniques/scatter-gather.md",
         "meta/techniques/README.md",
-        "meta/README.md"
+        "meta/README.md",
+        "meta/techniques/workflow-engine/activity-worker.md"
       ]
     },
     {
       "target_workflow_id": "workflow-design",
-      "note": "co-edit under shared worktree; not in bag target_workflow_ids",
-      "audit_findings": [],
+      "audit_findings": [
+        {
+          "entry": "stale-principle-anchors-after-renumber",
+          "severity": "High",
+          "status": "addressed",
+          "fix": "retarget #10/#12/#18 on consumer techniques"
+        }
+      ],
       "coverage_divergences": [],
       "fail_count": 0,
       "changed_files": [
         "workflow-design/resources/design-principles.md",
         "workflow-design/resources/anti-patterns.md",
-        "workflow-design/resources/README.md"
+        "workflow-design/resources/schema-construct-inventory.md",
+        "workflow-design/resources/README.md",
+        "workflow-design/activities/01-intake-and-context.yaml",
+        "workflow-design/techniques/yaml-authoring.md",
+        "workflow-design/techniques/readme-authoring.md",
+        "workflow-design/techniques/audit-rule-enforcement.md"
       ]
     },
     {
       "target_workflow_id": "prism",
-      "note": "co-edit under shared worktree; not in bag target_workflow_ids",
       "audit_findings": [],
       "coverage_divergences": [],
       "fail_count": 0,
       "changed_files": [
-        "prism/techniques/behavioral-pipeline/independent-lenses.md"
+        "prism/techniques/behavioral-pipeline/independent-lenses.md",
+        "prism/activities/01-structural-pass.yaml"
       ],
       "deferred": ["prism/techniques/dispute-analysis.md"]
+    },
+    {
+      "target_workflow_id": "work-package",
+      "audit_findings": [],
+      "coverage_divergences": [],
+      "fail_count": 0,
+      "changed_files": [
+        "work-package/activities/11-validate.yaml",
+        "work-package/activities/14-complete.yaml",
+        "work-package/README.md"
+      ]
+    },
+    {
+      "target_workflow_id": "workflow-authoring",
+      "note": "consumer-surface co-edit for principle anchor retarget only",
+      "audit_findings": [],
+      "fail_count": 0,
+      "changed_files": [
+        "workflow-authoring/techniques/workflow-definition/readme-authoring.md"
+      ]
     }
   ],
   "guards": {
     "total_fails": 0,
+    "check_when_expression": "PASS via PR #383 worktree",
     "suite": [
       "validate-workflow-yaml",
       "validate-activities",
@@ -80,7 +110,12 @@
       "check-self-provisioned-input",
       "check-identifier-qualification",
       "check-review-mode-gating",
-      "check-stealth-isolation"
+      "check-stealth-isolation",
+      "check-when-expression"
     ]
+  },
+  "ap114_detect": {
+    "protocol_apply_on_changed_techniques": 0,
+    "unit_fan_out_technique_file": "deleted"
   }
 }
