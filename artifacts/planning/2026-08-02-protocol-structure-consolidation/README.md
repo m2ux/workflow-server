@@ -11,6 +11,10 @@ This folder is the investigation-detail home for the protocol-structure epic, wh
 
 Each capture is the issue body verbatim at consolidation time, so the evidence, tables, and acceptance detail stay reachable after the issue closes.
 
+## Doctrine decision
+
+The fold doctrine W3 depended on is settled: **declared folds are sanctioned, bounded by the visibility rule** — a call whose outcome stays inside the caller may fold; a call whose outcome the workflow acts on must be an activity step. The full decision record — nineteen decision rows across five review rounds, with rejected alternatives, rationale, accepted residual risks, the #405 ancestry direction, and consequences for W2/W3 scope — is in [doctrine-decision.md](./doctrine-decision.md) (decided 2026-08-02; per-edge disposition of the 118 edges remains pending the W2 guard inventory).
+
 ## Why these two consolidate
 
 - Both change the same loader path: how `## Protocol` sub-structure is parsed and preserved through to delivery.
@@ -23,3 +27,5 @@ Each capture is the issue body verbatim at consolidation time, so the evidence, 
 - 554 technique files surveyed; zero mix numbered and unnumbered protocol sections, so variant validation lands with no migration; exactly one file needs a refile.
 - 118 distinct inline call edges between techniques; 99 of them (84%) invisible to the activity layer; 56 call sites omit at least one required input of the technique they call; every link target exists — the rot is entirely in the contracts.
 - Roughly 80% of the fold machinery already exists in the server, pointed at other targets.
+- Zero containers in any of the 16 workflows author an `Initial`/`Final` wrap block (2026-08-02 survey), so the fold's "rules yes, wrap no" carriage loses nothing at adoption — and W1 reserves those two titles out of variant interpretation.
+- The two technique delivery paths disagree about cross-workflow container ancestry (#405); fold carriage names the callee's source ancestry explicitly.
