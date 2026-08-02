@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.4.1
+  version: 3.4.3
 ---
 
 ## Capability
@@ -30,3 +30,7 @@ Outside this technique group, GitHub access is an Apply of a leaf op. Domain tec
 ### ask-before-replying
 
 Ask the user before replying to PR comments or review feedback.
+
+### host-shell-for-gh
+
+Every `gh` invocation runs on the host shell — host credentials, host network, and host SSH agent. Isolated execution environments that block those are outside this technique. `GH_TOKEN` and `GITHUB_TOKEN` stay unset unless a known-good PAT is intentionally supplied. An isolation denial is not a credential failure.
