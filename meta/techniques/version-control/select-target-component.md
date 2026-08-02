@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ The enumerated target-component submodules (infrastructure submodules already ex
 
 ### component_hint
 
-*(optional)* Basename of the component the session was opened inside, as derived from git.
+*(optional)* Basename of the component the workspace path already sits inside, as derived from git.
 
 ### mentioned_repo
 
