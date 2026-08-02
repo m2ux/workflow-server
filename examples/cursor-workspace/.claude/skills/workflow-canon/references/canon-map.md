@@ -46,6 +46,16 @@ One unit: Reference Conventions. It is explicitly *not* a substitute for reading
 
 The registry is the enumeration; each entry carries a one-line `proves`. Read it rather than assuming a roster. `npm run check:all` runs every entry; `npx tsx scripts/check-delta.ts --base <ref>` reports only what the change added.
 
+## Change-surface scope (audit)
+
+When the path is **Audit** (SKILL.md), the walk's **change surface** is not the diff hunk list:
+
+1. **Whole touched files** — every definition path that differs from the base ref, inspected in full.
+2. **I/O-contract closure** — every activity or technique that references a file whose Inputs/Outputs (or activity I/O / bind contract) changed, whether or not that referencer's bytes changed.
+3. **Consumers** — cross-workflow references that resolve to a file already on the change surface.
+
+File-kind routing still chooses which units can fire; it does not shrink a touched file to its hunks or drop contract referencers. Details and forbidden scopes live in SKILL.md § Audit → Scope the surface.
+
 ## Fetching
 
 `anti-patterns.md` exceeds the per-resource eager-delivery cap, so it is never bundled whole. Fetch by section in every mode:
