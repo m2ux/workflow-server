@@ -1485,7 +1485,7 @@ A technique's Protocol sequences sibling or shared operations for work that the 
 
 **Do not flag:** Citing resources (including creation-guide Templates); non-invoking technique hyperlinks used as documentation or canonical reference (`canonical-technique-reference`); loader `Initial`/`Final` wrap and container I/O merge; activity `steps[]` technique binds; activity borrow/bind/include of reusable orchestration patterns; tools; a single capability whose protocol phases are facets of one produce path over tools and resources (load → derive → persist *one* product bag) with no Protocol Apply/`::` work invoke that is itself a multi-op façade; stage/gate locus without an op inventory (`technique-stage-agnostic`).
 
-**Fix:** Delete the façade or strip Apply/`::` work invokes from the Protocol; bind each sibling or shared operation as its own activity step in the order required; keep only distinct local value assembly (if any) as a separate atomic technique. See [Bind Sibling Operations as Steps](./design-principles.md#26-bind-sibling-operations-as-steps), [Atomic Techniques; Compose at Activities](./design-principles.md#27-atomic-techniques-compose-at-activities); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`. Related: `prose-based-dispatch-patterns` (AP-140), `coordination-in-technique` (AP-143) — free concurrent recipes and multi-unit dispatch coordination belong on activity structure (prefer pattern activities), not Protocol Apply façades.
+**Fix:** Delete the façade or strip Apply/`::` work invokes from the Protocol; bind each sibling or shared operation as its own activity step in the order required; keep only distinct local value assembly (if any) as a separate atomic technique. See [Bind Sibling Operations as Steps](./design-principles.md#26-bind-sibling-operations-as-steps), [Atomic Techniques; Compose at Activities](./design-principles.md#27-atomic-techniques-compose-at-activities); also `bind-site-is-orchestration-truth`, `no-monolith-masking-steps`, `duplicate-shared-capability`. Related: `prose-based-dispatch-patterns`, `coordination-in-technique` — free concurrent recipes and multi-unit dispatch coordination belong on activity structure (prefer pattern activities), not Protocol Apply façades.
 
 ### AP-115. platform-semantics-in-capability
 
@@ -1853,11 +1853,7 @@ A container technique (group or workflow-root `TECHNIQUE.md`) names, links, or c
 
 **Fix:** Delete the child name, link, and carve-out. Put shared policy in domain terms every inheritor can apply (predicate on the work, not on the op id). Put leaf-only Protocol, budgets, and exceptions on the leaf that owns that invocation. Prefer removing a parent exception that exists only because a blanket parent rule was too wide — narrow the shared rule so the exception disappears. See [State Contract Contribution](./design-principles.md#28-state-contract-contribution); also `capability-as-op-inventory`, `platform-semantics-in-capability`, `overlapping-rule-scopes`, `single-rule-authority`.
 
-### AP-142. *(retired)* technique-references-technique
-
-Retired. Technique→technique cites (documentation, canonical wrap, single-capability invoke the server resolves) are **permitted**. Multi-op composition façades remain `pass-orchestration-in-technique` (AP-114). Multi-unit scatter/wait-all/gather still prefers activity coordination (`coordination-in-technique`, AP-143). I/O slots still do not hyperlink techniques (`technique-ref-in-io-contract`, AP-125). Containers still do not name inheriting descendants (`container-names-inheriting-ops`, AP-141).
-
-### AP-143. coordination-in-technique
+### AP-142. coordination-in-technique
 
 "Capability: scatter work units, wait for all, gather ordered results" / a strategy technique whose Protocol is multi-unit dispatch coordination
 
