@@ -22,11 +22,13 @@ A guard that exits 2 has not measured. That is `blocked` coverage, not a pass, a
 | Entry | The criteria entry by its kebab-case **name** — never a bare `AP-XX`, never a count of the catalog |
 | Location | File and field, at the depth the evidence sits |
 | Evidence | The construct the entry's Detect keys on, quoted or named |
-| Origin | `diff` when the violation arrived with this change, `pre-existing` when it was already there at the base ref |
+| Origin | `diff` when the violation arrived with this change (path touched, **or** contract-drift at a referencer/consumer pulled in by I/O-contract closure), `pre-existing` when the same construct was already at the base ref and does not depend on an I/O contract change in this surface |
 | Known | Set when a prior pass accepted this key |
 | Fix | The action the entry prescribes, in one line |
 
 **A row whose Evidence cannot name a construct is not a finding** and does not belong in the table. Inferred intent is not evidence. Where the entry keys on the harness tool surface or an authoritative bootstrap resource, the evidence is that surface read directly.
+
+**Change surface is whole files.** Evidence and Location cite constructs anywhere in a change-surface file. A finding is not limited to diff hunk lines. When the file joined via I/O-contract closure only, say so in Evidence (referencer of `{path}` whose Inputs/Outputs changed).
 
 ## Coverage ledger
 
@@ -59,7 +61,7 @@ Fetch the guide's `## Template` section and fill it; persist through the activit
 ~~~markdown
 # Canon Audit — `{target}`
 
-**Base ref:** `{ref}` · **Surface:** N files · **Guards:** clean | N findings | N unmeasured
+**Base ref:** `{ref}` · **Target surface:** N files · **Change surface:** N files (touched: N whole files · I/O-contract closure: N · consumers: N) · **Guards:** clean | N findings | N unmeasured
 
 | Severity | Open | Known |
 |----------|-----:|------:|
@@ -67,6 +69,16 @@ Fetch the guide's `## Template` section and fill it; persist through the activit
 | High     | N | N |
 | Medium   | N | N |
 | Low      | N | N |
+
+## Change surface
+
+| Path | How it joined |
+|------|----------------|
+| `{path}` | touched (whole file) |
+| `{path}` | I/O-contract closure — references `{contract-path}` |
+| `{path}` | consumer of change-surface target |
+
+[Omit the table only when the change surface is empty. Never replace it with a hunk list.]
 
 ## Findings
 
@@ -90,3 +102,4 @@ Fetch the guide's `## Template` section and fill it; persist through the activit
 - **No criteria prose in the report.** Link the entry; the catalog is its home.
 - **Cite entries by name.** Never a bare designator, never any count of the catalog's entries.
 - **Report the verify pass honestly.** Say which Highs were withdrawn or downgraded on re-derivation; a register that silently drops them reads as a walk that never found them.
+- **Report the change surface honestly.** Header counts and the Change surface table must match the skill's union (whole touched files ∪ I/O-contract closure ∪ consumers). A report that only lists diff hunks or omits silent referencers is incomplete coverage, not a clean sweep.
