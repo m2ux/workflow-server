@@ -17,7 +17,7 @@ Multi-workflow technique + canon change:
 | Layer | What changes |
 |-------|----------------|
 | **meta** | New same-context unit fan-out contract (`unit-fan-out` draft); retarget `cargo-operations::run-suite`; cargo group rule; scatter-gather boundary cross-link; indexes |
-| **workflow-design** | Design principle §33 (prefer parallelisation via formal patterns); anti-pattern AP-140 `prose-based-dispatch-patterns`; resource README index lines |
+| **workflow-design** | Design principle Prefer Parallel Independent Work (prefer parallelisation via formal patterns); anti-pattern `prose-based-dispatch-patterns`; resource README index lines |
 | **prism** | Retarget free-prose concurrent lens dispatch in `behavioral-pipeline/independent-lenses.md` to agent formal patterns; optional `dispute-analysis.md` (judgement #5) |
 
 Lifecycle activities and transitions stay put on all three targets. **Prior scope-confirmed#0 was incomplete:** it treated the change as meta-only and claimed no peers beyond run-suite; full-corpus rescan finds prism free-prose dispatch candidates and requires workflow-design canon files.
@@ -44,8 +44,8 @@ Lifecycle activities and transitions stay put on all three targets. **Prior scop
 | File | Why |
 |------|-----|
 | `workflow-design/resources/design-principles.md` | Add **§33** prefer parallelisation via formal fan-out/dispatch patterns (prefer / before / only after) |
-| `workflow-design/resources/anti-patterns.md` | Add **AP-140** `prose-based-dispatch-patterns` under Technique Protocol Anti-Patterns (after AP-139) |
-| `workflow-design/resources/README.md` | Index §33 and AP-140 in resource detail blurbs |
+| `workflow-design/resources/anti-patterns.md` | Add `prose-based-dispatch-patterns` under Technique Protocol Anti-Patterns (after `framing-outside-any-section`) |
+| `workflow-design/resources/README.md` | Index Prefer Parallel Independent Work and `prose-based-dispatch-patterns` in resource detail blurbs |
 
 ### Directly modified — prism
 
@@ -83,7 +83,7 @@ Lifecycle activities and transitions stay put on all three targets. **Prior scop
 | Check | Verdict |
 |-------|---------|
 | Transitions, entry activity, reachability | Pass — no activity add/remove/reorder on any target |
-| Technique and resource references | Pass if new `unit-fan-out` path is indexed, AP-140/§33 cross-link, and every Apply resolves; Fail risk if free-prose sites remain the only recipe after claim of migration |
+| Technique and resource references | Pass if new `unit-fan-out` path is indexed, `prose-based-dispatch-patterns` / Prefer Parallel Independent Work cross-link, and every Apply resolves; Fail risk if free-prose sites remain the only recipe after claim of migration |
 | Variables, checkpoint effects, step gates | Pass — no required variable/checkpoint topology change; prism structural-pass already lists scatter-gather |
 | Multi-workflow bag honesty | Pass with primary `meta` + manifest multi-path plan; Fail if bag claims multi-target update contrary to intake rules |
 
@@ -95,16 +95,16 @@ Lifecycle activities and transitions stay put on all three targets. **Prior scop
 |---|----------|---------|-----------|
 | 1 | `meta/techniques/cargo-operations/run-suite.md` Protocol free concurrent-shell recipe | Standalone “Fan out four concurrent shells…” / wait-all instructions that re-teach concurrency without naming a meta contract | Domain suite composition: four ops, resource budgets, RAM backoff, sequential fallback, envelope fields |
 | 2 | `prism/techniques/behavioral-pipeline/independent-lenses.md` Protocol §3 + Rules `independent-lenses-parallel` | Free “dispatch them concurrently (up to four at once)” recipe without Apply of scatter-gather / spawn-concurrent | Four lens identities, graph augmentation, artifact writes, independence claim as motivation (cite formal pattern for *how*) |
-| 3 | `workflow-design` N/A (additive canon) | — | Existing AP-01…AP-139 and §1–§32 unchanged in substance |
+| 3 | `workflow-design` N/A (additive canon) | — | Prior catalogue entries and §1–§32 unchanged in substance |
 | 4 | `prism/techniques/dispute-analysis.md` (if in-pass) | Free “can be parallel” dual dispatch without formal Apply | Pair selection, fresh-worker isolation, synthesis rules |
 
 ---
 
 ## Change constraints (for scope-and-draft)
 
-**Co-change set:** unit-fan-out definition + run-suite + cargo group + meta indexes + scatter-gather boundary + design-principles §33 + anti-patterns AP-140 + resources README + independent-lenses (+ optional dispute-analysis).
+**Co-change set:** unit-fan-out definition + run-suite + cargo group + meta indexes + scatter-gather boundary + design-principles Prefer Parallel Independent Work + anti-patterns `prose-based-dispatch-patterns` + resources README + independent-lenses (+ optional dispute-analysis).
 
-**Identifier collisions:** existing ids `scatter-gather`, `spawn-concurrent`, `dispatch-workers`, `run-suite`, pattern activity `isolated-fan-out`, AP-139 `framing-outside-any-section`. New technique id must not collide; new AP id is **AP-140** (not 139). Prefer a name that states process/shell unit fan-out.
+**Identifier collisions:** existing ids `scatter-gather`, `spawn-concurrent`, `dispatch-workers`, `run-suite`, pattern activity `isolated-fan-out`, `framing-outside-any-section`. New technique id must not collide; new smell is `prose-based-dispatch-patterns` (cite by name). Prefer a name that states process/shell unit fan-out.
 
 **Unit-kind split (binding decision draft):**
 

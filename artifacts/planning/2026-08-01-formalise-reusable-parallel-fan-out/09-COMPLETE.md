@@ -12,11 +12,11 @@
 | Item | Result |
 |------|--------|
 | Process-unit coordination | Activity pattern `meta/activities/patterns/06-process-unit-fan-out` (seed → execute/wait-all/gather → `unit_results`) |
-| Strategy technique `unit-fan-out` | Removed (AP-143 — coordination is activity-owned) |
+| Strategy technique `unit-fan-out` | Removed (`coordination-in-technique` — coordination is activity-owned) |
 | `cargo-operations::run-suite` | Pure combine over gathered `unit_results` |
 | `work-package` validate | Mirrors process-unit spine; step gates on inline `when:` |
 | Agent / lens parallel | Patterns 01–05; `independent-lenses` atomic; activity owns dispatch |
-| Canon | §2 layer map, §34 pattern homes, AP-140–141 / AP-143; hard-ban AP-142 **retired** (technique cites allowed); principle-anchor consumers retargeted after renumber |
+| Canon | §2 layer map, §34 pattern homes; smells `prose-based-dispatch-patterns`, `container-names-inheriting-ops`, `coordination-in-technique`; hard-ban `technique-references-technique` retired (technique cites allowed); AP numbers renumbered contiguously; principle-anchor consumers retargeted |
 | PR #383 keep-sites | Integrated workflows pin `d891ed73` (four OR gates → parenthesized `when:`) |
 | Definition guards | Green on edit worktree; `check:when` PASS via #383 tree against this surface |
 
@@ -30,6 +30,6 @@
 
 ## Retrospective
 
-1. **AP-114 false negative** — quality-review walked Protocol “formalisation” as success without Detect for technique→technique Apply; corrected bind graph is activity steps only ([10-ap114-redesign-note.md](10-ap114-redesign-note.md)).
+1. **`pass-orchestration-in-technique` false negative** — quality-review walked Protocol “formalisation” as success without Detect for multi-op Protocol Apply façades; corrected bind graph is activity steps only ([10-ap114-redesign-note.md](10-ap114-redesign-note.md)).
 2. **§ renumber blast radius** — inserting Activities Coordinate as §2 broke numbered principle anchors in consumer techniques; `check-resource-anchors` caught it on resume.
 3. **Cross-PR corpus divergence** — OR keep-sites on #383 vs this branch required an explicit merge so fan-out does not reintroduce structured OR trees on the same steps.

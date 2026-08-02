@@ -4,10 +4,10 @@
 **Mode:** Update (multi-workflow edit under one worktree; bag keeps single-target update shape — see Scope)  
 **Date:** 2026-08-01  
 **Change categories:** Technique · Resource (canon) · Activity (validate bind graph)  
-**Change request:** Formalise reusable parallel fan-out as **activity-bound** parameterized contracts (`unit-fan-out` for process units; scatter-gather / spawn-concurrent for agents). Techniques do **not** Protocol-Apply techniques for work (AP-114). Extend workflow-design §33 + AP-140 (Fix = activity step bind). Co-change work-package validate. Document quality-review AP-114 false negative ([10-ap114-redesign-note.md](10-ap114-redesign-note.md)).  
+**Change request:** Formalise reusable parallel fan-out as **activity-bound** parameterized coordination (process-unit pattern for process units; scatter-gather / spawn-concurrent / agent patterns for agents). Multi-op Protocol façades remain `pass-orchestration-in-technique`. Extend workflow-design Prefer Parallel Independent Work + `prose-based-dispatch-patterns` (Fix = activity structure). Co-change work-package validate. Document quality-review false negative ([10-ap114-redesign-note.md](10-ap114-redesign-note.md)).  
 **Baseline / edit surface:** `.worktrees/2026-08-01-formalise-reusable-parallel-fan-out/` on `workflow/meta-formalise-reusable-parallel-fan-out` (full workflows orphan checkout — meta, workflow-design, prism, work-package, and siblings)
 
-> **Redesign (AP-114):** The first draft had techniques Apply fan-out contracts (run-suite → unit-fan-out; independent-lenses → scatter-gather). That violated AP-114 and passed quality-review as a false negative. Correct composition: **activities bind** fan-out steps; atomic techniques own unit bodies or pure combine only.
+> **Redesign (`pass-orchestration-in-technique`):** The first draft had techniques Apply fan-out contracts (run-suite → unit-fan-out; independent-lenses → scatter-gather). That violated `pass-orchestration-in-technique` and passed quality-review as a false negative. Correct composition: **activities bind** fan-out coordination; atomic techniques own unit bodies or pure combine only. Peer technique cites remain allowed.
 
 ---
 
@@ -19,14 +19,14 @@ This run:
 
 1. **Chooses and authors** the reusable same-context **unit/process** fan-out contract for run-suite-class work (draft: new meta strategy technique `unit-fan-out`), distinct from agent scatter-gather / spawn-concurrent.
 2. **Retargets** confirmed free-prose callers: `run-suite` → unit/process contract; prism independent-lenses (and any peer agent free-prose in scope) → existing agent formal patterns (`scatter-gather` / `spawn-concurrent` / orchestration-patterns as fit).
-3. **Extends workflow-design canon:** design principle **§33** (prefer parallelisation of independent work via formal patterns) and anti-pattern **AP-140** `prose-based-dispatch-patterns` (next free id after AP-139 `framing-outside-any-section` — the revise note’s AP-139 was already taken).
+3. **Extends workflow-design canon:** design principle Prefer Parallel Independent Work via Formal Fan-Out and anti-pattern `prose-based-dispatch-patterns` (plus `coordination-in-technique` for multi-unit homes on techniques).
 4. **Records a full-corpus migration inventory** so “peers” is evidence-backed, not meta-only guesswork. Prior round #0 inventory under-scoped: it reported only run-suite under meta and missed prism free-prose dispatch.
 
 | Goal | Meaning |
 |------|---------|
-| Named contracts (split by unit kind) | Same-context shell/process units Apply `unit-fan-out` (or chosen process contract); agent/lens units Apply scatter-gather / spawn-concurrent / orchestration-patterns — never free concurrent-shell or concurrent-Task recipes |
-| Canon | §33 preference + AP-140 detect triad make formal fan-out the write-time default and free-prose re-teaching a named smell |
-| Caller retarget | Confirmed candidates cite the right contract; I/O envelopes stay bindable for existing step call sites |
+| Named coordination (split by unit kind) | Same-context shell/process units use process-unit pattern activity; agent/lens units use agent pattern activities / scatter-gather / spawn-concurrent — never free concurrent-shell or concurrent-Task recipes |
+| Canon | Prefer Parallel Independent Work + `prose-based-dispatch-patterns` / `coordination-in-technique` make formal activity fan-out the write-time default and free-prose re-teaching a named smell |
+| Caller retarget | Confirmed candidates use the right coordination home; I/O envelopes stay bindable for existing step call sites |
 | Honest inventory | Every workflow directory under the edit worktree is classified candidate / clean / N/A with path citations ([06-migration-candidates.md](06-migration-candidates.md)) |
 | Edit home | All definition edits under the session `{target_path}` worktree (meta + workflow-design + prism paths) |
 
@@ -49,7 +49,7 @@ This run:
 | Activity list | Unchanged across targets — technique/resource edits only |
 | Checkpoints | Unchanged |
 | Artifacts | Planning artifacts for this authoring run; no new workflow-level planning artifacts inside targets |
-| Rules | Meta cargo group rule for unit fan-out; prism behavioral rule cites formal agent pattern; workflow-design AP-140 + §33 |
+| Rules | Meta cargo group rule for process-unit suites; prism behavioral rule cites formal agent pattern; workflow-design `prose-based-dispatch-patterns` + Prefer Parallel Independent Work |
 
 ---
 

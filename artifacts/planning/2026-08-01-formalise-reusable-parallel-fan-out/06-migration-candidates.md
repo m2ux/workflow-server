@@ -49,7 +49,7 @@ Every top-level workflow directory in the edit worktree:
 | Workflow directory | Class | Notes / citations |
 |--------------------|-------|-------------------|
 | **meta** | **mixed** — formal homes **clean**; **candidate** `cargo-operations/run-suite.md` | Formal: `techniques/scatter-gather.md`, `harness-compat/spawn-concurrent.md`, `orchestration-patterns/*`, `activities/patterns/*`. Candidate: run-suite free concurrent shells. |
-| **workflow-design** | **canon target** (not a dispatch candidate) | Will **gain** §33 + AP-140. Existing prose cites orchestration-patterns under Prefer Shared Capability / schema inventory — clean guidance, not free runtime recipes. Activities declare scatter-gather where needed. |
+| **workflow-design** | **canon target** (not a dispatch candidate) | Will **gain** Prefer Parallel Independent Work + `prose-based-dispatch-patterns`. Existing prose cites orchestration-patterns under Prefer Shared Capability / schema inventory — clean guidance, not free runtime recipes. Activities declare scatter-gather where needed. |
 | **prism** | **mixed** — **candidates** independent-lenses (+ dispute-analysis); plan-analysis **N/A**; activities **clean** declarations | Activities `01-structural-pass` etc. list `scatter-gather`. Free-prose debt is technique-local. |
 | **prism-audit** | **clean** | `execute-analysis` declares scatter-gather; README documents strategy bind |
 | **prism-evaluate** | **clean** | `execute-analysis` / `resolution-dialogue` declare scatter-gather |

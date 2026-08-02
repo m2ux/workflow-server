@@ -14,7 +14,7 @@ Paths under the worktree root.
 |---|------|------|--------|-----------------|
 | 1 | `meta/activities/patterns/06-process-unit-fan-out.yaml` | activity pattern | create | Process/shell/tool suite spine: seed → execute/wait-all/gather → `{unit_results}` |
 | 2 | `meta/activities/patterns/README.md` | readme | modify | Catalog 06; apportionment; seed vars for process-unit |
-| 3 | `meta/techniques/unit-fan-out.md` | technique | **delete** | Coordination is activity-owned (AP-143); not a strategy technique |
+| 3 | `meta/techniques/unit-fan-out.md` | technique | **delete** | Coordination is activity-owned (`coordination-in-technique`); not a strategy technique |
 | 4 | `meta/techniques/cargo-operations/run-suite.md` | technique | modify | Pure combine over `{unit_results}` |
 | 5 | `meta/techniques/cargo-operations/TECHNIQUE.md` | technique | modify | Leaf ops do not scatter multi-op suites |
 | 6 | `meta/techniques/scatter-gather.md` | technique | modify | Agent-instance parallel boundary; process units elsewhere |
@@ -23,9 +23,9 @@ Paths under the worktree root.
 | 9 | `work-package/activities/11-validate.yaml` | activity | modify | Mirror process-unit pattern spine + `run-suite` combine; step gates on inline `when:` (PR #383 dialect) |
 | 10 | `work-package/README.md` | readme | modify | Validate uses pattern spine, not strategy technique |
 | 11 | `workflow-design/resources/design-principles.md` | resource | modify | §2 layer map; §34 pattern homes; renumbered principles |
-| 12 | `workflow-design/resources/anti-patterns.md` | resource | modify | AP-140–143; AP-36/39/110/107 scrub |
+| 12 | `workflow-design/resources/anti-patterns.md` | resource | modify | `prose-based-dispatch-patterns`, `container-names-inheriting-ops`, `coordination-in-technique`; scrub contradictory entries |
 | 13 | `workflow-design/resources/schema-construct-inventory.md` | resource | modify | Layer map; pattern-primary rows; 06 process-unit |
-| 14 | `workflow-design/resources/README.md` | readme | modify | Index blurbs for §2/§34/AP-143 |
+| 14 | `workflow-design/resources/README.md` | readme | modify | Index blurbs for §2/§34/`coordination-in-technique` |
 | 15 | `prism/techniques/behavioral-pipeline/independent-lenses.md` | technique | modify | Atomic lens work; parallel dispatch activity-owned |
 | 16 | `work-package/activities/14-complete.yaml` | activity | integrate | OR keep-sites → parenthesized `when:` (from [PR #383](https://github.com/m2ux/workflow-server/pull/383)) |
 | 17 | `workflow-design/activities/01-intake-and-context.yaml` | activity | integrate | `persist-structural-inventory` OR gate → `when:` (PR #383) |
