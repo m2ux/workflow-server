@@ -93,7 +93,7 @@ midnight-system-review/
 ├── techniques/
 │   ├── README.md
 │   ├── TECHNIQUE.md            # base contract: planning_folder_path, target_repo_path
-│   ├── scope-intake/           # TECHNIQUE.md, resolve-change-surface, detect-toolchain
+│   ├── scope-intake/           # TECHNIQUE.md, classify-review-target, resolve-change-surface, detect-toolchain
 │   ├── area-derivation/        # TECHNIQUE.md, derive-areas, amend-plan
 │   ├── evidence-probes/        # TECHNIQUE.md, probe-area, consolidate-evidence
 │   ├── finding-adjudication/   # TECHNIQUE.md, grade-findings, register-findings
