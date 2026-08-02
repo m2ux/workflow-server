@@ -107,6 +107,18 @@ A step-back review asked three questions: is the settled machinery proportionate
 4. **Given up while W3b is dormant:** the server never independently confirms each join at delivery; W2's static totality check carries that load. Accepted knowingly.
 5. **Rejected in the same review:** a new operation *schema kind* — it bifurcates the loader, template guard, canon, and addressing model; creates a permanent operation-versus-technique boundary argument; and converts a 118-edge problem into a several-hundred-link re-authoring. Hoisting every reference to activity level stays rejected on the unchanged fragmentation analysis.
 
+## Amendments — 2026-08-02 related-gaps sweep (scope additions)
+
+A final sweep for sibling prose classes with the epic's failure signature (written by authors, invisible to the server) added five scope items, no new decisions:
+
+1. **Dotted rule citations join the W2 scan** — a well-formed dotted address naming a renamed or removed rule currently drifts silently; the loader's rule resolution already exists, the scan calls it.
+2. **Bare resource links join the W2 scan** — the anchors guard requires a `#`; a typo'd bare resource path today surfaces only as the runtime unresolvable-resource warning, the same channel whose misclassification bug W2 already fixes.
+3. **Artifact-name tokens join the W2 scan** — `#### artifact` bodies are shape-checked but a `{token}` inside a filename template is never checked against declared I/O; a rename strands it with the 56-site drift signature.
+4. **W3a rewrites delivered technique references to canonical `group::op` display form** — the pipeline trace proved technique links pass through verbatim while `canonical-technique-reference` has always claimed server resolution; the rewrite rides the same projection pass W3a extends anyway, making the canon's claim true.
+5. **W3a adds a referenced-technique scenario to the token benchmark** — the fixed walk predates closure delivery; without the scenario, the review-time cost comparison has nothing to measure.
+
+Checked and cleared in the same sweep: checkpoint fragments, when-expressions, and stealth isolation have live guards; the I/O-protocol reference analyzer is registry-absent by design; workflow-authoring's resources are process artifacts, with the syntax homes authors consult already inside the amendment scope. Workspace rider: the workflow-canon skill's routing table picks up amended entry names when the canon pass lands.
+
 ## Consequences for the work items
 
 - **W2 is unchanged and remains first.** Under this doctrine it is the fidelity checker; its edge inventory plus the two-direction lint mechanically produce the migrate / fold / documentation-only disposition.
@@ -123,4 +135,5 @@ A step-back review asked three questions: is the settled machinery proportionate
 - W2 PR scope now includes the shared grammar module (row 20), the per-section scan (row 23), repairing the three rule-as-operation sites (row 16), and emitting the guard-signal bins that seed the disposition worklist (row 17).
 - Epic and #405 GitHub updates applied 2026-08-02 for rounds four through seven.
 - #405 sequences before W3a — closure delivery composes referenced bodies with home ancestry.
+- Related-gaps sweep additions (see its Amendments section): dotted rule citations, bare resource links, and artifact-name tokens join the W2 scan; W3a rewrites delivered references to canonical form and adds a referenced-technique benchmark scenario.
 - Next milestones in order: the W2 pull request, then W3a (reference-closure delivery). W3b is dormant pending post-closure evidence. No further doctrine rounds planned (rounds-six/seven Amendments, item 4).
