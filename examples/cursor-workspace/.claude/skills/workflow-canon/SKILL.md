@@ -51,13 +51,20 @@ A draft self-check is not an audit and does not produce a findings register. If 
 
 ### 1. Scope the surface
 
-Name, before reading criteria:
+Name, before reading criteria. Build the **change surface** first; the walk is against that set (and the wider target surface for pre-existing attribution), never against a hunk list.
 
-- **Surface files** — every definition file of the target: `workflow.yaml`, `activities/`, `techniques/`, `resources/`, and the READMEs.
-- **Changed files** — the subset differing from the base ref. Without this, nothing can be attributed.
-- **Consumer surface** — the references other workflows hold *into* the target, each resolved to the file it names. A violation reachable only from a consumer is reachable. `grep -rn "<target-id>/" workflows/ --include=*.md --include=*.yaml` finds the cross-workflow refs.
-- **Reference workflows** — the siblings of similar type whose conventions the target is compared against.
 - **Base ref** — the ref the change is measured against.
+- **Surface files** — every definition file of the target: `workflow.yaml`, `activities/`, `techniques/`, `resources/`, and the READMEs.
+- **Touched files** — every path under the target (and any other definition path in the diff) that differs from the base ref. A path is in or out as a **whole file**. Diff hunks only discover membership; they never bound what Detect may inspect inside that file.
+- **I/O-contract closure** — when any touched technique or activity changes its **I/O contract**, every other activity or technique that references that file is also in the change surface, whether or not its bytes differ from the base ref.
+  - **I/O contract** means: technique `## Inputs` / `## Outputs` (including nested component / artifact declarations); activity-declared inputs/outputs and step binds that name technique input or output ids; renames, additions, removals, optionality flips, and type/shape changes of those ids.
+  - **Reference** means any of: activity `techniques[]` or step `technique` / `technique.name` binds; technique Protocol `Apply` / `::` / markdown links to a sibling or cross-workflow op; resource or README cites that resolve to the op file. Resolve each reference to a concrete definition file path.
+  - Sweep the whole workflows tree (same target and other workflows). A referencer outside the original target still joins the change surface.
+- **Change surface** — the union of **touched files** and **I/O-contract closure**, each entry the full file. Report the two subsets separately in the audit header so a reader can see what git touched versus what contract reach pulled in.
+- **Consumer surface** — the references other workflows hold *into* the target, each resolved to the file it names. Always computed; when a resolved target file is on the change surface (touched or pulled in by I/O-contract closure), that consumer file is on the change surface too. `grep -rn "<target-id>/" workflows/ --include=*.md --include=*.yaml` finds the cross-workflow refs; expand with bind and Apply resolution, not path string match alone.
+- **Reference workflows** — the siblings of similar type whose conventions the target is compared against.
+
+**Forbidden scopes.** Do not treat "the lines the diff shows" as the audit surface. Do not mark a unit `walked` on a touched file after reading only the hunk. Do not omit a silent referencer because the bind site was not edited.
 
 ### 2. Run the mechanical guards first
 
@@ -73,15 +80,21 @@ Do not restate, summarise, or renumber the entries a unit contains. Follow each 
 
 ### 4. Walk every unit against the surface
 
-- Apply each entry's **Detect**, honour its **Do not flag** carve-outs, and record its **Fix** verbatim in intent when it fires.
+- Apply each entry's **Detect** to the **entire contents** of every file on the **change surface** (touched ∪ I/O-contract closure ∪ consumers of those files). Honour **Do not flag** carve-outs; record **Fix** verbatim in intent when it fires.
+- Also apply Detect to the rest of **surface files** so pre-existing defects remain attributable; those findings are not excused by sitting outside the hunk list.
 - **Detect comes from the anti-pattern and inventory homes only.** From the principles home take only whether the authored content honours the stance — so one violation is not counted twice under two homes.
-- Extend the same criteria to the consumer surface.
 - Compare against the reference workflows wherever a unit states its criteria relative to sibling convention.
 - Record every unit's disposition into the coverage ledger as you go — `walked`, `not-applicable` with the reason it does not reach this surface, or `blocked` with what prevented the walk. Only `blocked` is missing coverage; `not-applicable` is an evidenced negative.
+- Status `walked` on a unit that intersects the change surface requires field-level evidence on **each whole file** in that intersection the unit can reach — not on the diff hunks alone. A narrative "walked the change" without whole-file evidence is `blocked`.
 
 ### 5. Attribute and exclude
 
-Attribute each finding against the base ref: a violation in a changed file arrived with this change; one anywhere else pre-existed it. Mark findings whose key a prior pass already accepted as **known** and keep them out of the decision surface — recorded, not deleted, so a later pass can ask whether the acceptance still holds.
+Attribute each finding against the base ref:
+
+- **Origin `diff`** — the violation is in a **touched** file (path bytes differ from base), **or** it is a break that only exists because an I/O contract on the change surface changed (including a stale bind or Apply in an untouched referencer or consumer). Contract-closure membership alone is enough for `diff` when the defect is contract-drift at the reference site.
+- **Origin `pre-existing`** — the same construct and evidence were already present at the base ref on that path, and the finding does not depend on an I/O contract change in this change surface.
+
+Mark findings whose key a prior pass already accepted as **known** and keep them out of the decision surface — recorded, not deleted, so a later pass can ask whether the acceptance still holds.
 
 ### 6. Verify High findings adversarially
 
@@ -91,10 +104,12 @@ Only confirmed findings are eligible to drive fixes.
 
 ### 7. Report
 
-Per [references/reporting.md](references/reporting.md): the finding row shape, the coverage ledger, the severity scale, and which report shape applies. Inside a workflow-authoring or workflow-design run, that run's creation guides own the layout and this skill defers to them.
+Per [references/reporting.md](references/reporting.md): the finding row shape, the coverage ledger, the severity scale, and which report shape applies. The standalone header **must** state change-surface counts: touched (whole files), I/O-contract closure, and consumers pulled in — never "N hunks" or "diff lines only". Inside a workflow-authoring or workflow-design run, that run's creation guides own the layout and this skill defers to them.
 
 ## Non-negotiables
 
+- **Whole file on the change surface.** Every touched path is audited as a complete definition file. Diff hunks discover which paths joined the surface; they do not limit Detect.
+- **I/O contract pulls referencers.** A modified Inputs/Outputs (or activity bind contract) expands the change surface to every activity and technique that references that file, in-tree and cross-workflow.
 - **Structural evidence or it is not a finding.** A finding names the field, shape, or phrase its entry's Detect keys on. Inferred intent is never that evidence. Where an entry keys on the harness tool surface or an authoritative bootstrap resource, the evidence is that surface read directly — not the authored claim about it.
 - **Cite by name.** Kebab-case entry name and principle title. No bare `AP-XX`, no entry counts — both drift.
 - **One violation, one home.** Do not report the same bad sentence under a principle and its covering anti-pattern.
