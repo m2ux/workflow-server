@@ -50,7 +50,6 @@ const TREE_PRESENT = existsSync(join(WORKFLOWS_ROOT, 'workflow-authoring', 'work
  * into rather than pushed, so neither appears.
  */
 const EAGER_STEP_IDS = [
-  'inventory-prose-fields',
   'load-known-findings',
   'survey-reference-workflows',
   'rebind-target-baseline',
