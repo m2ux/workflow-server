@@ -1,0 +1,226 @@
+== 03e43af3-30d  t0=2026-07-27T13:42
+   start_session    +   0.6 min
+   first_agent      +   1.2 min
+   first_checkpoint +  26.8 min
+   startup_end      +   9.6 min
+   swp_complete     +  31.7 min
+   checkpoint wait: 1.2 min  | agents dispatched: 5  turns: 42
+   MAIN   out= 25,011  cache_create=  104,054  in_uncached=    80
+   WORKER out= 51,612  cache_create=  974,517  in_uncached=   311  (files=5)
+   MCP result bytes in window: total=111,194
+      get_workflow                   49,739
+      ReadMcpResourceTool            43,917
+      get_resource                   12,238
+      discover                        2,182
+      present_checkpoint                897
+      next_activity                     886
+      get_workflow_status               623
+      start_session                     464
+      respond_checkpoint                248
+
+== 8608448b-35f  t0=2026-07-28T10:15
+   start_session    +   0.4 min
+   first_agent      +   1.2 min
+   first_checkpoint +  11.5 min
+   startup_end      +  18.4 min
+   swp_complete     +1172.7 min
+   checkpoint wait: 806.8 min  | agents dispatched: 20  turns: 271
+   MAIN   out=150,281  cache_create=  956,773  in_uncached=   503
+   WORKER out=788,571  cache_create=9,125,185  in_uncached=18,064  (files=20)
+   MCP result bytes in window: total=70,780
+      ReadMcpResourceTool            43,917
+      present_checkpoint              9,269
+      get_workflow_status             4,602
+      get_workflow                    4,576
+      next_activity                   2,917
+      respond_checkpoint              2,357
+      discover                        2,196
+      start_session                     946
+
+== 3a2415c4-5cc  t0=2026-07-28T10:21
+   start_session    +  12.2 min
+   first_agent      +  13.0 min
+   first_checkpoint +  36.8 min
+   startup_end      +  40.8 min
+   swp_complete     + 509.6 min
+   checkpoint wait: 1.3 min  | agents dispatched: 8  turns: 150
+   MAIN   out=101,270  cache_create=  985,082  in_uncached=   273
+   WORKER out=790,912  cache_create=9,654,509  in_uncached= 8,945  (files=28)
+   MCP result bytes in window: total=84,524
+      ReadMcpResourceTool            43,917
+      get_workflow_status            15,247
+      get_resource                   12,699
+      get_workflow                    4,576
+      present_checkpoint              2,720
+      discover                        2,196
+      next_activity                   1,612
+      respond_checkpoint                849
+      start_session                     464
+      inspect_session                   244
+
+== 7b04f0f4-895  t0=2026-07-30T18:37
+   start_session    +  66.5 min
+   first_agent      +  67.6 min
+   first_checkpoint + 590.0 min
+   startup_end      + 578.0 min
+   swp_complete     + 606.5 min
+   checkpoint wait: 66.3 min  | agents dispatched: 5  turns: 52
+   MAIN   out= 37,776  cache_create=  288,902  in_uncached=   103
+   WORKER out= 85,261  cache_create=1,467,481  in_uncached=   465  (files=5)
+   MCP result bytes in window: total=66,850
+      ReadMcpResourceTool            43,917
+      get_resource                    9,622
+      discover                        4,075
+      get_workflow                    2,788
+      record_usage                    2,172
+      get_workflow_status             1,735
+      present_checkpoint                942
+      next_activity                     886
+      start_session                     464
+      respond_checkpoint                249
+
+== 7d363a87-f85  t0=2026-07-10T13:56
+   start_session    +   1.0 min
+   first_agent      +   2.0 min
+   first_checkpoint +1066.9 min
+   startup_end      +   7.3 min
+   checkpoint wait: 431.8 min  | agents dispatched: 16  turns: 178
+   MAIN   out=118,509  cache_create=1,735,613  in_uncached=14,500
+   WORKER out=270,433  cache_create=5,265,073  in_uncached=254,687  (files=16)
+   MCP result bytes in window: total=108,073
+      ReadMcpResourceTool            43,737
+      get_workflow                   36,148
+      present_checkpoint             10,951
+      get_resource                    5,052
+      discover                        3,618
+      get_workflow_status             3,227
+      next_activity                   2,475
+      respond_checkpoint              2,454
+      start_session                     411
+
+== 8e33afd9-bc4  t0=2026-07-13T17:26
+   start_session    +   0.9 min
+   first_agent      +   2.0 min
+   first_checkpoint +  76.3 min
+   startup_end      +   8.3 min
+   swp_complete     + 650.4 min
+   checkpoint wait: 533.0 min  | agents dispatched: 4  turns: 31
+   MAIN   out= 38,452  cache_create=  381,280  in_uncached= 6,641
+   WORKER out= 46,262  cache_create=1,349,241  in_uncached=52,033  (files=4)
+   MCP result bytes in window: total=91,028
+      ReadMcpResourceTool            43,737
+      get_workflow                   36,148
+      get_resource                    5,052
+      discover                        3,618
+      present_checkpoint                914
+      next_activity                     886
+      start_session                     424
+      respond_checkpoint                249
+
+== b5474fca-ef2  t0=2026-07-14T17:22
+   start_session    +   0.4 min
+   first_agent      +   1.4 min
+   first_checkpoint + 713.5 min
+   startup_end      +   8.5 min
+   swp_complete     + 750.7 min
+   checkpoint wait: 501.4 min  | agents dispatched: 15  turns: 107
+   MAIN   out=133,617  cache_create=  523,794  in_uncached=11,045
+   WORKER out=191,300  cache_create=3,894,651  in_uncached=221,393  (files=15)
+   MCP result bytes in window: total=98,050
+      ReadMcpResourceTool            43,737
+      get_workflow                   36,148
+      get_resource                    5,119
+      inspect_session                 3,841
+      discover                        3,618
+      next_activity                   2,339
+      respond_checkpoint              1,565
+      present_checkpoint              1,259
+      start_session                     424
+
+== e0f51155-f98  t0=2026-06-07T09:44
+   start_session    +   0.4 min
+   first_agent      +   1.1 min
+   first_checkpoint +   4.4 min
+   startup_end      +   6.7 min
+   swp_complete     +1389.3 min
+   checkpoint wait: 307.6 min  | agents dispatched: 45  turns: 281
+   MAIN   out=294,125  cache_create=1,689,830  in_uncached=23,952
+   WORKER out=583,446  cache_create=9,777,061  in_uncached=620,473  (files=45)
+   MCP result bytes in window: total=123,298
+      get_workflow                   77,099
+      ReadMcpResourceTool            30,881
+      present_checkpoint              4,674
+      respond_checkpoint              2,797
+      get_resource                    2,700
+      next_activity                   2,615
+      discover                        2,108
+      start_session                     424
+
+== f5783c2a-dcd  t0=2026-07-12T17:44
+   start_session    +   0.5 min
+   first_agent      +   1.7 min
+   first_checkpoint +  12.3 min
+   startup_end      +   7.3 min
+   swp_complete     +  18.2 min
+   checkpoint wait: 1.0 min  | agents dispatched: 4  turns: 33
+   MAIN   out= 29,230  cache_create=  111,787  in_uncached= 6,904
+   WORKER out= 32,482  cache_create=  543,574  in_uncached=49,430  (files=4)
+   MCP result bytes in window: total=91,607
+      ReadMcpResourceTool            43,737
+      get_workflow                   36,148
+      get_resource                    5,052
+      discover                        3,618
+      start_session                   1,003
+      present_checkpoint                914
+      next_activity                     886
+      respond_checkpoint                249
+
+agent-a032043c122c5032f. start=15:01 out= 72,456 cache_w=  900,021 results_total= 228,398B mcp=   2,537B
+    get_activity                      1,395B
+    yield_checkpoint                    690B
+    resume_checkpoint                   452B
+agent-a05330c72dd502faf. start=15:32 out= 90,876 cache_w=  824,484 results_total= 280,407B mcp=  11,969B
+    ReadMcpResourceTool               5,848B
+    ListMcpResourcesTool              4,157B
+    get_activity                      1,395B
+    yield_checkpoint                    343B
+    resume_checkpoint                   226B
+agent-a1bf5ac98bf5f226d. start=13:45 out=  4,395 cache_w=   67,421 results_total=  46,191B mcp=  45,788B
+    get_activity                     42,547B
+    get_technique                     2,913B
+    dispatch_child                      328B
+agent-a2f3c7cfadeed5032. start=13:48 out= 10,216 cache_w=   80,489 results_total=  39,243B mcp=  38,531B
+    get_activity                     23,388B
+    get_technique                    10,208B
+    get_workflow_status               3,593B
+    inspect_session                   1,342B
+agent-a309f1786142e808e. start=13:51 out= 30,857 cache_w=  667,245 results_total= 165,561B mcp=  47,187B
+    get_technique                    20,849B
+    get_resource                     17,064B
+    inspect_session                   7,328B
+    get_activity                      1,395B
+    yield_checkpoint                    325B
+    resume_checkpoint                   226B
+agent-a3dba44fce22b7ad2. start=14:14 out= 68,774 cache_w=  609,470 results_total= 170,977B mcp=   6,508B
+    get_technique                     4,520B
+    get_activity                      1,393B
+    yield_checkpoint                    369B
+    resume_checkpoint                   226B
+agent-a45774fe5876327db. start=16:09 out=146,720 cache_w=2,071,745 results_total= 397,953B mcp=   1,982B
+    get_activity                      1,395B
+    yield_checkpoint                    361B
+    resume_checkpoint                   226B
+agent-a47c0819bb9facc5f. start=13:47 out=  2,249 cache_w=   59,620 results_total=  28,395B mcp=  27,383B
+    get_activity                     27,383B
+agent-a71231684274f2ba5. start=17:20 out= 67,245 cache_w=  706,525 results_total= 405,269B mcp=   5,915B
+    get_technique                     4,520B
+    get_activity                      1,395B
+agent-a7b9ee3a7fb21532c. start=14:32 out= 79,286 cache_w=  759,652 results_total= 253,860B mcp=  14,249B
+    get_technique                    12,217B
+    get_activity                      1,395B
+    yield_checkpoint                    351B
+    resume_checkpoint                   226B
+    get_resource                         60B
+agent-afac297675993b1e5. start=13:43 out=  3,895 cache_w=   99,742 results_total=  57,809B mcp=   5,095B
+    list_workflows                    2,807B
+    get_activity                      2,288B
