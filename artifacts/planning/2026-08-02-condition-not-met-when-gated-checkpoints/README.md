@@ -24,10 +24,10 @@ Those three gaps slow reviews and migrations. Authors cannot rely on one gate st
 |---|------|-------------|----------|--------|
 | 1 | Start work package | Issue, branch, worktree, planning folder | 20-40m | ✅ |
 | 2 | Prior feedback triage | Review-mode prior feedback ingest | 15-30m | ⊘ |
-| 3 | [Design philosophy](02-design-philosophy.md) | Problem classification, workflow path | 15-30m | ⬚ |
-| 4 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across activities | 10-15m | ⬚ |
-| 5 | [Requirements elicitation](03-requirements-elicitation.md) | Scope, success criteria, boundaries | 30-60m | ⬚ |
-| 6 | [KB research](04-kb-research.md) | Knowledge-base and web synthesis | 20-45m | ⬚ |
+| 3 | [Design philosophy](02-design-philosophy.md) | Problem classification, workflow path | 15-30m | ✅ |
+| 4 | [Assumptions log](02-assumptions-log.md) | Tracked assumptions across activities | 10-15m | ✅ |
+| 5 | Requirements elicitation | Scope, success criteria, boundaries | 30-60m | ⊘ |
+| 6 | KB research | Knowledge-base and web synthesis | 20-45m | ⊘ |
 | 7 | [Implementation analysis](05-implementation-analysis.md) | Baselines, gaps, measurement | 20-45m | ⬚ |
 | 8 | [Work package plan](06-work-package-plan.md) | Tasks, estimates, dependencies | 20-45m | ⬚ |
 | 9 | [Test plan](06-test-plan.md) | Test cases, coverage strategy | 15-30m | ⬚ |

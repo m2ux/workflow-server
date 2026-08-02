@@ -5,11 +5,12 @@
   "workflowVersion": "5.15.0",
   "agentId": "orchestrator",
   "sessionIndex": "XAA3MJ",
+  "planningFolderPath": "/var/lib/workflow-server/projects/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints",
   "currentActivity": "dispatch-client-workflow",
   "currentTechnique": "workflow-engine::commit-and-persist",
   "condition": "isDefault:dispatch-client-workflow",
-  "seq": 23,
-  "ts": 1785652261,
+  "seq": 28,
+  "ts": 1785656791,
   "startedAt": "2026-08-02T05:06:14.230Z",
   "completedActivities": [
     "discover-session",
@@ -799,6 +800,51 @@
       },
       "timestamp": "2026-08-02T06:31:01.031Z",
       "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "meta-dispatch-client-worker-1",
+        "chars": 27633,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-08-02T07:03:42.468Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "meta-dispatch-client-worker-1",
+        "chars": 12810,
+        "delivery": "full",
+        "stepId": "dispatch-activity",
+        "techniqueId": "workflow-engine::dispatch-activity"
+      },
+      "timestamp": "2026-08-02T07:03:51.711Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "meta-dispatch-client-worker-1",
+        "chars": 11228,
+        "delivery": "full",
+        "stepId": "commit-activity-artifacts",
+        "techniqueId": "workflow-engine::commit-and-persist"
+      },
+      "timestamp": "2026-08-02T07:43:15.034Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "meta-dispatch-client-worker-1",
+        "chars": 14980,
+        "delivery": "full",
+        "resourceId": "planning-readme"
+      },
+      "timestamp": "2026-08-02T07:46:31.628Z",
+      "type": "resource_fetched"
     }
   ],
   "triggeredWorkflows": [
@@ -807,6 +853,18 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "design-philosophy-classification-and-path-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "needs_elicitation": false,
+                "needs_research": false,
+                "problem_complexity": "simple",
+                "skip_optional_activities": true
+              }
+            },
+            "optionId": "skip-optional",
+            "respondedAt": "2026-08-02T07:42:51.000Z"
+          },
           "start-work-package-issue-verification": {
             "effects": {
               "variablesSet": {
@@ -817,13 +875,42 @@
             "respondedAt": "2026-08-02T06:26:48.000Z"
           }
         },
-        "completedActivities": [],
+        "completedActivities": [
+          "start-work-package",
+          "design-philosophy"
+        ],
         "condition": "",
-        "currentActivity": "start-work-package",
-        "currentTechnique": "github-cli-protocol::list-prs",
+        "currentActivity": "design-philosophy",
+        "currentTechnique": "analyse-challenge::run-loop",
+        "declaredArtifacts": [
+          {
+            "id": "created_readme",
+            "name": "README.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints/README.md"
+          }
+        ],
         "deliveredContent": {
           "meta-dispatch-client-worker-1": {
             "resource:work-package/readme-seed": "a07b9eec70d567e7"
+          },
+          "wp-design-philosophy-worker-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
+            "bundle:scatter-gather": "5936e102c068c56c",
+            "bundle:variable-binding": "e5b276dec214b8d1",
+            "bundle:workflow-engine::finalize-activity": "4953563937662ff5",
+            "bundle:workflow-engine::resume-from-checkpoint": "be1aa82160949fb5",
+            "bundle:workflow-engine::yield-checkpoint": "df32af09a25e7d7f",
+            "resource:assumptions-review": "574deecbed762d0f",
+            "resource:design-framework": "9677f1e2db0b3827",
+            "technique:analyse-challenge::run-loop": "19c409edb5f134e8",
+            "technique:assess-ticket-completeness": "7e6c16a0de78e905",
+            "technique:design-philosophy::classify": "cce5dd3222d463d7",
+            "technique:design-philosophy::define": "ad04bdb30cfefd07",
+            "technique:design-philosophy::determine-path": "372edbd1f260b29f",
+            "technique:design-philosophy::document": "673e7c04efd18af7",
+            "technique:review-assumptions::collect": "7726d2ba1c9c1e5f",
+            "technique:review-assumptions::record": "e661f438ccf93ef4"
           },
           "wp-start-work-package-worker-1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -1643,17 +1730,1029 @@
             },
             "timestamp": "2026-08-02T06:31:11.678Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "start-work-package",
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "is_review_mode",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "review_mode_ambiguous",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "target_repo",
+              "source": "variables_changed",
+              "value": "m2ux/workflow-server"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "host_repo_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "component_path",
+              "source": "variables_changed",
+              "value": "."
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "component_name",
+              "source": "variables_changed",
+              "value": "workflow-server"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "is_monorepo",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "gitnexus_indexed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "signing.configured",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "squash_merge_supported",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "merge_strategy",
+              "source": "variables_changed",
+              "value": "squash"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "project_type",
+              "source": "variables_changed",
+              "value": "node-typescript"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "issue_present",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "issue_skipped",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "needs_issue_creation",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "planning_folder_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "created_readme",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints/README.md"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "stakeholder_overview",
+              "source": "variables_changed",
+              "value": "Workflow checkpoints can be dismissed when their gate says they do not apply, but that dismissal path only works for one gate form today. The other common form — a when expression — still leaves those checkpoints active even when the expression is false, so agents keep hitting steps that should have been skipped. At the same time, shared rule text can be referenced from workflow-level rules, while activity files cannot use the same fragment references, so authors paste the same wording in many places. A third gap is automation: a known documentation mistake (citing a whole guide and also citing pieces of it in the same place) is not yet caught by a guard.\n\nThose three gaps slow reviews and migrations. Authors cannot rely on one gate style, cannot reuse rule fragments everywhere rules are written, and can reintroduce a citation pattern that already caused trouble. This work package finishes the open PR that closes those gaps so the server behaviour matches the schema direction already chosen, and the companion corpus work can migrate cleanly."
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "branch_name",
+              "source": "variables_changed",
+              "value": "feat/when-merge-rule-fragments-ap134-guard"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "target_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-02-condition-not-met-when-gated-checkpoints"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "worktree_created",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "on_feature_branch",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "pr_exists",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "declaredType": "string",
+              "name": "existing_pr_number",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": 373,
+              "valueType": "number"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "use_existing_pr",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "declaredType": "string",
+              "name": "pr_number",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": 373,
+              "valueType": "number"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "pr_url",
+              "source": "variables_changed",
+              "value": "https://github.com/m2ux/workflow-server/pull/373"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "pr_skipped",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "name": "user_request",
+              "source": "variables_changed",
+              "value": "resume the work package workflow for https://github.com/m2ux/workflow-server/pull/373"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "announce-start"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "detect-review-mode"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "derive-host-repo"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "resolve-repo-root"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "update-repo-submodules"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "analyze-repo-with-gitnexus"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "verify-signing-precondition"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "detect-merge-strategy"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "detect-project-type"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "announce-project-type"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "check-issue"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "issue-verification"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "bind-planning-folder-path"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "initialize-planning-folder"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "present-problem-overview"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "derive-branch-name"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "compute-canonical-target-path"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "create-component-worktree"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "check-branch"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "check-pr"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "announce-auto-use-existing-pr"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "start-work-package",
+            "data": {
+              "agentId": "wp-start-work-package-worker-1",
+              "stepId": "announce-completion"
+            },
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "timestamp": "2026-08-02T06:46:59.491Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 74273,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 4832,
+              "delivery": "full",
+              "stepId": "define-problem",
+              "techniqueId": "design-philosophy::define"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "define-problem"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 5370,
+              "delivery": "full",
+              "stepId": "classify-problem",
+              "techniqueId": "design-philosophy::classify"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "classify-problem"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 4861,
+              "delivery": "full",
+              "stepId": "determine-path",
+              "techniqueId": "design-philosophy::determine-path"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "determine-path"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 3846,
+              "delivery": "full",
+              "stepId": "document-philosophy",
+              "techniqueId": "design-philosophy::document"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "document-philosophy"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 5398,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 4599,
+              "delivery": "full",
+              "stepId": "create-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "create-assumptions-log"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 8027,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-02T06:47:18.881Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "timestamp": "2026-08-02T07:04:21.135Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "design-philosophy",
+            "timestamp": "2026-08-02T07:04:21.135Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 74273,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-02T07:04:59.286Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 4832,
+              "delivery": "full",
+              "stepId": "define-problem",
+              "techniqueId": "design-philosophy::define"
+            },
+            "timestamp": "2026-08-02T07:04:59.286Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 5370,
+              "delivery": "full",
+              "stepId": "classify-problem",
+              "techniqueId": "design-philosophy::classify"
+            },
+            "timestamp": "2026-08-02T07:04:59.286Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 4861,
+              "delivery": "full",
+              "stepId": "determine-path",
+              "techniqueId": "design-philosophy::determine-path"
+            },
+            "timestamp": "2026-08-02T07:04:59.286Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 3846,
+              "delivery": "full",
+              "stepId": "document-philosophy",
+              "techniqueId": "design-philosophy::document"
+            },
+            "timestamp": "2026-08-02T07:04:59.286Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 5398,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-02T07:04:59.286Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 4599,
+              "delivery": "full",
+              "stepId": "create-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-02T07:04:59.286Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 8027,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-02T07:04:59.286Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 6002,
+              "delivery": "full",
+              "resourceId": "design-framework"
+            },
+            "timestamp": "2026-08-02T07:05:23.311Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 5764,
+              "delivery": "full",
+              "resourceId": "assumptions-review"
+            },
+            "timestamp": "2026-08-02T07:05:23.880Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "checkpoint": "classification-and-path-confirmed",
+            "timestamp": "2026-08-02T07:06:28.101Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "design-philosophy",
+            "checkpoint": "classification-and-path-confirmed",
+            "data": {
+              "optionId": "skip-optional"
+            },
+            "timestamp": "2026-08-02T07:42:51.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_complexity",
+              "source": "setVariable",
+              "value": "simple"
+            },
+            "timestamp": "2026-08-02T07:42:51.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_elicitation",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-02T07:42:51.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_research",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-02T07:42:51.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "skip_optional_activities",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-02T07:42:51.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 74273,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-02T07:43:46.393Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 4832,
+              "delivery": "full",
+              "stepId": "define-problem",
+              "techniqueId": "design-philosophy::define"
+            },
+            "timestamp": "2026-08-02T07:43:46.393Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 5370,
+              "delivery": "full",
+              "stepId": "classify-problem",
+              "techniqueId": "design-philosophy::classify"
+            },
+            "timestamp": "2026-08-02T07:43:46.393Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 4861,
+              "delivery": "full",
+              "stepId": "determine-path",
+              "techniqueId": "design-philosophy::determine-path"
+            },
+            "timestamp": "2026-08-02T07:43:46.393Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 3846,
+              "delivery": "full",
+              "stepId": "document-philosophy",
+              "techniqueId": "design-philosophy::document"
+            },
+            "timestamp": "2026-08-02T07:43:46.393Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 5398,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-02T07:43:46.393Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 4599,
+              "delivery": "full",
+              "stepId": "create-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-02T07:43:46.393Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 8027,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-02T07:43:46.393Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "design-philosophy",
+            "checkpoint": "classification-and-path-confirmed",
+            "data": {
+              "optionId": "skip-optional"
+            },
+            "timestamp": "2026-08-02T07:44:20.742Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 6002,
+              "delivery": "full",
+              "resourceId": "design-framework"
+            },
+            "timestamp": "2026-08-02T07:44:28.138Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 5764,
+              "delivery": "full",
+              "resourceId": "assumptions-review"
+            },
+            "timestamp": "2026-08-02T07:44:28.849Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 3603,
+              "delivery": "full",
+              "stepId": "assess-ticket-completeness",
+              "techniqueId": "assess-ticket-completeness"
+            },
+            "timestamp": "2026-08-02T07:44:29.591Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "assess-ticket-completeness"
+            },
+            "timestamp": "2026-08-02T07:44:29.591Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 3846,
+              "delivery": "full",
+              "stepId": "document-philosophy",
+              "techniqueId": "design-philosophy::document"
+            },
+            "timestamp": "2026-08-02T07:44:40.082Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "chars": 8027,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-02T07:45:22.571Z",
+            "type": "technique_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 24,
+        "seq": 39,
         "sessionIndex": "KOQWUL",
         "skippedActivities": [],
         "startedAt": "2026-08-02T05:13:48.854Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785652271,
+        "ts": 1785656722,
         "variables": {
           "artifact_name": "",
           "artifact_publish_ref": "",
@@ -1669,24 +2768,26 @@
           "body_conforms": false,
           "body_findings": [],
           "body_override_recorded": false,
+          "branch_name": "feat/when-merge-rule-fragments-ap134-guard",
           "broken_artifact_links": [],
           "build_artifact_user_owned": false,
           "build_dependent_artifact_commands": "",
           "build_dependent_artifacts_pending": false,
           "change_block_index": "",
           "completion_document_path": "",
-          "component_name": "",
+          "component_name": "workflow-server",
           "component_path": ".",
           "comprehension_artifact": "",
           "comprehension_dir": "",
           "context_scope": "repo-only",
           "context_scope_uncertain": false,
+          "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints/README.md",
           "current_block_index": 0,
           "current_branch": "",
           "elicitation_complete": false,
-          "existing_pr_number": "",
+          "existing_pr_number": 373,
           "github_issue_found": false,
-          "gitnexus_indexed": false,
+          "gitnexus_indexed": true,
           "has_critical_blocker": false,
           "has_debt_markers": false,
           "has_deferred_assumptions": false,
@@ -1698,6 +2799,9 @@
           "has_stakeholder_comment": false,
           "has_stakeholder_input": false,
           "has_uncertain_symbols": false,
+          "host_repo_path": "/home/mike1/projects/dev/workflow-server",
+          "is_monorepo": false,
+          "is_review_mode": false,
           "issue_approved": false,
           "issue_cancelled": false,
           "issue_present": false,
@@ -1707,6 +2811,7 @@
           "issue_url": "",
           "jira_issue_key": "",
           "mark_progress_na": false,
+          "merge_strategy": "squash",
           "needs_cleanup": false,
           "needs_code_fixes": false,
           "needs_comprehension": true,
@@ -1720,10 +2825,15 @@
           "needs_simplification": false,
           "needs_strategic_fixes": false,
           "needs_test_improvements": false,
+          "on_feature_branch": true,
+          "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints",
           "post_jira_comment": false,
-          "pr_exists": false,
+          "pr_exists": true,
+          "pr_number": 373,
           "pr_skipped": false,
-          "pr_url": "",
+          "pr_url": "https://github.com/m2ux/workflow-server/pull/373",
+          "problem_complexity": "simple",
+          "project_type": "node-typescript",
           "provenance_log_path": "",
           "push_remote": "origin",
           "push_remote_url": "",
@@ -1739,10 +2849,12 @@
           "reviewed_code_base_url": "",
           "run_local_validation": false,
           "safety_floor_cleared": false,
+          "signing.configured": true,
           "skip_architecture_summary": false,
           "skip_assumption_review": false,
-          "skip_optional_activities": false,
-          "squash_merge_supported": false,
+          "skip_optional_activities": true,
+          "squash_merge_supported": true,
+          "stakeholder_overview": "Workflow checkpoints can be dismissed when their gate says they do not apply, but that dismissal path only works for one gate form today. The other common form — a when expression — still leaves those checkpoints active even when the expression is false, so agents keep hitting steps that should have been skipped. At the same time, shared rule text can be referenced from workflow-level rules, while activity files cannot use the same fragment references, so authors paste the same wording in many places. A third gap is automation: a known documentation mistake (citing a whole guide and also citing pieces of it in the same place) is not yet caught by a guard.\n\nThose three gaps slow reviews and migrations. Authors cannot rely on one gate style, cannot reuse rule fragments everywhere rules are written, and can reintroduce a citation pattern that already caused trouble. This work package finishes the open PR that closes those gaps so the server behaviour matches the schema direction already chosen, and the companion corpus work can migrate cleanly.",
           "stakeholder_review_complete": false,
           "stealth_mode": false,
           "strategic_findings_deferred": false,
@@ -1750,15 +2862,17 @@
           "strategic_fixes_selective": false,
           "submission_aborted": false,
           "summary_budget_overruns": [],
+          "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-02-condition-not-met-when-gated-checkpoints",
+          "target_repo": "m2ux/workflow-server",
           "ticket_gaps_documented": false,
           "ticket_refactor_needed": false,
           "uncertain_symbols": "",
           "unsigned_commit_list_summary": "",
           "unsigned_commits_in_pr": false,
-          "use_existing_pr": false,
+          "use_existing_pr": true,
           "user_request": "resume the work package workflow for https://github.com/m2ux/workflow-server/pull/373",
           "validation_passed": false,
-          "worktree_created": false
+          "worktree_created": true
         },
         "workflowId": "work-package",
         "workflowVersion": "3.42.0"
