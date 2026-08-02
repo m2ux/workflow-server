@@ -879,19 +879,44 @@
           "start-work-package",
           "design-philosophy"
         ],
-        "condition": "",
-        "currentActivity": "design-philosophy",
-        "currentTechnique": "analyse-challenge::run-loop",
+        "condition": "isDefault:codebase-comprehension",
+        "currentActivity": "codebase-comprehension",
+        "currentTechnique": "manage-artifacts::write-artifact",
         "declaredArtifacts": [
           {
             "id": "created_readme",
             "name": "README.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints/README.md"
+          },
+          {
+            "id": "design_philosophy_doc",
+            "name": "design-philosophy.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints/02-design-philosophy.md"
+          },
+          {
+            "id": "assumptions_log",
+            "name": "assumptions-log.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints/02-assumptions-log.md"
           }
         ],
         "deliveredContent": {
           "meta-dispatch-client-worker-1": {
             "resource:work-package/readme-seed": "a07b9eec70d567e7"
+          },
+          "wp-codebase-comprehension-worker-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:e2e9097b50d5356b": "e2e9097b50d5356b",
+            "bundle:scatter-gather": "5936e102c068c56c",
+            "bundle:variable-binding": "e5b276dec214b8d1",
+            "bundle:workflow-engine::finalize-activity": "4953563937662ff5",
+            "bundle:workflow-engine::resume-from-checkpoint": "be1aa82160949fb5",
+            "bundle:workflow-engine::yield-checkpoint": "df32af09a25e7d7f",
+            "resource:codebase-comprehension#comprehension-techniques": "b251f018ee923193",
+            "technique:analyse-challenge::run-loop": "4eed8afb3f653bcc",
+            "technique:codebase-comprehension::deep-dive": "3265e598fbc731f4",
+            "technique:codebase-comprehension::revise-questions": "83c1595aabd3b96f",
+            "technique:codebase-comprehension::survey": "bf5ebfcfc00d352f",
+            "technique:manage-artifacts::write-artifact": "d8614120946801fd"
           },
           "wp-design-philosophy-worker-1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -2742,17 +2767,418 @@
             },
             "timestamp": "2026-08-02T07:45:22.571Z",
             "type": "technique_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_statement",
+              "source": "variables_changed",
+              "value": "Checkpoint dismissal via condition_not_met only accepts structured condition gates; when-gated checkpoints cannot be dismissed when false. Activity-file rules lack workflow-level fragment refs. AP-134 citation-grain has no automated guard. PR #373 closes those three server gaps."
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_type",
+              "source": "variables_changed",
+              "value": "specific-cause-known"
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_complexity",
+              "source": "variables_changed",
+              "value": "simple"
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "classification_rationale",
+              "source": "variables_changed",
+              "value": "Root cause named in schema and respond_checkpoint; three specified deliverables with clear acceptance surfaces; user confirmed skip-optional (simple)."
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_elicitation",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_research",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "skip_optional_activities",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "path_rationale",
+              "source": "variables_changed",
+              "value": "skip-optional — well-defined PR #373 scope; elicitation/research off; comprehension mandatory; direct to planning."
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "design_philosophy_doc",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints/02-design-philosophy.md"
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints/02-assumptions-log.md"
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "assumption_decisions",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "define-problem"
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "classify-problem"
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "determine-path"
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "document-philosophy"
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "create-assumptions-log"
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "wp-design-philosophy-worker-1",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "timestamp": "2026-08-02T07:47:12.772Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "chars": 77708,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-02T07:47:38.663Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "chars": 9685,
+              "delivery": "full",
+              "stepId": "build-comprehension",
+              "techniqueId": "codebase-comprehension::survey"
+            },
+            "timestamp": "2026-08-02T07:47:38.663Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "stepId": "build-comprehension"
+            },
+            "timestamp": "2026-08-02T07:47:38.663Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "chars": 10627,
+              "delivery": "full",
+              "stepId": "create-comprehension-artifact",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-02T07:47:38.663Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "stepId": "create-comprehension-artifact"
+            },
+            "timestamp": "2026-08-02T07:47:38.663Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "chars": 6256,
+              "delivery": "full",
+              "stepId": "initial-deep-dive",
+              "techniqueId": "codebase-comprehension::deep-dive"
+            },
+            "timestamp": "2026-08-02T07:47:38.663Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "stepId": "initial-deep-dive"
+            },
+            "timestamp": "2026-08-02T07:47:38.663Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "chars": 10623,
+              "delivery": "full",
+              "stepId": "update-artifact-initial",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-02T07:47:38.663Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "stepId": "update-artifact-initial"
+            },
+            "timestamp": "2026-08-02T07:47:38.663Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "chars": 5382,
+              "delivery": "full",
+              "stepId": "revise-initial-questions",
+              "techniqueId": "codebase-comprehension::revise-questions"
+            },
+            "timestamp": "2026-08-02T07:47:38.663Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "stepId": "revise-initial-questions"
+            },
+            "timestamp": "2026-08-02T07:47:38.663Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "chars": 8356,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension#comprehension-techniques"
+            },
+            "timestamp": "2026-08-02T07:47:56.346Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "chars": 7588,
+              "delivery": "full",
+              "stepId": "analyse-challenge-pass",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-02T07:51:51.661Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "stepId": "analyse-challenge-pass"
+            },
+            "timestamp": "2026-08-02T07:51:51.661Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "chars": 10623,
+              "delivery": "full",
+              "stepId": "update-artifact",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-02T07:51:51.911Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "wp-codebase-comprehension-worker-1",
+              "stepId": "update-artifact"
+            },
+            "timestamp": "2026-08-02T07:51:51.911Z",
+            "type": "step_started"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 39,
+        "seq": 44,
         "sessionIndex": "KOQWUL",
         "skippedActivities": [],
         "startedAt": "2026-08-02T05:13:48.854Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1785656722,
+        "ts": 1785657111,
         "variables": {
           "artifact_name": "",
           "artifact_publish_ref": "",
@@ -2760,6 +3186,7 @@
           "assumption_decisions": [],
           "assumption_deferred": false,
           "assumption_resolved_inline": false,
+          "assumptions_log": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints/02-assumptions-log.md",
           "attestation_option": "certify",
           "audit_confirmed": false,
           "awaiting_review": false,
@@ -2774,6 +3201,7 @@
           "build_dependent_artifact_commands": "",
           "build_dependent_artifacts_pending": false,
           "change_block_index": "",
+          "classification_rationale": "Root cause named in schema and respond_checkpoint; three specified deliverables with clear acceptance surfaces; user confirmed skip-optional (simple).",
           "completion_document_path": "",
           "component_name": "workflow-server",
           "component_path": ".",
@@ -2784,6 +3212,7 @@
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints/README.md",
           "current_block_index": 0,
           "current_branch": "",
+          "design_philosophy_doc": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints/02-design-philosophy.md",
           "elicitation_complete": false,
           "existing_pr_number": 373,
           "github_issue_found": false,
@@ -2826,6 +3255,8 @@
           "needs_strategic_fixes": false,
           "needs_test_improvements": false,
           "on_feature_branch": true,
+          "open_assumptions": [],
+          "path_rationale": "skip-optional — well-defined PR #373 scope; elicitation/research off; comprehension mandatory; direct to planning.",
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-condition-not-met-when-gated-checkpoints",
           "post_jira_comment": false,
           "pr_exists": true,
@@ -2833,6 +3264,8 @@
           "pr_skipped": false,
           "pr_url": "https://github.com/m2ux/workflow-server/pull/373",
           "problem_complexity": "simple",
+          "problem_statement": "Checkpoint dismissal via condition_not_met only accepts structured condition gates; when-gated checkpoints cannot be dismissed when false. Activity-file rules lack workflow-level fragment refs. AP-134 citation-grain has no automated guard. PR #373 closes those three server gaps.",
+          "problem_type": "specific-cause-known",
           "project_type": "node-typescript",
           "provenance_log_path": "",
           "push_remote": "origin",

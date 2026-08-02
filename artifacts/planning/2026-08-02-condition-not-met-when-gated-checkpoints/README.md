@@ -51,7 +51,7 @@ Those three gaps slow reviews and migrations. Authors cannot rely on one gate st
 | 27 | [Close-out](14-COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | ⬚ |
 | 28 | [Token usage](14-token-usage.md) | Session token and cost summary | 5-10m | ⬚ |
 | 29 | [Session trace](14-session-trace.md) | Lean mechanical execution trace | 5-10m | ⬚ |
-| 30 | Codebase comprehension | Persistent knowledge under comprehension/ | 20-45m | ⬚ |
+| 30 | [Codebase comprehension](../../comprehension/when-merge-condition-not-met.md) | Persistent knowledge under comprehension/ | 20-45m | ✅ |
 
 **Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
