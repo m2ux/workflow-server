@@ -31,6 +31,6 @@ True once the review is accepted by the API.
 
 ### 1. Post Review
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
-2. `gh api repos/{$owner}/{$repo}/pulls/{pr_number}/reviews -F body=@<file-or-body> -f event={review_event}` (use `-f body="{body}"` when the body is a single-line string).
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews -F body=@<file-or-body> -f event={review_event}` (use `-f body="{body}"` when the body is a single-line string).
 3. Set `{review_posted}` true on success.

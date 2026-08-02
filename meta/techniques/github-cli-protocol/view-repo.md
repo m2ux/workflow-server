@@ -17,5 +17,5 @@ True when the repository allows squash merges (`.allow_squash_merge`).
 
 ### 1. Fetch Repository
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
-2. `gh api repos/{$owner}/{$repo} --jq .allow_squash_merge`; set `{squash_merge_supported}` from the result.
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo} --jq .allow_squash_merge`; set `{squash_merge_supported}` from the result.

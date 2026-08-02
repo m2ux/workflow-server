@@ -21,6 +21,6 @@ List issues via REST search or listing.
 
 ### 1. List Or Search Issues
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
-2. When `{search_text}` is set: `gh api "search/issues?q={search_text}+repo:{$owner}/{$repo}+type:issue" --paginate`.
-3. When `{search_text}` is unset: `gh api "repos/{$owner}/{$repo}/issues?{list_query}" --paginate` with `{list_query}` defaulting to `state=open`.
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. When `{search_text}` is set: `gh api "search/issues?q={search_text}+repo:{owner}/{repo}+type:issue" --paginate`.
+3. When `{search_text}` is unset: `gh api "repos/{owner}/{repo}/issues?{list_query}" --paginate` with `{list_query}` defaulting to `state=open`.

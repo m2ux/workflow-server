@@ -21,5 +21,5 @@ Comma-separated label names.
 
 ### 1. Add Labels
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
-2. `gh api repos/{$owner}/{$repo}/issues/{issue_number}/labels -X POST -f labels={labels}`.
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo}/issues/{issue_number}/labels -X POST -f labels={labels}`.

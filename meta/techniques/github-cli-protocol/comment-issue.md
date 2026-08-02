@@ -21,5 +21,5 @@ Markdown comment body.
 
 ### 1. Post Comment
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
-2. `gh api repos/{$owner}/{$repo}/issues/{issue_number}/comments -f body="{body}"`.
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo}/issues/{issue_number}/comments -f body="{body}"`.

@@ -23,5 +23,5 @@ Ordered list of changed file paths (each `.filename` from the pulls files endpoi
 
 ### 1. List Files
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
-2. `gh api repos/{$owner}/{$repo}/pulls/{pr_number}/files --paginate --jq '.[].filename'`; set `{changed_files}` to the resulting path list.
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo}/pulls/{pr_number}/files --paginate --jq '.[].filename'`; set `{changed_files}` to the resulting path list.

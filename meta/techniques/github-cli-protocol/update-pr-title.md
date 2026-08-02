@@ -21,5 +21,5 @@ New PR title.
 
 ### 1. Patch Title
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
-2. `gh api repos/{$owner}/{$repo}/pulls/{pr_number} -X PATCH -f title="{title}"`.
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo}/pulls/{pr_number} -X PATCH -f title="{title}"`.

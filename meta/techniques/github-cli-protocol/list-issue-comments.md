@@ -23,5 +23,5 @@ JSON array of issue comments from the paginated list.
 
 ### 1. List Comments
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
-2. `gh api repos/{$owner}/{$repo}/issues/{issue_number}/comments --paginate`; set `{issue_comments}` to the parsed array.
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo}/issues/{issue_number}/comments --paginate`; set `{issue_comments}` to the parsed array.

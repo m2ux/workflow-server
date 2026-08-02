@@ -25,6 +25,6 @@ Assignee login, or the literal `@me` for the authenticated user.
 
 ### 2. Assign
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
-2. `gh api repos/{$owner}/{$repo}/issues/{issue_number}/assignees -f "assignees[]={$assignee_login}"`.
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo}/issues/{issue_number}/assignees -f "assignees[]={$assignee_login}"`.
    - When the issue is already assigned to `{$assignee_login}`, this is a no-op — skip silently.

@@ -23,5 +23,5 @@ JSON array of inline review comments from the paginated list.
 
 ### 1. List Review Comments
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
-2. `gh api repos/{$owner}/{$repo}/pulls/{pr_number}/comments --paginate`; set `{pr_review_comments}` to the parsed array.
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo}/pulls/{pr_number}/comments --paginate`; set `{pr_review_comments}` to the parsed array.

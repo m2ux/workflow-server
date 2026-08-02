@@ -27,6 +27,6 @@ Status after the update (ready for review).
 
 ### 1. Mark Ready
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
-2. `gh api repos/{$owner}/{$repo}/pulls/{pr_number} -X PATCH -F draft=false`.
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo}/pulls/{pr_number} -X PATCH -F draft=false`.
 3. Set `{pr_url}` from `.html_url` and `{pr_status}` to ready for review.

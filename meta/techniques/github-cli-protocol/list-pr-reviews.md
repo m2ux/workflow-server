@@ -23,5 +23,5 @@ JSON array of reviews from the paginated list.
 
 ### 1. List Reviews
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
-2. `gh api repos/{$owner}/{$repo}/pulls/{pr_number}/reviews --paginate`; set `{pr_reviews}` to the parsed array.
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo}/pulls/{pr_number}/reviews --paginate`; set `{pr_reviews}` to the parsed array.

@@ -43,14 +43,14 @@ URL of the pull request.
 
 ### 1. Resolve Coordinates
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
 
 ### 2. Reuse Existing Pull
 
-1. `gh api "repos/{$owner}/{$repo}/pulls?state=open&head={$owner}:{branch_name}" --jq '.[0]'`.
-2. When a pull exists, set `{pr_number}` from `.number` and `{pr_url}` from `.html_url`, write `{body}` to a temp file, and `gh api repos/{$owner}/{$repo}/pulls/{pr_number} -X PATCH -F body=@<file>`; stop.
+1. `gh api "repos/{owner}/{repo}/pulls?state=open&head={owner}:{branch_name}" --jq '.[0]'`.
+2. When a pull exists, set `{pr_number}` from `.number` and `{pr_url}` from `.html_url`, write `{body}` to a temp file, and `gh api repos/{owner}/{repo}/pulls/{pr_number} -X PATCH -F body=@<file>`; stop.
 
 ### 3. Create Pull
 
-1. `gh api repos/{$owner}/{$repo}/pulls -f title="{title}" -f head="{branch_name}" -f base="{base_branch}" -f body="{body}" -F draft={as_draft}`.
+1. `gh api repos/{owner}/{repo}/pulls -f title="{title}" -f head="{branch_name}" -f base="{base_branch}" -f body="{body}" -F draft={as_draft}`.
 2. Set `{pr_number}` from `.number` and `{pr_url}` from `.html_url`.

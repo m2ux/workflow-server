@@ -43,6 +43,6 @@ Permanent blob-URL prefix for citing the head commit — `https://github.com/` p
 
 ### 1. Fetch Pull
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
-2. `gh api repos/{$owner}/{$repo}/pulls/{pr_number}` with `--jq {field_projection}` when `{field_projection}` is set.
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo}/pulls/{pr_number}` with `--jq {field_projection}` when `{field_projection}` is set.
 3. When `{field_projection}` is unset, set `{base_branch}` from `.base.ref`, `{head_sha}` from `.head.sha`, `{pr_body}` from `.body`, `{pr_url}` from `.html_url`, and `{reviewed_code_base_url}` to `https://github.com/{.head.repo.owner.login}/{.head.repo.name}/blob/{.head.sha}`.

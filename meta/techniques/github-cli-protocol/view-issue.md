@@ -31,6 +31,6 @@ HTML URL of the issue (`.html_url`) when the full object is fetched.
 
 ### 1. Fetch Issue
 
-1. Apply [resolve-repo-coordinates](./TECHNIQUE.md#resolve-repo-coordinates).
-2. `gh api repos/{$owner}/{$repo}/issues/{issue_number}` with `--jq {field_projection}` when `{field_projection}` is set; return the parsed object as `{issue_record}`.
+1. Apply [resolve-repo-coordinates](./resolve-repo-coordinates.md).
+2. `gh api repos/{owner}/{repo}/issues/{issue_number}` with `--jq {field_projection}` when `{field_projection}` is set; return the parsed object as `{issue_record}`.
 3. When `{field_projection}` is unset, set `{issue_url}` from `.html_url` and keep `{issue_number}` from `.number` when present.
