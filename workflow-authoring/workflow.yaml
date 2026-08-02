@@ -180,7 +180,7 @@ variables:
     defaultValue: false
   - name: register_sections
     type: array
-    description: Per-target register sections accumulated across the sweep.
+    description: Per-target register sections accumulated across the sweep, each holding findings, coverage, validation count, and that target's change-surface membership (touched, changed, consumer paths).
     defaultValue: []
   - name: verified_findings
     type: array

@@ -53,13 +53,14 @@ steps:
         actions:
           - action: set
             target: register_sections
-            message: "This target's register section appended to the sections already gathered: `{target_workflow_id}` with `{audit_findings}`, `{coverage_ledger}` (divergences and evidence), and `{fail_count}`. Appends; never replaces a prior target's section."
+            message: "This target's register section appended to the sections already gathered: `{target_workflow_id}` with `{audit_findings}`, `{coverage_ledger}` (divergences and evidence), `{fail_count}`, and change-surface membership `{touched_files}`, `{changed_files}`, `{consumer_surface}` (whole-file paths and consumer entries for this target only). Appends; never replaces a prior target's section."
 transitions:
   - to: validate-and-commit
     isDefault: true
 outcome:
   - Every criteria home is walked once per target against the working tree, so a finding is attributed to this change rather than to the catalogue it came from
   - The change surface is whole touched files closed under I/O-contract referencers, so Detect is never limited to diff hunks and silent bind sites still join the walk
+  - Each target's change-surface membership is packed into `{register_sections}` at sweep time, so the register rollup does not depend on the last loop iteration's bag
   - A violation reachable only through another workflow's reference into the target is reachable, because the consumer surface is part of what the walk covers
   - Every enumeration unit the walk could not apply is recorded with the reason, so absent coverage is visible rather than indistinguishable from a clean result
   - Walked units that reach the change surface carry field-level evidence on each whole file, so a narrative "walked" claim without Detect is a coverage gap

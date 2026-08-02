@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ The run's findings register, rolled up from every target swept.
 
 ### register_sections
 
-The per-target sections gathered across the sweep, each carrying a target id with its findings, its coverage divergences and its validation result.
+The per-target sections gathered across the sweep. Each section carries: target id; findings; coverage ledger (divergences and evidence); validation `{fail_count}`; and that target's **change-surface membership** — whole-file path lists `{touched_files}` and `{changed_files}`, plus `{consumer_surface}` entries (referencing path, reference form, resolved target path, on-change-surface flag). Membership is packed at sweep time; this op does not re-read live bag paths from the last loop iteration.
 
 ### verified_findings
 
@@ -49,7 +49,7 @@ The register body: the severity summary, the change-surface membership table (to
 
 - Fold `{register_sections}` into one findings section per target, taking each row's severity, entry, location, evidence, origin and known marking from `{verified_findings}` where an entry was re-derived
 - Count the severity summary from the surviving entries, with entries keyed in `{known_finding_keys}` counted under Known rather than Open
-- Emit the header change-surface counts and the **Change surface** table (path × how it joined: touched whole file, I/O-contract closure, or consumer) from each target's `{changed_files}` / `{touched_files}` / `{consumer_surface}` — never a hunk list
+- Emit the header change-surface counts and the **Change surface** table only from membership already on each `{register_sections}` entry: for each path in that section's `{touched_files}`, row `touched (whole file)`; for each path in `{changed_files}` not in `{touched_files}`, row `I/O-contract closure`; for each `{consumer_surface}` entry whose resolved target is on that section's change surface, row `consumer of change-surface target` naming the referencing path. Never a hunk list; never bag ids outside `{register_sections}`
 
 ### 2. Record the Divergences and the Exclusions
 
@@ -69,3 +69,7 @@ The register body: the severity summary, the change-surface membership table (to
 ### the-register-is-the-decision-surface
 
 The register carries rows a reader can act on and links to the artifacts behind them. It never embeds criteria prose, and it never restates the body of an artifact it links.
+
+### membership-from-register-sections-only
+
+Change-surface path × join rows are formatted from `{register_sections}` membership fields alone. Live session bag values for touched, changed, or consumer paths are outside this op's Inputs and are not read here.
