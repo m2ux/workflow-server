@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.4.1
+  version: 3.4.2
 ---
 
 ## Capability
@@ -30,3 +30,7 @@ Outside this technique group, GitHub access is an Apply of a leaf op. Domain tec
 ### ask-before-replying
 
 Ask the user before replying to PR comments or review feedback.
+
+### host-shell-for-gh
+
+Every `gh` invocation runs with full host permissions (Cursor Shell `required_permissions: ["all"]`, or the harness equivalent outside the agent sandbox). `GH_TOKEN` and `GITHUB_TOKEN` stay unset unless a known-good PAT is intentionally supplied. A sandbox denial is not a credential failure.

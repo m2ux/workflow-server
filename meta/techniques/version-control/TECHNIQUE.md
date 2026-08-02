@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.3.1
+  version: 5.3.2
 ---
 
 ## Capability
@@ -8,6 +8,10 @@ metadata:
 Version-control operations for planning folders and artifacts — parent repos, submodules, and branch push. Owns the host-versus-component distinction: host path and `owner/repo` come from git; a repository name in request prose identifies a component only.
 
 ## Rules
+
+### host-shell-for-remote-git
+
+Every git invocation that contacts a remote (`fetch`, `pull`, `push`, `ls-remote`, network `clone`, and `ssh` to the git host) runs with full host permissions (Cursor Shell `required_permissions: ["all"]`, or the harness equivalent outside the agent sandbox). Local-only git may use the default shell. A sandbox denial is not a credential or key failure.
 
 ### no-destructive-ops
 
