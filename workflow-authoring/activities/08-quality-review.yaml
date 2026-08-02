@@ -59,7 +59,8 @@ transitions:
     isDefault: true
 outcome:
   - Every criteria home is walked once per target against the working tree, so a finding is attributed to this change rather than to the catalogue it came from
+  - The change surface is whole touched files closed under I/O-contract referencers, so Detect is never limited to diff hunks and silent bind sites still join the walk
   - A violation reachable only through another workflow's reference into the target is reachable, because the consumer surface is part of what the walk covers
   - Every enumeration unit the walk could not apply is recorded with the reason, so absent coverage is visible rather than indistinguishable from a clean result
-  - Walked units that reach the change surface carry field-level evidence, so a narrative "walked" claim without Detect is a coverage gap
+  - Walked units that reach the change surface carry field-level evidence on each whole file, so a narrative "walked" claim without Detect is a coverage gap
   - The definition guards run against the tree this run edits as a mechanical net separate from canon coverage

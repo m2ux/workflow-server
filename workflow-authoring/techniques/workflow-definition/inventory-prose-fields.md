@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-The inventory of every definition-prose field on the target's changed definition surface that Description Hygiene and bound-step criteria reach.
+The inventory of every definition-prose field on the change surface (whole touched files and I/O-contract closure) that Description Hygiene and bound-step criteria reach.
 
 ## Inputs
 
@@ -15,19 +15,19 @@ Every definition file of the target in scope for this walk.
 
 ### changed_files
 
-The subset of `{surface_files}` that differs from the run's base ref.
+The change surface: whole files that differ from the base ref plus I/O-contract referencers. Inventory covers each file in full, not the diff hunks.
 
 ## Outputs
 
 ### prose_field_inventory
 
-One row per prose field on `{changed_files}` that Description Hygiene or bound-step criteria can key on: file path, field path (`activity.description`, `steps[<id>].description`, `steps[<id>].set[<target>].description`, `steps[<id>].name`, checkpoint `message` / option `description`, technique `## Capability` when the file is a technique), and a short quote of the field's text. Empty when `{changed_files}` holds no such field.
+One row per prose field on `{changed_files}` that Description Hygiene or bound-step criteria can key on: file path, field path (`activity.description`, `steps[<id>].description`, `steps[<id>].set[<target>].description`, `steps[<id>].name`, checkpoint `message` / option `description`, technique `## Capability` when the file is a technique), and a short quote of the field's text. Empty when `{changed_files}` holds no such field. Every qualifying field on each change-surface file is listed, including fields outside the git hunks.
 
 ## Protocol
 
 ### 1. Restrict to the Change Surface
 
-- Take `{changed_files}` as the inventory scope. Files only in `{surface_files}` stay out of this inventory; the full-surface walk still covers them under other units.
+- Take `{changed_files}` as the inventory scope — whole files. Files only in `{surface_files}` stay out of this inventory; the full-surface walk still covers them under other units. Do not restrict rows to lines present in the diff.
 
 ### 2. Enumerate Prose Fields
 
@@ -38,10 +38,10 @@ One row per prose field on `{changed_files}` that Description Hygiene or bound-s
 ### 3. Emit the Inventory
 
 - Emit `{prose_field_inventory}` as one row per field at the shape its Output declaration states
-- When no field qualifies, emit an empty inventory — emptiness is evidence that Description Hygiene has no changed prose to walk, not a skip
+- When no field qualifies, emit an empty inventory — emptiness is evidence that Description Hygiene has no change-surface prose to walk, not a skip
 
 ## Rules
 
 ### inventory-before-hygiene-walk
 
-Description Hygiene Detect runs against this inventory (and the full surface for pre-existing fields). A walk that marks Description Hygiene `walked` without an inventory that covers every changed prose field is incomplete — the unit is `blocked` for missing inventory, not `walked`.
+Description Hygiene Detect runs against this inventory (and the full surface for pre-existing fields). A walk that marks Description Hygiene `walked` without an inventory that covers every prose field on every change-surface file is incomplete — the unit is `blocked` for missing inventory, not `walked`.
