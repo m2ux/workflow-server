@@ -73,7 +73,7 @@ Layer map plus four mapping tables that translate informal prose patterns into f
 
 ### 02 — Anti-Patterns
 
-Specific smell instances — Detect / Do not flag / Fix. Cite by kebab-case smell **name**. Section-delivery family includes `whole-resource-for-one-section` and `framing-outside-any-section`. Technique locus family includes `technique-stage-agnostic`, `container-names-inheriting-ops`, and **`technique-references-technique` (AP-142 — a technique body never names, links, or Applies another technique; composition is activity-only)**. Dispatch / coordination family includes `prose-based-dispatch-patterns` (AP-140), **`coordination-in-technique` (AP-143 — multi-unit scatter/wait-all/gather is activity coordination)**, and AP-114 as the work-invoke subset of AP-142.
+Specific smell instances — Detect / Do not flag / Fix. Cite by kebab-case smell **name**. Section-delivery family includes `whole-resource-for-one-section` and `framing-outside-any-section`. Technique locus family includes `technique-stage-agnostic` (activity-blind technique prose) and `container-names-inheriting-ops` (group/root contracts do not name descendant ops that inherit them). Dispatch / coordination family includes `prose-based-dispatch-patterns` (AP-140), **`coordination-in-technique` (AP-143 — multi-unit scatter/wait-all/gather prefers activity coordination)**, and `pass-orchestration-in-technique` (AP-114 — multi-op Protocol façades). Peer technique cites for documentation or single-capability work remain allowed (`canonical-technique-reference`).
 
 ### 03 — Update Mode Guide
 

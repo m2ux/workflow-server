@@ -7,17 +7,17 @@ metadata:
 
 Scatter work units (sequential or parallel), gather an ordered keyed collection, then combine — one primitive, two scatter modes.
 
-Parallel mode dispatches agent instances (isolation, per-instance prompts, no auto-bind of instance scalars into the parent bag). Parallel mode here is agent-instance fan-out only.
+Parallel mode dispatches agent instances (isolation, per-instance prompts, no auto-bind of instance scalars into the parent bag). Same-context process, shell, or tool unit suites prefer the process-unit pattern activity under [`meta/activities/patterns/06-process-unit-fan-out`](../activities/patterns/06-process-unit-fan-out.yaml) — not this contract's parallel mode.
 
 ## Protocol
 
 1. Scatter, by mode:
    - Sequential: iterate the work units in a `forEach` loop; invoke the per-unit operation once per unit; it emits one scalar output per iteration.
-   - Parallel: build one instance prompt per work unit from the per-unit operation; dispatch all agents in one concurrent batch on the harness multi-agent surface; block until every instance yields or completes.
+   - Parallel: build one instance prompt per work unit from the per-unit operation; dispatch all at once via [harness-compat](./harness-compat/TECHNIQUE.md)::[spawn-concurrent](./harness-compat/spawn-concurrent.md) (a single batch); block until every instance yields or completes.
 2. Gather, ordered and keyed. Accumulate each unit's output into the gathered collection in input/iteration order, attaching the iteration key to each entry when supplied. Accumulation APPENDS — a per-unit scalar never overwrites the prior unit's value.
    - Sequential: append each iteration's scalar; the gather is what prevents a per-iteration scalar from clobbering the prior one.
-   - Parallel: assemble the concurrent batch's in-input-order results into the gathered collection under the iteration key. Record dispatch completeness (dispatched and returned counts) so a missing instance is detectable, and do NOT bind any instance's scalar outputs into the parent bag by name — instance outputs stay isolated until combined.
-3. Combine. Invoke the combine operation with the gathered collection as its input; its output lands in the bag under the combine operation's declared output name. The combine phase is identical across modes — the caller supplies WHICH combine operation; the contract of the call is mode-independent.
+   - Parallel: assemble `spawn-concurrent`'s in-input-order `results` into the gathered collection under the iteration key. Record dispatch completeness (dispatched and returned counts) so a missing instance is detectable, and do NOT bind any instance's scalar outputs into the parent bag by name — instance outputs stay isolated until combined.
+3. Combine. Invoke the combine operation with the gathered collection as its input; its output lands in the bag under the combine operation's declared output name (per [variable-binding](./variable-binding.md)). The combine phase is identical across modes — the caller supplies WHICH combine operation; the contract of the call is mode-independent.
 
 ## Rules
 
@@ -35,12 +35,12 @@ Parallel instance outputs are gathered into an isolated ordered collection and m
 
 ### order-is-preserved
 
-The gathered collection is in work-unit/iteration order — in parallel mode inherited from the concurrent batch's in-input-order results — so the combine step and any downstream report are deterministic.
+The gathered collection is in work-unit/iteration order — in parallel mode inherited from `spawn-concurrent`'s in-input-order collection — so the combine step and any downstream report are deterministic.
 
 ### parallelism-is-optimisation
 
 Sequential mode is always valid for correctness; parallel mode is an optimisation that adds concurrency and isolation. Where genuine parallel fan-out is not needed, sequential mode (the `concurrency = 1` case) is the correct default.
 
-### agent-instance-parallel
+### agent-instances-vs-process-units
 
-Parallel scatter dispatches agent instances (via the harness concurrent-spawn path in Protocol). Does not run same-context process, shell, or tool unit fan-out.
+Parallel scatter here is agent-instance fan-out via [spawn-concurrent](./harness-compat/spawn-concurrent.md). Same-context process, shell, or tool unit suites prefer [process-unit-fan-out](../activities/patterns/06-process-unit-fan-out.yaml) (activity coordination). Prefer parallel independent work via the unit-kind-correct formal home ([Prefer Parallel Independent Work via Formal Fan-Out](../../workflow-design/resources/design-principles.md#34-prefer-parallel-independent-work-via-formal-fan-out)). Multi-op composition façades remain activity-bound ([pass-orchestration-in-technique](../../workflow-design/resources/anti-patterns.md#ap-114-pass-orchestration-in-technique)).

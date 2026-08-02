@@ -38,4 +38,4 @@ During inner loops (TDD red/green in implement-task) prefer build_scope=`-p <cra
 
 ### one-invocation-per-leaf
 
-Each cargo leaf Protocol runs one cargo invocation (or pure combine over already-gathered unit outcomes). Does not scatter multi-op process suites, wait-all, gather, or Protocol-Apply techniques.
+Each cargo leaf Protocol runs one cargo invocation (or pure combine over already-gathered unit outcomes). Multi-op process suites (wait-all, ordered gather) prefer the process-unit pattern activity ([process-unit-fan-out](../../activities/patterns/06-process-unit-fan-out.yaml)); cargo technique Protocols do not Apply multi-op fan-out façades ([pass-orchestration-in-technique](../../../workflow-design/resources/anti-patterns.md#ap-114-pass-orchestration-in-technique); [Prefer Parallel Independent Work via Formal Fan-Out](../../../workflow-design/resources/design-principles.md#34-prefer-parallel-independent-work-via-formal-fan-out)).

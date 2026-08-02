@@ -76,7 +76,7 @@ Capability ops those activities bind live under technique groups (e.g. orchestra
 ## Anti-pattern traps
 
 - **AP-82** — do not informally merge worker outputs outside gather → synthesise steps.
-- **AP-114 / AP-142** — do not fold this pipeline into one technique Protocol Apply chain or name peer techniques from a technique body; keep step binds (or borrow these activities).
+- **AP-114** — do not fold this pipeline into one technique Protocol Apply façade; keep step binds (or borrow these activities). Peer technique cites for documentation or single-capability work remain allowed.
 - **AP-140** — do not re-teach concurrent shells / wait-all in technique Protocol; coordination stays here.
 - **AP-143 `coordination-in-technique`** — do not mint a strategy technique whose Capability is scatter / wait-all / gather; extend or mirror a pattern activity.
 - **AP-110** — do not re-teach harness spawn recipes locally when a shared capability op already wraps the surface; bind that op as a step of the activity.
