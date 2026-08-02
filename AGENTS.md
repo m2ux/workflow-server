@@ -50,45 +50,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
 - **Commit incrementally. Do not amend or squash to tidy up.** Each change lands as its own commit with its own message, so the branch carries a readable record of how it was built. Push with plain `git push`; when a push will not fast-forward, stop and ask rather than rewriting.
   - **`--force`/`--force-with-lease` has exactly one use:** correcting a genuine error in an earlier commit, on a branch with **no other contributors**. Not for squashing, not for rewording, not for folding a follow-up into the commit it fixes, and never on a shared branch.
   - Repeated amending is the failure mode to avoid: it silently collapses distinct pieces of work into one commit, and the intermediate states survive only in a local reflog. Once collapsed, the history cannot be recovered — only reconstructed by hand, which is a rewrite of its own.
-- **GitHub CLI — REST only (no GraphQL).** `gh pr create`, `gh pr view`, `gh pr list`, and any call that hits `api.github.com/graphql` are **forbidden** here (GraphQL is deprecated/unreliable and fails). Create and manage PRs with REST only, e.g.:
-
-  ```bash
-  git push -u origin HEAD
-  gh api --method POST repos/{owner}/{repo}/pulls \
-    -f title='...' -f head='branch' -f base='main' -f body='...'
-  ```
-
-  Other ops: `gh api repos/...`, `gh api --method PATCH|POST|GET ...`. Never use `gh pr *`.
-
-### GitHub auth and agent shell (required)
-
-Host auth is **keyring + SSH** (`gh` as the active user; `origin` is `git@github.com:...`). Most agent GitHub failures are a **sandboxed shell**, not a broken login. Workflow ops under `github-cli-protocol` and remote `version-control` carry the same invariant (`host-shell-for-gh`, `host-shell-for-remote-git`).
-
-1. **First attempt, every time — full host permissions.**  
-   For every `gh` call (including `gh api`) and every remote git/SSH call (`fetch` / `pull` / `push` / `ls-remote` / network `clone` / `ssh` to the git host), run the Shell with `required_permissions: ["all"]` (or the harness equivalent outside the agent sandbox). Local-only git (`status`, `add`, `commit`, `rev-parse`) may use the default shell. Do not start these remote calls sandboxed and “escalate after failure.”
-
-2. **Leave token env unset unless a known-good PAT is intentional.**  
-   Unset `GH_TOKEN` and `GITHUB_TOKEN` for keyring auth. `gh` prefers those env vars over the keyring; a wrong or garbage value yields `Bad credentials` / HTTP 401 even when keyring login is fine. Never scrape `~/.config/gh/hosts.yml` into them (tokens live in the keyring, not that file).
-
-3. **Sandbox denial is not auth failure.**  
-   These signatures mean the shell is still sandboxed — re-run the **same** command once under full host permissions. Do not conclude credentials or SSH keys are invalid; do not thrash sandboxed retries; if the harness refuses full host permissions, stop and surface that blockage:
-
-   ```text
-   Bad owner or permissions on /etc/ssh/ssh_config.d/20-systemd-ssh-proxy.conf
-   read tcp 127.0.0.1:…->127.0.0.1:… connection reset by peer
-   Get "https://api.github.com/...": unexpected EOF
-   fatal: Could not read from remote repository.
-   ```
-
-4. **Health check** (unsandboxed only — same permissions as step 1):
-
-   ```bash
-   unset GH_TOKEN GITHUB_TOKEN
-   gh auth status
-   gh api user --jq .login
-   ssh -T git@github.com
-   git ls-remote origin HEAD
-   ```
+- **GitHub CLI: do not use GraphQL.** Prefer REST only (`gh api repos/...`, `gh api --method PATCH|POST|GET ...`). Avoid `gh pr view/create/list` and any path that hits `api.github.com/graphql` — GraphQL is deprecated/unreliable here.
 
 ## Where to look
 

@@ -459,13 +459,6 @@
     },
     {
       "check": "orphan-input",
-      "site": "work-package :: meta::github-cli-protocol::comment-issue",
-      "detail": "own input 'number' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
-    },
-    {
-      "check": "orphan-input",
       "site": "work-package :: meta::gitnexus-operations::analyze",
       "detail": "own input 'force_rebuild' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
@@ -533,13 +526,6 @@
       "detail": "{email} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
       "rationale": "artifact-template-placeholder"
-    },
-    {
-      "check": "read-resolution",
-      "site": "work-package/techniques/manage-git/detect-merge-strategy.md:26",
-      "detail": "{allow_squash_merge} has no producer (declared id / $-local / workflow var / set-target)",
-      "verdict": "harmless",
-      "rationale": "external-tool-syntax"
     },
     {
       "check": "read-resolution",
