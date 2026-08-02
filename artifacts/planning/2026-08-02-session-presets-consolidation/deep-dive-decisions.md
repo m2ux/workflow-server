@@ -143,3 +143,62 @@ Open since March, untouched since, it adds a second session store backed by a da
 - Adding a session field must change both the type and the schema object together — the schema is cast to the type, so changing only the type still compiles and then silently strips the field on every read. A bad enumerated value surfaces as a seal mismatch, whose message wrongly suggests tampering.
 - The measurement sequence across epics needs managing: this epic's batching change, then its bootstrap fold, each measured against the July baselines before the delivery-cost epic audits what survives.
 - One acceptance criterion inside this epic contradicts another: the profile item pins a planning-folder operation inside the wrapper that the bootstrap item retires. The wrapper keeps its privacy content; the planning-folder operation goes.
+
+---
+
+# Fourth loop — what batching moots, and where it belongs
+
+The general batching mechanism from decision 21 changes the arithmetic the epic was built on, so a fourth pass tested every assumption that rested on dispatch cost. Two work items changed home or justification, and one blocker appeared that no earlier pass reached.
+
+## What the fourth pass established
+
+### Batching captures almost the whole cost win, and the bootstrap's cost case does not survive
+
+Decomposing the profiled 27 July run gives an exact split, because the five worker ledgers sum to the recorded total. The four setup workers cost 307 thousand tokens of fresh context, of which roughly 272 thousand is context establishment and only 29 thousand is delivered content. Collapsing four dispatches into one leaves one establishment plus all the content: **roughly 110 thousand against 307, a saving of about 65% of the setup walk.** The second clean run gives 60–66% independently.
+
+Folding setup into the server removes no dispatches on top of that — there is only one left. It removes content and turns: **about 25 to 30 thousand tokens per run, roughly 2.5% of the headline figure** the epic was re-prioritised on. That residue is delivered content weight, which is the delivery-cost epic's declared area, so it is also double-counted.
+
+### The bootstrap's correctness case survives, and there are real incidents behind it
+
+Four documented failures, two of them priced. A run bound the wrong repository from a link rather than deriving it from the checkout, creating an empty directory where the reviewer expected source — and the run looked healthy throughout. The same fault elsewhere threw away a whole session at a cost of 81,762 tokens. A planning folder was minted under the dated fallback instead of its intended name and written into for three days across six commits. A temporary session was never promoted and the child was written as the top-level record, inverting the documented nesting — which is exactly what decision 14 deletes.
+
+In none of these did an agent get arithmetic wrong. Each is the same shape: the prose named the wrong source and nothing checked the answer. That is the argument for code rather than prose — a rule with no test, no type, and no guard ships wrong silently. The current fix for the first incident is itself prose: a 48-line derivation the agent hand-executes every run, propped up by three validations that exist only because the server cannot check them. One live gap is still unfiled: session start accepts a repository whose mapped directory is neither present nor a checkout, and creates it.
+
+### Batching is not a creation-time property
+
+The epic's thesis is properties fixed at session creation and never re-decided mid-run. Batch composition is chosen per dispatch during a run, its size is explicitly to be tuned from real data rather than fixed, and what it changes is the dispatch contract. The rule that moved the bootstrap into this epic — an epic coordinates one area of concern — moves batching out of it.
+
+### The commit rule collides with batching, and no earlier pass caught it
+
+A standing rule requires that after every completed activity both source changes and planning artifacts are committed and pushed before transitions are evaluated, and the commit hook is the orchestrator's, explicitly denied to workers. A worker crossing an activity boundary inside its own context cannot run it.
+
+### Per-activity transitions are what make a failed resume survivable
+
+If the batched worker reports each activity as it finishes, a failed resume costs one activity: a fresh worker picks up the session's current activity, and already-answered gates replay silently because recorded responses are keyed per activity rather than per agent. If instead the worker defers its transitions to the end of the batch, the session cursor goes stale and the whole batch is redone — and the worker is told to stop when the pointer disagrees. So relaxing the rule that forbids workers from asking for their next activity is a **requirement** of the mechanism, not a convenience.
+
+### Measured batch shapes and collapse
+
+Thirteen of the main workflow's fifteen activities carry a gate, so there is no gate-free run of two — batching removes respawns, not pauses. Delivery collapses about 40–45% for the second activity in a batch and 55–70% for the third; the best measured runs of three collapse 32% and 40% overall. But the payoff is lopsided: the ledger collapse on a good batch of three saves about 23 thousand tokens while skipping two respawns saves 120 to 200 thousand. **Batching is five to eight times more about not re-paying the harness baseline than about content dedupe** — which means it loses most of its value, and keeps all of its risk, if resume does not work.
+
+One context walking all fifteen activities would take 937 thousand characters of definition alone, about 234 thousand tokens before a line of code is read. Counting ledger entries the same way puts the historical overflow at roughly three to four of today's activities — two independent routes to the same limit.
+
+### The calibration plan measured itself out of existence
+
+Cost is recorded once per dispatch against one named activity. A worker covering three activities yields one figure attributed to one of them, destroying exactly the per-activity resolution needed to determine a safe batch size from real runs.
+
+## Decisions from the fourth loop
+
+23. **Batching becomes its own issue at high priority.** *(Relocates decisions 20 and 21 out of this epic.)* It carries the dispatch-loop ownership fix, the batch-size calibration, and the re-measurement, and it inherits the high priority the startup measurement granted — that measurement is now its evidence, not this epic's. The precedent is exact: the last dispatch-mechanics change shipped as a standalone issue rather than under an epic.
+24. **The bootstrap item is rewritten on correctness.** The dispatch-count and token-total framing comes out; the four incidents, the hand-executed derivation with its three compensating validations, the mis-promoting temporary-session path, and the unfiled bind-time precondition go in. Cost stays as one secondary sentence at its true size. The item remains worth doing — it is small, most of it is already server-side, and it closes an open silent-failure gap — but it is no longer a headline.
+25. **A batched worker pauses at each activity boundary so the orchestrator can commit.** The pause-and-resume machinery is already needed for gates, which fire in thirteen of fifteen activities, so the boundary costs a round trip rather than a respawn. The invariant that a resume finds its work already pushed is preserved, and the saving is untouched because the saving comes from not respawning.
+26. **The batch limit is a server-enforced cumulative budget plus a hard cap of three activities.** The server refuses to deliver the next activity once a worker's accumulated delivery passes a budget carrying its own, much smaller headroom setting — reusing the existing per-delivery fraction unchanged would admit nine of fifteen activities. The cap covers what a byte count cannot see: the harness baseline, the code the worker reads, and context degradation across a long walk. Both the byte measurement and the ledger-entry count converge on three.
+27. **Cost is recorded per activity within a batch.** The usage record is extended so one dispatch can report a figure for each activity it covered, keeping the resolution calibration depends on while the existing reconciliation between recorded entries and actual dispatches still balances.
+
+## Further constraints carried into implementation
+
+- Batching's premise — that resuming a worker is cheap — holds only because the per-agent delivery ledger shipped; before it, resumed workers were forced into full delivery and twelve resumes cost over a million tokens in one measured run. Name that work as the enabler.
+- Mid-batch arrivals are currently recorded as fresh dispatches, because the discriminator keys on the activity as well as the agent. Left alone this corrupts the saving measurement that the ledger work is judged by, and any limit later keyed off it. The scope-only predicate already exists alongside it.
+- Batch discipline on delivery mode: the first activity takes full delivery, later ones take reference. Reference mode on a batch's first activity is measurably more expensive than full, because it ships resource bodies eagerly so they can collapse later.
+- A worker that has silently lost content mid-batch and still asks for reference delivery receives unreadable markers for content it no longer holds. The existing escape hatch is agent-judged, and there is no server-side detector. Per-activity dispatch makes this impossible by construction; batching makes it a live mode.
+- Good batch candidates in the main workflow are the analysis runs in its middle, not its ends. The activities that create the worktree, do the implementation, submit for review, or read unbounded external material should stay one to a worker.
+- Abandoned batches leave their ledger entries behind permanently, since deliveries merge and are never pruned.
