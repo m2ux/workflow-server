@@ -11,6 +11,10 @@ This folder is the investigation-detail home for the session-presets epic, which
 
 Each capture is the issue body verbatim at consolidation time, so the schema sketches, candidate-profile tables, and open design questions stay reachable after the issue closes.
 
+## Decisions
+
+The open design questions were settled on 2 August 2026 after a code-level deep dive across the four surfaces the epic touches. The findings and all nine decisions — including the entry-activity ruling the acceptance criteria call for — are recorded in [deep-dive-decisions.md](./deep-dive-decisions.md).
+
 ## Why these two consolidate
 
 - Both add declared, named metadata to a workflow definition that is consumed exactly once, at session creation — profile seeds laid over defaults, a cost profile read to decide dispatch versus solo.
