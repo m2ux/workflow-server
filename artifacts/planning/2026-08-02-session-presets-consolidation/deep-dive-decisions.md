@@ -63,11 +63,11 @@ A follow-up pass, run once the first round settled, checking what the accepted d
 
 ## Decisions from the second loop
 
-10. **Locking is strict, and the redundant write is deleted.** Any write to a locked variable is a hard error. The wrapper's re-set of `stealth_mode` is removed — it is a no-op against the seed and uses a verb already scheduled for removal — leaving one unambiguous rule rather than a value-dependent one.
+10. **Locking is strict, and the redundant write is deleted.** ~~Any write to a locked variable is a hard error.~~ **The enforcement half is superseded by decision 15 — a locked write is refused and reported, never thrown.** The wrapper's re-set of `stealth_mode` is still removed — it is a no-op against the seed and uses a verb already scheduled for removal.
 11. **An inherited declaration may be overridden in its default and its lock, nothing else.** Type and description always come from the base, so a variable keeps one meaning across a borrow. This is exactly what the wrapper needs, and it resolves the 63 drifted descriptions by construction.
 12. **Ambiguity comes back as an open decision, not an error.** The bootstrap call succeeds, keeps the deterministic work it completed, and returns a structured field naming the decision kind, the candidates, and its ranked recommendation; the orchestrator presents it and calls back. This follows the existing pattern where session start reports an unbound repository as a field. A checkpoint cannot be used — the machinery needs a live session already walking an activity, which has not happened yet.
-13. **No cost model ships. The orchestrating workflow runs solo; measurement decides anything further.** *(Supersedes decision 6 and rebases decision 7.)* The static estimate, its storage, its staleness policy, and per-path eligibility are all dropped as over-built for what the epic actually needs. The orchestrating workflow — five small activities, ending after dispatch, running at the head of every session — is named solo-eligible outright; the server refuses a persistent context for everything else, so the overflow class stays structurally unreachable without any arithmetic behind the refusal. Real runs after the change provide the data for revisiting, if a second candidate ever appears.
-    **Worth keeping distinct:** the orchestrator walking *its own* small setup activities in one context is not the failure that PR #247 reverted. That was the orchestrator absorbing *client* activity content — 93 delivered entries under one ledger. The epic's constraint that the shared orchestrating workflow never accumulates client deliveries is untouched by this decision, and the startup measurement names its own ceremony (2–43 KB per activity) as the canonical short walk.
+13. **No cost model ships.** *(Supersedes decision 6 and rebases decision 7.)* The static estimate, its storage, its staleness policy, and per-path eligibility are all dropped as over-built for what the epic actually needs. Real runs after the change provide the data for revisiting. **The execution-shape half of this decision — "the orchestrating workflow runs solo" — is itself superseded by decision 21: many activities to one worker, rather than the orchestrator walking them itself.**
+    **Worth keeping distinct, and still true:** a short setup walk held in one context is not the failure PR #247 reverted. That was the orchestrator absorbing *client* activity content — 93 delivered entries under one ledger. The epic's constraint that the shared orchestrating workflow never accumulates client deliveries is untouched, and the startup measurement names the setup ceremony (2–43 KB per activity) as the canonical short walk.
 14. **The bootstrap creates a durable session directly, and the temp-then-promote path is deleted.** Restart-fragile code is removed rather than ported; resume keeps working because the saved-session scanner already matches both shapes.
 
 ## Constraints carried into implementation, no decision needed
@@ -76,3 +76,70 @@ A follow-up pass, run once the first round settled, checking what the accepted d
 - The bootstrap can derive a planning slug mechanically when the request carries a parseable identifier, and otherwise fall back to the dated `YYYY-MM-DD-<workflow_id>` form the dispatch path already sanctions.
 - With setup folded in, the orchestrating workflow plausibly lands at three activities: match the request and present any decisions the bootstrap returned, then dispatch, then close out. The session-creation activity disappears entirely and target resolution reduces to a single checkpoint presentation.
 - Guard interaction to preserve: the existing rule rejecting existence tests on defaulted variables means the base workflow's `is_review_mode` must keep its deliberate absence of a default when inheritance merges declarations.
+
+---
+
+# Third loop — breakage, collisions, and a better execution shape
+
+A third pass, checking what the accepted decisions break, whether they collide with the other open epics, and what the execution-shape change actually costs. Two accepted decisions did not survive it, and the execution-shape item changed shape entirely.
+
+## What the third pass established
+
+### The reverted solo path was never what we were proposing
+
+The removed operation was bound at exactly one place — the client-activity loop, authenticated with the *client* session index. The revert message says it directly: solo-as-default "overflowed agent context on multi-activity **client** walks." The orchestrating workflow's own activities were untouched by both the original change and its revert. So there was no prior art either way for holding a short setup walk in one context; the question was open, not settled by the earlier failure.
+
+### A hard error on a locked write can strand a session
+
+This is the sharpest finding of the pass. The refusal would happen inside the session mutation, so the change is discarded and the checkpoint stays open on disk — while a helper gates every authenticated tool except responding to that same checkpoint. The values a checkpoint writes come from the workflow definition, not the agent, so the agent cannot avoid the write by answering differently; if every option on the gate writes the locked value, nothing can resolve it. There is no abort, reset, or reseal tool, and hand-editing the file fails the seal, whose error text tells the user to restore from a commit — which restores the stuck gate too. Meanwhile the response shape already carries an unused errors channel: the type is there, `buildValidation` only ever fills warnings, and no tool sets it.
+
+### The design canon argues against posture as its own field
+
+Two catalog entries apply. One says a mode is one authoritative variable driving conditional flow, not a parallel field; the other warns against derived state shadowing an existing variable, and its worked example is the review-mode flag itself. The construct inventory already lists "named bundle of mode settings" as activation variable plus conditional flow. Posture as a declared variable needs no new construct and inherits history recording, audit, resume, and guard evaluation for free.
+
+### Moving privacy into a profile would break its own guard first
+
+The privacy guard models what the server seeds by reading the wrapper's declared defaults directly, then asserts privacy is on before evaluating a single step. Move those seeds into a profile and the guard fails on its own headline assertion until rewritten in the same change. Leaving privacy in the wrapper — which decision 1 already does — keeps the guard untouched.
+
+### Two prerequisites sit behind this epic in the running order
+
+The decision-integrity epic owns the contract for how a gate reaches the user, which a headless posture overrides, and would build the caller-identity check that enforcing posture needs — which does not exist: the respond tool takes no agent id and performs no role check, so "only the orchestrator resolves gates" is error-message prose. The server-unblocks epic owns the schema wording that decides whether the absence test gate-on-absence rests on survives the next schema major. Both sit at order 2 and 3 behind this epic's order 1.
+
+### Gate-on-absence is cheaper than feared, with one snapshot cost
+
+The review-mode guard needs no changes: its allowlist is keyed to checkpoints in other activities, and its provably-false logic already evaluates the absence operator correctly against a seeded bag. The walker never tries to satisfy step conditions, so its path selection is unaffected. One stored walk snapshot loses one step and must be re-baselined in the same commit as the corpus stamp.
+
+### Inheritance is safe, and one guard already proves it
+
+All 75 shared declarations agree on type, so "an override may never change type" costs nothing today. The variable-model and fragment guards scope their scans to each workflow's own activity directory, so borrowed activities are already linted against the workflow that authored them — meaning those guards never forced the duplication and inheritance will not break them. No snapshot covers the wrapper's variable list. The privacy guard is the exception: it walks borrowed activities with the wrapper's bag, so a wider inherited bag changes which steps it considers reachable and needs re-baselining.
+
+### Adding a session field is well-precedented; adding a workflow key is half-checked
+
+The seal is computed over raw bytes before any parse, session parsing is non-strict, and the delivery-mode field was added with no migration and no version bump — so an optional field is safe. On the workflow side there is a gap worth knowing: the workflow schema object is not strict while its generated JSON counterpart is, and nothing validates corpus YAML against the generated schema, so an unregistered key is silently dropped — a half-landed key looks declared and does nothing.
+
+### A five-month-stale pull request overlaps this work
+
+Open since March, untouched since, it adds a second session store backed by a database, its own session lifecycle, a relay of gates to human approvers, and a second meaning of "headless."
+
+## Decisions from the third loop
+
+15. **A locked write is refused and reported, never thrown.** *(Supersedes the enforcement half of decision 10.)* The write is dropped rather than applied, recorded as a rejection in session history, and surfaced through the errors channel that already exists in the response shape and is currently unused. The value genuinely never changes — the whole point of the lock — and no session can be stranded.
+16. **Posture is an ordinary declared variable, not a session field.** *(Supersedes decision 4.)* An enumerated variable that a profile seeds like any other value. No new construct, conforms to the canon, and it inherits history recording, audit, resume survival, and guard evaluation from the seeding path that already exists.
+17. **Review mode is the first profile, and privacy stays in the wrapper.** The privacy guarantee is not put through brand-new machinery, and its guard keeps the driver it reads today. A privacy profile is revisited only if a second private variant appears.
+18. **Two decisions are pulled forward rather than re-ordering the epics.** The gate-presentation ruling and the wording exempting existence tests from removal become inputs to this epic's profile item. Everything else in those two epics stays where it is, and the two setup items proceed immediately with no such dependency.
+19. **Which workflows may use a persistent context is a server setting, defaulting to the orchestrating workflow.** Tests and the token benchmark set their own. The shipped default stays strict, and the reference-delivery suite — the regression net for the delivery mechanics this depends on — keeps exercising them.
+20. **The client dispatch loop moves to the orchestrator.** It is currently handed to a spawned worker that then spawns further workers, which the harness rule against spawned agents inheriting the dispatch primitive forbids. Fixing it removes a standing violation, is implied by the batching change anyway, and removes the most expensive setup dispatch measured.
+21. **Many activities to one worker, as a general mechanism.** *(Supersedes the execution-shape half of decision 13.)* A dispatch may carry a run of activities rather than exactly one, and the worker walks them in a single context, resumed in place when a gate fires. An acceptable batch size is calibrated after the fact from real runs rather than guessed now. The orchestrating workflow's setup walk is the first user of the mechanism.
+    **Why this beats the orchestrator walking them itself:** the orchestrator's context stays clean and its no-domain-work rule is untouched; the existing yield-and-resolve contract needs no carve-out, because the worker still yields and the orchestrator still resolves; and cost accounting keeps working, because the dispatch accounting rule already covers a resume after a gate. It needs one rule relaxed — workers are currently told never to ask for the next activity — against roughly six the alternative required. The resume machinery already exists as a harness operation documented as preserving the context window.
+22. **The stale pull request is closed, with what is worth keeping captured.** Its human-approval relay is recorded against the epic that owns gate delivery. Five months of drift means it would be substantially rewritten regardless, and leaving it open lets the repository drift toward two session lifecycles and two meanings of headless.
+
+## Further constraints carried into implementation
+
+- **Profile shape follows the fragments precedent:** a record keyed by a kebab-case name, with no separate id field (the key is the id), no title (reserved to the workflow root), and no tags (which exist at exactly one place in the schema surface today). Seed keys inside are variable names and stay qualified snake_case.
+- Registering the new key means the schema field, schema regeneration, an enforcement-model row, and a construct-inventory row — without the inventory row it trips the rule requiring operative criteria to have a home.
+- The privacy guard and the variable-model guard both need to evaluate the *effective* declaration set once inheritance lands, not the literal file contents.
+- Re-baselining sequence for gate-on-absence: update the walk snapshots and re-stamp the corpus in one commit, since the stamp check runs first and fails with a drift message before any snapshot is compared.
+- Watch two tests that assert on the delivered workflow payload when the wrapper's declaration list grows under inheritance.
+- Adding a session field must change both the type and the schema object together — the schema is cast to the type, so changing only the type still compiles and then silently strips the field on every read. A bad enumerated value surfaces as a seal mismatch, whose message wrongly suggests tampering.
+- The measurement sequence across epics needs managing: this epic's batching change, then its bootstrap fold, each measured against the July baselines before the delivery-cost epic audits what survives.
+- One acceptance criterion inside this epic contradicts another: the profile item pins a planning-folder operation inside the wrapper that the bootstrap item retires. The wrapper keeps its privacy content; the planning-folder operation goes.
