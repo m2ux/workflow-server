@@ -31,6 +31,8 @@ Method: `grep -rli gitnexus` over `workflows/` at `e189c138`, excluding the oper
 
 The operations group at HEAD: 17 operation files + `TECHNIQUE.md` under `workflows/meta/techniques/gitnexus-operations/` (analyze, query, context, impact, cypher, detect-changes, verify-index, orphan-scan, diff-coverage-map, public-api-enum, read-cluster, read-process, rename, complexity-signal, reversibility-signal, scope-discipline-check, diagram-source-select).
 
+Placement rule for the fix (AP-23, `worker-rule-reach`): "use the graph" directives belong on surfaces workers actually receive — activity rules or a technique's Rules section — not on workflow-level files workers never see. The activities that gain most are the ones whose job is structural reasoning: impact analysis, quality review, scope verification, wiki building.
+
 ## Part 2 — multi-repo / sibling-graph capability already present in GitNexus
 
 `list_repos` (MCP) returns 17 indexed repositories. The `midnight-agent-eng` mono-repo is indexed both as a unified root index (13,726 files) **and** as 13 separate per-submodule indexes; a repository group named `midnight` is configured over those 13 (midnight-node, midnight-ledger, midnight-zk, midnight-js, midnight-indexer, midnight-reserve-contracts, compact, compact-export, example-counter, cardano-node, partner-chains, midnight-docs, midnight-architecture), with no manifest links yet.
