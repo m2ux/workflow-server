@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.3.2
+  version: 5.3.3
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Version-control operations for planning folders and artifacts — parent repos, 
 
 ### host-shell-for-remote-git
 
-Every git invocation that contacts a remote (`fetch`, `pull`, `push`, `ls-remote`, network `clone`, and `ssh` to the git host) runs with full host permissions (Cursor Shell `required_permissions: ["all"]`, or the harness equivalent outside the agent sandbox). Local-only git may use the default shell. A sandbox denial is not a credential or key failure.
+Every git invocation that contacts a remote (`fetch`, `pull`, `push`, `ls-remote`, network `clone`, and `ssh` to the git host) runs on the host shell — host credentials, host network, and host SSH agent. Isolated execution environments that block those are outside this technique. Local-only git may use the default shell. An isolation denial is not a credential or key failure.
 
 ### no-destructive-ops
 

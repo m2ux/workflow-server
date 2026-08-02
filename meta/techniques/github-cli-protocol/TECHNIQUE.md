@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.4.2
+  version: 3.4.3
 ---
 
 ## Capability
@@ -33,4 +33,4 @@ Ask the user before replying to PR comments or review feedback.
 
 ### host-shell-for-gh
 
-Every `gh` invocation runs with full host permissions (Cursor Shell `required_permissions: ["all"]`, or the harness equivalent outside the agent sandbox). `GH_TOKEN` and `GITHUB_TOKEN` stay unset unless a known-good PAT is intentionally supplied. A sandbox denial is not a credential failure.
+Every `gh` invocation runs on the host shell — host credentials, host network, and host SSH agent. Isolated execution environments that block those are outside this technique. `GH_TOKEN` and `GITHUB_TOKEN` stay unset unless a known-good PAT is intentionally supplied. An isolation denial is not a credential failure.
