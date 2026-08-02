@@ -37,7 +37,7 @@ Keys of findings already accepted or baselined, each pairing a criteria entry wi
 
 ### findings_register
 
-The register body: the severity summary, one findings section per target, the coverage divergences, the accepted exclusions and the sources consulted. Shaped by [Template](../../resources/findings-register.md#template). Read by later steps of the same run as much as by a person, so every section is one row per item rather than prose.
+The register body: the severity summary, the change-surface membership table (touched whole files, I/O-contract closure, consumers), one findings section per target, the coverage divergences, the accepted exclusions and the sources consulted. Shaped by [Template](../../resources/findings-register.md#template). Read by later steps of the same run as much as by a person, so every section is one row per item rather than prose.
 
 #### artifact
 
@@ -49,11 +49,12 @@ The register body: the severity summary, one findings section per target, the co
 
 - Fold `{register_sections}` into one findings section per target, taking each row's severity, entry, location, evidence, origin and known marking from `{verified_findings}` where an entry was re-derived
 - Count the severity summary from the surviving entries, with entries keyed in `{known_finding_keys}` counted under Known rather than Open
+- Emit the header change-surface counts and the **Change surface** table (path × how it joined: touched whole file, I/O-contract closure, or consumer) from each target's `{changed_files}` / `{touched_files}` / `{consumer_surface}` — never a hunk list
 
 ### 2. Record the Divergences and the Exclusions
 
 - Take the rows of `{coverage_ledger}` that carry `blocked` or `not-applicable` into the coverage section
-- When any `walked` unit that intersects the change surface carries `evidence`, include a **Coverage evidence** subsection with those rows (file, field, entry-or-clean, quote) — required for Description Hygiene and every other unit that reached changed files; omit the subsection only when no unit required evidence
+- When any `walked` unit that intersects the change surface carries `evidence`, include a **Coverage evidence** subsection with those rows (file, field, entry-or-clean, quote) — required for Description Hygiene and every other unit that reached whole change-surface files; omit the subsection only when no unit required evidence
 - Omit the coverage section entirely only when every unit was walked with no divergences and no evidence obligation
 - Take the entries excluded by `{known_finding_keys}` into the known section, and omit it when nothing is excluded
 - When `{fixes_applied}` is present, record what the remediation round changed against the findings it resolved
