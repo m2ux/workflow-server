@@ -147,3 +147,13 @@ Reach for structure first: a condition selecting a step, an activity, or a whole
 A citation is a delivery instruction. What it resolves to — the path after `resources/` with `.md` stripped and any `#anchor` kept — is the unit the server loads into the consumer's context, so `example.md#section-title` delivers one section where `example.md` delivers the file. A citation therefore names the narrowest section carrying what the citing prose needs. The bare resource is the citation for a consumer that reads the whole body: a filler working a `## Template` together with the `## Rules` that populate it, an audit walking every entry.
 
 Grain is a property of the resource across the whole technique, not of one link. Every distinct citation is delivered, so a bare citation standing beside anchored ones sends the file *and* those sections, and the file's size counts against the eager budget that decides what else arrives. Where a technique needs several sections, cite each by anchor; where the set approaches the whole body, cite the resource once and drop the anchors. A section citation delivers only that heading's span, so any dependency the section reader still needs — including operative framing and shared keys — is authored inside a section per [Resources at the Abstract Level; Split for Section Delivery](#30-resources-at-the-abstract-level-split-for-section-delivery). This is the citation half of the section-or-whole economy, whose structural half is that principle — a resource is split so its sections are deliverable, and cited at the grain it was split for. Avoids `whole-resource-for-one-section` and `framing-outside-any-section`.
+
+## 33. Pre-Session Prose Stands Alone
+
+Content delivered before a session exists carries no way to resolve a reference: the reader holds no
+operations bundle, no session index to authenticate a fetch with, and so no `get_resource` or
+`get_activity` call at all. Prose on that surface must be executable from itself — every instruction
+complete in the text, and every value it names either supplied there or obtained by a call the text
+spells out. A canonical name may still appear as a label for the home a rule keeps once the framework
+arrives, provided the text says so and nothing depends on following it now. Elsewhere, citing the home
+instead of restating it is the right economy; here the same economy strands the reader.
