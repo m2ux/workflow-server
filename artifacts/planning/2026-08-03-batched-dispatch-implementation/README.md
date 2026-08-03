@@ -61,6 +61,31 @@ Smaller ones in the same pass: the refusal was recorded per retry rather than pe
 
 The sweep also caught that the corpus branch was eight commits behind its own branch tip, so the pull request would have reverted three other merged changes including a live anti-pattern entry. Merged rather than rebased, in the pattern the branch history already uses.
 
+## What a second sweep found
+
+A claim-verification pass against the running server, and a mutation pass that applied 52 single-line changes and re-ran every survivor against the full suite. The mutation score was 35 killed to 17 surviving; every survivor named here is now dead.
+
+**The recovery corrupted the session.** The fix for the stalled-loop fault above handed a failed continuation back to the dispatch step, and both advance the session pointer — so a failed continuation advanced twice onto the same activity, and the second advance records that activity exited and complete before a worker has walked a step of it. Measured live: the activity came back simultaneously current and completed, with only a misdirected warn-only validation string as a signal, and every later reader of the session believing it. The continuation now owns getting a worker onto what it advanced to, spawning the replacement itself.
+
+This is the second fault introduced by fixing the first. Both were in the recovery path, and both were invisible to a walk that never fails — which is the argument for the loop-gate test being about state rather than about a happy path.
+
+**The refusal had no carrier.** The corpus told the orchestrator to act on the worker reporting a refusal, and the corpus defines exactly two tagged envelopes, neither of which can say that. The recovery worked only by accident — the identity happened to be null — while the contract described a signal that does not exist. It now keys on an envelope that is not one of the two, which the partial-result rule already covers.
+
+**The bound was expressed twice and drifted at the boundary.** The refusal admits a batch sitting exactly on its budget; `may_continue` tells it to continue. That pairing is deliberate, and flipping either operator passed the whole suite because they were separate expressions of one comparison. They now share `withinBatchBound`, and a test asserts the complement across the boundary rather than either side of it.
+
+**The benchmark's accounting was unreconciled with the server's.** The benchmark counts deliveries with its own copy of the rule — which is exactly how one double count got into both at once. Injecting that double count into the benchmark alone moved the headline saving from 24.4% to 16.7% with the suite green. It now also reports the figure the server's own `deliveredChars` produces over the same session, and the smoke test requires the two equal.
+
+**Three figures were wrong, each stated in more than one place.** The double count inflates a run of three by **70.2%**, not 32% — the 32% was the *collapse* figure from the investigation record, a different quantity, and 70% is the only value consistent with the +48% single-activity figure and the 164,540 bind point already quoted. The eager fraction of 0.80 admits **thirteen** of fifteen activities, not nine. And the per-dispatch spawn cost is **87 seconds**, the mean of the four measured setup dispatches of 77, 65, 42 and 165 — 41 was a token count read as a duration, and it made the projected saving 82 seconds where the measurement gives 174.
+
+Smaller ones: the smoke test's floor was 5% against a measured 24.4%, so a regression halving the saving passed; its projected-seconds assertion was tautological over a hard-coded constant; the benchmark's collapse field under-reports tenfold because payload collapse never emits an `unchanged` event; and the reported headroom, the budget floor, the dedupe's context key and the limit reported when both bind were each unpinned.
+
+### What is known and stated rather than fixed
+
+- **The loop-gate test models one bag per iteration.** At runtime `worker_result` is rewritten mid-iteration by the gate path, so the test checks gate wiring rather than the full sequence. Its value is in the wiring — that is where four of the six faults were — but it should not be read as a sequence test.
+- **A batch surviving a real checkpoint onto its next activity has no end-to-end walk.** The replay key is unit-covered and the corpus contract is explicit, but the yield → respond → resume → advance → take-next-activity hop under one identity is asserted nowhere over the server.
+- **Server-side elapsed does not reproduce.** Best-of-three lands anywhere from 8% against the batch to 5% for it across runs; the character figures are bit-identical every time. The tooling now says which is which.
+- **The installed vitest is 1.6.1 against a declared `^4.1.10`**, resolved from the parent checkout. Pre-existing and outside this change, but every figure here was measured on 1.6.1.
+
 ## The corpus mechanism
 
 The orchestrator holds no batch state. The worker reads `_meta.batch.may_continue` and carries it out on its `activity_complete` envelope as `batch_may_continue`; the loop continues that worker onto the next activity when it is true and releases the identity when it is false. So the server owns the bound, the worker relays it, and the orchestrator does no sizing and no reasoning about context load.
