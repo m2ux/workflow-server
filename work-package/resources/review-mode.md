@@ -23,7 +23,7 @@ The sub-sections decompose the rules so a consumer fetches only the one it needs
 - [Header Fields](#header-fields) — the `PR` / `Plan` / `Activities` / `Reports` / `Date` header and the link conventions that govern it
 - [Table Format](#table-format) — the shared findings-table shape across all categories
 - [Reference, Don't Restate](#reference-dont-restate) — findings cited by ID, never reproduced, within a declared budget
-- [Prose Register](#prose-register) — the sentence-level register every prose passage holds to
+- [Prose Register](#prose-register) — where the summary's prose passages take their sentence-level register from
 - [Caveat Form](#caveat-form) — the one-line claim-plus-link shape for caveats
 - [Action Items](#action-items) — the prioritized checklist consolidation
 - [Skeleton](#skeleton) — the whole-document template itself
@@ -100,13 +100,7 @@ A passage that exceeds its budget is over-budget because it has absorbed content
 
 ### Prose Register
 
-Every prose passage — Executive Summary, section scope lines, Action Items entries, caveats — holds to one register:
-
-- **Plain language.** The word a maintainer would use, not the more formal synonym.
-- **Short sentences.** One clause carrying one claim. A sentence needing a semicolon is two sentences.
-- **No stacked qualification.** One hedge per claim at most. "may, under some conditions, potentially" states less than "may".
-- **No dense symbol chains.** At most one code symbol and one location per sentence. A claim that needs three symbols and four line numbers is a report section, cited by link.
-- **Claim first.** The sentence opens with what is true, and any qualification follows it.
+Every prose passage — Executive Summary, section scope lines, Action Items entries, caveats — holds to [Prose](../../meta/resources/writing-register.md#prose) in the Artifact Writing Register. A passage whose claim needs three symbols and four line numbers is a report section, cited by link.
 
 ### Caveat Form
 

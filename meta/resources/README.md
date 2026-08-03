@@ -16,6 +16,7 @@ Tool reference content for Atlassian, GitNexus, and state management has moved i
 | `session-summary-template` | [Session Summary Template](./session-summary-template.md) | Skeleton for the markdown session summary composed at workflow close |
 | `planning-readme` | [Planning Folder README Guide](./planning-readme.md) | Universal Template + Progress Status policy for planning-folder `README.md`; Progress inventory comes from each workflow's readme-seed profile |
 | `resume-intent-lexicon` | [Resume Intent Lexicon](./resume-intent-lexicon.md) | Continuation-phrase vocabulary and negative cases matched by [detect-resume-intent](../techniques/workflow-engine/detect-resume-intent.md) to gate the saved-session search |
+| `writing-register` | [Artifact Writing Register](./writing-register.md) | Prose and table register for any artifact whose declared audience is a person; creation guides keep the sections and budgets |
 
 ### Removed
 
@@ -31,4 +32,4 @@ Tool reference content for Atlassian, GitNexus, and state management has moved i
 
 ## Cross-Workflow Access
 
-Cross-workflow ids use the `meta/<resource-id>` form (e.g. `meta/bootstrap-protocol`, `meta/planning-readme`). Load via [resource-loading-via-tool](../techniques/workflow-engine/TECHNIQUE.md#resource-loading-via-tool).
+Cross-workflow ids use the `meta/<resource-id>` form (e.g. `meta/bootstrap-protocol`, `meta/planning-readme`, `meta/writing-register`). Load via [resource-loading-via-tool](../techniques/workflow-engine/TECHNIQUE.md#resource-loading-via-tool).
