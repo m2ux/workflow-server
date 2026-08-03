@@ -34,7 +34,7 @@ Collapsing four dispatches into one leaves one establishment plus all the conten
 
 The limit is server-enforced at delivery: a cumulative budget per worker context, refusing to hand over the next activity once accumulated delivery passes it, backed by a hard cap of three activities.
 
-Both halves are needed. The existing per-delivery budget arithmetic can be made cumulative easily — the mid-batch signal already exists as a scope-only dispatch check, and the per-delivery sizes are already recorded as history events carrying the agent identity, with the summation already written in a benchmark script. But its headroom fraction is calibrated for a different question, and applied unchanged it would admit nine of fifteen activities into one context. The batch budget needs its own, much smaller fraction.
+Both halves are needed. The existing per-delivery budget arithmetic can be made cumulative easily — the mid-batch signal already exists as a scope-only dispatch check, and the per-delivery sizes are already recorded as history events carrying the agent identity, with the summation already written in a benchmark script. But its headroom fraction is calibrated for a different question, and applied unchanged it would admit thirteen of fifteen activities into one context. (This record first said nine; the implementation record's re-measurement, once each delivery was counted only once, gives thirteen.) The batch budget needs its own, much smaller fraction.
 
 The cap covers what a byte count cannot see: the harness baseline the server never delivers, the code the worker reads, the artifacts it drafts, and context degradation across a long walk. Those are the things that actually overflowed the agent last time.
 

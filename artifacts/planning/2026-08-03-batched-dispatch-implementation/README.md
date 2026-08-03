@@ -53,7 +53,7 @@ Six faults, all fixed, and the tests that now hold each one down. Four were in t
 
 **The load-bearing rule was carried by rule text beside a gate that could carry it.** The rule said to continue only with room; the gate said only that an identity was held and an activity had completed. The gate now carries the condition, which makes it and the release exact complements — for a completed activity, exactly one fires. This is the same standard the mechanism applies to its own bound, and it was being applied unevenly.
 
-**The budget double-counted eagerly bundled content.** An `activity_dispatched` size is the whole `get_activity` response, bundled techniques and resources included; their own observability events were then added again. Measured at +48% on one activity and +32% across the run, which made a nominal 280,000-character budget bind at roughly 165,000. Counted once, only lazy fetches add to an activity payload. This is what re-based the numbers above.
+**The budget double-counted eagerly bundled content.** An `activity_dispatched` size is the whole `get_activity` response, bundled techniques and resources included; their own observability events were then added again. Measured at +48% on one activity and +70% across a run of three, which made a nominal 280,000-character budget bind at 164,540. Counted once, only lazy fetches add to an activity payload. This is what re-based the numbers above.
 
 **A technique fetch spent an activity slot.** An out-of-band context announces itself on its first server call of any kind, and that dispatch event carries no payload size because no activity was delivered. The slot was spent anyway, so a context that had taken two activities could be refused a third with a message stating it had taken three. Slots now count only deliveries that carried a payload.
 
@@ -82,7 +82,7 @@ Smaller ones: the smoke test's floor was 5% against a measured 24.7%, so a regre
 ### What is known and stated rather than fixed
 
 - **The loop-gate test models one bag per iteration.** At runtime `worker_result` is rewritten mid-iteration by the gate path, so the test checks gate wiring rather than the full sequence. Its value is in the wiring — that is where four of the six faults were — but it should not be read as a sequence test.
-- **A batch surviving a real checkpoint onto its next activity has no end-to-end walk.** The replay key is unit-covered and the corpus contract is explicit, but the yield → respond → resume → advance → take-next-activity hop under one identity is asserted nowhere over the server.
+- **The loop's own frame was restated rather than read.** The walk hand-rolled the exit test and coalesced both sides to null, where the server compares strictly — so deleting the condition's declared `value` left every test passing on a loop that in fact never exits. Nine mutations outside the loop body escaped for the same reason. The walk now evaluates the declared condition through the server's own `evaluateCondition`.
 - **Server-side elapsed does not reproduce.** Best-of-three lands anywhere from 8% against the batch to 5% for it across runs; the character figures are bit-identical every time. The tooling now says which is which.
 - **The installed vitest is 1.6.1 against a declared `^4.1.10`**, resolved from the parent checkout. Pre-existing and outside this change, but every figure here was measured on 1.6.1.
 
