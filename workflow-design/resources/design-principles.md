@@ -150,10 +150,4 @@ Grain is a property of the resource across the whole technique, not of one link.
 
 ## 33. Pre-Session Prose Stands Alone
 
-Content delivered before a session exists carries no way to resolve a reference: the reader holds no
-operations bundle, no session index to authenticate a fetch with, and so no `get_resource` or
-`get_activity` call at all. Prose on that surface must be executable from itself — every instruction
-complete in the text, and every value it names either supplied there or obtained by a call the text
-spells out. A canonical name may still appear as a label for the home a rule keeps once the framework
-arrives, provided the text says so and nothing depends on following it now. Elsewhere, citing the home
-instead of restating it is the right economy; here the same economy strands the reader.
+Prose delivered before the framework that resolves references exists must be executable from itself: every instruction complete in the text, and every value it names either supplied there or obtained by a call the text spells out. A canonical name may appear as a label for a home the reader reaches later, never as the only place an instruction lives. A bounded exception to [One Authoritative Home](#6-one-authoritative-home) — elsewhere citing the home rather than restating it is the right economy, and on this surface the same economy strands the reader. Avoids `pre-session-prose-defers-to-the-framework`.

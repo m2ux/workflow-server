@@ -1881,22 +1881,22 @@ A rules entry cites rules another file owns and the reader already receives, so 
 
 "the activity `id` already returned by `get_activity`" / "the commit for that activity has already landed"
 
-A reference names no source, so the reader cannot tell where the value came from or whether producing it is their job.
+A reference does not resolve to one source, so the reader cannot tell which value is meant or whether producing it is their job.
 
-**Detect:** For each prose reference to a value, a tool result, or a completed action, name the construct that supplies it — a declared input or output on this technique, a workflow variable, an earlier phase of this same Protocol, a resolvable link, or a field the tool surface returns. Flag when the answer is nothing. Passive construction is the written tell: "already returned by", "as returned", "has already landed", or "carry it to X" where no phase applies X.
+**Detect:** For each prose reference to a value, a tool result, or a completed action, name the construct that supplies it — a declared input or output on this technique, a workflow variable, an earlier phase of this same Protocol, a resolvable link, or a field a named call returns. Flag when the answer is nothing, and when the answer names a kind of thing the context holds several of. Passive construction is the written tell, because it is what lets the supplier go unsaid: "already returned by", "as returned", "has already landed", or "carry it to X" where no phase applies X.
 
-**Do not flag:** A declared target referenced in the wrong form, which is `anchored-protocol-references`. The declaration-side pair — a needed value absent from `inputs[]` is `technique-inputs-declared`, a vague noun for a declared output is `brace-output-references`. Magnitudes, which are `branch-on-undeclared-threshold`. Anaphora for a noun already anchored once in the same step. A precondition another operation guarantees, where the step names that operation.
+**Do not flag:** A reference whose target is declared but wears the wrong form, or names nothing at all — both are `anchored-protocol-references`. The declaration-side pair — a needed value absent from `inputs[]` is `technique-inputs-declared`, a vague noun for a declared output is `brace-output-references`. Magnitudes, which are `branch-on-undeclared-threshold`. Anaphora for a noun already anchored once in the same step. A precondition another operation guarantees, where the step names that operation.
 
 **Fix:** Name the supplier in the sentence — the phase that produces the value, the call that returns it, or the operation that guarantees the action — or declare it and reference the designator. Where nothing supplies it, delete the reference rather than leave the reader to reconstruct a source. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-145. pre-session-prose-defers-to-the-framework
 
-"Derive the repository by applying [resolve-host-repo](../techniques/version-control/resolve-host-repo.md)" / `resolve-host-repo.prose-sources-are-fallback-only`
+"Derive the repository by applying [resolve-host-repo](…)" in the bootstrap procedure / `resolve-host-repo.prose-sources-are-fallback-only`
 
 Bootstrap prose sends the reader somewhere they have no way to go.
 
 **Detect:** On a surface delivered before a session exists — the `discover` bootstrap procedure — a relative corpus link, a dotted rule address, or an instruction to apply a technique, where the substance of the instruction is not also present in the text. Without a session index there is no `get_resource` and no `get_activity`, so nothing can be fetched and no link followed. Test: strike every reference from the text; an instruction that stops being executable was never executable.
 
-**Do not flag:** An MCP resource URI the text tells the client to fetch directly. A canonical name carried as a label for the home a rule keeps later, where the text says the reference is for after the bundle arrives and nothing depends on following it now. Dotted rule addresses on session-gated surfaces, which `dotted-rule-address` requires. Session-gated prose citing its home rather than restating it, which is `prompt-restates-owned-mechanics`.
+**Do not flag:** An MCP resource URI the text tells the client to fetch directly. A canonical name carried as a label for the home a rule keeps later, where the text says the reference is for after the framework arrives and nothing depends on following it now. Prose that restates a contract owned elsewhere, which is `prompt-restates-owned-mechanics`.
 
-**Fix:** Inline the instruction's substance and keep the name only as a forward label. `check:bootstrap` holds this at zero. See [Pre-Session Prose Stands Alone](./design-principles.md#33-pre-session-prose-stands-alone).
+**Fix:** Inline the instruction's substance and keep the name only as a forward label. On this surface that overrides `dotted-rule-address`, which requires the bare dotted form everywhere a reader can fetch the file it addresses. See [Pre-Session Prose Stands Alone](./design-principles.md#33-pre-session-prose-stands-alone).

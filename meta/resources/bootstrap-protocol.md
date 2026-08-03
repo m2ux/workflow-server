@@ -15,13 +15,14 @@ keeps once step 4 hands you the bundle; it is a label for later, never something
 1. Read this MCP resource via your client's resource-fetch mechanism (it is an MCP resource URI, *not*
    an argument to the `get_resource` tool): `workflow-server://schemas/workflow`
 
-   - Orchestrators need only the workflow schema. The activity and technique schemas are fetched later,
-     by the workers that execute activities.
+   - Only the workflow schema is needed here. The activity and technique schemas are fetched later, by
+     whichever context executes an activity.
 
 2. Derive the target repository as `owner/repo` from git, before step 3:
 
-   - Start at the workspace directory and ascend to the outermost repository that claims the workspace
-     checkout as a submodule. That outermost repository is the host.
+   - Start at the workspace checkout's own repository root. While the parent directory is itself a
+     repository whose `.gitmodules` declares the current root's basename as a submodule path, move the
+     current root to that parent. The outermost root the loop reaches is the host.
    - Read `owner/repo` from the host's `origin` remote. Accept the SSH form
      (`git@host:owner/repo.git`) and the HTTPS form (`https://host/owner/repo.git`), dropping any
      trailing `.git`.
@@ -40,14 +41,17 @@ keeps once step 4 hands you the bundle; it is a label for later, never something
 3. Call `start_session { workflow_id: "meta", agent_id: "orchestrator", repo, user_request }`. Keep the
    returned `session_index` (6-character base32) as `{meta_session_index}`, and keep `{repo}` as
    `{target_repo}` — the response echo when it carries one, otherwise the value you passed. The server
-   writes `session.json` and `.session-token` under the planning folder; you write no state yourself.
+   creates or rebinds `session.json` and `.session-token` itself; you write no state. This call names no
+   planning folder, so they start somewhere transient and move once a durable folder resolves.
 
    - The response carries more than the index: the running workflow's id, version, title and
      description (later drift detection compares against that version), the `planning_slug` the session
      is keyed on, the canonical `planning_folder_path` once a durable one resolves, the echoed `repo`
-     binding, and `context_mode` / `migrated` where either applies.
-   - `repo_unbound: true` means the session booted with no repository bound, so the derivation in step 2
-     yielded nothing. Treat it as the fallback branch, not a successful boot: supply `repo` from a prose
+     binding, and `context_mode` / `migrated` where either applies. `context_mode` records the delivery
+     topology: `persistent` for a single context walking the whole session, omitted or `fresh` when each
+     activity is dispatched to a worker.
+   - `repo_unbound: true` comes back when a transient session booted with no repository bound, so the
+     derivation in step 2 yielded nothing. Treat it as the fallback branch, not a successful boot: supply `repo` from a prose
      source before any durable path can resolve.
    - Pass `planning_folder` as an absolute path or omit it entirely; a relative path is rejected. The
      response's `planning_folder_path` is canonical — do not recompose it.
@@ -56,7 +60,9 @@ keeps once step 4 hands you the bundle; it is a label for later, never something
    then a `\n\n---\n\n` separator, then the workflow's metadata and activity roster. Read the bundle:
    from here on, the operations and rules it carries govern, and this bootstrap text stops applying.
 
-   Two rules in that bundle bind immediately, so they are stated here as well:
+   Two of the bundle's rules bind from your very next call, so they are stated here too. The bundle
+   carries both — one among the `workflow-engine` rules, one among `harness-compat`'s — and its wording
+   governs once you hold it.
 
    - Pass `session_index` on every authenticated tool call from now on.
    - Every worker you spawn must be awaited before your next step — no fire-and-forget. On Cursor that
