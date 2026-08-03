@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.3.1
 ---
 
 ## Capability
@@ -66,7 +66,7 @@ One-line summary from evaluate-transition of which transition matched (`transiti
 
 #### batch_may_continue
 
-Whether this context may take another activity, folded from the input of the same name. Required on every successful `activity_complete`: the orchestrator holds no batch state of its own, and this is what tells it whether to continue this worker onto the next activity or release it and dispatch a fresh one ([batch-continues-only-with-room](./continue-batch.md#batch-continues-only-with-room)).
+Whether this context may take another activity, folded from the input of the same name. Required on every successful `activity_complete`: the orchestrator holds no batch state of its own, and this is what tells it whether to continue this worker onto the next activity or release it and dispatch a fresh one ([batch-is-bounded-by-the-server](./dispatch-activity.md#batch-is-bounded-by-the-server)).
 
 ## Protocol
 

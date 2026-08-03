@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
-Advance the session to the next activity and continue the worker already carrying the batch, under the delivery identity its dispatch bound.
+Advance the session to the next activity and continue the worker already carrying the batch, under the delivery identity its dispatch bound. Reached only across an activity boundary; a gate answered by a user takes [resume-worker](./resume-worker.md).
 
 ## Inputs
 
@@ -65,18 +65,8 @@ The identity now holding the advanced activity: the one the batch was carried un
 
 ## Rules
 
-### batch-continues-only-with-room
-
-Continue the held worker only while its last `activity_complete` reports both `batch_may_continue: true` and a next activity. The loop's own gate carries that condition, so a spent batch cannot reach this operation — the check is the gate rather than this sentence, because a bound carried by rule text is the failure this whole mechanism replaces ([batch-is-bounded-by-the-server](./dispatch-activity.md#batch-is-bounded-by-the-server)).
-
-`batch_may_continue` is read when the worker takes an activity, so it cannot account for what that worker then fetched lazily while running it. A batch reported as having room can still be refused at the next boundary. That refusal is expected rather than exceptional, and is met by ending the batch here and spawning the replacement — not by predicting it more precisely.
-
 ### one-advance-per-activity
 
 This operation advances the session pointer, so it owns getting a worker onto the activity it advanced to — the held one, or a replacement it spawns itself. It does not hand that job back to [dispatch-activity](./dispatch-activity.md), which advances the pointer of its own accord: a second advance onto an activity already current records that activity as exited and complete before a worker has walked a step of it, and every later reader of the session — resume, status, activity-manifest validation — believes it.
 
 So a batch that cannot continue ends inside this operation, and the only paths that reach `dispatch-activity` are the ones where no advance has happened yet: the first activity of a walk, and the activity after a spent batch was released.
-
-### batch-stops-at-a-human-boundary
-
-A boundary crossed in seconds is cheap to resume across; a boundary waiting on a person is not, because a resumed context is re-written rather than read from cache and a prompt cache does not survive a wait measured in hours. Continue a batch across an activity boundary, whose gap is the orchestrator's commit. A gate answered by a user is the checkpoint path's business ([resume-worker](./resume-worker.md)), and batching across it saves nothing.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -59,7 +59,7 @@ Never call the workflow-server control-plane tools `next_activity` or `get_workf
 
 ### one-activity-at-a-time-in-a-batch
 
-Report each activity as it finishes — a batch defers nothing to its end. A completed activity's `activity_complete` envelope leaves the session pointer where the walk actually is, so a resume that fails costs that one activity: a fresh worker takes the current activity in full and re-crosses already-answered gates silently, because gate responses are keyed by activity rather than by agent ([yield-checkpoint](./yield-checkpoint.md)). Deferred reporting leaves the pointer stale, redoes the whole batch, and hands the replacement worker a pointer that disagrees with what it finds — which stops it ([verify-dispatched-activity](./TECHNIQUE.md#verify-dispatched-activity)).
+Report each activity as it finishes — a batch defers nothing to its end. That keeps the session pointer where the walk actually is, so a failed resume costs one activity rather than the batch; deferred reporting leaves the pointer stale and hands a replacement worker a pointer that disagrees with what it finds, which stops it ([verify-dispatched-activity](./TECHNIQUE.md#verify-dispatched-activity)).
 
 ### session-index-on-each-call
 

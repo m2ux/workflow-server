@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.16.1
+  version: 1.16.2
 ---
 
 ## Capability
@@ -88,7 +88,7 @@ Delivery mode follows the agent context, not the session: one worker `agent_id` 
 
 ### batch-is-bounded-by-the-server
 
-A worker's batch is bounded at delivery, not by this operation's judgement: the server refuses the next activity once that context has taken the cap of distinct activities or accumulated more delivery than its batch budget allows, and reports where a context stands on every `get_activity`. So the orchestrator does not size a batch, hold a count, or reason about context load — it continues a worker while the loop's own gate says the server will still serve it ([batch-continues-only-with-room](./continue-batch.md#batch-continues-only-with-room)). A bound carried by instruction text is the failure this replaces; a bound applied where the content is handed over holds whether or not the text is read.
+A worker's batch is bounded at delivery, not by this operation's judgement: the server refuses the next activity once that context has taken the cap of distinct activities or accumulated more delivery than its batch budget allows, and reports where a context stands on every `get_activity`. So the orchestrator does not size a batch, hold a count, or reason about context load — it continues a worker while the loop's own gate says the server will still serve it. That answer is given when the worker takes an activity, before the lazy fetches of that activity draw down the same budget, so a batch reported as having room can still be refused at the next boundary; the refusal is an ordinary outcome, met by ending the batch and spawning a replacement ([continue-batch](./continue-batch.md)). A bound carried by instruction text is the failure this replaces; a bound applied where the content is handed over holds whether or not the text is read.
 
 ### reject-partial-worker-result
 
