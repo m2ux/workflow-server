@@ -278,6 +278,21 @@ Lenses for pre-analysis preparation and post-analysis claim verification.
 
 ---
 
+## Planning artifact to guide map
+
+Document skeletons, as distinct from the lens prompts above. A per-lens analysis artifact takes its shape from the lens the unit runs, so its guide is that lens resource.
+
+| Bare filename | Guide |
+|---------------|-------|
+| `analysis-plan.md` | [analysis-plan](analysis-plan.md) |
+| `REPORT.md` | [final-output-template](final-output-template.md) |
+| `DEFINITIVE-FINDINGS.md` | [definitive-findings-template](definitive-findings-template.md) |
+| `behavioral-synthesis.md` | [behavioral-synthesis](behavioral-synthesis.md) |
+| `dispute-synthesis.md` | [dispute-synthesis](dispute-synthesis.md) |
+| A per-lens analysis artifact (`{lens_name}-analysis.md`, `portfolio-{lens_name}.md`, `reflect-*.md`, `verified-*.md`, `adaptive-stage*.md`, `behavioral-*.md`, `subsystem-*.md`, `smart-prereq.md`, `structural-analysis.md`, `adversarial-analysis.md`, `synthesis.md`, `dispute-lens-*.md`) | The lens resource the unit's lens slug names |
+
+---
+
 ## Cross-Workflow Access
 
 Any workflow can load prism resources without depending on the prism workflow's activities or orchestration:

@@ -20,6 +20,19 @@ Reference content loaded on demand by the workflow's techniques. The authoritati
 | [`target-profile.md`](target-profile.md) | Target-specific crate assignments, file paths, node agent scope split, verification-agent spec, calibration benchmarks, and ensemble blind-spot items |
 | [`vulnerability-pattern-vocabulary.md`](vulnerability-pattern-vocabulary.md) | Known cross-project vulnerability patterns used as a recognition aid during architectural analysis |
 | [`gap-analysis-template.md`](gap-analysis-template.md) | The document skeleton for the gap-analysis report |
+| [`second-pass-findings.md`](second-pass-findings.md) | Creation guide: `second-pass-findings.md` — the blind-spot verdicts, the second-pass findings, and the sub-agent results that attest the pass ran |
+
+---
+
+## Planning artifact to guide map
+
+| Bare filename | Guide |
+|---------------|-------|
+| `START-HERE.md` | [start-here](start-here.md) |
+| `01-audit-report.md` | [audit-prompt-template](audit-prompt-template.md) (§4 Reporting Format) |
+| `02-gap-analysis.md` | [gap-analysis-template](gap-analysis-template.md) |
+| `second-pass-findings.md` | [second-pass-findings](second-pass-findings.md) |
+| `{agent_id}.json`, `s-architectural-analysis.json`, `r-function-registry.json`, `r-crate-map.json`, `r-reconnaissance-data.json`, `m-merge.json`, `dependency-scan.json` | [sub-agent-output-schema](sub-agent-output-schema.md) |
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -59,10 +59,10 @@ Absolute path to the written applicable-constructs artifact (create mode only).
 
 ### 6. Persist Format Conventions
 
-- When `{operation_type}` is `create` and `{planning_folder_path}` is bound: persist a concise format-conventions summary (YAML syntax rules and observed project conventions — naming, folder structure, field ordering, versions, transition and checkpoint shapes) via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `format-conventions.md`; capture `{format_conventions_path}`
+- When `{operation_type}` is `create` and `{planning_folder_path}` is bound: persist the format-conventions summary per [format-conventions](../resources/format-conventions.md#template) and its [Rules](../resources/format-conventions.md#rules), via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `format-conventions.md`; capture `{format_conventions_path}`
 - Skip when `{operation_type}` is `update` or `review`
 
 ### 7. Persist Applicable Constructs
 
-- When `{operation_type}` is `create` and `{planning_folder_path}` is bound: persist the applicable-constructs list (construct name, why it applies, reference example) via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `applicable-constructs.md`; capture `{applicable_constructs_path}`
+- When `{operation_type}` is `create` and `{planning_folder_path}` is bound: persist the applicable-constructs list per [applicable-constructs](../resources/applicable-constructs.md#template) and its [Rules](../resources/applicable-constructs.md#rules), via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `applicable-constructs.md`; capture `{applicable_constructs_path}`
 - Skip when `{operation_type}` is `update` or `review`
