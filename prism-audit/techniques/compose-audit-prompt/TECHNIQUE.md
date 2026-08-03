@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -42,6 +42,10 @@ The composed [audit prompt document](../../resources/audit-prompt-template.md#au
 #### artifact
 
 `audit-prompt.md`
+
+#### audience
+
+`human`
 
 #### codebase_overview
 

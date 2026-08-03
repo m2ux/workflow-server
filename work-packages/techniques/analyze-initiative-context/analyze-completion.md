@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Assess how far a multi-package initiative has already got: the completion state 
 #### artifact
 
 `01-COMPLETION-ANALYSIS.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

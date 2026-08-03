@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -27,6 +27,10 @@ Completed [START-HERE.md](../resources/roadmap-template.md#start-heremd-final-fo
 
 `START-HERE.md`
 
+#### audience
+
+`human`
+
 ### planning_readme
 
 Updated [README.md](../resources/roadmap-template.md#readmemd-final-format) with navigation links
@@ -34,6 +38,10 @@ Updated [README.md](../resources/roadmap-template.md#readmemd-final-format) with
 #### artifact
 
 `README.md`
+
+#### audience
+
+`human`
 
 ### timeline_estimate
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ The target workflow's root README: generated whole on a create run, revised in p
 #### artifact
 
 `README.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.1
+  version: 1.5.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Conformance divergences — each a divergence with its file, the diverging const
 #### artifact
 
 `conformance-findings.md`
+
+#### audience
+
+`human`
 
 ### conformance_finding_count
 

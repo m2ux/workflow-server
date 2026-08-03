@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -38,6 +38,10 @@ Path to the planning folder where the completion document is created.
 #### artifact
 
 `COMPLETE.md`
+
+#### audience
+
+`human`
 
 ### completion_document_path
 

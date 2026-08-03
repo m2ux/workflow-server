@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -34,6 +34,10 @@ Comprehensive [mitigation plan](../../resources/mitigation-plan-template.md#miti
 #### artifact
 
 `MITIGATION-PLAN.md`
+
+#### audience
+
+`human`
 
 #### summary_table
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -27,6 +27,10 @@ The refreshed catalog: one entry per page, organized by page type and routing to
 
 `index.md`
 
+#### audience
+
+`human`
+
 ### mutation_log
 
 The appended ledger: one entry per create/update operation, in operation order.
@@ -34,6 +38,10 @@ The appended ledger: one entry per create/update operation, in operation order.
 #### artifact
 
 `log.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

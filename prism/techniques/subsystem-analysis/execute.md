@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ Per-subsystem analysis outputs — one for each decomposed subsystem, produced b
 #### artifact
 
 `subsystem-{code_subsystem.subsystem_name}.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

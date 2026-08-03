@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ Ordered list of work packages by execution priority, with prioritization rationa
 #### artifact
 
 `priority-ranking.md`
+
+#### audience
+
+`human`
 
 #### dependency_graph
 

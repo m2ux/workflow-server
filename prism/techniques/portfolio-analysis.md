@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -27,6 +27,10 @@ Individual analysis artifact per lens
 
 `portfolio-{lens_name}.md`
 
+#### audience
+
+`human`
+
 #### per_lens_findings
 
 Complete findings from each lens, labelled by lens name
@@ -42,6 +46,10 @@ Cross-lens convergence/divergence synthesis
 #### artifact
 
 `portfolio-synthesis.md`
+
+#### audience
+
+`human`
 
 #### convergent_findings
 

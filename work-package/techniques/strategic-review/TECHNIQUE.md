@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -50,6 +50,10 @@ Architecture [summary](../../resources/architecture-summary.md#architecture-summ
 #### artifact
 
 `architecture-summary.md`
+
+#### audience
+
+`human`
 
 
 ## Rules

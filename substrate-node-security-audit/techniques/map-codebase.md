@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -31,6 +31,10 @@ The in-scope components with their architectural classification and priority.
 
 `r-crate-map.json`
 
+#### audience
+
+`agent`
+
 #### component_inventory
 
 every crate/module with classification and priority
@@ -42,6 +46,10 @@ The security-relevant structure of the classified components: trust boundaries, 
 #### artifact
 
 `r-reconnaissance-data.json`
+
+#### audience
+
+`agent`
 
 #### trust_boundary_map
 

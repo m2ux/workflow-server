@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -30,6 +30,10 @@ The complete updated specification document for this pass.
 #### artifact
 
 `working-spec-{correction_iteration}.md`
+
+#### audience
+
+`human`
 
 ### working_specification_path
 

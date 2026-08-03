@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -30,6 +30,10 @@ Test suite review [report](../resources/test-suite-review.md#report-template) do
 #### artifact
 
 `test-suite-review.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

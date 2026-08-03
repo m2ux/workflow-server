@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ Per-activity token table, per-workflow totals, cost estimate (labelled an estima
 #### artifact
 
 `token-usage.md`
+
+#### audience
+
+`human`
 
 #### usage_coverage
 

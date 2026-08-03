@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -27,6 +27,10 @@ The finalized specification staged for promotion.
 
 `final-spec.md`
 
+#### audience
+
+`human`
+
 ### final_specification_path
 
 Absolute path to the staged final specification.
@@ -38,6 +42,10 @@ Human-readable summary of all applied changes and the validation status.
 #### artifact
 
 `change-summary.md`
+
+#### audience
+
+`human`
 
 ### change_summary_path
 

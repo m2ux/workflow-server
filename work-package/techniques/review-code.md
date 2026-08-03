@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 ## Capability
@@ -34,6 +34,10 @@ Code review [report](../resources/rust-substrate-code-review.md#report-template)
 #### artifact
 
 `code-review.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

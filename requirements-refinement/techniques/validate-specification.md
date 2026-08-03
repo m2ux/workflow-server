@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ Categorized validation findings with an overall verdict and the source-coverage 
 #### artifact
 
 `validation-report-{correction_iteration}.md`
+
+#### audience
+
+`human`
 
 ### validation_report_path
 

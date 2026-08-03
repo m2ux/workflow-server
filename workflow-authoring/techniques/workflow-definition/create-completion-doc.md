@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -38,6 +38,10 @@ The close-out record: what the run delivered, links to where its decisions live,
 #### artifact
 
 `COMPLETE.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

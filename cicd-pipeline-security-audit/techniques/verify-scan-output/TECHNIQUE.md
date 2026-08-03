@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ Scan completeness [verification](../../resources/intermediate-artifact-schemas.m
 #### artifact
 
 `verification-report.json`
+
+#### audience
+
+`agent`
 
 #### file_coverage
 

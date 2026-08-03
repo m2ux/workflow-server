@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -20,6 +20,10 @@ Full L12 analysis of the target at the escalated stage.
 #### artifact
 
 `adaptive-stage2.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ The reconciled reading of the two prior analyses: refined conservation law, refi
 #### artifact
 
 `synthesis.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

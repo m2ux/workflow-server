@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ L12 structural analysis re-run against the target with the gap context injected.
 #### artifact
 
 `verified-corrected.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

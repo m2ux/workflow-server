@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -38,6 +38,10 @@ Knowledge base and web research synthesis artifact for the work package. Written
 #### artifact
 
 `kb-research.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

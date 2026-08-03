@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ Work package [plan document](../../resources/package-plan-template.md#template)
 #### artifact
 
 `{package_name}-plan.md`
+
+#### audience
+
+`human`
 
 #### scope_definitions
 
