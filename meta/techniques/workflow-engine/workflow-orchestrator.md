@@ -37,7 +37,7 @@ Orchestrator agent identity for this session.
 ### 3. Drive the activity loop
 
 - Apply [dispatch-activity](./dispatch-activity.md) from the bundle
-- On `checkpoint_pending`, bubble the yield, then apply [resume-worker](./resume-worker.md) with the resolved effects under the `{worker_agent_id}` the dispatch bound
+- On `checkpoint_pending`, bubble the yield, then apply [resume-worker](./resume-worker.md) with the resolved effects
 - After each `activity_complete`, apply [commit-and-persist](./commit-and-persist.md) before the next dispatch (Applies [sync-progress-status](./sync-progress-status.md) per [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites)). When a planning README drift check ran, require `{readme_conformance}.conforms` before treating Progress as durable. Blocked and path-skip moments stay [dispatch-activity](./dispatch-activity.md) Protocol duties.
 - Route from `{worker_result.next_activity_id}` ([finalize-activity](./finalize-activity.md))
 
@@ -53,7 +53,7 @@ Pass `{session_index}` on every authenticated tool call ([session-index-passes-o
 
 ### orchestrator-worker-boundaries
 
-Honor [no-get-activity-from-orchestrator](./dispatch-activity.md#no-get-activity-from-orchestrator), [no-pre-load-techniques](./dispatch-activity.md#no-pre-load-techniques), [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), [identity-outlives-the-gate](./resume-worker.md#identity-outlives-the-gate), [reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result), and [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile).
+Honor [no-get-activity-from-orchestrator](./dispatch-activity.md#no-get-activity-from-orchestrator), [no-pre-load-techniques](./dispatch-activity.md#no-pre-load-techniques), [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), [resume-preserves-delivery-scope](../harness-compat/continue-agent.md#resume-preserves-delivery-scope), [reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result), and [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile).
 
 ### resolve-trace-at-close-out
 

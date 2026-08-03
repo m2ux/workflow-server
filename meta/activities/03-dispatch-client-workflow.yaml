@@ -80,7 +80,6 @@ steps:
           - action: set
             target: worker_agent_id
             value: null
-            description: Release the finished worker's delivery identity so the next activity is dispatched to a worker of its own.
 transitions:
   - to: end-workflow
     condition:

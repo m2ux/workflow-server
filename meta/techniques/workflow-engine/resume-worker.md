@@ -49,8 +49,7 @@ The envelope the worker returned, passed through unchanged — one of two tagged
 
 - Await the worker's envelope and return it unchanged as `{worker_result}`.
 
-## Rules
+### 4. Record the continuation's cost
 
-### identity-outlives-the-gate
-
-One identity spans every gate a dispatch pauses at, so the composed stub binds `{worker_agent_id}` however many times the worker is continued ([resume-preserves-delivery-scope](../harness-compat/continue-agent.md#resume-preserves-delivery-scope)).
+- Record the continuation's harness-reported usage with `record_usage { session_index, activity, usage }`, one call for this continuation ([account-every-dispatch](./dispatch-activity.md#account-every-dispatch)).
+  > When the harness surfaces no figure, omit the call.
