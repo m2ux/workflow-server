@@ -1,29 +1,26 @@
 /**
- * check-audience — artifact audience guard: every artifact declares its reader, and an
- * agent-audience artifact is JSON on disk.
+ * check-audience — agent-audience artifact JSON-format convention guard (#224 V4).
  *
- * Two finding families, both hard zero:
+ * An output declared with `#### audience` = `agent` is written for the next agent to consume as
+ * state, and by convention (docs/technique-protocol-specification.md §3.2) an agent-audience
+ * artifact is serialized as JSON on disk. This guard walks every technique `.md` in the corpus
+ * through the real loader and, for each output that is BOTH `audience: agent` AND carries an
+ * `#### artifact` filename, asserts the artifact name follows the JSON-format convention: it (or,
+ * for a `{token}`-template name, its literal suffix) ends in `.json`.
  *
- *   audience-declared    Every output carrying an `#### artifact` filename also carries an
- *                        `#### audience`. The attribute has a default (absent means `human`), so a
- *                        missing declaration is indistinguishable from a considered `human` call —
- *                        which is what let the whole corpus default silently. Declaring it makes the
- *                        reader a design decision on the record.
- *
- *   audience-json-format An output declared `audience: agent` is written for the next agent to
- *                        consume as state, and by convention
- *                        (docs/technique-protocol-specification.md §3.2) an agent-audience artifact
- *                        is serialized as JSON on disk. For each such output, the artifact name (or,
- *                        for a `{token}`-template name, its literal suffix) ends in `.json`.
+ * It does not check that an artifact declares an audience at all. A register whose only reader is a
+ * later step is agent state in substance but markdown in form, and `agent` implies JSON, so those
+ * registers carry no declaration until #428 converts them. A presence check would fail on exactly
+ * the set that is waiting, so presence lands with the conversion.
  *
  * This is a distinct concern from check-binding-fidelity.ts — that guard checks input/output
  * binding conformance and treats `#### artifact` as opaque presence. Audience is a separate
  * one-guard-per-concern check, so it lives in its own script. Enum *validity* (`human`|`agent`) is
- * already enforced by the Zod `.strict()` schema at load; this guard checks the declaration's
- * presence and the on-disk format convention, neither of which the schema can express.
+ * already enforced by the Zod `.strict()` schema at load; this guard checks the on-disk *format*
+ * convention the schema cannot express.
  *
- * Hard zero, no baseline: neither check has accepted exceptions, so any violation fails the guard.
- * The retired `audience-baseline.json` held an empty array (issue #327 R5).
+ * Hard zero, no baseline: the convention has no accepted exceptions, so any violation fails the
+ * guard. The retired `audience-baseline.json` held an empty array (issue #327 R5).
  *
  * Run: npx tsx scripts/check-audience.ts [--root <workflows-dir>] [--json]
  * To check a dedicated worktree's workflows instead of the repo's own ../workflows, pass
@@ -43,7 +40,7 @@ const GROUPED_INDEX = 'TECHNIQUE.md';
 
 export interface AudienceViolation {
   /** Which finding family this violation belongs to. */
-  check: 'audience-declared' | 'audience-json-format';
+  check: 'audience-json-format';
   /** `<workflow>::<technique-id>::<output-id>`. */
   key: string;
   detail: string;
@@ -107,23 +104,15 @@ export async function collectAudienceViolations(root: string = DEFAULT_ROOT): Pr
     for (const { id, technique } of await loadWorkflowTechniques(techniquesDir)) {
       scanned++;
       for (const o of technique.outputs ?? []) {
-        // An output with no artifact filename persists nothing, so it has no reader to declare and
-        // no on-disk format to hold to. Both checks are scoped to the artifact-bearing outputs.
+        // Only agent-audience outputs that also declare an artifact filename are in scope: those
+        // are the artifacts written to disk that the convention says must be JSON.
+        if (o.audience !== 'agent') continue;
         const name = o.artifact?.name;
         if (!name) continue;
-        const key = `${workflow}::${technique.id}::${o.id}`;
-        if (!o.audience) {
-          out.push({
-            check: 'audience-declared',
-            key,
-            detail: `output '${o.id}' in technique '${id}' persists '${name}' without declaring an audience — add '#### audience' with 'human' or 'agent' so the reader is on the record rather than defaulted`,
-          });
-          continue;
-        }
-        if (o.audience === 'agent' && !isJsonArtifactName(name)) {
+        if (!isJsonArtifactName(name)) {
           out.push({
             check: 'audience-json-format',
-            key,
+            key: `${workflow}::${technique.id}::${o.id}`,
             detail: `output '${o.id}' in technique '${id}' is audience: agent but its artifact name '${name}' is not JSON — an agent-audience artifact is serialized as JSON on disk (rename to a .json filename)`,
           });
         }
@@ -141,7 +130,7 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
   await runGuard('audience', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
-    okMessage: 'every artifact declares its reader, and every agent-audience artifact is JSON on disk',
-    remedy: 'declare the missing audience, or rename the agent-audience artifact to a .json filename',
+    okMessage: 'every agent-audience artifact is JSON on disk',
+    remedy: 'rename each artifact to a .json filename',
   });
 }
