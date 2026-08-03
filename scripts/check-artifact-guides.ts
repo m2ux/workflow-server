@@ -23,6 +23,10 @@
  * `scripts/binding-fidelity-triage.json`. Adding a new artifact with no guide fails the guard;
  * closing a baselined gap means deleting its entry.
  *
+ * A baseline entry matching no declaration is itself reported (`artifact-guide-baseline-stale`), so
+ * the triage cannot outlive the debt it records — the same convention the binding-fidelity triage
+ * states for its own entries.
+ *
  * Run: npx tsx scripts/check-artifact-guides.ts [--root <workflows-dir>] [--json]
  */
 import { readdirSync, existsSync, statSync, readFileSync } from 'node:fs';
@@ -53,6 +57,8 @@ export interface UnmappedArtifact {
   key: string;
   artifact: string;
   detail: string;
+  /** Set when the finding is a baseline entry matching no declaration, not an unguided artifact. */
+  stale?: boolean;
 }
 
 interface BaselineEntry {
@@ -171,9 +177,18 @@ async function loadWorkflowTechniques(techniquesDir: string): Promise<Array<{ id
   return out;
 }
 
-export async function collectUnmappedArtifacts(root: string = DEFAULT_ROOT): Promise<UnmappedArtifact[]> {
+/**
+ * `reportStale` defaults to "only when measuring the corpus the baseline describes". A fixture corpus
+ * holds none of the real declarations, so reporting staleness there would flag every entry.
+ */
+export async function collectUnmappedArtifacts(
+  root: string = DEFAULT_ROOT,
+  opts: { reportStale?: boolean } = {},
+): Promise<UnmappedArtifact[]> {
+  const reportStale = opts.reportStale ?? root === DEFAULT_ROOT;
   const baseline = loadBaseline();
   const accepted = new Set(baseline.entries.map((e) => `${e.site} ${e.artifact}`));
+  const matched = new Set<string>();
   const out: UnmappedArtifact[] = [];
   const sharedResources = readResources(root, SHARED_WORKFLOW);
   let scanned = 0;
@@ -193,7 +208,8 @@ export async function collectUnmappedArtifacts(root: string = DEFAULT_ROOT): Pro
         if (mapNamesArtifact(map, artifact)) continue;
         if (resourceIsGuideFor(resources, artifact)) continue;
         if (resourceIsGuideFor(sharedResources, artifact)) continue;
-        if (accepted.has(`${key} ${artifact}`)) continue;
+        const acceptedKey = `${key} ${artifact}`;
+        if (accepted.has(acceptedKey)) { matched.add(acceptedKey); continue; }
         out.push({
           key,
           artifact,
@@ -203,11 +219,29 @@ export async function collectUnmappedArtifacts(root: string = DEFAULT_ROOT): Pro
     }
   }
   assertScanned(scanned, 'technique files', root);
+
+  // A baseline entry that matched nothing is stale — the artifact gained a guide, was renamed, or
+  // stopped being declared. Reporting it is what stops the triage silently outliving the debt it
+  // records, the same convention scripts/binding-fidelity-triage.json states for its own entries.
+  for (const entry of reportStale ? baseline.entries : []) {
+    const acceptedKey = `${entry.site} ${entry.artifact}`;
+    if (matched.has(acceptedKey)) continue;
+    out.push({
+      key: entry.site,
+      artifact: entry.artifact,
+      stale: true,
+      detail: `baseline entry for '${entry.artifact}' at '${entry.site}' matches no artifact declaration — it gained a guide, was renamed, or is no longer declared; delete the entry from scripts/artifact-guide-baseline.json`,
+    });
+  }
   return out.sort((a, b) => a.key.localeCompare(b.key));
 }
 
 export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Finding[]> {
-  return (await collectUnmappedArtifacts(root)).map((v) => ({ check: 'artifact-guide-mapped', site: v.key, detail: v.detail }));
+  return (await collectUnmappedArtifacts(root)).map((v) => ({
+    check: v.stale ? 'artifact-guide-baseline-stale' : 'artifact-guide-mapped',
+    site: v.key,
+    detail: v.detail,
+  }));
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
@@ -217,6 +251,6 @@ if (isMain) {
   const owed = loadBaseline().entries.length;
   await runGuard('artifact-guides', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
     okMessage: `every persisted artifact filename maps to a creation guide (${owed} triaged as owing one)`,
-    remedy: 'map the filename in the workflow resources index, author the guide, or classify the gap in scripts/artifact-guide-baseline.json',
+    remedy: 'map the filename in the workflow resources index, author the guide, classify the gap in scripts/artifact-guide-baseline.json — or delete the stale entry that no longer matches anything',
   });
 }

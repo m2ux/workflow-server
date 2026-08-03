@@ -153,6 +153,21 @@ describe('artifact-guides guard (fixture corpus)', () => {
     expect(await collectUnmappedArtifacts(tempDir)).toEqual([]);
   });
 
+  // A triage that outlives its debt is a triage nobody prunes, so an entry matching nothing reports.
+  // Against a fixture corpus the real baseline matches nothing by construction, which is why stale
+  // reporting is scoped to the corpus the baseline describes.
+  it('reports every baseline entry as stale when asked to against a corpus that has none', async () => {
+    await writeTechnique(join(tempDir, 'fixture-wf', 'techniques'), 'writer', [
+      '### report', '', 'A report.', '',
+      '#### artifact', '', '`unguided-report.md`',
+    ]);
+    const withStale = await collectUnmappedArtifacts(tempDir, { reportStale: true });
+    expect(withStale.some((v) => v.stale)).toBe(true);
+    const withoutStale = await collectUnmappedArtifacts(tempDir, { reportStale: false });
+    expect(withoutStale.some((v) => v.stale)).toBe(false);
+    expect(withoutStale.map((v) => v.artifact)).toEqual(['unguided-report.md']);
+  });
+
   it('ignores an output that persists nothing', async () => {
     await writeTechnique(join(tempDir, 'fixture-wf', 'techniques'), 'computer', [
       '### verdict', '', 'A bag-only verdict with no artifact.',
