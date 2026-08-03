@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -43,5 +43,5 @@ The publication close-out: post status, PR, review type, verdict, and links back
 
 ### 1. Record Publication
 
-- Write `{publication_record}` to the planning folder: `{review_posted}` status, PR `{pr_number}`, `{review_type}`, `{merge_readiness_verdict}`, the posting timestamp, and links to `review-report.md`, `findings-register.md`, and `evidence-log.md`.
+- Write `{publication_record}` to the planning folder per [publication-record](../../resources/publication-record.md#template) and its [Rules](../../resources/publication-record.md#rules): `{review_posted}` status, PR `{pr_number}`, `{review_type}`, `{merge_readiness_verdict}`, and the posting timestamp.
   > If `{review_posted}` is false, record the failed post with its reason — the record reflects what actually happened, and the orchestrator decides whether to retry.

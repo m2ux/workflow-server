@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -67,7 +67,7 @@ Overall verdict — `true` when the specification is conformant and covers the s
 
 ### 4. Compile Verdict
 
-- Write `{validation_report}` to `{planning_folder_path}`, recording the overall verdict (passed, correctable, or critical), the categorized issues, the source-coverage result, and the correction-pass number; capture its written location as `{validation_report_path}`.
+- Write `{validation_report}` to `{planning_folder_path}` per [validation-report](../resources/validation-report.md#template) and its [Rules](../resources/validation-report.md#rules); capture its written location as `{validation_report_path}`.
 
 ### 5. Derive Routing Verdict
 
