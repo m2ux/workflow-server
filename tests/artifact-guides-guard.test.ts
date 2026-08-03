@@ -88,6 +88,42 @@ describe('artifact-guides guard (fixture corpus)', () => {
     expect(await collectUnmappedArtifacts(tempDir)).toEqual([]);
   });
 
+  // The defect this guards against: a body-wide filename match certifies coverage it has not got.
+  // A guide's own "traces to" line names sibling artifacts, and a close-out guide names every
+  // register it counts, so a loose match resolved evidence-log.md and token-usage.md to resources
+  // that say nothing about their shape.
+  it('does not accept a templated resource that names the filename only in its body', async () => {
+    await writeTechnique(join(tempDir, 'fixture-wf', 'techniques'), 'writer', [
+      '### log', '', 'A register.', '',
+      '#### artifact', '', '`evidence-log.md`',
+    ]);
+    await writeResource(join(tempDir, 'fixture-wf', 'resources'), 'publication-record.md', [
+      '---', 'name: publication-record',
+      'description: Creation guide for `publication-record.md`.', '---', '',
+      '# Publication Record Guide', '',
+      'Creation guide for bare filename `publication-record.md`.', '',
+      '## Template', '', '```markdown', '# Publication Record', '```', '',
+      '## Rules', '',
+      '- **Traces to** the review report and `evidence-log.md`.',
+    ]);
+    const unmapped = await collectUnmappedArtifacts(tempDir);
+    expect(unmapped.map((v) => v.artifact)).toEqual(['evidence-log.md']);
+  });
+
+  it('accepts a guide that declares its artifact in the frontmatter description alone', async () => {
+    await writeTechnique(join(tempDir, 'fixture-wf', 'techniques'), 'writer', [
+      '### record', '', 'A record.', '',
+      '#### artifact', '', '`publication-record.md`',
+    ]);
+    await writeResource(join(tempDir, 'fixture-wf', 'resources'), 'publication-record.md', [
+      '---', 'name: publication-record',
+      'description: Creation guide for `publication-record.md`.', '---', '',
+      '# Publication Record Guide', '',
+      '## Template', '', 'Fields.',
+    ]);
+    expect(await collectUnmappedArtifacts(tempDir)).toEqual([]);
+  });
+
   it('does not accept a resource that names the filename without carrying a template', async () => {
     await writeTechnique(join(tempDir, 'fixture-wf', 'techniques'), 'writer', [
       '### report', '', 'A report.', '',

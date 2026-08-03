@@ -139,10 +139,16 @@ Anti-patterns, per side:
 - **cross-cutting**: don't serialize agent state as prose, and don't dress a human document up as a
   data dump.
 
-*Out of scope:* the per-artifact JSON *field schemas* for specific agent artifacts (assumptions-log,
-findings-classification, etc.) are a later increment (V5), not part of the `audience` attribute
-itself. This attribute states *who reads* an artifact and *that* an agent artifact is JSON; it does
-not fix the shape of any particular JSON payload.
+The attribute states *who reads* an artifact and *that* an agent artifact is JSON. It does not fix
+the shape of any particular JSON payload — the per-artifact field schemas belong to each artifact's
+own creation guide.
+
+**Naming the reader and converting the file are one act.** Because `agent` implies JSON on disk, an
+ID-bearing register that is markdown today is declared `human` until it is converted, even where a
+later step is its only reader. A declaration therefore describes the artifact as it exists, never as
+it is intended to become. `scripts/artifact-guide-baseline.json` carries the registers awaiting that
+conversion under the `row-register-awaiting-conversion` rationale, so which declarations are
+provisional is readable from the repo rather than from a planning folder.
 
 #### The symbol model
 
