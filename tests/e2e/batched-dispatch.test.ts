@@ -5,17 +5,12 @@ import { createHarness, type Harness, parseToolResponse, rawText, isError } from
 import type { HistoryEntry } from '../../src/schema/state.schema.js';
 
 /**
- * Batched dispatch over the real server (#407).
- *
- * One worker context walks a run of activities. The saving is the context establishment it does not
- * re-pay, so what these walks pin down is the bound that makes the run safe: the second and third
- * activities collapse against what the context already holds, and the fourth is refused with the
- * payload undelivered.
+ * Batched dispatch over the real server (#407). What these walks pin down is the bound that makes a
+ * run safe, and the gate crossings that make a batch worth having.
  *
  * The run walked is the analysis run through the middle of the main workflow — the best batch
- * candidate the investigation measured — with the implementation activity behind it as the fourth
- * activity the cap refuses. `npm run bench:batch` prices the same run at 24.7% fewer characters
- * delivered.
+ * candidate the investigation measured — with the implementation activity behind it as the fourth the
+ * cap refuses.
  */
 describe('batched dispatch (#407)', () => {
   let h: Harness;

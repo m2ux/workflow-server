@@ -775,11 +775,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         throw new Error('No current activity in session state. Call next_activity first.');
       }
 
-      // The batch bound (#407). A worker context may walk a run of activities, and this is where the
-      // run ends: a scope arriving for an activity it has not taken, whose batch is already at the
-      // activity cap or over its cumulative delivery budget, is refused. Refusing here rather than in
-      // rule text is what makes the bound a property of the system — the same discipline the corpus
-      // states as Encode Constraints as Structure.
+      // The batch bound (#407), applied where content is handed over rather than in rule text.
       //
       // Placed on the freshly loaded state, ahead of every composition await, for two reasons: a
       // refusal costs nothing because no payload is assembled, and the refusal event is written with
@@ -1239,16 +1235,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       });
       await saveSessionForTool(reloaded, next);
 
-      // Where this context stands against its bound, counted with this delivery included. A worker
-      // carrying a batch reads `may_continue` to decide whether to ask for the next activity, so the
-      // ordinary end of a batch is the worker stopping rather than the server refusing it. The
-      // refusal above is the backstop for a worker that asks anyway.
-      //
-      // `may_continue` is answered as of THIS delivery, and the worker goes on to fetch techniques and
-      // resources lazily while it runs the activity — which draw down the same budget. So a `true`
-      // here can still become a refusal at the next boundary. `remaining_chars` is reported for that
-      // reason: it is the headroom those lazy fetches eat into, and a worker close to zero should
-      // expect its batch to end whatever the boolean said.
+      // Where this context stands against its bound, this delivery included. A worker reads
+      // `may_continue` to decide whether to ask for the next activity, so the ordinary end of a batch
+      // is the worker stopping and the refusal above is the backstop. `remaining_chars` is the
+      // headroom the activity's own lazy fetches eat into after this answer was given.
       const batchTaken = batchActivities(next, scope);
       const batchChars = deliveredChars(next, scope);
       const unbounded = scope === next.agentId;

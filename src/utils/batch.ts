@@ -1,32 +1,16 @@
 import type { SessionFile } from '../schema/session.schema.js';
 
 /**
- * The batch bound (#407).
+ * The batch bound (#407) — see `docs/dispatch_model.md` for the model and
+ * `DEFAULT_BATCH_HEADROOM_FRACTION` in `src/config.ts` for the measurements behind the settings.
  *
- * One dispatched worker context walks a run of activities rather than exactly one, and the saving is
- * the context establishment it does not re-pay — the system prompt, project instructions and tool
- * schemas a fresh worker rebuilds before it reads a line of workflow content. What makes the run
- * safe is that it is bounded, and the bound lives here, at delivery, rather than in rule text a
- * worker may or may not read.
+ * A batch is not declared: it IS the run of activities one delivery scope takes delivery of, derived
+ * from session history, so the server needs no cooperation to see one. Bounded by a cumulative
+ * character budget and a cap on distinct activities.
  *
- * A batch is not declared. It IS the run of activities one delivery scope takes delivery of, so the
- * server sees a batch with no orchestrator cooperation and a worker that omits a parameter does not
- * escape it. Both halves are read off the session history: `activity_dispatched.chars` is the size of
- * the whole `get_activity` response, eagerly bundled techniques and resources included, and the
- * content-fetch events cover what the worker went back for LAZILY on top of it. Bundled entries are
- * therefore not added again — their bytes are already inside the activity payload.
- *
- * Two limits, neither redundant: a CUMULATIVE character budget over everything delivered to the
- * scope, scaled to the caller's declared `context_tokens`, and a hard cap on distinct activities that
- * sees what a character count cannot — the context establishment the server never delivers, the code
- * the worker reads, the artifacts it drafts, and degradation across a long walk. Which one binds
- * depends on how heavy the workflow's activities are; `DEFAULT_BATCH_HEADROOM_FRACTION` in
- * `src/config.ts` carries the measurements behind both, and `docs/dispatch_model.md` the model.
- *
- * Two carve-outs, each load-bearing. The bound applies to a DISPATCHED worker context, so a scope
- * equal to the session's own agent is exempt — that context owns the whole walk by construction. And
- * an activity the scope has ALREADY taken is always served: that is a worker resuming after a gate
- * asking for the payload it is holding, and refusing it would end every batch at its first gate.
+ * Two carve-outs are load-bearing. A scope equal to the session's own agent is exempt, owning the
+ * whole walk by construction. And an activity the scope already holds is always served — that is a
+ * worker resuming after a gate, and refusing it would end every batch at its first gate.
  */
 
 /** Which limit a refused activity ran into. */
@@ -60,10 +44,8 @@ export function batchActivities(state: SessionFile, scope: string): string[] {
     if (event.type !== 'activity_dispatched') continue;
     const data = event.data as { agentId?: string; chars?: number } | undefined;
     if (data?.agentId !== scope) continue;
-    // A dispatch event with no size is a context announcing itself on a technique or resource fetch,
-    // which delivered no activity payload — an out-of-band context does exactly that. Counting the
-    // activity the session happened to be on would spend a slot on an activity never delivered, and
-    // the refusal would then state a count the context cannot account for.
+    // No size means no activity payload was delivered — a context announcing itself on a technique
+    // or resource fetch. Counting it would spend a slot on an activity never delivered.
     if (typeof data.chars !== 'number') continue;
     const activity = event.activity;
     if (typeof activity !== 'string' || seen.includes(activity)) continue;
@@ -73,21 +55,14 @@ export function batchActivities(state: SessionFile, scope: string): string[] {
 }
 
 /**
- * Characters delivered in full to `scope` across everything it has received. Content that collapsed
- * to an unchanged marker cost the receiving context effectively nothing, so it does not draw down the
- * budget.
+ * Characters delivered in full to `scope`, counted once each. Collapsed content cost the receiving
+ * context nothing, so it does not draw down the budget.
  *
- * Counted once each, which takes care over what already contains what:
- *
- * - `activity_dispatched.chars` is the size of the whole `get_activity` response, so it already
- *   includes every technique and resource that response bundled eagerly. Those arrive with their own
- *   `technique_bundled` / `resource_fetched` events, recorded for delivery observability, and adding
- *   them would charge the same bytes twice — measured at +48% on one activity of the main workflow and
- *   +70% over a run of three, which made a nominal 280,000-character budget bind at 164,540.
- * - `technique_fetched`, and a `resource_fetched` the response did not bundle, are what the worker
- *   went back for LAZILY. Those bytes are in no activity payload, so they count.
- * - `activity_redelivered` reports the same payload as the `activity_dispatched` event recorded by
- *   the same call, so counting both would charge one delivery twice.
+ * What already contains what is the whole difficulty. `activity_dispatched.chars` is the size of the
+ * whole `get_activity` response, so every eagerly bundled technique and resource is inside it
+ * already; their own events exist for observability and are not added again. What counts on top is
+ * only what the worker went back for lazily. `activity_redelivered` reports the payload its
+ * `activity_dispatched` event already carried.
  */
 export function deliveredChars(state: SessionFile, scope: string): number {
   let total = 0;
@@ -124,42 +99,30 @@ export function batchBound(
   policy: { headroomFraction: number; maxActivities: number; charsPerToken: number },
 ): BatchBound {
   return {
-    // A cap below one still admits the activity a dispatch was made for: one activity to a worker is
-    // batching switched off, which is what an operator setting zero means.
+    // One activity to a worker is batching switched off, which is what setting zero means.
     maxActivities: Math.max(1, Math.floor(policy.maxActivities)),
-    // Floored, so the budget reported to the caller and recorded on a refusal is the same integer the
-    // comparison applies rather than one up to a character larger.
+    // Floored so the reported and recorded budget is the integer the comparison applies.
     budgetChars: Math.floor(contextTokens * policy.headroomFraction * policy.charsPerToken),
   };
 }
 
 /**
- * Whether a batch of `activities` that has been delivered `chars` is inside both limits.
- *
- * The one home for the comparison, because it is asked twice from opposite sides: the refusal below
- * asks whether to hand over the next activity, and `may_continue` on a delivery response asks whether
- * the worker should come back for one. Two expressions of one rule drift, and the boundary is exactly
- * where they drift — a batch sitting on its budget must be both admitted and told to continue.
+ * The one home for the comparison, asked from both sides — whether to hand the next activity over,
+ * and whether the worker should come back for one. Expressed twice, the two drift at the boundary.
  */
 function withinBatchBound(activities: number, chars: number, bound: BatchBound): boolean {
   return activities < bound.maxActivities && chars <= bound.budgetChars;
 }
 
 /**
- * Whether `scope` may take a further activity, as of what it has been delivered. The session's own
- * agent always may — its run is the session, not a batch.
- *
- * Answered as of this moment, and a worker goes on to fetch techniques and resources lazily while it
- * runs the activity it just took, drawing down the same budget. So `true` here can still become a
- * refusal at the next boundary; the headroom reported alongside is what those fetches eat into.
+ * Whether `scope` may take a further activity, as of what it has been delivered. Answered before the
+ * lazy fetches of the activity just taken draw down the same budget, so `true` can still become a
+ * refusal at the next boundary.
  */
 export function batchMayContinue(state: SessionFile, scope: string, bound: BatchBound): boolean {
   if (scope === state.agentId) return true;
   const activities = batchActivities(state, scope).length;
-  // A context with no activity payload yet has no batch to be past the end of — the same reading the
-  // refusal takes. Without this, a context that announced itself on a technique fetch and read enough
-  // lazily to pass the budget would be told to stop before it had taken an activity at all, while the
-  // refusal would still serve it.
+  // No activity taken yet is no batch to be past the end of — the reading the refusal takes too.
   if (activities === 0) return true;
   return withinBatchBound(activities, deliveredChars(state, scope), bound);
 }
@@ -184,8 +147,7 @@ export function batchRefusal(
   const chars = deliveredChars(state, scope);
   if (withinBatchBound(activities.length, chars, bound)) return undefined;
 
-  // Past the bound, so which limit to name. The cap is reported ahead of the budget because it is the
-  // limit meant to do the routine work, and the recorded tally is read per limit to revise both.
+  // Past the bound: which limit to name, since the recorded tally is read per limit.
   const refusal = { activities: activities.length, chars, bound };
   if (activities.length >= bound.maxActivities) return { limit: 'activity_cap', ...refusal };
   return { limit: 'delivery_budget', ...refusal };
@@ -207,12 +169,10 @@ export function batchRefusalMessage(activityId: string, scope: string, refusal: 
 
 /**
  * Append one `batch_refused` event to a session draft (call inside an `advanceSession` mutator), so
- * the runs that hit each limit are countable and the starting settings can be revised from them.
+ * the runs that hit each limit are countable and the settings can be revised from them.
  *
- * Once per scope, activity and limit. A caller that retries a refused activity is refused again, and
- * a tally that counted retries would report how insistent a worker was rather than how often a limit
- * bound — which is the figure the settings are revised from. Idempotent in the same shape as
- * `appendStepStartedIfAbsent`.
+ * Once per scope, activity and limit: a retry is refused again, and counting retries would report how
+ * insistent a worker was rather than how often a limit bound.
  */
 export function recordBatchRefusal(
   draft: SessionFile,

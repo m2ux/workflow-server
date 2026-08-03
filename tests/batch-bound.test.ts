@@ -81,10 +81,8 @@ describe('batch bound arithmetic (#407)', () => {
 
   it('charges eagerly bundled content once, the activity payload it travelled inside', () => {
     const state = session();
-    // The activity payload IS the whole response, bundled techniques and resources included. Their
-    // own events exist for delivery observability; adding them charges the same bytes twice, measured
-    // at +48% on one activity of the main workflow and +70% over a run of three, which made a nominal
-    // 280,000-character budget bind at 164,540.
+    // The activity payload IS the whole response, bundled techniques and resources included; their
+    // own events exist for observability, and adding them charges the same bytes twice.
     deliver(state, 'worker-a', 'implementation-analysis', 1_000);
     state.history.push({
       timestamp: new Date().toISOString(), type: 'technique_bundled', activity: 'implementation-analysis',
@@ -153,9 +151,8 @@ describe('batch bound arithmetic (#407)', () => {
   });
 
   it('answers may-continue as the exact complement of a refusal, boundary included', () => {
-    // The two ask one question from opposite sides: hand over the next activity, and come back for
-    // one. At the boundary they must agree — a batch sitting exactly on its budget is admitted, so it
-    // must also be told to continue. Two expressions of this drifted apart until they shared a home.
+    // At the boundary the two must agree: a batch exactly on its budget is admitted, so it must also
+    // be told to continue. Expressed separately, they drifted here.
     const bound = batchBound(1_000, POLICY);
     for (const chars of [0, 1, 1_399, 1_400, 1_401, 9_999]) {
       const state = session();

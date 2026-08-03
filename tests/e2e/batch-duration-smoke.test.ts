@@ -2,26 +2,11 @@ import { describe, it, expect } from 'vitest';
 import { DEFAULT_RUN, DEFAULT_SPAWN_SECONDS, measure } from '../../scripts/run-batch-benchmark.js';
 
 /**
- * Batch duration smoke test (#407).
+ * Batch duration smoke test (#407) — the assertion half of `npm run bench:batch`, whose header states
+ * what the two passes measure and what the elapsed figures are worth.
  *
- * Walks the analysis run through the middle of the main workflow twice — a fresh context per
- * activity, then one context for the whole run — and asserts the shape of the difference, so a
- * regression that quietly costs the batch its saving fails here rather than in a run profile weeks
- * later. It is the assertion half of `npm run bench:batch`, which prints the same figures.
- *
- * ## Which duration this quantifies
- *
- * Both passes drive the real server over an in-memory transport, so the elapsed figures are the
- * SERVER-SIDE component of a walk: composing each payload, resolving techniques and fragments off
- * disk, and writing the session. That figure is a WASH, and the assertion below says so rather than
- * claiming a speed-up: reference delivery composes every payload in full and then hashes it to
- * decide what may collapse, so a batch does slightly more server work to put fewer bytes on the wire.
- *
- * The run duration a batch actually saves is the harness rebuilding a fresh worker's context before
- * it reads a line of workflow content, and that cannot be observed with no agent to spawn. So it is
- * asserted as arithmetic over CONTEXTS AVOIDED, priced at the measured per-dispatch spawn cost of the
- * profiled 27 July run. The contexts avoided are real and measured here; the seconds they are worth
- * come from that input, and the two figures are never added into one.
+ * Here so a regression that costs a batch its saving fails in CI rather than in a run profile weeks
+ * later.
  */
 describe('batch duration smoke (#407)', () => {
   it('quantifies what a batch saves over a fresh context per activity', async () => {

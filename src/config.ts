@@ -214,14 +214,9 @@ function envNumberOrDefault(key: string, fallback: number): number {
 }
 
 /**
- * Read a numeric env var into `[min, max]`, falling back to `fallback` when unset, blank, or not a
- * finite number, and clamping anything outside the range to the nearest end.
- *
- * Clamping rather than falling back, because for a bound the two answers differ in the dangerous
- * direction: an operator writing `BATCH_MAX_ACTIVITIES=0` means "no batching", and a plain
- * positive-only reader rejects that as invalid and hands back the DEFAULT of three — the loosest
- * setting, the opposite of what was asked for, silently. Clamped, zero becomes the minimum of one
- * activity to a worker, which is batching switched off.
+ * Read a numeric env var into `[min, max]`, falling back only when unset, blank or not finite.
+ * Clamped rather than rejected: an out-of-range bound should land at the nearest end, never fall back
+ * to a default looser than what was asked for.
  */
 function envNumberInRange(key: string, fallback: number, min: number, max: number): number {
   const raw = process.env[key]?.trim();
@@ -640,9 +635,6 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
     serverVersion: envOrDefault('SERVER_VERSION', '2.1.0'),
     bundleHeadroomFraction: envNumberOrDefault('BUNDLE_HEADROOM_FRACTION', DEFAULT_BUNDLE_HEADROOM_FRACTION),
     bundleCharsPerToken: envNumberOrDefault('BUNDLE_CHARS_PER_TOKEN', DEFAULT_BUNDLE_CHARS_PER_TOKEN),
-    // Clamped rather than validated: a batch bound set out of range should land at the nearest end,
-    // never fall back to a default looser than what was asked for. A fraction above 1 would budget a
-    // batch more than the window it is measured against; 1 activity is batching switched off.
     batchHeadroomFraction: envNumberInRange('BATCH_HEADROOM_FRACTION', DEFAULT_BATCH_HEADROOM_FRACTION, 0, 1),
     batchMaxActivities: envNumberInRange('BATCH_MAX_ACTIVITIES', DEFAULT_BATCH_MAX_ACTIVITIES, 1, 100),
     transport: resolveTransport(argv),
