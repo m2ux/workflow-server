@@ -5,25 +5,26 @@ Reproduce, from a server checkout with the transcripts under ~/.claude/projects:
 
   npm run --silent profile:run -- \
     --session=03e43af3 --session=f5783c2a --session=8e33afd9 --session=b5474fca \
-    --session=7d363a87 --session=e0f51155 --session=8608448b --session=7b04f0f4
-
-  npm run --silent profile:run -- --session=3a2415c4 --opening-activity=intake-and-context
-
-The 3a2415c4 run walks the workflow-authoring client workflow, whose opening activity is
-intake-and-context; the other eight walk work-package, which opens on start-work-package.
+    --session=7d363a87 --session=e0f51155 --session=8608448b --session=3a2415c4 \
+    --session=7b04f0f4
 
 Each block reports the startup window: from the first record to the point the client
-workflow's opening activity is reported done. `record-summed` is what a summation over
-transcript records yields for the same span, and the factor it exceeds the total by.
+workflow's opening activity is reported done. The profiler reads which activity that is
+off the session the transitions name, so the 3a2415c4 run — which walks workflow-authoring
+and opens on intake-and-context rather than start-work-package — needs no special handling.
+
+`record-summed` is what a summation over transcript records yields for the same span, and
+the factor it exceeds the total by.
 
 ===========================================================================
 
 == 03e43af3-30d4-455d-a079-3eb3cf15dfc8  t0=2026-07-27T13:42:09.201Z
    window: startup — 31.7 min, closed by openingComplete
+   client workflow opens on: start-work-package
    startSession         +      0.6 min
    firstWorker          +      1.2 min
-   clientFirstActivity  +      9.6 min
    firstCheckpoint      +     26.8 min
+   clientFirstActivity  +      9.6 min
    openingComplete      +     31.7 min
    checkpoint wait: 1.2 min  |  workers dispatched: 5
    MAIN   out=   25,011  cache_write=    104,054  cache_read=  3,562,138  (42 responses over 80 records)
@@ -51,10 +52,11 @@ transcript records yields for the same span, and the factor it exceeds the total
 
 == f5783c2a-dcd3-4533-86fb-57e0254d287f  t0=2026-07-12T17:44:21.869Z
    window: startup — 18.2 min, closed by openingComplete
+   client workflow opens on: start-work-package
    startSession         +      0.5 min
    firstWorker          +      1.7 min
-   clientFirstActivity  +      7.3 min
    firstCheckpoint      +     12.3 min
+   clientFirstActivity  +      7.3 min
    openingComplete      +     18.2 min
    checkpoint wait: 1 min  |  workers dispatched: 4
    MAIN   out=   29,230  cache_write=    111,787  cache_read=  2,765,788  (33 responses over 80 records)
@@ -81,10 +83,11 @@ transcript records yields for the same span, and the factor it exceeds the total
 
 == 8e33afd9-bc4c-46cf-abe1-23cc14f42426  t0=2026-07-13T17:26:58.233Z
    window: startup — 650.4 min, closed by openingComplete
+   client workflow opens on: start-work-package
    startSession         +      0.9 min
    firstWorker          +        2 min
-   clientFirstActivity  +      8.3 min
    firstCheckpoint      +     76.3 min
+   clientFirstActivity  +      8.3 min
    openingComplete      +    650.4 min
    checkpoint wait: 533 min  |  workers dispatched: 4
    MAIN   out=   38,452  cache_write=    381,280  cache_read=  2,649,192  (31 responses over 88 records)
@@ -111,11 +114,12 @@ transcript records yields for the same span, and the factor it exceeds the total
 
 == b5474fca-ef22-45fb-9e2a-36e5b8575bad  t0=2026-07-14T17:22:32.878Z
    window: startup — 671.3 min, closed by openingComplete
+   client workflow opens on: start-work-package
    startSession         +      0.4 min
    firstWorker          +      1.4 min
+   firstCheckpoint      +    713.5 min
    clientFirstActivity  +      8.6 min
    openingComplete      +    671.3 min
-   firstCheckpoint      +    713.5 min
    checkpoint wait: 484.4 min  |  workers dispatched: 5
    MAIN   out=   42,699  cache_write=    382,243  cache_read=  3,784,233  (42 responses over 95 records)
    WORKER out=   34,163  cache_write=    485,254  cache_read=  4,475,812  (78 responses over 147 records)
@@ -142,10 +146,11 @@ transcript records yields for the same span, and the factor it exceeds the total
 
 == 7d363a87-f856-4e62-9fdc-11abe4774d95  t0=2026-07-10T13:56:30.487Z
    window: startup — 1076.5 min, closed by openingComplete
+   client workflow opens on: start-work-package
    startSession         +        1 min
    firstWorker          +        2 min
-   clientFirstActivity  +      7.3 min
    firstCheckpoint      +   1066.9 min
+   clientFirstActivity  +      7.3 min
    openingComplete      +   1076.5 min
    checkpoint wait: 0.8 min  |  workers dispatched: 4
    MAIN   out=   22,625  cache_write=    213,028  cache_read=  3,560,605  (41 responses over 88 records)
@@ -172,6 +177,7 @@ transcript records yields for the same span, and the factor it exceeds the total
 
 == e0f51155-f98b-460b-9a4c-a1983f99a78d  t0=2026-06-07T09:44:00.216Z
    window: startup — 15.3 min, closed by openingComplete
+   client workflow opens on: start-work-package
    startSession         +      0.4 min
    firstWorker          +      1.1 min
    firstCheckpoint      +      4.4 min
@@ -205,6 +211,7 @@ transcript records yields for the same span, and the factor it exceeds the total
 
 == 8608448b-35fd-460e-bfc8-9f1d177fa9bb  t0=2026-07-28T10:15:20.218Z
    window: startup — 36.5 min, closed by openingComplete
+   client workflow opens on: start-work-package
    startSession         +      0.4 min
    firstWorker          +      1.2 min
    firstCheckpoint      +     11.5 min
@@ -238,10 +245,11 @@ transcript records yields for the same span, and the factor it exceeds the total
 
 == 3a2415c4-5cc7-421d-8d1e-11f0366eef02  t0=2026-07-28T10:21:06.473Z
    window: startup — 40.8 min, closed by openingComplete
+   client workflow opens on: intake-and-context
    startSession         +     12.2 min
    firstWorker          +       13 min
-   clientFirstActivity  +     19.2 min
    firstCheckpoint      +     36.8 min
+   clientFirstActivity  +     19.2 min
    openingComplete      +     40.8 min
    checkpoint wait: 0.3 min  |  workers dispatched: 6
    MAIN   out=   55,784  cache_write=    161,645  cache_read=  8,711,160  (78 responses over 179 records)
@@ -270,10 +278,11 @@ transcript records yields for the same span, and the factor it exceeds the total
 
 == 7b04f0f4-8957-4d32-b78a-edc05fa60eb7  t0=2026-07-30T18:37:05.103Z
    window: startup — 606.5 min, closed by openingComplete
+   client workflow opens on: start-work-package
    startSession         +     66.5 min
    firstWorker          +     67.6 min
-   clientFirstActivity  +      578 min
    firstCheckpoint      +      590 min
+   clientFirstActivity  +      578 min
    openingComplete      +    606.5 min
    checkpoint wait: 66.3 min  |  workers dispatched: 5
    MAIN   out=   37,776  cache_write=    288,902  cache_read=  6,245,154  (52 responses over 119 records)
