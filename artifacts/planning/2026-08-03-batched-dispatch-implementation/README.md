@@ -1,0 +1,80 @@
+# Batched dispatch — implementation record
+
+Supporting record for the batched-dispatch work against [#407](https://github.com/m2ux/workflow-server/issues/407). The measurements, the case for the mechanism, and the risk register live in the [investigation record](../2026-08-02-batched-dispatch/README.md); this one records what was built, the decisions taken while building it, and the numbers the implementation itself produced.
+
+## Where the bound lives, and why it needed no new state
+
+A batch is not declared anywhere. It **is** the run of activities one delivery scope takes delivery of, which the session history already records: `activity_dispatched` carries the scope and the payload size, and the content-fetch events carry the techniques and resources delivered alongside. So both halves of the bound are a derived predicate over history — no session-state field, no schema migration, and no way for a worker to leave the bound behind by omitting a parameter.
+
+Enforcement sits in `get_activity` before composition runs, so a refusal costs nothing: the payload is never assembled, let alone delivered.
+
+## The two carve-outs, and why each is load-bearing
+
+**An activity the scope already holds is always served.** Thirteen of the main workflow's fifteen activities carry a gate. A worker resuming after one asks for the payload it is still sitting on, and refusing that would end every batch at its first gate — the mechanism would never reach its second activity.
+
+**The session's own agent is unbounded.** `deliveryScope` falls back to `state.agentId` when no `agent_id` is passed, so a scope equal to the session agent is the context that owns the whole walk by construction — which is what `contextMode: 'persistent'` describes. Bounding it would break the persistent solo topology that `bench:token` measures and that the reference-delivery suite walks. The issue says "a cumulative budget per worker context", and this is what draws the line at *worker*: a batch bounds a subordinate context, not the context that is the session.
+
+This was the one interpretive decision the issue did not settle. The alternative — bounding every multi-activity scope — is stricter but retires persistent solo sessions as a side effect, which is a separate call.
+
+## The headroom fraction was set from measurement, not from caution
+
+The starting value was 0.20, on the arithmetic in the investigation record: 937,121 characters across fifteen activities averages some 62,000 an activity, so three activities ought to sit near 187,000 characters, and 0.20 of a 200,000-token window gives 160,000.
+
+The first run of the new benchmark refused the batch at its third activity. Measured rather than averaged, the analysis run delivers **263,253 characters into one context, 224,073 of them by the end of the second activity** — the run's activities are heavier than the corpus mean, and 0.20 refuses the very batch the measurements name as the best candidate.
+
+Re-based to **0.35**, a 200,000-token window gives 280,000 characters, and the run is admitted with the activity **cap** closing it. That is the intended relationship between the two limits: the cap does the routine work, and the budget is there for a run of unusually heavy activities. It stays far below the eager-bundling fraction of 0.80, which on the same arithmetic admits nine of fifteen activities into one context.
+
+## What the implementation measures
+
+`npm run bench:batch` walks a run twice — a fresh context per activity, then one context for the whole run — and reports the difference. Over the analysis run at a 200,000-token window:
+
+| | per-activity | batched |
+|---|---:|---:|
+| Contexts the server met | 3 | 1 |
+| Characters delivered | 298,800 | 263,253 |
+| Activity payloads, in walk order | 70,764 / 79,178 / 54,801 | 70,764 / 62,127 / 21,808 |
+| Server-side elapsed, best of 4 | 556 ms | 539 ms |
+
+**Delivery collapse is 11.9%, not the 32% the investigation record cites for this run.** The two measure different things and both are right. The record's figure comes from a real run's delivery ledger, where a worker also fetches techniques and resources lazily across the activity and those fetches collapse too. This benchmark takes activity payloads only, so it sees the payload collapse — 79,178 → 62,127 and 54,801 → 21,808, which is 42% and 60% by position, matching the record's "second collapses 40–45%, third 55–70%" — but not the lazy-fetch collapse layered on top. The 11.9% is the conservative floor and the honest figure for what this script walks.
+
+**Server-side elapsed is a wash, and that is a finding rather than a defect.** Best-of-4 gives 3.2% in the batch's favour; single walks swing ±20%. Reference delivery composes every payload in full and *then* hashes it to decide what may collapse, so a batch does slightly more server work to put fewer bytes on the wire. Nothing in the tooling claims a server-side speed-up, and the smoke test's assertion is that batching is not materially slower rather than that it is faster.
+
+**The run duration a batch saves is the contexts it avoids.** Two, on this run. Priced at 41 seconds — the mean per-dispatch spawn cost across the four setup workers of the profiled 27 July run, whose most expensive ran 165 seconds — that is 82 seconds. The script reports it as a projection with its input named and never adds it to the measured figures, because nothing headless can observe a harness spawning an agent.
+
+## The corpus mechanism
+
+The orchestrator holds no batch state. The worker reads `_meta.batch.may_continue` and carries it out on its `activity_complete` envelope as `batch_may_continue`; the loop continues that worker onto the next activity when it is true and releases the identity when it is false. So the server owns the bound, the worker relays it, and the orchestrator does no sizing and no reasoning about context load.
+
+`continue-batch` is the activity-boundary counterpart of `resume-worker`'s gate-boundary continuation: it advances the session pointer and continues the held worker, where `resume-worker` continues it on the activity it already holds. Splitting them by boundary keeps each one's capability a single sentence, and the split has a measured reason — a boundary crossed in seconds resumes against a warm cache, a boundary waiting on a person does not, and batching across the latter saves nothing because the re-warm is paid either way.
+
+### The commit boundary decided the shape
+
+The issue asks for two things that pull against each other: workers may ask for their next activity, and every activity boundary still commits and pushes before transitions are evaluated. That commit is explicitly denied to workers.
+
+A worker calling `next_activity` itself would cross the boundary without the orchestrator, so the commit would be skipped — the second requirement would fail to buy the first. What the mechanism actually needs is for the worker to keep going rather than terminate, and that is a second `get_activity` under the identity it already holds, after the orchestrator has committed and advanced the pointer. So `worker-control-plane-ban` stands and gains a sentence saying where asking for the next activity does happen; the rule that changed is `verify-dispatched-activity`, which now checks against the activity the current continuation bound rather than the one the run opened with.
+
+### Per-activity reporting is what makes a failed resume cheap
+
+`one-activity-at-a-time-in-a-batch` states the requirement and its consequence together: the pointer tracks where the walk actually is, so a failed resume costs one activity. The replacement worker takes the current activity in full and re-crosses answered gates silently, because `checkpointResponses` is keyed `activityId-checkpointId` with no agent component and `yield_checkpoint` replays any prior response for the same activity.
+
+## What this work does not do
+
+**The client dispatch loop still runs in a spawned worker.** Meta binds `workflow-engine::activity-worker` to every one of its activities, so `03-dispatch-client-workflow` — whose loop applies `dispatch-activity` and therefore `spawn-agent` — executes inside a spawned agent, which `depth-1-only` says holds no dispatch primitive. The defect is real and predates this work.
+
+Fixing it means the meta orchestrator executes that activity itself, and there is no construct in the corpus that says so: activity audience is not declarable, and an orchestrator reading its own activity body runs into `no-get-activity-from-orchestrator`. That is a new schema construct plus a carve-out in a load-bearing rule — a design call that belongs with the owner and is separable from batching, which works within the existing topology. Left for a follow-up rather than decided here.
+
+**The re-measurement against the July baselines is post-merge.** It needs real runs with real agents; the headless benchmark and the smoke test are what can be asserted before then, and the conservative settings are revised from `batch_refused` counts and per-activity usage rows once runs exist.
+
+## Where things are
+
+| Concern | Home |
+|---|---|
+| The bound, as a derived predicate | `src/utils/batch.ts` |
+| Enforcement at delivery, and `_meta.batch` | `src/tools/workflow-tools.ts`, `get_activity` |
+| Policy and its two settings | `src/config.ts` |
+| The refusal event | `src/schema/state.schema.ts`, `batch_refused` |
+| Cost per activity | `src/tools/workflow-tools.ts`, `record_usage` and `projectUsage` |
+| The walk, and the arithmetic | `tests/e2e/batched-dispatch.test.ts`, `tests/batch-bound.test.ts` |
+| Duration and collapse, measured | `scripts/run-batch-benchmark.ts`, `tests/e2e/batch-duration-smoke.test.ts` |
+| The mechanism, in definitions | `workflows/meta/techniques/workflow-engine/continue-batch.md` and the loop in `03-dispatch-client-workflow.yaml` |
+| The model, documented | `docs/dispatch_model.md` |
