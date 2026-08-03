@@ -1837,7 +1837,7 @@ A technique declares an input its own Protocol and Rules never reach, so the bin
 
 **Detect:** For each `### <id>` under a technique's `## Inputs`, search that technique's `## Protocol` and `## Rules` for the id — braced as `{id}`, as `{id}.field`, or named bare inside a tool-call signature a phase passes (`next_activity { session_index, … }`). Flag an entry with no occurrence. Test: name the phase that spends the value; if the only answer is the declaration itself, a caller reading the contract wires a value nothing consumes.
 
-**Do not flag:** Inputs on a container `TECHNIQUE.md`, which descendants reference after the merge. An input whose whole value is handed to an applied op as a substitution map or pass-through argument, where a phase references the map rather than each member. Outputs no consumer reads, which are `output-without-destination`.
+**Do not flag:** Inputs on a container `TECHNIQUE.md`, which descendants reference after the merge. An input whose whole value is handed to an applied op as a substitution map or pass-through argument, where a phase references the map rather than each member. An agent-entry technique's identity bindings — the ids a spawn or continuation stub emits and the entry tools it names consume, rather than any phase of the technique the agent goes on to apply. Outputs no consumer reads, which are `output-without-destination`.
 
 **Fix:** Reference `{id}` from the phase that spends it, or delete the declaration. Where the value belongs to an op this technique applies, pass it at the Apply site rather than redeclaring it here (`apply-omits-declared-input`).
 
@@ -1849,6 +1849,30 @@ A Protocol Apply passes some of the applied operation's declared inputs and omit
 
 **Detect:** For each Protocol `Apply` / `::` invocation, resolve the target's `## Inputs`, including any merged from its container. Flag a required input the Apply site neither passes nor covers by a declared `default`, and that no same-name slot on the applying technique makes ambient. Test: read the Apply line alone and list what the target receives; if a required slot of the target is absent from both that list and the applying technique's own contract, the call is contract-silent.
 
-**Do not flag:** Inputs the target marks optional or backs with a `#### default`. Inputs the applying technique declares under the same id, which bind by name. Container-merged inputs the whole group shares. Activity `steps[]` binds, whose argument conformance is a bind-site concern.
+**Do not flag:** Inputs the target marks optional or backs with a `#### default`. Inputs the applying technique declares under the same id, which bind by name. Container-merged inputs the whole group shares. Activity `steps[]` binds, whose argument conformance is a bind-site concern. An agent-entry technique naming the operations of a loop it describes, where the activity YAML is the bind site that passes them — restating the contract there is `prompt-restates-owned-mechanics`.
 
 **Fix:** Name the omitted input at the Apply site. Where the value has no home on the applying technique, declare it there first, then pass it. The mirror defect — a slot declared and never passed on — is `declared-input-never-read`.
+
+### AP-142. branch-on-undeclared-threshold
+
+"When the worker does not return within the expected time"
+
+A Protocol branch conditions on a magnitude nothing declares, so the agent cannot evaluate it and either supplies its own limit or never takes the branch.
+
+**Detect:** A Protocol branch, `>` note, gate, or rule conditions on a duration, size, count, or limit — "within the expected time", "if it takes too long", "when the payload is large", "after enough retries" — that no declared input, `#### default`, workflow variable, policy resource row, or tool-surface field supplies. Test: name the value the agent compares against. If nothing in the contract or the harness surface holds it, the branch is not a path, and whatever behaviour hangs off it is unspecified.
+
+**Do not flag:** Thresholds the harness or server owns and reports (`autoAdvanceMs`, a budget returned on a response). A branch on a declared input's value. Qualitative branches carrying no magnitude — "fewer steps than the activity defines" is countable from the definition the agent already holds.
+
+**Fix:** Declare the threshold and compare it by designator — a technique input with a `#### default`, a workflow variable, or a row in the owning policy resource. Where no owner can supply it, delete the branch and rebuild any behaviour it guarded on a condition the agent can observe. See [Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure).
+
+### AP-143. inherited-rules-re-enumerated
+
+"Honor no-get-activity-from-orchestrator, no-pre-load-techniques, delivery-keys-on-agent-context, …"
+
+A rules entry cites rules another file owns and the reader already receives, so it tracks a section it does not own and states nothing that section does not.
+
+**Detect:** A `## Rules` entry (or `rules.*` string) whose body is a citation, or list of citations, to rules declared elsewhere, where the reader already receives those rules — by container merge into descendants, by the operations bundle, or by a sibling entry in the same block that commands following the inherited or bundled set. Resolve the cited home and compare the citation set against its rule roster. Flag when the home holds a rule the list omits; when the entry states nothing the cited rule does not already state, so deleting it loses no constraint; when the entry is a subset of an obligation a sibling entry already states; or when the entry reuses the cited rule's own name or a near-variant of it, which leaves the shortened dotted address ambiguous for every caller. Any one of the four is enough — a single citation that adds nothing fails on the same ground as a roster that has gone stale. Test: adding a rule to the cited home leaves this entry silently incomplete, or removing the entry changes no behaviour.
+
+**Do not flag:** A pointer that narrows or qualifies the cited rule for this caller — a scope restriction, a threshold, an exception the cited rule does not state. Container `TECHNIQUE.md` Rules the loader merges into descendants, which is inheritance rather than enumeration. A prohibition citing the home that owns the behaviour it forbids bypassing (`no-rule-protocol-restatement`). README index tables (`readme-orients-not-transcribes`) and Capability op inventories (`capability-as-op-inventory`), which are the same shape on other sections.
+
+**Fix:** Delete the enumeration and rely on the entry that already commands the inherited or bundled set. Where one rule genuinely needs reach across a group boundary, hoist that invariant to the smallest common container so the loader delivers it rather than naming it from a distance. Carry over any clause the deleted entry held that no other surface states. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
