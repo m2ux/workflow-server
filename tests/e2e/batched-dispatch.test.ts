@@ -207,6 +207,135 @@ describe('batched dispatch (#407)', () => {
     expect(walk.history.filter(e => e.type === 'batch_refused')).toHaveLength(0);
   });
 
+  it('carries a batch across a real gate and on to its next activity, under one identity', async () => {
+    // The hop the whole mechanism turns on, and the one the other cases here do not reach: a worker
+    // takes an activity, stops at a gate, the orchestrator answers it, the worker resumes on the
+    // activity it holds, and is then advanced to the NEXT activity of its batch — all under the
+    // identity its dispatch bound. Thirteen of the main workflow's fifteen activities carry a gate, so
+    // a batch that cannot survive one never reaches a second activity.
+    const { client } = h;
+    const scope = 'worker-run-gate-crossing';
+    const planningFolder = join(h.workspaceDir, '.engineering/artifacts/planning', scope);
+    const start = await client.callTool({
+      name: 'start_session',
+      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder },
+    });
+    if (isError(start)) throw new Error(`start_session failed: ${rawText(start)}`);
+    const sessionIndex = parseToolResponse(start).session_index as string;
+
+    // First activity of the batch: full delivery into an empty context.
+    await client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, activity_id: RUN[0] } });
+    const first = await client.callTool({
+      name: 'get_activity',
+      arguments: { session_index: sessionIndex, context_tokens: 2_000_000, agent_id: scope },
+    });
+    if (isError(first)) throw new Error(`get_activity ${RUN[0]} failed: ${rawText(first)}`);
+    const firstChars = rawText(first).length;
+
+    // The worker reaches a gate and stops.
+    const yielded = await client.callTool({
+      name: 'yield_checkpoint',
+      arguments: { session_index: sessionIndex, checkpoint_id: 'analysis-assumption-interview' },
+    });
+    if (isError(yielded)) throw new Error(`yield_checkpoint failed: ${rawText(yielded)}`);
+
+    // The orchestrator answers it and clears the worker to continue.
+    const responded = await client.callTool({
+      name: 'respond_checkpoint',
+      arguments: { session_index: sessionIndex, option_id: 'accept-agent-positions' },
+    });
+    if (isError(responded)) throw new Error(`respond_checkpoint failed: ${rawText(responded)}`);
+    const resumed = await client.callTool({ name: 'resume_checkpoint', arguments: { session_index: sessionIndex } });
+    if (isError(resumed)) throw new Error(`resume_checkpoint failed: ${rawText(resumed)}`);
+
+    // Resumed on the activity it still holds: the already-taken carve-out serves it, and the batch has
+    // not grown, because this is the same activity.
+    const afterGate = await client.callTool({
+      name: 'get_activity',
+      arguments: { session_index: sessionIndex, context_tokens: 2_000_000, agent_id: scope, bundle: 'reference' },
+    });
+    if (isError(afterGate)) throw new Error(`get_activity after gate failed: ${rawText(afterGate)}`);
+    expect(rawText(afterGate)).toContain('delivery: unchanged');
+    expect(((afterGate._meta as Record<string, unknown>)['batch'] as Record<string, unknown>)['activities']).toBe(1);
+
+    // The orchestrator commits, advances, and continues the SAME worker onto the next activity.
+    await client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, activity_id: RUN[1] } });
+    const second = await client.callTool({
+      name: 'get_activity',
+      arguments: { session_index: sessionIndex, context_tokens: 2_000_000, agent_id: scope, bundle: 'reference' },
+    });
+    if (isError(second)) throw new Error(`get_activity ${RUN[1]} failed: ${rawText(second)}`);
+
+    // The batch grew across the gate, and the second activity collapsed against what the context has
+    // been holding since before the gate was answered.
+    const secondBatch = (second._meta as Record<string, unknown>)['batch'] as Record<string, unknown>;
+    expect(secondBatch['activities']).toBe(2);
+    expect(secondBatch['may_continue']).toBe(true);
+    expect(rawText(second)).toContain('delivery: unchanged');
+    expect(rawText(second).length).toBeLessThan(firstChars);
+
+    const history = (JSON.parse(readFileSync(join(planningFolder, 'session.json'), 'utf8')) as { history: HistoryEntry[] }).history;
+    // One dispatch, then the same context arriving twice more — across a gate and across an activity
+    // boundary. A gate that cost the identity would show a second 'fresh' here.
+    const dispatches = history.filter(e => e.type === 'activity_dispatched');
+    expect(dispatches.map(e => (e.data as { dispatch: string }).dispatch)).toEqual(['fresh', 'resume', 'resume']);
+    expect(dispatches.every(e => (e.data as { agentId: string }).agentId === scope)).toBe(true);
+    // Nothing was delivered twice, which is what the gate would have cost under a fresh identity.
+    expect(history.filter(e => e.type === 'activity_redelivered')).toHaveLength(0);
+    expect(history.filter(e => e.type === 'batch_refused')).toHaveLength(0);
+  });
+
+  it('replays an answered gate for a replacement worker, so a failed resume costs one activity', async () => {
+    // What makes a failed resume cheap: the replacement takes the current activity in full and
+    // re-crosses the gate the dead worker already answered, without asking the user again. Gate
+    // responses are keyed by activity with no agent component, so any worker is waved through.
+    const { client } = h;
+    const planningFolder = join(h.workspaceDir, '.engineering/artifacts/planning', 'worker-run-replaced');
+    const start = await client.callTool({
+      name: 'start_session',
+      arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder },
+    });
+    const sessionIndex = parseToolResponse(start).session_index as string;
+
+    await client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, activity_id: RUN[0] } });
+    await client.callTool({
+      name: 'get_activity',
+      arguments: { session_index: sessionIndex, context_tokens: 2_000_000, agent_id: 'worker-doomed' },
+    });
+    await client.callTool({
+      name: 'yield_checkpoint',
+      arguments: { session_index: sessionIndex, checkpoint_id: 'analysis-assumption-interview' },
+    });
+    await client.callTool({
+      name: 'respond_checkpoint',
+      arguments: { session_index: sessionIndex, option_id: 'accept-agent-positions' },
+    });
+
+    // The worker dies. A replacement is dispatched under a NEW identity for the same activity.
+    const replacement = await client.callTool({
+      name: 'get_activity',
+      arguments: { session_index: sessionIndex, context_tokens: 2_000_000, agent_id: 'worker-replacement' },
+    });
+    expect(isError(replacement)).toBe(false);
+    // A new context holds nothing, so it takes the activity whole — which is the one activity a failed
+    // resume costs, and the reason the batch is reported per activity rather than at its end.
+    expect((replacement._meta as Record<string, unknown>)['dispatch']).toBe('fresh');
+    expect(((replacement._meta as Record<string, unknown>)['batch'] as Record<string, unknown>)['activities']).toBe(1);
+
+    // Reaching the same gate, it is waved through rather than yielded to the user a second time.
+    const reCross = await client.callTool({
+      name: 'yield_checkpoint',
+      arguments: { session_index: sessionIndex, checkpoint_id: 'analysis-assumption-interview' },
+    });
+    if (isError(reCross)) throw new Error(`yield_checkpoint (replay) failed: ${rawText(reCross)}`);
+    expect((parseToolResponse(reCross) as { status?: string }).status).toBe('replayed');
+
+    const history = (JSON.parse(readFileSync(join(planningFolder, 'session.json'), 'utf8')) as { history: HistoryEntry[] }).history;
+    expect(history.filter(e => e.type === 'checkpoint_replayed')).toHaveLength(1);
+    // The second full copy of the activity is recorded, which is what the replacement cost.
+    expect(history.filter(e => e.type === 'activity_redelivered')).toHaveLength(1);
+  });
+
   it('keeps a usage figure per activity a dispatch covered', async () => {
     const { client } = h;
     const start = await client.callTool({
