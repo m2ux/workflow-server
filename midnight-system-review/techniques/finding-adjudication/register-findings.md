@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ The adjudicated register: a disposition table (finding, area, tuple summary, dis
 #### artifact
 
 `findings-register.md`
+
+#### audience
+
+`human`
 
 ### accepted_findings
 
