@@ -1,5 +1,5 @@
 id: report-generation
-version: 1.3.0
+version: 1.4.0
 name: Report Generation
 description: Produce the final CI/CD security audit report.
 techniques:
@@ -28,7 +28,10 @@ steps:
     technique: write-cicd-report::write-report
   - kind: technique
     id: verify-artifact-conformance
-    technique: verify-artifact-conforms
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        guide_map: cicd-pipeline-security-audit/README#planning-artifact-to-guide-map
   - kind: action
     id: finalize-activity
     actions:

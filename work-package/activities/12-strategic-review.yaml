@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.12.0
+version: 2.13.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 required: true
@@ -58,6 +58,7 @@ steps:
       name: verify-artifact-conforms
       inputs:
         canonical_home_map: manage-artifacts#canonical-home-map
+        guide_map: work-package/README#planning-artifact-to-guide-map
   - kind: technique
     id: ensure-changes-folder-entry
     technique: changes-folder

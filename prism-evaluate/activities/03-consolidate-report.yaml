@@ -1,5 +1,5 @@
 id: consolidate-report
-version: 2.1.0
+version: 2.2.0
 name: Consolidate Evaluation Report
 description: Consolidate the per-dimension DEFINITIVE-FINDINGS.md into a unified EVALUATION-REPORT.md.
 steps:
@@ -21,6 +21,7 @@ steps:
       name: verify-artifact-conforms
       inputs:
         artifact_dir: output_path
+        guide_map: prism-evaluate/README#planning-artifact-to-guide-map
 outcome:
   - The consumer has a single severity-calibrated evaluation of the target — cross-dimensional findings and actionable recommendations to decide from
 transitions:
