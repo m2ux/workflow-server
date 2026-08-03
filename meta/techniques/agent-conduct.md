@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 4.6.0
+  version: 4.8.0
 ---
 
 ## Capability
@@ -77,10 +77,6 @@ Domain-specific tools may ONLY be invoked from operations bundled into the curre
 
 Do not read workflow resource files from disk. Load via [resource-loading-via-tool](./workflow-engine/TECHNIQUE.md#resource-loading-via-tool) (and [resource-section-or-whole](./workflow-engine/TECHNIQUE.md#resource-section-or-whole) / [force-full-after-summarization](./workflow-engine/TECHNIQUE.md#force-full-after-summarization) as needed).
 
-### operational-discipline-cargo-fmt-exempt
-
-`cargo fmt` is exempt from `nice` — it is fast and should run at normal priority.
-
 ### operational-discipline-artifact-location
 
 Write planning artifacts only under the server-returned `{planning_folder_path}` — never compose or reconstruct that path ([start-session](./workflow-engine/start-session.md)::planning-folder-absolute-or-omit). Filename prefix and find-or-update discipline belong to the artifact-writing techniques (e.g. manage-artifacts [artifact-prefix](../../work-package/techniques/manage-artifacts/TECHNIQUE.md#artifact-prefix)).
@@ -91,7 +87,7 @@ Orchestrators (meta or workflow) never execute activity steps or produce domain 
 
 ### orchestrator-no-inline-on-resume
 
-On resume, still dispatch a worker via [dispatch-activity](./workflow-engine/dispatch-activity.md) — resume changes which activity is dispatched, not whether one is. Do not execute steps inline from restored bag/folder context.
+Resuming a saved session still dispatches a worker via [dispatch-activity](./workflow-engine/dispatch-activity.md) — the restored state changes which activity is dispatched, not whether one is. Do not execute steps inline from restored bag/folder context. A worker paused at a gate is continued under its bound identity via [resume-worker](./workflow-engine/resume-worker.md).
 
 ### orchestrator-component-path-scope
 

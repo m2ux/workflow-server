@@ -1,5 +1,5 @@
 id: dispatch-client-workflow
-version: 5.5.2
+version: 5.6.0
 name: Dispatch Client Workflow
 description: Drive the client workflow's activity loop by dispatching a disposable worker per activity.
 required: true
@@ -29,6 +29,7 @@ steps:
     steps:
       - kind: technique
         id: dispatch-activity
+        when: "!worker_agent_id"
         technique:
           name: workflow-engine::dispatch-activity
           inputs:
@@ -52,6 +53,17 @@ steps:
             session_index: client_session_index
             checkpoint_resolution: user_selection
       - kind: technique
+        id: resume-yielded-worker
+        when: worker_result.result_type == "checkpoint_pending"
+        technique:
+          name: workflow-engine::resume-worker
+          inputs:
+            session_index: client_session_index
+            activity_id: current_activity
+            worker_agent_id: worker_agent_id
+            effects: effects
+            state: variables
+      - kind: technique
         id: commit-activity-artifacts
         when: worker_result.result_type == "activity_complete"
         technique:
@@ -65,6 +77,9 @@ steps:
           - action: set
             target: current_activity
             value: "{worker_result.next_activity_id}"
+          - action: set
+            target: worker_agent_id
+            value: null
 transitions:
   - to: end-workflow
     condition:

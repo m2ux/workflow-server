@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -21,13 +21,13 @@ Send the user's selection back to the server, clearing the active checkpoint.
 
 ### effects
 
-Variable updates returned by the server, to pass back down to the worker on resume
+Variable updates the server returned on clearing the active checkpoint.
 
 ## Protocol
 
 1. When `{checkpoint_resolution}` is `{ auto_advance: true }`, apply [verify-auto-advance-on-resolve](#verify-auto-advance-on-resolve) before calling `respond_checkpoint`.
 2. Call `respond_checkpoint { session_index, ...checkpoint_resolution }`; the server clears `session.json#activeCheckpoint` and returns `{effects}`. Capture `{effects}` and propagate them to the worker on resume.
-   - If the call returns `no active checkpoint on session`, there is no active checkpoint to resolve: verify `{session_index}` references the correct worker session and that an active checkpoint was reported before this call.
+   > When the call returns `no active checkpoint on session`, there is no active checkpoint to resolve: verify `{session_index}` references the correct worker session and that an active checkpoint was reported before this call.
 
 ## Rules
 

@@ -2,7 +2,7 @@
 
 > Part of the [Meta Workflow](../README.md)
 
-Markdown resources providing the bootstrap navigation primer and shared cross-workflow reference structures (such as the canonical planning-folder README guide). Agent entry Protocol lives on workflow-engine techniques ([activity-worker](../techniques/workflow-engine/activity-worker.md), [workflow-orchestrator](../techniques/workflow-engine/workflow-orchestrator.md)); spawn stubs are composed by [compose-prompt](../techniques/workflow-engine/compose-prompt.md).
+Markdown resources providing the bootstrap navigation primer and shared cross-workflow reference structures (such as the canonical planning-folder README guide). Agent entry Protocol lives on workflow-engine techniques ([activity-worker](../techniques/workflow-engine/activity-worker.md), [workflow-orchestrator](../techniques/workflow-engine/workflow-orchestrator.md)); agent stubs are composed by [compose-prompt](../techniques/workflow-engine/compose-prompt.md).
 
 Tool reference content for Atlassian, GitNexus, and state management has moved into the corresponding capability techniques' operations — each operation declares its own `tools` block and any `prose` reference content.
 

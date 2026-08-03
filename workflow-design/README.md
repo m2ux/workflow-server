@@ -84,7 +84,7 @@ graph TD
 
 ## Orchestration Model
 
-Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](../meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](../meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](../meta/techniques/workflow-engine/dispatch-activity.md) (spawn stubs via [compose-prompt](../meta/techniques/workflow-engine/compose-prompt.md)). Do not restate engine dispatch/checkpoint HOW here.
+Inherits the meta orchestrator/worker pattern — [workflow-orchestrator](../meta/techniques/workflow-engine/workflow-orchestrator.md) / [activity-worker](../meta/techniques/workflow-engine/activity-worker.md) via [dispatch-activity](../meta/techniques/workflow-engine/dispatch-activity.md) (agent stubs via [compose-prompt](../meta/techniques/workflow-engine/compose-prompt.md)). Do not restate engine dispatch/checkpoint HOW here.
 
 ---
 

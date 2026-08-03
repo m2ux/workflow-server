@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.2.1
 ---
 
 ## Capability
@@ -26,7 +26,7 @@ Orchestrator agent identity for this session.
 ### 1. Load resources
 
 - Load resources declared on bundle operations per [resource-loading-via-tool](./TECHNIQUE.md#resource-loading-via-tool)
-- Use [force-full-after-summarization](./TECHNIQUE.md#force-full-after-summarization) when this context no longer holds prior deliveries
+- Use [force-full-after-summarization](./TECHNIQUE.md#force-full-after-summarization) when the context `{agent_id}` names no longer holds prior deliveries
 
 ### 2. Choose and dispatch first activity
 
@@ -37,7 +37,7 @@ Orchestrator agent identity for this session.
 ### 3. Drive the activity loop
 
 - Apply [dispatch-activity](./dispatch-activity.md) from the bundle
-- On `checkpoint_pending`, bubble the yield and resume the worker with resolved effects
+- On `checkpoint_pending`, bubble the yield, then apply [resume-worker](./resume-worker.md) with the resolved effects
 - After each `activity_complete`, apply [commit-and-persist](./commit-and-persist.md) before the next dispatch (Applies [sync-progress-status](./sync-progress-status.md) per [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites)). When a planning README drift check ran, require `{readme_conformance}.conforms` before treating Progress as durable. Blocked and path-skip moments stay [dispatch-activity](./dispatch-activity.md) Protocol duties.
 - Route from `{worker_result.next_activity_id}` ([finalize-activity](./finalize-activity.md))
 
@@ -53,8 +53,8 @@ Pass `{session_index}` on every authenticated tool call ([session-index-passes-o
 
 ### orchestrator-worker-boundaries
 
-Honor [no-get-activity-from-orchestrator](./dispatch-activity.md#no-get-activity-from-orchestrator), [no-pre-load-techniques](./dispatch-activity.md#no-pre-load-techniques), [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), [reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result), and [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile).
+Honor [no-get-activity-from-orchestrator](./dispatch-activity.md#no-get-activity-from-orchestrator), [no-pre-load-techniques](./dispatch-activity.md#no-pre-load-techniques), [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), [resume-preserves-delivery-scope](../harness-compat/continue-agent.md#resume-preserves-delivery-scope), [reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result), and [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile).
 
 ### resolve-trace-at-close-out
 
-At client finalize / retrospective close-out, honor [resolve-trace-at-close-out](./dispatch-activity.md#resolve-trace-at-close-out), which owns both halves of the contract — the mid-run accumulate and the close-out resolve.
+At client finalize / retrospective close-out, honor [resolve-trace-at-close-out](./dispatch-activity.md#resolve-trace-at-close-out).
