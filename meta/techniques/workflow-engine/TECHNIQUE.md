@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 6.9.0
+  version: 6.10.0
 ---
 
 ## Capability
@@ -43,7 +43,7 @@ When this agent context no longer holds previously delivered content (e.g. after
 
 ### verify-dispatched-activity
 
-Before executing any step, confirm the activity `id` returned by `get_activity` equals the `{activity_id}` your current dispatch or continuation bound. A worker carrying a batch re-checks this on every activity of the run, against the id the continuation named rather than the id the run opened with. On mismatch, STOP — execute no steps — and report a pointer mismatch (expected vs returned) so the orchestrator can advance the session pointer and re-dispatch. Do not proceed on the wrong activity.
+Before executing any step, confirm the activity `id` returned by the `get_activity` call your current stub instructed — not an earlier response this context still holds — equals the `{activity_id}` that dispatch or continuation bound. A worker carrying a batch re-checks this on every activity of the run, against the id the continuation named rather than the id the run opened with. On mismatch, STOP — execute no steps — and report a pointer mismatch (expected vs returned) so the orchestrator can advance the session pointer and re-dispatch. Do not proceed on the wrong activity.
 
 ### progressive-step-technique-load
 

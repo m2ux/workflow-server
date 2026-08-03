@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Advance the session to the next activity and continue the worker already carrying the batch, under the delivery identity its dispatch bound. Reached only across an activity boundary; a gate answered by a user takes [resume-worker](./resume-worker.md).
+Advance the session to the next activity and continue the worker already carrying the batch, under the delivery identity its dispatch bound. Reached only across an activity boundary; a gate answered by a user takes `resume-worker` instead.
 
 ## Inputs
 
@@ -23,7 +23,7 @@ Server-side worker identity the batch is carried under — the identity the deli
 
 ### step_manifest
 
-One entry per step the activity just finished completed, taken from that activity's `activity_complete` envelope, for the server's step-completion and technique-fetch validation.
+One entry per step of the activity the worker just finished — `steps_completed` from the `activity_complete` envelope the preceding [dispatch-activity](./dispatch-activity.md) or continuation returned. Feeds the server's step-completion and technique-fetch validation.
 
 ### state
 
@@ -43,8 +43,8 @@ The identity now holding the advanced activity: the one the batch was carried un
 
 ### 1. Advance the session
 
-- Call `next_activity { session_index, activity_id, step_manifest, agent_id: worker_agent_id }`; capture `_meta.trace_token` and accumulate it per [dispatch-activity](./dispatch-activity.md) step 2. `agent_id` names the context whose technique fetches the manifest is checked against — one identity now covers several activities, so an unattributed manifest credits any agent.
-- The commit for the activity just finished has already landed, so this advance is the transition it precedes ([commit-after-activity](./commit-and-persist.md#commit-after-activity)).
+- Call `next_activity { session_index, activity_id, step_manifest, agent_id: worker_agent_id }`; capture `_meta.trace_token` and accumulate it per [dispatch-activity](./dispatch-activity.md) step 2. `agent_id` names the context whose technique fetches the manifest is checked against; one identity covers several activities, and an unattributed manifest credits any agent.
+- The orchestrator applies [commit-and-persist](./commit-and-persist.md) for the activity just finished before reaching this operation, so this advance is the transition that commit precedes ([commit-after-activity](./commit-and-persist.md#commit-after-activity)). Do not advance ahead of it.
 
 ### 2. Compose the continuation stub
 
@@ -57,11 +57,11 @@ The identity now holding the advanced activity: the one the batch was carried un
 ### 4. Await the envelope
 
 - Wait until the worker yields or completes (blocking-equivalent); capture its envelope unchanged as `{worker_result}` and return `{worker_agent_id}` unchanged.
-- When the continuation returns no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results ([reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result)), which is also how a server refusal of the advanced activity surfaces — the batch ends here. Mint a new `{worker_agent_id}` per [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), apply [compose-prompt](./compose-prompt.md) with `holds_prior_deliveries: false` and [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME advanced `{activity_id}`, and return that identity with the replacement's envelope. The replacement takes full delivery and re-crosses any answered gate silently.
+- When the continuation returns no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results ([reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result)), which is also how a server refusal of the advanced activity surfaces — the batch ends here. Mint a new `{worker_agent_id}` per [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), apply [compose-prompt](./compose-prompt.md) with `holds_prior_deliveries: false` and [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME advanced `{activity_id}`, and return that identity with the replacement's envelope. The replacement holds no prior deliveries, so it takes the advanced activity in full.
 
 ### 5. Account for the activity
 
-- Account for this activity of the batch per [account-every-activity](./dispatch-activity.md#account-every-activity).
+- Account for `{activity_id}` — this activity of the batch — per [account-every-activity](./dispatch-activity.md#account-every-activity).
 
 ## Rules
 
@@ -69,4 +69,4 @@ The identity now holding the advanced activity: the one the batch was carried un
 
 This operation advances the session pointer, so it owns getting a worker onto the activity it advanced to — the held one, or a replacement it spawns itself. It does not hand that job back to [dispatch-activity](./dispatch-activity.md), which advances the pointer of its own accord: a second advance onto an activity already current records that activity as exited and complete before a worker has walked a step of it, and every later reader of the session — resume, status, activity-manifest validation — believes it.
 
-So a batch that cannot continue ends inside this operation, and the only paths that reach `dispatch-activity` are the ones where no advance has happened yet: the first activity of a walk, and the activity after a spent batch was released.
+So a batch that cannot continue ends inside this operation, and the only paths that reach `dispatch-activity` are the ones where no advance has happened yet: the first activity of a walk, and the activity after the orchestrator released a spent batch's identity ([delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context)).

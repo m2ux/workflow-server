@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -40,7 +40,7 @@ Orchestrator agent identity for this session.
 - On `checkpoint_pending`, bubble the yield, then apply [resume-worker](./resume-worker.md) with the resolved effects
 - After each `activity_complete`, apply [commit-and-persist](./commit-and-persist.md) before the next dispatch (Applies [sync-progress-status](./sync-progress-status.md) per [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites)). When a planning README drift check ran, require `{readme_conformance}.conforms` before treating Progress as durable. Blocked and path-skip moments stay [dispatch-activity](./dispatch-activity.md) Protocol duties.
 - Route from `{worker_result.next_activity_id}` ([finalize-activity](./finalize-activity.md))
-- On `batch_may_continue: true`, apply [continue-batch](./continue-batch.md) to advance that same worker onto the routed activity; otherwise release its identity and dispatch afresh
+- On `{worker_result.batch_may_continue}` with a non-null `{worker_result.next_activity_id}`, apply [continue-batch](./continue-batch.md) to advance that same worker onto the routed activity. Otherwise release the worker's identity ([delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context)) and enter the routed activity via [dispatch-activity](./dispatch-activity.md)
 
 ## Rules
 

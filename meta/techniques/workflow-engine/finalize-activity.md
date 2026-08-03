@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.4.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ Array of artifact entries (`id`, `name`, `path`).
 
 ### batch_may_continue
 
-Whether this worker's context may take another activity, read from `_meta.batch.may_continue` on its last `get_activity` ([batch-ends-where-the-server-says](./activity-worker.md#batch-ends-where-the-server-says)). The orchestrator holds no batch state, so this is the channel that carries the server's answer out to it.
+Whether this worker's context may take another activity, read from `_meta.batch.may_continue` on the `get_activity` response for this activity ([batch-ends-where-the-server-says](./activity-worker.md#batch-ends-where-the-server-says)). The orchestrator holds no batch state, so this is the channel that carries the server's answer out to it.
 
 ## Outputs
 
@@ -50,7 +50,6 @@ state variables the activity mutated, reported by the worker — one of the two 
 #### artifacts_produced
 
 array of artifact entries (`id`, `name`, `path`).
-
 
 #### transition_override
 
