@@ -62,7 +62,7 @@ The good candidates are the analysis runs in the middle of the walk, whose work 
 
 ## Enabler
 
-The premise that resuming a worker is cheap holds only because the per-agent delivery ledger shipped. Before it, resumed workers were forced into full delivery: one measured run paid over a million tokens across twelve resumes, about a quarter of the whole run.
+The premise that resuming a worker is cheap holds only because the per-agent delivery ledger shipped. Before it, resumed workers were forced into full delivery: one measured run paid over a million tokens across twelve resumes, about a quarter of the whole run — that token figure is on the per-record basis and roughly halves once counted per response, though the share of the run does not.
 
 ---
 

@@ -150,6 +150,8 @@ Open since March, untouched since, it adds a second session store backed by a da
 
 The general batching mechanism from decision 21 changes the arithmetic the epic was built on, so a fourth pass tested every assumption that rested on dispatch cost. Two work items changed home or justification, and one blocker appeared that no earlier pass reached.
 
+> **Correction note, 3 August 2026 — the token figures in this loop are on a per-record basis.** The analyser behind them summed usage once per transcript record; a figure belongs to a response, and the harness repeats one usage object across every content block of it. Counted once per response, the cache-write figures in this section are roughly **2.4× smaller**: the four setup workers cost **124 thousand tokens, not 307**, so collapsing them saves about **half the setup walk rather than 65%** — around 60 thousand tokens per run rather than 200. The server-side bootstrap residue is correspondingly **about 14% of the setup walk, not 2.5%**, which weakens rather than supports the decision to demote its cost case. Respawn savings and the twelve-resume figure below halve the same way. Character-derived figures (delivered content bytes, the 937-thousand-character definition total) are unaffected, and every ratio and ranking holds, because the error scaled everything alike. The decisions recorded in this loop stand on the ratios and were not revisited. Measured with `npm run profile:run`; see [#409](https://github.com/m2ux/workflow-server/issues/409) and the startup-cost measurement record.
+
 ## What the fourth pass established
 
 ### Batching captures almost the whole cost win, and the bootstrap's cost case does not survive

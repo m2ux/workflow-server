@@ -4,7 +4,7 @@ Investigation supporting the startup-cost issue and the re-prioritisation of the
 
 ## Method
 
-The figures here are the output of `npm run profile:run`, the committed run profiler, over the nine session transcripts. Each transcript (JSONL) is parsed into a tool-call timeline with token usage, and the worker (subagent) transcripts stored alongside each session are included, windowed to the same span. Five milestones are placed per run:
+The figures here are the output of `npm run profile:run`, the committed run profiler, over the nine session transcripts. Each transcript (JSONL) is parsed into a tool-call timeline with token usage. A worker (subagent) transcript stored alongside the session joins the run's figures when the **dispatch** falls inside the window, and its whole ledger comes with it — a dispatch made to do startup work costs what it costs, even if its last turn lands after the milestone. No worker in these nine runs overruns its window, so counting whole ledgers and counting only in-window turns give the same answer here. Five milestones are placed per run:
 
 1. **`start_session` call** — end of the bootstrap-protocol preamble (schema read, repo derivation).
 2. **First worker dispatch** — the orchestrator hands the first meta activity to a fresh worker.
