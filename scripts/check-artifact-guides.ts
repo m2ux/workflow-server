@@ -39,8 +39,12 @@ const BASELINE = resolve(join(DIR, 'artifact-guide-baseline.json'));
 const GROUPED_INDEX = 'TECHNIQUE.md';
 const SHARED_WORKFLOW = 'meta';
 
-/** A `## …Template` or `## …Skeleton` heading at any depth — what makes a resource a creation guide. */
-const TEMPLATE_HEADING = /^#{2,4} .*(Template|Skeleton)\s*$/im;
+/**
+ * A resource carries a fill shape when it has a heading naming one. `Template` and `Skeleton` are
+ * the canonical words; `Artifact`, `Format` and `Structure` cover the guides that named their shape
+ * before the convention settled (`## Planning Artifact`, `## Response Format Template`).
+ */
+const TEMPLATE_HEADING = /^#{2,4} .*(Template|Skeleton|Artifact|Format|Structure)\s*$/im;
 /** The authored filename-to-guide map section, matched on its heading. */
 const GUIDE_MAP_HEADING = /^##+ +Planning artifact to guide map\s*$/im;
 
@@ -105,11 +109,34 @@ function mapNamesArtifact(section: string | null, artifact: string): boolean {
   return section.split('\n').some((row) => row.includes('|') && row.includes(artifact));
 }
 
-/** A resource is the guide for an artifact when it names the filename and carries a template. */
+/**
+ * The span where a resource declares what it is the guide FOR: its frontmatter and everything before
+ * its first `##` section — the `name`/`description` block plus the H1 and its lead paragraph.
+ *
+ * Scoping the filename match to this span is what separates a guide from a resource that merely
+ * mentions the file. A body-wide match certifies coverage it has not got: a guide's own "traces to"
+ * line names sibling artifacts, and a close-out guide names every register it counts, so a loose
+ * match resolved `evidence-log.md`, `assumptions-log.md` and `token-usage.md` to resources that say
+ * nothing about their shape.
+ */
+function guideDeclarationSpan(body: string): string {
+  const afterFrontmatter = body.startsWith('---') ? body.indexOf('\n---', 3) : -1;
+  const head = afterFrontmatter >= 0 ? body.slice(0, afterFrontmatter) : '';
+  const rest = afterFrontmatter >= 0 ? body.slice(afterFrontmatter) : body;
+  const firstSection = rest.search(/^##\s/m);
+  return head + (firstSection < 0 ? rest : rest.slice(0, firstSection));
+}
+
+/**
+ * A resource is the guide for an artifact when it declares the filename in its own guide-declaration
+ * span (or in an explicit "creation guide for" statement anywhere) and carries a fill shape.
+ */
 function resourceIsGuideFor(resources: Map<string, string>, artifact: string): string | null {
   for (const [name, body] of resources) {
     if (name === 'README.md') continue;
-    if (body.includes(artifact) && TEMPLATE_HEADING.test(body)) return name;
+    if (!TEMPLATE_HEADING.test(body)) continue;
+    if (guideDeclarationSpan(body).includes(artifact)) return name;
+    if (new RegExp(`creation guide for[^\\n]*${artifact.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`, 'i').test(body)) return name;
   }
   return null;
 }
