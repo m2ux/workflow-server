@@ -224,3 +224,11 @@ agent-a7b9ee3a7fb21532c. start=14:32 out= 79,286 cache_w=  759,652 results_total
 agent-afac297675993b1e5. start=13:43 out=  3,895 cache_w=   99,742 results_total=  57,809B mcp=   5,095B
     list_workflows                    2,807B
     get_activity                      2,288B
+
+--- CORRECTION, 3 August 2026 ---------------------------------------------
+The worker cache-write figures in this file are inflated by about 2.1x overall
+(2.4x across the startup window). The analyser summed usage once per transcript
+record; the harness repeats one usage object per content block of a response, so
+a figure must be counted once per request id. See issue 409 and the correction
+box in README.md for the corrected per-worker table.
+---------------------------------------------------------------------------
