@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.11.1
+  version: 1.12.0
 ---
 
 ## Capability
@@ -31,6 +31,10 @@ Current variable state for stub substitution (`session_index`, `workflow_id`, `a
 
 The envelope the worker returned, passed through unchanged — one of two tagged result types: the `checkpoint_pending` envelope, or the `activity_complete` envelope.
 
+### worker_agent_id
+
+Server-side worker identity this dispatch bound — the identity the delivery ledger is keyed on, held by the worker until it reports the activity complete.
+
 ### trace_token
 
 Opaque HMAC-signed trace token from the `next_activity` response `_meta.trace_token`.
@@ -41,9 +45,9 @@ Opaque HMAC-signed trace token from the `next_activity` response `_meta.trace_to
 2. Call `next_activity { session_index, activity_id, step_manifest }`; capture `_meta.trace_token`.
    - **`step_manifest`:** a dispatch whose activity ran steps carries one manifest entry per completed step — the server validates step completion against it, and reports a gap when it is absent.
    - **Trace accumulate (required):** when `_meta.trace_token` is present, append it to `trace_tokens[]`. Tokens stay opaque — no routine per-activity `get_trace`. Live `_meta.validation` self-correct remains; do not resolve tokens mid-run (close-out resolve is [resolve-trace-at-close-out](#resolve-trace-at-close-out)).
-3. Apply [compose-prompt](./compose-prompt.md) with `{agent_technique}` and `{state}` as substitutions (include `session_index`, `workflow_id`, `activity_id`, and a worker `agent_id` minted for this dispatch per [delivery-keys-on-agent-context](#delivery-keys-on-agent-context)).
+3. Mint `{worker_agent_id}` for this dispatch per [delivery-keys-on-agent-context](#delivery-keys-on-agent-context), then apply [compose-prompt](./compose-prompt.md) with `{agent_technique}` and `{state}` as substitutions (include `session_index`, `workflow_id`, `activity_id`, and `{worker_agent_id}` as `agent_id`).
 4. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await the worker's envelope and return it unchanged as `{worker_result}`.
-   - If the worker does not return within the expected time, apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) if it is still running; otherwise dispatch a fresh worker for the same `{activity_id}` — a resume carries the dispatched worker's `agent_id`, a fresh worker mints its own.
+   - If the worker does not return within the expected time, apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) under `{worker_agent_id}` if it is still running; otherwise dispatch a fresh worker for the same `{activity_id}`, which mints its own.
 5. On `activity_complete`, read `{worker_result.next_activity_id}` (and optionally `{worker_result.evaluated_condition}`) as the authoritative next-activity routing — the worker evaluated transitions via [finalize-activity](./finalize-activity.md).
    - Before an orchestrator decision depends on a critical routing or path variable, apply [distrust-then-reconcile](#distrust-then-reconcile).
    - When the orchestrator observes **blocked** (worker/harness signal), apply [sync-progress-status](./sync-progress-status.md) for the blocked moment in [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites) for `{activity_id}` before surfacing or retrying.
@@ -85,7 +89,7 @@ NEVER call `get_technique` to pre-load techniques for the worker. Step technique
 
 ### delivery-keys-on-agent-context
 
-Delivery mode follows the agent context, not the session: one worker `agent_id` per worker, and the server scopes its ledger to that context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch is a fresh context holding no prior deliveries, so it takes full delivery; the resumed worker is the same context and collapses what it already received. A retry that spawns a NEW worker for the same activity is a new context, and takes full delivery again. `context_mode: "persistent"` stays off worker-dispatched sessions — it is a session-wide declaration, and one session serves many worker contexts.
+Delivery mode follows the agent context, not the session: one worker `agent_id` per worker, bound at dispatch and held until that worker reports the activity complete, and the server scopes its ledger to that context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch is a fresh context holding no prior deliveries, so it takes full delivery; the resumed worker is the same context and collapses what it already received ([resume-worker](./resume-worker.md)). A retry that spawns a NEW worker for the same activity is a new context, and takes full delivery again. `context_mode: "persistent"` stays off worker-dispatched sessions — it is a session-wide declaration, and one session serves many worker contexts.
 
 ### reject-partial-worker-result
 
