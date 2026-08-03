@@ -13,6 +13,20 @@ The authoritative content lives in the `.md` file and is served by `get_resource
 | Resource | Owns | Anchor |
 |----------|------|--------|
 | [audit-prompt-template.md](audit-prompt-template.md) | The structure of the self-contained `audit-prompt.md` — codebase overview, evidence-based audit domains, the GitNexus-gated trust-boundary map, cross-cutting concerns, and output requirements — plus its "what good looks like" bar | `#audit-prompt-template` |
+| [audit-report.md](audit-report.md) | Creation guide: `AUDIT-REPORT.md` — the summary report and the reference line that replaces its lifted findings section | `#template` |
+| [detailed-findings.md](detailed-findings.md) | Creation guide: `DETAILED-FINDINGS.md` — the five inherited fields, the severity-then-domain grouping, and the ID heading form | `#template` |
+| [design-trade-offs.md](design-trade-offs.md) | Creation guide: `DESIGN-TRADE-OFFS.md` — the trade-off catalogue, interaction map, and decision register | `#template` |
+
+---
+
+## Planning artifact to guide map
+
+| Bare filename | Guide |
+|---------------|-------|
+| `audit-prompt.md` | [audit-prompt-template](audit-prompt-template.md) |
+| `AUDIT-REPORT.md` | [audit-report](audit-report.md) |
+| `DETAILED-FINDINGS.md` | [detailed-findings](detailed-findings.md) |
+| `DESIGN-TRADE-OFFS.md` | [design-trade-offs](design-trade-offs.md) |
 
 ---
 
