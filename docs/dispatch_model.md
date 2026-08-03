@@ -94,7 +94,7 @@ At a 200,000-token window, giving a 280,000-character budget:
 
 - **On the main workflow the budget binds first** — two real runs reach it after two activities. That is the mechanism working: three heavy activities would put over half the declared window into workflow content before a line of code is read.
 - **On the setup sequence the cap binds first**, its activities costing 33,000 to 154,000. That sequence is batching's first user, and a character budget alone would admit more of it than a context should hold.
-- **A smaller declared window is bounded proportionally** — the budget binds before the cap for anything under roughly 95,000 tokens.
+- **A smaller declared window is bounded proportionally**, and where the third activity is refused depends on what the first two cost. On the median activity the budget binds before the cap below roughly 106,000 declared tokens; on the 90th percentile, below roughly 261,000 — so on heavy content the budget is the binding limit at any window worth declaring. The lighter run the benchmark walks puts the crossover near 95,000.
 
 Admission is checked *before* a delivery rather than after, so the admitted activity can carry a batch past the budget — by up to one heavy activity, 261,827 characters on measured content. Refusing after composing would pay the composition and still not un-deliver it.
 
@@ -104,8 +104,9 @@ Both limits count each delivery once. An `activity_dispatched` size is the whole
 
 `may_continue` is answered as of that delivery, and the worker then fetches techniques and resources lazily while it runs the activity, drawing down the same budget. So a batch reported as having room can still be refused at the next boundary — the delivered and budget counts on the same response are what a reader compares to see how close it was. The refusal is an expected outcome rather than an error, and the orchestrator handles it by releasing the identity and dispatching a replacement — which must carry a **new** `agent_id`, since the bound is keyed on the identity and a fresh context under a used one would receive markers for content it does not hold.
 
-Two carve-outs keep the bound aimed at what it is for:
+Three carve-outs keep the bound aimed at what it is for:
 
+- **A context that has taken no activity is always admitted its first.** Lazy reads draw down the same budget, so a scope that read past it before taking any activity would otherwise be refused the work it was spawned to do.
 - **An activity the context already holds is always served.** That is a worker resuming after a gate asking for the payload it is sitting on, and thirteen of the main workflow's fifteen activities carry a gate.
 - **The session's own agent is unbounded.** A scope equal to `session.agentId` is the context that owns the whole walk by construction, which is what `contextMode: "persistent"` describes; its run is the session, not a batch. Note that `agentId` is caller-set: `dispatch_child` defaults it to `"worker"`, and a resume rebinds it to the resuming caller's `agent_id`. So a dispatched worker that passes the session's own identity is unbounded, and which context holds the exemption can move across a resume. Minting one identity per dispatch, which the corpus already requires, is what keeps the exemption where it belongs.
 

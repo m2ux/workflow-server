@@ -8,9 +8,11 @@ import type { SessionFile } from '../schema/session.schema.js';
  * from session history, so the server needs no cooperation to see one. Bounded by a cumulative
  * character budget and a cap on distinct activities.
  *
- * Two carve-outs are load-bearing. A scope equal to the session's own agent is exempt, owning the
- * whole walk by construction. And an activity the scope already holds is always served — that is a
- * worker resuming after a gate, and refusing it would end every batch at its first gate.
+ * Three carve-outs are load-bearing. A scope equal to the session's own agent is exempt, owning the
+ * whole walk by construction. An activity the scope already holds is always served — that is a
+ * worker resuming after a gate, and refusing it would end every batch at its first gate. And a scope
+ * that has taken no activity is always admitted its first, whatever it read lazily, so a context
+ * cannot be refused the work it was spawned to do.
  */
 
 /** The two limits in force for one delivery, in the units they are measured in. */

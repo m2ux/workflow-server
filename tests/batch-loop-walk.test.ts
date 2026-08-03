@@ -1,8 +1,9 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse as parseYaml } from 'yaml';
 import { evaluateWhenExpression } from '../src/schema/when-expression.js';
+import { evaluateCondition, validateCondition } from '../src/schema/condition.schema.js';
 import { corpusRoot } from './corpus-root.js';
 
 /**
@@ -57,11 +58,10 @@ type Bag = Record<string, unknown>;
 const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) => void> = {
   'continue-batched-worker': (bag, next, log) => {
     log.push('advance');
-    const envelope = next();
-    // A continuation that cannot complete spawns the replacement itself and returns its identity, so
-    // the bag always leaves this step holding one.
-    bag['worker_agent_id'] = bag['worker_agent_id'] ?? 'worker-replacement';
-    bag['worker_result'] = envelope;
+    // `continue-batch` returns the identity now holding the activity — the held one, or a replacement it
+    // spawned. The step's own gate requires an identity already, so the bag holds one either way and a
+    // walk cannot tell the two apart; the bag is left alone rather than implying it can.
+    bag['worker_result'] = next();
   },
   // Also declares trace_token, which no gate reads.
   'dispatch-activity': (bag, next, log) => {
@@ -69,9 +69,10 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
     bag['worker_agent_id'] = 'worker-minted';
     bag['worker_result'] = next();
   },
-  // These two do declare Outputs — `user_selection` and `effects`, the latter consumed by
-  // `resume-worker`'s `effects` input — but no `when:` in the loop reads either, so a faithful encoding
-  // and an empty one produce identical walks. Left empty, and named here so the table stays auditable.
+  // Both declare Outputs, and both are consumed — `user_selection` by `respond-checkpoint`'s
+  // `checkpoint_resolution`, `effects` by `resume-worker`'s `effects` — but no `when:` in the loop reads
+  // either, so a faithful encoding and an empty one produce identical walks. Left empty, and both named
+  // here so the table stays auditable and neither reads as unconsumed.
   'present-yielded-checkpoint': () => { /* returns user_selection; no gate reads it */ },
   'respond-yielded-checkpoint': () => { /* returns effects; no gate reads it */ },
   'resume-yielded-worker': (bag, next) => { bag['worker_result'] = next(); },
@@ -82,7 +83,7 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
   'release-spent-worker': (bag) => { bag['worker_agent_id'] = null; },
 };
 
-interface LoopStep { id: string; when?: string }
+interface LoopStep { id: string; when?: string; actions?: SetAction[] }
 interface SetAction { action?: string; target?: string; value?: unknown }
 interface OuterStep {
   kind: string;
@@ -108,19 +109,17 @@ function loop(): LoopDef {
 }
 
 /**
- * The loop's own exit test, read from its declared `condition` rather than restated here. Written out,
- * a change to the operator, the variable, or the whole block would leave every walk below passing.
+ * The loop's exit test, read from its declared `condition` and evaluated by the server's own evaluator.
+ *
+ * Both halves matter. Restating the condition lets a change to the operator, the variable, or the whole
+ * block leave every walk below passing. Hand-rolling the comparison is worse: coalescing the two sides
+ * to null reads an ABSENT `value` as `null`, where `evaluateCondition` compares strictly — so `!=` with
+ * no declared value holds against a null pointer and the loop never exits. Coalescing turned that
+ * runaway into a clean stop. Parsing through `validateCondition` also proves the condition is
+ * schema-valid, and fails by naming the field when it is not.
  */
 function loopHolds(def: LoopDef, bag: Bag): boolean {
-  const cond = def.condition;
-  if (!cond || cond.type !== 'simple' || typeof cond.variable !== 'string' || typeof cond.operator !== 'string') {
-    throw new Error('the loop declares no simple condition to walk');
-  }
-  const actual = bag[cond.variable] ?? null;
-  const expected = cond.value ?? null;
-  if (cond.operator === '!=') return actual !== expected;
-  if (cond.operator === '==') return actual === expected;
-  throw new Error(`unhandled loop operator '${cond.operator}'`);
+  return evaluateCondition(validateCondition(def.condition), bag);
 }
 
 interface Walk {
@@ -131,7 +130,7 @@ interface Walk {
   /** The bag when the loop exited. */
   bag: Bag;
   /** Why the walk stopped. */
-  stopped: 'condition' | 'envelopes-exhausted' | 'max-iterations';
+  stopped: 'condition' | 'envelopes-exhausted' | 'walk-cap';
 }
 
 /**
@@ -154,10 +153,15 @@ function walk(envelopes: Envelope[], initialActivity = 'implementation-analysis'
     return envelope;
   };
 
-  // The declared bound, not a number of this file's choosing — a walk that outruns it is the loop's
-  // own ceiling, which the definition must carry for a batch of any length to finish.
-  const ceiling = def.maxIterations ?? 0;
-  for (let i = 0; i < Math.min(ceiling, 20); i++) {
+  // The declared ceiling bounds the walk, but so does WALK_CAP, and the two mean different things: a
+  // walk that reaches the cap is a runaway this file stopped, not a batch the definition ended. An
+  // absent ceiling is unbounded under the schema, so it is an error here rather than a zero — read as
+  // zero it would model the loop as never running, which is the opposite of what it does.
+  const ceiling = def.maxIterations;
+  if (typeof ceiling !== 'number' || ceiling < 1) {
+    throw new Error(`the loop declares no usable iteration ceiling (got ${String(ceiling)})`);
+  }
+  for (let i = 0; i < Math.min(ceiling, WALK_CAP); i++) {
     if (!loopHolds(def, bag)) return { iterations, log, bag, stopped: 'condition' };
     const fired: string[] = [];
     try {
@@ -173,33 +177,77 @@ function walk(envelopes: Envelope[], initialActivity = 'implementation-analysis'
     iterations.push(fired);
     if (exhausted) return { iterations, log, bag, stopped: 'envelopes-exhausted' };
   }
-  return { iterations, log, bag, stopped: 'max-iterations' };
+  return { iterations, log, bag, stopped: 'walk-cap' };
 }
 
 const complete = (next: string | null, room = true): Envelope =>
   ({ result_type: 'activity_complete', next_activity_id: next, batch_may_continue: room, steps_completed: [] });
 const gate = (): Envelope => ({ result_type: 'checkpoint_pending' });
 
+/** This file's runaway stop, well above the longest scenario and unrelated to the declared ceiling. */
+const WALK_CAP = 20;
+
+/**
+ * Activities in the longest workflow the corpus carries. The loop's ceiling has to clear this for a
+ * batch to walk a whole workflow, with headroom, since rework transitions revisit activities.
+ */
+function longestWorkflowActivityCount(): number {
+  const root = corpusRoot();
+  let most = 0;
+  for (const workflow of readdirSync(root)) {
+    const dir = join(root, workflow, 'activities');
+    if (!existsSync(dir)) continue;
+    most = Math.max(most, readdirSync(dir).filter((f) => f.endsWith('.yaml')).length);
+  }
+  if (most === 0) throw new Error('no workflow activities found under the corpus root');
+  return most;
+}
+
 describe('client activity loop walked (#407)', () => {
   it('carries the frame a batch of any length needs, outside the body', () => {
     const def = activityDef();
+
+    // Exactly these steps, in this order. Naming positions instead would miss a step inserted between
+    // the prime and the loop — one that nulls the pointer keeps the loop from ever running — and a step
+    // appended after it that re-primes, and a second `kind: loop` the walk's own `find` cannot see.
+    expect(def.steps.map((s) => s.id)).toEqual([
+      'verify-preconditions',
+      'prime-initial-activity',
+      'client-activity-loop',
+    ]);
+    expect(def.steps.filter((s) => s.kind === 'loop')).toHaveLength(1);
+
     const [precondition, prime] = def.steps;
+    const l = loop();
 
     // Nothing in the body checks that a client session exists, and nothing primes the pointer the
     // condition tests. Both live ahead of the loop, and a walk that starts inside the body cannot see
     // either — so they are asserted here rather than assumed.
     expect(precondition?.actions?.some((a) => a.action === 'validate' && a.target === 'client_session_index')).toBe(true);
-    expect(prime?.actions?.some((a) => a.action === 'set' && a.target === 'current_activity')).toBe(true);
-
-    const l = loop();
+    const primeWrite = prime?.actions?.find((a) => a.action === 'set');
+    expect(primeWrite?.target).toBe(l.condition?.variable);
+    // Pinned as the literal it is. Every other variable reference in the corpus is braced, so this bare
+    // word reads as the string rather than the client workflow's field — pre-existing, tracked
+    // separately, and pinned here so correcting it forces this walk to be updated with it.
+    expect(primeWrite?.value).toBe('initialActivity');
     expect(l.loopType).toBe('while');
     // The exit test is on the pointer the body advances, against null — the two have to agree, or the
     // walk either never enters or never leaves.
     expect(l.condition?.variable).toBe('current_activity');
     expect(l.condition?.operator).toBe('!=');
-    expect(l.condition?.value ?? null).toBeNull();
-    // A ceiling of one would abort every batch after its first activity.
-    expect(l.maxIterations ?? 0).toBeGreaterThan(3);
+    // Declared null, not merely absent: `value` is schema-optional, and the server compares strictly, so
+    // omitting it makes `!= null` hold against a null pointer and the loop runs to its ceiling.
+    expect(l.condition && 'value' in l.condition).toBe(true);
+    expect(l.condition?.value).toBeNull();
+    // The ceiling has to clear the longest workflow the corpus carries, with room for rework — a bound
+    // tuned to this file's longest scenario would certify a frame that truncates real batches.
+    expect(l.maxIterations ?? 0).toBeGreaterThan(longestWorkflowActivityCount());
+
+    // The body's one pointer write lands on the variable the condition tests, carrying the id the worker
+    // returned. Either half retargeted and the pointer never moves, so the loop runs to its ceiling.
+    const advanceWrite = l.steps.find((s) => s.id === 'advance-activity')?.actions?.find((a) => a.action === 'set');
+    expect(advanceWrite?.target).toBe(l.condition?.variable);
+    expect(advanceWrite?.value).toBe('{worker_result.next_activity_id}');
 
     // And the activity leaves for close-out on the same condition the loop exits by.
     const transitions = (def as unknown as { transitions?: Array<{ to?: string; condition?: { variable?: string; operator?: string; value?: unknown } }> }).transitions ?? [];
@@ -229,6 +277,9 @@ describe('client activity loop walked (#407)', () => {
         const advancing = fired.filter((id) => ADVANCING_STEPS.includes(id));
         expect(advancing.length, `${name}, iteration ${index + 1}: ${fired.join(' → ')}`).toBeLessThanOrEqual(1);
       }
+      // A runaway would otherwise pass every assertion below: the advance/commit counts stay equal
+      // per iteration, and the worker check sits behind `stopped === 'condition'` and would skip.
+      expect(result.stopped, `${name}: stopped`).not.toBe('walk-cap');
       // One advance per activity walked, which is one commit per activity walked.
       const advances = result.log.filter((e) => e === 'advance').length;
       const commits = result.log.filter((e) => e === 'commit').length;

@@ -180,8 +180,12 @@ export const DEFAULT_BUNDLE_CHARS_PER_TOKEN = 4;
  * - On the setup sequence, whose activities cost 33,000 to 154,000, the CAP binds
  *   first. That sequence is batching's first user, and a character budget alone
  *   would admit more of it than a context should hold.
- * - A worker declaring a smaller window is bounded proportionally: the budget
- *   binds before the cap for anything under roughly 95,000 declared tokens.
+ * - A worker declaring a smaller window is bounded proportionally, and where the
+ *   third activity is refused depends on what the first two cost. On the median
+ *   activity the budget binds before the cap below roughly 106,000 declared tokens;
+ *   on the 90th percentile, below roughly 261,000 — so on heavy content the budget
+ *   is the binding limit at any window worth declaring. The lighter run the
+ *   benchmark walks puts the crossover near 95,000.
  *
  * Admission is checked BEFORE a delivery rather than after, so the activity that
  * is admitted can carry a batch past the budget — by up to one heavy activity,
