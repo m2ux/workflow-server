@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 4.7.0
+  version: 4.8.0
 ---
 
 ## Capability
@@ -76,10 +76,6 @@ Domain-specific tools may ONLY be invoked from operations bundled into the curre
 ### operational-discipline-resources-via-tool
 
 Do not read workflow resource files from disk. Load via [resource-loading-via-tool](./workflow-engine/TECHNIQUE.md#resource-loading-via-tool) (and [resource-section-or-whole](./workflow-engine/TECHNIQUE.md#resource-section-or-whole) / [force-full-after-summarization](./workflow-engine/TECHNIQUE.md#force-full-after-summarization) as needed).
-
-### operational-discipline-cargo-fmt-exempt
-
-`cargo fmt` is exempt from `nice` — it is fast and should run at normal priority.
 
 ### operational-discipline-artifact-location
 
