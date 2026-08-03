@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.3.0
+  version: 2.4.0
 ---
 
 ## Capability
@@ -38,6 +38,10 @@ Lean mechanical session-trace summary when `{trace_tokens}` resolves to non-empt
 #### artifact
 
 `session-trace.md`
+
+#### audience
+
+`human`
 
 ## Rules
 

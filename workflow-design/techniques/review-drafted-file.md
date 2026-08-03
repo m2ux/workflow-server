@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ Per-file delta note for `{current_file}` following the [File Review Note Guide](
 #### artifact
 
 `file-review-note.md`
+
+#### audience
+
+`human`
 
 ### file_review_note_path
 

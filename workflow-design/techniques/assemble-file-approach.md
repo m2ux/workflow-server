@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.4
+  version: 1.3.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ The per-file delta for `{current_file}` following the [Drafting Plan Guide](../r
 #### artifact
 
 `drafting-plan.md`
+
+#### audience
+
+`human`
 
 ### drafting_plan_path
 

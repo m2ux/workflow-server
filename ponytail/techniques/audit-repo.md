@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ The repo-wide findings ranked biggest-cut-first — each written as `<tag> <what
 #### artifact
 
 `audit-findings.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

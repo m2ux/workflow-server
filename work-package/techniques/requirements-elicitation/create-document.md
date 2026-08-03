@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -30,6 +30,10 @@ The requirements [artifact](../../resources/requirements-elicitation.md#document
 #### artifact
 
 `requirements-elicitation.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ Complete CI/CD security [audit report](../../resources/cicd-audit-report-templat
 #### artifact
 
 `01-cicd-audit-report.md`
+
+#### audience
+
+`human`
 
 ## Rules
 

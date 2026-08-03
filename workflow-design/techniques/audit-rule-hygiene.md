@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.4.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Rule-hygiene findings — each a flagged rule with its file, rule key, the hygie
 #### artifact
 
 `rule-hygiene-findings.md`
+
+#### audience
+
+`human`
 
 ### rule_hygiene_finding_count
 

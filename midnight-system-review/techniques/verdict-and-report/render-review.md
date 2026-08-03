@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -34,6 +34,10 @@ The full review report in the canonical format, persisted for the planning recor
 #### artifact
 
 `review-report.md`
+
+#### audience
+
+`human`
 
 ### review_summary
 

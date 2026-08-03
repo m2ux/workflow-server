@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -30,6 +30,10 @@ The design philosophy [artifact](../../resources/design-framework.md#design-phil
 #### artifact
 
 `design-philosophy.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

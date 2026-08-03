@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ Work package plan artifact with task breakdown and dependencies. Written to `{pl
 #### artifact
 
 `work-package-plan.md`
+
+#### audience
+
+`human`
 
 #### tasks
 

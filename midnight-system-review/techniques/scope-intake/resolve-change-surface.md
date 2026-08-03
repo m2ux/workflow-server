@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -54,6 +54,10 @@ The authoritative changed-file inventory: target identity, base and head refs, e
 #### artifact
 
 `change-surface.md`
+
+#### audience
+
+`human`
 
 ### has_pr_surface
 

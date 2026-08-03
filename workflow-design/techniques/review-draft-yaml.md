@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -30,6 +30,10 @@ Absolute path to the written draft-attestation artifact (includes the block-inde
 #### artifact
 
 `draft-attestation.md`
+
+#### audience
+
+`human`
 
 #### draft_attestation
 

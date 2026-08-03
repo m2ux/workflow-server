@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.4.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Per-principle Pass / Partial / Violation classifications with file, field, and l
 #### artifact
 
 `principle-findings.md`
+
+#### audience
+
+`human`
 
 ### principle_findings_path
 

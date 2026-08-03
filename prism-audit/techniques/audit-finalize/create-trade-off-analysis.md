@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Filesystem path to the written DESIGN-TRADE-OFFS.md (the design trade-off analys
 #### artifact
 
 `DESIGN-TRADE-OFFS.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

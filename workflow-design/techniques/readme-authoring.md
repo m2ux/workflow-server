@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ The workflow root README (create: generate; update: revise for structural change
 #### artifact
 
 `README.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

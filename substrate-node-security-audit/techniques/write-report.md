@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ Final audit report. Every finding takes the shape and fill rules of [Finding Ent
 #### artifact
 
 `01-audit-report.md`
+
+#### audience
+
+`human`
 
 #### header_table
 

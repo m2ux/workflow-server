@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -30,6 +30,10 @@ L12 structural analysis with conservation law, meta-law, and classified bug tabl
 #### artifact
 
 `structural-analysis.md`
+
+#### audience
+
+`human`
 
 #### conservation_law
 

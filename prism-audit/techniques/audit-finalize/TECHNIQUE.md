@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -23,6 +23,10 @@ File path to the summary report.
 
 `AUDIT-REPORT.md`
 
+#### audience
+
+`human`
+
 ### detailed_findings_path
 
 File path to the detailed-findings document.
@@ -31,6 +35,10 @@ File path to the detailed-findings document.
 
 `DETAILED-FINDINGS.md`
 
+#### audience
+
+`human`
+
 ### trade_offs_path
 
 File path to the design trade-off analysis.
@@ -38,6 +46,10 @@ File path to the design trade-off analysis.
 #### artifact
 
 `DESIGN-TRADE-OFFS.md`
+
+#### audience
+
+`human`
 
 ## Rules
 

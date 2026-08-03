@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -20,6 +20,10 @@ Cheapest-stage deep scan of the target.
 #### artifact
 
 `adaptive-stage1.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

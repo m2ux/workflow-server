@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 > The `§X.Y` identifiers used throughout this technique refer to the audit checklist taxonomy in [§2 Static Analysis Phase](../resources/audit-template-reference.md#2-static-analysis-phase), [§3 Systematic Manual Review Strategies](../resources/audit-template-reference.md#3-systematic-manual-review-strategies) and [§5 Execution Strategy](../resources/audit-template-reference.md#5-execution-strategy).
@@ -18,6 +18,10 @@ Findings from the second independent pass, including at least one sub-agent resu
 #### artifact
 
 `second-pass-findings.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

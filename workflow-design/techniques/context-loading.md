@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -17,6 +17,10 @@ Absolute path to the written format-conventions artifact (create mode only).
 
 `format-conventions.md`
 
+#### audience
+
+`human`
+
 ### applicable_constructs_path
 
 Absolute path to the written applicable-constructs artifact (create mode only).
@@ -24,6 +28,10 @@ Absolute path to the written applicable-constructs artifact (create mode only).
 #### artifact
 
 `applicable-constructs.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

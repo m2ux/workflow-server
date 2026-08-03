@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 > The `§X.Y` identifiers used throughout this technique refer to the audit checklist taxonomy in [§3 Systematic Manual Review Strategies](../resources/audit-template-reference.md#3-systematic-manual-review-strategies).
@@ -48,6 +48,10 @@ Vulnerability domains derived from the architecture that fall outside any §3 ch
 #### artifact
 
 `s-architectural-analysis.json`
+
+#### audience
+
+`agent`
 
 ## Protocol
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ Structured analysis of the requirement changes derived from the source document,
 #### artifact
 
 `requirements-analysis.md`
+
+#### audience
+
+`human`
 
 #### source_coverage_matrix
 

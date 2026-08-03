@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ The complete file manifest: one entry per file to create/modify/remove with its 
 #### artifact
 
 `scope-manifest.md`
+
+#### audience
+
+`human`
 
 ### file_count
 

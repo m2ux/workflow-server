@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -47,6 +47,10 @@ Known-vulnerable dependency report, or the extracted dependency manifest when no
 
 `dependency-scan.json`
 
+#### audience
+
+`agent`
+
 ### start_here
 
 Session overview with audit target, commit, methodology, and artifact index.
@@ -54,6 +58,10 @@ Session overview with audit target, commit, methodology, and artifact index.
 #### artifact
 
 `START-HERE.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 
