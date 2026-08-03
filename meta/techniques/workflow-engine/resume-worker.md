@@ -11,7 +11,7 @@ Continue the worker that already holds an activity, under the delivery identity 
 
 ### session_index
 
-`session_index` of the session whose worker is being continued.
+`session_index` of the worker being continued.
 
 ### activity_id
 
@@ -43,7 +43,7 @@ The envelope the worker returned, passed through unchanged — one of two tagged
 
 ### 2. Continue the worker
 
-- Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) with the composed prompt.
+- Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) with the composed prompt and `{session_index}`.
 
 ### 3. Await the envelope
 
@@ -51,4 +51,4 @@ The envelope the worker returned, passed through unchanged — one of two tagged
 
 ### 4. Account for the continuation
 
-- Account for this continuation per [account-every-dispatch](./dispatch-activity.md#account-every-dispatch).
+- Account for this continuation of `{activity_id}` per [account-every-dispatch](./dispatch-activity.md#account-every-dispatch).

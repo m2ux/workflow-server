@@ -15,7 +15,7 @@ Canonical agent technique — workflow-engine::activity-worker, workflow-engine:
 
 ### substitutions
 
-Map of placeholder name → value. Must include `session_index`, `workflow_id`, and `agent_id`. For activity-worker, must also include `activity_id`; for resume-from-checkpoint, must also include `effects`.
+Map of placeholder name → value. Must include `session_index`, `workflow_id`, and `agent_id`; `activity_id` as well for activity-worker and resume-from-checkpoint, and `effects` for resume-from-checkpoint.
 
 ## Outputs
 
@@ -34,7 +34,7 @@ Minimal stub string ready for the host invoke that spawns or continues the agent
 
 - When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens, agent_id }` — `context_tokens` is the agent's context window size and is **required**; `agent_id` scopes delivery to this worker context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery))
 - When `{agent_technique}` is [workflow-orchestrator](./workflow-orchestrator.md): instruct `start_session { session_index, agent_id }` then `get_workflow { session_index }`
-- When `{agent_technique}` is [resume-from-checkpoint](./resume-from-checkpoint.md): instruct `resume_checkpoint { session_index }` and carry the `effects` substitution — `agent_id` is the identity the dispatch bound, so refetches under it collapse to unchanged markers
+- When `{agent_technique}` is [resume-from-checkpoint](./resume-from-checkpoint.md): instruct `resume_checkpoint { session_index }` and carry the `effects` substitution
 
 ### 3. Direct Apply
 
