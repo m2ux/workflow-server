@@ -1837,7 +1837,7 @@ A technique declares an input its own Protocol and Rules never reach, so the bin
 
 **Detect:** For each `### <id>` under a technique's `## Inputs`, search that technique's `## Protocol` and `## Rules` for the id — braced as `{id}`, as `{id}.field`, or named bare inside a tool-call signature a phase passes (`next_activity { session_index, … }`). Flag an entry with no occurrence. Test: name the phase that spends the value; if the only answer is the declaration itself, a caller reading the contract wires a value nothing consumes.
 
-**Do not flag:** Inputs on a container `TECHNIQUE.md`, which descendants reference after the merge. An input whose whole value is handed to an applied op as a substitution map or pass-through argument, where a phase references the map rather than each member. Outputs no consumer reads, which are `output-without-destination`.
+**Do not flag:** Inputs on a container `TECHNIQUE.md`, which descendants reference after the merge. An input whose whole value is handed to an applied op as a substitution map or pass-through argument, where a phase references the map rather than each member. An agent-entry technique's identity bindings — the ids a spawn or continuation stub emits and the entry tools it names consume, rather than any phase of the technique the agent goes on to apply. Outputs no consumer reads, which are `output-without-destination`.
 
 **Fix:** Reference `{id}` from the phase that spends it, or delete the declaration. Where the value belongs to an op this technique applies, pass it at the Apply site rather than redeclaring it here (`apply-omits-declared-input`).
 
@@ -1849,7 +1849,7 @@ A Protocol Apply passes some of the applied operation's declared inputs and omit
 
 **Detect:** For each Protocol `Apply` / `::` invocation, resolve the target's `## Inputs`, including any merged from its container. Flag a required input the Apply site neither passes nor covers by a declared `default`, and that no same-name slot on the applying technique makes ambient. Test: read the Apply line alone and list what the target receives; if a required slot of the target is absent from both that list and the applying technique's own contract, the call is contract-silent.
 
-**Do not flag:** Inputs the target marks optional or backs with a `#### default`. Inputs the applying technique declares under the same id, which bind by name. Container-merged inputs the whole group shares. Activity `steps[]` binds, whose argument conformance is a bind-site concern.
+**Do not flag:** Inputs the target marks optional or backs with a `#### default`. Inputs the applying technique declares under the same id, which bind by name. Container-merged inputs the whole group shares. Activity `steps[]` binds, whose argument conformance is a bind-site concern. An agent-entry technique naming the operations of a loop it describes, where the activity YAML is the bind site that passes them — restating the contract there is `prompt-restates-owned-mechanics`.
 
 **Fix:** Name the omitted input at the Apply site. Where the value has no home on the applying technique, declare it there first, then pass it. The mirror defect — a slot declared and never passed on — is `declared-input-never-read`.
 
