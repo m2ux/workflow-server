@@ -1,7 +1,7 @@
 id: dispatch-client-workflow
-version: 5.6.0
+version: 5.7.0
 name: Dispatch Client Workflow
-description: Drive the client workflow's activity loop by dispatching a disposable worker per activity.
+description: Drive the client workflow's activity loop, each worker carrying a bounded run of activities.
 required: true
 steps:
   - kind: action
@@ -36,6 +36,17 @@ steps:
             activity_id: current_activity
             session_index: client_session_index
             agent_technique: workflow-engine::activity-worker
+            state: variables
+      - kind: technique
+        id: continue-batched-worker
+        when: worker_agent_id && worker_result.result_type == "activity_complete"
+        technique:
+          name: workflow-engine::continue-batch
+          inputs:
+            activity_id: current_activity
+            session_index: client_session_index
+            worker_agent_id: worker_agent_id
+            step_manifest: step_manifest
             state: variables
       - kind: technique
         id: present-yielded-checkpoint
@@ -77,6 +88,10 @@ steps:
           - action: set
             target: current_activity
             value: "{worker_result.next_activity_id}"
+      - kind: action
+        id: release-spent-worker
+        when: worker_result.result_type == "activity_complete" && !worker_result.batch_may_continue
+        actions:
           - action: set
             target: worker_agent_id
             value: null
@@ -89,5 +104,6 @@ transitions:
       value: null
 outcome:
   - The client workflow has executed end to end with its artifacts committed and state persisted at every activity boundary
+  - Each worker carried a bounded run of activities in one context, so the harness baseline was paid once a run rather than once an activity
   - The user retained control over every decision point — checkpoints surfaced to them and their selections steered the workflow
   - The client workflow has no further activities to run, so the meta can proceed to close it out

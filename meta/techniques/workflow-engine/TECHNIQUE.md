@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 6.8.0
+  version: 6.9.0
 ---
 
 ## Capability
@@ -19,7 +19,7 @@ Check `_meta.validation` in each response. Warnings are advisory but should be a
 
 ### dispatch-topology
 
-Client walks use per-activity disposable workers via [dispatch-activity](./dispatch-activity.md). Do not set `context_mode: "persistent"` on worker-dispatched sessions — see [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context).
+Client walks dispatch workers via [dispatch-activity](./dispatch-activity.md), each worker carrying a bounded run of activities and continued across each activity boundary by [continue-batch](./continue-batch.md). The bound is the server's, enforced at delivery — see [batch-is-bounded-by-the-server](./dispatch-activity.md#batch-is-bounded-by-the-server). Do not set `context_mode: "persistent"` on worker-dispatched sessions — see [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context).
 
 ### resource-loading-via-tool
 
@@ -43,7 +43,7 @@ When this agent context no longer holds previously delivered content (e.g. after
 
 ### verify-dispatched-activity
 
-Before executing any step, confirm the activity `id` returned by `get_activity` equals the `{activity_id}` you were dispatched for. On mismatch, STOP — execute no steps — and report a pointer mismatch (expected vs returned) so the orchestrator can advance the session pointer and re-dispatch. Do not proceed on the wrong activity.
+Before executing any step, confirm the activity `id` returned by `get_activity` equals the `{activity_id}` your current dispatch or continuation bound. A worker carrying a batch re-checks this on every activity of the run, against the id the continuation named rather than the id the run opened with. On mismatch, STOP — execute no steps — and report a pointer mismatch (expected vs returned) so the orchestrator can advance the session pointer and re-dispatch. Do not proceed on the wrong activity.
 
 ### progressive-step-technique-load
 

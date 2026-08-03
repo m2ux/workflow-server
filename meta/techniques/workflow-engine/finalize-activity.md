@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.2.0
 ---
 
 ## Capability
@@ -58,6 +58,10 @@ Activity ID the worker resolved for the next dispatch (or null when the workflow
 #### evaluated_condition
 
 One-line summary from evaluate-transition of which transition matched (`transition_override:…`, `condition:…`, `isDefault:…`, or `workflow_complete`).
+
+#### batch_may_continue
+
+Whether this context may take another activity, read from `_meta.batch.may_continue` on the last `get_activity` response. Required on every successful `activity_complete`: the orchestrator holds no batch state of its own, and this is what tells it whether to continue this worker onto the next activity or release it and dispatch a fresh one ([batch-continues-only-with-room](./continue-batch.md#batch-continues-only-with-room)).
 
 ## Protocol
 

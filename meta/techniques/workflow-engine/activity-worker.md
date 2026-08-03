@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.1
+  version: 1.3.0
 ---
 
 ## Capability
 
-Disposable worker for one dispatched activity — executes bound steps and yields checkpoints.
+Worker for a dispatched activity — executes bound steps, yields checkpoints, and walks on to the next activity while its batch has room.
 
 ## Inputs
 
@@ -19,7 +19,7 @@ Workflow the worker is executing an activity for.
 
 ### activity_id
 
-Activity id this worker was dispatched for — must match the activity returned by `get_activity`.
+Activity id this worker's current dispatch or continuation bound — must match the activity returned by `get_activity`.
 
 ### agent_id
 
@@ -31,6 +31,7 @@ Worker agent identity for this dispatch.
 
 - Confirm the activity `id` already returned by `get_activity` equals `{activity_id}` per [verify-dispatched-activity](./TECHNIQUE.md#verify-dispatched-activity)
 - Follow the operations bundle and any delivery notes on that response (`step_techniques_note`, `resources_note`, reference-mode notes)
+- Read `_meta.batch.may_continue` and carry it to [finalize-activity](./finalize-activity.md) as `batch_may_continue` — the orchestrator holds no batch state of its own
 
 ### 2. Load resources
 
@@ -54,7 +55,11 @@ Follow the rules in [agent-conduct](../agent-conduct.md), [workflow-engine](./TE
 
 ### worker-control-plane-ban
 
-Never call the workflow-server control-plane tools `next_activity` or `get_workflow`.
+Never call the workflow-server control-plane tools `next_activity` or `get_workflow`. Asking for the next activity of a batch is a `get_activity` call once the orchestrator's continuation has re-bound `{activity_id}`: the session pointer moves with the commit that every activity boundary requires, and that commit is the orchestrator's ([no-readme-persist-on-worker](./finalize-activity.md#no-readme-persist-on-worker)).
+
+### one-activity-at-a-time-in-a-batch
+
+Report each activity as it finishes — a batch defers nothing to its end. A completed activity's `activity_complete` envelope leaves the session pointer where the walk actually is, so a resume that fails costs that one activity: a fresh worker takes the current activity in full and re-crosses already-answered gates silently, because gate responses are keyed by activity rather than by agent ([yield-checkpoint](./yield-checkpoint.md)). Deferred reporting leaves the pointer stale, redoes the whole batch, and hands the replacement worker a pointer that disagrees with what it finds — which stops it ([verify-dispatched-activity](./TECHNIQUE.md#verify-dispatched-activity)).
 
 ### session-index-on-each-call
 
@@ -62,4 +67,8 @@ Pass `{session_index}` on every authenticated tool call ([session-index-passes-o
 
 ### agent-id-on-delivery-calls
 
-Every `get_activity`, `get_technique` and `get_resource` call this worker makes carries `{agent_id}`, the identity its ledger is keyed on ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch holds no prior deliveries and takes full delivery; a resume under that same identity carries `bundle: "reference"`, so content this context already holds arrives as unchanged markers.
+Every `get_activity`, `get_technique` and `get_resource` call this worker makes carries `{agent_id}`, the identity its ledger is keyed on ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch holds no prior deliveries and takes full delivery; every call after it under that same identity carries `bundle: "reference"`, whether it resumes the activity this context holds or takes the next activity of its batch, so content this context already holds arrives as unchanged markers.
+
+### batch-ends-where-the-server-says
+
+`_meta.batch` on each `get_activity` reports how many activities this context has taken, what it has been delivered, and whether it may take another. On `may_continue: false`, finish the current activity and report it — do not ask for a further one. Asking past the bound is refused with the payload undelivered, and the refusal is a round trip that ends in a fresh dispatch either way.

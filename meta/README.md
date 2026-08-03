@@ -20,7 +20,7 @@ The meta workflow is the structural home for the orchestration logic that used t
 | 00 | [**Discover Session**](./activities/README.md#00-discover-session) | Derive the host repository from git, identify the target client workflow and, on stated resume intent, surface any saved session to resume |
 | 01 | [**Initialize Session**](./activities/README.md#01-initialize-session) | Give the work package a stable identity and create or resume the client session as a child of meta |
 | 02 | [**Resolve Target**](./activities/README.md#02-resolve-target) | Detect the repo structure (regular vs. submodule monorepo), resolve `component_path`, and confirm the host binding agrees with the derivation |
-| 03 | [**Dispatch Client Workflow**](./activities/README.md#03-dispatch-client-workflow) | Drive the client workflow end to end inline, mediating its checkpoints with the user |
+| 03 | [**Dispatch Client Workflow**](./activities/README.md#03-dispatch-client-workflow) | Drive the client workflow end to end inline, each worker carrying a bounded run of activities, mediating its checkpoints with the user |
 | 04 | [**End Workflow**](./activities/README.md#04-end-workflow) | Verify the client workflow's outcomes, summarise the session, and confirm closure |
 
 **Detailed documentation:**
@@ -127,7 +127,7 @@ workflows/meta/
 │   ├── 00-discover-session.yaml             # Derive host repo from git, match user request, scan saved sessions on resume intent
 │   ├── 01-initialize-session.yaml           # Create or resume the client session
 │   ├── 02-resolve-target.yaml               # Detect repo type, set component_path, verify host binding
-│   ├── 03-dispatch-client-workflow.yaml     # Drive the client activity loop (while current_activity != null)
+│   ├── 03-dispatch-client-workflow.yaml     # Drive the client activity loop, a bounded run of activities per worker
 │   └── 04-end-workflow.yaml                 # Outcome verification, summary
 ├── techniques/
 │   ├── TECHNIQUE.md                         # Root base contract (inherited by every meta technique)

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -51,4 +51,4 @@ The envelope the worker returned, passed through unchanged — one of two tagged
 
 ### 4. Account for the continuation
 
-- Account for this continuation of `{activity_id}` per [account-every-dispatch](./dispatch-activity.md#account-every-dispatch).
+- Account for this continuation of `{activity_id}` per [account-every-activity](./dispatch-activity.md#account-every-activity).

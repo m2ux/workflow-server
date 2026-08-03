@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.15.0
+  version: 1.16.0
 ---
 
 ## Capability
 
-Transition the session to a target activity and spawn a disposable worker for it.
+Transition the session to a target activity and spawn a worker to carry it, and the bounded run of activities behind it.
 
 ## Inputs
 
@@ -54,7 +54,7 @@ Opaque HMAC-signed trace token from the `next_activity` response `_meta.trace_to
 4. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await the worker's envelope and return it unchanged as `{worker_result}`.
    > When the harness reports the worker ended without returning an envelope, dispatch a fresh worker for the same `{activity_id}`, which mints its own identity.
    > When the envelope reports fewer steps than the activity defines, or leaves a required checkpoint without a response, apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) under `{worker_agent_id}` with explicit instructions to complete the missing items ([reject-partial-worker-result](#reject-partial-worker-result)).
-5. Account for this dispatch, and for any replacement worker dispatched for the same `{activity_id}`, per [account-every-dispatch](#account-every-dispatch).
+5. Account for this activity, and for any replacement worker dispatched for the same `{activity_id}`, per [account-every-activity](#account-every-activity).
 6. Reconcile any critical routing or path variable an orchestrator decision depends on: compare the session record against the just-completed worker's `activity_complete` envelope, and against planning-folder evidence when the two still leave it uncertain ([distrust-then-reconcile](#distrust-then-reconcile)).
 7. On `activity_complete`, read `{worker_result.next_activity_id}` (and optionally `{worker_result.evaluated_condition}`) as the authoritative next-activity routing — the worker evaluated transitions via [finalize-activity](./finalize-activity.md).
    > When the orchestrator observes **blocked** (worker/harness signal), apply [sync-progress-status](./sync-progress-status.md) for the blocked moment in [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites) for `{activity_id}` before surfacing or retrying.
@@ -62,9 +62,9 @@ Opaque HMAC-signed trace token from the `next_activity` response `_meta.trace_to
 
 ## Rules
 
-### account-every-dispatch
+### account-every-activity
 
-Every dispatch carries exactly one usage entry, recorded with `record_usage { session_index, activity, usage }` — the first worker, each continuation, each replacement worker, and any dispatch made out of band alike. Cost travels on its own entry, so coverage follows the dispatches rather than the graph: the terminal activity's own dispatches and anything after the final transition carry one like any other. A worker cannot self-measure, so a dispatch with no entry is one whose harness reported nothing, never one that cost zero — where the harness surfaces no figure the entry is omitted rather than zeroed.
+Every activity carries exactly one usage entry, recorded with `record_usage { session_index, activity, usage, agent_id }` — the first worker, each continuation, each activity of a batch, each replacement worker, and any dispatch made out of band alike. A dispatch carrying a run of activities records the delta at each activity boundary, so cost keeps a figure per activity and a batch size is calibrated from real runs rather than estimated. Cost travels on its own entry, so coverage follows the activities rather than the graph: the terminal activity's own entry and anything after the final transition carry one like any other. A worker cannot self-measure, so an activity with no entry is one whose harness reported nothing, never one that cost zero — where the harness surfaces no figure the entry is omitted rather than zeroed.
 
 ### distrust-then-reconcile
 
@@ -84,7 +84,11 @@ NEVER call `get_technique` to pre-load techniques for the worker. Step technique
 
 ### delivery-keys-on-agent-context
 
-Delivery mode follows the agent context, not the session: one worker `agent_id` per worker, bound at dispatch and held until that worker reports the activity complete, and the server scopes its ledger to that context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch is a fresh context holding no prior deliveries, so it takes full delivery; the resumed worker is the same context and collapses what it already received ([resume-worker](./resume-worker.md)). A retry that spawns a NEW worker for the same activity is a new context, and takes full delivery again. `context_mode: "persistent"` stays off worker-dispatched sessions.
+Delivery mode follows the agent context, not the session: one worker `agent_id` per worker, bound at dispatch and held for as long as that worker carries its batch, and the server scopes its ledger to that context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch is a fresh context holding no prior deliveries, so it takes full delivery; the same context collapses what it already received, whether it is resumed on the activity it holds ([resume-worker](./resume-worker.md)) or advanced to the next activity of its batch ([continue-batch](./continue-batch.md)). The identity is released when the batch is spent, and a retry that spawns a NEW worker for the same activity is a new context, taking full delivery again. `context_mode: "persistent"` stays off worker-dispatched sessions.
+
+### batch-is-bounded-by-the-server
+
+A worker's batch is bounded at delivery, not by this operation's judgement: the server refuses the next activity once that context has taken the cap of distinct activities or accumulated more delivery than its batch budget allows, and reports where a context stands on every `get_activity`. So the orchestrator does not size a batch, hold a count, or reason about context load — it continues a worker while the worker's last envelope says the server will still serve it ([batch-continues-only-with-room](./continue-batch.md#batch-continues-only-with-room)). A bound carried by instruction text is the failure this replaces; a bound carried by a delivery refusal cannot be talked past.
 
 ### reject-partial-worker-result
 

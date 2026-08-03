@@ -21,7 +21,7 @@ IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
 
    - The call returns more than an index: the running workflow's id, version, title and description (the version later drift detection compares against), the `planning_slug` the session is keyed on, the canonical `planning_folder_path` once a durable one resolves, the echoed `repo` binding, and `context_mode` / `migrated` when either applies.
    - `repo_unbound: true` comes back when a transient session booted with no repository bound. That is the signal the derivation above yielded nothing and a fallback source must supply `repo` before any durable path resolves — treat it as the fallback branch, not as a successful boot.
-   - Planning-folder targeting (`planning_folder` absolute-or-omit, response `planning_folder_path`) and `context_mode` topology follow [start-session](../techniques/workflow-engine/start-session.md) (and [dispatch-topology](../techniques/workflow-engine/TECHNIQUE.md#dispatch-topology) for disposable workers).
+   - Planning-folder targeting (`planning_folder` absolute-or-omit, response `planning_folder_path`) and `context_mode` topology follow [start-session](../techniques/workflow-engine/start-session.md) (and [dispatch-topology](../techniques/workflow-engine/TECHNIQUE.md#dispatch-topology) for the worker topology).
 
 4. `get_workflow { session_index }`. The response carries the workflow's resolved operations bundle ahead of the workflow's metadata and activity roster (separated by `\n\n---\n\n`). Follow the operations and rules in the bundle — ongoing delivery policy lives there ([workflow-engine](../techniques/workflow-engine/TECHNIQUE.md)).
 
