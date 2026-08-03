@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.14.0
+  version: 1.15.0
 ---
 
 ## Capability
@@ -25,6 +25,10 @@ Canonical agent technique for the worker — default workflow-engine::activity-w
 
 Current variable state for stub substitution (`session_index`, `workflow_id`, `activity_id`, `agent_id`, …)
 
+### planning_folder_path
+
+*(optional)* Path to the planning folder whose `README.md` Progress surface is updated. Unset until the folder exists.
+
 ## Outputs
 
 ### worker_result
@@ -41,7 +45,7 @@ Opaque HMAC-signed trace token from the `next_activity` response `_meta.trace_to
 
 ## Protocol
 
-1. **Progress in-progress:** Apply [sync-progress-status](./sync-progress-status.md) for the dispatch moment in [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites) (`activity_id={activity_id}`; `{target_status}` from that row / [Status vocabulary](../../resources/planning-readme.md#status-vocabulary)). Transitions follow [Status transition policy](../../resources/planning-readme.md#status-transition-policy).
+1. **Progress in-progress:** Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites) (`activity_id={activity_id}`; `{target_status}` from that row / [Status vocabulary](../../resources/planning-readme.md#status-vocabulary)). Transitions follow [Status transition policy](../../resources/planning-readme.md#status-transition-policy).
    > When `{planning_folder_path}` is unset, skip this phase.
 2. Call `next_activity { session_index, activity_id, step_manifest }`; capture `_meta.trace_token`.
    - **`step_manifest`:** a dispatch whose activity ran steps carries one manifest entry per completed step — the server validates step completion against it, and reports a gap when it is absent.
@@ -64,11 +68,11 @@ Every dispatch carries exactly one usage entry, recorded with `record_usage { se
 
 ### distrust-then-reconcile
 
-Where the session record and a just-completed worker's `activity_complete` envelope (`variables_changed` and related fields) disagree on routing or path state, the envelope governs — the worker holds ground truth from its own user interaction — and the discrepancy is logged.
+Where the session record and a just-completed worker's `activity_complete` envelope (`variables_changed` and related fields) disagree on routing or path state, the envelope governs, and the discrepancy is logged.
 
 ### resolve-trace-at-close-out
 
-Client finalize/retrospective paths that consume execution history MUST resolve accumulated `trace_tokens[]` once via `get_trace { session_index, trace_tokens }` (optionally `inspect_session` for fetch/fidelity context). This operation owns the accumulate half of the contract; the client's close-out path owns the resolve call and any planning artifacts. Skip resolve when `trace_tokens` is empty.
+Client finalize/retrospective paths that consume execution history MUST resolve accumulated `trace_tokens[]` once via `get_trace { session_index, trace_tokens }` (optionally `inspect_session` for fetch/fidelity context). This operation owns the accumulate half of the contract; the client's close-out path owns the resolve. Skip resolve when `trace_tokens` is empty.
 
 ### no-get-activity-from-orchestrator
 
@@ -80,7 +84,7 @@ NEVER call `get_technique` to pre-load techniques for the worker. Step technique
 
 ### delivery-keys-on-agent-context
 
-Delivery mode follows the agent context, not the session: one worker `agent_id` per worker, bound at dispatch and held until that worker reports the activity complete, and the server scopes its ledger to that context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch is a fresh context holding no prior deliveries, so it takes full delivery; the resumed worker is the same context and collapses what it already received ([resume-worker](./resume-worker.md)). A retry that spawns a NEW worker for the same activity is a new context, and takes full delivery again. `context_mode: "persistent"` stays off worker-dispatched sessions — it is a session-wide declaration, and one session serves many worker contexts.
+Delivery mode follows the agent context, not the session: one worker `agent_id` per worker, bound at dispatch and held until that worker reports the activity complete, and the server scopes its ledger to that context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch is a fresh context holding no prior deliveries, so it takes full delivery; the resumed worker is the same context and collapses what it already received ([resume-worker](./resume-worker.md)). A retry that spawns a NEW worker for the same activity is a new context, and takes full delivery again. `context_mode: "persistent"` stays off worker-dispatched sessions.
 
 ### reject-partial-worker-result
 
