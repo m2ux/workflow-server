@@ -21,10 +21,6 @@ Next activity for the worker to walk — the target of this advance.
 
 Server-side worker identity the batch is carried under — the identity the delivery ledger is keyed on.
 
-### step_manifest
-
-One entry per step the just-finished activity completed, for the server's step-completion validation.
-
 ### state
 
 Current variable state for stub substitution (`session_index`, `workflow_id`, `activity_id`, …).
@@ -39,7 +35,7 @@ The envelope the worker returned, passed through unchanged — one of two tagged
 
 ### 1. Advance the session
 
-- Call `next_activity { session_index, activity_id, step_manifest }`; capture `_meta.trace_token` and accumulate it per [dispatch-activity](./dispatch-activity.md) step 2.
+- Call `next_activity { session_index, activity_id, step_manifest }` — one manifest entry per step the activity just finished ran — and capture `_meta.trace_token`, accumulating it per [dispatch-activity](./dispatch-activity.md) step 2.
 - The commit for the activity just finished has already landed, so this advance is the transition it precedes ([commit-after-activity](./commit-and-persist.md#commit-after-activity)).
 
 ### 2. Compose the continuation stub

@@ -28,16 +28,6 @@ steps:
     maxIterations: 200
     steps:
       - kind: technique
-        id: dispatch-activity
-        when: "!worker_agent_id"
-        technique:
-          name: workflow-engine::dispatch-activity
-          inputs:
-            activity_id: current_activity
-            session_index: client_session_index
-            agent_technique: workflow-engine::activity-worker
-            state: variables
-      - kind: technique
         id: continue-batched-worker
         when: worker_agent_id && worker_result.result_type == "activity_complete"
         technique:
@@ -46,7 +36,16 @@ steps:
             activity_id: current_activity
             session_index: client_session_index
             worker_agent_id: worker_agent_id
-            step_manifest: step_manifest
+            state: variables
+      - kind: technique
+        id: dispatch-activity
+        when: "!worker_agent_id"
+        technique:
+          name: workflow-engine::dispatch-activity
+          inputs:
+            activity_id: current_activity
+            session_index: client_session_index
+            agent_technique: workflow-engine::activity-worker
             state: variables
       - kind: technique
         id: present-yielded-checkpoint
@@ -90,7 +89,7 @@ steps:
             value: "{worker_result.next_activity_id}"
       - kind: action
         id: release-spent-worker
-        when: worker_result.result_type == "activity_complete" && !worker_result.batch_may_continue
+        when: worker_result.result_type == "activity_complete" && (!worker_result.batch_may_continue || !worker_result.next_activity_id)
         actions:
           - action: set
             target: worker_agent_id
