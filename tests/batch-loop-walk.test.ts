@@ -63,13 +63,17 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
     bag['worker_agent_id'] = bag['worker_agent_id'] ?? 'worker-replacement';
     bag['worker_result'] = envelope;
   },
+  // Also declares trace_token, which no gate reads.
   'dispatch-activity': (bag, next, log) => {
     log.push('advance');
     bag['worker_agent_id'] = 'worker-minted';
     bag['worker_result'] = next();
   },
-  'present-yielded-checkpoint': () => { /* surfaces the gate; no bag effect */ },
-  'respond-yielded-checkpoint': () => { /* records the answer; no bag effect */ },
+  // These two do declare Outputs — `user_selection` and `effects`, the latter consumed by
+  // `resume-worker`'s `effects` input — but no `when:` in the loop reads either, so a faithful encoding
+  // and an empty one produce identical walks. Left empty, and named here so the table stays auditable.
+  'present-yielded-checkpoint': () => { /* returns user_selection; no gate reads it */ },
+  'respond-yielded-checkpoint': () => { /* returns effects; no gate reads it */ },
   'resume-yielded-worker': (bag, next) => { bag['worker_result'] = next(); },
   'commit-activity-artifacts': (_bag, _next, log) => { log.push('commit'); },
   'advance-activity': (bag) => {
@@ -79,14 +83,44 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
 };
 
 interface LoopStep { id: string; when?: string }
+interface SetAction { action?: string; target?: string; value?: unknown }
+interface OuterStep {
+  kind: string;
+  id?: string;
+  steps?: LoopStep[];
+  loopType?: string;
+  maxIterations?: number;
+  condition?: { type?: string; variable?: string; operator?: string; value?: unknown };
+  actions?: SetAction[];
+}
+interface LoopDef extends OuterStep { steps: LoopStep[] }
 
-function loopBody(): LoopStep[] {
-  const activity = parseYaml(
+function activityDef(): { steps: OuterStep[] } {
+  return parseYaml(
     readFileSync(join(corpusRoot(), 'meta/activities/03-dispatch-client-workflow.yaml'), 'utf8'),
-  ) as { steps: Array<{ kind: string; steps?: LoopStep[] }> };
-  const loop = activity.steps.find((s) => s.kind === 'loop');
-  if (!loop?.steps?.length) throw new Error('no loop body in 03-dispatch-client-workflow');
-  return loop.steps;
+  ) as { steps: OuterStep[] };
+}
+
+function loop(): LoopDef {
+  const found = activityDef().steps.find((s) => s.kind === 'loop');
+  if (!found?.steps?.length) throw new Error('no loop body in 03-dispatch-client-workflow');
+  return found as LoopDef;
+}
+
+/**
+ * The loop's own exit test, read from its declared `condition` rather than restated here. Written out,
+ * a change to the operator, the variable, or the whole block would leave every walk below passing.
+ */
+function loopHolds(def: LoopDef, bag: Bag): boolean {
+  const cond = def.condition;
+  if (!cond || cond.type !== 'simple' || typeof cond.variable !== 'string' || typeof cond.operator !== 'string') {
+    throw new Error('the loop declares no simple condition to walk');
+  }
+  const actual = bag[cond.variable] ?? null;
+  const expected = cond.value ?? null;
+  if (cond.operator === '!=') return actual !== expected;
+  if (cond.operator === '==') return actual === expected;
+  throw new Error(`unhandled loop operator '${cond.operator}'`);
 }
 
 interface Walk {
@@ -106,7 +140,8 @@ interface Walk {
  * null`, which the YAML declares as a structured condition rather than a `when:` string.
  */
 function walk(envelopes: Envelope[], initialActivity = 'implementation-analysis'): Walk {
-  const body = loopBody();
+  const def = loop();
+  const body = def.steps;
   const bag: Bag = { current_activity: initialActivity, client_session_index: 'AAAAAA' };
   const queue = [...envelopes];
   const iterations: string[][] = [];
@@ -119,8 +154,11 @@ function walk(envelopes: Envelope[], initialActivity = 'implementation-analysis'
     return envelope;
   };
 
-  for (let i = 0; i < 20; i++) {
-    if (bag['current_activity'] == null) return { iterations, log, bag, stopped: 'condition' };
+  // The declared bound, not a number of this file's choosing — a walk that outruns it is the loop's
+  // own ceiling, which the definition must carry for a batch of any length to finish.
+  const ceiling = def.maxIterations ?? 0;
+  for (let i = 0; i < Math.min(ceiling, 20); i++) {
+    if (!loopHolds(def, bag)) return { iterations, log, bag, stopped: 'condition' };
     const fired: string[] = [];
     try {
       for (const step of body) {
@@ -143,6 +181,34 @@ const complete = (next: string | null, room = true): Envelope =>
 const gate = (): Envelope => ({ result_type: 'checkpoint_pending' });
 
 describe('client activity loop walked (#407)', () => {
+  it('carries the frame a batch of any length needs, outside the body', () => {
+    const def = activityDef();
+    const [precondition, prime] = def.steps;
+
+    // Nothing in the body checks that a client session exists, and nothing primes the pointer the
+    // condition tests. Both live ahead of the loop, and a walk that starts inside the body cannot see
+    // either — so they are asserted here rather than assumed.
+    expect(precondition?.actions?.some((a) => a.action === 'validate' && a.target === 'client_session_index')).toBe(true);
+    expect(prime?.actions?.some((a) => a.action === 'set' && a.target === 'current_activity')).toBe(true);
+
+    const l = loop();
+    expect(l.loopType).toBe('while');
+    // The exit test is on the pointer the body advances, against null — the two have to agree, or the
+    // walk either never enters or never leaves.
+    expect(l.condition?.variable).toBe('current_activity');
+    expect(l.condition?.operator).toBe('!=');
+    expect(l.condition?.value ?? null).toBeNull();
+    // A ceiling of one would abort every batch after its first activity.
+    expect(l.maxIterations ?? 0).toBeGreaterThan(3);
+
+    // And the activity leaves for close-out on the same condition the loop exits by.
+    const transitions = (def as unknown as { transitions?: Array<{ to?: string; condition?: { variable?: string; operator?: string; value?: unknown } }> }).transitions ?? [];
+    const exit = transitions.find((tr) => tr.to === 'end-workflow');
+    expect(exit?.condition?.variable).toBe('current_activity');
+    expect(exit?.condition?.operator).toBe('==');
+    expect(exit?.condition?.value ?? null).toBeNull();
+  });
+
   it('advances the session pointer exactly once per activity, never twice in an iteration', () => {
     // The invariant the whole loop rests on, and it is per ACTIVITY rather than per iteration: an
     // iteration that only answers a gate must not advance, because the worker is still on the activity
@@ -208,9 +274,14 @@ describe('client activity loop walked (#407)', () => {
   it('answers two gates on one activity under one identity, committing once', () => {
     const result = walk([gate(), gate(), complete(null)]);
 
-    const gateSteps = result.iterations[0]!.filter((id) => id.includes('yielded'));
-    expect(gateSteps.length).toBeGreaterThanOrEqual(3);
-    // One activity, one commit — a second gate does not buy a second commit.
+    // The second gate takes its own iteration, and that iteration neither dispatches nor continues —
+    // the worker is still on the activity it holds, so the pointer must not move. A one-gate walk
+    // finishes in one iteration, so the count is what distinguishes them.
+    expect(result.iterations).toHaveLength(2);
+    expect(walk([gate(), complete(null)]).iterations).toHaveLength(1);
+    expect(result.iterations[1]![0]).toBe('present-yielded-checkpoint');
+    expect(result.iterations[1]!.filter((id) => ADVANCING_STEPS.includes(id))).toEqual([]);
+    // One activity, one commit — a second gate does not buy a second commit, or a second advance.
     expect(result.log.filter((e) => e === 'commit')).toHaveLength(1);
     expect(result.log.filter((e) => e === 'advance')).toHaveLength(1);
   });
