@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ Failure report carrying the critical issues, correction history, and manual-reso
 #### artifact
 
 `failure-report.md`
+
+#### audience
+
+`human`
 
 ### failure_report_path
 

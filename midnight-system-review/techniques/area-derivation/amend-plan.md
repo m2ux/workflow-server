@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -30,6 +30,10 @@ The amended plan document, updated in place.
 #### artifact
 
 `investigation-plan.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ Path to the reference report artifact.
 #### artifact
 
 `02-gap-analysis.md`
+
+#### audience
+
+`human`
 
 #### summary_metrics
 

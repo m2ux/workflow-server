@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -17,6 +17,10 @@ How the code behaves when things fail: error paths, propagation, and handling co
 
 `behavioral-errors.md`
 
+#### audience
+
+`human`
+
 ### cost_analysis
 
 Where the code spends: algorithmic complexity and optimization opportunities. Role label COSTS.
@@ -24,6 +28,10 @@ Where the code spends: algorithmic complexity and optimization opportunities. Ro
 #### artifact
 
 `behavioral-costs.md`
+
+#### audience
+
+`human`
 
 ### evolution_analysis
 
@@ -33,6 +41,10 @@ How the code absorbs change: coupling points and their blast radius. Role label 
 
 `behavioral-changes.md`
 
+#### audience
+
+`human`
+
 ### api_surface_analysis
 
 What the code promises outward: the public surface and its callers. Role label PROMISES.
@@ -40,6 +52,10 @@ What the code promises outward: the public surface and its callers. Role label P
 #### artifact
 
 `behavioral-promises.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

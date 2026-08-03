@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -30,6 +30,10 @@ Stakeholder-facing architecture [summary](../resources/architecture-summary.md#a
 #### artifact
 
 `architecture-summary.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

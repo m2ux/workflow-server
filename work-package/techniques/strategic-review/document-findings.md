@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ The strategic review [document](../../resources/strategic-review.md#strategic-re
 #### artifact
 
 `strategic-review-{n}.md`
+
+#### audience
+
+`human`
 
 
 ## Protocol

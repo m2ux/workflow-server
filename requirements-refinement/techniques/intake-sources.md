@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -28,6 +28,10 @@ Record of the captured sources, classified source type, detected augment/create 
 #### artifact
 
 `intake.md`
+
+#### audience
+
+`human`
 
 ### intake_record_path
 

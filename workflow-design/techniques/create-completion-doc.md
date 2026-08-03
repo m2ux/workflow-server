@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.1.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ The classified operation. When `update`, the summary frames the delivery as chan
 #### artifact
 
 `COMPLETE.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -38,6 +38,10 @@ Machine-readable manifest of the run's artifacts and completion status.
 #### artifact
 
 `RUN-MANIFEST.md`
+
+#### audience
+
+`human`
 
 ### run_manifest_path
 

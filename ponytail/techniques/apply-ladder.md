@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ The minimal change that solves the problem at the highest reachable [rung](../..
 #### artifact
 
 `lean-change.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ L12 structural analysis of the target, as first run — before any gap correctio
 #### artifact
 
 `verified-initial.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

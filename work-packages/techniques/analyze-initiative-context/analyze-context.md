@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Establish the starting context for a fresh initiative: the domain and stack it l
 #### artifact
 
 `02-CONTEXT-ANALYSIS.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

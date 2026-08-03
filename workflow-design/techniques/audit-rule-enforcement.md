@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.4.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Text-only rules found — each with its file, rule content, whether it is critic
 #### artifact
 
 `enforcement-findings.md`
+
+#### audience
+
+`human`
 
 ### enforcement_finding_count
 

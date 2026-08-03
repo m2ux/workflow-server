@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Cross-subsystem findings, cross-boundary bugs, and the file-level conservation l
 #### artifact
 
 `subsystem-synthesis.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ PR review [analysis](../resources/pr-review-response.md#review-document-template
 #### artifact
 
 `{YYYY-MM-DD}-pr{pr_number}-review-analysis.md`
+
+#### audience
+
+`human`
 
 #### requires_replan
 

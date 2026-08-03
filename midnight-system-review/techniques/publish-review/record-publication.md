@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -34,6 +34,10 @@ The publication close-out: post status, PR, review type, verdict, and links back
 #### artifact
 
 `publication-record.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 
