@@ -16,6 +16,12 @@
  * SERVER-SIDE component of a walk: composing each payload, resolving techniques and fragments off
  * disk, and writing the session.
  *
+ * Delivered characters are counted by the server's own `deliveredChars` (`src/utils/batch.ts`), the
+ * same rule the batch bound applies, so this script cannot report a saving the bound disagrees with.
+ * It measures activity payloads only — it never fetches a technique or resource lazily — so its figure
+ * is the EAGER floor. On real runs the lazy half is usually the larger one; see the measurements on
+ * `DEFAULT_BATCH_HEADROOM_FRACTION` in `src/config.ts`.
+ *
  * **Server-side elapsed is a wash, and that is the finding, not a defect.** Over the analysis run it
  * lands within a few percent either way of the per-activity pass, noise-dominated at this scale.
  * Reference delivery composes every payload in full and then hashes it to decide what may collapse,
@@ -61,7 +67,6 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createHarness, rawText, isError, parseToolResponse } from '../tests/e2e/harness.js';
-import type { HistoryEntry } from '../src/schema/state.schema.js';
 import type { SessionFile } from '../src/schema/session.schema.js';
 import { deliveredChars } from '../src/utils/batch.js';
 
@@ -74,27 +79,18 @@ export const DEFAULT_SPAWN_SECONDS = 87;
 export interface PassMetrics {
   /** How the pass drove the walk. */
   mode: 'per-activity' | 'batched';
-  /** Characters the server delivered in full across the whole run. */
-  deliveredChars: number;
   /**
-   * Characters reported as collapsed by a content-fetch event. NOT the run's total saving: most
-   * collapse happens inside an activity payload, which shows up as a smaller `activity_dispatched`
-   * size rather than as an `unchanged` event. Compare `deliveredChars` between the passes for the
-   * saving; this field only sees the lazy fetches.
+   * Characters delivered in full across the whole run, counted by the server's own
+   * `deliveredChars` over every scope the pass used. One implementation of that rule, not a second
+   * one for a test to reconcile.
    */
-  savedChars: number;
+  deliveredChars: number;
   /** Contexts the server met, which is what a dispatch costs a harness. */
   dispatches: number;
   /** Best server-side elapsed over --repeat walks, milliseconds. */
   elapsedMs: number;
   /** Per activity, in walk order: the characters that activity's delivery carried. */
   perActivityChars: number[];
-  /**
-   * The same total, computed by the SERVER's own `deliveredChars` over the same session. This script's
-   * `magnitudes` is a second implementation of one counting rule, and a second implementation nobody
-   * reconciles is how the double count got into both of them at once. A caller asserts the two agree.
-   */
-  serverDeliveredChars: number;
 }
 
 function flag(name: string): string | undefined {
@@ -104,44 +100,6 @@ function flag(name: string): string | undefined {
 
 function has(name: string): boolean {
   return process.argv.slice(2).includes(`--${name}`);
-}
-
-/**
- * Sum delivery magnitudes over one session's history, split by whether the payload shipped.
- *
- * Counted the same way the batch bound counts (see `src/utils/batch.ts`), which matters here: an
- * `activity_dispatched` size is the WHOLE `get_activity` response, eagerly bundled techniques and
- * resources included, so adding their own events would charge those bytes twice and overstate the
- * saving the recalibration is read from. Collapsed content is reported as saved rather than delivered.
- */
-function magnitudes(history: HistoryEntry[]): { deliveredChars: number; savedChars: number } {
-  let deliveredChars = 0;
-  let savedChars = 0;
-  for (const event of history) {
-    const data = event.data as { chars?: number; delivery?: string; bundled?: boolean } | undefined;
-    if (!data || typeof data.chars !== 'number') continue;
-    const collapsed = data.delivery === 'unchanged';
-    switch (event.type) {
-      case 'activity_dispatched':
-        deliveredChars += data.chars;
-        break;
-      case 'technique_bundled':
-        // Inside the activity payload already counted above; only its collapse is news.
-        if (collapsed) savedChars += data.chars;
-        break;
-      case 'resource_fetched':
-        if (collapsed) savedChars += data.chars;
-        else if (data.bundled !== true) deliveredChars += data.chars;
-        break;
-      case 'technique_fetched':
-        if (collapsed) savedChars += data.chars;
-        else deliveredChars += data.chars;
-        break;
-      default:
-        break;
-    }
-  }
-  return { deliveredChars, savedChars };
 }
 
 /**
@@ -193,11 +151,11 @@ async function walk(
         .map((e) => (e.data as { agentId?: string } | undefined)?.agentId)
         .filter((id): id is string => typeof id === 'string'),
     );
-    // Reconciliation figure: the server's own counting over every scope this pass used, which for the
-    // batched pass is the one batch scope and for the per-activity pass is one scope an activity.
-    const serverDeliveredChars = [...scopes].reduce((total, scope) => total + deliveredChars(state, scope), 0);
+    // The server's own counting over every scope this pass used — the one batch scope for the batched
+    // pass, one scope an activity for the per-activity pass.
+    const delivered = [...scopes].reduce((total, scope) => total + deliveredChars(state, scope), 0);
 
-    return { ...magnitudes(history), dispatches: scopes.size, elapsedMs, perActivityChars, serverDeliveredChars };
+    return { deliveredChars: delivered, dispatches: scopes.size, elapsedMs, perActivityChars };
   } finally {
     await h.close();
   }
@@ -250,7 +208,6 @@ async function main(): Promise<number> {
       batched: {
         dispatches: batched.dispatches,
         deliveredChars: batched.deliveredChars,
-        savedChars: batched.savedChars,
         elapsedMs: Number(batched.elapsedMs.toFixed(1)),
         perActivityChars: batched.perActivityChars,
       },

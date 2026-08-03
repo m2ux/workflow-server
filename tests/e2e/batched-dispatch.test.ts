@@ -14,7 +14,7 @@ import type { HistoryEntry } from '../../src/schema/state.schema.js';
  *
  * The run walked is the analysis run through the middle of the main workflow — the best batch
  * candidate the investigation measured — with the implementation activity behind it as the fourth
- * activity the cap refuses. `npm run bench:batch` prices the same run at 24.4% fewer characters
+ * activity the cap refuses. `npm run bench:batch` prices the same run at 24.7% fewer characters
  * delivered.
  */
 describe('batched dispatch (#407)', () => {

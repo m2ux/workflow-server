@@ -1,8 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { readFileSync } from 'node:fs';
 import { DEFAULT_RUN, DEFAULT_SPAWN_SECONDS, measure } from '../../scripts/run-batch-benchmark.js';
-import { deliveredChars } from '../../src/utils/batch.js';
-import type { SessionFile } from '../../src/schema/session.schema.js';
 
 /**
  * Batch duration smoke test (#407).
@@ -41,14 +38,8 @@ describe('batch duration smoke (#407)', () => {
     const dispatchesAvoided = perActivity.dispatches - batched.dispatches;
     expect(dispatchesAvoided).toBe(2);
 
-    // The two accountings agree. This script counts deliveries itself, which is a second
-    // implementation of the server's rule — and a second implementation nobody reconciles is how the
-    // same double count got into both at once, moving this figure by 8 points with the suite green.
-    expect(batched.deliveredChars).toBe(batched.serverDeliveredChars);
-    expect(perActivity.deliveredChars).toBe(perActivity.serverDeliveredChars);
-
     // Content collapses against what the one context already holds. The floor sits close under the
-    // measured 24.4%, so a regression that quietly halves the saving fails here.
+    // measured 24.7%, so a regression that quietly halves the saving fails here.
     const charSavingPct = ((perActivity.deliveredChars - batched.deliveredChars) / perActivity.deliveredChars) * 100;
     expect(charSavingPct).toBeGreaterThan(20);
 

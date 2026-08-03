@@ -161,21 +161,37 @@ export const DEFAULT_BUNDLE_CHARS_PER_TOKEN = 4;
  * `context_tokens × batchHeadroomFraction × charsPerToken`, and by a hard cap on
  * distinct activities.
  *
- * The fraction is set from the headless batch benchmark (`npm run bench:batch`)
- * over the analysis run through the middle of the main workflow, whose three
- * activities deliver 154,699 characters into one context, 132,891 of them by the
- * end of the second. At a 200,000-token window a fraction of 0.35 gives 280,000
- * characters, so that run is admitted and the activity CAP is what closes it —
- * the intended relationship: the cap does the routine work and the budget catches
- * a run of unusually heavy activities. It also leaves some 125,000 characters of
- * headroom for what a worker fetches lazily while running those activities, which
- * draws down the same budget and is not visible at the moment an activity is
- * delivered. The bundling fraction of 0.80 would admit thirteen of fifteen activities
- * into one context.
+ * WHICH LIMIT BINDS DEPENDS ON THE WORKFLOW, and both cases are wanted.
  *
- * Both values are revised from `batch_refused` counts and per-activity usage rows
- * over real runs, where the context establishment a byte count cannot see is
- * finally visible.
+ * The two rest on different evidence. `npm run bench:batch` measures activity
+ * payloads only — it never fetches a technique or a resource lazily — so its
+ * 155,060 characters for the three-activity analysis run is the EAGER floor, not
+ * what a batch really accumulates. Read off 112 worker contexts in the sealed
+ * session records, one activity costs a median 74,109 characters once its lazy
+ * fetches are counted, with a 90th percentile of 182,642 and a maximum of 261,827.
+ * The lazy half is usually the larger one.
+ *
+ * So at a 200,000-token window, giving a 280,000-character budget:
+ *
+ * - On the main workflow, whose activities are heavy, the BUDGET binds first — two
+ *   real runs reach it after two activities. That is the mechanism working: three
+ *   heavy activities would put over half the declared window into workflow content
+ *   before a line of code is read.
+ * - On the setup sequence, whose activities cost 33,000 to 154,000, the CAP binds
+ *   first. That sequence is batching's first user, and a character budget alone
+ *   would admit more of it than a context should hold.
+ * - A worker declaring a smaller window is bounded proportionally: the budget
+ *   binds before the cap for anything under roughly 95,000 declared tokens.
+ *
+ * Admission is checked BEFORE a delivery rather than after, so the activity that
+ * is admitted can carry a batch past the budget — by up to one heavy activity,
+ * 261,827 characters on measured content. Refusing after composing would pay the
+ * composition and still not un-deliver it.
+ *
+ * The bundling fraction of 0.80 would admit thirteen of fifteen activities into
+ * one context. Both values are revised from `batch_refused` counts and
+ * per-activity usage rows over real runs, where the context establishment a byte
+ * count cannot see is finally visible.
  */
 export const DEFAULT_BATCH_HEADROOM_FRACTION = 0.35;
 export const DEFAULT_BATCH_MAX_ACTIVITIES = 3;

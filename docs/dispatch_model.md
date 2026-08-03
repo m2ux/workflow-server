@@ -88,7 +88,15 @@ The run pauses at every activity boundary, because the orchestrator owns the com
 
 The character budget carries a headroom fraction of its own because `BUNDLE_HEADROOM_FRACTION` answers a different question — how much of one activity's window may go to inlined step techniques — and at `0.80` the arithmetic admits thirteen of the main workflow's fifteen activities into one context. The activity cap covers what a character count is blind to: the establishment the server never delivers, the code the worker reads, the artifacts it drafts, and degradation across a long walk.
 
-The fraction is set from `npm run bench:batch` over the analysis run through the middle of the main workflow, whose three activities deliver 154,699 characters into one context, 132,891 of them by the end of the second. At a 200,000-token window `0.35` gives 280,000 characters, so that run is admitted and the activity cap is what closes it — the intended relationship, with the cap doing the routine work and the budget catching a run of unusually heavy activities.
+**Which limit binds depends on the workflow, and both cases are wanted.** The two rest on different evidence. `npm run bench:batch` measures activity payloads only — it never fetches a technique or resource lazily — so its 155,060 characters for the three-activity analysis run is the *eager floor*, not what a batch really accumulates. Read off 112 worker contexts in the sealed session records, one activity costs a median 74,109 characters once its lazy fetches are counted, with a 90th percentile of 182,642 and a maximum of 261,827. The lazy half is usually the larger one.
+
+At a 200,000-token window, giving a 280,000-character budget:
+
+- **On the main workflow the budget binds first** — two real runs reach it after two activities. That is the mechanism working: three heavy activities would put over half the declared window into workflow content before a line of code is read.
+- **On the setup sequence the cap binds first**, its activities costing 33,000 to 154,000. That sequence is batching's first user, and a character budget alone would admit more of it than a context should hold.
+- **A smaller declared window is bounded proportionally** — the budget binds before the cap for anything under roughly 95,000 tokens.
+
+Admission is checked *before* a delivery rather than after, so the admitted activity can carry a batch past the budget — by up to one heavy activity, 261,827 characters on measured content. Refusing after composing would pay the composition and still not un-deliver it.
 
 Both limits count each delivery once. An `activity_dispatched` size is the whole `get_activity` response, so the techniques and resources it bundled eagerly are already inside it and their own observability events are not added again; what counts on top is only what the worker went back for lazily. Counting the bundled entries twice inflated one activity of the main workflow by 48% and a run of three by 70%, which made a nominal 280,000-character budget bind at 164,540.
 
@@ -99,7 +107,9 @@ Both limits count each delivery once. An `activity_dispatched` size is the whole
 Two carve-outs keep the bound aimed at what it is for:
 
 - **An activity the context already holds is always served.** That is a worker resuming after a gate asking for the payload it is sitting on, and thirteen of the main workflow's fifteen activities carry a gate.
-- **The session's own agent is unbounded.** A scope equal to `session.agentId` is the context that owns the whole walk by construction, which is what `contextMode: "persistent"` describes; its run is the session, not a batch.
+- **The session's own agent is unbounded.** A scope equal to `session.agentId` is the context that owns the whole walk by construction, which is what `contextMode: "persistent"` describes; its run is the session, not a batch. Note that `agentId` is caller-set: `dispatch_child` defaults it to `"worker"`, and a resume rebinds it to the resuming caller's `agent_id`. So a dispatched worker that passes the session's own identity is unbounded, and which context holds the exemption can move across a resume. Minting one identity per dispatch, which the corpus already requires, is what keeps the exemption where it belongs.
+
+**Rolling back after a refusal.** `batch_refused` is a new history event in a strictly-validated enum, and session load validates the whole file including nested child sessions. An earlier server reading a session that has recorded a refusal fails that validation, and the failure surfaces as `SEAL_MISMATCH` — the error normally read as tampering or a rotated key. A rollback therefore needs those events stripped, or the session retired. The forward direction — this server reading an older session — is unaffected.
 
 **A failed resume costs one activity, not the batch.** The worker reports each activity as it completes, so the session cursor tracks the run. A replacement worker picks up the current activity, takes full delivery, and re-crosses already-answered gates silently — checkpoint responses are keyed `activityId-checkpointId`, with no agent component, so `yield_checkpoint` replays them for any worker.
 

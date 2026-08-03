@@ -16,23 +16,17 @@ import type { SessionFile } from '../schema/session.schema.js';
  * content-fetch events cover what the worker went back for LAZILY on top of it. Bundled entries are
  * therefore not added again — their bytes are already inside the activity payload.
  *
- * Two limits, and the second is not redundant:
+ * Two limits, neither redundant: a CUMULATIVE character budget over everything delivered to the
+ * scope, scaled to the caller's declared `context_tokens`, and a hard cap on distinct activities that
+ * sees what a character count cannot — the context establishment the server never delivers, the code
+ * the worker reads, the artifacts it drafts, and degradation across a long walk. Which one binds
+ * depends on how heavy the workflow's activities are; `DEFAULT_BATCH_HEADROOM_FRACTION` in
+ * `src/config.ts` carries the measurements behind both, and `docs/dispatch_model.md` the model.
  *
- * - A CUMULATIVE character budget over everything already delivered to the scope, derived from the
- *   caller's declared `context_tokens` under a headroom fraction of its own. The eager-bundling
- *   fraction answers a different question — how much of one activity's window may go to inlined
- *   step techniques — and at that setting the arithmetic admits thirteen of the main workflow's fifteen
- *   activities into a single context.
- * - A hard cap on distinct activities. A character count is blind to the context establishment the
- *   server never delivers, the code the worker reads, the artifacts it drafts, and degradation
- *   across a long walk. Those are what overflow a context.
- *
- * The bound applies to a DISPATCHED worker context — a scope other than the session's own agent. A
- * scope equal to the session agent is the context that owns the whole walk by construction, which is
- * what `contextMode: 'persistent'` describes; its run is the session, not a batch.
- *
- * An activity the scope has ALREADY taken is always served: that is a worker resuming after a gate
- * asking for the payload it is holding, and refusing it would break the mechanism at every gate.
+ * Two carve-outs, each load-bearing. The bound applies to a DISPATCHED worker context, so a scope
+ * equal to the session's own agent is exempt — that context owns the whole walk by construction. And
+ * an activity the scope has ALREADY taken is always served: that is a worker resuming after a gate
+ * asking for the payload it is holding, and refusing it would end every batch at its first gate.
  */
 
 /** Which limit a refused activity ran into. */
@@ -147,7 +141,7 @@ export function batchBound(
  * the worker should come back for one. Two expressions of one rule drift, and the boundary is exactly
  * where they drift — a batch sitting on its budget must be both admitted and told to continue.
  */
-export function withinBatchBound(activities: number, chars: number, bound: BatchBound): boolean {
+function withinBatchBound(activities: number, chars: number, bound: BatchBound): boolean {
   return activities < bound.maxActivities && chars <= bound.budgetChars;
 }
 
@@ -161,7 +155,13 @@ export function withinBatchBound(activities: number, chars: number, bound: Batch
  */
 export function batchMayContinue(state: SessionFile, scope: string, bound: BatchBound): boolean {
   if (scope === state.agentId) return true;
-  return withinBatchBound(batchActivities(state, scope).length, deliveredChars(state, scope), bound);
+  const activities = batchActivities(state, scope).length;
+  // A context with no activity payload yet has no batch to be past the end of — the same reading the
+  // refusal takes. Without this, a context that announced itself on a technique fetch and read enough
+  // lazily to pass the budget would be told to stop before it had taken an activity at all, while the
+  // refusal would still serve it.
+  if (activities === 0) return true;
+  return withinBatchBound(activities, deliveredChars(state, scope), bound);
 }
 
 /**

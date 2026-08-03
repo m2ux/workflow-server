@@ -196,7 +196,7 @@ describe('loadConfig — workspace argument', () => {
       expect(config.batchHeadroomFraction).toBe(0.35);
       expect(config.batchMaxActivities).toBe(3);
       // The two answer different questions, and applying the bundling fraction to a batch would
-      // admit nine of the main workflow's fifteen activities into one context.
+      // admit thirteen of the main workflow's fifteen activities into one context.
       expect(config.batchHeadroomFraction!).toBeLessThan(config.bundleHeadroomFraction!);
     });
 
