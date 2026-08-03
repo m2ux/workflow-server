@@ -205,7 +205,9 @@ Hashing the content is what keeps this from going stale: a block annotated with 
 
 ### What gets measured
 
-**Every dispatch is counted.** Each `get_activity` records an `activity_dispatched` history event carrying `{ agentId, dispatch: "fresh" | "resume", chars }`, and echoes the discriminator on `_meta.dispatch`. The server derives fresh-versus-resume from whether that scope already has a dispatch event for the activity, so the orchestrator does not have to declare it. A worker dispatched out of band, which never calls `get_activity`, records the same event on its first `get_technique` or `get_resource`. Where `activity_usage` counts activity exits, this counts dispatches.
+**Every dispatch is counted.** Each `get_activity` records an `activity_dispatched` history event carrying `{ agentId, dispatch: "fresh" | "resume", chars }`, and echoes the discriminator on `_meta.dispatch`. The server derives fresh-versus-resume from whether it has met that scope at all, so the orchestrator does not have to declare it, and the two values name the two states the ledger has: an empty ledger taking full delivery, and prior deliveries to collapse. A worker dispatched out of band, which never calls `get_activity`, records the same event on its first `get_technique` or `get_resource`. Where `activity_usage` counts activity exits, this counts dispatches.
+
+**A second copy of one activity is visible.** When an activity is delivered whole to a context that has not received it, in a session where another context already took it, the server also records `activity_redelivered` carrying `{ agentId, priorAgentId, chars }`. That is either a replaced worker or a resume that arrived under a fresh identity, and it leaves no other trace — a second full delivery reads like a first one at every other instrument.
 
 **Sizes are summable.** `technique_fetched`, `technique_bundled` and `resource_fetched` each carry `chars` — always the full payload size, on both paths — and `delivery: "full" | "unchanged"`. Characters delivered and characters saved are therefore both totals you can add up from the ledger.
 

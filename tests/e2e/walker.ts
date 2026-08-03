@@ -18,7 +18,7 @@ import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { evaluateCondition, type Condition } from '../../src/schema/condition.schema.js';
 import { evaluateWhenExpression } from '../../src/schema/when-expression.js';
 import { TERMINAL_SENTINEL } from '../../src/loaders/workflow-loader.js';
-import { parseToolResponse, parseWorkflowResponse, parseBundle, isError, type Harness } from './harness.js';
+import { parseToolResponse, parseWorkflowResponse, parseBundle, rawText, isError, type Harness } from './harness.js';
 
 export interface CheckpointOption {
   id: string;
@@ -150,10 +150,29 @@ export interface WalkResult {
   /** Activities the walk reached but the server could not load (e.g. borrowed cross-workflow
    *  activities whose full definition does not resolve). Empty on a clean walk. */
   loadErrors: string[];
+  /** One row per gate crossed under `workerIdentity`, in walk order. Empty when the option is off. */
+  gateRefetches: GateRefetch[];
+}
+
+/** What a resumed worker received when it re-requested its activity after a gate. */
+export interface GateRefetch {
+  activityId: string;
+  checkpointId: string;
+  agentId: string;
+  /** The server's own fresh/resume discriminator for that arrival. */
+  dispatch: string;
+  chars: number;
 }
 
 export interface WalkOptions {
   agentId?: string;
+  /**
+   * Dispatch each activity under its own worker identity, carried on every `get_activity` and
+   * `get_technique` that activity makes, and re-request the activity under that same identity
+   * after each gate. Off by default: the other walks drive the graph, not the delivery ledger,
+   * and they authenticate as the session's own agent.
+   */
+  workerIdentity?: boolean;
   /** Max times any single activity may be entered before the walk aborts. */
   maxVisits?: number;
   /**
@@ -263,16 +282,30 @@ function interpolate(template: string, variables: Record<string, unknown>): stri
   });
 }
 
-async function getActivity(client: Client, sessionIndex: string): Promise<{ def: ActivityDef; unresolved: string[]; bundledSteps: string[] }> {
-  const res = await client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex, context_tokens: 200_000 } });
+async function getActivity(
+  client: Client,
+  sessionIndex: string,
+  worker?: { agentId: string; bundle?: 'reference' },
+): Promise<{ def: ActivityDef; unresolved: string[]; bundledSteps: string[]; chars: number; dispatch?: string }> {
+  const res = await client.callTool({
+    name: 'get_activity',
+    arguments: {
+      session_index: sessionIndex,
+      context_tokens: 200_000,
+      ...(worker ? { agent_id: worker.agentId } : {}),
+      ...(worker?.bundle ? { bundle: worker.bundle } : {}),
+    },
+  });
   if (isError(res)) throw new Error(`get_activity failed: ${JSON.stringify(res.content)}`);
   const def = parseWorkflowResponse(res) as unknown as ActivityDef;
   const bundle = parseBundle(res);
   const unresolved = (bundle.unresolved as string[] | undefined) ?? [];
+  const chars = rawText(res).length;
+  const dispatch = (res._meta as Record<string, unknown> | undefined)?.['dispatch'] as string | undefined;
   // Hybrid bundling (#166 B11): step ids whose techniques arrived inline in this response —
   // the robot skips their per-step get_technique, as a real worker should.
   const bundledSteps = ((res._meta as { bundled_steps?: string[] } | undefined)?.bundled_steps) ?? [];
-  return { def, unresolved, bundledSteps };
+  return { def, unresolved, bundledSteps, chars, dispatch };
 }
 
 async function transition(
@@ -319,6 +352,7 @@ async function executeActivitySteps(
   variables: Record<string, unknown>,
   policy: Policy,
   bundledSteps: string[] = [],
+  worker?: { agentId: string; gateRefetches: GateRefetch[] },
 ): Promise<StepExecution> {
   const cpRecords: CheckpointRecord[] = [];
   const manifest: Array<{ step_id: string; output: string }> = [];
@@ -334,6 +368,19 @@ async function executeActivitySteps(
       activityId, checkpointId: cp.id, optionId,
       setVariable: effect.setVariable, transitionTo: effect.transitionTo, skipActivities: effect.skipActivities,
     });
+    // A resumed worker re-requests its activity under the identity its dispatch bound, carrying
+    // `bundle: "reference"` so content it still holds arrives as markers. Recording the delivery
+    // per gate is what makes identity reuse across MANY gates observable rather than asserted once.
+    if (worker) {
+      const again = await getActivity(client, sessionIndex, { agentId: worker.agentId, bundle: 'reference' });
+      worker.gateRefetches.push({
+        activityId,
+        checkpointId: cp.id,
+        agentId: worker.agentId,
+        dispatch: again.dispatch ?? 'unrecorded',
+        chars: again.chars,
+      });
+    }
   };
 
   // Per-step technique fetch, mirroring the worker disclosure contract: a real
@@ -348,7 +395,10 @@ async function executeActivitySteps(
   const fetchTechnique = async (stepId: string): Promise<void> => {
     if (fetchedStepIds.has(stepId)) return;
     fetchedStepIds.add(stepId);
-    const res = await client.callTool({ name: 'get_technique', arguments: { session_index: sessionIndex, step_id: stepId } });
+    const res = await client.callTool({
+      name: 'get_technique',
+      arguments: { session_index: sessionIndex, step_id: stepId, ...(worker ? { agent_id: worker.agentId } : {}) },
+    });
     if (isError(res)) {
       const text = (res.content?.[0] as { text?: string })?.text ?? JSON.stringify(res.content);
       throw new Error(`get_technique(${activityId}/${stepId}) failed: ${text}`);
@@ -507,6 +557,7 @@ export async function walk(
   const path: string[] = [];
   const steps: WalkStep[] = [];
   const loadErrors: string[] = [];
+  const gateRefetches: GateRefetch[] = [];
   const visits = new Map<string, number>();
 
   let current: string | null = initialActivity;
@@ -523,11 +574,19 @@ export async function walk(
     pendingManifest = undefined;
     path.push(current);
 
+    // One identity per dispatch, held for every call this activity's worker makes — including
+    // every gate it pauses at. A second visit to the same activity is a new dispatch, so it mints
+    // its own, which is what a retry is.
+    const visitNo = (path.filter(p => p === current).length);
+    const worker = opts.workerIdentity
+      ? { agentId: `worker-${current}-${visitNo}`, gateRefetches }
+      : undefined;
+
     let act: ActivityDef;
     let unresolved: string[];
     let bundledSteps: string[];
     try {
-      ({ def: act, unresolved, bundledSteps } = await getActivity(client, sessionIndex));
+      ({ def: act, unresolved, bundledSteps } = await getActivity(client, sessionIndex, worker));
     } catch (e) {
       if (opts.autoAdvance) { loadErrors.push(`${current}: ${(e as Error).message}`); break; }
       throw e;
@@ -539,7 +598,7 @@ export async function walk(
     let artifactsWritten: string[] = [];
 
     if (mode === 'robot') {
-      const exec = await executeActivitySteps(client, sessionIndex, current, act, variables, policy, bundledSteps);
+      const exec = await executeActivitySteps(client, sessionIndex, current, act, variables, policy, bundledSteps, worker);
       cpRecords = exec.cpRecords;
       transitionOverride = exec.transitionOverride;
       stepsExecuted = exec.stepsExecuted;
@@ -622,7 +681,7 @@ export async function walk(
   return {
     workflowId, policy: policy.name, sessionIndex, planningSlug, initialActivity,
     declaredActivities, orchestratorUnresolved,
-    path, steps, variables, finalStatus, loadErrors,
+    path, steps, variables, finalStatus, loadErrors, gateRefetches,
   };
 }
 
