@@ -775,6 +775,33 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         throw new Error('No current activity in session state. Call next_activity first.');
       }
 
+      // The batch bound (#407). A worker context may walk a run of activities, and this is where the
+      // run ends: a scope arriving for an activity it has not taken, whose batch is already at the
+      // activity cap or over its cumulative delivery budget, is refused. Refusing here rather than in
+      // rule text is what makes the bound a property of the system — the same discipline the corpus
+      // states as Encode Constraints as Structure.
+      //
+      // Placed on the freshly loaded state, ahead of every composition await, for two reasons: a
+      // refusal costs nothing because no payload is assembled, and the refusal event is written with
+      // no await between the load and the save, so it cannot revert a concurrent write the way a save
+      // against a pre-composition snapshot would.
+      const scope = deliveryScope(state, agent_id);
+      const bound = batchBound(context_tokens, {
+        headroomFraction: config.batchHeadroomFraction ?? DEFAULT_BATCH_HEADROOM_FRACTION,
+        maxActivities: config.batchMaxActivities ?? DEFAULT_BATCH_MAX_ACTIVITIES,
+        charsPerToken: config.bundleCharsPerToken ?? DEFAULT_BUNDLE_CHARS_PER_TOKEN,
+      });
+      const refusal = batchRefusal(state, scope, activity_id, bound);
+      if (refusal) {
+        // Recorded before the throw, so the limit each run ran into is countable from the session
+        // even though the call carries no payload away with it.
+        const refused = advanceSession(state, (draft) => {
+          recordBatchRefusal(draft, { scope, activityId: activity_id, refusal });
+        });
+        await saveSessionForTool(loaded, refused);
+        throw new Error(batchRefusalMessage(activity_id, scope, refusal));
+      }
+
       const workflow_id = state.workflowId;
       const rawResult = await readActivityRaw(config.workflowDir, workflow_id, activity_id);
       if (!rawResult.success) throw new Error(`Activity not found: ${activity_id}`);
@@ -806,29 +833,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // empty context and the repeated bundle is load-bearing. The ledger this reads and writes
       // is scoped to the calling AGENT CONTEXT (#353 §1.1), so a resumed worker that passes its
       // dispatch `agent_id` collapses only what THAT context already received.
-      const scope = deliveryScope(state, agent_id);
-
-      // The batch bound (#407). A worker context may walk a run of activities, and this is where the
-      // run ends: a scope arriving for an activity it has not taken, whose batch is already at the
-      // activity cap or over its cumulative delivery budget, is refused before any composition runs.
-      // Refusing here rather than in rule text is what makes the bound a property of the system —
-      // the same discipline the corpus states as Encode Constraints as Structure.
-      const bound = batchBound(context_tokens, {
-        headroomFraction: config.batchHeadroomFraction ?? DEFAULT_BATCH_HEADROOM_FRACTION,
-        maxActivities: config.batchMaxActivities ?? DEFAULT_BATCH_MAX_ACTIVITIES,
-        charsPerToken: config.bundleCharsPerToken ?? DEFAULT_BUNDLE_CHARS_PER_TOKEN,
-      });
-      const refusal = batchRefusal(state, scope, activity_id, bound);
-      if (refusal) {
-        // Recorded before the throw, so the limit each run ran into is countable from the session
-        // even though the call carries no payload away with it.
-        const refused = advanceSession(state, (draft) => {
-          recordBatchRefusal(draft, { scope, activityId: activity_id, refusal });
-        });
-        await saveSessionForTool(loaded, refused);
-        throw new Error(batchRefusalMessage(activity_id, scope, refusal));
-      }
-
       const referenceMode = (bundle ?? (state.contextMode === 'persistent' ? 'reference' : 'full')) === 'reference';
       // Hashes of content delivered in full by THIS call, recorded to the session's delivery
       // ledger. Recorded in every mode so a later per-call reference opt-in can refer back to
