@@ -98,7 +98,7 @@ export interface ServerConfig {
    * Its own setting, because it answers a different question from
    * `bundleHeadroomFraction`: that one asks how much of a window one activity may
    * spend on inlined step techniques, and at 0.80 the arithmetic admits nine of
-   * the main workflow's fifteen activities into a single context. Default 0.20
+   * the main workflow's fifteen activities into a single context. Default 0.35
    * (see DEFAULT_BATCH_HEADROOM_FRACTION). Env override: `BATCH_HEADROOM_FRACTION`.
    */
   batchHeadroomFraction?: number;
@@ -157,13 +157,23 @@ export const DEFAULT_BUNDLE_CHARS_PER_TOKEN = 4;
  * Batch bound policy (#407). One dispatched worker context walks a run of
  * activities, and the run is bounded twice: by cumulative delivered characters,
  * `context_tokens × batchHeadroomFraction × charsPerToken`, and by a hard cap on
- * distinct activities. Both starting values are deliberately conservative — a
- * fraction of 0.20 admits between two and three of the main workflow's activities
- * at a 200,000-token window, where the measured definition weight averages some
- * 62,000 characters an activity. They are revised from `batch_refused` counts and
- * per-activity usage rows over real runs.
+ * distinct activities.
+ *
+ * The fraction is set from the headless batch benchmark (`npm run bench:batch`)
+ * over the analysis run through the middle of the main workflow, whose three
+ * activities deliver 263,253 characters into one context, 224,073 of them by the
+ * end of the second. At a 200,000-token window a fraction of 0.35 gives 280,000
+ * characters, so that run is admitted and the activity CAP is what closes it —
+ * which is the intended relationship: the cap does the routine work and the
+ * budget catches a run of unusually heavy activities. A tighter fraction refuses
+ * the batch the measurements name as the best candidate, and the bundling
+ * fraction of 0.80 admits nine of fifteen activities into one context.
+ *
+ * Both values are revised from `batch_refused` counts and per-activity usage rows
+ * over real runs, where the context establishment a byte count cannot see is
+ * finally visible.
  */
-export const DEFAULT_BATCH_HEADROOM_FRACTION = 0.2;
+export const DEFAULT_BATCH_HEADROOM_FRACTION = 0.35;
 export const DEFAULT_BATCH_MAX_ACTIVITIES = 3;
 
 function envOrDefault(key: string, fallback: string): string {

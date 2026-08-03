@@ -193,7 +193,7 @@ describe('loadConfig — workspace argument', () => {
 
     it('derives the batch bound with a headroom fraction of its own, well under the bundling one', () => {
       const config = loadConfig(['--workspace=/tmp/ws']);
-      expect(config.batchHeadroomFraction).toBe(0.2);
+      expect(config.batchHeadroomFraction).toBe(0.35);
       expect(config.batchMaxActivities).toBe(3);
       // The two answer different questions, and applying the bundling fraction to a batch would
       // admit nine of the main workflow's fifteen activities into one context.
@@ -201,11 +201,11 @@ describe('loadConfig — workspace argument', () => {
     });
 
     it('takes the batch bound from the environment when it is set', () => {
-      process.env['BATCH_HEADROOM_FRACTION'] = '0.35';
+      process.env['BATCH_HEADROOM_FRACTION'] = '0.5';
       process.env['BATCH_MAX_ACTIVITIES'] = '2';
       try {
         const config = loadConfig(['--workspace=/tmp/ws']);
-        expect(config.batchHeadroomFraction).toBe(0.35);
+        expect(config.batchHeadroomFraction).toBe(0.5);
         expect(config.batchMaxActivities).toBe(2);
       } finally {
         delete process.env['BATCH_HEADROOM_FRACTION'];

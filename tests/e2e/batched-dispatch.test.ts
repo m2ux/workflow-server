@@ -147,7 +147,7 @@ describe('batched dispatch (#407)', () => {
     expect(refusals[0]!.data as Record<string, unknown>).toMatchObject({
       limit: 'delivery_budget',
       activities: 1,
-      budgetChars: 800,
+      budgetChars: 1400,
     });
     // The batch reported its own headroom as spent on the way in, so a cooperating worker stops here
     // without needing the refusal.

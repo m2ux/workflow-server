@@ -88,8 +88,8 @@ describe('batch bound arithmetic (#407)', () => {
   });
 
   it('derives the budget from the caller declared window', () => {
-    // 200,000 tokens × 0.20 headroom × 4 characters a token.
-    expect(batchBound(200_000, POLICY)).toEqual({ maxActivities: 3, budgetChars: 160_000 });
+    // 200,000 tokens × 0.35 headroom × 4 characters a token.
+    expect(batchBound(200_000, POLICY)).toEqual({ maxActivities: 3, budgetChars: 280_000 });
     // A fractional cap floors, and a cap below one still admits the activity a dispatch was made for.
     expect(batchBound(1_000, { ...POLICY, maxActivities: 2.9 }).maxActivities).toBe(2);
     expect(batchBound(1_000, { ...POLICY, maxActivities: 0.4 }).maxActivities).toBe(1);
@@ -124,12 +124,12 @@ describe('batch bound arithmetic (#407)', () => {
 
   it('refuses on the budget while the cap still has room', () => {
     const state = session();
-    // One activity, and it alone has spent more than a 20,000-token window's batch budget of 16,000.
-    deliver(state, 'worker-a', 'implementation-analysis', 20_000);
+    // One activity, and it alone has spent more than a 20,000-token window's batch budget of 28,000.
+    deliver(state, 'worker-a', 'implementation-analysis', 30_000);
 
     const refusal = batchRefusal(state, 'worker-a', 'plan-prepare', batchBound(20_000, POLICY));
-    expect(refusal).toMatchObject({ limit: 'delivery_budget', activities: 1, chars: 20_000 });
-    expect(batchRefusalMessage('plan-prepare', 'worker-a', refusal!)).toContain('batch budget of 16000');
+    expect(refusal).toMatchObject({ limit: 'delivery_budget', activities: 1, chars: 30_000 });
+    expect(batchRefusalMessage('plan-prepare', 'worker-a', refusal!)).toContain('batch budget of 28000');
   });
 
   it('leaves the session own agent unbounded, whose run is the session rather than a batch', () => {
@@ -143,7 +143,7 @@ describe('batch bound arithmetic (#407)', () => {
 
   it('records the limit a refusal met, with the arithmetic that produced it', () => {
     const state = session();
-    deliver(state, 'worker-a', 'implementation-analysis', 20_000);
+    deliver(state, 'worker-a', 'implementation-analysis', 30_000);
     const bound = batchBound(20_000, POLICY);
     const refusal = batchRefusal(state, 'worker-a', 'plan-prepare', bound)!;
     recordBatchRefusal(state, { scope: 'worker-a', activityId: 'plan-prepare', refusal });
@@ -155,9 +155,9 @@ describe('batch bound arithmetic (#407)', () => {
       agentId: 'worker-a',
       limit: 'delivery_budget',
       activities: 1,
-      chars: 20_000,
+      chars: 30_000,
       maxActivities: 3,
-      budgetChars: 16_000,
+      budgetChars: 28_000,
     });
   });
 });

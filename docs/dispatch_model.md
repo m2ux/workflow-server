@@ -83,10 +83,12 @@ The run pauses at every activity boundary, because the orchestrator owns the com
 
 | Limit | Derivation | Default |
 |---|---|---|
-| Cumulative delivered characters | `context_tokens × BATCH_HEADROOM_FRACTION × BUNDLE_CHARS_PER_TOKEN` | fraction `0.20` |
+| Cumulative delivered characters | `context_tokens × BATCH_HEADROOM_FRACTION × BUNDLE_CHARS_PER_TOKEN` | fraction `0.35` |
 | Distinct activities | `BATCH_MAX_ACTIVITIES` | `3` |
 
 The character budget carries a headroom fraction of its own because `BUNDLE_HEADROOM_FRACTION` answers a different question — how much of one activity's window may go to inlined step techniques — and at `0.80` the arithmetic admits nine of the main workflow's fifteen activities into one context. The activity cap covers what a character count is blind to: the establishment the server never delivers, the code the worker reads, the artifacts it drafts, and degradation across a long walk.
+
+The fraction is set from `npm run bench:batch` over the analysis run through the middle of the main workflow, whose three activities deliver 263,253 characters into one context, 224,073 of them by the end of the second. At a 200,000-token window `0.35` gives 280,000 characters, so that run is admitted and the activity cap is what closes it — the intended relationship, with the cap doing the routine work and the budget catching a run of unusually heavy activities.
 
 `get_activity` reports where a context stands in `_meta.batch` (`activities`, `max_activities`, `delivered_chars`, `budget_chars`, `may_continue`), so the ordinary end of a batch is the worker stopping. Asking past the bound is refused with the payload undelivered and a `batch_refused` history event naming the limit, which is what the starting settings are revised from.
 
