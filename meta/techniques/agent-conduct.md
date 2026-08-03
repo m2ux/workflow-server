@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 4.8.0
+  version: 4.9.0
 ---
 
 ## Capability
@@ -36,6 +36,10 @@ Provide respectful constructive feedback focused on code quality.
 ### communication-technical-merit
 
 Focus on technical merit rather than emotional assessments.
+
+### communication-artifact-writing-register
+
+An artifact whose declared audience is a person is written to the [Artifact Writing Register](../resources/writing-register.md). The artifact's own creation guide keeps its sections, its budget, and the form it prefers.
 
 ### attribution-prohibition-direct-presentation
 
