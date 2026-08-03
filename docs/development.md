@@ -104,8 +104,9 @@ workflow-server/
 │   ├── update-workflows.sh
 │   ├── generate-schemas.ts
 │   ├── validate-workflow-yaml.ts
-│   ├── run-token-benchmark.ts
-│   └── run-profile.ts        # Profiles a real run from its session transcript
+│   ├── run-token-benchmark.ts    # Delivery cost per session mode
+│   ├── run-dispatch-benchmark.ts # What a re-dispatch costs
+│   └── run-profile.ts            # Profiles a real run from its session transcript
 ├── tests/                    # Test suites
 ├── workflows/                # Worktree (workflows branch)
 │   ├── meta/                 # Bootstrap workflow
