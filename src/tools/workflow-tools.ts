@@ -1243,14 +1243,22 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // carrying a batch reads `may_continue` to decide whether to ask for the next activity, so the
       // ordinary end of a batch is the worker stopping rather than the server refusing it. The
       // refusal above is the backstop for a worker that asks anyway.
+      //
+      // `may_continue` is answered as of THIS delivery, and the worker goes on to fetch techniques and
+      // resources lazily while it runs the activity — which draw down the same budget. So a `true`
+      // here can still become a refusal at the next boundary. `remaining_chars` is reported for that
+      // reason: it is the headroom those lazy fetches eat into, and a worker close to zero should
+      // expect its batch to end whatever the boolean said.
       const batchTaken = batchActivities(next, scope);
       const batchChars = deliveredChars(next, scope);
+      const unbounded = scope === next.agentId;
       const batch = {
         activities: batchTaken.length,
         max_activities: bound.maxActivities,
         delivered_chars: batchChars,
-        budget_chars: Math.floor(bound.budgetChars),
-        may_continue: scope === next.agentId
+        budget_chars: bound.budgetChars,
+        remaining_chars: unbounded ? null : Math.max(0, bound.budgetChars - batchChars),
+        may_continue: unbounded
           || (batchTaken.length < bound.maxActivities && batchChars <= bound.budgetChars),
       };
 

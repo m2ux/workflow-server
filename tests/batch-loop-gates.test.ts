@@ -77,11 +77,15 @@ describe('client activity loop gates (#407)', () => {
   });
 
   it('releases the identity when the batch is spent, so the next activity is dispatched afresh', () => {
-    const fired = firing(complete({ batch_may_continue: false }));
+    const spent = complete({ batch_may_continue: false });
+    const fired = firing(spent);
     expect(fired.release).toBe(true);
     expect(fired.commit).toBe(true);
-    // With the identity released, the following iteration reaches dispatch rather than continuation.
-    expect(firing({ worker_result: (complete({ batch_may_continue: false }) as { worker_result: unknown }).worker_result }))
+    // The gate carries the condition the rule states, so a spent batch cannot reach the continuation
+    // even while its identity is still held. Rule text is not what stops it.
+    expect(fired.continueBatch).toBe(false);
+    // With the identity released, the following iteration reaches dispatch.
+    expect(firing({ worker_result: (spent as { worker_result: unknown }).worker_result }))
       .toMatchObject({ continueBatch: false, dispatch: true });
   });
 
@@ -92,6 +96,18 @@ describe('client activity loop gates (#407)', () => {
     const fired = firing(complete({ next_activity_id: null, batch_may_continue: true }));
     expect(fired.release).toBe(true);
     expect(fired.commit).toBe(true);
+    // And the continuation is shut too, so it cannot be reached onto a null activity.
+    expect(fired.continueBatch).toBe(false);
+  });
+
+  it('dispatches a replacement in the same iteration when a continuation releases the batch', () => {
+    // A continuation that cannot complete — a worker that returned nothing, or one the server refused
+    // because its batch turned out to be spent — returns a null identity. Dispatch follows the
+    // continuation in the body, so the replacement is spawned without waiting for another iteration.
+    // Holding the identity here would be a loop that neither continues nor dispatches.
+    const fired = firing({ worker_agent_id: null, worker_result: { result_type: 'activity_complete', batch_may_continue: true, next_activity_id: 'plan-prepare' } });
+    expect(fired.continueBatch).toBe(false);
+    expect(fired.dispatch).toBe(true);
   });
 
   it('takes the gate path without touching dispatch or the commit', () => {

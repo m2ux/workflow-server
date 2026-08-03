@@ -58,12 +58,14 @@ describe('batch bound arithmetic (#407)', () => {
   it('draws the budget down by what shipped, and not by what collapsed to a marker', () => {
     const state = session();
     deliver(state, 'worker-a', 'implementation-analysis', 1_000);
+    // A lazy technique fetch is content no activity payload carried, so it counts.
     state.history.push({
-      timestamp: new Date().toISOString(), type: 'technique_bundled', activity: 'implementation-analysis',
+      timestamp: new Date().toISOString(), type: 'technique_fetched', activity: 'implementation-analysis',
       data: { techniqueId: 't1', stepId: 's1', agentId: 'worker-a', chars: 500, delivery: 'full' },
     });
+    // Collapsed content cost the receiving context nothing.
     state.history.push({
-      timestamp: new Date().toISOString(), type: 'technique_bundled', activity: 'plan-prepare',
+      timestamp: new Date().toISOString(), type: 'technique_fetched', activity: 'plan-prepare',
       data: { techniqueId: 't1', stepId: 's1', agentId: 'worker-a', chars: 500, delivery: 'unchanged' },
     });
     state.history.push({
@@ -74,6 +76,41 @@ describe('batch bound arithmetic (#407)', () => {
     deliver(state, 'worker-b', 'assumptions-review', 9_999);
 
     expect(deliveredChars(state, 'worker-a')).toBe(1_750);
+  });
+
+  it('charges eagerly bundled content once, the activity payload it travelled inside', () => {
+    const state = session();
+    // The activity payload IS the whole response, bundled techniques and resources included. Their
+    // own events exist for delivery observability; adding them charges the same bytes twice, which
+    // measured at +48% on one activity of the main workflow and would have made the budget bind at
+    // roughly two thirds of its stated size.
+    deliver(state, 'worker-a', 'implementation-analysis', 1_000);
+    state.history.push({
+      timestamp: new Date().toISOString(), type: 'technique_bundled', activity: 'implementation-analysis',
+      data: { techniqueId: 't1', stepId: 's1', agentId: 'worker-a', chars: 400, delivery: 'full' },
+    });
+    state.history.push({
+      timestamp: new Date().toISOString(), type: 'resource_fetched', activity: 'implementation-analysis',
+      data: { resourceId: 'r1', agentId: 'worker-a', bundled: true, chars: 300, delivery: 'full' },
+    });
+
+    expect(deliveredChars(state, 'worker-a')).toBe(1_000);
+  });
+
+  it('spends no activity slot on a context that only fetched a technique', () => {
+    const state = session();
+    // An out-of-band context announces itself on its first server call of any kind, which may be a
+    // technique or resource fetch. That dispatch event carries no size because no activity payload
+    // was delivered — counting the activity the session happened to be on would spend a slot the
+    // context never received, and the refusal would then state a count it cannot account for.
+    state.history.push({
+      timestamp: new Date().toISOString(), type: 'activity_dispatched', activity: 'implementation-analysis',
+      data: { agentId: 'worker-a', dispatch: 'fresh' },
+    });
+    expect(batchActivities(state, 'worker-a')).toEqual([]);
+
+    deliver(state, 'worker-a', 'implementation-analysis', 1_000);
+    expect(batchActivities(state, 'worker-a')).toEqual(['implementation-analysis']);
   });
 
   it('excludes a redelivery, which reports the payload its dispatch event already counted', () => {
@@ -139,6 +176,25 @@ describe('batch bound arithmetic (#407)', () => {
     deliver(state, 'orchestrator', 'assumptions-review', 1_000_000);
 
     expect(batchRefusal(state, 'orchestrator', 'implement', batchBound(200_000, POLICY))).toBeUndefined();
+  });
+
+  it('records a refusal once per limit, so the tally counts limits rather than retries', () => {
+    const state = session();
+    deliver(state, 'worker-a', 'implementation-analysis', 30_000);
+    const bound = batchBound(20_000, POLICY);
+    const refusal = batchRefusal(state, 'worker-a', 'plan-prepare', bound)!;
+    // A caller that retries a refused activity is refused again. A tally that counted retries would
+    // report how insistent a worker was, not how often a limit bound — and the settings are revised
+    // from the latter.
+    recordBatchRefusal(state, { scope: 'worker-a', activityId: 'plan-prepare', refusal });
+    recordBatchRefusal(state, { scope: 'worker-a', activityId: 'plan-prepare', refusal });
+    recordBatchRefusal(state, { scope: 'worker-a', activityId: 'plan-prepare', refusal });
+    expect(state.history.filter(e => e.type === 'batch_refused')).toHaveLength(1);
+
+    // A different activity, or a different limit, is a different fact and is recorded.
+    recordBatchRefusal(state, { scope: 'worker-a', activityId: 'assumptions-review', refusal });
+    recordBatchRefusal(state, { scope: 'worker-a', activityId: 'plan-prepare', refusal: { ...refusal, limit: 'activity_cap' } });
+    expect(state.history.filter(e => e.type === 'batch_refused')).toHaveLength(3);
   });
 
   it('records the limit a refusal met, with the arithmetic that produced it', () => {

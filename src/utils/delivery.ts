@@ -51,10 +51,11 @@ export function contentHash(text: string): string {
  * way: worker B receives an unchanged-marker for content only worker A holds, and a marker is
  * unreadable to a context that never received the bytes.
  *
- * The orchestrator mints an id per dispatch and reuses it verbatim when it resumes that worker, so a
- * fresh spawn reads an empty ledger and takes full delivery, while a resumed context reads its own
- * prior deliveries and collapses them to markers. Omitted, the scope is the session's own agent id,
- * which is the whole walk on a solo session.
+ * The orchestrator mints an id per dispatch and reuses it verbatim for as long as that worker lives —
+ * resuming it after a gate, and advancing it to the next activity of its batch. So a fresh spawn reads
+ * an empty ledger and takes full delivery, while that same context reads its own prior deliveries and
+ * collapses them to markers. Omitted, the scope is the session's own agent id, which is the whole walk
+ * on a solo session.
  */
 export function deliveryScope(state: SessionFile, agentId?: string): string {
   return agentId ?? state.agentId;

@@ -108,7 +108,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         'Pass `planning_folder` as an absolute path (basename = slug). ' +
         'Always pass `repo` as owner/repo, derived from git via `version-control::resolve-host-repo` (origin remote of the outermost claiming superproject); the user or workspace AGENTS.md is a fallback only when the workspace is not a git repo or has no origin remote. Stored on session.json#repo. ' +
         'Omit planning_folder for a transient meta bootstrap. Children use `dispatch_child`, not this tool. ' +
-        '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for disposable workers.',
+        '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for worker-dispatched walks.',
       inputSchema: z
         .object({
           workflow_id: z.string().optional().describe('Optional. Fresh-session workflow id (default "meta"). Ignored on resume.'),
@@ -422,14 +422,14 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         'Dispatch a child workflow under the parent session. Returns the child `session_index` and canonical `planning_folder_path`. ' +
         'Transient meta parents are promoted to a workspace planning folder first (optional `planning_slug`). ' +
 'Ensure `session.repo` is bound (pass `repo` here if start_session did not); path resolution reads only session.json. ' +
-        'Never set `context_mode: "persistent"` on disposable-worker children — workers need fresh/full delivery.',
+        'Never set `context_mode: "persistent"` on worker-dispatched children — a worker takes full delivery on the first activity of its run and collapses against its own ledger thereafter.',
       inputSchema: z.object({
         ...sessionIndexParam,
         workflow_id: z.string().describe('Child workflow id (e.g. "work-package").'),
         agent_id: z.string().default('worker').describe('Child agent_id (default "worker").'),
         planning_slug: z.string().optional().describe('Optional. Promotion slug when the parent is a transient meta bootstrap. Ignored if the parent is already persistent.'),
         repo: z.string().optional().describe('Bind owner/repo onto the parent session when missing (must match if already set). session.json#repo is the source of truth.'),
-        context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. Child delivery mode. "persistent" ONLY for solo child walks; omit/"fresh" for disposable workers.'),
+        context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. Child delivery mode. "persistent" ONLY for solo child walks; omit/"fresh" for worker-dispatched walks.'),
       }).strict(),
     },
     withAuditLog('dispatch_child', withSessionStoreErrors(async ({ session_index, workflow_id, agent_id, planning_slug, repo, context_mode }) => {

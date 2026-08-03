@@ -212,6 +212,31 @@ describe('loadConfig — workspace argument', () => {
         delete process.env['BATCH_MAX_ACTIVITIES'];
       }
     });
+
+    it('clamps an out-of-range batch bound to the nearest end rather than the default', () => {
+      // Zero is how an operator says "no batching". Falling back to the default would hand back 3,
+      // the LOOSEST setting and the opposite of the request, with nothing said about it.
+      process.env['BATCH_MAX_ACTIVITIES'] = '0';
+      process.env['BATCH_HEADROOM_FRACTION'] = '5';
+      try {
+        const config = loadConfig(['--workspace=/tmp/ws']);
+        expect(config.batchMaxActivities).toBe(1);
+        // A fraction above one would budget a batch more than the window it is measured against.
+        expect(config.batchHeadroomFraction).toBe(1);
+      } finally {
+        delete process.env['BATCH_MAX_ACTIVITIES'];
+        delete process.env['BATCH_HEADROOM_FRACTION'];
+      }
+    });
+
+    it('keeps the default when the batch bound is set to something that is not a number', () => {
+      process.env['BATCH_MAX_ACTIVITIES'] = 'lots';
+      try {
+        expect(loadConfig(['--workspace=/tmp/ws']).batchMaxActivities).toBe(3);
+      } finally {
+        delete process.env['BATCH_MAX_ACTIVITIES'];
+      }
+    });
   });
 });
 

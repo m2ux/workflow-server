@@ -12,9 +12,10 @@ import type { HistoryEntry } from '../../src/schema/state.schema.js';
  * activities collapse against what the context already holds, and the fourth is refused with the
  * payload undelivered.
  *
- * The run walked is the analysis run through the middle of the main workflow — the batch candidate
- * measured at 32% delivery collapse — with the implementation activity behind it as the fourth
- * activity the cap refuses.
+ * The run walked is the analysis run through the middle of the main workflow — the best batch
+ * candidate the investigation measured — with the implementation activity behind it as the fourth
+ * activity the cap refuses. `npm run bench:batch` prices the same run at 24.4% fewer characters
+ * delivered.
  */
 describe('batched dispatch (#407)', () => {
   let h: Harness;

@@ -10,10 +10,11 @@ import type { SessionFile } from '../schema/session.schema.js';
  * worker may or may not read.
  *
  * A batch is not declared. It IS the run of activities one delivery scope takes delivery of, so the
- * server sees a batch with no orchestrator cooperation and a worker cannot leave the bound behind by
- * omitting a parameter. Both halves are read off the session history: `activity_dispatched.chars` is
- * what each activity payload cost this scope, and the content-fetch events carry the techniques and
- * resources delivered alongside.
+ * server sees a batch with no orchestrator cooperation and a worker that omits a parameter does not
+ * escape it. Both halves are read off the session history: `activity_dispatched.chars` is the size of
+ * the whole `get_activity` response, eagerly bundled techniques and resources included, and the
+ * content-fetch events cover what the worker went back for LAZILY on top of it. Bundled entries are
+ * therefore not added again — their bytes are already inside the activity payload.
  *
  * Two limits, and the second is not redundant:
  *
@@ -63,7 +64,13 @@ export function batchActivities(state: SessionFile, scope: string): string[] {
   const seen: string[] = [];
   for (const event of state.history ?? []) {
     if (event.type !== 'activity_dispatched') continue;
-    if (event.data?.['agentId'] !== scope) continue;
+    const data = event.data as { agentId?: string; chars?: number } | undefined;
+    if (data?.agentId !== scope) continue;
+    // A dispatch event with no size is a context announcing itself on a technique or resource fetch,
+    // which delivered no activity payload — an out-of-band context does exactly that. Counting the
+    // activity the session happened to be on would spend a slot on an activity never delivered, and
+    // the refusal would then state a count the context cannot account for.
+    if (typeof data.chars !== 'number') continue;
     const activity = event.activity;
     if (typeof activity !== 'string' || seen.includes(activity)) continue;
     seen.push(activity);
@@ -72,18 +79,28 @@ export function batchActivities(state: SessionFile, scope: string): string[] {
 }
 
 /**
- * Characters delivered in full to `scope` across everything it has received: activity payloads plus
- * the techniques and resources delivered with them. Content that collapsed to an unchanged marker
- * cost the receiving context effectively nothing, so it does not draw down the budget.
+ * Characters delivered in full to `scope` across everything it has received. Content that collapsed
+ * to an unchanged marker cost the receiving context effectively nothing, so it does not draw down the
+ * budget.
  *
- * `activity_redelivered` is excluded — it reports the same payload as the `activity_dispatched`
- * event recorded by the same call, and counting both would charge one delivery twice.
+ * Counted once each, which takes care over what already contains what:
+ *
+ * - `activity_dispatched.chars` is the size of the whole `get_activity` response, so it already
+ *   includes every technique and resource that response bundled eagerly. Those arrive with their own
+ *   `technique_bundled` / `resource_fetched` events, recorded for delivery observability, and adding
+ *   them would charge the same bytes twice — measured at +48% on one activity of the main workflow,
+ *   which would have made a nominal budget bind at roughly two thirds of its stated size.
+ * - `technique_fetched`, and a `resource_fetched` the response did not bundle, are what the worker
+ *   went back for LAZILY. Those bytes are in no activity payload, so they count.
+ * - `activity_redelivered` reports the same payload as the `activity_dispatched` event recorded by
+ *   the same call, so counting both would charge one delivery twice.
  */
 export function deliveredChars(state: SessionFile, scope: string): number {
   let total = 0;
   for (const event of state.history ?? []) {
-    const data = event.data as { agentId?: string; chars?: number; delivery?: string } | undefined;
+    const data = event.data as { agentId?: string; chars?: number; delivery?: string; bundled?: boolean } | undefined;
     if (!data || data.agentId !== scope || typeof data.chars !== 'number') continue;
+    if (data.delivery === 'unchanged') continue;
     switch (event.type) {
       case 'activity_dispatched':
         // The recorded size is what the response actually carried, so a resume that collapsed to
@@ -91,9 +108,11 @@ export function deliveredChars(state: SessionFile, scope: string): number {
         total += data.chars;
         break;
       case 'technique_fetched':
-      case 'technique_bundled':
+        total += data.chars;
+        break;
       case 'resource_fetched':
-        if (data.delivery !== 'unchanged') total += data.chars;
+        // `bundled` marks a body the activity response carried, already counted above.
+        if (data.bundled !== true) total += data.chars;
         break;
       default:
         break;
@@ -111,8 +130,12 @@ export function batchBound(
   policy: { headroomFraction: number; maxActivities: number; charsPerToken: number },
 ): BatchBound {
   return {
+    // A cap below one still admits the activity a dispatch was made for: one activity to a worker is
+    // batching switched off, which is what an operator setting zero means.
     maxActivities: Math.max(1, Math.floor(policy.maxActivities)),
-    budgetChars: contextTokens * policy.headroomFraction * policy.charsPerToken,
+    // Floored, so the budget reported to the caller and recorded on a refusal is the same integer the
+    // comparison applies rather than one up to a character larger.
+    budgetChars: Math.floor(contextTokens * policy.headroomFraction * policy.charsPerToken),
   };
 }
 
@@ -146,20 +169,33 @@ export function batchRefusalMessage(activityId: string, scope: string, refusal: 
     ? `it has already taken ${refusal.activities} activit${refusal.activities === 1 ? 'y' : 'ies'}, `
       + `which is the cap of ${refusal.bound.maxActivities} per worker context`
     : `${refusal.chars} characters have been delivered to it, over the batch budget of `
-      + `${Math.floor(refusal.bound.budgetChars)} characters for its declared context window`;
+      + `${refusal.bound.budgetChars} characters for its declared context window`;
   return `Batch full: context '${scope}' cannot take '${activityId}' because ${cause}. `
-    + 'Report this activity as needing its own dispatch and stop — the orchestrator spawns a fresh '
-    + 'worker for it, which takes full delivery and re-crosses any answered gate silently.';
+    + 'Report this activity as needing its own dispatch and stop. The replacement must be a NEW '
+    + `agent_id — the bound is keyed on the identity, so re-dispatching under '${scope}' is refused `
+    + 'again, and a fresh context under a used identity would receive markers for content it does '
+    + 'not hold. A new identity takes full delivery and re-crosses any answered gate silently.';
 }
 
 /**
  * Append one `batch_refused` event to a session draft (call inside an `advanceSession` mutator), so
  * the runs that hit each limit are countable and the starting settings can be revised from them.
+ *
+ * Once per scope, activity and limit. A caller that retries a refused activity is refused again, and
+ * a tally that counted retries would report how insistent a worker was rather than how often a limit
+ * bound — which is the figure the settings are revised from. Idempotent in the same shape as
+ * `appendStepStartedIfAbsent`.
  */
 export function recordBatchRefusal(
   draft: SessionFile,
   opts: { scope: string; activityId: string; refusal: BatchRefusal },
 ): void {
+  const already = (draft.history ?? []).some((e) => {
+    if (e.type !== 'batch_refused' || e.activity !== opts.activityId) return false;
+    const data = e.data as { agentId?: string; limit?: string } | undefined;
+    return data?.agentId === opts.scope && data.limit === opts.refusal.limit;
+  });
+  if (already) return;
   draft.history.push({
     timestamp: new Date().toISOString(),
     type: 'batch_refused',
@@ -170,7 +206,7 @@ export function recordBatchRefusal(
       activities: opts.refusal.activities,
       chars: opts.refusal.chars,
       maxActivities: opts.refusal.bound.maxActivities,
-      budgetChars: Math.floor(opts.refusal.bound.budgetChars),
+      budgetChars: opts.refusal.bound.budgetChars,
     },
   });
 }

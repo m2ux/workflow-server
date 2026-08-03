@@ -79,7 +79,7 @@ One dispatch may carry a **run** of activities rather than exactly one. The work
 
 The run pauses at every activity boundary, because the orchestrator owns the commit that boundary requires, and at every gate, because the orchestrator owns the answer. It **resumes in place** across both, under the identity its dispatch bound, so the pauses cost a round trip rather than a respawn.
 
-**The server bounds the run.** A batch is not declared — it is the run of activities one delivery scope takes delivery of, so the server sees one with no orchestrator cooperation and a worker cannot leave the bound behind by omitting a parameter. Two limits apply, both read off the session history:
+**The server bounds the run.** A batch is not declared — it is the run of activities one delivery scope takes delivery of, so the server sees one with no orchestrator cooperation and a worker that omits a parameter does not escape it. (The scope itself is the caller's `agent_id`, which is not authenticated, so this bounds a cooperating topology rather than an adversarial one.) Two limits apply, both read off the session history:
 
 | Limit | Derivation | Default |
 |---|---|---|
@@ -88,9 +88,13 @@ The run pauses at every activity boundary, because the orchestrator owns the com
 
 The character budget carries a headroom fraction of its own because `BUNDLE_HEADROOM_FRACTION` answers a different question — how much of one activity's window may go to inlined step techniques — and at `0.80` the arithmetic admits nine of the main workflow's fifteen activities into one context. The activity cap covers what a character count is blind to: the establishment the server never delivers, the code the worker reads, the artifacts it drafts, and degradation across a long walk.
 
-The fraction is set from `npm run bench:batch` over the analysis run through the middle of the main workflow, whose three activities deliver 263,253 characters into one context, 224,073 of them by the end of the second. At a 200,000-token window `0.35` gives 280,000 characters, so that run is admitted and the activity cap is what closes it — the intended relationship, with the cap doing the routine work and the budget catching a run of unusually heavy activities.
+The fraction is set from `npm run bench:batch` over the analysis run through the middle of the main workflow, whose three activities deliver 154,699 characters into one context, 132,891 of them by the end of the second. At a 200,000-token window `0.35` gives 280,000 characters, so that run is admitted and the activity cap is what closes it — the intended relationship, with the cap doing the routine work and the budget catching a run of unusually heavy activities.
 
-`get_activity` reports where a context stands in `_meta.batch` (`activities`, `max_activities`, `delivered_chars`, `budget_chars`, `may_continue`), so the ordinary end of a batch is the worker stopping. Asking past the bound is refused with the payload undelivered and a `batch_refused` history event naming the limit, which is what the starting settings are revised from.
+Both limits count each delivery once. An `activity_dispatched` size is the whole `get_activity` response, so the techniques and resources it bundled eagerly are already inside it and their own observability events are not added again; what counts on top is only what the worker went back for lazily. Counting the bundled entries twice inflated one activity of the main workflow by 48%, which would have made the budget bind at roughly two thirds of its stated size.
+
+`get_activity` reports where a context stands in `_meta.batch` (`activities`, `max_activities`, `delivered_chars`, `budget_chars`, `remaining_chars`, `may_continue`), so the ordinary end of a batch is the worker stopping. Asking past the bound is refused with the payload undelivered and a `batch_refused` history event naming the limit — recorded once per scope, activity and limit, so the tally counts how often a limit bound rather than how often a worker retried. That tally is what the starting settings are revised from.
+
+`may_continue` is answered as of that delivery, and the worker then fetches techniques and resources lazily while it runs the activity, drawing down the same budget. So a batch reported as having room can still be refused at the next boundary; `remaining_chars` is the headroom those fetches eat into. The refusal is an expected outcome rather than an error, and the orchestrator handles it by releasing the identity and dispatching a replacement — which must carry a **new** `agent_id`, since the bound is keyed on the identity and a fresh context under a used one would receive markers for content it does not hold.
 
 Two carve-outs keep the bound aimed at what it is for:
 

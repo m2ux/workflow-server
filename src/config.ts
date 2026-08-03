@@ -99,15 +99,17 @@ export interface ServerConfig {
    * `bundleHeadroomFraction`: that one asks how much of a window one activity may
    * spend on inlined step techniques, and at 0.80 the arithmetic admits nine of
    * the main workflow's fifteen activities into a single context. Default 0.35
-   * (see DEFAULT_BATCH_HEADROOM_FRACTION). Env override: `BATCH_HEADROOM_FRACTION`.
+   * (see DEFAULT_BATCH_HEADROOM_FRACTION). Env override:
+   * `BATCH_HEADROOM_FRACTION`, clamped to [0, 1].
    */
   batchHeadroomFraction?: number;
   /**
    * Distinct activities one worker context may take delivery of. Backs the
    * character budget, which is blind to the context establishment the server never
    * delivers, the code a worker reads, the artifacts it drafts, and degradation
-   * across a long walk. Default 3 (see DEFAULT_BATCH_MAX_ACTIVITIES). Env
-   * override: `BATCH_MAX_ACTIVITIES`.
+   * across a long walk. Default 3 (see DEFAULT_BATCH_MAX_ACTIVITIES); 1 is
+   * batching switched off, one activity to a worker. Env override:
+   * `BATCH_MAX_ACTIVITIES`, clamped to [1, 100].
    */
   batchMaxActivities?: number;
   /** In-process trace store for execution tracing. Created by createServer(). */
@@ -161,13 +163,15 @@ export const DEFAULT_BUNDLE_CHARS_PER_TOKEN = 4;
  *
  * The fraction is set from the headless batch benchmark (`npm run bench:batch`)
  * over the analysis run through the middle of the main workflow, whose three
- * activities deliver 263,253 characters into one context, 224,073 of them by the
+ * activities deliver 154,699 characters into one context, 132,891 of them by the
  * end of the second. At a 200,000-token window a fraction of 0.35 gives 280,000
  * characters, so that run is admitted and the activity CAP is what closes it —
- * which is the intended relationship: the cap does the routine work and the
- * budget catches a run of unusually heavy activities. A tighter fraction refuses
- * the batch the measurements name as the best candidate, and the bundling
- * fraction of 0.80 admits nine of fifteen activities into one context.
+ * the intended relationship: the cap does the routine work and the budget catches
+ * a run of unusually heavy activities. It also leaves some 125,000 characters of
+ * headroom for what a worker fetches lazily while running those activities, which
+ * draws down the same budget and is not visible at the moment an activity is
+ * delivered. The bundling fraction of 0.80 would admit nine of fifteen activities
+ * into one context.
  *
  * Both values are revised from `batch_refused` counts and per-activity usage rows
  * over real runs, where the context establishment a byte count cannot see is
@@ -191,6 +195,24 @@ function envNumberOrDefault(key: string, fallback: number): number {
   if (!raw) return fallback;
   const parsed = Number(raw);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+/**
+ * Read a numeric env var into `[min, max]`, falling back to `fallback` when unset, blank, or not a
+ * finite number, and clamping anything outside the range to the nearest end.
+ *
+ * Clamping rather than falling back, because for a bound the two answers differ in the dangerous
+ * direction: an operator writing `BATCH_MAX_ACTIVITIES=0` means "no batching", and a plain
+ * positive-only reader rejects that as invalid and hands back the DEFAULT of three — the loosest
+ * setting, the opposite of what was asked for, silently. Clamped, zero becomes the minimum of one
+ * activity to a worker, which is batching switched off.
+ */
+function envNumberInRange(key: string, fallback: number, min: number, max: number): number {
+  const raw = process.env[key]?.trim();
+  if (!raw) return fallback;
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.min(max, Math.max(min, parsed));
 }
 
 /**
@@ -602,8 +624,11 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
     serverVersion: envOrDefault('SERVER_VERSION', '2.1.0'),
     bundleHeadroomFraction: envNumberOrDefault('BUNDLE_HEADROOM_FRACTION', DEFAULT_BUNDLE_HEADROOM_FRACTION),
     bundleCharsPerToken: envNumberOrDefault('BUNDLE_CHARS_PER_TOKEN', DEFAULT_BUNDLE_CHARS_PER_TOKEN),
-    batchHeadroomFraction: envNumberOrDefault('BATCH_HEADROOM_FRACTION', DEFAULT_BATCH_HEADROOM_FRACTION),
-    batchMaxActivities: envNumberOrDefault('BATCH_MAX_ACTIVITIES', DEFAULT_BATCH_MAX_ACTIVITIES),
+    // Clamped rather than validated: a batch bound set out of range should land at the nearest end,
+    // never fall back to a default looser than what was asked for. A fraction above 1 would budget a
+    // batch more than the window it is measured against; 1 activity is batching switched off.
+    batchHeadroomFraction: envNumberInRange('BATCH_HEADROOM_FRACTION', DEFAULT_BATCH_HEADROOM_FRACTION, 0, 1),
+    batchMaxActivities: envNumberInRange('BATCH_MAX_ACTIVITIES', DEFAULT_BATCH_MAX_ACTIVITIES, 1, 100),
     transport: resolveTransport(argv),
     port: resolvePort(argv),
     host: resolveHost(argv),

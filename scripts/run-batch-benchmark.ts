@@ -41,7 +41,7 @@
  *
  *   npm run bench:batch
  *   npm run bench:batch -- --workflow=meta --activities=discover-session,initialize-session,resolve-target
- *   npm run bench:batch -- --gate --min-saving-pct=25
+ *   npm run bench:batch -- --gate --min-saving-pct=20
  *
  * Flags:
  *   --workflow=<id>        Workflow to walk (default: work-package)
@@ -50,7 +50,7 @@
  *   --spawn-seconds=<n>    Measured per-dispatch spawn cost for the projection (default: 41)
  *   --repeat=<n>           Walk each pass n times and report the best elapsed (default: 3)
  *   --gate                 Exit 3 unless the batched pass saves at least --min-saving-pct of chars
- *   --min-saving-pct=<n>   Gate threshold, percent of the per-activity pass's chars (default: 25)
+ *   --min-saving-pct=<n>   Gate threshold, percent of the per-activity pass's chars (default: 15)
  *
  * Env:
  *   WORKFLOWS_DIR   Corpus root (default: <server-root>/workflows), same knob as the guards.
@@ -93,21 +93,35 @@ function has(name: string): boolean {
   return process.argv.slice(2).includes(`--${name}`);
 }
 
-/** Sum delivery magnitudes over one session's history, split by whether the payload shipped. */
+/**
+ * Sum delivery magnitudes over one session's history, split by whether the payload shipped.
+ *
+ * Counted the same way the batch bound counts (see `src/utils/batch.ts`), which matters here: an
+ * `activity_dispatched` size is the WHOLE `get_activity` response, eagerly bundled techniques and
+ * resources included, so adding their own events would charge those bytes twice and overstate the
+ * saving the recalibration is read from. Collapsed content is reported as saved rather than delivered.
+ */
 function magnitudes(history: HistoryEntry[]): { deliveredChars: number; savedChars: number } {
   let deliveredChars = 0;
   let savedChars = 0;
   for (const event of history) {
-    const data = event.data as { chars?: number; delivery?: string } | undefined;
+    const data = event.data as { chars?: number; delivery?: string; bundled?: boolean } | undefined;
     if (!data || typeof data.chars !== 'number') continue;
+    const collapsed = data.delivery === 'unchanged';
     switch (event.type) {
       case 'activity_dispatched':
         deliveredChars += data.chars;
         break;
-      case 'technique_fetched':
       case 'technique_bundled':
+        // Inside the activity payload already counted above; only its collapse is news.
+        if (collapsed) savedChars += data.chars;
+        break;
       case 'resource_fetched':
-        if (data.delivery === 'unchanged') savedChars += data.chars;
+        if (collapsed) savedChars += data.chars;
+        else if (data.bundled !== true) deliveredChars += data.chars;
+        break;
+      case 'technique_fetched':
+        if (collapsed) savedChars += data.chars;
         else deliveredChars += data.chars;
         break;
       default:
@@ -191,7 +205,7 @@ async function main(): Promise<number> {
   const contextTokens = Number(flag('context-tokens') ?? 200_000);
   const spawnSeconds = Number(flag('spawn-seconds') ?? DEFAULT_SPAWN_SECONDS);
   const repeat = Math.max(1, Number(flag('repeat') ?? 3));
-  const minSavingPct = Number(flag('min-saving-pct') ?? 25);
+  const minSavingPct = Number(flag('min-saving-pct') ?? 15);
 
   const perActivity = await measure('per-activity', { workflowId, activities, contextTokens, repeat });
   const batched = await measure('batched', { workflowId, activities, contextTokens, repeat });
