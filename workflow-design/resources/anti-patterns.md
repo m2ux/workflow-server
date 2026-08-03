@@ -401,11 +401,11 @@ Definition-prose smells: rationale, sequence narration, avoidance/comparative fr
 
 Description fields carry rationale, process narration, or structural restatement.
 
-**Detect:** `description`, `message`, option/action descriptions, or procedure bullets explain why a construct exists, what consumes it, compare to prior impls, or restate facts already encoded by adjacent structure (`steps[]` order, `when`, effects, transitions, defaults).
+**Detect:** `description`, `message`, option/action descriptions, procedure bullets, or a technique `## Rules` entry / `rules.*` string explain why a construct exists, what consumes it, whose remit it falls under, compare to prior impls, or restate facts already encoded by adjacent structure (`steps[]` order, `when`, effects, transitions, defaults). Test on a rule: delete the clause; if the prohibition or invariant still says what is constrained, the clause was rationale, and attributing the constraint to another actor's remit couples the rule to a contract it does not own.
 
-**Do not flag:** One-line WHAT summaries that state what the construct does; structural fields themselves.
+**Do not flag:** One-line WHAT summaries that state what the construct does; structural fields themselves; a prohibition citing the home that owns the behaviour it forbids bypassing, which is the pointer that makes it checkable (`no-rule-protocol-restatement`); rules whose own subject is the boundary between actors.
 
-**Fix:** Delete rationale/narration/restatement; keep only WHAT that would lose a fact if removed. Put rationale in commits/ADRs/planning docs.
+**Fix:** Delete rationale/narration/restatement; keep only WHAT that would lose a fact if removed. Where a reader genuinely needs another actor's contract, link that contract's home rather than restating whose it is. Put rationale in commits/ADRs/planning docs.
 
 ### AP-27. validate-message-economy
 
@@ -1828,3 +1828,27 @@ A resource carries operative prose in a span no `##` anchor reaches, while techn
 **Do not flag:** Orientation-only framing a section consumer does not need (record the verdict). Single-section resources with no anchored citers. Framing already under a named `##` that citers can request. Whole-resource citations where the consumer loads the full file (`whole-resource-for-one-section` Do-not-flag carve-outs).
 
 **Fix:** Classify the framing — delete when it duplicates the citing technique; mint a `##` section (or move the obligation into the technique) when it is operative and unique; leave when it is orientation only. Cross-section deixis becomes an anchored link. See [Resources at the Abstract Level; Split for Section Delivery](./design-principles.md#30-resources-at-the-abstract-level-split-for-section-delivery) (content a section-scoped reader depends on lives in a section) and [Cite Resources at Section Grain](./design-principles.md#32-cite-resources-at-section-grain). Related: `whole-resource-for-one-section`.
+
+### AP-140. declared-input-never-read
+
+"`### activity_id` and `### session_index` declared, with no phase naming either"
+
+A technique declares an input its own Protocol and Rules never reach, so the bind contract promises a value the operation cannot spend.
+
+**Detect:** For each `### <id>` under a technique's `## Inputs`, search that technique's `## Protocol` and `## Rules` for the id — braced as `{id}`, as `{id}.field`, or named bare inside a tool-call signature a phase passes (`next_activity { session_index, … }`). Flag an entry with no occurrence. Test: name the phase that spends the value; if the only answer is the declaration itself, a caller reading the contract wires a value nothing consumes.
+
+**Do not flag:** Inputs on a container `TECHNIQUE.md`, which descendants reference after the merge. An input whose whole value is handed to an applied op as a substitution map or pass-through argument, where a phase references the map rather than each member. Outputs no consumer reads, which are `output-without-destination`.
+
+**Fix:** Reference `{id}` from the phase that spends it, or delete the declaration. Where the value belongs to an op this technique applies, pass it at the Apply site rather than redeclaring it here (`apply-omits-declared-input`).
+
+### AP-141. apply-omits-declared-input
+
+"Apply [continue-agent] with the composed prompt"
+
+A Protocol Apply passes some of the applied operation's declared inputs and omits others, so the applied op runs on whatever the bag happens to hold.
+
+**Detect:** For each Protocol `Apply` / `::` invocation, resolve the target's `## Inputs`, including any merged from its container. Flag a required input the Apply site neither passes nor covers by a declared `default`, and that no same-name slot on the applying technique makes ambient. Test: read the Apply line alone and list what the target receives; if a required slot of the target is absent from both that list and the applying technique's own contract, the call is contract-silent.
+
+**Do not flag:** Inputs the target marks optional or backs with a `#### default`. Inputs the applying technique declares under the same id, which bind by name. Container-merged inputs the whole group shares. Activity `steps[]` binds, whose argument conformance is a bind-site concern.
+
+**Fix:** Name the omitted input at the Apply site. Where the value has no home on the applying technique, declare it there first, then pass it. The mirror defect — a slot declared and never passed on — is `declared-input-never-read`.
