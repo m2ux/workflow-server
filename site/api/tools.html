@@ -282,6 +282,7 @@
           <p>You must pass <code>context_tokens</code>: your worker's context window size in tokens. The server uses this to decide how many step techniques to bundle inline.</p>
           <p>Ungated techniques that fit the budget are included in the response under <code>step_techniques</code> — the same content you would get from <code>get_technique</code> for that step. Gated steps and overflow techniques still need a separate <code>get_technique</code> call.</p>
           <p>If the session uses persistent context mode (or you pass <code>bundle: &quot;reference&quot;</code>), content you already received may come back as short unchanged markers instead of full text. Pass <code>bundle: &quot;full&quot;</code> to force full delivery.</p>
+          <p><code>_meta.batch</code> reports where your context stands against its batch bound: how many activities it has taken, the cap, what it has been delivered, the budget, and <code>may_continue</code>. On <code>may_continue: false</code>, finish this activity and report it — asking for another is refused with the payload undelivered, and the orchestrator dispatches a fresh worker under a new <code>agent_id</code>.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">

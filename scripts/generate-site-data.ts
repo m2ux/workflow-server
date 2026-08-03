@@ -377,6 +377,7 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
     'You must pass `context_tokens`: your worker\'s context window size in tokens. The server uses this to decide how many step techniques to bundle inline.',
     'Ungated techniques that fit the budget are included in the response under `step_techniques` — the same content you would get from `get_technique` for that step. Gated steps and overflow techniques still need a separate `get_technique` call.',
     'If the session uses persistent context mode (or you pass `bundle: "reference"`), content you already received may come back as short unchanged markers instead of full text. Pass `bundle: "full"` to force full delivery.',
+    '`_meta.batch` reports where your context stands against its batch bound: how many activities it has taken, the cap, what it has been delivered, the budget, and `may_continue`. On `may_continue: false`, finish this activity and report it — asking for another is refused with the payload undelivered, and the orchestrator dispatches a fresh worker under a new `agent_id`.',
   ],
   yield_checkpoint: [
     'Call when a checkpoint step tells you to stop and hand control to the orchestrator.',

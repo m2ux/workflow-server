@@ -168,7 +168,7 @@ export function batchRefusalMessage(activityId: string, scope: string, refusal: 
     + 'Report this activity as needing its own dispatch and stop. The replacement must be a NEW '
     + `agent_id — the bound is keyed on the identity, so re-dispatching under '${scope}' is refused `
     + 'again, and a fresh context under a used identity would receive markers for content it does '
-    + 'not hold. A new identity takes full delivery and re-crosses any answered gate silently.';
+    + 'not hold. A new identity holds no prior deliveries, so it takes this activity in full.';
 }
 
 /**

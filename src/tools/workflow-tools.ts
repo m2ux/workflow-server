@@ -282,8 +282,8 @@ export const USAGE_TOKEN_KEYS = [
  * event in record order (one per activity a dispatch covered), plus a plain-sum
  * token aggregate over those rows. Rows are DELTA figures for one activity, so a
  * dispatch carrying a run of activities appears as several rows sharing an
- * `agentId`; the aggregate is the
- * arithmetic sum of known numeric token keys across the projected rows. When
+ * `agentId`; the aggregate is the arithmetic sum of known numeric token keys
+ * across the projected rows. When
  * `agentId` is set, only rows whose `data.agentId` matches are included
  * (unattributed rows — no agentId — are excluded from a filtered view).
  */

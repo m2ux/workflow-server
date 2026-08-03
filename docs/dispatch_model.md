@@ -75,7 +75,7 @@ Task({
 
 ### Batching a Run of Activities (#407)
 
-One dispatch may carry a **run** of activities rather than exactly one. The worker walks them under a single `agent_id`, so it pays the harness's context establishment — system prompt, project instructions, tool schemas — once for the run rather than once an activity. On the profiled setup walk that is where the saving is: about five to eight times more of it comes from not re-paying establishment than from delivered content collapsing.
+One dispatch may carry a **run** of activities rather than exactly one. The worker walks them under a single `agent_id`, so it pays the harness's context establishment — system prompt, project instructions, tool schemas — once for the run rather than once an activity. On the profiled setup walk that is where the saving is: skipping two respawns saves roughly two to four times what the delivered content collapsing saves, once the establishment figures are counted once per response.
 
 The run pauses at every activity boundary, because the orchestrator owns the commit that boundary requires, and at every gate, because the orchestrator owns the answer. It **resumes in place** across both, under the identity its dispatch bound, so the pauses cost a round trip rather than a respawn.
 
@@ -88,7 +88,7 @@ The run pauses at every activity boundary, because the orchestrator owns the com
 
 The character budget carries a headroom fraction of its own because `BUNDLE_HEADROOM_FRACTION` answers a different question — how much of one activity's window may go to inlined step techniques — and at `0.80` the arithmetic admits thirteen of the main workflow's fifteen activities into one context. The activity cap covers what a character count is blind to: the establishment the server never delivers, the code the worker reads, the artifacts it drafts, and degradation across a long walk.
 
-**Which limit binds depends on the workflow, and both cases are wanted.** The two rest on different evidence. `npm run bench:batch` measures activity payloads only — it never fetches a technique or resource lazily — so its 155,060 characters for the three-activity analysis run is the *eager floor*, not what a batch really accumulates. Read off 112 worker contexts in the sealed session records, one activity costs a median 74,109 characters once its lazy fetches are counted, with a 90th percentile of 182,642 and a maximum of 261,827. The lazy half is usually the larger one.
+**Which limit binds depends on the workflow, and both cases are wanted.** The two rest on different evidence. `npm run bench:batch` measures activity payloads only — it never fetches a technique or resource lazily — so its 155,168 characters for the three-activity analysis run is the *eager floor*, not what a batch really accumulates. Read off 112 worker contexts in the sealed session records, one activity costs a median 74,109 characters once its lazy fetches are counted, with a 90th percentile of 182,642 and a maximum of 261,827. The lazy half is usually the larger one.
 
 At a 200,000-token window, giving a 280,000-character budget:
 

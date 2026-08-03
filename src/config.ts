@@ -165,7 +165,7 @@ export const DEFAULT_BUNDLE_CHARS_PER_TOKEN = 4;
  *
  * The two rest on different evidence. `npm run bench:batch` measures activity
  * payloads only — it never fetches a technique or a resource lazily — so its
- * 155,060 characters for the three-activity analysis run is the EAGER floor, not
+ * 155,168 characters for the three-activity analysis run is the EAGER floor, not
  * what a batch really accumulates. Read off 112 worker contexts in the sealed
  * session records, one activity costs a median 74,109 characters once its lazy
  * fetches are counted, with a 90th percentile of 182,642 and a maximum of 261,827.
