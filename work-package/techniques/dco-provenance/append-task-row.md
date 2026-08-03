@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -58,11 +58,6 @@ The updated provenance log, with the appended task row
 #### artifact
 
 `provenance-log.md`
-
-#### audience
-
-`human`
-
 
 ## Protocol
 

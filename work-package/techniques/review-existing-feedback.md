@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -22,10 +22,6 @@ The triage table: one row per prior comment or review thread, each marked Confir
 #### artifact
 
 `prior-feedback-triage.md`
-
-#### audience
-
-`human`
 
 ### rating_cap
 

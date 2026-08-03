@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -22,10 +22,6 @@ The assumptions [log](../../resources/assumptions-review.md#assumptions-log-temp
 #### artifact
 
 `assumptions-log.md`
-
-#### audience
-
-`human`
 
 ### has_deferred_assumptions
 

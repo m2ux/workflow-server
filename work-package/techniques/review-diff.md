@@ -27,10 +27,6 @@ Conduct structured manual diff review using external side-by-side diff tool with
 
 `change-block-index.md`
 
-#### audience
-
-`human`
-
 #### block_rationale
 
 Per-block descriptive paragraphs explaining intent, context, and non-obvious design choices; Block titles link to the primary `file:line`

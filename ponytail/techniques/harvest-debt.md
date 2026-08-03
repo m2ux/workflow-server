@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -16,10 +16,6 @@ The debt ledger — one row per [ponytail marker](../../ponytail/resources/ponyt
 #### artifact
 
 `debt-ledger.md`
-
-#### audience
-
-`human`
 
 ### has_debt_markers
 
