@@ -226,9 +226,20 @@ agent-afac297675993b1e5. start=13:43 out=  3,895 cache_w=   99,742 results_total
     get_activity                      2,288B
 
 --- CORRECTION, 3 August 2026 ---------------------------------------------
-The worker cache-write figures in this file are inflated by about 2.1x overall
-(2.4x across the startup window). The analyser summed usage once per transcript
-record; the harness repeats one usage object per content block of a response, so
-a figure must be counted once per request id. See issue 409 and the correction
-box in README.md for the corrected per-worker table.
+This is the output of a throwaway analyser that was never committed, kept as the
+historical capture. Two things in it are wrong.
+
+The worker cache-write figures are inflated by about 2.1x overall (2.4x across
+the startup window). The analyser summed usage once per transcript record; the
+harness repeats one usage object per content block of a response, so a figure
+must be counted once per request id.
+
+The startup window closed on the wrong milestone on b5474fca, 7d363a87,
+e0f51155 and 8608448b: it ran to the end of the workflow rather than to the
+point the client workflow's opening activity was reported done, so those blocks
+describe the whole run and not its startup.
+
+runs-profiled.txt beside this file holds the same nine runs measured with
+`npm run profile:run`, the committed profiler, and is reproducible. See issue
+409 and the restatement box in README.md.
 ---------------------------------------------------------------------------

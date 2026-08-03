@@ -2,7 +2,7 @@
 
 Body verbatim as of 2 August 2026 (filed 2 August 2026; subsumed into #404 and closed the same day — the epic carries the two work items, and this folder's README holds the measurement record).
 
-> **Correction note, 3 August 2026.** The token figures in the body below — "roughly 60–100 thousand tokens of context establishment" per dispatch and "974 thousand tokens of fresh context" for the five pre-work workers — are inflated by about 2.4×, because the analyser that produced them counted usage once per transcript record rather than once per response. The true figures are 23 to 42 thousand and 403 thousand. The body is left verbatim, as captures are; see [#409](https://github.com/m2ux/workflow-server/issues/409) and the correction box in this folder's README.
+> **Correction note, 3 August 2026.** The token figures in the body below — "roughly 60–100 thousand tokens of context establishment" per dispatch, "974 thousand tokens of fresh context" for the five pre-work workers, and "0.66–1.08 million tokens" before real work begins — are inflated by about 2.4×, because the analyser that produced them counted usage once per transcript record rather than once per response. Measured with `npm run profile:run`, the committed profiler, they are 23 to 42 thousand, 403 thousand, and 0.43–0.51 million. The body is left verbatim, as captures are; see [#409](https://github.com/m2ux/workflow-server/issues/409) and the restatement box in this folder's README.
 
 ---
 

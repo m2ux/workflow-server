@@ -20,6 +20,8 @@ The epic originally proposed reviving a "solo" walk — one agent holding an ent
 | 4 | dispatch-client-workflow | 80,489 | 38,531 B |
 | | **setup walk total** | **307,272** | **116,797 B** |
 
+> The cache-write column above, and the token arithmetic in the two paragraphs that follow it, are the figures as first published. They are inflated by about 2.4× — see [the correction below](#the-token-figures-were-double-counted). Measured once per response, the four workers cost 41,509, 28,626, 23,328 and 30,573, for a setup walk of **124,036**. The delivered-content column is a byte count and stands. `npm run profile:run` reproduces the per-worker figures from the transcripts.
+
 Collapsing four dispatches into one leaves one establishment plus all the content: **roughly 110,000 tokens against 307,000, a saving near 65%.** The second clean run in the baseline set gives 60–66% by the same method, independently.
 
 **The payoff is lopsided toward respawns, not dedupe.** On the best measured run of three activities the delivery ledger collapse saves about 23,000 tokens, while skipping two respawns saves 120,000 to 200,000. Batching is five to eight times more about not re-paying the harness baseline than about content collapsing — so the mechanism loses most of its value, while keeping all of its risk, if resuming a paused worker does not work.
@@ -70,7 +72,7 @@ Two findings from a forensic pass over the nine profiled runs and the sealed ses
 
 ### The token figures were double-counted
 
-The analyser summed cache-write once per transcript record, but the harness repeats one usage object across every content block of a request. Counted once per request id, the profiled run's total falls from 7,751,699 to 3,717,424 — **2.09× overall, 2.42× across the startup window**. Corrected, the four ceremony workers cost **124,036 tokens, not 307,272**, and the five pre-work workers **402,586, not 974,517**. Per-dispatch establishment for a ceremony worker is **23 to 42 thousand tokens, not 60 to 100 thousand**.
+The analyser summed cache-write once per transcript record, but the harness repeats one usage object across every content block of a request. Counted once per request id, the profiled run's total falls from 7,751,699 to 3,717,424 — **2.09× overall, 2.42× across the startup window**. The counting rule now lives in `npm run profile:run`, the committed run profiler, which reproduces these figures from the transcripts and reports the record-summed figure beside every total so a quoted number can be reconciled rather than merely contradicted. Corrected, the four ceremony workers cost **124,036 tokens, not 307,272**, and the five pre-work workers **402,586, not 974,517**. Per-dispatch establishment for a ceremony worker is **23 to 42 thousand tokens, not 60 to 100 thousand**.
 
 **What that does to the case for batching.** The saving is roughly half the ceremony walk rather than 65%, and in absolute terms about **60 thousand tokens per run rather than 200 thousand**. Still worth having, since it is paid on every session, but it is no longer an order-of-magnitude argument. It also narrows the gap with the server-side bootstrap considerably: that item removes about 17 thousand tokens of delivered content, which against a corrected 124-thousand ceremony walk is roughly 14% — not the 2.5% of a headline figure quoted when the denominator was inflated.
 

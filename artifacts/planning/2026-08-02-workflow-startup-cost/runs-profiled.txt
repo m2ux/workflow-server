@@ -1,0 +1,300 @@
+Output of `npm run profile:run`, the committed run profiler, over the nine work-package
+runs of this measurement record. Usage is counted once per response.
+
+Reproduce, from a server checkout with the transcripts under ~/.claude/projects:
+
+  npm run --silent profile:run -- \
+    --session=03e43af3 --session=f5783c2a --session=8e33afd9 --session=b5474fca \
+    --session=7d363a87 --session=e0f51155 --session=8608448b --session=7b04f0f4
+
+  npm run --silent profile:run -- --session=3a2415c4 --opening-activity=intake-and-context
+
+The 3a2415c4 run walks the workflow-authoring client workflow, whose opening activity is
+intake-and-context; the other eight walk work-package, which opens on start-work-package.
+
+Each block reports the startup window: from the first record to the point the client
+workflow's opening activity is reported done. `record-summed` is what a summation over
+transcript records yields for the same span, and the factor it exceeds the total by.
+
+===========================================================================
+
+== 03e43af3-30d4-455d-a079-3eb3cf15dfc8  t0=2026-07-27T13:42:09.201Z
+   window: startup — 31.7 min, closed by openingComplete
+   startSession         +      0.6 min
+   firstWorker          +      1.2 min
+   clientFirstActivity  +      9.6 min
+   firstCheckpoint      +     26.8 min
+   openingComplete      +     31.7 min
+   checkpoint wait: 1.2 min  |  workers dispatched: 5
+   MAIN   out=   25,011  cache_write=    104,054  cache_read=  3,562,138  (42 responses over 80 records)
+   WORKER out=   51,356  cache_write=    402,586  cache_read=  3,962,088  (72 responses over 165 records)
+   worker cache-write record-summed: 974,517 (2.42x this total)
+   per worker:
+     +    1.2 min  discover-session worker            out=   3,874  cache_write=    41,509  results=   57,407B
+     +    2.9 min  initialize-session worker          out=   4,383  cache_write=    28,626  results=   44,473B
+     +    5.2 min  resolve-target worker              out=   2,232  cache_write=    23,328  results=   27,260B
+     +    6.3 min  dispatch-client-workflow worker    out=  10,192  cache_write=    30,573  results=   37,394B
+     +    9.7 min  start-work-package worker          out=  30,675  cache_write=   278,550  results=  162,625B
+   main result chars in window: total=175,043
+      mcp__workflow-server__get_workflow    48,750
+      ReadMcpResourceTool                   43,917
+      Bash                                  30,720
+      Agent                                 25,278
+      mcp__workflow-server__get_resource    11,672
+      Read                                   8,946
+      mcp__workflow-server__discover         2,106
+      mcp__workflow-server__present_checkpoint       827
+      mcp__workflow-server__get_workflow_status       522
+      mcp__workflow-server__next_activity       510
+      SendMessage                              438
+      Edit                                     418
+
+== f5783c2a-dcd3-4533-86fb-57e0254d287f  t0=2026-07-12T17:44:21.869Z
+   window: startup — 18.2 min, closed by openingComplete
+   startSession         +      0.5 min
+   firstWorker          +      1.7 min
+   clientFirstActivity  +      7.3 min
+   firstCheckpoint      +     12.3 min
+   openingComplete      +     18.2 min
+   checkpoint wait: 1 min  |  workers dispatched: 4
+   MAIN   out=   29,230  cache_write=    111,787  cache_read=  2,765,788  (33 responses over 80 records)
+   WORKER out=   32,314  cache_write=    316,330  cache_read=  4,906,770  (79 responses over 142 records)
+   worker cache-write record-summed: 543,574 (1.72x this total)
+   per worker:
+     +    1.7 min  Meta discover-session worker       out=   3,745  cache_write=    62,181  results=   39,096B
+     +      4 min  Meta initialize-session worker     out=   2,497  cache_write=    40,247  results=   23,684B
+     +    5.1 min  Meta resolve-target worker         out=   1,443  cache_write=    37,136  results=   20,541B
+     +    7.6 min  work-package start-work-package wo out=  24,629  cache_write=   176,766  results=  130,521B
+   main result chars in window: total=102,678
+      ReadMcpResourceTool                   43,737
+      mcp__workflow-server__get_workflow    35,380
+      Bash                                   8,654
+      mcp__workflow-server__get_resource     4,903
+      mcp__workflow-server__discover         3,520
+      Agent                                  3,056
+      mcp__workflow-server__start_session       858
+      mcp__workflow-server__present_checkpoint       844
+      mcp__workflow-server__next_activity       510
+      AskUserQuestion                          361
+      SendMessage                              346
+      TodoWrite                                320
+
+== 8e33afd9-bc4c-46cf-abe1-23cc14f42426  t0=2026-07-13T17:26:58.233Z
+   window: startup — 650.4 min, closed by openingComplete
+   startSession         +      0.9 min
+   firstWorker          +        2 min
+   clientFirstActivity  +      8.3 min
+   firstCheckpoint      +     76.3 min
+   openingComplete      +    650.4 min
+   checkpoint wait: 533 min  |  workers dispatched: 4
+   MAIN   out=   38,452  cache_write=    381,280  cache_read=  2,649,192  (31 responses over 88 records)
+   WORKER out=   46,011  cache_write=    690,397  cache_read=  7,260,057  (95 responses over 180 records)
+   worker cache-write record-summed: 1,349,241 (1.95x this total)
+   per worker:
+     +      2 min  Meta discover-session worker       out=   4,595  cache_write=    65,852  results=   43,689B
+     +    4.1 min  Meta initialize-session worker     out=   2,391  cache_write=    40,361  results=   23,459B
+     +    5.5 min  Meta resolve-target worker         out=   2,220  cache_write=    37,891  results=   20,646B
+     +    8.9 min  WP start-work-package worker       out=  36,805  cache_write=   546,293  results=  171,430B
+   main result chars in window: total=167,711
+      Read                                  61,816
+      ReadMcpResourceTool                   43,737
+      mcp__workflow-server__get_workflow    35,380
+      Bash                                  11,727
+      mcp__workflow-server__get_resource     4,903
+      mcp__workflow-server__discover         3,520
+      Agent                                  3,056
+      TodoWrite                                960
+      mcp__workflow-server__present_checkpoint       844
+      mcp__workflow-server__next_activity       510
+      AskUserQuestion                          369
+      mcp__workflow-server__start_session       354
+
+== b5474fca-ef22-45fb-9e2a-36e5b8575bad  t0=2026-07-14T17:22:32.878Z
+   window: startup — 671.3 min, closed by openingComplete
+   startSession         +      0.4 min
+   firstWorker          +      1.4 min
+   clientFirstActivity  +      8.6 min
+   openingComplete      +    671.3 min
+   firstCheckpoint      +    713.5 min
+   checkpoint wait: 484.4 min  |  workers dispatched: 5
+   MAIN   out=   42,699  cache_write=    382,243  cache_read=  3,784,233  (42 responses over 95 records)
+   WORKER out=   34,163  cache_write=    485,254  cache_read=  4,475,812  (78 responses over 147 records)
+   worker cache-write record-summed: 960,326 (1.98x this total)
+   per worker:
+     +    1.4 min  Meta worker: discover-session      out=   2,628  cache_write=    62,688  results=   37,486B
+     +    3.1 min  Meta worker: initialize-session    out=   1,863  cache_write=    41,653  results=   23,521B
+     +    5.2 min  Meta worker: resolve-target        out=   1,920  cache_write=    43,150  results=   26,480B
+     +    9.2 min  WP worker: start-work-package      out=   2,467  cache_write=    67,212  results=   95,647B
+     +  164.5 min  WP worker: start-work-package (ret out=  25,285  cache_write=   270,551  results=  142,048B
+   main result chars in window: total=160,170
+      Read                                  59,704
+      ReadMcpResourceTool                   43,737
+      mcp__workflow-server__get_workflow    35,380
+      mcp__workflow-server__get_resource     4,970
+      Agent                                  3,820
+      mcp__workflow-server__discover         3,520
+      mcp__workflow-server__inspect_session     3,421
+      Bash                                   2,546
+      TodoWrite                                800
+      SendMessage                              684
+      mcp__workflow-server__next_activity       510
+      mcp__workflow-server__respond_checkpoint       417
+
+== 7d363a87-f856-4e62-9fdc-11abe4774d95  t0=2026-07-10T13:56:30.487Z
+   window: startup — 1076.5 min, closed by openingComplete
+   startSession         +        1 min
+   firstWorker          +        2 min
+   clientFirstActivity  +      7.3 min
+   firstCheckpoint      +   1066.9 min
+   openingComplete      +   1076.5 min
+   checkpoint wait: 0.8 min  |  workers dispatched: 4
+   MAIN   out=   22,625  cache_write=    213,028  cache_read=  3,560,605  (41 responses over 88 records)
+   WORKER out=   46,491  cache_write=    382,872  cache_read=  5,022,533  (72 responses over 168 records)
+   worker cache-write record-summed: 911,648 (2.38x this total)
+   per worker:
+     +      2 min  Meta discover-session worker       out=   5,015  cache_write=    51,331  results=   41,922B
+     +    4.1 min  Meta initialize-session worker     out=   1,165  cache_write=    38,550  results=   23,435B
+     +    5.4 min  Meta resolve-target worker         out=   1,289  cache_write=    22,584  results=   20,547B
+     +   1048 min  WP start-work-package worker       out=  39,022  cache_write=   270,407  results=  158,251B
+   main result chars in window: total=145,592
+      ReadMcpResourceTool                   43,737
+      Bash                                  40,117
+      mcp__workflow-server__get_workflow    35,380
+      Read                                   9,093
+      mcp__workflow-server__get_resource     4,903
+      mcp__workflow-server__discover         3,520
+      Agent                                  3,056
+      mcp__workflow-server__get_workflow_status     2,879
+      mcp__workflow-server__present_checkpoint       844
+      mcp__workflow-server__next_activity       510
+      AskUserQuestion                          357
+      SendMessage                              346
+
+== e0f51155-f98b-460b-9a4c-a1983f99a78d  t0=2026-06-07T09:44:00.216Z
+   window: startup — 15.3 min, closed by openingComplete
+   startSession         +      0.4 min
+   firstWorker          +      1.1 min
+   firstCheckpoint      +      4.4 min
+   clientFirstActivity  +      6.7 min
+   openingComplete      +     15.3 min
+   checkpoint wait: 0.1 min  |  workers dispatched: 7
+   MAIN   out=   21,054  cache_write=     95,257  cache_read=  2,065,245  (31 responses over 78 records)
+   WORKER out=   32,934  cache_write=    238,462  cache_read=  2,555,316  (89 responses over 160 records)
+   worker cache-write record-summed: 425,006 (1.78x this total)
+   per worker:
+     +    1.1 min  discover-session worker            out=   3,743  cache_write=    47,076  results=   38,740B
+     +    2.6 min  initialize-session worker          out=   1,737  cache_write=    24,716  results=   13,899B
+     +    3.8 min  resolve-target worker              out=   1,645  cache_write=    21,467  results=   12,299B
+     +    4.8 min  resume resolve-target worker       out=   1,494  cache_write=    19,233  results=   11,939B
+     +    5.6 min  dispatch-client-workflow worker    out=   2,821  cache_write=    28,599  results=   27,775B
+     +      7 min  start-work-package worker          out=  12,756  cache_write=    69,246  results=  101,695B
+     +   11.4 min  resume start-work-package worker   out=   8,738  cache_write=    28,125  results=   21,942B
+   main result chars in window: total=138,236
+      mcp__workflow-server__get_workflow    75,266
+      ReadMcpResourceTool                   30,881
+      Agent                                 23,936
+      mcp__workflow-server__get_resource     2,603
+      mcp__workflow-server__discover         2,030
+      mcp__workflow-server__present_checkpoint     1,250
+      AskUserQuestion                          673
+      mcp__workflow-server__next_activity       510
+      mcp__workflow-server__respond_checkpoint       413
+      mcp__workflow-server__start_session       354
+      TodoWrite                                320
+      ToolSearch                                 0
+
+== 8608448b-35fd-460e-bfc8-9f1d177fa9bb  t0=2026-07-28T10:15:20.218Z
+   window: startup — 36.5 min, closed by openingComplete
+   startSession         +      0.4 min
+   firstWorker          +      1.2 min
+   firstCheckpoint      +     11.5 min
+   clientFirstActivity  +     18.4 min
+   openingComplete      +     36.5 min
+   checkpoint wait: 0.8 min  |  workers dispatched: 7
+   MAIN   out=   32,770  cache_write=    123,521  cache_read=  5,799,386  (58 responses over 118 records)
+   WORKER out=   82,148  cache_write=    362,995  cache_read=  6,155,596  (109 responses over 261 records)
+   worker cache-write record-summed: 883,988 (2.44x this total)
+   per worker:
+     +    1.2 min  meta discover-session worker       out=   5,619  cache_write=    38,841  results=   43,536B
+     +    2.9 min  meta initialize-session worker     out=   4,798  cache_write=    26,679  results=   34,650B
+     +    6.3 min  meta discover-session worker       out=   5,348  cache_write=    29,615  results=   43,540B
+     +    7.8 min  meta initialize-session worker     out=   3,375  cache_write=    26,871  results=   33,193B
+     +     10 min  meta resolve-target worker         out=  10,131  cache_write=    72,819  results=   39,771B
+     +   14.2 min  meta dispatch-client-workflow work out=  12,811  cache_write=    37,732  results=   43,829B
+     +   18.5 min  wp start-work-package worker       out=  40,066  cache_write=   130,438  results=  193,716B
+   main result chars in window: total=193,178
+      Read                                  76,915
+      ReadMcpResourceTool                   43,917
+      Agent                                 33,285
+      Bash                                  24,144
+      mcp__workflow-server__get_workflow     4,576
+      mcp__workflow-server__get_workflow_status     4,101
+      mcp__workflow-server__discover         2,120
+      mcp__workflow-server__present_checkpoint       928
+      mcp__workflow-server__start_session       796
+      mcp__workflow-server__next_activity       710
+      AskUserQuestion                          564
+      Edit                                     462
+
+== 3a2415c4-5cc7-421d-8d1e-11f0366eef02  t0=2026-07-28T10:21:06.473Z
+   window: startup — 40.8 min, closed by openingComplete
+   startSession         +     12.2 min
+   firstWorker          +       13 min
+   clientFirstActivity  +     19.2 min
+   firstCheckpoint      +     36.8 min
+   openingComplete      +     40.8 min
+   checkpoint wait: 0.3 min  |  workers dispatched: 6
+   MAIN   out=   55,784  cache_write=    161,645  cache_read=  8,711,160  (78 responses over 179 records)
+   WORKER out=   82,135  cache_write=    498,572  cache_read=  4,070,705  (82 responses over 231 records)
+   worker cache-write record-summed: 1,623,536 (3.26x this total)
+   per worker:
+     +     13 min  meta discover-session worker       out=   1,154  cache_write=    29,929  results=   46,999B
+     +   14.6 min  meta initialize-session worker     out=   4,876  cache_write=    28,312  results=   37,814B
+     +   17.5 min  meta resolve-target worker         out=   2,740  cache_write=    23,104  results=   27,585B
+     +   19.3 min  workflow-authoring intake worker   out=  49,965  cache_write=   331,393  results=  164,659B
+     +   21.8 min  Inventory meta and work-package    out=   6,961  cache_write=    30,834  results=   29,808B
+     +   29.7 min  Integrity sweep of meta and work-p out=  16,439  cache_write=    55,000  results=   81,769B
+   main result chars in window: total=231,185
+      Bash                                  86,032
+      Read                                  60,234
+      ReadMcpResourceTool                   43,917
+      Agent                                 14,110
+      mcp__workflow-server__get_resource    12,127
+      mcp__workflow-server__get_workflow_status     4,890
+      mcp__workflow-server__get_workflow     4,576
+      mcp__workflow-server__discover         2,120
+      Edit                                     687
+      mcp__workflow-server__present_checkpoint       674
+      mcp__workflow-server__next_activity       510
+      SendMessage                              438
+
+== 7b04f0f4-8957-4d32-b78a-edc05fa60eb7  t0=2026-07-30T18:37:05.103Z
+   window: startup — 606.5 min, closed by openingComplete
+   startSession         +     66.5 min
+   firstWorker          +     67.6 min
+   clientFirstActivity  +      578 min
+   firstCheckpoint      +      590 min
+   openingComplete      +    606.5 min
+   checkpoint wait: 66.3 min  |  workers dispatched: 5
+   MAIN   out=   37,776  cache_write=    288,902  cache_read=  6,245,154  (52 responses over 119 records)
+   WORKER out=   83,081  cache_write=    571,474  cache_read=  8,218,394  (113 responses over 247 records)
+   worker cache-write record-summed: 1,467,481 (2.57x this total)
+   per worker:
+     +   67.6 min  discover-session worker            out=   7,357  cache_write=    40,173  results=   66,461B
+     +   70.1 min  initialize-session worker          out=   4,830  cache_write=    29,709  results=   41,673B
+     +  571.7 min  resolve-target worker              out=   4,053  cache_write=    37,774  results=   36,516B
+     +  573.7 min  dispatch-client-workflow worker    out=  13,972  cache_write=    41,563  results=   55,248B
+     +  578.1 min  start-work-package worker          out=  52,869  cache_write=   422,255  results=  221,923B
+   main result chars in window: total=290,979
+      Read                                 184,320
+      ReadMcpResourceTool                   43,917
+      Agent                                 26,664
+      Bash                                  12,180
+      mcp__workflow-server__get_resource     9,071
+      mcp__workflow-server__discover         3,983
+      mcp__workflow-server__get_workflow     2,788
+      mcp__workflow-server__record_usage     1,848
+      mcp__workflow-server__get_workflow_status     1,616
+      mcp__workflow-server__present_checkpoint       872
+      TodoWrite                                800
+      Write                                    702
