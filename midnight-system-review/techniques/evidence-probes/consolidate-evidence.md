@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -26,10 +26,6 @@ The consolidated evidence base: per-area probe accounting, all evidence items wi
 #### artifact
 
 `evidence-log.md`
-
-#### audience
-
-`human`
 
 ### candidate_findings
 
