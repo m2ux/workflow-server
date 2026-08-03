@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 ## Capability
@@ -17,6 +17,10 @@ Canonical agent technique — workflow-engine::activity-worker, workflow-engine:
 
 Map of placeholder name → value. Must include `session_index`, `workflow_id`, and `agent_id`; `activity_id` as well for activity-worker and resume-from-checkpoint, and `effects` for resume-from-checkpoint.
 
+### holds_prior_deliveries
+
+Whether `agent_id` names a context that already received content under this session — true when continuing a worker onto the next activity of its batch, false for a freshly minted identity. Decides the delivery mode the stub asks for, which the receiving agent cannot infer: a fresh context reading unchanged markers holds none of the bytes they stand for.
+
 ## Outputs
 
 ### composed_prompt
@@ -32,7 +36,7 @@ Minimal stub string ready for the host invoke that spawns or continues the agent
 
 ### 2. Emit entry tools
 
-- When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens, agent_id }` — `context_tokens` is the agent's context window size and is **required**; `agent_id` scopes delivery to this worker context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A stub that continues an identity already holding deliveries — the next activity of a batch ([continue-batch](./continue-batch.md)) — carries `bundle: "reference"` on that call, so what the context holds arrives as unchanged markers
+- When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens, agent_id }` — `context_tokens` is the agent's context window size and is **required**; `agent_id` scopes delivery to this worker context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). Add `bundle: "reference"` to that call when `{holds_prior_deliveries}`, so what the context already holds arrives as unchanged markers; omit it otherwise, because a fresh context needs the bytes
 - When `{agent_technique}` is [workflow-orchestrator](./workflow-orchestrator.md): instruct `start_session { session_index, agent_id }` then `get_workflow { session_index }`
 - When `{agent_technique}` is [resume-from-checkpoint](./resume-from-checkpoint.md): instruct `resume_checkpoint { session_index }` and carry the `effects` substitution
 
