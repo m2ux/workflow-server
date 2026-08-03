@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -33,7 +33,7 @@ The conformance envelope — the violation list plus the aggregate verdict:
 
 #### conforms
 
-true iff the `violations` array is empty after fixes are applied.
+true iff every entry in `violations` carries `fixed` true — nothing is left standing. A folder whose only remaining violations sit in artifacts under a published contract reports false, since the shape is still wrong wherever it is corrected.
 
 #### violations
 
@@ -55,10 +55,11 @@ array of `{ file, rule, detail, fixed }` entries — one per detected violation,
 
 - Replace a restated fact with a link to its canonical home, delete a section whose content is an absence, collapse a table whose every row passes, condense prose over its guide's budget, and rewrite a passage that breaks the register
 - Preserve content the user asked for explicitly, whatever the budget says
+- Leave an artifact under a published contract as it stands, recording its violations with `fixed` false — see [published-contracts-are-reported](#published-contracts-are-reported)
 
 ### 4. Surface the Exceptions
 
-- Compose `{artifact_conformance}`: its `violations` array carries every detected violation with its fix status, and `conforms` is true iff that array is empty after the fixes
+- Compose `{artifact_conformance}`: its `violations` array carries every detected violation with its fix status, and `conforms` is true iff every entry was fixed
 - Report exceptions only — an artifact that already conformed gets no line
 
 ## Rules
@@ -66,6 +67,10 @@ array of `{ file, rule, detail, fixed }` entries — one per detected violation,
 ### guide-is-the-standard
 
 An artifact is measured against the guide its own filename maps to. Where no guide maps the filename, that missing mapping is the finding — a `no-guide` violation against the folder rather than against the artifact.
+
+### published-contracts-are-reported
+
+An artifact under a published contract is measured and reported, never rewritten. Its declaration or its guide says so: the bytes are posted or delivered verbatim, or a consumer outside this run parses the file. Rewriting one breaks a promise the producing step made — condensing prose renumbers sections a split step already fixed, and collapsing a table removes a field a triggering workflow reads. Record each violation with `fixed` false and leave the file, so the producing step's own guide is where the shape gets corrected.
 
 ### maps-come-from-the-caller
 
