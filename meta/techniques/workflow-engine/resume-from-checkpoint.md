@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -11,14 +11,14 @@ Continue execution after the orchestrator resolves a checkpoint.
 
 ### session_index
 
-The `session_index` for the worker's session — unchanged across the yield/respond/resume sequence (the server-managed index is stable across all tool calls)
+`session_index` of the worker whose checkpoint was resolved.
 
 ### effects
 
-Variable updates passed back by the orchestrator
+Variable updates carried by the resolved checkpoint.
 
 ## Protocol
 
 1. Call `resume_checkpoint { session_index }`; the server verifies that `session.json#activeCheckpoint` has been cleared by the orchestrator's `respond_checkpoint`.
-   - If `resume_checkpoint` returns `no active checkpoint` or `checkpoint is still active`, the orchestrator has not yet called `respond_checkpoint` to resolve the checkpoint. Wait for the orchestrator to resume you; do not call `resume_checkpoint` until the resume prompt arrives.
+   > When `resume_checkpoint` returns `no active checkpoint` or `checkpoint is still active`, the checkpoint is not yet resolved: wait for the resume prompt to arrive before calling again.
 2. Apply `{effects}` to local state and continue from the paused step.
