@@ -3,7 +3,7 @@ import { createInitialSessionFile, type SessionFile } from '../src/schema/sessio
 import {
   batchActivities,
   batchBound,
-  batchMayContinue,
+  batchState,
   batchRefusal,
   batchRefusalMessage,
   deliveredChars,
@@ -158,7 +158,7 @@ describe('batch bound arithmetic (#407)', () => {
       const state = session();
       deliver(state, 'worker-a', 'implementation-analysis', chars);
       const refused = batchRefusal(state, 'worker-a', 'plan-prepare', bound) !== undefined;
-      expect(batchMayContinue(state, 'worker-a', bound)).toBe(!refused);
+      expect(batchState(state, 'worker-a', bound).mayContinue).toBe(!refused);
     }
 
     // And at the cap, with the budget untouched.
@@ -166,11 +166,32 @@ describe('batch bound arithmetic (#407)', () => {
     for (const activity of ['implementation-analysis', 'plan-prepare', 'assumptions-review']) {
       deliver(capped, 'worker-a', activity, 1);
     }
-    expect(batchMayContinue(capped, 'worker-a', bound)).toBe(false);
+    expect(batchState(capped, 'worker-a', bound).mayContinue).toBe(false);
     expect(batchRefusal(capped, 'worker-a', 'implement', bound)).toMatchObject({ limit: 'activity_cap' });
 
     // The session's own agent is outside the question entirely.
-    expect(batchMayContinue(capped, 'orchestrator', bound)).toBe(true);
+    expect(batchState(capped, 'orchestrator', bound).mayContinue).toBe(true);
+  });
+
+  it('leaves a context that has taken no activity alone, whatever it read lazily', () => {
+    // An out-of-band context announces itself on a technique or resource fetch and can read a great
+    // deal before taking an activity at all. It has no batch to be past the end of, so neither side of
+    // the bound may act on it — one real session already sits in this shape.
+    const state = session();
+    state.history.push({
+      timestamp: new Date().toISOString(), type: 'activity_dispatched', activity: 'implementation-analysis',
+      data: { agentId: 'oob-worker', dispatch: 'fresh' },
+    });
+    state.history.push({
+      timestamp: new Date().toISOString(), type: 'technique_fetched', activity: 'implementation-analysis',
+      data: { techniqueId: 't1', agentId: 'oob-worker', chars: 300_000, delivery: 'full' },
+    });
+
+    const bound = batchBound(200_000, POLICY);
+    expect(deliveredChars(state, 'oob-worker')).toBe(300_000);
+    expect(batchState(state, 'oob-worker', bound).activities).toEqual([]);
+    expect(batchState(state, 'oob-worker', bound).mayContinue).toBe(true);
+    expect(batchRefusal(state, 'oob-worker', 'implementation-analysis', bound)).toBeUndefined();
   });
 
   it('names the activity cap when both limits bind, because the tally is read per limit', () => {

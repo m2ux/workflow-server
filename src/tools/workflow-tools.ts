@@ -20,7 +20,7 @@ import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { dispatchKind, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
-import { batchActivities, batchBound, batchMayContinue, batchRefusal, batchRefusalMessage, deliveredChars, recordBatchRefusal } from '../utils/batch.js';
+import { batchBound, batchRefusal, batchRefusalMessage, batchState, recordBatchRefusal } from '../utils/batch.js';
 import { extractResourceIds, qualifyResourceId } from '../utils/resource-ref.js';
 import { readdir } from 'node:fs/promises';
 import { join as pathJoin } from 'node:path';
@@ -1237,18 +1237,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       // Where this context stands against its bound, this delivery included. A worker reads
       // `may_continue` to decide whether to ask for the next activity, so the ordinary end of a batch
-      // is the worker stopping and the refusal above is the backstop. `remaining_chars` is the
-      // headroom the activity's own lazy fetches eat into after this answer was given.
-      const batchTaken = batchActivities(next, scope);
-      const batchChars = deliveredChars(next, scope);
-      const unbounded = scope === next.agentId;
+      // is the worker stopping and the refusal above is the backstop. The counts make that answer
+      // auditable from the response.
+      const stand = batchState(next, scope, bound);
       const batch = {
-        activities: batchTaken.length,
+        activities: stand.activities.length,
         max_activities: bound.maxActivities,
-        delivered_chars: batchChars,
+        delivered_chars: stand.chars,
         budget_chars: bound.budgetChars,
-        remaining_chars: unbounded ? null : Math.max(0, bound.budgetChars - batchChars),
-        may_continue: batchMayContinue(next, scope, bound),
+        may_continue: stand.mayContinue,
       };
 
       return {

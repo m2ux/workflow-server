@@ -13,9 +13,6 @@ import type { SessionFile } from '../schema/session.schema.js';
  * worker resuming after a gate, and refusing it would end every batch at its first gate.
  */
 
-/** Which limit a refused activity ran into. */
-export type BatchLimit = 'activity_cap' | 'delivery_budget';
-
 /** The two limits in force for one delivery, in the units they are measured in. */
 export interface BatchBound {
   /** Distinct activities one worker context may take delivery of. */
@@ -24,9 +21,19 @@ export interface BatchBound {
   budgetChars: number;
 }
 
+/** Where one delivery scope stands against its bound. */
+export interface BatchState {
+  /** Distinct activities this scope has taken, in first-delivery order. */
+  activities: string[];
+  /** Characters delivered to it in full. */
+  chars: number;
+  /** Whether it may take a further activity. Always true for the session's own agent. */
+  mayContinue: boolean;
+}
+
 /** A refusal to extend a batch, carrying the arithmetic that produced it. */
 export interface BatchRefusal {
-  limit: BatchLimit;
+  limit: 'activity_cap' | 'delivery_budget';
   /** Distinct activities this scope has already taken. */
   activities: number;
   /** Characters already delivered to this scope. */
@@ -107,24 +114,24 @@ export function batchBound(
 }
 
 /**
- * The one home for the comparison, asked from both sides — whether to hand the next activity over,
- * and whether the worker should come back for one. Expressed twice, the two drift at the boundary.
+ * Where `scope` stands against `bound` — the one home for the reading, which both the refusal and the
+ * answer handed back on a delivery are taken from. Asked from opposite sides, expressed separately,
+ * the two drift at the boundary.
+ *
+ * `mayContinue` is answered before the lazy fetches of the activity just taken draw down the same
+ * budget, so `true` can still become a refusal at the next boundary.
  */
-function withinBatchBound(activities: number, chars: number, bound: BatchBound): boolean {
-  return activities < bound.maxActivities && chars <= bound.budgetChars;
-}
-
-/**
- * Whether `scope` may take a further activity, as of what it has been delivered. Answered before the
- * lazy fetches of the activity just taken draw down the same budget, so `true` can still become a
- * refusal at the next boundary.
- */
-export function batchMayContinue(state: SessionFile, scope: string, bound: BatchBound): boolean {
-  if (scope === state.agentId) return true;
-  const activities = batchActivities(state, scope).length;
-  // No activity taken yet is no batch to be past the end of — the reading the refusal takes too.
-  if (activities === 0) return true;
-  return withinBatchBound(activities, deliveredChars(state, scope), bound);
+export function batchState(state: SessionFile, scope: string, bound: BatchBound): BatchState {
+  const activities = batchActivities(state, scope);
+  const chars = deliveredChars(state, scope);
+  // The session's own agent owns the whole walk, and a scope with no activity yet has no batch to be
+  // past the end of — the reading the refusal takes too.
+  const exempt = scope === state.agentId || activities.length === 0;
+  return {
+    activities,
+    chars,
+    mayContinue: exempt || (activities.length < bound.maxActivities && chars <= bound.budgetChars),
+  };
 }
 
 /**
@@ -139,13 +146,10 @@ export function batchRefusal(
   activityId: string,
   bound: BatchBound,
 ): BatchRefusal | undefined {
-  if (scope === state.agentId) return undefined;
-  const activities = batchActivities(state, scope);
+  const { activities, chars, mayContinue } = batchState(state, scope, bound);
+  // An activity this scope already holds is a worker resuming on the payload it is sitting on.
   if (activities.includes(activityId)) return undefined;
-  if (activities.length === 0) return undefined;
-
-  const chars = deliveredChars(state, scope);
-  if (withinBatchBound(activities.length, chars, bound)) return undefined;
+  if (mayContinue) return undefined;
 
   // Past the bound: which limit to name, since the recorded tally is read per limit.
   const refusal = { activities: activities.length, chars, bound };
