@@ -52,6 +52,8 @@ Token figures are split between the orchestrator's main context and the workers'
 | 3a2415c4 | Jul 28 | (mid-session start, workflow-authoring) | +19.2 min | +40.8 min | 0.3 min | 6 | 55.8K / 161.6K | 82.1K / 498.6K |
 | 7b04f0f4 | Jul 30 | issue 365 | +578 min (long pre-session idle) | +607 min | 66 min | 5 | 37.8K / 288.9K | 83.1K / 571.5K |
 
+**"Real work begins" is elapsed time, not active time, on the four rows marked overnight.** Subtracting checkpoint wait does not recover an active figure there: 7d363a87's window runs 1,077 minutes against a checkpoint wait of 0.8, because its first checkpoint falls at minute 1,067 — after the gap. The idle was someone leaving for the night mid-activity, which is not the run waiting on an answer. Only the rows without an overnight gap support reading the window as active minutes.
+
 Five of the nine reach real work with no overnight gap inside the startup window, at 15 to 41 active minutes. The two of those that also ran clean of conversational detours and mid-session starts — 03e43af3 and f5783c2a — are the bookends: **real work begins 18–32 active minutes after the request, after 0.43–0.51 million cache-write tokens and 62–76 thousand output tokens.** The meta-ceremony phase alone is stable at 6.7–9.6 minutes across every clean run regardless of the task.
 
 ## Where the cost sits
