@@ -42,7 +42,8 @@
     "worktree:provision": "bash scripts/provision-worktree.sh",
     "baseline:stamp": "tsx scripts/stamp-corpus-baseline.ts",
     "bench:token": "tsx scripts/run-token-benchmark.ts",
-    "bench:dispatch": "tsx scripts/run-dispatch-benchmark.ts"
+    "bench:dispatch": "tsx scripts/run-dispatch-benchmark.ts",
+    "profile:run": "tsx scripts/run-profile.ts"
   },
   "license": "MIT",
   "devDependencies": {

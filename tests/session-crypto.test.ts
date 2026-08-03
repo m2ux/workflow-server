@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { join } from 'node:path';
-import { mkdtempSync, rmSync, readFileSync, chmodSync, existsSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, rmSync, readFileSync, chmodSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import {
   getOrCreateServerKey,
@@ -22,8 +22,23 @@ describe('session crypto key paths', () => {
     _resetServerKeyCacheForTests();
   });
 
+  /**
+   * A key directory the running user genuinely cannot create, so the errno is EACCES wherever
+   * the suite runs. A path under `/` stands in for the Docker `HOME=/` failure mode, but a
+   * sandboxed or read-only root answers with ENOENT or EROFS instead, which is a different
+   * branch of the error mapping.
+   */
+  function lockedKeyDir(): string {
+    const parent = join(tmp, 'locked');
+    mkdirSync(parent, { mode: 0o500 });
+    return join(parent, 'state');
+  }
+
   afterEach(() => {
     _resetServerKeyCacheForTests();
+    // Restore write permission so the temp tree can be removed.
+    const locked = join(tmp, 'locked');
+    if (existsSync(locked)) chmodSync(locked, 0o700);
     if (prevKey === undefined) delete process.env['WORKFLOW_SERVER_KEY_DIR'];
     else process.env['WORKFLOW_SERVER_KEY_DIR'] = prevKey;
     if (prevState === undefined) delete process.env['WORKFLOW_SERVER_STATE_DIR'];
@@ -57,8 +72,7 @@ describe('session crypto key paths', () => {
   });
 
   it('getOrCreateServerKey surfaces actionable EACCES when dir is not writable', async () => {
-    // Prefer a path under / that non-root cannot create (Docker HOME=/ failure mode).
-    process.env['WORKFLOW_SERVER_KEY_DIR'] = '/.workflow-server-eacces-test-issue-283';
+    process.env['WORKFLOW_SERVER_KEY_DIR'] = lockedKeyDir();
     await expect(getOrCreateServerKey()).rejects.toThrow(/session signing key|WORKFLOW_SERVER_KEY_DIR|HOME/);
   });
 
@@ -68,7 +82,7 @@ describe('session crypto key paths', () => {
   });
 
   it('probeSessionKeyWritable is false for an unwritable KEY_DIR', async () => {
-    process.env['WORKFLOW_SERVER_KEY_DIR'] = '/.workflow-server-eacces-probe-issue-283';
+    process.env['WORKFLOW_SERVER_KEY_DIR'] = lockedKeyDir();
     await expect(probeSessionKeyWritable()).resolves.toBe(false);
   });
 
