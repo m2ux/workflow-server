@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -58,7 +58,7 @@ Per-package rationale for the ordering, with the value, risk, and effort assessm
 
 - Apply priority ordering rules: dependency-first, then high-value/low-effort, then high-risk-early
 - Identify packages that could be parallelized (independent, no shared resources)
-- Write `{priority_order}` as the ranking document: the priority table with package, value, risk, effort, and rationale, the dependency graph as text or a mermaid diagram, and any alternative valid sequences
+- Write `{priority_order}` as the ranking document per [priority-ranking](../resources/priority-ranking.md#template) and its [Rules](../resources/priority-ranking.md#rules)
 - If all packages evaluate identically on every criterion, ask the user which dimension matters most for their context to break the tie
 
 ## Rules

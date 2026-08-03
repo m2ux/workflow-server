@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -47,12 +47,11 @@ The appended ledger: one entry per create/update operation, in operation order.
 
 ### 1. Update The Index
 
-- For each page in `{mutated_pages}`, ensure `{wiki_index}` has an entry under its type section linking to the page by `[[wikilink]]`, with its title and one-line summary; add a new entry for a new page, refresh the summary for an updated one.
-- Keep the index organized by page type (`concepts`, `entities`, `sources`, `comparisons`) so it stays navigable as it grows.
+- For each page in `{mutated_pages}`, ensure `{wiki_index}` has an entry under its type section per [Index Template](../resources/index-and-log.md#index-template); add a new entry for a new page, refresh the summary for an updated one.
 
 ### 2. Append The Log
 
-- Append one entry to `{mutation_log}` recording the operation: a timestamp, the `{operation_summary}`, the pages touched, the `{raw_baseline_commit}` the claims cite, and whether the mutation was code-driven or task-driven. The log is append-only — never rewrite prior entries.
+- Append one entry to `{mutation_log}` per [Log Template](../resources/index-and-log.md#log-template), recording the `{operation_summary}` and the `{raw_baseline_commit}` the claims cite.
 
 ### 3. Write Both Files
 

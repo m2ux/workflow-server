@@ -38,3 +38,4 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `assumption-reconciliation` | Assumption Reconciliation | Assumptions-log integration and scorecard formats |
 | `research-reconciliation` | Research Reconciliation | Research-candidate inventory shape, reconcilability statuses, and scorecard format |
 | `pr-review-response` | PR Review Response | Response-format and review-document templates |
+| `prior-feedback-triage` | Prior Feedback Triage | Creation guide: `prior-feedback-triage.md` — the disposition register the rating cap is computed from |

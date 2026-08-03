@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -153,7 +153,7 @@ Array of `{ target, target_type, pipeline_mode, lens_name, lenses, role, risk, r
 ### 10. Format Plan
 
 - Produce `{analysis_plan}` as structured output and expose `{analysis_units}` as the ordered execution collection
-- If `{output_path}` is provided, write the human-readable plan as `{analysis_plan}` into `{output_path}`
+- If `{output_path}` is provided, write `{analysis_plan}` into `{output_path}` per [analysis-plan](../resources/analysis-plan.md#template) and its [Rules](../resources/analysis-plan.md#rules)
 - A single-unit `{analysis_units}` array runs one analysis pass; a multi-unit array runs one pass per unit in order
 
 ## Rules
