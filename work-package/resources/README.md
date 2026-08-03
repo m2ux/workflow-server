@@ -38,3 +38,19 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `research-reconciliation` | Research Reconciliation | Research-candidate inventory shape, reconcilability statuses, and scorecard format |
 | `pr-review-response` | PR Review Response | Response-format and review-document templates |
 | `prior-feedback-triage` | Prior Feedback Triage | Creation guide: `prior-feedback-triage.md` — the disposition register the rating cap is computed from |
+
+## Planning artifact to guide map
+
+Where a filename's shape is not stated by a guide that names it. Every other artifact resolves through the guide carrying its name.
+
+| Bare filename | Guide |
+|---------------|-------|
+| `README.md` | [readme](readme.md) pointer to the meta [planning-readme](../../meta/resources/planning-readme.md) Template plus [readme-seed](readme-seed.md) |
+| `architecture-summary.md` | [architecture-summary](architecture-summary.md) |
+| `strategic-review-{n}.md` | [strategic-review](strategic-review.md) |
+| `{codebase_area}.md` | [codebase-comprehension](codebase-comprehension.md) |
+| `{YYYY-MM-DD}-pr{pr_number}-review-analysis.md` | [pr-review-response](pr-review-response.md) |
+| `kb-research.md` | [knowledge-base-research](knowledge-base-research.md) |
+| `design-philosophy.md` | [design-framework](design-framework.md) |
+| `COMPLETE.md` | [complete-wp-guide](complete-wp-guide.md) |
+| `work-package-plan.md` | [wp-plan](wp-plan.md) |
