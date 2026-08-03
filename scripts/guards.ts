@@ -75,6 +75,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'no activity opens with a checkpoint, so no dispatch exists only to ask a question',
   },
   {
+    id: 'bootstrap-self-contained',
+    script: 'scripts/check-bootstrap-self-contained.ts',
+    npmScript: 'check:bootstrap',
+    scope: 'corpus',
+    json: true,
+    proves: 'the text delivered before a session exists sends the reader nowhere it cannot go',
+  },
+  {
     id: 'self-provisioned-input',
     script: 'scripts/check-self-provisioned-input.ts',
     npmScript: 'check:self-input',

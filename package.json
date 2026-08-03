@@ -30,6 +30,7 @@
     "check:fragments": "tsx scripts/check-fragments.ts",
     "check:review-mode": "tsx scripts/check-review-mode-gating.ts",
     "check:checkpoint-entry": "tsx scripts/check-checkpoint-entry.ts",
+    "check:bootstrap": "tsx scripts/check-bootstrap-self-contained.ts",
     "check:stealth": "tsx scripts/check-stealth-isolation.ts",
     "check:when": "tsx scripts/check-when-expression.ts",
     "check:audience": "tsx scripts/check-audience.ts",
