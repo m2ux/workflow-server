@@ -1782,7 +1782,6 @@ describe('mcp-server integration', () => {
     it('meta sessions live in os.tmpdir() (not the workspace) and are discarded when a child captures them', async () => {
       const { existsSync, readFileSync } = await import('node:fs');
       const path = await import('node:path');
-      const os = await import('node:os');
 
       // 1. Start a meta session. The slug is a label only — the workspace
       //    planning root must not see a folder for it. Meta state lives
@@ -1802,11 +1801,14 @@ describe('mcp-server integration', () => {
       // Workspace folder must not exist — meta is transient (tmp-rooted).
       expect(existsSync(metaWorkspaceFolder)).toBe(false);
 
-      // Snapshot the existing tmp folders for the workflow-server prefix so
-      // we can later assert the meta's tmp folder is gone after dispatch.
-      const { readdirSync } = await import('node:fs');
-      const tmpBefore = readdirSync(os.tmpdir())
-        .filter((n) => n.startsWith('workflow-server-transient-'));
+      // The transient folder this meta was given, by name. The registry keys it
+      // under the caller-supplied slug, so the assertion after the dispatch can
+      // name one path — os.tmpdir() is shared by every concurrently running test
+      // file, and a listing of it also holds their transient sessions.
+      const { lookupTransientBySlug } = await import('../src/utils/session/store.js');
+      const metaTmpFolder = lookupTransientBySlug(metaSlug);
+      expect(metaTmpFolder).toBeDefined();
+      expect(existsSync(metaTmpFolder!)).toBe(true);
 
       // 2. Dispatch a child workflow from the meta session. The server
       //    promotes the meta's state onto disk under the workspace planning
@@ -1847,15 +1849,8 @@ describe('mcp-server integration', () => {
       expect(entry.state.workflowId).toBe('work-package');
       expect(entry.state.sessionIndex).toBe(childResponse.session_index);
 
-      // The original /tmp folder for the meta is gone (the redirect removed it).
-      const tmpAfter = readdirSync(os.tmpdir())
-        .filter((n) => n.startsWith('workflow-server-transient-'));
-      // Exactly the new tmp entries created since the snapshot must be
-      // absent: i.e. no folder created during the meta start_session is
-      // still around. The discard is best-effort, so tolerate older orphans
-      // (only require that tmpAfter ⊆ tmpBefore).
-      const newOrphans = tmpAfter.filter((n) => !tmpBefore.includes(n));
-      expect(newOrphans).toEqual([]);
+      // The meta's own tmp folder is gone — the redirect removed it.
+      expect(existsSync(metaTmpFolder!)).toBe(false);
     });
 
     it('dispatch_child accepts planning_slug to control the promoted workspace folder', async () => {

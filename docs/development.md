@@ -104,7 +104,9 @@ workflow-server/
 │   ├── update-workflows.sh
 │   ├── generate-schemas.ts
 │   ├── validate-workflow-yaml.ts
-│   └── run-token-benchmark.ts
+│   ├── run-token-benchmark.ts    # Delivery cost per session mode
+│   ├── run-dispatch-benchmark.ts # What a re-dispatch costs
+│   └── run-profile.ts            # Profiles a real run from its session transcript
 ├── tests/                    # Test suites
 ├── workflows/                # Worktree (workflows branch)
 │   ├── meta/                 # Bootstrap workflow
@@ -253,6 +255,28 @@ Pin `WORKFLOWS_DIR` to the corpus the fixture names (`workflowsRev`) for a gate 
 and the scorecard warns when the two disagree.
 
 Stderr: compact scorecard, plus a `gate: PASS|FAIL` line under `--gate`. Stdout: one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals, optional `vsReference` and `gate`). Exit `2` if the walk does not complete, `3` on gate failure. See [Reference Delivery](resource_resolution_model.md#11-reference-delivery) for the contract under test.
+
+### Run profiler
+
+[`scripts/run-profile.ts`](../scripts/run-profile.ts) (`npm run profile:run`) profiles a **real run already on disk**, where the two benchmarks above price the server's delivery on a synthetic walk. It reads a session transcript and the worker transcripts stored beside it, places the startup milestones on a timeline, and reports token usage split between the orchestrator's main context and each worker's context.
+
+```bash
+npm run profile:run -- --session=03e43af3
+npm run profile:run -- --session=03e43af3 --session=f5783c2a --json
+npm run profile:run -- --transcript=~/.claude/projects/<slug>/<session-id>.jsonl --window=full
+```
+
+`--session` resolves an id or id-prefix under `--projects-dir` (default `~/.claude/projects`); `--transcript` takes a path. Both are repeatable. `--window=startup` (the default) runs from the first record to the point the client workflow's opening activity is reported done. `--json` puts the whole profile on stdout in place of the text report.
+
+Which activity that is comes off the session the transitions name, not a flag: a session index that never carries a meta activity belongs to the client workflow, and by the `next_activity` contract the first call against it names that workflow's `initialActivity`. Every client workflow in the corpus opens on a different id, so the profiler discovers the opener — and reports it — rather than being told it. The rule also holds on a run that abandons one meta session and starts another before dispatching.
+
+The two token columns are scoped differently, on purpose. Main-context figures cover the orchestrator turns inside the window. A worker joins on its **dispatch** time, and its whole ledger comes with it — a dispatch made to do startup work costs what it costs, even when its last turn lands after the milestone. Worker turns are read from the `subagents/` directory beside the transcript; when a transcript instead carries them inline and has no such directory, the profile sets `workerTurnsUnread` and the report says the worker figures are unread rather than zero.
+
+#### A usage figure belongs to a response
+
+The harness writes one transcript record per content block of a response and repeats the same usage object on every one of them, so `requestId` — not the record — is the unit a figure attaches to. The profiler reduces each field across a response's records: the maximum, which is the shared value for the cache and input counters and the terminal count for `output_tokens`, whose earlier streaming partials report single digits.
+
+Every total is reported beside `recordSummed`, what a summation over records yields for the same span, and their `ratio`. A figure quoted from a per-record count can then be reconciled against a profile rather than merely contradicted by it — over the whole 27 July 2026 run, main and worker context together reconcile at 2.09×, and the worker column across that run's startup window at 2.42× ([#409](https://github.com/m2ux/workflow-server/issues/409)).
 
 ## Validating Workflows
 
