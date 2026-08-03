@@ -53,6 +53,13 @@
     },
     {
       "check": "dead-output",
+      "site": "meta/techniques/verify-artifact-conforms.md",
+      "detail": "output 'artifact_conformance' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "shared-op-return-contract"
+    },
+    {
+      "check": "dead-output",
       "site": "meta/techniques/cargo-operations/build-dev.md",
       "detail": "output 'build_artifacts' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
