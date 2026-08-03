@@ -7,6 +7,7 @@ This folder is the investigation-detail home for the artifact-audience epic: pla
 | File | What it holds |
 |---|---|
 | [artifact-format-survey.md](./artifact-format-survey.md) | The full corpus survey: headline counts, per-technique coverage grades with file paths, the grade-C shortlist, the agent-consumed-artifact table, the three tiers of existing style guidance, enforcement coverage, and prior art |
+| [audience-classification.md](./audience-classification.md) | The decision behind all 139 audience declarations: the rule they follow, the registers whose substance is agent state, and the artifacts read by both a person and a later step |
 
 ## Key numbers carried into the epic
 
