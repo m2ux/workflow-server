@@ -312,6 +312,79 @@ describe('fetch observability (#166 B8)', () => {
     });
   });
 
+  /**
+   * Delivery-identity accounting (#408).
+   *
+   * A worker that pauses at a gate keeps its context; what a corpus pass found losing was the
+   * server-side identity the ledger is keyed on, on about a third of gate crossings. The fault
+   * leaves one trace — the same activity delivered whole to two identities in one session — so
+   * these tests pin the discriminator that reads the ledger's own two states, and the event that
+   * makes the second copy countable.
+   */
+  describe('delivery identity across a gate (#408)', () => {
+    it('reads a context the server has already met as a resume, whatever activity it asks for', async () => {
+      const slug = '2026-08-03-scope-spans-activities';
+      const idx = await startSession(slug, 'orchestrator');
+
+      await enterActivity(idx, 'start-work-package');
+      const first = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1' },
+      });
+      await enterActivity(idx, 'design-philosophy');
+      const second = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1', bundle: 'reference' },
+      });
+
+      expect((first._meta as Record<string, unknown>)['dispatch']).toBe('fresh');
+      expect((second._meta as Record<string, unknown>)['dispatch']).toBe('resume');
+
+      const dispatches = sessionHistory(slug).filter(h => h.type === 'activity_dispatched');
+      expect(dispatches.map(d => (d.data as { dispatch: string }).dispatch)).toEqual(['fresh', 'resume']);
+    });
+
+    it('records a second full delivery of one activity to a second identity', async () => {
+      const slug = '2026-08-03-redelivery-visible';
+      const idx = await startSession(slug, 'orchestrator');
+      await enterActivity(idx, 'start-work-package');
+
+      await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-a' },
+      });
+      await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-b' },
+      });
+
+      const redelivered = sessionHistory(slug).filter(h => h.type === 'activity_redelivered');
+      expect(redelivered).toHaveLength(1);
+      expect(redelivered[0]!.activity).toBe('start-work-package');
+      expect(redelivered[0]!.data as Record<string, unknown>).toMatchObject({
+        agentId: 'w-b',
+        priorAgentId: 'w-a',
+      });
+      // `chars` is what the second copy cost, so the waste totals from the ledger.
+      expect((redelivered[0]!.data as { chars: number }).chars).toBeGreaterThan(0);
+    });
+
+    it('records nothing when the identity that took the activity asks for it again', async () => {
+      const slug = '2026-08-03-redelivery-quiet-on-resume';
+      const idx = await startSession(slug, 'orchestrator');
+      await enterActivity(idx, 'start-work-package');
+
+      for (const bundle of [undefined, 'reference', 'reference']) {
+        await client.callTool({
+          name: 'get_activity',
+          arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1', ...(bundle ? { bundle } : {}) },
+        });
+      }
+
+      expect(sessionHistory(slug).filter(h => h.type === 'activity_redelivered')).toHaveLength(0);
+    });
+  });
+
   describe('PR366 context fidelity and observability', () => {
     it('PR366-TC-21: bundled path emits idempotent step_started', async () => {
       const slug = '2026-07-31-pr366-step-started-bundle';
