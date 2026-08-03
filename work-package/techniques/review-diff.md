@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.3.0
+  version: 2.4.0
 ---
 
 ## Capability
@@ -38,6 +38,10 @@ PR identifier, used to resolve the authoritative base branch and citation base v
 #### artifact
 
 `change-block-index.md`
+
+#### audience
+
+`human`
 
 #### block_rationale
 
