@@ -121,7 +121,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`assemble-file-approach`](./techniques/assemble-file-approach.md) | Assemble and persist the per-file drafting plan | Scope and Draft |
 | [`review-drafted-file`](./techniques/review-drafted-file.md) | Assemble and persist a per-file review note (including update-mode removals) | Scope and Draft |
 | [`yaml-authoring`](./techniques/yaml-authoring.md) | Author syntactically valid YAML files that pass schema validation | Scope and Draft |
-| [`verify-artifact-conforms`](./techniques/verify-artifact-conforms.md) | Verify planning artifacts against the design canonical-home map and fix drift in place | Scope and Draft |
+| meta [`verify-artifact-conforms`](../meta/techniques/verify-artifact-conforms.md) | Verify planning artifacts against the design canonical-home map and the guide map, and fix drift in place | Scope and Draft |
 | [`audit-expressiveness`](./techniques/audit-expressiveness.md) | Walk prose against the schema construct inventory | Quality Review (create/update), Post-Update |
 | [`audit-conformance`](./techniques/audit-conformance.md) | Apply convention-conformance against reference workflows | Quality Review (create/update), Post-Update |
 | [`audit-rule-hygiene`](./techniques/audit-rule-hygiene.md) | Apply Rule Hygiene anti-patterns to `rules[]` | Quality Review (create/update) |
@@ -160,7 +160,7 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | 08 | [Design Assumption Reconciliation](./resources/design-assumption-reconciliation.md) | Audit vs open resolvability + while-loop / Gate 2 handoff |
 | 09 | [Elicitation Guide](./resources/elicitation-guide.md) | Mode dimension sets + per-dimension question bank |
 | 10 | [Convention Conformance](./resources/convention-conformance.md) | Reference conventions vs sibling workflows |
-| 11–21 | [Artifact creation guides](./resources/README.md#planning-artifact--guide-map) | Template + Rules for every planning artifact |
+| 11–21 | [Artifact creation guides](./resources/README.md#planning-artifact-to-guide-map) | Template + Rules for every planning artifact |
 
 ---
 
@@ -224,7 +224,6 @@ workflows/workflow-design/
 │   ├── audit-rule-enforcement.md
 │   ├── verify-high-findings.md
 │   ├── review-draft-yaml.md
-│   ├── verify-artifact-conforms.md
 │   ├── apply-audit-fixes.md
 │   ├── scope-audit.md
 │   ├── create-completion-doc.md

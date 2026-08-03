@@ -23,7 +23,7 @@ Workflow-local operations live in the [`workflow-definition`](./workflow-definit
 | [`yaml-authoring`](./workflow-definition/yaml-authoring.md) | Author one manifest entry as a schema-valid definition file |
 | [`review-drafted-file`](./workflow-definition/review-drafted-file.md) | Detect content a drafted file removes that no inventory accounts for |
 | [`readme-authoring`](./workflow-definition/readme-authoring.md) | Generate or revise the target workflow's root README |
-| [`verify-artifact-conforms`](./workflow-definition/verify-artifact-conforms.md) | Correct the planning artifacts against their own guides and the canonical-home map |
+| meta [`verify-artifact-conforms`](../../meta/techniques/verify-artifact-conforms.md) | Correct the planning artifacts against their own guides and the canonical-home map, bound with this workflow's two maps |
 | [`load-known-findings`](./workflow-definition/load-known-findings.md) | Normalise the baselines and a prior register into comparable exclusion keys |
 | [`reload-workflow`](./workflow-definition/reload-workflow.md) | Resolve one target's current definition surface and the base ref its change is measured against |
 | [`resolve-consumer-surface`](./workflow-definition/resolve-consumer-surface.md) | Resolve the references other workflows hold into a target against the files this run changed |

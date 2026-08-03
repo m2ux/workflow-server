@@ -36,7 +36,7 @@ Markdown resources for design principles, construct inventories, anti-pattern ca
 
 ---
 
-## Planning artifact → guide map
+## Planning artifact to guide map
 
 | Bare filename | Guide |
 |---------------|-------|

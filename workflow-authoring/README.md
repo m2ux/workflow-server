@@ -85,7 +85,6 @@ workflows/workflow-authoring/
 │       ├── yaml-authoring.md
 │       ├── review-drafted-file.md
 │       ├── readme-authoring.md
-│       ├── verify-artifact-conforms.md
 │       ├── load-known-findings.md
 │       ├── reload-workflow.md
 │       ├── resolve-consumer-surface.md

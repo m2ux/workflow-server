@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.6.0
+  version: 3.7.0
 ---
 
 ## Capability
@@ -16,7 +16,7 @@ Every fact has exactly one canonical artifact. When another artifact needs it, l
 
 ### canonical-home-map
 
-The canonical home for each shared fact category. Templates carry link-only slots for every category they don't home; [verify-artifact-conforms](./verify-artifact-conforms.md) enforces the map at the strategic-review boundary.
+The canonical home for each shared fact category. Templates carry link-only slots for every category they don't home; [verify-artifact-conforms](../../../meta/techniques/verify-artifact-conforms.md) enforces the map at the strategic-review boundary.
 
 | Fact category | Canonical home |
 |---|---|

@@ -1,11 +1,18 @@
 id: generate-report
-version: 1.1.0
+version: 1.2.0
 name: Generate Final Report
 description: Generate the final REPORT.md from prior-pass analysis artifacts.
 steps:
   - kind: technique
     id: generate-report
     technique: generate-report
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        artifact_dir: output_path
+        guide_map: prism/README#planning-artifact-to-guide-map
 transitions:
   - to: deliver-result
     isDefault: true

@@ -109,7 +109,11 @@ steps:
     when: operation_type != 'review' && scope_manifest_confirmed == true
   - kind: technique
     id: verify-planning-artifacts
-    technique: workflow-definition::verify-artifact-conforms
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        canonical_home_map: workflow-authoring/techniques#canonical-home-map
+        guide_map: workflow-authoring/README#planning-artifact-to-guide-map
     when: operation_type != 'review' && scope_manifest_confirmed == true
 transitions:
   - to: quality-review

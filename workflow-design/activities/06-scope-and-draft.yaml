@@ -164,7 +164,11 @@ steps:
         target_dir: planning_folder_path
   - kind: technique
     id: verify-artifact-conforms
-    technique: verify-artifact-conforms
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        canonical_home_map: workflow-design/techniques#canonical-home-map
+        guide_map: workflow-design/README#planning-artifact-to-guide-map
   - kind: technique
     id: pre-attestation-audit-principles
     technique: audit-principles
