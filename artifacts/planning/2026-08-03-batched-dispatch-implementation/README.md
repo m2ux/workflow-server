@@ -20,7 +20,7 @@ This was the one interpretive decision the issue did not settle. The alternative
 
 The starting value was 0.20, on the arithmetic in the investigation record: 937,121 characters across fifteen activities averages some 62,000 an activity, so three activities ought to sit near 187,000 characters, and 0.20 of a 200,000-token window gives 160,000.
 
-The first run of the new benchmark refused the batch at its third activity, and re-basing to **0.35** admitted it. A review sweep then found that both of those figures were inflated by the same double count (below), so the arithmetic was redone against honest numbers: the analysis run delivers **154,699 characters into one context, 132,891 of them by the end of the second activity**. At 0.35 a 200,000-token window gives 280,000 characters, so the run is admitted with the activity **cap** closing it, and some 125,000 characters remain for what the worker fetches lazily while running those activities — which draws down the same budget and is invisible at the moment an activity is delivered.
+The first run of the new benchmark refused the batch at its third activity, and re-basing to **0.35** admitted it. A review sweep then found that both of those figures were inflated by the same double count (below), so the arithmetic was redone against honest numbers: the analysis run delivers **155,168 characters into one context, 133,360 of them by the end of the second activity**. At 0.35 a 200,000-token window gives 280,000 characters, so the eager payloads of that run are admitted and the headroom left over is for what the worker fetches lazily while running them — which draws down the same budget and is invisible at the moment an activity is delivered. The third sweep below found that lazy half is usually the larger one.
 
 The value survived that correction and a third one below; the reasoning behind it did not. It stays far below the eager-bundling fraction of 0.80, which on the same arithmetic admits thirteen of fifteen activities into one context.
 
@@ -31,15 +31,15 @@ The value survived that correction and a third one below; the reasoning behind i
 | | per-activity | batched |
 |---|---:|---:|
 | Contexts the server met | 3 | 1 |
-| Characters delivered | 204,743 | 154,699 |
-| Activity payloads, in walk order | 70,764 / 79,178 / 54,801 | 70,764 / 62,127 / 21,808 |
+| Characters delivered | 206,150 | 155,168 |
+| Activity payloads, in walk order | 71,233 / 79,647 / 55,270 | 71,233 / 62,127 / 21,808 |
 | Server-side elapsed, best of 3 | 576 ms | 569 ms |
 
-**Delivery collapse is 24.7% on this walk, against the 32% the investigation record cites for the same run.** Both are right about different things. The record's figure comes from a real run's delivery ledger, where the worker also fetches techniques and resources lazily across each activity and those fetches collapse too. This benchmark issues activity deliveries only, so it sees the payload collapse — 79,178 → 62,127 and 54,801 → 21,808, which is 42% and 60% by position, matching the record's "second collapses 40–45%, third 55–70%" — without the lazy-fetch collapse layered on top. The 24.7% is the floor, and the honest figure for what this script walks.
+**Delivery collapse is 24.7% on this walk, against the 32% the investigation record cites for the same run.** Both are right about different things. The record's figure comes from a real run's delivery ledger, where the worker also fetches techniques and resources lazily across each activity and those fetches collapse too. This benchmark issues activity deliveries only, so it sees the payload collapse — 79,647 → 62,127 and 55,270 → 21,808, which is 22% and 61% by position, matching the record's "second collapses 40–45%, third 55–70%" — without the lazy-fetch collapse layered on top. The 24.7% is the floor, and the honest figure for what this script walks.
 
 **Server-side elapsed is a wash, and that is a finding rather than a defect.** Best-of-3 gives 1.2% in the batch's favour; single walks swing ±20%. Reference delivery composes every payload in full and *then* hashes it to decide what may collapse, so a batch does slightly more server work to put fewer bytes on the wire. Nothing in the tooling claims a server-side speed-up, and the smoke test's assertion is that batching is not materially slower rather than that it is faster.
 
-**The run duration a batch saves is the contexts it avoids.** Two, on this run. Priced at 41 seconds — the mean per-dispatch spawn cost across the four setup workers of the profiled 27 July run, whose most expensive ran 165 seconds — that is 82 seconds. The script reports it as a projection with its input named and never adds it to the measured figures, because nothing headless can observe a harness spawning an agent.
+**The run duration a batch saves is the contexts it avoids.** Two, on this run. Priced at 87 seconds — the mean of the four setup dispatches of the profiled 27 July run, which ran 77, 65, 42 and 165 seconds — that is 174 seconds. The script reports it as a projection with its input named and never adds it to the measured figures, because nothing headless can observe a harness spawning an agent.
 
 ## What the review sweep found
 
@@ -49,7 +49,7 @@ Six faults, all fixed, and the tests that now hold each one down. Four were in t
 
 **A terminal activity leaked its worker identity.** The loop exits on a null activity, and the release only fired on a spent batch, so a final activity with room left an identity held. Nothing continues that worker, and `end-workflow` offers a return to the loop, where the stale identity would have skipped the dispatch and continued on a stale envelope. The release now also fires when there is no next activity.
 
-**A batch that ended untidily stalled the loop.** A worker that returned no envelope, or one the server refused because its batch turned out to be spent, left the identity held and no completed activity to release it — a loop that could neither continue nor dispatch until its iteration ceiling. The continuation now returns a null identity on either, and the dispatch that follows it in the body spawns the replacement in the same iteration.
+**A batch that ended untidily stalled the loop.** A worker that returned no envelope, or one the server refused because its batch turned out to be spent, left the identity held and no completed activity to release it — a loop that could neither continue nor dispatch until its iteration ceiling. The continuation now handles both itself, spawning the replacement under a new identity rather than handing the activity back to a dispatch that would advance the pointer a second time.
 
 **The load-bearing rule was carried by rule text beside a gate that could carry it.** The rule said to continue only with room; the gate said only that an identity was held and an activity had completed. The gate now carries the condition, which makes it and the release exact complements — for a completed activity, exactly one fires. This is the same standard the mechanism applies to its own bound, and it was being applied unevenly.
 
