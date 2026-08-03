@@ -19,11 +19,11 @@ Activity the worker holds.
 
 ### worker_agent_id
 
-Server-side worker identity bound by the dispatch that spawned this worker — the identity the delivery ledger is keyed on.
+Server-side worker identity the worker's dispatch bound — the identity the delivery ledger is keyed on.
 
 ### effects
 
-Variable updates the resolved checkpoint returned, for the worker to apply to its local state.
+Variable updates carried by the resolved checkpoint.
 
 ### state
 
@@ -45,11 +45,10 @@ The envelope the worker returned, passed through unchanged — one of two tagged
 
 - Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) with the composed prompt.
 
-### 3. Return the envelope
+### 3. Await the envelope
 
-- Await the worker's envelope and return it unchanged as `{worker_result}`.
+- Wait until the worker yields or completes (blocking-equivalent); capture its envelope unchanged as `{worker_result}`.
 
-### 4. Record the continuation's cost
+### 4. Account for the continuation
 
-- Record the continuation's harness-reported usage with `record_usage { session_index, activity, usage }`, one call for this continuation ([account-every-dispatch](./dispatch-activity.md#account-every-dispatch)).
-  > When the harness surfaces no figure, omit the call.
+- Account for this continuation per [account-every-dispatch](./dispatch-activity.md#account-every-dispatch).
