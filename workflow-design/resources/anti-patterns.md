@@ -1864,3 +1864,15 @@ A Protocol branch conditions on a magnitude nothing declares, so the agent canno
 **Do not flag:** Thresholds the harness or server owns and reports (`autoAdvanceMs`, a budget returned on a response). A branch on a declared input's value. Qualitative branches carrying no magnitude — "fewer steps than the activity defines" is countable from the definition the agent already holds.
 
 **Fix:** Declare the threshold and compare it by designator — a technique input with a `#### default`, a workflow variable, or a row in the owning policy resource. Where no owner can supply it, delete the branch and rebuild any behaviour it guarded on a condition the agent can observe. See [Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure).
+
+### AP-143. inherited-rules-re-enumerated
+
+"Honor no-get-activity-from-orchestrator, no-pre-load-techniques, delivery-keys-on-agent-context, …"
+
+A rules entry lists rules another file owns and the reader already receives, so the list is maintained against a section it does not own and under-enumerates the moment that section grows.
+
+**Detect:** A `## Rules` entry (or `rules.*` string) whose body is a citation, or list of citations, to rules declared elsewhere, where the reader already receives those rules — by container merge into descendants, by the operations bundle, or by a sibling entry in the same block that commands following the inherited or bundled set. Resolve the cited home and compare the citation set against its rule roster. Flag when the home holds a rule the list omits, when the entry is a subset of an obligation a sibling entry already states, or when the entry reuses the cited rule's own name or a near-variant of it, which leaves the shortened dotted address ambiguous for every caller. Test: if adding a rule to the cited home leaves this entry silently incomplete, or deleting the entry loses no constraint, the entry is a copy of a roster rather than a constraint.
+
+**Do not flag:** A pointer that narrows or qualifies the cited rule for this caller — a scope restriction, a threshold, an exception the cited rule does not state. Container `TECHNIQUE.md` Rules the loader merges into descendants, which is inheritance rather than enumeration. A prohibition citing the home that owns the behaviour it forbids bypassing (`no-rule-protocol-restatement`). README index tables (`readme-orients-not-transcribes`) and Capability op inventories (`capability-as-op-inventory`), which are the same shape on other sections.
+
+**Fix:** Delete the enumeration and rely on the entry that already commands the inherited or bundled set. Where one rule genuinely needs reach across a group boundary, hoist that invariant to the smallest common container so the loader delivers it rather than naming it from a distance. Carry over any clause the deleted entry held that no other surface states. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
