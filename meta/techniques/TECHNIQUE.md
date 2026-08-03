@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.2.0
 ---
 
 ## Capability
@@ -16,3 +16,7 @@ Absolute path of the outermost git host for the workspace checkout — the outer
 ### component_path
 
 Path of the component being worked on, relative to `{host_repo_path}` — `.` for a regular repo. The two together locate the component directory.
+
+### planning_folder_path
+
+Path to the session's planning folder, as the server returned it. Techniques that read or write session artifacts take it from here; not every technique needs one.

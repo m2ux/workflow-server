@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -37,15 +37,13 @@ true iff the `violations` array is empty after fixes are applied.
 
 #### violations
 
-array of `{ file, rule, detail, fixed }` entries — one per detected violation, where `rule` names the discipline breached (`no-guide`, `single-source-and-link`, `state-once-per-artifact`, `omit-null-sections`, `exception-only-reporting`, `line-budget`, `writing-register`, `code-reference-is-an-inline-link`, `finding-layout`, `designator-order`, `severity-value`, or `delivery-class`) and `fixed` records whether the in-place fix was applied.
+array of `{ file, rule, detail, fixed }` entries — one per detected violation, where `rule` is the slug the breached discipline carries in the guide, the map, or the writing register that owns it (`no-guide` when no guide maps the filename) and `fixed` records whether the in-place fix was applied.
 
 ## Protocol
 
 ### 1. Enumerate and Resolve
 
 - Enumerate every artifact in `{artifact_dir}` and resolve each one's guide through `{guide_map}` when it is bound, otherwise through the guide that names the filename
-  > A caller that binds no `{artifact_dir}` checks the session planning folder.
-- A filename that resolves to no guide is a `no-guide` violation against the folder, not against the artifact — the missing mapping is the finding
 
 ### 2. Measure Against the Guide and the Map
 
@@ -67,8 +65,8 @@ array of `{ file, rule, detail, fixed }` entries — one per detected violation,
 
 ### guide-is-the-standard
 
-An artifact is measured against the guide its own filename maps to. Where no guide maps the filename, that missing mapping is the finding.
+An artifact is measured against the guide its own filename maps to. Where no guide maps the filename, that missing mapping is the finding — a `no-guide` violation against the folder rather than against the artifact.
 
-### caller-owns-the-maps
+### maps-come-from-the-caller
 
-The guide map and the canonical-home map are the caller's declarations, bound as inputs. This operation resolves through whichever maps it receives and never carries a workflow's map of its own.
+Resolve every map through the bound `{guide_map}` and `{canonical_home_map}` only. A workflow's artifacts are never measured against another workflow's map, and reaching for a familiar map that the caller did not bind is a wrong measurement whatever it reports.
