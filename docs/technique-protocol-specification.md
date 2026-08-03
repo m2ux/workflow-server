@@ -143,12 +143,12 @@ The attribute states *who reads* an artifact and *that* an agent artifact is JSO
 the shape of any particular JSON payload — the per-artifact field schemas belong to each artifact's
 own creation guide.
 
-**Naming the reader and converting the file are one act.** Because `agent` implies JSON on disk, an
-ID-bearing register that is markdown today is declared `human` until it is converted, even where a
-later step is its only reader. A declaration therefore describes the artifact as it exists, never as
-it is intended to become. `scripts/artifact-guide-baseline.json` carries the registers awaiting that
-conversion under the `row-register-awaiting-conversion` rationale, so which declarations are
-provisional is readable from the repo rather than from a planning folder.
+**Naming the reader and converting the file are one act.** Because `agent` implies JSON on disk, a
+declaration cannot name a later step as the reader while the file is still markdown. An ID-bearing
+register in that position therefore carries **no** `audience` at all until it is converted — a
+declaration states the reader of the artifact as it exists, and the absent case is the honest one
+while the format is in transit. The registers waiting are listed in the conversion issue, and
+`check-audience` deliberately does not require presence, so the wait is not a standing failure.
 
 #### The symbol model
 

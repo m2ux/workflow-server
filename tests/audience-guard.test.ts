@@ -6,16 +6,14 @@ import { collectAudienceViolations, collectFindings } from '../scripts/check-aud
 import { corpusRoot } from './corpus-root.js';
 
 /**
- * Audience guard, two families, both hard zero:
+ * Audience convention guard (#224 V4): an output declared `audience: agent` that also carries an
+ * `#### artifact` filename must name a JSON artifact — an agent-audience artifact is serialized as
+ * JSON on disk (docs/technique-protocol-specification.md §3.2). Hard zero: the convention has no
+ * accepted exceptions, and the retired baseline held an empty array (#327 R5).
  *
- *   audience-declared    Every output carrying an `#### artifact` filename declares an audience.
- *                        The attribute defaults to `human` when absent, so without this check a
- *                        considered decision and a silent default are the same text (#403 W2).
- *   audience-json-format An output declared `audience: agent` names a JSON artifact — an
- *                        agent-audience artifact is serialized as JSON on disk
- *                        (docs/technique-protocol-specification.md §3.2).
- *
- * Neither family has accepted exceptions, and the retired baseline held an empty array (#327 R5).
+ * Presence is deliberately unchecked. A register whose only reader is a later step is agent state in
+ * substance but markdown in form, so it carries no declaration until #428 converts it; a presence
+ * check would fail on exactly the set that is waiting.
  */
 
 const FM = ['---', 'metadata:', '  version: 1.0.0', '---', ''];
@@ -30,9 +28,8 @@ async function writeTechnique(techniquesDir: string, id: string, outputsBody: st
 }
 
 describe('audience guard (corpus)', () => {
-  // PR227-TC-10 — the real corpus declares no non-JSON agent-audience artifact, and since #403 W2
-  // every artifact-bearing output declares its reader.
-  it('declares an audience on every artifact and names every agent artifact as JSON', async () => {
+  // PR227-TC-10 — the real corpus declares no non-JSON agent-audience artifact.
+  it('names every agent-audience artifact as JSON', async () => {
     const findings = await collectFindings(corpusRoot());
     expect(findings.map((f) => `${f.site} — ${f.detail}`)).toEqual([]);
   });
@@ -62,19 +59,15 @@ describe('audience guard (fixture corpus)', () => {
     expect(violations[0]!.detail).toContain('assumptions-log.md');
   });
 
-  // #403 W2 — an artifact with no audience declaration is flagged, because absent reads as `human`
-  // and a silent default is indistinguishable from a decision.
-  it('flags an artifact-bearing output that declares no audience', async () => {
+  // An artifact with no audience declaration is out of scope: absent means `human`, and the
+  // registers awaiting conversion (#428) rely on that until their format changes.
+  it('passes an artifact-bearing output that declares no audience', async () => {
     const dir = join(tempDir, 'fixture-wf', 'techniques');
     await writeTechnique(dir, 'undeclared', [
       '### report', '', 'A report with no declared reader.', '',
       '#### artifact', '', '`design-review.md`',
     ]);
-    const violations = await collectAudienceViolations(tempDir);
-    expect(violations.map((v) => `${v.check} ${v.key}`)).toEqual([
-      'audience-declared fixture-wf::undeclared::report',
-    ]);
-    expect(violations[0]!.detail).toContain('without declaring an audience');
+    expect(await collectAudienceViolations(tempDir)).toEqual([]);
   });
 
   it('passes a JSON-named agent-audience artifact and a human-audience markdown artifact', async () => {
