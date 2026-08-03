@@ -33,4 +33,4 @@ Creation guide for bare filename `findings-register.md`. The register holds the 
 - **Every row has a detail section.** The row is the index; the section carries the full tuple, the anchor, and the rationale. A dismissed candidate records the contradicting anchor there.
 - **The tuple is complete before the register is finished.** An incomplete tuple is what the grade-tuple completeness gate looks for, so a row with a partial tuple is unfinished work rather than a finding.
 - **Disposition comes from the threshold.** Accepted, observation, and dismissed are assigned per the [accepted-issue threshold](./grading-rubric.md#accepted-issue-threshold); this template records the assignment and its rationale.
-- **Line budget:** ~15 lines per finding section, and the summary line replaces any count table.
+- **Line budget:** ~15 lines per finding section and ~200 lines for the register, and the summary line replaces any count table. A register at the ceiling with candidates left to record means the sections are carrying evidence the probe artifacts own.

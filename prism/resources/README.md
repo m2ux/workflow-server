@@ -289,7 +289,26 @@ Document skeletons, as distinct from the lens prompts above. A per-lens analysis
 | `DEFINITIVE-FINDINGS.md` | [definitive-findings-template](definitive-findings-template.md) |
 | `behavioral-synthesis.md` | [behavioral-synthesis](behavioral-synthesis.md) |
 | `dispute-synthesis.md` | [dispute-synthesis](dispute-synthesis.md) |
-| A per-lens analysis artifact (`{lens_name}-analysis.md`, `portfolio-{lens_name}.md`, `reflect-*.md`, `verified-*.md`, `adaptive-stage*.md`, `behavioral-*.md`, `subsystem-*.md`, `smart-prereq.md`, `structural-analysis.md`, `adversarial-analysis.md`, `synthesis.md`, `dispute-lens-*.md`) | The lens resource the unit's lens slug names |
+| `{lens_name}-analysis.md`, `portfolio-{lens_name}.md`, `dispute-lens-a.md`, `dispute-lens-b.md` | The lens resource the unit's lens slug names |
+| `subsystem-{code_subsystem.subsystem_name}.md` | The prism resource the subsystem assignment names for that region |
+| `structural-analysis.md` | [l12](l12.md) |
+| `adversarial-analysis.md` | [l12-complement-adversarial](l12-complement-adversarial.md) |
+| `synthesis.md` | [l12-synthesis](l12-synthesis.md) |
+| `reflect-l12.md` | [l12](l12.md) |
+| `reflect-meta.md` | [claim](claim.md) |
+| `verified-initial.md` | [l12](l12.md) |
+| `verified-gaps.md` | [knowledge-boundary](knowledge-boundary.md) with [knowledge-audit](knowledge-audit.md) |
+| `verified-corrected.md` | [l12](l12.md) |
+| `adaptive-stage1.md` | [deep-scan](deep-scan.md) |
+| `adaptive-stage2.md` | [l12](l12.md) |
+| `behavioral-errors.md` | [error-resilience](error-resilience.md) |
+| `behavioral-costs.md` | [optimize](optimize.md) |
+| `behavioral-changes.md` | [evolution](evolution.md) |
+| `behavioral-promises.md` | [api-surface](api-surface.md) |
+| `subsystem-synthesis.md` | [subsystem-synthesis](subsystem-synthesis.md) |
+| `smart-prereq.md` | [prereq](prereq.md) |
+
+`reflect-synthesis.md` and `portfolio-synthesis.md` are absent from this map on purpose: their producing steps prescribe the sections inline and dispatch no lens, so no resource owns their shape yet. Both are triaged as owing a guide rather than mapped to a lens that does not shape them.
 
 ---
 
