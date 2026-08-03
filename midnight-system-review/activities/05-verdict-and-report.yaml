@@ -1,5 +1,5 @@
 id: verdict-and-report
-version: 1.0.0
+version: 1.1.0
 name: Verdict and Report
 description: Compute the merge-readiness verdict from accepted findings, render the review report with per-area accounting, and secure verdict sign-off.
 required: true
@@ -20,6 +20,12 @@ steps:
     actions:
       - action: validate
         message: Verdict presentation is blocked until the report's per-area accounting reconciles — every investigation area reports its probe and finding counts, every finding maps to exactly one area, and totals match the findings register (accounting reconciliation gate)
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        guide_map: midnight-system-review/README#planning-artifact-to-guide-map
   - kind: checkpoint
     id: verdict-review
     message: "Merge-readiness verdict: {merge_readiness_verdict}/5 ({review_type}). The full report with per-area accounting is in review-report.md. Accept the verdict, or reopen the investigation?"

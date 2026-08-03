@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -33,7 +33,7 @@ Every planning fact has exactly one canonical artifact. Where a second artifact 
 
 ### canonical-home-map
 
-No fact category below has a second canonical home. [verify-artifact-conforms](./workflow-definition/verify-artifact-conforms.md) enforces the map.
+No fact category below has a second canonical home. [verify-artifact-conforms](../../meta/techniques/verify-artifact-conforms.md) enforces the map.
 
 | Fact category | Canonical home |
 |---|---|

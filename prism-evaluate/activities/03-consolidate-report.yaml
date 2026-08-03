@@ -1,5 +1,5 @@
 id: consolidate-report
-version: 2.0.0
+version: 2.1.0
 name: Consolidate Evaluation Report
 description: Consolidate the per-dimension DEFINITIVE-FINDINGS.md into a unified EVALUATION-REPORT.md.
 steps:
@@ -15,6 +15,12 @@ steps:
   - kind: technique
     id: verify-report
     technique: compose-evaluation-report::verify-report
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        artifact_dir: output_path
 outcome:
   - The consumer has a single severity-calibrated evaluation of the target — cross-dimensional findings and actionable recommendations to decide from
 transitions:

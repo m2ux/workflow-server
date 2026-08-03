@@ -1,5 +1,5 @@
 id: lint-wiki
-version: 1.0.0
+version: 1.1.0
 name: Lint Wiki
 description: Run the wiki integrity checks over the built pages and decide whether findings warrant a re-ingest pass.
 required: true
@@ -7,6 +7,13 @@ steps:
   - kind: technique
     id: lint
     technique: lint
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        artifact_dir: wiki_path
+        guide_map: codebase-wiki/README#planning-artifact-to-guide-map
   - kind: checkpoint
     id: lint-findings-confirmed
     condition:
