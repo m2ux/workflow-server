@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.5.0
+  version: 3.6.0
 ---
 
 ## Capability
@@ -73,7 +73,7 @@ Artifacts describe the work, not the process that produced it: no "per user requ
 
 ### plain-technical-language
 
-Specific, plain technical language: no vague descriptions ("various improvements", "might be better"), no unquantified claims where a number is known, no hidden negative consequences.
+Human-audience artifacts are written to the [Artifact Writing Register](../../../meta/resources/writing-register.md).
 
 ### artifact-prefix
 
