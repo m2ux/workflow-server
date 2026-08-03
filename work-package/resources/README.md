@@ -41,11 +41,18 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 
 ## Planning artifact to guide map
 
-Where a filename's shape is not stated by a guide that names it. Every other artifact resolves through the guide carrying its name.
+Which guide owns each persisted filename's shape.
 
 | Bare filename | Guide |
 |---------------|-------|
 | `README.md` | [readme](readme.md) pointer to the meta [planning-readme](../../meta/resources/planning-readme.md) Template plus [readme-seed](readme-seed.md) |
+| `requirements-elicitation.md` | [requirements-elicitation](requirements-elicitation.md) |
+| `implementation-analysis.md` | [implementation-analysis](implementation-analysis.md) |
+| `assumptions-log.md` | [assumptions-review](assumptions-review.md) |
+| `test-plan.md` | [test-plan](test-plan.md) |
+| `code-review.md` | [rust-substrate-code-review](rust-substrate-code-review.md#report-template) |
+| `test-suite-review.md` | [test-suite-review](test-suite-review.md) |
+| `session-trace.md` | [session-trace](session-trace.md) |
 | `architecture-summary.md` | [architecture-summary](architecture-summary.md) |
 | `strategic-review-{n}.md` | [strategic-review](strategic-review.md) |
 | `{codebase_area}.md` | [codebase-comprehension](codebase-comprehension.md) |
