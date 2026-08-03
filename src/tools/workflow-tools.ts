@@ -20,7 +20,7 @@ import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { dispatchKind, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
-import { batchActivities, batchBound, batchRefusal, batchRefusalMessage, deliveredChars, recordBatchRefusal } from '../utils/batch.js';
+import { batchActivities, batchBound, batchMayContinue, batchRefusal, batchRefusalMessage, deliveredChars, recordBatchRefusal } from '../utils/batch.js';
 import { extractResourceIds, qualifyResourceId } from '../utils/resource-ref.js';
 import { readdir } from 'node:fs/promises';
 import { join as pathJoin } from 'node:path';
@@ -1258,8 +1258,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         delivered_chars: batchChars,
         budget_chars: bound.budgetChars,
         remaining_chars: unbounded ? null : Math.max(0, bound.budgetChars - batchChars),
-        may_continue: unbounded
-          || (batchTaken.length < bound.maxActivities && batchChars <= bound.budgetChars),
+        may_continue: batchMayContinue(next, scope, bound),
       };
 
       return {

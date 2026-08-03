@@ -3,6 +3,7 @@ import { createInitialSessionFile, type SessionFile } from '../src/schema/sessio
 import {
   batchActivities,
   batchBound,
+  batchMayContinue,
   batchRefusal,
   batchRefusalMessage,
   deliveredChars,
@@ -81,9 +82,9 @@ describe('batch bound arithmetic (#407)', () => {
   it('charges eagerly bundled content once, the activity payload it travelled inside', () => {
     const state = session();
     // The activity payload IS the whole response, bundled techniques and resources included. Their
-    // own events exist for delivery observability; adding them charges the same bytes twice, which
-    // measured at +48% on one activity of the main workflow and would have made the budget bind at
-    // roughly two thirds of its stated size.
+    // own events exist for delivery observability; adding them charges the same bytes twice, measured
+    // at +48% on one activity of the main workflow and +70% over a run of three, which made a nominal
+    // 280,000-character budget bind at 164,540.
     deliver(state, 'worker-a', 'implementation-analysis', 1_000);
     state.history.push({
       timestamp: new Date().toISOString(), type: 'technique_bundled', activity: 'implementation-analysis',
@@ -132,10 +133,57 @@ describe('batch bound arithmetic (#407)', () => {
     expect(batchBound(1_000, { ...POLICY, maxActivities: 0.4 }).maxActivities).toBe(1);
   });
 
-  it('admits the activity a fresh context was dispatched for, whatever the bound says', () => {
+  it('floors a budget that does not divide evenly, so the reported figure is the enforced one', () => {
+    // 1,001 × 0.35 × 4 = 1,401.4. Reporting 1,401 while comparing against 1,401.4 would make the
+    // recorded budget a number that was never applied.
+    expect(batchBound(1_001, POLICY).budgetChars).toBe(1_401);
+  });
+
+  it('admits a batch sitting exactly on its budget, and refuses the character after it', () => {
+    const bound = batchBound(1_000, POLICY);
+    expect(bound.budgetChars).toBe(1_400);
+
+    const atBudget = session();
+    deliver(atBudget, 'worker-a', 'implementation-analysis', 1_400);
+    expect(batchRefusal(atBudget, 'worker-a', 'plan-prepare', bound)).toBeUndefined();
+
+    const overBudget = session();
+    deliver(overBudget, 'worker-a', 'implementation-analysis', 1_401);
+    expect(batchRefusal(overBudget, 'worker-a', 'plan-prepare', bound)).toMatchObject({ limit: 'delivery_budget' });
+  });
+
+  it('answers may-continue as the exact complement of a refusal, boundary included', () => {
+    // The two ask one question from opposite sides: hand over the next activity, and come back for
+    // one. At the boundary they must agree — a batch sitting exactly on its budget is admitted, so it
+    // must also be told to continue. Two expressions of this drifted apart until they shared a home.
+    const bound = batchBound(1_000, POLICY);
+    for (const chars of [0, 1, 1_399, 1_400, 1_401, 9_999]) {
+      const state = session();
+      deliver(state, 'worker-a', 'implementation-analysis', chars);
+      const refused = batchRefusal(state, 'worker-a', 'plan-prepare', bound) !== undefined;
+      expect(batchMayContinue(state, 'worker-a', bound)).toBe(!refused);
+    }
+
+    // And at the cap, with the budget untouched.
+    const capped = session();
+    for (const activity of ['implementation-analysis', 'plan-prepare', 'assumptions-review']) {
+      deliver(capped, 'worker-a', activity, 1);
+    }
+    expect(batchMayContinue(capped, 'worker-a', bound)).toBe(false);
+    expect(batchRefusal(capped, 'worker-a', 'implement', bound)).toMatchObject({ limit: 'activity_cap' });
+
+    // The session's own agent is outside the question entirely.
+    expect(batchMayContinue(capped, 'orchestrator', bound)).toBe(true);
+  });
+
+  it('names the activity cap when both limits bind, because the tally is read per limit', () => {
+    // The cap is meant to do the routine work and the budget to catch unusually heavy runs, so which
+    // limit a refusal reports decides what the settings are revised from.
     const state = session();
-    // An empty ledger is a first arrival: there is no batch to extend yet.
-    expect(batchRefusal(state, 'worker-a', 'implementation-analysis', batchBound(1, POLICY))).toBeUndefined();
+    for (const activity of ['implementation-analysis', 'plan-prepare', 'assumptions-review']) {
+      deliver(state, 'worker-a', activity, 200_000);
+    }
+    expect(batchRefusal(state, 'worker-a', 'implement', batchBound(200_000, POLICY))).toMatchObject({ limit: 'activity_cap' });
   });
 
   it('admits an activity the context already holds, so a batch survives its gates', () => {
@@ -191,10 +239,13 @@ describe('batch bound arithmetic (#407)', () => {
     recordBatchRefusal(state, { scope: 'worker-a', activityId: 'plan-prepare', refusal });
     expect(state.history.filter(e => e.type === 'batch_refused')).toHaveLength(1);
 
-    // A different activity, or a different limit, is a different fact and is recorded.
+    // A different activity, a different limit, or a different CONTEXT is a different fact. Collapsing
+    // two workers refused on the same activity into one row would undercount the very figure the
+    // settings are revised from.
     recordBatchRefusal(state, { scope: 'worker-a', activityId: 'assumptions-review', refusal });
     recordBatchRefusal(state, { scope: 'worker-a', activityId: 'plan-prepare', refusal: { ...refusal, limit: 'activity_cap' } });
-    expect(state.history.filter(e => e.type === 'batch_refused')).toHaveLength(3);
+    recordBatchRefusal(state, { scope: 'worker-b', activityId: 'plan-prepare', refusal });
+    expect(state.history.filter(e => e.type === 'batch_refused')).toHaveLength(4);
   });
 
   it('records the limit a refusal met, with the arithmetic that produced it', () => {

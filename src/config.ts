@@ -97,7 +97,7 @@ export interface ServerConfig {
    * may accumulate in delivered content before the server refuses the next one.
    * Its own setting, because it answers a different question from
    * `bundleHeadroomFraction`: that one asks how much of a window one activity may
-   * spend on inlined step techniques, and at 0.80 the arithmetic admits nine of
+   * spend on inlined step techniques, and at 0.80 the arithmetic admits thirteen of
    * the main workflow's fifteen activities into a single context. Default 0.35
    * (see DEFAULT_BATCH_HEADROOM_FRACTION). Env override:
    * `BATCH_HEADROOM_FRACTION`, clamped to [0, 1].
@@ -170,7 +170,7 @@ export const DEFAULT_BUNDLE_CHARS_PER_TOKEN = 4;
  * a run of unusually heavy activities. It also leaves some 125,000 characters of
  * headroom for what a worker fetches lazily while running those activities, which
  * draws down the same budget and is not visible at the moment an activity is
- * delivered. The bundling fraction of 0.80 would admit nine of fifteen activities
+ * delivered. The bundling fraction of 0.80 would admit thirteen of fifteen activities
  * into one context.
  *
  * Both values are revised from `batch_refused` counts and per-activity usage rows

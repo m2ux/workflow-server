@@ -1,5 +1,8 @@
 import { describe, it, expect } from 'vitest';
+import { readFileSync } from 'node:fs';
 import { DEFAULT_RUN, DEFAULT_SPAWN_SECONDS, measure } from '../../scripts/run-batch-benchmark.js';
+import { deliveredChars } from '../../src/utils/batch.js';
+import type { SessionFile } from '../../src/schema/session.schema.js';
 
 /**
  * Batch duration smoke test (#407).
@@ -38,19 +41,27 @@ describe('batch duration smoke (#407)', () => {
     const dispatchesAvoided = perActivity.dispatches - batched.dispatches;
     expect(dispatchesAvoided).toBe(2);
 
-    // Content collapses against what the one context already holds. The floor is deliberately well
-    // under the figure a real run collapses at — this is a regression tripwire, not a target.
+    // The two accountings agree. This script counts deliveries itself, which is a second
+    // implementation of the server's rule — and a second implementation nobody reconciles is how the
+    // same double count got into both at once, moving this figure by 8 points with the suite green.
+    expect(batched.deliveredChars).toBe(batched.serverDeliveredChars);
+    expect(perActivity.deliveredChars).toBe(perActivity.serverDeliveredChars);
+
+    // Content collapses against what the one context already holds. The floor sits close under the
+    // measured 24.4%, so a regression that quietly halves the saving fails here.
     const charSavingPct = ((perActivity.deliveredChars - batched.deliveredChars) / perActivity.deliveredChars) * 100;
-    expect(charSavingPct).toBeGreaterThan(5);
+    expect(charSavingPct).toBeGreaterThan(20);
 
     // Server-side elapsed is a wash — a batch trades extra hashing for fewer bytes — so the bound
     // here is that batching does not make the server materially slower, not that it makes it faster.
-    // The tolerance is wide because a single walk of a few hundred milliseconds is noise-dominated.
+    // The tolerance is wide because a single walk of a few hundred milliseconds is noise-dominated,
+    // and the per-activity pass runs first, so it absorbs the cold-cache penalty.
     expect(batched.elapsedMs).toBeLessThan(perActivity.elapsedMs * 1.6);
 
-    // The run-duration figure, priced from contexts avoided rather than measured here.
+    // The spawn cost is a profiling input, not a measurement this test makes. Pinning it keeps a
+    // change to the projected run duration deliberate rather than a side effect.
+    expect(DEFAULT_SPAWN_SECONDS).toBe(87);
     const projectedSecondsSaved = dispatchesAvoided * DEFAULT_SPAWN_SECONDS;
-    expect(projectedSecondsSaved).toBeGreaterThan(0);
 
     process.stderr.write(
       `batch duration smoke — ${DEFAULT_RUN.length} activities: `

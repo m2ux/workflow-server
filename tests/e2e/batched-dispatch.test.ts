@@ -106,6 +106,13 @@ describe('batched dispatch (#407)', () => {
     // At the cap, the context is told not to ask again.
     expect(walk.batches[2]!['may_continue']).toBe(false);
 
+    // Headroom is what a worker's lazy fetches eat into, so it has to be the budget less what has
+    // been delivered — not a decoration. It is still ample here, which is why the cap closes the run.
+    for (const batch of walk.batches) {
+      expect(batch['remaining_chars']).toBe((batch['budget_chars'] as number) - (batch['delivered_chars'] as number));
+      expect(batch['remaining_chars'] as number).toBeGreaterThan(0);
+    }
+
     // Walking on is not a second copy of anything, so nothing is recorded as one.
     expect(walk.history.filter(e => e.type === 'activity_redelivered')).toHaveLength(0);
   });

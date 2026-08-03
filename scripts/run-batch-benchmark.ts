@@ -30,9 +30,9 @@
  * supplied as a flag, rather than inventing one:
  *
  *   --spawn-seconds=<n>   Wall-clock a real dispatch costs before the worker's first server call.
- *                         Default 41, the mean of the four setup-walk dispatches on the profiled
- *                         27 July 2026 run (the most expensive of them ran 165s). Override it with
- *                         your own harness's figure — the projection is only as good as this input.
+ *                         Default 87, the mean of the four setup-walk dispatches on the profiled
+ *                         27 July 2026 run — 77, 65, 42 and 165 seconds. Override it with your own
+ *                         harness's figure; the projection is only as good as this input.
  *
  * The projected saving is `dispatchesAvoided × spawnSeconds`, reported separately from the measured
  * server-side elapsed and clearly labelled, so the two are never added into one headline number.
@@ -47,7 +47,7 @@
  *   --workflow=<id>        Workflow to walk (default: work-package)
  *   --activities=<a,b,c>   Run to walk, comma-separated (default: the measured analysis run)
  *   --context-tokens=<n>   Window each pass declares (default: 200000)
- *   --spawn-seconds=<n>    Measured per-dispatch spawn cost for the projection (default: 41)
+ *   --spawn-seconds=<n>    Measured per-dispatch spawn cost for the projection (default: 87)
  *   --repeat=<n>           Walk each pass n times and report the best elapsed (default: 3)
  *   --gate                 Exit 3 unless the batched pass saves at least --min-saving-pct of chars
  *   --min-saving-pct=<n>   Gate threshold, percent of the per-activity pass's chars (default: 15)
@@ -62,19 +62,26 @@ import { join } from 'node:path';
 import { pathToFileURL } from 'node:url';
 import { createHarness, rawText, isError, parseToolResponse } from '../tests/e2e/harness.js';
 import type { HistoryEntry } from '../src/schema/state.schema.js';
+import type { SessionFile } from '../src/schema/session.schema.js';
+import { deliveredChars } from '../src/utils/batch.js';
 
 /** The analysis run through the middle of the main workflow — the best measured batch candidate. */
 export const DEFAULT_RUN = ['implementation-analysis', 'plan-prepare', 'assumptions-review'];
 
 /** Mean per-dispatch spawn wall-clock across the four setup workers of the profiled 27 July run. */
-export const DEFAULT_SPAWN_SECONDS = 41;
+export const DEFAULT_SPAWN_SECONDS = 87;
 
 export interface PassMetrics {
   /** How the pass drove the walk. */
   mode: 'per-activity' | 'batched';
   /** Characters the server delivered in full across the whole run. */
   deliveredChars: number;
-  /** Characters that collapsed to unchanged markers — what the run did NOT resend. */
+  /**
+   * Characters reported as collapsed by a content-fetch event. NOT the run's total saving: most
+   * collapse happens inside an activity payload, which shows up as a smaller `activity_dispatched`
+   * size rather than as an `unchanged` event. Compare `deliveredChars` between the passes for the
+   * saving; this field only sees the lazy fetches.
+   */
   savedChars: number;
   /** Contexts the server met, which is what a dispatch costs a harness. */
   dispatches: number;
@@ -82,6 +89,12 @@ export interface PassMetrics {
   elapsedMs: number;
   /** Per activity, in walk order: the characters that activity's delivery carried. */
   perActivityChars: number[];
+  /**
+   * The same total, computed by the SERVER's own `deliveredChars` over the same session. This script's
+   * `magnitudes` is a second implementation of one counting rule, and a second implementation nobody
+   * reconciles is how the double count got into both of them at once. A caller asserts the two agree.
+   */
+  serverDeliveredChars: number;
 }
 
 function flag(name: string): string | undefined {
@@ -139,7 +152,7 @@ function magnitudes(history: HistoryEntry[]): { deliveredChars: number; savedCha
 async function walk(
   mode: PassMetrics['mode'],
   opts: { workflowId: string; activities: string[]; contextTokens: number; slug: string },
-): Promise<{ deliveredChars: number; savedChars: number; dispatches: number; elapsedMs: number; perActivityChars: number[] }> {
+): Promise<Omit<PassMetrics, 'mode'>> {
   const h = await createHarness();
   try {
     const planningFolder = join(h.workspaceDir, '.engineering/artifacts/planning', opts.slug);
@@ -172,15 +185,19 @@ async function walk(
     }
 
     const elapsedMs = Number(process.hrtime.bigint() - startedAt) / 1e6;
-    const history = (JSON.parse(readFileSync(join(planningFolder, 'session.json'), 'utf8')) as { history?: HistoryEntry[] }).history ?? [];
-    const dispatches = new Set(
+    const state = JSON.parse(readFileSync(join(planningFolder, 'session.json'), 'utf8')) as SessionFile;
+    const history = state.history ?? [];
+    const scopes = new Set(
       history
         .filter((e) => e.type === 'activity_dispatched')
         .map((e) => (e.data as { agentId?: string } | undefined)?.agentId)
         .filter((id): id is string => typeof id === 'string'),
-    ).size;
+    );
+    // Reconciliation figure: the server's own counting over every scope this pass used, which for the
+    // batched pass is the one batch scope and for the per-activity pass is one scope an activity.
+    const serverDeliveredChars = [...scopes].reduce((total, scope) => total + deliveredChars(state, scope), 0);
 
-    return { ...magnitudes(history), dispatches, elapsedMs, perActivityChars };
+    return { ...magnitudes(history), dispatches: scopes.size, elapsedMs, perActivityChars, serverDeliveredChars };
   } finally {
     await h.close();
   }

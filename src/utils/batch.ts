@@ -21,7 +21,7 @@ import type { SessionFile } from '../schema/session.schema.js';
  * - A CUMULATIVE character budget over everything already delivered to the scope, derived from the
  *   caller's declared `context_tokens` under a headroom fraction of its own. The eager-bundling
  *   fraction answers a different question — how much of one activity's window may go to inlined
- *   step techniques — and at that setting the arithmetic admits nine of the main workflow's fifteen
+ *   step techniques — and at that setting the arithmetic admits thirteen of the main workflow's fifteen
  *   activities into a single context.
  * - A hard cap on distinct activities. A character count is blind to the context establishment the
  *   server never delivers, the code the worker reads, the artifacts it drafts, and degradation
@@ -88,8 +88,8 @@ export function batchActivities(state: SessionFile, scope: string): string[] {
  * - `activity_dispatched.chars` is the size of the whole `get_activity` response, so it already
  *   includes every technique and resource that response bundled eagerly. Those arrive with their own
  *   `technique_bundled` / `resource_fetched` events, recorded for delivery observability, and adding
- *   them would charge the same bytes twice — measured at +48% on one activity of the main workflow,
- *   which would have made a nominal budget bind at roughly two thirds of its stated size.
+ *   them would charge the same bytes twice — measured at +48% on one activity of the main workflow and
+ *   +70% over a run of three, which made a nominal 280,000-character budget bind at 164,540.
  * - `technique_fetched`, and a `resource_fetched` the response did not bundle, are what the worker
  *   went back for LAZILY. Those bytes are in no activity payload, so they count.
  * - `activity_redelivered` reports the same payload as the `activity_dispatched` event recorded by
@@ -140,6 +140,31 @@ export function batchBound(
 }
 
 /**
+ * Whether a batch of `activities` that has been delivered `chars` is inside both limits.
+ *
+ * The one home for the comparison, because it is asked twice from opposite sides: the refusal below
+ * asks whether to hand over the next activity, and `may_continue` on a delivery response asks whether
+ * the worker should come back for one. Two expressions of one rule drift, and the boundary is exactly
+ * where they drift — a batch sitting on its budget must be both admitted and told to continue.
+ */
+export function withinBatchBound(activities: number, chars: number, bound: BatchBound): boolean {
+  return activities < bound.maxActivities && chars <= bound.budgetChars;
+}
+
+/**
+ * Whether `scope` may take a further activity, as of what it has been delivered. The session's own
+ * agent always may — its run is the session, not a batch.
+ *
+ * Answered as of this moment, and a worker goes on to fetch techniques and resources lazily while it
+ * runs the activity it just took, drawing down the same budget. So `true` here can still become a
+ * refusal at the next boundary; the headroom reported alongside is what those fetches eat into.
+ */
+export function batchMayContinue(state: SessionFile, scope: string, bound: BatchBound): boolean {
+  if (scope === state.agentId) return true;
+  return withinBatchBound(batchActivities(state, scope).length, deliveredChars(state, scope), bound);
+}
+
+/**
  * Why this scope may not take `activityId` as the next activity of its batch, if it may not.
  *
  * `undefined` means deliver. A scope that is the session's own agent, or that is arriving for an
@@ -157,10 +182,13 @@ export function batchRefusal(
   if (activities.length === 0) return undefined;
 
   const chars = deliveredChars(state, scope);
+  if (withinBatchBound(activities.length, chars, bound)) return undefined;
+
+  // Past the bound, so which limit to name. The cap is reported ahead of the budget because it is the
+  // limit meant to do the routine work, and the recorded tally is read per limit to revise both.
   const refusal = { activities: activities.length, chars, bound };
   if (activities.length >= bound.maxActivities) return { limit: 'activity_cap', ...refusal };
-  if (chars > bound.budgetChars) return { limit: 'delivery_budget', ...refusal };
-  return undefined;
+  return { limit: 'delivery_budget', ...refusal };
 }
 
 /** What the refused caller is told, and what the recorded event carries as its reason. */

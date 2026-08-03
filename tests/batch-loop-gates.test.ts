@@ -100,14 +100,34 @@ describe('client activity loop gates (#407)', () => {
     expect(fired.continueBatch).toBe(false);
   });
 
-  it('dispatches a replacement in the same iteration when a continuation releases the batch', () => {
-    // A continuation that cannot complete — a worker that returned nothing, or one the server refused
-    // because its batch turned out to be spent — returns a null identity. Dispatch follows the
-    // continuation in the body, so the replacement is spawned without waiting for another iteration.
-    // Holding the identity here would be a loop that neither continues nor dispatches.
-    const fired = firing({ worker_agent_id: null, worker_result: { result_type: 'activity_complete', batch_may_continue: true, next_activity_id: 'plan-prepare' } });
+  it('never continues and dispatches in the same iteration', () => {
+    // The two are complements on the identity, so the pointer is advanced by exactly one of them.
+    // Both firing would advance twice — and a second advance onto an activity already current records
+    // it exited and complete before a worker has walked a step of it.
+    const bags: Array<Record<string, unknown>> = [
+      {},
+      complete({}),
+      complete({ batch_may_continue: false }),
+      complete({ next_activity_id: null }),
+      { worker_agent_id: 'worker-1', worker_result: { result_type: 'checkpoint_pending' } },
+      { worker_agent_id: 'worker-1' },
+      { worker_result: (complete({}) as { worker_result: unknown }).worker_result },
+    ];
+    for (const vars of bags) {
+      const fired = firing(vars);
+      expect(fired.continueBatch && fired.dispatch).toBe(false);
+    }
+  });
+
+  it('shuts the continuation on an envelope that is not a completed activity', () => {
+    // A worker that yielded reports a gate, not a finished activity. Continuing on that envelope
+    // would advance the pointer off an activity still in progress.
+    const fired = firing({
+      worker_agent_id: 'worker-1',
+      worker_result: { result_type: 'checkpoint_pending', batch_may_continue: true, next_activity_id: 'plan-prepare' },
+    });
     expect(fired.continueBatch).toBe(false);
-    expect(fired.dispatch).toBe(true);
+    expect(fired.gatePath).toBe(true);
   });
 
   it('takes the gate path without touching dispatch or the commit', () => {
