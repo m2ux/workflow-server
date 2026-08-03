@@ -135,6 +135,19 @@ describe('profileRun', () => {
     expect(profile.openingActivity).toBe('start-work-package');
   });
 
+  it('says so when worker turns are inline and unreadable, rather than reporting zero', () => {
+    const inline = profileRun(join(FIXTURES, 'inline-workers-run.jsonl'));
+
+    expect(inline.workerTurnsUnread).toBe(true);
+    expect(inline.workerTotals.cacheCreationTokens).toBe(0);
+    // The inline worker turn is excluded from the orchestrator's own figures either way.
+    expect(inline.main.cacheCreationTokens).toBe(6900);
+  });
+
+  it('leaves the flag off when the worker transcripts are where it can read them', () => {
+    expect(profile.workerTurnsUnread).toBeUndefined();
+  });
+
   it('is not fooled by a second meta session created before the client workflow is dispatched', () => {
     // 8608448b in the corpus does this: the run abandons its first meta session and starts another.
     const restarted = profileRun(join(FIXTURES, 'restarted-meta-run.jsonl'));

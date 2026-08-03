@@ -146,6 +146,11 @@ export interface RunProfile {
   main: UsageTotals;
   workers: WorkerProfile[];
   workerTotals: UsageTotals;
+  /**
+   * Set when the transcript carries worker turns inline and has no `subagents/` directory beside it:
+   * the worker figures are then zero because none could be read, not because none were paid.
+   */
+  workerTurnsUnread?: boolean;
   /** Result characters the orchestrator received in the window, by tool. */
   resultCharsByTool: Record<string, number>;
 }
@@ -204,8 +209,9 @@ function emptyTotals(): UsageTotals {
  * Records are grouped by `requestId` — the response identity — and each field is reduced with `max`
  * across a group. The cache and input counters are one value repeated on every record of the
  * response, so the maximum is that value; `output_tokens` grows to its final count on the record
- * that closes the response, so the maximum is that count. A usage-bearing record with no
- * `requestId` stands as its own response, keyed on its `uuid`.
+ * that closes the response, so the maximum is that count. A record with no `requestId` falls back to
+ * the message id, which the records of one response also share, and then to its own `uuid` — so a
+ * record carrying neither stands as its own response rather than merging with an unrelated one.
  */
 export function sumUsage(records: Iterable<TranscriptRecord>): UsageTotals {
   const totals = emptyTotals();
@@ -400,8 +406,8 @@ function inWindow(records: TranscriptRecord[], from: number, to: number): Transc
   });
 }
 
-/** Timestamp of the tool call that spawned each worker, keyed on the harness `toolUseId`. */
-function spawnTimes(main: TranscriptRecord[]): Map<string, string> {
+/** Timestamp of every tool call, keyed on its id — a worker's `toolUseId` resolves to its dispatch. */
+function toolCallTimes(main: TranscriptRecord[]): Map<string, string> {
   const times = new Map<string, string>();
   for (const record of main) {
     if (!record.timestamp) continue;
@@ -419,7 +425,9 @@ export interface ProfileOptions {
 export function profileRun(transcriptPath: string, options: ProfileOptions = {}): RunProfile {
   const mode = options.window ?? 'startup';
   const path = resolve(transcriptPath);
-  const main = parseTranscript(readFileSync(path, 'utf8')).filter((r) => !r.isSidechain);
+  const all = parseTranscript(readFileSync(path, 'utf8'));
+  const main = all.filter((r) => !r.isSidechain);
+  const sidechainInMain = all.length !== main.length;
   if (!main.length) throw new Error(`transcript has no records: ${path}`);
 
   const sessionId = basename(path, '.jsonl');
@@ -434,9 +442,11 @@ export function profileRun(transcriptPath: string, options: ProfileOptions = {})
   const to = ms(end);
 
   const workers: WorkerProfile[] = [];
-  const spawns = spawnTimes(main);
+  const workerRecords: TranscriptRecord[] = [];
+  const toolCalls = toolCallTimes(main);
   const subagentsDir = join(dirname(path), sessionId, 'subagents');
-  if (existsSync(subagentsDir) && statSync(subagentsDir).isDirectory()) {
+  const hasSubagents = existsSync(subagentsDir) && statSync(subagentsDir).isDirectory();
+  if (hasSubagents) {
     for (const file of readdirSync(subagentsDir).filter((f) => f.endsWith('.jsonl')).sort()) {
       const agentId = basename(file, '.jsonl');
       const records = parseTranscript(readFileSync(join(subagentsDir, file), 'utf8'));
@@ -445,9 +455,11 @@ export function profileRun(transcriptPath: string, options: ProfileOptions = {})
       const meta = existsSync(metaPath)
         ? JSON.parse(readFileSync(metaPath, 'utf8')) as { description?: string; toolUseId?: string }
         : {};
-      const dispatchedAt = (meta.toolUseId ? spawns.get(meta.toolUseId) : undefined) ?? records[0]!.timestamp;
+      const dispatchedAt = (meta.toolUseId ? toolCalls.get(meta.toolUseId) : undefined) ?? records[0]!.timestamp;
       const at = ms(dispatchedAt);
-      // A worker belongs to the window its dispatch falls in; its own turns may run past the close.
+      // A worker belongs to the window its dispatch falls in, and its whole ledger belongs with it:
+      // a dispatch made to do startup work costs what it costs, even when its last turn lands after
+      // the milestone. No worker in the nine-run baseline overruns, so the two readings agree there.
       if (!Number.isFinite(at) || at < from || at > to) continue;
       const chars = resultCharsByTool(records, -Infinity, Infinity);
       workers.push({
@@ -459,15 +471,14 @@ export function profileRun(transcriptPath: string, options: ProfileOptions = {})
         resultCharsByTool: chars,
         resultCharsTotal: Object.values(chars).reduce((a, b) => a + b, 0),
       });
+      workerRecords.push(...records);
     }
   }
   workers.sort((a, b) => ms(a.dispatchedAt) - ms(b.dispatchedAt));
 
-  const workerRecords: TranscriptRecord[] = [];
-  for (const worker of workers) {
-    const records = parseTranscript(readFileSync(join(subagentsDir, `${worker.agentId}.jsonl`), 'utf8'));
-    workerRecords.push(...records);
-  }
+  // Worker turns live in their own files. A transcript that instead carries them inline would report
+  // no worker cost at all, so say so rather than reporting a silent zero.
+  const workerTurnsUnread = !hasSubagents && sidechainInMain;
 
   const milestoneOffsetsMin: Partial<Record<keyof Milestones, number>> = {};
   for (const [name, at] of Object.entries(milestones)) {
@@ -486,6 +497,7 @@ export function profileRun(transcriptPath: string, options: ProfileOptions = {})
     main: sumUsage(inWindow(main, from, to)),
     workers,
     workerTotals: sumUsage(workerRecords),
+    ...(workerTurnsUnread ? { workerTurnsUnread } : {}),
     resultCharsByTool: resultCharsByTool(main, from, to),
   };
 }
@@ -496,10 +508,13 @@ export function findTranscripts(prefix: string, projectsDir: string): string[] {
   if (!existsSync(projectsDir)) return hits;
   for (const project of readdirSync(projectsDir)) {
     const dir = join(projectsDir, project);
-    if (!statSync(dir).isDirectory()) continue;
-    for (const file of readdirSync(dir)) {
-      if (file.endsWith('.jsonl') && file.startsWith(prefix)) hits.push(join(dir, file));
-    }
+    // A projects root accumulates whatever the client left there, including dangling links.
+    try {
+      if (!statSync(dir).isDirectory()) continue;
+      for (const file of readdirSync(dir)) {
+        if (file.endsWith('.jsonl') && file.startsWith(prefix)) hits.push(join(dir, file));
+      }
+    } catch { /* unreadable entry */ }
   }
   return hits.sort();
 }
@@ -528,6 +543,10 @@ function report(profile: RunProfile): string {
     `   WORKER out=${thousands(workers.outputTokens).padStart(9)}  cache_write=${thousands(workers.cacheCreationTokens).padStart(11)}`
     + `  cache_read=${thousands(workers.cacheReadTokens).padStart(11)}  (${workers.responses} responses over ${workers.records} records)`,
   );
+  if (profile.workerTurnsUnread) {
+    lines.push('   ⚠ worker turns are inline in this transcript and no subagents/ directory sits beside it —'
+      + ' the worker figures above are unread, not zero');
+  }
   const ratio = workers.recordSummed.cacheCreationRatio;
   if (ratio !== null) {
     lines.push(`   worker cache-write record-summed: ${thousands(workers.recordSummed.cacheCreationTokens)} (${ratio.toFixed(2)}x this total)`);
