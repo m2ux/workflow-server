@@ -131,10 +131,16 @@ describe('profileRun', () => {
     expect(full.main.cacheCreationTokens).toBe(98300);
   });
 
-  it('takes the opening activity of whichever client workflow the run dispatched', () => {
-    const other = profileRun(RUN, { openingActivity: 'discover-session' });
+  it('reads the opening activity off the client session rather than being told it', () => {
+    expect(profile.openingActivity).toBe('start-work-package');
+  });
 
-    expect(other.milestoneOffsetsMin.clientFirstActivity).toBe(0.8);
-    expect(other.milestoneOffsetsMin.openingComplete).toBe(3);
+  it('is not fooled by a second meta session created before the client workflow is dispatched', () => {
+    // 8608448b in the corpus does this: the run abandons its first meta session and starts another.
+    const restarted = profileRun(join(FIXTURES, 'restarted-meta-run.jsonl'));
+
+    expect(restarted.openingActivity).toBe('intake-and-context');
+    expect(restarted.milestoneOffsetsMin.clientFirstActivity).toBe(4);
+    expect(restarted.milestoneOffsetsMin.openingComplete).toBe(6);
   });
 });

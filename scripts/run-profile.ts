@@ -29,13 +29,18 @@
  *   startSession        `start_session` — end of the bootstrap-protocol preamble
  *   firstWorker         the first worker dispatch
  *   firstCheckpoint     the first `present_checkpoint`
- *   clientFirstActivity the first `next_activity` naming the client workflow's opening activity;
- *                       everything before it is the meta workflow's ceremony
+ *   clientFirstActivity the first `next_activity` against a client session; everything before it is
+ *                       the meta workflow's ceremony
  *   openingComplete     the next `next_activity` after that, which reports the opening activity done
  *
  * A `next_activity` call names the activity being requested and carries the step manifest of the
  * one just finished, so the call *after* the opening activity is fetched is the call that reports it
  * complete. That is where substantive work begins, and it closes the default measurement window.
+ *
+ * The client session is read from the transitions themselves: a session index that never carries a
+ * meta activity belongs to the client workflow, and the first call against it names that workflow's
+ * `initialActivity`. Every client workflow in the corpus opens on a different id, so the profiler
+ * discovers the opening activity rather than being told it — and reports it.
  *
  * Checkpoint wait is the span between putting a question to the user and receiving the answer
  * (`AskUserQuestion` call to result), summed over the window and excluded from active duration.
@@ -51,7 +56,6 @@
  *   --transcript=<path>       Session transcript JSONL to profile directly. Repeatable.
  *   --projects-dir=<path>     Transcript root (default: ~/.claude/projects)
  *   --window=startup|full     Span to report (default: startup — t0 to the opening activity done)
- *   --opening-activity=<id>   Activity that opens the client workflow (default: start-work-package)
  *   --json                    One JSON array on stdout instead of the text report
  *
  * Exit: 0 on a completed profile; 1 if no run could be resolved or read.
@@ -125,6 +129,8 @@ export interface RunProfile {
   sessionId: string;
   transcriptPath: string;
   t0: string;
+  /** Opening activity of the client workflow this run dispatched, read from the transcript. */
+  openingActivity?: string;
   window: {
     mode: 'startup' | 'full';
     start: string;
@@ -145,7 +151,6 @@ export interface RunProfile {
 }
 
 const DEFAULT_PROJECTS_DIR = join(homedir(), '.claude', 'projects');
-const DEFAULT_OPENING_ACTIVITY = 'start-work-package';
 
 function flags(name: string): string[] {
   return process.argv.slice(2).filter((a) => a.startsWith(`--${name}=`)).map((a) => a.slice(name.length + 3));
@@ -275,9 +280,54 @@ function isTool(name: string | undefined, bare: string): boolean {
 /** The harness spawns a worker through one of these; which one depends on the client version. */
 const SPAWN_TOOLS = new Set(['Agent', 'Task']);
 
-function findMilestones(main: TranscriptRecord[], openingActivity: string): Milestones {
+/** One `next_activity` call: the session it transitions and the activity it asks for. */
+interface Transition {
+  at: string;
+  sessionIndex?: string;
+  activityId?: string;
+}
+
+function transitions(main: TranscriptRecord[]): Transition[] {
+  const calls: Transition[] = [];
+  for (const record of main) {
+    if (!record.timestamp) continue;
+    for (const block of blocks(record)) {
+      if (block.type !== 'tool_use' || !isTool(block.name, 'next_activity')) continue;
+      calls.push({
+        at: record.timestamp,
+        sessionIndex: typeof block.input?.session_index === 'string' ? block.input.session_index : undefined,
+        activityId: typeof block.input?.activity_id === 'string' ? block.input.activity_id : undefined,
+      });
+    }
+  }
+  return calls;
+}
+
+/**
+ * The meta workflow's activity roster, from `workflows/meta/activities/`. The bootstrap protocol
+ * fixes this one workflow, so its ids identify a meta session; every other session a run transitions
+ * belongs to the client workflow the meta walk dispatched.
+ */
+const META_ACTIVITIES = new Set([
+  'discover-session',
+  'initialize-session',
+  'resolve-target',
+  'dispatch-client-workflow',
+  'end-workflow',
+]);
+
+/**
+ * Milestones, and the client workflow's opening activity.
+ *
+ * The opening activity is found by the session it transitions rather than by its id: a session index
+ * that never carries a meta activity is a client session, and by the `next_activity` contract the
+ * first call against it names that workflow's `initialActivity`. Every client workflow in the corpus
+ * opens on a different id, so reading the session scope is what lets one profiler walk any of them —
+ * and it holds on a run that creates a second meta session before dispatching.
+ */
+function findMilestones(main: TranscriptRecord[]): { milestones: Milestones; openingActivity?: string } {
   const found: Milestones = {};
-  let sawClientFirstActivity = false;
+  let openingActivity: string | undefined;
   for (const record of main) {
     const at = record.timestamp;
     if (!at) continue;
@@ -287,18 +337,22 @@ function findMilestones(main: TranscriptRecord[], openingActivity: string): Mile
       if (!found.startSession && isTool(name, 'start_session')) found.startSession = at;
       if (!found.firstWorker && name && SPAWN_TOOLS.has(name)) found.firstWorker = at;
       if (!found.firstCheckpoint && isTool(name, 'present_checkpoint')) found.firstCheckpoint = at;
-      if (!isTool(name, 'next_activity')) continue;
-      if (sawClientFirstActivity) {
-        // A next_activity call carries the step manifest of the activity just finished, so the
-        // first one after the opening activity was fetched is the one reporting it complete.
-        found.openingComplete ??= at;
-      } else if (block.input?.activity_id === openingActivity) {
-        found.clientFirstActivity = at;
-        sawClientFirstActivity = true;
-      }
     }
   }
-  return found;
+
+  const calls = transitions(main);
+  const metaSessions = new Set(
+    calls.filter((c) => c.activityId && META_ACTIVITIES.has(c.activityId)).map((c) => c.sessionIndex),
+  );
+  const opening = calls.findIndex((c) => c.sessionIndex && !metaSessions.has(c.sessionIndex));
+  if (opening !== -1) {
+    found.clientFirstActivity = calls[opening]!.at;
+    openingActivity = calls[opening]!.activityId;
+    // A next_activity call carries the step manifest of the activity just finished, so the call
+    // after the opening activity is fetched is the one reporting it complete.
+    found.openingComplete = calls[opening + 1]?.at;
+  }
+  return { milestones: found, openingActivity };
 }
 
 /** Summed `AskUserQuestion` call-to-result spans inside the window, in minutes. */
@@ -360,12 +414,10 @@ function spawnTimes(main: TranscriptRecord[]): Map<string, string> {
 
 export interface ProfileOptions {
   window?: 'startup' | 'full';
-  openingActivity?: string;
 }
 
 export function profileRun(transcriptPath: string, options: ProfileOptions = {}): RunProfile {
   const mode = options.window ?? 'startup';
-  const openingActivity = options.openingActivity ?? DEFAULT_OPENING_ACTIVITY;
   const path = resolve(transcriptPath);
   const main = parseTranscript(readFileSync(path, 'utf8')).filter((r) => !r.isSidechain);
   if (!main.length) throw new Error(`transcript has no records: ${path}`);
@@ -373,7 +425,7 @@ export function profileRun(transcriptPath: string, options: ProfileOptions = {})
   const sessionId = basename(path, '.jsonl');
   const t0 = main[0]!.timestamp ?? new Date(0).toISOString();
   const last = [...main].reverse().find((r) => r.timestamp)?.timestamp ?? t0;
-  const milestones = findMilestones(main, openingActivity);
+  const { milestones, openingActivity } = findMilestones(main);
 
   const closedBy = mode === 'full' ? 'transcript-end'
     : milestones.openingComplete ? 'openingComplete' : 'transcript-end';
@@ -426,6 +478,7 @@ export function profileRun(transcriptPath: string, options: ProfileOptions = {})
     sessionId,
     transcriptPath: path,
     t0,
+    ...(openingActivity ? { openingActivity } : {}),
     window: { mode, start: t0, end, closedBy, minutes: minutesBetween(t0, end) },
     milestones,
     milestoneOffsetsMin,
@@ -460,6 +513,7 @@ function report(profile: RunProfile): string {
   const w = profile.window;
   lines.push(`== ${profile.sessionId}  t0=${profile.t0}`);
   lines.push(`   window: ${w.mode} — ${w.minutes} min, closed by ${w.closedBy}`);
+  if (profile.openingActivity) lines.push(`   client workflow opens on: ${profile.openingActivity}`);
   for (const [name, offset] of Object.entries(profile.milestoneOffsetsMin)) {
     lines.push(`   ${name.padEnd(20)} + ${String(offset).padStart(8)} min`);
   }
@@ -506,8 +560,6 @@ if (isMain) {
     process.stderr.write(`--window must be startup|full, got ${window}\n`);
     process.exit(1);
   }
-  const openingActivity = flag('opening-activity', DEFAULT_OPENING_ACTIVITY);
-
   const paths = flags('transcript').map((p) => resolve(p.replace(/^~(?=$|\/)/, homedir())));
   for (const session of flags('session')) {
     const hits = findTranscripts(session, projectsDir);
@@ -522,7 +574,7 @@ if (isMain) {
   const profiles: RunProfile[] = [];
   for (const path of paths) {
     try {
-      profiles.push(profileRun(path, { window, openingActivity }));
+      profiles.push(profileRun(path, { window }));
     } catch (err) {
       process.stderr.write(`WARN: ${path}: ${err instanceof Error ? err.message : String(err)}\n`);
     }

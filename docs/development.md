@@ -265,7 +265,9 @@ npm run profile:run -- --session=03e43af3 --session=f5783c2a --json
 npm run profile:run -- --transcript=~/.claude/projects/<slug>/<session-id>.jsonl --window=full
 ```
 
-`--session` resolves an id or id-prefix under `--projects-dir` (default `~/.claude/projects`); `--transcript` takes a path. Both are repeatable. `--window=startup` (the default) runs from the first record to the point the client workflow's opening activity is reported done — pass `--opening-activity=<id>` for a client workflow that opens on something other than `start-work-package`. `--json` puts the whole profile on stdout in place of the text report.
+`--session` resolves an id or id-prefix under `--projects-dir` (default `~/.claude/projects`); `--transcript` takes a path. Both are repeatable. `--window=startup` (the default) runs from the first record to the point the client workflow's opening activity is reported done. `--json` puts the whole profile on stdout in place of the text report.
+
+Which activity that is comes off the session the transitions name, not a flag: a session index that never carries a meta activity belongs to the client workflow, and by the `next_activity` contract the first call against it names that workflow's `initialActivity`. Every client workflow in the corpus opens on a different id, so the profiler discovers the opener — and reports it — rather than being told it. The rule also holds on a run that abandons one meta session and starts another before dispatching.
 
 #### A usage figure belongs to a response
 
