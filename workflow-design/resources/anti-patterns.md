@@ -1852,3 +1852,15 @@ A Protocol Apply passes some of the applied operation's declared inputs and omit
 **Do not flag:** Inputs the target marks optional or backs with a `#### default`. Inputs the applying technique declares under the same id, which bind by name. Container-merged inputs the whole group shares. Activity `steps[]` binds, whose argument conformance is a bind-site concern.
 
 **Fix:** Name the omitted input at the Apply site. Where the value has no home on the applying technique, declare it there first, then pass it. The mirror defect — a slot declared and never passed on — is `declared-input-never-read`.
+
+### AP-142. branch-on-undeclared-threshold
+
+"When the worker does not return within the expected time"
+
+A Protocol branch conditions on a magnitude nothing declares, so the agent cannot evaluate it and either supplies its own limit or never takes the branch.
+
+**Detect:** A Protocol branch, `>` note, gate, or rule conditions on a duration, size, count, or limit — "within the expected time", "if it takes too long", "when the payload is large", "after enough retries" — that no declared input, `#### default`, workflow variable, policy resource row, or tool-surface field supplies. Test: name the value the agent compares against. If nothing in the contract or the harness surface holds it, the branch is not a path, and whatever behaviour hangs off it is unspecified.
+
+**Do not flag:** Thresholds the harness or server owns and reports (`autoAdvanceMs`, a budget returned on a response). A branch on a declared input's value. Qualitative branches carrying no magnitude — "fewer steps than the activity defines" is countable from the definition the agent already holds.
+
+**Fix:** Declare the threshold and compare it by designator — a technique input with a `#### default`, a workflow variable, or a row in the owning policy resource. Where no owner can supply it, delete the branch and rebuild any behaviour it guarded on a condition the agent can observe. See [Encode Constraints as Structure](./design-principles.md#9-encode-constraints-as-structure).
