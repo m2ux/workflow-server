@@ -92,6 +92,24 @@ export interface ServerConfig {
    * DEFAULT_BUNDLE_CHARS_PER_TOKEN). Env override: `BUNDLE_CHARS_PER_TOKEN`.
    */
   bundleCharsPerToken?: number;
+  /**
+   * Fraction of a worker's declared `context_tokens` a whole BATCH of activities
+   * may accumulate in delivered content before the server refuses the next one.
+   * Its own setting, because it answers a different question from
+   * `bundleHeadroomFraction`: that one asks how much of a window one activity may
+   * spend on inlined step techniques, and at 0.80 the arithmetic admits nine of
+   * the main workflow's fifteen activities into a single context. Default 0.20
+   * (see DEFAULT_BATCH_HEADROOM_FRACTION). Env override: `BATCH_HEADROOM_FRACTION`.
+   */
+  batchHeadroomFraction?: number;
+  /**
+   * Distinct activities one worker context may take delivery of. Backs the
+   * character budget, which is blind to the context establishment the server never
+   * delivers, the code a worker reads, the artifacts it drafts, and degradation
+   * across a long walk. Default 3 (see DEFAULT_BATCH_MAX_ACTIVITIES). Env
+   * override: `BATCH_MAX_ACTIVITIES`.
+   */
+  batchMaxActivities?: number;
   /** In-process trace store for execution tracing. Created by createServer(). */
   traceStore?: TraceStore;
   /** Minimum seconds between checkpoint issuance and response. Default 3. Set to 0 for testing. */
@@ -134,6 +152,19 @@ const PROJECT_ROOT = resolve(import.meta.dirname, '..');
  */
 export const DEFAULT_BUNDLE_HEADROOM_FRACTION = 0.8;
 export const DEFAULT_BUNDLE_CHARS_PER_TOKEN = 4;
+
+/**
+ * Batch bound policy (#407). One dispatched worker context walks a run of
+ * activities, and the run is bounded twice: by cumulative delivered characters,
+ * `context_tokens × batchHeadroomFraction × charsPerToken`, and by a hard cap on
+ * distinct activities. Both starting values are deliberately conservative — a
+ * fraction of 0.20 admits between two and three of the main workflow's activities
+ * at a 200,000-token window, where the measured definition weight averages some
+ * 62,000 characters an activity. They are revised from `batch_refused` counts and
+ * per-activity usage rows over real runs.
+ */
+export const DEFAULT_BATCH_HEADROOM_FRACTION = 0.2;
+export const DEFAULT_BATCH_MAX_ACTIVITIES = 3;
 
 function envOrDefault(key: string, fallback: string): string {
   const value = process.env[key]?.trim();
@@ -561,6 +592,8 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
     serverVersion: envOrDefault('SERVER_VERSION', '2.1.0'),
     bundleHeadroomFraction: envNumberOrDefault('BUNDLE_HEADROOM_FRACTION', DEFAULT_BUNDLE_HEADROOM_FRACTION),
     bundleCharsPerToken: envNumberOrDefault('BUNDLE_CHARS_PER_TOKEN', DEFAULT_BUNDLE_CHARS_PER_TOKEN),
+    batchHeadroomFraction: envNumberOrDefault('BATCH_HEADROOM_FRACTION', DEFAULT_BATCH_HEADROOM_FRACTION),
+    batchMaxActivities: envNumberOrDefault('BATCH_MAX_ACTIVITIES', DEFAULT_BATCH_MAX_ACTIVITIES),
     transport: resolveTransport(argv),
     port: resolvePort(argv),
     host: resolveHost(argv),

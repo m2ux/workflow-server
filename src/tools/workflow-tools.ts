@@ -4,6 +4,8 @@ import type { PathPresentationMap, ServerConfig } from '../config.js';
 import {
   DEFAULT_BUNDLE_HEADROOM_FRACTION,
   DEFAULT_BUNDLE_CHARS_PER_TOKEN,
+  DEFAULT_BATCH_HEADROOM_FRACTION,
+  DEFAULT_BATCH_MAX_ACTIVITIES,
   presentPathToAgent,
 } from '../config.js';
 import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, readActivityRaw, buildFragmentsLookup, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
@@ -18,6 +20,7 @@ import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { dispatchKind, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
+import { batchActivities, batchBound, batchRefusal, batchRefusalMessage, deliveredChars, recordBatchRefusal } from '../utils/batch.js';
 import { extractResourceIds, qualifyResourceId } from '../utils/resource-ref.js';
 import { readdir } from 'node:fs/promises';
 import { join as pathJoin } from 'node:path';
@@ -56,8 +59,10 @@ const activityManifestSchema = z.array(z.object({
 })).optional().describe('Orchestrator activity-completion manifest: [{activity_id, outcome, transition_condition?}].');
 
 const usageSchema = z.record(z.unknown()).describe(
-  'Harness-reported token usage for ONE completed dispatch (DELTA for that dispatch only — not a \n'
-  + 'cumulative session total). Include numeric token fields the harness reports (`input_tokens`, \n'
+  'Harness-reported token usage for ONE activity (DELTA since the last figure recorded for this \n'
+  + 'dispatch — not a cumulative session total). A dispatch carrying a run of activities records one \n'
+  + 'call per activity as it completes, so cost keeps a figure per activity and a batch size can be \n'
+  + 'calibrated from real runs. Include numeric token fields the harness reports (`input_tokens`, \n'
   + '`output_tokens`, `total_tokens`, `subagent_tokens`, cache/model fields). Recorded as an \n'
   + '`activity_usage` history event keyed to the activity that ran; inspect_session view:usage \n'
   + 'projects each row and plain-sums known token keys across rows. Workers cannot self-measure: \n'
@@ -274,8 +279,10 @@ export const USAGE_TOKEN_KEYS = [
 
 /**
  * Usage projection (#324 B1, #346 DI-33, #365 S3): one entry per `activity_usage`
- * event in record order (one per dispatch), plus a plain-sum token aggregate over
- * those rows. Rows are DELTA figures for each dispatch; the aggregate is the
+ * event in record order (one per activity a dispatch covered), plus a plain-sum
+ * token aggregate over those rows. Rows are DELTA figures for one activity, so a
+ * dispatch carrying a run of activities appears as several rows sharing an
+ * `agentId`; the aggregate is the
  * arithmetic sum of known numeric token keys across the projected rows. When
  * `agentId` is set, only rows whose `data.agentId` matches are included
  * (unattributed rows — no agentId — are excluded from a filtered view).
@@ -748,7 +755,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
   server.tool('get_activity', 'Worker tool: load the current activity definition (from session state — no activity_id). `context_tokens` is REQUIRED for eager step-technique bundling, and bounds the whole eager bundle (step technique bodies plus any bundled resource bodies). ' +
     'Under persistent/`bundle: "reference"`, already-delivered content may collapse to unchanged markers — ONLY valid when THIS agent received the earlier payloads; technique-linked resource BODIES also arrive under a sibling `resources` map. ' +
     'Under full delivery, that map is not sent: the linked ids arrive under `resource_refs` and you fetch the ones you need with get_resource. `resources_note` states which shape this response used. ' +
-    'Use `bundle: "full"` after summarization; a FRESH worker must not pass `bundle: "reference"` (it holds no prior delivery), but a RESUMED worker that passes its dispatch `agent_id` may.',
+    'Use `bundle: "full"` after summarization; a FRESH worker must not pass `bundle: "reference"` (it holds no prior delivery), but a RESUMED worker that passes its dispatch `agent_id` may. ' +
+    'A dispatch carrying a run of activities walks them under ONE `agent_id`: `_meta.batch` reports how many that context has taken, what it has been delivered, and `may_continue` — false means report the next activity as needing its own dispatch and stop. ' +
+    'Asking past the bound is refused with the payload undelivered.',
     {
       ...sessionIndexParam,
       ...contextTokensParam,
@@ -798,6 +807,28 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // is scoped to the calling AGENT CONTEXT (#353 §1.1), so a resumed worker that passes its
       // dispatch `agent_id` collapses only what THAT context already received.
       const scope = deliveryScope(state, agent_id);
+
+      // The batch bound (#407). A worker context may walk a run of activities, and this is where the
+      // run ends: a scope arriving for an activity it has not taken, whose batch is already at the
+      // activity cap or over its cumulative delivery budget, is refused before any composition runs.
+      // Refusing here rather than in rule text is what makes the bound a property of the system —
+      // the same discipline the corpus states as Encode Constraints as Structure.
+      const bound = batchBound(context_tokens, {
+        headroomFraction: config.batchHeadroomFraction ?? DEFAULT_BATCH_HEADROOM_FRACTION,
+        maxActivities: config.batchMaxActivities ?? DEFAULT_BATCH_MAX_ACTIVITIES,
+        charsPerToken: config.bundleCharsPerToken ?? DEFAULT_BUNDLE_CHARS_PER_TOKEN,
+      });
+      const refusal = batchRefusal(state, scope, activity_id, bound);
+      if (refusal) {
+        // Recorded before the throw, so the limit each run ran into is countable from the session
+        // even though the call carries no payload away with it.
+        const refused = advanceSession(state, (draft) => {
+          recordBatchRefusal(draft, { scope, activityId: activity_id, refusal });
+        });
+        await saveSessionForTool(loaded, refused);
+        throw new Error(batchRefusalMessage(activity_id, scope, refusal));
+      }
+
       const referenceMode = (bundle ?? (state.contextMode === 'persistent' ? 'reference' : 'full')) === 'reference';
       // Hashes of content delivered in full by THIS call, recorded to the session's delivery
       // ledger. Recorded in every mode so a later per-call reference opt-in can refer back to
@@ -1204,11 +1235,26 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       });
       await saveSessionForTool(reloaded, next);
 
+      // Where this context stands against its bound, counted with this delivery included. A worker
+      // carrying a batch reads `may_continue` to decide whether to ask for the next activity, so the
+      // ordinary end of a batch is the worker stopping rather than the server refusing it. The
+      // refusal above is the backstop for a worker that asks anyway.
+      const batchTaken = batchActivities(next, scope);
+      const batchChars = deliveredChars(next, scope);
+      const batch = {
+        activities: batchTaken.length,
+        max_activities: bound.maxActivities,
+        delivered_chars: batchChars,
+        budget_chars: Math.floor(bound.budgetChars),
+        may_continue: scope === next.agentId
+          || (batchTaken.length < bound.maxActivities && batchChars <= bound.budgetChars),
+      };
+
       return {
         content: [{ type: 'text' as const, text: responseText }],
         _meta: {
           session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules,
-          dispatch,
+          dispatch, batch,
           ...(bundledSteps.length > 0 ? { bundled_steps: bundledSteps.map(b => b.stepId) } : {}),
           ...(bundledResourceDeliveries.length > 0 ? { bundled_resources: bundledResourceDeliveries.map(r => r.resourceId) } : {}),
           ...(resourceRefIds.length > 0 ? { resource_refs: resourceRefIds } : {}),
@@ -1317,10 +1363,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('record_usage', 'Orchestrator tool: record harness-reported token usage for ONE completed dispatch (DELTA for that dispatch). Call as each dispatch finishes — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity. Optional `agent_id` attributes the row to a worker context.',
+  server.tool('record_usage', 'Orchestrator tool: record harness-reported token usage for ONE completed ACTIVITY (DELTA since the last figure for that dispatch). Call at every activity boundary — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity; a dispatch carrying a run of activities records one call per activity it covers. Optional `agent_id` attributes the row to a worker context.',
     {
       ...sessionIndexParam,
-      activity: z.string().describe('Activity the dispatch ran, whether or not the session is still on it.'),
+      activity: z.string().describe('Activity this figure is attributed to, whether or not the session is still on it. One call per activity a dispatch covers.'),
       usage: usageSchema.describe(
         'Harness-reported token DELTA for this ONE dispatch, as reported. Omit the call entirely when the harness '
         + 'surfaced nothing rather than passing zeros — the worker cannot self-measure, so absence must stay '
@@ -1328,7 +1374,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ),
       agent_id: z.string().min(1).optional().describe(
         'Optional. Worker context that incurred this usage — the same identity used on get_activity for that dispatch. '
-        + 'Stored as data.agentId on the activity_usage event so inspect_session can filter and attribute rows. '
+        + 'Stored as data.agentId on the activity_usage event so inspect_session can filter and attribute rows, and so '
+        + 'the rows of one batched dispatch are readable as a group. '
         + 'Omit when attribution is unknown; the row remains valid as an unattributed bucket.',
       ),
     },
@@ -1339,9 +1386,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const recordedAt = new Date().toISOString();
       const next = advanceSession(state, (draft) => {
-        // One entry per dispatch, which is what projectUsage reports. Attribution is the
-        // caller's `activity`: the dispatch ran for it, whether or not the session is still
-        // there by the time the figure arrives. Optional agent_id scopes the row to a worker.
+        // One entry per activity, which is what projectUsage reports. Attribution is the
+        // caller's `activity`: the dispatch ran it, whether or not the session is still
+        // there by the time the figure arrives. A dispatch covering a run of activities
+        // contributes one row apiece, which is the resolution a batch size is calibrated
+        // from. Optional agent_id scopes the row to a worker.
         const data: Record<string, unknown> = { usage };
         if (agent_id !== undefined) data['agentId'] = agent_id;
         draft.history.push({
@@ -1357,7 +1406,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           activity,
           session_index,
           usage_events: recorded,
-          message: `Usage recorded for one dispatch of '${activity}'. The session now carries ${recorded} usage event(s); inspect_session view usage reconciles that count against the run's actual dispatch count.`,
+          message: `Usage recorded for '${activity}'. The session now carries ${recorded} usage event(s) — one per activity a dispatch covered, so a dispatch carrying a run of activities contributes several; inspect_session view usage projects the rows and view history counts the dispatches they belong to.`,
         }, null, 2) }],
         _meta: { session_index, validation: buildValidation() },
       };
@@ -1751,7 +1800,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     {
       ...sessionIndexParam,
       view: z.enum(INSPECT_SESSION_VIEWS).default('summary')
-        .describe('Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-dispatch token rows and plain-sum totals from record_usage).'),
+        .describe('Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-activity token rows and plain-sum totals from record_usage).'),
       child_index: z.number().int().nonnegative().optional()
         .describe('Optional. Project triggeredWorkflows[child_index].state instead of the parent session.'),
       variable: z.string().optional()

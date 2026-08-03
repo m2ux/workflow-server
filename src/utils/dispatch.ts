@@ -3,12 +3,13 @@ import type { SessionFile } from '../schema/session.schema.js';
 /**
  * Dispatch accounting (#353 §1.3).
  *
- * Two events measure a dispatch from opposite ends. `activity_usage` carries what one dispatch COST
- * in tokens — the orchestrator supplies it via `record_usage` as each dispatch finishes (a worker
- * cannot self-measure), one DELTA row per dispatch. `activity_dispatched` records that a dispatch
- * HAPPENED, emitted by the server when the dispatched context first reaches it: it needs no
- * orchestrator cooperation, and it counts dispatches rather than exits, so resumed workers,
- * out-of-band workers and abandoned sessions all appear.
+ * Two events measure a dispatch from opposite ends. `activity_usage` carries what one ACTIVITY of a
+ * dispatch COST in tokens — the orchestrator supplies it via `record_usage` at each activity
+ * boundary (a worker cannot self-measure), one DELTA row per activity, so a dispatch carrying a run
+ * of activities keeps a figure apiece. `activity_dispatched` records that a dispatch HAPPENED,
+ * emitted by the server when the dispatched context first reaches it: it needs no orchestrator
+ * cooperation, and it counts dispatches rather than exits, so resumed workers, out-of-band workers
+ * and abandoned sessions all appear.
  *
  * The fresh/resume discriminator is DERIVED, not declared — a delivery call from a scope the server
  * has never met is a fresh spawn; a call from a scope it has met is that same context arriving again.

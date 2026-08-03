@@ -173,7 +173,8 @@
                   "variables_seeded",
                   "activity_usage",
                   "activity_dispatched",
-                  "activity_redelivered"
+                  "activity_redelivered",
+                  "batch_refused"
                 ]
               },
               "activity": {
