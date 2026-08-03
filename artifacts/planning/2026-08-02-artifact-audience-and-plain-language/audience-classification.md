@@ -6,20 +6,21 @@ Every `#### artifact` declaration in the corpus now carries `#### audience`. Thi
 
 An `agent`-audience artifact is JSON on disk — the technique protocol specification makes that part of the attribute's meaning, and `scripts/check-audience.ts` enforces it. So a declaration can only say `agent` where the artifact is already a `.json` file. Declaring `agent` on a markdown filename and converting the file are the same act, and that conversion is the deferred work item.
 
-Each declaration therefore states the reader of the artifact **as it exists on disk today**. The classification of what an artifact *should* be is recorded below rather than declared, so no declaration promises a format the file does not have.
+A declaration therefore states the reader of the artifact **as it exists on disk today**. Where that cannot be said honestly — a register whose only reader is a later step, still in markdown — the declaration is **absent** rather than forced to `human`. Absent already means `human` by default, so the format is unchanged either way; what changes is that no declaration claims a reader the file's form contradicts. `check-audience` deliberately checks the JSON-format convention and not presence, so the wait is not a standing failure.
 
 ## What was declared
 
 | Audience | Declarations | Where |
 |---|---|---|
 | `agent` | 14 | substrate-node-security-audit 7, cicd-pipeline-security-audit 7 |
-| `human` | 125 | prism 29, work-package 22, workflow-design 19, work-packages 9, workflow-authoring 7, requirements-refinement 7, prism-audit 7, midnight-system-review 7, substrate-node-security-audit 4, ponytail 4, prism-evaluate 3, codebase-wiki 3, cicd-pipeline-security-audit 2, remediate-vuln 1, meta 1 |
+| `human` | 113 | prism 28, work-package 18, workflow-design 16, work-packages 9, requirements-refinement 7, prism-audit 7, workflow-authoring 6, midnight-system-review 5, substrate-node-security-audit 4, ponytail 3, prism-evaluate 3, codebase-wiki 3, cicd-pipeline-security-audit 2, remediate-vuln 1, meta 1 |
+| absent, pending conversion | 12 | the registers listed below |
 
 The 14 agent declarations are the scanner, registry, reconnaissance and merge outputs of the two security-audit workflows. They were structured JSON against a declared sub-agent schema before this change; the attribute now says so, and the audience guard stops passing vacuously.
 
 ## Registers whose substance is agent state
 
-These are read back mechanically by a later step of the same run, or by a triggering workflow, and never linearly by a person. Each is declared `human` because it is prose markdown today. Converting the file and flipping the declaration is one act, tracked as the conversion work item.
+These are read back mechanically by a later step of the same run, or by a triggering workflow, and never linearly by a person. None carries a declaration: `agent` would contradict the markdown on disk, and `human` would contradict who reads it. The conversion issue is where both settle at once.
 
 | Artifact | Producer | Who reads it back |
 |---|---|---|
@@ -34,7 +35,7 @@ These are read back mechanically by a later step of the same run, or by a trigge
 | `file-review-note.md` | workflow-design `review-drafted-file` | the attestation pass |
 | `prior-feedback-triage.md` | work-package `review-existing-feedback` | the review summary, by disposition |
 | `debt-ledger.md` | ponytail `harvest-debt` | the gain report |
-| `follow-ups.md`, `deferred-items.md` | many | `finalize-documentation::create-complete-doc`, for the Open Work counts |
+| `follow-ups.md`, `deferred-items.md` | many | `finalize-documentation::create-complete-doc`, for the Open Work counts — no technique declares either as an `#### artifact`, so neither has a declaration to leave absent |
 
 ## Artifacts read by both a person and a later step
 
@@ -51,4 +52,4 @@ These carry an explicit decision rather than a default. Each is declared `human`
 
 ## What this unblocks
 
-The audience guard now measures 14 real declarations instead of zero. A guard over declaration *presence* — every artifact declaration carries an audience — becomes checkable from the same walk, and lands with the enforcement work item.
+The audience guard now measures 14 real declarations instead of zero. A guard over declaration *presence* becomes checkable from the same walk, but it lands with the conversion rather than here: presence would fail on exactly the twelve registers that are waiting, so requiring it now would buy a red guard rather than a decision.
