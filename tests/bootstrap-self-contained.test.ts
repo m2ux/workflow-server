@@ -76,6 +76,12 @@ describe('bootstrap self-containment guard', () => {
     expect(checks(prose(`Apply [rhr](${target} "its home").`))).toEqual(['corpus-link']);
     expect(checks(prose(`Apply [rhr](<${target}>).`))).toEqual(['corpus-link']);
     expect(checks(prose(`Apply [rhr][home].\n\n[home]: ${target}`))).toEqual(['corpus-link']);
+    // Markdown permits raw HTML, so reading only `](…)` is bypassed by writing the anchor out.
+    expect(checks(prose(`Apply <a href="${target}">rhr</a>.`))).toEqual(['corpus-link']);
+    expect(checks(prose(`See <img src='${target}' alt="d">.`))).toEqual(['corpus-link']);
+    // An HTML destination is a path too, so a rule address inside one reports as the link it is.
+    expect(checks(prose('See <a href="../t/resolve-host-repo.prose-sources-are-fallback-only">x</a>.')))
+      .toEqual(['corpus-link']);
   });
 
   it('refuses a rule address however far its ancestry is spelled out', () => {

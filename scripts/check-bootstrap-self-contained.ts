@@ -26,9 +26,12 @@
  * a rule address, so no check sees it.
  *
  * The rule checks cannot strip inline code spans the way the anchor guard does, because the construct
- * they look for is itself backticked — the bare-rule check depends on the backticks. One consequence
- * worth knowing: a link may be shown inside a fence as illustration, but a rule address shown there
- * still reports, because the address is recognised by corpus lookup rather than by position.
+ * they look for is itself backticked — the bare-rule check depends on the backticks. Two consequences
+ * worth knowing. A link may be shown inside a fence as illustration, but a rule address shown there
+ * still reports, because the address is recognised by corpus lookup rather than by position. And a link
+ * in a four-space-indented block reports even though CommonMark renders it as code: telling an indented
+ * code block from a list item's continuation needs a real parser, and over-reporting is the safe
+ * direction here — fence the illustration and it goes quiet.
  *
  * That lookup is on the PAIR rather than the left half: around thirty techniques carry a single-word
  * name, so a left-half test reads `plan.json` and `context.yaml` as addresses. Requiring the corpus to
@@ -60,6 +63,11 @@ const PRE_SESSION_RESOURCE = join('meta', 'resources', 'bootstrap-protocol.md');
 const LINK_RE = /\]\(\s*(<[^>]*>|[^)\s]*)(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?\s*\)/g;
 /** A reference definition. The destination lives here rather than at the `[text][ref]` that uses it. */
 const REF_DEF_RE = /^ {0,3}\[[^\]]+\]:\s*(<[^>]*>|\S+)/;
+/**
+ * An HTML destination. Markdown permits raw HTML, so a guard that reads only `](…)` is bypassed by
+ * writing the same link as an anchor — and the reader is stranded either way.
+ */
+const HTML_LINK_RE = /<[a-z][a-z0-9]*\s[^>]*?\b(?:href|src)\s*=\s*(?:"([^"]*)"|'([^']*)')/gi;
 /** A run of dot-joined lowercase segments — `a.b`, `a.b.c`. Each adjacent pair is tested separately. */
 const DOTTED_RE = /\b([a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+)\b/g;
 /** An inline code span, which is the only form the bare-rule check considers. */
@@ -185,7 +193,9 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     // illustration, not an instruction.
     if (!fenced.has(index)) {
       const refDef = REF_DEF_RE.exec(line);
-      const targets = [...line.replace(/`[^`]*`/g, '').matchAll(LINK_RE)].map((m) => m[1]!);
+      const rendered = line.replace(/`[^`]*`/g, '');
+      const targets = [...rendered.matchAll(LINK_RE)].map((m) => m[1]!);
+      for (const [, quoted, single] of rendered.matchAll(HTML_LINK_RE)) targets.push(quoted ?? single ?? '');
       if (refDef) targets.push(refDef[1]!);
       for (const target of targets) {
         const to = target.replace(/^<|>$/g, '');
@@ -201,7 +211,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     }
 
     // Link destinations are paths; a dotted segment inside one is not a rule address.
-    const prose = line.replace(LINK_RE, ']()').replace(REF_DEF_RE, '[]:');
+    const prose = line.replace(LINK_RE, ']()').replace(HTML_LINK_RE, '<a href=""').replace(REF_DEF_RE, '[]:');
     for (const [, run] of prose.matchAll(DOTTED_RE)) {
       // Every adjacent pair, not the leftmost match: a full ancestry address puts the technique and the
       // rule in the last two segments, and a single scan consumes `<workflow>.<technique>` and moves
