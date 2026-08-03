@@ -17,7 +17,7 @@ import { withAuditLog, logWarn } from '../logging.js';
 import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
-import { dispatchKind, recordDispatch } from '../utils/dispatch.js';
+import { dispatchKind, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
 import { extractResourceIds, qualifyResourceId } from '../utils/resource-ref.js';
 import { readdir } from 'node:fs/promises';
 import { join as pathJoin } from 'node:path';
@@ -1163,10 +1163,19 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // Dispatch accounting (#353 §1.3): get_activity is the call a dispatched worker makes to
       // receive its payload, so it is where a dispatch announces itself. Derived from the reloaded
       // history, which is what the save writes against.
-      const dispatch = dispatchKind(reloaded.state, scope, activity_id);
+      const dispatch = dispatchKind(reloaded.state, scope);
+      // Delivery-identity accounting (#408): the activity is on its way to a context that has not
+      // received it, so a scope that already took it is a second copy of the same payload in one
+      // session — a replaced worker, or a resume that arrived under a fresh identity.
+      const priorScope = hasDispatch(reloaded.state, scope, activity_id)
+        ? undefined
+        : priorDeliveryScope(reloaded.state, scope, activity_id);
       const next = advanceSession(reloaded.state, (draft) => {
         recordDeliveries(draft, scope, newDeliveries);
         recordDispatch(draft, { scope, kind: dispatch, activityId: activity_id, chars: responseText.length });
+        if (priorScope !== undefined) {
+          recordRedelivery(draft, { scope, priorScope, activityId: activity_id, chars: responseText.length });
+        }
         // Fidelity observability for bundled deliveries (#166 B11): one technique_bundled
         // event per bundled step, on both delivery paths (full and unchanged-marker) — the
         // bundle counterpart of get_technique's technique_fetched. next_activity's manifest

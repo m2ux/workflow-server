@@ -43,6 +43,13 @@ export const HistoryEventTypeSchema = z.enum([
   // carries { agentId, dispatch: 'fresh' | 'resume', chars? }. See
   // src/utils/dispatch.ts.
   'activity_dispatched',
+  // Delivery-identity accounting (#408): one activity delivered in full to a
+  // context that has not received it, in a session where another context
+  // already has. `data` carries { agentId, priorAgentId, chars }. The fault it
+  // makes visible — a resumed worker arriving under a fresh identity — leaves
+  // no other trace, since a second full delivery is indistinguishable from a
+  // first one at every other instrument.
+  'activity_redelivered',
 ]);
 export type HistoryEventType = z.infer<typeof HistoryEventTypeSchema>;
 

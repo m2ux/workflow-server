@@ -170,7 +170,10 @@
                   "technique_fetched",
                   "resource_fetched",
                   "technique_bundled",
-                  "variables_seeded"
+                  "variables_seeded",
+                  "activity_usage",
+                  "activity_dispatched",
+                  "activity_redelivered"
                 ]
               },
               "activity": {
@@ -296,8 +299,7 @@
         },
         "repo": {
           "type": "string",
-          "minLength": 1,
-          "description": "Target owner/repo bound on this session (install multi-root single source of truth for promotion)."
+          "minLength": 1
         },
         "contextMode": {
           "type": "string",
@@ -313,6 +315,30 @@
             "additionalProperties": {
               "type": "string"
             }
+          }
+        },
+        "declaredArtifacts": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "path": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "id",
+              "name"
+            ],
+            "additionalProperties": false
           }
         },
         "parentSession": {
