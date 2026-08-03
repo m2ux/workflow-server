@@ -73,6 +73,32 @@ Task({
 })
 ```
 
+### Batching a Run of Activities (#407)
+
+One dispatch may carry a **run** of activities rather than exactly one. The worker walks them under a single `agent_id`, so it pays the harness's context establishment — system prompt, project instructions, tool schemas — once for the run rather than once an activity. On the profiled setup walk that is where the saving is: about five to eight times more of it comes from not re-paying establishment than from delivered content collapsing.
+
+The run pauses at every activity boundary, because the orchestrator owns the commit that boundary requires, and at every gate, because the orchestrator owns the answer. It **resumes in place** across both, under the identity its dispatch bound, so the pauses cost a round trip rather than a respawn.
+
+**The server bounds the run.** A batch is not declared — it is the run of activities one delivery scope takes delivery of, so the server sees one with no orchestrator cooperation and a worker cannot leave the bound behind by omitting a parameter. Two limits apply, both read off the session history:
+
+| Limit | Derivation | Default |
+|---|---|---|
+| Cumulative delivered characters | `context_tokens × BATCH_HEADROOM_FRACTION × BUNDLE_CHARS_PER_TOKEN` | fraction `0.20` |
+| Distinct activities | `BATCH_MAX_ACTIVITIES` | `3` |
+
+The character budget carries a headroom fraction of its own because `BUNDLE_HEADROOM_FRACTION` answers a different question — how much of one activity's window may go to inlined step techniques — and at `0.80` the arithmetic admits nine of the main workflow's fifteen activities into one context. The activity cap covers what a character count is blind to: the establishment the server never delivers, the code the worker reads, the artifacts it drafts, and degradation across a long walk.
+
+`get_activity` reports where a context stands in `_meta.batch` (`activities`, `max_activities`, `delivered_chars`, `budget_chars`, `may_continue`), so the ordinary end of a batch is the worker stopping. Asking past the bound is refused with the payload undelivered and a `batch_refused` history event naming the limit, which is what the starting settings are revised from.
+
+Two carve-outs keep the bound aimed at what it is for:
+
+- **An activity the context already holds is always served.** That is a worker resuming after a gate asking for the payload it is sitting on, and thirteen of the main workflow's fifteen activities carry a gate.
+- **The session's own agent is unbounded.** A scope equal to `session.agentId` is the context that owns the whole walk by construction, which is what `contextMode: "persistent"` describes; its run is the session, not a batch.
+
+**A failed resume costs one activity, not the batch.** The worker reports each activity as it completes, so the session cursor tracks the run. A replacement worker picks up the current activity, takes full delivery, and re-crosses already-answered gates silently — checkpoint responses are keyed `activityId-checkpointId`, with no agent component, so `yield_checkpoint` replays them for any worker.
+
+**Cost keeps its per-activity resolution.** `record_usage` records one `activity_usage` row per activity a dispatch covered, sharing an `agent_id`, rather than one figure per dispatch attributed to whichever activity the orchestrator names. Without that, a batch size cannot be calibrated from real runs.
+
 ## Workflow Status Polling
 
 The meta orchestrator can poll the status of a dispatched workflow using `get_workflow_status`:

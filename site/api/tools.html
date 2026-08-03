@@ -174,7 +174,7 @@
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot; | &quot;usage&quot;</code></td><td>no</td><td>Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-dispatch token rows and plain-sum totals from record_usage). Default: <code>&quot;summary&quot;</code></td></tr>
+          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot; | &quot;usage&quot;</code></td><td>no</td><td>Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-activity token rows and plain-sum totals from record_usage). Default: <code>&quot;summary&quot;</code></td></tr>
           <tr><td><code>child_index</code></td><td><code>integer</code></td><td>no</td><td>Optional. Project triggeredWorkflows[child_index].state instead of the parent session.</td></tr>
           <tr><td><code>variable</code></td><td><code>string</code></td><td>no</td><td>Optional. With view=variables, return a single variable by name.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
@@ -444,17 +444,17 @@
       </section>
       <section class="tool" id="record_usage">
         <h3><code>record_usage</code></h3>
-        <p class="tool-summary">Orchestrator tool: record harness-reported token usage for ONE completed dispatch (DELTA for that dispatch).</p>
+        <p class="tool-summary">Orchestrator tool: record harness-reported token usage for ONE completed ACTIVITY (DELTA since the last figure for that dispatch).</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Orchestrator tool: record harness-reported token usage for ONE completed dispatch (DELTA for that dispatch). Call as each dispatch finishes — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity. Optional <code>agent_id</code> attributes the row to a worker context.</p>
+          <p>Orchestrator tool: record harness-reported token usage for ONE completed ACTIVITY (DELTA since the last figure for that dispatch). Call at every activity boundary — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity; a dispatch carrying a run of activities records one call per activity it covers. Optional <code>agent_id</code> attributes the row to a worker context.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>activity</code></td><td><code>string</code></td><td>yes</td><td>Activity the dispatch ran, whether or not the session is still on it.</td></tr>
+          <tr><td><code>activity</code></td><td><code>string</code></td><td>yes</td><td>Activity this figure is attributed to, whether or not the session is still on it. One call per activity a dispatch covers.</td></tr>
           <tr><td><code>usage</code></td><td><code>object</code></td><td>yes</td><td>Harness-reported token DELTA for this ONE dispatch, as reported. Omit the call entirely when the harness surfaced nothing rather than passing zeros — the worker cannot self-measure, so absence must stay distinguishable from a measured zero.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
           </tbody>
