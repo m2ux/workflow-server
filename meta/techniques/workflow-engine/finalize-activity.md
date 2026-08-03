@@ -51,9 +51,6 @@ state variables the activity mutated, reported by the worker — one of the two 
 
 array of artifact entries (`id`, `name`, `path`).
 
-#### batch_may_continue
-
-Whether this context may take another activity, folded from `{batch_may_continue}`.
 
 #### transition_override
 
