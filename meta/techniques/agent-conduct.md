@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 4.6.0
+  version: 4.7.0
 ---
 
 ## Capability
@@ -91,7 +91,7 @@ Orchestrators (meta or workflow) never execute activity steps or produce domain 
 
 ### orchestrator-no-inline-on-resume
 
-On resume, still dispatch a worker via [dispatch-activity](./workflow-engine/dispatch-activity.md) — resume changes which activity is dispatched, not whether one is. Do not execute steps inline from restored bag/folder context.
+Resuming a saved session still dispatches a worker via [dispatch-activity](./workflow-engine/dispatch-activity.md) — the restored state changes which activity is dispatched, not whether one is. Do not execute steps inline from restored bag/folder context. A worker paused at a gate is continued under its bound identity via [resume-worker](./workflow-engine/resume-worker.md).
 
 ### orchestrator-component-path-scope
 
