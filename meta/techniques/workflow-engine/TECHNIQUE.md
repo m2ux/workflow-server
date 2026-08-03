@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 6.7.1
+  version: 6.8.0
 ---
 
 ## Capability
@@ -35,7 +35,7 @@ Variables mutate from two sources only: checkpoint option effects (`setVariable`
 
 ### agent-id-scopes-delivery
 
-The delivery ledger is keyed on agent context, not on the session. `agent_id` on `get_activity`, `get_technique` and `get_resource` names that context — the worker agent identity bound into the dispatch stub — and each context reads and writes its own ledger. A first dispatch under a new `agent_id` holds no prior deliveries, so it takes full delivery; the same `agent_id` calling again is that context resumed, where `bundle: "reference"` collapses what it already received to unchanged markers. A solo walk is the one case carrying no `agent_id`, the session's own agent being its only context.
+The delivery ledger is keyed on agent context, not on the session. `agent_id` on `get_activity`, `get_technique` and `get_resource` names that context — the worker agent identity bound into the stub that dispatches or continues the agent — and each context reads and writes its own ledger. A first dispatch under a new `agent_id` holds no prior deliveries, so it takes full delivery; the same `agent_id` calling again is that context resumed, where `bundle: "reference"` collapses what it already received to unchanged markers. A solo walk is the one case carrying no `agent_id`, the session's own agent being its only context.
 
 ### force-full-after-summarization
 
