@@ -16,6 +16,7 @@ techniques:
     - workflow-engine::handle-sub-workflow
     - workflow-engine::dispatch-activity
     - workflow-engine::resume-worker
+    - workflow-engine::continue-batch
     - workflow-engine::workflow-orchestrator
     - agent-conduct::orchestrator
   activity:

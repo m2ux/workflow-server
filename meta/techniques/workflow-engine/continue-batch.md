@@ -21,6 +21,10 @@ Next activity for the worker to walk — the target of this advance.
 
 Server-side worker identity the batch is carried under — the identity the delivery ledger is keyed on.
 
+### step_manifest
+
+One entry per step the activity just finished completed, taken from that activity's `activity_complete` envelope, for the server's step-completion and technique-fetch validation.
+
 ### state
 
 Current variable state for stub substitution (`session_index`, `workflow_id`, `activity_id`, …).
@@ -31,11 +35,15 @@ Current variable state for stub substitution (`session_index`, `workflow_id`, `a
 
 The envelope the worker returned, passed through unchanged — one of two tagged result types: the `checkpoint_pending` envelope, or the `activity_complete` envelope.
 
+### worker_agent_id
+
+The identity the batch is still carried under, or null when this continuation could not be completed — which releases the batch so the next step spawns a fresh worker for the same activity.
+
 ## Protocol
 
 ### 1. Advance the session
 
-- Call `next_activity { session_index, activity_id, step_manifest }` — one manifest entry per step the activity just finished ran — and capture `_meta.trace_token`, accumulating it per [dispatch-activity](./dispatch-activity.md) step 2.
+- Call `next_activity { session_index, activity_id, step_manifest, agent_id: worker_agent_id }`; capture `_meta.trace_token` and accumulate it per [dispatch-activity](./dispatch-activity.md) step 2. `agent_id` names the context whose technique fetches the manifest is checked against — one identity now covers several activities, so an unattributed manifest credits any agent.
 - The commit for the activity just finished has already landed, so this advance is the transition it precedes ([commit-after-activity](./commit-and-persist.md#commit-after-activity)).
 
 ### 2. Compose the continuation stub
@@ -48,7 +56,8 @@ The envelope the worker returned, passed through unchanged — one of two tagged
 
 ### 4. Await the envelope
 
-- Wait until the worker yields or completes (blocking-equivalent); capture its envelope unchanged as `{worker_result}`.
+- Wait until the worker yields or completes (blocking-equivalent); capture its envelope unchanged as `{worker_result}` and return `{worker_agent_id}` unchanged.
+- When the harness reports the worker ended without returning an envelope, or the worker reports that the server refused the activity because its batch is spent, return `{worker_agent_id}` as null. The batch ends there and [dispatch-activity](./dispatch-activity.md) spawns a fresh worker for the same activity, which takes full delivery and re-crosses any answered gate silently ([batch-release-frees-the-activity](#batch-release-frees-the-activity)).
 
 ### 5. Account for the activity
 
@@ -58,7 +67,13 @@ The envelope the worker returned, passed through unchanged — one of two tagged
 
 ### batch-continues-only-with-room
 
-Continue the held worker only when its last `activity_complete` reported `batch_may_continue: true`. The server bounds a batch at delivery and refuses an activity past the bound with nothing delivered, so continuing a worker the server will refuse costs a round trip and ends with a fresh dispatch anyway. A worker whose batch is spent is released and the next activity takes [dispatch-activity](./dispatch-activity.md).
+Continue the held worker only while its last `activity_complete` reports both `batch_may_continue: true` and a next activity. The loop's own gate carries that condition, so a spent batch cannot reach this operation — the check is the gate rather than this sentence, because a bound carried by rule text is the failure this whole mechanism replaces ([batch-is-bounded-by-the-server](./dispatch-activity.md#batch-is-bounded-by-the-server)).
+
+`batch_may_continue` is read when the worker takes an activity, so it cannot account for what that worker then fetched lazily while running it. A batch reported as having room can still be refused at the next boundary. That refusal is expected, not exceptional, and is handled by releasing the identity rather than by predicting it more precisely.
+
+### batch-release-frees-the-activity
+
+A batch that ends for any reason — spent, refused, or a worker that returned nothing — releases `{worker_agent_id}`, and nothing else releases it. Holding an identity a continuation cannot use is a loop that neither continues nor dispatches: the release is what lets the next step spawn a replacement, so it happens on every exit from a batch and not only on the tidy one.
 
 ### batch-stops-at-a-human-boundary
 

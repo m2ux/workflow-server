@@ -29,13 +29,14 @@ steps:
     steps:
       - kind: technique
         id: continue-batched-worker
-        when: worker_agent_id && worker_result.result_type == "activity_complete"
+        when: worker_agent_id && worker_result.result_type == "activity_complete" && worker_result.batch_may_continue && worker_result.next_activity_id
         technique:
           name: workflow-engine::continue-batch
           inputs:
             activity_id: current_activity
             session_index: client_session_index
             worker_agent_id: worker_agent_id
+            step_manifest: "{worker_result.steps_completed}"
             state: variables
       - kind: technique
         id: dispatch-activity

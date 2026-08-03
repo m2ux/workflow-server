@@ -88,7 +88,7 @@ Delivery mode follows the agent context, not the session: one worker `agent_id` 
 
 ### batch-is-bounded-by-the-server
 
-A worker's batch is bounded at delivery, not by this operation's judgement: the server refuses the next activity once that context has taken the cap of distinct activities or accumulated more delivery than its batch budget allows, and reports where a context stands on every `get_activity`. So the orchestrator does not size a batch, hold a count, or reason about context load — it continues a worker while the worker's last envelope says the server will still serve it ([batch-continues-only-with-room](./continue-batch.md#batch-continues-only-with-room)). A bound carried by instruction text is the failure this replaces; a bound carried by a delivery refusal cannot be talked past.
+A worker's batch is bounded at delivery, not by this operation's judgement: the server refuses the next activity once that context has taken the cap of distinct activities or accumulated more delivery than its batch budget allows, and reports where a context stands on every `get_activity`. So the orchestrator does not size a batch, hold a count, or reason about context load — it continues a worker while the loop's own gate says the server will still serve it ([batch-continues-only-with-room](./continue-batch.md#batch-continues-only-with-room)). A bound carried by instruction text is the failure this replaces; a bound applied where the content is handed over holds whether or not the text is read.
 
 ### reject-partial-worker-result
 
