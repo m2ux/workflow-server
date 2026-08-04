@@ -44,7 +44,7 @@ The identity now holding the advanced activity: the one the batch was carried un
 ### 1. Advance the session
 
 - Call `next_activity { session_index, activity_id, step_manifest, agent_id: worker_agent_id }`; capture `_meta.trace_token` and accumulate it per [dispatch-activity](./dispatch-activity.md) step 2. `agent_id` names the context whose technique fetches the manifest is checked against; one identity covers several activities, and an unattributed manifest credits any agent.
-- The orchestrator applies [commit-and-persist](./commit-and-persist.md) for the activity just finished before reaching this operation, so this advance is the transition that commit precedes ([commit-after-activity](./commit-and-persist.md#commit-after-activity)). Do not advance ahead of it.
+- Advance only where the finished activity is already committed: this call is the transition that commit has to precede ([commit-after-activity](./commit-and-persist.md#commit-after-activity)). Where it has not landed, commit it first.
 
 ### 2. Compose the continuation stub
 

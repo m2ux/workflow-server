@@ -535,7 +535,7 @@ A rule sits in the wrong rules.* audience bucket.
 
 **Detect:** Classify each rule by who must act: orchestrator (`get_workflow` only), worker (`get_activity` inject), or both identically. Flag worker directives (write-immediately, no-permission-questions, blocker-surfacing, artifact-verification, lens-loading-by-worker) under `rules.workflow`. Flag orchestration directives (dispatch isolation, output forwarding, checkpoint cadence, orchestrator handoff) under `rules.activity`.
 
-**Do not flag:** Correct placements — orchestrator → `rules.workflow`, worker → `rules.activity`, same directive for both → `rules.universal`.
+**Do not flag:** Correct placements — orchestrator → `rules.workflow`, worker → `rules.activity`, same directive for both → `rules.universal`. A correctly filed rule that describes the other actor's mechanics, which is `instruction-narrates-an-actor`.
 
 **Fix:** Move to the bucket for the actor commanded. If one prose rule commands the two actors differently, split into two rules (orchestrator handoff vs worker load).
 
@@ -1579,7 +1579,7 @@ A worker/orchestrator spawn stub or agent-entry technique restates delivery, bin
 
 **Detect:** Stub or agent-entry prose explains bundling budget / begin-beat / `step_techniques` engagement, sibling `resources` map reuse, bind precedence, yield/replay branching, or other contracts already owned by a technique Protocol/Rules ([variable-binding](../../meta/techniques/variable-binding.md), [yield-checkpoint](../../meta/techniques/workflow-engine/yield-checkpoint.md), [workflow-engine](../../meta/techniques/workflow-engine/TECHNIQUE.md) Rules) or by the tool response itself (`step_techniques_note`, `resources_note`, reference-mode notes). Test: if deleting the paragraph and leaving a cite to that home preserves fidelity, flag it.
 
-**Do not flag:** Minimal [compose-prompt](../../meta/techniques/workflow-engine/compose-prompt.md) stub (entry tools + Apply `{agent_technique}`); novel duties with no other home (hoist into engine/conduct once, then cite); one-line cites to the home; role-boundary Rules (`never call next_activity` / `get_workflow`).
+**Do not flag:** Minimal [compose-prompt](../../meta/techniques/workflow-engine/compose-prompt.md) stub (entry tools + Apply `{agent_technique}`); novel duties with no other home (hoist into engine/conduct once, then cite); one-line cites to the home; role-boundary Rules — the prohibition itself, where an account of what the other role does instead is `instruction-narrates-an-actor`.
 
 **Fix:** Delete the restatement. Keep the imperative entry sequence and cite the home. Hoist any unique duty that still has no home into workflow-engine / the owning technique once. See also `no-delivery-mechanism-narration`, `no-engine-mechanics-as-rules`, `no-duplicated-guidance`.
 
@@ -1705,7 +1705,7 @@ A change updates some restatements of a behaviour it altered and leaves others a
 
 **Detect:** When a change alters a behavioural claim — a gate, precondition, default, or ordering — take the pre-change phrasing as the search key and sweep the whole definition tree: every README tier, activity `description`, technique `## Capability`, `outcome[]`, and resource body. Flag each surviving occurrence that still asserts the pre-change behaviour. The test is occurrence count against the tree, not against the change's file list: a manifest naming one file for a claim that appears in three is the same defect.
 
-**Do not flag:** Restatements already accurate and unaffected by the change; planning-folder artifacts that record the before state deliberately; a claim held once in a single authoritative home. Restatement that duplicates a Detect body an existing entry owns is `canon-layer-cites-not-restates`.
+**Do not flag:** Restatements already accurate and unaffected by the change; planning-folder artifacts that record the before state deliberately; a claim held once in a single authoritative home. Restatement that duplicates a Detect body an existing entry owns is `canon-layer-cites-not-restates`. A stale clause describing a different actor's mechanics, where updating it would keep the coupling the staleness came from, is `instruction-narrates-an-actor`.
 
 **Fix:** Update every occurrence in one edit and record the count in the change's file manifest so the sweep is auditable. Where the claim needs only one home, delete the restatements instead of updating them — see [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
@@ -1900,3 +1900,15 @@ Bootstrap prose sends the reader somewhere they have no way to go.
 **Do not flag:** An MCP resource URI the text tells the client to fetch directly. A canonical name carried as a label for the home a rule keeps later, where the text says the reference is for after the framework arrives and nothing depends on following it now. Prose that restates a contract owned elsewhere, which is `prompt-restates-owned-mechanics`.
 
 **Fix:** Inline the instruction's substance and keep the name only as a forward label. On this surface that overrides `dotted-rule-address`. See [Pre-Session Prose Stands Alone](./design-principles.md#33-pre-session-prose-stands-alone).
+
+### AP-146. instruction-narrates-an-actor
+
+"The next activity reaches this context only as a continuation stub the orchestrator sends after continue-batch has advanced the pointer" / "The orchestrator applies commit-and-persist for the activity just finished before reaching this operation"
+
+A rule, Protocol step, or I/O description describes an actor instead of instructing its reader.
+
+**Detect:** For each rule, Protocol step and I/O description, name the actor the surface is delivered to. Flag a clause that narrates rather than instructs, in either direction: a SECOND actor's behaviour, state, operations or limitations, which the reader can neither observe nor act on; or the reader's OWN duty written in the third person, which reads as somebody else's and so gets left undone. Test: strike the clause. Flag it if the instruction is still complete — the narration bought no fidelity and goes stale when the other side changes — and flag it equally if what remains no longer tells the reader to do the thing the clause described, which means a duty was being narrated rather than commanded.
+
+**Do not flag:** A duty stated as outside the reader's, with no account of who holds it. A value the reader takes from its own tool responses. A precondition the reader can check. The contract the reader itself applies, on the surface that owns it. An actor role carried as data a stub or manifest binds. Prose restating a contract owned elsewhere, which is `prompt-restates-owned-mechanics`. A rule filed under the wrong audience bucket, which is `rule-audience-bucket`.
+
+**Fix:** Address the reader. Where the clause carried a duty of the reader's, restate it as the imperative it always was. Where it described another actor, restate the reason from the reader's own position or delete it — an instruction whose reason cannot be put that way had no reason the reader could use. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
