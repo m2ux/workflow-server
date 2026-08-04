@@ -63,7 +63,7 @@ flowchart LR
 
 Planning-folder filename pattern: `architecture-summary-{n}.md` (n increments on successive versions). Template:
 
-```markdown
+````markdown
 # Architecture Summary
 
 > architecture-summary · [work package name] · #[issue number] [title] · YYYY-MM-DD · [author/agent]
@@ -224,4 +224,4 @@ flowchart LR
 ## Related Documents
 
 *[Omit this section if none. Link (don't copy) the ADR, work package plan, and relevant documentation.]*
-```
+````

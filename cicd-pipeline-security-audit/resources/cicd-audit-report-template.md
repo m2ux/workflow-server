@@ -15,7 +15,7 @@ What good looks like: every finding has a confirmed source-to-sink flow and a sp
 
 ## CI/CD Audit Report Template
 
-```markdown
+````markdown
 # CI/CD Pipeline Security Audit Report
 
 **Targets:** {submodule paths or 'all'}
@@ -108,4 +108,4 @@ What good looks like: every finding has a confirmed source-to-sink flow and a sp
 | Scanner Finding | Merged Finding | Disposition |
 |-----------------|----------------|-------------|
 | {S1-F001} | {M-001} | {merged / duplicate} |
-```
+````
