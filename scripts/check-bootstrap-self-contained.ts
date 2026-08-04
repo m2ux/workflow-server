@@ -28,10 +28,13 @@
  * The rule checks cannot strip inline code spans the way the anchor guard does, because the construct
  * they look for is itself backticked — the bare-rule check depends on the backticks. Two consequences
  * worth knowing. A link may be shown inside a fence as illustration, but a rule address shown there
- * still reports, because the address is recognised by corpus lookup rather than by position. And a link
- * in a four-space-indented block reports even though CommonMark renders it as code: telling an indented
- * code block from a list item's continuation needs a real parser, and over-reporting is the safe
- * direction here — fence the illustration and it goes quiet.
+ * still reports, because the address is recognised by corpus lookup rather than by position. And
+ * indentation is read absolutely, where CommonMark reads it relative to the containing block: a link
+ * indented four spaces reports even where CommonMark renders it as code, and a fenced illustration
+ * nested deep enough that its own marker sits past three spaces reports too, because the marker is not
+ * taken as a fence there. Both want a block-level parser — the guarded file already runs to five spaces
+ * of nesting — and since treating something as fenced SUPPRESSES checks, the bound stays tight and an
+ * illustration either sits within three spaces of the margin or carries the finding.
  *
  * That lookup is on the PAIR rather than the left half: around thirty techniques carry a single-word
  * name, so a left-half test reads `plan.json` and `context.yaml` as addresses. Requiring the corpus to
