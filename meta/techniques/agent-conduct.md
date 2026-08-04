@@ -79,7 +79,7 @@ Do not read workflow resource files from disk. Load via [resource-loading-via-to
 
 ### operational-discipline-artifact-location
 
-Write planning artifacts only under the server-returned `{planning_folder_path}` — never compose or reconstruct that path ([start-session](./workflow-engine/start-session.md)::planning-folder-absolute-or-omit). Filename prefix and find-or-update discipline belong to the artifact-writing techniques (e.g. manage-artifacts [artifact-prefix](../../work-package/techniques/manage-artifacts/TECHNIQUE.md#artifact-prefix)).
+Write planning artifacts only under the server-returned `{planning_folder_path}` — never compose or reconstruct that path. Filename prefix and find-or-update discipline belong to whichever artifact-writing technique the workflow bundles, not here.
 
 ### orchestrator-no-domain-work
 
