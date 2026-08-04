@@ -250,6 +250,24 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     expect(body.workflow.initialActivity).toBe('child-activity');
   });
 
+  it('reports the first activity from the transient-promotion path too, which is the one bootstrap takes', async () => {
+    // `start_session` with no planning folder is how the meta bootstrap opens, so the promotion branch
+    // is the return site production reaches. It is a second `return` in the same handler, and covering
+    // only the persistent-parent one leaves the live path free to drop the field.
+    const started = await call('start_session', { agent_id: 'orchestrator' });
+    const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+    const result = await call('dispatch_child', {
+      session_index: sessionIndex,
+      workflow_id: 'child-fixture',
+      planning_slug: '2026-07-07-promoted-initial',
+    });
+    const body = JSON.parse((result.content[0] as { type: 'text'; text: string }).text) as {
+      planning_slug?: string; workflow: { id: string; initialActivity?: string };
+    };
+    expect(body.planning_slug).toBe('2026-07-07-promoted-initial');
+    expect(body.workflow.initialActivity).toBe('child-activity');
+  });
+
   it('dispatch_child (transient meta promotion) seeds both the promoted parent and the embedded child', async () => {
     const started = await call('start_session', { agent_id: 'orchestrator' });
     const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;

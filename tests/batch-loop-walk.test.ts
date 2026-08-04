@@ -227,8 +227,8 @@ describe('client activity loop walked (#407)', () => {
     const primeWrite = prime?.actions?.find((a) => a.action === 'set');
     expect(primeWrite?.target).toBe(l.condition?.variable);
     // Primed from a bound variable, braced like every other reference in the corpus. Written bare it
-    // reads as the literal string, which the server refuses on the first `next_activity` — and the
-    // refusal names the right id, so the run recovered and the fault stayed invisible.
+    // reads as the literal string, and no workflow declares an activity by that name, so the first
+    // `next_activity` fails outright — an error naming the id it could not find, not the one to use.
     expect(primeWrite?.value).toBe('{client_initial_activity}');
     expect(l.loopType).toBe('while');
     // The exit test is on the pointer the body advances, against null — the two have to agree, or the
