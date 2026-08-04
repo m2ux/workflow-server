@@ -51,6 +51,7 @@ This repo is an **MCP server** for AI agent workflow orchestration (TypeScript, 
   - **`--force`/`--force-with-lease` has exactly one use:** correcting a genuine error in an earlier commit, on a branch with **no other contributors**. Not for squashing, not for rewording, not for folding a follow-up into the commit it fixes, and never on a shared branch.
   - Repeated amending is the failure mode to avoid: it silently collapses distinct pieces of work into one commit, and the intermediate states survive only in a local reflog. Once collapsed, the history cannot be recovered — only reconstructed by hand, which is a rewrite of its own.
 - **GitHub CLI: do not use GraphQL.** Prefer REST only (`gh api repos/...`, `gh api --method PATCH|POST|GET ...`). Avoid `gh pr view/create/list` and any path that hits `api.github.com/graphql` — GraphQL is deprecated/unreliable here.
+- **Inspecting a backticked construct takes a script, not a shell one-liner.** Rule names, code spans and fenced blocks all carry backticks, and this corpus is mostly made of them, so counting or extracting one is a routine need. A literal backtick anywhere in a Bash command is refused before the permission prompt, and the scan is textual — single quotes, `grep -F`, and a trailing comment do not exempt it. Put the pattern in a Python or Node file, run it under `sbx`, and compose the character as `chr(96)` where the pattern itself needs one. The same applies to a commit message quoting a rule name: write it to a file and use `git commit -F <file>`.
 
 ## Where to look
 
