@@ -23,13 +23,13 @@ Array of artifact entries (`id`, `name`, `path`).
 
 ### batch_may_continue
 
-Whether this worker's context may take another activity, read from `_meta.batch.may_continue` on the `get_activity` response for this activity ([batch-ends-where-the-server-says](./activity-worker.md#batch-ends-where-the-server-says)). The orchestrator holds no batch state, so this is the channel that carries the server's answer out to it.
+Whether this worker's context may take another activity, read from `_meta.batch.may_continue` on the `get_activity` response for this activity ([batch-ends-where-the-server-says](./activity-worker.md#batch-ends-where-the-server-says)). The envelope is the only place this answer appears again, so it is read here and carried there unchanged.
 
 ## Outputs
 
 ### activity_result
 
-The `activity_complete` result envelope, returned as one tagged object (the orchestrator switches on `result_type`):
+The `activity_complete` result envelope, returned as one tagged object whose `result_type` says which kind it is:
 
 #### result_type
 
@@ -57,7 +57,7 @@ optional — the transition target to take instead of the default, set when a ch
 
 #### next_activity_id
 
-Activity ID the worker resolved for the next dispatch (or null when the workflow is complete). Required on every successful `activity_complete` so definition-blind orchestrators need not call `get_activity` or re-walk `transitions[]`.
+Activity ID the worker resolved for the next dispatch (or null when the workflow is complete). Required on every successful `activity_complete`: this context holds the definition the transition was resolved from, and the envelope is the only report of the result.
 
 #### evaluated_condition
 
@@ -65,16 +65,16 @@ One-line summary from evaluate-transition of which transition matched (`transiti
 
 #### batch_may_continue
 
-Whether this context may take another activity, folded from the input of the same name. Required on every successful `activity_complete`: the orchestrator holds no batch state of its own, and this is what tells it whether to continue this worker onto the next activity or release it and dispatch a fresh one ([batch-is-bounded-by-the-server](./dispatch-activity.md#batch-is-bounded-by-the-server)).
+Whether this context may take another activity, folded from the input of the same name. Required on every successful `activity_complete`: the server answered it for this context and the envelope is the only report of that answer ([batch-is-bounded-by-the-server](./dispatch-activity.md#batch-is-bounded-by-the-server)).
 
 ## Protocol
 
 1. Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, `{artifacts_produced}` and `{batch_may_continue}` into the `activity_complete` object. Populate the envelope's `variables_changed` map with every bag key this activity mutated — declared step outputs landed per [variable-binding](../variable-binding.md) (including remapped output names), plus any checkpoint `setVariable` effects already applied. Include `{transition_override}` if a checkpoint effect specified `transitionTo`.
-2. Resolve the next activity: with the current activity definition already in hand from `get_activity` and the post-activity variable bag (after `variables_changed` / checkpoint effects), apply [evaluate-transition](./evaluate-transition.md). Fold `{next_activity_id}` and `{evaluated_condition}` into the envelope. Do not omit these fields — orchestrators under `no-get-activity-from-orchestrator` route solely from this report.
+2. Resolve the next activity: with the current activity definition already in hand from `get_activity` and the post-activity variable bag (after `variables_changed` / checkpoint effects), apply [evaluate-transition](./evaluate-transition.md). Fold `{next_activity_id}` and `{evaluated_condition}` into the envelope. Do not omit these fields: the definition they were resolved from is held here and nowhere else, so an omission cannot be recovered later.
 3. Return `{activity_result}`.
 
 ## Rules
 
 ### no-readme-persist-on-worker
 
-Planning-folder `README.md` Progress/Status sync and engineering commit/push are **not** worker duties. The orchestrator applies [commit-and-persist](./commit-and-persist.md) after `activity_complete`. Workers still report `{artifacts_produced}` in the envelope for activity evidence; Progress Status writes go through [sync-progress-status](./sync-progress-status.md) by owning activity, not per envelope artifact entry.
+Planning-folder `README.md` Progress/Status sync and engineering commit/push are **not** worker duties, and are done elsewhere once the envelope is returned — do not do them here, and do not wait for them. Workers still report `{artifacts_produced}` in the envelope for activity evidence; Progress Status writes go through [sync-progress-status](./sync-progress-status.md) by owning activity, not per envelope artifact entry.

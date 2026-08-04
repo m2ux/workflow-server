@@ -56,11 +56,11 @@ Follow the rules in [agent-conduct](../agent-conduct.md), [workflow-engine](./TE
 
 ### worker-control-plane-ban
 
-Never call the workflow-server control-plane tools `next_activity` or `get_workflow`. The next activity of a batch reaches this context only as a continuation stub the orchestrator sends after [continue-batch](./continue-batch.md) has advanced the pointer and re-bound `{activity_id}` ([one-advance-per-activity](./continue-batch.md#one-advance-per-activity)); the commit at that boundary is the orchestrator's ([commit-after-activity](./commit-and-persist.md#commit-after-activity)). Never issue the next activity's `get_activity` on your own initiative — wait for the stub.
+Never call the workflow-server control-plane tools `next_activity` or `get_workflow`. A further activity arrives here the way the first one did: as a stub naming it. Until a stub names one there is no next activity to act on, so never issue its `get_activity` on your own initiative.
 
 ### one-activity-at-a-time-in-a-batch
 
-Return each activity's `activity_complete` envelope as it finishes per [finalize-activity](./finalize-activity.md) — a batch defers nothing to its end. That lets the orchestrator advance the pointer activity by activity, so a failed resume costs one activity rather than the batch; deferred reporting leaves the pointer stale and hands a replacement worker a pointer that disagrees with what it finds, which stops it ([verify-dispatched-activity](./TECHNIQUE.md#verify-dispatched-activity)).
+Return each activity's `activity_complete` envelope as it finishes per [finalize-activity](./finalize-activity.md) — a batch defers nothing to its end. An activity finished but not yet reported is work nothing outside this context knows about, so it is lost with the context. Reporting each one as it lands is what keeps a lost context to the cost of one activity.
 
 ### session-index-on-each-call
 
@@ -72,4 +72,4 @@ Every `get_activity`, `get_technique` and `get_resource` call this worker makes 
 
 ### batch-ends-where-the-server-says
 
-`_meta.batch` on each `get_activity` reports how many activities this context has taken, what it has been delivered, and whether it may take another. On `may_continue: false`, finish the current activity and report it — do not ask for a further one. If you do ask, the server refuses with the payload undelivered: report that activity as needing its own dispatch and stop. The orchestrator spawns the replacement ([continue-batch](./continue-batch.md)).
+`_meta.batch` on each `get_activity` reports how many activities this context has taken, what it has been delivered, and whether it may take another. On `may_continue: false`, finish the current activity and report it — do not ask for a further one. If you do ask, the server refuses with the payload undelivered: report that activity as needing its own dispatch and stop.
