@@ -2,7 +2,7 @@ import { describe, it, expect, afterAll } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { collectFindings } from '../scripts/check-bootstrap-self-contained.js';
+import { collectFindings, MIN_PROSE_LINES } from '../scripts/check-bootstrap-self-contained.js';
 import { corpusRoot } from './corpus-root.js';
 
 /**
@@ -33,7 +33,7 @@ afterAll(() => {
  * collide with ordinary filenames, and a fixture with no such collision cannot show that `plan.json`
  * stays silent for the stated reason rather than by accident.
  */
-function rootWith(body: string): string {
+function rootWith(body: string, pad = true): string {
   const root = mkdtempSync(join(tmpdir(), 'bootstrap-guard-'));
   roots.push(root);
   const write = (relative: string, text: string): void => {
@@ -42,7 +42,11 @@ function rootWith(body: string): string {
     writeFileSync(path, text);
   };
 
-  write('meta/resources/bootstrap-protocol.md', body);
+  // The guard refuses a document too short to be the procedure, so a fixture carries procedure-length
+  // filler. Neutral by construction: no destination, no dotted pair, no hyphenated rule name.
+  const short = MIN_PROSE_LINES - body.split('\n').filter((line) => line.trim() !== '').length;
+  const filler = Array.from({ length: Math.max(0, short) }, (_, i) => `Step ${i + 1} of the procedure.`);
+  write('meta/resources/bootstrap-protocol.md', pad ? [body, ...filler].join('\n') : body);
   // An operation inside a group, keyed on its own filename. Its Inputs and Protocol headings must NOT
   // become rule names — without the `## Rules` gating every I/O id and step name in the corpus would.
   write(
@@ -54,6 +58,8 @@ function rootWith(body: string): string {
   write('meta/techniques/harness-compat/TECHNIQUE.md', '## Rules\n\n### foreground-always\n\nBlock.\n');
   // A flat technique, keyed on its filename.
   write('meta/techniques/plan.md', '## Rules\n\n### only-one-plan\n\nOne plan.\n');
+  // A single-word rule name, which the corpus also has four of. Addressable dotted, not bare.
+  write('meta/techniques/harness.md', '## Rules\n\n### spawn\n\nSpawn in the foreground.\n');
   // The workflow's own TECHNIQUE.md, keyed on the workflow — not on the literal string `TECHNIQUE`.
   write('meta/techniques/TECHNIQUE.md', '## Rules\n\n### await-every-worker\n\nWait.\n');
   return root;
@@ -82,6 +88,25 @@ describe('bootstrap self-containment guard', () => {
     // An HTML destination is a path too, so a rule address inside one reports as the link it is.
     expect(checks(prose('See <a href="../t/resolve-host-repo.prose-sources-are-fallback-only">x</a>.')))
       .toEqual(['corpus-link']);
+  });
+
+  it('reads an HTML destination however the attribute is written', () => {
+    const target = '../techniques/version-control/resolve-host-repo.md';
+    // Unquoted values are legal and every renderer follows them, so demanding quotes is a way through.
+    expect(checks(prose(`Apply <a href=${target}>rhr</a>.`))).toEqual(['corpus-link']);
+    // An attribute ahead of the destination, uppercase, a tab separator, spaces around the equals.
+    expect(checks(prose(`Apply <a class="x" href="${target}">rhr</a>.`))).toEqual(['corpus-link']);
+    expect(checks(prose(`See <img alt="a" src="${target}" width="2">.`))).toEqual(['corpus-link']);
+    expect(checks(prose(`Apply <A HREF="${target}">rhr</A>.`))).toEqual(['corpus-link']);
+    expect(checks(prose(`Apply <a\thref="${target}">rhr</a>.`))).toEqual(['corpus-link']);
+    expect(checks(prose(`Apply <a href = "${target}">rhr</a>.`))).toEqual(['corpus-link']);
+    // A tag may straddle lines, so the destination is read wherever it sits rather than beside its tag.
+    expect(checks(prose(`Apply <a\nhref="${target}">rhr</a>.`))).toEqual(['corpus-link']);
+    // A destination hidden behind one quoted inside another attribute still reports — and reports the
+    // real one. Taking the first `href` before the closing angle reads the decoy and stops.
+    expect(checks(prose(`See <img alt="href='#top'" src="${target}">.`))).toEqual(['corpus-link']);
+    // And an attribute whose name merely ends in the one we want is not a destination.
+    expect(checks(prose(`See <span data-href="${target}">x</span>.`))).toEqual([]);
   });
 
   it('refuses a rule address however far its ancestry is spelled out', () => {
@@ -150,11 +175,77 @@ describe('bootstrap self-containment guard', () => {
       .toEqual(['corpus-link', 'dotted-rule']);
   });
 
+  it('closes a fence at any indent, so a block cannot run past its real end', () => {
+    const target = '../techniques/version-control/resolve-host-repo.md';
+    // The closer sits three spaces inside the list item's content column, which CommonMark accepts. An
+    // opener-only match cannot see it, pairs this opener with the NEXT block's opener, and swallows the
+    // prose between them — with the marker count still even, so nothing reports. The link below the
+    // first block is rendered prose and must be found.
+    const body = [
+      '# B', '',
+      '1. Step:', '',
+      '   ```json',
+      '   { "a": 1 }',
+      '      ```', '',
+      `   Apply [first](${target}).`, '',
+      '   ```',
+      '   more', '',
+      '      ```', '',
+      `   Apply [second](${target}).`, '',
+    ].join('\n');
+    expect(checks(body)).toEqual(['corpus-link', 'corpus-link']);
+    // An opener still has to sit within three spaces of the margin, so a stray marker deep in a list
+    // cannot open a block and silence everything under it.
+    expect(checks(`# B\n\n1. Step:\n\n    \`\`\`\n    Apply [x](${target}).\n    \`\`\`\n`))
+      .toEqual(['corpus-link']);
+    // A closer may run LONGER than its opener, which CommonMark allows. Demanding equal length leaves
+    // this block open to the end of the file.
+    expect(checks('# B\n\n```\nApply [x](' + target + ').\n````\n')).toEqual([]);
+    // A marker carrying an info string opens a block and never closes one, so this inner line is
+    // content. Accepting it as a close ends the block early and reports the illustration below it.
+    expect(checks('# B\n\n```\n```js\nApply [x](' + target + ').\n```\n')).toEqual([]);
+  });
+
+  it('reads every line once a fence is left open, including lines an earlier block closed', () => {
+    // The fail-safe is to discard the fenced set entirely, not merely to stop adding to it. Keeping the
+    // spans an earlier block closed leaves that block's contents suppressed while the file's fence state
+    // is already known to be unreliable — so a link shown there stays hidden on a reported failure.
+    const target = '../techniques/version-control/resolve-host-repo.md';
+    const body = '# B\n\n```\nApply [inside](' + target + ').\n```\n\n```json\nApply [after]('
+      + target + ').\n';
+    expect(checks(body).sort()).toEqual(['corpus-link', 'corpus-link', 'unbalanced-fence']);
+  });
+
+  it('reads a CRLF file the same as an LF one', () => {
+    // A carriage return left on each line stops any line looking like a fence, which would take the
+    // fence matcher — and with it the unclosed-fence fail-safe — out of service on a CRLF checkout.
+    const target = '../techniques/version-control/resolve-host-repo.md';
+    const fenced = `# Bootstrap\n\n\`\`\`\nApply [x](${target}).\n\`\`\`\n`;
+    expect(checks(fenced)).toEqual([]);
+    expect(checks(fenced.replace(/\n/g, '\r\n'))).toEqual([]);
+  });
+
+  it('names a rule by bare name only where the name is hyphenated', () => {
+    // Four declared rules are single words that this text also uses in their ordinary sense — it already
+    // backticks `persistent` and `fresh` as topology values. Those stay addressable dotted.
+    expect(checks(prose('Apply `prose-sources-are-fallback-only`.'))).toEqual(['bare-rule']);
+    // `spawn` is a declared rule in this fixture, and still not an address when written bare.
+    expect(checks(prose('Every worker you `spawn` must be awaited.'))).toEqual([]);
+    expect(checks(prose('Apply `harness.spawn`.'))).toEqual(['dotted-rule']);
+  });
+
   it('refuses to call an emptied or absent resource clean', () => {
     // Nothing scanned and nothing wrong look identical in a hard-zero guard, so an empty file has to be
     // an error rather than a pass.
-    expect(() => collectFindings(rootWith(''))).toThrow();
-    expect(() => collectFindings(rootWith('\n   \n\n'))).toThrow();
+    expect(() => collectFindings(rootWith('', false))).toThrow();
+    expect(() => collectFindings(rootWith('\n   \n\n', false))).toThrow();
     expect(() => collectFindings(mkdtempSync(join(tmpdir(), 'bootstrap-guard-empty-')))).toThrow();
+    // And a file gutted to a stub, which is the shape a bad merge leaves. Presence alone would pass it,
+    // and a hard-zero guard would then report OK on a document that instructs nobody.
+    expect(() => collectFindings(rootWith('# Bootstrap\n', false))).toThrow();
+    const short = Array.from({ length: MIN_PROSE_LINES - 1 }, (_, i) => `Line ${i + 1}.`).join('\n');
+    expect(() => collectFindings(rootWith(short, false))).toThrow();
+    // One more line and it is a procedure.
+    expect(collectFindings(rootWith(`${short}\nLine ${MIN_PROSE_LINES}.`, false))).toEqual([]);
   });
 });

@@ -29,12 +29,10 @@
  * they look for is itself backticked — the bare-rule check depends on the backticks. Two consequences
  * worth knowing. A link may be shown inside a fence as illustration, but a rule address shown there
  * still reports, because the address is recognised by corpus lookup rather than by position. And
- * indentation is read absolutely, where CommonMark reads it relative to the containing block: a link
- * indented four spaces reports even where CommonMark renders it as code, and a fenced illustration
- * nested deep enough that its own marker sits past three spaces reports too, because the marker is not
- * taken as a fence there. Both want a block-level parser — the guarded file already runs to five spaces
- * of nesting — and since treating something as fenced SUPPRESSES checks, the bound stays tight and an
- * illustration either sits within three spaces of the margin or carries the finding.
+ * indentation is read absolutely, where CommonMark reads it relative to the containing block, so a link
+ * indented four spaces reports even where CommonMark renders it as code. Telling an indented code block
+ * from a list item's continuation wants a block-level parser, and over-reporting is the affordable
+ * direction: fence the illustration, at any indent, and it goes quiet.
  *
  * That lookup is on the PAIR rather than the left half: around thirty techniques carry a single-word
  * name, so a left-half test reads `plan.json` and `context.yaml` as addresses. Requiring the corpus to
@@ -58,6 +56,8 @@ const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
 
 /** The one resource `discover` delivers before a session exists. */
 const PRE_SESSION_RESOURCE = join('meta', 'resources', 'bootstrap-protocol.md');
+/** Prose the procedure cannot be shorter than and still be one. It runs to 56 lines today. */
+export const MIN_PROSE_LINES = 20;
 
 /**
  * An inline link's destination, with the optional title CommonMark allows after it. Without the title
@@ -69,13 +69,30 @@ const REF_DEF_RE = /^ {0,3}\[[^\]]+\]:\s*(<[^>]*>|\S+)/;
 /**
  * An HTML destination. Markdown permits raw HTML, so a guard that reads only `](…)` is bypassed by
  * writing the same link as an anchor — and the reader is stranded either way.
+ *
+ * This looks for the ATTRIBUTE rather than the tag around it, which is what makes it hard to sidestep.
+ * Requiring a tag on the same line misses one split across lines, which CommonMark permits. Taking the
+ * first `href` before the first `>` reads the one inside `alt="href='…'"` and never the real
+ * destination beside it. And the value may be unquoted, which every renderer follows.
+ *
+ * Demanding whitespace or line start ahead of the name does the discriminating: it rules out
+ * `data-href`, and an `href` inside a quoted value, since neither is preceded by space.
  */
-const HTML_LINK_RE = /<[a-z][a-z0-9]*\s[^>]*?\b(?:href|src)\s*=\s*(?:"([^"]*)"|'([^']*)')/gi;
+const HTML_DEST_RE = /(?:^|\s)(?:href|src)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>]+))/gi;
 /** A run of dot-joined lowercase segments — `a.b`, `a.b.c`. Each adjacent pair is tested separately. */
 const DOTTED_RE = /\b([a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+)\b/g;
 /** An inline code span, which is the only form the bare-rule check considers. */
 const CODE_SPAN_RE = /`([^`]+)`/g;
-const FENCE_RE = /^ {0,3}(`{3,}|~{3,})(.*)$/;
+/**
+ * A fence opener stays within three spaces of the margin, so a stray marker deep in a list cannot open
+ * a block and take the checks below it out of service. A CLOSER is accepted at any indent, because a
+ * closer the matcher cannot see is far worse: the opener then pairs with the NEXT visible marker — the
+ * start of a later block — and the rendered prose between them is swallowed as fenced with the count
+ * still even, so the unbalanced-fence fail-safe never fires and a real link goes unreported. Both
+ * choices err toward scanning more lines, which is the only direction this guard can afford.
+ */
+const FENCE_OPEN_RE = /^ {0,3}(`{3,}|~{3,})(.*)$/;
+const FENCE_CLOSE_RE = /^\s*(`{3,}|~{3,})\s*$/;
 /** A scheme the reader's own client resolves, per RFC 3986: letter, then letters, digits, `+`, `-`, `.`. */
 const SCHEME_RE = /^[a-z][a-z0-9+.-]*:\/\//i;
 /** Schemes that carry no authority, so they never show `//` and are still the client's to resolve. */
@@ -144,22 +161,23 @@ function declaredRules(root: string): Declared {
  * direction: an unclosed fence must not be able to take the link check out of service behind a green
  * verdict, which is the one failure this guard must not have.
  */
-function fencedLines(lines: string[]): { fenced: Set<number>; unclosed: boolean } {
+function fencedLines(lines: string[]): { fenced: Set<number>; unclosed: number | null } {
   const fenced = new Set<number>();
   let open: { char: string; len: number; start: number } | null = null;
   lines.forEach((line, index) => {
-    const match = FENCE_RE.exec(line);
     if (open) {
-      if (match && match[1]![0] === open.char && match[1]!.length >= open.len && match[2]!.trim() === '') {
-        for (let line = open.start; line <= index; line++) fenced.add(line);
+      const close = FENCE_CLOSE_RE.exec(line);
+      if (close && close[1]![0] === open.char && close[1]!.length >= open.len) {
+        for (let fencedLine = open.start; fencedLine <= index; fencedLine++) fenced.add(fencedLine);
         open = null;
       }
       return;
     }
-    if (match) open = { char: match[1]![0]!, len: match[1]!.length, start: index };
+    const opener = FENCE_OPEN_RE.exec(line);
+    if (opener) open = { char: opener[1]![0]!, len: opener[1]!.length, start: index };
   });
-  if (open) return { fenced: new Set<number>(), unclosed: true };
-  return { fenced, unclosed: false };
+  if (open) return { fenced: new Set<number>(), unclosed: open.start + 1 };
+  return { fenced, unclosed: null };
 }
 
 /** A destination the reader already holds: their client resolves it, or it names this same document. */
@@ -170,22 +188,28 @@ function resolvableHere(target: string): boolean {
 export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   const findings: Finding[] = [];
   const file = join(root, PRE_SESSION_RESOURCE);
-  // An absent or emptied file must not read as clean: nothing scanned and nothing wrong look identical.
-  const lines = existsSync(file) ? readFileSync(file, 'utf-8').split('\n') : [];
+  // A CR left on the end of every line would stop each one looking like a fence, taking the fence
+  // matcher out of service on a CRLF checkout — so line endings are normalised before anything reads a
+  // line's shape.
+  const lines = existsSync(file) ? readFileSync(file, 'utf-8').split(/\r?\n/) : [];
+  const prose = lines.filter((line) => line.trim() !== '').length;
+  // A floor rather than mere presence. An emptied file and a clean one look identical to a hard-zero
+  // guard, and so does a file gutted to its heading — which is the shape a bad merge leaves. The
+  // procedure runs to 56 lines of prose; the floor sits well under that and far above a stub.
   assertScanned(
-    lines.filter((line) => line.trim() !== '').length,
-    `lines of pre-session prose (${PRE_SESSION_RESOURCE})`,
+    prose >= MIN_PROSE_LINES ? prose : 0,
+    `lines of pre-session prose (${PRE_SESSION_RESOURCE}, at least ${MIN_PROSE_LINES} expected)`,
     root,
   );
 
   const declared = declaredRules(root);
   const { fenced, unclosed } = fencedLines(lines);
-  if (unclosed) {
+  if (unclosed !== null) {
     findings.push({
       check: 'unbalanced-fence',
-      site: PRE_SESSION_RESOURCE,
-      detail: 'a code fence never closes, so nothing below it can be told from illustration — close it, '
-        + 'because fence state is what separates a shown link from an instruction here',
+      site: `${PRE_SESSION_RESOURCE}:${unclosed}`,
+      detail: 'this code fence never closes, so nothing below it can be told from illustration — close '
+        + 'it, because fence state is what separates a shown link from an instruction here',
     });
   }
 
@@ -198,7 +222,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
       const refDef = REF_DEF_RE.exec(line);
       const rendered = line.replace(/`[^`]*`/g, '');
       const targets = [...rendered.matchAll(LINK_RE)].map((m) => m[1]!);
-      for (const [, quoted, single] of rendered.matchAll(HTML_LINK_RE)) targets.push(quoted ?? single ?? '');
+      for (const [, quoted, single, bare] of rendered.matchAll(HTML_DEST_RE)) targets.push(quoted ?? single ?? bare!);
       if (refDef) targets.push(refDef[1]!);
       for (const target of targets) {
         const to = target.replace(/^<|>$/g, '');
@@ -214,7 +238,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     }
 
     // Link destinations are paths; a dotted segment inside one is not a rule address.
-    const prose = line.replace(LINK_RE, ']()').replace(HTML_LINK_RE, '<a href=""').replace(REF_DEF_RE, '[]:');
+    const prose = line.replace(LINK_RE, ']()').replace(HTML_DEST_RE, ' href=""').replace(REF_DEF_RE, '[]:');
     for (const [, run] of prose.matchAll(DOTTED_RE)) {
       // Every adjacent pair, not the leftmost match: a full ancestry address puts the technique and the
       // rule in the last two segments, and a single scan consumes `<workflow>.<technique>` and moves
@@ -230,11 +254,16 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
       });
     }
 
-    // The shortened spelling: a backticked bare rule name and nothing else in the span. Restricting to
-    // code spans is what makes this safe — a rule name is a hyphenated phrase, and unrestricted it would
-    // read ordinary prose ('every worker you spawn') as an address.
+    // The shortened spelling: a backticked hyphenated rule name, alone in the span.
+    //
+    // Two restrictions keep this off ordinary writing. The span, because unrestricted it would read
+    // prose — 'every worker you spawn' — as an address. And the hyphen, because four declared rules are
+    // named with a single word (`spawn`, `resume`, `concurrent`, `posting`) and three of those are also
+    // topology and operation-kind values this very text trades in, backticked, in their ordinary sense:
+    // it already writes `persistent` and `fresh` that way, so a sibling value named `concurrent` would
+    // report. Those four stay addressable in the dotted form, which is unambiguous.
     for (const [, span] of line.matchAll(CODE_SPAN_RE)) {
-      if (!/^[a-z][a-z0-9-]*$/.test(span!) || !declared.names.has(span!)) continue;
+      if (!/^[a-z][a-z0-9]*(?:-[a-z0-9]+)+$/.test(span!) || !declared.names.has(span!)) continue;
       findings.push({
         check: 'bare-rule',
         site,
