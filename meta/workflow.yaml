@@ -84,6 +84,9 @@ variables:
   - name: client_planning_slug
     type: string
     description: Planning slug of the dispatched client workflow's planning folder — stable identifier the server uses to locate session.json
+  - name: client_initial_activity
+    type: string
+    description: The client workflow's own first activity, returned by create-session — the only id the server accepts on that session's first next_activity call
   - name: is_monorepo
     type: boolean
     description: Whether the target repository is a submodule monorepo (set by resolve-target)

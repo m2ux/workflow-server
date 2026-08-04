@@ -31,7 +31,7 @@ Orchestrator agent identity for this session.
 ### 2. Choose and dispatch first activity
 
 - Call `get_workflow_status { session_index }`
-- Dispatch `current_activity` when set, otherwise the workflow's `initialActivity`, via [dispatch-activity](./dispatch-activity.md)
+- Dispatch `current_activity` via [dispatch-activity](./dispatch-activity.md). It is set before the loop is entered, from the first activity the dispatched workflow declares — a fresh session has no current activity, and the server accepts no other id on its first `next_activity`
 - Always dispatch a worker — never execute activity steps inline ([orchestrator-no-inline-on-resume](../agent-conduct.md#orchestrator-no-inline-on-resume), [orchestrator-no-domain-work](../agent-conduct.md#orchestrator-no-domain-work))
 
 ### 3. Drive the activity loop

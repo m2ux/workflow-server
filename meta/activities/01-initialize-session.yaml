@@ -30,6 +30,7 @@ steps:
         repo: target_repo
       outputs:
         session_index: client_session_index
+        initial_activity: client_initial_activity
 transitions:
   - to: resolve-target
     isDefault: true

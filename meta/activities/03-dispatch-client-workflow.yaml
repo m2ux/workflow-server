@@ -15,7 +15,7 @@ steps:
     actions:
       - action: set
         target: current_activity
-        value: initialActivity
+        value: "{client_initial_activity}"
   - kind: loop
     id: client-activity-loop
     name: Client Activity Loop
