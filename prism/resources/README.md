@@ -307,8 +307,11 @@ Document skeletons, as distinct from the lens prompts above. A per-lens analysis
 | `behavioral-promises.md` | [api-surface](api-surface.md) |
 | `subsystem-synthesis.md` | [subsystem-synthesis](subsystem-synthesis.md) |
 | `smart-prereq.md` | [prereq](prereq.md) |
+| `RUN-MANIFEST.md` | [run-manifest](run-manifest.md) |
+| `portfolio-synthesis.md` | [portfolio-synthesis](portfolio-synthesis.md) |
+| `reflect-synthesis.md` | [reflect-synthesis](reflect-synthesis.md) |
 
-`reflect-synthesis.md` and `portfolio-synthesis.md` are absent from this map on purpose: their producing steps prescribe the sections inline and dispatch no lens, so no resource owns their shape yet. Both are triaged as owing a guide rather than mapped to a lens that does not shape them.
+The last three dispatch no lens — their shape is their own, so each has a guide rather than a lens standing in for one.
 
 ---
 

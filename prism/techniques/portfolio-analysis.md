@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -98,9 +98,7 @@ All findings with lens attribution and convergent/unique classification
 ### 6. Cross Lens Synthesis
 
 - After all lenses complete, identify where findings converge (same structural property found via different operations)
-- Identify where findings diverge (each lens found a different property — this is expected and is the value of portfolio analysis)
-- Produce a summary table: finding, which lens(es) found it, convergent or unique
-- Write the synthesis as `{portfolio_synthesis}` into `{output_path}`
+- Write the synthesis as `{portfolio_synthesis}` into `{output_path}` per [portfolio-synthesis](../resources/portfolio-synthesis.md#template) and its [Rules](../resources/portfolio-synthesis.md#rules)
 
 ## Rules
 
