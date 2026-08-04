@@ -145,3 +145,7 @@ Total tests analyzed: [X] · with anti-patterns: [Y] · clean: [X-Y] · rate: [Y
 
 **Deferred Improvements:** [Omit if none.]
 ```
+
+## Rules
+
+- **Line budget:** ~30 lines per finding. Coverage figures are stated once, not repeated per finding.

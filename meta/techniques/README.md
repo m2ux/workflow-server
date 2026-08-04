@@ -10,4 +10,6 @@ Techniques in this library are bound by the meta activities and are also referen
 
 Cross-cutting conduct rules live in [`agent-conduct`](./agent-conduct.md); capability groups reference it as their single source of truth rather than restating it.
 
+[`verify-artifact-conforms`](./verify-artifact-conforms.md) is the artifact-conformance pass every workflow that persists artifacts binds. It carries no workflow's canonical-home map or guide map of its own — the caller binds whichever maps it declares.
+
 For the group-by-group capability summary, see the [workflow README](../README.md#techniques).

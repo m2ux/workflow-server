@@ -27,3 +27,4 @@ The register is the one canonical home for **in-task** follow-ups — work still
 - **One row per item, updated in place** — mark `done` when closed; do not delete historical rows.
 - **Created lazily** — create the register when the first in-task follow-up appears; a run with none has no register.
 - **Link, don't restate** — producers record one pointer line to this register; the row here is the single statement of the item.
+- **Line budget:** one row per follow-up, with no prose between rows.

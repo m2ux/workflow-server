@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -49,12 +49,7 @@ Share of the run's dispatches the ledger accounts for: ledger entry count, actua
 
 ### 3. Write the Cost Artifact
 
-- Create `{token_usage_document}` at `{planning_folder_path}` per [artifact-prefix](../manage-artifacts/TECHNIQUE.md#artifact-prefix) containing:
-  - A title identifying this as a token-use and cost **estimate** for the work package.
-  - A per-activity table: activity id, input/output/total tokens, cache-read and cache-write columns when present, **Duration (min)** (convert harness `duration_ms` with `min = ms / 60000`, one decimal), model, `priceTableVersion`, and per-activity cost (or `unknown` when `cost_usd` is null).
-  - A per-workflow totals section with input/output/total tokens, total wall duration in minutes, and total cost (or `unknown` when unpriced activities contributed).
-  - The reconciliation from `{token_usage_document.usage_coverage}`: ledger entries, actual dispatches, and the unaccounted count. When the unaccounted count is above zero, state the totals as a floor rather than a total.
-  - A caveat that cost is an **estimate** meaningful for API-key per-token billing; on Pro/Max subscriptions the figure is not a bill.
+- Create `{token_usage_document}` at `{planning_folder_path}` per [artifact-prefix](../manage-artifacts/TECHNIQUE.md#artifact-prefix), following [token-usage](../../resources/token-usage.md#template) and its [Rules](../../resources/token-usage.md#rules), filling it from the per-activity figures and `{token_usage_document.usage_coverage}`
 - A mid-`complete` write is a **draft**: it cannot yet include the terminal activity's own dispatch figure. [workflow-engine::revise-session-metrics](../../../meta/techniques/workflow-engine/revise-session-metrics.md) (meta `end-workflow`) rewrites the same artifact after client exit.
 
 ### 4. Link From the README

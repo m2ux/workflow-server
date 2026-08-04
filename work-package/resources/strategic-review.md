@@ -93,3 +93,7 @@ Problem-solving commonly leaves behind speculative changes, debugging infrastruc
 
 **Next Step:** [Proceed to finalize / Return to planning]
 ```
+
+## Rules
+
+- **Line budget:** ~120 lines. Each recommendation is one entry with its scope-fit reason.

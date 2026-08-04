@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -37,12 +37,8 @@ Filesystem path to the written DETAILED-FINDINGS.md (the detailed-findings docum
 
 ### 2. Create Detailed Findings
 
-- Write an expanded write-up for every finding in the consolidated set — not just Critical and High — to `{detailed_findings_path}`.
-- Organise findings by severity: Critical, High, Medium, Low.
-- Take each finding's fields directly from DEFINITIVE-FINDINGS.md: Description, Impact, Location, Recommendation, and Adversarial confirmation (present for full-prism findings). These are not re-derived.
-- Group findings within each severity section under audit-domain sub-headings.
-- Format each finding heading as a level-3 markdown heading carrying the finding's ID followed by its title: `### ID: Title`. IDs are prism's report IDs, unchanged.
-- Where DEFINITIVE-FINDINGS.md records a finding's Blast radius, carry it through as that finding's Graph Evidence subsection (blast-radius metrics and execution-flow participation) — prism computed it, the audit does not recompute it.
+- Write an expanded write-up for every finding in the consolidated set — not just Critical and High — to `{detailed_findings_path}` per [detailed-findings](../../resources/detailed-findings.md#template) and its [Rules](../../resources/detailed-findings.md#rules)
+- Take each finding's fields directly from DEFINITIVE-FINDINGS.md; none is re-derived, and a Blast radius recorded there carries through as that finding's Graph Evidence
 
 ## Rules
 

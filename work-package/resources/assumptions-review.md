@@ -89,3 +89,7 @@ Add bullets ONLY for corrected, invalidated, or deferred assumptions, plus one t
 line if a pattern emerged. Deferred follow-ups are canonically tracked in the
 [deferred-items register](deferred-items.md) — link them, don't duplicate.
 ```
+
+## Rules
+
+- **Line budget:** one row per assumption, ~100 lines for the log. A row needing a paragraph links the artifact that holds the reasoning.

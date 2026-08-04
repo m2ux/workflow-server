@@ -70,3 +70,4 @@ An `##`-level section, so it nests inside a host document rather than standing a
 ### permanent-blob-citations
 
 Every change-block and finding citation is a permanent blob URL at the commit under review — the repository host, the full commit sha, the repo-relative path, and a line anchor. A path relative to the working checkout resolves only for as long as that checkout exists, and a review worktree is removed at close-out, so a checkout-relative citation stops resolving inside the run that wrote it. Blob URLs also survive the branch moving on, which a branch-anchored citation does not.
+- **Line budget:** ~5 lines per block rationale, and one section per block. The index grows with the diff, so the ceiling is per block.

@@ -313,3 +313,7 @@ The structural biases (first-positive-signal bias, large-file avoidance, grep-tr
 | `grep` / `rg` | Pattern matching across codebase (lead generation only — see §2 preamble) | System utility / `cargo install ripgrep` |
 | `cargo check` | Compilation and feature flag verification | Included with rustup |
 | `cargo semver-checks` | API compatibility verification for runtime upgrades | `cargo install cargo-semver-checks` |
+
+## Rules
+
+- **Line budget:** ~200 lines for the prompt, and ~150 for the report its Reporting Format section shapes.

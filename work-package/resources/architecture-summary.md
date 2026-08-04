@@ -58,6 +58,7 @@ flowchart LR
 - Label every arrow with the interaction type; direction shows data/control flow; avoid crossing lines.
 - Highlight new/modified elements with distinct colors; grey out unchanged context; keep names and colors consistent across diagrams.
 - Include a clear "why" for the changes.
+- **Line budget:** ~150 lines. Diagrams count toward it, so a third diagram displaces prose rather than adding to it.
 
 ## Architecture Summary Artifact Template
 

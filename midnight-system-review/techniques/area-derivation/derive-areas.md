@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -83,4 +83,4 @@ The reviewable plan document: per-area rationale, planned probes, and coverage s
 
 ### 4. Write Plan
 
-- Write `{investigation_plan}` to the planning folder — area table, per-area rationale and planned probes, and a coverage summary showing every changed file assigned to at least one area — and emit `{investigation_areas}`.
+- Write `{investigation_plan}` to the planning folder per [investigation-plan](../../resources/investigation-plan.md#template) and its [Rules](../../resources/investigation-plan.md#rules), and emit `{investigation_areas}`.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -59,12 +59,7 @@ The updated provenance log, with the appended task row
 
 `provenance-log.md`
 
-#### audience
-
-`human`
-
-
 ## Protocol
 
-1. If the `{provenance_log}` does not exist, create it with the canonical header: `| Task ID | Assistant | Model | Prompt Class | Context Scope | Description |` followed by the divider `|---|---|---|---|---|---|`.
-2. Append one row: `| {task_id} | {assistant_name} | {model_id} | {prompt_class} | {context_scope} | {task_description} |`.
+1. Create the `{provenance_log}` when it does not exist, per [provenance-log](../../resources/provenance-log.md#template).
+2. Append one row from `{task_id}`, `{assistant_name}`, `{model_id}`, `{prompt_class}`, `{context_scope}` and `{task_description}`, per the guide's [Rules](../../resources/provenance-log.md#rules).

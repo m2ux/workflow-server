@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.8.0
+  version: 2.9.0
 ---
 
 ## Capability
@@ -52,10 +52,6 @@ Per-target structural inventory following the [Structural Inventory Guide](../re
 #### artifact
 
 `structural-inventory.md`
-
-#### audience
-
-`human`
 
 ### structural_inventory_path
 

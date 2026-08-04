@@ -1,5 +1,5 @@
 id: verdict-and-report
-version: 1.0.0
+version: 1.2.0
 name: Verdict and Report
 description: Compute the merge-readiness verdict from accepted findings, render the review report with per-area accounting, and secure verdict sign-off.
 required: true
@@ -15,6 +15,12 @@ steps:
   - kind: technique
     id: render-review
     technique: render-review
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        guide_map: midnight-system-review/README#planning-artifact-to-guide-map
   - kind: action
     id: enforce-accounting-gate
     actions:
