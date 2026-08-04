@@ -124,6 +124,77 @@ describe('artifact-guides guard (fixture corpus)', () => {
     expect(await collectUnmappedArtifacts(tempDir)).toEqual([]);
   });
 
+  // The map wins over the filename search, so whatever a row points at is what the guard trusts.
+  // A row naming a guide that does not exist certifies an artifact whose guide is a broken link.
+  it('flags a map row whose guide does not exist', async () => {
+    await writeTechnique(join(tempDir, 'fixture-wf', 'techniques'), 'writer', [
+      '### report', '', 'A report.', '',
+      '#### artifact', '', '`REPORT.md`',
+    ]);
+    await writeResource(join(tempDir, 'fixture-wf', 'resources'), 'README.md', [
+      '# Fixture Resources', '',
+      '## Planning artifact to guide map', '',
+      '| Bare filename | Guide |', '|---|---|',
+      '| `REPORT.md` | [gone](./gone.md) |',
+    ]);
+    const unmapped = await collectUnmappedArtifacts(tempDir);
+    expect(unmapped.map((v) => v.artifact)).toEqual(['REPORT.md']);
+    expect(unmapped[0]!.detail).toContain('points at a guide that does not exist');
+  });
+
+  // A row is matched on its filename column, not on the row's text. `index-and-log.md` in the guide
+  // column would otherwise read as naming `log.md`, so the wrong row answers for the artifact.
+  it('matches a map row on its filename column, not as a substring of the row', async () => {
+    await writeTechnique(join(tempDir, 'fixture-wf', 'techniques'), 'writer', [
+      '### log', '', 'A ledger.', '',
+      '#### artifact', '', '`log.md`',
+    ]);
+    await writeResource(join(tempDir, 'fixture-wf', 'resources'), 'index-and-log.md', [
+      '# Index and Log Guide', '', '## Template', '', 'Rows.',
+    ]);
+    await writeResource(join(tempDir, 'fixture-wf', 'resources'), 'README.md', [
+      '# Fixture Resources', '',
+      '## Planning artifact to guide map', '',
+      '| Bare filename | Guide |', '|---|---|',
+      '| `index.md` | [index-and-log](./index-and-log.md) |',
+    ]);
+    // Only `index.md` is mapped. `log.md` must not borrow that row via the guide filename.
+    const unmapped = await collectUnmappedArtifacts(tempDir);
+    expect(unmapped.map((v) => v.artifact)).toEqual(['log.md']);
+    expect(unmapped[0]!.detail).toContain('with no creation guide');
+  });
+
+  it('accepts a filename column listing several artifacts that share one guide', async () => {
+    await writeTechnique(join(tempDir, 'fixture-wf', 'techniques'), 'writer', [
+      '### log', '', 'A ledger.', '',
+      '#### artifact', '', '`log.md`',
+    ]);
+    await writeResource(join(tempDir, 'fixture-wf', 'resources'), 'index-and-log.md', [
+      '# Index and Log Guide', '', '## Template', '', 'Rows.',
+    ]);
+    await writeResource(join(tempDir, 'fixture-wf', 'resources'), 'README.md', [
+      '# Fixture Resources', '',
+      '## Planning artifact to guide map', '',
+      '| Bare filename | Guide |', '|---|---|',
+      '| `index.md`, `log.md` | [index-and-log](./index-and-log.md) |',
+    ]);
+    expect(await collectUnmappedArtifacts(tempDir)).toEqual([]);
+  });
+
+  it('accepts a row that states a rule instead of linking a file', async () => {
+    await writeTechnique(join(tempDir, 'fixture-wf', 'techniques'), 'writer', [
+      '### analysis', '', 'A per-lens artifact.', '',
+      '#### artifact', '', '`{lens_name}-analysis.md`',
+    ]);
+    await writeResource(join(tempDir, 'fixture-wf', 'resources'), 'README.md', [
+      '# Fixture Resources', '',
+      '## Planning artifact to guide map', '',
+      '| Bare filename | Guide |', '|---|---|',
+      '| `{lens_name}-analysis.md` | The lens resource the unit\'s lens slug names |',
+    ]);
+    expect(await collectUnmappedArtifacts(tempDir)).toEqual([]);
+  });
+
   it('does not accept a resource that names the filename without carrying a template', async () => {
     await writeTechnique(join(tempDir, 'fixture-wf', 'techniques'), 'writer', [
       '### report', '', 'A report.', '',
