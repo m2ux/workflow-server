@@ -3,7 +3,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { normalizeRepoPath, presentPathToAgent, type ServerConfig } from '../config.js';
 import { withAuditLog } from '../logging.js';
 
-import { loadWorkflow, loadWorkflowWithDiagnostics, getActivity, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { loadWorkflow, loadWorkflowWithDiagnostics, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import { composeActivityTechnique, projectTechnique } from '../loaders/technique-loader.js';
 import {
@@ -43,7 +43,6 @@ import {
   parentChainDepth,
   PARENT_CHAIN_DEPTH_WARN_THRESHOLD,
   type SessionFile,
-  type EmbeddedSessionRef,
 } from '../schema/session.schema.js';
 import { techniqueName, flattenActivitySteps, type Step } from '../schema/activity.schema.js';
 import { buildProvenanceContext, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
@@ -60,35 +59,6 @@ import { basename, isAbsolute, resolve } from 'node:path';
 
 /** Re-export for callers/tests that imported section extraction from this module. */
 export { extractMarkdownSection } from '../utils/resource-ref.js';
-
-/**
- * The children a planning folder already records, or none when it holds no session yet.
- *
- * A promotion writes over whatever `session.json` the folder held, so the children it recorded have to
- * be read before that write and carried into it. Their order is load-bearing: an embedded child's
- * `session_index` is derived from the folder plus the path to its slot, so moving one to a different
- * array position changes the index its worker authenticates with.
- *
- * A folder holding no session is a first run and yields none. A folder whose session cannot be READ is
- * something else entirely, and must not be treated the same way: the promotion writes OVER that file, so
- * proceeding as a first run destroys the work recorded there — the exact damage carrying the children
- * exists to prevent. The likeliest cause is a rotated server key, which leaves the content perfectly
- * intact, so refusing costs the caller one call where continuing would cost it the run.
- */
-async function carriedChildren(folderAbsPath: string): Promise<EmbeddedSessionRef[]> {
-  if (!(await sessionFileExists(folderAbsPath))) return [];
-  // A seal or JSON failure raises SessionStoreError, which the caller surfaces unchanged.
-  const { state } = await verifySeal(folderAbsPath);
-  const parsed = safeValidateSessionFile(state);
-  if (!parsed.success) {
-    throw new Error(
-      `dispatch_child: the session.json in ${folderAbsPath} does not match the SessionFile schema, so `
-      + 'the children it records cannot be carried into the promoted file. Repair or retire that session '
-      + 'rather than dispatching over it.',
-    );
-  }
-  return parsed.data.triggeredWorkflows;
-}
 
 /**
  * Wrap a tool handler so any thrown `SessionStoreError` is re-thrown with a
@@ -108,7 +78,6 @@ function withSessionStoreErrors<T extends Record<string, unknown>, R>(
     }
   };
 }
-
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
@@ -547,85 +516,33 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           promotedSlug,
           { planningRelativeDir: promoteRoot.planningRelativeDir },
         );
-        // The promoted folder may already hold a durable session from an earlier run — that is the
-        // resume case, and `ensurePlanningFolder` hands back the existing folder rather than making a
-        // new one. A fresh parent written over it takes every child with it, and because a child's
-        // index is derived from the folder and the path to it, the caller receives the SAME index back
-        // with an emptied session behind it: the walk silently restarts at the first activity, having
-        // reported the cursor it was resuming.
-        //
-        // So the children recorded there are carried forward, each at the array position its index was
-        // derived from. A child of this workflow still running is resumed in place, with the cursor,
-        // completed activities and variables it had. Anything else — a completed child, or a different
-        // workflow — is left untouched and the new child appends beside it.
-        // A ref carries its child's state inline, but the field is optional — an entry recorded without
-        // one has no cursor to resume and is treated as absent rather than resumed into an empty session.
-        //
-        // Whether the child FINISHED is read from its own state rather than from the ref's `status`. The
-        // ref is only flipped to `completed` by the branch that notifies a persistent parent, and a
-        // dispatched child carries no `parentSession`, so for these children that flip never happens and
-        // the ref reads `running` forever. Resuming on it walks a finished workflow back onto its
-        // close-out activity and runs it a second time.
-        //
-        // A cursor sitting on the terminal sentinel is not resumable either: `next_activity` accepts the
-        // sentinel and re-emits completion, but no activity is declared under that id, so the worker's
-        // `get_activity` refuses it and the loop can neither advance nor exit.
-        const carried = await carriedChildren(promotedWorkspaceFolder);
-        let resume: { index: number; state: SessionFile } | null = null;
-        for (let i = carried.length - 1; i >= 0; i--) {
-          const candidate = carried[i]!;
-          const child = candidate.state;
-          if (candidate.workflowId !== workflow_id || !child) continue;
-          if (candidate.status !== 'running' || (child.status ?? 'running') !== 'running') continue;
-          if (child.currentActivity === TERMINAL_SENTINEL) continue;
-          resume = { index: i, state: child };
-          break;
-        }
-        const childArrayIndex = resume ? resume.index : carried.length;
         const childSessionIndex = await computeEmbeddedSessionIndex(
           promotedWorkspaceFolder,
-          ['triggeredWorkflows', childArrayIndex, 'state'],
+          ['triggeredWorkflows', 0, 'state'],
         );
-        const childInitial: SessionFile = resume
-          ? resume.state
-          : createInitialSessionFile({
-            sessionIndex: childSessionIndex,
-            workflowId: workflow_id,
-            workflowVersion: effectiveWorkflowVersion,
-            agentId: agent_id,
-            ...(parentState.repo ? { repo: parentState.repo } : {}),
-            ...(context_mode ? { contextMode: context_mode } : {}),
-            variables: childVariables(wfResult.value),
-          });
+        const childInitial = createInitialSessionFile({
+          sessionIndex: childSessionIndex,
+          workflowId: workflow_id,
+          workflowVersion: effectiveWorkflowVersion,
+          agentId: agent_id,
+          ...(parentState.repo ? { repo: parentState.repo } : {}),
+          ...(context_mode ? { contextMode: context_mode } : {}),
+          variables: childVariables(wfResult.value),
+        });
         const parentNext = advanceSession(parentState, (draft) => {
-          draft.triggeredWorkflows = carried;
-          if (resume) {
-            // The index is derived from this position, so the entry stays where it is. Both recorded
-            // copies of the index are refreshed, in case the folder moved since the child was
-            // dispatched: resolution matches the one INSIDE the child's state, so refreshing only the
-            // ref would hand back an index that resolves to nothing while the stale one still works.
-            // `childInitial` is the child's own saved state, and writing it back through the same name
-            // both paths use keeps one source for what the slot holds.
-            draft.triggeredWorkflows[resume.index] = {
-              ...carried[resume.index]!,
-              sessionIndex: childSessionIndex,
-              state: { ...childInitial, sessionIndex: childSessionIndex },
-            };
-          } else {
-            draft.triggeredWorkflows.push({
-              workflowId: workflow_id,
-              sessionIndex: childSessionIndex,
-              triggeredAt,
-              triggeredFrom: { activityId: draft.currentActivity || '' },
-              status: 'running',
-              state: childInitial,
-            });
-          }
+          draft.triggeredWorkflows.push({
+            workflowId: workflow_id,
+            sessionIndex: childSessionIndex,
+            triggeredAt,
+            triggeredFrom: { activityId: draft.currentActivity || '' },
+            status: 'running',
+            state: childInitial,
+          });
           draft.history.push({
             timestamp: triggeredAt,
-            type: resume ? 'workflow_returned' : 'workflow_triggered',
+            type: 'workflow_triggered',
             activity: draft.currentActivity || undefined,
-            data: { workflowId: workflow_id, sessionIndex: childSessionIndex, ...(resume ? { resumedAt: childInitial.currentActivity || null } : {}) },
+            data: { workflowId: workflow_id, sessionIndex: childSessionIndex },
           });
         });
         await writeSessionFile(promotedWorkspaceFolder, parentNext);
@@ -633,7 +550,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // index to it and remove the tmp folder.
         await redirectTransientToWorkspace(parentFolder, promotedWorkspaceFolder);
         return {
-          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version, initialActivity: wfResult.value.initialActivity }, ...(resume && childInitial.currentActivity ? { resumed_activity: childInitial.currentActivity } : {}), planning_slug: promotedSlug, planning_folder_path: presentPlanningPath(promotedWorkspaceFolder) ?? promotedWorkspaceFolder }, null, 2) }],
+          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version, initialActivity: wfResult.value.initialActivity }, planning_slug: promotedSlug, planning_folder_path: presentPlanningPath(promotedWorkspaceFolder) ?? promotedWorkspaceFolder }, null, 2) }],
           _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
         };
       }
