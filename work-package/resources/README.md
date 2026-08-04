@@ -39,6 +39,9 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `research-reconciliation` | Research Reconciliation | Research-candidate inventory shape, reconcilability statuses, and scorecard format |
 | `pr-review-response` | PR Review Response | Response-format and review-document templates |
 | `prior-feedback-triage` | Prior Feedback Triage | Creation guide: `prior-feedback-triage.md` — the disposition register the rating cap is computed from |
+| `token-usage` | Token Usage | Creation guide: `token-usage.md` — the run's sole cost home, reconciled or labelled a floor |
+| `provenance-log` | Provenance Log | Creation guide: `provenance-log.md` — one appended row per task |
+| `adr` | Architecture Decision Record | Creation guide: `NNNN-{decision_title}.md` — standard ADR form with at least one rejected alternative |
 
 ## Planning artifact to guide map
 
@@ -54,6 +57,10 @@ Which guide owns each persisted filename's shape.
 | `code-review.md` | [rust-substrate-code-review](rust-substrate-code-review.md#report-template) |
 | `test-suite-review.md` | [test-suite-review](test-suite-review.md) |
 | `session-trace.md` | [session-trace](session-trace.md) |
+| `change-block-index.md` | [manual-diff-review](manual-diff-review.md#file-index-generation) |
+| `token-usage.md` | [token-usage](token-usage.md) |
+| `provenance-log.md` | [provenance-log](provenance-log.md) |
+| `NNNN-{decision_title}.md` | [adr](adr.md) |
 | `architecture-summary.md` | [architecture-summary](architecture-summary.md) |
 | `strategic-review-{n}.md` | [strategic-review](strategic-review.md) |
 | `{codebase_area}.md` | [codebase-comprehension](codebase-comprehension.md) |
