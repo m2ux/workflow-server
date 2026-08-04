@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Conformance of a folder's persisted artifacts to the guide each filename maps to
 
 ### artifact_dir
 
-*(optional)* Directory holding the artifacts to check, for a caller whose artifacts land somewhere other than the session planning folder. In scope are the artifacts **this run persisted** there, never every file the directory happens to hold — a planning folder holds only the run's own artifacts, while a code or shared directory holds a great deal the run did not write.
+*(optional)* Directory holding the artifacts to check, for a caller whose artifacts land somewhere other than the session planning folder. In scope are the **human-audience artifacts this run persisted** there — never every file the directory happens to hold, since a planning folder holds only the run's own artifacts while a code or shared directory holds a great deal the run did not write, and never an agent-audience artifact, whose conformance is its declared schema rather than a prose template.
 
 #### default
 
@@ -43,7 +43,8 @@ array of `{ file, rule, detail, fixed }` entries — one per detected violation,
 
 ### 1. Enumerate and Resolve
 
-- Enumerate the artifacts this run persisted into `{artifact_dir}` — a file the run did not write is out of scope — and resolve each one's guide through `{guide_map}` when it is bound, otherwise through the guide that names the filename
+- Enumerate the human-audience artifacts this run persisted into `{artifact_dir}` and resolve each one's guide through `{guide_map}` when it is bound, otherwise through the guide that names the filename
+  > A file the run did not write, and an artifact declared `agent`, are both out of scope.
 
 ### 2. Measure Against the Guide and the Map
 
@@ -66,7 +67,7 @@ array of `{ file, rule, detail, fixed }` entries — one per detected violation,
 
 ### only-what-this-run-wrote
 
-Measure the artifacts this run persisted, and nothing else in the directory. A caller whose artifact directory is a checkout, a code path, or any folder it shares with content the run did not write would otherwise have unrelated files measured against guides they were never written to, and corrected in place against them.
+Measure the human-audience artifacts this run persisted, and nothing else in the directory. Two exclusions carry the weight. A caller whose artifact directory is a checkout, a code path, or any folder it shares with content the run did not write would otherwise have unrelated files measured against guides they were never written to, and corrected in place against them. And an agent-audience artifact is structured data whose conformance is its declared schema — a template and a line budget say nothing about it, so measuring one against them reports noise and correcting one against them corrupts it.
 
 ### guide-is-the-standard
 

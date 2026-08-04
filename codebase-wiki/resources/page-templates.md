@@ -127,3 +127,8 @@ confidence: [high|medium|low]
 ## Trade-offs
 - [Where A wins / where B wins, and why.] (cite: [...], confidence: [...])
 ```
+
+## Rules
+
+- **Line budget:** ~60 lines per page. A page past that is two pages, and the wiki is navigated by the index rather than by scrolling one long entry.
+- **Every claim carries its citation and confidence.** A sentence without both is an assertion the wiki cannot stand behind, whatever section it sits in.
