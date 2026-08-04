@@ -83,6 +83,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'the text delivered before a session exists sends the reader nowhere it cannot go',
   },
   {
+    id: 'set-action-values',
+    script: 'scripts/check-set-action-values.ts',
+    npmScript: 'check:set-values',
+    scope: 'corpus',
+    json: true,
+    proves: 'every set action names where it writes, and braces a value that names a variable',
+  },
+  {
     id: 'self-provisioned-input',
     script: 'scripts/check-self-provisioned-input.ts',
     npmScript: 'check:self-input',
