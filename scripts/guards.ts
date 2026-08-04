@@ -91,6 +91,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'every set action names where it writes, and braces a value that names a variable',
   },
   {
+    id: 'harness-adapter-set',
+    script: 'scripts/check-harness-adapter-set.ts',
+    npmScript: 'check:harness-set',
+    scope: 'corpus',
+    json: true,
+    proves: 'every harness kind resolves to an adapter exposing exactly the operation kinds callers ask for',
+  },
+  {
     id: 'self-provisioned-input',
     script: 'scripts/check-self-provisioned-input.ts',
     npmScript: 'check:self-input',
