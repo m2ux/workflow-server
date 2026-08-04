@@ -249,6 +249,8 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     expect(body.workflow.id).toBe('child-fixture');
     // The child's, not the parent's — the seed-fixture parent starts at `checkpoint-activity`.
     expect(body.workflow.initialActivity).toBe('child-activity');
+    // A first dispatch resumed nothing, so there is no cursor to prefer over that first activity.
+    expect(body).not.toHaveProperty('resumed_activity');
   });
 
   it('resumes a running child in place instead of writing a fresh session over it', async () => {
@@ -278,6 +280,14 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     // Same index, because it is derived from the same slot — and now the session behind it is the one
     // the first run advanced, not a replacement.
     expect((again._meta as Record<string, unknown>).session_index).toBe(childIndex);
+
+    // And the cursor is reported, because preserving it on disk is no use if the caller still primes
+    // its loop from the first activity — that re-enters work the child already finished.
+    const body = JSON.parse((again.content[0] as { type: 'text'; text: string }).text) as {
+      resumed_activity?: string;
+    };
+    expect(body.resumed_activity).toBe('child-activity');
+
     const stored = readSession(slug);
     expect(stored.triggeredWorkflows).toHaveLength(1);
     expect(stored.triggeredWorkflows[0].state.currentActivity).toBe('child-activity');

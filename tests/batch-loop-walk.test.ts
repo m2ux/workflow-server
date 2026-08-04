@@ -88,6 +88,7 @@ interface SetAction { action?: string; target?: string; value?: unknown }
 interface OuterStep {
   kind: string;
   id?: string;
+  when?: string;
   steps?: LoopStep[];
   loopType?: string;
   maxIterations?: number;
@@ -212,13 +213,23 @@ describe('client activity loop walked (#407)', () => {
     // appended after it that re-primes, and a second `kind: loop` the walk's own `find` cannot see.
     expect(def.steps.map((s) => s.id)).toEqual([
       'verify-preconditions',
+      'prime-resumed-activity',
       'prime-initial-activity',
       'client-activity-loop',
     ]);
     expect(def.steps.filter((s) => s.kind === 'loop')).toHaveLength(1);
 
-    const [precondition, prime] = def.steps;
+    const [precondition, resumed, prime] = def.steps;
     const l = loop();
+
+    // The two primes are exact complements on the same variable, so exactly one runs. Overlapping
+    // gates would prime twice and the second would win; a gap would leave the loop never entered.
+    expect(resumed?.when).toBe('client_resumed_activity');
+    expect(prime?.when).toBe('!client_resumed_activity');
+    // A resumed cursor supersedes the first activity — priming from the first re-enters finished work.
+    const resumedWrite = resumed?.actions?.find((a) => a.action === 'set');
+    expect(resumedWrite?.target).toBe(l.condition?.variable);
+    expect(resumedWrite?.value).toBe('{client_resumed_activity}');
 
     // Nothing in the body checks that a client session exists, and nothing primes the pointer the
     // condition tests. Both live ahead of the loop, and a walk that starts inside the body cannot see
