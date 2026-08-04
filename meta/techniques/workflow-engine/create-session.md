@@ -37,7 +37,7 @@ The canonical absolute path of the planning folder, as resolved by the server un
 
 ### initial_activity
 
-The activity the child's first `next_activity` must name. A fresh session has no current activity, so the server accepts no other id on that first call; the child workflow declares which one it is, and this carries it across the session boundary.
+*(optional)* The activity the child's first `next_activity` should name — absent when the child workflow declares no `initialActivity`, which makes every activity an entry point. A session that has not entered an activity reports none, and the parent has no other way to learn the child's first one, so this carries it across the session boundary.
 
 ## Protocol
 
