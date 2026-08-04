@@ -32,7 +32,7 @@ export interface BrokenAnchor {
   /** Link target as written. */
   link: string;
   /** Why it failed. */
-  reason: 'missing-file' | 'missing-anchor';
+  reason: 'missing-file' | 'missing-anchor' | 'unclosed-fence';
 }
 
 /**
@@ -53,7 +53,10 @@ function collectAnchors(mdPath: string): Set<string> {
   const anchors = new Set<string>();
   const counts = new Map<string, number>();
   const lines = toLines(readFileSync(mdPath, 'utf-8'));
-  const { fenced } = fencedLines(lines);
+  // `suppress-to-end`, not the link scan's `read-all`: for collection the safe direction inverts. A
+  // heading exposed from under an unclosed fence is an anchor the rendered page does not have, and it
+  // makes a link to it resolve here and break in the reader's hands.
+  const { fenced } = fencedLines(lines, { onUnclosed: 'suppress-to-end' });
   for (const [index, line] of lines.entries()) {
     if (fenced.has(index)) continue;
     const m = /^#{1,6}\s+(.*)$/.exec(line);
@@ -87,7 +90,14 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
     // links like NN-work-package-plan.md) and inline code spans (anti-pattern docs quote
     // illustrative link forms in backticks).
     const lines = toLines(readFileSync(file, 'utf-8'));
-    const { fenced } = fencedLines(lines);
+    const { fenced, unclosed } = fencedLines(lines);
+    if (unclosed !== null) {
+      broken.push({
+        source: relative(ROOT, file),
+        link: `line ${unclosed}`,
+        reason: 'unclosed-fence',
+      });
+    }
     const destinations: string[] = [];
     for (const [index, line] of lines.entries()) {
       if (fenced.has(index)) continue;
@@ -97,7 +107,8 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
       const m = ANCHORED_RE.exec(destination);
       if (!m) continue;
       const [, target, anchor] = m;
-      if (/^[a-z][a-z0-9+.-]*:/i.test(target!)) continue;
+      // Requires an authority, so a relative path whose first segment carries a colon stays checked.
+      if (/^[a-z][a-z0-9+.-]*:\/\//i.test(target!)) continue;
       // A template body names its file with a placeholder, which resolves to nothing on purpose.
       if (/[{]/.test(target!)) continue;
       const targetPath = resolve(dirname(file), target);
@@ -123,7 +134,7 @@ if (isMain) {
     process.stdout.write('resource-anchors: OK — every relative .md#anchor link resolves to a rendered heading\n');
     process.exit(0);
   }
-  process.stdout.write(`resource-anchors: ${broken.length} broken link(s) — fix the link or restore the heading:\n`);
+  process.stdout.write(`resource-anchors: ${broken.length} finding(s) — fix the link, restore the heading, or close the fence:\n`);
   for (const b of broken) process.stdout.write(`  [${b.reason}] ${b.source} -> ${b.link}\n`);
   process.exit(1);
 }

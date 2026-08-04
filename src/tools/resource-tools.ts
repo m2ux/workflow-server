@@ -3,7 +3,7 @@ import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { normalizeRepoPath, presentPathToAgent, type ServerConfig } from '../config.js';
 import { withAuditLog } from '../logging.js';
 
-import { loadWorkflow, loadWorkflowWithDiagnostics, getActivity } from '../loaders/workflow-loader.js';
+import { loadWorkflow, loadWorkflowWithDiagnostics, getActivity, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
 import { composeActivityTechnique, projectTechnique } from '../loaders/technique-loader.js';
 import {
@@ -69,20 +69,25 @@ export { extractMarkdownSection } from '../utils/resource-ref.js';
  * `session_index` is derived from the folder plus the path to its slot, so moving one to a different
  * array position changes the index its worker authenticates with.
  *
- * A folder with no session, an unreadable one, or one whose contents no longer satisfy the schema
- * yields none — promotion then proceeds as a fresh dispatch, which is what happens today in every case.
- * Widening a resume into a first run costs one restart; letting a broken read abort the dispatch would
- * cost the caller its session.
+ * A folder holding no session is a first run and yields none. A folder whose session cannot be READ is
+ * something else entirely, and must not be treated the same way: the promotion writes OVER that file, so
+ * proceeding as a first run destroys the work recorded there — the exact damage carrying the children
+ * exists to prevent. The likeliest cause is a rotated server key, which leaves the content perfectly
+ * intact, so refusing costs the caller one call where continuing would cost it the run.
  */
 async function carriedChildren(folderAbsPath: string): Promise<EmbeddedSessionRef[]> {
   if (!(await sessionFileExists(folderAbsPath))) return [];
-  try {
-    const { state } = await verifySeal(folderAbsPath);
-    const parsed = safeValidateSessionFile(state);
-    return parsed.success ? parsed.data.triggeredWorkflows : [];
-  } catch {
-    return [];
+  // A seal or JSON failure raises SessionStoreError, which the caller surfaces unchanged.
+  const { state } = await verifySeal(folderAbsPath);
+  const parsed = safeValidateSessionFile(state);
+  if (!parsed.success) {
+    throw new Error(
+      `dispatch_child: the session.json in ${folderAbsPath} does not match the SessionFile schema, so `
+      + 'the children it records cannot be carried into the promoted file. Repair or retire that session '
+      + 'rather than dispatching over it.',
+    );
   }
+  return parsed.data.triggeredWorkflows;
 }
 
 /**
@@ -555,14 +560,26 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // workflow — is left untouched and the new child appends beside it.
         // A ref carries its child's state inline, but the field is optional — an entry recorded without
         // one has no cursor to resume and is treated as absent rather than resumed into an empty session.
+        //
+        // Whether the child FINISHED is read from its own state rather than from the ref's `status`. The
+        // ref is only flipped to `completed` by the branch that notifies a persistent parent, and a
+        // dispatched child carries no `parentSession`, so for these children that flip never happens and
+        // the ref reads `running` forever. Resuming on it walks a finished workflow back onto its
+        // close-out activity and runs it a second time.
+        //
+        // A cursor sitting on the terminal sentinel is not resumable either: `next_activity` accepts the
+        // sentinel and re-emits completion, but no activity is declared under that id, so the worker's
+        // `get_activity` refuses it and the loop can neither advance nor exit.
         const carried = await carriedChildren(promotedWorkspaceFolder);
         let resume: { index: number; state: SessionFile } | null = null;
         for (let i = carried.length - 1; i >= 0; i--) {
           const candidate = carried[i]!;
-          if (candidate.workflowId === workflow_id && candidate.status === 'running' && candidate.state) {
-            resume = { index: i, state: candidate.state };
-            break;
-          }
+          const child = candidate.state;
+          if (candidate.workflowId !== workflow_id || !child) continue;
+          if (candidate.status !== 'running' || (child.status ?? 'running') !== 'running') continue;
+          if (child.currentActivity === TERMINAL_SENTINEL) continue;
+          resume = { index: i, state: child };
+          break;
         }
         const childArrayIndex = resume ? resume.index : carried.length;
         const childSessionIndex = await computeEmbeddedSessionIndex(
@@ -583,12 +600,16 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         const parentNext = advanceSession(parentState, (draft) => {
           draft.triggeredWorkflows = carried;
           if (resume) {
-            // The index is derived from this position, so the entry stays where it is. Only the
-            // recorded index is refreshed, in case the folder moved since the child was dispatched.
-            // `childInitial` is the child's own saved state here, and writing it back through the same
-            // name both paths use keeps one source for what the slot holds.
+            // The index is derived from this position, so the entry stays where it is. Both recorded
+            // copies of the index are refreshed, in case the folder moved since the child was
+            // dispatched: resolution matches the one INSIDE the child's state, so refreshing only the
+            // ref would hand back an index that resolves to nothing while the stale one still works.
+            // `childInitial` is the child's own saved state, and writing it back through the same name
+            // both paths use keeps one source for what the slot holds.
             draft.triggeredWorkflows[resume.index] = {
-              ...carried[resume.index]!, sessionIndex: childSessionIndex, state: childInitial,
+              ...carried[resume.index]!,
+              sessionIndex: childSessionIndex,
+              state: { ...childInitial, sessionIndex: childSessionIndex },
             };
           } else {
             draft.triggeredWorkflows.push({

@@ -11,7 +11,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { createServer } from '../src/server.js';
 import { resolve, join } from 'node:path';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { writeSessionFile } from '../src/utils/session/index.js';
 import { tmpdir } from 'node:os';
 import { seedDefaults, jsonTypeOf, isTemplateReference } from '../src/utils/variable-seed.js';
@@ -302,11 +302,14 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     const firstIndex = (first._meta as Record<string, unknown>).session_index as string;
     await call('dispatch_child', { session_index: firstIndex, workflow_id: 'child-fixture', planning_slug: slug });
 
-    // Mark the child finished. Written through the server's own writer so the seal is recomputed — a
-    // raw write would break it, and a broken seal is read as no prior children at all, which would make
-    // this pass for the wrong reason.
+    // Mark the child finished the way a finished child actually looks. The REF's `status` is only
+    // flipped by the branch that notifies a persistent parent, and a dispatched child carries no
+    // `parentSession`, so that flip never happens for these — the ref reads `running` forever. The
+    // child's own state is what records completion, so that is what has to be read.
+    // Written through the server's own writer so the seal is recomputed: a raw write breaks it, and a
+    // broken seal now refuses the dispatch rather than passing this for the wrong reason.
     const done = readSession(slug);
-    done.triggeredWorkflows[0].status = 'completed';
+    done.triggeredWorkflows[0].state.status = 'completed';
     await writeSessionFile(planningFolder(slug), done);
 
     const second = await call('start_session', { agent_id: 'orchestrator' });
@@ -315,12 +318,58 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
 
     const stored = readSession(slug);
     expect(stored.triggeredWorkflows).toHaveLength(2);
-    expect(stored.triggeredWorkflows[0].status).toBe('completed');
-    expect(stored.triggeredWorkflows[1].status).toBe('running');
+    // The finished child is read by its own state, which is where completion is actually recorded.
+    expect(stored.triggeredWorkflows[0].state.status).toBe('completed');
+    expect(stored.triggeredWorkflows[1].state.status).toBe('running');
     // Each index is derived from the slot it sits in, so two children cannot share one. Recording the
     // new child's index against the wrong slot hands two workers the same session.
     expect(stored.triggeredWorkflows[1].sessionIndex)
       .not.toBe(stored.triggeredWorkflows[0].sessionIndex);
+  });
+
+  it('does not resume a cursor parked on the terminal sentinel', async () => {
+    // `next_activity` accepts the sentinel and re-emits completion, but no activity is declared under
+    // that id, so the worker's `get_activity` refuses it and the loop can neither advance nor exit.
+    const slug = '2026-07-07-terminal-cursor';
+    const first = await call('start_session', { agent_id: 'orchestrator' });
+    const firstIndex = (first._meta as Record<string, unknown>).session_index as string;
+    await call('dispatch_child', { session_index: firstIndex, workflow_id: 'child-fixture', planning_slug: slug });
+
+    const parked = readSession(slug);
+    parked.triggeredWorkflows[0].state.currentActivity = '__terminal__';
+    await writeSessionFile(planningFolder(slug), parked);
+
+    const second = await call('start_session', { agent_id: 'orchestrator' });
+    const secondIndex = (second._meta as Record<string, unknown>).session_index as string;
+    const again = await call('dispatch_child', {
+      session_index: secondIndex, workflow_id: 'child-fixture', planning_slug: slug,
+    });
+    const body = JSON.parse((again.content[0] as { type: 'text'; text: string }).text) as {
+      resumed_activity?: string;
+    };
+    expect(body).not.toHaveProperty('resumed_activity');
+    expect(readSession(slug).triggeredWorkflows).toHaveLength(2);
+  });
+
+  it('refuses to dispatch over a session it cannot read, rather than replacing it', async () => {
+    // Promotion writes OVER the folder's session.json, so treating an unreadable one as absent destroys
+    // the work it records — the same quiet damage carrying the children exists to prevent. A rotated
+    // server key is the likeliest cause and leaves the content intact, so refusing costs one call.
+    const slug = '2026-07-07-unreadable';
+    const first = await call('start_session', { agent_id: 'orchestrator' });
+    const firstIndex = (first._meta as Record<string, unknown>).session_index as string;
+    await call('dispatch_child', { session_index: firstIndex, workflow_id: 'child-fixture', planning_slug: slug });
+
+    // Break the seal the way a rotated key does: content untouched, signature no longer matching.
+    writeFileSync(join(planningFolder(slug), '.session-token'), 'not-the-real-seal');
+
+    const second = await call('start_session', { agent_id: 'orchestrator' });
+    const secondIndex = (second._meta as Record<string, unknown>).session_index as string;
+    await expect(call('dispatch_child', {
+      session_index: secondIndex, workflow_id: 'child-fixture', planning_slug: slug,
+    })).rejects.toThrow();
+    // And the prior run's cursor is still there.
+    expect(readSession(slug).triggeredWorkflows).toHaveLength(1);
   });
 
   it('reports the first activity from the transient-promotion path too, which is the one bootstrap takes', async () => {

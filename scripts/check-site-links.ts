@@ -24,19 +24,30 @@ function htmlFiles(dir: string): string[] {
  * An attribute value in any spelling HTML permits: double-quoted, single-quoted, or bare.
  *
  * Reading only double quotes leaves a destination written either other way unchecked, and an anchor
- * target written that way invisible — which then reads as an anchor nothing declares. Whitespace or
- * line start ahead of the name is what keeps `data-href` and an `id` inside another attribute's value
- * from counting.
+ * target written that way invisible — which then reads as an anchor nothing declares, so that direction
+ * loses a real finding.
+ *
+ * Pairs are walked in order and the name is matched exactly. Order is what keeps a quoted value from
+ * being mined: `alt="see id=phantom"` is consumed whole, where a whitespace-before-the-name test would
+ * harvest the inner `id` and let a phantom anchor silence a genuine report. Exact naming is what
+ * excludes `data-href`.
  */
-const attrValues = (name: string): RegExp =>
-  new RegExp('(?:^|\\s)(?:' + name + ')\\s*=\\s*(?:"([^"]*)"|\'([^\']*)\'|([^\\s"\'=<>]+))', 'gi');
+const HTML_ATTR_RE = /([a-zA-Z_:][-\w:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g;
+
+function* attrValues(html: string, names: ReadonlySet<string>): Generator<string> {
+  for (const [, name, quoted, single, bare] of html.matchAll(HTML_ATTR_RE)) {
+    if (!names.has(name!.toLowerCase())) continue;
+    const value = quoted ?? single ?? bare!;
+    if (value !== '') yield value;
+  }
+}
+
+const ID_ATTR = new Set(['id']);
+const DEST_ATTRS = new Set(['href', 'src']);
 
 function idsOf(filePath: string): Set<string> {
   const ids = new Set<string>();
-  for (const match of readFileSync(filePath, 'utf-8').matchAll(attrValues('id'))) {
-    const value = match[1] ?? match[2] ?? match[3]!;
-    if (value !== '') ids.add(value);
-  }
+  for (const value of attrValues(readFileSync(filePath, 'utf-8'), ID_ATTR)) ids.add(value);
   return ids;
 }
 
@@ -50,9 +61,7 @@ export function checkSiteLinks(): string[] {
   for (const file of htmlFiles(SITE_DIR)) {
     const page = relative(ROOT, file);
     const html = readFileSync(file, 'utf-8');
-    for (const match of html.matchAll(attrValues('href|src'))) {
-      const link = (match[1] ?? match[2] ?? match[3])!;
-      if (link === '') continue;
+    for (const link of attrValues(html, DEST_ATTRS)) {
       if (link.startsWith(GITHUB_PREFIX)) {
         const repoPath = decodeURIComponent(link.slice(GITHUB_PREFIX.length)).split('#')[0]!;
         if (!existsSync(join(ROOT, repoPath))) {

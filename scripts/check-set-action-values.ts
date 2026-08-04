@@ -40,11 +40,35 @@ const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
 /**
  * A bag name, or a dotted projection of one: what a `value` must be braced to mean.
  *
- * Deliberately wider than the bag's own snake_case convention, since the fault this catches wore
- * camelCase. Hyphens are excluded because a hyphenated word is how this corpus writes a literal — an
- * activity id like `plan-prepare` is a value, not a reference.
+ * Hyphens are excluded because a hyphenated word is how this corpus writes a literal — an activity id
+ * like `plan-prepare` is a value, not a reference, and no bag name could contain one.
  */
 const NAME_SHAPED = /^[A-Za-z_][A-Za-z0-9_]*(\.[A-Za-z0-9_]+)*$/;
+
+/**
+ * What tells a bag name from a bare word that is simply a value.
+ *
+ * `variable-binding` resolves the ambiguity by asking whether the string resolves in the bag, and calls
+ * it a literal when it does not. That reading is what let the fault through: the word this branch
+ * started with resolved to nothing, so it WAS a literal, and being a literal is precisely what made it
+ * wrong. Refusing every name-shaped value instead goes too far the other way — a checkpoint writes bare
+ * enum words like `single` and `create` to the same variables, so the identical assignment would be
+ * legal in one place and refused in the other.
+ *
+ * The line that actually separates them is shape. Every bag name in this corpus carries an underscore,
+ * a capital, or a dotted projection; all 49 bare words the corpus assigns as enum values carry none of
+ * the three. So a value is read as a name only when it is marked as one.
+ */
+const BAG_NAME_MARK = /[_.]|[A-Z]/;
+
+/** A filename, whose extension would otherwise read as a dotted projection of a bag name. */
+const FILE_EXTENSION = /\.(md|json|ya?ml|html?|ts|js|txt|csv|svg|png|sh)$/i;
+
+/** Whether this string names something rather than being something. */
+function readsAsBagName(value: string): boolean {
+  const trimmed = value.trim();
+  return NAME_SHAPED.test(trimmed) && BAG_NAME_MARK.test(trimmed) && !FILE_EXTENSION.test(trimmed);
+}
 
 interface SetAction { action?: unknown; target?: unknown; value?: unknown }
 
@@ -62,14 +86,30 @@ function checkAction(action: SetAction, site: string, findings: Finding[]): void
   }
 
   // No `value` is the agent-derived form, which is the majority of them and carries nothing to check.
-  if (typeof action.value !== 'string') return;
-  if (!NAME_SHAPED.test(action.value)) return;
+  if (typeof action.value !== 'string' || !readsAsBagName(action.value)) return;
   findings.push({
     check: 'unbraced-reference',
     site,
     detail: `value '${action.value}' is shaped like a variable but is the literal string — brace it as `
-      + `'{${action.value}}' to read that variable, or write a literal nothing mistakes for a name`,
+      + `'{${action.value.trim()}}' to read that variable, or write a literal nothing mistakes for a name`,
   });
+}
+
+/**
+ * A checkpoint's `setVariable` writes the bag too, under the same braced-reference convention, so a bare
+ * name means the same wrong thing there. Its keys are the variables written; only string values can
+ * carry the fault.
+ */
+function checkSetVariable(effect: Record<string, unknown>, site: string, findings: Finding[]): void {
+  for (const [name, value] of Object.entries(effect)) {
+    if (typeof value !== 'string' || !readsAsBagName(value)) continue;
+    findings.push({
+      check: 'unbraced-reference',
+      site: `${site} setVariable.${name}`,
+      detail: `value '${value}' is shaped like a variable but is the literal string — brace it as `
+        + `'{${value.trim()}}' to read that variable, or write a literal nothing mistakes for a name`,
+    });
+  }
 }
 
 /** Every `set` action under any `steps[]`, loops and nested steps included. */
@@ -85,6 +125,9 @@ function walk(node: unknown, file: string, stepId: string, findings: Finding[]):
       }
     }
   }
+  if (record.setVariable && typeof record.setVariable === 'object' && !Array.isArray(record.setVariable)) {
+    checkSetVariable(record.setVariable as Record<string, unknown>, `${file}[${id || '?'}]`, findings);
+  }
   for (const value of Object.values(record)) walk(value, file, id, findings);
 }
 
@@ -95,13 +138,22 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     const path = join(root, entry);
     return statSync(path).isDirectory() && existsSync(join(path, 'activities'));
   });
+  // Recursive, because activity definitions also sit a level down — `meta/activities/patterns/` holds
+  // five, and a flat read leaves them unscanned while `assertScanned` still passes on the rest.
+  const definitions = (dir: string): string[] => readdirSync(dir, { withFileTypes: true })
+    .sort((a, b) => a.name.localeCompare(b.name))
+    .flatMap((entry) => {
+      const path = join(dir, entry.name);
+      if (entry.isDirectory()) return definitions(path);
+      return entry.name.endsWith('.yaml') ? [path] : [];
+    });
+
   for (const workflow of workflows.sort()) {
-    const dir = join(root, workflow, 'activities');
-    for (const file of readdirSync(dir).filter((name) => name.endsWith('.yaml')).sort()) {
-      const rel = relative(root, join(dir, file));
+    for (const path of definitions(join(root, workflow, 'activities'))) {
+      const rel = relative(root, path);
       scanned++;
       try {
-        walk(parseDefinition(readFileSync(join(dir, file), 'utf-8')), rel, '', findings);
+        walk(parseDefinition(readFileSync(path, 'utf-8')), rel, '', findings);
       } catch {
         // Malformed YAML is validate-workflow-yaml's finding, not this guard's.
       }
