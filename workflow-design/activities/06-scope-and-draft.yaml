@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.12.0
+version: 1.13.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file, then planning-artifact conformance verify.
 required: true
@@ -163,7 +163,7 @@ steps:
         artifact_content: reviewed_blocks
         target_dir: planning_folder_path
   - kind: technique
-    id: verify-artifact-conforms
+    id: verify-artifact-conformance
     technique:
       name: verify-artifact-conforms
       inputs:
