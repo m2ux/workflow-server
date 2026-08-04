@@ -1,5 +1,5 @@
 id: audit-finalize
-version: 2.1.0
+version: 2.2.0
 name: Audit Report Finalization
 description: Assemble the audit deliverables from prism's REPORT.md and DEFINITIVE-FINDINGS.md.
 steps:
@@ -15,6 +15,12 @@ steps:
   - kind: technique
     id: apply-formatting-rules
     technique: apply-formatting-rules
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        artifact_dir: output_path
   - kind: technique
     id: verify-artifacts
     technique: verify-audit-consistency
@@ -35,12 +41,6 @@ steps:
             - type: simple
               variable: trade_offs_path
               operator: exists
-  - kind: technique
-    id: verify-artifact-conformance
-    technique:
-      name: verify-artifact-conforms
-      inputs:
-        artifact_dir: output_path
 outcome:
   - "The consumer has a cross-validated, severity-calibrated audit they can act on: a navigable summary, expanded per-finding write-ups, and the design trade-offs behind the findings"
 transitions:
