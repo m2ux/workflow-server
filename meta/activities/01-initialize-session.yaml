@@ -31,7 +31,6 @@ steps:
       outputs:
         session_index: client_session_index
         initial_activity: client_initial_activity
-        resumed_activity: client_resumed_activity
 transitions:
   - to: resolve-target
     isDefault: true

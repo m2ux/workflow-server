@@ -87,9 +87,6 @@ variables:
   - name: client_initial_activity
     type: string
     description: The client workflow's own first activity, returned by create-session — the id its first next_activity call names
-  - name: client_resumed_activity
-    type: string
-    description: The cursor a reattached client session was left on, returned by create-session only when it resumed one — supersedes client_initial_activity for priming the dispatch loop
   - name: is_monorepo
     type: boolean
     description: Whether the target repository is a submodule monorepo (set by resolve-target)

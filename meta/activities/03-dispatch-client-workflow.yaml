@@ -11,15 +11,7 @@ steps:
         target: client_session_index
         message: Cannot dispatch without a client session_index; initialize-session must run first
   - kind: action
-    id: prime-resumed-activity
-    when: client_resumed_activity
-    actions:
-      - action: set
-        target: current_activity
-        value: "{client_resumed_activity}"
-  - kind: action
     id: prime-initial-activity
-    when: "!client_resumed_activity"
     actions:
       - action: set
         target: current_activity
