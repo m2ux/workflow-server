@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -80,4 +80,4 @@ Echo of the intake classification so publish gates keep a single name.
 
 ### 3. Record Inventory
 
-1. Write `{change_surface_inventory}` under `{planning_folder_path}` as `change-surface.md`: target identity from `{review_target}`, `{has_pr_surface}`, `{pr_number}` when set, `{base_ref}`, `{base_branch}` when set, `{base_sha}` when set, `{head_sha}`, the changed-file table, and the path-to-crate/pallet column.
+1. Write `{change_surface_inventory}` under `{planning_folder_path}` as `change-surface.md` per [change-surface](../../resources/change-surface.md#template) and its [Rules](../../resources/change-surface.md#rules), filling it from `{review_target}`, `{has_pr_surface}`, `{pr_number}`, `{base_ref}`, `{base_branch}`, `{base_sha}`, `{head_sha}` and the mapped paths.

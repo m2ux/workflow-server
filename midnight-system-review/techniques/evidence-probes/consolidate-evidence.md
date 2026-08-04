@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -41,5 +41,5 @@ All candidate findings aggregated across areas in area order, each tied to its a
 
 ### 2. Consolidate
 
-- Write `{evidence_log}` to the planning folder: an accounting table (per area: probes planned, executed, blocked, candidate findings raised), followed by each area's evidence items, failure-class discharge records (confirmed/refuted/inconclusive/blocked with proof artifacts where required), and blocked validations with anchors.
+- Write `{evidence_log}` to the planning folder per [evidence-log](../../resources/evidence-log.md#template) and its [Rules](../../resources/evidence-log.md#rules).
 - Aggregate every record's candidate findings into `{candidate_findings}`, preserving area order and anchors.
