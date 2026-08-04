@@ -20,6 +20,7 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { resolveWorkflowsRoot } from './workflows-root.js';
+import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree (issue #160 #1).
@@ -51,10 +52,10 @@ function slugify(heading: string): string {
 function collectAnchors(mdPath: string): Set<string> {
   const anchors = new Set<string>();
   const counts = new Map<string, number>();
-  let inFence = false;
-  for (const line of readFileSync(mdPath, 'utf-8').split('\n')) {
-    if (/^\s*(```|~~~)/.test(line)) { inFence = !inFence; continue; }
-    if (inFence) continue;
+  const lines = toLines(readFileSync(mdPath, 'utf-8'));
+  const { fenced } = fencedLines(lines);
+  for (const [index, line] of lines.entries()) {
+    if (fenced.has(index)) continue;
     const m = /^#{1,6}\s+(.*)$/.exec(line);
     if (!m) continue;
     const base = slugify(m[1]);
@@ -75,7 +76,8 @@ function* walkFiles(dir: string): Generator<string> {
   }
 }
 
-const LINK_RE = /\]\(([^()\s]+\.md)#([A-Za-z0-9][\w-]*)\)/g;
+/** An anchored markdown destination, once the shared reader has produced it in any spelling. */
+const ANCHORED_RE = /^([^\s#]+\.md)#([A-Za-z0-9][\w-]*)$/;
 
 export function collectBrokenAnchors(): BrokenAnchor[] {
   const broken: BrokenAnchor[] = [];
@@ -84,17 +86,20 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
     // Scan only rendered prose: drop fenced code blocks (template bodies carry placeholder
     // links like NN-work-package-plan.md) and inline code spans (anti-pattern docs quote
     // illustrative link forms in backticks).
-    const lines: string[] = [];
-    let inFence = false;
-    for (const line of readFileSync(file, 'utf-8').split('\n')) {
-      if (/^\s*(```|~~~)/.test(line)) { inFence = !inFence; continue; }
-      if (!inFence) lines.push(line.replace(/`[^`]*`/g, ''));
+    const lines = toLines(readFileSync(file, 'utf-8'));
+    const { fenced } = fencedLines(lines);
+    const destinations: string[] = [];
+    for (const [index, line] of lines.entries()) {
+      if (fenced.has(index)) continue;
+      destinations.push(...linkDestinations(line));
     }
-    const text = lines.join('\n');
-    for (const m of text.matchAll(LINK_RE)) {
+    for (const destination of destinations) {
+      const m = ANCHORED_RE.exec(destination);
+      if (!m) continue;
       const [, target, anchor] = m;
-      if (/^[a-z]+:\/\//i.test(target)) continue;
-      if (/[<{]/.test(target)) continue; // placeholder targets like <id>.md or {token}.md
+      if (/^[a-z][a-z0-9+.-]*:/i.test(target!)) continue;
+      // A template body names its file with a placeholder, which resolves to nothing on purpose.
+      if (/[{]/.test(target!)) continue;
       const targetPath = resolve(dirname(file), target);
       if (relative(ROOT, targetPath).startsWith('..' + sep)) continue; // outside the corpus
       const source = relative(ROOT, file);

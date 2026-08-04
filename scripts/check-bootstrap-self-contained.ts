@@ -50,6 +50,7 @@ import { join, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
+import { fencedLines, linkDestinations, stripDestinations, toLines } from './markdown-refs.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
@@ -59,40 +60,10 @@ const PRE_SESSION_RESOURCE = join('meta', 'resources', 'bootstrap-protocol.md');
 /** Prose the procedure cannot be shorter than and still be one. It runs to 56 lines today. */
 export const MIN_PROSE_LINES = 20;
 
-/**
- * An inline link's destination, with the optional title CommonMark allows after it. Without the title
- * arm, `[x](../a/b.md "its home")` is ordinary markdown that reads as no link at all.
- */
-const LINK_RE = /\]\(\s*(<[^>]*>|[^)\s]*)(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?\s*\)/g;
-/** A reference definition. The destination lives here rather than at the `[text][ref]` that uses it. */
-const REF_DEF_RE = /^ {0,3}\[[^\]]+\]:\s*(<[^>]*>|\S+)/;
-/**
- * An HTML destination. Markdown permits raw HTML, so a guard that reads only `](…)` is bypassed by
- * writing the same link as an anchor — and the reader is stranded either way.
- *
- * This looks for the ATTRIBUTE rather than the tag around it, which is what makes it hard to sidestep.
- * Requiring a tag on the same line misses one split across lines, which CommonMark permits. Taking the
- * first `href` before the first `>` reads the one inside `alt="href='…'"` and never the real
- * destination beside it. And the value may be unquoted, which every renderer follows.
- *
- * Demanding whitespace or line start ahead of the name does the discriminating: it rules out
- * `data-href`, and an `href` inside a quoted value, since neither is preceded by space.
- */
-const HTML_DEST_RE = /(?:^|\s)(?:href|src)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>]+))/gi;
 /** A run of dot-joined lowercase segments — `a.b`, `a.b.c`. Each adjacent pair is tested separately. */
 const DOTTED_RE = /\b([a-z][a-z0-9-]*(?:\.[a-z][a-z0-9-]*)+)\b/g;
 /** An inline code span, which is the only form the bare-rule check considers. */
 const CODE_SPAN_RE = /`([^`]+)`/g;
-/**
- * A fence opener stays within three spaces of the margin, so a stray marker deep in a list cannot open
- * a block and take the checks below it out of service. A CLOSER is accepted at any indent, because a
- * closer the matcher cannot see is far worse: the opener then pairs with the NEXT visible marker — the
- * start of a later block — and the rendered prose between them is swallowed as fenced with the count
- * still even, so the unbalanced-fence fail-safe never fires and a real link goes unreported. Both
- * choices err toward scanning more lines, which is the only direction this guard can afford.
- */
-const FENCE_OPEN_RE = /^ {0,3}(`{3,}|~{3,})(.*)$/;
-const FENCE_CLOSE_RE = /^\s*(`{3,}|~{3,})\s*$/;
 /** A scheme the reader's own client resolves, per RFC 3986: letter, then letters, digits, `+`, `-`, `.`. */
 const SCHEME_RE = /^[a-z][a-z0-9+.-]*:\/\//i;
 /** Schemes that carry no authority, so they never show `//` and are still the client's to resolve. */
@@ -150,35 +121,6 @@ function declaredRules(root: string): Declared {
   return { pairs, names };
 }
 
-/**
- * Which lines sit inside a closed fence, and whether one is left open.
- *
- * A close has to match its opener's character, run at least as long, and carry no info string — the
- * rules CommonMark states. Tracking fences as a parity count instead reads a 3-backtick example nested
- * in a 4-backtick wrapper as two blocks and inverts the phase, so illustration reports as instruction.
- *
- * An unclosed fence returns no fenced lines at all, so every line is read. That is the fail-safe
- * direction: an unclosed fence must not be able to take the link check out of service behind a green
- * verdict, which is the one failure this guard must not have.
- */
-function fencedLines(lines: string[]): { fenced: Set<number>; unclosed: number | null } {
-  const fenced = new Set<number>();
-  let open: { char: string; len: number; start: number } | null = null;
-  lines.forEach((line, index) => {
-    if (open) {
-      const close = FENCE_CLOSE_RE.exec(line);
-      if (close && close[1]![0] === open.char && close[1]!.length >= open.len) {
-        for (let fencedLine = open.start; fencedLine <= index; fencedLine++) fenced.add(fencedLine);
-        open = null;
-      }
-      return;
-    }
-    const opener = FENCE_OPEN_RE.exec(line);
-    if (opener) open = { char: opener[1]![0]!, len: opener[1]!.length, start: index };
-  });
-  if (open) return { fenced: new Set<number>(), unclosed: open.start + 1 };
-  return { fenced, unclosed: null };
-}
 
 /** A destination the reader already holds: their client resolves it, or it names this same document. */
 function resolvableHere(target: string): boolean {
@@ -191,7 +133,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
   // A CR left on the end of every line would stop each one looking like a fence, taking the fence
   // matcher out of service on a CRLF checkout — so line endings are normalised before anything reads a
   // line's shape.
-  const lines = existsSync(file) ? readFileSync(file, 'utf-8').split(/\r?\n/) : [];
+  const lines = existsSync(file) ? toLines(readFileSync(file, 'utf-8')) : [];
   const prose = lines.filter((line) => line.trim() !== '').length;
   // A floor rather than mere presence. An emptied file and a clean one look identical to a hard-zero
   // guard, and so does a file gutted to its heading — which is the shape a bad merge leaves. The
@@ -219,15 +161,8 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     // Links are read from rendered prose only: a fenced block or a code span quoting a link form is
     // illustration, not an instruction.
     if (!fenced.has(index)) {
-      const refDef = REF_DEF_RE.exec(line);
-      const rendered = line.replace(/`[^`]*`/g, '');
-      const targets = [...rendered.matchAll(LINK_RE)].map((m) => m[1]!);
-      for (const [, quoted, single, bare] of rendered.matchAll(HTML_DEST_RE)) targets.push(quoted ?? single ?? bare!);
-      if (refDef) targets.push(refDef[1]!);
-      for (const target of targets) {
-        const to = target.replace(/^<|>$/g, '');
-        // An empty destination points nowhere, so it strands nobody.
-        if (to === '' || resolvableHere(to)) continue;
+      for (const to of linkDestinations(line)) {
+        if (resolvableHere(to)) continue;
         findings.push({
           check: 'corpus-link',
           site,
@@ -238,7 +173,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     }
 
     // Link destinations are paths; a dotted segment inside one is not a rule address.
-    const prose = line.replace(LINK_RE, ']()').replace(HTML_DEST_RE, ' href=""').replace(REF_DEF_RE, '[]:');
+    const prose = stripDestinations(line);
     for (const [, run] of prose.matchAll(DOTTED_RE)) {
       // Every adjacent pair, not the leftmost match: a full ancestry address puts the technique and the
       // rule in the last two segments, and a single scan consumes `<workflow>.<technique>` and moves
