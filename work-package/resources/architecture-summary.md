@@ -211,7 +211,7 @@ flowchart LR
 
 ## Risks & Mitigations
 
-*[Omit this section if none. Planning risks: [plan](work-package-plan.md#dependencies--risks) — one line. Table rows ONLY for net-new risks the implementation surfaced:]*
+*[Omit this section if none. Planning risks: [plan](wp-plan.md#rules) — one line. Table rows ONLY for net-new risks the implementation surfaced:]*
 
 | Risk | Likelihood | Impact | Mitigation |
 |------|------------|--------|------------|
