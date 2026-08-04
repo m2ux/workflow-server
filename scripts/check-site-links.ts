@@ -33,6 +33,11 @@ function htmlFiles(dir: string): string[] {
  * harvest the inner `id` and let a phantom anchor silence a genuine report. The pattern comes from
  * `markdown-refs`, which owns it — two copies of the same reader is what the extraction was against.
  */
+/**
+ * `matchAll` clones the pattern, which is what makes the nesting below safe: the link loop is iterating
+ * this generator when `idsOf` starts another pass over the same shared regex. A refactor to an `exec`
+ * loop would share `lastIndex` between the two and interleave them silently.
+ */
 function* attrValues(html: string, names: ReadonlySet<string>): Generator<string> {
   for (const [, name, quoted, single, bare] of html.matchAll(HTML_ATTR_RE)) {
     if (!names.has(name!.toLowerCase())) continue;
