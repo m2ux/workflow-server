@@ -167,3 +167,7 @@ Criteria must be SMART: Specific, Measurable, Achievable, Relevant, Time-bound.
 For simpler features, at minimum capture: a one-sentence problem statement, the primary user/stakeholder, 3-5 in-scope items, 2-3 explicit exclusions, and 2-3 success criteria.
 
 **Stop eliciting** when you can confidently answer: What problem are we solving? For whom? What's included and excluded? How will we know it's done?
+
+## Rules
+
+- **Line budget:** ~150 lines. Elicited requirements are the payload; the questions that produced them are not recorded here.

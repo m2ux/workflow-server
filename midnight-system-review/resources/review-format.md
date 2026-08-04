@@ -89,3 +89,7 @@ The Review Details block is the reconciliation surface the accounting gate valid
 ## Verdict Phrases
 
 Use the phrase for the computed verdict: 5/5 "Ready to merge", 4/5 "Merge with follow-ups", 3/5 "Fix before merge", 2/5 "Do not merge", 1/5 "Strongly do not merge".
+
+## Rules
+
+- **Line budget:** ~15 lines per finding and ~200 for the review. A longer review is restating evidence the log holds.

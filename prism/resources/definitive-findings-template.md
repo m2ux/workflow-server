@@ -74,3 +74,7 @@ rejected by the adversarial pass are excluded.}
 What good looks like: every REPORT.md finding ID has a full-field entry here and a Traceability row;
 Impact and Recommendation are present for every finding; conservation laws rejected by the adversarial
 pass never appear; the voice is factual with no attribution to passes, lenses, or analytical process.
+
+## Rules
+
+- **Line budget:** ~40 lines per finding. The per-finding field set is the ceiling; raw pass artifacts hold anything longer.

@@ -109,3 +109,7 @@ What good looks like: every finding has a confirmed source-to-sink flow and a sp
 |-----------------|----------------|-------------|
 | {S1-F001} | {M-001} | {merged / duplicate} |
 ```
+
+## Rules
+
+- **Line budget:** ~150 lines, plus ~20 per finding. A report past that is carrying scanner output the findings files own.

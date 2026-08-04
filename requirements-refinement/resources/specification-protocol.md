@@ -100,3 +100,7 @@ with an `SRC-DOC###` reference and credited to its author, mirroring the meeting
 ```
 
 Example: `**SRC-DOC001**: [Cross-chain settlement brief](sources/documents/settlement-brief.md) — Jane Doe`
+
+## Rules
+
+- **Line budget:** ~15 lines per requirement entry. The specification grows with its requirements, so the ceiling is per entry rather than per file.

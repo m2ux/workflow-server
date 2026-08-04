@@ -38,3 +38,7 @@ Create a review analysis document with these sections:
 5. Changes Made — the changes implemented in response to the review
 6. Conclusion
 7. Sources and References
+
+## Rules
+
+- **Line budget:** ~80 lines. One entry per comment responded to, each naming the change that answers it.

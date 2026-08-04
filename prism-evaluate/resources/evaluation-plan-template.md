@@ -50,3 +50,7 @@ configurations, and groups dimensions for execution.
 **What good looks like:** every dimension maps to a pipeline mode and a substantive `analysis_focus`
 that names the dimension (so prism assigns dimension-prefixed finding IDs); full-prism dimensions sit
 in their own group, portfolio dimensions are merged into a single group with their lens indices unioned.
+
+## Rules
+
+- **Line budget:** ~60 lines. A plan longer than that is doing the evaluation rather than scoping it.

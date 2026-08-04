@@ -193,3 +193,7 @@ Comprehension artifacts follow this structure. When augmenting an existing artif
 - Check whether other comprehension artifacts reference the same modules or types; add cross-references in the header line.
 - Note when understanding of one area depends on another.
 - If the work package's problem spans multiple codebase areas, create or update a separate artifact per area and note the relationship.
+
+## Rules
+
+- **Line budget:** ~150 lines per area. An area needing more is two areas.
