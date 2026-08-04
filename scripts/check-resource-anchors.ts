@@ -32,7 +32,7 @@ export interface BrokenAnchor {
   /** Link target as written. */
   link: string;
   /** Why it failed. */
-  reason: 'missing-file' | 'missing-anchor' | 'unclosed-fence';
+  reason: 'missing-file' | 'missing-anchor' | 'unbalanced-fence';
 }
 
 /**
@@ -99,11 +99,14 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
     // illustrative link forms in backticks).
     const lines = toLines(readFileSync(file, 'utf-8'));
     const { fenced, unclosed } = fencedLines(lines);
-    if (unclosed !== null) {
+    // Markdown only. A stray fence marker inside a YAML block scalar is not a defect in the YAML, and
+    // 'close the fence' is not a remedy there. The name matches the sibling guard's, since both come
+    // from the same signal and one vocabulary is easier to act on than two.
+    if (unclosed !== null && file.endsWith('.md')) {
       broken.push({
-        source: relative(ROOT, file),
-        link: `line ${unclosed}`,
-        reason: 'unclosed-fence',
+        source: `${relative(ROOT, file)}:${unclosed}`,
+        link: 'a code fence left open',
+        reason: 'unbalanced-fence',
       });
     }
     const destinations: string[] = [];
@@ -139,7 +142,7 @@ const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.ar
 if (isMain) {
   const broken = collectBrokenAnchors();
   if (broken.length === 0) {
-    process.stdout.write('resource-anchors: OK — every relative .md#anchor link resolves to a rendered heading\n');
+    process.stdout.write('resource-anchors: OK — every relative .md#anchor link resolves to a rendered heading, and every fence closes\n');
     process.exit(0);
   }
   process.stdout.write(`resource-anchors: ${broken.length} finding(s) — fix the link, restore the heading, or close the fence:\n`);

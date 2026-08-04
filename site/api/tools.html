@@ -189,8 +189,10 @@
           <summary>Full description</summary>
           <p>Starts a child workflow inside the parent session you are already in.</p>
           <p>Returns the child's <code>session_index</code> and <code>planning_folder_path</code>. The child's variables are seeded from the child workflow's defaults; the parent is unchanged.</p>
+          <p>Also returns <code>workflow.initialActivity</code> when the child workflow declares one — the activity its first <code>next_activity</code> should name. A parent knows its own workflow's first activity, not its child's, and <code>get_workflow</code> stays where a session reads its own metadata, so this carries the child's across the boundary.</p>
           <p>The child state is stored inside the parent's <code>session.json</code> under <code>triggeredWorkflows</code>.</p>
           <p>When the parent is a temporary meta-bootstrap session, the server first promotes it to a real planning folder on disk, then embeds the child. You can keep using the parent's original <code>session_index</code>.</p>
+          <p>Dispatching from a temporary parent into a folder that already holds a child of the same workflow REPLACES that child rather than continuing it, and hands back the same <code>session_index</code> with an empty session behind it. A persistent parent appends a second child instead. See issue 429.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">

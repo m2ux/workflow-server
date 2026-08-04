@@ -248,8 +248,9 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     expect(body.workflow.id).toBe('child-fixture');
     // The child's, not the parent's — the seed-fixture parent starts at `checkpoint-activity`.
     expect(body.workflow.initialActivity).toBe('child-activity');
-    // A first dispatch resumed nothing, so there is no cursor to prefer over that first activity.
-    expect(body).not.toHaveProperty('resumed_activity');
+    // The response carries the workflow's metadata and nothing about a prior run: re-dispatching from a
+    // transient parent replaces the child rather than continuing it, which is #429.
+    expect(Object.keys(body.workflow)).toEqual(['id', 'version', 'initialActivity']);
   });
 
   it('reports the first activity from the transient-promotion path too, which is the one bootstrap takes', async () => {

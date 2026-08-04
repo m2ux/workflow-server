@@ -120,7 +120,7 @@ export const GUARDS: GuardSpec[] = [
     npmScript: 'check:anchors',
     scope: 'corpus',
     json: false,
-    proves: 'every relative .md#anchor link resolves to a rendered heading',
+    proves: 'every relative .md#anchor link resolves to a rendered heading, and every markdown fence closes',
   },
   {
     id: 'technique-template',

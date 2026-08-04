@@ -28,9 +28,15 @@ const FENCE_CLOSE_RE = /^\s*(`{3,}|~{3,})\s*$/;
 /**
  * An inline destination, with the optional title CommonMark allows after it, and an angle-bracket form
  * that may contain spaces.
+ *
+ * The plain arm stops at the first `)`, which truncates a destination carrying balanced parens — a form
+ * the spec allows at any depth. That is deliberate, and the alternative was worse: an arm that MATCHES
+ * balanced parens fails the whole pattern when the nesting outruns it, so a destination that used to be
+ * reported under a truncated name became no destination at all. Truncated text in a finding is a
+ * cosmetic fault; a destination nobody reports is the fault this module exists to prevent. Reading
+ * arbitrary nesting needs a counting scan rather than a wider regex.
  */
-const INLINE_DEST_RE =
-  /\]\(\s*(<[^>]*>|(?:[^()\s\\]|\\.|\([^()\s]*\))*)(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?\s*\)/g;
+const INLINE_DEST_RE = /\]\(\s*(<[^>]*>|[^)\s]*)(?:\s+(?:"[^"]*"|'[^']*'|\([^)]*\)))?\s*\)/g;
 /** A reference definition, which carries the destination away from the `[text][label]` that uses it. */
 const REF_DEF_RE = /^ {0,3}\[[^\]]+\]:\s*(<[^>]*>|\S+)/;
 /**
@@ -44,9 +50,14 @@ const REF_DEF_RE = /^ {0,3}\[[^\]]+\]:\s*(<[^>]*>|\S+)/;
  * Found by attribute rather than by tag on purpose: a tag may straddle lines, which the spec permits,
  * and requiring the tag would miss the destination sitting on the continuation line.
  */
-const HTML_ATTR_RE = /([a-zA-Z_:][-\w:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g;
-/** The attributes that carry a destination. Matched exactly, so `data-href` is not one of them. */
-const DEST_ATTRS = new Set(['href', 'src']);
+const HTML_ATTR_RE =
+  /(?<![-\w:.])([a-zA-Z_:][-\w:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g;
+/**
+ * The attributes that carry a destination. Matched exactly, so `data-href` is not one of them — and
+ * the lookbehind is what stops `-href` matching by starting the name after the hyphen.
+ */
+export const DEST_ATTRS = new Set(['href', 'src']);
+export { HTML_ATTR_RE };
 
 /**
  * Which lines sit inside a closed fence, and where an unclosed one opened.
@@ -108,7 +119,9 @@ export function linkDestinations(line: string): string[] {
   const refDef = REF_DEF_RE.exec(rendered);
   if (refDef) out.push(refDef[1]!);
   return out
-    .map((target) => (/^<.*>$/.test(target) ? target.slice(1, -1) : target))
+    // `[^>]*`, not `.*`: a greedy test strips `<owner>/<repo>` down to `owner>/<repo`, which is a
+    // destination nobody wrote. The angle form is the WHOLE destination or it is not the angle form.
+    .map((target) => (/^<[^>]*>$/.test(target) ? target.slice(1, -1) : target))
     .filter((target) => target !== '');
 }
 

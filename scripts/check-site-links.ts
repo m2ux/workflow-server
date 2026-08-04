@@ -9,6 +9,7 @@
  */
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, resolve, relative } from 'node:path';
+import { HTML_ATTR_RE } from './markdown-refs.js';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const SITE_DIR = join(ROOT, 'site');
@@ -29,11 +30,9 @@ function htmlFiles(dir: string): string[] {
  *
  * Pairs are walked in order and the name is matched exactly. Order is what keeps a quoted value from
  * being mined: `alt="see id=phantom"` is consumed whole, where a whitespace-before-the-name test would
- * harvest the inner `id` and let a phantom anchor silence a genuine report. Exact naming is what
- * excludes `data-href`.
+ * harvest the inner `id` and let a phantom anchor silence a genuine report. The pattern comes from
+ * `markdown-refs`, which owns it — two copies of the same reader is what the extraction was against.
  */
-const HTML_ATTR_RE = /([a-zA-Z_:][-\w:.]*)\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'=<>`]+))/g;
-
 function* attrValues(html: string, names: ReadonlySet<string>): Generator<string> {
   for (const [, name, quoted, single, bare] of html.matchAll(HTML_ATTR_RE)) {
     if (!names.has(name!.toLowerCase())) continue;

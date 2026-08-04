@@ -356,8 +356,10 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   dispatch_child: [
     'Starts a child workflow inside the parent session you are already in.',
     'Returns the child\'s `session_index` and `planning_folder_path`. The child\'s variables are seeded from the child workflow\'s defaults; the parent is unchanged.',
+    'Also returns `workflow.initialActivity` when the child workflow declares one — the activity its first `next_activity` should name. A parent knows its own workflow\'s first activity, not its child\'s, and `get_workflow` stays where a session reads its own metadata, so this carries the child\'s across the boundary.',
     'The child state is stored inside the parent\'s `session.json` under `triggeredWorkflows`.',
     'When the parent is a temporary meta-bootstrap session, the server first promotes it to a real planning folder on disk, then embeds the child. You can keep using the parent\'s original `session_index`.',
+    'Dispatching from a temporary parent into a folder that already holds a child of the same workflow REPLACES that child rather than continuing it, and hands back the same `session_index` with an empty session behind it. A persistent parent appends a second child instead. See issue 429.',
   ],
   get_workflow: [
     'Loads the workflow definition for the current session.',
