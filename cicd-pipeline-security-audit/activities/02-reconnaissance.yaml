@@ -32,7 +32,8 @@ steps:
       - action: log
         message: Reconnaissance complete — workflows classified and scanner agents assigned
       - action: set
-        message: reconnaissance_complete=true
+        target: reconnaissance_complete
+        value: true
 transitions:
   - to: primary-scan
     isDefault: true
