@@ -226,10 +226,10 @@ describe('client activity loop walked (#407)', () => {
     expect(precondition?.actions?.some((a) => a.action === 'validate' && a.target === 'client_session_index')).toBe(true);
     const primeWrite = prime?.actions?.find((a) => a.action === 'set');
     expect(primeWrite?.target).toBe(l.condition?.variable);
-    // Pinned as the literal it is. Every other variable reference in the corpus is braced, so this bare
-    // word reads as the string rather than the client workflow's field — pre-existing, tracked
-    // separately, and pinned here so correcting it forces this walk to be updated with it.
-    expect(primeWrite?.value).toBe('initialActivity');
+    // Primed from a bound variable, braced like every other reference in the corpus. Written bare it
+    // reads as the literal string, which the server refuses on the first `next_activity` — and the
+    // refusal names the right id, so the run recovered and the fault stayed invisible.
+    expect(primeWrite?.value).toBe('{client_initial_activity}');
     expect(l.loopType).toBe('while');
     // The exit test is on the pointer the body advances, against null — the two have to agree, or the
     // walk either never enters or never leaves.

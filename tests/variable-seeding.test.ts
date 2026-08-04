@@ -234,6 +234,22 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     expect(stored.history.filter((h: { type: string }) => h.type === 'variable_set')).toHaveLength(0);
   });
 
+  it('dispatch_child reports the child workflow\'s first activity, which only the child declares', async () => {
+    // A fresh session has no current activity, so the server accepts no id but this one on the child's
+    // first `next_activity`. The parent knows its own workflow's first activity and not the child's, so
+    // without this the caller either guesses or learns the answer from a rejection.
+    const slug = '2026-07-07-report-initial';
+    const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
+    const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+    const result = await call('dispatch_child', { session_index: sessionIndex, workflow_id: 'child-fixture' });
+    const body = JSON.parse((result.content[0] as { type: 'text'; text: string }).text) as {
+      workflow: { id: string; initialActivity?: string };
+    };
+    expect(body.workflow.id).toBe('child-fixture');
+    // The child's, not the parent's — the seed-fixture parent starts at `checkpoint-activity`.
+    expect(body.workflow.initialActivity).toBe('child-activity');
+  });
+
   it('dispatch_child (transient meta promotion) seeds both the promoted parent and the embedded child', async () => {
     const started = await call('start_session', { agent_id: 'orchestrator' });
     const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;

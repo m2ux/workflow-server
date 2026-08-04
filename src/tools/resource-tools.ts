@@ -419,7 +419,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'dispatch_child',
     {
       description:
-        'Dispatch a child workflow under the parent session. Returns the child `session_index` and canonical `planning_folder_path`. ' +
+        'Dispatch a child workflow under the parent session. Returns the child `session_index`, canonical `planning_folder_path`, and `workflow.initialActivity` — the activity the child\'s first `next_activity` must name, since a fresh session has no current activity and the server accepts no other id there. ' +
         'Transient meta parents are promoted to a workspace planning folder first (optional `planning_slug`). ' +
 'Ensure `session.repo` is bound (pass `repo` here if start_session did not); path resolution reads only session.json. ' +
         'Never set `context_mode: "persistent"` on worker-dispatched children — a worker takes full delivery on the first activity of its run and collapses against its own ledger thereafter.',
@@ -550,7 +550,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // index to it and remove the tmp folder.
         await redirectTransientToWorkspace(parentFolder, promotedWorkspaceFolder);
         return {
-          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_slug: promotedSlug, planning_folder_path: presentPlanningPath(promotedWorkspaceFolder) ?? promotedWorkspaceFolder }, null, 2) }],
+          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version, initialActivity: wfResult.value.initialActivity }, planning_slug: promotedSlug, planning_folder_path: presentPlanningPath(promotedWorkspaceFolder) ?? promotedWorkspaceFolder }, null, 2) }],
           _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
         };
       }
@@ -591,7 +591,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       });
       await saveSessionForTool(loaded, parentNext);
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_folder_path: presentPlanningPath(parentFolder) ?? parentFolder }, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version, initialActivity: wfResult.value.initialActivity }, planning_folder_path: presentPlanningPath(parentFolder) ?? parentFolder }, null, 2) }],
         _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
       };
     }), traceOpts)

@@ -1,4 +1,4 @@
 {
-  "corpusSha": "475360e431a3d4489066309dd3d1f38e7a6c9851",
+  "corpusSha": "0e0d809a607b65dfe7a2301a28374f31e9194d53",
   "note": "Corpus commit the committed walk snapshots were generated against. Update it in the same commit that bumps the workflows submodule and re-baselines the walk (npm run baseline:stamp)."
 }
