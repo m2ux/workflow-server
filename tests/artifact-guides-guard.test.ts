@@ -154,18 +154,37 @@ describe('artifact-guides guard (fixture corpus)', () => {
   });
 
   // A triage that outlives its debt is a triage nobody prunes, so an entry matching nothing reports.
-  // Against a fixture corpus the real baseline matches nothing by construction, which is why stale
-  // reporting is scoped to the corpus the baseline describes.
-  it('reports every baseline entry as stale when asked to against a corpus that has none', async () => {
+  // Stale reporting is scoped to the corpus the baseline describes, because a fixture corpus holds
+  // none of the real declarations and would flag every entry.
+  it('reports a baseline entry that matches no declaration, and honours the scope flag', async () => {
     await writeTechnique(join(tempDir, 'fixture-wf', 'techniques'), 'writer', [
       '### report', '', 'A report.', '',
       '#### artifact', '', '`unguided-report.md`',
     ]);
-    const withStale = await collectUnmappedArtifacts(tempDir, { reportStale: true });
-    expect(withStale.some((v) => v.stale)).toBe(true);
-    const withoutStale = await collectUnmappedArtifacts(tempDir, { reportStale: false });
+    const baselinePath = join(tempDir, 'fixture-baseline.json');
+    await writeFile(baselinePath, JSON.stringify({
+      entries: [{ site: 'ghost-wf::ghost::x', artifact: 'ghost.md', verdict: 'fix-later', rationale: 'r' }],
+    }), 'utf-8');
+
+    const withStale = await collectUnmappedArtifacts(tempDir, { reportStale: true, baselinePath });
+    expect(withStale.filter((v) => v.stale).map((v) => v.artifact)).toEqual(['ghost.md']);
+
+    const withoutStale = await collectUnmappedArtifacts(tempDir, { reportStale: false, baselinePath });
     expect(withoutStale.some((v) => v.stale)).toBe(false);
     expect(withoutStale.map((v) => v.artifact)).toEqual(['unguided-report.md']);
+  });
+
+  // An entry that still matches suppresses its artifact and is not reported stale.
+  it('suppresses an artifact a live baseline entry accounts for', async () => {
+    await writeTechnique(join(tempDir, 'fixture-wf', 'techniques'), 'writer', [
+      '### report', '', 'A report.', '',
+      '#### artifact', '', '`unguided-report.md`',
+    ]);
+    const baselinePath = join(tempDir, 'fixture-baseline.json');
+    await writeFile(baselinePath, JSON.stringify({
+      entries: [{ site: 'fixture-wf::writer::report', artifact: 'unguided-report.md', verdict: 'fix-later', rationale: 'r' }],
+    }), 'utf-8');
+    expect(await collectUnmappedArtifacts(tempDir, { reportStale: true, baselinePath })).toEqual([]);
   });
 
   it('ignores an output that persists nothing', async () => {
