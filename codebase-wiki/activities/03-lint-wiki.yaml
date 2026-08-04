@@ -1,12 +1,9 @@
 id: lint-wiki
-version: 1.1.0
+version: 1.2.0
 name: Lint Wiki
-description: Run the wiki integrity checks over the built pages and decide whether findings warrant a re-ingest pass.
+description: Bring the built pages into line with their guides, run the wiki integrity checks over the result, and decide whether findings warrant a re-ingest pass.
 required: true
 steps:
-  - kind: technique
-    id: lint
-    technique: lint
   - kind: technique
     id: verify-artifact-conformance
     technique:
@@ -14,6 +11,9 @@ steps:
       inputs:
         artifact_dir: wiki_path
         guide_map: codebase-wiki/README#planning-artifact-to-guide-map
+  - kind: technique
+    id: lint
+    technique: lint
   - kind: checkpoint
     id: lint-findings-confirmed
     condition:
@@ -58,6 +58,7 @@ transitions:
   - to: publish
     isDefault: true
 outcome:
+  - Pages conform to the guide their type maps to before the integrity checks measure them, so a finding the user adjudicates describes the page as it now stands
   - The wiki has been checked for citation coverage, confidence presence, contradictions, orphan pages, missing referenced concepts, and stale claims
   - Contradictions and gaps are surfaced explicitly rather than silently reconciled, so the user decides whether to fix or accept them
   - When findings warrant it, the flow returns to the build pass to re-ingest, closing the one rework loop before publish
