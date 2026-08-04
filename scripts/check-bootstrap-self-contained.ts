@@ -34,8 +34,8 @@
  * from a list item's continuation wants a block-level parser, and over-reporting is the affordable
  * direction: fence the illustration, at any indent, and it goes quiet.
  *
- * That lookup is on the PAIR rather than the left half: around thirty techniques carry a single-word
- * name, so a left-half test reads `plan.json` and `context.yaml` as addresses. Requiring the corpus to
+ * That lookup is on the PAIR rather than the left half: forty-five rule owners carry a single-word name,
+ * so a left-half test reads `plan.json` and `context.yaml` as addresses. Requiring the corpus to
  * declare that rule on that technique keeps ordinary filenames out while
  * `resolve-host-repo.prose-sources-are-fallback-only` lands in the findings.
  *

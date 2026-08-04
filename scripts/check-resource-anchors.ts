@@ -79,6 +79,9 @@ function* walkFiles(dir: string): Generator<string> {
   }
 }
 
+/** Owned by `check-bootstrap-self-contained`, which refuses every corpus link on it. */
+const PRE_SESSION_RESOURCE = join('meta', 'resources', 'bootstrap-protocol.md');
+
 /** An anchored markdown destination, once the shared reader has produced it in any spelling. */
 const ANCHORED_RE = /^([^\s#]+\.md)#([A-Za-z0-9][\w-]*)$/;
 
@@ -86,6 +89,11 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
   const broken: BrokenAnchor[] = [];
   const anchorCache = new Map<string, Set<string>>();
   for (const file of walkFiles(ROOT)) {
+    // The pre-session bootstrap resource belongs to `check-bootstrap-self-contained`, which refuses
+    // EVERY corpus link on it — nothing can be followed before a session exists. So anything this guard
+    // could report there is already a finding of that one's, and reporting it twice would make one bad
+    // line yield two findings that one edit clears.
+    if (relative(ROOT, file) === PRE_SESSION_RESOURCE) continue;
     // Scan only rendered prose: drop fenced code blocks (template bodies carry placeholder
     // links like NN-work-package-plan.md) and inline code spans (anti-pattern docs quote
     // illustrative link forms in backticks).

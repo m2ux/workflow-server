@@ -419,7 +419,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     {
       description:
         'Dispatch a child workflow under the parent session. Returns the child `session_index`, canonical `planning_folder_path`, and `workflow.initialActivity` when the child workflow declares one — the activity its first `next_activity` should name, which the parent otherwise has no way to know. `get_workflow` remains where a session reads its OWN workflow metadata; this reports the CHILD\'s, so a parent need not load a workflow bundle it will not execute. Naming an activity the workflow does not declare fails that call; naming a declared one out of order is recorded with a warning, so the id is worth getting right here rather than relying on the transition check. '
-        + 'Re-dispatching a workflow into a planning folder that already holds a running child of it resumes that child rather than replacing it, and reports `resumed_activity` — the cursor it was left on. Prefer that over `initialActivity` when present, or the walk restarts from the beginning. ' +
+        + 'Re-dispatching into a planning folder that already holds a child of this workflow REPLACES it rather than continuing it, and returns the same `session_index` with an empty session behind it (#429). ' +
         'Transient meta parents are promoted to a workspace planning folder first (optional `planning_slug`). ' +
 'Ensure `session.repo` is bound (pass `repo` here if start_session did not); path resolution reads only session.json. ' +
         'Never set `context_mode: "persistent"` on worker-dispatched children — a worker takes full delivery on the first activity of its run and collapses against its own ledger thereafter.',
