@@ -91,3 +91,7 @@ Workflow improvement suggestions derived from the gap root causes above.
 **What good looks like:** every reference finding appears exactly once in the finding-mapping table;
 every `gap` row has a corresponding root-cause entry; the summary metrics are internally consistent
 with the mapping table; and each recommendation cites the gap that motivates it.
+
+## Rules
+
+- **Line budget:** ~120 lines. A gap is named with what would close it, not argued for at length.

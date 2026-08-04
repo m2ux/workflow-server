@@ -85,3 +85,4 @@ Based on research findings:
 - Each finding names its source and states how it applies to this work package (e.g. "API is 90% reads → write-behind cache with periodic flush"), not generic advice ("we should probably use caching").
 - Quote the specific recommendation, not a paraphrase, when the wording carries the decision criteria.
 - Record confidence (HIGH/MEDIUM/LOW) for each pattern recommendation.
+- **Line budget:** ~120 lines. Findings cite their source; a quoted passage longer than the finding it supports is over budget.

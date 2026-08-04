@@ -79,3 +79,7 @@ Use the current date and a hyphenated initiative name derived from `initiative_n
 
 [Plans will be added during package-planning activity]
 ```
+
+## Rules
+
+- **Line budget:** ~80 lines. Both skeletons are index surfaces, so they link rather than summarise.

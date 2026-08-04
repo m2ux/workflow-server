@@ -69,3 +69,4 @@ Link the [implementation plan](NN-work-package-plan.md) — do not restate its t
 - **Exception-only results.** "All N criteria met" is one line. A table appears only when a row diverges from its target.
 - **Omit null sections.** No "What Was NOT Implemented: none" — drop the heading.
 - **Update in place** if post-merge changes occur; the close-out reflects the final delivered state.
+- **Line budget:** ~100 lines. The close-out links each artifact and restates none of them.

@@ -94,3 +94,7 @@ bullets, never a single large block. Bold the key takeaway.}
 **What good looks like:** finding IDs use a 3-letter dimension prefix and are unique (CON-01, VER-03,
 PLB-01, FEA-07); severity counts in the executive summary table match the per-dimension detail; the
 report stands alone and contains no references to lenses, passes, or pipeline modes.
+
+## Rules
+
+- **Line budget:** ~200 lines. Per-dimension findings cite the analysis artifacts rather than reproducing them.

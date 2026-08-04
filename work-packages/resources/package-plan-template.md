@@ -106,3 +106,7 @@ Where `{package_name}` is the kebab-case package name (e.g., `auth-service-plan.
 - Every criterion must be objectively verifiable
 - Prefer automated verification (tests passing, build succeeding) over subjective assessment
 - Include both functional criteria (what it does) and quality criteria (how well it does it)
+
+## Rules
+
+- **Line budget:** ~100 lines per package plan. A plan past that is an implementation analysis in the wrong artifact.

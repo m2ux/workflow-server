@@ -33,3 +33,7 @@ Promote to: [canonical target path]
 - List every new, updated, and deprecated requirement by identifier.
 - State the validation outcome, including the number of correction passes when more than zero.
 - Name the staged path and the canonical target path so promotion is unambiguous.
+
+## Rules
+
+- **Line budget:** ~40 lines. The summary says what changed; the specification says what the requirements are.
