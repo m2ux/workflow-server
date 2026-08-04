@@ -13,8 +13,8 @@ A declaration therefore states the reader of the artifact **as it exists on disk
 | Audience | Declarations | Where |
 |---|---|---|
 | `agent` | 14 | substrate-node-security-audit 7, cicd-pipeline-security-audit 7 |
-| `human` | 113 | prism 28, work-package 18, workflow-design 16, work-packages 9, requirements-refinement 7, prism-audit 7, workflow-authoring 6, midnight-system-review 5, substrate-node-security-audit 4, ponytail 3, prism-evaluate 3, codebase-wiki 3, cicd-pipeline-security-audit 2, remediate-vuln 1, meta 1 |
-| absent, pending conversion | 12 | the registers listed below |
+| `human` | 117 | every artifact a person reads, including the four registers reviewed and kept as prose |
+| absent, pending conversion | 8 | the registers approved for conversion below |
 
 The 14 agent declarations are the scanner, registry, reconnaissance and merge outputs of the two security-audit workflows. They were structured JSON against a declared sub-agent schema before this change; the attribute now says so, and the audience guard stops passing vacuously.
 
@@ -22,20 +22,23 @@ The 14 agent declarations are the scanner, registry, reconnaissance and merge ou
 
 These are read back mechanically by a later step of the same run, or by a triggering workflow, and never linearly by a person. None carries a declaration: `agent` would contradict the markdown on disk, and `human` would contradict who reads it. The conversion issue is where both settle at once.
 
-| Artifact | Producer | Who reads it back |
-|---|---|---|
-| `RUN-MANIFEST.md` | prism `emit-run-manifest` | prism-audit `read-run-manifest`; the contract a triggering workflow reads to locate results |
-| `change-block-index.md` | work-package `review-diff` | later review steps, by block ID |
-| `provenance-log.md` | work-package `dco-provenance::append-task-row` | later task rows appended to the same register |
-| `assumptions-log.md` | work-package `review-assumptions::record` | later `record` and `reconcile` calls; `assess-ticket-completeness` |
-| `evidence-log.md` | midnight-system-review `consolidate-evidence` | the adjudication pass, by evidence ID |
-| `findings-register.md` | workflow-authoring `compile-report`; midnight-system-review `register-findings` | later steps of the same run — the workflow-authoring guide says so in its own words |
-| `structural-inventory.md` | workflow-design `intake-classification` | the impact and drafting passes |
-| `drafting-plan.md` | workflow-design `assemble-file-approach` | updated in place each file iteration, then read by the review pass |
-| `file-review-note.md` | workflow-design `review-drafted-file` | the attestation pass |
-| `prior-feedback-triage.md` | work-package `review-existing-feedback` | the review summary, by disposition |
-| `debt-ledger.md` | ponytail `harvest-debt` | the gain report |
-| `follow-ups.md`, `deferred-items.md` | many | `finalize-documentation::create-complete-doc`, for the Open Work counts — no technique declares either as an `#### artifact`, so neither has a declaration to leave absent |
+Each was reviewed one at a time and either approved for conversion or kept as prose. The eight approved carry no declaration until they convert; the five kept carry a settled `human`.
+
+| Artifact | Producer | Who reads it back | Call |
+|---|---|---|---|
+| `RUN-MANIFEST.md` | prism `emit-run-manifest` | prism-audit `read-run-manifest`; the contract a triggering workflow reads to locate results | convert |
+| `provenance-log.md` | work-package `dco-provenance::append-task-row` | later task rows appended to the same register | convert |
+| `evidence-log.md` | midnight-system-review `consolidate-evidence` | the adjudication pass, by evidence ID | convert |
+| `structural-inventory.md` | workflow-design `intake-classification` | the impact and drafting passes | convert |
+| `drafting-plan.md` | workflow-design `assemble-file-approach` | updated in place each file iteration, then read by the review pass | convert |
+| `file-review-note.md` | workflow-design `review-drafted-file` | the attestation pass | convert |
+| `prior-feedback-triage.md` | work-package `review-existing-feedback` | the review summary, by disposition | convert |
+| `debt-ledger.md` | ponytail `harvest-debt` | the gain report | convert |
+| `change-block-index.md` | work-package `review-diff` | later review steps, by block ID | keep prose |
+| `assumptions-log.md` | work-package `review-assumptions::record` | later `record` and `reconcile` calls; `assess-ticket-completeness` | keep prose |
+| `findings-register.md` | workflow-authoring `compile-report` | later steps of the same run, and a person — its own guide says both | keep prose |
+| `findings-register.md` | midnight-system-review `register-findings` | the verdict reads the accepted subset; the adjudication trail is there to be audited | keep prose |
+| `follow-ups.md`, `deferred-items.md` | many | `finalize-documentation::create-complete-doc`, for the Open Work counts, and every artifact that links here rather than restating | keep prose. Neither is a declared artifact, so neither has a declaration either way |
 
 ## Artifacts read by both a person and a later step
 
