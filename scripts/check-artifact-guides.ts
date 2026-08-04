@@ -113,9 +113,44 @@ function guideMapSection(readme: string | undefined): string | null {
  * says which resource owns the shape. The guard checks the mapping exists, not that its link
  * resolves: `check-resource-anchors` already resolves every relative link in the corpus.
  */
-function mapNamesArtifact(section: string | null, artifact: string): boolean {
-  if (!section) return false;
-  return section.split('\n').some((row) => row.includes('|') && row.includes(artifact));
+/**
+ * The row whose filename column names this artifact.
+ *
+ * Matching is against the column's entries, not the row's text. A substring match reads
+ * `index-and-log.md` in the guide column as naming `log.md`, so the wrong row answers for the
+ * artifact — and since the map wins over the filename search, whatever that row points at is what
+ * the guard trusts. `plan.md` would likewise be answered by a row about `analysis-plan.md`.
+ *
+ * A filename column may list several artifacts that share one guide, so it is split on commas.
+ */
+function mapRowFor(section: string | null, artifact: string): string | null {
+  if (!section) return null;
+  for (const row of section.split('\n')) {
+    const cells = row.split('|');
+    if (cells.length < 3) continue;
+    const named = cells[1].split(',').map((c) => c.trim().replace(/`/g, '').trim());
+    if (named.includes(artifact)) return row;
+  }
+  return null;
+}
+
+/**
+ * A map row's guide links must resolve to files that exist.
+ *
+ * The authored map wins over the filename search, so a row is what the guard trusts — and a row
+ * pointing at a resource that was renamed or never written certifies an artifact as guided while its
+ * guide is a broken link. That is the same false coverage a loose filename match produced, arriving
+ * through the other resolution path.
+ *
+ * A row with no link at all is a stated rule rather than a file reference (prism maps a per-lens
+ * artifact to "the lens resource the unit's lens slug names"), so it is accepted as authored.
+ */
+function mapRowTargetsResolve(row: string, resourcesDir: string): boolean {
+  const targets = [...row.matchAll(/\]\(([^)]+)\)/g)]
+    .map((m) => m[1].split('#')[0].trim())
+    .filter((t) => t.endsWith('.md'));
+  if (targets.length === 0) return true;
+  return targets.some((t) => existsSync(resolve(resourcesDir, t)));
 }
 
 /**
@@ -209,7 +244,16 @@ export async function collectUnmappedArtifacts(
         const artifact = o.artifact?.name?.trim();
         if (!artifact) continue;
         const key = `${workflow}::${technique.id}::${o.id}`;
-        if (mapNamesArtifact(map, artifact)) continue;
+        const row = mapRowFor(map, artifact);
+        if (row) {
+          if (mapRowTargetsResolve(row, join(root, workflow, 'resources'))) continue;
+          out.push({
+            key,
+            artifact,
+            detail: `output '${o.id}' in technique '${id}' persists '${artifact}', and its row in ${workflow}/resources/README.md points at a guide that does not exist — fix the link or author the guide it names`,
+          });
+          continue;
+        }
         if (resourceIsGuideFor(resources, artifact)) continue;
         if (resourceIsGuideFor(sharedResources, artifact)) continue;
         const acceptedKey = `${key} ${artifact}`;
