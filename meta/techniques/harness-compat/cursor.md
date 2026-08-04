@@ -13,7 +13,6 @@ Harness-specific invoke details for `harness_kind: cursor`. Catalogue of alterna
 
 - Invoke `Agent(subagent_type=<type>, description={description}, prompt={composed_prompt}, run_in_background=false)`. Cursor wraps the Claude Code agent primitive across CLI, IDE, and web.
 - Set `run_in_background` false explicitly. Omitting it dispatches in the background, which forfeits the blocking-equivalent wait [foreground-always](./TECHNIQUE.md#foreground-always) requires.
-- Background dispatch is allowed **only if** the caller waits on the Cursor completion notification before continuing — that wait is blocking-equivalent under [foreground-always](./TECHNIQUE.md#foreground-always).
 
 ### resume
 
