@@ -23,6 +23,9 @@
  * `scripts/binding-fidelity-triage.json`. Adding a new artifact with no guide fails the guard;
  * closing a baselined gap means deleting its entry.
  *
+ * Every corpus artifact resolves today, so no baseline file exists — the triage is the escape hatch
+ * for a deliberate gap, not a standing allowance.
+ *
  * A baseline entry matching no declaration is itself reported (`artifact-guide-baseline-stale`), so
  * the triage cannot outlive the debt it records — the same convention the binding-fidelity triage
  * states for its own entries.
@@ -74,9 +77,9 @@ interface BaselineFile {
   entries: BaselineEntry[];
 }
 
-function loadBaseline(): BaselineFile {
-  if (!existsSync(BASELINE)) return { entries: [] };
-  return JSON.parse(readFileSync(BASELINE, 'utf-8')) as BaselineFile;
+function loadBaseline(path: string = BASELINE): BaselineFile {
+  if (!existsSync(path)) return { entries: [] };
+  return JSON.parse(readFileSync(path, 'utf-8')) as BaselineFile;
 }
 
 /**
@@ -180,13 +183,14 @@ async function loadWorkflowTechniques(techniquesDir: string): Promise<Array<{ id
 /**
  * `reportStale` defaults to "only when measuring the corpus the baseline describes". A fixture corpus
  * holds none of the real declarations, so reporting staleness there would flag every entry.
+ * `baselinePath` lets a test point at a fixture triage instead of the repo's own.
  */
 export async function collectUnmappedArtifacts(
   root: string = DEFAULT_ROOT,
-  opts: { reportStale?: boolean } = {},
+  opts: { reportStale?: boolean; baselinePath?: string } = {},
 ): Promise<UnmappedArtifact[]> {
   const reportStale = opts.reportStale ?? root === DEFAULT_ROOT;
-  const baseline = loadBaseline();
+  const baseline = loadBaseline(opts.baselinePath);
   const accepted = new Set(baseline.entries.map((e) => `${e.site} ${e.artifact}`));
   const matched = new Set<string>();
   const out: UnmappedArtifact[] = [];
@@ -247,10 +251,13 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
   // Name the accepted-debt count in the clean message, so a passing guard never reads as "every
-  // artifact has a guide" while sixteen of them are owed one.
+  // artifact has a guide" while some of them are owed one. The corpus currently owes none, so the
+  // baseline file is absent and the message says so plainly.
   const owed = loadBaseline().entries.length;
   await runGuard('artifact-guides', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
-    okMessage: `every persisted artifact filename maps to a creation guide (${owed} triaged as owing one)`,
+    okMessage: owed === 0
+      ? 'every persisted artifact filename maps to a creation guide, none triaged as owing one'
+      : `every persisted artifact filename maps to a creation guide (${owed} triaged as owing one)`,
     remedy: 'map the filename in the workflow resources index, author the guide, classify the gap in scripts/artifact-guide-baseline.json — or delete the stale entry that no longer matches anything',
   });
 }
