@@ -62,10 +62,6 @@ Never call the workflow-server control-plane tools `next_activity` or `get_workf
 
 Return each activity's `activity_complete` envelope as it finishes per [finalize-activity](./finalize-activity.md) — a batch defers nothing to its end. An activity finished but not yet reported is work nothing outside this context knows about, so it is lost with the context. Reporting each one as it lands is what keeps a lost context to the cost of one activity.
 
-### session-index-on-each-call
-
-Pass `{session_index}` on every authenticated tool call ([session-index-passes-on-each-call](./TECHNIQUE.md#session-index-passes-on-each-call)).
-
 ### agent-id-on-delivery-calls
 
 Every `get_activity`, `get_technique` and `get_resource` call this worker makes carries `{agent_id}`, the identity its ledger is keyed on ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch holds no prior deliveries and takes full delivery; every call after it under that same identity carries `bundle: "reference"`, whether it resumes the activity this context holds or takes the next activity of its batch, so content this context already holds arrives as unchanged markers.

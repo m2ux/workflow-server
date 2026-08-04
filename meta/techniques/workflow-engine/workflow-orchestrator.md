@@ -48,9 +48,9 @@ Orchestrator agent identity for this session.
 
 Follow the rules in the operations bundle throughout — [agent-conduct](../agent-conduct.md), [workflow-engine](./TECHNIQUE.md), and any other touched techniques include their global rules automatically.
 
-### session-index-on-each-call
+### no-state-reconstruction-on-attach
 
-Pass `{session_index}` on every authenticated tool call ([session-index-passes-on-each-call](./TECHNIQUE.md#session-index-passes-on-each-call)). The server restores session state on attach — do not reconstruct it.
+The server restores session state on attach. Read it rather than rebuilding it from history, artifacts, or a prior context.
 
 ### orchestrator-worker-boundaries
 
