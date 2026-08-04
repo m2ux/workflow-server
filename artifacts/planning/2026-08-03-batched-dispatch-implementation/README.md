@@ -140,3 +140,64 @@ The third pass read the sealed session records rather than the benchmark, and th
 **The loop is walked, not only gated.** The gate test evaluates each gate against one bag and cannot see `worker_result` being rewritten mid-iteration, which is the shape of both faults that reached review. A second test reads the loop body from the definition and walks iterations; reconstructing both faults as mutations, both fail it. Writing it corrected the invariant — the pointer advances once per activity, not per iteration, because an iteration that only answers a gate must not advance.
 
 **Figures corrected across the passes:** the double count inflates a run of three by 70%, not 32%; the eager fraction admits thirteen of fifteen, not nine; the per-dispatch spawn cost is 87 seconds, the mean of 77, 65, 42 and 165, where 41 was a token count read as a duration; and the benchmark's own figure moved to 155,168 when two corpus bumps added 469 characters to every full activity payload. The establishment-to-collapse ratio is roughly two to four times, not five to eight, once the token figures are counted once per response.
+
+## What the SOLID review found
+
+A pass read the corpus against the SOLID axes, on the reasoning that they land on constructs the schema
+already names — a technique is an interface, Apply is a call, actors are clients, and delivery is the
+linkage step. It corrected the earlier reading of the catalogue and produced two measured results plus
+one defect with a live failure path.
+
+**A technique reached through a value is unchecked.** A technique normally arrives by a `technique:`
+binding, which the binding guard reads. It can also arrive as the value of a variable — `Apply
+{agent_technique}`, `Apply {harness_technique}'s {harness_operation}`, `invoke the bound
+{analyse_technique}`. Those resolve at runtime from a string, and the guard verifies the caller's declared
+inputs, never the indirect callee's. Eight such call sites exist; two are guarded. Every substitutability
+defect below sits in that blind spot, which is why twenty-three guards and nine hundred tests pass over
+them.
+
+**A resumed worker is not told to produce what its caller waits for.** `resume-worker` declares its output
+as one of two tagged envelopes. `resume-from-checkpoint`, one of the three techniques its `agent_technique`
+input can name, declares no Outputs, carries no rules, and ends its two-line Protocol at "continue from the
+paused step"; `compose-prompt` states the abstraction's precondition as three fields it declares none of.
+The path is reachable: a resume may degrade to a fresh spawn, and two of the four harness adapters say they
+do. On that path the agent receives only the resume stub — no activity fetch, so no worker bundle and no
+envelope obligation — while the caller waits for an envelope nothing asked for.
+
+**Five mutations pass every check:** a fifth harness adapter declaring one of the three required rule
+slices; a sixth renaming a slice; a resolution-map row naming a file that does not exist; deleting a slice
+from an existing adapter; and an agent-entry technique with an extra required input. The reverse
+direction — a core-ops entry with no file — is caught by the definition lint and the walk, so the gap is
+exactly one direction. The adapter set is substitutable today, at twelve slices of twelve, held that way by
+nothing but care, and its obligation lives in one prose sentence plus a map that calls itself authoritative
+while a second enumeration in the loader must agree with it.
+
+**Delivery carries content its recipient cannot act on, and it is countable.** A worker's fixed floor is
+22,477 to 27,123 characters, a third of a median activity delivery, before the workflow says anything of its
+own. Container-declared I/O rides with every operation for 107,572 characters across a work-package walk,
+618 entries of which 8.9% are named in the operation they ride with. Authoring-time binding conventions
+reach a runtime reader at 2,957 characters a delivery, five of six rules governing how a binding is
+written. Aggregate content with no tool, input or observable behind it: 5,439 characters a delivery.
+
+**But the cap binds before the budget at the declared window this was measured at.** Three median
+activities come to 216,147 characters against a 280,000 budget, so removing all of that buys no additional
+activity at 200k declared tokens. It matters below roughly 103k, where the refusal threshold would fall to
+about 96k. The waste is real and its present value is smaller than the figures suggest.
+
+**The actor buckets are sound and cover almost nothing.** A probe confirmed `rules.workflow`,
+`rules.activity` and `rules.universal` deliver exactly as declared, and no workflow puts a cross-actor tool
+token in the wrong bucket. But buckets exist only on `workflow.yaml`: 9.0% of the rule characters reaching a
+worker are bucketed, 4.3% on the orchestrator side. Every leak above lives in the remainder, which carries
+no actor discipline — the container technique file being the one surface in the tree with no audience
+mechanism at all.
+
+**Two faults were fixed on the spot.** A worker rule restated a container rule that reaches it anyway,
+less completely, under a near-variant name, while a sibling already commanded the inherited set. And a
+shared conduct rule reaching all sixteen workflows cited an orchestrator-only technique and one workflow's
+private tree, neither of which most of its readers can open.
+
+**The catalogue reading was corrected.** Four axes are already covered under better names, and more
+thoroughly than first credited: one-invariant-two-homes is duplication rather than cohesion, the capability
+inventory entry tests edit-on-extension, and the re-enumerated-rules entry is the same. The gap is
+substitutability, and the reason is structural — every cross-surface detector in the catalogue looks for
+duplication, and none looks for divergence where uniformity is required.
