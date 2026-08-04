@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.1.0
+version: 1.2.0
 name: Scope and Draft
 description: "Prepare the edit worktree, enumerate the complete file manifest, author every file the manifest names, and bring the target README and the planning artifacts into line with what was drafted."
 required: true
@@ -108,7 +108,7 @@ steps:
     technique: workflow-definition::readme-authoring
     when: operation_type != 'review' && scope_manifest_confirmed == true
   - kind: technique
-    id: verify-planning-artifacts
+    id: verify-artifact-conformance
     technique:
       name: verify-artifact-conforms
       inputs:
