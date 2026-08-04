@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -30,7 +30,7 @@ The repo-wide findings ranked biggest-cut-first — each written as `<tag> <what
 
 ### 2. Rank biggest-cut-first
 
-- Record each finding into `{audit_findings}` as `<tag> <what to cut>. <replacement>. [path]`, ordered by the size of the cut — lines removed plus dependencies dropped — so the largest wins surface first.
+- Record each finding into `{audit_findings}` in `{artifact_dir}` per [audit-findings](../resources/audit-findings.md#template) and its [Rules](../resources/audit-findings.md#rules), ordered by the size of the cut — lines removed plus dependencies dropped — so the largest wins surface first.
 
 ### 3. Score the net
 
