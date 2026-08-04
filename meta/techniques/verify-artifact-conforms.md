@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Conformance of a folder's persisted artifacts to the guide each filename maps to
 
 ### artifact_dir
 
-*(optional)* Directory holding the artifacts to check, for a caller whose artifacts land somewhere other than the session planning folder. Every `.md` in it is in scope except session state files.
+*(optional)* Directory holding the artifacts to check, for a caller whose artifacts land somewhere other than the session planning folder. In scope are the artifacts **this run persisted** there, never every file the directory happens to hold — a planning folder holds only the run's own artifacts, while a code or shared directory holds a great deal the run did not write.
 
 #### default
 
@@ -43,7 +43,7 @@ array of `{ file, rule, detail, fixed }` entries — one per detected violation,
 
 ### 1. Enumerate and Resolve
 
-- Enumerate every artifact in `{artifact_dir}` and resolve each one's guide through `{guide_map}` when it is bound, otherwise through the guide that names the filename
+- Enumerate the artifacts this run persisted into `{artifact_dir}` — a file the run did not write is out of scope — and resolve each one's guide through `{guide_map}` when it is bound, otherwise through the guide that names the filename
 
 ### 2. Measure Against the Guide and the Map
 
@@ -63,6 +63,10 @@ array of `{ file, rule, detail, fixed }` entries — one per detected violation,
 - Report exceptions only — an artifact that already conformed gets no line
 
 ## Rules
+
+### only-what-this-run-wrote
+
+Measure the artifacts this run persisted, and nothing else in the directory. A caller whose artifact directory is a checkout, a code path, or any folder it shares with content the run did not write would otherwise have unrelated files measured against guides they were never written to, and corrected in place against them.
 
 ### guide-is-the-standard
 
