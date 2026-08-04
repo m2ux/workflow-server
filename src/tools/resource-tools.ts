@@ -43,6 +43,7 @@ import {
   parentChainDepth,
   PARENT_CHAIN_DEPTH_WARN_THRESHOLD,
   type SessionFile,
+  type EmbeddedSessionRef,
 } from '../schema/session.schema.js';
 import { techniqueName, flattenActivitySteps, type Step } from '../schema/activity.schema.js';
 import { buildProvenanceContext, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
@@ -59,6 +60,30 @@ import { basename, isAbsolute, resolve } from 'node:path';
 
 /** Re-export for callers/tests that imported section extraction from this module. */
 export { extractMarkdownSection } from '../utils/resource-ref.js';
+
+/**
+ * The children a planning folder already records, or none when it holds no session yet.
+ *
+ * A promotion writes over whatever `session.json` the folder held, so the children it recorded have to
+ * be read before that write and carried into it. Their order is load-bearing: an embedded child's
+ * `session_index` is derived from the folder plus the path to its slot, so moving one to a different
+ * array position changes the index its worker authenticates with.
+ *
+ * A folder with no session, an unreadable one, or one whose contents no longer satisfy the schema
+ * yields none — promotion then proceeds as a fresh dispatch, which is what happens today in every case.
+ * Widening a resume into a first run costs one restart; letting a broken read abort the dispatch would
+ * cost the caller its session.
+ */
+async function carriedChildren(folderAbsPath: string): Promise<EmbeddedSessionRef[]> {
+  if (!(await sessionFileExists(folderAbsPath))) return [];
+  try {
+    const { state } = await verifySeal(folderAbsPath);
+    const parsed = safeValidateSessionFile(state);
+    return parsed.success ? parsed.data.triggeredWorkflows : [];
+  } catch {
+    return [];
+  }
+}
 
 /**
  * Wrap a tool handler so any thrown `SessionStoreError` is re-thrown with a
@@ -516,33 +541,69 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           promotedSlug,
           { planningRelativeDir: promoteRoot.planningRelativeDir },
         );
+        // The promoted folder may already hold a durable session from an earlier run — that is the
+        // resume case, and `ensurePlanningFolder` hands back the existing folder rather than making a
+        // new one. A fresh parent written over it takes every child with it, and because a child's
+        // index is derived from the folder and the path to it, the caller receives the SAME index back
+        // with an emptied session behind it: the walk silently restarts at the first activity, having
+        // reported the cursor it was resuming.
+        //
+        // So the children recorded there are carried forward, each at the array position its index was
+        // derived from. A child of this workflow still running is resumed in place, with the cursor,
+        // completed activities and variables it had. Anything else — a completed child, or a different
+        // workflow — is left untouched and the new child appends beside it.
+        // A ref carries its child's state inline, but the field is optional — an entry recorded without
+        // one has no cursor to resume and is treated as absent rather than resumed into an empty session.
+        const carried = await carriedChildren(promotedWorkspaceFolder);
+        let resume: { index: number; state: SessionFile } | null = null;
+        for (let i = carried.length - 1; i >= 0; i--) {
+          const candidate = carried[i]!;
+          if (candidate.workflowId === workflow_id && candidate.status === 'running' && candidate.state) {
+            resume = { index: i, state: candidate.state };
+            break;
+          }
+        }
+        const childArrayIndex = resume ? resume.index : carried.length;
         const childSessionIndex = await computeEmbeddedSessionIndex(
           promotedWorkspaceFolder,
-          ['triggeredWorkflows', 0, 'state'],
+          ['triggeredWorkflows', childArrayIndex, 'state'],
         );
-        const childInitial = createInitialSessionFile({
-          sessionIndex: childSessionIndex,
-          workflowId: workflow_id,
-          workflowVersion: effectiveWorkflowVersion,
-          agentId: agent_id,
-          ...(parentState.repo ? { repo: parentState.repo } : {}),
-          ...(context_mode ? { contextMode: context_mode } : {}),
-          variables: childVariables(wfResult.value),
-        });
-        const parentNext = advanceSession(parentState, (draft) => {
-          draft.triggeredWorkflows.push({
-            workflowId: workflow_id,
+        const childInitial: SessionFile = resume
+          ? resume.state
+          : createInitialSessionFile({
             sessionIndex: childSessionIndex,
-            triggeredAt,
-            triggeredFrom: { activityId: draft.currentActivity || '' },
-            status: 'running',
-            state: childInitial,
+            workflowId: workflow_id,
+            workflowVersion: effectiveWorkflowVersion,
+            agentId: agent_id,
+            ...(parentState.repo ? { repo: parentState.repo } : {}),
+            ...(context_mode ? { contextMode: context_mode } : {}),
+            variables: childVariables(wfResult.value),
           });
+        const parentNext = advanceSession(parentState, (draft) => {
+          draft.triggeredWorkflows = carried;
+          if (resume) {
+            // The index is derived from this position, so the entry stays where it is. Only the
+            // recorded index is refreshed, in case the folder moved since the child was dispatched.
+            // `childInitial` is the child's own saved state here, and writing it back through the same
+            // name both paths use keeps one source for what the slot holds.
+            draft.triggeredWorkflows[resume.index] = {
+              ...carried[resume.index]!, sessionIndex: childSessionIndex, state: childInitial,
+            };
+          } else {
+            draft.triggeredWorkflows.push({
+              workflowId: workflow_id,
+              sessionIndex: childSessionIndex,
+              triggeredAt,
+              triggeredFrom: { activityId: draft.currentActivity || '' },
+              status: 'running',
+              state: childInitial,
+            });
+          }
           draft.history.push({
             timestamp: triggeredAt,
-            type: 'workflow_triggered',
+            type: resume ? 'workflow_returned' : 'workflow_triggered',
             activity: draft.currentActivity || undefined,
-            data: { workflowId: workflow_id, sessionIndex: childSessionIndex },
+            data: { workflowId: workflow_id, sessionIndex: childSessionIndex, ...(resume ? { resumedAt: childInitial.currentActivity || null } : {}) },
           });
         });
         await writeSessionFile(promotedWorkspaceFolder, parentNext);

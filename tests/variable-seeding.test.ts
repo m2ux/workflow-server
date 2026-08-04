@@ -12,6 +12,7 @@ import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { createServer } from '../src/server.js';
 import { resolve, join } from 'node:path';
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { writeSessionFile } from '../src/utils/session/index.js';
 import { tmpdir } from 'node:os';
 import { seedDefaults, jsonTypeOf, isTemplateReference } from '../src/utils/variable-seed.js';
 import { createInitialSessionFile } from '../src/schema/session.schema.js';
@@ -248,6 +249,68 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     expect(body.workflow.id).toBe('child-fixture');
     // The child's, not the parent's — the seed-fixture parent starts at `checkpoint-activity`.
     expect(body.workflow.initialActivity).toBe('child-activity');
+  });
+
+  it('resumes a running child in place instead of writing a fresh session over it', async () => {
+    // A second bootstrap into the same planning folder is what a resume is: `start_session` opens a new
+    // transient meta parent, and promotion hands back the folder the earlier run already filled. Writing
+    // the fresh parent over it discarded every child, and since a child's index is derived from the
+    // folder and its slot, the caller got the SAME index back with an emptied session behind it — the
+    // walk restarted at the first activity having reported the cursor it was resuming.
+    const slug = '2026-07-07-resume-child';
+
+    const first = await call('start_session', { agent_id: 'orchestrator' });
+    const firstIndex = (first._meta as Record<string, unknown>).session_index as string;
+    const dispatched = await call('dispatch_child', {
+      session_index: firstIndex, workflow_id: 'child-fixture', planning_slug: slug,
+    });
+    const childIndex = (dispatched._meta as Record<string, unknown>).session_index as string;
+    await call('next_activity', { session_index: childIndex, activity_id: 'child-activity' });
+    expect(readSession(slug).triggeredWorkflows[0].state.currentActivity).toBe('child-activity');
+
+    // Second bootstrap, same slug.
+    const second = await call('start_session', { agent_id: 'orchestrator' });
+    const secondIndex = (second._meta as Record<string, unknown>).session_index as string;
+    const again = await call('dispatch_child', {
+      session_index: secondIndex, workflow_id: 'child-fixture', planning_slug: slug,
+    });
+
+    // Same index, because it is derived from the same slot — and now the session behind it is the one
+    // the first run advanced, not a replacement.
+    expect((again._meta as Record<string, unknown>).session_index).toBe(childIndex);
+    const stored = readSession(slug);
+    expect(stored.triggeredWorkflows).toHaveLength(1);
+    expect(stored.triggeredWorkflows[0].state.currentActivity).toBe('child-activity');
+    expect(stored.history.filter((h: { type: string }) => h.type === 'workflow_returned')).toHaveLength(1);
+  });
+
+  it('starts a new child beside a completed one rather than resuming it', async () => {
+    // Only a running child is resumable. A finished one stays as the record of that walk, and the new
+    // child appends — which keeps every prior slot, and so every prior index, where it was.
+    const slug = '2026-07-07-completed-child';
+    const first = await call('start_session', { agent_id: 'orchestrator' });
+    const firstIndex = (first._meta as Record<string, unknown>).session_index as string;
+    await call('dispatch_child', { session_index: firstIndex, workflow_id: 'child-fixture', planning_slug: slug });
+
+    // Mark the child finished. Written through the server's own writer so the seal is recomputed — a
+    // raw write would break it, and a broken seal is read as no prior children at all, which would make
+    // this pass for the wrong reason.
+    const done = readSession(slug);
+    done.triggeredWorkflows[0].status = 'completed';
+    await writeSessionFile(planningFolder(slug), done);
+
+    const second = await call('start_session', { agent_id: 'orchestrator' });
+    const secondIndex = (second._meta as Record<string, unknown>).session_index as string;
+    await call('dispatch_child', { session_index: secondIndex, workflow_id: 'child-fixture', planning_slug: slug });
+
+    const stored = readSession(slug);
+    expect(stored.triggeredWorkflows).toHaveLength(2);
+    expect(stored.triggeredWorkflows[0].status).toBe('completed');
+    expect(stored.triggeredWorkflows[1].status).toBe('running');
+    // Each index is derived from the slot it sits in, so two children cannot share one. Recording the
+    // new child's index against the wrong slot hands two workers the same session.
+    expect(stored.triggeredWorkflows[1].sessionIndex)
+      .not.toBe(stored.triggeredWorkflows[0].sessionIndex);
   });
 
   it('reports the first activity from the transient-promotion path too, which is the one bootstrap takes', async () => {
