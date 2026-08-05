@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
 
-Continue the worker that already holds an activity, under the delivery identity its dispatch bound.
+Continue the worker that already holds an activity under the delivery identity its dispatch bound, or replace it where that context is gone.
 
 ## Inputs
 
@@ -35,6 +35,10 @@ Current variable state for stub substitution (`session_index`, `workflow_id`, `a
 
 The envelope the worker returned, passed through unchanged — one of two tagged result types: the `checkpoint_pending` envelope, or the `activity_complete` envelope.
 
+### worker_agent_id
+
+The identity now holding the activity: the one the worker was continued under when the continuation succeeded, or a freshly minted one when it did not and a replacement was spawned in its place.
+
 ## Protocol
 
 ### 1. Compose the continuation stub
@@ -47,7 +51,8 @@ The envelope the worker returned, passed through unchanged — one of two tagged
 
 ### 3. Await the envelope
 
-- Wait until the worker yields or completes (blocking-equivalent); capture its envelope unchanged as `{worker_result}`.
+- Wait until the worker yields or completes (blocking-equivalent); capture its envelope unchanged as `{worker_result}` and return `{worker_agent_id}` unchanged.
+- When the continuation returns no accepted envelope — the harness reports the worker ended, or what came back is not one of the two tagged results ([reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result)) — that context is gone and nothing further will arrive from it. Mint a new `{worker_agent_id}` per [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), apply [compose-prompt](./compose-prompt.md) with `holds_prior_deliveries: false` and no `effects`, and [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) for the SAME `{activity_id}`; return that identity with the replacement's envelope. The replacement takes the activity in full and re-crosses the answered gate without asking again — a checkpoint response is keyed by activity and checkpoint with no agent component, so the server replays the answer already given.
 
 ### 4. Account for the continuation
 
