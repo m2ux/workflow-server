@@ -70,6 +70,10 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
  * get_activity alongside the activity's declared technique refs.
  */
 export const CORE_WORKER_TECHNIQUES: readonly string[] = [
+  // The role itself. Every worker stub says to apply it, and only the meta workflow declares it in
+  // `techniques.activity` — so for a client workflow it was named and never delivered, with no tool
+  // able to fetch it by id. A worker that cannot read its own role reads none of the rules it owes.
+  'workflow-engine::activity-worker',
   // Step execution surface
   'workflow-engine::yield-checkpoint',
   'workflow-engine::resume-from-checkpoint',
