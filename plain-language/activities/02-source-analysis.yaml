@@ -1,0 +1,50 @@
+id: source-analysis
+version: 1.0.0
+name: Source Analysis
+description: "Audit the existing document against the principles and persist the findings and strengths a rewrite works from, or an audit run reports."
+required: false
+steps:
+  - kind: technique
+    id: analyze-source
+    technique: plain-language::analyze-source
+  - kind: technique
+    id: persist-source-analysis
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: source-analysis.md
+        artifact_content: source_analysis
+        target_dir: planning_folder_path
+      outputs:
+        written_artifact: source_analysis_path
+  - kind: checkpoint
+    id: analysis-reviewed
+    condition:
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: audit
+    message: "{finding_count} plain-language findings recorded against `{document_title}` ([source analysis]({source_analysis_path}))."
+    blocking: false
+    defaultOption: accepted
+    autoAdvanceMs: 30000
+    options:
+      - id: accepted
+        label: Accepted
+        description: The findings accurately record where the document fails its readers.
+      - id: revise
+        label: Needs revision
+        description: The findings miss failures or misstate the guidelines they cite.
+transitions:
+  - to: __terminal__
+    condition:
+      type: simple
+      variable: operation_type
+      operator: ==
+      value: audit
+  - to: draft
+    isDefault: true
+outcome:
+  - The existing document's failures are recorded against the guidelines they breach, so a rewrite fixes named problems rather than restyling on taste
+  - The document's strengths are inventoried, so a rewrite preserves what already works for its readers
+  - An audit run closes on the analysis as its terminal record, authoring no document
