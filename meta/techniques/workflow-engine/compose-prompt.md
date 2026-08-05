@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.6.0
+  version: 2.7.0
 ---
 
 ## Capability
@@ -20,8 +20,7 @@ Map of placeholder name → value. Must include `session_index`, `workflow_id`, 
 ### effects
 
 *(optional)* Variable updates carried by a resolved checkpoint. Present only when the stub continues a
-worker past a gate, and its presence is what makes this a continuation: the agent is told to clear the
-checkpoint before it does anything else.
+worker past a gate, and its presence is what makes this a continuation.
 
 ### holds_prior_deliveries
 
@@ -42,7 +41,7 @@ Minimal stub string ready for the host invoke that spawns or continues the agent
 
 ### 2. Emit entry tools
 
-- When `{effects}` is bound: instruct `resume_checkpoint { session_index }` FIRST, carrying the `effects` substitution, then the activity-worker line below. Clearing the gate is a precondition of the calls that follow, not an alternative to them — a continuation still takes its activity, which is where its duties and the definition it routes from come from
+- When `{effects}` is bound, and `{agent_technique}` is activity-worker: instruct `resume_checkpoint { session_index }` FIRST, carrying the `effects` substitution, then the activity-worker line below. That call verifies the orchestrator has already resolved the gate; it goes first because its refusal is the one a worker has a remedy for, where a blocked `get_activity` gives it none. A continuation still takes its activity, which is where its duties and the definition it routes from come from
 - When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens, agent_id }` — `context_tokens` is the agent's context window size and is **required**; `agent_id` scopes delivery to this worker context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). Add `bundle: "reference"` to that call when `{holds_prior_deliveries}`, so what the context already holds arrives as unchanged markers; omit it otherwise, because a fresh context needs the bytes
 - When `{agent_technique}` is [workflow-orchestrator](./workflow-orchestrator.md): instruct `start_session { session_index, agent_id }` then `get_workflow { session_index }`
 

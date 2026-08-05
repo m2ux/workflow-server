@@ -21,6 +21,10 @@ Workflow the worker is executing an activity for.
 
 Activity id this worker's current dispatch ([dispatch-activity](./dispatch-activity.md)) or continuation ([continue-batch](./continue-batch.md)) bound — must match the activity returned by `get_activity`.
 
+### effects
+
+*(optional)* Variable updates carried by a checkpoint this context yielded and the orchestrator has since resolved. Present only on a continuation, and its presence is what distinguishes one from a first dispatch.
+
 ### agent_id
 
 Worker agent identity for this dispatch.
@@ -40,13 +44,13 @@ Worker agent identity for this dispatch.
 
 ### 3. Execute steps
 
+- When `{effects}` is bound, this context is continuing past a gate it yielded rather than opening the activity: apply [resume-from-checkpoint](./resume-from-checkpoint.md), then carry on from the paused step rather than the first. The remaining steps and the envelope below are owed either way — a gate pauses the walk, it does not end it
 - Read the artifact each bound artifact-path input names before the step that consumes it — the dispatch stub carries identity bindings only, never artifact content
 - Execute each activity step in document order
 - For `kind: technique` steps, load the bound operation on reach per [progressive-step-technique-load](./TECHNIQUE.md#progressive-step-technique-load)
 - Apply each bound operation via [variable-binding](../variable-binding.md)
 - Honor `when:` gates against the variable bag — operators `==`/`!=`/`>`/`<`/`>=`/`<=`, bare truthiness, unary `!`, `&&`, `||`, parentheses; C-style precedence (`()` > `!` > comparisons > `&&` > `||`); mixed `&&`/`||` at one depth requires parentheses; match the reference evaluator in `src/schema/when-expression.ts` (invalid expressions do not run the step)
 - When a step reaches a checkpoint, apply [yield-checkpoint](./yield-checkpoint.md)
-- When a stub carries `effects`, this context is continuing past a gate it yielded: apply [resume-from-checkpoint](./resume-from-checkpoint.md) before executing further, then carry on at the paused step. The activity's remaining steps and the envelope below are owed either way — a gate pauses the walk, it does not end it
 - When the last step completes, apply [finalize-activity](./finalize-activity.md), passing the `may_continue` read in step 1 as `batch_may_continue`
 
 ## Rules
