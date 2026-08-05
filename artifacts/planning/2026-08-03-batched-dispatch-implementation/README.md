@@ -20,7 +20,7 @@ This was the one interpretive decision the issue did not settle. The alternative
 
 The starting value was 0.20, on the arithmetic in the investigation record: 937,121 characters across fifteen activities averages some 62,000 an activity, so three activities ought to sit near 187,000 characters, and 0.20 of a 200,000-token window gives 160,000.
 
-The first run of the new benchmark refused the batch at its third activity, and re-basing to **0.35** admitted it. A review sweep then found that both of those figures were inflated by the same double count (below), so the arithmetic was redone against honest numbers: the analysis run delivers **155,168 characters into one context, 133,360 of them by the end of the second activity**. At 0.35 a 200,000-token window gives 280,000 characters, so the eager payloads of that run are admitted and the headroom left over is for what the worker fetches lazily while running them — which draws down the same budget and is invisible at the moment an activity is delivered. The third sweep below found that lazy half is usually the larger one.
+The first run of the new benchmark refused the batch at its third activity, and re-basing to **0.35** admitted it. A review sweep then found that both of those figures were inflated by the same double count (below), so the arithmetic was redone against honest numbers: the analysis run delivers **161,027 characters into one context, 139,124 of them by the end of the second activity**. At 0.35 a 200,000-token window gives 280,000 characters, so the eager payloads of that run are admitted and the headroom left over is for what the worker fetches lazily while running them — which draws down the same budget and is invisible at the moment an activity is delivered. The third sweep below found that lazy half is usually the larger one.
 
 The value survived that correction and a third one below; the reasoning behind it did not. It stays far below the eager-bundling fraction of 0.80, which on the same arithmetic admits thirteen of fifteen activities into one context.
 
@@ -31,13 +31,13 @@ The value survived that correction and a third one below; the reasoning behind i
 | | per-activity | batched |
 |---|---:|---:|
 | Contexts the server met | 3 | 1 |
-| Characters delivered | 206,150 | 155,168 |
-| Activity payloads, in walk order | 71,233 / 79,647 / 55,270 | 71,233 / 62,127 / 21,808 |
-| Server-side elapsed, best of 3 | 576 ms | 569 ms |
+| Characters delivered | 223,157 | 161,027 |
+| Activity payloads, in walk order | 76,902 / 85,316 / 60,939 | 76,902 / 62,222 / 21,903 |
+| Server-side elapsed, best of 3 | 590 ms | 589 ms |
 
-**Delivery collapse is 24.7% on this walk, against the 32% the investigation record cites for the same run.** Both are right about different things. The record's figure comes from a real run's delivery ledger, where the worker also fetches techniques and resources lazily across each activity and those fetches collapse too. This benchmark issues activity deliveries only, so it sees the payload collapse — 79,647 → 62,127 and 55,270 → 21,808, which is 22% and 61% by position, matching the record's "second collapses 40–45%, third 55–70%" — without the lazy-fetch collapse layered on top. The 24.7% is the floor, and the honest figure for what this script walks.
+**Delivery collapse is 27.8% on this walk, against the 32% the investigation record cites for the same run.** Both are right about different things. The record's figure comes from a real run's delivery ledger, where the worker also fetches techniques and resources lazily across each activity and those fetches collapse too. This benchmark issues activity deliveries only, so it sees the payload collapse — 85,316 → 62,222 and 60,939 → 21,903, which is 27% and 64% by position. The third sits inside the record's "third 55–70%"; the second falls short of its "second collapses 40–45%" because the record counts the lazy collapse this script cannot see. The 27.8% is the floor, and the honest figure for what this script walks.
 
-**Server-side elapsed is a wash, and that is a finding rather than a defect.** Best-of-3 gives 1.2% in the batch's favour; single walks swing ±20%. Reference delivery composes every payload in full and *then* hashes it to decide what may collapse, so a batch does slightly more server work to put fewer bytes on the wire. Nothing in the tooling claims a server-side speed-up, and the smoke test's assertion is that batching is not materially slower rather than that it is faster.
+**Server-side elapsed is a wash, and that is a finding rather than a defect.** Best-of-3 gives 0.3% in the batch's favour; single walks swing ±20%. Reference delivery composes every payload in full and *then* hashes it to decide what may collapse, so a batch does slightly more server work to put fewer bytes on the wire. Nothing in the tooling claims a server-side speed-up, and the smoke test's assertion is that batching is not materially slower rather than that it is faster.
 
 **The run duration a batch saves is the contexts it avoids.** Two, on this run. Priced at 87 seconds — the mean of the four setup dispatches of the profiled 27 July run, which ran 77, 65, 42 and 165 seconds — that is 174 seconds. The script reports it as a projection with its input named and never adds it to the measured figures, because nothing headless can observe a harness spawning an agent.
 
@@ -139,7 +139,7 @@ The third pass read the sealed session records rather than the benchmark, and th
 
 **The loop is walked, not only gated.** The gate test evaluates each gate against one bag and cannot see `worker_result` being rewritten mid-iteration, which is the shape of both faults that reached review. A second test reads the loop body from the definition and walks iterations; reconstructing both faults as mutations, both fail it. Writing it corrected the invariant — the pointer advances once per activity, not per iteration, because an iteration that only answers a gate must not advance.
 
-**Figures corrected across the passes:** the double count inflates a run of three by 70%, not 32%; the eager fraction admits thirteen of fifteen, not nine; the per-dispatch spawn cost is 87 seconds, the mean of 77, 65, 42 and 165, where 41 was a token count read as a duration; and the benchmark's own figure moved to 155,168 when two corpus bumps added 469 characters to every full activity payload. The establishment-to-collapse ratio is roughly two to four times, not five to eight, once the token figures are counted once per response.
+**Figures corrected across the passes:** the double count inflates a run of three by 70%, not 32%; the eager fraction admits thirteen of fifteen, not nine; the per-dispatch spawn cost is 87 seconds, the mean of 77, 65, 42 and 165, where 41 was a token count read as a duration; and the benchmark's own figure moved twice — to 155,168 when two corpus bumps added 469 characters to every full activity payload, then to 161,027 when delivering `activity-worker` to client workers added some 5,700 more. The saving rose with it, to 27.8%, because a larger fixed floor is a larger thing to collapse. The establishment-to-collapse ratio is roughly two to four times, not five to eight, once the token figures are counted once per response.
 
 ## What the SOLID review found
 
@@ -153,8 +153,7 @@ binding, which the binding guard reads. It can also arrive as the value of a var
 {agent_technique}`, `Apply {harness_technique}'s {harness_operation}`, `invoke the bound
 {analyse_technique}`. Those resolve at runtime from a string, and the guard verifies the caller's declared
 inputs, never the indirect callee's. Eight such call sites exist; two are guarded. Every substitutability
-defect below sits in that blind spot, which is why twenty-three guards and nine hundred tests pass over
-them.
+defect below sits in that blind spot, which is why the whole suite passes over them.
 
 **A resumed worker is not told to produce what its caller waits for.** `resume-worker` declares its output
 as one of two tagged envelopes. `resume-from-checkpoint`, one of the three techniques its `agent_technique`
@@ -201,3 +200,35 @@ thoroughly than first credited: one-invariant-two-homes is duplication rather th
 inventory entry tests edit-on-extension, and the re-enumerated-rules entry is the same. The gap is
 substitutability, and the reason is structural — every cross-surface detector in the catalogue looks for
 duplication, and none looks for divergence where uniformity is required.
+
+## What the review's findings turned into
+
+The four statements above that a later commit made false, and what they read as now. Kept rather than
+edited, because the finding and its resolution are different facts and the first is what the pass earned.
+
+**The resumed worker's contract is closed.** `resume-from-checkpoint` is no longer one of the values
+`agent_technique` may take; the resume stub composes with `activity-worker` instead, so the technique that
+declares the envelope obligation is the one the resumed agent is handed. The degraded path — a resume the
+harness turns into a fresh spawn — now has a branch of its own that mints an identity and states its
+price, which is that pre-gate steps re-run. The harness rule that made the path ambiguous was resolved to
+foreground-only in every adapter.
+
+**Four of the five mutations are caught.** `check:harness-set` proves the resolution map's rows, the
+adapter files and the loader's core-ops list describe one set, in both directions. It caught a partial
+adapter, a renamed slice, a map row with no file and a deleted slice; the fifth, an agent-entry technique
+with an extra required input, is deliberately out of scope, since that set's members differ by role. The
+guard's own first draft passed five mutations of the corpus it was written against, which is why it was
+rewritten to read the step that decides the vocabulary rather than an earlier mention of it.
+
+**The blind spot is measured, not closed.** A technique reached through a variable's value is still
+invisible to the binding guard. What changed is that the two call sites the harness resolution owns are
+now covered by a set-closure check instead of by care, and the resume path's is covered by composition.
+The general case — verifying an indirect callee's declared inputs against what the call site supplies —
+remains open, and is the most generalisable thing this branch found.
+
+**One finding above was itself unprovenanced.** The record claimed malformed and legacy session state had
+been fuzzed across two dozen shapes; no test in the tree carried that. Writing one found two real gaps —
+a history that is not a list threw rather than reading as no batch, and a `NaN` character count would have
+refused every later activity in the session — and it now asserts its own fixture is read, because the
+first draft's fixture put the fields one level too high and all 33 shapes passed having exercised nothing.
+That is `reference-without-provenance`, the entry this branch added, firing on the branch's own record.
