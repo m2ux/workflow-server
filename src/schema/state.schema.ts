@@ -30,12 +30,14 @@ export const HistoryEventTypeSchema = z.enum([
   // session variable bag at session creation. ONE event per session; `data`
   // carries { variables: <the seeded map> }.
   'variables_seeded',
-  // Per-dispatch cost accounting (#324 B1, #346 DI-33): harness-reported token
-  // usage for ONE completed dispatch, recorded by record_usage as it finishes.
-  // `activity` is the activity that ran; `data` carries { usage: <as reported> }.
-  // One event per dispatch, so a resumed or re-dispatched activity contributes a
-  // row per pass. A worker cannot self-measure, so absence means the harness
-  // surfaced nothing — never a zero.
+  // Per-activity cost accounting (#324 B1, #346 DI-33, #407): harness-reported
+  // token usage for ONE completed activity, recorded by record_usage at each
+  // activity boundary. `activity` is the activity that ran; `data` carries
+  // { usage: <as reported>, agentId? }. One event per activity, so a resumed or
+  // re-dispatched activity contributes a row per pass, and a dispatch carrying a
+  // run of activities contributes a row apiece under one agentId — the
+  // resolution a batch size is calibrated from. A worker cannot self-measure, so
+  // absence means the harness surfaced nothing — never a zero.
   'activity_usage',
   // Dispatch accounting (#353 §1.3): one event per dispatched context arriving
   // at the server, recorded with no orchestrator cooperation — where
@@ -50,6 +52,13 @@ export const HistoryEventTypeSchema = z.enum([
   // no other trace, since a second full delivery is indistinguishable from a
   // first one at every other instrument.
   'activity_redelivered',
+  // Batch bound (#407): one worker context refused the next activity of its
+  // batch, because it has taken the cap of distinct activities or accumulated
+  // more delivery than its batch budget allows. `data` carries { agentId,
+  // limit: 'activity_cap' | 'delivery_budget', activities, chars,
+  // maxActivities, budgetChars }. Counting these per limit is what the
+  // conservative starting settings are revised from. See src/utils/batch.ts.
+  'batch_refused',
 ]);
 export type HistoryEventType = z.infer<typeof HistoryEventTypeSchema>;
 

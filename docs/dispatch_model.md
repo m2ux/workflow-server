@@ -73,6 +73,49 @@ Task({
 })
 ```
 
+### Batching a Run of Activities (#407)
+
+One dispatch may carry a **run** of activities rather than exactly one. The worker walks them under a single `agent_id`, so it pays the harness's context establishment — system prompt, project instructions, tool schemas — once for the run rather than once an activity. On the profiled setup walk that is where the saving is: skipping two respawns saves roughly two to four times what the delivered content collapsing saves, once the establishment figures are counted once per response.
+
+The run pauses at every activity boundary, because the orchestrator owns the commit that boundary requires, and at every gate, because the orchestrator owns the answer. It **resumes in place** across both, under the identity its dispatch bound, so the pauses cost a round trip rather than a respawn.
+
+**The server bounds the run.** A batch is not declared — it is the run of activities one delivery scope takes delivery of, so the server sees one with no orchestrator cooperation and a worker that omits a parameter does not escape it. (The scope itself is the caller's `agent_id`, which is not authenticated, so this bounds a cooperating topology rather than an adversarial one.) Two limits apply, both read off the session history:
+
+| Limit | Derivation | Default |
+|---|---|---|
+| Cumulative delivered characters | `context_tokens × BATCH_HEADROOM_FRACTION × BUNDLE_CHARS_PER_TOKEN` | fraction `0.35` |
+| Distinct activities | `BATCH_MAX_ACTIVITIES` | `3` |
+
+The character budget carries a headroom fraction of its own because `BUNDLE_HEADROOM_FRACTION` answers a different question — how much of one activity's window may go to inlined step techniques — and at `0.80` the arithmetic admits thirteen of the main workflow's fifteen activities into one context. The activity cap covers what a character count is blind to: the establishment the server never delivers, the code the worker reads, the artifacts it drafts, and degradation across a long walk.
+
+**Which limit binds depends on the workflow, and both cases are wanted.** The two rest on different evidence. `npm run bench:batch` measures activity payloads only — it never fetches a technique or resource lazily — so its 161,027 characters for the three-activity analysis run is the *eager floor*, not what a batch really accumulates. Read off 112 worker contexts in the sealed session records, one activity costs a median 74,109 characters once its lazy fetches are counted, with a 90th percentile of 182,642 and a maximum of 261,827. The lazy half is usually the larger one.
+
+At a 200,000-token window, giving a 280,000-character budget:
+
+- **On the main workflow the budget binds first** — two real runs reach it after two activities. That is the mechanism working: three heavy activities would put over half the declared window into workflow content before a line of code is read.
+- **On the setup sequence the cap binds first**, its activities costing 33,000 to 154,000. That sequence is batching's first user, and a character budget alone would admit more of it than a context should hold.
+- **A smaller declared window is bounded proportionally**, and where the third activity is refused depends on what the first two cost. On the median activity the budget binds before the cap below roughly 106,000 declared tokens; on the 90th percentile, below roughly 261,000 — so on heavy content the budget is the binding limit at any window worth declaring. The lighter run the benchmark walks puts the crossover near 99,000.
+
+Admission is checked *before* a delivery rather than after, so the admitted activity can carry a batch past the budget — by up to one heavy activity, 261,827 characters on measured content. Refusing after composing would pay the composition and still not un-deliver it.
+
+Both limits count each delivery once. An `activity_dispatched` size is the whole `get_activity` response, so the techniques and resources it bundled eagerly are already inside it and their own observability events are not added again; what counts on top is only what the worker went back for lazily. Counting the bundled entries twice inflated one activity of the main workflow by 48% and a run of three by 70%, which made a nominal 280,000-character budget bind at 164,540.
+
+`get_activity` reports where a context stands in `_meta.batch` (`activities`, `max_activities`, `delivered_chars`, `budget_chars`, `may_continue`), so the ordinary end of a batch is the worker stopping. Asking past the bound is refused with the payload undelivered and a `batch_refused` history event naming the limit — recorded once per scope, activity and limit, so the tally counts how often a limit bound rather than how often a worker retried. That tally is what the starting settings are revised from.
+
+`may_continue` is answered as of that delivery, and the worker then fetches techniques and resources lazily while it runs the activity, drawing down the same budget. So a batch reported as having room can still be refused at the next boundary — the delivered and budget counts on the same response are what a reader compares to see how close it was. The refusal is an expected outcome rather than an error, and the orchestrator handles it by releasing the identity and dispatching a replacement — which must carry a **new** `agent_id`, since the bound is keyed on the identity and a fresh context under a used one would receive markers for content it does not hold.
+
+Three carve-outs keep the bound aimed at what it is for:
+
+- **A context that has taken no activity is always admitted its first.** Lazy reads draw down the same budget, so a scope that read past it before taking any activity would otherwise be refused the work it was spawned to do.
+- **An activity the context already holds is always served.** That is a worker resuming after a gate asking for the payload it is sitting on, and thirteen of the main workflow's fifteen activities carry a gate.
+- **The session's own agent is unbounded.** A scope equal to `session.agentId` is the context that owns the whole walk by construction, which is what `contextMode: "persistent"` describes; its run is the session, not a batch. Note that `agentId` is caller-set: `dispatch_child` defaults it to `"worker"`, and a resume rebinds it to the resuming caller's `agent_id`. So a dispatched worker that passes the session's own identity is unbounded, and which context holds the exemption can move across a resume. Minting one identity per dispatch, which the corpus already requires, is what keeps the exemption where it belongs.
+
+**Rolling back after a refusal.** `batch_refused` is a new history event in a strictly-validated enum, and session load validates the whole file including nested child sessions. An earlier server reading a session that has recorded a refusal fails that validation, and the failure surfaces as `SEAL_MISMATCH` — the error normally read as tampering or a rotated key. A rollback therefore needs those events stripped, or the session retired. The forward direction — this server reading an older session — is unaffected.
+
+**A failed resume costs one activity, not the batch.** The worker reports each activity as it completes, so the session cursor tracks the run. A replacement worker picks up the current activity, takes full delivery, and re-crosses already-answered gates silently — checkpoint responses are keyed `activityId-checkpointId`, with no agent component, so `yield_checkpoint` replays them for any worker.
+
+**Cost keeps its per-activity resolution.** `record_usage` records one `activity_usage` row per activity a dispatch covered, sharing an `agent_id`, rather than one figure per dispatch attributed to whichever activity the orchestrator names. Without that, a batch size cannot be calibrated from real runs.
+
 ## Workflow Status Polling
 
 The meta orchestrator can poll the status of a dispatched workflow using `get_workflow_status`:

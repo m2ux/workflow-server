@@ -190,6 +190,53 @@ describe('loadConfig — workspace argument', () => {
       expect(config.bundleHeadroomFraction).toBe(0.8);
       expect(config.bundleCharsPerToken).toBe(4);
     });
+
+    it('derives the batch bound with a headroom fraction of its own, well under the bundling one', () => {
+      const config = loadConfig(['--workspace=/tmp/ws']);
+      expect(config.batchHeadroomFraction).toBe(0.35);
+      expect(config.batchMaxActivities).toBe(3);
+      // The two answer different questions, and applying the bundling fraction to a batch would
+      // admit thirteen of the main workflow's fifteen activities into one context.
+      expect(config.batchHeadroomFraction!).toBeLessThan(config.bundleHeadroomFraction!);
+    });
+
+    it('takes the batch bound from the environment when it is set', () => {
+      process.env['BATCH_HEADROOM_FRACTION'] = '0.5';
+      process.env['BATCH_MAX_ACTIVITIES'] = '2';
+      try {
+        const config = loadConfig(['--workspace=/tmp/ws']);
+        expect(config.batchHeadroomFraction).toBe(0.5);
+        expect(config.batchMaxActivities).toBe(2);
+      } finally {
+        delete process.env['BATCH_HEADROOM_FRACTION'];
+        delete process.env['BATCH_MAX_ACTIVITIES'];
+      }
+    });
+
+    it('clamps an out-of-range batch bound to the nearest end rather than the default', () => {
+      // Zero is how an operator says "no batching". Falling back to the default would hand back 3,
+      // the LOOSEST setting and the opposite of the request, with nothing said about it.
+      process.env['BATCH_MAX_ACTIVITIES'] = '0';
+      process.env['BATCH_HEADROOM_FRACTION'] = '5';
+      try {
+        const config = loadConfig(['--workspace=/tmp/ws']);
+        expect(config.batchMaxActivities).toBe(1);
+        // A fraction above one would budget a batch more than the window it is measured against.
+        expect(config.batchHeadroomFraction).toBe(1);
+      } finally {
+        delete process.env['BATCH_MAX_ACTIVITIES'];
+        delete process.env['BATCH_HEADROOM_FRACTION'];
+      }
+    });
+
+    it('keeps the default when the batch bound is set to something that is not a number', () => {
+      process.env['BATCH_MAX_ACTIVITIES'] = 'lots';
+      try {
+        expect(loadConfig(['--workspace=/tmp/ws']).batchMaxActivities).toBe(3);
+      } finally {
+        delete process.env['BATCH_MAX_ACTIVITIES'];
+      }
+    });
   });
 });
 

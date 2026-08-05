@@ -92,6 +92,26 @@ export interface ServerConfig {
    * DEFAULT_BUNDLE_CHARS_PER_TOKEN). Env override: `BUNDLE_CHARS_PER_TOKEN`.
    */
   bundleCharsPerToken?: number;
+  /**
+   * Fraction of a worker's declared `context_tokens` a whole BATCH of activities
+   * may accumulate in delivered content before the server refuses the next one.
+   * Its own setting, because it answers a different question from
+   * `bundleHeadroomFraction`: that one asks how much of a window one activity may
+   * spend on inlined step techniques, and at 0.80 the arithmetic admits thirteen of
+   * the main workflow's fifteen activities into a single context. Default 0.35
+   * (see DEFAULT_BATCH_HEADROOM_FRACTION). Env override:
+   * `BATCH_HEADROOM_FRACTION`, clamped to [0, 1].
+   */
+  batchHeadroomFraction?: number;
+  /**
+   * Distinct activities one worker context may take delivery of. Backs the
+   * character budget, which is blind to the context establishment the server never
+   * delivers, the code a worker reads, the artifacts it drafts, and degradation
+   * across a long walk. Default 3 (see DEFAULT_BATCH_MAX_ACTIVITIES); 1 is
+   * batching switched off, one activity to a worker. Env override:
+   * `BATCH_MAX_ACTIVITIES`, clamped to [1, 100].
+   */
+  batchMaxActivities?: number;
   /** In-process trace store for execution tracing. Created by createServer(). */
   traceStore?: TraceStore;
   /** Minimum seconds between checkpoint issuance and response. Default 3. Set to 0 for testing. */
@@ -135,6 +155,51 @@ const PROJECT_ROOT = resolve(import.meta.dirname, '..');
 export const DEFAULT_BUNDLE_HEADROOM_FRACTION = 0.8;
 export const DEFAULT_BUNDLE_CHARS_PER_TOKEN = 4;
 
+/**
+ * Batch bound policy (#407). One dispatched worker context walks a run of
+ * activities, and the run is bounded twice: by cumulative delivered characters,
+ * `context_tokens × batchHeadroomFraction × charsPerToken`, and by a hard cap on
+ * distinct activities.
+ *
+ * WHICH LIMIT BINDS DEPENDS ON THE WORKFLOW, and both cases are wanted.
+ *
+ * The two rest on different evidence. `npm run bench:batch` measures activity
+ * payloads only — it never fetches a technique or a resource lazily — so its
+ * 161,027 characters for the three-activity analysis run is the EAGER floor, not
+ * what a batch really accumulates. Read off 112 worker contexts in the sealed
+ * session records, one activity costs a median 74,109 characters once its lazy
+ * fetches are counted, with a 90th percentile of 182,642 and a maximum of 261,827.
+ * The lazy half is usually the larger one.
+ *
+ * So at a 200,000-token window, giving a 280,000-character budget:
+ *
+ * - On the main workflow, whose activities are heavy, the BUDGET binds first — two
+ *   real runs reach it after two activities. That is the mechanism working: three
+ *   heavy activities would put over half the declared window into workflow content
+ *   before a line of code is read.
+ * - On the setup sequence, whose activities cost 33,000 to 154,000, the CAP binds
+ *   first. That sequence is batching's first user, and a character budget alone
+ *   would admit more of it than a context should hold.
+ * - A worker declaring a smaller window is bounded proportionally, and where the
+ *   third activity is refused depends on what the first two cost. On the median
+ *   activity the budget binds before the cap below roughly 106,000 declared tokens;
+ *   on the 90th percentile, below roughly 261,000 — so on heavy content the budget
+ *   is the binding limit at any window worth declaring. The lighter run the
+ *   benchmark walks puts the crossover near 99,000.
+ *
+ * Admission is checked BEFORE a delivery rather than after, so the activity that
+ * is admitted can carry a batch past the budget — by up to one heavy activity,
+ * 261,827 characters on measured content. Refusing after composing would pay the
+ * composition and still not un-deliver it.
+ *
+ * The bundling fraction of 0.80 would admit thirteen of fifteen activities into
+ * one context. Both values are revised from `batch_refused` counts and
+ * per-activity usage rows over real runs, where the context establishment a byte
+ * count cannot see is finally visible.
+ */
+export const DEFAULT_BATCH_HEADROOM_FRACTION = 0.35;
+export const DEFAULT_BATCH_MAX_ACTIVITIES = 3;
+
 function envOrDefault(key: string, fallback: string): string {
   const value = process.env[key]?.trim();
   return value || fallback;
@@ -150,6 +215,19 @@ function envNumberOrDefault(key: string, fallback: number): number {
   if (!raw) return fallback;
   const parsed = Number(raw);
   return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+/**
+ * Read a numeric env var into `[min, max]`, falling back only when unset, blank or not finite.
+ * Clamped rather than rejected: an out-of-range bound should land at the nearest end, never fall back
+ * to a default looser than what was asked for.
+ */
+function envNumberInRange(key: string, fallback: number, min: number, max: number): number {
+  const raw = process.env[key]?.trim();
+  if (!raw) return fallback;
+  const parsed = Number(raw);
+  if (!Number.isFinite(parsed)) return fallback;
+  return Math.min(max, Math.max(min, parsed));
 }
 
 /**
@@ -561,6 +639,8 @@ export function loadConfig(argv: readonly string[] = process.argv.slice(2)): Ser
     serverVersion: envOrDefault('SERVER_VERSION', '2.1.0'),
     bundleHeadroomFraction: envNumberOrDefault('BUNDLE_HEADROOM_FRACTION', DEFAULT_BUNDLE_HEADROOM_FRACTION),
     bundleCharsPerToken: envNumberOrDefault('BUNDLE_CHARS_PER_TOKEN', DEFAULT_BUNDLE_CHARS_PER_TOKEN),
+    batchHeadroomFraction: envNumberInRange('BATCH_HEADROOM_FRACTION', DEFAULT_BATCH_HEADROOM_FRACTION, 0, 1),
+    batchMaxActivities: envNumberInRange('BATCH_MAX_ACTIVITIES', DEFAULT_BATCH_MAX_ACTIVITIES, 1, 100),
     transport: resolveTransport(argv),
     port: resolvePort(argv),
     host: resolveHost(argv),

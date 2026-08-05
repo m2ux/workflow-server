@@ -174,7 +174,7 @@
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot; | &quot;usage&quot;</code></td><td>no</td><td>Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-dispatch token rows and plain-sum totals from record_usage). Default: <code>&quot;summary&quot;</code></td></tr>
+          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot; | &quot;usage&quot;</code></td><td>no</td><td>Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-activity token rows and plain-sum totals from record_usage). Default: <code>&quot;summary&quot;</code></td></tr>
           <tr><td><code>child_index</code></td><td><code>integer</code></td><td>no</td><td>Optional. Project triggeredWorkflows[child_index].state instead of the parent session.</td></tr>
           <tr><td><code>variable</code></td><td><code>string</code></td><td>no</td><td>Optional. With view=variables, return a single variable by name.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
@@ -189,8 +189,10 @@
           <summary>Full description</summary>
           <p>Starts a child workflow inside the parent session you are already in.</p>
           <p>Returns the child's <code>session_index</code> and <code>planning_folder_path</code>. The child's variables are seeded from the child workflow's defaults; the parent is unchanged.</p>
+          <p>Also returns <code>workflow.initialActivity</code> when the child workflow declares one — the activity its first <code>next_activity</code> should name. A parent knows its own workflow's first activity, not its child's, and <code>get_workflow</code> stays where a session reads its own metadata, so this carries the child's across the boundary.</p>
           <p>The child state is stored inside the parent's <code>session.json</code> under <code>triggeredWorkflows</code>.</p>
           <p>When the parent is a temporary meta-bootstrap session, the server first promotes it to a real planning folder on disk, then embeds the child. You can keep using the parent's original <code>session_index</code>.</p>
+          <p>Dispatching from a temporary parent into a folder that already holds a child of the same workflow REPLACES that child rather than continuing it, and hands back the same <code>session_index</code> with an empty session behind it. A persistent parent appends a second child instead. See issue 429.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
@@ -215,7 +217,7 @@
           <summary>Full description</summary>
           <p>Loads the workflow definition for the current session.</p>
           <p>The response starts with the orchestrator technique, then a separator, then metadata: rules, variables, <code>initialActivity</code> (the first activity to run), and a short list of all activities.</p>
-          <p>Use <code>initialActivity</code> for your first <code>next_activity</code> call — this is the only tool that returns it.</p>
+          <p>Use <code>initialActivity</code> for your first <code>next_activity</code> call — this is where a session reads its own. (<code>dispatch_child</code> returns the *child's*, for the parent to hand across.)</p>
           <p>Also returns <code>planning_folder_path</code> (host bind path under Docker when <code>HOST_PROJECTS_ROOT</code> is set). Treat this as the one true artifact location; do not build paths relative to your own working directory.</p>
           <p>If some activity files failed to load, <code>activity_load_errors</code> lists them and those activities are omitted from the list.</p>
         </details>
@@ -282,6 +284,7 @@
           <p>You must pass <code>context_tokens</code>: your worker's context window size in tokens. The server uses this to decide how many step techniques to bundle inline.</p>
           <p>Ungated techniques that fit the budget are included in the response under <code>step_techniques</code> — the same content you would get from <code>get_technique</code> for that step. Gated steps and overflow techniques still need a separate <code>get_technique</code> call.</p>
           <p>If the session uses persistent context mode (or you pass <code>bundle: &quot;reference&quot;</code>), content you already received may come back as short unchanged markers instead of full text. Pass <code>bundle: &quot;full&quot;</code> to force full delivery.</p>
+          <p><code>_meta.batch</code> reports where your context stands against its batch bound: how many activities it has taken, the cap, what it has been delivered, the budget, and <code>may_continue</code>. On <code>may_continue: false</code>, finish this activity and report it — asking for another is refused with the payload undelivered, and the orchestrator dispatches a fresh worker under a new <code>agent_id</code>.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
@@ -444,17 +447,17 @@
       </section>
       <section class="tool" id="record_usage">
         <h3><code>record_usage</code></h3>
-        <p class="tool-summary">Orchestrator tool: record harness-reported token usage for ONE completed dispatch (DELTA for that dispatch).</p>
+        <p class="tool-summary">Orchestrator tool: record harness-reported token usage for ONE completed ACTIVITY (DELTA since the last figure for that dispatch).</p>
         <details class="tool-details">
           <summary>Full description</summary>
-          <p>Orchestrator tool: record harness-reported token usage for ONE completed dispatch (DELTA for that dispatch). Call as each dispatch finishes — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity. Optional <code>agent_id</code> attributes the row to a worker context.</p>
+          <p>Orchestrator tool: record harness-reported token usage for ONE completed ACTIVITY (DELTA since the last figure for that dispatch). Call at every activity boundary — the first worker, a continue, a fresh worker after a timeout, a resume after a checkpoint yield, an out-of-band dispatch, and the terminal activity; a dispatch carrying a run of activities records one call per activity it covers. Optional <code>agent_id</code> attributes the row to a worker context.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>activity</code></td><td><code>string</code></td><td>yes</td><td>Activity the dispatch ran, whether or not the session is still on it.</td></tr>
+          <tr><td><code>activity</code></td><td><code>string</code></td><td>yes</td><td>Activity this figure is attributed to, whether or not the session is still on it. One call per activity a dispatch covers.</td></tr>
           <tr><td><code>usage</code></td><td><code>object</code></td><td>yes</td><td>Harness-reported token DELTA for this ONE dispatch, as reported. Omit the call entirely when the harness surfaced nothing rather than passing zeros — the worker cannot self-measure, so absence must stay distinguishable from a measured zero.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
           </tbody>

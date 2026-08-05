@@ -30,6 +30,9 @@
     "check:fragments": "tsx scripts/check-fragments.ts",
     "check:review-mode": "tsx scripts/check-review-mode-gating.ts",
     "check:checkpoint-entry": "tsx scripts/check-checkpoint-entry.ts",
+    "check:bootstrap": "tsx scripts/check-bootstrap-self-contained.ts",
+    "check:set-values": "tsx scripts/check-set-action-values.ts",
+    "check:harness-set": "tsx scripts/check-harness-adapter-set.ts",
     "check:stealth": "tsx scripts/check-stealth-isolation.ts",
     "check:when": "tsx scripts/check-when-expression.ts",
     "check:audience": "tsx scripts/check-audience.ts",
@@ -43,6 +46,7 @@
     "baseline:stamp": "tsx scripts/stamp-corpus-baseline.ts",
     "bench:token": "tsx scripts/run-token-benchmark.ts",
     "bench:dispatch": "tsx scripts/run-dispatch-benchmark.ts",
+    "bench:batch": "tsx scripts/run-batch-benchmark.ts",
     "profile:run": "tsx scripts/run-profile.ts"
   },
   "license": "MIT",

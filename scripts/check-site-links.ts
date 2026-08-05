@@ -9,6 +9,7 @@
  */
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, resolve, relative } from 'node:path';
+import { HTML_ATTR_RE } from './markdown-refs.js';
 
 const ROOT = resolve(import.meta.dirname, '..');
 const SITE_DIR = join(ROOT, 'site');
@@ -20,11 +21,37 @@ function htmlFiles(dir: string): string[] {
     .map(f => join(dir, f));
 }
 
+/**
+ * An attribute value in any spelling HTML permits: double-quoted, single-quoted, or bare.
+ *
+ * Reading only double quotes leaves a destination written either other way unchecked, and an anchor
+ * target written that way invisible — which then reads as an anchor nothing declares, so that direction
+ * loses a real finding.
+ *
+ * Pairs are walked in order and the name is matched exactly. Order is what keeps a quoted value from
+ * being mined: `alt="see id=phantom"` is consumed whole, where a whitespace-before-the-name test would
+ * harvest the inner `id` and let a phantom anchor silence a genuine report. The pattern comes from
+ * `markdown-refs`, which owns it — two copies of the same reader is what the extraction was against.
+ */
+/**
+ * `matchAll` clones the pattern, which is what makes the nesting below safe: the link loop is iterating
+ * this generator when `idsOf` starts another pass over the same shared regex. A refactor to an `exec`
+ * loop would share `lastIndex` between the two and interleave them silently.
+ */
+function* attrValues(html: string, names: ReadonlySet<string>): Generator<string> {
+  for (const [, name, quoted, single, bare] of html.matchAll(HTML_ATTR_RE)) {
+    if (!names.has(name!.toLowerCase())) continue;
+    const value = quoted ?? single ?? bare!;
+    if (value !== '') yield value;
+  }
+}
+
+const ID_ATTR = new Set(['id']);
+const DEST_ATTRS = new Set(['href', 'src']);
+
 function idsOf(filePath: string): Set<string> {
   const ids = new Set<string>();
-  for (const match of readFileSync(filePath, 'utf-8').matchAll(/\bid="([^"]+)"/g)) {
-    ids.add(match[1]!);
-  }
+  for (const value of attrValues(readFileSync(filePath, 'utf-8'), ID_ATTR)) ids.add(value);
   return ids;
 }
 
@@ -38,8 +65,7 @@ export function checkSiteLinks(): string[] {
   for (const file of htmlFiles(SITE_DIR)) {
     const page = relative(ROOT, file);
     const html = readFileSync(file, 'utf-8');
-    for (const match of html.matchAll(/\b(?:href|src)="([^"]+)"/g)) {
-      const link = match[1]!;
+    for (const link of attrValues(html, DEST_ATTRS)) {
       if (link.startsWith(GITHUB_PREFIX)) {
         const repoPath = decodeURIComponent(link.slice(GITHUB_PREFIX.length)).split('#')[0]!;
         if (!existsSync(join(ROOT, repoPath))) {

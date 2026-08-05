@@ -356,13 +356,15 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   dispatch_child: [
     'Starts a child workflow inside the parent session you are already in.',
     'Returns the child\'s `session_index` and `planning_folder_path`. The child\'s variables are seeded from the child workflow\'s defaults; the parent is unchanged.',
+    'Also returns `workflow.initialActivity` when the child workflow declares one — the activity its first `next_activity` should name. A parent knows its own workflow\'s first activity, not its child\'s, and `get_workflow` stays where a session reads its own metadata, so this carries the child\'s across the boundary.',
     'The child state is stored inside the parent\'s `session.json` under `triggeredWorkflows`.',
     'When the parent is a temporary meta-bootstrap session, the server first promotes it to a real planning folder on disk, then embeds the child. You can keep using the parent\'s original `session_index`.',
+    'Dispatching from a temporary parent into a folder that already holds a child of the same workflow REPLACES that child rather than continuing it, and hands back the same `session_index` with an empty session behind it. A persistent parent appends a second child instead. See issue 429.',
   ],
   get_workflow: [
     'Loads the workflow definition for the current session.',
     'The response starts with the orchestrator technique, then a separator, then metadata: rules, variables, `initialActivity` (the first activity to run), and a short list of all activities.',
-    'Use `initialActivity` for your first `next_activity` call — this is the only tool that returns it.',
+    'Use `initialActivity` for your first `next_activity` call — this is where a session reads its own. (`dispatch_child` returns the *child\'s*, for the parent to hand across.)',
     'Also returns `planning_folder_path` (host bind path under Docker when `HOST_PROJECTS_ROOT` is set). Treat this as the one true artifact location; do not build paths relative to your own working directory.',
     'If some activity files failed to load, `activity_load_errors` lists them and those activities are omitted from the list.',
   ],
@@ -377,6 +379,7 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
     'You must pass `context_tokens`: your worker\'s context window size in tokens. The server uses this to decide how many step techniques to bundle inline.',
     'Ungated techniques that fit the budget are included in the response under `step_techniques` — the same content you would get from `get_technique` for that step. Gated steps and overflow techniques still need a separate `get_technique` call.',
     'If the session uses persistent context mode (or you pass `bundle: "reference"`), content you already received may come back as short unchanged markers instead of full text. Pass `bundle: "full"` to force full delivery.',
+    '`_meta.batch` reports where your context stands against its batch bound: how many activities it has taken, the cap, what it has been delivered, the budget, and `may_continue`. On `may_continue: false`, finish this activity and report it — asking for another is refused with the payload undelivered, and the orchestrator dispatches a fresh worker under a new `agent_id`.',
   ],
   yield_checkpoint: [
     'Call when a checkpoint step tells you to stop and hand control to the orchestrator.',

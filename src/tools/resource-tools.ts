@@ -79,7 +79,6 @@ function withSessionStoreErrors<T extends Record<string, unknown>, R>(
   };
 }
 
-
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
   // Process-level engineering root (may be install multi-root). Per-session
@@ -108,7 +107,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         'Pass `planning_folder` as an absolute path (basename = slug). ' +
         'Always pass `repo` as owner/repo, derived from git via `version-control::resolve-host-repo` (origin remote of the outermost claiming superproject); the user or workspace AGENTS.md is a fallback only when the workspace is not a git repo or has no origin remote. Stored on session.json#repo. ' +
         'Omit planning_folder for a transient meta bootstrap. Children use `dispatch_child`, not this tool. ' +
-        '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for disposable workers.',
+        '`context_mode: "persistent"` is ONLY for solo (same agent context; no worker spawn); omit/`"fresh"` for worker-dispatched walks.',
       inputSchema: z
         .object({
           workflow_id: z.string().optional().describe('Optional. Fresh-session workflow id (default "meta"). Ignored on resume.'),
@@ -419,17 +418,18 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
     'dispatch_child',
     {
       description:
-        'Dispatch a child workflow under the parent session. Returns the child `session_index` and canonical `planning_folder_path`. ' +
+        'Dispatch a child workflow under the parent session. Returns the child `session_index`, canonical `planning_folder_path`, and `workflow.initialActivity` when the child workflow declares one — the activity its first `next_activity` should name, which the parent otherwise has no way to know. `get_workflow` remains where a session reads its OWN workflow metadata; this reports the CHILD\'s, so a parent need not load a workflow bundle it will not execute. Naming an activity the workflow does not declare fails that call; naming a declared one out of order is recorded with a warning, so the id is worth getting right here rather than relying on the transition check. '
+        + 'From a TRANSIENT parent (the bootstrap case), re-dispatching into a planning folder that already holds a child of this workflow REPLACES it rather than continuing it, and returns the same `session_index` with an empty session behind it (#429). A persistent parent appends a second child instead. ' +
         'Transient meta parents are promoted to a workspace planning folder first (optional `planning_slug`). ' +
 'Ensure `session.repo` is bound (pass `repo` here if start_session did not); path resolution reads only session.json. ' +
-        'Never set `context_mode: "persistent"` on disposable-worker children — workers need fresh/full delivery.',
+        'Never set `context_mode: "persistent"` on worker-dispatched children — a worker takes full delivery on the first activity of its run and collapses against its own ledger thereafter.',
       inputSchema: z.object({
         ...sessionIndexParam,
         workflow_id: z.string().describe('Child workflow id (e.g. "work-package").'),
         agent_id: z.string().default('worker').describe('Child agent_id (default "worker").'),
         planning_slug: z.string().optional().describe('Optional. Promotion slug when the parent is a transient meta bootstrap. Ignored if the parent is already persistent.'),
         repo: z.string().optional().describe('Bind owner/repo onto the parent session when missing (must match if already set). session.json#repo is the source of truth.'),
-        context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. Child delivery mode. "persistent" ONLY for solo child walks; omit/"fresh" for disposable workers.'),
+        context_mode: z.enum(['persistent', 'fresh']).optional().describe('Optional. Child delivery mode. "persistent" ONLY for solo child walks; omit/"fresh" for worker-dispatched walks.'),
       }).strict(),
     },
     withAuditLog('dispatch_child', withSessionStoreErrors(async ({ session_index, workflow_id, agent_id, planning_slug, repo, context_mode }) => {
@@ -550,7 +550,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // index to it and remove the tmp folder.
         await redirectTransientToWorkspace(parentFolder, promotedWorkspaceFolder);
         return {
-          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_slug: promotedSlug, planning_folder_path: presentPlanningPath(promotedWorkspaceFolder) ?? promotedWorkspaceFolder }, null, 2) }],
+          content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version, initialActivity: wfResult.value.initialActivity }, planning_slug: promotedSlug, planning_folder_path: presentPlanningPath(promotedWorkspaceFolder) ?? promotedWorkspaceFolder }, null, 2) }],
           _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
         };
       }
@@ -591,7 +591,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       });
       await saveSessionForTool(loaded, parentNext);
       return {
-        content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version }, planning_folder_path: presentPlanningPath(parentFolder) ?? parentFolder }, null, 2) }],
+        content: [{ type: 'text' as const, text: JSON.stringify({ session_index: childSessionIndex, workflow: { id: wfResult.value.id, version: wfResult.value.version, initialActivity: wfResult.value.initialActivity }, planning_folder_path: presentPlanningPath(parentFolder) ?? parentFolder }, null, 2) }],
         _meta: { session_index: childSessionIndex, validation: buildValidation(null) },
       };
     }), traceOpts)
