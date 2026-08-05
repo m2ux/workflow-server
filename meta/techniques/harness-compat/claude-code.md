@@ -18,6 +18,8 @@ Harness-specific invoke details for `harness_kind: claude-code`. Catalogue of al
 
 - Invoke `SendMessage(<agent id or name>, {composed_prompt})`. Preserves the agent's context window; a fresh `Agent` call would start over instead.
 - Include `{session_index}` in the prompt ([index-in-prompt](./TECHNIQUE.md#index-in-prompt)).
+- `SendMessage` has no blocking form: it returns once the resume is accepted, while the agent runs on. The signal that discharges the [foreground-always](./TECHNIQUE.md#foreground-always) wait is the harness task-notification for that agent — hold the turn open until it arrives, and read the send's acknowledgement as the resume being accepted rather than as the result.
+- `TaskOutput` on that agent is not that wait. Against a `local_agent` task it yields the conversation transcript rather than the envelope, so one call spends thousands of tokens of context and still returns on its own timeout with the agent unfinished. The notification carries the envelope on its own.
 
 ### concurrent
 
