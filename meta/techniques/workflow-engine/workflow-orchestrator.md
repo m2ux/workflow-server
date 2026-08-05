@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.1
+  version: 1.4.0
 ---
 
 ## Capability
@@ -31,15 +31,16 @@ Orchestrator agent identity for this session.
 ### 2. Choose and dispatch first activity
 
 - Call `get_workflow_status { session_index }`
-- Dispatch `current_activity` when set, otherwise the workflow's `initialActivity`, via [dispatch-activity](./dispatch-activity.md)
+- Dispatch `current_activity` when set, otherwise the `initialActivity` that `get_workflow` returns, via [dispatch-activity](./dispatch-activity.md). A session that has not entered an activity reports none, so the workflow's own first activity is the only id to reach for; a session part-way through reports the cursor to resume on
 - Always dispatch a worker — never execute activity steps inline ([orchestrator-no-inline-on-resume](../agent-conduct.md#orchestrator-no-inline-on-resume), [orchestrator-no-domain-work](../agent-conduct.md#orchestrator-no-domain-work))
 
 ### 3. Drive the activity loop
 
 - Apply [dispatch-activity](./dispatch-activity.md) from the bundle
 - On `checkpoint_pending`, bubble the yield, then apply [resume-worker](./resume-worker.md) with the resolved effects
-- After each `activity_complete`, apply [commit-and-persist](./commit-and-persist.md) before the next dispatch (Applies [sync-progress-status](./sync-progress-status.md) per [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites)). When a planning README drift check ran, require `{readme_conformance}.conforms` before treating Progress as durable. Blocked and path-skip moments stay [dispatch-activity](./dispatch-activity.md) Protocol duties.
+- After each `activity_complete`, apply [commit-and-persist](./commit-and-persist.md) before the pointer advances onto the routed activity, whether a continuation or a fresh dispatch carries it (Applies [sync-progress-status](./sync-progress-status.md) per [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites)). When a planning README drift check ran, require `{readme_conformance}.conforms` before treating Progress as durable. Blocked and path-skip moments stay [dispatch-activity](./dispatch-activity.md) Protocol duties.
 - Route from `{worker_result.next_activity_id}` ([finalize-activity](./finalize-activity.md))
+- On `{worker_result.batch_may_continue}` with a non-null `{worker_result.next_activity_id}`, apply [continue-batch](./continue-batch.md) to advance that same worker onto the routed activity. Otherwise release the worker's identity ([delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context)) and enter the routed activity via [dispatch-activity](./dispatch-activity.md)
 
 ## Rules
 
@@ -47,13 +48,13 @@ Orchestrator agent identity for this session.
 
 Follow the rules in the operations bundle throughout — [agent-conduct](../agent-conduct.md), [workflow-engine](./TECHNIQUE.md), and any other touched techniques include their global rules automatically.
 
-### session-index-on-each-call
+### no-state-reconstruction-on-attach
 
-Pass `{session_index}` on every authenticated tool call ([session-index-passes-on-each-call](./TECHNIQUE.md#session-index-passes-on-each-call)). The server restores session state on attach — do not reconstruct it.
+The server restores session state on attach. Read it rather than rebuilding it from history, artifacts, or a prior context.
 
 ### orchestrator-worker-boundaries
 
-Honor [no-get-activity-from-orchestrator](./dispatch-activity.md#no-get-activity-from-orchestrator), [no-pre-load-techniques](./dispatch-activity.md#no-pre-load-techniques), [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), [resume-preserves-delivery-scope](../harness-compat/continue-agent.md#resume-preserves-delivery-scope), [reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result), and [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile).
+Honor [no-get-activity-from-orchestrator](./dispatch-activity.md#no-get-activity-from-orchestrator), [no-pre-load-techniques](./dispatch-activity.md#no-pre-load-techniques), [delivery-keys-on-agent-context](./dispatch-activity.md#delivery-keys-on-agent-context), [batch-is-bounded-by-the-server](./dispatch-activity.md#batch-is-bounded-by-the-server), [resume-preserves-delivery-scope](../harness-compat/continue-agent.md#resume-preserves-delivery-scope), [reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result), and [distrust-then-reconcile](./dispatch-activity.md#distrust-then-reconcile).
 
 ### resolve-trace-at-close-out
 

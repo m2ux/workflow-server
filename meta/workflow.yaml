@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 5.16.0
+version: 5.19.0
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -16,6 +16,7 @@ techniques:
     - workflow-engine::handle-sub-workflow
     - workflow-engine::dispatch-activity
     - workflow-engine::resume-worker
+    - workflow-engine::continue-batch
     - workflow-engine::workflow-orchestrator
     - agent-conduct::orchestrator
   activity:
@@ -83,6 +84,9 @@ variables:
   - name: client_planning_slug
     type: string
     description: Planning slug of the dispatched client workflow's planning folder — stable identifier the server uses to locate session.json
+  - name: client_initial_activity
+    type: string
+    description: The client workflow's own first activity, returned by create-session — the id its first next_activity call names
   - name: is_monorepo
     type: boolean
     description: Whether the target repository is a submodule monorepo (set by resolve-target)

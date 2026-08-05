@@ -32,7 +32,8 @@ steps:
       - action: log
         message: Report generation complete — CI/CD security audit report finalized
       - action: set
-        message: report_complete=true
+        target: report_complete
+        value: true
 transitions: []
 outcome:
   - Readers can triage findings by consistent, defensible severity rather than gut feel, with the report backed by a passed coverage gate so they can trust nothing in scope was missed

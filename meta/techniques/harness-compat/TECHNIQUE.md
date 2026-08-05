@@ -23,8 +23,8 @@ All techniques and activities MUST reference operation names from this technique
 
 CRITICAL: every dispatch operation in this technique MUST be blocking-equivalent for the orchestrator — the orchestrator must observe the worker's `<checkpoint_yield>` or completion before continuing.
 
-- Prefer a true foreground/blocking spawn when the harness supports it.
-- When the harness cannot true-block, async dispatch plus waiting on that harness's completion signal is blocking-equivalent and satisfies this rule.
+- Use a true foreground/blocking spawn wherever the harness offers one. Where it does, that is the only conforming form — a harness that can block has no reason to dispatch in the background, and an adapter that permits it anyway is reading this bullet as advice.
+- Only where the harness cannot true-block: async dispatch plus waiting on that harness's completion signal is blocking-equivalent and satisfies this rule. This is a fallback for harnesses without a blocking primitive, not an option for those that have one.
 - Fire-and-forget dispatch with no completion wait is forbidden — that path silently drops checkpoint delivery.
 
 Harness-specific technique files document how each host expresses blocking-equivalent wait; this rule states only the contract.

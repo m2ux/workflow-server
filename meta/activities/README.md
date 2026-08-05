@@ -36,7 +36,7 @@ Definition: [`02-resolve-target.yaml`](./02-resolve-target.yaml)
 
 ### 03. Dispatch Client Workflow
 
-Drives the client workflow end to end inline via [`03-dispatch-client-workflow.yaml`](./03-dispatch-client-workflow.yaml) (dispatch → present/respond on yield → commit-and-persist → advance). Role and auth boundaries: [agent-conduct](../techniques/agent-conduct.md) + [dispatch-activity](../techniques/workflow-engine/dispatch-activity.md). Leads to [End Workflow](#04-end-workflow) when the client workflow is exhausted.
+Drives the client workflow end to end inline via [`03-dispatch-client-workflow.yaml`](./03-dispatch-client-workflow.yaml) (dispatch → present/respond on yield → commit-and-persist → advance → continue that same worker while its batch has room). Each worker carries a bounded run of activities, so a fresh context is established once a run rather than once an activity; the bound is the server's, enforced at delivery ([batch-is-bounded-by-the-server](../techniques/workflow-engine/dispatch-activity.md#batch-is-bounded-by-the-server)). Role and auth boundaries: [agent-conduct](../techniques/agent-conduct.md) + [dispatch-activity](../techniques/workflow-engine/dispatch-activity.md). Leads to [End Workflow](#04-end-workflow) when the client workflow is exhausted.
 
 Definition: [`03-dispatch-client-workflow.yaml`](./03-dispatch-client-workflow.yaml)
 

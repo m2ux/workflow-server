@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.0.1
 ---
 
 ## Capability
@@ -35,7 +35,7 @@ Updated lean mechanical trace under the planning folder (`*session-trace.md`).
 
 ### 1. Read the full client ledger
 
-- Read rolled-up `activity_usage` from the **client** session after its terminal activity has exited and the orchestrator has had its chance to `record_usage` for that dispatch ([account-every-dispatch](./dispatch-activity.md#account-every-dispatch)).
+- Read rolled-up `activity_usage` from the **client** session after its terminal activity has exited and the orchestrator has had its chance to `record_usage` for that dispatch ([account-every-activity](./dispatch-activity.md#account-every-activity)).
 - Include every activity that ran, including the terminal activity and any failed or partial dispatches that left a ledger row.
 - When the ledger is empty, leave existing artifacts untouched and stop — do not fabricate figures.
 
