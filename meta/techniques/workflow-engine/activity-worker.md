@@ -46,6 +46,7 @@ Worker agent identity for this dispatch.
 - Apply each bound operation via [variable-binding](../variable-binding.md)
 - Honor `when:` gates against the variable bag — operators `==`/`!=`/`>`/`<`/`>=`/`<=`, bare truthiness, unary `!`, `&&`, `||`, parentheses; C-style precedence (`()` > `!` > comparisons > `&&` > `||`); mixed `&&`/`||` at one depth requires parentheses; match the reference evaluator in `src/schema/when-expression.ts` (invalid expressions do not run the step)
 - When a step reaches a checkpoint, apply [yield-checkpoint](./yield-checkpoint.md)
+- When a stub carries `effects`, this context is continuing past a gate it yielded: apply [resume-from-checkpoint](./resume-from-checkpoint.md) before executing further, then carry on at the paused step. The activity's remaining steps and the envelope below are owed either way — a gate pauses the walk, it does not end it
 - When the last step completes, apply [finalize-activity](./finalize-activity.md), passing the `may_continue` read in step 1 as `batch_may_continue`
 
 ## Rules

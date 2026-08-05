@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 1.2.0
 ---
 
 ## Capability
@@ -39,7 +39,7 @@ The envelope the worker returned, passed through unchanged — one of two tagged
 
 ### 1. Compose the continuation stub
 
-- Apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::resume-from-checkpoint`, `holds_prior_deliveries: true`, and `{state}` as substitutions, binding `agent_id` to `{worker_agent_id}` and carrying `{effects}`.
+- Apply [compose-prompt](./compose-prompt.md) with `agent_technique: workflow-engine::activity-worker`, `holds_prior_deliveries: true`, and `{state}` as substitutions, binding `agent_id` to `{worker_agent_id}` and carrying `{effects}`. The worker role is what carries the duty to return an envelope, and `{effects}` is what makes the stub clear the gate first.
 
 ### 2. Continue the worker
 

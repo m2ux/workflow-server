@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.5.0
+  version: 2.6.0
 ---
 
 ## Capability
@@ -11,11 +11,17 @@ Compose a minimal stub that binds agent identity and directs the agent to Apply 
 
 ### agent_technique
 
-Canonical agent technique — workflow-engine::activity-worker, workflow-engine::workflow-orchestrator, or workflow-engine::resume-from-checkpoint.
+Canonical agent technique — workflow-engine::activity-worker or workflow-engine::workflow-orchestrator. These are the two agent roles, and each is the entry point to the rules its holder owes. Resuming is a worker continuing the activity it already holds, so it takes the worker role and is signalled by `{effects}` rather than by a role of its own.
 
 ### substitutions
 
-Map of placeholder name → value. Must include `session_index`, `workflow_id`, and `agent_id`; `activity_id` as well for activity-worker and resume-from-checkpoint, and `effects` for resume-from-checkpoint.
+Map of placeholder name → value. Must include `session_index`, `workflow_id`, and `agent_id`, and `activity_id` as well for activity-worker.
+
+### effects
+
+*(optional)* Variable updates carried by a resolved checkpoint. Present only when the stub continues a
+worker past a gate, and its presence is what makes this a continuation: the agent is told to clear the
+checkpoint before it does anything else.
 
 ### holds_prior_deliveries
 
@@ -31,14 +37,14 @@ Minimal stub string ready for the host invoke that spawns or continues the agent
 
 ### 1. Bind identity
 
-- Emit a one-line role from `{agent_technique}`: activity worker for `{workflow_id}`, workflow orchestrator for `{workflow_id}`, or the same activity worker continuing `{activity_id}`
+- Emit a one-line role from `{agent_technique}`: activity worker for `{workflow_id}`, or workflow orchestrator for `{workflow_id}`
 - Emit Session bindings from `{substitutions}` (`session_index`, `workflow_id`, `agent_id`, and `activity_id` when present)
 
 ### 2. Emit entry tools
 
+- When `{effects}` is bound: instruct `resume_checkpoint { session_index }` FIRST, carrying the `effects` substitution, then the activity-worker line below. Clearing the gate is a precondition of the calls that follow, not an alternative to them — a continuation still takes its activity, which is where its duties and the definition it routes from come from
 - When `{agent_technique}` is [activity-worker](./activity-worker.md): instruct `get_activity { session_index, context_tokens, agent_id }` — `context_tokens` is the agent's context window size and is **required**; `agent_id` scopes delivery to this worker context ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). Add `bundle: "reference"` to that call when `{holds_prior_deliveries}`, so what the context already holds arrives as unchanged markers; omit it otherwise, because a fresh context needs the bytes
 - When `{agent_technique}` is [workflow-orchestrator](./workflow-orchestrator.md): instruct `start_session { session_index, agent_id }` then `get_workflow { session_index }`
-- When `{agent_technique}` is [resume-from-checkpoint](./resume-from-checkpoint.md): instruct `resume_checkpoint { session_index }` and carry the `effects` substitution
 
 ### 3. Direct Apply
 
