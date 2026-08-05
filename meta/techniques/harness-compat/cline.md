@@ -18,6 +18,7 @@ Harness-specific invoke details for `harness_kind: cline`. Catalogue of alternat
 
 - When Cline exposes a resume primitive for `{agent_id}`, use it with `{composed_prompt}` and `{session_index}` in the prompt ([index-in-prompt](./TECHNIQUE.md#index-in-prompt)).
 - Otherwise fall back to [spawn-agent](./spawn-agent.md) via [generic](./generic.md) with `{session_index}` prepended to `{composed_prompt}`.
+- Wait until the resumed agent yields or completes before continuing. Where the resume primitive returns as soon as the resume is accepted, the wait is the host's completion signal for that agent, held open per [foreground-always](./TECHNIQUE.md#foreground-always).
 
 ### concurrent
 

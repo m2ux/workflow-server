@@ -71,6 +71,14 @@ Return each activity's `activity_complete` envelope as it finishes per [finalize
 
 Every `get_activity`, `get_technique` and `get_resource` call this worker makes carries `{agent_id}`, the identity its ledger is keyed on ([agent-id-scopes-delivery](./TECHNIQUE.md#agent-id-scopes-delivery)). A first dispatch holds no prior deliveries and takes full delivery; every call after it under that same identity carries `bundle: "reference"`, whether it resumes the activity this context holds or takes the next activity of its batch, so content this context already holds arrives as unchanged markers.
 
+### outlive-dispatched-children
+
+While a step of this activity holds work still running outside this context — an agent it dispatched, a task it armed a completion signal on — the activity is not finished, so stay live until every one of them has returned. A completion signal armed on that work is delivered to the context that armed it, so a context that has ended leaves the signal with nowhere to land and the result it carried unread.
+
+### final-message-is-an-envelope
+
+The last thing this context emits is the envelope this activity owes — the `checkpoint_pending` yield, or the `activity_complete` result. Anything emitted in its place ends the context with the envelope still owed, and is not an accepted result ([reject-partial-worker-result](./dispatch-activity.md#reject-partial-worker-result)).
+
 ### batch-ends-where-the-server-says
 
 `_meta.batch` on each `get_activity` reports how many activities this context has taken, what it has been delivered, and whether it may take another. On `may_continue: false`, finish the current activity and report it — do not ask for a further one. If you do ask, the server refuses with the payload undelivered: report that activity as needing its own dispatch and stop.
