@@ -44,18 +44,40 @@ export interface BatchRefusal {
 }
 
 /**
+ * A recorded size that arithmetic can use. `history` is the one input the server does not author —
+ * sessions sealed by older builds, migration output, and hand-edited files all reach these readers —
+ * so a size is taken only when it is a real measurement.
+ *
+ * `NaN` and `Infinity` are the dangerous ones, because they pass a `typeof` test and then compare
+ * false against the budget in BOTH directions: a single poisoned event would read as past the budget
+ * forever and refuse every later activity in the session, naming a character count of `NaN`.
+ */
+function isMeasuredSize(chars: unknown): chars is number {
+  return typeof chars === 'number' && Number.isFinite(chars) && chars >= 0;
+}
+
+/**
+ * The event log to derive a batch from. No history means no batch, and anything that is not a list of
+ * events is no history — `?? []` covers the field being absent but not its being a number or an
+ * object, neither of which is iterable, so the `for…of` throws where the intent was to see no batch.
+ */
+function historyOf(state: SessionFile): readonly SessionFile['history'][number][] {
+  return Array.isArray(state.history) ? state.history : [];
+}
+
+/**
  * Distinct activities `scope` has taken delivery of, in first-delivery order. This is the batch: the
  * run of activities one worker context has walked.
  */
 export function batchActivities(state: SessionFile, scope: string): string[] {
   const seen: string[] = [];
-  for (const event of state.history ?? []) {
-    if (event.type !== 'activity_dispatched') continue;
+  for (const event of historyOf(state)) {
+    if (!event || event.type !== 'activity_dispatched') continue;
     const data = event.data as { agentId?: string; chars?: number } | undefined;
     if (data?.agentId !== scope) continue;
     // No size means no activity payload was delivered — a context announcing itself on a technique
     // or resource fetch. Counting it would spend a slot on an activity never delivered.
-    if (typeof data.chars !== 'number') continue;
+    if (!isMeasuredSize(data.chars)) continue;
     const activity = event.activity;
     if (typeof activity !== 'string' || seen.includes(activity)) continue;
     seen.push(activity);
@@ -75,9 +97,10 @@ export function batchActivities(state: SessionFile, scope: string): string[] {
  */
 export function deliveredChars(state: SessionFile, scope: string): number {
   let total = 0;
-  for (const event of state.history ?? []) {
+  for (const event of historyOf(state)) {
+    if (!event) continue;
     const data = event.data as { agentId?: string; chars?: number; delivery?: string; bundled?: boolean } | undefined;
-    if (!data || data.agentId !== scope || typeof data.chars !== 'number') continue;
+    if (!data || data.agentId !== scope || !isMeasuredSize(data.chars)) continue;
     if (data.delivery === 'unchanged') continue;
     switch (event.type) {
       case 'activity_dispatched':

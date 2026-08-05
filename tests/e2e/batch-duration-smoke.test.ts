@@ -24,7 +24,7 @@ describe('batch duration smoke (#407)', () => {
     expect(dispatchesAvoided).toBe(2);
 
     // Content collapses against what the one context already holds. The floor sits close under the
-    // measured 24.7%, so a regression that quietly halves the saving fails here.
+    // measured 27.8%, so a regression that quietly halves the saving fails here.
     const charSavingPct = ((perActivity.deliveredChars - batched.deliveredChars) / perActivity.deliveredChars) * 100;
     expect(charSavingPct).toBeGreaterThan(20);
 

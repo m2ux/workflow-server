@@ -364,7 +364,7 @@ const SITE_TOOL_GUIDES: Partial<Record<string, string[]>> = {
   get_workflow: [
     'Loads the workflow definition for the current session.',
     'The response starts with the orchestrator technique, then a separator, then metadata: rules, variables, `initialActivity` (the first activity to run), and a short list of all activities.',
-    'Use `initialActivity` for your first `next_activity` call — this is the only tool that returns it.',
+    'Use `initialActivity` for your first `next_activity` call — this is where a session reads its own. (`dispatch_child` returns the *child\'s*, for the parent to hand across.)',
     'Also returns `planning_folder_path` (host bind path under Docker when `HOST_PROJECTS_ROOT` is set). Treat this as the one true artifact location; do not build paths relative to your own working directory.',
     'If some activity files failed to load, `activity_load_errors` lists them and those activities are omitted from the list.',
   ],
