@@ -95,14 +95,14 @@ The response is the union of the workflow's declared technique references and th
 
 ### `get_activity` — worker bundle
 
-The response is the union of the activity's declared technique references and the core worker technique references the server auto-includes (`CORE_WORKER_TECHNIQUES` in `src/loaders/core-ops.ts`): the yield/resume checkpoint, finalize-activity, and worker-side `agent-conduct` rule references every worker needs.
+The response is the union of the activity's declared technique references and the core worker technique references the server auto-includes (`CORE_WORKER_TECHNIQUES` in `src/loaders/core-ops.ts`): the worker role itself, the yield/resume checkpoint, finalize-activity, and worker-side `agent-conduct` rule references every worker needs. The role is in that set because every worker stub names it and only the meta workflow declares it, so a client worker would otherwise be told to apply a technique its bundle never carried.
 
 ### Core technique reference sets (`src/loaders/core-ops.ts`)
 
 | Set | Technique references |
 |-----|----------------------|
 | `CORE_ORCHESTRATOR_TECHNIQUES` | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `compose-prompt`, `present-checkpoint-to-user`, `respond-checkpoint`; `version-control::commit-submodule`, `commit-regular-files`; `harness-compat::spawn-agent`, `continue-agent`; `agent-conduct::orchestrator`, `checkpoint-discipline`, `operational-discipline` |
-| `CORE_WORKER_TECHNIQUES` | `workflow-engine::yield-checkpoint`, `resume-from-checkpoint`, `finalize-activity`; `agent-conduct::checkpoint-discipline`, `operational-discipline`, `file-sensitivity`, `code-commentary` |
+| `CORE_WORKER_TECHNIQUES` | `workflow-engine::activity-worker`, `yield-checkpoint`, `resume-from-checkpoint`, `finalize-activity`; `agent-conduct::checkpoint-discipline`, `operational-discipline`, `file-sensitivity`, `code-commentary` |
 
 ## 7. Shared-Layer Technique Resolution
 

@@ -25,12 +25,19 @@ const ADAPTER = (slices: string[]): string =>
     .concat(slices.flatMap((s) => [`### ${s}`, '', 'Do the thing.', '']))
     .join('\n');
 
-const MAP = (rows: string[], slices: string[]): string => [
-  '# Resolve harness operation', '', '## Protocol', '', '### 1. Map harness kind', '',
+const MAP = (rows: string[], slices: string[], vocabulary?: string): string => [
+  '# Resolve harness operation', '',
+  // The real map describes these names in Outputs before deciding them in step 2. A guard that scans the
+  // whole file matches here first, and then a step-2 rewrite cannot change its verdict.
+  '## Outputs', '', '### harness_operation', '',
+  'The Rules section name within that file matching `{operation_kind}` (`spawn`, `resume`, or '
+    + '`concurrent`).', '',
+  '## Protocol', '', '### 1. Map harness kind', '',
   '- Map `{harness_kind}` to `{harness_technique}` (authoritative table — edit only here):',
   ...rows,
   '', '### 2. Select rule slice', '',
-  '- Set `{harness_operation}` from `{operation_kind}` (' + slices.map((s) => `\`${s}\``).join(' | ')
+  vocabulary ?? '- Set `{harness_operation}` from `{operation_kind}` ('
+    + slices.map((s) => `\`${s}\``).join(' | ')
     + ') — each harness technique exposes those Rules sections.', '',
 ].join('\n');
 
@@ -40,7 +47,7 @@ const MAP = (rows: string[], slices: string[]): string => [
  */
 function rootWith(
   adapters: Record<string, string[] | null>,
-  opts?: { slices?: string[]; orphan?: string; unrowed?: string },
+  opts?: { slices?: string[]; orphan?: string; vocabulary?: string; fenced?: string; rows?: string[] },
 ): string {
   const root = mkdtempSync(join(tmpdir(), 'harness-set-'));
   roots.push(root);
@@ -48,10 +55,16 @@ function rootWith(
   mkdirSync(dir, { recursive: true });
 
   const slices = opts?.slices ?? ['spawn', 'resume', 'concurrent'];
-  const rows = Object.keys(adapters).map((kind) => `  - \`${kind}\` → [${kind}](./${kind}.md)`);
-  writeFileSync(join(dir, 'resolve-harness-operation.md'), MAP(rows, slices));
+  const rows = opts?.rows
+    ?? Object.keys(adapters).map((kind) => `  - \`${kind}\` → [${kind}](./${kind}.md)`);
+  writeFileSync(join(dir, 'resolve-harness-operation.md'), MAP(rows, slices, opts?.vocabulary));
   for (const [kind, declared] of Object.entries(adapters)) {
-    if (declared) writeFileSync(join(dir, `${kind}.md`), ADAPTER(declared));
+    if (!declared) continue;
+    // `fenced` shows a slice as an example instead of declaring it, which is not a declaration.
+    const body = opts?.fenced === kind
+      ? ADAPTER(declared) + ['```md', `### ${slices[slices.length - 1]}`, '```', ''].join('\n')
+      : ADAPTER(declared);
+    writeFileSync(join(dir, `${kind}.md`), body);
   }
   // An adapter file no row resolves to.
   if (opts?.orphan) writeFileSync(join(dir, `${opts.orphan}.md`), ADAPTER(slices));
@@ -97,6 +110,56 @@ describe('harness adapter set', () => {
   it('refuses an adapter file nothing resolves to', () => {
     expect(checks({ 'claude-code': ALL, cursor: ALL, cline: ALL, generic: ALL }, { orphan: 'stray' }))
       .toEqual(['adapter-unmapped']);
+  });
+
+  it('reads the operation kinds from the step that decides them, not a mention elsewhere', () => {
+    // The map names these in Outputs too. A whole-file scan matches there first, so narrowing step 2
+    // would change nothing the guard sees — and the adapters would keep passing against a stale set.
+    expect(checks({ 'claude-code': ALL, cursor: ALL, cline: ALL, generic: ALL },
+      { vocabulary: '- Set `{harness_operation}` from `{operation_kind}` (`spawn`).' }))
+      .toEqual(['slice-unreachable', 'slice-unreachable', 'slice-unreachable', 'slice-unreachable',
+        'slice-unreachable', 'slice-unreachable', 'slice-unreachable', 'slice-unreachable']);
+  });
+
+  it('refuses a name it cannot match rather than dropping it from both sides', () => {
+    // A rejected name would narrow the vocabulary AND every adapter's declared set, so a genuinely
+    // missing slice would pass. Reporting it is what keeps the set from shrinking silently.
+    expect(checks({ 'claude-code': ALL, cursor: ALL, cline: ALL, generic: ALL },
+      { vocabulary: '- Set `{harness_operation}` from `{operation_kind}` (`spawn` | `run_concurrent`).' }))
+      .toContain('name-unparseable');
+    expect(checks({ ...REGISTERED, 'claude-code': [...ALL, 'Spawn_Extra'], cursor: ALL, cline: ALL, generic: ALL }))
+      .toContain('name-unparseable');
+  });
+
+  it('does not count a slice shown inside a fence as declared', () => {
+    // A technique file may show a rule heading as an example. Counting it would let a deleted slice pass.
+    expect(checks({ 'claude-code': ['spawn', 'resume'], cursor: ALL, cline: ALL, generic: ALL },
+      { fenced: 'claude-code' })).toEqual(['slice-missing']);
+  });
+
+  it('refuses a slice declared twice', () => {
+    // Three callers dereference the name; two sections answering to it leave which applies undecided.
+    expect(checks({ ...REGISTERED, 'claude-code': [...ALL, 'spawn'], cursor: ALL, cline: ALL, generic: ALL }))
+      .toEqual(['slice-ambiguous']);
+  });
+
+  it('names an aliased adapter as aliased, not as unregistered', () => {
+    // Two kinds onto one file: the second row would otherwise be reported as absent from the core list,
+    // naming a file that is registered perfectly well.
+    expect(checks({ 'claude-code': ALL, cursor: ALL, cline: ALL, generic: ALL }, {
+      rows: [
+        '  - `claude-code` → [claude-code](./claude-code.md)',
+        '  - `claude-code-web` → [claude-code](./claude-code.md)',
+        '  - `cursor` → [cursor](./cursor.md)',
+        '  - `cline` → [cline](./cline.md)',
+        '  - `generic` → [generic](./generic.md)',
+      ],
+    })).toEqual(['adapter-aliased']);
+  });
+
+  it('refuses to call an absent map clean', () => {
+    // Reading it unguarded exits 1 with a stack trace, and the sweep reads exit 1 as findings.
+    expect(() => collectFindings(mkdtempSync(join(tmpdir(), 'harness-set-bare-')))).toThrow();
   });
 
   it('refuses to call an unparseable map clean', () => {
