@@ -36,7 +36,12 @@ import { corpusRoot } from './corpus-root.js';
 const ADVANCING_STEPS = ['continue-batched-worker', 'dispatch-activity'];
 
 interface Envelope {
-  result_type: 'activity_complete' | 'checkpoint_pending';
+  /**
+   * `none` is not a result type the corpus declares — it is this file's way of scripting a worker that
+   * returned no accepted envelope at all, which the two declared types cannot express and which is the
+   * case every worker-producing operation carries a recovery branch for.
+   */
+  result_type: 'activity_complete' | 'checkpoint_pending' | 'none';
   next_activity_id?: string | null;
   batch_may_continue?: boolean;
   steps_completed?: unknown[];
@@ -75,7 +80,18 @@ const EFFECTS: Record<string, (bag: Bag, next: () => Envelope, log: string[]) =>
   // here so the table stays auditable and neither reads as unconsumed.
   'present-yielded-checkpoint': () => { /* returns user_selection; no gate reads it */ },
   'respond-yielded-checkpoint': () => { /* returns effects; no gate reads it */ },
-  'resume-yielded-worker': (bag, next) => { bag['worker_result'] = next(); },
+  'resume-yielded-worker': (bag, next) => {
+    const envelope = next();
+    if (envelope.result_type === 'none') {
+      // `resume-worker` step 3: the continued context is gone, so a replacement is spawned under a new
+      // identity for the SAME activity and its envelope is what the step returns. Without this the bag
+      // stays on `checkpoint_pending` and the loop re-presents a gate the orchestrator already resolved.
+      bag['worker_agent_id'] = 'worker-replacement';
+      bag['worker_result'] = next();
+      return;
+    }
+    bag['worker_result'] = envelope;
+  },
   'commit-activity-artifacts': (_bag, _next, log) => { log.push('commit'); },
   'advance-activity': (bag) => {
     bag['current_activity'] = (bag['worker_result'] as Envelope).next_activity_id ?? null;
@@ -184,6 +200,8 @@ function walk(envelopes: Envelope[], initialActivity = 'implementation-analysis'
 const complete = (next: string | null, room = true): Envelope =>
   ({ result_type: 'activity_complete', next_activity_id: next, batch_may_continue: room, steps_completed: [] });
 const gate = (): Envelope => ({ result_type: 'checkpoint_pending' });
+/** A continuation that returned no accepted envelope — the context ended, or answered with neither type. */
+const gone = (): Envelope => ({ result_type: 'none' });
 
 /** This file's runaway stop, well above the longest scenario and unrelated to the declared ceiling. */
 const WALK_CAP = 20;
@@ -289,6 +307,23 @@ describe('client activity loop walked (#407)', () => {
       // dispatching while the loop is still running.
       if (result.stopped === 'condition') expect(result.bag['worker_agent_id']).toBeNull();
     }
+  });
+
+  it('replaces a continued worker that returns nothing, rather than re-presenting a resolved gate', () => {
+    // A gate, a continuation that comes back with nothing, then the replacement finishing the activity.
+    // Without a recovery branch the bag stays on `checkpoint_pending`: every gate step fires a second
+    // time, and the orchestrator asks the server to present a checkpoint it has already resolved — which
+    // the server refuses. The loop can then neither advance nor dispatch.
+    const result = walk([gate(), gone(), complete(null)]);
+
+    expect(result.stopped).toBe('condition');
+    // The gate is presented once. A second presentation is the stall.
+    expect(result.log.filter((e) => e === 'commit')).toHaveLength(1);
+    expect(result.iterations.flat().filter((id) => id === 'present-yielded-checkpoint')).toHaveLength(1);
+    // The activity still commits and advances exactly once, so the recovery costs one context, not the
+    // activity — and the identity is released at the end like any other completed walk.
+    expect(result.log).toEqual(['advance', 'commit']);
+    expect(result.bag['worker_agent_id']).toBeNull();
   });
 
   it('walks a clean batch of three as one dispatch and two continuations', () => {
