@@ -224,7 +224,15 @@ rewritten to read the step that decides the vocabulary rather than an earlier me
 invisible to the binding guard. What changed is that the two call sites the harness resolution owns are
 now covered by a set-closure check instead of by care, and the resume path's is covered by composition.
 The general case — verifying an indirect callee's declared inputs against what the call site supplies —
-remains open, and is the most generalisable thing this branch found.
+is mostly owned already, which this record failed to check before calling it open. The
+protocol-structure epic #397 opens on exactly this pattern: it names spawn, resume and concurrent
+dispatch as its motivating example of alternatives that have no home, and its variants work item
+lists the `harness-compat` slices as the first real consumer — which turns the prose obligation
+`check:harness-set` holds by set closure into a declared contract per variant. What that epic does
+not reach is the half where the callee's FILE is named by a value rather than a link; its 118-edge
+call survey never counted those, because there is no link to resolve, and its dormant
+verified-joints item gestures at runtime misbinding without naming this as the mechanism. That
+remainder is the generalisable part, and it is the one thing this branch found that nothing tracks.
 
 **One finding above was itself unprovenanced.** The record claimed malformed and legacy session state had
 been fuzzed across two dozen shapes; no test in the tree carried that. Writing one found two real gaps —
