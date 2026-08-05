@@ -4,7 +4,7 @@ Forward-looking only. What the review measured is recorded in the [batched-dispa
 
 Three of the review's proposals were carried out on the batched-dispatch branch, and they have been removed from here rather than marked done, so that everything below is genuinely outstanding: the adapter-set closure guard ships as `check:harness-set`, the resumption contract was repaired by dropping `resume-from-checkpoint` from the technique variable and composing the resume stub with `activity-worker`, and the harness rule that admitted two readings of background dispatch now permits one. The implementation record carries what each of them turned out to involve.
 
-Of what is left, items 2 and 3 are tracked as work items W6 and W7 of the delivery-cost epic [#404](https://github.com/m2ux/workflow-server/issues/404) — the detail stays here, which is that epic's convention for a subsumed item. Item 1 is the only thing here with no issue behind it. The hazards at the bottom are small enough to fix directly.
+Of what is left, items 2 and 3 are tracked as work items W6 and W7 of the delivery-cost epic [#404](https://github.com/m2ux/workflow-server/issues/404) — the detail stays here, which is that epic's convention for a subsumed item. Item 1 is filed as [#432](https://github.com/m2ux/workflow-server/issues/432). The hazards at the bottom are small enough to fix directly, so nothing in this folder is untracked.
 
 ## Why the lens is worth keeping
 
@@ -22,9 +22,11 @@ Use it for classification and gap-finding. It did not generate the faults it exp
 
 ## 1. Consider one catalogue addition: variant parity
 
+Filed as [#432](https://github.com/m2ux/workflow-server/issues/432). The measured case is in [variant-parity-evidence.md](./variant-parity-evidence.md), which corrects two claims below.
+
 Named for the smell, not the axis. Where two or more operations are selected by one discriminator at one bind site, compare their declared Inputs, Outputs and artifacts: flag a required input the bind site supplies on one arm only, an output a sibling omits where a common consumer reads them uniformly, and a variant that writes the discriminator a sibling's gate reads.
 
-It collides with nothing, and it closes an exposure the catalogue's own remedies create — two entries prescribe splitting a multi-mode operation into one operation per mode gated at the bind sites, after which nothing checks the siblings agree. Live instance: three operations bound as an escalation chain with three different declared contracts, one consumer reading them uniformly, and the second arm rewriting the discriminator the third arm's gate reads. Only the per-file defects fire today.
+It collides with nothing, and it closes an exposure the catalogue creates for itself — `artifact-name-is-filename` prescribes splitting an operation whose artifact name is selected by a mode input into a group with one operation per mode, gated at the bind sites, after which nothing checks the siblings agree. One entry does this, not the two first claimed; the others that prescribe a split are splitting steps inside an activity, which produces no siblings behind a discriminator. Live instance: **four** operations selected by one mode variable, with five declared inputs and eight declared outputs between them and nothing common to all four, and one consumer reading across them uniformly through an accumulator that no arm's declared output is bound into. Only the per-file defects fire today. Two things first claimed here did not survive checking — there are four arms rather than three, and no arm writes the discriminator, which is set in the mode-selection activity.
 
 Two cautions. It would be the catalogue's first cross-variant detector, so the scan scope must be bounded inside Detect — one bind site, or one gate variable — or it becomes unapplicable. And a member-set version of the same idea is barred until the schema has an enum variable type, because the member set would have to be read out of prose descriptions.
 
@@ -47,7 +49,7 @@ This got larger while the branch was in flight. Delivering `activity-worker` to 
 - **No entry or rename after a SOLID axis.** Barred by the catalogue's own naming rule — entry names identify the smell, not the stance — and by the ban on handing an auditor a framework to re-derive. Three axes are covered well enough that an axis-level entry would be an umbrella restatement: a dependency-inversion entry would yield four findings for one caller-named input description.
 - **No relevance gate**, per item 2.
 - **No "names a tool this actor cannot call" guard.** Five hits, one true positive; the rest are legitimate prohibitions and an exemption list. Useful only with negation-awareness over prose.
-- **No substitutability guard over the agent-entry or analysis sets.** Their members differ by role, deliberately. Enforcing sameness would be wrong; the analysis set's abstraction already switches on implementation identity in its own Protocol, and the repair is to stop calling it polymorphic.
+- **No substitutability guard over the agent-entry or analysis sets.** Their members differ by role, deliberately. Enforcing sameness would be wrong; the analysis set's abstraction already switches on implementation identity in its own Protocol, and the repair is to stop calling it polymorphic. Item 1 reaches the analysis set without contradicting this, because it keys on the seam between the arms and their shared consumer rather than on the arms resembling each other.
 - **No broadened link-existence guard** over the 1,476 anchor-less internal links. Out of proportion to the finding, and it would drown the specific signal; the four map rows were the load-bearing subset, and `check:harness-set` now covers them.
 
 ## Hazards to resolve in prose, since no structure can catch them
