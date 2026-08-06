@@ -141,6 +141,25 @@ describe('a repeat fetch arrives as a marker (W9)', () => {
     expect(rawText(second).length).toBe(rawText(first).length);
   });
 
+  it('never collapses for a caller naming the session identity, which siblings share by construction', async () => {
+    // `dispatch_child` defaults `agent_id` to "worker", so two sibling workers can each pass the
+    // session's own identity without either having received what the other did. Naming it is not
+    // evidence of one context, so that scope collapses only on a declared reference opt-in.
+    const first = await fetchResource('orchestrator');
+    const second = await fetchResource('orchestrator');
+    expect(rawText(second)).not.toContain('delivery: unchanged');
+    expect(rawText(second).length).toBe(rawText(first).length);
+    // The declared opt-in is still honoured for that identity — it is a claim about one context.
+    const optedIn = await h.client.callTool({
+      name: 'get_resource',
+      arguments: {
+        session_index: sessionIndex, resource_id: 'meta/planning-readme',
+        agent_id: 'orchestrator', bundle: 'reference',
+      },
+    });
+    expect(rawText(optedIn)).toContain('delivery: unchanged');
+  });
+
   it('answers the second ask for a technique with a marker', async () => {
     const args = { session_index: sessionIndex, agent_id: 'repeat-tech-worker', step_id: 'survey-codebase' };
     const first = await h.client.callTool({ name: 'get_technique', arguments: args });

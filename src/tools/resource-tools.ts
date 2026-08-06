@@ -86,13 +86,30 @@ function withSessionStoreErrors<T extends Record<string, unknown>, R>(
  * answered with a marker whatever delivery mode the call declares — the content is in the asking
  * context already, and re-sending it buys nothing.
  *
- * Two conditions make that sound. `full: true` always overrides, which is the escape hatch for a
- * context that summarized the content away. And the caller must NAME its context: with `agent_id`
- * omitted the scope falls back to the session's own identity, which several sibling workers share, so
- * a marker could reach a context that never received the bytes.
+ * Three conditions make that sound.
+ *
+ * `full: true` always overrides, which is the escape hatch for a context that summarized the content
+ * away.
+ *
+ * The caller must NAME its context, because with `agent_id` omitted the scope falls back to the
+ * session's own identity and a marker could reach a context that never received the bytes.
+ *
+ * And the name must not BE the session's own identity, which is the one name known to be shared by
+ * construction: `dispatch_child` defaults it to `"worker"`, so two sibling workers can each pass it
+ * without either having received what the other did. That scope keeps its earlier behaviour — it
+ * collapses only where the caller asked for reference delivery, which is a claim about one context
+ * rather than an inference from a name. A solo walk, which legitimately owns that identity, declares
+ * `context_mode: "persistent"` and so collapses on that ground instead.
+ *
+ * A distinct name shared by two contexts anyway defeats this, as it defeats reference delivery today;
+ * minting one identity per dispatch is what the corpus requires, and `full: true` recovers.
  */
-function isRepeatToNamedContext(agentId: string | undefined, full: boolean | undefined): boolean {
-  return full !== true && agentId !== undefined;
+function isRepeatToNamedContext(
+  agentId: string | undefined,
+  full: boolean | undefined,
+  sessionAgentId: string,
+): boolean {
+  return full !== true && agentId !== undefined && agentId !== sessionAgentId;
 }
 
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
@@ -778,7 +795,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         && (bundle ?? (state.contextMode === 'persistent' ? 'reference' : 'full')) === 'reference';
       const ledgerKey = `technique:${techniqueId}`;
       const hash = contentHash(text);
-      if ((referenceMode || isRepeatToNamedContext(agent_id, full))
+      if ((referenceMode || isRepeatToNamedContext(agent_id, full, state.agentId))
         && deliveredHash(state, ledgerKey, scope) === hash) {
         const next = advanceSession(state, (draft) => {
           draft.currentTechnique = techniqueId as string;
@@ -916,7 +933,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const hash = contentHash(fullText);
       const referenceMode = full !== true
         && (bundle ?? (state.contextMode === 'persistent' ? 'reference' : 'full')) === 'reference';
-      if ((referenceMode || isRepeatToNamedContext(agent_id, full))
+      if ((referenceMode || isRepeatToNamedContext(agent_id, full, state.agentId))
         && deliveredHash(state, ledgerKey, scope) === hash) {
         const next = advanceSession(state, (draft) => {
           recordFirstArrival(draft);
