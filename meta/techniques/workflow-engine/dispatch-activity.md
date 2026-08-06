@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.17.0
+  version: 1.18.0
 ---
 
 ## Capability
@@ -51,12 +51,13 @@ Opaque HMAC-signed trace token from the `next_activity` response `_meta.trace_to
    - **`step_manifest`:** a dispatch whose activity ran steps carries one manifest entry per completed step — the server validates step completion against it, and reports a gap when it is absent. A first dispatch has no prior worker context to attribute it to, so `agent_id` is omitted here; a continuation names one ([continue-batch](./continue-batch.md)).
    - **Trace accumulate (required):** when `_meta.trace_token` is present, append it to `trace_tokens[]`. Tokens stay opaque — no routine per-activity `get_trace`. Live `_meta.validation` self-correct remains; do not resolve tokens mid-run (close-out resolve is [resolve-trace-at-close-out](#resolve-trace-at-close-out)).
 3. Mint `{worker_agent_id}` for this dispatch per [delivery-keys-on-agent-context](#delivery-keys-on-agent-context), then apply [compose-prompt](./compose-prompt.md) with `{agent_technique}`, `holds_prior_deliveries: false` (a minted identity holds nothing), and `{state}` as substitutions (include `session_index`, `workflow_id`, `activity_id`, and `{worker_agent_id}` as `agent_id`).
-4. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await the worker's envelope and return it unchanged as `{worker_result}`.
+4. Tell the user what is about to run and what it will cost them in waiting: the activity's name, the next gate their answer is needed at (the first checkpoint of that activity, or that the activity runs to completion without one), and the elapsed figure of the last comparable dispatch where the session record has one. A dispatch is minutes of silence otherwise ([say-what-a-dispatch-is-doing](#say-what-a-dispatch-is-doing)).
+5. Apply [harness-compat](../harness-compat/TECHNIQUE.md)::[spawn-agent](../harness-compat/spawn-agent.md) with the composed prompt; await the worker's envelope and return it unchanged as `{worker_result}`.
    > When the harness reports the worker ended without returning an envelope, dispatch a fresh worker for the same `{activity_id}`, which mints its own identity.
    > When the harness still reports the worker live and what came back is not an accepted result ([reject-partial-worker-result](#reject-partial-worker-result)), apply [harness-compat](../harness-compat/TECHNIQUE.md)::[continue-agent](../harness-compat/continue-agent.md) under `{worker_agent_id}` with explicit instructions to finish what the result left undone and return the envelope.
-5. Account for this activity, and for any replacement worker dispatched for the same `{activity_id}`, per [account-every-activity](#account-every-activity).
-6. Reconcile any critical routing or path variable an orchestrator decision depends on: compare the session record against the just-completed worker's `activity_complete` envelope, and against planning-folder evidence when the two still leave it uncertain ([distrust-then-reconcile](#distrust-then-reconcile)).
-7. On `activity_complete`, read `{worker_result.next_activity_id}` (and optionally `{worker_result.evaluated_condition}`) as the authoritative next-activity routing — the worker evaluated transitions via [finalize-activity](./finalize-activity.md).
+6. Account for this activity, and for any replacement worker dispatched for the same `{activity_id}`, per [account-every-activity](#account-every-activity).
+7. Reconcile any critical routing or path variable an orchestrator decision depends on: compare the session record against the just-completed worker's `activity_complete` envelope, and against planning-folder evidence when the two still leave it uncertain ([distrust-then-reconcile](#distrust-then-reconcile)).
+8. On `activity_complete`, read `{worker_result.next_activity_id}` (and optionally `{worker_result.evaluated_condition}`) as the authoritative next-activity routing — the worker evaluated transitions via [finalize-activity](./finalize-activity.md).
    > On a **blocked** signal from the worker or the harness, apply [sync-progress-status](./sync-progress-status.md) for the blocked moment in [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites) for `{activity_id}` before surfacing or retrying.
    > When the path **skips / cancels** an activity without running it, apply [sync-progress-status](./sync-progress-status.md) for the path-skip / cancel moment in [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites) for that activity's rows.
 
@@ -73,6 +74,12 @@ Where the session record and a just-completed worker's `activity_complete` envel
 ### resolve-trace-at-close-out
 
 Client finalize/retrospective paths that consume execution history MUST resolve accumulated `trace_tokens[]` once via `get_trace { session_index, trace_tokens }` (optionally `inspect_session` for fetch/fidelity context). This operation owns the accumulate half of the contract; the client's close-out path owns the resolve. Skip resolve when `trace_tokens` is empty.
+
+### say-what-a-dispatch-is-doing
+
+No minute of a run is silent to the user. A dispatch takes minutes during which nothing they can read is produced, and a gate arrives whenever the worker reaches one, so the wait is legible only if it was quoted before it was spent — a cost paid unannounced reads as a stall, and a gate that arrives unannounced arrives to someone who has stopped watching.
+
+Two consequences beyond the announcement in phase 4. Any wait the orchestrator itself imposes between dispatches — a commit cycle, a reconciliation, a retry — is named as it happens. And where a dispatch is one of a run of activities under one worker, which of the run it is belongs in the announcement, so the standing the server reports to the worker is legible to the person too.
 
 ### no-get-activity-from-orchestrator
 

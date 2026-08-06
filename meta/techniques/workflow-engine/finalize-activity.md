@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ Array of artifact entries (`id`, `name`, `path`).
 
 ### batch_may_continue
 
-Whether this worker's context may take another activity, read from `_meta.batch.may_continue` on the `get_activity` response for this activity ([batch-ends-where-the-server-says](./activity-worker.md#batch-ends-where-the-server-says)). The envelope is the only place this answer appears again, so it is read here and carried there unchanged.
+Whether this worker's context may take another activity, read from `may_continue` in the `batch:` block of the `get_activity` response for this activity ([batch-ends-where-the-server-says](./activity-worker.md#batch-ends-where-the-server-says)). The envelope is the only place this answer appears again, so it is read here and carried there unchanged.
 
 ## Outputs
 

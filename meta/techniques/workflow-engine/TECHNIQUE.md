@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 6.10.0
+  version: 6.11.0
 ---
 
 ## Capability
@@ -25,6 +25,14 @@ Client walks dispatch workers via [dispatch-activity](./dispatch-activity.md), e
 
 Resource refs returned in operation bodies (e.g. `planning-readme`) are lightweight pointers. When `get_activity` includes a sibling `resources` map, reuse those bodies (or unchanged markers). Otherwise load via `get_resource { session_index, resource_id }`.
 
+The ids come from the delivery: the `resources` map keys, `resource_refs`, and the refs in the operation bodies this response carried, each already qualified. Pass one of those verbatim. A ref that will not resolve is a definition defect to report, not a spelling to search for — an id guessed under another workflow prefix or another slug spelling costs a round trip and returns an error, and the id that would have worked was in the response already.
+
+### fetch-costs-what-it-delivers
+
+A fetch hands over the whole composed body, so ask for what a step needs and reuse what a response already carried. Measured on one real run, lazy technique fetches ran 5,242 to 15,126 characters apiece and lazy resource fetches 1,426 to 14,980.
+
+Two things make a second ask cheap rather than free. A repeat under the same `agent_id` comes back as an unchanged marker, because the ledger records that this context received those bytes — so a repeat costs the round trip, not the body, and the marker is the expected answer rather than an error. And within one `get_activity` response, a shared contract or rules block may arrive as a marker whose bytes an earlier `step_techniques` entry of that same response carries in full; read it from there. Where content has genuinely left this context, [force-full-after-summarization](#force-full-after-summarization) is how to get it back.
+
 ### resource-section-or-whole
 
 Choose bare vs `#section` `resource_id` by how much of the resource this agent context will need. Prefer a `#section` anchor when the current step needs a single slice of a large resource. When the same agent context will need two or more sections from the same resource in the current activity (or in the immediate next steps of that activity), call `get_resource` once with the bare resource id and reuse that content — do not issue repeated section fetches for the same file. Bare and `#section` ids are distinct delivery keys: loading sections does not populate the whole-resource key, and loading the whole file does not collapse a later section fetch under a different key. In the eager `resources` map the file takes precedence — a bundled whole resource carries its own sections, so a technique citing both ways receives the file alone and its sections are read out of that body rather than fetched again. Unchanged-references and `full: true` follow [force-full-after-summarization](#force-full-after-summarization).
@@ -47,4 +55,4 @@ Before executing any step, confirm the activity `id` returned by the `get_activi
 
 ### progressive-step-technique-load
 
-A step's bound technique loads as that step is reached; the whole activity is never pre-fetched. `get_technique { session_index, step_id }` serves steps not already inlined, and where `get_activity` carries `step_techniques` or a sibling `resources` map, those response notes govern — begin-beat, reuse map, lazy remainder — rather than bundling policy re-derived in prose.
+A step's bound technique loads as that step is reached; the whole activity is never pre-fetched. `get_technique { session_index, step_id }` serves steps not already inlined, and where `get_activity` carries `step_techniques` or a sibling `resources` map, those response notes govern — begin-beat, reuse map, lazy remainder — rather than bundling policy re-derived in prose. An inlined step is read from the bundle; re-fetching it pays the round trip for content the response already delivered ([fetch-costs-what-it-delivers](#fetch-costs-what-it-delivers)).
