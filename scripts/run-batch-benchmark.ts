@@ -69,6 +69,12 @@ import { pathToFileURL } from 'node:url';
 import { createHarness, rawText, isError, parseToolResponse } from '../tests/e2e/harness.js';
 import type { SessionFile } from '../src/schema/session.schema.js';
 import { deliveredChars } from '../src/utils/batch.js';
+import { measureFanOut, fanOutRatios, fanOutLines } from '../src/utils/fan-out.js';
+import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
+import { composeActivityTechnique } from '../src/loaders/technique-loader.js';
+import { flattenActivitySteps, techniqueName } from '../src/schema/activity.schema.js';
+import type { Technique } from '../src/schema/technique.schema.js';
+import { requireWorkflowsRoot } from './workflows-root.js';
 
 /** The analysis run through the middle of the main workflow — the best measured batch candidate. */
 export const DEFAULT_RUN = ['implementation-analysis', 'plan-prepare', 'assumptions-review'];
@@ -161,6 +167,33 @@ async function walk(
   }
 }
 
+/**
+ * Compose every step-bound operation of the walked run and measure how much of each delivery is
+ * content declared above it (#404 W6). Reported warn-only: a container rule is meant to be
+ * cross-cutting, so a low reach figure describes the design rather than faulting it.
+ */
+async function measureRunFanOut(workflowId: string, activities: string[]) {
+  const root = requireWorkflowsRoot(join(import.meta.dirname, '..', 'workflows'));
+  const loaded = await loadWorkflowWithDiagnostics(root, workflowId);
+  if (!loaded.success) throw loaded.error;
+  const { workflow, activitySourceWorkflow } = loaded.value;
+
+  const composed: Technique[] = [];
+  for (const activityId of activities) {
+    const activity = workflow.activities?.find((a) => a.id === activityId);
+    if (!activity) continue;
+    const scopeWorkflowId = activitySourceWorkflow.get(activityId) ?? workflowId;
+    for (const step of flattenActivitySteps(activity)) {
+      if (step.kind !== 'technique') continue;
+      const ref = techniqueName(step.technique);
+      if (!ref) continue;
+      const result = await composeActivityTechnique(ref, root, scopeWorkflowId, activityId);
+      if (result.success) composed.push(result.value.technique);
+    }
+  }
+  return measureFanOut(composed);
+}
+
 /** Walk one pass `repeat` times and keep the best elapsed, so a cold FS cache does not dominate. */
 export async function measure(
   mode: PassMetrics['mode'],
@@ -184,6 +217,7 @@ async function main(): Promise<number> {
 
   const perActivity = await measure('per-activity', { workflowId, activities, contextTokens, repeat });
   const batched = await measure('batched', { workflowId, activities, contextTokens, repeat });
+  const fanOut = await measureRunFanOut(workflowId, activities);
 
   const charSavingPct = perActivity.deliveredChars === 0
     ? 0
@@ -222,6 +256,10 @@ async function main(): Promise<number> {
       spawnSecondsInput: spawnSeconds,
       runDurationSavingSeconds: Number((dispatchesAvoided * spawnSeconds).toFixed(1)),
     },
+    // Warn-only, and nothing gates on it. Container rules and inherited I/O are cross-cutting by
+    // design, so a reach figure describes what the corpus intends rather than faulting it; the
+    // figures are here so the fan-out is visible and a regression is arguable.
+    fanOut: { ...fanOut, ...fanOutRatios(fanOut) },
   };
   process.stdout.write(JSON.stringify(report, null, 2) + '\n');
 
@@ -236,6 +274,7 @@ async function main(): Promise<number> {
     `  projected run duration: ${report.projected.runDurationSavingSeconds}s saved, from `
     + `${report.projected.basis} — supply your harness's own --spawn-seconds to re-base it\n`,
   );
+  for (const line of fanOutLines(fanOut)) process.stderr.write(`${line}\n`);
 
   if (has('gate') && charSavingPct < minSavingPct) {
     process.stderr.write(`GATE FAIL: batched saving ${report.measured.charSavingPct}% is below ${minSavingPct}%\n`);
