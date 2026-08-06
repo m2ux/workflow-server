@@ -1,0 +1,41 @@
+id: draft
+version: 1.0.0
+name: Draft
+description: "Produce the plain-language document — fresh on an author run, reworked from the source analysis on a rewrite run — structured and worded for its readers."
+required: false
+steps:
+  - kind: technique
+    id: draft-document
+    technique: plain-language::draft-document
+  - kind: technique
+    id: persist-plain-document
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: plain-document.md
+        artifact_content: document_draft
+        target_dir: planning_folder_path
+      outputs:
+        written_artifact: document_path
+  - kind: checkpoint
+    id: draft-reviewed
+    message: "Draft of `{document_title}` ready for evaluation ([draft]({document_path}))."
+    blocking: false
+    defaultOption: confirmed
+    autoAdvanceMs: 30000
+    options:
+      - id: confirmed
+        label: Ready for evaluation
+        description: The draft is structured and worded for its readers and can be evaluated.
+        effect:
+          setVariable:
+            draft_confirmed: true
+      - id: revise
+        label: Keep drafting
+        description: The draft needs more work before it is evaluated.
+transitions:
+  - to: evaluate
+    isDefault: true
+outcome:
+  - The document is drafted or rewritten for its readers — structured for findability, worded for understandability, and held to ASD-STE100 when the controlled-language overlay is on
+  - A rewrite fixes the recorded findings and preserves the inventoried strengths rather than restyling on taste
