@@ -31,7 +31,7 @@ The ids come from the delivery: the `resources` map keys, `resource_refs`, and t
 
 A fetch hands over the whole composed body, so ask for what a step needs and reuse what a response already carried. Measured on one real run, lazy technique fetches ran 5,242 to 15,126 characters apiece and lazy resource fetches 1,426 to 14,980.
 
-Two things make a second ask cheap rather than free. A repeat under the same `agent_id` comes back as an unchanged marker, because the ledger records that this context received those bytes — so a repeat costs the round trip, not the body, and the marker is the expected answer rather than an error. And within one `get_activity` response, a shared contract or rules block may arrive as a marker whose bytes an earlier `step_techniques` entry of that same response carries in full; read it from there. Where content has genuinely left this context, [force-full-after-summarization](#force-full-after-summarization) is how to get it back.
+Two things make a second ask cheap rather than free, and neither licenses one — how to avoid the second ask is [resource-section-or-whole](#resource-section-or-whole). A repeat under the same `agent_id` comes back as an unchanged marker, because the ledger records that this context received those bytes, so a repeat costs the round trip rather than the body and the marker is the expected answer rather than an error. And within one `get_activity` response, a shared contract or rules block may arrive as a marker whose bytes an earlier `step_techniques` entry of that same response carries in full; read it from there. Where content has genuinely left this context, [force-full-after-summarization](#force-full-after-summarization) is how to get it back.
 
 ### resource-section-or-whole
 
@@ -43,7 +43,7 @@ Variables mutate from two sources only: checkpoint option effects (`setVariable`
 
 ### agent-id-scopes-delivery
 
-The delivery ledger is keyed on agent context, not on the session. `agent_id` on `get_activity`, `get_technique` and `get_resource` names that context — the worker agent identity bound into the stub that dispatches or continues the agent — and each context reads and writes its own ledger. A first dispatch under a new `agent_id` holds no prior deliveries, so it takes full delivery; the same `agent_id` calling again is that context resumed, where `bundle: "reference"` collapses what it already received to unchanged markers. A solo walk is the one case carrying no `agent_id`, the session's own agent being its only context.
+The delivery ledger is keyed on agent context, not on the session. `agent_id` on `get_activity`, `get_technique` and `get_resource` names that context — the worker agent identity bound into the stub that dispatches or continues the agent — and each context reads and writes its own ledger. A first dispatch under a new `agent_id` holds no prior deliveries, so it takes full delivery; the same `agent_id` calling again is that context resumed, and what it already received arrives as unchanged markers — on `get_activity` when the call carries `bundle: "reference"`, and on a repeat `get_technique` or `get_resource` whether or not it does ([fetch-costs-what-it-delivers](#fetch-costs-what-it-delivers)). A solo walk is the one case carrying no `agent_id`, the session's own agent being its only context — and the one case where nothing collapses on a repeat, since sibling contexts would share that identity.
 
 ### force-full-after-summarization
 
