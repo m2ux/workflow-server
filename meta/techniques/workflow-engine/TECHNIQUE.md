@@ -29,7 +29,7 @@ The ids come from the delivery: the `resources` map keys, `resource_refs`, and t
 
 ### fetch-costs-what-it-delivers
 
-A fetch hands over the whole composed body, so ask for what a step needs and reuse what a response already carried. Measured on one real run, lazy technique fetches ran 5,242 to 15,126 characters apiece and lazy resource fetches 1,426 to 14,980.
+A fetch hands over the whole composed body — thousands of characters, whatever fraction of it a step reads — so ask for what the step needs and reuse what a response already carried.
 
 A second ask is cheap rather than free, and cheap is not a licence: how to avoid it is [resource-section-or-whole](#resource-section-or-whole), when a marker comes back instead of a body is [agent-id-scopes-delivery](#agent-id-scopes-delivery), and a marker inside one response is explained by that response's own notes, which govern. Read a marker as the expected answer rather than an error, and where content has genuinely left this context, [force-full-after-summarization](#force-full-after-summarization) is how to get it back.
 
