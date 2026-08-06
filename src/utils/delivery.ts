@@ -7,12 +7,25 @@ import { stringifyForResponse } from './serialization.js';
  *
  * The session file carries a delivery ledger (`deliveredContent`): per
  * delivery scope (see `deliveryScope`), a map of content key → hash of the
- * payload last delivered in full. When reference delivery is active (session
- * `contextMode: 'persistent'` or a per-call opt-in), a payload whose hash
- * matches the ledger is replaced by a short `{ delivery: 'unchanged',
- * content_hash }` marker — the receiving context already holds the bytes.
- * This is the one canonical unchanged-marker shape, emitted identically by
- * the `get_activity` bundle path, `get_technique`, and `get_resource`.
+ * payload last delivered in full. A payload whose hash matches is replaced by
+ * a short `{ delivery: 'unchanged', content_hash }` marker — the receiving
+ * context already holds the bytes. This is the one canonical unchanged-marker
+ * shape, emitted identically by the `get_activity` bundle path,
+ * `get_technique`, and `get_resource`.
+ *
+ * Three things make a marker readable, and each governs where one is emitted:
+ *   - Reference delivery (session `contextMode: 'persistent'` or a per-call
+ *     opt-in) — the caller states that this context holds its earlier payloads.
+ *   - The same response — a sibling entry above the marker carries the block in
+ *     full, so a full delivery to a fresh context can still collapse the
+ *     repeats (`dedupTechniqueBlocks` with `readLedger: false`).
+ *   - A named context asking again — the ledger records that THIS `agent_id`
+ *     received the bytes, so a repeat `get_technique` / `get_resource` is
+ *     answered with a marker whatever mode the call declares. A caller that
+ *     omits `agent_id` scopes to the session's own identity, which siblings
+ *     share, so no repeat collapses there.
+ *
+ * `full: true` overrides all three, for a context that summarized content away.
  *
  * Content keys are namespaced by delivery channel so the composition paths
  * never cross-reference each other's payloads:
@@ -97,6 +110,30 @@ export const DEDUP_BLOCKS = ['inherited_inputs', 'inherited_outputs', 'rules', '
 /** Inherited blocks whose `note` is content-keyed separately from `items`. */
 const INHERITED_SPLIT_BLOCKS = ['inherited_inputs', 'inherited_outputs'] as const;
 
+/** Whether a value is an unchanged-marker rather than content. */
+function isMarker(value: unknown): boolean {
+  return !!value && typeof value === 'object' && (value as { delivery?: string }).delivery === 'unchanged';
+}
+
+/**
+ * Shared blocks of a projected technique that came back as markers — whole blocks, and the `note` /
+ * `items` halves of an inherited block that collapsed independently. Counted so a delivery can report
+ * how much repetition it dropped.
+ */
+export function countCollapsedBlocks(projected: Record<string, unknown>): number {
+  let collapsed = 0;
+  for (const block of DEDUP_BLOCKS) {
+    const value = projected[block];
+    if (isMarker(value)) { collapsed += 1; continue; }
+    if (value && typeof value === 'object' && !Array.isArray(value)) {
+      const rec = value as Record<string, unknown>;
+      if (isMarker(rec['note'])) collapsed += 1;
+      if (isMarker(rec['items'])) collapsed += 1;
+    }
+  }
+  return collapsed;
+}
+
 /**
  * Content-key a field: collapse to an unchanged-marker when already delivered,
  * otherwise stage the hash. When `assignFull` is true, also write the full value
@@ -111,10 +148,12 @@ function stageField(
   scope: string,
   keyPrefix: string,
   assignFull = false,
+  readLedger = true,
 ): void {
   const hash = contentHash(stringifyForResponse({ [field]: value }));
   const key = `${keyPrefix}:${hash}`;
-  if (deliveredHash(state, key, scope) === hash || newDeliveries[key] === hash) {
+  const held = readLedger && deliveredHash(state, key, scope) === hash;
+  if (held || newDeliveries[key] === hash) {
     out[field] = unchangedMarker(hash);
   } else {
     newDeliveries[key] = hash;
@@ -130,21 +169,38 @@ function stageField(
  * whole-value candidates. Returns a shallow copy (input not mutated); newly-delivered
  * hashes are staged into `newDeliveries` for the caller to commit.
  *
+ * Two reasons a block may collapse, and `readLedger` selects which apply:
+ *
+ * - **The ledger** — this scope received the bytes on an earlier call. Only sound where the caller
+ *   asked for reference delivery, since a marker is unreadable to a context that never received the
+ *   bytes.
+ * - **This response** — a sibling in the SAME response carried the block in full, which
+ *   `newDeliveries` records. Sound on any delivery, including a full one to a freshly spawned
+ *   worker: the bytes are in the response the marker arrives in, above the marker.
+ *
+ * So `readLedger: false` is the full-delivery mode. It collapses the second and later copies of a
+ * block a response repeats — the contract and rules blocks every technique of a workflow shares —
+ * while the first copy ships in full.
+ *
  * @param projected   `projectTechnique` output.
  * @param state       session, for the delivery-ledger lookup.
  * @param newDeliveries accumulator of block-hashes to record.
  * @param scope       delivery scope to look up (default: the session's agent).
+ * @param opts.readLedger  consult this scope's earlier deliveries as well as this response's
+ *                         (default true).
  */
 export function dedupTechniqueBlocks(
   projected: Record<string, unknown>,
   state: SessionFile,
   newDeliveries: Record<string, string>,
   scope: string = state.agentId,
+  opts: { readLedger?: boolean } = {},
 ): Record<string, unknown> {
   const out = { ...projected };
+  const readLedger = opts.readLedger ?? true;
 
   if (out['provenance_note'] !== undefined) {
-    stageField(out, 'provenance_note', out['provenance_note'], state, newDeliveries, scope, 'technique:provenance_note', true);
+    stageField(out, 'provenance_note', out['provenance_note'], state, newDeliveries, scope, 'technique:provenance_note', true, readLedger);
   }
 
   for (const block of INHERITED_SPLIT_BLOCKS) {
@@ -154,28 +210,29 @@ export function dedupTechniqueBlocks(
       const rec = value as Record<string, unknown>;
       const next: Record<string, unknown> = { ...rec };
       if (rec['note'] !== undefined) {
-        stageField(next, 'note', rec['note'], state, newDeliveries, scope, `technique:${block}.note`);
+        stageField(next, 'note', rec['note'], state, newDeliveries, scope, `technique:${block}.note`, false, readLedger);
       }
       if (rec['items'] !== undefined) {
-        stageField(next, 'items', rec['items'], state, newDeliveries, scope, `technique:${block}.items`);
+        stageField(next, 'items', rec['items'], state, newDeliveries, scope, `technique:${block}.items`, false, readLedger);
       }
       // Whole-block key still recorded when both halves are full (first delivery), so a
       // reader that only understands whole-block markers keeps working.
       const wholeHash = contentHash(stringifyForResponse({ [block]: value }));
       const wholeKey = `technique:${block}:${wholeHash}`;
-      if (deliveredHash(state, wholeKey, scope) === wholeHash || newDeliveries[wholeKey] === wholeHash) {
+      const heldWhole = readLedger && deliveredHash(state, wholeKey, scope) === wholeHash;
+      if (heldWhole || newDeliveries[wholeKey] === wholeHash) {
         out[block] = unchangedMarker(wholeHash);
       } else {
         newDeliveries[wholeKey] = wholeHash;
         out[block] = next;
       }
     } else {
-      stageField(out, block, value, state, newDeliveries, scope, `technique:${block}`, true);
+      stageField(out, block, value, state, newDeliveries, scope, `technique:${block}`, true, readLedger);
     }
   }
 
   if (out['rules'] !== undefined) {
-    stageField(out, 'rules', out['rules'], state, newDeliveries, scope, 'technique:rules', true);
+    stageField(out, 'rules', out['rules'], state, newDeliveries, scope, 'technique:rules', true, readLedger);
   }
 
   return out;

@@ -18,7 +18,7 @@ import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance }
 import { withAuditLog, logInfo, logWarn } from '../logging.js';
 import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
-import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
+import { contentHash, countCollapsedBlocks, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { dispatchKind, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
 import { batchBound, batchRefusal, batchRefusalMessage, batchState, recordBatchRefusal } from '../utils/batch.js';
 import { extractResourceIds, qualifyResourceId } from '../utils/resource-ref.js';
@@ -899,6 +899,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const resourceRefIds: string[] = [];
       const linkedResourceIds = new Set<string>();
       const bundlingWarnings: string[] = [];
+      /** Shared blocks a full delivery dropped because a sibling of this same response carried them. */
+      let intraResponseCollapses = 0;
       const bundleConfig = (activity as Activity | undefined)?.bundleTechniques;
       // maxChars: 0 is the explicit opt-out sentinel; any other declared value is a per-technique
       // size cap. Absent config means no per-technique cap (only the cumulative budget applies).
@@ -985,11 +987,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             newDeliveries[ledgerKey] = hash;
             // The arrival marker leads the block; the composed technique fields follow at the same
             // level, so a bundled entry reads exactly like a get_technique fetch with a step header.
-            // Under reference mode, collapse any shared contract/rules block already delivered (by a
-            // sibling bundled step or an earlier fetch) to a marker while the core stays full.
-            const projected = referenceMode
-              ? dedupTechniqueBlocks(projectTechnique(technique), state, newDeliveries, scope)
-              : projectTechnique(technique);
+            // Shared contract and rules blocks collapse to a marker while the core stays full. Under
+            // reference mode a block this context received on an earlier call collapses too; under
+            // full delivery only a block a sibling of THIS response already carried does, so the
+            // bytes a marker stands for are always above it in the same payload.
+            const projected = dedupTechniqueBlocks(
+              projectTechnique(technique), state, newDeliveries, scope, { readLedger: referenceMode },
+            );
+            if (!referenceMode) intraResponseCollapses += countCollapsedBlocks(projected);
             bundledStepTechniques[step.id!] = { marker: stepMarker, ...projected };
           }
           // Collect linked resource ids from the full composed technique text even when this
@@ -1131,7 +1136,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             bundle_note: 'Entries marked { delivery: "unchanged", content_hash } are already in your context — reuse them. A marker may also replace a single inherited_inputs/inherited_outputs/rules block inside an otherwise-full step_techniques entry (that shared block came from a sibling technique). Re-fetch a technique with get_technique { step_id, full: true }, or get_activity { bundle: "full" } to re-deliver the whole bundle.',
             ...bundleData,
           }
-        : bundleData;
+        : intraResponseCollapses > 0
+          ? {
+              // A full delivery repeats the contract and rules blocks its techniques share. The
+              // second and later copies arrive as markers whose bytes are above them in this same
+              // response, so a freshly spawned worker holding no prior delivery still reads them.
+              bundle_note: 'A shared inherited_inputs/inherited_outputs/rules block inside a step_techniques entry may arrive as { delivery: "unchanged", content_hash } because an EARLIER entry of THIS response carries it in full. Read that block from the earliest step_techniques entry that shows it — the entries are in step order and the content is identical. Every other field of every entry arrives in full.',
+              ...bundleData,
+            }
+          : bundleData;
       const opsSection = stringifyForResponse(opsData) + '\n\n---\n\n';
 
       // artifactPrefix is server-computed from the activity filename and is NOT in
@@ -1193,7 +1206,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       // Assembled before the save so the dispatch event can record what this dispatch actually
       // cost — `chars` on an activity's fresh and resume events is the before/after measurement.
-      const responseText = `${opsSection}${header}\n\n${activityRulesBlock}${enforcementBlock}${activityBodyWithArtifacts}`;
+      const responseBody = `${opsSection}${header}\n\n${activityRulesBlock}${enforcementBlock}${activityBodyWithArtifacts}`;
 
       // Persist against a FRESH load, not the snapshot captured before composition: the session
       // store is last-writer-wins over the whole file, and composition awaits dozens of FS reads —
@@ -1211,6 +1224,31 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const priorScope = hasDispatch(reloaded.state, scope, activity_id)
         ? undefined
         : priorDeliveryScope(reloaded.state, scope, activity_id);
+
+      // Where this context stands against its bound once this delivery lands, read off the history it
+      // will be saved against plus the delivery itself. A worker reads `may_continue` to decide
+      // whether to ask for the next activity, so the ordinary end of a batch is the worker stopping
+      // and the refusal above is the backstop; the counts make that answer auditable from the
+      // response. It rides in the response TEXT as well as `_meta`, for the same reason
+      // `artifact_prefix` does: the text is the surface a worker is certain to read.
+      const stand = batchState(reloaded.state, scope, bound, { chars: responseBody.length, activityId: activity_id });
+      const batch = {
+        activities: stand.activities.length,
+        max_activities: bound.maxActivities,
+        delivered_chars: stand.chars,
+        budget_chars: bound.budgetChars,
+        may_continue: stand.mayContinue,
+      };
+      const batchBlock = `${stringifyForResponse({
+        batch: {
+          ...batch,
+          note: stand.mayContinue
+            ? 'This context may take a further activity of this run. Report each activity as it completes, and read this answer again on the next delivery.'
+            : 'This context has reached its bound. Finish and report the current activity, then report the next activity as needing its own dispatch and stop — asking for it is refused with the payload undelivered.',
+        },
+      })}\n\n`;
+      const responseText = `${batchBlock}${responseBody}`;
+
       const next = advanceSession(reloaded.state, (draft) => {
         recordDeliveries(draft, scope, newDeliveries);
         recordDispatch(draft, { scope, kind: dispatch, activityId: activity_id, chars: responseText.length });
@@ -1245,19 +1283,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       });
       await saveSessionForTool(reloaded, next);
 
-      // Where this context stands against its bound, this delivery included. A worker reads
-      // `may_continue` to decide whether to ask for the next activity, so the ordinary end of a batch
-      // is the worker stopping and the refusal above is the backstop. The counts make that answer
-      // auditable from the response.
-      const stand = batchState(next, scope, bound);
-      const batch = {
-        activities: stand.activities.length,
-        max_activities: bound.maxActivities,
-        delivered_chars: stand.chars,
-        budget_chars: bound.budgetChars,
-        may_continue: stand.mayContinue,
-      };
-
       // What this delivery cost to build and to send, on one line. `resolved_techniques` is the
       // distinct bound ops the producer scan read for the whole request and `provenance_passes` the
       // steps decorated from that one scan, so the two together say whether resolve work is being
@@ -1271,6 +1296,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         bundled_steps: bundledSteps.length,
         bundled_steps_collapsed: bundledSteps.filter((b) => b.delivery === 'unchanged').length,
         bundled_resources: bundledResourceDeliveries.length,
+        shared_blocks_collapsed_in_response: intraResponseCollapses,
         spent_chars: spentChars,
         eager_budget_chars: Math.floor(eagerBudgetChars),
         response_chars: responseText.length,
