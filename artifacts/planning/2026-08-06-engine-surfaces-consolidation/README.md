@@ -1,6 +1,6 @@
 # Engine surfaces — consolidation record
 
-This folder is the investigation-detail home for the engine-surfaces epic, which consolidates two issues about the same set of files: the workflow-engine group's rules, the orchestrator's entry technique, and the cross-workflow conduct contract — the surfaces that ride along on every dispatch, to every agent, in every workflow.
+This folder is the investigation-detail home for the engine-surfaces epic (#436), which consolidates two issues about the same set of files: the workflow-engine group's rules, the orchestrator's entry technique, and the cross-workflow conduct contract — the surfaces that ride along on every dispatch, to every agent, in every workflow.
 
 ## Consolidated issues
 

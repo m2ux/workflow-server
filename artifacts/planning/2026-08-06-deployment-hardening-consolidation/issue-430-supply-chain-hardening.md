@@ -1,6 +1,6 @@
 # Capture: issue #430 — Supply-chain hardening: pin safe dependency versions and block known-bad installs
 
-Body verbatim as of 6 August 2026 (filed 5 August 2026; subsumed into the deployment-hardening epic as W1 and closed on 6 August 2026). The local audit it records — root and worktree lockfiles, installed modules, host indicator paths — found nothing malicious, so the capture is the whole of the evidence and there is no separate investigation folder.
+Body verbatim as of 6 August 2026 (filed 5 August 2026; subsumed into the deployment-hardening epic #437 as W1 and closed on 6 August 2026). The local audit it records — root and worktree lockfiles, installed modules, host indicator paths — found nothing malicious, so the capture is the whole of the evidence and there is no separate investigation folder.
 
 ---
 

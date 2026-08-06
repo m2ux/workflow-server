@@ -1,6 +1,6 @@
 # Deployment hardening — consolidation record
 
-This folder is the investigation-detail home for the deployment-hardening epic, which consolidates two issues about the server meeting a machine that is not a developer's laptop: a continuous-integration runner installing dependencies, and a container whose filesystem the server cannot write to.
+This folder is the investigation-detail home for the deployment-hardening epic (#437), which consolidates two issues about the server meeting a machine that is not a developer's laptop: a continuous-integration runner installing dependencies, and a container whose filesystem the server cannot write to.
 
 ## Consolidated issues
 

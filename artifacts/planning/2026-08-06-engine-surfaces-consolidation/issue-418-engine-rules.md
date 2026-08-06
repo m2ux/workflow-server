@@ -1,6 +1,6 @@
 # Capture: issue #418 — Engine rules: move the procedure sitting in rule bodies to the operations, activities and resources that own it
 
-Body verbatim as of 6 August 2026 (filed 3 August 2026; subsumed into the engine-surfaces epic as W2 and closed on 6 August 2026).
+Body verbatim as of 6 August 2026 (filed 3 August 2026; subsumed into the engine-surfaces epic #436 as W2 and closed on 6 August 2026).
 
 ---
 

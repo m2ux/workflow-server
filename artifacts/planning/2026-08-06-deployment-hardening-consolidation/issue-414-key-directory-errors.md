@@ -1,6 +1,6 @@
 # Capture: issue #414 — Key directory errors: the fix-it guidance reaches every reason the write failed, not only permission denied
 
-Body verbatim as of 6 August 2026 (filed 3 August 2026; subsumed into the deployment-hardening epic as W2 and closed on 6 August 2026).
+Body verbatim as of 6 August 2026 (filed 3 August 2026; subsumed into the deployment-hardening epic #437 as W2 and closed on 6 August 2026).
 
 Its investigation record — the four failure sites, the error codes that miss the guidance, the sandbox run that surfaced it, the caller survey and the blast-radius output — stays where it was written: [`2026-08-03-key-directory-error-guidance`](../2026-08-03-key-directory-error-guidance/).
 

@@ -1,6 +1,6 @@
 # Capture: issue #425 — Activity audience: the client dispatch loop runs in the orchestrator instead of a spawned worker
 
-Body verbatim as of 6 August 2026 (filed 3 August 2026; subsumed into the engine-surfaces epic as W1 and closed on 6 August 2026).
+Body verbatim as of 6 August 2026 (filed 3 August 2026; subsumed into the engine-surfaces epic #436 as W1 and closed on 6 August 2026).
 
 ---
 
