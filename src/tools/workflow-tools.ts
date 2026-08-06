@@ -493,6 +493,17 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         planning_folder_path: presentPlanningPath(loaded.folderAbsPath) ?? loaded.folderAbsPath,
       };
 
+      // What the orchestrator's own delivery cost. This is the largest fixed payload of a session —
+      // the same operations bundle every run, read before the first decision — so it reports on the
+      // same channel as the worker-facing deliveries rather than being the one call that says nothing.
+      logInfo('Workflow delivery cost', {
+        session_index, workflow: workflow_id, agentId: state.agentId,
+        delivery: opsBlock === opsText ? 'full' : 'unchanged',
+        resolved_techniques: orchestratorTechniques.length,
+        bundle_chars: opsText.length,
+        response_chars: preamble.length + stringifyForResponse(summaryData).length,
+      });
+
       return {
         content: [{ type: 'text' as const, text: preamble + stringifyForResponse(summaryData) }],
         _meta: { session_index, validation },
@@ -1248,14 +1259,12 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         budget_chars: bound.budgetChars,
         may_continue: stand.mayContinue,
       };
-      const batchBlock = `${stringifyForResponse({
-        batch: {
-          ...batch,
-          note: stand.mayContinue
-            ? 'This context may take a further activity of this run. Report each activity as it completes, and read this answer again on the next delivery.'
-            : 'This context has reached its bound. Finish and report the current activity, then report the next activity as needing its own dispatch and stop — asking for it is refused with the payload undelivered.',
-        },
-      })}\n\n`;
+      // The numbers only. What to do with `may_continue` is owned by the worker role technique every
+      // activity bundle carries (`workflow-engine::activity-worker`, batch-ends-where-the-server-says),
+      // and restating it here would put the same instruction on a third surface and cost every
+      // delivery the characters. `delivered_chars` counts this response's payload; the block's own
+      // length is charged to the recorded dispatch, which is the figure a measurement reads.
+      const batchBlock = `${stringifyForResponse({ batch })}\n\n`;
       const responseText = `${batchBlock}${responseBody}`;
 
       const next = advanceSession(reloaded.state, (draft) => {
