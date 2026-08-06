@@ -71,6 +71,7 @@ import type { SessionFile } from '../src/schema/session.schema.js';
 import { deliveredChars } from '../src/utils/batch.js';
 import { measureFanOut, fanOutRatios, fanOutLines } from '../src/utils/fan-out.js';
 import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
+import { CORE_WORKER_TECHNIQUES } from '../src/loaders/core-ops.js';
 import { composeActivityTechnique } from '../src/loaders/technique-loader.js';
 import { flattenActivitySteps, techniqueName } from '../src/schema/activity.schema.js';
 import type { Technique } from '../src/schema/technique.schema.js';
@@ -177,16 +178,26 @@ async function measureRunFanOut(workflowId: string, activities: string[]) {
   const loaded = await loadWorkflowWithDiagnostics(root, workflowId);
   if (!loaded.success) throw loaded.error;
   const { workflow, activitySourceWorkflow } = loaded.value;
+  const inherited = (workflow as { techniques?: { activity?: string[] } }).techniques?.activity ?? [];
 
   const composed: Technique[] = [];
   for (const activityId of activities) {
     const activity = workflow.activities?.find((a) => a.id === activityId);
     if (!activity) continue;
     const scopeWorkflowId = activitySourceWorkflow.get(activityId) ?? workflowId;
-    for (const step of flattenActivitySteps(activity)) {
-      if (step.kind !== 'technique') continue;
-      const ref = techniqueName(step.technique);
-      if (!ref) continue;
+
+    // Every operation a delivery carries, not only the step-bound ones. The activity-level bundle —
+    // the workflow's inherited `techniques.activity`, the activity's own, and the core worker set —
+    // arrives with EVERY activity, so the container rules of `workflow-engine` and `agent-conduct`
+    // reach every worker of every workflow through it. Measuring the step-bound operations alone
+    // reports a fraction of the fan-out and misses the widest-reaching rules entirely.
+    const own = (activity as { techniques?: string[] }).techniques ?? [];
+    const stepRefs = flattenActivitySteps(activity)
+      .filter((s) => s.kind === 'technique')
+      .map((s) => techniqueName(s.technique))
+      .filter((ref): ref is string => !!ref);
+
+    for (const ref of [...inherited, ...own, ...CORE_WORKER_TECHNIQUES, ...stepRefs]) {
       const result = await composeActivityTechnique(ref, root, scopeWorkflowId, activityId);
       if (result.success) composed.push(result.value.technique);
     }
