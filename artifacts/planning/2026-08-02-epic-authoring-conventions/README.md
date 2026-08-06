@@ -3,31 +3,38 @@
 **Date:** 2026-08-02
 **Purpose:** Record the conventions established across the 2026-08-02 epic consolidation wave — language, structure, titling, work-item mechanics, lifecycle, and prioritisation — so they can be reviewed and later distilled into a workflow-authoring technique (an "author an epic" / "consolidate issues into an epic" protocol). Everything here is observed from live issues, not aspirational.
 
-**Exemplar corpus:** #310, #338, #397, #398, #399, #400, #401, #402 — the eight open epics at time of writing. #395 / #394 remain the reference pair for the plain-language mandate itself (see `CLAUDE.md`, "Plain-language mandate for issues and PRs", and the companion folder `2026-08-02-artifact-audience-and-plain-language`).
+**Exemplar corpus:** #310, #338, #397, #398, #399, #400, #401, #402 — the eight open epics at time of writing; #403, #404, #436 and #437 joined later and follow the same shape. #395 / #394 remain the reference pair for the plain-language mandate itself (see `CLAUDE.md`, "Plain-language mandate for issues and PRs", and the companion folder `2026-08-02-artifact-audience-and-plain-language`).
 
 ---
 
 ## 1. Title conventions
 
-Pattern: **`[Epic] Name: plain description`**
+Pattern: **`[Epic] Name: The Broad Concern`**, in title case.
 
 - `[Epic]` prefix marks the tracking tier; everything else obeys the plain-language title rules.
-- **Name** is a two-to-three-word handle used in speech and cross-references ("Shared homes", "Decision integrity", "Graph reach", "Server unblocks").
-- **Description** states what changes, in words anyone on the team can parse, usually as a compound clause covering each work-item cluster: "gates reach the user, approvals change recorded state, and the bindings around them resolve".
-- Sanitised: no conventional-commit prefixes, no internal shorthand or abbreviations, no anti-pattern numbers, no code tokens unless the token is the subject of the work. A schema keyword like `when` is spelled around ("checkpoints gated the surviving way become dismissible") rather than shipped in the title.
+- **Name** is a two-to-three-word handle used in speech and cross-references ("Shared Homes", "Decision Integrity", "Graph Reach", "Server Unblocks"). It names the area of concern, so it stays right as work items join. When it stops doing that, rename it and retarget the references — "Session presets" became "Session Creation" once the epic held a server-side bootstrap and a reattach item as well as profiles.
+- **Description** names the one broad concern the epic addresses, in about five to eight words. It is not a summary of the work items: the body's gap paragraphs and W-items carry those, and a title that enumerates them goes stale every time an item joins. "The State a Session Starts In" covers seeded profiles, derived setup facts and a resumed run without naming any of them.
+- **Title case** throughout: capitalise the first and last word, every noun, pronoun, verb (including "Is" and "Can"), adjective and adverb, and any word of four letters or more. Lowercase articles, coordinating conjunctions, and prepositions of three letters or fewer — "a", "the", "and", "to", "of", "for", "by", "per".
+- Sanitised: no conventional-commit prefixes, no internal shorthand or abbreviations, no anti-pattern numbers, no code tokens unless the token is the subject of the work. A schema keyword like `when` is spelled around rather than shipped in the title.
 
-Observed titles:
+Titles as of 6 August 2026, when all twelve were shortened to the broad concern and put into title case:
 
 | # | Title |
 |---|---|
-| 397 | Protocol structure: alternatives and inline calls written in technique protocols become structure the server resolves, checks, and delivers |
-| 398 | Section delivery: section links resolve the way the checker promises, nested sections become addressable, and a delivered section carries what its reader needs |
-| 399 | Shared homes: patterns kept as private copies or free prose move to shared groups, and workflows bind the contract |
-| 400 | Decision integrity: gates reach the user, approvals change recorded state, and the bindings around them resolve |
-| 401 | Session presets: a session's starting state and execution shape are fixed from the definition before the first step |
-| 402 | Server unblocks: checkpoints gated the surviving way become dismissible, and activity rules can reference shared fragments |
-| 338 | Corpus backlog: five content defects, the unfinished fragment conversion, and two schema-gated migrations in the workflow definitions |
-| 310 | Graph reach: every workflow gets the knowledge graph, sibling repositories become reachable, and the markdown index is put to work |
+| 310 | Graph Reach: The Knowledge Graph Across Workflows and Repositories |
+| 338 | Corpus Backlog: The Definition Debt Left Behind by Closed Issues |
+| 397 | Protocol Structure: Alternatives and Delegation the Server Can See |
+| 398 | Section Delivery: Citing and Delivering Part of a Resource |
+| 399 | Shared Homes: One Home per Capability, Bound Rather Than Copied |
+| 400 | Decision Integrity: The Path From a Gate to a Recorded Decision |
+| 401 | Session Creation: The State a Session Starts In |
+| 402 | Server Unblocks: The Server Capabilities the Corpus Is Waiting On |
+| 403 | Artifact Audience: Writing Each Artifact for Its Actual Reader |
+| 404 | Delivery Cost: What a Delivery Costs to Build and to Send |
+| 436 | Engine Surfaces: Who Shared Engine Content Is Written For |
+| 437 | Deployment Hardening: The Server Outside a Developer's Machine |
+
+The titles these replaced ran to twenty-five words and read as a list of work items — "gates reach the user, approvals change recorded state, and the bindings around them resolve". Each was accurate when written and drifted as soon as an item joined or left, which is the argument for naming the concern instead.
 
 ## 2. Language rules
 
