@@ -26,10 +26,38 @@ Every figure below is from the branch that produced it, on the same corpus.
 | Bootstrap fixed content | 137,758 | 100,273 | #439 + #440, budget 110,000 |
 | Resolve passes per delivery | one a step | one a request | #440 |
 | Full delivery, three activities of the main workflow | 225,617 | 213,476 | #441 |
-| Reference walk collapse over thirteen gates | 69.9% | 83.5% | #442 |
-| Characters re-requested on that walk | 271,411 | 141,951 | #442 |
+| Reference walk collapse over thirteen gates | 69.9% | 83.7% | #442 |
+| Characters re-requested on that walk | 271,411 | 140,014 | #442 |
 | Container-rule reach | — | 8.3% of 72 entries | #440, warn-only |
 | Inherited-I/O reach | — | 1.4% of 215 items | #440, warn-only |
+
+### A withdrawn comparison, and the like-for-like one that replaces it
+
+A first pass compared the meta setup ceremony's per-activity deliveries on the top of the stack against
+the figures measured before any change, and read three activities as growing 2.8 to 3.4 per cent.
+**Those figures are an artefact and should not be quoted.** The two measurements ran against different
+corpora — the before figures on the corpus main pinned, the after figures on a corpus 3,685 characters
+larger in the orchestrator bundle alone. The corpus difference, not the code, is most of what they
+showed. It is the same fault the startup-cost record withdrew a delivery-growth figure for, and it is
+worth not repeating twice.
+
+Measured like for like, corpus held at `e47942b6`, code before and after the delivery changes:
+
+| Activity | Before | After | Δ |
+|---|---:|---:|---:|
+| discover-session | 63,111 | 55,781 | −7,330 |
+| initialize-session | 40,188 | 40,302 | +114 |
+| resolve-target | 38,159 | 38,273 | +114 |
+| dispatch-client-workflow | 32,810 | 32,924 | +114 |
+| end-workflow | 53,887 | 52,149 | −1,738 |
+
+The 114 characters are the `batch:` block, which is content these deliveries did not previously carry.
+Where an activity bundles two or more techniques the collapse of their repeated blocks more than covers
+it; where it bundles one or none there is nothing to collapse and the block is the whole difference.
+That trade is deliberate: a limit no worker can read is a limit that cannot bind, and 114 characters is
+what the reading costs. The block carries the five numbers and no instruction — what to do with
+`may_continue` is owned by the worker role technique every activity bundle already delivers, so the
+block carries no instruction of its own.
 
 The epic body quotes 65.4% for the walk's collapse figure. That reading predates the batched-dispatch
 merge, which added the `activity-worker` role technique to every activity delivery; the same test at
@@ -82,6 +110,34 @@ changes plus 1,109,551 on same-identity resumes that re-delivered a byte-identic
 W10 is #442, so once that merges the residual is no longer explained by the activity body — the walk
 records 83.5% collapse with the body included in the collapsible set.
 
+## #269's four stages, dispositioned
+
+The epic's fourth acceptance criterion asks for each stage of the subsumed provenance-caching item to
+be delivered or explicitly declined. All four are delivered, and one carries a scope note.
+
+| Stage | Disposition |
+|---|---|
+| 1 — cache technique output ids once per request | Delivered in #440. `buildProducerIndex` holds the scan for a request; `provenanceContextFor` reads each step's position out of it. |
+| 2 — build provenance once per `get_activity` | Delivered in #440, by the same split. The eager-bundling loop builds one index before it starts and decorates every step from it. |
+| 3 — agent and protocol guidance | Delivered in #443. Its four points map to: reference bundles after the first full delivery (`agent-id-on-delivery-calls`, already in place); `full` only after summarization (`force-full-after-summarization`, already in place); use the bundled resources map and stop probing spellings (`resource-loading-via-tool`, extended); and what a lazy fetch costs (`fetch-costs-what-it-delivers`, new). |
+| 4 — observability | Delivered in #440, on four calls rather than the one the stage names: `get_activity`, `get_technique`, `get_resource`, and `get_workflow`. |
+
+**Scope note on stages 1 and 2.** The cache is per request, not per process. A cross-request cache
+would need invalidation against corpus edits, and the stage asks for "once per request" — a corpus
+edit between two calls is visible to the second with no invalidation logic at all. Nothing is declined.
+
+## The intra-response duplication that stays, and why
+
+The eighth criterion asks whether a full delivery can drop content it has already sent once, and takes
+either the duplication going or the reason it has to stay. Both apply, to different halves:
+
+- **Within one response** — gone. #441 collapses the second and later copies of a shared block, because
+  the bytes are above the marker in the same payload.
+- **Across calls, on a full delivery** — stays. A full delivery is what a context that holds nothing
+  receives, and a marker pointing at an earlier call is unreadable to it. The exception is a repeat
+  fetch to a named context, where the ledger is evidence the bytes arrived, which is what #441's
+  second half does.
+
 ## W5's audit, and what it found
 
 The ceremony's commit cadence is changed in #439. The delivered-weight half of W5 was measured rather
@@ -115,3 +171,32 @@ Three findings:
 
 So W5 delivers the single commit, and records that the per-activity trim it was scoped to find has
 nothing in the setup activities' own declarations to take.
+
+**Against the criterion as written.** It asks that each setup activity deliver less content than its
+July baseline. Measured against the code this work changed, two of five do and three carry 114
+characters more. Measured against July, none does — the deliveries have grown since, and the growth
+predates this work: the `activity-worker` role technique added to every activity delivery on the
+batched-dispatch branch accounts for about 5,700 characters of it. That clause is not met, and the
+lever that would meet it is the 27,600-character fixed activity bundle, which is corpus-wide.
+
+## What a gap analysis of this work found, and what changed because of it
+
+Run against the epic's twelve acceptance criteria and the canon's binding units, after all five pull
+requests were open. Seven findings, all fixed on their branches.
+
+| Finding | Where | Fix |
+|---|---|---|
+| `get_workflow` emitted no cost line, though the criterion says every delivery call does — and it is the largest fixed payload of a session | #440 | Reports on the same channel as the other three |
+| The resolution model asserted twice that a fresh or default session always receives full bodies, and once that the activity body is always delivered | #441, #442 | Three grounds for a marker, tabulated; the definition's parts described |
+| The ledger's documented namespace list omitted the definition channel | #442 | `activity:*` listed |
+| The batch block restated what the worker role technique already owns, on a third surface, for 148 characters a delivery | #441 | Numbers only |
+| A rule cited protocol phases by ordinal, twice, which addresses whichever phase later holds that index | #439, #443 | The acts named instead |
+| The dispatch announcement was both a protocol phase and a rule — a standing duty encoded as a work outcome | #443 | One home, under Rules, instructing the reader |
+| The rule describing the ledger implied a repeat fetch needs the reference opt-in | #443 | Says which call each ground governs |
+| Two of the new rules stated the reader's own duty in the third person | #439, #443 | Imperative |
+
+The catalogue entries these key on, by name: `stale-restatement-after-change`, `no-duplicated-guidance`,
+`phase-cited-by-ordinal`, `rule-as-protocol-step`, `instruction-narrates-an-actor`. Two entries were
+checked and found not to fire: `overlapping-rule-scopes`, because each new rule names the entry it
+excepts and that naming is the ordering, and `runtime-rules-only`, because every new rule governs
+session conduct rather than how to author a definition.
