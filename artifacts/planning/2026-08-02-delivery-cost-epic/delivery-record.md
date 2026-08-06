@@ -273,3 +273,56 @@ upper canon layer is on the change surface.
 The I/O-contract closure the first pass asserted is now verified: the corpus diff against `origin/workflows`
 adds and removes no `## Inputs`, `## Outputs` or declared-id heading, so no referencer joins the change
 surface and the consumer set stays empty.
+
+## A third pass, over the delivery accounting and the metric itself
+
+Three more findings. Two are defects in this epic's own instruments — the figure W2 reports and the
+figure W6 reports — which is the class the first two passes had no reason to look at, having taken both
+as the measuring apparatus rather than as code under review.
+
+| Finding | Keys on | Fixed in |
+|---|---|---|
+| The eager budget was charged the uncollapsed composed size while the response carried the collapsed one, so it spent budget on characters no response sends and would displace later steps into lazy fetches to pay for them. `spent_chars` on the cost line reported the same inflated figure | correctness | #444 |
+| The fan-out metric composed only step-bound operations, missing the activity-level bundle — where `workflow-engine`'s and `agent-conduct`'s container rules reach every worker of every workflow | W6 coverage | #444 |
+| A rule on a container carried a measured range from one historical run: not actionable by its reader, dated, and delivered to every worker — the fan-out the same metric counts | Output Economy | #443 |
+
+### What the budget was charging
+
+Measured over five activities of the two live workflows, charged against what the bundle delivered:
+
+| Activity | Charged | Delivered | Over |
+|---|---:|---:|---:|
+| discover-session | 27,710 | 19,906 | **39.2%** |
+| start-work-package | 53,199 | 39,767 | 33.8% |
+| plan-prepare | 42,499 | 35,404 | 20.0% |
+| implementation-analysis | 34,186 | 28,736 | 19.0% |
+| end-workflow | 21,414 | 19,178 | 11.7% |
+
+No step is displaced today, because the budget is 640,000 characters at a 200,000-token window and the
+heaviest of these spends 53,199. It binds on a narrow window, which is a case the suite and
+`bench:batch --context-tokens` both reach. The over-charge predates this epic for reference deliveries,
+where blocks already collapsed; W7 widened it to every delivery, which is why the fix rides with this
+work rather than being left as found.
+
+Block hashes now stage onto a copy, so a budget break discards them with the entry they belong to. A
+hash recorded for content never sent would collapse a later fetch to a marker the worker cannot read —
+the failure the whole ledger scheme exists to avoid, reachable through the fix if it were written
+carelessly.
+
+### What the fan-out metric was missing
+
+The first implementation composed each walked activity's step-bound operations. It never composed the
+activity-level bundle, so the container rules with the widest reach in the corpus — `workflow-engine`'s
+and `agent-conduct`'s, delivered with every activity of every workflow — were absent from a metric whose
+whole subject is reach.
+
+Over the default three-activity run: **16,504 characters across 72 rule entries → 41,596 across 135**,
+and the reach ratio 8.3% → 6.7%. Scaled to a full fifteen-activity walk the entry count reaches the
+order the SOLID review measured over one walk, 618, and the ratio sits near its 8.9%. The step-bound-only
+version could not offer that corroboration, and its agreement with the review's figure was coincidence.
+
+### How the third pass found them
+
+By treating W2's and W6's own output as claims to check rather than as instruments to read. The budget
+finding came from asking what `spent_chars` is measured against; the metric finding came from noticing
+that editing a `workflow-engine` container rule moved no reported figure, which it should have.
