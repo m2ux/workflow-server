@@ -10,6 +10,10 @@ import { corpusRoot } from './corpus-root.js';
  * `#### artifact` filename must name a JSON artifact — an agent-audience artifact is serialized as
  * JSON on disk (docs/technique-protocol-specification.md §3.2). Hard zero: the convention has no
  * accepted exceptions, and the retired baseline held an empty array (#327 R5).
+ *
+ * Presence is deliberately unchecked. A register whose only reader is a later step is agent state in
+ * substance but markdown in form, so it carries no declaration until #428 converts it; a presence
+ * check would fail on exactly the set that is waiting.
  */
 
 const FM = ['---', 'metadata:', '  version: 1.0.0', '---', ''];
@@ -51,7 +55,19 @@ describe('audience guard (fixture corpus)', () => {
     ]);
     const violations = await collectAudienceViolations(tempDir);
     expect(violations.map((v) => v.key)).toEqual(['fixture-wf::bad::state_log']);
+    expect(violations[0]!.check).toBe('audience-json-format');
     expect(violations[0]!.detail).toContain('assumptions-log.md');
+  });
+
+  // An artifact with no audience declaration is out of scope: absent means `human`, and the
+  // registers awaiting conversion (#428) rely on that until their format changes.
+  it('passes an artifact-bearing output that declares no audience', async () => {
+    const dir = join(tempDir, 'fixture-wf', 'techniques');
+    await writeTechnique(dir, 'undeclared', [
+      '### report', '', 'A report with no declared reader.', '',
+      '#### artifact', '', '`design-review.md`',
+    ]);
+    expect(await collectAudienceViolations(tempDir)).toEqual([]);
   });
 
   it('passes a JSON-named agent-audience artifact and a human-audience markdown artifact', async () => {
