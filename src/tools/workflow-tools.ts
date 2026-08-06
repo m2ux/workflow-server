@@ -1002,23 +1002,33 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             // A reference marker is near-zero cost — it does not draw down the eager budget.
             bundledStepTechniques[step.id!] = { marker: stepMarker, ...unchangedMarker(hash) };
           } else {
-            // Full content draws down the cumulative budget. Inline ungated step techniques in
-            // document order and STOP at the first one that would overflow the remaining budget
-            // (stop-and-break) — the remainder stay lazy. This preserves the contiguous
-            // document-order prefix the spec and docs promise, rather than skipping a large
-            // technique to squeeze in a later smaller one.
-            if (spentChars + text.length > eagerBudgetChars) break;
-            spentChars += text.length;
-            newDeliveries[ledgerKey] = hash;
             // The arrival marker leads the block; the composed technique fields follow at the same
             // level, so a bundled entry reads exactly like a get_technique fetch with a step header.
             // Shared contract and rules blocks collapse to a marker while the core stays full. Under
             // reference mode a block this context received on an earlier call collapses too; under
             // full delivery only a block a sibling of THIS response already carried does, so the
             // bytes a marker stands for are always above it in the same payload.
+            //
+            // Projected BEFORE the budget check, because what a collapsed block costs the budget is
+            // what it costs the wire: nothing. Charging the uncollapsed size instead spends budget on
+            // characters no response carries, and displaces later steps into lazy fetches to pay for
+            // them. Block hashes are staged onto a copy so a budget break discards them with the entry
+            // — a hash recorded for content never sent would collapse a later fetch to a marker the
+            // worker cannot read. The copy carries this call's earlier entries, which is what lets a
+            // sibling's block be recognised.
+            const staged: Record<string, string> = { ...newDeliveries };
             const projected = dedupTechniqueBlocks(
-              projectTechnique(technique), state, newDeliveries, scope, { readLedger: referenceMode },
+              projectTechnique(technique), state, staged, scope, { readLedger: referenceMode },
             );
+            // Full content draws down the cumulative budget. Inline ungated step techniques in
+            // document order and STOP at the first one that would overflow the remaining budget
+            // (stop-and-break) — the remainder stay lazy. This preserves the contiguous
+            // document-order prefix the spec and docs promise, rather than skipping a large
+            // technique to squeeze in a later smaller one.
+            const deliveredChars = stringifyForResponse(projected).length;
+            if (spentChars + deliveredChars > eagerBudgetChars) break;
+            spentChars += deliveredChars;
+            Object.assign(newDeliveries, staged, { [ledgerKey]: hash });
             if (!referenceMode) intraResponseCollapses += countCollapsedBlocks(projected);
             bundledStepTechniques[step.id!] = { marker: stepMarker, ...projected };
           }

@@ -6,8 +6,12 @@
  * its own role technique guards behind a branch that cannot be taken.
  */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { CHECKPOINT_WORKER_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../src/loaders/core-ops.js';
+import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
+import { flattenActivitySteps } from '../src/schema/activity.schema.js';
+import { corpusRoot } from './corpus-root.js';
 import { createHarness, rawText, isError, parseToolResponse, type Harness } from './e2e/harness.js';
 
 /** Activities of the main workflow with and without a checkpoint step. */
@@ -19,6 +23,35 @@ describe('checkpoint protocols in the core worker set', () => {
     for (const ref of CHECKPOINT_WORKER_TECHNIQUES) {
       expect(CORE_WORKER_TECHNIQUES).toContain(ref);
     }
+  });
+
+  it('sees a checkpoint wherever the authored YAML has one, over the whole corpus', async () => {
+    // The delivery decides from the LOADED activity; an author writes the raw file. A checkpoint the
+    // loaded object does not show is one whose activity would lose the protocols it needs to yield —
+    // silently, since nothing else reads that decision. So the two views are compared directly, over
+    // every activity, rather than trusted to agree: a checkpoint step carries `kind: checkpoint`
+    // whether its body is inline or arrives through a `ref:`, and this is what keeps that true.
+    const root = corpusRoot();
+    let scanned = 0;
+    for (const workflow of readdirSync(root)) {
+      const dir = join(root, workflow, 'activities');
+      if (!existsSync(dir)) continue;
+      const loaded = await loadWorkflowWithDiagnostics(root, workflow);
+      if (!loaded.success) continue;
+      for (const file of readdirSync(dir).filter((f) => f.endsWith('.yaml'))) {
+        const raw = readFileSync(join(dir, file), 'utf8');
+        const rawHas = /^\s*-?\s*kind:\s*checkpoint\s*$/m.test(raw);
+        const id = /^id:\s*(\S+)/m.exec(raw)?.[1];
+        const activity = loaded.value.workflow.activities?.find((a) => a.id === id);
+        if (!activity) continue;
+        scanned += 1;
+        expect(
+          flattenActivitySteps(activity).some((s) => s.kind === 'checkpoint'),
+          `${workflow}/${file}: the loaded activity and the authored YAML disagree on whether it has a checkpoint`,
+        ).toBe(rawHas);
+      }
+    }
+    expect(scanned).toBeGreaterThan(50);
   });
 });
 
