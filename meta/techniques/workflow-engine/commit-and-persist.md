@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.9.0
 ---
 
 ## Capability
@@ -38,7 +38,11 @@ Path to the planning folder.
 
 ### commit-after-activity
 
-After every completed activity, BOTH source-side changes (under `{host_repo_path}/{component_path}`) AND engineering artifacts (under `.engineering/artifacts/`) MUST be committed and **pushed** before evaluating transitions to the next activity. Skipping either scope leaves a dirty or remote-stale tree that breaks resume, Engineering links, and downstream activities. The submodule commit may be skipped only when the working tree at `{host_repo_path}/{component_path}` is clean. The engineering commit may be skipped only when the planning folder has no local changes **and** README Progress Status for `{activity_id}` already shows the intended post-activity status on the remote (complete, or cancelled/N/A when `{mark_progress_na}` applied) per [Status vocabulary](../../resources/planning-readme.md#status-vocabulary) — otherwise Apply [sync-progress-status](./sync-progress-status.md) then commit and push. Scope: this orchestrator post-activity hook only — distinct from [explicit-commit](../version-control/TECHNIQUE.md#explicit-commit), which governs ad-hoc commits outside this hook.
+After every completed activity, BOTH source-side changes (under `{host_repo_path}/{component_path}`) AND engineering artifacts (under `.engineering/artifacts/`) MUST be committed and **pushed** before evaluating transitions to the next activity. Skipping either scope leaves a dirty or remote-stale tree that breaks resume, Engineering links, and downstream activities. The submodule commit may be skipped only when the working tree at `{host_repo_path}/{component_path}` is clean. The engineering commit may be skipped only when the planning folder has no local changes **and** README Progress Status for `{activity_id}` already shows the intended post-activity status on the remote (complete, or cancelled/N/A when `{mark_progress_na}` applied) per [Status vocabulary](../../resources/planning-readme.md#status-vocabulary) — otherwise Apply [sync-progress-status](./sync-progress-status.md) then commit and push. Scope: this orchestrator post-activity hook only — distinct from [explicit-commit](../version-control/TECHNIQUE.md#explicit-commit), which governs ad-hoc commits outside this hook, and from the meta workflow's own setup sequence, whose cadence is [setup-sequence-persists-once](#setup-sequence-persists-once).
+
+### setup-sequence-persists-once
+
+The meta workflow's setup activities — every activity up to and including the one that dispatches the client workflow — share a single commit. Their Progress marks (Protocol steps 1–3) still apply per activity, because the README is the surface a reader watches while the ceremony runs and those edits are local. The commit and push (Protocol steps 4–6) apply once, as the first act of `03-dispatch-client-workflow`, covering everything the setup activities produced; that is the first moment anything outside this session reads the artifacts, since the client workflow's own commits land after it. Resume is unaffected: `session.json` and `.session-token` are written by the server on every authenticated call, so a session interrupted mid-ceremony resumes from the state on disk rather than from the remote. Client-workflow activities are outside this scope and persist per activity per [commit-after-activity](#commit-after-activity).
 
 ### readme-progress-before-persist
 
