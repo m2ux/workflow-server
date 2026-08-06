@@ -395,7 +395,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (bootstrapResult.success) {
         lines.push('', bootstrapResult.value.content);
       }
-      return { content: [{ type: 'text' as const, text: lines.join('\n') }] };
+      const text = lines.join('\n');
+      // The first content of a session, and fixed: the same characters every run. It reports on the
+      // same channel as every other delivery so the bootstrap window is summable from the log alone.
+      logInfo('Bootstrap delivery cost', { delivery: 'full', response_chars: text.length });
+      return { content: [{ type: 'text' as const, text }] };
     }));
 
   server.tool('list_workflows', 'List available workflows (id, title, version, tags). On load failures returns `{workflows, load_errors}`. No session_index required.', {},
