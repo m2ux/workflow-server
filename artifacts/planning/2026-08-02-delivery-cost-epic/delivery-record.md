@@ -173,11 +173,54 @@ So W5 delivers the single commit, and records that the per-activity trim it was 
 nothing in the setup activities' own declarations to take.
 
 **Against the criterion as written.** It asks that each setup activity deliver less content than its
-July baseline. Measured against the code this work changed, two of five do and three carry 114
-characters more. Measured against July, none does — the deliveries have grown since, and the growth
-predates this work: the `activity-worker` role technique added to every activity delivery on the
-batched-dispatch branch accounts for about 5,700 characters of it. That clause is not met, and the
-lever that would meet it is the 27,600-character fixed activity bundle, which is corpus-wide.
+July baseline. The 27 July profile records a `get_activity` figure per setup activity, so the comparison
+is possible — and after the checkpoint-reach change (#444) it comes out as:
+
+| Setup activity | 27 July | Now | Holds a gate? |
+|---|---:|---:|---|
+| initialize-session | 42,547 | **36,242** | no |
+| dispatch-client-workflow | 23,388 | 28,864 | no |
+| resolve-target | 27,383 | 38,273 | yes |
+| discover-session | 2,288 | 55,781 | yes |
+
+One of four is under its baseline. The other three are not, for the same reason in each case: eager
+bundling reached these activities after July, so the July figure counts the activity text plus whatever
+was inlined *then*, while today's counts step techniques that were being fetched lazily.
+`discover-session` is the extreme — 2,288 characters in July because almost nothing was inlined, against
+29,858 characters of four step techniques today, which the record's own lazy-fetch column shows it was
+paying for separately.
+
+So the clause is met for one activity, and for the rest it compares an eager-only figure against an
+all-in one. Meeting it as written would mean un-bundling those steps, which reverses a measured
+improvement. The lever that would meet it honestly is the 27,600-character fixed activity bundle every
+activity of every workflow receives, which is a corpus-wide decision rather than a ceremony one.
+
+## What measurement showed was reachable after the gap analysis
+
+The gap analysis reported W5's delivery clause and W8's real-session clause as unmet. Part of each turned
+out to be reachable, and #444 carries both.
+
+**The checkpoint protocols now reach only the activities that can reach a checkpoint.** A yield requires
+a `kind: checkpoint` step and a resume follows a yield, so an activity holding no checkpoint step reaches
+neither — its own role technique guards both behind branches it cannot take. Derived from the definition
+by the same scan the enforcement notes run. **4,060 characters off every checkpoint-free activity**: the
+two protocols compose to 13,052 between them, but their shared blocks collapse against their siblings
+either way, so what comes off is their own cores. Four activities across the two live workflows qualify —
+the meta workflow's `initialize-session` and `dispatch-client-workflow`, the main workflow's `validate`
+and `complete`.
+
+**A run forms at the window a real dispatch declares.** The batched-dispatch suite proved a run of three
+in one context and a batch surviving a real gate, both at a 2,000,000-token window chosen so only the
+activity cap could bind. That left the production question unanswered. It is now asserted: at 200,000
+tokens the run of three spends 151,931 of its 280,000-character budget, leaving 128,069 — more than the
+74,109 median all-in cost of one activity read off 112 worker contexts. So the server admits the run with
+headroom for a median activity's lazy fetches.
+
+That changes what W8 is waiting for. Its criterion offers a real session showing a context walking more
+than one activity, *or* the reason a run cannot form. Neither branch is satisfiable from here, and the
+precise statement is: a run **can** form, so the second branch has no true statement behind it on the
+server side, and what remains unobserved is the orchestrator composing a continuation on a live run.
+Everything the server contributes is proven.
 
 ## What a gap analysis of this work found, and what changed because of it
 
