@@ -69,6 +69,19 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
  * Technique refs every activity worker needs at the activity level. Returned by
  * get_activity alongside the activity's declared technique refs.
  */
+/**
+ * The members of {@link CORE_WORKER_TECHNIQUES} an activity needs only where it can reach a
+ * checkpoint. A yield requires a `kind: checkpoint` step, and a resume follows a yield, so an activity
+ * holding no checkpoint step reaches neither protocol. `get_activity` derives that from the definition
+ * and leaves both out, which is 4,060 characters off every checkpoint-free activity's delivery — the
+ * shared blocks they carry collapse against their siblings either way, so what comes off is their own
+ * cores.
+ */
+export const CHECKPOINT_WORKER_TECHNIQUES: readonly string[] = [
+  'workflow-engine::yield-checkpoint',
+  'workflow-engine::resume-from-checkpoint',
+];
+
 export const CORE_WORKER_TECHNIQUES: readonly string[] = [
   // The role itself. Every worker stub says to apply it, and only the meta workflow declares it in
   // `techniques.activity` — so for a client workflow it was named and never delivered, with no tool

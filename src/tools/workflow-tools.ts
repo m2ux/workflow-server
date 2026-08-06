@@ -11,7 +11,7 @@ import {
 import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, readActivityRaw, buildFragmentsLookup, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment, scanCheckpointRefLines } from '../loaders/fragment-resolver.js';
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
-import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
+import { CHECKPOINT_WORKER_TECHNIQUES, CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
 import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
@@ -853,7 +853,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const activity = result.success ? getActivity(result.value, activity_id) : undefined;
       const ownTechRefs = (activity as { techniques?: string[] } | undefined)?.techniques ?? [];
       const inheritedTechRefs = result.success ? ((result.value as { techniques?: { activity?: string[] } }).techniques?.activity ?? []) : [];
-      const workerTechniques = Array.from(new Set([...inheritedTechRefs, ...ownTechRefs, ...CORE_WORKER_TECHNIQUES]));
+      // The checkpoint half of the core worker set reaches the activities that can reach a checkpoint.
+      // An activity with no `kind: checkpoint` step cannot yield one, and a resume follows a yield, so
+      // both protocols are unreachable there — the worker role's own Protocol guards them behind
+      // reaching a checkpoint and behind `{effects}` being bound. Derived from the definition, like the
+      // enforcement notes below, so it is not a per-activity declaration anyone can forget to make.
+      const hasCheckpointStep = activity ? flattenActivitySteps(activity).some((s) => s.kind === 'checkpoint') : true;
+      const coreForActivity = hasCheckpointStep
+        ? CORE_WORKER_TECHNIQUES
+        : CORE_WORKER_TECHNIQUES.filter((ref) => !CHECKPOINT_WORKER_TECHNIQUES.includes(ref));
+      const workerTechniques = Array.from(new Set([...inheritedTechRefs, ...ownTechRefs, ...coreForActivity]));
       const resolvedWorker = await resolveTechniques(workerTechniques, config.workflowDir, workflow_id);
       const bundleData = formatTechniqueBundle(resolvedWorker);
 
