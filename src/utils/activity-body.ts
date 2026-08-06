@@ -13,8 +13,9 @@ import { stringifyForResponse } from './serialization.js';
  * returned matches the one it was dispatched for, and stops without executing a step if they
  * disagree. That check reads the definition.
  *
- * So the identity — every scalar field up to the first collapsible one — is always delivered in full,
- * and the step list, transitions, outcome and synthesised artifact contract are keyed separately.
+ * So every field the server does not key — the identity among them — is always delivered in full, in
+ * the position its author wrote it, and the step list, transitions, outcome and synthesised artifact
+ * contract are keyed separately.
  * It is the treatment a composed technique already gets, where the invariant note and the item list
  * are keyed apart so a shared preamble collapses even when the rest differs.
  *
@@ -35,11 +36,24 @@ export interface BodySection {
   text: string;
 }
 
+/**
+ * One run of the delivered definition. `field` names a keyed block; its absence means text that always
+ * ships as authored. Parts are held in DOCUMENT ORDER, and the delivery emits them in that order —
+ * seven activities of the corpus carry an unkeyed field between two keyed ones, so hoisting the unkeyed
+ * text would hand the worker a definition whose fields are not in the order its author wrote them.
+ */
+export interface BodyPart {
+  field?: string;
+  text: string;
+}
+
 /** The definition split at its top-level fields. */
 export interface SplitActivityBody {
-  /** Identity and scalars — everything before the first collapsible field. Always delivered whole. */
+  /** Every run of the definition, in document order — the form the delivery emits. */
+  parts: BodyPart[];
+  /** The unkeyed text, concatenated: the identity a worker checks its dispatch against. */
   identity: string;
-  /** The collapsible blocks, in document order. */
+  /** The keyed blocks, in document order. */
   sections: BodySection[];
 }
 
@@ -47,36 +61,46 @@ export interface SplitActivityBody {
 const TOP_LEVEL_FIELD = /^([A-Za-z$][A-Za-z0-9_-]*):/;
 
 /**
- * Split the delivered definition text at its top-level fields. Text before the first collapsible
- * field is the identity; each collapsible field carries its own block through to the next top-level
- * field. A field the server does not key stays in the identity, so an unrecognised definition field
- * is delivered rather than dropped.
+ * Split the delivered definition text into runs at its top-level fields, in document order. Each keyed
+ * field carries its own block through to the next top-level field; consecutive unkeyed fields share a
+ * run. A field the server does not key is delivered as authored rather than dropped, so an unrecognised
+ * definition field reaches the worker whole.
  */
 export function splitActivityBody(body: string): SplitActivityBody {
-  const lines = body.split('\n');
-  const identity: string[] = [];
-  const sections: BodySection[] = [];
-  let current: { field: string; lines: string[] } | undefined;
+  const parts: Array<{ field?: string; lines: string[] }> = [];
+  /** The run being accumulated. A new one opens at every top-level field that changes keyed-ness. */
+  let current: { field?: string; lines: string[] } | undefined;
 
-  for (const line of lines) {
+  const open = (field: string | undefined, line: string): void => {
+    current = field === undefined ? { lines: [line] } : { field, lines: [line] };
+    parts.push(current);
+  };
+
+  for (const line of body.split('\n')) {
     const opened = TOP_LEVEL_FIELD.exec(line);
     if (opened) {
       const field = opened[1]!;
-      if (current) { sections.push({ field: current.field, text: current.lines.join('\n') }); current = undefined; }
-      if (COLLAPSIBLE_BODY_FIELDS.includes(field)) {
-        current = { field, lines: [line] };
-        continue;
-      }
-      identity.push(line);
+      if (COLLAPSIBLE_BODY_FIELDS.includes(field)) { open(field, line); continue; }
+      // An unkeyed field extends the run before it only when that run is unkeyed too; after a keyed
+      // block it opens a run of its own, so document order survives.
+      if (current && current.field === undefined) current.lines.push(line);
+      else open(undefined, line);
       continue;
     }
-    // A continuation line belongs to whatever block is open; before the first collapsible field it is
-    // part of the identity (a folded description, a comment).
-    (current ? current.lines : identity).push(line);
+    // A continuation line belongs to whatever run is open — a folded description, a nested list, a
+    // comment. A body opening with one has no run yet, so it opens an unkeyed one.
+    if (current) current.lines.push(line);
+    else open(undefined, line);
   }
-  if (current) sections.push({ field: current.field, text: current.lines.join('\n') });
 
-  return { identity: identity.join('\n'), sections };
+  const resolved: BodyPart[] = parts.map((p) => (
+    p.field === undefined ? { text: p.lines.join('\n') } : { field: p.field, text: p.lines.join('\n') }
+  ));
+  return {
+    parts: resolved,
+    identity: resolved.filter((p) => p.field === undefined).map((p) => p.text).join('\n'),
+    sections: resolved.filter((p): p is BodySection => p.field !== undefined),
+  };
 }
 
 /** What a delivery of the definition carried, for the caller to report and to record. */
@@ -106,24 +130,22 @@ export function projectActivityBody(
   scope: string,
   opts: { readLedger: boolean },
 ): ProjectedActivityBody {
-  const { identity, sections } = splitActivityBody(body);
   const newDeliveries: Record<string, string> = {};
   const collapsedFields: string[] = [];
   let collapsedChars = 0;
 
-  const parts: string[] = identity.length > 0 ? [identity] : [];
-  for (const section of sections) {
-    const hash = contentHash(section.text);
-    const key = `activity:${section.field}:${hash}`;
+  const emitted = splitActivityBody(body).parts.map((part) => {
+    if (part.field === undefined) return part.text;
+    const hash = contentHash(part.text);
+    const key = `activity:${part.field}:${hash}`;
     if (opts.readLedger && deliveredHash(state, key, scope) === hash) {
-      parts.push(stringifyForResponse({ [section.field]: unchangedMarker(hash) }));
-      collapsedFields.push(section.field);
-      collapsedChars += section.text.length;
-      continue;
+      collapsedFields.push(part.field);
+      collapsedChars += part.text.length;
+      return stringifyForResponse({ [part.field]: unchangedMarker(hash) });
     }
     newDeliveries[key] = hash;
-    parts.push(section.text);
-  }
+    return part.text;
+  });
 
-  return { text: parts.join('\n'), newDeliveries, collapsedFields, collapsedChars };
+  return { text: emitted.join('\n'), newDeliveries, collapsedFields, collapsedChars };
 }

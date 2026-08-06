@@ -7,8 +7,10 @@
  * disagree — so the identity has to survive whatever else collapses.
  */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { parse } from 'yaml';
+import { corpusRoot } from './corpus-root.js';
 import { splitActivityBody, projectActivityBody, COLLAPSIBLE_BODY_FIELDS } from '../src/utils/activity-body.js';
 import { contentHash } from '../src/utils/delivery.js';
 import type { SessionFile } from '../src/schema/session.schema.js';
@@ -48,16 +50,47 @@ describe('splitActivityBody', () => {
   });
 
   it('loses nothing: the parts rejoin into the definition they came from', () => {
-    const { identity, sections } = splitActivityBody(BODY);
-    expect([identity, ...sections.map((s) => s.text)].join('\n')).toBe(BODY);
+    expect(splitActivityBody(BODY).parts.map((p) => p.text).join('\n')).toBe(BODY);
   });
 
-  it('keeps an unrecognised top-level field with the identity rather than dropping it', () => {
+  it('keeps an unrecognised top-level field rather than dropping it', () => {
     const withExtra = `${BODY}\nbundleTechniques:\n  maxChars: 0`;
     const { identity, sections } = splitActivityBody(withExtra);
     expect(identity).toContain('bundleTechniques:');
     expect(identity).toContain('  maxChars: 0');
     expect(sections.map((s) => s.field)).toEqual(COLLAPSIBLE_BODY_FIELDS);
+  });
+
+  it('keeps an unkeyed field where its author put it, between two keyed ones', () => {
+    // Seven activities of the corpus carry `decisions:` between `steps` and `transitions`. Hoisting it
+    // to the front of the delivery would hand the worker a definition whose fields are not in the order
+    // they were authored in.
+    const withMiddle = [
+      'id: mid', 'version: 1.0.0', 'steps:', '  - kind: action',
+      'decisions:', '  - id: d1', 'transitions:', '  - to: next',
+    ].join('\n');
+    const { parts } = splitActivityBody(withMiddle);
+    expect(parts.map((p) => p.field ?? '-')).toEqual(['-', 'steps', '-', 'transitions']);
+    expect(parts.map((p) => p.text).join('\n')).toBe(withMiddle);
+  });
+
+  it('round-trips every activity of the corpus', () => {
+    const root = corpusRoot();
+    let scanned = 0;
+    for (const workflow of readdirSync(root)) {
+      const dir = join(root, workflow, 'activities');
+      if (!existsSync(dir)) continue;
+      for (const file of readdirSync(dir).filter((f) => f.endsWith('.yaml'))) {
+        const body = readFileSync(join(dir, file), 'utf8');
+        scanned += 1;
+        expect(
+          splitActivityBody(body).parts.map((p) => p.text).join('\n'),
+          `${workflow}/${file} does not round-trip: the delivered definition differs from the authored one`,
+        ).toBe(body);
+      }
+    }
+    // A corpus that scanned nothing would pass every assertion above it.
+    expect(scanned).toBeGreaterThan(50);
   });
 });
 
