@@ -8,8 +8,11 @@ This folder is the investigation-detail home for the protocol-structure epic, wh
 |---|---|---|---|
 | W1 — protocol variants | #395 | [issue-395-protocol-variants.md](./issue-395-protocol-variants.md) | [2026-08-02-technique-protocol-variants](../2026-08-02-technique-protocol-variants/) — machinery trace, 554-file corpus survey, agreed design with rejected alternatives, change inventory |
 | W2 + W3 — inline technique folds | #394 | [issue-394-technique-folding.md](./issue-394-technique-folding.md) | [2026-08-02-inline-technique-fold-investigation](../2026-08-02-inline-technique-fold-investigation/) — composition pipeline trace, guard/canon/schema coverage survey, corpus survey with drift instances |
+| W4 — variant parity | #432 | [issue-432-variant-parity.md](./issue-432-variant-parity.md) | [2026-08-04-solid-affinity](../2026-08-04-solid-affinity/) — the search method, the three variant sets, the four arms' contracts side by side, and two originating claims that did not reproduce |
 
 Each capture is the issue body verbatim at consolidation time, so the evidence, tables, and acceptance detail stay reachable after the issue closes.
+
+W4 joined on 6 August 2026 and closed on joining. Its own non-goals had already made it conditional on W1: if declared protocol variants land first, the catalogue entry keys on that construct rather than growing its own way to find sibling arms. Folding it in settles the condition and puts the entry in the hands of whoever builds the construct. It also completes this epic's coverage of alternatives — W1 gives them a structural home, W4 gives the catalogue a test for the seam where they meet a common consumer.
 
 ## Doctrine decision
 

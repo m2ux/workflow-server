@@ -7,8 +7,10 @@ This folder is the investigation-detail home for the delivery-cost epic, which g
 | Work item | Issue | Capture in this folder | Prior records |
 |---|---|---|---|
 | W1 — resolve each technique once per delivery; W2 — one cost summary line per delivery; W3 — agent fetch guidance | #269 | [issue-269-provenance-caching.md](./issue-269-provenance-caching.md) | The issue's own investigation-detail link points at `2026-07-21-technique-loading-efficiency-provenance-scan/`, which does not exist on this branch (see below) — the capture here is the surviving record. |
+| W10 — the activity body collapses like everything else in a delivery | #417 | [issue-417-activity-body-delivery.md](./issue-417-activity-body-delivery.md) | The 184,684-character resumed-delivery measurement and its per-activity table are in the capture; the 65.4% collapse it decomposes is recorded by the walk test on the branch for #408. |
+| W11 — confirm on real runs that re-delivered characters have fallen | #419 | [issue-419-delivery-identity-confirmation.md](./issue-419-delivery-identity-confirmation.md) | Baselines and method come from the forensic pass recorded with the batched-dispatch investigation; the fix itself is #408, delivered by pull requests #410 and #411. |
 
-Unlike the consolidation epics of the same date, this epic closes nothing at creation time: #269 stays open as the first member, and future performance and delivery-cost issues join the tracking list as they are filed.
+This epic closes nothing at creation time: #269 stays open as the first member, and future performance and delivery-cost issues join the tracking list as they are filed. Two joined on 6 August 2026 — #417 and #419, both closed on joining. Both are delivery-cost work by the epic's own charter: #417 extends the delivered-content ledger that W7 and W9 also extend, and #419 is a read of the instruments W2 extends, against a baseline this folder's neighbours already carry.
 
 ## Why an epic now
 

@@ -8,8 +8,11 @@ This folder is the investigation-detail home for the session-presets epic, which
 |---|---|---|
 | W1 — profiles: named presets over seeded state and interaction posture | #213 | [issue-213-workflow-profiles.md](./issue-213-workflow-profiles.md) |
 | W2 — context-cost profile: a precomputed estimate gates solo runs | #248 | [issue-248-context-cost-profile.md](./issue-248-context-cost-profile.md) |
+| W3 — session reattach: a second dispatch continues the run it finds | #429 | [issue-429-session-reattach.md](./issue-429-session-reattach.md) |
 
 Each capture is the issue body verbatim at consolidation time, so the schema sketches, candidate-profile tables, and open design questions stay reachable after the issue closes.
+
+W3 joined on 6 August 2026 and closed on joining. It belongs here because the fault it describes lives in the throwaway-session-then-promote machinery the server-side bootstrap item retires — that item is the epic's current W2, which took the row after the cost model was designed and dropped. The bootstrap item already names a saved session that might be the one to resume as an open decision it returns rather than settles for itself, and this is what happens today when nothing returns it. Its own investigation folder — the measured damage, each constraint with its evidence, and the corpus-side gate semantics verified against the when-expression evaluator — stays at [2026-08-04-session-reattach](../2026-08-04-session-reattach/).
 
 ## Decisions
 
