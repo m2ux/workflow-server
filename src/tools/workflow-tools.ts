@@ -492,6 +492,17 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         planning_folder_path: presentPlanningPath(loaded.folderAbsPath) ?? loaded.folderAbsPath,
       };
 
+      // What the orchestrator's own delivery cost. This is the largest fixed payload of a session —
+      // the same operations bundle every run, read before the first decision — so it reports on the
+      // same channel as the worker-facing deliveries rather than being the one call that says nothing.
+      logInfo('Workflow delivery cost', {
+        session_index, workflow: workflow_id, agentId: state.agentId,
+        delivery: opsBlock === opsText ? 'full' : 'unchanged',
+        resolved_techniques: orchestratorTechniques.length,
+        bundle_chars: opsText.length,
+        response_chars: preamble.length + stringifyForResponse(summaryData).length,
+      });
+
       return {
         content: [{ type: 'text' as const, text: preamble + stringifyForResponse(summaryData) }],
         _meta: { session_index, validation },
