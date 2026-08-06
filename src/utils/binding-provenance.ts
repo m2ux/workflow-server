@@ -76,35 +76,52 @@ export interface ProvenanceContext {
   position: number;
 }
 
+/**
+ * The producer scan's result, held for the lifetime of one request.
+ *
+ * The scan reads every bound op in the workflow to learn which outputs it declares, and neither the
+ * producer list nor the variable set depends on which step is being decorated — only `position`
+ * does. So one index serves every step of a request: a delivery that inlines several steps resolves
+ * each unique technique once, however many steps it carries.
+ */
+export interface ProducerIndex {
+  declaredVariables: Set<string>;
+  producers: ProducerSite[];
+  /** Document-order position of `activityId`/`stepId`, or -1 where the step is not in the workflow. */
+  positions: Map<string, number>;
+  /** Distinct technique refs resolved to build this index — what a delivery reports as resolve work. */
+  resolvedTechniques: number;
+}
+
 /* ------------------------------- context assembly ------------------------------- */
 
 /**
  * Walk the whole workflow (activities in declared order, steps flattened in document order) and
  * collect every producer site: technique-step outputs (the bound op's own declared outputs, or the
  * step-binding remap targets), checkpoint-effect `setVariable` keys, `action: set` targets, and
- * loop variables. Returns null when the current step cannot be located.
+ * loop variables.
  *
  * Bound-op signatures are read uncomposed (`readTechnique`, memoized per activity+ref): a producer
  * claim belongs to the op's own file, not to root/group contract entries every sibling would then
  * appear to produce. Reads are best-effort — a malformed sibling op never fails the fetch, but is
  * logged, since it silently degrades the provenance of the technique being delivered.
+ *
+ * Build this once per request and pass it to `provenanceContextFor` per step.
  */
-export async function buildProvenanceContext(args: {
+export async function buildProducerIndex(args: {
   workflow: Workflow;
   workflowDir: string;
-  currentActivityId: string;
-  currentStepId: string;
   /**
    * Per-activity technique-resolution scope: activity id → the workflow the activity file was
    * authored in. A borrowed cross-workflow activity resolves its bound ops against its source
    * workflow (mirroring fragment scoping); absent entries fall back to the session workflow.
    */
   activitySourceWorkflow?: ReadonlyMap<string, string>;
-}): Promise<ProvenanceContext | null> {
-  const { workflow, workflowDir, currentActivityId, currentStepId, activitySourceWorkflow } = args;
+}): Promise<ProducerIndex> {
+  const { workflow, workflowDir, activitySourceWorkflow } = args;
   const declaredVariables = new Set((workflow.variables ?? []).map((v) => v.name));
   const producers: ProducerSite[] = [];
-  let position = -1;
+  const positions = new Map<string, number>();
   let ordinal = 0;
 
   const ownOutputsCache = new Map<string, string[]>();
@@ -137,7 +154,7 @@ export async function buildProvenanceContext(args: {
     for (const step of flattenActivitySteps(activity)) {
       const at = ordinal++;
       const stepId = step.id ?? (step.kind === 'technique' ? techniqueName(step.technique) : undefined) ?? '?';
-      if (activity.id === currentActivityId && step.id === currentStepId) position = at;
+      if (step.id !== undefined) positions.set(positionKey(activity.id, step.id), at);
 
       const push = (name: string, via: ProducerSite['via'], origOutputId?: string): void => {
         producers.push({ name, via, origOutputId, stepId, activityId: activity.id, ordinal: at });
@@ -171,8 +188,43 @@ export async function buildProvenanceContext(args: {
     }
   }
 
-  if (position < 0) return null;
-  return { declaredVariables, producers, position };
+  return { declaredVariables, producers, positions, resolvedTechniques: ownOutputsCache.size };
+}
+
+/** Positions are keyed by the pair, since one step id can occur in more than one activity. */
+function positionKey(activityId: string, stepId: string): string {
+  return `${activityId}|${stepId}`;
+}
+
+/**
+ * The classifier's view of one step, taken from an index the request already holds. Null where the
+ * step is not in the workflow — a read whose position cannot be placed has no before and after, so
+ * there is nothing to classify.
+ */
+export function provenanceContextFor(
+  index: ProducerIndex,
+  currentActivityId: string,
+  currentStepId: string,
+): ProvenanceContext | null {
+  const position = index.positions.get(positionKey(currentActivityId, currentStepId));
+  if (position === undefined) return null;
+  return { declaredVariables: index.declaredVariables, producers: index.producers, position };
+}
+
+/**
+ * One step's provenance context, for a caller decorating a single step. A caller decorating several
+ * steps of one request builds the index once with `buildProducerIndex` and reads each step's
+ * position out of it, rather than scanning the corpus per step.
+ */
+export async function buildProvenanceContext(args: {
+  workflow: Workflow;
+  workflowDir: string;
+  currentActivityId: string;
+  currentStepId: string;
+  activitySourceWorkflow?: ReadonlyMap<string, string>;
+}): Promise<ProvenanceContext | null> {
+  const index = await buildProducerIndex(args);
+  return provenanceContextFor(index, args.currentActivityId, args.currentStepId);
 }
 
 /* --------------------------------- classification --------------------------------- */

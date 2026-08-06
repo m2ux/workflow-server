@@ -1,7 +1,7 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { normalizeRepoPath, presentPathToAgent, type ServerConfig } from '../config.js';
-import { withAuditLog } from '../logging.js';
+import { withAuditLog, logInfo } from '../logging.js';
 
 import { loadWorkflow, loadWorkflowWithDiagnostics, getActivity } from '../loaders/workflow-loader.js';
 import { readResourceStructured } from '../loaders/resource-loader.js';
@@ -45,7 +45,7 @@ import {
   type SessionFile,
 } from '../schema/session.schema.js';
 import { techniqueName, flattenActivitySteps, type Step } from '../schema/activity.schema.js';
-import { buildProvenanceContext, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
+import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
 import { seedDefaults } from '../utils/variable-seed.js';
 import { buildValidation, validateWorkflowVersion } from '../utils/validation.js';
 import { stringifyForResponse } from '../utils/serialization.js';
@@ -686,14 +686,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // collapsing under reference delivery.
       let technique = composed.value.technique;
       const provenanceWarnings: string[] = [];
+      let resolvedTechniques = 0;
       if (boundStep?.id && state.currentActivity) {
-        const ctx = await buildProvenanceContext({
+        const producerIndex = await buildProducerIndex({
           workflow: wfResult.value,
           workflowDir: config.workflowDir,
-          currentActivityId: state.currentActivity,
-          currentStepId: boundStep.id,
           activitySourceWorkflow: wfDiag.value.activitySourceWorkflow,
         });
+        resolvedTechniques = producerIndex.resolvedTechniques;
+        const ctx = provenanceContextFor(producerIndex, state.currentActivity, boundStep.id);
         if (ctx) {
           const binding = boundStep.kind === 'technique' && typeof boundStep.technique === 'object'
             ? boundStep.technique
@@ -769,6 +770,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         });
         await saveSessionForTool(loaded, next);
 
+        logInfo('Technique delivery cost', {
+          session_index, technique: techniqueId, agentId: scope, delivery: 'unchanged',
+          resolved_techniques: resolvedTechniques, composed_chars: text.length, response_chars: 0,
+        });
+
         // Canonical unchanged-marker: { delivery: 'unchanged', content_hash } —
         // the same shape the get_activity bundle path emits (delivery.ts#unchangedMarker).
         // The technique id and note ride alongside as sibling context.
@@ -799,6 +805,15 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         recordFetch(draft, 'full');
       });
       await saveSessionForTool(loaded, next);
+
+      // What this fetch cost to build and to send. `resolved_techniques` is the distinct bound ops the
+      // producer scan read to decorate one step, which is the resolve work a lazy fetch pays; the two
+      // character figures are the composed technique and what the response carried after any shared
+      // block collapsed.
+      logInfo('Technique delivery cost', {
+        session_index, technique: techniqueId, agentId: scope, delivery: 'full',
+        resolved_techniques: resolvedTechniques, composed_chars: text.length, response_chars: body.length,
+      });
 
       return {
         content: [{ type: 'text' as const, text: `session_index: ${session_index}\n\n${body}` }],
@@ -891,6 +906,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         });
         await saveSessionForTool(loaded, next);
 
+        logInfo('Resource delivery cost', {
+          session_index, resource: resource_id, agentId: scope, delivery: 'unchanged',
+          resource_chars: fullText.length, response_chars: 0,
+        });
+
         const stub = stringifyForResponse({
           resource_id,
           ...unchangedMarker(hash),
@@ -908,6 +928,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         recordFetch(draft, 'full', fullText.length);
       });
       await saveSessionForTool(loaded, next);
+
+      logInfo('Resource delivery cost', {
+        session_index, resource: resource_id, agentId: scope, delivery: 'full',
+        resource_chars: fullText.length, response_chars: fullText.length,
+      });
 
       return {
         content: [{ type: 'text' as const, text: fullText }],
