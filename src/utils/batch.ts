@@ -145,10 +145,23 @@ export function batchBound(
  *
  * `mayContinue` is answered before the lazy fetches of the activity just taken draw down the same
  * budget, so `true` can still become a refusal at the next boundary.
+ *
+ * `pending` describes a delivery on its way out that the history does not record yet, so a response
+ * can carry the standing it produces without being assembled twice: `chars` is what that response
+ * costs, and `activityId` is the activity it carries, counted as taken when the scope does not
+ * already hold it.
  */
-export function batchState(state: SessionFile, scope: string, bound: BatchBound): BatchState {
+export function batchState(
+  state: SessionFile,
+  scope: string,
+  bound: BatchBound,
+  pending: { chars?: number; activityId?: string } = {},
+): BatchState {
   const activities = batchActivities(state, scope);
-  const chars = deliveredChars(state, scope);
+  if (pending.activityId !== undefined && !activities.includes(pending.activityId)) {
+    activities.push(pending.activityId);
+  }
+  const chars = deliveredChars(state, scope) + (pending.chars ?? 0);
   // The session's own agent owns the whole walk, and a scope with no activity yet has no batch to be
   // past the end of — the reading the refusal takes too.
   const exempt = scope === state.agentId || activities.length === 0;

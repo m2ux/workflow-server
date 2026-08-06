@@ -39,6 +39,19 @@ function responseText(result: any): string {
   return (result.content[0] as { type: 'text'; text: string }).text;
 }
 
+/**
+ * A get_activity response with the leading `batch:` block removed — the definitions and operations
+ * it delivers, without the live standing that leads it. The standing reports what this context has
+ * taken and been delivered, so it moves between two otherwise identical calls.
+ */
+function payloadOf(text: string): string {
+  if (!text.startsWith('batch:')) return text;
+  const lines = text.split('\n');
+  let at = 1;
+  while (at < lines.length && (lines[at]!.startsWith(' ') || lines[at] === '')) at += 1;
+  return lines.slice(at).join('\n');
+}
+
 describe('delivery ledger helpers', () => {
   it('contentHash is deterministic and 16 hex chars', () => {
     expect(contentHash('abc')).toBe(contentHash('abc'));
@@ -167,8 +180,8 @@ describe('reference-not-repeat delivery (B1)', () => {
     return result;
   }
 
-  describe('get_activity default mode is unchanged', () => {
-    it('repeats the full bundle on every call and never emits markers', async () => {
+  describe('get_activity default mode delivers every technique in full', () => {
+    it('never references content from an earlier call, and repeats its payload byte for byte', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
       await enterActivity(idx, 'start-work-package');
@@ -180,12 +193,17 @@ describe('reference-not-repeat delivery (B1)', () => {
         expect(parsed.bundle['bundle_mode']).toBeUndefined();
         const techniques = parsed.bundle['techniques'] as Record<string, unknown>;
         expect(Object.keys(techniques).length).toBeGreaterThan(0);
+        // Every composed technique arrives whole. A marker inside one of them stands for a block an
+        // earlier entry of the SAME response carries, which is a different thing (#404 W7) and is
+        // covered by tests/send-once.test.ts.
         for (const value of Object.values(techniques)) {
           expect(isUnchangedMarker(value)).toBe(false);
         }
       }
-      // Byte-identical repetition — the pre-B1 behaviour full mode preserves.
-      expect(responseText(await getActivity(idx))).toBe(responseText(await getActivity(idx)));
+      // The payload repeats byte for byte. The batch standing that leads the response is live state —
+      // what this context has taken and been delivered — so it moves between calls by design.
+      expect(payloadOf(responseText(await getActivity(idx))))
+        .toBe(payloadOf(responseText(await getActivity(idx))));
     });
   });
 
@@ -1306,17 +1324,29 @@ describe('reference-not-repeat delivery (B1)', () => {
       expect((await getResource(idx, { agent_id: 'w-b', bundle: 'reference' }))._meta?.['delivery']).toBeUndefined();
     });
 
-    it('leaves get_technique and get_resource in full delivery without the opt-in, and honours full: true over it', async () => {
+    it('answers a named context asking twice with a marker, and honours full: true over it', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'orchestrator' });
       const idx = session['session_index'] as string;
 
-      // No bundle, default (fresh) session: a byte-identical refetch still arrives in full.
-      await getResource(idx, { agent_id: 'w-1' });
+      // A context that names itself and asks again already holds the bytes, so the second answer is a
+      // marker whatever mode the call declares (#404 W9).
       expect((await getResource(idx, { agent_id: 'w-1' }))._meta?.['delivery']).toBeUndefined();
+      expect((await getResource(idx, { agent_id: 'w-1' }))._meta?.['delivery']).toBe('unchanged');
 
-      // Opt in, then force past it: `full: true` overrides `bundle: "reference"`.
+      // `full: true` is the escape hatch for a context that summarized the content away.
+      expect((await getResource(idx, { agent_id: 'w-1', full: true }))._meta?.['delivery']).toBeUndefined();
       expect((await getResource(idx, { agent_id: 'w-1', bundle: 'reference' }))._meta?.['delivery']).toBe('unchanged');
       expect((await getResource(idx, { agent_id: 'w-1', bundle: 'reference', full: true }))._meta?.['delivery']).toBeUndefined();
+    });
+
+    it('never collapses for a caller that leaves its context unnamed', async () => {
+      const session = await startSession({ workflow_id: 'work-package', agent_id: 'orchestrator' });
+      const idx = session['session_index'] as string;
+
+      // With `agent_id` omitted the scope falls back to the session's own identity, which sibling
+      // workers share — so a marker could reach a context that never received the bytes.
+      expect((await getResource(idx, {}))._meta?.['delivery']).toBeUndefined();
+      expect((await getResource(idx, {}))._meta?.['delivery']).toBeUndefined();
     });
 
     it('keys the on-disk ledger under the passed agent_id, leaving the session agent untouched', async () => {
