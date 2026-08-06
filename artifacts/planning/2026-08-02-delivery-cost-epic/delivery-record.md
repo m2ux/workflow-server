@@ -243,3 +243,33 @@ The catalogue entries these key on, by name: `stale-restatement-after-change`, `
 checked and found not to fire: `overlapping-rule-scopes`, because each new rule names the entry it
 excepts and that naming is the ordering, and `runtime-rules-only`, because every new rule governs
 session conduct rather than how to author a definition.
+
+## A second pass, over what the first one did not reach
+
+The first pass ran before #444 existed, walked the rule-hygiene and coupling units, and swept the docs.
+It did not re-read the code it had just changed, and it did not walk the canon-hygiene or
+technique-protocol units. Four more findings, all fixed.
+
+| Finding | Keys on | Fixed in |
+|---|---|---|
+| Seven activities across five workflows carry a `decisions:` block between `steps` and `transitions`. Holding the unkeyed text as one leading blob moved it ahead of the step list, so the definition a worker read was not in the authored order — valid YAML, and silent | correctness | #442 |
+| The repeat-fetch collapse treated any named identity as evidence of one context. `dispatch_child` defaults `agent_id` to `"worker"`, which is the session's own identity, so two siblings can each pass it | correctness | #441 |
+| `discover` emitted no cost line, and it is a content-delivering call — the first of a session, and fixed | AC2 | #440 |
+| The fetch rule restated when a marker comes back, which the ledger-scoping rule owns, and what an in-response marker stands for, which the response's own notes own — against the stance its own sibling states | `prompt-restates-owned-mechanics` | #443 |
+
+**The round-trip finding is the one worth learning from.** Nothing caught it: 1,014 tests passed, 24
+guards passed, and the reorder produced valid YAML that no assertion compared against the file. The fix
+carries the check that would have found it — a test that round-trips all 112 activities of the corpus —
+so the class is closed rather than the instance.
+
+Units walked on this pass and found not to fire, recorded as evidenced negatives: `cited-home-owns-claim`
+(every new citation's target owns its claim), `operative-criteria-need-a-home` (the announcement content
+is orchestration of one act, which the entry carves out), `bind-site-is-orchestration-truth` (the setup
+boundary is described by where it ends rather than enumerated, so it survives a new activity),
+`tool-contract-restated-in-protocol` (nothing new describes an argument's shape).
+`no-shadow-audit-pass` and `canon-layer-cites-not-restates` are `not-applicable`: no audit technique or
+upper canon layer is on the change surface.
+
+The I/O-contract closure the first pass asserted is now verified: the corpus diff against `origin/workflows`
+adds and removes no `## Inputs`, `## Outputs` or declared-id heading, so no referencer joins the change
+surface and the consumer set stays empty.
