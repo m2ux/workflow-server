@@ -8,6 +8,9 @@ This folder is the investigation-detail home for the artifact-audience epic: pla
 |---|---|
 | [artifact-format-survey.md](./artifact-format-survey.md) | The full corpus survey: headline counts, per-technique coverage grades with file paths, the grade-C shortlist, the agent-consumed-artifact table, the three tiers of existing style guidance, enforcement coverage, and prior art |
 | [audience-classification.md](./audience-classification.md) | The decision behind all 139 audience declarations: the rule they follow, the registers whose substance is agent state, and the artifacts read by both a person and a later step |
+| [issue-428-agent-read-registers.md](./issue-428-agent-read-registers.md) | Verbatim capture of #428, the epic's W3 while it ran as a spawned issue: the eight artifacts approved for conversion with producer, consumer and retarget surface, and the five held back as prose with a reason each |
+
+W3 was spawned as #428 on 3 August 2026 so the per-artifact review could settle its scope, and folded back into the epic on 6 August once it had. The epic's W3 now carries the settled scope directly, so a reader of the tracker sees the work where it belongs rather than in an issue that looks unhomed.
 
 ## Key numbers carried into the epic
 
