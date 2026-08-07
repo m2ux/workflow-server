@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -35,7 +35,7 @@ Worker agent identity for this dispatch.
 
 - Confirm the activity `id` on the `get_activity` response whose operations bundle delivered this technique equals `{activity_id}` per [verify-dispatched-activity](./TECHNIQUE.md#verify-dispatched-activity)
 - Follow the operations bundle and delivery notes on that same response (`step_techniques_note`, `resources_note`, reference-mode notes)
-- Read `may_continue` from `_meta.batch` on that response — this context's standing against its bound ([batch-ends-where-the-server-says](#batch-ends-where-the-server-says))
+- Read `may_continue` from the `batch:` block leading that response — this context's standing against its bound ([batch-ends-where-the-server-says](#batch-ends-where-the-server-says))
 
 ### 2. Load resources
 
@@ -81,4 +81,4 @@ The last thing this context emits is the envelope this activity owes — the `ch
 
 ### batch-ends-where-the-server-says
 
-`_meta.batch` on each `get_activity` reports how many activities this context has taken, what it has been delivered, and whether it may take another. On `may_continue: false`, finish the current activity and report it — do not ask for a further one. If you do ask, the server refuses with the payload undelivered: report that activity as needing its own dispatch and stop.
+Each `get_activity` opens with a `batch:` block reporting how many activities this context has taken, what it has been delivered, its two limits, and whether it may take another; `_meta.batch` carries the same reading. On `may_continue: false`, finish the current activity and report it — do not ask for a further one. If you do ask, the server refuses with the payload undelivered: report that activity as needing its own dispatch and stop.
