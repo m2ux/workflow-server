@@ -1912,3 +1912,15 @@ A rule, Protocol step, or I/O description describes an actor instead of instruct
 **Do not flag:** A duty stated as outside the reader's, with no account of who holds it. A value the reader takes from its own tool responses. A precondition the reader can check. The contract the reader itself applies, on the surface that owns it. An actor role carried as data a stub or manifest binds. Prose restating a contract owned elsewhere, which is `prompt-restates-owned-mechanics`. A rule whose only defect is its bucket, which is `rule-audience-bucket` — one that is mis-filed AND narrating is both, and the two fixes differ.
 
 **Fix:** Address the reader. Where the clause carried a duty of the reader's, restate it as the imperative it always was. Where it described another actor, restate the reason from the reader's own position or delete it — an instruction whose reason cannot be put that way had no reason the reader could use. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+
+### AP-147. rule-binds-beyond-its-operation
+
+"`sync-progress-status` is the only writer of Progress status — not a per-activity YAML step, not a client-workflow activity rule, not a worker duty" on a persistence operation's `## Rules`
+
+An operation's rule states policy over a subject the operation does not own, so it binds readers who never apply it.
+
+**Detect:** For each `## Rules` entry, name the subject it constrains and ask whether the operation performs or produces that subject. Flag an entry whose subject outlives it — a sole writer, owner or home named for something the operation only contributes to, or a duty assigned to an actor the entry is not delivered to. Test: strike the operation from the sentence; where the claim still binds somebody, it is policy, and its home is the surface that owns the subject rather than the Rules of one caller. Filing it there also narrows its reach, since an operation's rules travel only with that operation.
+
+**Do not flag:** A prohibition or conformance statement addressed to the reader — a worker rule barring a worker's own call, an adapter rule naming the only conforming form of its own dispatch. An invariant on the operation's own cadence, outputs, or the composition of what it writes. A one-line pointer to the surface that does own the policy. The same claim already held in both places, which is `no-technique-resource-dual-home`, and the mirror defect of operational cadence filed in a resource, which is `resource-fills-not-does`.
+
+**Fix:** Move the claim to the surface that owns the subject, widening that surface's own statement to cover whatever the rule uniquely carried, and delete the rule where nothing operation-specific remains. Cite the owning surface from the phase that needs it. Where no surface owns the subject yet, `operative-criteria-need-a-home` names the migration. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
