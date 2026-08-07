@@ -184,7 +184,7 @@ A marker is only ever valid for the context that received the bytes it stands fo
 
 The server hashes each payload it delivers and records it in `session.json#deliveredContent`. It records in every mode, so a call that opts in with `bundle: "reference"` can still refer back to content that arrived under the default full mode.
 
-Keys are namespaced by delivery channel — `bundle:*`, `technique:*`, `activity_rules:*`, `workflow_bundle:*`, `resource:*` — so a marker only ever points at content delivered through that same channel.
+Keys are namespaced by delivery channel — `bundle:*`, `technique:*`, `activity_rules:*`, `activity:*`, `workflow_bundle:*`, `resource:*` — so a marker only ever points at content delivered through that same channel.
 
 The ledger is keyed on the **delivery scope**: the per-call `agent_id` when one is supplied, otherwise the session's recorded `agentId`. This matters because a dispatched worker authenticates against the orchestrator's `session_index`, and several workers can hold that index at once — the scope names the agent context a payload went to, rather than the session they share.
 
@@ -192,7 +192,7 @@ The orchestrator mints an `agent_id` per dispatch and reuses it verbatim for as 
 
 ### What collapses, call by call
 
-- **`get_activity`** — the response carries `bundle_mode: reference` and a `bundle_note`. Any bundled technique whose composed content is byte-identical to an earlier delivery collapses to a marker, as do the `rules` and `activity_rules` blocks. Techniques new to the activity, or whose content changed, arrive in full. The activity body itself is always delivered.
+- **`get_activity`** — the response carries `bundle_mode: reference` and a `bundle_note`. Any bundled technique whose composed content is byte-identical to an earlier delivery collapses to a marker, as do the `rules` and `activity_rules` blocks. Techniques new to the activity, or whose content changed, arrive in full. The activity definition collapses in parts, keyed under `activity:<field>:<hash>` — its step list, transitions, outcome and synthesised artifact contract each on their own hash, while the identity fields are never keyed. A worker confirms the returned activity id against the one it was dispatched for, so that field is present however much of the rest is a marker.
 - **`get_technique`** — a byte-identical refetch returns `delivery: unchanged` and a `content_hash` instead of the composed technique. Step-bound provenance annotations (`source:` / `destination:`) are part of that content. They are fixed for a given corpus and step, so refetching the same step collapses; fetching the same operation from a *different* step re-delivers in full rather than handing back a stale reference.
 - **`get_resource`** — a byte-identical refetch of the same `resource_id` returns `delivery: unchanged` and a `content_hash` instead of the body. The key is the caller's exact `resource_id`, anchor included, so `pr-description` and `pr-description#templates` occupy independent slots.
 - **`get_workflow`** — under `context_mode: "persistent"` the orchestrator ops bundle (everything above the `---` separator) is keyed under `workflow_bundle:<hash>`. On a resume where the agent already holds it, the whole bundle collapses to a single marker, while the workflow summary below the separator stays full.

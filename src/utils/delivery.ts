@@ -32,6 +32,10 @@ import { stringifyForResponse } from './serialization.js';
  *   - `bundle:<technique-ref>`   — one composed technique in the `get_activity` bundle
  *   - `bundle:rules:<hash>`      — the `get_activity` rules bundle
  *   - `activity_rules:<hash>`    — the inherited worker rules block
+ *   - `activity:<field>:<hash>`  — one top-level block of the delivered activity
+ *     definition (`steps`, `transitions`, `outcome`, `artifacts`); its identity
+ *     fields are never keyed, so the dispatched-activity check always has an id
+ *     to read (see `activity-body.ts`)
  *   - `technique:<id>`           — a full `get_technique` composed payload
  *   - `technique:<block>:<hash>` — one shared block (`inherited_inputs` /
  *     `inherited_outputs` / `rules`) of a composed technique

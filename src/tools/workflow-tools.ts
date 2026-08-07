@@ -26,6 +26,7 @@ import { readdir } from 'node:fs/promises';
 import { join as pathJoin } from 'node:path';
 import { DEFAULT_MAX_EAGER_RESOURCE_CHARS, loadResourceDelivery } from '../utils/resource-delivery.js';
 import { appendStepStartedIfAbsent } from '../utils/step-events.js';
+import { projectActivityBody } from '../utils/activity-body.js';
 import {
   sessionIndexParam,
   contextTokensParam,
@@ -1181,6 +1182,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ? `${activityBody}\n${stringifyForResponse({ artifacts: composedArtifacts })}`
         : activityBody;
 
+      // The definition is keyed in parts, not whole (#404 W10): the identity a worker checks the
+      // dispatched activity id against is always delivered in full, and the step list, transitions,
+      // outcome and synthesised artifact contract collapse to markers where this context already
+      // holds those bytes. Under full delivery every part ships — a definition section appears once
+      // in a response, so there is no earlier copy for a marker to point at.
+      const projectedBody = projectActivityBody(activityBodyWithArtifacts, state, scope, { readLedger: referenceMode });
+      Object.assign(newDeliveries, projectedBody.newDeliveries);
+
       // Payload-borne enforcement hints (#189 C7, R7): the enforcement model (schemas/README) lives
       // in docs that never ride the wire, so a payload-only reader still infers the SERVER executes
       // inert fields (guessing it applies `action: set`, unsure who owns auto-advance). Annotate, at
@@ -1221,7 +1230,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       // Assembled before the save so the dispatch event can record what this dispatch actually
       // cost — `chars` on an activity's fresh and resume events is the before/after measurement.
-      const responseBody = `${opsSection}${header}\n\n${activityRulesBlock}${enforcementBlock}${activityBodyWithArtifacts}`;
+      const responseBody = `${opsSection}${header}\n\n${activityRulesBlock}${enforcementBlock}${projectedBody.text}`;
 
       // Persist against a FRESH load, not the snapshot captured before composition: the session
       // store is last-writer-wins over the whole file, and composition awaits dozens of FS reads —
@@ -1310,6 +1319,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         bundled_steps_collapsed: bundledSteps.filter((b) => b.delivery === 'unchanged').length,
         bundled_resources: bundledResourceDeliveries.length,
         shared_blocks_collapsed_in_response: intraResponseCollapses,
+        body_fields_collapsed: projectedBody.collapsedFields.length,
+        body_chars_collapsed: projectedBody.collapsedChars,
         spent_chars: spentChars,
         eager_budget_chars: Math.floor(eagerBudgetChars),
         response_chars: responseText.length,
