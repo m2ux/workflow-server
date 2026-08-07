@@ -79,6 +79,39 @@ function withSessionStoreErrors<T extends Record<string, unknown>, R>(
   };
 }
 
+/**
+ * Whether a fetch is a context asking again for content it already holds (#404 W9).
+ *
+ * A ledger entry says a scope received a payload in full, so a second ask for the same bytes is
+ * answered with a marker whatever delivery mode the call declares — the content is in the asking
+ * context already, and re-sending it buys nothing.
+ *
+ * Three conditions make that sound.
+ *
+ * `full: true` always overrides, which is the escape hatch for a context that summarized the content
+ * away.
+ *
+ * The caller must NAME its context, because with `agent_id` omitted the scope falls back to the
+ * session's own identity and a marker could reach a context that never received the bytes.
+ *
+ * And the name must not BE the session's own identity, which is the one name known to be shared by
+ * construction: `dispatch_child` defaults it to `"worker"`, so two sibling workers can each pass it
+ * without either having received what the other did. That scope keeps its earlier behaviour — it
+ * collapses only where the caller asked for reference delivery, which is a claim about one context
+ * rather than an inference from a name. A solo walk, which legitimately owns that identity, declares
+ * `context_mode: "persistent"` and so collapses on that ground instead.
+ *
+ * A distinct name shared by two contexts anyway defeats this, as it defeats reference delivery today;
+ * minting one identity per dispatch is what the corpus requires, and `full: true` recovers.
+ */
+function isRepeatToNamedContext(
+  agentId: string | undefined,
+  full: boolean | undefined,
+  sessionAgentId: string,
+): boolean {
+  return full !== true && agentId !== undefined && agentId !== sessionAgentId;
+}
+
 export function registerResourceTools(server: McpServer, config: ServerConfig): void {
   const traceOpts = config.traceStore ? { traceStore: config.traceStore } : undefined;
   // Process-level engineering root (may be install multi-root). Per-session
@@ -602,7 +635,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   server.tool(
     'get_technique',
     'Load one fully composed technique (step-bound when `step_id` is set; otherwise the activity\'s or workflow\'s first). ' +
-    'Under `context_mode: "persistent"` or `bundle: "reference"`, a byte-identical refetch to the SAME `agent_id` scope may return an unchanged-reference; pass `full: true` when earlier content was summarized away. ' +
+    'A byte-identical refetch to a named `agent_id` scope returns an unchanged-reference — that context already holds the bytes — as does any refetch under `context_mode: "persistent"` or `bundle: "reference"`; pass `full: true` when earlier content was summarized away. ' +
     'A fresh worker context must not ask for reference delivery — it holds no prior delivery to reference.',
     {
       ...sessionIndexParam,
@@ -762,7 +795,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         && (bundle ?? (state.contextMode === 'persistent' ? 'reference' : 'full')) === 'reference';
       const ledgerKey = `technique:${techniqueId}`;
       const hash = contentHash(text);
-      if (referenceMode && deliveredHash(state, ledgerKey, scope) === hash) {
+      if ((referenceMode || isRepeatToNamedContext(agent_id, full, state.agentId))
+        && deliveredHash(state, ledgerKey, scope) === hash) {
         const next = advanceSession(state, (draft) => {
           draft.currentTechnique = techniqueId as string;
           recordFirstArrival(draft);
@@ -825,7 +859,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
   server.tool(
     'get_resource',
     'Load a resource by id (optional `#section`). Bare slug = session workflow; `workflow/slug` = cross-workflow. ' +
-    'Under `context_mode: "persistent"` or `bundle: "reference"`, a byte-identical refetch to the SAME `agent_id` scope may return an unchanged-reference; pass `full: true` when content was summarized away. ' +
+    'A byte-identical refetch to a named `agent_id` scope returns an unchanged-reference — that context already holds the bytes — as does any refetch under `context_mode: "persistent"` or `bundle: "reference"`; pass `full: true` when content was summarized away. ' +
     'A freshly spawned worker must not ask for reference delivery — it holds no prior delivery to reference.',
     {
       ...sessionIndexParam,
@@ -899,7 +933,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const hash = contentHash(fullText);
       const referenceMode = full !== true
         && (bundle ?? (state.contextMode === 'persistent' ? 'reference' : 'full')) === 'reference';
-      if (referenceMode && deliveredHash(state, ledgerKey, scope) === hash) {
+      if ((referenceMode || isRepeatToNamedContext(agent_id, full, state.agentId))
+        && deliveredHash(state, ledgerKey, scope) === hash) {
         const next = advanceSession(state, (draft) => {
           recordFirstArrival(draft);
           recordFetch(draft, 'unchanged', fullText.length);

@@ -140,7 +140,7 @@ The server resolves the reference:
 
 An optional `#section` anchor (a GitHub-style heading slug) narrows the result to that section and its body — used to fetch just the template a technique references without the whole file. The content is loaded from `workflows/{workflow}/resources/{slug}.md` and returned alongside the resource `id` and `version`.
 
-Under `context_mode: "persistent"`, a byte-identical refetch of the same exact `resource_id` (including any `#section`) returns a short `{ delivery: "unchanged", content_hash }` marker instead of the body — the same reference-delivery contract as `get_technique` (see [Reference Delivery](#11-reference-delivery)). Bare and sectioned ids are independent ledger keys. Pass `full: true` to force the full body when the calling context no longer holds the earlier delivery. Fresh/default sessions always receive the full resource body. Each call still appends a `resource_fetched` history event (observability only), including when the answer is an unchanged marker.
+A byte-identical refetch of the same exact `resource_id` (including any `#section`) to a context that already holds it returns a short `{ delivery: "unchanged", content_hash }` marker instead of the body — the same reference-delivery contract as `get_technique`, on the grounds set out in [Reference Delivery](#11-reference-delivery). Bare and sectioned ids are independent ledger keys. Pass `full: true` to force the full body when the calling context no longer holds the earlier delivery. Each call still appends a `resource_fetched` history event (observability only), including when the answer is an unchanged marker.
 
 ### Benefits
 
@@ -150,9 +150,17 @@ Under `context_mode: "persistent"`, a byte-identical refetch of the same exact `
 
 ## 11. Reference Delivery
 
-By default the server sends every payload in full, every time. A freshly spawned worker starts with an empty context, so that repetition is what gives it the content at all.
+The server sends a payload in full to a context that does not hold it. A freshly spawned worker starts with an empty context, so that first delivery is what gives it the content at all.
 
-An agent that already holds a payload can ask for **reference delivery** instead. The server replaces that payload with a short marker — `{ delivery: "unchanged", content_hash }` — and the agent reuses what it has.
+Where a context already holds the bytes, the server sends a short marker instead — `{ delivery: "unchanged", content_hash }` — and the agent reuses what it has. Three things establish that it holds them, and each governs a different call:
+
+| Ground | What collapses |
+|---|---|
+| **Reference delivery** — `context_mode: "persistent"`, or `bundle: "reference"` on one call | anything this scope's ledger records |
+| **The same response** — an earlier `step_techniques` entry of this `get_activity` carries the block in full | the shared contract and rules blocks a response repeats, on a full delivery too |
+| **A named context asking again** — this `agent_id`'s ledger records the payload | a repeat `get_technique` or `get_resource`, whatever mode the call declares |
+
+The second and third need no opt-in, because in both cases the bytes demonstrably reached the asking context: in one they are above the marker in the same payload, in the other the ledger says this identity received them. The third requires a caller that names its context — with `agent_id` omitted the scope falls back to the session's own identity, which sibling workers share, so nothing collapses there.
 
 ### What counts as "already holds"
 
@@ -189,13 +197,15 @@ The orchestrator mints an `agent_id` per dispatch and reuses it verbatim for as 
 - **`get_resource`** — a byte-identical refetch of the same `resource_id` returns `delivery: unchanged` and a `content_hash` instead of the body. The key is the caller's exact `resource_id`, anchor included, so `pr-description` and `pr-description#templates` occupy independent slots.
 - **`get_workflow`** — under `context_mode: "persistent"` the orchestrator ops bundle (everything above the `---` separator) is keyed under `workflow_bundle:<hash>`. On a resume where the agent already holds it, the whole bundle collapses to a single marker, while the workflow summary below the separator stays full.
 
-`get_technique` and `get_resource` collapse under either `bundle: "reference"` or a session-wide `context_mode: "persistent"`. Fresh and default sessions always receive full bodies.
+`get_technique` and `get_resource` collapse a repeat to any caller that named its context, and under `bundle: "reference"` or a session-wide `context_mode: "persistent"` besides. A caller that named no context receives full bodies however often it asks, and `full: true` overrides every ground.
 
 ### Blocks inside a technique
 
 Collapsing can go finer than a whole technique. Techniques sharing a workflow contract share blocks: the contract-inherited `inherited_inputs` and `inherited_outputs`, and the merged `rules`. Each is hashed on its own, under `technique:<block>:<hash>`.
 
 So when a technique is new to the context but one of its shared blocks already arrived with a sibling technique, that block becomes a marker in place while the technique-specific core arrives in full. This happens both on the `get_technique` full-delivery path and inside each eagerly inlined `get_activity` `step_techniques` entry.
+
+Inside one `get_activity` response this holds on a full delivery too, and it is where most of the repetition is: every composed technique of a delivery carries the contract and rules blocks it inherits from its container, so a response bundling five of them would carry five copies. The first copy ships in full and the rest are markers, whose bytes are above them in the same payload — readable by a context holding no prior delivery at all. Measured over the batch benchmark's three-activity run, a fresh worker per activity receives 213,476 characters where five copies apiece cost 225,617. Where any block collapses this way the response carries a `bundle_note` pointing the reader at the earliest entry showing it.
 
 Hashing the content is what keeps this from going stale: a block annotated with binding-seam provenance hashes differently, so it correctly arrives in full.
 
