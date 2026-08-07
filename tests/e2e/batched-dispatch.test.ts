@@ -112,6 +112,29 @@ describe('batched dispatch (#407)', () => {
     expect(walk.history.filter(e => e.type === 'activity_redelivered')).toHaveLength(0);
   });
 
+  it('forms a run of three at the window a real dispatch declares', async () => {
+    // The walk above widens the window so only the cap can bind, which leaves the question a real run
+    // asks unanswered: does the budget admit a run at the window production actually declares? Every
+    // profiled run declares 200,000 tokens, giving a 280,000-character budget.
+    const walk = await walkBatch('worker-production-window', RUN.slice(0, 3), 200_000);
+
+    expect(walk.refusedAt, `refused at the production window: ${walk.refusedWith}`).toBeUndefined();
+    expect(walk.texts).toHaveLength(3);
+    expect(walk.batches.map(b => b['activities'])).toEqual([1, 2, 3]);
+
+    const last = walk.batches[2]!;
+    expect(last['budget_chars']).toBe(280_000);
+    // Reported so the headroom a real run has for its lazy fetches is a figure rather than a hope: the
+    // walk never fetches lazily, so what it spends is the eager floor of a run this size.
+    const spent = last['delivered_chars'] as number;
+    const budget = last['budget_chars'] as number;
+    console.log(`[production-window] run of 3 forms: ${spent} of ${budget} chars, ${budget - spent} left for lazy fetches`);
+    expect(spent).toBeLessThan(budget);
+    // Read off 112 worker contexts in the sealed session records, one activity costs a median 74,109
+    // characters once its lazy fetches are counted. A run of three at the median has to fit.
+    expect(budget - spent).toBeGreaterThan(74_109);
+  });
+
   it('refuses the fourth activity at the cap, with the payload undelivered', async () => {
     const walk = await walkBatch('worker-run-capped', RUN, 2_000_000);
 

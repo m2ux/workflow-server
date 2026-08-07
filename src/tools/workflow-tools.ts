@@ -11,7 +11,7 @@ import {
 import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, readActivityRaw, buildFragmentsLookup, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment, scanCheckpointRefLines } from '../loaders/fragment-resolver.js';
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
-import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
+import { CHECKPOINT_WORKER_TECHNIQUES, CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
 import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
@@ -857,7 +857,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const activity = result.success ? getActivity(result.value, activity_id) : undefined;
       const ownTechRefs = (activity as { techniques?: string[] } | undefined)?.techniques ?? [];
       const inheritedTechRefs = result.success ? ((result.value as { techniques?: { activity?: string[] } }).techniques?.activity ?? []) : [];
-      const workerTechniques = Array.from(new Set([...inheritedTechRefs, ...ownTechRefs, ...CORE_WORKER_TECHNIQUES]));
+      // The checkpoint half of the core worker set reaches the activities that can reach a checkpoint.
+      // An activity with no `kind: checkpoint` step cannot yield one, and a resume follows a yield, so
+      // both protocols are unreachable there — the worker role's own Protocol guards them behind
+      // reaching a checkpoint and behind `{effects}` being bound. Derived from the definition, like the
+      // enforcement notes below, so it is not a per-activity declaration anyone can forget to make.
+      const hasCheckpointStep = activity ? flattenActivitySteps(activity).some((s) => s.kind === 'checkpoint') : true;
+      const coreForActivity = hasCheckpointStep
+        ? CORE_WORKER_TECHNIQUES
+        : CORE_WORKER_TECHNIQUES.filter((ref) => !CHECKPOINT_WORKER_TECHNIQUES.includes(ref));
+      const workerTechniques = Array.from(new Set([...inheritedTechRefs, ...ownTechRefs, ...coreForActivity]));
       const resolvedWorker = await resolveTechniques(workerTechniques, config.workflowDir, workflow_id);
       const bundleData = formatTechniqueBundle(resolvedWorker);
 
@@ -993,23 +1002,33 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             // A reference marker is near-zero cost — it does not draw down the eager budget.
             bundledStepTechniques[step.id!] = { marker: stepMarker, ...unchangedMarker(hash) };
           } else {
-            // Full content draws down the cumulative budget. Inline ungated step techniques in
-            // document order and STOP at the first one that would overflow the remaining budget
-            // (stop-and-break) — the remainder stay lazy. This preserves the contiguous
-            // document-order prefix the spec and docs promise, rather than skipping a large
-            // technique to squeeze in a later smaller one.
-            if (spentChars + text.length > eagerBudgetChars) break;
-            spentChars += text.length;
-            newDeliveries[ledgerKey] = hash;
             // The arrival marker leads the block; the composed technique fields follow at the same
             // level, so a bundled entry reads exactly like a get_technique fetch with a step header.
             // Shared contract and rules blocks collapse to a marker while the core stays full. Under
             // reference mode a block this context received on an earlier call collapses too; under
             // full delivery only a block a sibling of THIS response already carried does, so the
             // bytes a marker stands for are always above it in the same payload.
+            //
+            // Projected BEFORE the budget check, because what a collapsed block costs the budget is
+            // what it costs the wire: nothing. Charging the uncollapsed size instead spends budget on
+            // characters no response carries, and displaces later steps into lazy fetches to pay for
+            // them. Block hashes are staged onto a copy so a budget break discards them with the entry
+            // — a hash recorded for content never sent would collapse a later fetch to a marker the
+            // worker cannot read. The copy carries this call's earlier entries, which is what lets a
+            // sibling's block be recognised.
+            const staged: Record<string, string> = { ...newDeliveries };
             const projected = dedupTechniqueBlocks(
-              projectTechnique(technique), state, newDeliveries, scope, { readLedger: referenceMode },
+              projectTechnique(technique), state, staged, scope, { readLedger: referenceMode },
             );
+            // Full content draws down the cumulative budget. Inline ungated step techniques in
+            // document order and STOP at the first one that would overflow the remaining budget
+            // (stop-and-break) — the remainder stay lazy. This preserves the contiguous
+            // document-order prefix the spec and docs promise, rather than skipping a large
+            // technique to squeeze in a later smaller one.
+            const deliveredChars = stringifyForResponse(projected).length;
+            if (spentChars + deliveredChars > eagerBudgetChars) break;
+            spentChars += deliveredChars;
+            Object.assign(newDeliveries, staged, { [ledgerKey]: hash });
             if (!referenceMode) intraResponseCollapses += countCollapsedBlocks(projected);
             bundledStepTechniques[step.id!] = { marker: stepMarker, ...projected };
           }
