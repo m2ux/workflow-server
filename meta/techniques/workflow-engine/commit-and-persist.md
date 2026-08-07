@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.10.0
+  version: 1.11.0
 ---
 
 ## Capability
@@ -51,10 +51,6 @@ Across the meta workflow's setup activities — every activity up to and includi
 - Hold the source-side commit and the engineering commit-and-push until the client workflow is dispatched, then make them once over everything those activities produced. That is the first moment anything outside this session reads the artifacts, since the client workflow's own commits land after it.
 - A session interrupted mid-ceremony still resumes, from the `session.json` and `.session-token` the server writes on every authenticated call rather than from the remote.
 - Scope: the setup sequence only. Client-workflow activities persist per activity, per [commit-after-activity](#commit-after-activity).
-
-### readme-progress-before-persist
-
-Planning-folder `README.md` Progress Status updates for the completed activity go through [sync-progress-status](./sync-progress-status.md) inside this hook — not a per-activity YAML step, not a client-workflow activity rule, and not a worker `finalize-activity` duty. This operation Applies that technique (complete or cancelled/N/A per `{mark_progress_na}`), updates the header lifecycle Status, and includes `README.md` in the pushed engineering commit.
 
 ### session-files-ride-along
 
