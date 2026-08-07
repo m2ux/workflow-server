@@ -163,7 +163,7 @@ A re-opened row that later gets its artifact written has the link restored by th
 
 ### Progress Status call sites
 
-Orchestrator guidance for when to Apply [sync-progress-status](../techniques/workflow-engine/sync-progress-status.md) — the only writer of Progress status fields. Do not add per-activity client-workflow Status writers.
+Orchestrator guidance for when to Apply [sync-progress-status](../techniques/workflow-engine/sync-progress-status.md) — the only writer of Progress status fields. Every write comes from a moment in the table below: not from a per-activity client-workflow Status writer, not from a step in an activity's own YAML, and not from a worker finalizing its activity.
 
 | Moment | `{target_status}` | Who Applies |
 |--------|-------------------|-------------|

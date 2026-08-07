@@ -52,10 +52,6 @@ Across the meta workflow's setup activities — every activity up to and includi
 - A session interrupted mid-ceremony still resumes, from the `session.json` and `.session-token` the server writes on every authenticated call rather than from the remote.
 - Scope: the setup sequence only. Client-workflow activities persist per activity, per [commit-after-activity](#commit-after-activity).
 
-### readme-progress-before-persist
-
-Planning-folder `README.md` Progress Status updates for the completed activity go through [sync-progress-status](./sync-progress-status.md) inside this hook — not a per-activity YAML step, not a client-workflow activity rule, and not a worker `finalize-activity` duty. This operation Applies that technique (complete or cancelled/N/A per `{mark_progress_na}`), updates the header lifecycle Status, and includes `README.md` in the pushed engineering commit.
-
 ### session-files-ride-along
 
 `session.json` and `.session-token` are written by the server on every authenticated tool call and so are always present in the planning folder by the time this operation runs. Stage them in the SAME engineering commit as the activity's other artifacts — do not produce a separate `state` commit.
