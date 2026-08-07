@@ -321,8 +321,53 @@ and the reach ratio 8.3% → 6.7%. Scaled to a full fifteen-activity walk the en
 order the SOLID review measured over one walk, 618, and the ratio sits near its 8.9%. The step-bound-only
 version could not offer that corroboration, and its agreement with the review's figure was coincidence.
 
-### How the third pass found them
+### How the third pass found them (continued below by the fourth)
 
 By treating W2's and W6's own output as claims to check rather than as instruments to read. The budget
 finding came from asking what `spent_chars` is measured against; the metric finding came from noticing
 that editing a `workflow-engine` container rule moved no reported figure, which it should have.
+
+## A fourth pass, over the integration surface
+
+The first three passes each read one change at a time. This one read the pair — the corpus and the server
+at the state each would merge in — which no earlier pass had done, and which is where the remaining
+findings turned out to be.
+
+| Finding | Keys on | Fixed in |
+|---|---|---|
+| The server branches pinned the corpus as it stood before three later corpus commits, so the definitions and the server had never been run against each other at the state either would merge in | integration | #444 |
+| The ledger rule named the exception as an omitted argument rather than as the identity, which the narrowing in #441 had made wrong; and it said a solo walk collapses nothing on a repeat, which is the reverse — a solo walk declares reference delivery, the one ground the exception leaves open | `stale-restatement-after-change` | #443 |
+
+### What the integration showed
+
+They agree. The whole suite passes on the pair, no walk snapshot moves, and the guards pass. Two figures
+moved, both as designed:
+
+| Figure | Pinned corpus | Merged corpus |
+|---|---:|---:|
+| Bootstrap-time fixed content | 100,273 | **102,933** of 110,000 |
+| Reference-walk collapse | 83.7% | **84.1%** |
+
+The fetch guidance took 2,660 characters of the budget's headroom, which leaves 7,067. That is the budget
+doing its job — a rule added to a core technique is visible against a stated ceiling on the run that adds
+it, rather than a year later.
+
+The pointer is provisional: both corpus pull requests merge into `workflows` as merge commits, so a final
+bump follows them. Worth stating because a stale pointer is exactly what this pass found, and the same
+staleness returns the moment the corpus merges.
+
+### The cross-branch class
+
+The second finding is the one worth naming. #441 narrowed the repeat-fetch collapse to exclude the
+session's own identity, and its code documentation was updated with it. The sentence that had described
+the old behaviour lives in a corpus rule, on a different branch, in a different pull request. Neither
+review surface shows both halves, so no per-change audit reaches it — only reading the pair does.
+
+### On a fifth pass
+
+Four passes: seven findings, four, three, two. The mix has moved from canon nits, to latent bugs, to
+defects in the instruments, to the seam between the two repositories. Each pass found what the previous
+one had no vantage point on, and the vantage points are now used up: one change, all changes, the
+measurements, the pair.
+
+What is left is not another pass of this kind. It is a reader who did not write any of it.
