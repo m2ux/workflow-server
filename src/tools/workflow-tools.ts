@@ -14,8 +14,8 @@ import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, pro
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
-import { buildProvenanceContext, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
-import { withAuditLog, logWarn } from '../logging.js';
+import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
+import { withAuditLog, logInfo, logWarn } from '../logging.js';
 import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
@@ -394,7 +394,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (bootstrapResult.success) {
         lines.push('', bootstrapResult.value.content);
       }
-      return { content: [{ type: 'text' as const, text: lines.join('\n') }] };
+      const text = lines.join('\n');
+      // The first content of a session, and fixed: the same characters every run. It reports on the
+      // same channel as every other delivery so the bootstrap window is summable from the log alone.
+      logInfo('Bootstrap delivery cost', { delivery: 'full', response_chars: text.length });
+      return { content: [{ type: 'text' as const, text }] };
     }));
 
   server.tool('list_workflows', 'List available workflows (id, title, version, tags). On load failures returns `{workflows, load_errors}`. No session_index required.', {},
@@ -491,6 +495,17 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // recomposes it relative to CWD or a target worktree.
         planning_folder_path: presentPlanningPath(loaded.folderAbsPath) ?? loaded.folderAbsPath,
       };
+
+      // What the orchestrator's own delivery cost. This is the largest fixed payload of a session —
+      // the same operations bundle every run, read before the first decision — so it reports on the
+      // same channel as the worker-facing deliveries rather than being the one call that says nothing.
+      logInfo('Workflow delivery cost', {
+        session_index, workflow: workflow_id, agentId: state.agentId,
+        delivery: opsBlock === opsText ? 'full' : 'unchanged',
+        resolved_techniques: orchestratorTechniques.length,
+        bundle_chars: opsText.length,
+        response_chars: preamble.length + stringifyForResponse(summaryData).length,
+      });
 
       return {
         content: [{ type: 'text' as const, text: preamble + stringifyForResponse(summaryData) }],
@@ -909,6 +924,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const headroomFraction = config.bundleHeadroomFraction ?? DEFAULT_BUNDLE_HEADROOM_FRACTION;
       const charsPerToken = config.bundleCharsPerToken ?? DEFAULT_BUNDLE_CHARS_PER_TOKEN;
       const eagerBudgetChars = context_tokens * headroomFraction * charsPerToken;
+      // Provenance resolve work, done once for the whole delivery. The producer scan reads every
+      // bound op in the workflow to learn its declared outputs, and its answer does not vary with
+      // the step being decorated — only the step's document-order position does. One index therefore
+      // serves every inlined step, so a delivery resolves each unique technique once however many
+      // steps it carries.
+      let producerIndex: Awaited<ReturnType<typeof buildProducerIndex>> | undefined;
+      // Running total of full-content characters committed to the eager bundle. An unchanged-reference
+      // marker costs effectively nothing, so it never draws down the budget; only full-content
+      // entries do. Held here so the delivery's cost line can report it against the budget.
+      let spentChars = 0;
       if (!optedOut && result.success && activity) {
         const eligible: Array<Step & { kind: 'technique' }> = [];
         const collectUngated = (steps: Step[] | undefined): void => {
@@ -920,10 +945,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         };
         collectUngated((activity as Activity).steps);
 
-        // Running total of full-content characters already committed to the eager bundle. An
-        // unchanged-reference marker costs effectively nothing, so it never draws down the budget;
-        // only full-content entries do.
-        let spentChars = 0;
+        if (eligible.length > 0) {
+          producerIndex = await buildProducerIndex({
+            workflow: result.value,
+            workflowDir: config.workflowDir,
+            activitySourceWorkflow,
+          });
+        }
+
         for (const step of eligible) {
           const ref = techniqueName(step.technique);
           if (!ref) continue;
@@ -936,13 +965,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           const { techniqueId } = composedStep.value;
           let technique = composedStep.value.technique;
           let provenanceWarnings: string[] = [];
-          const ctx = await buildProvenanceContext({
-            workflow: result.value,
-            workflowDir: config.workflowDir,
-            currentActivityId: activity_id,
-            currentStepId: step.id!,
-            activitySourceWorkflow,
-          });
+          const ctx = producerIndex
+            ? provenanceContextFor(producerIndex, activity_id, step.id!)
+            : null;
           if (ctx) {
             const binding = typeof step.technique === 'object' ? step.technique : undefined;
             const decorated = decorateTechniqueProvenance(technique, ctx, binding, techniqueId, step.id!);
@@ -1247,6 +1272,24 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         budget_chars: bound.budgetChars,
         may_continue: stand.mayContinue,
       };
+
+      // What this delivery cost to build and to send, on one line. `resolved_techniques` is the
+      // distinct bound ops the producer scan read for the whole request and `provenance_passes` the
+      // steps decorated from that one scan, so the two together say whether resolve work is being
+      // repeated. `spent_chars` against `eager_budget_chars` is what the bundle drew down; the
+      // response length is what actually went over the wire, which is larger by the activity body
+      // and smaller than the sum of everything named where content collapsed to markers.
+      logInfo('Activity delivery cost', {
+        session_index, activity: activity_id, agentId: scope, delivery: referenceMode ? 'reference' : 'full',
+        resolved_techniques: producerIndex?.resolvedTechniques ?? 0,
+        provenance_passes: bundledSteps.length,
+        bundled_steps: bundledSteps.length,
+        bundled_steps_collapsed: bundledSteps.filter((b) => b.delivery === 'unchanged').length,
+        bundled_resources: bundledResourceDeliveries.length,
+        spent_chars: spentChars,
+        eager_budget_chars: Math.floor(eagerBudgetChars),
+        response_chars: responseText.length,
+      });
 
       return {
         content: [{ type: 'text' as const, text: responseText }],
