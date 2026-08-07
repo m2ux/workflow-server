@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.17.0
+  version: 1.18.0
 ---
 
 ## Capability
@@ -73,6 +73,12 @@ Where the session record and a just-completed worker's `activity_complete` envel
 ### resolve-trace-at-close-out
 
 Client finalize/retrospective paths that consume execution history MUST resolve accumulated `trace_tokens[]` once via `get_trace { session_index, trace_tokens }` (optionally `inspect_session` for fetch/fidelity context). This operation owns the accumulate half of the contract; the client's close-out path owns the resolve. Skip resolve when `trace_tokens` is empty.
+
+### say-what-a-dispatch-is-doing
+
+Leave the user no silent minute. Before spawning, tell them what is about to run, which gate their answer is next needed at — the first checkpoint of that activity, or that it runs to completion without one — and how long a comparable dispatch took where the session record carries a figure. Where this dispatch is one of a run of activities under one worker, say which of the run it is. Name any wait you impose between dispatches as you impose it: a commit cycle, a reconciliation, a retry.
+
+A dispatch produces nothing the user can read while it runs, and a gate arrives whenever the worker reaches one. So a cost not quoted before it is spent reads as a stall, and a gate nobody was told to expect arrives to someone who has stopped watching.
 
 ### no-get-activity-from-orchestrator
 

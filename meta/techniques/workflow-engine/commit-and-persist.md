@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.8.0
+  version: 1.11.0
 ---
 
 ## Capability
@@ -38,11 +38,19 @@ Path to the planning folder.
 
 ### commit-after-activity
 
-After every completed activity, BOTH source-side changes (under `{host_repo_path}/{component_path}`) AND engineering artifacts (under `.engineering/artifacts/`) MUST be committed and **pushed** before evaluating transitions to the next activity. Skipping either scope leaves a dirty or remote-stale tree that breaks resume, Engineering links, and downstream activities. The submodule commit may be skipped only when the working tree at `{host_repo_path}/{component_path}` is clean. The engineering commit may be skipped only when the planning folder has no local changes **and** README Progress Status for `{activity_id}` already shows the intended post-activity status on the remote (complete, or cancelled/N/A when `{mark_progress_na}` applied) per [Status vocabulary](../../resources/planning-readme.md#status-vocabulary) — otherwise Apply [sync-progress-status](./sync-progress-status.md) then commit and push. Scope: this orchestrator post-activity hook only — distinct from [explicit-commit](../version-control/TECHNIQUE.md#explicit-commit), which governs ad-hoc commits outside this hook.
+After every completed activity, BOTH source-side changes (under `{host_repo_path}/{component_path}`) AND engineering artifacts (under `.engineering/artifacts/`) MUST be committed and **pushed** before evaluating transitions to the next activity. Skipping either scope leaves a dirty or remote-stale tree that breaks resume, Engineering links, and downstream activities.
 
-### readme-progress-before-persist
+- Skip the engineering commit only where the planning folder has no local changes **and** README Progress Status for `{activity_id}` already shows its intended post-activity status on the remote — complete, or cancelled/N/A where `{mark_progress_na}` applied, per [Status vocabulary](../../resources/planning-readme.md#status-vocabulary).
+- Scope: this orchestrator post-activity hook only. Ad-hoc commits outside it are [explicit-commit](../version-control/TECHNIQUE.md#explicit-commit); the meta workflow's own setup sequence has its own cadence, [setup-sequence-persists-once](#setup-sequence-persists-once).
 
-Planning-folder `README.md` Progress Status updates for the completed activity go through [sync-progress-status](./sync-progress-status.md) inside this hook — not a per-activity YAML step, not a client-workflow activity rule, and not a worker `finalize-activity` duty. This operation Applies that technique (complete or cancelled/N/A per `{mark_progress_na}`), updates the header lifecycle Status, and includes `README.md` in the pushed engineering commit.
+### setup-sequence-persists-once
+
+Across the meta workflow's setup activities — every activity up to and including the one that dispatches the client workflow — mark Progress per activity and commit once.
+
+- Mark Progress and set the header lifecycle Status as each activity completes: both are local edits to a README someone watches while the ceremony runs.
+- Hold the source-side commit and the engineering commit-and-push until the client workflow is dispatched, then make them once over everything those activities produced. That is the first moment anything outside this session reads the artifacts, since the client workflow's own commits land after it.
+- A session interrupted mid-ceremony still resumes, from the `session.json` and `.session-token` the server writes on every authenticated call rather than from the remote.
+- Scope: the setup sequence only. Client-workflow activities persist per activity, per [commit-after-activity](#commit-after-activity).
 
 ### session-files-ride-along
 
