@@ -8,7 +8,11 @@ metadata:
 
 # Findings Report Guide
 
-A report that states findings has an addressee: the person who must act on them. Every report of that kind — code review, test-suite review, strategic review — carries findings in one shape, so a reader moving between two of them meets the same object twice rather than re-learning where the remedy sits. Each report declares only what is its own: its designator prefix and its field list.
+## Shared Shape
+
+A report that states findings has an addressee: the person who must act on them. Every report of that kind carries its findings in one shape, so a reader moving between two of them meets the same object twice rather than re-learning where the remedy sits.
+
+This guide owns that shape. A report guide declares only what is its own — its designator prefix and its field list — and states them against the sections below, which no report restates.
 
 ## Report and Methodology
 
