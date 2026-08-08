@@ -517,11 +517,11 @@ describe('reference-not-repeat delivery (B1)', () => {
     it('a step-bound fetch annotates own inputs and noteworthy inherited ones', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'design-philosophy');
+      await enterActivity(idx, 'post-impl-review');
 
       const result = await client.callTool({
         name: 'get_technique',
-        arguments: { session_index: idx, step_id: 'define-problem' },
+        arguments: { session_index: idx, step_id: 'code-review' },
       });
       expect(result.isError).toBeFalsy();
       const text = responseText(result);
@@ -536,8 +536,21 @@ describe('reference-not-repeat delivery (B1)', () => {
         expect(input.source, `expected a source on own input '${input.id}'`).toBeDefined();
       }
       const own = new Map((technique.inputs ?? []).map((i) => [i.id, i.source]));
-      expect(own.get('issue_record')).toMatch(/output of step '.+' \(activity '.+'\)/);
-      expect(own.get('problem_context')).toContain('optional input');
+      expect(own.get('changed_files')).toMatch(/output of step '.+' \(activity '.+'\)/);
+      // The optional-with-no-producer form is pinned on a technique that has one: every own input
+      // of `review-code` resolves to a producer, so it cannot exhibit that annotation.
+      await enterActivity(idx, 'design-philosophy');
+      const optionalCase = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, step_id: 'define-problem' },
+      });
+      expect(optionalCase.isError).toBeFalsy();
+      const optionalText = responseText(optionalCase);
+      const defineTechnique = parse(optionalText.substring(optionalText.indexOf('\n\n') + 2)) as {
+        inputs?: Array<{ id: string; source?: string }>;
+      };
+      const defineOwn = new Map((defineTechnique.inputs ?? []).map((i) => [i.id, i.source]));
+      expect(defineOwn.get('problem_context')).toContain('optional input');
       // Inherited entries carry a source only where it says something the block note does not
       // (e.g. a later-positioned producer); settled ambient constants stay bare.
       const inherited = technique.inherited_inputs?.items ?? [];
@@ -793,8 +806,12 @@ describe('reference-not-repeat delivery (B1)', () => {
         context_mode: 'persistent',
       });
       const idx = session['session_index'] as string;
-      const [stepA, stepB] = await findTwoTechniqueStepIds('implement');
-      await enterActivity(idx, 'implement');
+      // Two operations of the same group, so the contracts the loader merges into both are
+      // identical and a collapse is possible at all. Across groups the inherited blocks differ by
+      // construction, and nothing delivered twice would be there to collapse.
+      const stepA = 'review-strategy';
+      const stepB = 'document-findings';
+      await enterActivity(idx, 'strategic-review');
 
       // Technique A (persistent, no prior get_activity) delivers in full and establishes
       // the shared contract blocks in the ledger.
