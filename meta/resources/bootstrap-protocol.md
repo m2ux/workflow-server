@@ -7,16 +7,10 @@ description: The mandatory session-bootstrap sequence executed by every agent at
 
 IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
 
-This text arrives from `discover` before you have a session or an operations bundle, so you have no way
-to fetch a workflow file yet. Every step below is therefore complete as written — carry it out from
-this text alone. Where a step names an operation in `group::operation` form, that is the home the rule
-keeps once step 3 hands you the bundle; it is a label for later, never something to go and read now.
+A `group::operation` name in a step is a label for the home that rule keeps once step 3 delivers the
+bundle. Do not read it now.
 
-Everything you read before your first decision is fixed content — the same characters every run — and it
-is held to a budget the server measures: this text, the session-start echo, and the operations bundle
-step 3 delivers, together under 110,000 characters. A definition schema is orders of magnitude larger
-than the part of it an orchestrator acts on, so it is read by whichever context authors a definition,
-and never here.
+Do not fetch a definition schema here — it is read by whichever context authors a definition.
 
 1. Derive the target repository as `owner/repo` from git, before step 2:
 
