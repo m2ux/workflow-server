@@ -755,9 +755,9 @@ The same shared input is redeclared instead of hoisted.
 
 **Detect:** The same input is re-declared on many techniques instead of once on the smallest common container (group or workflow-root `TECHNIQUE.md`; `composeLoaded` merges container I/O/Rules into descendants). Related smell: path-flavored id (`planning-folder-path`) — canonical id is the noun the value IS (`canonical-artifact-ids`). Synonym drift for one concept across leaves.
 
-**Do not flag:** Niche inputs shared by only two or three techniques — do not push those to the root just to dedup.
+**Do not flag:** Niche inputs shared by only two or three techniques whose common ancestor declares none of them — do not push those to the root just to dedup. This carve-out counts leaves, so it never covers a leaf declaration standing beside an ancestor's, which is `inherited-input-re-declared` at any count.
 
-**Fix:** Hoist the shared input to the container under one canonical id; delete per-technique declarations; reference `{id}` via inheritance. Hoist genuinely workflow-wide contextual inputs (artifact location, target path) even if some leaves never reference them. Producer/consumer values still hoist: shared input on ancestor + producing technique also declares it as output (input∩output, `snake-case-symbols`).
+**Fix:** Hoist the shared input to the container under one canonical id; delete per-technique declarations; reference `{id}` via inheritance. Hoist genuinely workflow-wide contextual inputs (artifact location, target path) even if some leaves never reference them. Producer/consumer values still hoist: shared input on ancestor + producing technique also declares it as output (input∩output, `snake-case-symbols`). A hoist that leaves the leaf declarations in place has not finished — the residue is `inherited-input-re-declared`.
 
 ### AP-56. paren-invocation-args
 
@@ -1875,7 +1875,7 @@ A rules entry cites rules another file owns and the reader already receives, so 
 
 **Do not flag:** A pointer that narrows or qualifies the cited rule for this caller — a scope restriction, a threshold, an exception the cited rule does not state. Container `TECHNIQUE.md` Rules the loader merges into descendants, which is inheritance rather than enumeration. A prohibition citing the home that owns the behaviour it forbids bypassing (`no-rule-protocol-restatement`). README index tables (`readme-orients-not-transcribes`) and Capability op inventories (`capability-as-op-inventory`), which are the same shape on other sections.
 
-**Fix:** Delete the enumeration and rely on the entry that already commands the inherited or bundled set. Where one rule genuinely needs reach across a group boundary, hoist that invariant to the smallest common container so the loader delivers it rather than naming it from a distance. Carry over any clause the deleted entry held that no other surface states. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Delete the enumeration and rely on the entry that already commands the inherited or bundled set. Where one rule genuinely needs reach across a group boundary, hoist that invariant to the smallest common container so the loader delivers it rather than naming it from a distance. Carry over any clause the deleted entry held that no other surface states. The same fault on a technique's `## Inputs` is `inherited-input-re-declared`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-144. reference-without-provenance
 
