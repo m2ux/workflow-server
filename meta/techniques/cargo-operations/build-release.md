@@ -9,14 +9,6 @@ Release build; produces the final binary AND the runtime wasm artifact.
 
 ## Inputs
 
-### build_budget
-
-The command prefix this operation carries. A release build produces the wasm runtime, so the skip that the other compiling operations set is absent here.
-
-#### default
-
-`CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} nice -n 19`
-
 ### build_scope
 
 `--workspace` for the full workspace, or `-p <crate>` to scope to one crate.
@@ -38,6 +30,6 @@ The optimized release binary for `{build_scope}` AND the runtime wasm artifact, 
 
 ## Rules
 
-### keeps-wasm-artifact
+### keeps-generated-product
 
-This is the ONLY cargo operation that produces the runtime wasm artifact, and the ONLY one that omits `SKIP_WASM_BUILD=1`. Do not "optimise" by adding `SKIP_WASM_BUILD=1` here — the wasm runtime artifact is required for release.
+This operation is where a project's second build product is produced, so it carries no suppression for one. Suppressing it here to save time removes the artifact a release exists to deliver.

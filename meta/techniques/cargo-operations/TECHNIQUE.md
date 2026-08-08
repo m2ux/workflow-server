@@ -19,17 +19,22 @@ Optional `--features` flags (empty string when none)
 
 ### build_budget
 
-The command prefix a compiling cargo invocation carries: the environment assignments that cap its resource use, then the scheduling nice level. An operation whose compile profile differs declares its own.
-
-#### default
-
-`SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} nice -n 19`
+The command prefix a compiling cargo invocation carries, composed per resource-budget.
 
 ## Rules
 
 ### resource-budget
 
 Every cargo invocation MUST use one of these operations. Do NOT call bare `cargo ...` from technique protocols. Every compiling invocation carries `{build_budget}`, which is what prevents host hang on ≤32 GiB hosts; raise the caps through the environment on larger hosts.
+
+`{build_budget}` is the environment caps followed by the nice level — `CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} nice -n 19` — and two operations extend it for what they compile:
+
+- [test](./test.md) adds `RUST_TEST_THREADS=${RUST_TEST_THREADS:-4}`, bounding test parallelism alongside build parallelism.
+- Every compiling operation except [build-release](./build-release.md) adds whatever assignment suppresses a generated build product the project carries, per generated-product-built-once.
+
+### generated-product-built-once
+
+Some projects compile a second product beside the binary — a Substrate runtime's wasm blob is the common case — and building it on every check, lint and test costs far more than it returns. Where a project has one, suppress it on each compiling operation and let the single operation whose product it is build it: on a Substrate project the assignment is `SKIP_WASM_BUILD=1` and the operation that keeps the product is [build-release](./build-release.md). A project with no such product adds nothing, and these operations are unchanged by its absence.
 
 ### foreground-only
 
