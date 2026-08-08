@@ -37,4 +37,4 @@ Kebab-case identifier for the work: lowercase, alphanumerics and single hyphens,
 
 ### one-name-per-work-item
 
-The same work yields the same name on every run, because the name is taken from the work item's own words rather than composed afresh. The slug is the key a resume matches on, so a name invented differently on a second run addresses a folder the first run never wrote.
+The same work yields the same name on every run.

@@ -183,12 +183,6 @@ steps:
           setVariable:
             findings_raised_to_author: none
             review_passed: true
-      - id: hold-for-examination
-        label: Hold for further review
-        description: Areas remain to examine before anything is posted
-        effect:
-          setVariable:
-            findings_raised_to_author: none
 transitions:
   - to: submit-for-review
     condition:

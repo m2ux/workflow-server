@@ -23,7 +23,7 @@ Designator prefix `SR`. Declared fields, in this order, laid out per [Finding La
 | `Action` | Remove / Simplify / Keep |
 | `Rationale` | The argument for that action |
 
-`Action` and `Rationale` are this report's own fields rather than the `Recommendation` and `Impact` its siblings carry: `Rationale` argues for an action where `Impact` states a consequence, and the two are not the same claim.
+`Rationale` argues for the action the finding names, which is a different claim from the consequence a finding states elsewhere.
 
 ## Strategic Review Artifact Template
 

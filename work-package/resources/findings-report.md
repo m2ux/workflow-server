@@ -3,7 +3,7 @@ name: findings-report
 description: Shared shape for every report that states findings — the finding layout, the designator and severity contracts, and the split between a report and its methodology record.
 metadata:
   version: 1.0.0
-  order: 19
+  order: 14
 ---
 
 # Findings Report Guide

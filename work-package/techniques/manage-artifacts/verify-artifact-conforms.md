@@ -37,22 +37,20 @@ array of `{ file, rule, detail, fixed }` entries — one per detected violation,
    - a recap table or closing summary restating the artifact's own sections breaches `state-once-per-artifact`;
    - an all-pass status table breaches `exception-only-reporting`;
    - an artifact exceeding a line budget declared in its template's `## Rules` breaches `line-budget`;
-   - a reference to a named thing in the code carrying no inline link on the name — or carrying a coordinate-only link, a trailing parenthetical citation, or a code span inside the link text — breaches `code-reference-is-an-inline-link`.
+   - a code reference departing from [code-reference-is-an-inline-link](./TECHNIQUE.md#code-reference-is-an-inline-link) breaches that rule, in any of the shapes it names.
 
 ### 3. Check Finding Shape
 
-1. For each artifact that states findings, take its report's declared field list and prefix, then check every finding against [Finding Layout](../../resources/findings-report.md#finding-layout):
-   - a finding that is not a heading, or a grouping heading standing between findings, breaches `finding-layout`;
-   - a paragraph whose opening label is outside the declared list breaches `finding-layout`, as does a finding whose labels appear out of declared order or omit a required one;
-   - a designator whose prefix is not the one the report declares, or a findings list or table not in ascending designator order, breaches `designator-order`;
-   - a severity outside the render scale, a severity carrying a qualifier, an absent severity, or one disagreeing with the map applied to that finding's recorded classification, breaches `severity-value`;
-   - a designator the run produced that appears in no delivery class, or in more than one, breaches `delivery-class` — compare the set of designators produced against the set each class names rather than reading the ranges.
+1. For each artifact that states findings, take its report's declared field list and prefix, then apply the criteria in [Finding Layout](../../resources/findings-report.md#finding-layout), [Designators](../../resources/findings-report.md#designators), [Severity](../../resources/findings-report.md#severity) and [Delivery Completeness](../../resources/findings-report.md#delivery-completeness) as each is written. Record a breach of the first as `finding-layout`, of the second as `designator-order`, of the third as `severity-value`, and of the fourth as `delivery-class`.
 
 ### 4. Resolve Anchors
 
-1. Resolve every `[…](file#anchor)` within the planning folder against the target file's actual headings; record each that does not resolve as `anchor-resolves`. Resolve the whole folder, not the files this run edited — removing a heading or renaming a designator invalidates links from anywhere.
+1. Apply [Anchor Integrity](../../resources/findings-report.md#anchor-integrity) across the planning folder; record each link it leaves unresolved as `anchor-resolves`.
 
-### 5. Fix and Report
+### 5. Fix in Place
 
-1. Fix each violation in place: replace restatement with a link to the canonical home, delete null sections and recap tables, collapse all-pass tables to one line, condense over-budget prose, move a code reference's link onto the name it belongs to, relabel and reorder a finding's fields, restore a heading an anchor points at, and derive an absent or wrong severity through the map. Preserve any content the user explicitly requested (requested detail is exempt, per [omit-null-sections](./TECHNIQUE.md#omit-null-sections)).
-2. Compose `{artifact_conformance}`: its `violations` array lists every detected violation with its fix status; its `conforms` verdict is true iff the list is empty after fixes. Report exceptions only — a fully conformant folder is the one-line result, not a per-file table.
+1. Fix each violation where it sits, by the remedy its own rule or section prescribes. Preserve any content the user explicitly requested (requested detail is exempt, per [omit-null-sections](./TECHNIQUE.md#omit-null-sections)).
+
+### 6. Report
+
+1. Compose `{artifact_conformance}`: its `violations` array lists every detected violation with its fix status; its `conforms` verdict is true iff the list is empty after fixes. Report exceptions only — a fully conformant folder is the one-line result, not a per-file table.
