@@ -28,7 +28,7 @@ Report file: optional for implementation and PR reviews; required for module aud
 
 ### Field List
 
-Designator prefix `CR`. Declared fields, in this order, laid out per [Finding Layout](./findings-report.md#finding-layout):
+Designators use the prefix declared for this report's category at [Code Review](./review-mode.md#code-review). Declared fields, in this order, laid out per [Finding Layout](./findings-report.md#finding-layout):
 
 | Field | Holds |
 |---|---|

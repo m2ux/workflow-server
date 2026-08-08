@@ -54,7 +54,7 @@ Four properties make it checkable:
   ```
 
 - **The labels appear in declared order**, every finding the same.
-- **The site is carried by the link in the prose**, not by a separate location field — the first mention of the named thing is an inline link to it, per the shared artifact rule that governs code references. A `Location:` field beside that link states the site twice in one artifact.
+- **The site is carried by the link in the prose**, not by a separate location field — the first mention of the named thing is an inline link to it, per manage-artifacts.code-reference-is-an-inline-link. A `Location:` field beside that link states the site twice in one artifact.
 
 ## Designators
 
@@ -64,11 +64,11 @@ Each finding carries a stable designator: the prefix its report declares, then i
 
 ## Severity
 
-Every finding a report states carries a severity, and the value is a member of the render scale in [Severity Definitions](./review-mode.md#severity-definitions) — a report that produces findings and supplies no severity leaves the summary's column blank, which is silent degradation rather than an omission.
+Every finding a report states carries a severity, derived from that finding's own classification through the map in [Severity Definitions](./review-mode.md#severity-definitions) — a report that produces findings and supplies no severity leaves the summary's column blank, which is silent degradation rather than an omission.
 
 Two constraints, both checkable from what the run already records:
 
-- **The value is from the scale, and nothing else.** A classification-scale term used where the render scale is meant, or an empty cell, fails.
+- **The value is what the map yields, and nothing else.** A classification-scale term left unmapped, or an empty cell, fails. A classification the map keeps out of the summary tables still carries a value here — `Informational` is what that omission reads as in the report, and it is the report that holds those findings.
 - **The value equals the map applied to that finding's own classification.** The classified severity is recorded on the finding, so this is a lookup rather than a judgement.
 
 A qualifier is not part of a severity value: `Medium (harness defect)` is a severity and a note sharing one cell, and the note belongs in the finding's description.

@@ -19,7 +19,7 @@ true iff the `violations` array is empty after fixes are applied.
 
 #### violations
 
-array of `{ file, rule, detail, fixed }` entries — one per detected violation, where `rule` names the rule breached (`single-source-and-link`, `state-once-per-artifact`, `omit-null-sections`, `exception-only-reporting`, `line-budget`, `code-reference-is-an-inline-link`, `finding-layout`, `designator-order`, `severity-value`, `delivery-class`, or `anchor-resolves`) and `fixed` records whether the in-place fix was applied.
+array of `{ file, rule, detail, fixed }` entries — one per detected violation, where `rule` names the rule breached (`single-source-and-link`, `state-once-per-artifact`, `omit-null-sections`, `exception-only-reporting`, `line-budget`, `code-reference-is-an-inline-link`, `finding-layout`, `designator-order`, `severity-value`, or `delivery-class`) and `fixed` records whether the in-place fix was applied.
 
 
 ## Protocol
@@ -43,14 +43,10 @@ array of `{ file, rule, detail, fixed }` entries — one per detected violation,
 
 1. For each artifact that states findings, take its report's declared field list and prefix, then apply the criteria in [Finding Layout](../../resources/findings-report.md#finding-layout), [Designators](../../resources/findings-report.md#designators), [Severity](../../resources/findings-report.md#severity) and [Delivery Completeness](../../resources/findings-report.md#delivery-completeness) as each is written. Record a breach of the first as `finding-layout`, of the second as `designator-order`, of the third as `severity-value`, and of the fourth as `delivery-class`.
 
-### 4. Resolve Anchors
-
-1. Apply [Anchor Integrity](../../resources/findings-report.md#anchor-integrity) across the planning folder; record each link it leaves unresolved as `anchor-resolves`.
-
-### 5. Fix in Place
+### 4. Fix in Place
 
 1. Fix each violation where it sits, by the remedy its own rule or section prescribes. Preserve any content the user explicitly requested (requested detail is exempt, per [omit-null-sections](./TECHNIQUE.md#omit-null-sections)).
 
-### 6. Report
+### 5. Report
 
 1. Compose `{artifact_conformance}`: its `violations` array lists every detected violation with its fix status; its `conforms` verdict is true iff the list is empty after fixes. Report exceptions only — a fully conformant folder is the one-line result, not a per-file table.

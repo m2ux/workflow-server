@@ -13,7 +13,7 @@ Problem-solving commonly leaves behind speculative changes, debugging infrastruc
 
 ## Field List
 
-Designator prefix `SR`. Declared fields, in this order, laid out per [Finding Layout](./findings-report.md#finding-layout):
+Designators use the prefix declared for this report's category at [Strategic Review](./review-mode.md#strategic-review). Declared fields, in this order, laid out per [Finding Layout](./findings-report.md#finding-layout):
 
 | Field | Holds |
 |---|---|

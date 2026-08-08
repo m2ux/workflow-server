@@ -43,23 +43,23 @@ Lifecycle **Status** values: `Planning`, `Ready`, `In Progress`, `Complete`.
 | 14 | [Provenance log](08-provenance-log.md) | Per-task AI-assistance provenance | 5-15m | ⬚ |
 | 15 | Lean-coding audit | Ponytail lean lens on the change | 15-30m | ⬚ |
 | 16 | [Code review](09-code-review.md) | Consolidated review findings home | 15-30m | ⬚ |
-| 16a | [Code review method](09-code-review-method.md) | What the code review walked and swept | 5-10m | ⬚ |
-| 17 | [Debt ledger](09-debt-ledger.md) | Harvested ponytail debt markers | 10-20m | ⬚ |
-| 18 | [Lean change](09-lean-change.md) | Applied lean simplifications record | 10-20m | ⬚ |
-| 19 | Post-implementation review | Quality review before validation | 30-60m | ⬚ |
-| 20 | [Change block index](10-change-block-index.md) | Indexed diff hunks for review | 5-10m | ⬚ |
-| 21 | [Test suite review](10-test-suite-review.md) | Test quality and coverage | 10-20m | ⬚ |
-| 21a | [Test suite review method](10-test-suite-review-method.md) | Suite baseline, coverage map, sweeps | 5-10m | ⬚ |
-| 22 | [Structural analysis](10-structural-analysis.md) | Prism L12 when written standalone | 15-30m | ⬚ |
-| 23 | [Architecture summary](10-architecture-summary.md) | Stakeholder architecture overview | 15-30m | ⬚ |
-| 24 | Validation | Build, test, lint verification | 15-30m | ⬚ |
-| 25 | [Strategic review](12-strategic-review-1.md) | Scope/minimality series (`strategic-review-{n}`) | 15-30m | ⬚ |
-| 25a | [Strategic review method](12-strategic-review-1-method.md) | Scope, conformance, minimality and delivery passes | 5-10m | ⬚ |
-| 26 | Submit for review | PR review lifecycle / stealth push | 30-60m | ⬚ |
-| 27 | [Close-out](14-COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | ⬚ |
-| 28 | [Token usage](14-token-usage.md) | Session token and cost summary | 5-10m | ⬚ |
-| 29 | [Session trace](14-session-trace.md) | Lean mechanical execution trace | 5-10m | ⬚ |
-| 30 | Codebase comprehension | Persistent knowledge under comprehension/ | 20-45m | ⬚ |
+| 17 | [Code review method](10-code-review-method.md) | What the code review walked and swept | 5-10m | ⬚ |
+| 18 | [Debt ledger](09-debt-ledger.md) | Harvested ponytail debt markers | 10-20m | ⬚ |
+| 19 | [Lean change](09-lean-change.md) | Applied lean simplifications record | 10-20m | ⬚ |
+| 20 | Post-implementation review | Quality review before validation | 30-60m | ⬚ |
+| 21 | [Change block index](10-change-block-index.md) | Indexed diff hunks for review | 5-10m | ⬚ |
+| 22 | [Test suite review](10-test-suite-review.md) | Test quality and coverage | 10-20m | ⬚ |
+| 23 | [Test suite review method](10-test-suite-review-method.md) | Suite baseline, coverage map, sweeps | 5-10m | ⬚ |
+| 24 | [Structural analysis](10-structural-analysis.md) | Prism L12 when written standalone | 15-30m | ⬚ |
+| 25 | [Architecture summary](10-architecture-summary.md) | Stakeholder architecture overview | 15-30m | ⬚ |
+| 26 | Validation | Build, test, lint verification | 15-30m | ⬚ |
+| 27 | [Strategic review](12-strategic-review-1.md) | Scope/minimality series (`strategic-review-{n}`) | 15-30m | ⬚ |
+| 28 | [Strategic review method](12-strategic-review-1-method.md) | Scope, conformance, minimality and delivery passes | 5-10m | ⬚ |
+| 29 | Submit for review | PR review lifecycle / stealth push | 30-60m | ⬚ |
+| 30 | [Close-out](14-COMPLETE.md) | Deliverables, limitations, retrospective; ADR when owed | 10-20m | ⬚ |
+| 31 | [Token usage](14-token-usage.md) | Session token and cost summary | 5-10m | ⬚ |
+| 32 | [Session trace](14-session-trace.md) | Lean mechanical execution trace | 5-10m | ⬚ |
+| 33 | Codebase comprehension | Persistent knowledge under comprehension/ | 20-45m | ⬚ |
 
 Link targets are minted filenames per [Item cell](../../meta/resources/planning-readme.md#item-cell). Deferred items and Follow-ups are the cross-activity registers, minted by whichever activity defers or logs first and therefore unprefixed.
 
@@ -79,8 +79,8 @@ Which activity owns which rows, per [row-ownership map](../../meta/resources/pla
 | 06 | Work package plan · Test plan · Deferred items · Follow-ups |
 | 07 | Assumptions review |
 | 08 | Implementation · Provenance log |
-| 09 | Lean-coding audit · Code review · Code review method · Debt ledger · Lean change |
-| 10 | Post-implementation review · Change block index · Test suite review · Test suite review method · Structural analysis · Architecture summary |
+| 09 | Lean-coding audit · Code review · Debt ledger · Lean change |
+| 10 | Post-implementation review · Change block index · Code review method · Test suite review · Test suite review method · Structural analysis · Architecture summary |
 | 11 | Validation |
 | 12 | Strategic review · Strategic review method |
 | 13 | Submit for review |

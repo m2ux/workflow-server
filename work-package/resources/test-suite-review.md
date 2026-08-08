@@ -45,7 +45,7 @@ High-value patterns to encourage: protocol compliance (calculated values vs prot
 
 ## Field List
 
-Designator prefix `TR`. Declared fields, in this order, laid out per [Finding Layout](./findings-report.md#finding-layout):
+Designators use the prefix declared for this report's category at [Test Review](./review-mode.md#test-review). Declared fields, in this order, laid out per [Finding Layout](./findings-report.md#finding-layout):
 
 | Field | Holds |
 |---|---|
