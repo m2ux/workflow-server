@@ -27,11 +27,11 @@ prompt. A `deny` decision is reliable (unlike an `updatedInput` rewrite, which
 misbehaves when multiple PreToolUse Bash hooks are configured).
 
 NOT handled here (deliberately):
-  * Filesystem-mutating binaries (rm/mv/ln/dd/chmod): they have legitimate
-    uses OUTSIDE the project (where the sandbox's read-only bind would block
-    them), so they are NOT forced. They stay hard-denied by
-    compound-bash-allow.py's DENY_BINARIES (prompt on bare use); `sbx rm ...`
-    is an allowlisted, auto-approved OPTION for in-project mutation.
+  * Filesystem-mutating binaries (rm/mv/ln/chmod/chown/chgrp): redirect-fs-
+    mutation.py owns those, and redirects one only when every path it touches
+    lies inside a writable root, since the sandbox's read-only bind would block
+    a mutation outside. `dd` and any undecidable operand shape stay hard-denied
+    by compound-bash-allow.py's DENY_BINARIES, which prompts on bare use.
   * `python3 <file>.py` and other interpreter+file forms — handled by the
     location hook.
   * Commands already wrapped (first token sbx / bwrap).

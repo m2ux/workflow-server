@@ -21,6 +21,7 @@ scripts/claude/
     ├── compound-bash.json          # extra read-only safe commands for compound-bash-allow.py
     ├── curl-allow.json             # host/path allowlist config for curl-read-allow.py
     ├── curl-read-allow.py          # PreToolUse: auto-allow read-only curl to trusted hosts
+    ├── redirect-fs-mutation.py     # PreToolUse: deny bare rm/mv/chmod on writable-root paths; redirect to sbx
     ├── redirect-inline-eval.py     # PreToolUse: deny bare python -c / node -e; redirect to sbx
     ├── webfetch-allow.json         # URL-prefix allowlist config for webfetch-allow.py
     ├── webfetch-allow.py           # PreToolUse: auto-allow WebFetch under configured prefixes
