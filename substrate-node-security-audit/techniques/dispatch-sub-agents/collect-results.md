@@ -13,10 +13,6 @@ Project meta [gather-results](../../../meta/techniques/orchestration-patterns/ga
 
 Ordered keyed collection from [orchestration-patterns](../../../meta/techniques/orchestration-patterns/TECHNIQUE.md)::[gather-results](../../../meta/techniques/orchestration-patterns/gather-results.md).
 
-### agent_roster
-
-Domain roster used to attach crate / assignment columns to the manifest.
-
 ## Outputs
 
 ### dispatch_results

@@ -17,10 +17,6 @@ The basis for the overview — issue details, ticket description, work-package p
 
 The README section to write into (e.g. `## Problem Overview`, `## Solution Overview`). The overview replaces the placeholder text under this heading.
 
-### planning_folder_path
-
-Path to the planning folder whose `README.md` holds the section.
-
 ## Outputs
 
 ### stakeholder_overview
@@ -33,7 +29,6 @@ The two-paragraph plain-language overview written under `{readme_section_heading
 2. Write exactly two paragraphs in simple, accessible language suitable for non-technical stakeholders; do not use jargon without explanation.
 3. Frame the first paragraph as the situation or what the work does, and the second paragraph as the consequences or guarantees — what matters and why — tailoring the framing to `{readme_section_heading}` and `{source_material}`.
 4. Write it into `{planning_folder_path}`/`README.md` by replacing the placeholder text under the `{readme_section_heading}` section, and emit `{stakeholder_overview}` as the bindable overview text.
-
 
 ## Rules
 

@@ -45,14 +45,6 @@ Ordered path list of the authoritative authored surface.
 
 *(optional)* Per-path status and line counts when the producing leaf emitted them; when unset, the inventory records paths from `{changed_files}` without per-file stats.
 
-### planning_folder_path
-
-Folder that receives `change-surface.md`.
-
-### target_repo_path
-
-Checkout under review — used only to map paths to crates and pallets for the preliminary inventory column.
-
 ## Outputs
 
 ### change_surface_inventory

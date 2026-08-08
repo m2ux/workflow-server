@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ Artifact content to write
 
 ### target_dir
 
-*(optional)* The directory the artifact is written into. Defaults to `{planning_folder_path}`; bind it to `{comprehension_dir}` when writing into the comprehension directory rather than the planning folder.
+*(optional)* The directory the artifact is written into.
 
 #### default
 

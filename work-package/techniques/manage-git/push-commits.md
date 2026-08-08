@@ -9,14 +9,6 @@ Push local commits on the feature branch to the configured push remote.
 
 ## Inputs
 
-### target_path
-
-Path to the edit-side checkout the push runs in (per the manage-git group's directory-scope rule, edit-side git operations run inside `{target_path}`).
-
-### branch_name
-
-The feature branch whose local commits are pushed to `{push_remote}`.
-
 ### push_remote
 
 The git remote the push targets. Defaults to `origin`; a private consumer (stealth mode) sets it to its private remote (e.g. `security`) so no commit ever reaches a public destination.

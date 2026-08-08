@@ -9,10 +9,6 @@ Classify the goal against a fixed lane roster and select exactly one lane — th
 
 ## Inputs
 
-### work_goal
-
-Request to classify.
-
 ### lane_roster
 
 Array of lanes. Each entry has `id`, `description`, and optional `tools_hint` / `prompt_suffix` describing the specialist.

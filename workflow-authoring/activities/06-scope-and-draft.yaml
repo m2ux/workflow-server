@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.0.0
+version: 1.1.0
 name: Scope and Draft
 description: "Prepare the edit worktree, enumerate the complete file manifest, author every file the manifest names, and bring the target README and the planning artifacts into line with what was drafted."
 required: true
@@ -15,7 +15,6 @@ steps:
       inputs:
         branch_name: workflow_branch
         create_branch: true
-        component_name: workflows
     when: operation_type != 'review'
   - kind: technique
     id: define-scope

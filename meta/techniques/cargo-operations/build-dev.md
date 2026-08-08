@@ -1,21 +1,11 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.1.0
 ---
 
 ## Capability
 
 Workspace dev build; skips the runtime wasm artifact.
-
-## Inputs
-
-### build_scope
-
-`--workspace` for the full workspace, or `-p <crate>` to scope to one crate.
-
-### features
-
-Optional `--features` flags (empty string when none).
 
 ## Outputs
 
@@ -25,5 +15,5 @@ The compiled dev binaries/libraries for `{build_scope}` under the cargo target d
 
 ## Protocol
 
-1. `SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} nice -n 19 cargo build {build_scope} {features}`
+1. `{generated_product_skip} {build_budget} cargo build {build_scope} {features}`
    - If the link or codegen step exceeds available RAM, halve `CARGO_BUILD_JOBS` and retry.

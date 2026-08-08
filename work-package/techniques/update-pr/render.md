@@ -1,44 +1,17 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
 
 PR description body from the selected template, sourced from planning artifacts.
 
-## Inputs
-
-### pr_template_variant
-
-Which PR body template to render — `initial` or `final`.
-
-### is_review_mode
-
-True when the body is the consolidated review-mode comment rather than an implementation update; selects the [Review Comment Template](../../resources/review-mode.md#review-comment-template).
-
-### planning_folder_path
-
-Path to the planning folder holding the implementation summary and artifacts the body draws from.
-
-### host_repo_path
-
-Path to the repo root (monorepo or standalone checkout). Used to resolve the engineering link when planning lives under `{host_repo_path}/.engineering/`.
-
-### target_path
-
-Path to the target checkout (where the PR lives), from which the target repo URL is resolved.
-
-### pr_number
-
-The PR number whose description is updated.
-
 ## Outputs
 
 ### rendered_pr_body
 
 The rendered PR description body now live on the `{pr_number}` PR — composed from the selected template, including the implementation summary, test-coverage summary, key decisions/trade-offs, and the engineering/target link URLs.
-
 
 ## Protocol
 
@@ -53,4 +26,4 @@ The rendered PR description body now live on the `{pr_number}` PR — composed f
    - `{$eng_repo_url}`: same remote commands against `{eng_git_dir}`. Target and engineering remotes may differ.
    - `{$eng_branch}`: `git -C {eng_git_dir} branch --show-current` — do NOT assume `main`; planning artifacts may live on another branch. When `{eng_git_dir}` is `{host_repo_path}`, the Engineering link path includes `/.engineering/artifacts/planning/…`; when `{eng_git_dir}` is the eng checkout itself, the path is `/artifacts/planning/…` relative to that remote. The link must resolve to a committed file on the remote (manage-artifacts.push-before-linking).
 4. Compose the link row per the [link-row forms](../../resources/pr-description.md#link-row-forms): the Issue link always present, pointing at the GitHub issue in the target repo via the `github_issue_number` variable — never the Jira key, never a guessed number; when `issue_skipped` is true, render the [Issue-skipped placeholder](../../resources/pr-description.md#link-row-forms). The Engineering link is always present on the same line. When `issue_platform` is `jira` and a `jira_issue_key` was captured, append the Jira ticket as the secondary reference line. Add ADR and test-plan links when those artifacts exist.
-5. Apply [update-pr-description](../../../meta/techniques/github-cli-protocol/update-pr-description.md) with `body` the composed markdown; set `{rendered_pr_body}` from the op. If the PR cannot be found because `{pr_number}` does not exist, verify the PR number and check `gh` auth before retrying.
+5. Apply [update-pr-description](../../../meta/techniques/github-cli-protocol/update-pr-description.md)(*repo_path*=`{component_git_dir}`, *body*=the composed markdown); set `{rendered_pr_body}` from the op. If the PR cannot be found because `{pr_number}` does not exist, verify the PR number and check `gh` auth before retrying.

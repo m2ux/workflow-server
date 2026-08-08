@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -21,7 +21,7 @@ Completed activities, checkpoint decisions, and artifacts produced.
 
 ### completion_summary
 
-[Markdown string](../../resources/session-summary-template.md#session-summary-template) summarizing the completed session.
+[Markdown string](../../../meta/resources/session-summary-template.md#session-summary-template) summarizing the completed session.
 
 ## Protocol
 

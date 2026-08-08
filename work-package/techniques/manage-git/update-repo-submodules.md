@@ -7,12 +7,6 @@ metadata:
 
 Refresh the monorepo's submodules to their tracked remote HEADs, with locking and skip-if-recent semantics to coordinate concurrent invocations from sibling work packages.
 
-## Inputs
-
-### host_repo_path
-
-Path to the repo root (monorepo whose submodules are refreshed); the gate, lock, freshness sentinel, and `git submodule update` all operate inside it. The op is a no-op when this is empty or the repo root is a standalone repo with no `.gitmodules`.
-
 ## Protocol
 
 ### 1. Gate and Lock

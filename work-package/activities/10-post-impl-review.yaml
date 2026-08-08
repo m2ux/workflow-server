@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.19.0
+version: 1.20.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 required: true
@@ -87,15 +87,16 @@ steps:
     id: review-fix-cycle
     name: Review-Fix Cycle
     loopType: doWhile
+    when: is_review_mode != true
     condition:
       type: or
       conditions:
         - type: simple
-          variable: needs_code_fixes
+          variable: code_findings_actionable
           operator: ==
           value: true
         - type: simple
-          variable: needs_test_improvements
+          variable: test_findings_actionable
           operator: ==
           value: true
     maxIterations: 3
@@ -107,10 +108,10 @@ steps:
         id: reset-fix-flags
         actions:
           - action: set
-            target: needs_code_fixes
+            target: code_findings_actionable
             value: false
           - action: set
-            target: needs_test_improvements
+            target: test_findings_actionable
             value: false
       - kind: technique
         id: re-manual-diff-review
@@ -134,7 +135,7 @@ steps:
         findings_to_classify: manual_diff_review_report
   - kind: checkpoint
     id: local-validation-permission
-    message: Is the local environment suitable to run the project's validation suite?
+    message: The project's validation suite either runs here against the checked-out head, or its result is recorded as not run.
     blocking: true
     condition:
       type: simple
@@ -142,15 +143,15 @@ steps:
       operator: "!="
       value: true
     options:
-      - id: run-locally
-        label: Yes — run validation locally
-        description: The validate activity executes the project suite in-process
+      - id: run-suite
+        label: Run the suite against the checked-out head
+        description: The validate activity runs the project suite in this environment and records what it reports
         effect:
           setVariable:
             run_local_validation: true
-      - id: validation-unavailable
-        label: No — mark validation N/A
-        description: Skip the local suite; Progress Validation recorded as cancelled/N/A
+      - id: suite-not-run
+        label: Record validation as not run
+        description: Progress Validation is recorded as cancelled/N/A and the run states that the suite was not exercised here
         effect:
           setVariable:
             run_local_validation: false

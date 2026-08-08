@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-authoring
-version: 1.1.0
+version: 1.2.0
 title: Workflow Authoring Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -125,6 +125,10 @@ variables:
   - name: target_path
     type: string
     description: Worktree path for edits, builds and PR operations.
+    defaultValue: ""
+  - name: component_git_dir
+    type: string
+    description: Absolute path of the workflows library's git working tree under the checkout.
     defaultValue: ""
   - name: worktree_created
     type: boolean

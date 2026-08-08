@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ Create or update.
 
 ### host_repo_path
 
-*(optional)* Monorepo or checkout that contains the shared `workflows` library component. Used when composing create-worktree to locate the component git directory.
+*(optional)* Monorepo or checkout that contains the shared `workflows` library component.
 
 ## Outputs
 
@@ -49,8 +49,7 @@ True when the worktree at `{target_path}` on `{workflow_branch}` was created or 
   - `{target_path}` as declared
   - `branch_name` = `{$branch_name}`
   - `create_branch` = true
-  - `component_name` = `workflows`
-  - `{host_repo_path}` when supplied (otherwise create-worktree resolves the component from ambient context)
+  - `component_git_dir` = `{component_git_dir}`
   >
   > Compose only the declared create-worktree inputs — no parallel git recipe and no undeclared compose params. create-worktree bases the new branch on that component's `origin/HEAD` default; the workflows library's HEAD must resolve to `workflows` (intervene before compose when it does not).
 - Reuse when `{target_path}` is already a registered worktree on that branch; surface path conflicts to the user (do not delete)

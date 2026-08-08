@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -53,7 +53,7 @@ Slug the session is keyed on — minted transitionally when no planning folder w
 
 ## Protocol
 
-1. Call `start_session` with `{workflow_id}`, `{agent_id}`, `{repo}`, `{user_request}`, and optional `{planning_folder}`, per the [bootstrap protocol](../../resources/bootstrap-protocol.md). Omit `context_mode` (or pass `"fresh"`).
+1. Call `start_session` with `{workflow_id}`, `{agent_id}`, `{repo}`, `{user_request}`, and optional `{planning_folder}`, per the [bootstrap protocol](../../../meta/resources/bootstrap-protocol.md). Omit `context_mode` (or pass `"fresh"`).
    > `{repo}` is required on every call, including transient meta when `{planning_folder}` is omitted.
    > Pass `{user_request}` verbatim — the server seeds it into the bag and children inherit it, so it reaches downstream agents as state rather than as prose in a spawn prompt.
 2. Save `{session_index}` and `{planning_folder_path}` from the response. Record `{repo}` as bag `{target_repo}` (response echo when present, otherwise the value passed). Do not compose or reconcile the planning path yourself.

@@ -2,7 +2,7 @@
 name: codebase-comprehension
 description: Comprehension techniques, artifact template, and deep-dive guidance from reverse engineering and code forensics literature.
 metadata:
-  version: 1.1.1
+  version: 1.2.0
   order: 25
   legacy_id: 25
 ---
@@ -10,7 +10,7 @@ metadata:
 
 # Codebase Comprehension Guide
 
-Systematically build a mental model of an unfamiliar codebase before design decisions are made. Artifacts persist in `.engineering/artifacts/comprehension/` and are augmented across successive work packages into a cumulative knowledge base.
+Systematically build a mental model of an unfamiliar codebase before design decisions are made. Artifacts persist in the comprehension corpus, outside any one session's planning folder, and are augmented across successive work packages into a cumulative knowledge base.
 
 Knowledge-base sources for concept lookups: *Object-Oriented Reengineering Patterns* (Demeyer, Ducasse, Nierstrasz — first contact, reverse engineering lifecycle), *Your Code as a Crime Scene* (Tornhill — hotspots, temporal coupling, knowledge maps), *Software Design X-Rays* (Tornhill — behavioral analysis, complexity trends, change coupling), *Code Reading* (Spinellis — reading strategies, software archaeology, build analysis), *Working Effectively with Legacy Code* (Feathers — seams, characterization tests, dependency breaking).
 

@@ -7,12 +7,6 @@ metadata:
 
 Create the detailed-findings document from prism's DEFINITIVE-FINDINGS.md contract: an expanded write-up for every finding, organised by severity and grouped within each severity under audit-domain sub-headings. For multi-scope audits, consolidate the per-scope definitive findings before writing.
 
-## Inputs
-
-### completed_analyses
-
-The triggered prism runs, each carrying its scope's `definitive_findings_path` (the DEFINITIVE-FINDINGS.md the run produced). The findings source for every scope.
-
 ## Outputs
 
 ### detailed_findings_path

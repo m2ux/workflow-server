@@ -2,7 +2,7 @@
 name: test-suite-review
 description: Guidelines for reviewing and evaluating test suites. Covers test quality assessment, coverage analysis, anti-pattern detection, and improvement recommendations.
 metadata:
-  version: 1.1.1
+  version: 1.2.0
   order: 17
   legacy_id: 17
 ---
@@ -43,14 +43,60 @@ Low-value patterns to flag (each can only fail if the language/framework is brok
 
 High-value patterns to encourage: protocol compliance (calculated values vs protocol specification), business rule enforcement (invalid input rejected with error), error boundary testing (timeouts, failure handling), state transition validation, real client logic (actual conversion/validation methods, not mocks).
 
+## Field List
+
+Designators use the prefix declared for this report's category at [Test Review](./review-mode.md#test-review). Declared fields, in this order, laid out per [Finding Layout](./findings-report.md#finding-layout):
+
+| Field | Holds |
+|---|---|
+| `Category` | Coverage Gap / Anti-Pattern / Redundancy / Harness Defect / Reported Failure |
+| `Severity` | A value from the render scale, per [Severity](./findings-report.md#severity) |
+| `Description` | What the test does or fails to do, opening with an inline link to the test |
+| `Impact` | What goes unverified, or what a passing run fails to prove |
+| `Recommendation` | The concrete improvement |
+
 ## Report Template
 
-Reference this guide in the header's Author link so readers understand the methodology used.
+Reference this guide in the header's Author link so readers understand the methodology used, and link the method record for what the review walked.
 
 ```markdown
 # Test Suite Review Report
 
-> [Work Package] · #[issue] - [Title] · YYYY-MM-DD · [Test Suite Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/test-suite-review.md) Agent
+> [Work Package] · #[issue] - [Title] · YYYY-MM-DD · [Test Suite Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/test-suite-review.md) Agent · what was walked: [method record](NN-test-suite-review-method.md)
+
+## Summary Assessment
+
+**Overall Test Quality:** X/5 — [brief assessment]
+
+## Findings
+
+[One heading per finding, ascending by designator, no grouping heading between them. With no findings, state that in one line.]
+
+### TR-1 — [one line naming the finding]
+
+**Category:** [category]
+
+**Severity:** [render-scale value]
+
+**Description:** [what the test does or fails to do, opening with an inline link to it]
+
+**Impact:** [what goes unverified]
+
+**Recommendation:** [improvement]
+
+## Review Outcome
+
+**Result:** [Acceptable / Needs Improvement / Significant Issues]
+
+**Summary:** [1-2 sentence summary of findings and next steps]
+```
+
+## Method Record Template
+
+```markdown
+# Test Suite Review Method
+
+> test-suite review method · [Work Package] · YYYY-MM-DD · findings: [test suite review report](NN-test-suite-review.md)
 
 ## Review Scope
 
@@ -61,10 +107,11 @@ Reference this guide in the header's Author link so readers understand the metho
 | Total Tests Reviewed | [count] |
 | Testing Framework | [framework name] |
 
-## Summary Assessment
+## Suite Baseline
 
-**Overall Test Quality:** X/5 — [brief assessment]
-**Critical Issues Found:** [count]
+[The command that runs the suite and what it reported, so a reader can reproduce the baseline the review judged against.]
+
+## Assessment Criteria
 
 [Exception-only: if all of Relevance & Business Alignment, Coverage Completeness, and Test Effectiveness PASS, state "All 3 assessment criteria PASS" on one line. Otherwise list only the FAILing criteria with notes.]
 
@@ -115,33 +162,7 @@ Total tests analyzed: [X] · with anti-patterns: [Y] · clean: [X-Y] · rate: [Y
 | `test_workflow_b` | `unit_c` (partial) | 70% | ENHANCE unit tests |
 | `test_workflow_c` | None | 0% | KEEP or CONVERT to unit |
 
-## Recommendations
+## Reported-Failure Triage
 
-[Omit any empty tier.]
-
-### 1. Immediate Actions (Critical/High Priority)
-
-| # | Action | Affected Tests | Rationale |
-|---|--------|----------------|-----------|
-| 1.1 | [Specific action] | `test_name` | [Why] |
-
-### 2. Near-term Improvements (Medium Priority)
-
-| # | Action | Affected Tests | Rationale |
-|---|--------|----------------|-----------|
-| 2.1 | [Specific action] | `test_name` | [Why] |
-
-### 3. Long-term Enhancements (Low Priority)
-
-| # | Action | Affected Tests | Rationale |
-|---|--------|----------------|-----------|
-| 3.1 | [Specific action] | `test_name` | [Why] |
-
-## Review Outcome
-
-**Result:** [Acceptable / Needs Improvement / Significant Issues]
-
-**Summary:** [1-2 sentence summary of findings and next steps]
-
-**Deferred Improvements:** [Omit if none.]
+[Omit if none were reported. One row per reported runtime failure with the code path that raises it and the state precondition that reaches it.]
 ```

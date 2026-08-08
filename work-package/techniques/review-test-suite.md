@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.1.0
+  version: 2.2.0
 ---
 
 ## Capability
@@ -13,10 +13,6 @@ Test-suite quality and coverage review — gaps, assertion quality, isolation, a
 
 List of files changed in the work package (from `git diff`)
 
-### planning_folder_path
-
-Folder where the test suite review report is written
-
 ### prior_feedback_triage
 
 *(optional)* The triage of prior PR feedback, when present. Its entries tagged as reported runtime failures are the input to reported-failure triage — each is traced to a code path and state precondition here rather than re-read from the PR thread.
@@ -25,11 +21,19 @@ Folder where the test suite review report is written
 
 ### test_suite_review_report
 
-Test suite review [report](../resources/test-suite-review.md#report-template) documenting quality assessment
+Test suite review [report](../resources/test-suite-review.md#report-template) stating the suite's findings and the review outcome.
 
 #### artifact
 
 `test-suite-review.md`
+
+### test_suite_review_method
+
+Method [record](../resources/test-suite-review.md#method-record-template) of how the review was conducted — the suite baseline, the coverage map, the anti-pattern sweep, the pyramid and redundancy assessments, and the reported-failure triage.
+
+#### artifact
+
+`test-suite-review-method.md`
 
 ## Protocol
 
@@ -75,10 +79,13 @@ When `{prior_feedback_triage}` is present, every entry tagged as a reported runt
 
 ### 5. Document Findings
 
-- Document findings with severity and recommendations
+- State each finding in the shape [Finding Layout](../resources/findings-report.md#finding-layout) declares, carrying the fields under [Field List](../resources/test-suite-review.md#field-list) and no others, with its severity derived through the map per [Severity](../resources/findings-report.md#severity)
 - Create the `{test_suite_review_report}` in `{planning_folder_path}`
 - Emit a brief summary of coverage gaps and critical issues as part of the bindable report output for the binding activity to surface
 
+### 6. Record the Method
+
+- Create the `{test_suite_review_method}` in `{planning_folder_path}` from the [Method Record Template](../resources/test-suite-review.md#method-record-template): the suite baseline and the command that reproduces it, the coverage map, the anti-pattern sweep with its counts, the pyramid and redundancy assessments, and the reported-failure triage. A finding's own evidence stays on the finding, per [Report and Methodology](../resources/findings-report.md#report-and-methodology)
 
 ## Rules
 

@@ -13,10 +13,6 @@ Targeted investigation of a selected codebase area into the comprehension artifa
 
 The comprehension artifact whose architecture survey and existing Open Questions seed the candidate-area selection, and to which findings are appended.
 
-### comprehension_dir
-
-Directory holding codebase-comprehension artifacts. Names the location the artifact is written to (`{codebase_area}.md`).
-
 ### gitnexus_indexed
 
 Flag indicating whether the codebase is indexed; selects between gitnexus-operations (context, cypher, process resources) and grep/read for tracing call chains.
@@ -34,7 +30,6 @@ Updated comprehension artifact — written as `{codebase_area}.md` in `{comprehe
 #### deep_dives
 
 Targeted exploration subsections appended for the selected area: traced data flows, implementation details, and edge cases.
-
 
 ## Protocol
 

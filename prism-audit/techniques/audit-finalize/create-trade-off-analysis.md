@@ -7,12 +7,6 @@ metadata:
 
 Distil the conservation laws prism recorded into a design trade-off analysis: a trade-off catalogue, a cross-domain interaction map, and a design decision register. Prism has already excluded the laws its adversarial pass rejected, so this technique reads only the surviving laws from the findings contract.
 
-## Inputs
-
-### completed_analyses
-
-The triggered prism runs, each carrying its scope's `definitive_findings_path`. The Conservation Laws & Design Trade-offs section of each DEFINITIVE-FINDINGS.md is the source of laws.
-
 ## Outputs
 
 ### trade_offs_path

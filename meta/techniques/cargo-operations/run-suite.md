@@ -1,21 +1,11 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.1.0
 ---
 
 ## Capability
 
-Run check, clippy, test, and fmt-check as concurrent foreground shells against the same scope and aggregate their statuses into a single validation-results envelope. The canonical entry point for full validation on rust-substrate projects.
-
-## Inputs
-
-### build_scope
-
-`--workspace` for the full workspace, or `-p <crate>` to scope to one crate.
-
-### features
-
-Optional `--features` flags (empty string when none).
+One validation verdict for a rust-substrate project, covering compilation, lints, tests and formatting, with each check's diagnostics carried beside its status so a failure is analysable without re-running it. The canonical entry point for full validation.
 
 ## Outputs
 
@@ -53,7 +43,8 @@ aggregate verdict — true iff all four per-op statuses passed (equivalently, `f
 
 ## Protocol
 
-1. In the caller's foreground, start four concurrent shell invocations of [check](./check.md), [clippy](./clippy.md), [test](./test.md), and [fmt-check](./fmt-check.md) against the same `{build_scope}`, passing the same `{features}` flags to each compiling op. Do not background the suite or any op via `run_in_background` inside a worker — the caller waits on all four (group rule `foreground-only`). Each carries its own resource budget (env assignments before `nice -n 19` + `CARGO_BUILD_JOBS` cap), so suite peak memory is bounded by the per-op cap, NOT by 4× a single op (fmt-check uses no compile budget at all). If the combined peak of the concurrent cargo invocations still exceeds available RAM despite the per-op budgets, halve `CARGO_BUILD_JOBS` for all (`export CARGO_BUILD_JOBS=2`) and retry; on very tight hosts, fall back to running check/clippy/test sequentially via the per-op operations.
+1. Start four concurrent shell invocations of [check](./check.md), [clippy](./clippy.md), [test](./test.md), and [fmt-check](./fmt-check.md) against the same `{build_scope}`, passing the same `{features}` flags to each compiling op. Each op carries its own budget, so the suite's peak memory is bounded by the per-op cap rather than by four of them, and fmt-check compiles nothing at all.  
+   > When the combined peak still exceeds available RAM, halve the job cap for all (`export CARGO_BUILD_JOBS=2`) and retry; on very tight hosts, run check, clippy and test sequentially via the per-op operations.
 2. Wait for ALL four to finish before composing results. Do NOT short-circuit on the first failure — collect every per-op status and diagnostics so a single pass surfaces every issue rather than forcing serial discovery.
 3. Compose each per-check status as `{ check_id, passed, diagnostics }`, folding the op's diagnostic field into `diagnostics`: `{check_status}` from [check](./check.md)'s rustc output, `{clippy_status}.diagnostics` from `{lint_diagnostics}`, `{test_status}.diagnostics` from `{failures}`, `{fmt_status}.diagnostics` from `{fmt_diff_summary}`.
 4. Derive `{$failed_checks}` = the per-check statuses with `passed == false` in suite order (check, clippy, test, fmt-check); set `{$first_failure}` = the first entry of `{$failed_checks}` projected to `{ check_id, diagnostics }`, or null when `{$failed_checks}` is empty.

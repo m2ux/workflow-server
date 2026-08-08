@@ -17,10 +17,6 @@ Ordered array of `{ id, brief, tools_hint? }`.
 
 *(optional)* Shared structured-output or artifact requirements for every worker.
 
-### isolation_mode
-
-`context` (default) or `worktree`.
-
 ### planning_folder_path
 
 *(optional)* Absolute planning folder when outputs must persist as files.

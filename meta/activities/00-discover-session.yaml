@@ -1,5 +1,5 @@
 id: discover-session
-version: 7.4.0
+version: 7.5.0
 name: Discover Session
 description: Derive the host repository the session belongs to, identify the target workflow and, on stated resume intent, search for an existing client session to resume.
 required: true
@@ -64,7 +64,9 @@ steps:
   - kind: technique
     id: extract-context
     technique: workflow-engine::extract-identifying-context
-    when: resume_intent_requested == true
+  - kind: technique
+    id: name-initiative
+    technique: workflow-engine::derive-initiative-name
   - kind: technique
     id: scan-planning-folders
     technique: workflow-engine::scan-saved-sessions
@@ -124,4 +126,6 @@ transitions:
 outcome:
   - Host repository derived from git, with a basename divergence the server's mapping cannot represent raised as an explicit decision
   - Target workflow identified (and confirmed by user if ambiguous)
+  - The work carries one name taken from its own words, so the planning folder a fresh run creates is the folder a later resume looks for
+  - A repository the request names is held as component context on every run, so the component under work is identifiable whether or not prior work is resumed
   - Saved session matched and resume decision captured whenever the request states resume intent

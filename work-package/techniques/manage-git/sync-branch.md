@@ -9,14 +9,6 @@ Feature branch kept current with the default branch.
 
 ## Inputs
 
-### target_path
-
-Path to the edit-side checkout the fetch and rebase/merge run in (per the manage-git group's directory-scope rule, edit-side git operations run inside `{target_path}`).
-
-### branch_name
-
-The feature branch brought current with the default branch.
-
 ### default_branch
 
 The default branch (typically `main`) fetched and rebased/merged into `{branch_name}`.

@@ -17,10 +17,6 @@ Object with at least `id` and `brief`. May include `tools_hint`.
 
 *(optional)* Structured-output or artifact requirements the worker must satisfy (schema summary, filename under `{planning_folder_path}`, return shape).
 
-### isolation_mode
-
-`context` (default) or `worktree`.
-
 ### planning_folder_path
 
 *(optional)* Absolute planning folder for persisted outputs when `{output_contract}` requires files.

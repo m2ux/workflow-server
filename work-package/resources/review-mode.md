@@ -2,7 +2,7 @@
 name: review-mode
 description: Guidelines for using the work-package workflow in review mode to conduct structured PR reviews. Covers detection, adapted workflow behavior, and output generation. Organized by review category for per-section delivery to the technique that renders that category.
 metadata:
-  version: 1.14.0
+  version: 1.15.0
   order: 24
   legacy_id: 24
 ---
@@ -20,7 +20,7 @@ This section is the creation guide for the consolidated review comment posted to
 
 The sub-sections decompose the rules so a consumer fetches only the one it needs:
 
-- [Header Fields](#header-fields) — the `PR` / `Plan` / `Reviewers` / `Reports` / `Date` header and the link conventions that govern it
+- [Header Fields](#header-fields) — the `PR` / `Plan` / `Activities` / `Reports` / `Date` header and the link conventions that govern it
 - [Table Format](#table-format) — the shared findings-table shape across all categories
 - [Reference, Don't Restate](#reference-dont-restate) — findings cited by ID, never reproduced, within a declared budget
 - [Prose Register](#prose-register) — the sentence-level register every prose passage holds to
@@ -31,11 +31,11 @@ The sub-sections decompose the rules so a consumer fetches only the one it needs
 
 ### Header Fields
 
-The summary header carries `PR`, `Plan`, `Reviewers`, `Reports`, and `Date` fields.
+The summary header carries `PR`, `Plan`, `Activities`, `Reports`, and `Date` fields.
 
 **Findings constraint:** every finding names a file within the authored surface (the PR's changed-files list). Findings on files in that set form the PR's findings; findings on other files form a separate "pre-existing" grouping.
 
-**Reports list:** The header includes a `Reports` field naming each report the summary links to, as hyperlinks. Each entry links the report by name to its artifact, under the engineering-artifacts base URL:
+**Reports list:** The header includes a `Reports` field naming each report the summary links to, as hyperlinks. It is the summary's single home for those links: a findings section carries no `Details:` line of its own, because the reader has already met the list in the header and reads a repeat as a different link worth following. Each entry links the report by name to its artifact, under the engineering-artifacts base URL:
 
 ```
 https://github.com/{ENG_REPO_OWNER}/{ENG_REPO_NAME}/blob/{ARTIFACT_PUBLISH_REF}/{ENG_PLANNING_PATH}/{PLANNING_FOLDER}/
@@ -55,13 +55,13 @@ Section titles (a per-category findings heading) must NOT be hyperlinks — the 
 
 **Plan link:** Immediately after the `PR` line, the header carries a `Plan` field linking the planning folder's `README.md` — the work package's canonical home — built from the same engineering-artifacts base URL as the `Reports` field, with `README.md` appended.
 
-**Reviewers list:** The `Reviewers` field lists each review *activity* that contributed findings — an activity, not a technique — with each name hyperlinked to that activity's section in the activities README. When one activity runs several review techniques, it appears once; never split it into per-technique reviewer entries, never link a reviewer to a technique file, and link to the activity's README section rather than its raw `.yaml`. The activities README lives in the workflows repository (a submodule), so reviewer links use the workflow repo base URL:
+**Activities list:** The `Activities` field lists each review activity that contributed findings, with each name hyperlinked to that activity's section in the activities README. The field names activities rather than people: the summary is posted into a pull request, where a reader takes `Reviewers` to mean the people whose approval the change waits on, and these entries resolve into a workflow-definition repository instead. When one activity runs several review techniques it appears once; never split it into per-technique entries, never link an entry to a technique file, and link to the activity's README section rather than its raw `.yaml`. The activities README lives in the workflows repository (a submodule), so these links use the workflow repo base URL:
 
 ```
 https://github.com/{WORKFLOW_REPO_OWNER}/{WORKFLOW_REPO_NAME}/blob/{WORKFLOW_BRANCH}/work-package/activities/README.md
 ```
 
-Resolve `{WORKFLOW_REPO_OWNER}`, `{WORKFLOW_REPO_NAME}`, and `{WORKFLOW_BRANCH}` from the `.gitmodules` entry for the workflows submodule (typically `.engineering/workflows`). Each reviewer links to its activity's heading anchor; the rendering step supplies the activity-to-anchor mapping for the activities it links.
+Resolve `{WORKFLOW_REPO_OWNER}`, `{WORKFLOW_REPO_NAME}`, and `{WORKFLOW_BRANCH}` from the `.gitmodules` entry for the workflows submodule (typically `.engineering/workflows`). Each entry links to its activity's heading anchor; the rendering step supplies the activity-to-anchor mapping for the activities it links.
 
 ### Table Format
 
@@ -80,6 +80,8 @@ The `@` cell is `[>](url)`, never the filename, path, test name, or run label as
 
 The item column header is `Finding` in every category's table. Prior Feedback Triage is the one carve-out on shape: its `#` links the prior comment thread rather than a report section, it carries no `@` column, and it keeps a `Disposition` column as its right-most column. No other table carries `Disposition` — the [Action Items](#action-items) tiers already express it.
 
+**One free-prose column per table.** A posted review body renders in a narrow fixed-width column, so two columns of prose compete for the same width and both wrap on every row. `Finding` is that column. Every other column holds a short closed value — a designator, a link glyph, a severity, a classification, an author login — and a column whose values grow into phrases has stopped being a column: state the qualification in the linked report, which has room for it.
+
 ### Reference, Don't Restate
 
 The summary references each finding by designator, one-line title, `@` link, and severity ONLY. Descriptions, evidence, reproduction and suggestions live in the linked report artifacts (`Reports` header).
@@ -89,7 +91,7 @@ Budget, so the rule is checkable rather than aspirational:
 | Slot | Budget |
 |------|--------|
 | A `Finding` cell | one line, at most 15 words, no sentence-ending punctuation, no code fence, no line-number list |
-| A category section's prose outside its table | at most 2 lines — the `Details:` report link, plus one optional line of scope |
+| A category section's prose outside its table | at most one line of scope; the report is reached from the `Reports` header |
 | Executive Summary | at most 2 sentences, plus the `Overall Rating` line |
 | An Action Items entry | one line naming the fix and its designator |
 | The whole summary | at most 120 lines |
@@ -146,6 +148,8 @@ Review mode produces review-specific variants of the standard planning artifacts
 
 ### Severity Definitions
 
+This is the render scale for the summary and for every report that states findings; the constraints on using it are under [Severity](./findings-report.md#severity).
+
 | Severity | Merge Blocker? | Expectation |
 |----------|----------------|-------------|
 | Critical | Yes | Must fix before merge |
@@ -183,7 +187,7 @@ The Overall Rating rendered in the summary maps to the posted review type:
 
 **PR**: #XXX - Title  
 **Plan**: [work package README](.../planning/{PLANNING_FOLDER}/README.md)  
-**Reviewers**: [each contributing review activity linked to its section in the activities README under `{workflow_base}/activities/README.md`]  
+**Activities**: [each contributing review activity linked to its section in the activities README under `{workflow_base}/activities/README.md`]  
 **Reports**: `{reports}` — one hyperlinked entry per report the run produced, supplied by the rendering step  
 **Date**: YYYY-MM-DD
 
@@ -295,17 +299,19 @@ Based on ticket [PM-XXXXX] requirements:
 
 Disposition of every prior comment and review on the PR (human and bot), determined before independent analysis. The `#` column links the prior comment thread (each row is a prior comment, not a finding with a report section). A Confirmed blocker-class entry caps the Overall Rating unless the review's own findings refute it (the rating-cap carve-in).
 
-**Population:** one row per prior comment with its Confirmed / Refuted / Superseded disposition and reasoning; carry each Confirmed blocker-class entry into Action Items as blocking. This table is the [Table Format](#table-format) carve-out: no `@` column, and `Disposition` right-most.
+**Population:** one row per prior comment carrying its disposition; carry each Confirmed blocker-class entry into Action Items as blocking. This table is the [Table Format](#table-format) carve-out: no `@` column, and `Disposition` right-most.
+
+`Disposition` is a classification with exactly three values — `Confirmed`, `Refuted`, `Superseded` — and carries no qualifying phrase. The reasoning behind each disposition, and any qualification of it, lives in the prior-feedback triage report the `Reports` header links; a Confirmed blocker-class entry additionally reaches Action Items, where it has room to be stated properly. The `Author` column is the aggravating factor for width — a bot login is long and unbreakable — so `Finding` is the only column here that may hold prose.
 
 ```markdown
 ### Prior Feedback Triage
 
 Disposition of every prior comment and review on the PR (human and bot), determined before independent analysis.
 
-| # | Finding | Author | Reasoning | Disposition |
-|---|---------|--------|-----------|-------------|
-| [1](pr-comment-url) | Storage record never cleared on close | reviewer | Clear missing on the governance-close path | Confirmed — caps rating |
-| [2](pr-comment-url) | Naming nit on handler | bot | Name follows the crate convention | Refuted |
+| # | Finding | Author | Disposition |
+|---|---------|--------|-------------|
+| [1](pr-comment-url) | Storage record never cleared on close | reviewer | Confirmed |
+| [2](pr-comment-url) | Naming nit on handler | bot | Refuted |
 ```
 
 ## Code Review
@@ -316,8 +322,6 @@ Disposition of every prior comment and review on the PR (human and bot), determi
 
 ```markdown
 ### Code Review Findings
-
-Details: [code review report]({report-url}).
 
 | # | @ | Finding | Severity |
 |---|---|---------|----------|
@@ -333,8 +337,6 @@ Details: [code review report]({report-url}).
 
 ```markdown
 ### Test Review Findings
-
-Details: [test suite review report]({report-url}).
 
 | # | @ | Finding | Severity |
 |---|---|---------|----------|
@@ -394,8 +396,6 @@ Review-mode strategic review produces cleanup and scope-fit **recommendations** 
 
 ```markdown
 ### Strategic Review
-
-Details: [strategic review report]({report-url}).
 
 | # | @ | Finding | Severity |
 |---|---|---------|----------|

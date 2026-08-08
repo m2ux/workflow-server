@@ -7,12 +7,6 @@ metadata:
 
 Canonical formatting check; matches CI exactly. Does not compile, so does not need build-jobs caps.
 
-## Inputs
-
-### build_scope
-
-`--workspace` for the full workspace, or `-p <crate>` to scope to one crate. `{features}` does not apply — fmt does not compile.
-
 ## Outputs
 
 ### fmt_status

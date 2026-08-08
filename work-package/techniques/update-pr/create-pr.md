@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -17,14 +17,6 @@ Issue identifier (GitHub `#N` or Jira `KEY-N`)
 
 Platform where the issue lives (`github` or `jira`)
 
-### target_path
-
-Working tree of the repository in which to create the PR.
-
-### branch_name
-
-Head branch to open the PR from.
-
 ## Outputs
 
 ### pr_number
@@ -34,7 +26,6 @@ PR number
 ### pr_url
 
 URL to the PR
-
 
 ## Protocol
 
@@ -49,5 +40,5 @@ URL to the PR
 
 ### 3. Assign Current User
 
-- Apply [assign-issue](../../../meta/techniques/github-cli-protocol/assign-issue.md) with `issue_number` `{pr_number}` and `assignee` `@me` (PR numbers share the issues assignees endpoint).
+- Apply [assign-issue](../../../meta/techniques/github-cli-protocol/assign-issue.md)(*repo_path*=`{target_path}`, *issue_number*=`{pr_number}`, *assignee*=`@me`) — PR numbers share the issues assignees endpoint.
 - Keep the PR as draft until implementation and review complete

@@ -755,9 +755,9 @@ The same shared input is redeclared instead of hoisted.
 
 **Detect:** The same input is re-declared on many techniques instead of once on the smallest common container (group or workflow-root `TECHNIQUE.md`; `composeLoaded` merges container I/O/Rules into descendants). Related smell: path-flavored id (`planning-folder-path`) — canonical id is the noun the value IS (`canonical-artifact-ids`). Synonym drift for one concept across leaves.
 
-**Do not flag:** Niche inputs shared by only two or three techniques — do not push those to the root just to dedup.
+**Do not flag:** Niche inputs shared by only two or three techniques whose common ancestor declares none of them — do not push those to the root just to dedup. This carve-out counts leaves, so it never covers a leaf declaration standing beside an ancestor's, which is `inherited-input-re-declared` at any count.
 
-**Fix:** Hoist the shared input to the container under one canonical id; delete per-technique declarations; reference `{id}` via inheritance. Hoist genuinely workflow-wide contextual inputs (artifact location, target path) even if some leaves never reference them. Producer/consumer values still hoist: shared input on ancestor + producing technique also declares it as output (input∩output, `snake-case-symbols`).
+**Fix:** Hoist the shared input to the container under one canonical id; delete per-technique declarations; reference `{id}` via inheritance. Hoist genuinely workflow-wide contextual inputs (artifact location, target path) even if some leaves never reference them. Producer/consumer values still hoist: shared input on ancestor + producing technique also declares it as output (input∩output, `snake-case-symbols`). A hoist that leaves the leaf declarations in place has not finished — the residue is `inherited-input-re-declared`.
 
 ### AP-56. paren-invocation-args
 
@@ -1875,7 +1875,7 @@ A rules entry cites rules another file owns and the reader already receives, so 
 
 **Do not flag:** A pointer that narrows or qualifies the cited rule for this caller — a scope restriction, a threshold, an exception the cited rule does not state. Container `TECHNIQUE.md` Rules the loader merges into descendants, which is inheritance rather than enumeration. A prohibition citing the home that owns the behaviour it forbids bypassing (`no-rule-protocol-restatement`). README index tables (`readme-orients-not-transcribes`) and Capability op inventories (`capability-as-op-inventory`), which are the same shape on other sections.
 
-**Fix:** Delete the enumeration and rely on the entry that already commands the inherited or bundled set. Where one rule genuinely needs reach across a group boundary, hoist that invariant to the smallest common container so the loader delivers it rather than naming it from a distance. Carry over any clause the deleted entry held that no other surface states. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+**Fix:** Delete the enumeration and rely on the entry that already commands the inherited or bundled set. Where one rule genuinely needs reach across a group boundary, hoist that invariant to the smallest common container so the loader delivers it rather than naming it from a distance. Carry over any clause the deleted entry held that no other surface states. The same fault on a technique's `## Inputs` is `inherited-input-re-declared`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
 
 ### AP-144. reference-without-provenance
 
@@ -1924,3 +1924,15 @@ An operation's rule states policy over a subject the operation does not own, so 
 **Do not flag:** A prohibition or conformance statement addressed to the reader — a worker rule barring a worker's own call, an adapter rule naming the only conforming form of its own dispatch. An invariant on the operation's own cadence, outputs, or the composition of what it writes. A one-line pointer to the surface that does own the policy. The same claim already held in both places, which is `no-technique-resource-dual-home`, and the mirror defect of operational cadence filed in a resource, which is `resource-fills-not-does`.
 
 **Fix:** Move the claim to the surface that owns the subject, widening that surface's own statement to cover whatever the rule uniquely carried, and delete the rule where nothing operation-specific remains. Cite the owning surface from the phase that needs it. Where no surface owns the subject yet, `operative-criteria-need-a-home` names the migration. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+
+### AP-148. inherited-input-re-declared
+
+"`### planning_folder_path` on a leaf whose workflow-root `TECHNIQUE.md` declares it already"
+
+A leaf redeclares an input a container contract merges into it, so one bind slot carries two descriptions and each is edited without the other.
+
+**Detect:** For each `### <id>` under a technique's `## Inputs`, resolve the contracts the loader merges into that file — its group `TECHNIQUE.md` and the workflow-root `TECHNIQUE.md` — and flag an id an ancestor already declares. The merge supplies the slot before the leaf entry is read, so the leaf adds no bind point; where its wording narrows the value to that one operation, a caller binds against the ancestor's contract while a reader takes the leaf's, and neither is marked as the one that governs.
+
+**Do not flag:** A leaf entry that changes the bind contract rather than restating it — a differing `#### default`, or an optionality the operation genuinely needs — which is what an override exists for. An id an ancestor carries only under `## Outputs`. Container `TECHNIQUE.md` files, whose declarations exist to be inherited. An input several leaves share that no common ancestor declares at all, which is `hoist-shared-inputs`: the hoist still owed rather than its residue.
+
+**Fix:** Delete the leaf declaration and let the merge deliver it; Protocol goes on referencing `{id}` unchanged. Where the leaf's wording held something the ancestor's lacks, widen the ancestor once, then delete. The Rules-side counterpart is `inherited-rules-re-enumerated`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).

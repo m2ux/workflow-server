@@ -9,10 +9,6 @@ Sole cost home for a run — the token-use and cost-estimate artifact, reconcile
 
 ## Inputs
 
-### planning_folder_path
-
-Path to the planning folder where the token-usage artifact is written and the README lives.
-
 ### trace_tokens
 
 *(optional)* Opaque trace tokens accumulated across the run; the dispatch record the ledger is reconciled against. Empty when the run accumulated none.
@@ -56,7 +52,6 @@ Share of the run's dispatches the ledger accounts for: ledger entry count, actua
 ### 4. Link From the README
 
 - Add one line to the planning folder `README.md` summarizing total tokens and estimated cost with a markdown link to the token-usage artifact. When usage was absent, omit the line.
-
 
 ## Rules
 

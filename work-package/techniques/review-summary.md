@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.9.0
+  version: 1.10.0
 ---
 
 ## Capability
@@ -66,7 +66,7 @@ Every slot in `{review_summary}` whose measured size exceeds its budget in the f
 
 - Resolve `{$eng_git_dir}`: `{host_repo_path}/.engineering` when that path is a git checkout (submodule or nested clone); otherwise `{host_repo_path}`.
 - Resolve `{$eng_publish_ref}`: `{artifact_publish_ref}` when it is non-empty; otherwise `git -C {eng_git_dir} branch --show-current` — never hardcode `main`. This is a branch, so the linked tree carries every artifact the run writes after this render.
-- Resolve `{$reviewed_code_base}`: `{reviewed_code_base_url}` when it is non-empty; otherwise Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md) and take `{reviewed_code_base_url}` from the op.
+- Resolve `{$reviewed_code_base}`: `{reviewed_code_base_url}` when it is non-empty; otherwise Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and take `{reviewed_code_base_url}` from the op.
 - Supply `{eng_publish_ref}` as the ref in every engineering-artifact hyperlink and `{reviewed_code_base}` as the prefix of every reviewed-code citation, per the ref split in [Header Fields](../resources/review-mode.md#header-fields) — that section owns the URL shapes and their slots; this step supplies only the two refs.
 
 ### 3. Render the Summary
@@ -77,12 +77,12 @@ Every slot in `{review_summary}` whose measured size exceeds its budget in the f
 - Render the Strategic Review section from the run's cleanup and scope-fit recommendations as a findings table on the shared format, and carry each recommendation into the Action Items tier its severity assigns.
 - Render `What This Change Gets Right` between Strategic Review and Action Items, one bullet per specific strength with its `@` locus link; omit the section when the review found none.
 - Hold every prose passage to the format's prose register and caveat form: plain language, one claim per sentence, at most one hedge, at most one symbol and one location per sentence, and each caveat one line plus a link to the report section holding its basis.
-- Render the header fields in order — `PR`, then `Plan` on its own line immediately after `PR` (linking the planning folder's `README.md`, the work package's canonical home, via the engineering-artifacts base URL with `{eng_publish_ref}`), then `Reviewers`, `Reports`, and `Date`. Every `Plan`, `Reports`, and reviewer hyperlink is mandatory — the posting step posts them verbatim.
+- Render the header fields in order — `PR`, then `Plan` on its own line immediately after `PR` (linking the planning folder's `README.md`, the work package's canonical home, via the engineering-artifacts base URL with `{eng_publish_ref}`), then `Activities`, `Reports`, and `Date`. Every `Plan`, `Reports`, and `Activities` hyperlink is mandatory — the posting step posts them verbatim.
 - Render the `Reports` field — one hyperlinked entry per report this run produced, each linking the report name to its artifact under the engineering-artifacts base URL with `{eng_publish_ref}`. Include an entry only for a report actually produced this run; omit categories with no report. Each report's concrete artifact filename and content are owned by the technique that produced it — this step iterates over whatever reports were produced, it does not enumerate them.
-- Render the Reviewers field: list each contributing review *activity* once and hyperlink it to its section in the activities README, using the base URL from the [Header Fields](../resources/review-mode.md#header-fields) sub-section of the Review Comment Template — never link a reviewer to a technique file or to an activity's raw `.yaml`, and never split one activity into per-technique entries. The activity-to-anchor mapping is supplied by the rendering step at runtime (e.g. Post-Implementation Review → `#10-post-implementation-review`, Validate → `#11-validate`, Strategic Review → `#12-strategic-review`).
-- Render the Prior Feedback Triage section from `{prior_feedback_triage}`: one row per prior comment with its Confirmed / Refuted / Superseded disposition, and carry each Confirmed blocker-class entry into the Action Items as a blocking item.
+- Render the `Activities` field: list each contributing review activity once and hyperlink it to its section in the activities README, using the base URL from the [Header Fields](../resources/review-mode.md#header-fields) sub-section of the Review Comment Template — never link an entry to a technique file or to an activity's raw `.yaml`, and never split one activity into per-technique entries. The activity-to-anchor mapping is supplied by the rendering step at runtime (e.g. Post-Implementation Review → `#10-post-implementation-review`, Validate → `#11-validate`, Strategic Review → `#12-strategic-review`).
+- Render the Prior Feedback Triage section from `{prior_feedback_triage}`: one row per prior comment, its `Disposition` cell holding one of the three values that column admits and nothing else, and carry each Confirmed blocker-class entry into the Action Items as a blocking item.
 - Apply `{rating_cap}` to the Overall Rating per the rating-cap carve-in below.
-- Render the attribution footer that closes the format template — Apply [viewer-login](../../meta/techniques/github-cli-protocol/viewer-login.md) and substitute `{viewer_login}` for `{user}`; Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md) and use the short form of `{head_sha}` for `{sha}` — so `{review_summary}` carries it and the posted comment reaches the PR with it intact.
+- Render the attribution footer that closes the format template — Apply [viewer-login](../../meta/techniques/github-cli-protocol/viewer-login.md) and substitute `{viewer_login}` for `{user}`; Apply [view-pr](../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and use the short form of `{head_sha}` for `{sha}` — so `{review_summary}` carries it and the posted comment reaches the PR with it intact.
 - Produce `{review_summary}` as the rendered text.
 - Follow the loaded format exactly — do not invent a parallel structure; the review-mode resource is the authoritative owner of the format. `{review_summary}` is the verbatim source the posting step (`update-pr::post-review-comment`) emits — the bytes bound here are the bytes posted.
 

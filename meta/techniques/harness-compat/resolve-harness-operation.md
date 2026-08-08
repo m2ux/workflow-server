@@ -9,10 +9,6 @@ Resolve harness kind plus an operation kind to the harness-specific technique fi
 
 ## Inputs
 
-### harness_kind
-
-Identifier of the harness in use: `claude-code`, `cursor`, `cline`, or `generic`.
-
 ### operation_kind
 
 Which slice to resolve — one of: `spawn`, `resume`, `concurrent`.

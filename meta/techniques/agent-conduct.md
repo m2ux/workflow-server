@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 4.8.0
+  version: 5.0.0
 ---
 
 ## Capability
@@ -9,65 +9,25 @@ Cross-cutting behavioral boundaries for agents — file sensitivity, communicati
 
 ## Rules
 
-### file-sensitivity-no-core-config
+### file-sensitivity
 
-Do not modify core configuration files without explicit user direction.
-
-### file-sensitivity-avoid-build-scripts
-
-Avoid changes to build scripts unless specifically requested.
-
-### file-sensitivity-cicd-approval
-
-Request approval before modifying CI/CD configuration or Docker files.
+Changing core configuration, build scripts, CI/CD configuration or container files takes explicit user direction.
 
 ### communication-measured-language
 
-Use measured technical language appropriate for senior software engineering.
+Write in measured technical language, with each claim sized to the evidence behind it. Feedback addresses the code on its technical merit.
 
-### communication-no-hyperbole
+### attribution-prohibition
 
-Avoid hyperbolic statements and superlatives.
-
-### communication-constructive-feedback
-
-Provide respectful constructive feedback focused on code quality.
-
-### communication-technical-merit
-
-Focus on technical merit rather than emotional assessments.
-
-### attribution-prohibition-direct-presentation
-
-Present design decisions directly without referencing their origin.
-
-### attribution-prohibition-no-tool-reference
-
-Do not reference how code was generated or which tool created it.
-
-### attribution-prohibition-no-process-in-comments
-
-Do not include process attribution in code comments or documentation.
+Design decisions, code comments and documentation state what is. They carry no account of how it came to be — which tool produced it, what process it went through, whose suggestion it was.
 
 ### code-commentary-why-not-what
 
-Comments should explain why code exists and the rationale for design choices — avoid narrating what the code does.
+Comments explain why code exists and the rationale for design choices, rather than narrating what the code does.
 
-### checkpoint-discipline-workers-yield-only
+### checkpoint-discipline
 
-Workers never call `respond_checkpoint`. Pause via [yield-checkpoint](./workflow-engine/yield-checkpoint.md).
-
-### checkpoint-discipline-workflow-orchestrators-bubble-up
-
-Workflow orchestrators never call `respond_checkpoint`. Bubble the worker's yield to the meta-orchestrator unchanged.
-
-### checkpoint-discipline-meta-only-resolves
-
-Only the meta-orchestrator resolves checkpoints — via [present-checkpoint-to-user](./workflow-engine/present-checkpoint-to-user.md) then [respond-checkpoint](./workflow-engine/respond-checkpoint.md).
-
-### checkpoint-discipline-explicit-user-decision
-
-Never fabricate an `option_id` or skip user presentation. Honor [present-checkpoint-to-user](./workflow-engine/present-checkpoint-to-user.md)::present-before-any-resolution.
+Resolving a checkpoint is the meta-orchestrator's, via [present-checkpoint-to-user](./workflow-engine/present-checkpoint-to-user.md) then [respond-checkpoint](./workflow-engine/respond-checkpoint.md). A worker reaching a gate pauses there via [yield-checkpoint](./workflow-engine/yield-checkpoint.md); a workflow orchestrator passes the yield it receives upward unchanged.
 
 ### operational-discipline-bundled-tools-only
 
@@ -75,7 +35,7 @@ Domain-specific tools may ONLY be invoked from operations bundled into the curre
 
 ### operational-discipline-resources-via-tool
 
-Do not read workflow resource files from disk. Load via [resource-loading-via-tool](./workflow-engine/TECHNIQUE.md#resource-loading-via-tool) (and [resource-section-or-whole](./workflow-engine/TECHNIQUE.md#resource-section-or-whole) / [force-full-after-summarization](./workflow-engine/TECHNIQUE.md#force-full-after-summarization) as needed).
+Workflow resources reach an agent from the server. Load them per [resource-loading-via-tool](./workflow-engine/TECHNIQUE.md#resource-loading-via-tool) rather than reading resource files from disk.
 
 ### operational-discipline-artifact-location
 

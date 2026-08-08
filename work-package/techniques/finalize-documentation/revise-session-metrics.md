@@ -9,10 +9,6 @@ Client-side pointer: the authoritative post-exit rewrite of session-trace and to
 
 ## Inputs
 
-### planning_folder_path
-
-Path to the planning folder holding `token-usage.md` and `session-trace.md`.
-
 ### trace_tokens
 
 *(optional)* Opaque trace tokens for the client run.

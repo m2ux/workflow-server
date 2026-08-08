@@ -7,20 +7,6 @@ metadata:
 
 Effectiveness, baseline metrics, and gaps of the current implementation against success criteria.
 
-## Inputs
-
-### component_name
-
-Target submodule for the work package, e.g. midnight-node, midnight-ledger. Used to resolve the codebase to locate and to key the GitNexus index (`gitnexus://repo/{name}/...`).
-
-### requirements
-
-Work package requirements; read to set the analysis scope and to link baselines and gaps to measurable success criteria.
-
-### problem_statement
-
-The work package problem statement; read alongside `{requirements}` to focus the analysis.
-
 ## Outputs
 
 ### located_implementation
@@ -38,7 +24,6 @@ Quantitative baseline metrics (performance, quality, usage, reliability), each w
 ### gaps_identified
 
 Gaps linked to measurable success criteria from `{requirements}`, with documented assumptions about current behavior.
-
 
 ## Protocol
 

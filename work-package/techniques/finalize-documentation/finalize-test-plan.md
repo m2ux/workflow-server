@@ -13,10 +13,6 @@ Finalize the test plan by linking each test case to its actual source location.
 
 The [test plan](../../resources/test-plan.md#test-plan-structure) artifact for this work package.
 
-### planning_folder_path
-
-Path to the planning folder holding the test plan.
-
 ## Outputs
 
 ### finalized_test_plan

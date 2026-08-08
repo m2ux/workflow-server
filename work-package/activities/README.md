@@ -274,7 +274,7 @@ graph TD
 
 ### 10. Post-Implementation Review
 
-Reviews implementation quality through manual diff review, code review, structural analysis, test-suite review, and an architecture summary, catching issues before validation. When no critical blocker is found it closes by settling whether the local environment can run the validation suite. If a critical blocker is found it routes back to implement for remediation; otherwise leads to validate.
+Reviews implementation quality through manual diff review, code review, structural analysis, test-suite review, and an architecture summary, catching issues before validation. Each review states its findings in one report and records what it walked in a companion method record. The fix cycle belongs to create mode: on the review path an actionable finding is raised to the pull-request author rather than repaired here. When no critical blocker is found it closes by settling whether the environment can run the validation suite. If a critical blocker is found it routes back to implement for remediation; otherwise leads to validate.
 
 Definition: [`10-post-impl-review.yaml`](./10-post-impl-review.yaml)
 
@@ -295,7 +295,7 @@ graph TD
     structuralInline --> testReview["Review the test suite, summarise the architecture, then classify and route findings"]
     dispatchPrism --> testReview
 
-    testReview --> fixCycle{"needs code fixes or test improvements?"}
+    testReview --> fixCycle{"create mode and actionable code or test findings?"}
     fixCycle -->|"yes (max 3)"| applyFixes["Apply fixes, regenerate index, re-review"]
     applyFixes --> fixCycle
     fixCycle -->|"no"| blockerGate{"has_critical_blocker?"}
@@ -333,7 +333,7 @@ graph TD
 
 ### 12. Strategic Review
 
-Reviews the change set to ensure it is minimal and focused — that the PR contains only what the solution requires — and produces the strategic review document and architecture summary. The scope review also scans the branch range for unsigned commits and, on the authoring path, offers a re-sign pass. In review mode it documents cleanup recommendations without applying them. In stealth mode the fragment issue-reference check is skipped. Leads to submit-for-review when the review passes, otherwise back to plan-prepare for rework.
+Reviews the change set to ensure it is minimal and focused — that the PR contains only what the solution requires — and produces the strategic review document, its method record and the architecture summary. The scope review also scans the branch range for unsigned commits and, on the authoring path, offers a re-sign pass. In review mode it documents cleanup recommendations without applying them, and its findings gate decides which of them the posted review carries to the author. In stealth mode the fragment issue-reference check is skipped. Leads to submit-for-review when the review passes, otherwise back to plan-prepare for rework.
 
 Definition: [`12-strategic-review.yaml`](./12-strategic-review.yaml)
 
@@ -350,8 +350,11 @@ graph TD
     docCleanup --> createArchSummary
     applyCleanup --> createArchSummary["Architecture summary"]
     createArchSummary --> analyze["Analyze strategic findings"]
-    analyze --> cpFindings{"review-findings checkpoint"}
-    cpFindings -->|"review mode / passed / accept / defer"| exitSubmit(["submit-for-review"])
+    analyze --> gateMode{"Review mode?"}
+    gateMode -->|"yes"| cpDelivery{"findings-delivery checkpoint"}
+    gateMode -->|"no"| cpFindings{"review-findings checkpoint"}
+    cpDelivery --> exitSubmit(["submit-for-review"])
+    cpFindings -->|"passed / accept / defer"| exitSubmit
     cpFindings -->|"fix / selective / more review"| exitPlan(["plan-prepare"])
 ```
 

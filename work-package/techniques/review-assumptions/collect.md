@@ -9,14 +9,6 @@ Assumptions from the work classified against the bound assumption categories in 
 
 ## Inputs
 
-### activity_context
-
-The context in which assumptions are generated, used to choose the category appropriate to the current phase (supplied via `step.technique.inputs`).
-
-### assumption_categories
-
-The list of categories used to classify each assumption (supplied via `step.technique.inputs`).
-
 ### assumptions_log
 
 *(optional)* The existing assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) to append to.
@@ -34,7 +26,6 @@ The collected assumptions classified as open (stakeholder-dependent, non-code-re
 ### has_open_assumptions
 
 Boolean gate — true iff `{open_assumptions}` is non-empty.
-
 
 ## Protocol
 

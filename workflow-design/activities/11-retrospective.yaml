@@ -1,5 +1,5 @@
 id: retrospective
-version: 1.1.0
+version: 1.2.0
 name: Retrospective
 description: A recorded completion summary (create/update) and a session retrospective capturing lessons before the workflow ends.
 required: true
@@ -30,10 +30,7 @@ steps:
         target_dir: planning_folder_path
   - kind: technique
     id: remove-session-worktree
-    technique:
-      name: work-package::manage-git::remove-worktree
-      inputs:
-        component_name: workflows
+    technique: work-package::manage-git::remove-worktree
     when: worktree_created == true
 outcome:
   - A completion summary records what the session delivered, the key design decisions and alternatives rejected, and known limitations

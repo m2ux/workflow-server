@@ -13,14 +13,6 @@ Structured requirements elicitation across question domains, with stakeholder re
 
 The question domains to iterate one question at a time (per the [Question Domain Reference](../../resources/requirements-elicitation.md#question-domain-reference)).
 
-### issue_platform
-
-Issue host platform: `github` or `jira`.
-
-### issue_number
-
-Issue identifier on `{issue_platform}` (GitHub `#N` or Jira `KEY-N`).
-
 ## Outputs
 
 ### requirements
@@ -38,7 +30,6 @@ In/out scope definitions captured during elicitation.
 ### elicitation_log
 
 Record of the questions asked and the responses given across the domain iteration.
-
 
 ## Protocol
 

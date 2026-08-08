@@ -9,10 +9,6 @@ Define a clear problem statement with system understanding, impact, success crit
 
 ## Inputs
 
-### issue_record
-
-Summary, description, and context from the linked issue, reviewed to ground the problem statement.
-
 ### problem_context
 
 *(optional)* Additional context about the problem from the user or prior context.

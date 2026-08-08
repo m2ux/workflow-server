@@ -9,21 +9,9 @@ Initial mental model of the codebase area — architecture, abstractions, design
 
 ## Inputs
 
-### comprehension_dir
-
-Directory holding codebase-comprehension artifacts.
-
 ### project_type
 
 *(optional)* Detected project type, rust-substrate|other. Confirmed from the build system and used to shape which abstractions and patterns to look for.
-
-### problem_statement
-
-The work package problem statement; used to match relevant existing artifacts and to prioritize areas during the survey.
-
-### target_path
-
-Working checkout surveyed for structure, build system, and entry points.
 
 ### gitnexus_indexed
 
@@ -50,7 +38,6 @@ Inferred rationale for significant design choices and their trade-offs, framed a
 #### domain_glossary
 
 Mapping of domain-specific terms to the technical modules/constructs that implement them, connected to the problem statement.
-
 
 ## Protocol
 

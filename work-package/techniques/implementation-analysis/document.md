@@ -25,10 +25,6 @@ Quantitative baselines with measurement methods; recorded in the artifact.
 
 Gaps linked to success criteria; recorded in the artifact.
 
-### planning_folder_path
-
-Path to the planning artifacts folder where `{analysis_document}` is written.
-
 ## Outputs
 
 ### analysis_document

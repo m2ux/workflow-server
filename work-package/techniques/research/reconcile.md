@@ -13,14 +13,6 @@ Research-reconcilable candidates closed until only irreconcilable residue remain
 
 The running [inventory](../../resources/research-reconciliation.md#inventory-shape) of open and resolved candidates to reconcile. On the first pass this is the triaged set; on later passes it also carries any candidates a `request-more` reopened.
 
-### requirements
-
-Work package requirements that scope the targeted research and to which resolved candidates are mapped back.
-
-### problem_statement
-
-The work package problem statement, read alongside `{requirements}` to keep the targeted research in scope.
-
 ## Outputs
 
 ### research_candidates
@@ -60,7 +52,6 @@ The research [artifact](../../resources/knowledge-base-research.md#planning-arti
 - If any open candidate is research-reconcilable (including newly surfaced ones), signal another pass is needed — set `{has_reconcilable_research}` true
 - If no open candidate is research-reconcilable, convergence is reached per the [convergence-definition](#convergence-definition) — set `{has_reconcilable_research}` false; the remaining open set is irreducible through research
 - Present the [scorecard](../../resources/research-reconciliation.md#scorecard) in the session after each pass; do not persist count tables in the artifact — the candidate rows are the record
-
 
 ## Rules
 
