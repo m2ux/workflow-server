@@ -35,6 +35,13 @@ export const GUARDS: GuardSpec[] = [
     proves: 'step bindings resolve, args conform, reads have producers, outputs have consumers',
   },
   {
+    id: 'inherited-inputs',
+    script: 'scripts/check-inherited-inputs.ts',
+    npmScript: 'check:inherited-inputs',
+    scope: 'corpus',
+    proves: 'no technique redeclares an input a container contract already merges into it',
+  },
+  {
     id: 'identifier-qualification',
     script: 'scripts/check-identifier-qualification.ts',
     npmScript: 'check:identifiers',
