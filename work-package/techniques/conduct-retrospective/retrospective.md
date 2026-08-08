@@ -9,14 +9,6 @@ Close-out retrospective — session history, friction (user-message and mechanic
 
 ## Inputs
 
-### pr_number
-
-The PR number for **this** work package's own authored PR (empty or unset when the run produced none). Never the audited third-party PR from review mode.
-
-### planning_folder_path
-
-Path to the planning folder where the final outcome, session-trace, and retrospective are recorded.
-
 ### is_review_mode
 
 *(optional)* When true, the run audited an external change rather than implementing one; close-out and status update follow the review-mode path.
@@ -42,7 +34,6 @@ Lean mechanical summary of resolved trace events (dispatch counts, tool counts, 
 #### artifact
 
 `session-trace.md`
-
 
 ## Protocol
 

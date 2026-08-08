@@ -9,10 +9,6 @@ Restore selected worktree paths to match a base git ref (whole file or interacti
 
 ## Inputs
 
-### target_path
-
-Edit-side checkout the restore runs in (per directory-scope).
-
 ### base_ref
 
 Git ref to restore from (default branch name, merge-base SHA, or other commit-ish available in `{target_path}`).

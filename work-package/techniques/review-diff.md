@@ -9,14 +9,6 @@ Conduct structured manual diff review using external side-by-side diff tool with
 
 ## Inputs
 
-### branch_name
-
-Feature branch whose diff is reviewed (synced via `git pull`, parsed via `git diff`)
-
-### planning_folder_path
-
-Folder where the change block index and manual diff review report are written
-
 ### base_pr_diff
 
 *(optional)* The base↔PR diff to review, when a review-mode baseline already derived it — read in place of re-deriving the three-dot diff.
@@ -24,10 +16,6 @@ Folder where the change block index and manual diff review report are written
 ### base_sha
 
 *(optional)* Commit SHA of the base branch the diff is taken against, so block citations resolve at the reviewed baseline.
-
-### pr_number
-
-PR identifier, used to resolve the authoritative base branch and citation base via github-cli-protocol.
 
 ## Outputs
 

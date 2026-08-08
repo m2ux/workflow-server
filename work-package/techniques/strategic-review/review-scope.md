@@ -9,18 +9,6 @@ Scope-discipline and artifact-hygiene findings across the feature-branch diff fo
 
 ## Inputs
 
-### branch_name
-
-Feature branch under review, examined via `git diff` / `git log`.
-
-### requirements
-
-The work-package requirements, used as the scope baseline for the scope-discipline check.
-
-### changed_files
-
-List of files changed in the work package, passed to the orphan scan.
-
 ### pr_number
 
 *(optional)* PR identifier for the PR under review. Absent when no PR exists (stealth mode).
@@ -89,7 +77,6 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 - Apply [view-pr](../../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`); take the live body from `{pr_body}`.
 - Run [update-pr](../update-pr/TECHNIQUE.md)::[verify-body](../update-pr/verify-body.md) against the live body.
 - If `body_conforms == false`, record each `body_findings` entry in the `{strategic_review_doc}` under 'PR body conformance'.
-
 
 ## Rules
 

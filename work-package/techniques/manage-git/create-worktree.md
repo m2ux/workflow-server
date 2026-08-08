@@ -9,14 +9,6 @@ Working directory materialised as a git worktree of the component at `{target_pa
 
 ## Inputs
 
-### target_path
-
-Filesystem path at which to materialise the worktree.
-
-### branch_name
-
-Branch the worktree is checked out on — created fresh when `{create_branch}` is true, expected to exist already when it is false.
-
 ### create_branch
 
 Optional. Boolean, default `true`. When true, create `{branch_name}` fresh off the component's default branch (`git worktree add -b`). When false, check out an existing `{branch_name}` (no `-b`) — the branch already exists upstream (e.g. a PR's branch under review).
@@ -26,7 +18,6 @@ Optional. Boolean, default `true`. When true, create `{branch_name}` fresh off t
 ### worktree_created
 
 Boolean — true when the worktree exists at `{target_path}` on `{branch_name}`
-
 
 ## Protocol
 

@@ -25,10 +25,6 @@ The issue number — the branch-name issue segment.
 
 Basename of the component being worked on — used as the first path segment of the personal-layout worktree path.
 
-### planning_folder_path
-
-The server's canonical planning folder for this work package. Its basename is the work-package slug reused as the worktree name. Under the install layout its ancestors also encode the install root and `owner/repo` used to place the feature worktree.
-
 ### is_review_mode
 
 *(optional)* Whether this work package is in review mode, where the branch name is already captured from the PR reference.

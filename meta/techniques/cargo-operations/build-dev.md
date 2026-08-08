@@ -7,16 +7,6 @@ metadata:
 
 Workspace dev build; skips the runtime wasm artifact.
 
-## Inputs
-
-### build_scope
-
-`--workspace` for the full workspace, or `-p <crate>` to scope to one crate.
-
-### features
-
-Optional `--features` flags (empty string when none).
-
 ## Outputs
 
 ### build_artifacts

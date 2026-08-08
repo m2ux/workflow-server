@@ -25,10 +25,6 @@ Findings-to-requirements synthesis; recorded in the artifact.
 
 Patterns mapped to needs; recorded in the artifact.
 
-### planning_folder_path
-
-Path to the planning artifacts folder where `{research_document}` is written.
-
 ## Outputs
 
 ### research_document

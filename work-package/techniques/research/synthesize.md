@@ -17,10 +17,6 @@ Knowledge base findings connected to requirements during synthesis.
 
 Web research findings connected to requirements during synthesis.
 
-### requirements
-
-Work package requirements that the findings are synthesized against to map applicable patterns to specific needs.
-
 ## Outputs
 
 ### findings_synthesis

@@ -21,14 +21,6 @@ Whether code-review findings are in scope for this cycle.
 
 Whether test improvements are in scope for this cycle.
 
-### target_path
-
-Path to the target repository.
-
-### branch_name
-
-The feature branch that receives the fix commits.
-
 ## Protocol
 
 ### 1. Select Fixes
@@ -46,7 +38,6 @@ The feature branch that receives the fix commits.
 ### 3. Commit Changes
 
 - Apply [manage-git](./manage-git/TECHNIQUE.md)::[commit-paths](./manage-git/commit-paths.md) with `{target_path}`, `{branch_name}`, the fixed source paths, and a Conventional Commits message for the fix cycle, noting the `{commit_sha}` it returns against the findings the cycle addressed. This is the technique's final phase; no separate source commit step follows. Do not use [artifact-commits](./manage-git/artifact-commits.md) here — that op is planning-folder / engineering-repo only.
-
 
 ## Rules
 

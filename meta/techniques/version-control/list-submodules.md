@@ -7,12 +7,6 @@ metadata:
 
 Enumerate target-component submodules from the host repository's `.gitmodules`, excluding infrastructure paths.
 
-## Inputs
-
-### host_repo_path
-
-Absolute path of the host repository whose `.gitmodules` is enumerated.
-
 ## Outputs
 
 ### submodules

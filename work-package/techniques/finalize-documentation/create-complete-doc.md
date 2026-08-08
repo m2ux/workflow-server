@@ -9,10 +9,6 @@ Work package's single terminal close-out artifact — delivered work, coverage, 
 
 ## Inputs
 
-### planning_folder_path
-
-Path to the planning folder where the completion document is created.
-
 ### is_review_mode
 
 *(optional)* True when the run audited an external change; false or unset when it produced an implementation.
@@ -42,7 +38,6 @@ Path to the planning folder where the completion document is created.
 ### completion_document_path
 
 Path to the written close-out document, for user-facing links.
-
 
 ## Protocol
 

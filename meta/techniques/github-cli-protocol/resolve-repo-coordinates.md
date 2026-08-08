@@ -7,16 +7,6 @@ metadata:
 
 Owner and repository name for a GitHub REST path, derived from a named working tree's `origin` remote or from the session's repository binding.
 
-## Inputs
-
-### repo_path
-
-*(optional when `{target_repo}` is set)* Working tree whose `origin` remote names the repository the call addresses.
-
-### target_repo
-
-*(optional when `{repo_path}` is set)* GitHub repository as `owner/repo`.
-
 ## Outputs
 
 ### owner

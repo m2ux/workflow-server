@@ -7,12 +7,6 @@ metadata:
 
 Apply rustfmt formatting in place.
 
-## Inputs
-
-### build_scope
-
-`--workspace` for the full workspace, or `-p <crate>` to scope to one crate. `{features}` does not apply — fmt does not compile.
-
 ## Outputs
 
 ### formatted_sources

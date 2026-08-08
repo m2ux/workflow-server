@@ -13,10 +13,6 @@ Test-suite quality and coverage review — gaps, assertion quality, isolation, a
 
 List of files changed in the work package (from `git diff`)
 
-### planning_folder_path
-
-Folder where the test suite review report is written
-
 ### prior_feedback_triage
 
 *(optional)* The triage of prior PR feedback, when present. Its entries tagged as reported runtime failures are the input to reported-failure triage — each is traced to a code path and state precondition here rather than re-read from the PR thread.
@@ -90,7 +86,6 @@ When `{prior_feedback_triage}` is present, every entry tagged as a reported runt
 ### 6. Record the Method
 
 - Create the `{test_suite_review_method}` in `{planning_folder_path}` from the [Method Record Template](../resources/test-suite-review.md#method-record-template): the suite baseline and the command that reproduces it, the coverage map, the anti-pattern sweep with its counts, the pyramid and redundancy assessments, and the reported-failure triage. A finding's own evidence stays on the finding, per [Report and Methodology](../resources/findings-report.md#report-and-methodology)
-
 
 ## Rules
 

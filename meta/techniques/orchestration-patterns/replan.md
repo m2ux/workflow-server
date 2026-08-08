@@ -9,10 +9,6 @@ Revise the execution plan in light of the replan reason and prior step results, 
 
 ## Inputs
 
-### work_goal
-
-Original goal.
-
 ### execution_plan
 
 Plan that failed or surprised during execution.

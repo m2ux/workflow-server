@@ -9,14 +9,6 @@ Approved cleanup on source, with changes-folder fragment committed on the featur
 
 ## Inputs
 
-### branch_name
-
-Feature branch the cleanup commit lands on.
-
-### target_path
-
-Target repository root — restore and commit scope for source cleanup and the `changes/` fragment.
-
 ### base_ref
 
 *(optional)* Git ref to restore whole-file or hunk removals from (typically the PR base / default branch). Required when any cleanup path is restored from base rather than edited in place.

@@ -13,10 +13,6 @@ Challenge findings folded into the concern set with convergence/residue flags fo
 
 Ordered per-perspective findings from the challenge pass.
 
-### concern_kind
-
-Domain of the open set (`assumptions`, `open_questions`, …).
-
 ### assumptions_log
 
 *(optional)* Assumptions log to update in place when `concern_kind` is `assumptions`.
@@ -24,14 +20,6 @@ Domain of the open set (`assumptions`, `open_questions`, …).
 ### comprehension_artifact
 
 *(optional)* Comprehension artifact whose Open Questions table is updated when `concern_kind` is `open_questions`.
-
-### convergence_flag
-
-Bag name of the boolean set true when further analyse/challenge is warranted.
-
-### residue_flag
-
-Bag name of the boolean set true iff irreducible opens remain after this combine.
 
 ### residue_collection
 
@@ -96,7 +84,6 @@ Bound flag: true iff irreducible opens remain for activity-level residual interv
 ### 3. Authority
 
 - The log (or Open Questions table) remains the single source of truth — do not restate concern bodies elsewhere
-
 
 ## Rules
 

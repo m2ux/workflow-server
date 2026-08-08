@@ -7,12 +7,6 @@ metadata:
 
 Transform prism's report(s) into a summary-focused audit report: retain every section except the inline detailed findings, replace those with a reference line to the detailed-findings document, renumber the subsequent sections to fill the gap, and repair internal cross-references to the old section numbers.
 
-## Inputs
-
-### completed_analyses
-
-The triggered prism runs, each carrying its scope's `report_path` (the REPORT.md the run produced). The report source.
-
 ## Outputs
 
 ### audit_report_path

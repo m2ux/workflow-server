@@ -9,10 +9,6 @@ Identify the next work package and prepare context for the transition.
 
 ## Inputs
 
-### planning_folder_path
-
-Path to the current work package's planning folder, read for follow-up items and carried context that inform what the next work package should be.
-
 ### execution_trace
 
 *(optional)* Completed activities and the event history behind them.

@@ -7,12 +7,6 @@ metadata:
 
 Systematic response to PR review comments — analysis through posted replies.
 
-## Inputs
-
-### pr_number
-
-PR number whose review comments are fetched and answered.
-
 ## Outputs
 
 ### review_comments
@@ -76,7 +70,6 @@ Whether the changes are significant enough to require substantial rework
 - After applying reviewer-requested changes, apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[detect-changes](../../meta/techniques/gitnexus-operations/detect-changes.md) to inform the 'minor fix' vs 'significant change' classification — small symbol/process deltas suggest minor; broad fan-out suggests significant.
 - Determine if re-review is needed (significant changes) or minor fixes suffice
 - Capture the categorized dispositions, changes made, and re-review decision as the `{review_analysis}` document
-
 
 ## Rules
 

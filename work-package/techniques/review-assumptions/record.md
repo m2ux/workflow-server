@@ -9,10 +9,6 @@ Assumption outcomes and stakeholder responses recorded in the assumptions log.
 
 ## Inputs
 
-### assumptions_log
-
-The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) to write outcomes into; its existing assumptions and resolution status are preserved.
-
 ### assumption_decisions
 
 The per-assumption decisions (accept/reject/defer) together with any user-supplied correction, written back as each assumption's outcome.
@@ -30,7 +26,6 @@ The assumptions [log](../../resources/assumptions-review.md#assumptions-log-temp
 ### has_deferred_assumptions
 
 Boolean gate — true iff any assumption was marked deferred (needs-discussion).
-
 
 ## Protocol
 

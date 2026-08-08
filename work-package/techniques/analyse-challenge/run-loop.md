@@ -9,26 +9,6 @@ Parameterized analyse–challenge–combine iterations until agent-resolvable co
 
 ## Inputs
 
-### concern_kind
-
-Domain of the open set (e.g. `assumptions`, `open_questions`).
-
-### analyse_technique
-
-Technique path to invoke for the analyse phase each iteration (supplied via `step.technique.inputs`).
-
-### challenge_perspectives
-
-Perspectives (or lens names) passed to challenge for the adversarial pass.
-
-### convergence_flag
-
-Bag name of the boolean that is true while another iteration is needed. Defaults to reading `has_resolvable_assumptions` when `concern_kind` is `assumptions`, or `needs_comprehension` when `concern_kind` is `open_questions`, unless an explicit name is bound.
-
-### residue_flag
-
-Bag name of the boolean set true iff irreducible opens remain after convergence. Defaults to `has_open_assumptions` or `has_open_questions` by `concern_kind` unless overridden.
-
 ### residue_collection
 
 *(optional)* Bag name for the residual open collection (e.g. `open_assumptions`).
@@ -82,7 +62,6 @@ The bound residue variable after combine.
 ### 3. Hand Off Residue
 
 - Emit the bound flag values for the activity. Residual interview/batch is **not** performed here — the activity gates those steps on `{residue_flag}`.
-
 
 ## Rules
 

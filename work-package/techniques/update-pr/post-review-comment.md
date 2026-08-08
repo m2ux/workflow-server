@@ -13,10 +13,6 @@ Confirmed consolidated review summary posted verbatim to the PR as a pull-reques
 
 The rendered consolidated review summary text, authored to the [Review Comment Template](../../resources/review-mode.md#review-comment-template).
 
-### pr_number
-
-The PR number to post the review to.
-
 ### review_type
 
 *(optional, enum: `approve` | `request-changes` | `comment`; default: derived from the summary's Overall Rating)* Which review event to post.
@@ -26,7 +22,6 @@ The PR number to post the review to.
 ### review_posted
 
 True once the review comment is posted to the `{pr_number}` PR; false when posting was skipped.
-
 
 ## Protocol
 

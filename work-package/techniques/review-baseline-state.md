@@ -7,20 +7,6 @@ metadata:
 
 Review-mode baseline for PR evaluation — expected changes against requirements and the base↔PR authored surface.
 
-## Inputs
-
-### requirements
-
-The ticket requirements used to derive what changes the PR is expected to make
-
-### target_path
-
-Path to the target checkout where the git operations run
-
-### pr_number
-
-PR identifier for the pull under review
-
 ## Outputs
 
 ### base_sha
@@ -61,7 +47,6 @@ The base↔PR diff (fresh three-dot `{base_branch}...HEAD`), noted for later com
 ### 4. Merge-In Guard
 
 - When HEAD is a merge commit or the branch contains merges of `{$base_branch}`, recompute the three-dot set against a freshly resolved merge-base and **log** the merge-in.
-
 
 ## Rules
 

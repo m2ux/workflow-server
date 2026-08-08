@@ -9,10 +9,6 @@ Design philosophy artifact — problem statement, classification, complexity, an
 
 ## Inputs
 
-### problem_statement
-
-The problem definition recorded into the artifact.
-
 ### problem_type
 
 The classification recorded into the artifact.
@@ -25,10 +21,6 @@ The complexity assessment recorded into the artifact.
 
 The workflow path rationale recorded into the artifact.
 
-### planning_folder_path
-
-Path to the planning artifacts folder where the artifact is created.
-
 ## Outputs
 
 ### design_philosophy_doc
@@ -38,7 +30,6 @@ The design philosophy [artifact](../../resources/design-framework.md#design-phil
 #### artifact
 
 `design-philosophy.md`
-
 
 ## Protocol
 

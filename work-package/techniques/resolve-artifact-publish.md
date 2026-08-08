@@ -9,10 +9,6 @@ Resolve the engineering checkout's publish branch and the planning-folder files 
 
 ## Inputs
 
-### planning_folder_path
-
-Path to the planning folder whose artifacts the consolidated review links (`README.md`, report artifacts, `review-summary.md`).
-
 ### host_repo_path
 
 Path to the product repo root (monorepo or standalone); the `.engineering/` artifacts directory sits under it.

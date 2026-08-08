@@ -9,10 +9,6 @@ Work-package plan artifact — task breakdown, dependencies, ordering, and recor
 
 ## Inputs
 
-### requirements
-
-Work package requirements, driving the task breakdown and success-criteria alignment.
-
 ### analysis_findings
 
 *(optional)* Implementation analysis findings — baselines and gaps. Reviewed to inform the approach when analysis was performed.
@@ -20,10 +16,6 @@ Work package requirements, driving the task breakdown and success-criteria align
 ### research_findings
 
 *(optional)* Research findings from knowledge base and web. Reviewed to inform the approach when research was performed.
-
-### planning_folder_path
-
-Path to the planning artifacts folder where `{plan_document}` is written.
 
 ## Outputs
 
@@ -38,7 +30,6 @@ Work package plan artifact with task breakdown and dependencies. Written to `{pl
 #### tasks
 
 Atomic tasks with explicit dependencies and ordering — each implementable, testable, and committable independently. Ordered by dependency depth (leaves before callers) when target symbols are knowable.
-
 
 ## Protocol
 

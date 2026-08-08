@@ -13,10 +13,6 @@ Confirm every assigned scanner was gathered with a non-empty return, using meta 
 
 Ordered keyed collection from [orchestration-patterns](../../../meta/techniques/orchestration-patterns/TECHNIQUE.md)::[gather-results](../../../meta/techniques/orchestration-patterns/gather-results.md).
 
-### scanners_assigned
-
-Count of scanner agents in the roster.
-
 ## Protocol
 
 ### 1. Verify Dispatch Completeness

@@ -7,12 +7,6 @@ metadata:
 
 Generate API documentation to verify inline doc comments compile.
 
-## Inputs
-
-### build_scope
-
-`--workspace` for the full workspace, or `-p <crate>` to scope to one crate.
-
 ## Outputs
 
 ### doc_artifacts

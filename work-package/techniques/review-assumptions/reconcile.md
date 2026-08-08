@@ -9,14 +9,6 @@ Code-analyzable assumptions closed via targeted analysis; callable as the analys
 
 ## Inputs
 
-### assumptions_log
-
-The running [log](../../resources/assumption-reconciliation.md#integration-with-assumptions-log) of open and resolved assumptions to reconcile.
-
-### target_path
-
-Working checkout within which code-resolvable assumptions are investigated.
-
 ### comprehension_artifact
 
 *(optional)* Existing comprehension [artifact](../../resources/codebase-comprehension.md#artifact-template) to augment with findings.
@@ -72,7 +64,6 @@ Boolean gate — true iff stakeholder-dependent assumptions remain open after co
 - If a `{comprehension_artifact}` was provided, append findings to it as a numbered deep-dive section (e.g., 'Deep-Dive N: Assumption Reconciliation')
 - Update the Open Questions table in the `{comprehension_artifact}` with any questions resolved or surfaced during reconciliation
 - If no `{comprehension_artifact}` was provided, skip this phase — findings are preserved in the assumptions log
-
 
 ## Rules
 

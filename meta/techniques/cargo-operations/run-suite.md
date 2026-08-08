@@ -7,16 +7,6 @@ metadata:
 
 One validation verdict for a rust-substrate project, covering compilation, lints, tests and formatting, with each check's diagnostics carried beside its status so a failure is analysable without re-running it. The canonical entry point for full validation.
 
-## Inputs
-
-### build_scope
-
-`--workspace` for the full workspace, or `-p <crate>` to scope to one crate.
-
-### features
-
-Optional `--features` flags (empty string when none).
-
 ## Outputs
 
 ### validation_results

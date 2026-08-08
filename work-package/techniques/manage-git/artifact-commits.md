@@ -25,10 +25,6 @@ List of files to stage and commit
 
 Engineering branch to push to
 
-### host_repo_path
-
-Path to the product repo root (monorepo or standalone); the engineering checkout sits at or under it.
-
 ## Protocol
 
 ### 1. Commit Artifacts

@@ -7,16 +7,6 @@ metadata:
 
 Push all local commits to the remote feature branch.
 
-## Inputs
-
-### branch_name
-
-The feature branch whose local commits are pushed to the remote.
-
-### pr_number
-
-The PR being updated.
-
 ## Outputs
 
 ### pushed_branch

@@ -9,10 +9,6 @@ Create the requirements document artifact capturing elicited requirements, succe
 
 ## Inputs
 
-### requirements
-
-The captured requirements list, recorded into the artifact.
-
 ### success_criteria
 
 The defined success criteria with verification methods, recorded into the artifact.
@@ -24,10 +20,6 @@ The in/out scope definitions, recorded into the artifact.
 ### elicitation_log
 
 The record of questions asked and responses given, recorded into the artifact as the provenance of the captured requirements.
-
-### planning_folder_path
-
-Path to the planning artifacts folder where the artifact is created.
 
 ## Outputs
 

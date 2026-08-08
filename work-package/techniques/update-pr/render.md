@@ -7,38 +7,11 @@ metadata:
 
 PR description body from the selected template, sourced from planning artifacts.
 
-## Inputs
-
-### pr_template_variant
-
-Which PR body template to render — `initial` or `final`.
-
-### is_review_mode
-
-True when the body is the consolidated review-mode comment rather than an implementation update; selects the [Review Comment Template](../../resources/review-mode.md#review-comment-template).
-
-### planning_folder_path
-
-Path to the planning folder holding the implementation summary and artifacts the body draws from.
-
-### host_repo_path
-
-Path to the repo root (monorepo or standalone checkout). Used to resolve the engineering link when planning lives under `{host_repo_path}/.engineering/`.
-
-### target_path
-
-Path to the target checkout (where the PR lives), from which the target repo URL is resolved.
-
-### pr_number
-
-The PR number whose description is updated.
-
 ## Outputs
 
 ### rendered_pr_body
 
 The rendered PR description body now live on the `{pr_number}` PR — composed from the selected template, including the implementation summary, test-coverage summary, key decisions/trade-offs, and the engineering/target link URLs.
-
 
 ## Protocol
 

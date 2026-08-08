@@ -9,10 +9,6 @@ Analyse the goal (and optional context) into an ordered work-units list — the 
 
 ## Inputs
 
-### work_goal
-
-Task or request to decompose.
-
 ### planning_context
 
 *(optional)* Additional context (paths, prior findings, constraints) that shapes decomposition.

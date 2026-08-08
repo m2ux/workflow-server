@@ -7,12 +7,6 @@ metadata:
 
 Strategic review document with findings typed from the review-scope pass, or a clean-review result.
 
-## Inputs
-
-### planning_folder_path
-
-Folder where the strategic review document is written.
-
 ## Outputs
 
 ### strategic_review_doc
@@ -30,7 +24,6 @@ Method [record](../../resources/strategic-review.md#method-record-template) of h
 #### artifact
 
 `strategic-review-{n}-method.md`
-
 
 ## Protocol
 

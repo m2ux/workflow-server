@@ -7,16 +7,6 @@ metadata:
 
 Type-check without producing binaries; the cheapest validation pass.
 
-## Inputs
-
-### build_scope
-
-`--workspace` for the full workspace, or `-p <crate>` to scope to one crate.
-
-### features
-
-Optional `--features` flags (empty string when none).
-
 ## Outputs
 
 ### check_status

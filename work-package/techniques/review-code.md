@@ -21,10 +21,6 @@ The authored surface — the PR's changed-files set, produced canonically by `re
 
 *(optional)* Detected project type (rust-substrate or other)
 
-### planning_folder_path
-
-Folder where the code review report is written
-
 ## Outputs
 
 ### code_review_report
@@ -81,7 +77,6 @@ When the diff changes a `Config` impl, an associated type, or any trait-implemen
 ### 5. Record the Method
 
 - Create the `{code_review_method}` in `{planning_folder_path}` from the [Method Record Template](../resources/rust-substrate-code-review.md#method-record-template): the surface enumerated, each sweep and what it returned including the clean ones, and the compliance assessment. A finding's own evidence stays on the finding, per [Report and Methodology](../resources/findings-report.md#report-and-methodology)
-
 
 ## Rules
 

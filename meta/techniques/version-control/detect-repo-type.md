@@ -7,12 +7,6 @@ metadata:
 
 Determine whether the host repository is a regular repo or a submodule monorepo, excluding infrastructure submodules.
 
-## Inputs
-
-### host_repo_path
-
-Absolute path of the host repository whose structure is classified.
-
 ## Outputs
 
 ### is_monorepo

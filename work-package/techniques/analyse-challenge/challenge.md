@@ -9,14 +9,6 @@ Adversarial challenge perspectives over the current concern set for the combine 
 
 ## Inputs
 
-### challenge_perspectives
-
-Ordered list of perspective or lens names to apply (e.g. `stakeholder-gap`, `rejected-paths`, `evidence-strength`, or prism portfolio lens ids).
-
-### concern_kind
-
-Domain of the open set under challenge (`assumptions`, `open_questions`, …).
-
 ### assumptions_log
 
 *(optional)* Assumptions log when challenging assumptions.
@@ -53,7 +45,6 @@ Ordered collection of per-perspective findings (keyed by perspective name): conc
 
 - Assemble `{challenge_findings}` in input-perspective order
 - Return the collection to [combine](./combine.md); do not merge into the log here
-
 
 ## Rules
 

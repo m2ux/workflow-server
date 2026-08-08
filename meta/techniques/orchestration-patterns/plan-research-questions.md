@@ -9,10 +9,6 @@ Turn a research goal into parallel research questions as work units — the plan
 
 ## Inputs
 
-### work_goal
-
-Research question or brief.
-
 ### planning_context
 
 *(optional)* Scope limits, sources to prefer/avoid, deadline hints.

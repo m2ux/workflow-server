@@ -9,10 +9,6 @@ Target repository `changes/` changelog fragment for this work package when the r
 
 ## Inputs
 
-### target_path
-
-Target repository root, checked for a `changes/` folder.
-
 ### issue_platform
 
 Issue tracker platform (`github` or `jira`) captured in start-work-package, used to decide how to reference the issue.
@@ -30,7 +26,6 @@ The full issue URL, used as the reference form when sibling fragments use that s
 ### changes_fragment
 
 The `changes/` changelog fragment for this work package, written under the `{target_path}` repository's `changes/` folder (absent when the repo does not use that convention) — matching sibling fragments' filename convention and section structure, and containing a CI-conformant GitHub issue reference.
-
 
 ## Protocol
 

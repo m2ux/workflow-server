@@ -7,12 +7,6 @@ metadata:
 
 Read each dimension's findings from the prism run's DEFINITIVE-FINDINGS.md contract into the report's per-dimension findings — inheriting prism's IDs, severities, and per-finding fields rather than re-extracting or re-numbering.
 
-## Inputs
-
-### completed_analyses
-
-The triggered prism runs, each carrying its group's `definitive_findings_path` (the DEFINITIVE-FINDINGS.md the run produced) and prism-reported `status`. The findings source for every dimension.
-
 ## Protocol
 
 - For each execution group's run in `{completed_analyses}`, read its DEFINITIVE-FINDINGS.md at the `definitive_findings_path`. This is the findings source — the raw pass artifacts (synthesis.md, portfolio-*.md) are never read here.

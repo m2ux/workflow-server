@@ -9,10 +9,6 @@ Produce an inspectable ordered execution plan of steps for the goal — the plan
 
 ## Inputs
 
-### work_goal
-
-Goal to plan against.
-
 ### planning_context
 
 *(optional)* Constraints, inventory, or prior state the planner should honour.

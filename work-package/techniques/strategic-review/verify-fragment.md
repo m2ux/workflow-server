@@ -9,10 +9,6 @@ Whether the work-package change fragment under the target path references the is
 
 ## Inputs
 
-### target_path
-
-Target repository root, checked for a `changes/` folder and the located fragment.
-
 ### changes_fragment
 
 *(optional)* The changelog fragment written for this work package, when one was produced — the body checked for the issue reference.
@@ -30,7 +26,6 @@ The work-package issue number, surfaced in the remediation guidance (`Closes: #{
 ### fragment_references_issue
 
 `true` when the located fragment body contains `{issue_url}` verbatim; `false` when it does not; `null` when no `changes/` directory exists at the `{target_path}` root (skip).
-
 
 ## Protocol
 

@@ -9,14 +9,6 @@ Classify the problem as specific (cause known/unknown) or inventive (improvement
 
 ## Inputs
 
-### problem_statement
-
-The problem definition, classified into a problem type and assessed for complexity.
-
-### issue_record
-
-Summary, description, and context from the linked issue, used to infer the problem type and any preliminary target symbols.
-
 ### target
 
 *(optional)* Preliminary target symbol(s) inferred from the issue, used for an objective complexity signal.

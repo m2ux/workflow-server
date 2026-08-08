@@ -7,16 +7,6 @@ metadata:
 
 Best practices, patterns, and resources gathered from the knowledge base and the web.
 
-## Inputs
-
-### requirements
-
-Work package requirements that focus the research; read in the protocol to scope kb and web searches and to map findings back to specific needs.
-
-### problem_statement
-
-The work package problem statement; read alongside `{requirements}` to set the research focus.
-
 ## Outputs
 
 ### kb_findings
@@ -50,7 +40,6 @@ Best practices, documentation, and resources gathered from web research, each ca
 - Search authoritative sources first: official documentation sites, established technical blogs, GitHub repositories/discussions, Stack Overflow accepted answers; include version numbers when relevant, add the current year for recent information, and use site-specific searches (e.g. `site:docs.rust-lang.org`)
 - Validate each finding per [source-validation](#source-validation) before it enters `{web_findings}`
 - Cross-reference `{web_findings}` with `{kb_findings}`: do external sources confirm internal patterns? Note contradictions for resolution, any additional context, and each source's publication date and freshness
-
 
 ## Rules
 

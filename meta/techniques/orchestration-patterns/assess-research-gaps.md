@@ -9,10 +9,6 @@ Judge whether synthesis (and gathered results) leave material gaps against the g
 
 ## Inputs
 
-### work_goal
-
-Original research goal.
-
 ### combined_synthesis
 
 Current synthesised answer.

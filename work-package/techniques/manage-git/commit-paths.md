@@ -9,14 +9,6 @@ Stage and commit selected paths on the edit-side feature branch (code commits, n
 
 ## Inputs
 
-### target_path
-
-Edit-side checkout the commit runs in (per directory-scope).
-
-### branch_name
-
-Feature branch the commit lands on.
-
 ### paths
 
 Array of repository-relative paths (or git pathspecs) to stage and commit.

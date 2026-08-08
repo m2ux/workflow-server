@@ -13,10 +13,6 @@ Judgement-augmentation context for residual stakeholder-dependent assumptions, r
 
 The residual open assumptions to assemble; empty when all assumptions were already resolved. In interview mode the current one is bound as `current_assumption`; in batch mode (default) the whole list is assembled together.
 
-### assumptions_log
-
-The assumptions [log](../../resources/assumptions-review.md#assumptions-log-template) carrying each assumption's analyse/challenge history and technical context, linked into the presentation for full detail.
-
 ### assembly_mode
 
 *(optional)* `batch` (default) or `interview`. Activities bind `interview` only for individual drill-down after a batch checkpoint selects that path.
@@ -26,7 +22,6 @@ The assumptions [log](../../resources/assumptions-review.md#assumptions-log-temp
 ### assumption_review_presentation
 
 Structured judgement-augmentation context for decision, shaped like the Open Assumptions entry fields of the [assumptions log template](../../resources/assumptions-review.md#assumptions-log-template) (decision space, non-resolvability rationale, technical context, agent's position, reversibility) plus a link to the assumptions log.
-
 
 ## Protocol
 

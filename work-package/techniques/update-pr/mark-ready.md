@@ -7,12 +7,6 @@ metadata:
 
 Mark the PR ready for review once its description is finalized.
 
-## Inputs
-
-### pr_number
-
-The PR to mark ready for review.
-
 ## Outputs
 
 ### updated_pr

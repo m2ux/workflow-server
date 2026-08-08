@@ -21,14 +21,6 @@ Patterns mapped to needs during synthesis; read to detect needs that no validate
 
 Assumptions about pattern applicability recorded during synthesis; each inferred-rather-than-established fit is a candidate research gap.
 
-### requirements
-
-Work package requirements the candidate set is triaged against, so every requirement with an unresolved research question surfaces as a candidate.
-
-### problem_statement
-
-The work package problem statement, read alongside `{requirements}` to scope which gaps are in-scope research candidates.
-
 ## Outputs
 
 ### research_candidates
@@ -56,7 +48,6 @@ Boolean gate driving the reconciliation loop — true when at least one candidat
 
 - Write the candidates to `{research_candidates}` and into the research artifact's Open Research Candidates section per the [integration shape](../../resources/research-reconciliation.md#inventory-shape)
 - Set `{has_reconcilable_research}` true if any candidate is reconcilable-by-research, false otherwise
-
 
 ## Rules
 

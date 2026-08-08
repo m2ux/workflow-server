@@ -13,10 +13,6 @@ Prior PR feedback accounted for in the review verdict — dispositions and block
 
 The URL of the PR under review, captured during PR-reference detection. Identifies the PR whose existing comments and reviews are ingested.
 
-### pr_number
-
-PR number whose comments and reviews are ingested.
-
 ## Outputs
 
 ### prior_feedback_triage
@@ -57,7 +53,6 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
 ### 4. Create the Triage
 
 - Create the `{prior_feedback_triage}` artifact in `{planning_folder_path}` so the consolidated summary renders the triage section and applies the cap.
-
 
 ## Rules
 

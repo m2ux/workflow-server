@@ -17,14 +17,6 @@ Issue identifier (GitHub `#N` or Jira `KEY-N`)
 
 Platform where the issue lives (`github` or `jira`)
 
-### target_path
-
-Working tree of the repository in which to create the PR.
-
-### branch_name
-
-Head branch to open the PR from.
-
 ## Outputs
 
 ### pr_number
@@ -34,7 +26,6 @@ PR number
 ### pr_url
 
 URL to the PR
-
 
 ## Protocol
 
