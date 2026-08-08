@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.11.0
+version: 2.12.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 required: true
@@ -90,10 +90,16 @@ steps:
   - kind: checkpoint
     id: review-findings
     condition:
-      type: simple
-      variable: strategic_findings_summary
-      operator: "!="
-      value: ""
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: strategic_findings_summary
+          operator: "!="
+          value: ""
     message: |-
       Strategic review complete.
 
@@ -114,13 +120,13 @@ steps:
         description: Address strategic review findings now
         effect:
           setVariable:
-            needs_strategic_fixes: true
+            strategic_findings_actionable: true
       - id: selective-fixes
         label: Fix selected findings
         description: Choose which findings to fix, by priority
         effect:
           setVariable:
-            needs_strategic_fixes: true
+            strategic_findings_actionable: true
             strategic_fixes_selective: true
       - id: defer-findings
         label: Defer findings
@@ -132,6 +138,57 @@ steps:
       - id: more-review
         label: Need more review
         description: Additional areas need examination
+  - kind: checkpoint
+    id: findings-delivery
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: ==
+          value: true
+        - type: simple
+          variable: strategic_findings_summary
+          operator: "!="
+          value: ""
+    message: |-
+      Strategic review complete. Every finding is the pull-request author's to act on; this gate decides which of them the posted review carries.
+
+      Findings:
+      {strategic_findings_summary}
+
+      Recommended action: {recommended_strategic_option}.
+    blocking: true
+    defaultOption: raise-all
+    autoAdvanceMs: 30000
+    options:
+      - id: raise-all
+        label: Raise all findings to the author
+        description: The posted review carries every finding
+        effect:
+          setVariable:
+            findings_raised_to_author: all
+            review_passed: true
+      - id: raise-selected
+        label: Raise selected findings
+        description: The posted review carries the findings named in the reply; the report keeps the rest
+        effect:
+          setVariable:
+            findings_raised_to_author: selected
+            review_passed: true
+      - id: raise-none
+        label: Raise none
+        description: The report keeps every finding and the posted review carries none of them
+        effect:
+          setVariable:
+            findings_raised_to_author: none
+            review_passed: true
+      - id: hold-for-examination
+        label: Hold for further review
+        description: Areas remain to examine before anything is posted
+        effect:
+          setVariable:
+            findings_raised_to_author: none
 transitions:
   - to: submit-for-review
     condition:

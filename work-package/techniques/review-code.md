@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 ## Capability
@@ -54,7 +54,7 @@ Code review [report](../resources/rust-substrate-code-review.md#report-template)
 When the diff changes a `Config` impl, an associated type, or any trait-implementation binding, the blast radius extends beyond the changed line to every site that reads or writes through that binding — including unchanged upstream code that now resolves to the swapped type. A change that reads as locally correct can silently re-govern that unchanged code, so the swapped binding is in scope for the state-lifecycle conservation walk over that upstream set.
 
 - Run the set-wide producer/clearer conservation walk over the upstream read and write sites keyed on the changed binding — the [prism](../../prism/techniques/structural-analysis.md)::[structural-analysis](../../prism/techniques/structural-analysis.md#producerclearer-ledger) producer/clearer ledger owns the method (enumerate every producer against every clearer across the unchanged upstream set; confirm a matching clear on every termination path). Seed it from the `impact upstream` result.
-- A detected imbalance is a finding that classifies ≥ Minor (so it sets `needs_code_fixes`); when the imbalance causes unbounded state growth or other system harm, classify it on the matching impact axis (Major or above), so a correct-but-harmful config swap is rated above "safe".
+- A detected imbalance is a finding that classifies ≥ Minor (so it sets `code_findings_actionable`); when the imbalance causes unbounded state growth or other system harm, classify it on the matching impact axis (Major or above), so a correct-but-harmful config swap is rated above "safe".
 
 ### 3. Review Files
 

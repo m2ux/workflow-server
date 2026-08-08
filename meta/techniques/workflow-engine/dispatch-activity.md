@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.18.0
+  version: 1.19.0
 ---
 
 ## Capability
@@ -45,7 +45,7 @@ Opaque HMAC-signed trace token from the `next_activity` response `_meta.trace_to
 
 ## Protocol
 
-1. **Progress in-progress:** Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites) (`activity_id={activity_id}`; `{target_status}` from that row / [Status vocabulary](../../resources/planning-readme.md#status-vocabulary)). Transitions follow [Status transition policy](../../resources/planning-readme.md#status-transition-policy).
+1. **Progress in-progress:** Apply [sync-progress-status](./sync-progress-status.md) with `{planning_folder_path}` for the dispatch moment in [Progress Status call sites](../../../meta/resources/planning-readme.md#progress-status-call-sites) (`activity_id={activity_id}`; `{target_status}` from that row / [Status vocabulary](../../../meta/resources/planning-readme.md#status-vocabulary)). Transitions follow [Status transition policy](../../../meta/resources/planning-readme.md#status-transition-policy).
    > When `{planning_folder_path}` is unset, skip this phase.
 2. Call `next_activity { session_index, activity_id, step_manifest }`; capture `_meta.trace_token`.
    - **`step_manifest`:** a dispatch whose activity ran steps carries one manifest entry per completed step — the server validates step completion against it, and reports a gap when it is absent. A first dispatch has no prior worker context to attribute it to, so `agent_id` is omitted here; a continuation names one ([continue-batch](./continue-batch.md)).
@@ -57,8 +57,8 @@ Opaque HMAC-signed trace token from the `next_activity` response `_meta.trace_to
 5. Account for this activity, and for any replacement worker dispatched for the same `{activity_id}`, per [account-every-activity](#account-every-activity).
 6. Reconcile any critical routing or path variable an orchestrator decision depends on: compare the session record against the just-completed worker's `activity_complete` envelope, and against planning-folder evidence when the two still leave it uncertain ([distrust-then-reconcile](#distrust-then-reconcile)).
 7. On `activity_complete`, read `{worker_result.next_activity_id}` (and optionally `{worker_result.evaluated_condition}`) as the authoritative next-activity routing — the worker evaluated transitions via [finalize-activity](./finalize-activity.md).
-   > On a **blocked** signal from the worker or the harness, apply [sync-progress-status](./sync-progress-status.md) for the blocked moment in [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites) for `{activity_id}` before surfacing or retrying.
-   > When the path **skips / cancels** an activity without running it, apply [sync-progress-status](./sync-progress-status.md) for the path-skip / cancel moment in [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites) for that activity's rows.
+   > On a **blocked** signal from the worker or the harness, apply [sync-progress-status](./sync-progress-status.md) for the blocked moment in [Progress Status call sites](../../../meta/resources/planning-readme.md#progress-status-call-sites) for `{activity_id}` before surfacing or retrying.
+   > When the path **skips / cancels** an activity without running it, apply [sync-progress-status](./sync-progress-status.md) for the path-skip / cancel moment in [Progress Status call sites](../../../meta/resources/planning-readme.md#progress-status-call-sites) for that activity's rows.
 
 ## Rules
 

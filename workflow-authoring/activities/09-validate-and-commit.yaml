@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.0.0
+version: 1.1.0
 name: Validate and Commit
 description: "Re-derive the high-severity findings independently, persist the register, take the operator's disposition, then re-verify scope, commit, publish and close out. Terminal."
 required: true
@@ -178,10 +178,7 @@ steps:
     when: commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
   - kind: technique
     id: remove-worktree
-    technique:
-      name: work-package::manage-git::remove-worktree
-      inputs:
-        component_name: workflows
+    technique: work-package::manage-git::remove-worktree
     when: worktree_created == true && commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
 transitions:
   - to: quality-review

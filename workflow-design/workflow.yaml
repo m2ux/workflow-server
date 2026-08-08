@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.32.0
+version: 1.33.0
 title: DEPRECATED — use workflow-authoring — Workflow Design Workflow
 description: >-
   DEPRECATED — start `workflow-authoring` instead. This workflow remains only so sessions already
@@ -249,6 +249,10 @@ variables:
   - name: target_path
     type: string
     description: Feature worktree path for edits, builds, and PR ops (not host_repo_path).
+    defaultValue: ""
+  - name: component_git_dir
+    type: string
+    description: Absolute path of the workflows library's git working tree under the checkout.
     defaultValue: ""
   - name: worktree_created
     type: boolean

@@ -1,5 +1,5 @@
 id: assumptions-review
-version: 2.5.0
+version: 2.6.0
 name: Assumptions Review
 description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
 required: true
@@ -123,7 +123,10 @@ steps:
             post_jira_comment: false
   - kind: technique
     id: post-summary-github
-    technique: github-cli-protocol::comment-issue
+    technique:
+      name: github-cli-protocol::comment-issue
+      inputs:
+        repo_path: component_git_dir
     when: stealth_mode != true && is_review_mode != true && issue_platform == 'github' && has_deferred_assumptions == true
 transitions:
   - to: codebase-comprehension

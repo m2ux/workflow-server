@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 5.21.0
+version: 5.22.0
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -68,6 +68,9 @@ variables:
     type: boolean
     description: Whether discover-session matched a saved client session for the request
     defaultValue: false
+  - name: initiative_name
+    type: string
+    description: Kebab-case name for the work this session opens, from the words the request uses for it.
   - name: saved_planning_slug
     type: string
     description: Planning slug of the matched saved client session.
@@ -97,8 +100,18 @@ variables:
     defaultValue: .
   - name: component_selection_needed
     type: boolean
-    description: Whether the monorepo has more than one target-component submodule (after excluding infrastructure submodules per version-control::infrastructure-submodule-paths), requiring the user to pick. Set by resolve-target's select-target-component step; gates the submodule-selection checkpoint so a single-component monorepo resolves headlessly.
+    description: Whether more than one target-component submodule remains, so the user still has a component to pick.
     defaultValue: false
+  - name: submodules
+    type: array
+    description: "Target-component submodules of the host repository, each { path, name, url }."
+    defaultValue: []
+  - name: candidate_component
+    type: object
+    description: The submodule currently offered at the component-selection gate.
+  - name: recommended_component_path
+    type: string
+    description: Path of the best-supported candidate submodule, from the context the request carries.
   - name: client_workflow_completed
     type: boolean
     description: Whether the dispatched client workflow has reached workflow_complete

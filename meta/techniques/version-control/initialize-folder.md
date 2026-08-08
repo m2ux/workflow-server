@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.0.0
+  version: 2.1.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Derive the canonical planning slug (date plus kebab-case initiative name) for a 
 
 ### initiative_name
 
-Kebab-case identifier for the work package, slugified from the issue title or work-package description (lowercase, alphanumerics and hyphens). The caller derives it; this operation does not.
+Kebab-case identifier for the work package: lowercase, alphanumerics and single hyphens.
 
 ## Outputs
 

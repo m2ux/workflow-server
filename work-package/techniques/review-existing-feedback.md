@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -35,9 +35,9 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
 
 ### 1. Ingest All Prior Feedback
 
-- Apply [list-issue-comments](../../meta/techniques/github-cli-protocol/list-issue-comments.md) with `issue_number` `{pr_number}`; retain `{issue_comments}`.
-- Apply [list-pr-reviews](../../meta/techniques/github-cli-protocol/list-pr-reviews.md); retain `{pr_reviews}`.
-- Apply [list-pr-review-comments](../../meta/techniques/github-cli-protocol/list-pr-review-comments.md); retain `{pr_review_comments}`.
+- Apply [list-issue-comments](../../meta/techniques/github-cli-protocol/list-issue-comments.md)(*repo_path*=`{component_git_dir}`, *issue_number*=`{pr_number}`); retain `{issue_comments}`.
+- Apply [list-pr-reviews](../../meta/techniques/github-cli-protocol/list-pr-reviews.md)(*repo_path*=`{component_git_dir}`); retain `{pr_reviews}`.
+- Apply [list-pr-review-comments](../../meta/techniques/github-cli-protocol/list-pr-review-comments.md)(*repo_path*=`{component_git_dir}`); retain `{pr_review_comments}`.
 - Include both human and bot authors — a bot finding is signal, not noise. Do this before any independent code, structural, or test analysis, so the existing signal frames the review rather than being reconciled after a verdict is formed.
 
 ### 2. Triage Each Prior Finding

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -33,6 +33,10 @@ The work package's feature branch
 
 The work package's pull request number
 
+### component_git_dir
+
+Absolute path of the component's git working tree — the checkout whose `origin` remote names the component's repository.
+
 ### target_repo
 
-GitHub repository as `owner/repo`. Bound into github-cli-protocol ops by name-match; domain techniques do not split it.
+GitHub repository as `owner/repo` for the repository the session is bound to. Bound into github-cli-protocol ops by name-match; domain techniques do not split it.

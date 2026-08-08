@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -15,19 +15,19 @@ The findings or diagnostics to classify. Each entry carries enough context to ju
 
 ### code_review_findings
 
-*(optional)* The code-review findings subset, when present, that drives `needs_code_fixes`.
+*(optional)* The code-review findings subset, when present, that drives `code_findings_actionable`.
 
 ### test_review_findings
 
-*(optional)* The test-suite-review findings subset, when present, that drives `needs_test_improvements`.
+*(optional)* The test-suite-review findings subset, when present, that drives `test_findings_actionable`.
 
 ## Outputs
 
-### needs_code_fixes
+### code_findings_actionable
 
 True when any code-review finding has severity >= Minor (Critical, Major, or Minor); false when all code-review findings are Nit/Informational or there are no findings.
 
-### needs_test_improvements
+### test_findings_actionable
 
 True when any test-suite finding has severity >= Minor (Critical, Major, or Minor); false when all test-suite findings are Nit/Informational or there are no findings.
 
@@ -52,17 +52,17 @@ Code-correctness is one axis of severity; system impact is another, orthogonal t
 - **liveness-halt** — a path can stall, deadlock, or halt progress for the system or a class of participants (a panic on a reachable input, an unbounded loop, a lock never released).
 - **migration-upgrade** — a change to persisted shape, encoding, or governance binding leaves existing on-chain or on-disk state unreadable, mis-governed, or un-upgradeable without an accompanying migration.
 
-A finding that is correct on the code-correctness axis but lands on any impact axis is **correct-but-harmful**. Classify a correct-but-harmful finding at **Major** at minimum, and at **Critical** when the impact is unrecoverable without intervention (state already corrupted, funds already lost, chain already halted). Because correct-but-harmful classifies Major or above, it is ≥ Minor and therefore sets `{needs_code_fixes}` through the existing routing rule — the impact axes add severity without changing the routing threshold.
+A finding that is correct on the code-correctness axis but lands on any impact axis is **correct-but-harmful**. Classify a correct-but-harmful finding at **Major** at minimum, and at **Critical** when the impact is unrecoverable without intervention (state already corrupted, funds already lost, chain already halted). Because correct-but-harmful classifies Major or above, it is ≥ Minor and therefore sets `{code_findings_actionable}` through the existing routing rule — the impact axes add severity without changing the routing threshold.
 
 ### 2. Route Code Findings
 
 - Inspect the code-review subset (`{code_review_findings}`).
-- Set `{needs_code_fixes}`=true when any code-review finding is Minor or above; otherwise false.
+- Set `{code_findings_actionable}`=true when any code-review finding is Minor or above; otherwise false.
 
 ### 3. Route Test Findings
 
 - Inspect the test-suite subset (`{test_review_findings}`).
-- Set `{needs_test_improvements}`=true when any test-suite finding is Minor or above; otherwise false.
+- Set `{test_findings_actionable}`=true when any test-suite finding is Minor or above; otherwise false.
 
 ### 4. Record Triage Notes
 

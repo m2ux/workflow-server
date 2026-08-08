@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -44,7 +44,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 ### 1. Load Guidance
 
 - Judge the change against [Architectural Significance](../../resources/architecture-review.md#architectural-significance) and [Decision-Making Discipline](../../resources/architecture-review.md#decision-making-discipline); the rules below govern the review findings
-- Identify the base branch (`{$base_branch}`): when `{pr_number}` is set, Apply [view-pr](../../../meta/techniques/github-cli-protocol/view-pr.md) and take `{base_branch}`; otherwise (no PR — stealth mode) the default branch of the configured push remote.
+- Identify the base branch (`{$base_branch}`): when `{pr_number}` is set, Apply [view-pr](../../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`) and take `{base_branch}`; otherwise (no PR — stealth mode) the default branch of the configured push remote.
 - Examine the authored surface `{changed_files}` on the feature branch `{branch_name}` using three-dot diffs against the base branch (`{$base_branch}`):
   - Consume the canonical `{changed_files}` when it is established (review mode, produced by `review-baseline-state`); otherwise (create mode, no PR baseline) derive it from the local working-tree diff against `{$base_branch}`.
 
@@ -86,7 +86,7 @@ Short human-readable summary of the unsigned commits (hash + subject, one per li
 ### 8. Verify Pr Body Conformance
 
 - Skip this phase when `{pr_number}` is unset (no PR exists — stealth mode).
-- Apply [view-pr](../../../meta/techniques/github-cli-protocol/view-pr.md); take the live body from `{pr_body}`.
+- Apply [view-pr](../../../meta/techniques/github-cli-protocol/view-pr.md)(*repo_path*=`{component_git_dir}`); take the live body from `{pr_body}`.
 - Run [update-pr](../update-pr/TECHNIQUE.md)::[verify-body](../update-pr/verify-body.md) against the live body.
 - If `body_conforms == false`, record each `body_findings` entry in the `{strategic_review_doc}` under 'PR body conformance'.
 

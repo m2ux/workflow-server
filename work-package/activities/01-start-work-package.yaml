@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.15.0
+version: 3.16.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 required: true
@@ -226,13 +226,17 @@ steps:
         message: Atlassian cloudId not set. Load the atlassian-operations technique and call getAccessibleAtlassianResources before any Jira tool.
   - kind: technique
     id: verify-github-issue
-    technique: github-cli-protocol::view-issue
+    technique:
+      name: github-cli-protocol::view-issue
+      inputs:
+        repo_path: component_git_dir
     when: issue_platform == 'github'
   - kind: technique
     id: search-github-issue
     technique:
       name: github-cli-protocol::list-issues
       inputs:
+        repo_path: component_git_dir
         search_text: "{jira_issue_key}"
     when: issue_platform == 'jira'
     actions:
@@ -447,6 +451,7 @@ steps:
     technique:
       name: github-cli-protocol::assign-issue
       inputs:
+        repo_path: component_git_dir
         assignee: "@me"
     when: issue_skipped != true && issue_platform == 'github'
   - kind: action
@@ -505,7 +510,10 @@ steps:
         message: "The worktree at {target_path} is on a default branch, not a feature branch, so subsequent commits would land there. Check out {branch_name} in {target_path} and re-run."
   - kind: technique
     id: check-pr
-    technique: github-cli-protocol::list-prs
+    technique:
+      name: github-cli-protocol::list-prs
+      inputs:
+        repo_path: component_git_dir
     when: is_review_mode != true
     actions:
       - action: set
@@ -628,7 +636,10 @@ steps:
           value: jira
   - kind: technique
     id: link-pr-to-ticket-github
-    technique: github-cli-protocol::view-issue
+    technique:
+      name: github-cli-protocol::view-issue
+      inputs:
+        repo_path: component_git_dir
     condition:
       type: and
       conditions:

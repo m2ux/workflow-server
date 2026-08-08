@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.42.0
+version: 3.43.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first. Also supports review mode for auditing an existing PR or implementation end-to-end.
 author: m2ux
@@ -18,7 +18,7 @@ rules:
     - Explicit approval - Get clear 'yes' or 'proceed' before major actions (within activity checkpoints only — NOT between activities)
     - Decision points require user choice - When issues are found, user decides whether to proceed or loop back
     - Git configuration is user-owned. Validate-action messages describe a misconfiguration but never prescribe config-changing commands; the user fixes their own environment at whatever scope (system, global, local) they prefer.
-    - "review-mode-headless-auto-advance - Once is_review_mode == true the run is headless. Every review-reachable checkpoint that carries defaultOption + autoAdvanceMs is resolved by calling respond_checkpoint with auto_advance:true (which applies the default option's full side effects unchanged) and surfacing the outcome as a plain message — never as an AskUserQuestion dialog. A checkpoint gated is_review_mode != true is cleared with respond_checkpoint condition_not_met. Interactive in review mode only when their gap conditions fire — review-mode-detection (when review_mode_ambiguous) and review-pr-reference (when review_pr_missing). review-summary-approval remains always interactive in review mode."
+    - "review-mode-headless-auto-advance - Once is_review_mode == true the run is headless. Every review-reachable checkpoint that carries defaultOption + autoAdvanceMs is resolved by calling respond_checkpoint with auto_advance:true (which applies the default option's full side effects unchanged) and surfacing the outcome as a plain message — never as an AskUserQuestion dialog. A checkpoint gated is_review_mode != true is cleared with respond_checkpoint condition_not_met. Interactive in review mode only when their gap conditions fire — review-mode-detection (when review_mode_ambiguous) and review-pr-reference (when review_pr_missing). review-summary-approval and local-validation-permission remain always interactive in review mode."
   activity:
     - safety-floor-never-simplified - The safety floor is never simplified away during the lean-coding audit - understanding the problem, input validation at trust boundaries, error handling that prevents data loss, security, accessibility, anything explicitly requested by the issue, and one runnable check for non-trivial logic. A simplification that would breach the floor is rejected; the simplification-apply-cycle validates the floor before resetting its driver flag.
     - report-before-apply - The over-engineering review, debt harvest, and gain report are read-only - they list findings into their artifacts and change no code. Code is only ever changed in the simplification-apply-cycle, and only on simplifications the user accepted at the audit-findings-confirmed gate.
@@ -110,6 +110,9 @@ variables:
     type: string
     description: Path of the component being worked on, relative to the host repository.
     defaultValue: .
+  - name: component_git_dir
+    type: string
+    description: Absolute path of the component's git working tree, whose origin remote names the component's repository.
   - name: worktree_created
     type: boolean
     description: True when a worktree at target_path was created or reused by this workflow run (only those worktrees are eligible for cleanup).
@@ -221,13 +224,13 @@ variables:
     type: boolean
     description: Whether strategic review passed.
     defaultValue: false
-  - name: needs_code_fixes
+  - name: code_findings_actionable
     type: boolean
-    description: Whether code review findings require fixes before proceeding.
+    description: Whether any code-review finding is at or above the severity that warrants action.
     defaultValue: false
-  - name: needs_test_improvements
+  - name: test_findings_actionable
     type: boolean
-    description: Whether test suite needs improvements before proceeding.
+    description: Whether any test-suite finding is at or above the severity that warrants action.
     defaultValue: false
   - name: review_requires_changes
     type: boolean
@@ -365,10 +368,14 @@ variables:
     type: boolean
     description: Whether to skip architecture summary creation.
     defaultValue: false
-  - name: needs_strategic_fixes
+  - name: strategic_findings_actionable
     type: boolean
-    description: Whether strategic review findings require fixes.
+    description: Whether any strategic-review finding is at or above the severity that warrants action.
     defaultValue: false
+  - name: findings_raised_to_author
+    type: string
+    description: "Which findings the posted review carries to the pull-request author (all|selected|none)."
+    defaultValue: all
   - name: strategic_fixes_selective
     type: boolean
     description: Whether the user chose to fix only selected strategic-review findings (by priority) rather than all of them.
@@ -602,6 +609,5 @@ variables:
     defaultValue: ""
   - name: comprehension_dir
     type: string
-    description: Directory holding codebase-comprehension artifacts.
-    defaultValue: ""
+    description: Absolute path of the cumulative codebase-comprehension corpus, outside any one session's planning folder.
 initialActivity: start-work-package

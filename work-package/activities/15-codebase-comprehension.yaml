@@ -1,11 +1,17 @@
 id: codebase-comprehension
-version: 1.9.0
+version: 1.10.0
 name: Codebase Comprehension
 description: Build or augment a mental model of the codebase.
 required: false
 techniques:
   - scatter-gather
 steps:
+  - kind: action
+    id: bind-comprehension-dir
+    actions:
+      - action: set
+        target: comprehension_dir
+        value: "{host_repo_path}/.engineering/artifacts/comprehension"
   - kind: technique
     id: build-comprehension
     technique: survey
@@ -24,7 +30,10 @@ steps:
     technique: deep-dive
   - kind: technique
     id: update-artifact-initial
-    technique: manage-artifacts::write-artifact
+    technique:
+      name: manage-artifacts::write-artifact
+      inputs:
+        target_dir: comprehension_dir
   - kind: technique
     id: revise-initial-questions
     technique: revise-questions
@@ -51,7 +60,10 @@ steps:
             iteration_mode: once
       - kind: technique
         id: update-artifact
-        technique: manage-artifacts::write-artifact
+        technique:
+          name: manage-artifacts::write-artifact
+          inputs:
+            target_dir: comprehension_dir
       - kind: checkpoint
         id: comprehension-sufficient
         condition:
@@ -113,5 +125,5 @@ outcome:
   - Mental model of codebase architecture established
   - Key abstractions and design rationale documented
   - Domain concepts mapped to technical constructs
-  - A reusable comprehension reference exists that future work can build on without re-investigating the same area
+  - A reusable comprehension reference lands in the cumulative corpus, where the next work package on the same area reads it instead of re-investigating
   - Open questions converged via analyse-challenge before the soft sufficiency gate

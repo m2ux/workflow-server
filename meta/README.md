@@ -17,7 +17,7 @@ The meta workflow is the structural home for the orchestration logic that used t
 
 | # | Activity | Role |
 |---|----------|------|
-| 00 | [**Discover Session**](./activities/README.md#00-discover-session) | Derive the host repository from git, identify the target client workflow and, on stated resume intent, surface any saved session to resume |
+| 00 | [**Discover Session**](./activities/README.md#00-discover-session) | Derive the host repository from git, identify the target client workflow, name the work from the request, and on stated resume intent surface any saved session to resume |
 | 01 | [**Initialize Session**](./activities/README.md#01-initialize-session) | Give the work package a stable identity and create or resume the client session as a child of meta |
 | 02 | [**Resolve Target**](./activities/README.md#02-resolve-target) | Detect the repo structure (regular vs. submodule monorepo), resolve `component_path`, and confirm the host binding agrees with the derivation |
 | 03 | [**Dispatch Client Workflow**](./activities/README.md#03-dispatch-client-workflow) | Drive the client workflow end to end inline, each worker carrying a bounded run of activities, mediating its checkpoints with the user |
@@ -37,7 +37,7 @@ The meta workflow is the structural home for the orchestration logic that used t
 ```mermaid
 graph TD
     startNode(["Bootstrap"]) -->|"start_session(workflow_id: meta)"| DS["00 discover-session"]
-    DS -->|"target_repo, host_repo_path, target_workflow_id, resume_intent_requested, has_saved_state, is_resuming"| INI["01 initialize-session"]
+    DS -->|"target_repo, host_repo_path, target_workflow_id, initiative_name, resume_intent_requested, has_saved_state, is_resuming"| INI["01 initialize-session"]
     INI -->|"client_session_index, client_planning_slug"| RT["02 resolve-target"]
     RT -->|"component_path"| DSP["03 dispatch-client-workflow"]
     DSP -->|"current_activity == null"| END["04 end-workflow"]
@@ -124,7 +124,7 @@ workflows/meta/
 ├── workflow.yaml                            # Meta workflow definition
 ├── README.md                                # This file
 ├── activities/
-│   ├── 00-discover-session.yaml             # Derive host repo from git, match user request, scan saved sessions on resume intent
+│   ├── 00-discover-session.yaml             # Derive host repo from git, match user request, name the work, scan saved sessions on resume intent
 │   ├── 01-initialize-session.yaml           # Create or resume the client session
 │   ├── 02-resolve-target.yaml               # Detect repo type, set component_path, verify host binding
 │   ├── 03-dispatch-client-workflow.yaml     # Drive the client activity loop, a bounded run of activities per worker

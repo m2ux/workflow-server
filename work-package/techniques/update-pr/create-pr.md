@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -49,5 +49,5 @@ URL to the PR
 
 ### 3. Assign Current User
 
-- Apply [assign-issue](../../../meta/techniques/github-cli-protocol/assign-issue.md) with `issue_number` `{pr_number}` and `assignee` `@me` (PR numbers share the issues assignees endpoint).
+- Apply [assign-issue](../../../meta/techniques/github-cli-protocol/assign-issue.md)(*repo_path*=`{target_path}`, *issue_number*=`{pr_number}`, *assignee*=`@me`) — PR numbers share the issues assignees endpoint.
 - Keep the PR as draft until implementation and review complete

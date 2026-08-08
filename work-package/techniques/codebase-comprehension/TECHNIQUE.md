@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -15,11 +15,7 @@ Progressive codebase comprehension with persistent knowledge artifacts.
 
 ### comprehension_dir
 
-Directory holding codebase-comprehension artifacts
-
-#### default
-
-`.engineering/artifacts/comprehension/`
+Absolute path of the cumulative comprehension corpus — the directory whose artifacts outlive the session that wrote them.
 
 ## Outputs
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -17,6 +17,10 @@ Filesystem path of this run's dedicated workflows worktree: `<checkout>/.worktre
 
 Absolute path of the checkout that contains the shared workflows library — the ancestor of `{planning_folder_path}` above its `.engineering` artifact root. The library itself is the `workflows` component under it.
 
+### component_git_dir
+
+Absolute path of the workflows library's own git working tree under the checkout — the checkout worktrees of the library are added to.
+
 ## Protocol
 
 ### 1. Extract Planning Slug
@@ -27,6 +31,7 @@ Absolute path of the checkout that contains the shared workflows library — the
 ### 2. Compose Target Path
 
 - Set `{target_path}` to `{host_repo_path}/.worktrees/{$planning_slug}/` — the gitignored feature-worktree directory nested in the checkout; never anchor it to a home directory or an install root
+- Set `{component_git_dir}` to `{host_repo_path}/workflows` — the library component whose worktree `{target_path}` is
 - Do not bind issue-shaped naming conventions from other workflows — the planning-folder basename is the sole path segment
 
 ## Rules

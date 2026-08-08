@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.1.1
+  version: 3.2.0
 ---
 
 ## Capability
@@ -44,7 +44,7 @@ URL of the verified or newly created issue.
 ### 1. Verify Existing Issue
 
 - Runs only when the user provides an existing issue key. Detect the platform from key format: `#N` or bare number → GitHub, `PROJ-N` → Jira. Set `{issue_platform}`.
-- For GitHub: Apply [view-issue](../../meta/techniques/github-cli-protocol/view-issue.md); capture `{issue_number}` and `{issue_url}` from the op.
+- For GitHub: Apply [view-issue](../../meta/techniques/github-cli-protocol/view-issue.md)(*repo_path*=`{component_git_dir}`); capture `{issue_number}` and `{issue_url}` from the op.
 - For Jira: call `getAccessibleAtlassianResources` FIRST to obtain cloudId, preserve as `{$jira_cloud_id}`. THEN call `getJiraIssue` with cloudId and the issue key. Do NOT call `getJiraIssue` before cloudId is resolved.
 - Capture `{issue_number}` and `{issue_url}` from the verification result. Set `{needs_issue_creation}` to false.
 

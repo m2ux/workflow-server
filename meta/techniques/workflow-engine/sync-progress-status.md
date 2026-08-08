@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -15,7 +15,7 @@ Path to the planning folder whose `README.md` Progress surface is updated.
 
 ### target_status
 
-Status value to write — a canonical icon from [Status vocabulary](../../resources/planning-readme.md#status-vocabulary).
+Status value to write — a canonical icon from [Status vocabulary](../../../meta/resources/planning-readme.md#status-vocabulary).
 
 ### activity_id
 
@@ -27,11 +27,11 @@ Status value to write — a canonical icon from [Status vocabulary](../../resour
 
 ### seed_profile
 
-Resource id of the workflow's readme-seed profile, which carries the [row-ownership map](../../resources/planning-readme.md#row-ownership-map) selection resolves through.
+Resource id of the workflow's readme-seed profile, which carries the [row-ownership map](../../../meta/resources/planning-readme.md#row-ownership-map) selection resolves through.
 
 ### item_match
 
-*(optional)* Substring or bare filename matched against the Progress **item** field when only some rows for an activity should change. When unbound, all rows for `{artifact_prefix}` are candidates — selection per [Matching](../../resources/planning-readme.md#matching).
+*(optional)* Substring or bare filename matched against the Progress **item** field when only some rows for an activity should change. When unbound, all rows for `{artifact_prefix}` are candidates — selection per [Matching](../../../meta/resources/planning-readme.md#matching).
 
 ### delivered_artifact
 
@@ -39,7 +39,7 @@ Resource id of the workflow's readme-seed profile, which carries the [row-owners
 
 ### allow_overwrite_na
 
-*(optional)* When true, permit writing `{target_status}` onto cells that [Status transition policy](../../resources/planning-readme.md#status-transition-policy) treats as overwrite-N/A eligible. Defaults follow that section.
+*(optional)* When true, permit writing `{target_status}` onto cells that [Status transition policy](../../../meta/resources/planning-readme.md#status-transition-policy) treats as overwrite-N/A eligible. Defaults follow that section.
 
 ## Outputs
 
@@ -49,23 +49,23 @@ Count of Progress status fields changed this apply.
 
 ## Protocol
 
-1. Open `{planning_folder_path}/README.md` and locate the Progress surface per [Progress table](../../resources/planning-readme.md#progress-table).
+1. Open `{planning_folder_path}/README.md` and locate the Progress surface per [Progress table](../../../meta/resources/planning-readme.md#progress-table).
 2. Resolve `{artifact_prefix}`: use the bound value, else derive from `{activity_id}`'s server `artifactPrefix` (activity filename index).
-3. Load `{seed_profile}` and read the Item labels `{artifact_prefix}` owns from its [row-ownership map](../../resources/planning-readme.md#row-ownership-map).
-4. Select candidate rows per [Matching](../../resources/planning-readme.md#matching) using those labels and, when bound, `{item_match}`.
-5. For each candidate, set the status field to `{target_status}` per [Status transition policy](../../resources/planning-readme.md#status-transition-policy) (honour `{allow_overwrite_na}` when bound; otherwise use that section's defaults). Skip candidates the policy forbids.
-6. Write status fields as icons from [Status vocabulary](../../resources/planning-readme.md#status-vocabulary).
+3. Load `{seed_profile}` and read the Item labels `{artifact_prefix}` owns from its [row-ownership map](../../../meta/resources/planning-readme.md#row-ownership-map).
+4. Select candidate rows per [Matching](../../../meta/resources/planning-readme.md#matching) using those labels and, when bound, `{item_match}`.
+5. For each candidate, set the status field to `{target_status}` per [Status transition policy](../../../meta/resources/planning-readme.md#status-transition-policy) (honour `{allow_overwrite_na}` when bound; otherwise use that section's defaults). Skip candidates the policy forbids.
+6. Write status fields as icons from [Status vocabulary](../../../meta/resources/planning-readme.md#status-vocabulary).
 7. Bring each written row's item field into line with what its status now asserts, per the same policy section: a cancelled/N/A write strips the item link to plain text; a complete write with `{delivered_artifact}` bound repoints the item link at that artifact. Leave the item label either way.
-8. Ensure Progress chrome required by the resource is present per [Icon key](../../resources/planning-readme.md#icon-key).
-9. Do not mutate the README lifecycle Status line — ownership per [Progress table](../../resources/planning-readme.md#progress-table).
+8. Ensure Progress chrome required by the resource is present per [Icon key](../../../meta/resources/planning-readme.md#icon-key).
+9. Do not mutate the README lifecycle Status line — ownership per [Progress table](../../../meta/resources/planning-readme.md#progress-table).
 10. Return `{rows_updated}`.
 
 ## Rules
 
 ### preserve-unrelated-rows
 
-Rows not in the candidate set are untouched per [Status transition policy](../../resources/planning-readme.md#status-transition-policy).
+Rows not in the candidate set are untouched per [Status transition policy](../../../meta/resources/planning-readme.md#status-transition-policy).
 
 ### orchestrator-owned
 
-Client workflow activities and workers do not Apply this technique as a substitute for the orchestrator hooks listed under [Progress Status call sites](../../resources/planning-readme.md#progress-status-call-sites). Seed-time mode exclusion remains [create-readme](./create-readme.md) / readme-seed profile duty.
+Client workflow activities and workers do not Apply this technique as a substitute for the orchestrator hooks listed under [Progress Status call sites](../../../meta/resources/planning-readme.md#progress-status-call-sites). Seed-time mode exclusion remains [create-readme](./create-readme.md) / readme-seed profile duty.

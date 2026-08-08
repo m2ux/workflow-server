@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -19,6 +19,10 @@ Absolute path to this session's planning folder under the server `.engineering` 
 
 Filesystem path of the dedicated workflows worktree for this session: `<checkout>/.worktrees/{basename(planning_folder_path)}/`. Distinct from `{planning_folder_path}` — never place planning artifacts under `{target_path}`.
 
+### component_git_dir
+
+Absolute path of the workflows library's own git working tree under the checkout — the checkout worktrees of the library are added to.
+
 ## Protocol
 
 ### 1. Extract Planning Slug
@@ -29,6 +33,7 @@ Filesystem path of the dedicated workflows worktree for this session: `<checkout
 ### 2. Compose Target Path
 
 - Set `{target_path}` to `{$checkout_root}/.worktrees/{$planning_slug}/` — the gitignored feature-worktree directory nested in the checkout; never anchor it to a home directory or an install root
+- Set `{component_git_dir}` to `{$checkout_root}/workflows` — the library component whose worktree `{target_path}` is
 - Do not bind work-package issue-shaped naming conventions — the planning-folder basename is the sole path segment
 
 ### 3. Path Separation

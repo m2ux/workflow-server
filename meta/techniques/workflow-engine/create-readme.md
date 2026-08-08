@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.1.0
+  version: 3.2.0
 ---
 
 ## Capability
@@ -39,11 +39,11 @@ Full path to the created `README.md`
 
 ## Protocol
 
-1. Load [Template](../../resources/planning-readme.md#template).
+1. Load [Template](../../../meta/resources/planning-readme.md#template).
 2. Load the readme-seed profile named by `{seed_profile}`.
-3. Populate the header (title, classifier from seed + `{entity_context}`, date, lifecycle Status), Executive Summary placeholder, and Links table (seed defaults merged with `{entity_context}` URLs when present), each per its entry in [Rules](../../resources/planning-readme.md#rules).
-4. Replace the Progress table body with the seed profile's Progress inventory rows as authored (icons from [Status vocabulary](../../resources/planning-readme.md#status-vocabulary)). Insert any seed-declared append H2 sections after Solution Overview and before Progress.
-5. Apply the seed profile's mode-exclusion map using `{is_review_mode}` and/or `{operation_type}` when bound (else implement/create defaults on the profile), per [Status transition policy](../../resources/planning-readme.md#status-transition-policy).
+3. Populate the header (title, classifier from seed + `{entity_context}`, date, lifecycle Status), Executive Summary placeholder, and Links table (seed defaults merged with `{entity_context}` URLs when present), each per its entry in [Rules](../../../meta/resources/planning-readme.md#rules).
+4. Replace the Progress table body with the seed profile's Progress inventory rows as authored (icons from [Status vocabulary](../../../meta/resources/planning-readme.md#status-vocabulary)). Insert any seed-declared append H2 sections after Solution Overview and before Progress.
+5. Apply the seed profile's mode-exclusion map using `{is_review_mode}` and/or `{operation_type}` when bound (else implement/create defaults on the profile), per [Status transition policy](../../../meta/resources/planning-readme.md#status-transition-policy).
 6. Write the populated `README.md` to `{planning_folder_path}/README.md`, and return that location as `{created_readme}`.
 
 ## Rules
@@ -54,8 +54,8 @@ Leave Problem Overview and Solution Overview as Template placeholders for later 
 
 ### preserve-seed-na
 
-Never reset a Progress Status cell from cancelled/N/A to pending except when a mode flip in the bound seed profile explicitly brings that row into scope (mode-exclusion apply), per [Status transition policy](../../resources/planning-readme.md#status-transition-policy). Optional-path undecided rows and path-skip cancelled/N/A follow that same section and [Status vocabulary](../../resources/planning-readme.md#status-vocabulary).
+Never reset a Progress Status cell from cancelled/N/A to pending except when a mode flip in the bound seed profile explicitly brings that row into scope (mode-exclusion apply), per [Status transition policy](../../../meta/resources/planning-readme.md#status-transition-policy). Optional-path undecided rows and path-skip cancelled/N/A follow that same section and [Status vocabulary](../../../meta/resources/planning-readme.md#status-vocabulary).
 
 ### status-icons-from-vocabulary
 
-Progress Status cells use only icons from [Status vocabulary](../../resources/planning-readme.md#status-vocabulary).
+Progress Status cells use only icons from [Status vocabulary](../../../meta/resources/planning-readme.md#status-vocabulary).

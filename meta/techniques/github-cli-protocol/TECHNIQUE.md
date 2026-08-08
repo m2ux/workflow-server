@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.4.3
+  version: 3.5.0
 ---
 
 ## Capability
@@ -9,13 +9,13 @@ GitHub PR and issue tasks. Callers Apply leaf ops; REST paths, `gh api` recipes,
 
 ## Inputs
 
+### repo_path
+
+*(optional when `{target_repo}` is set)* Working tree whose `origin` remote names the repository a call addresses.
+
 ### target_repo
 
 *(optional when `{repo_path}` is set on the leaf)* GitHub repository as `owner/repo`.
-
-### repo_path
-
-*(optional when `{target_repo}` is set)* Working tree whose `origin` remote supplies `owner/repo` when `{target_repo}` is unset.
 
 ## Rules
 

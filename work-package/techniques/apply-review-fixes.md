@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -13,11 +13,11 @@ User-selected code-review findings and/or test improvements implemented and comm
 
 The user-selected review findings in scope for this fix cycle (code-review and/or test-suite findings).
 
-### needs_code_fixes
+### code_findings_actionable
 
 Whether code-review findings are in scope for this cycle.
 
-### needs_test_improvements
+### test_findings_actionable
 
 Whether test improvements are in scope for this cycle.
 
@@ -33,14 +33,14 @@ The feature branch that receives the fix commits.
 
 ### 1. Select Fixes
 
-- From `{review_findings}`, gather the code-review findings selected for fixing when `{needs_code_fixes}` is true, and the test-suite findings selected when `{needs_test_improvements}` is true.
+- From `{review_findings}`, gather the code-review findings selected for fixing when `{code_findings_actionable}` is true, and the test-suite findings selected when `{test_findings_actionable}` is true.
 - Confirm the selected set with the user when the selection is not already explicit.
 
 ### 2. Implement Fixes
 
 - Apply [gitnexus-operations](../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../meta/techniques/gitnexus-operations/impact.md)(target: `{$target_symbol}`, direction: `upstream`) before editing a symbol; surface HIGH or CRITICAL risk to the user before proceeding.
 - Implement each selected finding in `{target_path}`, following existing code patterns and conventions.
-- Apply test improvements alongside the code fixes when `{needs_test_improvements}` is true.
+- Apply test improvements alongside the code fixes when `{test_findings_actionable}` is true.
 - Verify locally — confirm the changes compile and the affected tests pass before committing.
 
 ### 3. Commit Changes

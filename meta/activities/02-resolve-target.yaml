@@ -1,5 +1,5 @@
 id: resolve-target
-version: 4.5.0
+version: 4.6.0
 name: Resolve Target
 description: Detect the target repository structure (regular directory vs. submodule monorepo), resolve component_path, and confirm the session's host binding agrees with the derivation — headlessly, prompting only when a monorepo has more than one target-component submodule.
 required: true
@@ -20,34 +20,42 @@ steps:
     id: select-component
     technique: version-control::select-target-component
     when: is_monorepo == true
-  - kind: checkpoint
-    id: submodule-selection
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: is_monorepo
-          operator: ==
-          value: true
-        - type: simple
+  - kind: loop
+    id: component-selection
+    name: Component Selection
+    loopType: forEach
+    variable: candidate_component
+    over: submodules
+    maxIterations: 25
+    when: is_monorepo == true && component_selection_needed == true
+    steps:
+      - kind: checkpoint
+        id: submodule-selection#{candidate_component.path}
+        condition:
+          type: simple
           variable: component_selection_needed
           operator: ==
           value: true
-    message: This monorepo has more than one component submodule. Select the target submodule.
-    options:
-      - id: submodule-chosen
-        label: Submodule selected
-        description: Proceed with the chosen submodule as `{component_path}`
-        effect:
-          setVariable:
-            component_selection_needed: false
-      - id: re-list
-        label: Re-list components
-        description: Cancel this selection and re-run component listing so a different submodule can be chosen
-        effect:
-          setVariable:
-            component_selection_needed: true
-          transitionTo: resolve-target
+        message: "This monorepo holds more than one component submodule. Candidate: `{candidate_component.path}` — recommended `{recommended_component_path}`."
+        blocking: true
+        options:
+          - id: submodule-chosen
+            label: Work in this submodule
+            description: The target component is the candidate named in the message
+            effect:
+              setVariable:
+                component_path: "{candidate_component.path}"
+                component_selection_needed: false
+          - id: next-submodule
+            label: Show the next submodule
+            description: The target component is one of the submodules not yet offered
+  - kind: action
+    id: validate-component-selected
+    when: is_monorepo == true
+    actions:
+      - action: validate
+        target: component_selection_needed != true
+        message: "No submodule was chosen at the selection gate, so `{component_path}` still names the host root. Re-enter resolve-target and choose one of the enumerated submodules."
   - kind: action
     id: validate-binding-agreement
     actions:
