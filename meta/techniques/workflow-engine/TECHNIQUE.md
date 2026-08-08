@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 6.11.0
+  version: 6.12.0
 ---
 
 ## Capability
@@ -52,6 +52,30 @@ When this agent context no longer holds previously delivered content (e.g. after
 ### verify-dispatched-activity
 
 Before executing any step, confirm the activity `id` returned by the `get_activity` call your current stub instructed — not an earlier response this context still holds — equals the `{activity_id}` that dispatch or continuation bound. A worker carrying a batch re-checks this on every activity of the run, against the id the continuation named rather than the id the run opened with. On mismatch, STOP — execute no steps — and report a pointer mismatch (expected vs returned), which is the whole of the remedy available from here. Do not proceed on the wrong activity.
+
+### run-status-shape
+
+A status emission during a run carries exactly three things, in this order:
+
+1. A link to the artifact the completed activity produced.
+2. One line summarising it.
+3. The activity checklist, complete.
+
+The checklist is a markdown task list. Each item's text is the row number and name from the planning README's Progress table — not an artifact filename, whose numeric prefixes repeat across rows and which several rows do not have — and that text **is** the hyperlink, targeting the artifact's remote URL on the session branch:
+
+```markdown
+- [x] [12 Assumptions review](https://github.com/owner/repo/blob/{branch}/{planning_path}/07-assumptions-log.md)
+- [ ] [13 Implementation](…)
+```
+
+The list is complete on every emission: every activity, run and unrun alike. Never roll the unrun tail into one summarising item. Any other enumeration in the emission is a bullet list rather than a semicolon run-on.
+
+Two boundaries decide what else may appear:
+
+- **Workflow mechanics stay out.** Which activity is dispatched to whom, worker resumes and identities, how much room a batch has left, usage recording, commit bookkeeping. None of it is actionable, and the checklist already carries where the run stands.
+- **What the user needs in order to decide stays in, at whatever length it takes.** A gate's substance, an option's trade-off, what a finding turns on. The distinction is the decision, not the length.
+
+A multi-paragraph restatement of what an artifact already records is the failure this shape prevents: a paraphrase drifts from the artifact it paraphrases, and a reader has no way to tell which is authoritative.
 
 ### progressive-step-technique-load
 

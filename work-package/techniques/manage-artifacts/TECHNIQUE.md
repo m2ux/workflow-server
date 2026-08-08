@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.5.0
+  version: 3.6.0
 ---
 
 ## Capability
@@ -66,6 +66,25 @@ Symbol and test references hyperlink to their definition line (the definition, n
 A path relative to a checkout is never a citation form: the checkout it resolves against is removed at close-out, so the link dies inside the run that wrote it. A resource or technique id is never a link target — ids address the loader, not the git host.
 
 [verify-artifact-links](./verify-artifact-links.md) resolves every link at the close-out boundary against the ref the published links point at, so a folder whose links break only in the published tree is caught rather than shipped.
+
+### code-reference-is-an-inline-link
+
+Every reference to a named thing in the code — a function, type, trait, module, constant, test, or a specific line of one — is an inline markdown link whose visible text is that name, placed where the sentence already names it. A reader following the prose reaches the source by clicking the words they are reading.
+
+```markdown
+[resolve_cursor](https://github.com/owner/repo/blob/<sha>/src/parser.rs#L190) advances the cursor before the bounds check, so a request at the limit reads one element past the end.
+```
+
+Four shapes fail it, and each is repaired by moving the link onto the name:
+
+| Shape | Why it fails |
+|---|---|
+| Coordinate-only link text — `[parser.rs#L190]` | The reader is given a location where the sentence needed a name, and the name goes unlinked. |
+| A trailing parenthetical citation — `… advances the cursor ([src/parser.rs:190](…))` | The citation interrupts the sentence it is attached to and duplicates a name already in it. |
+| A code span inside the link text — `` [`resolve_cursor`](…) `` | Several renderers drop the link and leave the code span, so the reference silently stops resolving. |
+| No link at all | The reader has a name and no way to reach it. |
+
+A name repeated across an artifact is linked on each mention that carries a distinct claim; consecutive mentions inside one paragraph link once.
 
 ### no-process-attribution
 

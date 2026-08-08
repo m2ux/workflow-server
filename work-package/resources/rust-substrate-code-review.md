@@ -2,7 +2,7 @@
 name: rust-substrate-code-review
 description: Guidelines for conducting code reviews of Rust and Substrate codebases. Covers scope determination, review criteria, and report generation.
 metadata:
-  version: 1.2.0
+  version: 1.3.0
   order: 16
   legacy_id: 16
 ---
@@ -26,39 +26,75 @@ For implementation reviews: review all files modified during implementation, foc
 
 Report file: optional for implementation and PR reviews; required for module audits. Naming: `{scope-description}-review.md`.
 
+### Field List
+
+Designator prefix `CR`. Declared fields, in this order, laid out per [Finding Layout](./findings-report.md#finding-layout):
+
+| Field | Holds |
+|---|---|
+| `Category` | Rust Idioms / Substrate Framework / Architecture / Documentation / Testing / Security |
+| `Severity` | A value from the render scale, per [Severity](./findings-report.md#severity) |
+| `Description` | The technical explanation, opening with an inline link to the named thing it is about |
+| `Impact` | The consequence — performance, security, maintainability |
+| `Recommendation` | The specific actionable fix |
+| `Code Example` | Current versus suggested, where the fix reads more clearly shown than described |
+
+`Code Example` is the one optional field; the rest appear on every finding.
+
 ### Report Template
 
-The report header links back to this guide so readers know the methodology used.
+The report header links back to this guide so readers know the methodology used, and to the method record for what the review walked.
 
 ```markdown
 # Code Review Report
 
-> code-review · [Module/PR/Directory path] · YYYY-MM-DD · [N] files reviewed · methodology: [Rust/Substrate Code Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/rust-substrate-code-review.md)
+> code-review · [Module/PR/Directory path] · YYYY-MM-DD · [N] files reviewed · methodology: [Rust/Substrate Code Review](https://github.com/m2ux/workflow-server/blob/workflows/work-package/resources/rust-substrate-code-review.md) · what was walked: [method record](NN-code-review-method.md)
 
 ## Summary
 
 **Overall Quality:** X/5 — Critical: X · High: X · Medium: X · Low: X
 
-## Module Overview
-
-[Brief description of what was reviewed]
-
 ## Findings
 
-[One subsection per severity — Critical / High / Medium / Low. Omit severity levels with no findings; if there are no findings at all, state that in one line.]
+[One heading per finding, ascending by designator, no grouping heading between them. With no findings, state that in one line.]
 
-### [Severity] Issues
-[List]
+### CR-1 — [one line naming the finding]
+
+**Category:** [category]
+
+**Severity:** [render-scale value]
+
+**Description:** [explanation, opening with an inline link to the named thing]
+
+**Impact:** [consequence]
+
+**Recommendation:** [fix]
 
 ## Strengths
 
 [Notable positive patterns observed]
 
-## Recommendations Summary
+## Review Outcome
 
-1. **Immediate:** [Critical/High items]
-2. **Near-term:** [Medium items]
-3. **Long-term:** [Low items]
+**Result:** [Acceptable / Needs Improvement / Significant Issues]
+
+**Summary:** [1-2 sentences]
+```
+
+### Method Record Template
+
+```markdown
+# Code Review Method
+
+> code-review method · [Module/PR/Directory path] · YYYY-MM-DD · findings: [code review report](NN-code-review.md)
+
+## Scope Walked
+
+[What was reviewed and how it was enumerated — the changed-file set, the changed-symbol set, and the blast radius with whether it rests on graph edges or a hand-derived caller set]
+
+## Sweeps
+
+[Each sweep run over the surface and what it returned, clean results included]
 
 ## Compliance
 
@@ -199,15 +235,7 @@ Tone / attribution: [agent-conduct](../../meta/techniques/agent-conduct.md). Pre
 
 **Strengths:** specific examples of effective code quality, well-implemented idiomatic Rust and Substrate patterns, notable solutions, quality documentation and testing.
 
-**Issues requiring attention** — for each issue provide:
-- **Location:** File path and line numbers
-- **Category:** Rust Idioms / Substrate Framework / Architecture / Documentation / Testing / Security
-- **Description:** Clear technical explanation
-- **Impact:** Potential consequences (performance, security, maintainability)
-- **Recommendation:** Specific actionable fix
-- **Code Example:** Current vs suggested improvement (if applicable)
-
-**Suggestions for improvement:** performance optimization opportunities, code organization and structural improvements, documentation enhancements, testing coverage gaps.
+**Issues requiring attention:** one finding per issue, in the shape [Finding Layout](./findings-report.md#finding-layout) declares, carrying the fields listed under [Field List](#field-list) and no others.
 
 ## Reference Materials
 

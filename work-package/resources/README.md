@@ -21,9 +21,10 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `pr-description` | PR Description | PR description templates and link-row rendering forms (rules live on update-pr) |
 | `assumptions-review` | Assumptions Review | Assumption collection, classification, and document formats |
 | `architecture-review` | Architecture Review | Architecture review criteria and checklist |
-| `rust-substrate-code-review` | Rust Substrate Code Review | Rust/Substrate-specific code review criteria |
-| `test-suite-review` | Test Suite Review | Test suite quality assessment framework |
-| `strategic-review` | Strategic Review | Strategic review artifact template |
+| `findings-report` | Findings Report | Shared finding layout, designator and severity contracts, and the report/method split every findings report follows |
+| `rust-substrate-code-review` | Rust Substrate Code Review | Rust/Substrate-specific code review criteria, field list and report templates |
+| `test-suite-review` | Test Suite Review | Test suite quality assessment framework, field list and report templates |
+| `strategic-review` | Strategic Review | Strategic review field list and report templates |
 | `architecture-summary` | Architecture Summary | Architecture summary template with UML diagram guidance |
 | `workflow-retrospective` | Workflow Retrospective | Retrospective methodology and section template |
 | `session-trace` | Session Trace | Lean mechanical session-trace artifact template (written at close-out) |

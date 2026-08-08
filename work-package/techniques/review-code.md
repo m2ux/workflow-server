@@ -29,11 +29,19 @@ Folder where the code review report is written
 
 ### code_review_report
 
-Code review [report](../resources/rust-substrate-code-review.md#report-template) documenting findings by severity. The single canonical home for the change's review findings — manual diff review, structural analysis, and lean-coding sections each land in a dedicated section of this artifact.
+Code review [report](../resources/rust-substrate-code-review.md#report-template) stating the change's findings and the review outcome. The single canonical home for the change's review findings — manual diff review, structural analysis, and lean-coding sections each land in a dedicated section of this artifact.
 
 #### artifact
 
 `code-review.md`
+
+### code_review_method
+
+Method [record](../resources/rust-substrate-code-review.md#method-record-template) of how the review was conducted — the surface walked, the sweeps run and what each returned, and the compliance assessment.
+
+#### artifact
+
+`code-review-method.md`
 
 ## Protocol
 
@@ -66,9 +74,13 @@ When the diff changes a `Config` impl, an associated type, or any trait-implemen
 
 ### 4. Document Findings
 
-- Document each finding with severity (critical, high, medium, low, informational)
+- State each finding in the shape [Finding Layout](../resources/findings-report.md#finding-layout) declares, carrying the fields under [Field List](../resources/rust-substrate-code-review.md#field-list) and no others, with its severity derived through the map per [Severity](../resources/findings-report.md#severity)
 - Create the `{code_review_report}` in `{planning_folder_path}` — or update it in place when an earlier review (manual diff, structural analysis, lean-coding) already created it; each contributing review owns its `##` section and this review writes the code-review sections
 - Emit a brief summary of critical and high findings as part of the bindable report output for the binding activity to surface
+
+### 5. Record the Method
+
+- Create the `{code_review_method}` in `{planning_folder_path}` from the [Method Record Template](../resources/rust-substrate-code-review.md#method-record-template): the surface enumerated, each sweep and what it returned including the clean ones, and the compliance assessment. A finding's own evidence stays on the finding, per [Report and Methodology](../resources/findings-report.md#report-and-methodology)
 
 
 ## Rules

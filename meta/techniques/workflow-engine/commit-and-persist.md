@@ -33,6 +33,7 @@ Path to the planning folder.
    > Otherwise apply [commit-regular-files](../version-control/commit-regular-files.md) — the artifacts are ordinary files of the host checkout.  
    > Where the host branch accepts changes only through pull requests, the parent's submodule-pointer bump lands in a PR; a direct push to that branch is refused, and the engineering push above already satisfies this step without it.
 6. Confirm the engineering push landed (remote tracking branch includes the new commit). If push failed, retry once; if still failing, surface the error and do not advance to the next activity.
+7. Emit the run status in the shape [run-status-shape](./TECHNIQUE.md#run-status-shape) declares. This is the last phase, after the push is confirmed, so every link the emission publishes points at an artifact the remote already holds.
 
 ## Rules
 

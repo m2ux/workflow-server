@@ -76,9 +76,9 @@ Client finalize/retrospective paths that consume execution history MUST resolve 
 
 ### say-what-a-dispatch-is-doing
 
-Leave the user no silent minute. Before spawning, tell them what is about to run, which gate their answer is next needed at — the first checkpoint of that activity, or that it runs to completion without one — and how long a comparable dispatch took where the session record carries a figure. Where this dispatch is one of a run of activities under one worker, say which of the run it is. Name any wait you impose between dispatches as you impose it: a commit cycle, a reconciliation, a retry.
+Leave the user no silent minute. Before spawning, tell them what is about to run, which gate their answer is next needed at — the first checkpoint of that activity, or that it runs to completion without one — and how long a comparable dispatch took where the session record carries a figure. Where a wait falls between one activity and the next, say that they are waiting and roughly how long, without an account of the machinery imposing it.
 
-A dispatch produces nothing the user can read while it runs, and a gate arrives whenever the worker reaches one. So a cost not quoted before it is spent reads as a stall, and a gate nobody was told to expect arrives to someone who has stopped watching.
+A dispatch produces nothing the user can read while it runs, and a gate arrives whenever the worker reaches one. So a cost not quoted before it is spent reads as a stall, and a gate nobody was told to expect arrives to someone who has stopped watching. What a completed activity delivered is a separate emission, in the shape [run-status-shape](./TECHNIQUE.md#run-status-shape) declares, made once its artifacts are on the remote.
 
 ### no-get-activity-from-orchestrator
 
