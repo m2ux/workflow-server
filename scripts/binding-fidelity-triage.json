@@ -340,13 +340,6 @@
     },
     {
       "check": "orphan-input",
-      "site": "meta :: version-control::initialize-folder",
-      "detail": "own input 'initiative_name' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
-    },
-    {
-      "check": "orphan-input",
       "site": "prism :: meta::gitnexus-operations::verify-index",
       "detail": "own input 'repo_name' has no producer in workflow 'prism' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
