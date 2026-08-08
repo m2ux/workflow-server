@@ -42,7 +42,7 @@ Divergences only. A unit walked cleanly gets no row — the absence of a row is 
 
 Only `blocked` represents missing coverage. `not-applicable` is an evidenced negative and must carry its reason; a bare skip is not one.
 
-The obligation is one row per unwalked unit of every home in the inventory. If the ledger cannot account for all thirteen anti-pattern units, the six inventory units, the thirty principles, and the conformance unit, the walk was partial — say so rather than reporting a clean sweep.
+The obligation is one row per unwalked unit of every home in the inventory. If the ledger cannot account for every anti-pattern unit, every inventory unit, every principle, and the conformance unit — as [canon-map.md](canon-map.md#unit-inventory) enumerates them — the walk was partial, and saying so beats reporting a clean sweep.
 
 ## Which report
 
