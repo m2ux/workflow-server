@@ -6,43 +6,43 @@ Where the criteria live, how to fetch them, and which ones bind what. No criteri
 
 The enumeration a walk covers. Take **this list**; do not derive it by pattern-matching section titles at read time.
 
-### Anti-Patterns — `workflows/workflow-design/resources/anti-patterns.md`
+### [Anti-Patterns](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md)
 
 Entries sit outside the family sections, so a title pattern silently drops them:
 
-| # | Unit | Anchor |
-|---|------|--------|
-| 1 | Creation Rules | `#creation-rules` |
-| 2 | Structural Anti-Patterns | `#structural-anti-patterns` |
-| 3 | Interaction Anti-Patterns | `#interaction-anti-patterns` |
-| 4 | Schema Expressiveness Anti-Patterns | `#schema-expressiveness-anti-patterns` |
-| 5 | Rule Hygiene Anti-Patterns | `#rule-hygiene-anti-patterns` |
-| 6 | Description Hygiene Anti-Patterns | `#description-hygiene-anti-patterns` |
-| 7 | Coupling Anti-Patterns | `#coupling-anti-patterns` |
-| 8 | Tool-Technique-Doc Consistency Anti-Patterns | `#tool-technique-doc-consistency-anti-patterns` |
-| 9 | Execution Anti-Patterns | `#execution-anti-patterns` |
-| 10 | Output Economy Anti-Patterns | `#output-economy-anti-patterns` |
-| 11 | Canon Hygiene Anti-Patterns | `#canon-hygiene-anti-patterns` |
-| 12 | Technique Protocol Anti-Patterns | `#technique-protocol-anti-patterns` |
-| 13 | Authoring Guidance (MR) | `#authoring-guidance-mr` |
+| Unit | Anchor |
+|------|--------|
+| [Creation Rules](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md#creation-rules) | `#creation-rules` |
+| [Structural Anti-Patterns](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md#structural-anti-patterns) | `#structural-anti-patterns` |
+| [Interaction Anti-Patterns](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md#interaction-anti-patterns) | `#interaction-anti-patterns` |
+| [Schema Expressiveness Anti-Patterns](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md#schema-expressiveness-anti-patterns) | `#schema-expressiveness-anti-patterns` |
+| [Rule Hygiene Anti-Patterns](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md#rule-hygiene-anti-patterns) | `#rule-hygiene-anti-patterns` |
+| [Description Hygiene Anti-Patterns](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md#description-hygiene-anti-patterns) | `#description-hygiene-anti-patterns` |
+| [Coupling Anti-Patterns](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md#coupling-anti-patterns) | `#coupling-anti-patterns` |
+| [Tool-Technique-Doc Consistency Anti-Patterns](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md#tool-technique-doc-consistency-anti-patterns) | `#tool-technique-doc-consistency-anti-patterns` |
+| [Execution Anti-Patterns](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md#execution-anti-patterns) | `#execution-anti-patterns` |
+| [Output Economy Anti-Patterns](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md#output-economy-anti-patterns) | `#output-economy-anti-patterns` |
+| [Canon Hygiene Anti-Patterns](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md#canon-hygiene-anti-patterns) | `#canon-hygiene-anti-patterns` |
+| [Technique Protocol Anti-Patterns](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md#technique-protocol-anti-patterns) | `#technique-protocol-anti-patterns` |
+| [Authoring Guidance (MR)](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md#authoring-guidance-mr) | `#authoring-guidance-mr` |
 
-Unit 13 is the tail of the file and holds both the `MR-` guidance entries and the catalog's most recently appended `AP-` entries. Read it to its end; the last entry is not signposted by a new `##`.
+**Authoring Guidance (MR)** is the tail of the file and holds both the `MR-` guidance entries and the catalog's most recently appended `AP-` entries. Read it to its end; the last entry is not signposted by a new `##`.
 
-Unit 1 (**Creation Rules**) governs authoring the catalog itself. It reaches the surface only when the audited change edits `anti-patterns.md` — otherwise it is `not-applicable`, with that as the recorded reason.
+**Creation Rules** governs authoring the catalog itself. It reaches the surface only when the audited change edits the catalog — otherwise it is `not-applicable`, with that as the recorded reason.
 
-### Design Principles — `workflows/workflow-design/resources/design-principles.md`
+### [Design Principles](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/design-principles.md)
 
 One unit per `##` section, each a numbered principle. Anchors embed the ordinal (`#22-modular-over-inline`); the **title** is the stable citation. If an anchor fails to resolve, the section was renumbered — re-read the headings.
 
-### Schema Construct Inventory — `workflows/workflow-design/resources/schema-construct-inventory.md`
+### [Schema Construct Inventory](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/schema-construct-inventory.md)
 
-One unit per `##` section: Activity-Level Constructs, Workflow-Level Constructs, Technique-Level Constructs, Condition Constructs, Checkpoint Effects, Action Types. The header block names the authoritative schema files under `schemas/`; `schemas/README.md` is the deep home for field tables and examples.
+One unit per `##` section: Activity-Level Constructs, Workflow-Level Constructs, Technique-Level Constructs, Condition Constructs, Checkpoint Effects, Action Types. The header block names the authoritative schema files under `schemas/`; [schemas/README.md](https://github.com/m2ux/workflow-server/blob/main/schemas/README.md) is the deep home for field tables and examples.
 
-### Convention Conformance — `workflows/workflow-design/resources/convention-conformance.md`
+### [Convention Conformance](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/convention-conformance.md)
 
 One unit: Reference Conventions. It is explicitly *not* a substitute for reading the live sibling workflows it compares against, and YAML syntax literacy is out of its scope.
 
-### Guards — `scripts/guards.ts`
+### [Guards](https://github.com/m2ux/workflow-server/blob/main/scripts/guards.ts)
 
 The registry is the enumeration; each entry carries a one-line `proves`. Read it rather than assuming a roster. `npm run check:all` runs every entry; `npx tsx scripts/check-delta.ts --base <ref>` reports only what the change added.
 
@@ -58,7 +58,7 @@ File-kind routing still chooses which units can fire; it does not shrink a touch
 
 ## Fetching
 
-`anti-patterns.md` exceeds the per-resource eager-delivery cap, so it is never bundled whole. Fetch by section in every mode:
+The [anti-pattern catalog](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md) exceeds the per-resource eager-delivery cap, so it is never bundled whole. Fetch by section in every mode:
 
 - **On disk** — `grep -n "^## " <file>` to get the section line numbers, then Read the one range you need. For a single entry, `grep -n "^### " ` and read that block.
 - **In an active workflow session** — `get_resource` with a cross-workflow ref and anchor: `workflow-design/anti-patterns#coupling-anti-patterns`, `workflow-design/design-principles`, `workflow-design/schema-construct-inventory`, `workflow-design/convention-conformance`.

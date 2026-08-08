@@ -17,11 +17,11 @@ Confirm the resolved root holds `workflows/workflow-design/resources/` before re
 
 | Home | Path | Owns |
 |------|------|------|
-| Design Principles | `workflows/workflow-design/resources/design-principles.md` | *Prefer / before / only after* stance. One unit per `##` section. |
-| Anti-Patterns | `workflows/workflow-design/resources/anti-patterns.md` | Specific smells as **Detect / Do not flag / Fix**. One unit per `##` family section. ~1700 lines — fetch by anchor. |
-| Schema Construct Inventory | `workflows/workflow-design/resources/schema-construct-inventory.md` | Informal-prose → formal-construct mappings. One unit per `##` section. |
-| Convention Conformance | `workflows/workflow-design/resources/convention-conformance.md` | Comparison against sibling workflows. One unit. |
-| Guard suite | `scripts/guards.ts` (registry) | Mechanical checks. The registry is the enumeration — never maintain a parallel list. |
+| [Design Principles](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/design-principles.md) | `workflows/workflow-design/resources/design-principles.md` | *Prefer / before / only after* stance. One unit per `##` section. |
+| [Anti-Patterns](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/anti-patterns.md) | `workflows/workflow-design/resources/anti-patterns.md` | Specific smells as **Detect / Do not flag / Fix**. One unit per `##` family section. Long enough to exceed the delivery cap — fetch by anchor. |
+| [Schema Construct Inventory](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/schema-construct-inventory.md) | `workflows/workflow-design/resources/schema-construct-inventory.md` | Informal-prose → formal-construct mappings. One unit per `##` section. |
+| [Convention Conformance](https://github.com/m2ux/workflow-server/blob/workflows/workflow-design/resources/convention-conformance.md) | `workflows/workflow-design/resources/convention-conformance.md` | Comparison against sibling workflows. One unit. |
+| [Guard suite](https://github.com/m2ux/workflow-server/blob/main/scripts/guards.ts) | `scripts/guards.ts` (registry) | Mechanical checks. The registry is the enumeration — never maintain a parallel list. |
 
 Anchors on the principles home embed the ordinal (`#13-separate-contract-from-procedure`). Cite by **title**; if an anchor fails to resolve, the section was renumbered — re-read the heading rather than guessing.
 
