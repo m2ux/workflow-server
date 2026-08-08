@@ -13,8 +13,7 @@ metadata:
 # Workflow-canonical ontology
 
 Any file whose frontmatter declares `metadata.ontology: workflow-canonical` is
-interpreted according to this document. Read once per session; contents do not
-change during execution.
+interpreted according to this document.
 
 ## On-disk layout
 
