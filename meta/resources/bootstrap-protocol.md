@@ -8,9 +8,7 @@ description: The mandatory session-bootstrap sequence executed by every agent at
 IMPORTANT: YOU *MUST* *ALWAYS* EXECUTE ALL OF THESE STEPS
 
 A `group::operation` name in a step is a label for the home that rule keeps once step 3 delivers the
-bundle. Do not read it now.
-
-Do not fetch a definition schema here — it is read by whichever context authors a definition.
+bundle.
 
 1. Derive the target repository as `owner/repo` from git, before step 2:
 
