@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.1
+  version: 1.3.0
 ---
 
 ## Capability
@@ -25,7 +25,7 @@ Every cargo invocation MUST use one of these operations. Do NOT call bare `cargo
 
 ### foreground-only
 
-Cargo operations MUST run as foreground shell invocations owned by the caller. Never dispatch them with `run_in_background` inside a worker — when the worker exits, the OS process group is killed and the build is lost. Concurrent foreground shells in one caller (as [run-suite](./run-suite.md) does) stay within this rule; backgrounded worker dispatches do not. If the wall-clock budget cannot accommodate a foreground run, the orchestrator (not the worker) owns the invocation; spawn a new worker only AFTER the cargo result is in hand.
+Cargo operations MUST run as foreground shell invocations owned by the caller. Never dispatch them with `run_in_background` inside a worker — when the worker exits, the OS process group is killed and the build is lost. Several foreground shells running concurrently in one caller stay within this rule; backgrounded worker dispatches do not. If the wall-clock budget cannot accommodate a foreground run, the orchestrator (not the worker) owns the invocation; spawn a new worker only AFTER the cargo result is in hand.
 
 ### scope-narrow-then-wide
 
