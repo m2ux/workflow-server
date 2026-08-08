@@ -7,12 +7,6 @@ metadata:
 
 Query GitHub for the component repository's allowed merge strategies (specifically, whether squash merging is enabled).
 
-## Inputs
-
-### component_git_dir
-
-Absolute path of the component's git working tree, whose `origin` remote names the repository queried.
-
 ## Outputs
 
 ### squash_merge_supported

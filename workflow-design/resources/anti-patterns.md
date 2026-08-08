@@ -1924,3 +1924,15 @@ An operation's rule states policy over a subject the operation does not own, so 
 **Do not flag:** A prohibition or conformance statement addressed to the reader — a worker rule barring a worker's own call, an adapter rule naming the only conforming form of its own dispatch. An invariant on the operation's own cadence, outputs, or the composition of what it writes. A one-line pointer to the surface that does own the policy. The same claim already held in both places, which is `no-technique-resource-dual-home`, and the mirror defect of operational cadence filed in a resource, which is `resource-fills-not-does`.
 
 **Fix:** Move the claim to the surface that owns the subject, widening that surface's own statement to cover whatever the rule uniquely carried, and delete the rule where nothing operation-specific remains. Cite the owning surface from the phase that needs it. Where no surface owns the subject yet, `operative-criteria-need-a-home` names the migration. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+
+### AP-148. inherited-input-re-declared
+
+"`### planning_folder_path` on a leaf whose workflow-root `TECHNIQUE.md` declares it already"
+
+A leaf redeclares an input a container contract merges into it, so one bind slot carries two descriptions and each is edited without the other.
+
+**Detect:** For each `### <id>` under a technique's `## Inputs`, resolve the contracts the loader merges into that file — its group `TECHNIQUE.md` and the workflow-root `TECHNIQUE.md` — and flag an id an ancestor already declares. The merge supplies the slot before the leaf entry is read, so the leaf adds no bind point; where its wording narrows the value to that one operation, a caller binds against the ancestor's contract while a reader takes the leaf's, and neither is marked as the one that governs.
+
+**Do not flag:** A leaf entry that changes the bind contract rather than restating it — a differing `#### default`, or an optionality the operation genuinely needs — which is what an override exists for. An id an ancestor carries only under `## Outputs`. Container `TECHNIQUE.md` files, whose declarations exist to be inherited. An input several leaves share that no common ancestor declares at all, which is `hoist-shared-inputs`: the hoist still owed rather than its residue.
+
+**Fix:** Delete the leaf declaration and let the merge deliver it; Protocol goes on referencing `{id}` unchanged. Where the leaf's wording held something the ancestor's lacks, widen the ancestor once, then delete. The Rules-side counterpart is `inherited-rules-re-enumerated`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).

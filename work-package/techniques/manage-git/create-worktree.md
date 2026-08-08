@@ -21,10 +21,6 @@ Branch the worktree is checked out on — created fresh when `{create_branch}` i
 
 Optional. Boolean, default `true`. When true, create `{branch_name}` fresh off the component's default branch (`git worktree add -b`). When false, check out an existing `{branch_name}` (no `-b`) — the branch already exists upstream (e.g. a PR's branch under review).
 
-### component_git_dir
-
-Absolute path of the component's git working tree — the checkout the worktree is added to.
-
 ## Outputs
 
 ### worktree_created

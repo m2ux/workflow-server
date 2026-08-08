@@ -9,10 +9,6 @@ Tear down a worktree created earlier in the work package.
 
 ## Inputs
 
-### component_git_dir
-
-Absolute path of the component's git working tree — the checkout the worktree is registered against.
-
 ### worktree_created
 
 Boolean — whether a worktree exists at `{target_path}`.
