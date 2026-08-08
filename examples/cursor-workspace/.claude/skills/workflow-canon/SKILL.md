@@ -31,14 +31,24 @@ Read [references/canon-map.md](references/canon-map.md) before the first fetch: 
 
 | Situation | Path |
 |-----------|------|
+| Deciding what a technique or operation group should *be* — its members, granularity, and where each piece lives | **Design** below |
 | About to write or edit a definition file | **Draft** below |
 | Reviewing or auditing existing definitions | **Audit** below |
 | One narrow question ("is X an anti-pattern?", "which construct for Y?") | Fetch that single entry or inventory row, answer, stop. No walk, no report. |
+
+## Design
+
+Applied before there is a file to check — when the question is which operations should exist, how big each one is, and which construct owns each piece of what you are about to write.
+
+Read [references/technique-design.md](references/technique-design.md). It carries the correspondence between the technique metamodel and an object system, SOLID mapped onto that correspondence, the placement table that routes a sentence to its construct and its smallest covering scope, the granularity tests for operation boundaries, and the design lenses — ontological soundness, stylistic elegance, efficiency — for reviewing a technique past compliance.
+
+It holds no criteria of its own either: every judgement it raises resolves to an entry, a principle title, or an inventory row. Design settles shape; **Draft** then writes the file and **Audit** walks it.
 
 ## Draft
 
 Applied *before* content exists, so the stance does the work and the Detect pass finds nothing.
 
+0. **Settle the shape first** when the file does not exist yet — which operations, how big, what each construct holds. That is the **Design** path above; it decides what you are about to write before the construct rules decide how.
 1. **Fix the construct before the prose.** Fetch the construct-inventory section for the kind you are authoring (activity / workflow / technique / condition) and pick the most specific formal construct it offers. Prose that an inventory row maps to a construct is a defect the moment it is written, not at audit time.
 2. **Load the stance that binds this file kind.** Use the routing table in [references/canon-map.md](references/canon-map.md#file-kind-routing) — it names the principles and the anti-pattern families a technique, activity, resource, or README can actually violate. Read the stance sections, not a summary of them.
 3. **Read a live sibling.** Convention conformance is defined relative to existing workflows; the reference files are the baseline, and this skill does not substitute for opening them.
@@ -119,4 +129,5 @@ Per [references/reporting.md](references/reporting.md): the finding row shape, t
 ## References
 
 - [references/canon-map.md](references/canon-map.md) — unit inventory, fetch anchors, file-kind routing, per-home boundaries.
+- [references/technique-design.md](references/technique-design.md) — the object-system correspondence, SOLID, functionality placement, granularity tests, design review lenses.
 - [references/reporting.md](references/reporting.md) — severity scale, finding and coverage row shapes, report templates.

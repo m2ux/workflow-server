@@ -8,7 +8,7 @@ The enumeration a walk covers. Take **this list**; do not derive it by pattern-m
 
 ### Anti-Patterns — `workflows/workflow-design/resources/anti-patterns.md`
 
-Thirteen units. Entries sit outside the family sections, so a title pattern silently drops them:
+Entries sit outside the family sections, so a title pattern silently drops them:
 
 | # | Unit | Anchor |
 |---|------|--------|
@@ -32,11 +32,11 @@ Unit 1 (**Creation Rules**) governs authoring the catalog itself. It reaches the
 
 ### Design Principles — `workflows/workflow-design/resources/design-principles.md`
 
-One unit per `##` section: thirty numbered principles. Anchors embed the ordinal (`#22-modular-over-inline`); the **title** is the stable citation. If an anchor fails to resolve, the section was renumbered — re-read the headings.
+One unit per `##` section, each a numbered principle. Anchors embed the ordinal (`#22-modular-over-inline`); the **title** is the stable citation. If an anchor fails to resolve, the section was renumbered — re-read the headings.
 
 ### Schema Construct Inventory — `workflows/workflow-design/resources/schema-construct-inventory.md`
 
-Six units, by `##` section: Activity-Level Constructs, Workflow-Level Constructs, Technique-Level Constructs, Condition Constructs, Checkpoint Effects, Action Types. The header block names the authoritative schema files under `schemas/`; `schemas/README.md` is the deep home for field tables and examples.
+One unit per `##` section: Activity-Level Constructs, Workflow-Level Constructs, Technique-Level Constructs, Condition Constructs, Checkpoint Effects, Action Types. The header block names the authoritative schema files under `schemas/`; `schemas/README.md` is the deep home for field tables and examples.
 
 ### Convention Conformance — `workflows/workflow-design/resources/convention-conformance.md`
 
