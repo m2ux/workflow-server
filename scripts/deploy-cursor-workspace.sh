@@ -501,8 +501,8 @@ servers["gitnexus"] = {
     "args": [gitnexus_bin, "mcp"],
 }
 servers["workflow-server"] = {
-    "command": "npx",
-    "args": ["-y", "mcp-remote", url],
+    "type": "http",
+    "url": url,
 }
 
 # Expand home-path tokens on every server (required + extras), every field.
