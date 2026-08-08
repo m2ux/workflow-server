@@ -76,7 +76,6 @@ workflows/workflow-authoring/
 │   ├── TECHNIQUE.md                        # Shared inputs and authoring invariants
 │   └── workflow-definition/                # Local operation group — cross-workflow addressable
 │       ├── TECHNIQUE.md                    # Group contract
-│       ├── derive-workflows-target-path.md
 │       ├── intake-classification.md
 │       ├── elicit-change-brief.md
 │       ├── synthesize-change-brief.md

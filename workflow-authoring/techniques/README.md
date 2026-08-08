@@ -14,7 +14,6 @@ Workflow-local operations live in the [`workflow-definition`](./workflow-definit
 
 | Operation | Capability |
 |-----------|------------|
-| [`derive-workflows-target-path`](./workflow-definition/derive-workflows-target-path.md) | Derive the dedicated workflows edit root from the planning-folder basename |
 | [`intake-classification`](./workflow-definition/intake-classification.md) | Classify create, update or review; land the gap flags, the target set and the baseline |
 | [`elicit-change-brief`](./workflow-definition/elicit-change-brief.md) | Elicit a new workflow's change brief one design dimension at a time |
 | [`synthesize-change-brief`](./workflow-definition/synthesize-change-brief.md) | Assemble an existing workflow's change brief from the dimensions that change |

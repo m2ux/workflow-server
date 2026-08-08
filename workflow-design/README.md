@@ -117,7 +117,6 @@ The `techniques/` directory is a flat library of workflow-local standalone techn
 | [`pattern-analysis`](./techniques/pattern-analysis.md) | Extract patterns from reference workflows and persist the comparison | Pattern Analysis |
 | [`impact-analysis`](./techniques/impact-analysis.md) | Assess change impact on files, transitions, and references | Impact Analysis |
 | [`scope-definition`](./techniques/scope-definition.md) | Enumerate the file manifest with lean structural design and drafting order | Scope and Draft |
-| [`derive-workflows-target-path`](./techniques/derive-workflows-target-path.md) | Derive `{target_path}` from the planning-folder basename | Scope and Draft |
 | [`prepare-workflow-branch`](./techniques/prepare-workflow-branch.md) | Ensure dedicated `{target_path}` worktree on `{workflow_branch}` (compose WP create-worktree) | Scope and Draft |
 | [`assemble-file-approach`](./techniques/assemble-file-approach.md) | Assemble and persist the per-file drafting plan | Scope and Draft |
 | [`review-drafted-file`](./techniques/review-drafted-file.md) | Assemble and persist a per-file review note (including update-mode removals) | Scope and Draft |
@@ -231,7 +230,6 @@ workflows/workflow-design/
 │   ├── create-completion-doc.md
 │   ├── conduct-retrospective.md
 │   ├── reconcile-design-assumptions.md
-│   ├── derive-workflows-target-path.md
 │   ├── prepare-workflow-branch.md
 │   └── publish-workflow-pr.md
 └── resources/
