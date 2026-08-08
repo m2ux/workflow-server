@@ -277,57 +277,8 @@
     },
     {
       "check": "orphan-input",
-      "site": "meta :: orchestration-patterns::assess-research-gaps",
-      "detail": "own input 'work_goal' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "pattern-library-seed"
-    },
-    {
-      "check": "orphan-input",
       "site": "meta :: orchestration-patterns::classify-request",
       "detail": "own input 'lane_roster' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "pattern-library-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "meta :: orchestration-patterns::classify-request",
-      "detail": "own input 'work_goal' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "pattern-library-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "meta :: orchestration-patterns::compose-worker-brief",
-      "detail": "own input 'isolation_mode' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "pattern-library-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "meta :: orchestration-patterns::decompose-work-units",
-      "detail": "own input 'work_goal' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "pattern-library-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "meta :: orchestration-patterns::plan-research-questions",
-      "detail": "own input 'work_goal' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "pattern-library-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "meta :: orchestration-patterns::plan-steps",
-      "detail": "own input 'work_goal' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "pattern-library-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "meta :: orchestration-patterns::replan",
-      "detail": "own input 'work_goal' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "pattern-library-seed"
     },
@@ -337,13 +288,6 @@
       "detail": "own input 'synthesis_criteria' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "pattern-library-seed"
-    },
-    {
-      "check": "orphan-input",
-      "site": "meta :: version-control::initialize-folder",
-      "detail": "own input 'initiative_name' has no producer in workflow 'meta' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
     },
     {
       "check": "orphan-input",
@@ -433,13 +377,6 @@
       "check": "orphan-input",
       "site": "work-package :: meta::atlassian-operations::transition-jira-issue",
       "detail": "own input 'status_transition' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
-      "verdict": "harmless",
-      "rationale": "shared-op-caller-argument"
-    },
-    {
-      "check": "orphan-input",
-      "site": "work-package :: meta::cargo-operations::run-suite",
-      "detail": "own input 'features' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",
       "rationale": "shared-op-caller-argument"
     },
@@ -545,6 +482,13 @@
       "check": "dead-output",
       "site": "workflow-design/techniques/TECHNIQUE.md",
       "detail": "output 'workflow_files' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
+      "verdict": "harmless",
+      "rationale": "container-contract-shape"
+    },
+    {
+      "check": "dead-output",
+      "site": "work-package/techniques/implementation-analysis/TECHNIQUE.md",
+      "detail": "output 'analysis_document' is declared but nothing outside its own file consumes it (no read, condition, binding value, remap, or same-named input)",
       "verdict": "harmless",
       "rationale": "container-contract-shape"
     }

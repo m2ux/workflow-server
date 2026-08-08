@@ -124,6 +124,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "next": "plan-prepare",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "bind-comprehension-dir",
         "build-comprehension",
         "create-comprehension-artifact",
         "initial-deep-dive",
@@ -250,15 +251,19 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "artifacts": [
         "change-block-index.md",
         "code-review.md",
+        "code-review-method.md",
         "structural-analysis.md",
         "test-suite-review.md",
+        "test-suite-review-method.md",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
         "10-code-review.md",
+        "10-code-review-method.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
+        "10-test-suite-review-method.md",
         "10-architecture-summary.md",
       ],
       "checkpoints": [
@@ -269,7 +274,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         },
         {
           "id": "local-validation-permission",
-          "option": "run-locally",
+          "option": "run-suite",
           "setVariable": {
             "run_local_validation": true,
           },
@@ -294,9 +299,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "activity": "validate",
       "artifacts": [
         "test-suite-review.md",
+        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-test-suite-review.md",
+        "10-test-suite-review-method.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -309,10 +316,12 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "activity": "strategic-review",
       "artifacts": [
         "strategic-review-{n}.md",
+        "strategic-review-{n}-method.md",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
+        "12-strategic-review-n-method.md",
         "10-architecture-summary.md",
       ],
       "checkpoints": [],
@@ -554,6 +563,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "next": "requirements-elicitation",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "bind-comprehension-dir",
         "build-comprehension",
         "create-comprehension-artifact",
         "initial-deep-dive",
@@ -744,15 +754,19 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "artifacts": [
         "change-block-index.md",
         "code-review.md",
+        "code-review-method.md",
         "structural-analysis.md",
         "test-suite-review.md",
+        "test-suite-review-method.md",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
         "10-code-review.md",
+        "10-code-review-method.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
+        "10-test-suite-review-method.md",
         "10-architecture-summary.md",
       ],
       "checkpoints": [
@@ -763,7 +777,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         },
         {
           "id": "local-validation-permission",
-          "option": "run-locally",
+          "option": "run-suite",
           "setVariable": {
             "run_local_validation": true,
           },
@@ -788,9 +802,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "validate",
       "artifacts": [
         "test-suite-review.md",
+        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-test-suite-review.md",
+        "10-test-suite-review-method.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -803,10 +819,12 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "strategic-review",
       "artifacts": [
         "strategic-review-{n}.md",
+        "strategic-review-{n}-method.md",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
+        "12-strategic-review-n-method.md",
         "10-architecture-summary.md",
       ],
       "checkpoints": [],
@@ -1051,6 +1069,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "next": "requirements-elicitation",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "bind-comprehension-dir",
         "build-comprehension",
         "create-comprehension-artifact",
         "initial-deep-dive",
@@ -1269,15 +1288,19 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "artifacts": [
         "change-block-index.md",
         "code-review.md",
+        "code-review-method.md",
         "structural-analysis.md",
         "test-suite-review.md",
+        "test-suite-review-method.md",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
         "10-code-review.md",
+        "10-code-review-method.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
+        "10-test-suite-review-method.md",
         "10-architecture-summary.md",
       ],
       "checkpoints": [
@@ -1288,7 +1311,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         },
         {
           "id": "local-validation-permission",
-          "option": "run-locally",
+          "option": "run-suite",
           "setVariable": {
             "run_local_validation": true,
           },
@@ -1313,9 +1336,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "validate",
       "artifacts": [
         "test-suite-review.md",
+        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-test-suite-review.md",
+        "10-test-suite-review-method.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -1328,10 +1353,12 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "strategic-review",
       "artifacts": [
         "strategic-review-{n}.md",
+        "strategic-review-{n}-method.md",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
+        "12-strategic-review-n-method.md",
         "10-architecture-summary.md",
       ],
       "checkpoints": [],
@@ -1575,6 +1602,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "next": "research",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "bind-comprehension-dir",
         "build-comprehension",
         "create-comprehension-artifact",
         "initial-deep-dive",
@@ -1753,15 +1781,19 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "artifacts": [
         "change-block-index.md",
         "code-review.md",
+        "code-review-method.md",
         "structural-analysis.md",
         "test-suite-review.md",
+        "test-suite-review-method.md",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
         "10-code-review.md",
+        "10-code-review-method.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
+        "10-test-suite-review-method.md",
         "10-architecture-summary.md",
       ],
       "checkpoints": [
@@ -1772,7 +1804,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         },
         {
           "id": "local-validation-permission",
-          "option": "run-locally",
+          "option": "run-suite",
           "setVariable": {
             "run_local_validation": true,
           },
@@ -1797,9 +1829,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "validate",
       "artifacts": [
         "test-suite-review.md",
+        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-test-suite-review.md",
+        "10-test-suite-review-method.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -1812,10 +1846,12 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "strategic-review",
       "artifacts": [
         "strategic-review-{n}.md",
+        "strategic-review-{n}-method.md",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
+        "12-strategic-review-n-method.md",
         "10-architecture-summary.md",
       ],
       "checkpoints": [],
@@ -2032,6 +2068,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "next": "implementation-analysis",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "bind-comprehension-dir",
         "build-comprehension",
         "create-comprehension-artifact",
         "initial-deep-dive",
@@ -2140,15 +2177,19 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "artifacts": [
         "change-block-index.md",
         "code-review.md",
+        "code-review-method.md",
         "structural-analysis.md",
         "test-suite-review.md",
+        "test-suite-review-method.md",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
         "10-code-review.md",
+        "10-code-review-method.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
+        "10-test-suite-review-method.md",
         "10-architecture-summary.md",
       ],
       "checkpoints": [
@@ -2159,7 +2200,7 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         },
         {
           "id": "local-validation-permission",
-          "option": "run-locally",
+          "option": "run-suite",
           "setVariable": {
             "run_local_validation": true,
           },
@@ -2184,9 +2225,11 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "activity": "validate",
       "artifacts": [
         "test-suite-review.md",
+        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-test-suite-review.md",
+        "10-test-suite-review-method.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -2203,10 +2246,12 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "activity": "strategic-review",
       "artifacts": [
         "strategic-review-{n}.md",
+        "strategic-review-{n}-method.md",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
+        "12-strategic-review-n-method.md",
         "10-architecture-summary.md",
       ],
       "checkpoints": [],
@@ -2421,6 +2466,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "next": "plan-prepare",
       "orphanCheckpoints": [],
       "stepsExecuted": [
+        "bind-comprehension-dir",
         "build-comprehension",
         "create-comprehension-artifact",
         "initial-deep-dive",
@@ -2547,15 +2593,19 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "artifacts": [
         "change-block-index.md",
         "code-review.md",
+        "code-review-method.md",
         "structural-analysis.md",
         "test-suite-review.md",
+        "test-suite-review-method.md",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "10-change-block-index.md",
         "10-code-review.md",
+        "10-code-review-method.md",
         "10-structural-analysis.md",
         "10-test-suite-review.md",
+        "10-test-suite-review-method.md",
         "10-architecture-summary.md",
       ],
       "checkpoints": [
@@ -2566,7 +2616,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         },
         {
           "id": "local-validation-permission",
-          "option": "run-locally",
+          "option": "run-suite",
           "setVariable": {
             "run_local_validation": true,
           },
@@ -2591,9 +2641,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "activity": "validate",
       "artifacts": [
         "test-suite-review.md",
+        "test-suite-review-method.md",
       ],
       "artifactsWritten": [
         "10-test-suite-review.md",
+        "10-test-suite-review-method.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -2606,10 +2658,12 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "activity": "strategic-review",
       "artifacts": [
         "strategic-review-{n}.md",
+        "strategic-review-{n}-method.md",
         "architecture-summary.md",
       ],
       "artifactsWritten": [
         "12-strategic-review-n.md",
+        "12-strategic-review-n-method.md",
         "10-architecture-summary.md",
       ],
       "checkpoints": [],
