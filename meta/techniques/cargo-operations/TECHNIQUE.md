@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -17,11 +17,19 @@ Resource-constrained operations for cargo subcommands.
 
 Optional `--features` flags (empty string when none)
 
+### build_budget
+
+The command prefix a compiling cargo invocation carries: the environment assignments that cap its resource use, then the scheduling nice level. An operation whose compile profile differs declares its own.
+
+#### default
+
+`SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} nice -n 19`
+
 ## Rules
 
 ### resource-budget
 
-Every cargo invocation MUST use one of these operations. Do NOT call bare `cargo ...` from technique protocols. The inline budget — env assignments before `nice -n 19`, `CARGO_BUILD_JOBS=\${CARGO_BUILD_JOBS:-4}`, `SKIP_WASM_BUILD=1` (non-release only) — is what prevents host hang on ≤32 GiB hosts. Override caps via env on larger hosts. Test operations also apply `RUST_TEST_THREADS=\${RUST_TEST_THREADS:-4}` (see [test](./test.md)).
+Every cargo invocation MUST use one of these operations. Do NOT call bare `cargo ...` from technique protocols. Every compiling invocation carries `{build_budget}`, which is what prevents host hang on ≤32 GiB hosts; raise the caps through the environment on larger hosts.
 
 ### foreground-only
 
@@ -33,4 +41,4 @@ During inner loops (TDD red/green in implement-task) prefer build_scope=`-p <cra
 
 ### fmt-uses-only-nice
 
-[fmt-check](./fmt-check.md) and [fmt-fix](./fmt-fix.md) do not compile, so only `nice -n 19` applies; do not paste the full env budget there — it is misleading.
+[fmt-check](./fmt-check.md) and [fmt-fix](./fmt-fix.md) do not compile, so they carry `nice -n 19` alone and read no `{build_budget}`. An env budget on a formatter states a cap nothing spends.

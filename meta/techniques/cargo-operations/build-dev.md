@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.1.0
 ---
 
 ## Capability
@@ -25,5 +25,5 @@ The compiled dev binaries/libraries for `{build_scope}` under the cargo target d
 
 ## Protocol
 
-1. `SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} nice -n 19 cargo build {build_scope} {features}`
+1. `{build_budget} cargo build {build_scope} {features}`
    - If the link or codegen step exceeds available RAM, halve `CARGO_BUILD_JOBS` and retry.

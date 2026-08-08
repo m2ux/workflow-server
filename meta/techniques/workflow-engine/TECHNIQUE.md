@@ -64,8 +64,8 @@ A status emission during a run carries exactly three things, in this order:
 The checklist is a markdown task list. Each item's text is the row number and name from the planning README's Progress table — not an artifact filename, whose numeric prefixes repeat across rows and which several rows do not have — and that text **is** the hyperlink, targeting the artifact's remote URL on the session branch:
 
 ```markdown
-- [x] [12 Assumptions review](https://github.com/owner/repo/blob/{branch}/{planning_path}/07-assumptions-log.md)
-- [ ] [13 Implementation](…)
+- [x] [13 Assumptions review](https://github.com/owner/repo/blob/{branch}/{planning_path}/07-assumptions-log.md)
+- [ ] [14 Implementation](…)
 ```
 
 The list is complete on every emission: every activity, run and unrun alike. Never roll the unrun tail into one summarising item. Any other enumeration in the emission is a bullet list rather than a semicolon run-on.

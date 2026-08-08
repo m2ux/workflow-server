@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.1.0
 ---
 
 ## Capability
@@ -29,5 +29,5 @@ Captured stdout/stderr from the linter run.
 
 ## Protocol
 
-1. Run `SKIP_WASM_BUILD=1 CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} nice -n 19 cargo clippy {build_scope} --all-targets {features} -- -D warnings`, capturing its combined stdout/stderr as `{lint_diagnostics}`.
+1. Run `{build_budget} cargo clippy {build_scope} --all-targets {features} -- -D warnings`, capturing its combined stdout/stderr as `{lint_diagnostics}`.
 2. Compose `{clippy_status}` = `{ check_id: 'clippy', passed: <run exited cleanly with no denied warnings>, diagnostics: {lint_diagnostics} }`. When `passed` is false, surface the offending entries from `{lint_diagnostics}`. If clippy emitted denied warnings, address the diagnostics; do not blanket-allow without justification.

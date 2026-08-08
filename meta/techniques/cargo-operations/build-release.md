@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.1.0
 ---
 
 ## Capability
@@ -8,6 +8,14 @@ metadata:
 Release build; produces the final binary AND the runtime wasm artifact.
 
 ## Inputs
+
+### build_budget
+
+The command prefix this operation carries. A release build produces the wasm runtime, so the skip that the other compiling operations set is absent here.
+
+#### default
+
+`CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} nice -n 19`
 
 ### build_scope
 
@@ -25,7 +33,7 @@ The optimized release binary for `{build_scope}` AND the runtime wasm artifact, 
 
 ## Protocol
 
-1. `CARGO_BUILD_JOBS=${CARGO_BUILD_JOBS:-4} nice -n 19 cargo build --release {build_scope} {features}`
+1. `{build_budget} cargo build --release {build_scope} {features}`
    - If the build runs out of memory (release link/LTO plus the nested wasm build together exceed available RAM), halve `CARGO_BUILD_JOBS`; on tight hosts, run `-p <crate>` for the binary first, then a separate workspace pass for the runtime.
 
 ## Rules

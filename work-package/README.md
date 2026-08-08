@@ -32,7 +32,7 @@ Assumption and comprehension stages converge agent-resolvable concerns (analyse 
 
 - **Activities:** See [activities/README.md](./activities/README.md) for per-activity orientation (purpose, role, and a flow diagram) and a link to each activity's authoritative YAML definition.
 - **Techniques:** See [techniques/README.md](./techniques/README.md) for the technique inventory orientation; per-technique protocols live in the technique files.
-- **Resources:** See [resources/README.md](./resources/README.md) for the resource index (30 resources).
+- **Resources:** See [resources/README.md](./resources/README.md) for the resource index.
 
 Each activity binds its step operations through `step.technique`. Every step carries its own `step.technique` operation binding. The cross-cutting [`variable-binding`](../meta/techniques/variable-binding.md) technique (governing how steps read and write workflow variables) is declared once at `workflow.techniques.activity` and inherited by every activity — injected into every `get_activity` — so it is never listed per-activity. An activity declares its own `techniques[]` block only for an activity-specific strategy technique such as [`scatter-gather`](../meta/techniques/scatter-gather.md) (present on activities that aggregate per-item outputs across `forEach` iteration loops). Steps reference operation techniques either by bare id (e.g. `create-test-plan`) or by namespaced id (e.g. `cargo-operations::run-suite`, `design-philosophy::classify`).
 
