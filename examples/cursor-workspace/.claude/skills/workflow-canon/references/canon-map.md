@@ -67,16 +67,19 @@ Do not summarise a section into working notes and then audit against the notes. 
 
 ## File-kind routing
 
-Which units a given file kind can actually violate. Use it to scope a draft self-check or a narrow review. A full audit walks every unit regardless — this table narrows effort, not coverage, and a unit skipped on its strength is `not-applicable` with this table as the reason.
+Where to start reading for a given file kind. Use it to scope a draft self-check or a narrow review. A full audit walks every unit regardless — this table narrows effort, not coverage.
+
+It routes; it does not decide. Each entry's Detect states the surface it keys on, so that is what a `not-applicable` disposition cites — the entry and why it cannot reach this surface. A row's silence is a starting point, never the evidence.
 
 | Authoring / auditing | Principles (by title) | Anti-pattern units | Inventory units |
 |---|---|---|---|
-| **Technique** `techniques/*.md` | Separate Contract from Procedure · Phase by Sequenced Outcome · Distinguish Designators from Parameters · Keep Orchestration in Structure · Keep Session Interaction in Activities · Bind Sibling Operations as Steps · Atomic Techniques; Compose at Activities · Prefer Shared Capability · Cite Resource Policy; Do Not Restate It · Name Symbols Affirmatively · Match the Harness Surface · Single Source of Truth | Technique Protocol · Coupling · Rule Hygiene · Description Hygiene · Tool-Technique-Doc Consistency | Technique-Level Constructs |
+| **Technique** `techniques/*.md` | Separate Contract from Procedure · Phase by Sequenced Outcome · Distinguish Designators from Parameters · Isolate Conditional Branches as Notes · Cite Resources at Section Grain · Keep Orchestration in Structure · Keep Session Interaction in Activities · Bind Sibling Operations as Steps · Atomic Techniques; Compose at Activities · Prefer Shared Capability · Cite Resource Policy; Do Not Restate It · Name Symbols Affirmatively · Match the Harness Surface · Single Source of Truth | Technique Protocol · Coupling · Rule Hygiene · Description Hygiene · Tool-Technique-Doc Consistency | Technique-Level Constructs |
 | **Container** `TECHNIQUE.md` | the technique row, plus State Contract Contribution | Technique Protocol · Canon Hygiene | Technique-Level Constructs |
 | **Activity** `activities/NN-*.yaml` | Encode Constraints as Structure · Keep Orchestration in Structure · Keep Session Interaction in Activities · Bind Sibling Operations as Steps · Atomic Techniques; Compose at Activities · Maximize Schema Expressiveness · Output Economy · Single Source of Truth · Document in Positive Present | Schema Expressiveness · Interaction · Output Economy · Rule Hygiene · Description Hygiene | Activity-Level Constructs · Condition Constructs · Checkpoint Effects · Action Types |
 | **Workflow** `workflow.yaml` | Single Source of Truth · Maximize Schema Expressiveness · Encode Constraints as Structure · Name Symbols Affirmatively | Rule Hygiene · Description Hygiene · Schema Expressiveness | Workflow-Level Constructs |
 | **Resource** `resources/*.md` | One Authoritative Home · Creation Guide for Generated Documents · Cite Resource Policy; Do Not Restate It · Resources at the Abstract Level; Split for Section Delivery · Output Economy | Output Economy · Canon Hygiene | — |
 | **README** `README.md` | Complete Documentation Structure · Document in Positive Present · Output Economy · Non-Destructive Updates | Description Hygiene · Output Economy · Coupling | — |
+| **Pre-session prose** the `discover` bootstrap procedure | Pre-Session Prose Stands Alone · One Authoritative Home | Authoring Guidance (MR) · Tool-Technique-Doc Consistency | — |
 | **The catalog itself** `anti-patterns.md` | One Authoritative Home | Creation Rules · Canon Hygiene | — |
 | **Every change** | Internalize Before Producing · Define Complete Scope Before Execution · Clarify Before Assuming · Convention Over Invention · Confirm Before Irreversible Changes · Non-Destructive Updates · Modular Over Inline · Close the Loop · Workflows Ossify Patterns | Structural · Execution | — |
 
