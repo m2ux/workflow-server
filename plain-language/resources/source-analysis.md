@@ -31,7 +31,7 @@ The findings surface for a document that already exists. Answers: where does thi
 
 ## Rules
 
-- **Cite the guideline.** Every finding names the principle and the guideline it breaches from [plain-language-standard](plain-language-standard.md); an unanchored complaint is not a finding.
+- **Cite the guideline.** Every finding names the principle and the guideline it breaches from [plain-language-standard](plain-language-standard.md); an unanchored complaint is not a finding. Where the run carries the ASD-STE100 overlay, a word- or sentence-level finding names the STE rule it breaches from [Writing Rules](asd-ste100.md#writing-rules) or [Approved Words](asd-ste100.md#approved-words) instead.
 - **Locate the passage.** Each finding quotes or locates the passage so a reader can confirm it without re-reading the whole document.
 - **Recommend, don't rewrite.** The recommendation names the change; the rewrite itself happens in the drafting pass.
 - **Record strengths too.** A rewrite preserves what already works; the strengths list is its don't-break inventory.

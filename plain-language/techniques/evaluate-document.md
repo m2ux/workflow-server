@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -45,10 +45,16 @@ True when any open issue sends the draft back for another pass; false when every
 
 - Assign each of the four principles a verdict per [Principles](../resources/plain-language-standard.md#principles) and [Usability](../resources/plain-language-standard.md#usability) and the guidelines it cites — relevant, findable, understandable, usable — naming the guidelines that carry each verdict per [Verdict by principle](../resources/evaluation-report.md#template)
 
-### 3. Record the Open Issues
+### 3. Verdict the Overlay
+
+- When `{controlled_language}` is true, assign a verdict against the [ASD-STE100 writing rules](../resources/asd-ste100.md#writing-rules) and [Approved Words](../resources/asd-ste100.md#approved-words) at the word and sentence level, under the precedence [When It Applies](../resources/asd-ste100.md#when-it-applies) sets — per [Controlled language](../resources/evaluation-report.md#template)
+  > Skip this phase when `{controlled_language}` is false; the report carries no overlay section for a run that drafted without it.
+
+### 4. Record the Open Issues
 
 - Record each failure as an open issue with its location, principle, the problem the reader hits, and the fix — per [Open issues](../resources/evaluation-report.md#template) — so the revision pass has no interpretation to redo
+- An overlay breach is an open issue on the same list, naming the STE rule it breaches in place of a principle guideline, so one count gates delivery
 
-### 4. Set the Revision Signal
+### 5. Set the Revision Signal
 
 - Set `{open_issue_count}` to the number of open issues and `{needs_revision}` true when any remain, false when every principle is met
