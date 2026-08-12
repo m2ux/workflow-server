@@ -7,9 +7,9 @@ metadata:
 
 # Plain Language Standard
 
-Plain language is communication written, structured, and presented so that readers can find what they are looking for, understand what they find, and use that information well. It focuses on the reader's ability to use the document, not on mechanical measures such as readability formulas, and it is not the same as simplified language — plain language serves a general audience at its own level of expertise, where simplified language serves readers who have difficulty understanding what they read.
+Plain language is communication written, structured, and presented so that readers can find what they are looking for, understand what they find, and use that information well.
 
-This resource is the criteria home. Techniques cite the section that governs their work; they do not restate the guidelines. The four principles are interdependent and iterative, not a linear sequence — the first three make a document likely to work, and only evaluation under the fourth confirms it.
+This resource is the criteria home. Techniques cite the section that governs their work; they do not restate the guidelines.
 
 ## Principles
 
@@ -20,7 +20,9 @@ This resource is the criteria home. Techniques cite the section that governs the
 | 3 | Readers can easily understand what they find | Understandable | [Understandability](#understandability) |
 | 4 | Readers can easily use the information | Usable | [Usability](#usability) |
 
-A document is usable when the information it carries is relevant, findable, and understandable. The four principles interact; applying them together is essential.
+A document is usable when the information it carries is relevant, findable, and understandable. The four principles are interdependent and iterative, not a linear sequence — the first three make a document likely to work, and only evaluation under the fourth confirms it.
+
+Plain language is measured by the reader's ability to use the document, not by mechanical measures such as readability formulas. It is not the same as simplified language: plain language serves a general audience at its own level of expertise, where simplified language serves readers who have difficulty understanding what they read.
 
 ## Relevance
 

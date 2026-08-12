@@ -12,7 +12,7 @@ steps:
         message: Absolute planning folder this session writes its working artifacts into, as reported in the server session summary.
   - kind: technique
     id: intake-and-profile
-    technique: plain-language::intake-and-profile
+    technique: intake-and-profile
   - kind: checkpoint
     id: intent-and-profile-batch
     condition:
@@ -36,7 +36,6 @@ steps:
         effect:
           setVariable:
             operation_type: author
-            operation_type_ambiguous: false
             intent_needs_confirmation: false
             document_profile_confirmed: true
       - id: confirm-rewrite
@@ -45,7 +44,6 @@ steps:
         effect:
           setVariable:
             operation_type: rewrite
-            operation_type_ambiguous: false
             intent_needs_confirmation: false
             document_profile_confirmed: true
       - id: confirm-audit
@@ -54,7 +52,6 @@ steps:
         effect:
           setVariable:
             operation_type: audit
-            operation_type_ambiguous: false
             intent_needs_confirmation: false
             document_profile_confirmed: true
   - kind: action

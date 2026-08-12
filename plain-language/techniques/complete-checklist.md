@@ -21,25 +21,21 @@ The latest evaluation — its open issues must agree with the checklist's open i
 
 ### iso_checklist
 
-The completed checklist with every item's disposition, shaped by [Template](../../resources/iso-checklist.md#template).
+The completed checklist with every item's disposition, shaped by [Template](../resources/iso-checklist.md#template).
 
 #### artifact
 
 `iso-checklist.md`
 
-### checklist_complete
-
-True when every checklist item carries a disposition.
-
 ## Protocol
 
 ### 1. Walk Every Item
 
-- Walk each item of the [ISO 24495-1 checklist](../../resources/iso-checklist.md#template) against `{document_draft}` — against the document itself, not from memory of the guidelines
+- Walk each item of the [ISO 24495-1 checklist](../resources/iso-checklist.md#template) against `{document_draft}` — against the document itself, not from memory of the guidelines
 
 ### 2. Dispose Each Item
 
-- Mark each item met, or leave it open with a one-line reason — no item is skipped without a note, per [Rules](../../resources/iso-checklist.md#rules)
+- Mark each item met, or leave it open with a one-line reason — no item is skipped without a note, per [Rules](../resources/iso-checklist.md#rules)
 
 ### 3. Reconcile with the Evaluation
 
@@ -47,4 +43,4 @@ True when every checklist item carries a disposition.
 
 ### 4. Record Completion
 
-- Set `{checklist_complete}` true when every item carries a disposition and return the completed checklist as `{iso_checklist}`
+- Return the completed checklist as `{iso_checklist}`, every item carrying its disposition

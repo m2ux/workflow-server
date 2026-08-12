@@ -34,13 +34,12 @@ variables:
   - name: planning_folder_path
     type: string
     description: Absolute path to this run's planning folder — the write location for every working artifact.
+  - name: user_request
+    type: string
+    description: The user's free-form request that opened this run.
   - name: operation_type
     type: string
     description: The classified operation for the request — author, rewrite, or audit.
-  - name: operation_type_ambiguous
-    type: boolean
-    description: True when intake cannot confidently classify author vs rewrite vs audit from the request alone.
-    defaultValue: false
   - name: intent_needs_confirmation
     type: boolean
     description: Composite gap flag for the intake gate — true when the operation type is ambiguous or the reader profile cannot be settled from the request.
@@ -60,10 +59,6 @@ variables:
   - name: document_title
     type: string
     description: Short title of the document this run authors, rewrites, or audits.
-    defaultValue: ""
-  - name: document_type
-    type: string
-    description: The class of document (email, web page, instruction, report, form, and so on) chosen to match the reader profile.
     defaultValue: ""
   - name: output_path
     type: string
@@ -122,10 +117,6 @@ variables:
     type: number
     description: Count of evaluate-revise rounds completed on the current document.
     defaultValue: 0
-  - name: checklist_complete
-    type: boolean
-    description: Whether the ISO 24495-1 Annex B checklist has been walked and recorded for the document.
-    defaultValue: false
   - name: checklist_path
     type: string
     description: Absolute path to the persisted iso-checklist artifact.
