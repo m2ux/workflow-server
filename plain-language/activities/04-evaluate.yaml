@@ -1,0 +1,109 @@
+id: evaluate
+version: 1.0.0
+name: Evaluate
+description: "Evaluate the draft against the four principles as its reader would, revise while issues remain, and complete the ISO checklist once every principle is met."
+required: false
+steps:
+  - kind: loop
+    id: evaluate-revise-loop
+    name: Evaluate and Revise Loop
+    loopType: doWhile
+    maxIterations: 5
+    condition:
+      type: simple
+      variable: needs_revision
+      operator: ==
+      value: true
+    steps:
+      - kind: technique
+        id: evaluate-document
+        technique: plain-language::evaluate-document
+      - kind: technique
+        id: persist-evaluation-report
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: evaluation-report.md
+            artifact_content: evaluation_report
+            target_dir: planning_folder_path
+          outputs:
+            written_artifact: evaluation_report_path
+      - kind: checkpoint
+        id: evaluation-reviewed
+        message: "Round {revision_round}: {open_issue_count} open issues against `{document_title}` ([evaluation report]({evaluation_report_path}))."
+        blocking: false
+        defaultOption: revise
+        autoAdvanceMs: 30000
+        options:
+          - id: revise
+            label: Revise and re-evaluate
+            description: Apply the open fixes and run another evaluation round.
+            effect:
+              setVariable:
+                needs_revision: true
+          - id: accept
+            label: Accept with open issues
+            description: Close the loop, accepting the remaining open issues as recorded.
+            effect:
+              setVariable:
+                needs_revision: false
+      - kind: technique
+        id: revise-document
+        technique: plain-language::draft-document
+        condition:
+          type: simple
+          variable: needs_revision
+          operator: ==
+          value: true
+      - kind: action
+        id: count-revision-round
+        condition:
+          type: simple
+          variable: needs_revision
+          operator: ==
+          value: true
+        actions:
+          - action: set
+            target: revision_round
+            message: Increment the revision round by one.
+  - kind: technique
+    id: complete-checklist
+    technique: plain-language::complete-checklist
+  - kind: technique
+    id: persist-iso-checklist
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: iso-checklist.md
+        artifact_content: iso_checklist
+        target_dir: planning_folder_path
+      outputs:
+        written_artifact: checklist_path
+  - kind: checkpoint
+    id: evaluation-gate
+    condition:
+      type: simple
+      variable: open_issue_count
+      operator: ">"
+      value: 0
+    message: "{open_issue_count} open issues remain after the final evaluation round ([evaluation report]({evaluation_report_path}), [ISO checklist]({checklist_path}))."
+    blocking: true
+    options:
+      - id: deliver-with-issues
+        label: Deliver with recorded issues
+        description: Accept the remaining open issues and proceed to delivery.
+        effect:
+          setVariable:
+            needs_revision: false
+      - id: revise-again
+        label: Return to drafting
+        description: Re-enter drafting to resolve the remaining issues before delivery.
+        effect:
+          transitionTo: draft
+transitions:
+  - to: deliver
+    isDefault: true
+outcome:
+  - The draft is evaluated against all four principles as its reader would experience it, the only way to know it works rather than assume it
+  - Revision repeats while issues remain, so the delivered document meets the principles rather than stopping at the first draft
+  - The completed ISO checklist travels with the document as its conformance record

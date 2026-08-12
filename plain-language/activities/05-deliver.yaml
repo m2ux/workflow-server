@@ -1,0 +1,26 @@
+id: deliver
+version: 1.0.0
+name: Deliver
+description: "Write the evaluated plain-language document to its output path with its completed ISO checklist, and close the run."
+required: false
+steps:
+  - kind: technique
+    id: deliver-document
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: plain-document.md
+        artifact_content: document_draft
+        target_dir: output_path
+      outputs:
+        written_artifact: document_path
+  - kind: action
+    id: announce-delivery
+    actions:
+      - action: message
+        message: "Delivered `{document_title}` to [{output_path}]({document_path}) — {open_issue_count} open issues recorded ([evaluation report]({evaluation_report_path}), [ISO checklist]({checklist_path}))."
+transitions:
+  - to: __terminal__
+    isDefault: true
+outcome:
+  - The plain-language document is written to its output path, with its evaluation report and completed ISO checklist as the conformance record

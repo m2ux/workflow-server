@@ -1,0 +1,107 @@
+id: intake-and-profile
+version: 1.0.0
+name: Intake and Profile
+description: "Classify the request as author, rewrite or audit, settle the reader profile and content selection, and persist the document profile the rest of the run is built on."
+required: true
+steps:
+  - kind: action
+    id: bind-planning-folder-path
+    actions:
+      - action: set
+        target: planning_folder_path
+        message: Absolute planning folder this session writes its working artifacts into, as reported in the server session summary.
+  - kind: technique
+    id: intake-and-profile
+    technique: plain-language::intake-and-profile
+  - kind: checkpoint
+    id: intent-and-profile-batch
+    condition:
+      type: simple
+      variable: intent_needs_confirmation
+      operator: ==
+      value: true
+    message: "Plain-language intent needs confirmation — classified `{operation_type}` for `{document_title}` (controlled language: {controlled_language})."
+    blocking: true
+    options:
+      - id: confirm
+        label: Confirm intent and profile
+        description: Accept the classified operation and the settled reader profile as stated.
+        effect:
+          setVariable:
+            intent_needs_confirmation: false
+            document_profile_confirmed: true
+      - id: confirm-author
+        label: Author a new document
+        description: Correct the classification to author mode.
+        effect:
+          setVariable:
+            operation_type: author
+            operation_type_ambiguous: false
+            intent_needs_confirmation: false
+            document_profile_confirmed: true
+      - id: confirm-rewrite
+        label: Rewrite an existing document
+        description: Correct the classification to rewrite mode.
+        effect:
+          setVariable:
+            operation_type: rewrite
+            operation_type_ambiguous: false
+            intent_needs_confirmation: false
+            document_profile_confirmed: true
+      - id: confirm-audit
+        label: Audit an existing document
+        description: Correct the classification to audit mode.
+        effect:
+          setVariable:
+            operation_type: audit
+            operation_type_ambiguous: false
+            intent_needs_confirmation: false
+            document_profile_confirmed: true
+  - kind: action
+    id: settle-profile-when-clear
+    condition:
+      type: simple
+      variable: intent_needs_confirmation
+      operator: ==
+      value: false
+    actions:
+      - action: set
+        target: document_profile_confirmed
+        value: true
+  - kind: technique
+    id: persist-document-profile
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: document-profile.md
+        artifact_content: document_profile
+        target_dir: planning_folder_path
+      outputs:
+        written_artifact: document_profile_path
+  - kind: technique
+    id: seed-planning-readme
+    technique:
+      name: workflow-engine::create-readme
+      inputs:
+        entity_context: "entity_title={document_title}; entity_type={operation_type}; status=Profiling"
+        seed_profile: plain-language/readme-seed
+        operation_type: operation_type
+transitions:
+  - to: source-analysis
+    condition:
+      type: or
+      conditions:
+        - type: simple
+          variable: operation_type
+          operator: ==
+          value: rewrite
+        - type: simple
+          variable: operation_type
+          operator: ==
+          value: audit
+  - to: draft
+    isDefault: true
+outcome:
+  - The run carries a classified operation type and a confirmed reader profile, so every later drafting and evaluation decision branches on settled state rather than re-reading the request
+  - The document profile is persisted, giving the drafting and evaluation passes a single canonical record of who the document is for and what it must carry
+  - A controlled-language overlay is declared up front, so technical documentation is held to ASD-STE100 from the first draft rather than retrofitted
