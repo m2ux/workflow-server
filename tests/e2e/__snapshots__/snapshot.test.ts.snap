@@ -331,8 +331,8 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "stepsExecuted": [
         "review-strategy",
         "refresh-pr-body",
-        "verify-readme",
         "verify-artifact-conformance",
+        "verify-readme",
         "ensure-changes-folder-entry",
         "verify-change-fragment",
         "document-findings",
@@ -834,8 +834,8 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "stepsExecuted": [
         "review-strategy",
         "refresh-pr-body",
-        "verify-readme",
         "verify-artifact-conformance",
+        "verify-readme",
         "ensure-changes-folder-entry",
         "verify-change-fragment",
         "document-findings",
@@ -1368,8 +1368,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "stepsExecuted": [
         "review-strategy",
         "refresh-pr-body",
-        "verify-readme",
         "verify-artifact-conformance",
+        "verify-readme",
         "ensure-changes-folder-entry",
         "verify-change-fragment",
         "document-findings",
@@ -1861,8 +1861,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "stepsExecuted": [
         "review-strategy",
         "refresh-pr-body",
-        "verify-readme",
         "verify-artifact-conformance",
+        "verify-readme",
         "ensure-changes-folder-entry",
         "verify-change-fragment",
         "document-findings",
@@ -2260,8 +2260,8 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "review-strategy",
-        "verify-readme",
         "verify-artifact-conformance",
+        "verify-readme",
         "ensure-changes-folder-entry",
         "verify-change-fragment",
         "document-findings",
@@ -2673,8 +2673,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "stepsExecuted": [
         "review-strategy",
         "refresh-pr-body",
-        "verify-readme",
         "verify-artifact-conformance",
+        "verify-readme",
         "ensure-changes-folder-entry",
         "verify-change-fragment",
         "document-findings",
