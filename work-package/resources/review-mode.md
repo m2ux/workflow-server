@@ -1,8 +1,8 @@
 ---
 name: review-mode
-description: Guidelines for using the work-package workflow in review mode to conduct structured PR reviews. Covers detection, adapted workflow behavior, and output generation. Organized by review category for per-section delivery to the technique that renders that category.
+description: Reference content for a structured pull-request review — the review comment template, and one section per review category carrying that category's findings fragment and population rules. Organized for per-section delivery.
 metadata:
-  version: 1.15.0
+  version: 1.16.0
   order: 24
   legacy_id: 24
 ---
@@ -10,7 +10,7 @@ metadata:
 
 # Overview
 
-Review mode adapts the work-package workflow for reviewing existing implementations. The workflow mechanism that drives it — the `is_review_mode` variable and the step, checkpoint, and transition conditions that branch on it — is documented in [REVIEW-MODE.md](../REVIEW-MODE.md), which also carries the per-activity behavior summary and the phase-difference table. This resource supplies the review-specific reference content the review techniques consume, organized by review category.
+The reference content for a structured pull-request review, organized by review category.
 
 Each **Review Category** has its own section under [Review Categories](#review-categories) carrying that category's findings fragment and population rules, so the technique that renders the category can fetch only its section. The [Review Comment Template](#review-comment-template) holds the whole-document skeleton with per-category placeholders, the shared header/table rules, and the cross-category scales (severity, review-type, category reference) for the consolidating step.
 
@@ -100,7 +100,7 @@ A passage that exceeds its budget is over-budget because it has absorbed content
 
 ### Prose Register
 
-Every prose passage — Executive Summary, section scope lines, Action Items entries, caveats — holds to [Prose](../../meta/resources/writing-register.md#prose) in the Artifact Writing Register. A passage whose claim needs three symbols and four line numbers is a report section, cited by link.
+Every prose passage — Executive Summary, section scope lines, Action Items entries, caveats — holds to [Prose](../../meta/resources/writing-register.md#prose) in the Artifact Writing Register.
 
 ### Caveat Form
 

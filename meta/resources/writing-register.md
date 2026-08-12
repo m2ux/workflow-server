@@ -5,11 +5,11 @@ description: The sentence-level and table-level register every artifact written 
 
 # Artifact Writing Register
 
-The register for an artifact whose declared audience is a person. A creation guide owns which sections that artifact has, how long it may run, and which form it prefers; this register owns the sentences and tables inside them. The reader is a technical one — precise terms are welcome, ceremony and padding are not.
+The register for an artifact whose declared audience is a person. A creation guide owns which sections that artifact has, how long it may run, and which form it prefers; this register owns the sentences and tables inside them.
 
 ## Prose
 
-Every prose passage holds to one register:
+The reader is a technical one — precise terms are welcome, ceremony and padding are not. Every prose passage holds to one register:
 
 - **Plain language.** The word a maintainer would use, not the more formal synonym.
 - **Short sentences.** One clause carrying one claim. A sentence needing a semicolon is two sentences.
