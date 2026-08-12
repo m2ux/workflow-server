@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -17,6 +17,10 @@ Analysis from the first lens of the pair, produced without sight of the second.
 
 `dispute-lens-a.md`
 
+#### audience
+
+`human`
+
 ### lens_b_analysis
 
 Analysis from the second lens of the pair, produced without sight of the first.
@@ -25,6 +29,10 @@ Analysis from the second lens of the pair, produced without sight of the first.
 
 `dispute-lens-b.md`
 
+#### audience
+
+`human`
+
 ### disagreement_synthesis
 
 Synthesis of where the two lenses disagree, with convergence noted only to test implicit shared assumptions.
@@ -32,6 +40,10 @@ Synthesis of where the two lenses disagree, with convergence noted only to test 
 #### artifact
 
 `dispute-synthesis.md`
+
+#### audience
+
+`human`
 
 #### prism_pair
 

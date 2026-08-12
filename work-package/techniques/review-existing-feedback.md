@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -52,7 +52,7 @@ The ceiling the Overall Rating may not exceed, derived from the triage. When any
 
 ### 4. Create the Triage
 
-- Create the `{prior_feedback_triage}` artifact in `{planning_folder_path}` so the consolidated summary renders the triage section and applies the cap.
+- Create the `{prior_feedback_triage}` artifact in `{planning_folder_path}` per [prior-feedback-triage](../resources/prior-feedback-triage.md#template) and its [Rules](../resources/prior-feedback-triage.md#rules).
 
 ## Rules
 

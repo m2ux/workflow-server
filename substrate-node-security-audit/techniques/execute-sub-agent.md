@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ Structured JSON conforming to the [Schema](../resources/sub-agent-output-schema.
 #### artifact
 
 `{agent_id}.json`
+
+#### audience
+
+`agent`
 
 #### agent_id
 

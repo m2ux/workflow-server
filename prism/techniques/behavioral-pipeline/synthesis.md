@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ The reconciled behavioral reading across failure, cost, change, and promise.
 #### artifact
 
 `behavioral-synthesis.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

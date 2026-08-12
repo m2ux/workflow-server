@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.2.0
+  version: 2.4.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ Conduct structured manual diff review using external side-by-side diff tool with
 #### artifact
 
 `change-block-index.md`
+
+#### audience
+
+`human`
 
 #### block_rationale
 

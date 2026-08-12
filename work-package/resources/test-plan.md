@@ -108,3 +108,7 @@ pytest -k "test_name"       # Python
 ## Test Plan Structure
 
 Required sections, in order: header link line (ADR, Ticket, PR), Overview, Test Cases, Acceptance Criteria Matrix (when requirements exist), Running Tests. Fill rules for every section cover table format, test-ID linking, content boundaries, and naming.
+
+## Rules
+
+- **Line budget:** ~120 lines. The acceptance matrix is the payload; test bodies live in the suite.

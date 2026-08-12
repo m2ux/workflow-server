@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -30,6 +30,10 @@ The composed [evaluation plan](../../resources/evaluation-plan-template.md#evalu
 #### artifact
 
 `evaluation-plan.md`
+
+#### audience
+
+`human`
 
 #### target_overview
 

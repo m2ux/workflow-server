@@ -12,6 +12,14 @@
 | [Evaluation Report Template](evaluation-report-template.md) | Structure for the EVALUATION-REPORT.md artifact (executive summary, core finding, per-dimension findings, recommendations) |
 | [Mitigation Plan Template](mitigation-plan-template.md) | Structure for the MITIGATION-PLAN.md artifact (summary table, detailed mitigations, implementation priority) |
 
+## Planning artifact to guide map
+
+| Bare filename | Guide |
+|---------------|-------|
+| `evaluation-plan.md` | [evaluation-plan-template](evaluation-plan-template.md) |
+| `EVALUATION-REPORT.md` | [evaluation-report-template](evaluation-report-template.md) |
+| `MITIGATION-PLAN.md` | [mitigation-plan-template](mitigation-plan-template.md) |
+
 ---
 
 ### Default Dimensions

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -34,6 +34,10 @@ Canonical finding flat table with elevation mapping and summary.
 #### artifact
 
 `m-merge.json`
+
+#### audience
+
+`agent`
 
 #### flat_table
 

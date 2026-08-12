@@ -30,6 +30,10 @@ variables:
     type: string
     description: Path to the code or repo under the lazy lens
     defaultValue: "."
+  - name: artifact_dir
+    type: string
+    description: Directory the pass writes its brief, change note, audit findings and debt ledger into. A dedicated folder under the target, so the four artifacts are identifiable as the pass's own and never mixed with the code they describe.
+    defaultValue: .ponytail
   - name: lazy_intensity
     type: string
     description: Strictness of the lazy lens — lite, full, or ultra. Governs review depth and gates the repo-audit activity.

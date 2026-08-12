@@ -1,5 +1,5 @@
 id: gap-analysis
-version: 2.4.0
+version: 2.5.0
 name: Gap Analysis
 description: Compare the AI audit report against a professional reference.
 required: false
@@ -12,6 +12,12 @@ steps:
   - kind: technique
     id: produce-gap-analysis
     technique: write-gap-analysis
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        guide_map: substrate-node-security-audit/README#planning-artifact-to-guide-map
   - kind: action
     id: announce-completion
     actions:

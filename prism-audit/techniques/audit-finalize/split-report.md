@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -17,12 +17,13 @@ Filesystem path to the written AUDIT-REPORT.md (the summary report).
 
 `AUDIT-REPORT.md`
 
+#### audience
+
+`human`
+
 ## Protocol
 
 ### 1. Split Report
 
 - Locate the source report(s) from the `report_path` in `{completed_analyses}`. For a single-scope audit, that one REPORT.md is the source; for a multi-scope audit, merge the per-scope REPORT.md summaries (executive summaries, domain tables, systemic patterns) into one.
-- Write the summary report to `{audit_report_path}` containing everything except the inline detailed findings section.
-- Replace that section with a reference line: `*Detailed write-ups for all findings organised by severity are in [DETAILED-FINDINGS.md](DETAILED-FINDINGS.md).*`
-- Renumber subsequent sections to fill the section-number gap.
-- Fix internal cross-references that point to the old section numbers.
+- Write the summary report to `{audit_report_path}` per [audit-report](../../resources/audit-report.md#template) and its [Rules](../../resources/audit-report.md#rules), which own the reference line that replaces the lifted section and the renumbering it forces.

@@ -72,3 +72,7 @@ correction), T2 (reframing & caveating), T3 (novel mitigation), T4 (structural /
 **What good looks like:** every finding from the report has a corresponding entry (accepted, modified,
 or skipped); accepted mitigations include their full proposed text so the plan is self-contained;
 changes are ordered T1 → T2 → T3 → T4 and within each tier by severity.
+
+## Rules
+
+- **Line budget:** ~100 lines. One entry per mitigation; the finding it answers is cited, not restated.

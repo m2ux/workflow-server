@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -30,6 +30,10 @@ The current draft of the plain-language document.
 #### artifact
 
 `plain-document.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

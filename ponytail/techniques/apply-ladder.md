@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ The minimal change that solves the problem at the highest reachable [rung](../..
 #### artifact
 
 `lean-change.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 
@@ -51,4 +55,4 @@ The minimal change that solves the problem at the highest reachable [rung](../..
 
 ### 5. Present the change
 
-- Lead with the `{lean_change}` code; follow with at most three lines naming what was skipped and the trigger that would justify adding it.
+- Record the `{lean_change}` into `{artifact_dir}` per [lean-change](../resources/lean-change.md#template) and its [Rules](../resources/lean-change.md#rules) — code first, then at most three lines on what was skipped and the trigger that would justify adding it.

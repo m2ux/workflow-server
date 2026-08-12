@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -28,6 +28,10 @@ Record of the captured sources, classified source type, detected augment/create 
 #### artifact
 
 `intake.md`
+
+#### audience
+
+`human`
 
 ### intake_record_path
 
@@ -59,7 +63,7 @@ Absolute path to the written intake record.
 
 ### 6. Record Intake
 
-- Write `{intake_record}` to `{planning_folder_path}`, capturing `{source_path}`, `{target_doc_path}`, `{source_type}`, `{target_doc_exists}`, and `{spec_basename}`; capture its written location as `{intake_record_path}`.
+- Write `{intake_record}` to `{planning_folder_path}` per [intake-record](../resources/intake-record.md#template), capturing `{source_path}`, `{target_doc_path}`, `{source_type}`, `{target_doc_exists}`, and `{spec_basename}`; capture its written location as `{intake_record_path}`.
 
 ## Rules
 

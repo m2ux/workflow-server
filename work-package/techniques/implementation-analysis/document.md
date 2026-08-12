@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -34,6 +34,10 @@ Current implementation analysis artifact with baselines and improvement opportun
 #### artifact
 
 `implementation-analysis.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

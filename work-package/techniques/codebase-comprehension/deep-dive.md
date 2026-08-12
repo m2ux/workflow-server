@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ Updated comprehension artifact — written as `{codebase_area}.md` in `{comprehe
 #### artifact
 
 `{codebase_area}.md`
+
+#### audience
+
+`human`
 
 #### deep_dives
 

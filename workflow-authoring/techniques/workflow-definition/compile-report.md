@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -42,6 +42,10 @@ The register body: the severity summary, the change-surface membership table (to
 #### artifact
 
 `findings-register.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

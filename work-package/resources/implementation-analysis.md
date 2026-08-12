@@ -130,3 +130,4 @@ Consult when filling the template (not a session procedure):
 - Every baseline row records value, measurement method, and date (e.g. `487ms | Production logs, 7-day average | 2025-01-15`).
 - Success criteria are quantitative, each mapped to a gap and to a validation method matching the baseline methodology. "Make it faster" is not a criterion.
 - Gaps are prioritized with impact justification.
+- **Line budget:** ~150 lines. Baseline measurements are the payload; the approach they argue for belongs in the plan.

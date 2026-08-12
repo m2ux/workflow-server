@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -30,6 +30,10 @@ Progress indicator (e.g., '3/7 complete'), written into the updated START-HERE.m
 #### artifact
 
 `START-HERE.md`
+
+#### audience
+
+`human`
 
 #### package_planning_paths
 

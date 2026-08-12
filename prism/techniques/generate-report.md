@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -35,6 +35,10 @@ Clean final [report](../resources/final-output-template.md#reportmd-template) ar
 
 `REPORT.md`
 
+#### audience
+
+`human`
+
 #### finding_count
 
 Total findings by severity
@@ -54,6 +58,10 @@ Detailed [definitive findings](../resources/definitive-findings-template.md#defi
 #### artifact
 
 `DEFINITIVE-FINDINGS.md`
+
+#### audience
+
+`human`
 
 ### definitive_findings_path
 

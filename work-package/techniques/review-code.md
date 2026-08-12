@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.3.0
+  version: 2.4.0
 ---
 
 ## Capability
@@ -31,6 +31,10 @@ Code review [report](../resources/rust-substrate-code-review.md#report-template)
 
 `code-review.md`
 
+#### audience
+
+`human`
+
 ### code_review_method
 
 Method [record](../resources/rust-substrate-code-review.md#method-record-template) of how the review was conducted — the surface walked, the sweeps run and what each returned, and the compliance assessment.
@@ -38,6 +42,10 @@ Method [record](../resources/rust-substrate-code-review.md#method-record-templat
 #### artifact
 
 `code-review-method.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

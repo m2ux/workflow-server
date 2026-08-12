@@ -81,3 +81,7 @@ Produce findings with: ID, severity (using the Impact x Feasibility rubric),
 description, location (file:line), impact, recommendation. Organise by domain
 and severity.
 ```
+
+## Rules
+
+- **Line budget:** ~200 lines. The prompt is self-contained by design, so its ceiling is generous — but a reviewer must still be able to read it before starting.

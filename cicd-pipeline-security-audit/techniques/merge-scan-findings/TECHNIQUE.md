@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -23,6 +23,10 @@ Unified [finding set](../../resources/intermediate-artifact-schemas.md#merged-fi
 
 `merged-findings.json`
 
+#### audience
+
+`agent`
+
 #### findings
 
 Deduplicated and correlated findings
@@ -42,6 +46,10 @@ Per-scanner finding mapping to merged findings — the [reconciliation table](..
 #### artifact
 
 `reconciliation-table.json`
+
+#### audience
+
+`agent`
 
 ## Rules
 

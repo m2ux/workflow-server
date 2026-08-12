@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.12.0
+  version: 1.13.0
 ---
 
 ## Capability
@@ -12,10 +12,6 @@ Post-activity Progress mark plus commit/push of source-side changes and engineer
 ### activity_id
 
 Activity that just completed.
-
-### planning_folder_path
-
-Path to the planning folder.
 
 ### mark_progress_na
 

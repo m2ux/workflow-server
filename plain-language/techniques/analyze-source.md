@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ The per-finding record and the strengths inventory, shaped by [Template](../reso
 #### artifact
 
 `source-analysis.md`
+
+#### audience
+
+`human`
 
 ### finding_count
 

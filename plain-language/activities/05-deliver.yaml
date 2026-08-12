@@ -1,9 +1,15 @@
 id: deliver
-version: 1.0.0
+version: 1.1.0
 name: Deliver
 description: "Write the evaluated plain-language document to its output path with its completed ISO checklist, and close the run."
 required: false
 steps:
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        guide_map: plain-language/README#planning-artifact-to-guide-map
   - kind: technique
     id: deliver-document
     technique:

@@ -166,3 +166,7 @@ Total tests analyzed: [X] · with anti-patterns: [Y] · clean: [X-Y] · rate: [Y
 
 [Omit if none were reported. One row per reported runtime failure with the code path that raises it and the state precondition that reaches it.]
 ```
+
+## Rules
+
+- **Line budget:** ~30 lines per finding. Coverage figures are stated once, not repeated per finding.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -42,6 +42,10 @@ The class of document (email, web page, instruction, report, form, and so on) ch
 #### artifact
 
 `document-profile.md`
+
+#### audience
+
+`human`
 
 ### intent_needs_confirmation
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -34,6 +34,10 @@ The assembled impact report: per-file classification, the integrity verdicts, an
 #### artifact
 
 `impact-analysis.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

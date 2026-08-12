@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ The challenge to the prior analysis: wrong predictions, overclaims, underclaims,
 #### artifact
 
 `adversarial-analysis.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

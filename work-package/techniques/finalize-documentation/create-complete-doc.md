@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -34,6 +34,10 @@ Work package's single terminal close-out artifact — delivered work, coverage, 
 #### artifact
 
 `COMPLETE.md`
+
+#### audience
+
+`human`
 
 ### completion_document_path
 

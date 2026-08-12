@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.12.0
+version: 2.14.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 required: true
@@ -47,14 +47,18 @@ steps:
     technique: resign-commits
     when: is_review_mode != true && resign_unsigned_commits_requested == true
   - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        canonical_home_map: manage-artifacts#canonical-home-map
+        guide_map: work-package/README#planning-artifact-to-guide-map
+  - kind: technique
     id: verify-readme
     technique:
       name: workflow-engine::verify-readme-conforms
       inputs:
         seed_profile: work-package/readme-seed
-  - kind: technique
-    id: verify-artifact-conformance
-    technique: manage-artifacts::verify-artifact-conforms
   - kind: technique
     id: ensure-changes-folder-entry
     technique: changes-folder

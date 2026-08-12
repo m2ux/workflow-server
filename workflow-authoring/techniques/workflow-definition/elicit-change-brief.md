@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ The assembled change brief for a new workflow: purpose, the dimension captures t
 #### artifact
 
 `change-brief.md`
+
+#### audience
+
+`human`
 
 ### open_judgements_count
 

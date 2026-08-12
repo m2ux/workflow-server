@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ Complete [inventory of workflow files](../../resources/intermediate-artifact-sch
 #### artifact
 
 `reconnaissance-summary.json`
+
+#### audience
+
+`agent`
 
 #### workflow_files
 
@@ -51,6 +55,10 @@ AI configuration files and CODEOWNERS coverage found per target, for P6 detectio
 
 `scanner-assignments.json`
 
+#### audience
+
+`agent`
+
 ### start_here
 
 Session overview for the audit run.
@@ -58,3 +66,7 @@ Session overview for the audit run.
 #### artifact
 
 `START-HERE.md`
+
+#### audience
+
+`human`
