@@ -7,7 +7,7 @@ metadata:
 
 # Findings Register Guide
 
-Creation guide for bare filename `findings-register.md`. The register holds the whole adjudication trail: what was accepted, what stands as an observation, what the evidence contradicted, and the grade tuple behind each call. The verdict computation reads the accepted subset; a reader auditing the review reads the rest.
+Creation guide for bare filename `findings-register.md`. The register holds the whole adjudication trail: what was accepted, what stands as an observation, what the evidence contradicted, and the grade tuple behind each call. The accepted subset is what the verdict rests on; the rest is the trail behind it.
 
 ## Template
 

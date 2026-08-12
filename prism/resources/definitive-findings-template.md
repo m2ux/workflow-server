@@ -7,7 +7,6 @@ metadata:
   quality_baseline: null
   optimal_model: sonnet
   type: template
-  type: template
 ---
 
 # Definitive Findings Template
