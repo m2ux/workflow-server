@@ -8,11 +8,16 @@
  * `#### artifact` filename, asserts the artifact name follows the JSON-format convention: it (or,
  * for a `{token}`-template name, its literal suffix) ends in `.json`.
  *
+ * It does not check that an artifact declares an audience at all. A register whose only reader is a
+ * later step is agent state in substance but markdown in form, and `agent` implies JSON, so those
+ * registers carry no declaration until #428 converts them. A presence check would fail on exactly
+ * the set that is waiting, so presence lands with the conversion.
+ *
  * This is a distinct concern from check-binding-fidelity.ts — that guard checks input/output
- * binding conformance and treats `#### artifact` as opaque presence. The audience/JSON-format
- * convention is a separate one-guard-per-concern check, so it lives in its own script. Enum
- * *validity* (`human`|`agent`) is already enforced by the Zod `.strict()` schema at load; this
- * guard checks the on-disk *format* convention the schema cannot express.
+ * binding conformance and treats `#### artifact` as opaque presence. Audience is a separate
+ * one-guard-per-concern check, so it lives in its own script. Enum *validity* (`human`|`agent`) is
+ * already enforced by the Zod `.strict()` schema at load; this guard checks the on-disk *format*
+ * convention the schema cannot express.
  *
  * Hard zero, no baseline: the convention has no accepted exceptions, so any violation fails the
  * guard. The retired `audience-baseline.json` held an empty array (issue #327 R5).
@@ -34,6 +39,8 @@ const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
 const GROUPED_INDEX = 'TECHNIQUE.md';
 
 export interface AudienceViolation {
+  /** Which finding family this violation belongs to. */
+  check: 'audience-json-format';
   /** `<workflow>::<technique-id>::<output-id>`. */
   key: string;
   detail: string;
@@ -104,6 +111,7 @@ export async function collectAudienceViolations(root: string = DEFAULT_ROOT): Pr
         if (!name) continue;
         if (!isJsonArtifactName(name)) {
           out.push({
+            check: 'audience-json-format',
             key: `${workflow}::${technique.id}::${o.id}`,
             detail: `output '${o.id}' in technique '${id}' is audience: agent but its artifact name '${name}' is not JSON — an agent-audience artifact is serialized as JSON on disk (rename to a .json filename)`,
           });
@@ -112,11 +120,11 @@ export async function collectAudienceViolations(root: string = DEFAULT_ROOT): Pr
     }
   }
   assertScanned(scanned, 'technique files', root);
-  return out.sort((a, b) => a.key.localeCompare(b.key));
+  return out.sort((a, b) => (a.check + a.key).localeCompare(b.check + b.key));
 }
 
 export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Finding[]> {
-  return (await collectAudienceViolations(root)).map((v) => ({ check: 'audience-json-format', site: v.key, detail: v.detail }));
+  return (await collectAudienceViolations(root)).map((v) => ({ check: v.check, site: v.key, detail: v.detail }));
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;

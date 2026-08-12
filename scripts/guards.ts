@@ -66,6 +66,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'every agent-audience artifact is JSON on disk',
   },
   {
+    id: 'artifact-guides',
+    script: 'scripts/check-artifact-guides.ts',
+    npmScript: 'check:artifact-guides',
+    scope: 'corpus',
+    json: true,
+    proves: 'every persisted artifact filename maps to a creation guide, or is triaged as owing one',
+  },
+  {
     id: 'description-hygiene',
     script: 'scripts/check-description-hygiene.ts',
     npmScript: 'check:description-hygiene',

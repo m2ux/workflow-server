@@ -11,8 +11,10 @@
  *
  *   coverage       Every lens resource under prism/resources/ is either routable (its slug is named
  *                  as a `slug (NN)` goal target in plan-analysis's goal-mapping-matrix or in the
- *                  portfolio-analysis lens catalog) OR explicitly tagged pipeline-internal (runs only
- *                  inside a pipeline / is a template). A lens that is neither is an orphan.
+ *                  portfolio-analysis lens catalog), an inner pipeline pass, or a document template
+ *                  declaring `type: template` in its own frontmatter. A lens that is none of those is
+ *                  an orphan. Template-ness is a property of the resource, so it is read from the file
+ *                  rather than held in a list here that a new template has to be added to.
  *
  *   name-fidelity  Every `slug (NN)` pair named in the portfolio-analysis lens catalog resolves to an
  *                  existing resource file, and its index agrees with the resources/README index table
@@ -37,8 +39,10 @@ const PORTFOLIO = join(PRISM, 'techniques', 'portfolio-analysis.md');
 
 /**
  * Lenses that are correctly unreachable from a goal because they run only as an inner pass of a
- * pipeline (their driver forwards them the prior pass's output) or are a document template, not a
- * lens. These need no goal route.
+ * pipeline — their driver forwards them the prior pass's output. These need no goal route.
+ *
+ * A document template is excluded by its own `type: template` frontmatter instead of by a name here,
+ * so adding a creation guide to `prism/resources/` needs no edit to this guard.
  */
 const PIPELINE_INTERNAL = new Set([
   'l12-complement-adversarial', // full-prism pass 2 (adversarial)
@@ -49,9 +53,15 @@ const PIPELINE_INTERNAL = new Set([
   'subsystem-synthesis', // subsystem-mode cross-region synthesis pass
   'writer-critique', // writer pipeline pass 2 (cross-workflow-only chain)
   'writer-synthesis', // writer pipeline pass 3 (cross-workflow-only chain)
-  'final-output-template', // REPORT.md skeleton — a template, not a lens
-  'definitive-findings-template', // DEFINITIVE-FINDINGS.md skeleton — a template, not a lens
 ]);
+
+/** True when a resource declares itself a document template in its own frontmatter. */
+function isDocumentTemplate(slug: string): boolean {
+  const path = join(RESOURCES, `${slug}.md`);
+  if (!existsSync(path)) return false;
+  const head = readFileSync(path, 'utf-8').split('\n', 40).join('\n');
+  return /^\s*type:\s*template\s*$/m.test(head);
+}
 
 export interface LensReachabilityViolation {
   check: string;
@@ -93,6 +103,7 @@ export function collectLensReachabilityViolations(): LensReachabilityViolation[]
   // coverage — every lens file is routable or explicitly pipeline-internal.
   for (const slug of lensSlugs) {
     if (PIPELINE_INTERNAL.has(slug)) continue;
+    if (isDocumentTemplate(slug)) continue;
     // A routable lens is named as a goal target: the literal token `slug (` (e.g. `reachability (`).
     if (routingText.includes(`${slug} (`)) continue;
     out.push({
