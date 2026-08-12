@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.1
+  version: 1.1.0
 ---
 
 ## Capability
@@ -8,10 +8,6 @@ metadata:
 Rewrite the client planning folder's session-trace and token-usage artifacts from the full client session ledger after that workflow has finished — including the terminal activity's own dispatch.
 
 ## Inputs
-
-### planning_folder_path
-
-Absolute path to the client planning folder holding `token-usage.md` and `session-trace.md`.
 
 ### client_session_index
 

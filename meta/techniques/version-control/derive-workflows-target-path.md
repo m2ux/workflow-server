@@ -1,17 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
 Where a session editing the shared workflows library reads, edits and commits, derived from the planning folder that session already has.
-
-## Inputs
-
-### planning_folder_path
-
-Absolute path to this session's planning folder under the server `.engineering` root. Its basename is the planning slug, and its ancestry gives the checkout.
 
 ## Outputs
 
