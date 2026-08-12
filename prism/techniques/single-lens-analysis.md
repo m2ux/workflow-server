@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ The applied lens's complete output following its own operations
 #### artifact
 
 `{lens_name}-analysis.md`
+
+#### audience
+
+`human`
 
 #### findings
 

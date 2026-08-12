@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ Test [strategy](../resources/test-plan.md#test-plan-structure) and acceptance cr
 #### artifact
 
 `test-plan.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

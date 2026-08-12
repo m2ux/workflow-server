@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -17,6 +17,10 @@ A concise brief recording the task, the target, the chosen intensity and scope, 
 
 `lean-brief.md`
 
+#### audience
+
+`human`
+
 ## Protocol
 
 ### 1. Capture the task
@@ -32,4 +36,4 @@ A concise brief recording the task, the target, the chosen intensity and scope, 
 
 ### 3. Record the brief
 
-- Write the `{lean_brief}`: task, target, intensity, scope, the traced flow, the reachable [rungs](../../ponytail/resources/the-ladder.md#rungs), and the safety-floor obligations in play.
+- Write the `{lean_brief}` into `{artifact_dir}` per [lean-brief](../resources/lean-brief.md#template) and its [Rules](../resources/lean-brief.md#rules), carrying the traced flow, the reachable [rungs](../../ponytail/resources/the-ladder.md#rungs), and the safety-floor obligations in play.

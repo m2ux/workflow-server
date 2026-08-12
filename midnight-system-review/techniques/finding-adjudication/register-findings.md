@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -23,6 +23,10 @@ The adjudicated register: a disposition table (finding, area, tuple summary, dis
 
 `findings-register.md`
 
+#### audience
+
+`human`
+
 ### accepted_findings
 
 The accepted subset in area order — the only findings the verdict computation reads.
@@ -36,5 +40,5 @@ The accepted subset in area order — the only findings the verdict computation 
 
 ### 2. Write Register
 
-- Write `{findings_register}` to the planning folder and emit `{accepted_findings}`.
+- Write `{findings_register}` to the planning folder per [findings-register](../../resources/findings-register.md#template) and its [Rules](../../resources/findings-register.md#rules), and emit `{accepted_findings}`.
 - Confirm every register entry carries its complete grade tuple before finishing — this is what the grade-tuple completeness gate checks.

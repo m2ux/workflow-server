@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.7.0
 ---
 
 ## Capability
@@ -8,10 +8,6 @@ metadata:
 Orchestrator-owned Progress **status** writer for selected activity (and optional item) rows in the planning-folder README.
 
 ## Inputs
-
-### planning_folder_path
-
-Path to the planning folder whose `README.md` Progress surface is updated.
 
 ### target_status
 

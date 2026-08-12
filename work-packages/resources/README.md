@@ -13,3 +13,15 @@ Markdown resources for initiative planning, package plans, prioritization, and r
 | 04 | `prioritization-framework` | Prioritization Framework | Framework for evaluating and ordering packages |
 | 05 | `roadmap-template` | Roadmap Template | Templates for finalized roadmap documentation |
 | 06 | `workflow-triggering-protocol` | Workflow Triggering Protocol | How to trigger and manage work-package workflow instances |
+| 07 | `priority-ranking` | Priority Ranking | Creation guide: `priority-ranking.md` |
+
+## Planning artifact to guide map
+
+| Bare filename | Guide |
+|---------------|-------|
+| `START-HERE.md` | [planning-folder-template](planning-folder-template.md) + [roadmap-template](roadmap-template.md) |
+| `README.md` | [planning-folder-template](planning-folder-template.md) |
+| `{package_name}-plan.md` | [package-plan-template](package-plan-template.md) |
+| `priority-ranking.md` | [priority-ranking](priority-ranking.md) |
+| `01-COMPLETION-ANALYSIS.md` | [completion-analysis-guide](completion-analysis-guide.md) |
+| `02-CONTEXT-ANALYSIS.md` | [context-analysis-guide](context-analysis-guide.md) |

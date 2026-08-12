@@ -104,3 +104,7 @@ findings above, each referencing the originating REPORT-ID.}
 What good looks like: the Executive Summary count table totals exactly match the number of findings in
 the body; every finding ID has a Traceability row; no sentence attributes a finding to a pass, lens, or
 analytical step.
+
+## Rules
+
+- **Line budget:** ~150 lines. The detailed findings document carries the write-ups this report summarises.

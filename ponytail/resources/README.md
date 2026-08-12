@@ -2,7 +2,7 @@
 
 > Part of the [Ponytail Lean-Coding Workflow](../README.md)
 
-Four single-source reference files holding the discipline the techniques apply: the ladder and its safety floor, the over-engineering taxonomy, the marker convention, and the honesty boundary on reporting. Each resource owns its subject once; the techniques link into it by `#section` anchor rather than restating it.
+Four single-source reference files holding the discipline the techniques apply — the ladder and its safety floor, the over-engineering taxonomy, the marker convention, and the honesty boundary on reporting — plus a creation guide for each artifact a pass writes. Each resource owns its subject once; the techniques link into it by `#section` anchor rather than restating it.
 
 The authoritative content lives in each `.md` file and is served by `get_resource`. This file is the catalog — what each resource owns.
 
@@ -16,6 +16,21 @@ The authoritative content lives in each `.md` file and is served by `get_resourc
 | [review-taxonomy.md](review-taxonomy.md) | The five over-engineering tags, the one-line finding format, and the net-savings scoreboard | `#tags` |
 | [ponytail-marker-convention.md](ponytail-marker-convention.md) | The `ponytail: <ceiling>, add when <trigger>` inline-comment convention and the `no-trigger` flag | `#convention`, `#no-trigger` |
 | [honesty-boundary.md](honesty-boundary.md) | The gain-reporting rule — benchmark medians only, never a fabricated per-repo figure | `#rule` |
+| [lean-brief.md](lean-brief.md) | Creation guide: `lean-brief.md` — the traced flow, reachable rungs, and obligations in play | `#template` |
+| [lean-change.md](lean-change.md) | Creation guide: `lean-change.md` — code first, then at most three lines on what was skipped | `#template` |
+| [audit-findings.md](audit-findings.md) | Creation guide: `audit-findings.md` — one line per finding, biggest cut first, net scoreboard | `#template` |
+| [debt-ledger.md](debt-ledger.md) | Creation guide: `debt-ledger.md` — one row per marker with its ceiling and upgrade trigger | `#template` |
+
+---
+
+## Planning artifact to guide map
+
+| Bare filename | Guide |
+|---------------|-------|
+| `lean-brief.md` | [lean-brief](lean-brief.md) |
+| `lean-change.md` | [lean-change](lean-change.md) |
+| `audit-findings.md` | [audit-findings](audit-findings.md) |
+| `debt-ledger.md` | [debt-ledger](debt-ledger.md) |
 
 ---
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Prerequisite scan of the target, with the atomic questions knowledge fill answer
 #### artifact
 
 `smart-prereq.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

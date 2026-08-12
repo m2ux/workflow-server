@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.12.1
+  version: 1.13.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Findings grouped by catalog entry **name** / **designator**: file path, offendin
 #### artifact
 
 `anti-pattern-findings.md`
+
+#### audience
+
+`human`
 
 ### anti_pattern_findings_path
 

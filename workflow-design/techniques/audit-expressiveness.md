@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.1
+  version: 1.4.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Expressiveness findings — each a flagged instance with its file, the prose pas
 #### artifact
 
 `expressiveness-findings.md`
+
+#### audience
+
+`human`
 
 ### expressiveness_finding_count
 

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ The epistemic weaknesses the boundary and audit prisms find in the analysis text
 #### artifact
 
 `verified-gaps.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

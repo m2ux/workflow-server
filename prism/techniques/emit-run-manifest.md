@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -69,28 +69,8 @@ REPORT.md or DEFINITIVE-FINDINGS.md is missing or empty.
 
 ### 2. Write Manifest
 
-- Write `{run_manifest}` as `RUN-MANIFEST.md` into `{output_path}`, capturing its full filesystem path as `{run_manifest_path}`.
-- Record: the `{run_status}`, the `{pipeline_mode}`, a link to `{report_path}` and to `{definitive_findings_path}`, a per-unit table (unit, output subdir, pipeline mode, status, artifact filenames), and a flat list of every path in `{all_artifact_paths}` as links.
-- Structure:
-
-  ```markdown
-  # Prism Run Manifest
-
-  - **Status:** {complete | partial | error}
-  - **Pipeline mode:** {pipeline_mode}
-  - **Report:** [REPORT.md]({report_path})
-  - **Definitive findings:** [DEFINITIVE-FINDINGS.md]({definitive_findings_path})
-
-  ## Units
-
-  | Unit | Output subdir | Pipeline mode | Status | Artifacts |
-  |------|---------------|---------------|--------|-----------|
-  | {unit name} | {output subdir, or "."} | {unit pipeline mode} | {complete or partial} | {artifact filenames} |
-
-  ## Artifacts
-
-  - [{artifact filename}]({artifact path})
-  ```
+- Write `{run_manifest}` as `RUN-MANIFEST.md` into `{output_path}` per [run-manifest](../resources/run-manifest.md#template) and its [Rules](../resources/run-manifest.md#rules), capturing its full filesystem path as `{run_manifest_path}`
+- Fill it from `{run_status}`, `{pipeline_mode}`, `{report_path}`, `{definitive_findings_path}`, the per-unit expectations in `{analysis_units}`, and every path in `{all_artifact_paths}`
 
 ## Rules
 

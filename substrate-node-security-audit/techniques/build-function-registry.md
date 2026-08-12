@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -30,6 +30,10 @@ Structured function registry table.
 #### artifact
 
 `r-function-registry.json`
+
+#### audience
+
+`agent`
 
 #### registry_table
 

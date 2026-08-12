@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -17,6 +17,10 @@ The strategic review [document](../../resources/strategic-review.md#strategic-re
 
 `strategic-review-{n}.md`
 
+#### audience
+
+`human`
+
 ### strategic_review_method
 
 Method [record](../../resources/strategic-review.md#method-record-template) of how the review was conducted — the scope, conformance and minimality passes, and the delivery class each designator falls in.
@@ -24,6 +28,11 @@ Method [record](../../resources/strategic-review.md#method-record-template) of h
 #### artifact
 
 `strategic-review-{n}-method.md`
+
+#### audience
+
+`human`
+
 
 ## Protocol
 

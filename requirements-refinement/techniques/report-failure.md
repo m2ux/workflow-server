@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -23,6 +23,10 @@ Failure report carrying the critical issues, correction history, and manual-reso
 
 `failure-report.md`
 
+#### audience
+
+`human`
+
 ### failure_report_path
 
 Absolute path to the written failure report.
@@ -39,7 +43,7 @@ Absolute path to the written failure report.
 
 ### 3. Write Failure Report
 
-- Write `{failure_report}` to `{planning_folder_path}`; capture its written location as `{failure_report_path}`.
+- Write `{failure_report}` to `{planning_folder_path}` per [failure-report](../resources/failure-report.md#template) and its [Rules](../resources/failure-report.md#rules); capture its written location as `{failure_report_path}`.
 
 ## Rules
 

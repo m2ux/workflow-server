@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -17,12 +17,13 @@ Filesystem path to the written DESIGN-TRADE-OFFS.md (the design trade-off analys
 
 `DESIGN-TRADE-OFFS.md`
 
+#### audience
+
+`human`
+
 ## Protocol
 
 ### 1. Create Trade-Off Analysis
 
 - Read the "Conservation Laws & Design Trade-offs" section from each scope's DEFINITIVE-FINDINGS.md at the `definitive_findings_path` in `{completed_analyses}` — not the raw synthesis documents. Every law recorded there survived or was refined through prism's adversarial challenge; rejected laws are already absent.
-- Write the analysis to `{trade_offs_path}` in three parts.
-- Part 1 — Trade-Off Catalogue: one entry per domain with its constraint, current operating point, shift prediction, and design questions. Each entry must have a falsifiable constraint, code-level evidence for the operating point (citing specific finding IDs), concrete shift predictions, and actionable design questions.
-- Part 2 — Cross-Domain Interactions: map which trade-offs compound.
-- Part 3 — Design Decision Register: a table of implicit decisions that should be made explicit, with current choice, alternative, governing trade-off, and documentation status.
+- Write the analysis to `{trade_offs_path}` per [design-trade-offs](../../resources/design-trade-offs.md#template) and its [Rules](../../resources/design-trade-offs.md#rules)

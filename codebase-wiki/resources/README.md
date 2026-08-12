@@ -2,7 +2,7 @@
 
 > Part of the [Codebase Wiki Workflow](../README.md)
 
-Four Markdown resources that concretize the wiki standard the techniques work to: the Karpathy-adapted page format, the per-type page templates, the lint checklist, and the citation conventions. Each is loaded via `get_resource` by the technique that references it — this file orients, it does not restate the resource content.
+Five Markdown resources that concretize the wiki standard the techniques work to: the Karpathy-adapted page format, the per-type page templates, the lint checklist, the citation conventions, and the creation guide for the catalog and ledger every mutation touches. Each is loaded via `get_resource` by the technique that references it — this file orients, it does not restate the resource content.
 
 ---
 
@@ -14,6 +14,17 @@ Four Markdown resources that concretize the wiki standard the techniques work to
 | `01` | [Page Templates](./page-templates.md) | One body skeleton per page type (concept, entity, source-summary, comparison) — the frontmatter block and the cited-claim, confidence-scored layout each page follows. |
 | `02` | [Lint Checklist](./lint-checklist.md) | The integrity checks the wiki is verified against, each with its pass/fail criterion. |
 | `03` | [Citation Conventions](./citation-conventions.md) | The raw-baseline citation form, the confidence vocabulary, and the `[[wikilink]]` cross-reference convention. |
+| `04` | [Index and Log](./index-and-log.md) | Creation guide: `index.md` and `log.md` — the navigation catalog and the append-only mutation ledger. |
+
+---
+
+## Planning artifact to guide map
+
+| Bare filename | Guide |
+|---------------|-------|
+| `{$page_slug}.md` | [page-templates](./page-templates.md) |
+| `index.md` | [index-and-log](./index-and-log.md) |
+| `log.md` | [index-and-log](./index-and-log.md) |
 
 ---
 

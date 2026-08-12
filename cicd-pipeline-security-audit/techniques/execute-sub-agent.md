@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -22,6 +22,10 @@ Structured JSON conforming to the [sub-agent output schema](../resources/sub-age
 #### artifact
 
 `{scanner_id}.json`
+
+#### audience
+
+`agent`
 
 #### scanner_id
 

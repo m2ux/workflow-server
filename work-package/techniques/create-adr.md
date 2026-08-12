@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -35,6 +35,10 @@ Directory holding the project's ADR files
 
 `NNNN-{decision_title}.md`
 
+#### audience
+
+`human`
+
 ## Protocol
 
 ### 1. Gate On Complexity
@@ -55,9 +59,7 @@ Directory holding the project's ADR files
 
 ### 4. Write Adr
 
-- Write the `{adr_document}` as `NNNN-{$decision_title}.md` in `{adr_dir}`, deriving `{$decision_title}` as a slugified short title of the decision
-- Use standard ADR format (Title, Status, Context, Decision, Consequences)
-- Set the `{adr_document}` status to Proposed; acceptance is recorded later in a separate finalization step
+- Write the `{adr_document}` as `NNNN-{$decision_title}.md` in `{adr_dir}` per [adr](../resources/adr.md#template) and its [Rules](../resources/adr.md#rules), deriving `{$decision_title}` as a slugified short title of the decision
 
 ## Rules
 

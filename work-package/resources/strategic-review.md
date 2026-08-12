@@ -108,3 +108,7 @@ Designators use the prefix declared for this report's category at [Strategic Rev
 | Handed to the audit | [SR-3, …] |
 | Held | [SR-4, …] |
 ```
+
+## Rules
+
+- **Line budget:** ~120 lines. Each recommendation is one entry with its scope-fit reason.

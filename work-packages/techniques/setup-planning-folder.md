@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -27,6 +27,10 @@ Executive-summary and status-tracking skeleton, written to `{planning_folder_pat
 
 `START-HERE.md`
 
+#### audience
+
+`human`
+
 ### readme_skeleton
 
 Navigation and document-index skeleton, written to `{planning_folder_path}` from the [README.md skeleton](../resources/planning-folder-template.md#readmemd-skeleton).
@@ -34,6 +38,10 @@ Navigation and document-index skeleton, written to `{planning_folder_path}` from
 #### artifact
 
 `README.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

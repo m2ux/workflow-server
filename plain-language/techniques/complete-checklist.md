@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ The completed checklist with every item's disposition, shaped by [Template](../r
 #### artifact
 
 `iso-checklist.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

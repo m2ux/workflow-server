@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -34,6 +34,10 @@ The consolidated [evaluation report](../../resources/evaluation-report-template.
 #### artifact
 
 `EVALUATION-REPORT.md`
+
+#### audience
+
+`human`
 
 #### executive_summary
 

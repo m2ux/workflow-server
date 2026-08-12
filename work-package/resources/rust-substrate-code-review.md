@@ -243,3 +243,7 @@ Tone / attribution: [agent-conduct](../../meta/techniques/agent-conduct.md). Pre
 - [Substrate Documentation](https://docs.substrate.io/)
 - [Polkadot SDK Documentation](https://paritytech.github.io/polkadot-sdk/)
 - [Rust Performance Book](https://nnethercote.github.io/perf-book/)
+
+## Rules
+
+- **Line budget:** ~30 lines per finding. A finding needing more is carrying evidence its locus link already shows.

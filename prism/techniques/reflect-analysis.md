@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -17,6 +17,10 @@ L12 structural analysis of the target.
 
 `reflect-l12.md`
 
+#### audience
+
+`human`
+
 ### meta_analysis
 
 Claim meta-analysis of the structural analysis text: the hidden assumptions it carries.
@@ -25,6 +29,10 @@ Claim meta-analysis of the structural analysis text: the hidden assumptions it c
 
 `reflect-meta.md`
 
+#### audience
+
+`human`
+
 ### constraint_synthesis
 
 Synthesis over the structural and meta analyses against constraint history, in four sections: recurring patterns, unexplored dimensions, known false positives, next best scan.
@@ -32,6 +40,10 @@ Synthesis over the structural and meta analyses against constraint history, in f
 #### artifact
 
 `reflect-synthesis.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 
@@ -50,9 +62,7 @@ Synthesis over the structural and meta analyses against constraint history, in f
 
 - Dispatch synthesis to a fresh worker
 - Worker receives: L12 output + meta output + constraint history (if available)
-- Worker produces: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN
-- Worker writes `{constraint_synthesis}` into `{output_path}`
-- Synthesis must produce exactly 4 sections: RECURRING PATTERNS, UNEXPLORED DIMENSIONS, KNOWN FALSE POSITIVES, NEXT BEST SCAN
+- Worker writes `{constraint_synthesis}` into `{output_path}` per [reflect-synthesis](../resources/reflect-synthesis.md#template) and its [Rules](../resources/reflect-synthesis.md#rules)
 - Return `{structural_analysis}`, `{meta_analysis}`, and `{constraint_synthesis}`
 
 ## Rules

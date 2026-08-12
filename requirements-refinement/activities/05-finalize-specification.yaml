@@ -1,5 +1,5 @@
 id: finalize-specification
-version: 1.3.0
+version: 1.4.0
 name: Finalize Specification
 description: Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts, and confirm the user accepts them for promotion to the canonical location.
 required: true
@@ -10,6 +10,12 @@ steps:
     actions:
       - action: message
         message: "The validation-passed specification and an account of every applied change are staged in the planning folder ([final specification]({final_specification_path}), [change summary]({change_summary_path}))."
+  - kind: technique
+    id: verify-artifact-conformance
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        guide_map: requirements-refinement/README#planning-artifact-to-guide-map
   - kind: checkpoint
     id: finalization-confirmed
     message: "The final specification {spec_basename} and the change summary are staged for promotion to the canonical location ([final specification]({final_specification_path}), [change summary]({change_summary_path}))."

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.0.0
+  version: 5.1.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Changing core configuration, build scripts, CI/CD configuration or container fil
 ### communication-measured-language
 
 Write in measured technical language, with each claim sized to the evidence behind it. Feedback addresses the code on its technical merit.
+
+### communication-artifact-writing-register
+
+An artifact whose declared audience is a person is written to the [Artifact Writing Register](../resources/writing-register.md).
 
 ### attribution-prohibition
 

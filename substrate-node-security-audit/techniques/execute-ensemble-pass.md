@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.2.0
 ---
 
 > The `§X.Y` identifiers used throughout this technique refer to the audit checklist taxonomy in [§2 Static Analysis Phase](../resources/audit-template-reference.md#2-static-analysis-phase), [§3 Systematic Manual Review Strategies](../resources/audit-template-reference.md#3-systematic-manual-review-strategies) and [§5 Execution Strategy](../resources/audit-template-reference.md#5-execution-strategy).
@@ -19,6 +19,10 @@ Findings from the second independent pass, including at least one sub-agent resu
 
 `second-pass-findings.md`
 
+#### audience
+
+`human`
+
 ## Protocol
 
 ### 1. Configure Pass
@@ -34,7 +38,7 @@ Findings from the second independent pass, including at least one sub-agent resu
 
 - Dispatch at least one sub-agent that independently applies the §3 checklist to the priority-1/2 crates, following the same §3 checklist and §5 execution requirements.
   > Under context-window pressure, scope to the top 3-5 files by priority rather than skipping — a reduced-scope pass is always preferable to a skipped one.
-- Record the results into `{second_pass_findings}` and persist it to its declared artifact file.
+- Record the results into `{second_pass_findings}` per [second-pass-findings](../resources/second-pass-findings.md#template) and its [Rules](../resources/second-pass-findings.md#rules), and persist it to its declared artifact file.
 
 ## Rules
 

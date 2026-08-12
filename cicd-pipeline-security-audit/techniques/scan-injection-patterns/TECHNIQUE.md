@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -38,6 +38,10 @@ Structured findings for this submodule, conforming to the [scanner output schema
 #### artifact
 
 `s{scanner_number}-{submodule_path}.json`
+
+#### audience
+
+`agent`
 
 #### findings
 

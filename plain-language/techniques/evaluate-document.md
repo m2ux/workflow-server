@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -26,6 +26,10 @@ The per-principle verdict and the open-issue list, shaped by [Template](../resou
 #### artifact
 
 `evaluation-report.md`
+
+#### audience
+
+`human`
 
 ### open_issue_count
 

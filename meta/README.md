@@ -79,6 +79,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 |-----------|------------|
 | [`workflow-engine`](techniques/workflow-engine/TECHNIQUE.md) | Operations and rules for executing a workflow's structured flow — session lifecycle, activity dispatch, agent entry, transitions, planning Progress, and the checkpoint protocol. |
 | [`agent-conduct`](techniques/agent-conduct.md) | Cross-cutting behavioural boundaries — single source of truth for file sensitivity, communication tone, attribution, code commentary, operational discipline, checkpoint discipline, and orchestrator discipline |
+| [`verify-artifact-conforms`](techniques/verify-artifact-conforms.md) | Artifact-conformance pass any workflow binds: each artifact measured against the guide its filename maps to, the caller's canonical-home map, and the [Artifact Writing Register](resources/writing-register.md), corrected in place |
 | [`version-control`](techniques/version-control/TECHNIQUE.md) | Host-repository derivation from git, planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
 | [`github-cli-protocol`](techniques/github-cli-protocol/TECHNIQUE.md) | GitHub PR and issue tasks; sole home of REST `gh api` recipes |
 | [`knowledge-base-search`](techniques/knowledge-base-search/TECHNIQUE.md) | Optimised concept-rag searches via pre-indexed domain maps |
@@ -134,6 +135,7 @@ workflows/meta/
 │   ├── agent-conduct.md                     # Cross-cutting rules (single source of truth)
 │   ├── variable-binding.md                  # Strategy technique — bind step inputs/outputs to variables
 │   ├── scatter-gather.md                    # Strategy technique — forEach fan-out / gather
+│   ├── verify-artifact-conforms.md          # Artifact-conformance pass bound by any workflow that persists artifacts
 │   ├── workflow-engine/                     # Session lifecycle, dispatch, transitions, checkpoint protocol
 │   │   ├── TECHNIQUE.md                     #   group index / base contract
 │   │   └── {op}.md                          #   one file per operation (start-session, create-session, dispatch-activity, ...)

@@ -117,3 +117,7 @@ Group packages into implementation phases:
 Phase duration = max(effort of packages in phase) + review buffer
 Total duration = sum(phase durations) + inter-phase buffer
 ```
+
+## Rules
+
+- **Line budget:** ~120 lines. One row per package; the rationale for the order lives in the priority ranking.

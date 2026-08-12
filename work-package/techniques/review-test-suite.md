@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.2.0
+  version: 2.3.0
 ---
 
 ## Capability
@@ -27,6 +27,10 @@ Test suite review [report](../resources/test-suite-review.md#report-template) st
 
 `test-suite-review.md`
 
+#### audience
+
+`human`
+
 ### test_suite_review_method
 
 Method [record](../resources/test-suite-review.md#method-record-template) of how the review was conducted — the suite baseline, the coverage map, the anti-pattern sweep, the pyramid and redundancy assessments, and the reported-failure triage.
@@ -34,6 +38,10 @@ Method [record](../resources/test-suite-review.md#method-record-template) of how
 #### artifact
 
 `test-suite-review-method.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 

@@ -59,3 +59,7 @@ marked out of scope.
   to the correct section — a meeting transcript (`SRC-MTG###`) to section 2.2, an unstructured document
   (`SRC-DOC###`, credited to its author) to section 2.5.
 - State each change precisely enough to be applied without re-reading the source document.
+
+## Rules
+
+- **Line budget:** ~120 lines. The source-coverage matrix is the payload; narrative about the source belongs in the intake record.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.4
+  version: 1.3.0
 ---
 
 ## Capability
@@ -16,6 +16,10 @@ Lean alignment / divergence table following the [Pattern Analysis Guide](../reso
 #### artifact
 
 `pattern-analysis.md`
+
+#### audience
+
+`human`
 
 ### pattern_analysis_path
 
