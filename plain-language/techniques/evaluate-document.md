@@ -13,10 +13,6 @@ Evaluate a draft against the four principles as its reader would, recording the 
 
 The draft to evaluate.
 
-### document_profile
-
-The settled reader, purpose, and context the draft is evaluated against.
-
 ### revision_round
 
 *(optional)* The evaluation round this is — the first pass is round 0.
@@ -25,7 +21,7 @@ The settled reader, purpose, and context the draft is evaluated against.
 
 ### evaluation_report
 
-The per-principle verdict and the open-issue list, shaped by [Template](../../resources/evaluation-report.md#template).
+The per-principle verdict and the open-issue list, shaped by [Template](../resources/evaluation-report.md#template).
 
 #### artifact
 
@@ -47,11 +43,11 @@ True when any open issue sends the draft back for another pass; false when every
 
 ### 2. Verdict Each Principle
 
-- Assign each of the four principles a verdict per [Usability](../../resources/plain-language-standard.md#usability) and the guidelines it cites — relevant, findable, understandable, usable — naming the guidelines that carry each verdict per [Verdict by principle](../../resources/evaluation-report.md#template)
+- Assign each of the four principles a verdict per [Principles](../resources/plain-language-standard.md#principles) and [Usability](../resources/plain-language-standard.md#usability) and the guidelines it cites — relevant, findable, understandable, usable — naming the guidelines that carry each verdict per [Verdict by principle](../resources/evaluation-report.md#template)
 
 ### 3. Record the Open Issues
 
-- Record each failure as an open issue with its location, principle, the problem the reader hits, and the fix — per [Open issues](../../resources/evaluation-report.md#template) — so the revision pass has no interpretation to redo
+- Record each failure as an open issue with its location, principle, the problem the reader hits, and the fix — per [Open issues](../resources/evaluation-report.md#template) — so the revision pass has no interpretation to redo
 
 ### 4. Set the Revision Signal
 

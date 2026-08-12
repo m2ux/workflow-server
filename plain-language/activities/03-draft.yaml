@@ -6,7 +6,7 @@ required: false
 steps:
   - kind: technique
     id: draft-document
-    technique: plain-language::draft-document
+    technique: draft-document
   - kind: technique
     id: persist-plain-document
     technique:

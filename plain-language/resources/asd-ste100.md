@@ -9,9 +9,11 @@ metadata:
 
 ASD-STE100 Simplified Technical English (STE) is a controlled natural language and international standard for clear, consistent, and safe technical documentation. It has two parts: a set of writing rules covering grammar, sentence structure, and style, and a controlled dictionary of approved words, each with one meaning and one part of speech.
 
-STE is an **overlay**, not a replacement. It applies only when the document is technical documentation and the `controlled_language` mode is on. The ISO 24495-1 base still governs relevance, findability, and evaluation; STE tightens understandability for readers who may have only a basic command of English. Where STE and the ISO base conflict, STE's stricter rule wins for the sentence and word level, and the ISO base still governs structure, audience fit, and evaluation.
+STE is an overlay, not a replacement.
 
 ## When It Applies
+
+STE applies only when the document is technical documentation and the `controlled_language` mode is on. The ISO 24495-1 base still governs relevance, findability, and evaluation; STE tightens understandability for readers who may have only a basic command of English. Where STE and the ISO base conflict, STE's stricter rule wins for the sentence and word level, and the ISO base still governs structure, audience fit, and evaluation.
 
 Apply STE when the document is a procedure or a description in a technical domain — maintenance instructions, operating manuals, safety information, engineering or industrial documentation — and readers include non-native English speakers or readers for whom ambiguity carries a safety or cost consequence. Do not apply it to general-audience prose where its restrictions would read as stilted without adding safety.
 

@@ -9,10 +9,6 @@ Produce the plain-language document — drafted fresh on an author run, or rewri
 
 ## Inputs
 
-### document_profile
-
-The settled reader, purpose, context, document type, and content selection the draft is built on.
-
 ### source_analysis
 
 *(optional)* The findings and strengths of the existing document — bound on a rewrite run, where the draft fixes the findings and preserves the strengths.
@@ -43,15 +39,15 @@ The current draft of the plain-language document.
 
 ### 2. Structure for the Reader
 
-- Order and group the content per [Findability](../../resources/plain-language-standard.md#findability) — the most important message first, logical grouping, headings that anticipate, lists and visual organization that help readers find what they need
+- Order and group the content per [Findability](../resources/plain-language-standard.md#findability) — the most important message first, logical grouping, headings that anticipate, lists and visual organization that help readers find what they need
 
 ### 3. Word and Build the Prose
 
-- Write the words, sentences, and paragraphs per [Understandability](../../resources/plain-language-standard.md#understandability) — familiar precise words, clear concise sentences, one-topic paragraphs, a respectful tone, a coherent whole
+- Write the words, sentences, and paragraphs per [Understandability](../resources/plain-language-standard.md#understandability) — familiar precise words, clear concise sentences, one-topic paragraphs, a respectful tone, a coherent whole
 
 ### 4. Apply the Overlay
 
-- When `{controlled_language}` is true, apply the [ASD-STE100 writing rules](../../resources/asd-ste100.md#writing-rules) at the word and sentence level, matching the [procedure or description](../../resources/asd-ste100.md#procedure-and-description) text type — the ISO base still governs structure and audience fit
+- When `{controlled_language}` is true, apply the [ASD-STE100 writing rules](../resources/asd-ste100.md#writing-rules) at the word and sentence level, matching the [procedure or description](../resources/asd-ste100.md#procedure-and-description) text type, under the precedence [When It Applies](../resources/asd-ste100.md#when-it-applies) sets
 
 ### 5. Return the Draft
 

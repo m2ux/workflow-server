@@ -17,7 +17,7 @@ steps:
     steps:
       - kind: technique
         id: evaluate-document
-        technique: plain-language::evaluate-document
+        technique: evaluate-document
       - kind: technique
         id: persist-evaluation-report
         technique:
@@ -49,7 +49,7 @@ steps:
                 needs_revision: false
       - kind: technique
         id: revise-document
-        technique: plain-language::draft-document
+        technique: draft-document
         condition:
           type: simple
           variable: needs_revision
@@ -68,7 +68,7 @@ steps:
             message: Increment the revision round by one.
   - kind: technique
     id: complete-checklist
-    technique: plain-language::complete-checklist
+    technique: complete-checklist
   - kind: technique
     id: persist-iso-checklist
     technique:
