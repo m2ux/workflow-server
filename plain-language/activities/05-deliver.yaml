@@ -6,7 +6,10 @@ required: false
 steps:
   - kind: technique
     id: verify-artifact-conformance
-    technique: verify-artifact-conforms
+    technique:
+      name: verify-artifact-conforms
+      inputs:
+        guide_map: plain-language/README#planning-artifact-to-guide-map
   - kind: technique
     id: deliver-document
     technique:
