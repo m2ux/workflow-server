@@ -1,0 +1,63 @@
+name: Verify corpus
+
+# The guards run against a pull request on THIS branch.
+#
+# They live on `main`, and this branch holds definitions only — no package.json, no scripts, and
+# until now no CI. A pull request here therefore reported no checks at all: every guard ran only
+# once a later commit on main bumped the submodule pointer, which happens after the merge rather
+# than before it. A workflow whose every technique reference failed to resolve reached a merge that
+# way, and the guard that catches it had been passing on main the whole time — against the older
+# corpus the pointer still named.
+#
+# GitHub reads a pull-request workflow file from the head ref, so this file has to sit on the branch
+# it guards. It carries no logic of its own: it borrows main's tooling and points it at the corpus
+# under review.
+#
+# Guards only, not the test suite. The walk snapshots are stamped against one corpus commit, so
+# running them here would compare a pull request's corpus to a baseline generated from a different
+# one and fail on the difference rather than on a defect. `npm run check:all` walks the registry in
+# scripts/guards.ts, so a guard added there is enforced here without touching this file.
+
+on:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: verify-corpus-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  guards:
+    name: Guard sweep against the corpus under review
+    runs-on: ubuntu-latest
+    steps:
+      # The tooling: main's scripts, guard registry and package manifest.
+      - name: Check out the server tooling from main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          submodules: false
+
+      # The corpus under review, where check:all looks for it by default. For a pull request this is
+      # the merge result; for a manual run it is the ref the run was dispatched on.
+      - name: Check out the corpus under review
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+          path: workflows
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # A guard that cannot reach its corpus exits 2 and fails the job, so an unmeasured guard is
+      # never folded into a pass.
+      - name: Run every guard against the corpus
+        run: npm run check:all
