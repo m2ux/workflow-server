@@ -1,7 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { join } from 'node:path';
-import { collectFramingFindings } from '../scripts/check-section-framing.js';
+import { collectFramingFindings, TRIAGE_PATH } from '../scripts/check-section-framing.js';
 
 /**
  * Section-framing guard. A resource cited by anchor is delivered one section at a time, so prose
@@ -18,7 +17,7 @@ describe('section-framing guard (corpus)', () => {
 
 describe('section-framing triage', () => {
   const triage = JSON.parse(
-    readFileSync(join(import.meta.dirname, '..', 'scripts', 'section-framing-triage.json'), 'utf-8'),
+    readFileSync(TRIAGE_PATH, 'utf-8'),
   ) as { rationales: Record<string, string>; entries: Array<{ site: string; verdict: string; rationale: string; owed?: string }> };
 
   it('gives every entry a verdict this file defines and a rationale it names', () => {
