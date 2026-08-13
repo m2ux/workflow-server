@@ -10,7 +10,7 @@ metadata:
 
 # Requirements Elicitation Guide
 
-Requirements elicitation discovers **what** the user needs before planning **how** to implement it — a dialogue, not a checklist. Use for new features and major enhancements only; skip for bug fixes, refactors, chores, and minor updates.
+Requirements elicitation discovers **what** the user needs before planning **how** to implement it — a dialogue, not a checklist.
 
 Goals: discover what the user actually needs (which may differ from the initial ask), clarify ambiguities before they become implementation assumptions, establish scope boundaries, define measurable success criteria.
 

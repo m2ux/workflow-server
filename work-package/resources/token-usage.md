@@ -7,7 +7,7 @@ metadata:
 
 # Token Usage Guide
 
-Creation guide for bare filename `token-usage.md`. The one place a run's token counts and cost estimate live, so every other artifact links here rather than repeating a figure. A number in it is either reconciled or labelled a floor — an unlabelled understatement reads as a measurement.
+Creation guide for bare filename `token-usage.md`. The one place a run's token counts and cost estimate live, so every other artifact links here rather than repeating a figure.
 
 ## Template
 
@@ -37,6 +37,7 @@ Cost is an estimate, meaningful for API-key per-token billing. On a subscription
 
 ## Rules
 
+- **A number is reconciled or labelled a floor.** An unlabelled understatement reads as a measurement, so a figure that could not be reconciled says so.
 - **One row per activity.** Cache columns appear when the harness surfaced them; a null cost is `unknown` rather than zero, because zero is a measurement and unknown is not.
 - **Duration converts from the harness figure.** Milliseconds to minutes, one decimal.
 - **A total is a total only when coverage is complete.** With any dispatch unaccounted, the figure is labelled a floor and the unaccounted count sits beside it.

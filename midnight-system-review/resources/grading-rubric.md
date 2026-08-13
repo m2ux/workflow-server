@@ -7,9 +7,11 @@ metadata:
 
 # Finding Grading Rubric
 
-Every finding candidate is graded on all six dimensions below, from these definitions — never intuitively. The tuple is complete or the finding does not pass the grade-tuple completeness gate. Grade first, disposition second: acceptance is a threshold applied to finished grades.
+The six dimensions a finding candidate carries, the threshold that turns finished grades into a disposition, and calibration anchors from real findings.
 
 ## The Grade Tuple
+
+Every finding candidate is graded on all six dimensions below, from these definitions — never intuitively. The tuple is complete or the finding does not pass the grade-tuple completeness gate. Grade first, disposition second: acceptance is a threshold applied to finished grades.
 
 ### 1. Evidence anchor
 

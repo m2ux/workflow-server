@@ -7,9 +7,11 @@ metadata:
 
 # Review Format
 
-The rendered review — both `review-report.md` and the posted `review_summary` — follows this structure. The summary is the report's publishable body, byte-for-byte; posting never re-renders it.
+The canonical shape of a rendered review, the per-area accounting, the verdict phrases, and the fill rules.
 
 ## Structure
+
+The rendered review — both `review-report.md` and the posted `review_summary` — follows this structure. The summary is the report's publishable body, byte-for-byte; posting never re-renders it.
 
 ```markdown
 ## System Review - Merge Readiness {verdict}/5

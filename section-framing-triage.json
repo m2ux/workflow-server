@@ -1,0 +1,539 @@
+{
+  "note": "Triage of the section-framing guard's findings. A resource cited by anchor is delivered one section at a time, so prose above the first '##' reaches whoever loads the whole file and nobody who asks for a section. The guard finds every such site mechanically; whether the prose is an obligation or an orientation is a judgement, and this file records it. orientation-only = the framing says what the resource is and who reads it, so a section consumer needs none of it. operative-owed-a-section = the framing states a rule that binds work the section consumer does, which is real debt: suppressed here and counted, to be closed by moving the rule into a section a citer can request. A site absent from this file is untriaged and reported; an entry matching nothing is stale and reported.",
+  "rationales": {
+    "orientation-only": "The framing names the resource, its subject and its reader. A consumer that asks for one section can apply that section without it, so nothing is stranded. This is the shape the creation guides share: 'Creation guide for bare filename X', then what the document answers.",
+    "operative-owed-a-section": "The framing states a rule rather than an orientation, and a consumer citing a section never receives it. Closing this means moving the rule into a section a citer can request, or into the technique that applies it — a content change in the owning workflow, not a triage entry. Counted here so the debt is visible rather than silent."
+  },
+  "entries": [
+    {
+      "site": "cicd-pipeline-security-audit/resources/cicd-audit-report-template.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "cicd-pipeline-security-audit/resources/cicd-severity-rubric.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "cicd-pipeline-security-audit/resources/intermediate-artifact-schemas.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "cicd-pipeline-security-audit/resources/sub-agent-output-schema.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "codebase-wiki/resources/citation-conventions.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "codebase-wiki/resources/index-and-log.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "codebase-wiki/resources/wiki-format.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "meta/resources/session-summary-template.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "meta/resources/writing-register.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "midnight-system-review/resources/change-surface.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "midnight-system-review/resources/evidence-log.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "midnight-system-review/resources/findings-register.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "midnight-system-review/resources/grading-rubric.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "midnight-system-review/resources/investigation-plan.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "midnight-system-review/resources/publication-record.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "midnight-system-review/resources/review-format.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "midnight-system-review/resources/verdict-rubric.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "plain-language/resources/asd-ste100.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "plain-language/resources/document-profile.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "plain-language/resources/evaluation-report.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "plain-language/resources/iso-checklist.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "plain-language/resources/plain-language-standard.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "plain-language/resources/source-analysis.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "ponytail/resources/audit-findings.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "ponytail/resources/debt-ledger.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "ponytail/resources/honesty-boundary.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "ponytail/resources/lean-brief.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "ponytail/resources/lean-change.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "ponytail/resources/ponytail-marker-convention.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "ponytail/resources/review-taxonomy.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "ponytail/resources/the-ladder.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "prism-audit/resources/audit-prompt-template.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "prism-audit/resources/audit-report.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "prism-audit/resources/design-trade-offs.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "prism-audit/resources/detailed-findings.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "prism-evaluate/resources/evaluation-plan-template.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "prism-evaluate/resources/evaluation-report-template.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "prism-evaluate/resources/mitigation-plan-template.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "prism/resources/analysis-plan.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "prism/resources/portfolio-synthesis.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "prism/resources/reflect-synthesis.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "prism/resources/run-manifest.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "requirements-refinement/resources/change-summary.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "requirements-refinement/resources/failure-report.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "requirements-refinement/resources/intake-record.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "requirements-refinement/resources/requirements-analysis-report.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "requirements-refinement/resources/specification-protocol.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "requirements-refinement/resources/validation-report.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "requirements-refinement/resources/validation-rubric.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "substrate-node-security-audit/resources/audit-prompt-template.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "substrate-node-security-audit/resources/audit-template-reference.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "substrate-node-security-audit/resources/second-pass-findings.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "substrate-node-security-audit/resources/static-analysis-patterns.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "substrate-node-security-audit/resources/target-profile.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/adr.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/architecture-review.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/architecture-summary.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/assumption-reconciliation.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/codebase-comprehension.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/deferred-items.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/design-framework.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/follow-ups.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/github-issue-creation.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/implementation-analysis.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/jira-issue-creation.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/knowledge-base-research.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/pr-description.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/prior-feedback-triage.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/provenance-log.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/readme.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/requirements-elicitation.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/research-reconciliation.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/review-mode.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/strategic-review.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/test-plan.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/test-suite-review.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/token-usage.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-package/resources/wp-plan.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-packages/resources/prioritization-framework.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-packages/resources/priority-ranking.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "work-packages/resources/workflow-triggering-protocol.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-authoring/resources/change-brief.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-authoring/resources/completion-artifact.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-authoring/resources/elicitation-guide.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-authoring/resources/findings-register.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-authoring/resources/impact-analysis.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-authoring/resources/scope-manifest.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/anti-patterns.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/applicable-constructs.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/completion-artifact.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/compliance-report.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/convention-conformance.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/design-assumptions.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/design-principles.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/design-specification.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/draft-attestation.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/drafting-plan.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/elicitation-guide.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/file-review-note.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/findings-satellite.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/follow-ups.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/format-conventions.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/impact-analysis.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/pattern-analysis.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/scope-manifest.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
+      "site": "workflow-design/resources/structural-inventory.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    }
+  ]
+}
