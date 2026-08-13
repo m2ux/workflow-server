@@ -43,7 +43,14 @@ const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
  */
 const CORPUS_TRIAGE = resolve(join(ROOT, 'section-framing-triage.json'));
 const LEGACY_TRIAGE = resolve(join(DIR, 'section-framing-triage.json'));
-const TRIAGE = existsSync(CORPUS_TRIAGE) ? CORPUS_TRIAGE : LEGACY_TRIAGE;
+
+/**
+ * Which triage this run reads. Exported so a test asserts against the same file the guard used
+ * rather than resolving the path a second time — the two would disagree the moment a corpus
+ * predating the move is pinned, which is exactly when the fallback matters.
+ */
+export const TRIAGE_PATH = existsSync(CORPUS_TRIAGE) ? CORPUS_TRIAGE : LEGACY_TRIAGE;
+const TRIAGE = TRIAGE_PATH;
 
 /**
  * Below this, framing is a line of orientation rather than a place an obligation can hide. The
