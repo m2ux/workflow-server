@@ -12,14 +12,24 @@ import { corpusRoot } from '../corpus-root.js';
  * Unlike the work-package walk (which uses hand-tuned policies to steer specific branches), this
  * drives EACH workflow with the generic `defaultPolicy` + `autoAdvance`: the walker optimistically
  * satisfies forward gate conditions toward unvisited activities, standing in for the convergence
- * variables a real agent would set — so no workflow-specific simulation is needed. It is the
- * functional-drift guard for structural refactors: every activity the walk reaches must load via
- * the real loader and resolve every technique reference (zero `unresolved`).
+ * variables a real agent would set — so no workflow-specific simulation is needed.
+ *
+ * What it covers, precisely: every activity the graph reaches loads through the real loader, and
+ * the activity-level technique references resolve (zero `unresolved`). In `mode: 'graph'` the walk
+ * traverses activities and transitions and executes no steps at all — `stepsExecuted` is empty for
+ * every workflow here, work-package included — so it never fetches a step's technique and cannot
+ * see a step binding that fails to resolve. A workflow whose every step binding was broken walked
+ * this graph to completion and passed.
+ *
+ * Step-binding resolution has a home: the `binding-fidelity` guard resolves each step's `technique`
+ * ref the way the server does and reports the ones that do not, and it runs on corpus pull requests.
+ * Do not add a second resolver here — read that guard instead, and treat this walk as what it is,
+ * a graph-reachability and activity-load check.
  *
  * The roster comes from the corpus, not from a list here. A hand-maintained list is a second home
  * for which workflows exist, and it drifts silently: a workflow added to the corpus and omitted
- * here is not walked, and nothing reports that it was skipped — which is how a workflow whose every
- * step failed to resolve reached a merge.
+ * here is not walked, and nothing reports that it was skipped — which is how the workflow above
+ * reached a merge with nothing measuring it.
  */
 function corpusWorkflows(): string[] {
   const root = corpusRoot();
