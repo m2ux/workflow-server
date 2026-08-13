@@ -21,7 +21,7 @@ Markdown resources for design principles, construct inventories, anti-pattern ca
 | `08` | [Design Assumption Reconciliation](design-assumption-reconciliation.md) | Audit vs open resolvability vocabulary |
 | `09` | [Elicitation Guide](elicitation-guide.md) | Mode dimension sets + per-dimension capture/question bank |
 | `10` | [Convention Conformance](convention-conformance.md) | Reference conventions vs sibling workflows |
-| `11` | [Structural Inventory](structural-inventory.md) | Creation guide: `structural-inventory.md` |
+| `11` | [Structural Inventory](structural-inventory.md) | Creation guide: `structural-inventory.json` |
 | `12` | [Format Conventions](format-conventions.md) | Creation guide: `format-conventions.md` |
 | `13` | [Applicable Constructs](applicable-constructs.md) | Creation guide: `applicable-constructs.md` |
 | `14` | [Design Specification](design-specification.md) | Creation guide: `design-specification.md` |
@@ -43,7 +43,7 @@ Markdown resources for design principles, construct inventories, anti-pattern ca
 | `README.md` | [planning-readme](../../meta/resources/planning-readme.md) Template + [readme-seed](readme-seed.md) |
 | `COMPLETE.md` | [completion-artifact](completion-artifact.md) |
 | `assumptions-log.md` | [design-assumptions](design-assumptions.md) |
-| `structural-inventory.md` | [structural-inventory](structural-inventory.md) |
+| `structural-inventory.json` | [structural-inventory](structural-inventory.md) |
 | `format-conventions.md` | [format-conventions](format-conventions.md) |
 | `applicable-constructs.md` | [applicable-constructs](applicable-constructs.md) |
 | `design-specification.md` | [design-specification](design-specification.md) |

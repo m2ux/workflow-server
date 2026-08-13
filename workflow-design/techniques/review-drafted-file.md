@@ -27,6 +27,10 @@ Per-file delta note for `{current_file}` following the [File Review Note Guide](
 
 `file-review-note.md`
 
+#### audience
+
+`human`
+
 ### file_review_note_path
 
 Absolute path to the persisted file-review note (updated in place each file iteration).

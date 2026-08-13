@@ -1253,15 +1253,15 @@ Output-discipline rules exist without a verify gate.
 
 ### AP-96. artifact-audience-declared
 
-"assumptions-log / change-block-index / provenance-log / debt-ledger — dense ID-bearing tables as prose markdown between human documents"
+"`#### artifact` / `debt-ledger.md`" — a filename with no `#### audience` beneath it
 
 An artifact's primary audience is undeclared.
 
-**Detect:** Output declaration carries only a filename; agent-state artifacts (lifecycle logs, indexes, ledgers only downstream steps re-read) default to the same prose-markdown shape as human-facing documents.
+**Detect:** An output declaring `#### artifact` carries no `#### audience`. Absence reads as `human` by default, so an agent-state artifact — a lifecycle log, index or ledger only later steps re-read — silently keeps the prose-markdown shape a human document has.
 
-**Do not flag:** Human-primary documents that should stay prose.
+**Do not flag:** An output with no `#### artifact`. Audience is a property of a file on disk, so a component or in-memory output has none to declare.
 
-**Fix:** Decide each artifact's primary audience (human | agent) at design time — human → prose; agent state → structured one-row-per-item data. Record audience in the output declaration's description until the technique protocol carries a first-class audience attribute.
+**Fix:** Decide the audience at design time and declare it: `human` → prose; `agent` → structured one-entry-per-item data, serialized as JSON on disk (`check-audience` enforces the format, and `audience-declared` the presence). Where a person is pointed at the artifact — a progress-inventory row, a gate message linking it — that reader is the one the format has to serve.
 
 ### AP-97. link-named-artifacts
 

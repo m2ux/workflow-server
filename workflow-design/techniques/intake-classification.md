@@ -47,15 +47,15 @@ Ordered list of workflow ids to audit in review mode. One element for single-tar
 
 ### structural_inventory
 
-Per-target structural inventory following the [Structural Inventory Guide](../resources/structural-inventory.md#template): file counts, entity counts, activity ids, and one-line update scope.
+Per-target structural inventory following the [Structural Inventory Guide](../resources/structural-inventory.md#template): file counts, entity counts, step kinds, activity ids in order, and the scope of the change under way.
 
 #### artifact
 
-`structural-inventory.md`
+`structural-inventory.json`
 
-### structural_inventory_path
+#### audience
 
-Absolute path to the persisted structural-inventory artifact when `{operation_type}` is `update` or `review`; empty otherwise.
+`agent`
 
 ### change_category
 
@@ -86,8 +86,8 @@ When `{operation_type}` is `update`, the categorized change request derived from
 
 ### 5. Persist Structural Inventory
 
-- When `{operation_type}` is `update` or `review`: persist `{structural_inventory}` via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `structural-inventory.md` per [structural-inventory](../resources/structural-inventory.md#template); capture `{structural_inventory_path}`
-- When create mode: leave `{structural_inventory_path}` empty
+- When `{operation_type}` is `update` or `review`: persist `{structural_inventory}` via the calling activity's bound `manage-artifacts::write-artifact` step with *target_dir* `{planning_folder_path}` and bare filename `structural-inventory.json` per [structural-inventory](../resources/structural-inventory.md#template)
+- When create mode: build no inventory, there being no existing definition to snapshot
 
 ### 6. Parse Change Request
 

@@ -19,7 +19,7 @@ Update-mode decision surface. Answers: what is touched, is integrity intact, and
 **Mode:** Update
 **Date:** YYYY-MM-DD
 **Change source:** [design specification](NN-design-specification.md)
-**Baseline:** [structural inventory](NN-structural-inventory.md)
+**Baseline:** [structural inventory](NN-structural-inventory.json)
 
 ---
 
