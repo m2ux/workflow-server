@@ -7,9 +7,11 @@ metadata:
 
 # Merge-Readiness Verdict Rubric
 
-The verdict is computed from the **accepted** findings only. Observations and dismissed candidates never move the score — they may appear in the rationale and the report, but a review with zero accepted findings is merge-ready no matter how many observations it carries. Compute mechanically from the level definitions; record which line fired.
+The 1-5 merge-readiness scale, its calibration anchors, the run status vocabulary, and the mapping from a verdict to a review type.
 
 ## The Scale
+
+The verdict is computed from the **accepted** findings only. Observations and dismissed candidates never move the score — they may appear in the rationale and the report, but a review with zero accepted findings is merge-ready no matter how many observations it carries. Compute mechanically from the level definitions; record which line fired.
 
 | Verdict | Meaning | Definition (accepted-set profile) |
 |---------|---------|-----------------------------------|

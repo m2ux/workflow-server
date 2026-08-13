@@ -1,12 +1,12 @@
 # Review Taxonomy
 
-The single source for the over-engineering tags, the one-line-per-finding format, and the scoreboard that closes a review. Scope is over-engineering only — correctness, security, and performance belong to the safety floor and are never tagged here.
+The single source for the over-engineering tags, the one-line-per-finding format, and the scoreboard that closes a review.
 
 ---
 
 ## Tags
 
-Five tags classify every over-engineering finding. Each names the simpler rung that would replace the construct.
+Scope is over-engineering only — correctness, security, and performance belong to the safety floor and are never tagged here. Five tags classify every over-engineering finding. Each names the simpler rung that would replace the construct.
 
 - **delete** — The construct can be removed outright; nothing depends on it. Dead code, an unused parameter, a flag no path reads, a comment that restates the line below it, a comment/doc block whose bulk dwarfs the code it annotates with no unique why, or a speculative feature / unused flexibility that no path actually needs.
   *Example:* `L42: delete unused 'verbose' parameter — no caller passes it.`

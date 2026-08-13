@@ -10,7 +10,7 @@ metadata:
 
 # Assumptions Guide
 
-The assumptions log is the single record of truth for assumptions — one row per assumption, updated in place. Never restate assumption content in other artifacts (single-source-and-link).
+The assumptions log template, with the category, risk and probe vocabulary that fills its rows.
 
 ## Probe Vocabulary
 
@@ -40,6 +40,7 @@ Common origins of false assumptions: missing/stale information, conditions that 
 
 ## Assumptions Log Template
 
+The log is the single record of truth for assumptions — one row per assumption, updated in place. Never restate assumption content in another artifact; link to the row instead (single-source-and-link).
 
 **Template:**
 

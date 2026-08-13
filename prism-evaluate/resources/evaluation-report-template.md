@@ -8,13 +8,11 @@ metadata:
 
 # Evaluation Report Template
 
-Template for the consolidated evaluation report. The
-report consolidates prism analysis artifacts across all evaluation dimensions into a unified, standalone
-document. The report MUST NOT
-contain methodology metadata — no lens names, pipeline modes, pass descriptions, or process narratives;
-findings are presented as conclusions.
+Template for the consolidated evaluation report, which gathers prism analysis artifacts across all evaluation dimensions into one standalone document.
 
 ## Evaluation Report Template
+
+The report MUST NOT contain methodology metadata — no lens names, pipeline modes, pass descriptions, or process narratives; findings are presented as conclusions.
 
 ```markdown
 # Evaluation Report: {target name}
