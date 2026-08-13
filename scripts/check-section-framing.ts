@@ -18,7 +18,7 @@
  *
  * The judgement this cannot make is whether the framing is operative or orientation. A guide that
  * opens "Creation guide for X. The reader is deciding whether to spend the run." strands nothing;
- * one that opens with a precedence rule strands it. So a site is either classified in
+ * one that opens with a precedence rule strands it. So a site is either classified in the corpus's
  * `section-framing-triage.json` with a verdict and a named rationale, or it is reported. An entry
  * matching nothing is stale and reported too, so the triage cannot outlive the prose it describes.
  *
@@ -32,25 +32,19 @@ import { resolveWorkflowsRoot } from './workflows-root.js';
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
 /**
- * The triage lives with the corpus, not with this script. Its entries are judgements about corpus
- * prose, so a change that moves a rule into a section and the entry describing that prose belong in
- * one commit. Held beside this script instead, the two could never agree: fixing the prose stranded
- * the entry, and the pull request fixing it could not reach the file — the corpus and the tooling are
- * separate histories, so a corpus change was red whichever side moved first.
+ * The triage lives with the corpus. Its entries are judgements about corpus prose, so a change that
+ * moves a rule into a section and the entry describing that prose belong in one commit. Held beside
+ * this script instead, the two could not agree: fixing the prose stranded the entry, and the pull
+ * request fixing it could not reach a file in `scripts/` — the corpus and the tooling are separate
+ * histories, so a corpus change was red whichever side moved first.
  *
- * The fallback beside this script carries a corpus pinned before the triage moved into it, and goes
- * once no supported pin predates the move.
+ * Exported so a test asserts against the same file the guard read rather than resolving the path a
+ * second time.
  */
-const CORPUS_TRIAGE = resolve(join(ROOT, 'section-framing-triage.json'));
-const LEGACY_TRIAGE = resolve(join(DIR, 'section-framing-triage.json'));
+export const TRIAGE_PATH = resolve(join(ROOT, 'section-framing-triage.json'));
 
-/**
- * Which triage this run reads. Exported so a test asserts against the same file the guard used
- * rather than resolving the path a second time — the two would disagree the moment a corpus
- * predating the move is pinned, which is exactly when the fallback matters.
- */
-export const TRIAGE_PATH = existsSync(CORPUS_TRIAGE) ? CORPUS_TRIAGE : LEGACY_TRIAGE;
-const TRIAGE = TRIAGE_PATH;
+/** What to call the triage in a finding, so the message names the file the reader has to open. */
+const TRIAGE_LABEL = relative(process.cwd(), TRIAGE_PATH);
 
 /**
  * Below this, framing is a line of orientation rather than a place an obligation can hide. The
@@ -109,8 +103,8 @@ export function collectFramingFindings(): FramingFinding[] {
     }
   }
 
-  const triage: Triage = existsSync(TRIAGE)
-    ? (JSON.parse(readFileSync(TRIAGE, 'utf-8')) as Triage)
+  const triage: Triage = existsSync(TRIAGE_PATH)
+    ? (JSON.parse(readFileSync(TRIAGE_PATH, 'utf-8')) as Triage)
     : {};
   const classified = new Map((triage.entries ?? []).map((e) => [e.site, e]));
   const matched = new Set<string>();
@@ -136,7 +130,7 @@ export function collectFramingFindings(): FramingFinding[] {
       site: rel,
       detail: `${chars} characters before the first '##', and ${citers.size} file(s) cite this resource by anchor — `
         + `a section consumer never receives that prose. Move an obligation into a section a citer can ask for, `
-        + `or classify the site in scripts/section-framing-triage.json when the framing is orientation only`,
+        + `or classify the site in ${TRIAGE_LABEL} when the framing is orientation only`,
     });
   }
 
@@ -145,7 +139,7 @@ export function collectFramingFindings(): FramingFinding[] {
       out.push({
         check: 'stale-triage',
         site,
-        detail: 'triaged framing no longer occurs — delete the entry from scripts/section-framing-triage.json',
+        detail: `triaged framing no longer occurs — delete the entry from ${TRIAGE_LABEL}`,
       });
     }
   }

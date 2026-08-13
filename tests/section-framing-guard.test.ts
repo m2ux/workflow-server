@@ -5,8 +5,8 @@ import { collectFramingFindings, TRIAGE_PATH } from '../scripts/check-section-fr
 /**
  * Section-framing guard. A resource cited by anchor is delivered one section at a time, so prose
  * above the first `##` never reaches a section consumer. The guard finds those sites mechanically;
- * `scripts/section-framing-triage.json` carries the judgement of whether the prose is an obligation
- * or an orientation, and an untriaged site is reported.
+ * the corpus's `section-framing-triage.json` carries the judgement of whether the prose is an
+ * obligation or an orientation, and an untriaged site is reported.
  */
 describe('section-framing guard (corpus)', () => {
   it('leaves no framing site untriaged and no triage entry stale', () => {

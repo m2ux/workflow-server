@@ -1,5 +1,5 @@
 /**
- * check-audience — agent-audience artifact JSON-format convention guard (#224 V4).
+ * check-audience — artifact audience declaration and JSON-format guard (#224 V4).
  *
  * An output declared with `#### audience` = `agent` is written for the next agent to consume as
  * state, and by convention (docs/technique-protocol-specification.md §3.2) an agent-audience
@@ -8,10 +8,13 @@
  * `#### artifact` filename, asserts the artifact name follows the JSON-format convention: it (or,
  * for a `{token}`-template name, its literal suffix) ends in `.json`.
  *
- * It does not check that an artifact declares an audience at all. A register whose only reader is a
- * later step is agent state in substance but markdown in form, and `agent` implies JSON, so those
- * registers carry no declaration until #428 converts them. A presence check would fail on exactly
- * the set that is waiting, so presence lands with the conversion.
+ * It also asserts that an output declaring an artifact declares an audience for it. Absence reads as
+ * `human` by default, so an agent-state register — a log, index or ledger only later steps re-read —
+ * silently keeps the prose shape a human document has, which is how a reader-less artifact acquires
+ * a reader nobody chose. An output with no `#### artifact` is out of scope for both halves: audience
+ * is a property of a file on disk, and a component or in-memory output is not one.
+ *
+ * The catalog entry `artifact-audience-declared` names both halves and this guard proves them.
  *
  * This is a distinct concern from check-binding-fidelity.ts — that guard checks input/output
  * binding conformance and treats `#### artifact` as opaque presence. Audience is a separate
@@ -40,7 +43,7 @@ const GROUPED_INDEX = 'TECHNIQUE.md';
 
 export interface AudienceViolation {
   /** Which finding family this violation belongs to. */
-  check: 'audience-json-format';
+  check: 'audience-json-format' | 'audience-declared';
   /** `<workflow>::<technique-id>::<output-id>`. */
   key: string;
   detail: string;
@@ -104,11 +107,21 @@ export async function collectAudienceViolations(root: string = DEFAULT_ROOT): Pr
     for (const { id, technique } of await loadWorkflowTechniques(techniquesDir)) {
       scanned++;
       for (const o of technique.outputs ?? []) {
-        // Only agent-audience outputs that also declare an artifact filename are in scope: those
-        // are the artifacts written to disk that the convention says must be JSON.
-        if (o.audience !== 'agent') continue;
+        // An output declaring an artifact filename is a file on disk, and only a file has an
+        // audience. Everything else — components, in-memory values — is out of scope for both halves.
         const name = o.artifact?.name;
         if (!name) continue;
+
+        if (!o.audience) {
+          out.push({
+            check: 'audience-declared',
+            key: `${workflow}::${technique.id}::${o.id}`,
+            detail: `output '${o.id}' in technique '${id}' declares artifact '${name}' with no audience — absence reads as human, so agent state keeps a prose shape nobody chose for it (declare 'human' for a document a person reads, or 'agent' for state a later step re-reads, which is JSON on disk)`,
+          });
+          continue;
+        }
+
+        if (o.audience !== 'agent') continue;
         if (!isJsonArtifactName(name)) {
           out.push({
             check: 'audience-json-format',
@@ -130,7 +143,7 @@ export async function collectFindings(root: string = DEFAULT_ROOT): Promise<Find
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
   await runGuard('audience', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
-    okMessage: 'every agent-audience artifact is JSON on disk',
-    remedy: 'rename each artifact to a .json filename',
+    okMessage: 'every artifact declares its audience, and every agent-audience artifact is JSON on disk',
+    remedy: 'declare an audience on each artifact, and rename each agent-audience artifact to a .json filename',
   });
 }
