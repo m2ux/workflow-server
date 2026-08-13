@@ -42,6 +42,13 @@ export const GUARDS: GuardSpec[] = [
     proves: 'no technique redeclares an input a container contract already merges into it',
   },
   {
+    id: 'section-framing',
+    script: 'scripts/check-section-framing.ts',
+    npmScript: 'check:framing',
+    scope: 'corpus',
+    proves: 'no resource strands prose above its first section from a consumer that cites it by anchor',
+  },
+  {
     id: 'identifier-qualification',
     script: 'scripts/check-identifier-qualification.ts',
     npmScript: 'check:identifiers',
