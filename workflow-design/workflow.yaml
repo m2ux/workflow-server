@@ -142,10 +142,6 @@ variables:
     type: string
     description: Absolute path to the persisted compliance or post-update review report.
     defaultValue: ""
-  - name: structural_inventory_path
-    type: string
-    description: Absolute path to the persisted structural-inventory artifact (update/review).
-    defaultValue: ""
   - name: drafting_plan_path
     type: string
     description: Absolute path to the persisted per-file drafting-plan artifact.

@@ -18,7 +18,7 @@ steps:
     technique:
       name: work-package::manage-artifacts::write-artifact
       inputs:
-        bare_filename: structural-inventory.md
+        bare_filename: structural-inventory.json
         artifact_content: structural_inventory
         target_dir: planning_folder_path
     when: operation_type == "update" || operation_type == "review"
@@ -90,7 +90,7 @@ steps:
         target: review_scope_confirmed
         value: true
       - action: message
-        message: "Compliance review target set: {target_workflow_ids} ([structural inventory]({structural_inventory_path}))."
+        message: "Compliance review target set: {target_workflow_ids}."
   - kind: action
     id: announce-review-seeded-update
     when: update_seeded_from_review == true

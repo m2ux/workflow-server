@@ -77,7 +77,7 @@ The canonical home for each shared design-session fact category. Templates carry
 | File manifest, structural design, drafting order | `scope-manifest.md` |
 | Format / YAML literacy | `format-conventions.md` |
 | Applicable schema constructs | `applicable-constructs.md` |
-| Structural inventory baseline | `structural-inventory.md` |
+| Structural inventory baseline | `structural-inventory.json` |
 | Pattern analysis findings | `pattern-analysis.md` |
 | Compliance / audit findings | `compliance-report.md` (and findings satellites) |
 | In-task follow-ups | `follow-ups.md` (see [follow-ups](../resources/follow-ups.md)) |

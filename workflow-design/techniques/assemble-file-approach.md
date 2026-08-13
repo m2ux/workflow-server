@@ -27,6 +27,10 @@ The per-file delta for `{current_file}` following the [Drafting Plan Guide](../r
 
 `drafting-plan.md`
 
+#### audience
+
+`human`
+
 ### drafting_plan_path
 
 Absolute path to the persisted drafting-plan artifact for the current file.

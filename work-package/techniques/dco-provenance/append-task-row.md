@@ -59,6 +59,10 @@ The updated provenance log, with the appended task row
 
 `provenance-log.md`
 
+#### audience
+
+`human`
+
 ## Protocol
 
 1. Create the `{provenance_log}` when it does not exist, per [provenance-log](../../resources/provenance-log.md#template).
