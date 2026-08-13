@@ -42,12 +42,19 @@ jobs:
           submodules: false
 
       # The corpus under review, where check:all looks for it by default. For a pull request this is
-      # the merge result; for a manual run it is the ref the run was dispatched on.
+      # the branch tip; for a manual run it is the ref the run was dispatched on.
+      #
+      # The tip, not the merge result. GitHub computes a pull request's merge commit asynchronously,
+      # so the sha in the event payload can name a merge of the previous push — the run then grades a
+      # corpus one commit behind the one that triggered it and reports on prose the branch no longer
+      # carries. That happened: a commit moving a triage record into the corpus was graded against
+      # the tree without it, and the failure named a file the push had already fixed. The tip is
+      # whatever was pushed, every time.
       - name: Check out the corpus under review
         uses: actions/checkout@v4
         with:
           repository: ${{ github.repository }}
-          ref: ${{ github.event.pull_request.merge_commit_sha || github.sha }}
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
           path: workflows
 
       - uses: actions/setup-node@v4
