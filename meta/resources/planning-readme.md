@@ -78,6 +78,7 @@ Tracks workflow **activities** (primary) and their planning artifacts (siblings 
 - When an activity produces artifacts, add artifact link rows for it. Pattern: optional activity milestone row plus artifact siblings, or let the first artifact row stand for the activity — apply one pattern consistently per workflow seed. Minimum bar: every activity owns at least one row.
 - **Seed the optional paths too**, including rows the current mode excludes. Undecided optional-path rows start pending; rows already out of scope for this run start cancelled/N/A (e.g. review-only artifacts in an implement seed, create-only activities when `is_review_mode`) so the exclusion is visible immediately rather than indistinguishable from work still in contention. A later path skip writes the same cancelled/N/A — [Status vocabulary](#status-vocabulary) covers both.
 - Estimate: expected agentic time — adjust template defaults to the work's complexity.
+- **An agent-audience artifact gets no row.** The table is read by a person, and an artifact whose declaration names an agent as its reader is not one they open. The activity that produces it still owns a row, so the work stays visible without linking a file nobody reads.
 - Distinct from the header-line `**Status:**` lifecycle field (Planning/Drafting/…), which remains text and is **not** mutated by Progress Status writers — lifecycle updates stay with [commit-and-persist](../techniques/workflow-engine/commit-and-persist.md).
 
 #### Item cell
