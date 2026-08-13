@@ -24,11 +24,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
     {
       "activity": "start-work-package",
       "artifacts": [
-        "prior-feedback-triage.md",
+        "prior-feedback-triage.json",
         "README.md",
       ],
       "artifactsWritten": [
-        "01-prior-feedback-triage.md",
+        "01-prior-feedback-triage.json",
         "01-README.md",
       ],
       "checkpoints": [
@@ -221,11 +221,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "debt-ledger.md",
+        "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-debt-ledger.md",
+        "09-debt-ledger.json",
         "09-lean-change.md",
       ],
       "checkpoints": [
@@ -463,11 +463,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
     {
       "activity": "start-work-package",
       "artifacts": [
-        "prior-feedback-triage.md",
+        "prior-feedback-triage.json",
         "README.md",
       ],
       "artifactsWritten": [
-        "01-prior-feedback-triage.md",
+        "01-prior-feedback-triage.json",
         "01-README.md",
       ],
       "checkpoints": [
@@ -724,11 +724,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "debt-ledger.md",
+        "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-debt-ledger.md",
+        "09-debt-ledger.json",
         "09-lean-change.md",
       ],
       "checkpoints": [
@@ -969,11 +969,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
     {
       "activity": "start-work-package",
       "artifacts": [
-        "prior-feedback-triage.md",
+        "prior-feedback-triage.json",
         "README.md",
       ],
       "artifactsWritten": [
-        "01-prior-feedback-triage.md",
+        "01-prior-feedback-triage.json",
         "01-README.md",
       ],
       "checkpoints": [
@@ -1258,11 +1258,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "debt-ledger.md",
+        "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-debt-ledger.md",
+        "09-debt-ledger.json",
         "09-lean-change.md",
       ],
       "checkpoints": [
@@ -1502,11 +1502,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
     {
       "activity": "start-work-package",
       "artifacts": [
-        "prior-feedback-triage.md",
+        "prior-feedback-triage.json",
         "README.md",
       ],
       "artifactsWritten": [
-        "01-prior-feedback-triage.md",
+        "01-prior-feedback-triage.json",
         "01-README.md",
       ],
       "checkpoints": [
@@ -1751,11 +1751,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "debt-ledger.md",
+        "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-debt-ledger.md",
+        "09-debt-ledger.json",
         "09-lean-change.md",
       ],
       "checkpoints": [
@@ -1993,11 +1993,11 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
     {
       "activity": "start-work-package",
       "artifacts": [
-        "prior-feedback-triage.md",
+        "prior-feedback-triage.json",
         "README.md",
       ],
       "artifactsWritten": [
-        "01-prior-feedback-triage.md",
+        "01-prior-feedback-triage.json",
         "01-README.md",
       ],
       "checkpoints": [],
@@ -2155,11 +2155,11 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "debt-ledger.md",
+        "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-debt-ledger.md",
+        "09-debt-ledger.json",
         "09-lean-change.md",
       ],
       "checkpoints": [],
@@ -2366,11 +2366,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
     {
       "activity": "start-work-package",
       "artifacts": [
-        "prior-feedback-triage.md",
+        "prior-feedback-triage.json",
         "README.md",
       ],
       "artifactsWritten": [
-        "01-prior-feedback-triage.md",
+        "01-prior-feedback-triage.json",
         "01-README.md",
       ],
       "checkpoints": [
@@ -2563,11 +2563,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "debt-ledger.md",
+        "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-debt-ledger.md",
+        "09-debt-ledger.json",
         "09-lean-change.md",
       ],
       "checkpoints": [
