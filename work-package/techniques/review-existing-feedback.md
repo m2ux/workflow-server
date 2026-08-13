@@ -21,7 +21,11 @@ The triage table: one row per prior comment or review thread, each marked Confir
 
 #### artifact
 
-`prior-feedback-triage.md`
+`prior-feedback-triage.json`
+
+#### audience
+
+`agent`
 
 ### rating_cap
 

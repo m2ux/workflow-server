@@ -14,7 +14,7 @@ rules:
   workflow:
     - ref: prism-audit::orchestration-model
     - Agents MUST NOT proceed past blocking checkpoints without user confirmation — auto-resolving a checkpoint is a protocol violation
-    - "CONTRACT REUSE: prism owns analysis, per-unit iteration, blast-radius enrichment, methodology-stripping, finding-ID assignment, and consolidation within a run. This workflow adds only what prism does not: evaluation dimensions, cross-dimensional synthesis, and the resolution dialogue. It sets analysis_focus to the dimension-specific evaluation guidance (naming the dimension so prism assigns dimension-prefixed IDs), reads prism's contract artifacts (`RUN-MANIFEST.md`, `REPORT.md`, `DEFINITIVE-FINDINGS.md`), and never re-reads prism's raw pass artifacts."
+    - "CONTRACT REUSE: prism owns analysis, per-unit iteration, blast-radius enrichment, methodology-stripping, finding-ID assignment, and consolidation within a run. This workflow adds only what prism does not: evaluation dimensions, cross-dimensional synthesis, and the resolution dialogue. It sets analysis_focus to the dimension-specific evaluation guidance (naming the dimension so prism assigns dimension-prefixed IDs), reads prism's contract artifacts (`RUN-MANIFEST.json`, `REPORT.md`, `DEFINITIVE-FINDINGS.md`), and never re-reads prism's raw pass artifacts."
   activity:
     - ref: prism::worker-permissions
     - ref: prism::artifact-verification
@@ -60,7 +60,7 @@ variables:
     description: Current execution group during the execute-analysis iteration loop
   - name: completed_analyses
     type: array
-    description: "Array of completed prism runs, each read from that run's `RUN-MANIFEST.md`: { report_path, definitive_findings_path, status } plus the run's group reference"
+    description: "Array of completed prism runs, each read from that run's `RUN-MANIFEST.json`: { report_path, definitive_findings_path, status } plus the run's group reference"
   - name: all_artifact_paths
     type: array
     description: Accumulated paths to all analysis artifacts across triggered prism workflows

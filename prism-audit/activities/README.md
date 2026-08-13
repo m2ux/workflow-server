@@ -26,7 +26,7 @@ Definition: [`01-prompt-generation.yaml`](01-prompt-generation.yaml). Leads to [
 
 ### 02. Execute Prism Analysis
 
-Trigger the generic [prism](../../prism/README.md) workflow once per entry in `audit_scopes`. After verifying the scopes exist, a `forEach` loop composes each scope's trigger context, dispatches prism as a child workflow via `workflow-engine::handle-sub-workflow`, and records the run from its `RUN-MANIFEST.md` — prism has already verified its own completion, so no re-scan or re-verification happens here. Scopes run sequentially so each prism run has full resources and no cross-analysis interference. **Value:** every audit scope has a completed prism analysis whose contract artifacts finalization can consolidate.
+Trigger the generic [prism](../../prism/README.md) workflow once per entry in `audit_scopes`. After verifying the scopes exist, a `forEach` loop composes each scope's trigger context, dispatches prism as a child workflow via `workflow-engine::handle-sub-workflow`, and records the run from its `RUN-MANIFEST.json` — prism has already verified its own completion, so no re-scan or re-verification happens here. Scopes run sequentially so each prism run has full resources and no cross-analysis interference. **Value:** every audit scope has a completed prism analysis whose contract artifacts finalization can consolidate.
 
 Definition: [`02-execute-analysis.yaml`](02-execute-analysis.yaml). Leads to [Audit Report Finalization](#03-audit-report-finalization).
 

@@ -19,7 +19,7 @@ The authoritative content lives in each `.md` file and is served by `get_resourc
 | [lean-brief.md](lean-brief.md) | Creation guide: `lean-brief.md` — the traced flow, reachable rungs, and obligations in play | `#template` |
 | [lean-change.md](lean-change.md) | Creation guide: `lean-change.md` — code first, then at most three lines on what was skipped | `#template` |
 | [audit-findings.md](audit-findings.md) | Creation guide: `audit-findings.md` — one line per finding, biggest cut first, net scoreboard | `#template` |
-| [debt-ledger.md](debt-ledger.md) | Creation guide: `debt-ledger.md` — one row per marker with its ceiling and upgrade trigger | `#template` |
+| [debt-ledger.md](debt-ledger.md) | Creation guide: `debt-ledger.json` — one row per marker with its ceiling and upgrade trigger | `#template` |
 
 ---
 
@@ -30,7 +30,7 @@ The authoritative content lives in each `.md` file and is served by `get_resourc
 | `lean-brief.md` | [lean-brief](lean-brief.md) |
 | `lean-change.md` | [lean-change](lean-change.md) |
 | `audit-findings.md` | [audit-findings](audit-findings.md) |
-| `debt-ledger.md` | [debt-ledger](debt-ledger.md) |
+| `debt-ledger.json` | [debt-ledger](debt-ledger.md) |
 
 ---
 

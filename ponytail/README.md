@@ -129,8 +129,8 @@ workflows/ponytail/
 │   ├── apply-ladder.md                        # Climb the rungs → lean-change.md
 │   ├── review-over-engineering.md             # Diff-scoped tagged review → review-findings.md
 │   ├── audit-repo.md                          # Repo-wide hunt → audit-findings.md
-│   ├── harvest-debt.md                        # Grep ponytail markers → debt-ledger.md
-│   └── report-gain.md                         # Honesty-bounded gain scoreboard (appends to debt-ledger.md)
+│   ├── harvest-debt.md                        # Grep ponytail markers → debt-ledger.json
+│   └── report-gain.md                         # Honesty-bounded gain scoreboard (fills the ledger gain field)
 └── resources/
     ├── README.md                              # Resource catalog
     ├── the-ladder.md                          # 7 rungs + safety floor + understand-first

@@ -8,7 +8,7 @@ Given a PR reference or local diff, the workflow derives investigation areas fro
 
 Four user decision points bound the run — scope confirmation (non-blocking, 30s auto-advance), investigation-plan approval (blocking, with an amendment loop), verdict sign-off (blocking, with a rework path back to area derivation), and publish authorization (blocking, only when a PR surface exists). Probing and adjudication run checkpoint-free between the plan and verdict gates.
 
-Declared variables are run configuration and boolean gates only (`review_target`, `target_repo_path`, `base_ref`, `planning_folder_path`, `insight_repo_path`, `probe_budget_per_area`, plus the `has_pr_surface`, toolchain, `plan_approved`, and `publish_requested` gates); rich data flows through step outputs and the planning-folder artifacts (`change-surface.md`, `investigation-plan.md`, `evidence-log.md`, `findings-register.md`, `review-report.md`, `publication-record.md`).
+Declared variables are run configuration and boolean gates only (`review_target`, `target_repo_path`, `base_ref`, `planning_folder_path`, `insight_repo_path`, `probe_budget_per_area`, plus the `has_pr_surface`, toolchain, `plan_approved`, and `publish_requested` gates); rich data flows through step outputs and the planning-folder artifacts (`change-surface.md`, `investigation-plan.md`, `evidence-log.json`, `findings-register.md`, `review-report.md`, `publication-record.md`).
 
 ## Getting Started
 

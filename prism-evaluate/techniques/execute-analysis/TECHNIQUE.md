@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Record a triggered prism run from its RUN-MANIFEST.md — the report, definitive findings, artifact paths, and prism-reported completion status — into the evaluation's accumulators. prism generates, enriches, and verifies its own results, so this set only reads the manifest; it does not re-extract findings, re-scan the output directory, or re-verify completion.
+Record a triggered prism run from its RUN-MANIFEST.json — the report, definitive findings, artifact paths, and prism-reported completion status — into the evaluation's accumulators. prism generates, enriches, and verifies its own results, so this set only reads the manifest; it does not re-extract findings, re-scan the output directory, or re-verify completion.
 
 ## Inputs
 

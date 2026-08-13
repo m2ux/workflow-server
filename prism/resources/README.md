@@ -307,7 +307,7 @@ Document skeletons, as distinct from the lens prompts above. A per-lens analysis
 | `behavioral-promises.md` | [api-surface](api-surface.md) |
 | `subsystem-synthesis.md` | [subsystem-synthesis](subsystem-synthesis.md) |
 | `smart-prereq.md` | [prereq](prereq.md) |
-| `RUN-MANIFEST.md` | [run-manifest](run-manifest.md) |
+| `RUN-MANIFEST.json` | [run-manifest](run-manifest.md) |
 | `portfolio-synthesis.md` | [portfolio-synthesis](portfolio-synthesis.md) |
 | `reflect-synthesis.md` | [reflect-synthesis](reflect-synthesis.md) |
 

@@ -15,7 +15,11 @@ The debt ledger — one row per [ponytail marker](../../ponytail/resources/ponyt
 
 #### artifact
 
-`debt-ledger.md`
+`debt-ledger.json`
+
+#### audience
+
+`agent`
 
 ### has_debt_markers
 
@@ -29,7 +33,7 @@ Whether any ponytail marker was found — true when the ledger has at least one 
 
 ### 2. Build the ledger
 
-- Add a row per marker to `{debt_ledger}` in `{artifact_dir}` per [debt-ledger](../resources/debt-ledger.md#template) and its [Rules](../resources/debt-ledger.md#rules), with the ceiling and upgrade trigger drawn from the [marker convention](../../ponytail/resources/ponytail-marker-convention.md#convention) and a missing trigger flagged [no-trigger](../../ponytail/resources/ponytail-marker-convention.md#no-trigger)
+- Add an entry per marker to `{debt_ledger}` in `{artifact_dir}` per [debt-ledger](../resources/debt-ledger.md#template) and its [Rules](../resources/debt-ledger.md#rules), with the ceiling and upgrade trigger drawn from the [marker convention](../../ponytail/resources/ponytail-marker-convention.md#convention) and a missing trigger flagged [no-trigger](../../ponytail/resources/ponytail-marker-convention.md#no-trigger)
 - For an owner per row, optionally append the output of `git blame -L<line>,<line>` for the marker's line.
 
 ### 3. Signal the result

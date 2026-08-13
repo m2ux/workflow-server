@@ -30,7 +30,7 @@ For dimensions not matching the standard patterns above, match the dimension's a
 
 ## Per-Dimension Findings Source
 
-Each triggered prism run writes its authoritative findings to `DEFINITIVE-FINDINGS.md` in the dimension's output subdirectory (see prism's [definitive-findings contract](../../prism/resources/definitive-findings-template.md)), alongside `REPORT.md` and `RUN-MANIFEST.md`. Consolidation reads DEFINITIVE-FINDINGS.md as the per-dimension findings source — it does not read the raw pass artifacts (`synthesis.md`, `portfolio-*.md`).
+Each triggered prism run writes its authoritative findings to `DEFINITIVE-FINDINGS.md` in the dimension's output subdirectory (see prism's [definitive-findings contract](../../prism/resources/definitive-findings-template.md)), alongside `REPORT.md` and `RUN-MANIFEST.json`. Consolidation reads DEFINITIVE-FINDINGS.md as the per-dimension findings source — it does not read the raw pass artifacts (`synthesis.md`, `portfolio-*.md`).
 
 ## Pipeline Mode Selection Guidance
 

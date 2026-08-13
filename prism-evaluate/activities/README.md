@@ -41,7 +41,7 @@ Definition: [`01-dimension-planning.yaml`](01-dimension-planning.yaml). Leads to
 
 ### 02. Execute Prism Analyses
 
-Trigger the generic prism workflow once per execution group and record each run from its `RUN-MANIFEST.md` — prism verifies its own completion, so a run the manifest flags `partial`/`error` is surfaced rather than dropped. **Value:** every planned dimension is analysed through the prism pipeline, yielding the per-dimension `DEFINITIVE-FINDINGS.md` consolidation draws on, with gaps made visible.
+Trigger the generic prism workflow once per execution group and record each run from its `RUN-MANIFEST.json` — prism verifies its own completion, so a run the manifest flags `partial`/`error` is surfaced rather than dropped. **Value:** every planned dimension is analysed through the prism pipeline, yielding the per-dimension `DEFINITIVE-FINDINGS.md` consolidation draws on, with gaps made visible.
 
 Definition: [`02-execute-analysis.yaml`](02-execute-analysis.yaml). Leads to [Consolidate Evaluation Report](#03-consolidate-evaluation-report).
 

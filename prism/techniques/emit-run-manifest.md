@@ -37,11 +37,15 @@ Machine-readable manifest of the run's artifacts and completion status.
 
 #### artifact
 
-`RUN-MANIFEST.md`
+`RUN-MANIFEST.json`
+
+#### audience
+
+`agent`
 
 ### run_manifest_path
 
-Full filesystem path to `RUN-MANIFEST.md`.
+Full filesystem path to `RUN-MANIFEST.json`.
 
 ### run_status
 
@@ -69,7 +73,7 @@ REPORT.md or DEFINITIVE-FINDINGS.md is missing or empty.
 
 ### 2. Write Manifest
 
-- Write `{run_manifest}` as `RUN-MANIFEST.md` into `{output_path}` per [run-manifest](../resources/run-manifest.md#template) and its [Rules](../resources/run-manifest.md#rules), capturing its full filesystem path as `{run_manifest_path}`
+- Write `{run_manifest}` as `RUN-MANIFEST.json` into `{output_path}` per [run-manifest](../resources/run-manifest.md#template) and its [Rules](../resources/run-manifest.md#rules), capturing its full filesystem path as `{run_manifest_path}`
 - Fill it from `{run_status}`, `{pipeline_mode}`, `{report_path}`, `{definitive_findings_path}`, the per-unit expectations in `{analysis_units}`, and every path in `{all_artifact_paths}`
 
 ## Rules

@@ -19,7 +19,7 @@ Filesystem path to DEFINITIVE-FINDINGS.md — the detailed companion where each 
 
 ### run_manifest_path
 
-Filesystem path to RUN-MANIFEST.md — the manifest recording the run's artifacts and completion status.
+Filesystem path to RUN-MANIFEST.json — the manifest recording the run's artifacts and completion status.
 
 ### run_status
 
