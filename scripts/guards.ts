@@ -70,7 +70,7 @@ export const GUARDS: GuardSpec[] = [
     npmScript: 'check:audience',
     scope: 'corpus',
     json: true,
-    proves: 'every agent-audience artifact is JSON on disk',
+    proves: 'every artifact declares who reads it, and every agent-audience artifact is JSON on disk',
   },
   {
     id: 'artifact-guides',
