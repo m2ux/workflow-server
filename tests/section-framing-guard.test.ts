@@ -18,7 +18,7 @@ describe('section-framing guard (corpus)', () => {
 
 describe('section-framing triage', () => {
   const triage = JSON.parse(
-    readFileSync(join(import.meta.dirname, '..', 'scripts', 'section-framing-triage.json'), 'utf-8'),
+    readFileSync(join(import.meta.dirname, '..', 'workflows', 'section-framing-triage.json'), 'utf-8'),
   ) as { rationales: Record<string, string>; entries: Array<{ site: string; verdict: string; rationale: string; owed?: string }> };
 
   it('gives every entry a verdict this file defines and a rationale it names', () => {

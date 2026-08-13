@@ -31,7 +31,19 @@ import { resolveWorkflowsRoot } from './workflows-root.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
-const TRIAGE = resolve(join(DIR, 'section-framing-triage.json'));
+/**
+ * The triage lives with the corpus, not with this script. Its entries are judgements about corpus
+ * prose, so a change that moves a rule into a section and the entry describing that prose belong in
+ * one commit. Held beside this script instead, the two could never agree: fixing the prose stranded
+ * the entry, and the pull request fixing it could not reach the file — the corpus and the tooling are
+ * separate histories, so a corpus change was red whichever side moved first.
+ *
+ * The fallback beside this script carries a corpus pinned before the triage moved into it, and goes
+ * once no supported pin predates the move.
+ */
+const CORPUS_TRIAGE = resolve(join(ROOT, 'section-framing-triage.json'));
+const LEGACY_TRIAGE = resolve(join(DIR, 'section-framing-triage.json'));
+const TRIAGE = existsSync(CORPUS_TRIAGE) ? CORPUS_TRIAGE : LEGACY_TRIAGE;
 
 /**
  * Below this, framing is a line of orientation rather than a place an obligation can hide. The
