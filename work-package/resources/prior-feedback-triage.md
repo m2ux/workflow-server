@@ -55,7 +55,7 @@ One object per prior comment or review thread, plus the cap the register derives
 | `blocker_class_confirmed` | number | Confirmed entries whose `blocker` is true — what the cap turns on |
 | `rating_cap` | string | `request-changes` when any blocker-class entry is confirmed, otherwise `unset` |
 | `entries` | object[] | One entry per prior comment or review thread, human and bot alike |
-| `entries[].id` | number | Stable index within this register, cited by the posted summary |
+| `entries[].id` | number | Index within this register, unchanged for the run so a citation of it resolves |
 | `entries[].comment_url` | string | The thread the entry dispositions |
 | `entries[].finding` | string | What the earlier reader said, in one line |
 | `entries[].author` | string | Who said it |
