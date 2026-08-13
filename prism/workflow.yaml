@@ -95,7 +95,7 @@ variables:
     description: File path to the generated DEFINITIVE-FINDINGS.md artifact — the detailed findings contract (full per-finding field set + surviving conservation laws) that consumer workflows read instead of the raw pass artifacts
   - name: run_manifest_path
     type: string
-    description: File path to the generated RUN-MANIFEST.md artifact — records the run's produced artifacts and completion status; the single file a triggering workflow reads to locate results and confirm completion
+    description: File path to the generated RUN-MANIFEST.json artifact — records the run's produced artifacts and completion status; the single file a triggering workflow reads to locate results and confirm completion
   - name: run_status
     type: string
     description: Completion status of the run recorded in the manifest — 'complete', 'partial', or 'error'

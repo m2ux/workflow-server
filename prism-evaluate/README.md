@@ -77,7 +77,7 @@ Each activity step binds exactly one operation via `step.technique`. The operati
 | Technique group | Capability |
 |-----------------|------------|
 | [`plan-evaluation`](./techniques/plan-evaluation/TECHNIQUE.md) | Target classification, dimension derivation, target survey, dimension-to-lens mapping, execution grouping, and plan authoring |
-| [`execute-analysis`](./techniques/execute-analysis/TECHNIQUE.md) | Record a triggered prism run from its `RUN-MANIFEST.md` into the evaluation accumulators |
+| [`execute-analysis`](./techniques/execute-analysis/TECHNIQUE.md) | Record a triggered prism run from its `RUN-MANIFEST.json` into the evaluation accumulators |
 | [`compose-evaluation-report`](./techniques/compose-evaluation-report/TECHNIQUE.md) | Cross-artifact extraction, cross-dimensional synthesis, report composition and verification, result presentation |
 | [`resolve-findings`](./techniques/resolve-findings/TECHNIQUE.md) | Finding tier-classification, one-by-one mitigation proposal, mitigation-plan composition, and change application |
 
@@ -131,7 +131,7 @@ sequenceDiagram
     Orch->>User: report, mitigation plan, artifact index
 ```
 
-**Contract reuse:** the orchestrator sets prism's `analysis_focus` to the dimension-specific evaluation guidance (naming the dimension so prism assigns dimension-prefixed finding IDs). The evaluation then reads only prism's contract artifacts — `RUN-MANIFEST.md`, `REPORT.md`, `DEFINITIVE-FINDINGS.md` — and never re-derives what prism already produced (finding extraction, blast-radius enrichment, methodology-stripping, ID assignment). Consolidation adds the one thing prism cannot do across sibling runs: cross-dimensional synthesis.
+**Contract reuse:** the orchestrator sets prism's `analysis_focus` to the dimension-specific evaluation guidance (naming the dimension so prism assigns dimension-prefixed finding IDs). The evaluation then reads only prism's contract artifacts — `RUN-MANIFEST.json`, `REPORT.md`, `DEFINITIVE-FINDINGS.md` — and never re-derives what prism already produced (finding extraction, blast-radius enrichment, methodology-stripping, ID assignment). Consolidation adds the one thing prism cannot do across sibling runs: cross-dimensional synthesis.
 
 ---
 
@@ -144,14 +144,14 @@ For a standard 4-dimension evaluation (Consistency, Veracity, Plausibility, Feas
 ├── evaluation-plan.md              (dimension-to-lens mapping)
 ├── EVALUATION-REPORT.md            (consolidated evaluation)
 ├── consistency/
-│   ├── RUN-MANIFEST.md             (prism contract — run artifacts + status)
+│   ├── RUN-MANIFEST.json             (prism contract — run artifacts + status)
 │   ├── REPORT.md                   (prism contract — lean report)
 │   ├── DEFINITIVE-FINDINGS.md      (prism contract — findings source consolidation reads)
 │   ├── structural-analysis.md      (prism raw pass — full-prism)
 │   ├── adversarial-analysis.md     (prism raw pass — full-prism)
 │   └── synthesis.md                (prism raw pass — full-prism)
 └── dimensions/
-    ├── RUN-MANIFEST.md             (prism contract)
+    ├── RUN-MANIFEST.json             (prism contract)
     ├── REPORT.md                   (prism contract)
     ├── DEFINITIVE-FINDINGS.md      (prism contract — findings source)
     ├── claim-inversion.md          (Veracity — lens 07)
@@ -160,7 +160,7 @@ For a standard 4-dimension evaluation (Consistency, Veracity, Plausibility, Feas
     └── scarcity.md                 (Feasibility — lens 08)
 ```
 
-Consolidation reads each dimension's `DEFINITIVE-FINDINGS.md` (located from its `RUN-MANIFEST.md`); the raw pass artifacts are prism's internals, not read by this workflow. The resolution dialogue additionally produces a `MITIGATION-PLAN.md`.
+Consolidation reads each dimension's `DEFINITIVE-FINDINGS.md` (located from its `RUN-MANIFEST.json`); the raw pass artifacts are prism's internals, not read by this workflow. The resolution dialogue additionally produces a `MITIGATION-PLAN.md`.
 
 ---
 
@@ -183,7 +183,7 @@ workflows/prism-evaluate/
 │   ├── README.md                     # Technique library index
 │   ├── TECHNIQUE.md                  # Workflow-root base contract (inherited by all)
 │   ├── plan-evaluation/              # Target classification, dimension-to-lens mapping (one op per phase)
-│   ├── execute-analysis/             # Record each prism run from its RUN-MANIFEST.md
+│   ├── execute-analysis/             # Record each prism run from its RUN-MANIFEST.json
 │   ├── compose-evaluation-report/    # Cross-dimensional synthesis, report composition
 │   └── resolve-findings/             # Finding tier-classification, mitigation, change application
 └── resources/

@@ -11,7 +11,7 @@ The technique library for the prism-evaluate workflow. Each operation is one cap
 | Technique group | Capability |
 |-----------------|------------|
 | [`plan-evaluation`](plan-evaluation/TECHNIQUE.md) | Collect the scope, classify the target, derive dimensions, survey the target, map each dimension to prism lenses and pipeline modes, group for execution, and author the evaluation plan |
-| [`execute-analysis`](execute-analysis/TECHNIQUE.md) | Record a triggered prism run from its `RUN-MANIFEST.md` into the evaluation accumulators |
+| [`execute-analysis`](execute-analysis/TECHNIQUE.md) | Record a triggered prism run from its `RUN-MANIFEST.json` into the evaluation accumulators |
 | [`compose-evaluation-report`](compose-evaluation-report/TECHNIQUE.md) | Consolidate the per-dimension prism artifacts into a unified, methodology-stripped evaluation report, then compile and present its metrics and deliverable index |
 | [`resolve-findings`](resolve-findings/TECHNIQUE.md) | Tier-classify findings, propose a mitigation per finding through one-by-one dialogue, compile the mitigation plan, and apply the accepted changes |
 
@@ -37,7 +37,7 @@ The technique library for the prism-evaluate workflow. Each operation is one cap
 
 | Operation | Capability |
 |-----------|------------|
-| [`read-run-manifest`](execute-analysis/read-run-manifest.md) | Record a prism run from its `RUN-MANIFEST.md` (report + definitive-findings paths + status) into the evaluation accumulators |
+| [`read-run-manifest`](execute-analysis/read-run-manifest.md) | Record a prism run from its `RUN-MANIFEST.json` (report + definitive-findings paths + status) into the evaluation accumulators |
 
 ### compose-evaluation-report (Consolidate Evaluation Report + Deliver Evaluation Results)
 

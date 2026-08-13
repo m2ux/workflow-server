@@ -22,7 +22,7 @@ Creation guide for bare filename `publication-record.md`. The record answers one
 | Verdict | {merge-readiness verdict} |
 | Posted at | {timestamp} |
 
-**Traces to:** [review report](review-report.md) · [findings register](findings-register.md) · [evidence log](evidence-log.md)
+**Traces to:** [review report](review-report.md) · [findings register](findings-register.md) · [evidence log](evidence-log.json)
 
 {When the post failed: one line on the reason.}
 ```

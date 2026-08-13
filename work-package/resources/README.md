@@ -38,7 +38,7 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `assumption-reconciliation` | Assumption Reconciliation | Assumptions-log integration and scorecard formats |
 | `research-reconciliation` | Research Reconciliation | Research-candidate inventory shape, reconcilability statuses, and scorecard format |
 | `pr-review-response` | PR Review Response | Response-format and review-document templates |
-| `prior-feedback-triage` | Prior Feedback Triage | Creation guide: `prior-feedback-triage.md` — the disposition register the rating cap is computed from |
+| `prior-feedback-triage` | Prior Feedback Triage | Creation guide: `prior-feedback-triage.json` — the disposition register the rating cap is computed from |
 | `token-usage` | Token Usage | Creation guide: `token-usage.md` — the run's sole cost home, reconciled or labelled a floor |
 | `provenance-log` | Provenance Log | Creation guide: `provenance-log.md` — one appended row per task |
 | `adr` | Architecture Decision Record | Creation guide: `NNNN-{decision_title}.md` — standard ADR form with at least one rejected alternative |

@@ -26,7 +26,7 @@ Reference content loaded on demand by the workflow's techniques. The authoritati
 |---------------|-------|
 | `change-surface.md` | [change-surface](change-surface.md) |
 | `investigation-plan.md` | [investigation-plan](investigation-plan.md) |
-| `evidence-log.md` | [evidence-log](evidence-log.md) |
+| `evidence-log.json` | [evidence-log](evidence-log.md) |
 | `findings-register.md` | [findings-register](findings-register.md) |
 | `publication-record.md` | [publication-record](publication-record.md) |
 | `review-report.md` | [review-format](review-format.md) |

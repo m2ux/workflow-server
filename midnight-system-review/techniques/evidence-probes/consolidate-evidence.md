@@ -25,7 +25,11 @@ The consolidated evidence base: per-area probe accounting, all evidence items wi
 
 #### artifact
 
-`evidence-log.md`
+`evidence-log.json`
+
+#### audience
+
+`agent`
 
 ### candidate_findings
 

@@ -16,8 +16,8 @@ The technique library for the ponytail workflow. Each operation is one capabilit
 | [`apply-ladder`](apply-ladder.md) | Climb to the minimal solution, mark every deliberate simplification, and leave one runnable check | `lean-change.md` |
 | [`review-over-engineering`](review-over-engineering.md) | Tag the change's over-engineering one line per finding and close with a net-lines scoreboard | `review-findings.md` |
 | [`audit-repo`](audit-repo.md) | Hunt repo-wide over-engineering biggest-cut-first and close with a net lines-and-deps scoreboard | `audit-findings.md` |
-| [`harvest-debt`](harvest-debt.md) | Harvest every ponytail marker into a debt ledger and flag any marker missing an upgrade trigger | `debt-ledger.md` |
-| [`report-gain`](report-gain.md) | Append an honesty-bounded gain scoreboard to the foot of the debt ledger | *(appends to `debt-ledger.md`)* |
+| [`harvest-debt`](harvest-debt.md) | Harvest every ponytail marker into a debt ledger and flag any marker missing an upgrade trigger | `debt-ledger.jsod` |
+| [`report-gain`](report-gain.md) | Append an honesty-bounded gain scoreboard to the foot of the debt ledger | *(fills the `gain` field of `debt-ledger.json`)* |
 
 ---
 
