@@ -21,7 +21,7 @@ Whether `{host_repo_path}` has a usable GitNexus index; selects between gitnexus
 
 ### comprehension_survey
 
-Initial survey of the codebase area, taking the shape and fill rules of the [Artifact Template](../../resources/codebase-comprehension.md#artifact-template).
+Initial survey of the codebase area, taking the shape and fill rules of the [Corpus Artifact Template](../../resources/codebase-comprehension.md#corpus-artifact-template).
 
 #### architecture_overview
 
@@ -33,7 +33,7 @@ Core types, traits/interfaces, and data structures forming the domain model, wit
 
 #### design_rationale
 
-Inferred rationale for significant design choices and their trade-offs, framed as hypotheses for user validation.
+Rationale inferred for each significant design choice, with the trade-off it carries and what it constrains in later changes.
 
 #### domain_glossary
 
@@ -78,7 +78,8 @@ Mapping of domain-specific terms to the technical modules/constructs that implem
 
 - For each significant design choice, infer the likely rationale from context clues: comments, naming, structure, constraints
 - Identify trade-offs: what does this design optimize for? what does it sacrifice?
-- Frame rationale as hypotheses for user validation — not assertions
+- Identify what each choice constrains: which later changes it rules out, and which it makes cheap
+- State each rationale as a property of the design, under the heading that marks the whole section as read out of the code rather than stated by its authors; where the source documents a reason outright, say so in the entry
 
 ### 6. Domain Mapping
 
@@ -88,4 +89,4 @@ Mapping of domain-specific terms to the technical modules/constructs that implem
 
 ### 7. Assemble Survey
 
-- Fold the architecture overview, key abstractions, design rationale, and domain glossary into `{comprehension_survey}`, in the section order the [Artifact Template](../../resources/codebase-comprehension.md#artifact-template) defines
+- Fold the architecture overview, key abstractions, design rationale, and domain glossary into `{comprehension_survey}`, in the section order the [Corpus Artifact Template](../../resources/codebase-comprehension.md#corpus-artifact-template) defines

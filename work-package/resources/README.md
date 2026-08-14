@@ -34,7 +34,7 @@ Markdown resources for planning-folder templates, elicitation and review guidanc
 | `follow-ups` | Follow-ups | In-task follow-ups register template (distinct from out-of-scope `deferred-items`) |
 | `tdd-concepts-rust` | TDD Concepts Rust | TDD best practices for Rust: Red-Green-Refactor, FIRST principles |
 | `review-mode` | Review Mode | Complete guide for review mode behavior and PR review formats |
-| `codebase-comprehension` | Codebase Comprehension | Comprehension techniques, artifact template, and deep-dive guidance from reverse engineering and code forensics literature |
+| `codebase-comprehension` | Codebase Comprehension | Comprehension techniques, corpus and log artifact templates, promotion criteria, and deep-dive guidance from reverse engineering and code forensics literature |
 | `assumption-reconciliation` | Assumption Reconciliation | Assumptions-log integration and scorecard formats |
 | `research-reconciliation` | Research Reconciliation | Research-candidate inventory shape, reconcilability statuses, and scorecard format |
 | `pr-review-response` | PR Review Response | Response-format and review-document templates |
@@ -66,7 +66,8 @@ Which guide owns each persisted filename's shape.
 | `architecture-summary.md` | [architecture-summary](architecture-summary.md) |
 | `strategic-review-{n}.md` | [strategic-review](strategic-review.md) |
 | `strategic-review-{n}-method.md` | [strategic-review](strategic-review.md#method-record-template) |
-| `{codebase_area}.md` | [codebase-comprehension](codebase-comprehension.md) |
+| `{codebase_area}.md` | [codebase-comprehension](codebase-comprehension.md#corpus-artifact-template) |
+| `codebase-comprehension.md` | [codebase-comprehension](codebase-comprehension.md#comprehension-log-template) |
 | `{YYYY-MM-DD}-pr{pr_number}-review-analysis.md` | [pr-review-response](pr-review-response.md) |
 | `kb-research.md` | [knowledge-base-research](knowledge-base-research.md) |
 | `design-philosophy.md` | [design-framework](design-framework.md) |

@@ -1,5 +1,5 @@
 id: codebase-comprehension
-version: 1.10.0
+version: 1.11.0
 name: Codebase Comprehension
 description: Build or augment a mental model of the codebase.
 required: false
@@ -33,10 +33,17 @@ steps:
     technique:
       name: manage-artifacts::write-artifact
       inputs:
+        artifact_content: comprehension_artifact
         target_dir: comprehension_dir
   - kind: technique
     id: revise-initial-questions
     technique: revise-questions
+  - kind: technique
+    id: record-log-initial
+    technique:
+      name: manage-artifacts::write-artifact
+      inputs:
+        artifact_content: comprehension_log
   - kind: loop
     id: deep-dive-iteration
     name: Deep-Dive Iteration
@@ -63,7 +70,14 @@ steps:
         technique:
           name: manage-artifacts::write-artifact
           inputs:
+            artifact_content: comprehension_artifact
             target_dir: comprehension_dir
+      - kind: technique
+        id: record-log
+        technique:
+          name: manage-artifacts::write-artifact
+          inputs:
+            artifact_content: comprehension_log
       - kind: checkpoint
         id: comprehension-sufficient
         condition:
@@ -126,4 +140,5 @@ outcome:
   - Key abstractions and design rationale documented
   - Domain concepts mapped to technical constructs
   - A reusable comprehension reference lands in the cumulative corpus, where the next work package on the same area reads it instead of re-investigating
+  - The questions, investigations and follow-ups behind that reference stay in the session's planning folder as a comprehension log
   - Open questions converged via analyse-challenge before the soft sufficiency gate
