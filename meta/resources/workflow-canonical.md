@@ -52,8 +52,9 @@ Failure handling lives **inline in the protocol step that triggers it**.
 `## Protocol` is a **single ordered list of steps**. It may be a flat
 numbered/bulleted list, or `### N. Title` blocks each holding an ordered list. The
 server treats it as one ordered sequence and assigns step numbers at load time.
-**Do not write absolute intra-protocol step-number references** ("go to step 3") —
-composition and renumbering shift them; refer to steps descriptively.
+A step number is therefore a position the loader assigns, not an address:
+**do not write absolute intra-protocol step-number references** ("go to step 3").
+Refer to steps descriptively.
 
 ## Base-contract inheritance
 
