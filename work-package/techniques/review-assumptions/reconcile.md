@@ -11,7 +11,7 @@ Code-analyzable assumptions closed via targeted analysis; callable as the analys
 
 ### comprehension_artifact
 
-*(optional)* Existing comprehension [artifact](../../resources/codebase-comprehension.md#artifact-template) to augment with findings.
+*(optional)* Existing comprehension [corpus artifact](../../resources/codebase-comprehension.md#corpus-artifact-template) to augment with findings.
 
 ## Outputs
 

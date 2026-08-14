@@ -1,17 +1,21 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Targeted investigation of a selected codebase area into the comprehension artifact.
+Targeted investigation of a selected codebase area, recorded in the comprehension log with its settled outcomes promoted to the corpus artifact.
 
 ## Inputs
 
 ### comprehension_artifact
 
-The comprehension artifact whose architecture survey and existing Open Questions seed the candidate-area selection, and to which findings are appended.
+The corpus artifact for this area, whose architecture survey seeds candidate-area selection.
+
+### comprehension_log
+
+*(optional)* The log from earlier passes over this area; its Open Questions are the default candidates for the next investigation.
 
 ### gitnexus_indexed
 
@@ -21,7 +25,7 @@ Flag indicating whether the codebase is indexed; selects between gitnexus-operat
 
 ### comprehension_artifact
 
-Updated comprehension artifact — written as `{codebase_area}.md` in `{comprehension_dir}`, augmenting prior content rather than replacing it.
+The corpus artifact for the area, carrying the outcomes this investigation settled as statements about the code.
 
 #### artifact
 
@@ -31,25 +35,38 @@ Updated comprehension artifact — written as `{codebase_area}.md` in `{comprehe
 
 `human`
 
+### comprehension_log
+
+The session-local record of this investigation: the questions it worked, the findings that answered them, and the items it left open.
+
+#### artifact
+
+`codebase-comprehension.md`
+
+#### audience
+
+`human`
+
 #### deep_dives
 
-Targeted exploration subsections appended for the selected area: traced data flows, implementation details, and edge cases.
+Targeted exploration findings for the selected area: traced data flows, implementation detail, and edge cases.
 
 ## Protocol
 
 ### 1. Deep Dive
 
-- Emit candidate areas based on architecture survey and problem relevance as bindable output for the binding activity to surface. When open questions already exist in the artifact, prefer them as the default selection rather than generating new candidates from scratch (per `question-driven-exploration`).
+- Emit candidate areas based on architecture survey and problem relevance as bindable output for the binding activity to surface. When open questions already exist in the log, prefer them as the default selection rather than generating new candidates from scratch (per `question-driven-exploration`).
 - On the mandatory initial pass, attempt to resolve every open question without a selection gate; only subsequent iterations consume an activity-selected area.
-- For selected area: trace data flows, examine implementation details, document edge cases
-- When GitNexus is available: apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../../meta/techniques/gitnexus-operations/context.md) to trace callers/callees, read process resources for full execution traces, and [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../../meta/techniques/gitnexus-operations/cypher.md) for custom call chain queries
-- Append findings as dedicated subsections in the comprehension artifact
+- For selected area: trace data flows, examine implementation details, document edge cases, applying the [Comprehension Techniques](../../resources/codebase-comprehension.md#comprehension-techniques)
+- When `{gitnexus_indexed}` is true: apply [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../../meta/techniques/gitnexus-operations/context.md) to trace callers/callees, read process resources for full execution traces, and [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../../meta/techniques/gitnexus-operations/cypher.md) for custom call chain queries
 
-### 2. Artifact Management
+### 2. Record the Investigation
 
-- Write the `{comprehension_artifact}` following the [Artifact Template](../../resources/codebase-comprehension.md#artifact-template) and the [Comprehension Techniques](../../resources/codebase-comprehension.md#comprehension-techniques)
+- Write `{comprehension_log}` per the [Comprehension Log Template](../../resources/codebase-comprehension.md#comprehension-log-template)
+- Record this investigation alongside the ones earlier passes wrote, rather than in place of them
+
+### 3. Promote Settled Outcomes
+
 - Derive `{$codebase_area}` from the target project or subsystem name (slugified)
-- Artifact naming: `{codebase_area}.md` in `{comprehension_dir}`
-- When augmenting: add new sections, update existing sections with deeper detail, preserve prior content
-- Include metadata header: date, work-package reference, coverage scope, related artifacts
-- Include an 'Open Questions' section (markdown table) between Domain Concept Mapping and Deep-Dive Sections — this section is maintained by the [revise-questions](./revise-questions.md) question-management protocol
+- Select which findings cross into `{comprehension_artifact}` per [Promotion](../../resources/codebase-comprehension.md#promotion)
+- Write each promoted outcome into the section that owns it, per the [Corpus Artifact Template](../../resources/codebase-comprehension.md#corpus-artifact-template) and the fill [Rules](../../resources/codebase-comprehension.md#rules)

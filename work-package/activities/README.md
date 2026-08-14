@@ -79,7 +79,7 @@ graph TD
 
 ### Codebase Comprehension (optional)
 
-Builds or augments a durable mental model of the codebase sufficient to qualify the design assumptions raised in later activities. Produces persistent knowledge artifacts under `.engineering/artifacts/comprehension/` that grow across successive work packages. Runs after design-philosophy and routes to elicitation, research, analysis, or plan-prepare depending on the chosen path.
+Builds or augments a durable mental model of the codebase sufficient to qualify the design assumptions raised in later activities. Produces persistent knowledge artifacts under `.engineering/artifacts/comprehension/` that grow across successive work packages, and a session-local log of the questions and investigations behind them. Runs after design-philosophy and routes to elicitation, research, analysis, or plan-prepare depending on the chosen path.
 
 Definition: [`15-codebase-comprehension.yaml`](./15-codebase-comprehension.yaml)
 
