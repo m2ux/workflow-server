@@ -46,6 +46,11 @@
       "rationale": "orientation-only"
     },
     {
+      "site": "meta/resources/workflow-canonical.md",
+      "verdict": "harmless",
+      "rationale": "orientation-only"
+    },
+    {
       "site": "meta/resources/writing-register.md",
       "verdict": "harmless",
       "rationale": "orientation-only"
