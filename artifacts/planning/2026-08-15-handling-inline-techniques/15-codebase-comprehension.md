@@ -331,3 +331,9 @@ A worktree without its corpus submodule provisioned turns every corpus-scoped gu
 The binding guard walks bind sites in the shared pattern-activity directory, which the loader never loads as activities. Two of its current findings come from there. Small, and it cuts both ways — those activities are borrowable, so checking them is arguably right — but the divergence between what is checked and what runs should be deliberate rather than incidental.
 
 Borrowed activities are checked only in the workflow that authored them, leaving 143 bind sites unchecked in the scope they run in. This is the largest single gap either artifact records and it is independent of inline calls entirely; it belongs to whoever owns the binding guard.
+
+## Cost record is incomplete
+
+The recorded figure for this activity is 268,872 tokens, and it understates the true cost by a margin nobody can now recover. Five of this activity's segments ended without the harness surfacing a usage figure — four resumes across the checkpoint gates, and the final segment, whose context was lost before it reported. Each of those is omitted from the ledger rather than entered as zero, since an activity with no entry is one whose harness reported nothing rather than one that cost nothing. Child agents spawned inside those unreported dispatches carried their own cost, and it is absent for the same reason.
+
+Whoever writes the token-usage summary should carry this forward: the row for codebase-comprehension is a floor, not a measurement, and this was the most expensive activity of the run.
