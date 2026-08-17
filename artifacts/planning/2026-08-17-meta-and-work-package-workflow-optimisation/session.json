@@ -8,8 +8,8 @@
   "currentActivity": "dispatch-client-workflow",
   "currentTechnique": "workflow-engine::commit-and-persist",
   "condition": "isDefault: dispatch-client-workflow",
-  "seq": 25,
-  "ts": 1786949284,
+  "seq": 27,
+  "ts": 1786950125,
   "startedAt": "2026-08-17T06:17:44.568Z",
   "completedActivities": [
     "discover-session",
@@ -861,6 +861,29 @@
       },
       "timestamp": "2026-08-17T06:48:04.620Z",
       "type": "resource_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "usage": {
+          "duration_ms": 766901,
+          "subagent_tokens": 141511,
+          "tool_uses": 29
+        }
+      },
+      "timestamp": "2026-08-17T06:56:41.780Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 5385,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-08-17T07:02:05.745Z",
+      "type": "activity_dispatched"
     }
   ],
   "triggeredWorkflows": [
@@ -869,6 +892,15 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "dimension-planning-confirm-plan": {
+            "effects": {
+              "variablesSet": {
+                "dimensions_confirmed": true
+              }
+            },
+            "optionId": "accept",
+            "respondedAt": "2026-08-17T07:01:51.000Z"
+          },
           "scope-definition-confirm-scope": {
             "effects": {
               "variablesSet": {
@@ -879,9 +911,11 @@
             "respondedAt": "2026-08-17T06:43:10.000Z"
           }
         },
-        "completedActivities": [],
-        "condition": "",
-        "currentActivity": "scope-definition",
+        "completedActivities": [
+          "scope-definition"
+        ],
+        "condition": "scope_confirmed == true",
+        "currentActivity": "dimension-planning",
         "currentTechnique": "",
         "deliveredContent": {
           "worker-00-scope-definition-a": {
@@ -902,6 +936,21 @@
             "technique:plan-evaluation::create-output-folder": "e6f8b617991dc1c6",
             "technique:plan-evaluation::derive-dimensions": "dbde8e69b63768d7",
             "technique:plan-evaluation::summarize-scope": "f7e8e7c7a25d2002"
+          },
+          "worker-01-dimension-planning-a": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+            "bundle:variable-binding": "86e00a6d087f9e58",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:dimension-lens-mapping": "e871085ad8fe9b7c",
+            "resource:evaluation-plan-template#evaluation-plan-template": "7f6890c5a2156287",
+            "technique:plan-evaluation::group-for-execution": "61a879efcf052948",
+            "technique:plan-evaluation::map-dimensions-to-lenses": "611d4c538ad3c6ff",
+            "technique:plan-evaluation::survey-target": "45b480e1c918036c",
+            "technique:plan-evaluation::write-evaluation-plan": "21b8aa010b168e5f"
           }
         },
         "history": [
@@ -1210,24 +1259,447 @@
             },
             "timestamp": "2026-08-17T06:45:21.397Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-definition",
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "target_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server"
+            },
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "target_name",
+              "source": "variables_changed",
+              "value": "workflow-server"
+            },
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "evaluation_description",
+              "source": "variables_changed",
+              "value": "Find every opportunity to make the meta and work-package workflows faster and cheaper to run. The primary lead is mechanisation: agent-executed technique prose that is in fact a deterministic procedure a script or server tool could compute without agent involvement — the worked example is resolving a named component, issue or PR to a repository and matching it against a monorepo component, treated as a guide rather than a boundary. In scope as subject: workflows/meta/** and workflows/work-package/**. In scope as mechanisation surface: src/** and scripts/**. Deliverable is a report enumerating opportunities, each with the saving it buys and what it costs to build."
+            },
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "output_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation"
+            },
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "target_type",
+              "source": "variables_changed",
+              "value": "mixed"
+            },
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "scope_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "dimensions",
+              "source": "variables_changed",
+              "value": [
+                {
+                  "description": "Which agent-executed steps are deterministic procedures a server tool or script could compute instead.",
+                  "focus_areas": [
+                    "repo, component, issue and PR coordinate resolution",
+                    "path derivation, repo-type and project-type detection",
+                    "artifact link and anchor checking",
+                    "planning README Progress-table synchronisation",
+                    "git state inspection, branch and worktree verification",
+                    "classification steps that are really fixed decision tables",
+                    "format and schema validation of written artifacts",
+                    "the 26 existing scripts/check-*.ts guards, reachable today only as repo CI and never as a workflow operation"
+                  ],
+                  "name": "Mechanisation Potential"
+                },
+                {
+                  "description": "Tokens spent shipping definition content into agent contexts, and where that delivery is redundant or oversized.",
+                  "focus_areas": [
+                    "technique and resource body size against what a step actually reads",
+                    "duplication between the meta and work-package trees",
+                    "eager step-technique bundling budget behaviour",
+                    "reference-versus-full delivery effectiveness and the agent_id ledger",
+                    "inherited-input blocks restated per technique",
+                    "resources fetched but never read",
+                    "prose that restates what the schema already enforces"
+                  ],
+                  "name": "Context Economy"
+                },
+                {
+                  "description": "How work is distributed across agents and turns, and where the shape itself is the cost.",
+                  "focus_areas": [
+                    "dispatch granularity and batch bounds",
+                    "serial steps that could run concurrently",
+                    "worker round trips to the server per activity",
+                    "checkpoint placement and blocking gates — 44 checkpoint blocks across 13 work-package activities",
+                    "context re-establishment at every activity boundary",
+                    "sub-agent spawn overhead"
+                  ],
+                  "name": "Orchestration Topology"
+                },
+                {
+                  "description": "Work the workflows perform that produces nothing the run consumes.",
+                  "focus_areas": [
+                    "steps duplicated across meta and work-package",
+                    "activities and techniques never reached in practice",
+                    "artifacts written but never read downstream",
+                    "verification repeated at multiple stages",
+                    "optional branches that always resolve the same way"
+                  ],
+                  "name": "Redundant Work"
+                },
+                {
+                  "description": "For each opportunity, what building it costs and what it risks.",
+                  "focus_areas": [
+                    "implementation surface — new server tool versus script versus definition edit",
+                    "existing guard and test coverage protecting the change",
+                    "saved-session and backwards compatibility",
+                    "whether the saving is measurable with the record_usage instrumentation already present",
+                    "sequencing and dependencies between opportunities"
+                  ],
+                  "name": "Change Economics"
+                }
+              ]
+            },
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "scope_summary",
+              "source": "variables_changed",
+              "value": "Target /home/mike1/projects/dev/workflow-server, classified mixed. Subject: workflows/meta (5 activities, 150 techniques, 7 resources) and workflows/work-package (15 activities, 112 techniques, 37 resources). Mechanisation surface: src/ (712 KB TypeScript) and scripts/ (44 scripts, 26 check-* guards). Output to the session planning folder, verified writable. Five dimensions: Mechanisation Potential, Context Economy, Orchestration Topology, Redundant Work, Change Economics. Scoping-pass finding that shapes the dimensions: the server's entire tool surface is session control-plane with no domain-computation tool of any kind, so deterministic domain work in these workflows currently has nowhere to live except agent-executed prose. Confirmed by the user at the confirm-scope gate with option accept."
+            },
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "stepId": "collect-inputs"
+            },
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "stepId": "classify-target"
+            },
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "stepId": "derive-dimensions"
+            },
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "stepId": "create-output-directory"
+            },
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "stepId": "summarize-scope"
+            },
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "stepId": "confirm-scope"
+            },
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "dimension-planning",
+            "timestamp": "2026-08-17T06:49:57.226Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "worker-01-dimension-planning-a",
+              "chars": 51065,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-17T06:50:25.171Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "worker-01-dimension-planning-a",
+              "chars": 3132,
+              "delivery": "full",
+              "stepId": "survey-target",
+              "techniqueId": "plan-evaluation::survey-target"
+            },
+            "timestamp": "2026-08-17T06:50:25.171Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "worker-01-dimension-planning-a",
+              "stepId": "survey-target"
+            },
+            "timestamp": "2026-08-17T06:50:25.171Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "worker-01-dimension-planning-a",
+              "chars": 3763,
+              "delivery": "full",
+              "stepId": "map-dimensions",
+              "techniqueId": "plan-evaluation::map-dimensions-to-lenses"
+            },
+            "timestamp": "2026-08-17T06:50:25.171Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "worker-01-dimension-planning-a",
+              "stepId": "map-dimensions"
+            },
+            "timestamp": "2026-08-17T06:50:25.171Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "worker-01-dimension-planning-a",
+              "chars": 2213,
+              "delivery": "full",
+              "stepId": "group-dimensions",
+              "techniqueId": "plan-evaluation::group-for-execution"
+            },
+            "timestamp": "2026-08-17T06:50:25.171Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "worker-01-dimension-planning-a",
+              "stepId": "group-dimensions"
+            },
+            "timestamp": "2026-08-17T06:50:25.171Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "worker-01-dimension-planning-a",
+              "chars": 3287,
+              "delivery": "full",
+              "stepId": "write-plan",
+              "techniqueId": "plan-evaluation::write-evaluation-plan"
+            },
+            "timestamp": "2026-08-17T06:50:25.171Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "worker-01-dimension-planning-a",
+              "stepId": "write-plan"
+            },
+            "timestamp": "2026-08-17T06:50:25.171Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "worker-01-dimension-planning-a",
+              "chars": 3018,
+              "delivery": "full",
+              "resourceId": "dimension-lens-mapping"
+            },
+            "timestamp": "2026-08-17T06:51:06.671Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "worker-01-dimension-planning-a",
+              "chars": 2091,
+              "delivery": "full",
+              "resourceId": "evaluation-plan-template#evaluation-plan-template"
+            },
+            "timestamp": "2026-08-17T06:51:06.822Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "checkpoint": "confirm-plan",
+            "timestamp": "2026-08-17T06:55:06.920Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "worker-01-dimension-planning-a",
+              "usage": {
+                "duration_ms": 329786,
+                "subagent_tokens": 87009,
+                "tool_uses": 31
+              }
+            },
+            "timestamp": "2026-08-17T06:55:50.953Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "dimension-planning",
+            "checkpoint": "confirm-plan",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-08-17T07:01:51.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "dimensions_confirmed",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-17T07:01:51.000Z",
+            "type": "variable_set"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 8,
+        "seq": 16,
         "sessionIndex": "PD2H26",
         "skippedActivities": [],
         "startedAt": "2026-08-17T06:23:19.588Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1786949121,
+        "ts": 1786950125,
         "variables": {
           "accepted_count": 0,
-          "dimensions_confirmed": false,
+          "dimensions": [
+            {
+              "description": "Which agent-executed steps are deterministic procedures a server tool or script could compute instead.",
+              "focus_areas": [
+                "repo, component, issue and PR coordinate resolution",
+                "path derivation, repo-type and project-type detection",
+                "artifact link and anchor checking",
+                "planning README Progress-table synchronisation",
+                "git state inspection, branch and worktree verification",
+                "classification steps that are really fixed decision tables",
+                "format and schema validation of written artifacts",
+                "the 26 existing scripts/check-*.ts guards, reachable today only as repo CI and never as a workflow operation"
+              ],
+              "name": "Mechanisation Potential"
+            },
+            {
+              "description": "Tokens spent shipping definition content into agent contexts, and where that delivery is redundant or oversized.",
+              "focus_areas": [
+                "technique and resource body size against what a step actually reads",
+                "duplication between the meta and work-package trees",
+                "eager step-technique bundling budget behaviour",
+                "reference-versus-full delivery effectiveness and the agent_id ledger",
+                "inherited-input blocks restated per technique",
+                "resources fetched but never read",
+                "prose that restates what the schema already enforces"
+              ],
+              "name": "Context Economy"
+            },
+            {
+              "description": "How work is distributed across agents and turns, and where the shape itself is the cost.",
+              "focus_areas": [
+                "dispatch granularity and batch bounds",
+                "serial steps that could run concurrently",
+                "worker round trips to the server per activity",
+                "checkpoint placement and blocking gates — 44 checkpoint blocks across 13 work-package activities",
+                "context re-establishment at every activity boundary",
+                "sub-agent spawn overhead"
+              ],
+              "name": "Orchestration Topology"
+            },
+            {
+              "description": "Work the workflows perform that produces nothing the run consumes.",
+              "focus_areas": [
+                "steps duplicated across meta and work-package",
+                "activities and techniques never reached in practice",
+                "artifacts written but never read downstream",
+                "verification repeated at multiple stages",
+                "optional branches that always resolve the same way"
+              ],
+              "name": "Redundant Work"
+            },
+            {
+              "description": "For each opportunity, what building it costs and what it risks.",
+              "focus_areas": [
+                "implementation surface — new server tool versus script versus definition edit",
+                "existing guard and test coverage protecting the change",
+                "saved-session and backwards compatibility",
+                "whether the saving is measurable with the record_usage instrumentation already present",
+                "sequencing and dependencies between opportunities"
+              ],
+              "name": "Change Economics"
+            }
+          ],
+          "dimensions_confirmed": true,
+          "evaluation_description": "Find every opportunity to make the meta and work-package workflows faster and cheaper to run. The primary lead is mechanisation: agent-executed technique prose that is in fact a deterministic procedure a script or server tool could compute without agent involvement — the worked example is resolving a named component, issue or PR to a repository and matching it against a monorepo component, treated as a guide rather than a boundary. In scope as subject: workflows/meta/** and workflows/work-package/**. In scope as mechanisation surface: src/** and scripts/**. Deliverable is a report enumerating opportunities, each with the saving it buys and what it costs to build.",
           "gitnexus_available": false,
+          "output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation",
           "pipeline_mode": "full-prism",
           "resolution_requested": false,
           "scope_confirmed": true,
+          "scope_summary": "Target /home/mike1/projects/dev/workflow-server, classified mixed. Subject: workflows/meta (5 activities, 150 techniques, 7 resources) and workflows/work-package (15 activities, 112 techniques, 37 resources). Mechanisation surface: src/ (712 KB TypeScript) and scripts/ (44 scripts, 26 check-* guards). Output to the session planning folder, verified writable. Five dimensions: Mechanisation Potential, Context Economy, Orchestration Topology, Redundant Work, Change Economics. Scoping-pass finding that shapes the dimensions: the server's entire tool surface is session control-plane with no domain-computation tool of any kind, so deterministic domain work in these workflows currently has nowhere to live except agent-executed prose. Confirmed by the user at the confirm-scope gate with option accept.",
+          "target_name": "workflow-server",
+          "target_path": "/home/mike1/projects/dev/workflow-server",
+          "target_type": "mixed",
           "user_request": "Start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. Many operations that are agent-driven can be mechanised. For example, if the user provides a named component, an issue or a PR, a TypeScript or Python script can extract the repo name and match it against a mono-repo component purely mechanically without agent interaction — saving a lot of time and tokens. There are no doubt many other opportunities to do this. I want a report detailing any and all opportunities for optimisation of the meta and work-package workflows. Use the example provided as a guide but do not limit the report to it."
         },
         "workflowId": "prism-evaluate",
