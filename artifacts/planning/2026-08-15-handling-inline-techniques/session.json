@@ -6,10 +6,10 @@
   "agentId": "orchestrator",
   "sessionIndex": "3M75ZX",
   "currentActivity": "dispatch-client-workflow",
-  "currentTechnique": "workflow-engine::dispatch-activity",
+  "currentTechnique": "workflow-engine::resume-worker",
   "condition": "isDefault: dispatch-client-workflow",
-  "seq": 32,
-  "ts": 1786942904,
+  "seq": 36,
+  "ts": 1786946731,
   "startedAt": "2026-08-15T09:54:31.892Z",
   "completedActivities": [
     "discover-session",
@@ -1003,6 +1003,69 @@
       },
       "timestamp": "2026-08-17T05:01:44.764Z",
       "type": "resource_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d2",
+        "usage": {
+          "duration_ms": 471775,
+          "segment": "replacement-worker-recovery-and-iteration-4",
+          "subagent_tokens": 103161,
+          "tool_uses": 29
+        }
+      },
+      "timestamp": "2026-08-17T05:09:32.899Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d2",
+        "chars": 13710,
+        "delivery": "full",
+        "stepId": "resume-yielded-worker",
+        "techniqueId": "workflow-engine::resume-worker"
+      },
+      "timestamp": "2026-08-17T05:34:57.599Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d2",
+        "stepId": "resume-yielded-worker"
+      },
+      "timestamp": "2026-08-17T05:34:57.599Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d2",
+        "usage": {
+          "duration_ms": 74346,
+          "segment": "relay-stakeholder-transcript",
+          "subagent_tokens": 114881,
+          "tool_uses": 4
+        }
+      },
+      "timestamp": "2026-08-17T05:36:06.549Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d2",
+        "usage": {
+          "duration_ms": 33770,
+          "segment": "relay-elicitation-decisions",
+          "subagent_tokens": 119937,
+          "tool_uses": 1
+        }
+      },
+      "timestamp": "2026-08-17T06:05:31.938Z",
+      "type": "activity_usage"
     }
   ],
   "triggeredWorkflows": [
@@ -1058,6 +1121,24 @@
             },
             "optionId": "full-workflow",
             "respondedAt": "2026-08-15T11:58:28.000Z"
+          },
+          "requirements-elicitation-elicitation-complete": {
+            "effects": {
+              "variablesSet": {
+                "elicitation_complete": true
+              }
+            },
+            "optionId": "complete",
+            "respondedAt": "2026-08-17T06:04:28.000Z"
+          },
+          "requirements-elicitation-stakeholder-transcript": {
+            "effects": {
+              "variablesSet": {
+                "has_stakeholder_input": true
+              }
+            },
+            "optionId": "provide-transcript",
+            "respondedAt": "2026-08-17T05:34:12.000Z"
           },
           "start-work-package-pr-creation": {
             "effects": {
@@ -1149,6 +1230,31 @@
             "technique:design-philosophy::document": "ef6806faec322b7c",
             "technique:review-assumptions::collect": "655544fbd2bf77f9",
             "technique:review-assumptions::record": "9a2d2b12296ff79f"
+          },
+          "worker-requirements-elicitation-e1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+            "bundle:variable-binding": "69962c9fd66c4d9a",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:assumption-reconciliation#integration-with-assumptions-log": "ce221bca1788c008",
+            "resource:assumption-reconciliation#scorecard": "0ab7ea714687e7f3",
+            "resource:assumptions-review#assumptions-log-template": "a140149edbbd5bb6",
+            "resource:assumptions-review#classification-vocabulary": "f65d3b0a3185cfc9",
+            "resource:assumptions-review#probe-vocabulary": "2b0e6e31f3c05e40",
+            "resource:codebase-comprehension#corpus-artifact-template": "3f4a6661bd81560c",
+            "resource:deferred-items#template": "793860242a14d21b",
+            "resource:requirements-elicitation#document-template": "8c39ba923d7278f2",
+            "resource:requirements-elicitation#question-domain-reference": "59b1c64da1857839",
+            "technique:requirements-elicitation::ask-question": "6ce396e622d6a367",
+            "technique:requirements-elicitation::create-document": "95cfb4a1b3e6bd8b",
+            "technique:requirements-elicitation::discuss": "a9dec38382eb4df6",
+            "technique:requirements-elicitation::elicit": "c35caac324f6d7df",
+            "technique:review-assumptions::collect": "fb0e04d3569d3c25",
+            "technique:review-assumptions::reconcile": "5352f61341ff052a",
+            "technique:review-assumptions::record": "ecfe2105989ab831"
           },
           "worker-start-work-package-c1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -3421,17 +3527,468 @@
             "activity": "requirements-elicitation",
             "timestamp": "2026-08-17T05:03:44.847Z",
             "type": "activity_entered"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 85872,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 4175,
+              "delivery": "full",
+              "stepId": "stakeholder-discussion",
+              "techniqueId": "requirements-elicitation::discuss"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "stepId": "stakeholder-discussion"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 4991,
+              "delivery": "full",
+              "stepId": "elicit-requirements",
+              "techniqueId": "requirements-elicitation::elicit"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "stepId": "elicit-requirements"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 4449,
+              "delivery": "full",
+              "stepId": "ask-question",
+              "techniqueId": "requirements-elicitation::ask-question"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "stepId": "ask-question"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 5396,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 4275,
+              "delivery": "full",
+              "stepId": "create-document",
+              "techniqueId": "requirements-elicitation::create-document"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "stepId": "create-document"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 4413,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 12609,
+              "delivery": "full",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "stepId": "reconcile-assumptions"
+            },
+            "timestamp": "2026-08-17T05:05:25.736Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 26722,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 4175,
+              "delivery": "unchanged",
+              "stepId": "stakeholder-discussion",
+              "techniqueId": "requirements-elicitation::discuss"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 4991,
+              "delivery": "unchanged",
+              "stepId": "elicit-requirements",
+              "techniqueId": "requirements-elicitation::elicit"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 4449,
+              "delivery": "unchanged",
+              "stepId": "ask-question",
+              "techniqueId": "requirements-elicitation::ask-question"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 5396,
+              "delivery": "unchanged",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 4275,
+              "delivery": "unchanged",
+              "stepId": "create-document",
+              "techniqueId": "requirements-elicitation::create-document"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 4413,
+              "delivery": "unchanged",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "chars": 12609,
+              "delivery": "unchanged",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "bundled": true,
+              "chars": 1926,
+              "delivery": "full",
+              "resourceId": "requirements-elicitation#document-template"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "bundled": true,
+              "chars": 1822,
+              "delivery": "full",
+              "resourceId": "requirements-elicitation#question-domain-reference"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "bundled": true,
+              "chars": 2654,
+              "delivery": "full",
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "bundled": true,
+              "chars": 1038,
+              "delivery": "full",
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "bundled": true,
+              "chars": 1159,
+              "delivery": "full",
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "bundled": true,
+              "chars": 316,
+              "delivery": "full",
+              "resourceId": "deferred-items#template"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "bundled": true,
+              "chars": 4443,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension#corpus-artifact-template"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "bundled": true,
+              "chars": 202,
+              "delivery": "full",
+              "resourceId": "assumption-reconciliation#scorecard"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "bundled": true,
+              "chars": 1542,
+              "delivery": "full",
+              "resourceId": "assumption-reconciliation#integration-with-assumptions-log"
+            },
+            "timestamp": "2026-08-17T05:06:01.748Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "stakeholder-transcript",
+            "timestamp": "2026-08-17T05:07:37.017Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "usage": {
+                "duration_ms": 155745,
+                "segment": "first dispatch, paused at stakeholder-transcript gate",
+                "subagent_tokens": 131399,
+                "tool_uses": 19
+              }
+            },
+            "timestamp": "2026-08-17T05:08:08.675Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "stakeholder-transcript",
+            "data": {
+              "optionId": "provide-transcript"
+            },
+            "timestamp": "2026-08-17T05:34:12.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "has_stakeholder_input",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-17T05:34:12.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "elicitation-complete",
+            "timestamp": "2026-08-17T05:46:00.862Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "usage": {
+                "duration_ms": 654113,
+                "segment": "elicitation-after-stakeholder-transcript",
+                "subagent_tokens": 194617,
+                "tool_uses": 39
+              }
+            },
+            "timestamp": "2026-08-17T05:46:31.581Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "elicitation-complete",
+            "data": {
+              "optionId": "complete"
+            },
+            "timestamp": "2026-08-17T06:04:28.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "name": "elicitation_complete",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-17T06:04:28.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e1",
+              "usage": {
+                "duration_ms": 186456,
+                "segment": "fold-decisions-and-finalize",
+                "subagent_tokens": 210416,
+                "tool_uses": 17
+              }
+            },
+            "timestamp": "2026-08-17T06:08:30.504Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 42,
+        "seq": 53,
         "sessionIndex": "KLN3OI",
         "skippedActivities": [],
         "startedAt": "2026-08-15T10:00:34.754Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1786943024,
+        "ts": 1786946910,
         "variables": {
           "artifact_name": "",
           "artifact_publish_ref": "",
@@ -3470,7 +4027,7 @@
           "current_block_index": 0,
           "current_branch": "",
           "design_philosophy_doc": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/02-design-philosophy.md",
-          "elicitation_complete": false,
+          "elicitation_complete": true,
           "existing_pr_number": "",
           "findings_raised_to_author": "all",
           "github_issue_found": false,
@@ -3484,7 +4041,7 @@
           "has_reconcilable_research": false,
           "has_resolvable_assumptions": false,
           "has_stakeholder_comment": false,
-          "has_stakeholder_input": false,
+          "has_stakeholder_input": true,
           "has_uncertain_symbols": false,
           "host_binding_mismatch": false,
           "host_repo_path": "/home/mike1/projects/dev/workflow-server",
@@ -3625,8 +4182,14 @@
       "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
       "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
       "resource:meta/planning-readme": "7291d9446b32a6c1",
+      "technique:inherited_inputs.items:f351d5762d78fa43": "f351d5762d78fa43",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:ae2b09344c726b6f": "ae2b09344c726b6f",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:be94a1e5beea0046": "be94a1e5beea0046",
       "technique:workflow-engine::commit-and-persist": "e92365ff7814212c",
-      "technique:workflow-engine::dispatch-activity": "6cbc94bcabc9a417"
+      "technique:workflow-engine::dispatch-activity": "6cbc94bcabc9a417",
+      "technique:workflow-engine::resume-worker": "32d4059bf337dd44"
     },
     "worker-initialize-session-b1": {
       "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
