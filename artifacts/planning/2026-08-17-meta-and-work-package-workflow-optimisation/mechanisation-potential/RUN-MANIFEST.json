@@ -1,0 +1,28 @@
+{
+  "status": "complete",
+  "pipeline_mode": "full-prism",
+  "report_path": "REPORT.md",
+  "definitive_findings_path": "DEFINITIVE-FINDINGS.md",
+  "units": [
+    {
+      "unit": "/home/mike1/projects/dev/workflow-server",
+      "output_subdir": ".",
+      "pipeline_mode": "full-prism",
+      "status": "complete",
+      "artifacts": [
+        "structural-analysis.md",
+        "adversarial-analysis.md",
+        "synthesis.md"
+      ]
+    }
+  ],
+  "artifacts": [
+    "analysis-plan.md",
+    "structural-analysis.md",
+    "adversarial-analysis.md",
+    "synthesis.md",
+    "REPORT.md",
+    "DEFINITIVE-FINDINGS.md",
+    "RUN-MANIFEST.json"
+  ]
+}

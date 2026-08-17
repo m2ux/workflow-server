@@ -8,8 +8,8 @@
   "currentActivity": "dispatch-client-workflow",
   "currentTechnique": "workflow-engine::commit-and-persist",
   "condition": "isDefault: dispatch-client-workflow",
-  "seq": 27,
-  "ts": 1786950125,
+  "seq": 30,
+  "ts": 1786955763,
   "startedAt": "2026-08-17T06:17:44.568Z",
   "completedActivities": [
     "discover-session",
@@ -884,6 +884,68 @@
       },
       "timestamp": "2026-08-17T07:02:05.745Z",
       "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-b",
+        "chars": 39014,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-17T08:04:23.929Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-b",
+        "chars": 39014,
+        "priorAgentId": "worker-03-dispatch-client-workflow-a"
+      },
+      "timestamp": "2026-08-17T08:04:23.929Z",
+      "type": "activity_redelivered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-b",
+        "chars": 19906,
+        "delivery": "full",
+        "stepId": "dispatch-activity",
+        "techniqueId": "workflow-engine::dispatch-activity"
+      },
+      "timestamp": "2026-08-17T08:04:57.772Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-b",
+        "stepId": "dispatch-activity"
+      },
+      "timestamp": "2026-08-17T08:04:57.772Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-b",
+        "chars": 16022,
+        "delivery": "full",
+        "stepId": "commit-activity-artifacts",
+        "techniqueId": "workflow-engine::commit-and-persist"
+      },
+      "timestamp": "2026-08-17T08:36:03.457Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-b",
+        "stepId": "commit-activity-artifacts"
+      },
+      "timestamp": "2026-08-17T08:36:03.457Z",
+      "type": "step_started"
     }
   ],
   "triggeredWorkflows": [
@@ -912,11 +974,19 @@
           }
         },
         "completedActivities": [
-          "scope-definition"
+          "scope-definition",
+          "dimension-planning"
         ],
-        "condition": "scope_confirmed == true",
-        "currentActivity": "dimension-planning",
+        "condition": "dimensions_confirmed == true",
+        "currentActivity": "execute-analysis",
         "currentTechnique": "",
+        "declaredArtifacts": [
+          {
+            "id": "evaluation_plan",
+            "name": "evaluation-plan.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/01-evaluation-plan.md"
+          }
+        ],
         "deliveredContent": {
           "worker-00-scope-definition-a": {
             "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
@@ -951,6 +1021,33 @@
             "technique:plan-evaluation::map-dimensions-to-lenses": "611d4c538ad3c6ff",
             "technique:plan-evaluation::survey-target": "45b480e1c918036c",
             "technique:plan-evaluation::write-evaluation-plan": "21b8aa010b168e5f"
+          },
+          "worker-02-execute-analysis-a": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:1654f244e34d336f": "1654f244e34d336f",
+            "bundle:scatter-gather": "af12d4486241b5af",
+            "bundle:variable-binding": "86e00a6d087f9e58",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "technique:execute-analysis::read-run-manifest": "6c347adbdda15913",
+            "technique:workflow-engine::handle-sub-workflow": "035bfec615e79d50"
+          },
+          "worker-execute-analysis-b": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:1654f244e34d336f": "1654f244e34d336f",
+            "bundle:scatter-gather": "af12d4486241b5af",
+            "bundle:variable-binding": "86e00a6d087f9e58",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:prism/degradation": "192af63dbfe6ad7c",
+            "resource:prism/portfolio-synthesis": "26a933ac3c7b14e9",
+            "resource:prism/run-manifest": "70b7f3ff121a0f26",
+            "technique:execute-analysis::read-run-manifest": "6c347adbdda15913",
+            "technique:workflow-engine::handle-sub-workflow": "035bfec615e79d50"
           }
         },
         "history": [
@@ -1613,19 +1710,1476 @@
             },
             "timestamp": "2026-08-17T07:01:51.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "timestamp": "2026-08-17T07:05:30.896Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "dimensions_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-17T07:05:30.896Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "evaluation_plan_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/01-evaluation-plan.md"
+            },
+            "timestamp": "2026-08-17T07:05:30.896Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "target_summary",
+              "source": "variables_changed",
+              "value": "workflow-server is a TypeScript MCP server serving 21 workflow definition trees written in markdown and YAML. The evaluation subject is two of them — meta (session lifecycle orchestrator, 5 activities) and work-package (15-activity engineering delivery workflow). src/ and scripts/ are in scope as the mechanisation surface. The server registers 16 MCP tools and every one is session control-plane, so deterministic domain work in these workflows currently has nowhere to live except agent-executed prose."
+            },
+            "timestamp": "2026-08-17T07:05:30.896Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "structure_inventory",
+              "source": "variables_changed",
+              "value": "workflows/meta: 171 files (160 md, 11 yaml), 290 KB, ~34,900 words — 5 activities, 150 technique files across 9 groups, 7 resources, 5 checkpoints. workflows/work-package: 168 files (152 md), 617 KB, ~66,300 words — 15 activities, 112 technique files across 16 groups, 37 resources, 44 checkpoints. src/: 12,343 LOC TypeScript (utils 4,000; tools 2,821; loaders 2,359; schema 1,621; transports 224; middleware 90; resources 66), 16 registered MCP tools (14 workflow, 2 resource). scripts/: 44 scripts, 15,257 LOC, 26 check-*.ts guards. tests/: 72 test files, 18,420 LOC."
+            },
+            "timestamp": "2026-08-17T07:05:30.896Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "key_topics",
+              "source": "variables_changed",
+              "value": "No domain-computation tool exists on the server. Checkpoint density is uneven — 10 gates in 01-start-work-package, 9 in 13-submit-for-review, 0 in 11-validate and 14-complete. Large bodies: dispatch-activity.md 10.0 KB, review-summary.md 9.6 KB, review-assumptions/reconcile.md 9.3 KB, review-mode.md 21.6 KB, codebase-comprehension.md 18.5 KB. Four technique basenames (analyze, create-pr, mark-ready, revise-session-metrics) exist in both trees, plus eleven parallel TECHNIQUE.md group files. The 26 check-*.ts guards are reachable only as repo CI, never as a workflow operation. record_usage and three benchmark scripts already instrument cost."
+            },
+            "timestamp": "2026-08-17T07:05:30.896Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "execution_groups",
+              "source": "variables_changed",
+              "value": [
+                {
+                  "analysis_focus": "The Mechanisation Potential focus, run through structural, adversarial and synthesis passes.",
+                  "dimensions": [
+                    "Mechanisation Potential"
+                  ],
+                  "lenses": [
+                    "00",
+                    "01",
+                    "02"
+                  ],
+                  "output_subdir": "mechanisation-potential/",
+                  "pipeline_mode": "full-prism"
+                },
+                {
+                  "analysis_focus": "Each lens runs against its own dimension's focus and writes its own artifact within the shared subdirectory; the four foci are not merged into one prompt.",
+                  "dimensions": [
+                    "Context Economy",
+                    "Orchestration Topology",
+                    "Redundant Work",
+                    "Change Economics"
+                  ],
+                  "lenses": [
+                    "07",
+                    "08",
+                    "10",
+                    "14",
+                    "15",
+                    "20",
+                    "30",
+                    "51"
+                  ],
+                  "output_subdir": "dimensions/",
+                  "pipeline_mode": "portfolio"
+                }
+              ]
+            },
+            "timestamp": "2026-08-17T07:05:30.896Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "dimension_plan",
+              "source": "variables_changed",
+              "value": [
+                {
+                  "analysis_focus": "Evaluate the mechanisation potential of agent-executed technique prose in workflows/meta (150 technique files, ~34,900 words) and workflows/work-package (112 files, ~66,300 words): find every protocol step that is a deterministic procedure a script or server tool could compute. Use repo/component/issue/PR coordinate resolution (version-control::resolve-host-repo, monorepo component matching) as guide, not boundary; examine also path derivation, repo- and project-type detection, artifact link and anchor checking, sync-progress-status Progress-table writes, git and worktree state checks, classification steps that are fixed decision tables, and artifact format and schema validation. Judge each against the available surface: 16 registered MCP tools, all session control-plane, no domain-computation tool; 12,343 LOC in src/; 26 check-*.ts guards reachable only as CI. For each candidate, test whether the procedure is genuinely deterministic or whether the prose hides a judgement call.",
+                  "dimension": "Mechanisation Potential",
+                  "lenses": [
+                    "00",
+                    "01",
+                    "02"
+                  ],
+                  "output_subdir": "mechanisation-potential/",
+                  "pipeline_mode": "full-prism"
+                },
+                {
+                  "analysis_focus": "Assess the context economy of definition delivery — tokens spent shipping technique and resource bodies into agent contexts. Measure body size against what a step actually reads: dispatch-activity.md 10.0 KB, workflow-engine/TECHNIQUE.md 8.3 KB, review-summary.md 9.6 KB, review-assumptions/reconcile.md 9.3 KB, review-mode.md 21.6 KB, codebase-comprehension.md 18.5 KB, against 290 KB of meta and 617 KB of work-package definitions. Examine the eager step-technique bundling budget, reference-versus-full delivery and the agent_id ledger in src/utils/delivery.ts and resource-delivery.ts, inherited-input blocks restated per technique, resources fetched but never read, and prose that restates what schemas/ already enforces. Name the abstraction that would collapse each duplication.",
+                  "dimension": "Context Economy",
+                  "lenses": [
+                    "15",
+                    "20"
+                  ],
+                  "output_subdir": "dimensions/",
+                  "pipeline_mode": "portfolio"
+                },
+                {
+                  "analysis_focus": "Analyse the orchestration topology of the two workflows — how work is distributed across agents and turns, and where the shape itself is the cost. work-package runs 15 activities carrying 44 checkpoint blocks across 13 of them, concentrated in 01-start-work-package (10) and 13-submit-for-review (9); meta runs 5 activities with 5 checkpoints, 3 of them in 00-discover-session. Examine dispatch granularity and the server-enforced batch bound (src/utils/batch.ts, dispatch.ts, fan-out.ts), worker round trips per activity (get_activity, get_technique, get_resource, yield and resume, record_usage), serial steps that could run concurrently, blocking-gate placement, context re-establishment at every activity boundary, and sub-agent spawn overhead. Propose alternative topologies and state what each trades.",
+                  "dimension": "Orchestration Topology",
+                  "lenses": [
+                    "14",
+                    "51"
+                  ],
+                  "output_subdir": "dimensions/",
+                  "pipeline_mode": "portfolio"
+                },
+                {
+                  "analysis_focus": "Identify redundant work — steps the workflows perform that produce nothing the run consumes. Trace activities and techniques never reached in practice across meta's 5 activities and work-package's 15; artifacts written but never read downstream; verification repeated at multiple stages (26 check-*.ts guards alongside in-workflow verify-artifact-conforms, validate-workflow-yaml, validate-activities); optional branches that always resolve the same way. Examine duplication across the two trees, where analyze.md, create-pr.md, mark-ready.md and revise-session-metrics.md exist under both and eleven TECHNIQUE.md group files carry parallel structure. Distinguish genuinely dead paths from paths that are rare but load-bearing.",
+                  "dimension": "Redundant Work",
+                  "lenses": [
+                    "30",
+                    "10"
+                  ],
+                  "output_subdir": "dimensions/",
+                  "pipeline_mode": "portfolio"
+                },
+                {
+                  "analysis_focus": "Evaluate the change economics of each optimisation opportunity — what building it costs and what it risks. For each, classify the implementation surface: a new server tool in src/tools/ (2,821 LOC, 16 tools today), a script under scripts/ (44 scripts, 15,257 LOC), or a definition edit in the 907 KB markdown and YAML corpus. Weigh the guard and test coverage protecting the change (72 test files, 18,420 LOC; 26 check-*.ts guards), saved-session and backwards compatibility for sessions holding the old shape, whether the saving is measurable with the record_usage instrumentation and the run-token-benchmark / run-dispatch-benchmark / run-batch-benchmark scripts already present, and sequencing dependencies between opportunities. Test the scarcity claims: which costs are immovable regardless of redesign.",
+                  "dimension": "Change Economics",
+                  "lenses": [
+                    "07",
+                    "08"
+                  ],
+                  "output_subdir": "dimensions/",
+                  "pipeline_mode": "portfolio"
+                }
+              ]
+            },
+            "timestamp": "2026-08-17T07:05:30.896Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "stepId": "survey-target"
+            },
+            "timestamp": "2026-08-17T07:05:30.896Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "stepId": "map-dimensions"
+            },
+            "timestamp": "2026-08-17T07:05:30.896Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "stepId": "group-dimensions"
+            },
+            "timestamp": "2026-08-17T07:05:30.896Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "stepId": "write-plan"
+            },
+            "timestamp": "2026-08-17T07:05:30.896Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "stepId": "confirm-plan"
+            },
+            "timestamp": "2026-08-17T07:05:30.896Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "timestamp": "2026-08-17T07:05:30.896Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-02-execute-analysis-a",
+              "chars": 48633,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-17T07:06:00.789Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-02-execute-analysis-a",
+              "chars": 2140,
+              "delivery": "full",
+              "stepId": "trigger-prism",
+              "techniqueId": "workflow-engine::handle-sub-workflow"
+            },
+            "timestamp": "2026-08-17T07:06:00.789Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-02-execute-analysis-a",
+              "stepId": "trigger-prism"
+            },
+            "timestamp": "2026-08-17T07:06:00.789Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-02-execute-analysis-a",
+              "chars": 3074,
+              "delivery": "full",
+              "stepId": "read-run-manifest",
+              "techniqueId": "execute-analysis::read-run-manifest"
+            },
+            "timestamp": "2026-08-17T07:06:00.789Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-02-execute-analysis-a",
+              "stepId": "read-run-manifest"
+            },
+            "timestamp": "2026-08-17T07:06:00.789Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "sessionIndex": "W7EKMS",
+              "workflowId": "prism"
+            },
+            "timestamp": "2026-08-17T07:07:27.321Z",
+            "type": "workflow_triggered"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "sessionIndex": "MVO4PT",
+              "workflowId": "prism"
+            },
+            "timestamp": "2026-08-17T07:31:30.858Z",
+            "type": "workflow_triggered"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-execute-analysis-b",
+              "chars": 48633,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-17T08:07:43.879Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-execute-analysis-b",
+              "chars": 48633,
+              "priorAgentId": "worker-02-execute-analysis-a"
+            },
+            "timestamp": "2026-08-17T08:07:43.879Z",
+            "type": "activity_redelivered"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-execute-analysis-b",
+              "chars": 2140,
+              "delivery": "full",
+              "stepId": "trigger-prism",
+              "techniqueId": "workflow-engine::handle-sub-workflow"
+            },
+            "timestamp": "2026-08-17T08:07:43.879Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-execute-analysis-b",
+              "stepId": "trigger-prism"
+            },
+            "timestamp": "2026-08-17T08:07:43.879Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-execute-analysis-b",
+              "chars": 3074,
+              "delivery": "full",
+              "stepId": "read-run-manifest",
+              "techniqueId": "execute-analysis::read-run-manifest"
+            },
+            "timestamp": "2026-08-17T08:07:43.879Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-execute-analysis-b",
+              "stepId": "read-run-manifest"
+            },
+            "timestamp": "2026-08-17T08:07:43.879Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-execute-analysis-b",
+              "chars": 492,
+              "delivery": "full",
+              "resourceId": "prism/degradation"
+            },
+            "timestamp": "2026-08-17T08:08:38.220Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-execute-analysis-b",
+              "chars": 3213,
+              "delivery": "full",
+              "resourceId": "prism/run-manifest"
+            },
+            "timestamp": "2026-08-17T08:08:38.463Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-execute-analysis-b",
+              "chars": 1664,
+              "delivery": "full",
+              "resourceId": "prism/portfolio-synthesis"
+            },
+            "timestamp": "2026-08-17T08:32:37.410Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "worker-execute-analysis-b",
+              "usage": {
+                "duration_ms": 1683768,
+                "note": "replacement worker after context loss; covers lens 10 degradation, portfolio synthesis and portfolio run manifest only",
+                "subagent_tokens": 213175,
+                "tool_uses": 106
+              }
+            },
+            "timestamp": "2026-08-17T08:36:03.036Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 16,
+        "seq": 25,
         "sessionIndex": "PD2H26",
         "skippedActivities": [],
         "startedAt": "2026-08-17T06:23:19.588Z",
         "status": "running",
-        "triggeredWorkflows": [],
-        "ts": 1786950125,
+        "triggeredWorkflows": [
+          {
+            "sessionIndex": "W7EKMS",
+            "state": {
+              "agentId": "workflow-orchestrator",
+              "checkpointResponses": {},
+              "completedActivities": [
+                "select-mode",
+                "structural-pass",
+                "adversarial-pass",
+                "synthesis-pass",
+                "generate-report",
+                "deliver-result"
+              ],
+              "condition": "",
+              "currentActivity": "deliver-result",
+              "currentTechnique": "",
+              "declaredArtifacts": [
+                {
+                  "id": "analysis_plan",
+                  "name": "analysis-plan.md",
+                  "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/analysis-plan.md"
+                },
+                {
+                  "id": "structural_analysis",
+                  "name": "structural-analysis.md",
+                  "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/structural-analysis.md"
+                },
+                {
+                  "id": "adversarial_analysis",
+                  "name": "adversarial-analysis.md",
+                  "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/adversarial-analysis.md"
+                },
+                {
+                  "id": "synthesis",
+                  "name": "synthesis.md",
+                  "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/synthesis.md"
+                },
+                {
+                  "id": "final_report",
+                  "name": "REPORT.md",
+                  "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/REPORT.md"
+                },
+                {
+                  "id": "definitive_findings",
+                  "name": "DEFINITIVE-FINDINGS.md",
+                  "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/DEFINITIVE-FINDINGS.md"
+                },
+                {
+                  "id": "run_manifest",
+                  "name": "RUN-MANIFEST.json",
+                  "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/RUN-MANIFEST.json"
+                }
+              ],
+              "deliveredContent": {
+                "prism-g1-adversarial": {
+                  "resource:l12-complement-adversarial": "ffe58af208639434"
+                },
+                "prism-g1-orchestrator": {
+                  "activity_rules:df60226b63c3f6ae": "df60226b63c3f6ae",
+                  "bundle:rules:673787f9b68b9029": "673787f9b68b9029",
+                  "bundle:rules:8207196071c9d93e": "8207196071c9d93e",
+                  "bundle:scatter-gather": "c3ee7a21a91eb589",
+                  "bundle:variable-binding": "fc19a1a690c26bd4",
+                  "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+                  "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+                  "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+                  "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+                  "resource:analysis-plan": "78e5c9134ee366f7",
+                  "resource:definitive-findings-template": "80a3d751e28ac609",
+                  "resource:final-output-template": "fae83b853454955a",
+                  "resource:run-manifest": "848d742c336cb466",
+                  "technique:gitnexus-operations::verify-index": "2e0533c28e9e8d1a",
+                  "technique:inherited_inputs.items:8f4c7a7b274cacb4": "8f4c7a7b274cacb4",
+                  "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+                  "technique:inherited_inputs:6131206b19a50605": "6131206b19a50605",
+                  "technique:plan-analysis": "2af35b78c37666f7",
+                  "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+                  "technique:rules:28ed2620722185d8": "28ed2620722185d8"
+                },
+                "prism-g1-structural": {
+                  "resource:l12": "77c22c1333422a2d"
+                },
+                "prism-g1-synthesis": {
+                  "resource:l12-synthesis": "454d738567d26b1d"
+                }
+              },
+              "history": [
+                {
+                  "timestamp": "2026-08-17T07:07:27.321Z",
+                  "type": "workflow_started"
+                },
+                {
+                  "data": {
+                    "variables": {
+                      "gitnexus_available": false,
+                      "output_path": ".",
+                      "target_type": "code",
+                      "user_request": "Start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. Many operations that are agent-driven can be mechanised. For example, if the user provides a named component, an issue or a PR, a TypeScript or Python script can extract the repo name and match it against a mono-repo component purely mechanically without agent interaction — saving a lot of time and tokens. There are no doubt many other opportunities to do this. I want a report detailing any and all opportunities for optimisation of the meta and work-package workflows. Use the example provided as a guide but do not limit the report to it."
+                    }
+                  },
+                  "timestamp": "2026-08-17T07:07:27.321Z",
+                  "type": "variables_seeded"
+                },
+                {
+                  "activity": "select-mode",
+                  "timestamp": "2026-08-17T07:11:13.572Z",
+                  "type": "activity_entered"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "chars": 63658,
+                    "dispatch": "fresh"
+                  },
+                  "timestamp": "2026-08-17T07:11:16.311Z",
+                  "type": "activity_dispatched"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "chars": 20166,
+                    "delivery": "full",
+                    "stepId": "plan",
+                    "techniqueId": "plan-analysis"
+                  },
+                  "timestamp": "2026-08-17T07:11:16.311Z",
+                  "type": "technique_bundled"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "plan"
+                  },
+                  "timestamp": "2026-08-17T07:11:16.311Z",
+                  "type": "step_started"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "chars": 1680,
+                    "delivery": "full",
+                    "resourceId": "analysis-plan"
+                  },
+                  "timestamp": "2026-08-17T07:11:31.314Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "select-mode",
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "activity_exited"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "target",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server"
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "target_content",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server"
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "target_type",
+                    "source": "variables_changed",
+                    "value": "general"
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "pipeline_mode",
+                    "source": "variables_changed",
+                    "value": "full-prism"
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "selected_lenses",
+                    "source": "variables_changed",
+                    "value": [
+                      "00",
+                      "01",
+                      "02"
+                    ]
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "output_path",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential"
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "target_description",
+                    "source": "variables_changed",
+                    "value": "Mechanisation potential of agent-executed technique prose in the workflow-server meta and work-package workflow definitions, assessed against the server's src/ and scripts/ surface."
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "analysis_budget",
+                    "source": "variables_changed",
+                    "value": "thorough"
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "gitnexus_available",
+                    "source": "variables_changed",
+                    "value": false
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "analysis_plan",
+                    "source": "variables_changed",
+                    "value": "analysis-plan.md"
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "analysis_units",
+                    "source": "variables_changed",
+                    "value": [
+                      {
+                        "lens_name": "l12",
+                        "lenses": [],
+                        "pipeline_mode": "full-prism",
+                        "rationale": "Primary lead of the parent evaluation; highest false-positive risk (prose that looks deterministic but hides judgement), so it takes the 3-pass self-correcting pipeline.",
+                        "risk": "high",
+                        "role": "workflow-definitions",
+                        "target": "/home/mike1/projects/dev/workflow-server",
+                        "target_type": "general",
+                        "unit_output_subdir": ""
+                      }
+                    ]
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "plan"
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "summarize"
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "apply-plan"
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "confirm-mode"
+                  },
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "timestamp": "2026-08-17T07:13:18.100Z",
+                  "type": "activity_entered"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "chars": 34371,
+                    "dispatch": "resume"
+                  },
+                  "timestamp": "2026-08-17T07:13:23.326Z",
+                  "type": "activity_dispatched"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "chars": 3887,
+                    "delivery": "full",
+                    "stepId": "check-gitnexus",
+                    "techniqueId": "gitnexus-operations::verify-index"
+                  },
+                  "timestamp": "2026-08-17T07:13:23.326Z",
+                  "type": "technique_bundled"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "check-gitnexus"
+                  },
+                  "timestamp": "2026-08-17T07:13:23.326Z",
+                  "type": "step_started"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-structural",
+                    "dispatch": "fresh"
+                  },
+                  "timestamp": "2026-08-17T07:13:30.160Z",
+                  "type": "activity_dispatched"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-structural",
+                    "chars": 2209,
+                    "delivery": "full",
+                    "resourceId": "l12"
+                  },
+                  "timestamp": "2026-08-17T07:13:30.160Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "structural-pass",
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "activity_exited"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "name": "unit_output_dir",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential"
+                  },
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "name": "gitnexus_available",
+                    "source": "variables_changed",
+                    "value": false
+                  },
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "name": "structural_analysis",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/structural-analysis.md"
+                  },
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "name": "behavioral_output_paths",
+                    "source": "variables_changed",
+                    "value": {}
+                  },
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "name": "all_artifact_paths",
+                    "source": "variables_changed",
+                    "value": [
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/analysis-plan.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/structural-analysis.md"
+                    ]
+                  },
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "resolve-unit-output"
+                  },
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "check-gitnexus"
+                  },
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "run-structural"
+                  },
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "run-single-lens"
+                  },
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "run-portfolio"
+                  },
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "dispatch-behavioral-lenses"
+                  },
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "collect-behavioral-paths"
+                  },
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "report-unit-paths"
+                  },
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "adversarial-pass",
+                  "timestamp": "2026-08-17T07:19:31.194Z",
+                  "type": "activity_entered"
+                },
+                {
+                  "activity": "adversarial-pass",
+                  "data": {
+                    "agentId": "prism-g1-adversarial",
+                    "dispatch": "fresh"
+                  },
+                  "timestamp": "2026-08-17T07:19:35.180Z",
+                  "type": "activity_dispatched"
+                },
+                {
+                  "activity": "adversarial-pass",
+                  "data": {
+                    "agentId": "prism-g1-adversarial",
+                    "chars": 1297,
+                    "delivery": "full",
+                    "resourceId": "l12-complement-adversarial"
+                  },
+                  "timestamp": "2026-08-17T07:19:35.180Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "adversarial-pass",
+                  "timestamp": "2026-08-17T07:23:32.986Z",
+                  "type": "activity_exited"
+                },
+                {
+                  "activity": "adversarial-pass",
+                  "data": {
+                    "name": "adversarial_analysis",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/adversarial-analysis.md"
+                  },
+                  "timestamp": "2026-08-17T07:23:32.986Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "adversarial-pass",
+                  "data": {
+                    "name": "all_artifact_paths",
+                    "source": "variables_changed",
+                    "value": [
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/analysis-plan.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/structural-analysis.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/adversarial-analysis.md"
+                    ]
+                  },
+                  "timestamp": "2026-08-17T07:23:32.986Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "adversarial-pass",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "run-adversarial"
+                  },
+                  "timestamp": "2026-08-17T07:23:32.986Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "synthesis-pass",
+                  "timestamp": "2026-08-17T07:23:32.986Z",
+                  "type": "activity_entered"
+                },
+                {
+                  "activity": "synthesis-pass",
+                  "data": {
+                    "agentId": "prism-g1-synthesis",
+                    "dispatch": "fresh"
+                  },
+                  "timestamp": "2026-08-17T07:23:37.859Z",
+                  "type": "activity_dispatched"
+                },
+                {
+                  "activity": "synthesis-pass",
+                  "data": {
+                    "agentId": "prism-g1-synthesis",
+                    "chars": 1298,
+                    "delivery": "full",
+                    "resourceId": "l12-synthesis"
+                  },
+                  "timestamp": "2026-08-17T07:23:37.859Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "synthesis-pass",
+                  "timestamp": "2026-08-17T07:26:33.093Z",
+                  "type": "activity_exited"
+                },
+                {
+                  "activity": "synthesis-pass",
+                  "data": {
+                    "name": "synthesis",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/synthesis.md"
+                  },
+                  "timestamp": "2026-08-17T07:26:33.093Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "synthesis-pass",
+                  "data": {
+                    "name": "all_artifact_paths",
+                    "source": "variables_changed",
+                    "value": [
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/analysis-plan.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/structural-analysis.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/adversarial-analysis.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/synthesis.md"
+                    ]
+                  },
+                  "timestamp": "2026-08-17T07:26:33.093Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "synthesis-pass",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "run-synthesis"
+                  },
+                  "timestamp": "2026-08-17T07:26:33.093Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "generate-report",
+                  "timestamp": "2026-08-17T07:26:33.093Z",
+                  "type": "activity_entered"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "chars": 2828,
+                    "delivery": "full",
+                    "resourceId": "final-output-template"
+                  },
+                  "timestamp": "2026-08-17T07:26:38.221Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "chars": 3074,
+                    "delivery": "full",
+                    "resourceId": "definitive-findings-template"
+                  },
+                  "timestamp": "2026-08-17T07:26:38.503Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "generate-report",
+                  "timestamp": "2026-08-17T07:29:40.660Z",
+                  "type": "activity_exited"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "name": "report_path",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/REPORT.md"
+                  },
+                  "timestamp": "2026-08-17T07:29:40.660Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "name": "definitive_findings_path",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/DEFINITIVE-FINDINGS.md"
+                  },
+                  "timestamp": "2026-08-17T07:29:40.660Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "name": "finding_count",
+                    "source": "variables_changed",
+                    "value": 12
+                  },
+                  "timestamp": "2026-08-17T07:29:40.660Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "name": "core_finding",
+                    "source": "variables_changed",
+                    "value": "The corpus renders 'a procedure nobody has scripted' and 'a procedure that cannot be scripted' as identical protocol prose, so mechanisation adoption tracks what a workflow is about rather than what its steps do."
+                  },
+                  "timestamp": "2026-08-17T07:29:40.660Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "generate-report"
+                  },
+                  "timestamp": "2026-08-17T07:29:40.660Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "deliver-result",
+                  "timestamp": "2026-08-17T07:29:40.660Z",
+                  "type": "activity_entered"
+                },
+                {
+                  "activity": "deliver-result",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "chars": 3207,
+                    "delivery": "full",
+                    "resourceId": "run-manifest"
+                  },
+                  "timestamp": "2026-08-17T07:29:47.140Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "deliver-result",
+                  "timestamp": "2026-08-17T07:30:23.666Z",
+                  "type": "activity_exited"
+                },
+                {
+                  "activity": "deliver-result",
+                  "data": {
+                    "name": "run_manifest_path",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/RUN-MANIFEST.json"
+                  },
+                  "timestamp": "2026-08-17T07:30:23.666Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "deliver-result",
+                  "data": {
+                    "name": "run_status",
+                    "source": "variables_changed",
+                    "value": "complete"
+                  },
+                  "timestamp": "2026-08-17T07:30:23.666Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "deliver-result",
+                  "data": {
+                    "name": "all_artifact_paths",
+                    "source": "variables_changed",
+                    "value": [
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/analysis-plan.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/structural-analysis.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/adversarial-analysis.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/synthesis.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/REPORT.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/DEFINITIVE-FINDINGS.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/RUN-MANIFEST.json"
+                    ]
+                  },
+                  "timestamp": "2026-08-17T07:30:23.666Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "deliver-result",
+                  "data": {
+                    "agentId": "prism-g1-orchestrator",
+                    "stepId": "emit-run-manifest"
+                  },
+                  "timestamp": "2026-08-17T07:30:23.666Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "deliver-result",
+                  "timestamp": "2026-08-17T07:30:23.666Z",
+                  "type": "activity_entered"
+                }
+              ],
+              "repo": "m2ux/workflow-server",
+              "schemaVersion": 1,
+              "seq": 16,
+              "sessionIndex": "W7EKMS",
+              "skippedActivities": [],
+              "startedAt": "2026-08-17T07:07:27.321Z",
+              "status": "running",
+              "triggeredWorkflows": [],
+              "ts": 1786951823,
+              "variables": {
+                "adversarial_analysis": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/adversarial-analysis.md",
+                "all_artifact_paths": [
+                  "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/analysis-plan.md",
+                  "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/structural-analysis.md",
+                  "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/adversarial-analysis.md",
+                  "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/synthesis.md",
+                  "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/REPORT.md",
+                  "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/DEFINITIVE-FINDINGS.md",
+                  "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/RUN-MANIFEST.json"
+                ],
+                "analysis_budget": "thorough",
+                "analysis_plan": "analysis-plan.md",
+                "analysis_units": [
+                  {
+                    "lens_name": "l12",
+                    "lenses": [],
+                    "pipeline_mode": "full-prism",
+                    "rationale": "Primary lead of the parent evaluation; highest false-positive risk (prose that looks deterministic but hides judgement), so it takes the 3-pass self-correcting pipeline.",
+                    "risk": "high",
+                    "role": "workflow-definitions",
+                    "target": "/home/mike1/projects/dev/workflow-server",
+                    "target_type": "general",
+                    "unit_output_subdir": ""
+                  }
+                ],
+                "behavioral_output_paths": {},
+                "core_finding": "The corpus renders 'a procedure nobody has scripted' and 'a procedure that cannot be scripted' as identical protocol prose, so mechanisation adoption tracks what a workflow is about rather than what its steps do.",
+                "definitive_findings_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/DEFINITIVE-FINDINGS.md",
+                "finding_count": 12,
+                "gitnexus_available": false,
+                "output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential",
+                "pipeline_mode": "full-prism",
+                "report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/REPORT.md",
+                "run_manifest_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/RUN-MANIFEST.json",
+                "run_status": "complete",
+                "selected_lenses": [
+                  "00",
+                  "01",
+                  "02"
+                ],
+                "structural_analysis": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/structural-analysis.md",
+                "synthesis": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential/synthesis.md",
+                "target": "/home/mike1/projects/dev/workflow-server",
+                "target_content": "/home/mike1/projects/dev/workflow-server",
+                "target_description": "Mechanisation potential of agent-executed technique prose in the workflow-server meta and work-package workflow definitions, assessed against the server's src/ and scripts/ surface.",
+                "target_type": "general",
+                "unit_output_dir": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/mechanisation-potential",
+                "user_request": "Start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. Many operations that are agent-driven can be mechanised. For example, if the user provides a named component, an issue or a PR, a TypeScript or Python script can extract the repo name and match it against a mono-repo component purely mechanically without agent interaction — saving a lot of time and tokens. There are no doubt many other opportunities to do this. I want a report detailing any and all opportunities for optimisation of the meta and work-package workflows. Use the example provided as a guide but do not limit the report to it."
+              },
+              "workflowId": "prism",
+              "workflowVersion": "2.4.0"
+            },
+            "status": "running",
+            "triggeredAt": "2026-08-17T07:07:27.321Z",
+            "triggeredFrom": {
+              "activityId": "execute-analysis"
+            },
+            "workflowId": "prism"
+          },
+          {
+            "sessionIndex": "MVO4PT",
+            "state": {
+              "agentId": "workflow-orchestrator",
+              "checkpointResponses": {},
+              "completedActivities": [],
+              "condition": "",
+              "currentActivity": "",
+              "currentTechnique": "",
+              "deliveredContent": {
+                "workflow-orchestrator": {
+                  "resource:architect": "5a0e96c81b1d4803",
+                  "resource:claim": "513d782cec84709b",
+                  "resource:degradation": "8938c8cc2f0db5ba",
+                  "resource:optimize": "87bf2d4ba98d63de",
+                  "resource:prism/scarcity": "279e1445e3a5cff0",
+                  "resource:reachability": "138330ee1f00100d",
+                  "resource:scarcity": "1c0277a8915ed79a",
+                  "resource:sdl-abstraction": "577fcd43fce244ce",
+                  "resource:sdl-coupling": "6d76bdb8656cb999"
+                }
+              },
+              "history": [
+                {
+                  "timestamp": "2026-08-17T07:31:30.858Z",
+                  "type": "workflow_started"
+                },
+                {
+                  "data": {
+                    "variables": {
+                      "gitnexus_available": false,
+                      "output_path": ".",
+                      "target_type": "code",
+                      "user_request": "Start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. Many operations that are agent-driven can be mechanised. For example, if the user provides a named component, an issue or a PR, a TypeScript or Python script can extract the repo name and match it against a mono-repo component purely mechanically without agent interaction — saving a lot of time and tokens. There are no doubt many other opportunities to do this. I want a report detailing any and all opportunities for optimisation of the meta and work-package workflows. Use the example provided as a guide but do not limit the report to it."
+                    }
+                  },
+                  "timestamp": "2026-08-17T07:31:30.858Z",
+                  "type": "variables_seeded"
+                },
+                {
+                  "data": {
+                    "agentId": "workflow-orchestrator",
+                    "dispatch": "fresh"
+                  },
+                  "timestamp": "2026-08-17T07:32:27.060Z",
+                  "type": "activity_dispatched"
+                },
+                {
+                  "data": {
+                    "agentId": "workflow-orchestrator",
+                    "chars": 2123,
+                    "delivery": "full",
+                    "resourceId": "sdl-abstraction"
+                  },
+                  "timestamp": "2026-08-17T07:32:27.060Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "data": {
+                    "agentId": "workflow-orchestrator",
+                    "chars": 1112,
+                    "delivery": "full",
+                    "resourceId": "optimize"
+                  },
+                  "timestamp": "2026-08-17T07:32:40.339Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "data": {
+                    "agentId": "workflow-orchestrator",
+                    "chars": 1994,
+                    "delivery": "full",
+                    "resourceId": "sdl-coupling"
+                  },
+                  "timestamp": "2026-08-17T07:32:56.332Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "data": {
+                    "agentId": "workflow-orchestrator",
+                    "chars": 1641,
+                    "delivery": "full",
+                    "resourceId": "architect"
+                  },
+                  "timestamp": "2026-08-17T07:33:11.090Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "data": {
+                    "agentId": "workflow-orchestrator",
+                    "chars": 1194,
+                    "delivery": "full",
+                    "resourceId": "reachability"
+                  },
+                  "timestamp": "2026-08-17T07:33:30.109Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "data": {
+                    "agentId": "workflow-orchestrator",
+                    "chars": 486,
+                    "delivery": "full",
+                    "resourceId": "degradation"
+                  },
+                  "timestamp": "2026-08-17T07:33:43.764Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "data": {
+                    "agentId": "workflow-orchestrator",
+                    "chars": 565,
+                    "delivery": "full",
+                    "resourceId": "claim"
+                  },
+                  "timestamp": "2026-08-17T07:34:00.767Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "data": {
+                    "agentId": "workflow-orchestrator",
+                    "chars": 488,
+                    "delivery": "full",
+                    "resourceId": "scarcity"
+                  },
+                  "timestamp": "2026-08-17T07:34:15.200Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "data": {
+                    "agentId": "workflow-orchestrator",
+                    "chars": 494,
+                    "delivery": "full",
+                    "resourceId": "prism/scarcity"
+                  },
+                  "timestamp": "2026-08-17T07:34:26.806Z",
+                  "type": "resource_fetched"
+                }
+              ],
+              "repo": "m2ux/workflow-server",
+              "schemaVersion": 1,
+              "seq": 9,
+              "sessionIndex": "MVO4PT",
+              "skippedActivities": [],
+              "startedAt": "2026-08-17T07:31:30.858Z",
+              "status": "running",
+              "triggeredWorkflows": [],
+              "ts": 1786952066,
+              "variables": {
+                "gitnexus_available": false,
+                "output_path": ".",
+                "target_type": "code",
+                "user_request": "Start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. Many operations that are agent-driven can be mechanised. For example, if the user provides a named component, an issue or a PR, a TypeScript or Python script can extract the repo name and match it against a mono-repo component purely mechanically without agent interaction — saving a lot of time and tokens. There are no doubt many other opportunities to do this. I want a report detailing any and all opportunities for optimisation of the meta and work-package workflows. Use the example provided as a guide but do not limit the report to it."
+              },
+              "workflowId": "prism",
+              "workflowVersion": "2.4.0"
+            },
+            "status": "running",
+            "triggeredAt": "2026-08-17T07:31:30.858Z",
+            "triggeredFrom": {
+              "activityId": "execute-analysis"
+            },
+            "workflowId": "prism"
+          }
+        ],
+        "ts": 1786955763,
         "variables": {
           "accepted_count": 0,
+          "dimension_plan": [
+            {
+              "analysis_focus": "Evaluate the mechanisation potential of agent-executed technique prose in workflows/meta (150 technique files, ~34,900 words) and workflows/work-package (112 files, ~66,300 words): find every protocol step that is a deterministic procedure a script or server tool could compute. Use repo/component/issue/PR coordinate resolution (version-control::resolve-host-repo, monorepo component matching) as guide, not boundary; examine also path derivation, repo- and project-type detection, artifact link and anchor checking, sync-progress-status Progress-table writes, git and worktree state checks, classification steps that are fixed decision tables, and artifact format and schema validation. Judge each against the available surface: 16 registered MCP tools, all session control-plane, no domain-computation tool; 12,343 LOC in src/; 26 check-*.ts guards reachable only as CI. For each candidate, test whether the procedure is genuinely deterministic or whether the prose hides a judgement call.",
+              "dimension": "Mechanisation Potential",
+              "lenses": [
+                "00",
+                "01",
+                "02"
+              ],
+              "output_subdir": "mechanisation-potential/",
+              "pipeline_mode": "full-prism"
+            },
+            {
+              "analysis_focus": "Assess the context economy of definition delivery — tokens spent shipping technique and resource bodies into agent contexts. Measure body size against what a step actually reads: dispatch-activity.md 10.0 KB, workflow-engine/TECHNIQUE.md 8.3 KB, review-summary.md 9.6 KB, review-assumptions/reconcile.md 9.3 KB, review-mode.md 21.6 KB, codebase-comprehension.md 18.5 KB, against 290 KB of meta and 617 KB of work-package definitions. Examine the eager step-technique bundling budget, reference-versus-full delivery and the agent_id ledger in src/utils/delivery.ts and resource-delivery.ts, inherited-input blocks restated per technique, resources fetched but never read, and prose that restates what schemas/ already enforces. Name the abstraction that would collapse each duplication.",
+              "dimension": "Context Economy",
+              "lenses": [
+                "15",
+                "20"
+              ],
+              "output_subdir": "dimensions/",
+              "pipeline_mode": "portfolio"
+            },
+            {
+              "analysis_focus": "Analyse the orchestration topology of the two workflows — how work is distributed across agents and turns, and where the shape itself is the cost. work-package runs 15 activities carrying 44 checkpoint blocks across 13 of them, concentrated in 01-start-work-package (10) and 13-submit-for-review (9); meta runs 5 activities with 5 checkpoints, 3 of them in 00-discover-session. Examine dispatch granularity and the server-enforced batch bound (src/utils/batch.ts, dispatch.ts, fan-out.ts), worker round trips per activity (get_activity, get_technique, get_resource, yield and resume, record_usage), serial steps that could run concurrently, blocking-gate placement, context re-establishment at every activity boundary, and sub-agent spawn overhead. Propose alternative topologies and state what each trades.",
+              "dimension": "Orchestration Topology",
+              "lenses": [
+                "14",
+                "51"
+              ],
+              "output_subdir": "dimensions/",
+              "pipeline_mode": "portfolio"
+            },
+            {
+              "analysis_focus": "Identify redundant work — steps the workflows perform that produce nothing the run consumes. Trace activities and techniques never reached in practice across meta's 5 activities and work-package's 15; artifacts written but never read downstream; verification repeated at multiple stages (26 check-*.ts guards alongside in-workflow verify-artifact-conforms, validate-workflow-yaml, validate-activities); optional branches that always resolve the same way. Examine duplication across the two trees, where analyze.md, create-pr.md, mark-ready.md and revise-session-metrics.md exist under both and eleven TECHNIQUE.md group files carry parallel structure. Distinguish genuinely dead paths from paths that are rare but load-bearing.",
+              "dimension": "Redundant Work",
+              "lenses": [
+                "30",
+                "10"
+              ],
+              "output_subdir": "dimensions/",
+              "pipeline_mode": "portfolio"
+            },
+            {
+              "analysis_focus": "Evaluate the change economics of each optimisation opportunity — what building it costs and what it risks. For each, classify the implementation surface: a new server tool in src/tools/ (2,821 LOC, 16 tools today), a script under scripts/ (44 scripts, 15,257 LOC), or a definition edit in the 907 KB markdown and YAML corpus. Weigh the guard and test coverage protecting the change (72 test files, 18,420 LOC; 26 check-*.ts guards), saved-session and backwards compatibility for sessions holding the old shape, whether the saving is measurable with the record_usage instrumentation and the run-token-benchmark / run-dispatch-benchmark / run-batch-benchmark scripts already present, and sequencing dependencies between opportunities. Test the scarcity claims: which costs are immovable regardless of redesign.",
+              "dimension": "Change Economics",
+              "lenses": [
+                "07",
+                "08"
+              ],
+              "output_subdir": "dimensions/",
+              "pipeline_mode": "portfolio"
+            }
+          ],
           "dimensions": [
             {
               "description": "Which agent-executed steps are deterministic procedures a server tool or script could compute instead.",
@@ -1691,14 +3245,54 @@
           ],
           "dimensions_confirmed": true,
           "evaluation_description": "Find every opportunity to make the meta and work-package workflows faster and cheaper to run. The primary lead is mechanisation: agent-executed technique prose that is in fact a deterministic procedure a script or server tool could compute without agent involvement — the worked example is resolving a named component, issue or PR to a repository and matching it against a monorepo component, treated as a guide rather than a boundary. In scope as subject: workflows/meta/** and workflows/work-package/**. In scope as mechanisation surface: src/** and scripts/**. Deliverable is a report enumerating opportunities, each with the saving it buys and what it costs to build.",
+          "evaluation_plan_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/01-evaluation-plan.md",
+          "execution_groups": [
+            {
+              "analysis_focus": "The Mechanisation Potential focus, run through structural, adversarial and synthesis passes.",
+              "dimensions": [
+                "Mechanisation Potential"
+              ],
+              "lenses": [
+                "00",
+                "01",
+                "02"
+              ],
+              "output_subdir": "mechanisation-potential/",
+              "pipeline_mode": "full-prism"
+            },
+            {
+              "analysis_focus": "Each lens runs against its own dimension's focus and writes its own artifact within the shared subdirectory; the four foci are not merged into one prompt.",
+              "dimensions": [
+                "Context Economy",
+                "Orchestration Topology",
+                "Redundant Work",
+                "Change Economics"
+              ],
+              "lenses": [
+                "07",
+                "08",
+                "10",
+                "14",
+                "15",
+                "20",
+                "30",
+                "51"
+              ],
+              "output_subdir": "dimensions/",
+              "pipeline_mode": "portfolio"
+            }
+          ],
           "gitnexus_available": false,
+          "key_topics": "No domain-computation tool exists on the server. Checkpoint density is uneven — 10 gates in 01-start-work-package, 9 in 13-submit-for-review, 0 in 11-validate and 14-complete. Large bodies: dispatch-activity.md 10.0 KB, review-summary.md 9.6 KB, review-assumptions/reconcile.md 9.3 KB, review-mode.md 21.6 KB, codebase-comprehension.md 18.5 KB. Four technique basenames (analyze, create-pr, mark-ready, revise-session-metrics) exist in both trees, plus eleven parallel TECHNIQUE.md group files. The 26 check-*.ts guards are reachable only as repo CI, never as a workflow operation. record_usage and three benchmark scripts already instrument cost.",
           "output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation",
           "pipeline_mode": "full-prism",
           "resolution_requested": false,
           "scope_confirmed": true,
           "scope_summary": "Target /home/mike1/projects/dev/workflow-server, classified mixed. Subject: workflows/meta (5 activities, 150 techniques, 7 resources) and workflows/work-package (15 activities, 112 techniques, 37 resources). Mechanisation surface: src/ (712 KB TypeScript) and scripts/ (44 scripts, 26 check-* guards). Output to the session planning folder, verified writable. Five dimensions: Mechanisation Potential, Context Economy, Orchestration Topology, Redundant Work, Change Economics. Scoping-pass finding that shapes the dimensions: the server's entire tool surface is session control-plane with no domain-computation tool of any kind, so deterministic domain work in these workflows currently has nowhere to live except agent-executed prose. Confirmed by the user at the confirm-scope gate with option accept.",
+          "structure_inventory": "workflows/meta: 171 files (160 md, 11 yaml), 290 KB, ~34,900 words — 5 activities, 150 technique files across 9 groups, 7 resources, 5 checkpoints. workflows/work-package: 168 files (152 md), 617 KB, ~66,300 words — 15 activities, 112 technique files across 16 groups, 37 resources, 44 checkpoints. src/: 12,343 LOC TypeScript (utils 4,000; tools 2,821; loaders 2,359; schema 1,621; transports 224; middleware 90; resources 66), 16 registered MCP tools (14 workflow, 2 resource). scripts/: 44 scripts, 15,257 LOC, 26 check-*.ts guards. tests/: 72 test files, 18,420 LOC.",
           "target_name": "workflow-server",
           "target_path": "/home/mike1/projects/dev/workflow-server",
+          "target_summary": "workflow-server is a TypeScript MCP server serving 21 workflow definition trees written in markdown and YAML. The evaluation subject is two of them — meta (session lifecycle orchestrator, 5 activities) and work-package (15-activity engineering delivery workflow). src/ and scripts/ are in scope as the mechanisation surface. The server registers 16 MCP tools and every one is session control-plane, so deterministic domain work in these workflows currently has nowhere to live except agent-executed prose.",
           "target_type": "mixed",
           "user_request": "Start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. Many operations that are agent-driven can be mechanised. For example, if the user provides a named component, an issue or a PR, a TypeScript or Python script can extract the repo name and match it against a mono-repo component purely mechanically without agent interaction — saving a lot of time and tokens. There are no doubt many other opportunities to do this. I want a report detailing any and all opportunities for optimisation of the meta and work-package workflows. Use the example provided as a guide but do not limit the report to it."
         },
@@ -1779,6 +3373,16 @@
       "technique:workflow-engine::dispatch-activity": "6cbc94bcabc9a417",
       "technique:workflow-engine::present-checkpoint-to-user": "f5a407ae812a9276",
       "technique:workflow-engine::resume-worker": "32d4059bf337dd44"
+    },
+    "worker-03-dispatch-client-workflow-b": {
+      "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+      "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+      "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+      "technique:workflow-engine::commit-and-persist": "e92365ff7814212c",
+      "technique:workflow-engine::dispatch-activity": "6cbc94bcabc9a417"
     }
   },
   "repo": "m2ux/workflow-server"

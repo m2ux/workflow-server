@@ -1,0 +1,60 @@
+{
+  "status": "complete",
+  "pipeline_mode": "portfolio",
+  "report_path": "portfolio-synthesis.md",
+  "definitive_findings_path": null,
+  "units": [
+    {
+      "unit": "Context Economy",
+      "output_subdir": ".",
+      "pipeline_mode": "portfolio",
+      "status": "complete",
+      "artifacts": [
+        "portfolio-sdl-abstraction.md",
+        "portfolio-optimize.md"
+      ]
+    },
+    {
+      "unit": "Orchestration Topology",
+      "output_subdir": ".",
+      "pipeline_mode": "portfolio",
+      "status": "complete",
+      "artifacts": [
+        "portfolio-sdl-coupling.md",
+        "portfolio-architect.md"
+      ]
+    },
+    {
+      "unit": "Redundant Work",
+      "output_subdir": ".",
+      "pipeline_mode": "portfolio",
+      "status": "complete",
+      "artifacts": [
+        "portfolio-reachability.md",
+        "portfolio-degradation.md"
+      ]
+    },
+    {
+      "unit": "Change Economics",
+      "output_subdir": ".",
+      "pipeline_mode": "portfolio",
+      "status": "complete",
+      "artifacts": [
+        "portfolio-claim.md",
+        "portfolio-scarcity.md"
+      ]
+    }
+  ],
+  "artifacts": [
+    "portfolio-claim.md",
+    "portfolio-scarcity.md",
+    "portfolio-degradation.md",
+    "portfolio-sdl-coupling.md",
+    "portfolio-sdl-abstraction.md",
+    "portfolio-optimize.md",
+    "portfolio-reachability.md",
+    "portfolio-architect.md",
+    "portfolio-synthesis.md",
+    "RUN-MANIFEST.json"
+  ]
+}
