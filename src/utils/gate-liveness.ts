@@ -26,10 +26,7 @@ function collectWhenPaths(ast: WhenAst, out: Set<string>): void {
   }
 }
 
-/**
- * Paths a condition reads, split by whether absence is itself an answer: `exists` / `notExists`
- * answer on a missing variable, every other operator needs a value to compare.
- */
+/** Paths a condition reads. `exists` / `notExists` answer on a missing variable; the rest need a value. */
 function collectConditionPaths(
   condition: Condition,
   value: Set<string>,
@@ -80,11 +77,8 @@ export function variablesWrittenIn(
 
 /**
  * What a step's gate evaluates to for the whole of the activity being delivered, or `undefined` where
- * that has no answer yet: the gate reads a variable this activity produces, reads one that is not in
- * the bag at all, or does not parse. See docs/resource_resolution_model.md § Which steps get inlined.
- *
- * A step declaring no gate answers `true`; declaring both `when` and `condition` answers under
- * and-semantics.
+ * it has no answer yet. `when` and `condition` combine under and-semantics; no gate answers `true`.
+ * The cases and what each means for delivery: docs/resource_resolution_model.md § Which steps get inlined.
  */
 export function gateAnswer(args: {
   when?: string | undefined;

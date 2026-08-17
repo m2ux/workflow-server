@@ -10,11 +10,8 @@
  * baseline fixture (`scripts/fixtures/token-benchmark-baseline.json`). A compact
  * scorecard is written to stderr.
  *
- * `--gate` is what the Verify workflow runs, at the 1% default. A definition change that
- * adds delivery is therefore priced at merge: confirm the increase is wanted, re-record the
- * fixture from a `--no-compare` run in the same commit, and say in the description what the
- * corpus gained. The threshold is meaningful only against a fixture recorded on the corpus
- * commit under review — a stale one makes ordinary authoring read as a regression.
+ * `--gate` is what the Verify workflow runs, at the 1% default. Re-recording it, and why the
+ * fixture must name the corpus commit under review: docs/development.md § Token delivery benchmark.
  *
  * Usage (from a server checkout with `node_modules` and a `workflows/` worktree):
  *

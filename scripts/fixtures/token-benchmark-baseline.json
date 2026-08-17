@@ -1,8 +1,8 @@
 {
   "label": "baseline",
-  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-08-17 (workflows@34cd5429) against the delivery corrections in .engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/EVALUATION-REPORT.md. The July A0 reference recorded 1,355,532 delivery characters at workflows@a1409d5b; the same walk measured 1,780,292 on 2026-08-17 before those corrections.",
+  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-08-17 against workflows@cf4d0774. The July A0 reference recorded 1,355,532 delivery characters at workflows@a1409d5b; the same walk measured 1,780,292 on 2026-08-17 before the delivery corrections in .engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/EVALUATION-REPORT.md.",
   "contextMode": "fresh",
-  "workflowsRev": "34cd5429",
+  "workflowsRev": "cf4d0774",
   "agentId": "bench-solo",
   "path": [
     "start-work-package",
@@ -31,10 +31,10 @@
     "resume_checkpoint": 11
   },
   "chars": {
-    "get_activity": 518185,
+    "get_activity": 518679,
     "get_workflow": 108280,
     "get_resource": 527683,
-    "get_technique": 141991
+    "get_technique": 142118
   },
   "history": {
     "technique_bundled": 66,
@@ -45,8 +45,8 @@
   "resourceLedgerKeys": 77,
   "unchangedResourceAnswers": 0,
   "unchangedTechniqueAnswers": 0,
-  "getActivityChars": 518185,
+  "getActivityChars": 518679,
   "getWorkflowChars": 108280,
   "getResourceChars": 527683,
-  "getTechniqueChars": 141991
+  "getTechniqueChars": 142118
 }

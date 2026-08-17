@@ -103,12 +103,9 @@ export async function readTechnique(
 }
 
 /**
- * `readTechnique`, plus the workflow the file was actually found in.
- *
- * That differs from the `workflowId` asked for whenever resolution followed a cross-workflow prefix
- * or fell back to the meta shared layer. It is what a technique's own bare resource links must be
- * qualified against: a link written in a meta technique names a resource under `meta/resources/`,
- * whichever workflow's activity happens to be binding it.
+ * `readTechnique`, plus the workflow the file was found in — which differs from the `workflowId`
+ * asked for under a cross-workflow prefix or a meta fallback. This is the id a technique's own bare
+ * resource links qualify against.
  */
 export async function readTechniqueWithSource(
   techniqueId: string,

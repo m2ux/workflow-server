@@ -749,12 +749,8 @@ export function loadTriage(): TriageFile {
 }
 
 /**
- * How far the corpus has moved since these verdicts were made, when that can be established.
- *
- * Each entry is a human judgement about a definition as it stood at `corpusSha`. Nothing here fails
- * on drift — a verdict usually survives edits elsewhere in the corpus, and a stale entry is already
- * reported as a finding by name. What drift does mean is that the file's authority is older than the
- * corpus, which the reader can only weigh if the guard says so.
+ * How far the corpus has moved since these verdicts were made, or null where that cannot be
+ * established. Report-only: see docs/development.md § Corpus-coupled baselines.
  */
 export function triageStampNote(corpusSha: string, root: string = ROOT): string | null {
   if (!corpusSha) return null;

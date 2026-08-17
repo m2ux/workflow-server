@@ -739,11 +739,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const meta: Record<string, unknown> = { session_index, validation };
 
-      // Where the exiting worker stands, read at the boundary rather than at the last activity's
-      // open — between the two sit every lazy fetch that activity made, which is usually the larger
-      // half of what it consumed. The orchestrator decides the next dispatch from this, so a reading
-      // that predates those fetches is what turns a continuation into a refused delivery and a
-      // replacement spawn.
+      // Where the exiting worker stands, read at the boundary so the lazy fetches of the activity it
+      // just finished are counted (docs/dispatch_model.md § Batching a run of activities).
       if (agent_id && context_tokens !== undefined && !isTerminal) {
         const bound = batchBound(context_tokens, {
           headroomFraction: config.batchHeadroomFraction ?? DEFAULT_BATCH_HEADROOM_FRACTION,
@@ -875,12 +872,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // content that was delivered under the default full mode.
       const newDeliveries: Record<string, string> = {};
 
-      // A scope that has already taken an activity is the same context arriving again — the
-      // orchestrator holds one agent_id for as long as a worker carries its batch — so its ledger
-      // describes what it holds whatever mode the session declares. Applied to the blocks that are
-      // identical on every activity: the worker bundle, its rules, and the inherited activity rules.
-      // `bundle: 'full'` is the recovery path for a context that summarized them away, and a resume
-      // declaring a fresh context clears that scope's ledger, so neither reaches this reading.
+      // Whether this scope's ledger describes what it is holding. Governs the blocks identical on
+      // every activity — see docs/resource_resolution_model.md § Reference Delivery.
       const mayReferBack = bundle !== 'full' && (referenceMode || hasDispatch(state, scope));
 
       // Bundle the techniques the activity references (delivered as full protocols), deduped with
@@ -922,8 +915,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      // What the worker bundle costs this response, markers included. Eager delivery, so it opens the
-      // budget tally below.
+      // What the worker bundle costs this response, markers included: it opens the eager tally below.
       const workerBundleChars = stringifyForResponse(bundleData).length;
 
       // Automatic, per-agent context-derived step-technique bundling (#189 C1c): every activity

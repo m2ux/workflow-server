@@ -274,12 +274,8 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // A resume carries a fresh request from the user — rebind it so the bag
         // describes why the session is running now, not why it opened.
         const requestDrift = user_request !== undefined && state.variables?.['user_request'] !== user_request;
-        // Definition drift: the bag was seeded at creation from the declarations of
-        // whatever version was on disk then, and a resume runs the version on disk
-        // now. Declarations added since are absent from the bag, so a gate on one
-        // reads unbound; seeding the ones the bag lacks is what makes the resumed
-        // run execute the protocol it was delivered. Values already present win —
-        // a variable the run has written is a decision, not a stale default.
+        // Definition drift: declarations added since this session opened are absent from its bag, so
+        // seed the ones it lacks. A value already present is a decision, not a stale default.
         const versionDrift = effectiveWorkflowVersion !== ''
           && state.workflowVersion !== effectiveWorkflowVersion;
         const lateSeed = versionDrift && wfPreLoad.success
@@ -289,9 +285,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           )
           : {};
         const lateSeedNames = Object.keys(lateSeed);
-        // Declaring a fresh context on resume says this identity retains nothing it was sent, so its
-        // delivery ledger no longer describes it. Dropping those entries is what makes the next
-        // delivery arrive in full: a marker for content the context never received is unreadable.
+        // A fresh context retains nothing it was sent, so its ledger no longer describes it.
         const disownsPriorDeliveries = modeDrift && context_mode === 'fresh';
         let nextState = state;
         if (pathDrift || agentDrift || modeDrift || requestDrift || versionDrift) {
@@ -656,9 +650,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
       assertNoActiveCheckpoint(state);
 
-      // A step id is resolved against the session pointer, which any context in the session can
-      // move. Told which activity the caller believes it is in, the mismatch is an error naming both
-      // ids; untold, it silently resolves the step id against whatever activity the pointer names.
+      // A step id resolves against the session pointer, which any context in the session can move.
       if (activity_id !== undefined && state.currentActivity !== activity_id) {
         throw new Error(
           `get_technique: this session's current activity is '${state.currentActivity ?? '(none)'}', `
