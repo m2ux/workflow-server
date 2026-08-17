@@ -6,10 +6,10 @@
   "agentId": "orchestrator",
   "sessionIndex": "3M75ZX",
   "currentActivity": "dispatch-client-workflow",
-  "currentTechnique": "workflow-engine::commit-and-persist",
+  "currentTechnique": "workflow-engine::dispatch-activity",
   "condition": "isDefault: dispatch-client-workflow",
-  "seq": 24,
-  "ts": 1786791703,
+  "seq": 32,
+  "ts": 1786942904,
   "startedAt": "2026-08-15T09:54:31.892Z",
   "completedActivities": [
     "discover-session",
@@ -874,6 +874,135 @@
       },
       "timestamp": "2026-08-15T11:01:43.553Z",
       "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d1",
+        "usage": {
+          "duration_ms": 2362104,
+          "segment": "loop-iteration-3",
+          "subagent_tokens": 175047,
+          "tool_uses": 14
+        }
+      },
+      "timestamp": "2026-08-15T12:38:11.005Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d1",
+        "usage": {
+          "duration_ms": 658745,
+          "segment": "loop-iteration-3-comprehension-pass-2",
+          "subagent_tokens": 185198,
+          "tool_uses": 5
+        }
+      },
+      "timestamp": "2026-08-16T07:14:20.363Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d1",
+        "usage": {
+          "duration_ms": 1266302,
+          "segment": "loop-iteration-3-comprehension-pass-3",
+          "subagent_tokens": 200727,
+          "tool_uses": 11
+        }
+      },
+      "timestamp": "2026-08-16T07:39:30.040Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d1",
+        "usage": {
+          "duration_ms": 1229787,
+          "segment": "loop-iteration-3-comprehension-pass-4",
+          "subagent_tokens": 211788,
+          "tool_uses": 7
+        }
+      },
+      "timestamp": "2026-08-16T10:17:20.633Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d2",
+        "chars": 39014,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-17T05:01:07.108Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d2",
+        "chars": 39014,
+        "priorAgentId": "worker-dispatch-client-d1"
+      },
+      "timestamp": "2026-08-17T05:01:07.109Z",
+      "type": "activity_redelivered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d2",
+        "chars": 16022,
+        "delivery": "full",
+        "stepId": "commit-activity-artifacts",
+        "techniqueId": "workflow-engine::commit-and-persist"
+      },
+      "timestamp": "2026-08-17T05:01:23.744Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d2",
+        "stepId": "commit-activity-artifacts"
+      },
+      "timestamp": "2026-08-17T05:01:23.744Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d2",
+        "chars": 19906,
+        "delivery": "full",
+        "stepId": "dispatch-activity",
+        "techniqueId": "workflow-engine::dispatch-activity"
+      },
+      "timestamp": "2026-08-17T05:01:24.323Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d2",
+        "stepId": "dispatch-activity"
+      },
+      "timestamp": "2026-08-17T05:01:24.323Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d2",
+        "chars": 15399,
+        "delivery": "full",
+        "resourceId": "meta/planning-readme"
+      },
+      "timestamp": "2026-08-17T05:01:44.764Z",
+      "type": "resource_fetched"
     }
   ],
   "triggeredWorkflows": [
@@ -882,6 +1011,42 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "codebase-comprehension-comprehension-sufficient": {
+            "effects": {
+              "variablesSet": {
+                "needs_comprehension": true
+              }
+            },
+            "optionId": "dive-deeper",
+            "respondedAt": "2026-08-16T07:02:58.000Z"
+          },
+          "codebase-comprehension-comprehension-sufficient#iteration-2": {
+            "effects": {
+              "variablesSet": {
+                "needs_comprehension": true
+              }
+            },
+            "optionId": "different-area",
+            "respondedAt": "2026-08-16T07:17:55.000Z"
+          },
+          "codebase-comprehension-comprehension-sufficient#iteration-3": {
+            "effects": {
+              "variablesSet": {
+                "needs_comprehension": true
+              }
+            },
+            "optionId": "dive-deeper",
+            "respondedAt": "2026-08-16T09:56:20.000Z"
+          },
+          "codebase-comprehension-comprehension-sufficient#iteration-4": {
+            "effects": {
+              "variablesSet": {
+                "needs_comprehension": false
+              }
+            },
+            "optionId": "sufficient",
+            "respondedAt": "2026-08-16T10:34:37.000Z"
+          },
           "design-philosophy-classification-and-path-confirmed": {
             "effects": {
               "variablesSet": {
@@ -905,19 +1070,51 @@
           }
         },
         "completedActivities": [
-          "start-work-package"
+          "start-work-package",
+          "design-philosophy"
         ],
-        "condition": "isDefault:design-philosophy",
-        "currentActivity": "design-philosophy",
-        "currentTechnique": "update-pr::create-pr",
+        "condition": "isDefault: codebase-comprehension",
+        "currentActivity": "codebase-comprehension",
+        "currentTechnique": "analyse-challenge::run-loop",
         "declaredArtifacts": [
           {
             "id": "created_readme",
             "name": "README.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-15-handling-inline-techniques/README.md"
+          },
+          {
+            "id": "design_philosophy_doc",
+            "name": "design-philosophy.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-15-handling-inline-techniques/02-design-philosophy.md"
+          },
+          {
+            "id": "assumptions_log",
+            "name": "assumptions-log.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-15-handling-inline-techniques/02-assumptions-log.md"
           }
         ],
         "deliveredContent": {
+          "worker-codebase-comprehension-c3": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:1654f244e34d336f": "1654f244e34d336f",
+            "bundle:scatter-gather": "231021ae4411fad4",
+            "bundle:variable-binding": "69962c9fd66c4d9a",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:codebase-comprehension": "42863ec9c07d392d",
+            "technique:analyse-challenge::run-loop": "7fa0f969aa7342aa",
+            "technique:codebase-comprehension::deep-dive": "3029846de922bd03",
+            "technique:codebase-comprehension::revise-questions": "c6f15f6269e8eff1",
+            "technique:codebase-comprehension::survey": "cc7be36be5608081",
+            "technique:inherited_inputs.items:5dfa48a0b7f14066": "5dfa48a0b7f14066",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:312e490e1ac4c52c": "312e490e1ac4c52c",
+            "technique:manage-artifacts::write-artifact": "02f29121189ee905",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:7ee01840785973f0": "7ee01840785973f0"
+          },
           "worker-design-philosophy-c2": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
             "bundle:rules:1654f244e34d336f": "1654f244e34d336f",
@@ -2523,17 +2720,523 @@
             },
             "timestamp": "2026-08-15T12:00:38.065Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "design-philosophy",
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_statement",
+              "source": "variables_changed",
+              "value": "Technique files call other techniques from inside their Protocol prose and the server treats the call as ordinary text: nothing resolves the reference, checks its arguments against the callee's declared inputs, or delivers the callee's body. A 2026-08-02 survey of 554 technique files found 118 such edges, 99 (84%) invisible to the activity layer and 56 omitting a required callee input."
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_type",
+              "source": "variables_changed",
+              "value": "specific-cause-known"
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "problem_complexity",
+              "source": "variables_changed",
+              "value": "complex"
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "classification_rationale",
+              "source": "variables_changed",
+              "value": "Recorded in 02-design-philosophy.md under Problem Classification."
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_elicitation",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_research",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "skip_optional_activities",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "path_rationale",
+              "source": "variables_changed",
+              "value": "Recorded in 02-design-philosophy.md under Workflow Path Decision."
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "design_philosophy_doc",
+              "source": "variables_changed",
+              "value": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/02-design-philosophy.md"
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "value": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/02-assumptions-log.md"
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": [
+                "DP-7"
+              ]
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-c2",
+              "stepId": "define-problem"
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-c2",
+              "stepId": "classify-problem"
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-c2",
+              "stepId": "determine-path"
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-c2",
+              "stepId": "document-philosophy"
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-c2",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-c2",
+              "stepId": "create-assumptions-log"
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "design-philosophy",
+            "data": {
+              "agentId": "worker-design-philosophy-c2",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "timestamp": "2026-08-15T12:10:13.260Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "chars": 109933,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-15T12:10:37.609Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "chars": 10282,
+              "delivery": "full",
+              "stepId": "build-comprehension",
+              "techniqueId": "codebase-comprehension::survey"
+            },
+            "timestamp": "2026-08-15T12:10:37.609Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "stepId": "build-comprehension"
+            },
+            "timestamp": "2026-08-15T12:10:37.609Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "chars": 12070,
+              "delivery": "full",
+              "stepId": "create-comprehension-artifact",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-15T12:10:37.609Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "stepId": "create-comprehension-artifact"
+            },
+            "timestamp": "2026-08-15T12:10:37.609Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "chars": 6762,
+              "delivery": "full",
+              "stepId": "initial-deep-dive",
+              "techniqueId": "codebase-comprehension::deep-dive"
+            },
+            "timestamp": "2026-08-15T12:10:37.609Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "stepId": "initial-deep-dive"
+            },
+            "timestamp": "2026-08-15T12:10:37.609Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "chars": 12068,
+              "delivery": "full",
+              "stepId": "update-artifact-initial",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-15T12:10:37.609Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "stepId": "update-artifact-initial"
+            },
+            "timestamp": "2026-08-15T12:10:37.609Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "chars": 5723,
+              "delivery": "full",
+              "stepId": "revise-initial-questions",
+              "techniqueId": "codebase-comprehension::revise-questions"
+            },
+            "timestamp": "2026-08-15T12:10:37.609Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "stepId": "revise-initial-questions"
+            },
+            "timestamp": "2026-08-15T12:10:37.609Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "chars": 12031,
+              "delivery": "full",
+              "stepId": "record-log-initial",
+              "techniqueId": "manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-15T12:10:37.609Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "stepId": "record-log-initial"
+            },
+            "timestamp": "2026-08-15T12:10:37.609Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "chars": 18283,
+              "delivery": "full",
+              "resourceId": "codebase-comprehension"
+            },
+            "timestamp": "2026-08-15T12:11:14.830Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "chars": 7758,
+              "delivery": "full",
+              "stepId": "analyse-challenge-pass",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-15T12:32:17.641Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "stepId": "analyse-challenge-pass"
+            },
+            "timestamp": "2026-08-15T12:32:17.641Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "checkpoint": "comprehension-sufficient",
+            "timestamp": "2026-08-15T12:36:51.489Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "agentId": "worker-codebase-comprehension-c3",
+              "usage": {
+                "duration_ms": 1614953,
+                "subagent_tokens": 268872,
+                "tool_uses": 75
+              }
+            },
+            "timestamp": "2026-08-15T12:37:31.369Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "checkpoint": "comprehension-sufficient",
+            "data": {
+              "optionId": "dive-deeper"
+            },
+            "timestamp": "2026-08-16T07:02:58.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-16T07:02:58.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "checkpoint": "comprehension-sufficient#iteration-2",
+            "timestamp": "2026-08-16T07:10:42.339Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "checkpoint": "comprehension-sufficient#iteration-2",
+            "data": {
+              "optionId": "different-area"
+            },
+            "timestamp": "2026-08-16T07:17:55.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-16T07:17:55.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "checkpoint": "comprehension-sufficient#iteration-3",
+            "timestamp": "2026-08-16T07:37:34.747Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "checkpoint": "comprehension-sufficient#iteration-3",
+            "data": {
+              "optionId": "dive-deeper"
+            },
+            "timestamp": "2026-08-16T09:56:20.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-16T09:56:20.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "checkpoint": "comprehension-sufficient#iteration-4",
+            "timestamp": "2026-08-16T10:07:51.899Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "checkpoint": "comprehension-sufficient#iteration-4",
+            "data": {
+              "optionId": "sufficient"
+            },
+            "timestamp": "2026-08-16T10:34:37.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "codebase-comprehension",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-16T10:34:37.000Z",
+            "type": "variable_set"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 24,
+        "seq": 41,
         "sessionIndex": "KLN3OI",
         "skippedActivities": [],
         "startedAt": "2026-08-15T10:00:34.754Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1786795238,
+        "ts": 1786876527,
         "variables": {
           "artifact_name": "",
           "artifact_publish_ref": "",
@@ -2541,6 +3244,7 @@
           "assumption_decisions": [],
           "assumption_deferred": false,
           "assumption_resolved_inline": false,
+          "assumptions_log": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/02-assumptions-log.md",
           "attestation_option": "certify",
           "audit_confirmed": false,
           "awaiting_review": false,
@@ -2555,6 +3259,7 @@
           "build_dependent_artifact_commands": "",
           "build_dependent_artifacts_pending": false,
           "change_block_index": "",
+          "classification_rationale": "Recorded in 02-design-philosophy.md under Problem Classification.",
           "code_findings_actionable": false,
           "completion_document_path": "",
           "component_git_dir": "/home/mike1/projects/dev/workflow-server",
@@ -2566,6 +3271,7 @@
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-15-handling-inline-techniques/README.md",
           "current_block_index": 0,
           "current_branch": "",
+          "design_philosophy_doc": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/02-design-philosophy.md",
           "elicitation_complete": false,
           "existing_pr_number": "",
           "findings_raised_to_author": "all",
@@ -2575,7 +3281,7 @@
           "has_debt_markers": false,
           "has_deferred_assumptions": false,
           "has_flagged_blocks": false,
-          "has_open_assumptions": false,
+          "has_open_assumptions": true,
           "has_open_questions": false,
           "has_reconcilable_research": false,
           "has_resolvable_assumptions": false,
@@ -2599,7 +3305,7 @@
           "jira_issue_key": "",
           "mark_progress_na": false,
           "needs_cleanup": false,
-          "needs_comprehension": true,
+          "needs_comprehension": false,
           "needs_elicitation": true,
           "needs_further_discussion": false,
           "needs_github_issue_creation": false,
@@ -2609,6 +3315,10 @@
           "needs_research": true,
           "needs_simplification": false,
           "on_feature_branch": true,
+          "open_assumptions": [
+            "DP-7"
+          ],
+          "path_rationale": "Recorded in 02-design-philosophy.md under Workflow Path Decision.",
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-15-handling-inline-techniques",
           "post_jira_comment": false,
           "pr_exists": true,
@@ -2616,6 +3326,8 @@
           "pr_skipped": false,
           "pr_url": "https://github.com/m2ux/workflow-server/pull/466",
           "problem_complexity": "complex",
+          "problem_statement": "Technique files call other techniques from inside their Protocol prose and the server treats the call as ordinary text: nothing resolves the reference, checks its arguments against the callee's declared inputs, or delivers the callee's body. A 2026-08-02 survey of 554 technique files found 118 such edges, 99 (84%) invisible to the activity layer and 56 omitting a required callee input.",
+          "problem_type": "specific-cause-known",
           "project_type": "other",
           "provenance_log_path": "",
           "push_remote": "origin",
@@ -2705,6 +3417,17 @@
       "technique:workflow-engine::commit-and-persist": "e92365ff7814212c",
       "technique:workflow-engine::dispatch-activity": "6cbc94bcabc9a417",
       "technique:workflow-engine::present-checkpoint-to-user": "f5a407ae812a9276"
+    },
+    "worker-dispatch-client-d2": {
+      "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+      "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+      "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+      "resource:meta/planning-readme": "7291d9446b32a6c1",
+      "technique:workflow-engine::commit-and-persist": "e92365ff7814212c",
+      "technique:workflow-engine::dispatch-activity": "6cbc94bcabc9a417"
     },
     "worker-initialize-session-b1": {
       "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
