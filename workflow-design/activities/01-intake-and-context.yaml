@@ -1,5 +1,5 @@
 id: intake-and-context
-version: 1.8.0
+version: 1.9.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
 required: true
@@ -13,15 +13,6 @@ steps:
   - kind: technique
     id: intake-classification
     technique: intake-classification
-  - kind: technique
-    id: persist-structural-inventory
-    technique:
-      name: work-package::manage-artifacts::write-artifact
-      inputs:
-        bare_filename: structural-inventory.json
-        artifact_content: structural_inventory
-        target_dir: planning_folder_path
-    when: operation_type == "update" || operation_type == "review"
   - kind: checkpoint
     id: design-intent-batch
     condition:
@@ -76,6 +67,15 @@ steps:
             operation_type: create
             operation_type_ambiguous: false
             intent_needs_confirmation: false
+  - kind: technique
+    id: persist-structural-inventory
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: structural-inventory.json
+        artifact_content: structural_inventory
+        target_dir: planning_folder_path
+    when: operation_type == "update" || operation_type == "review"
   - kind: action
     id: announce-certain-intent
     when: intent_needs_confirmation == false && update_seeded_from_review != true && operation_type != 'review'

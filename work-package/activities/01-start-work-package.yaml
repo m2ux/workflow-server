@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.16.0
+version: 3.17.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 required: true
@@ -150,6 +150,12 @@ steps:
       type: simple
       variable: host_repo_path
       operator: exists
+  - kind: action
+    id: verify-signing-precondition
+    actions:
+      - action: validate
+        target: signing.configured == true
+        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing before re-running.
   - kind: technique
     id: analyze-repo-with-gitnexus
     technique:
@@ -160,12 +166,6 @@ steps:
       - action: set
         target: gitnexus_indexed
         value: true
-  - kind: action
-    id: verify-signing-precondition
-    actions:
-      - action: validate
-        target: signing.configured == true
-        message: Commit signing is not configured for this repository (user.signingkey, commit.gpgsign, or a working signing backend is missing). Configure git signing before re-running.
   - kind: technique
     id: detect-merge-strategy
     technique: manage-git::detect-merge-strategy
@@ -213,6 +213,27 @@ steps:
         effect:
           setVariable:
             issue_skipped: true
+  - kind: checkpoint
+    id: platform-selection
+    condition:
+      type: simple
+      variable: needs_issue_creation
+      operator: ==
+      value: true
+    message: Select the platform for the new issue.
+    options:
+      - id: github
+        label: GitHub
+        description: Create issue in GitHub repository
+        effect:
+          setVariable:
+            issue_platform: github
+      - id: jira
+        label: Jira
+        description: Create issue in Jira project
+        effect:
+          setVariable:
+            issue_platform: jira
   - kind: technique
     id: verify-jira-issue
     technique:
@@ -294,10 +315,16 @@ steps:
   - kind: checkpoint
     id: jira-project-selection
     condition:
-      type: simple
-      variable: issue_platform
-      operator: ==
-      value: jira
+      type: and
+      conditions:
+        - type: simple
+          variable: issue_platform
+          operator: ==
+          value: jira
+        - type: simple
+          variable: needs_issue_creation
+          operator: ==
+          value: true
     message: Select the Jira project for the new issue.
     options:
       - id: select
@@ -406,27 +433,6 @@ steps:
     id: create-issue
     technique: create-issue
     when: needs_issue_creation == true
-  - kind: checkpoint
-    id: platform-selection
-    condition:
-      type: simple
-      variable: needs_issue_creation
-      operator: ==
-      value: true
-    message: Select the platform for the new issue.
-    options:
-      - id: github
-        label: GitHub
-        description: Create issue in GitHub repository
-        effect:
-          setVariable:
-            issue_platform: github
-      - id: jira
-        label: Jira
-        description: Create issue in Jira project
-        effect:
-          setVariable:
-            issue_platform: jira
   - kind: technique
     id: lookup-current-user
     technique: atlassian-operations::user-info
