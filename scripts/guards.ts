@@ -42,6 +42,13 @@ export const GUARDS: GuardSpec[] = [
     proves: 'no technique redeclares an input a container contract already merges into it',
   },
   {
+    id: 'section-framing',
+    script: 'scripts/check-section-framing.ts',
+    npmScript: 'check:framing',
+    scope: 'corpus',
+    proves: 'no resource strands prose above its first section from a consumer that cites it by anchor',
+  },
+  {
     id: 'identifier-qualification',
     script: 'scripts/check-identifier-qualification.ts',
     npmScript: 'check:identifiers',
@@ -63,7 +70,7 @@ export const GUARDS: GuardSpec[] = [
     npmScript: 'check:audience',
     scope: 'corpus',
     json: true,
-    proves: 'every agent-audience artifact is JSON on disk',
+    proves: 'every artifact declares who reads it, and every agent-audience artifact is JSON on disk',
   },
   {
     id: 'artifact-guides',
