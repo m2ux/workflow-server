@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.17.0
+version: 3.18.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 required: true
@@ -234,6 +234,27 @@ steps:
         effect:
           setVariable:
             issue_platform: jira
+  - kind: technique
+    id: detect-provided-issue-reference
+    technique: issue-reference-detection
+    condition:
+      type: and
+      conditions:
+        - type: simple
+          variable: is_review_mode
+          operator: "!="
+          value: true
+        - type: simple
+          variable: needs_issue_creation
+          operator: "!="
+          value: true
+        - type: simple
+          variable: issue_skipped
+          operator: "!="
+          value: true
+        - type: simple
+          variable: issue_platform
+          operator: notExists
   - kind: technique
     id: verify-jira-issue
     technique:

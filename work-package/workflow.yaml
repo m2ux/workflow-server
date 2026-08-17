@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.43.0
+version: 3.44.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first. Also supports review mode for auditing an existing PR or implementation end-to-end.
 author: m2ux
@@ -301,9 +301,9 @@ variables:
     type: boolean
     description: Whether stakeholder discussion transcript was provided.
     defaultValue: false
-  - name: post_jira_comment
+  - name: post_summary_approved
     type: boolean
-    description: Whether to post assumptions comment to Jira.
+    description: Whether the deferred-assumptions summary is posted to the issue tracker, as decided at the post-summary-review gate.
     defaultValue: false
   - name: has_stakeholder_comment
     type: boolean

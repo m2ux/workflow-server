@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Whether the user supplied an issue reference, with platform and id when present 
 
 ### issue_request
 
-The user-supplied issue reference or request — the issue key, URL, or surrounding text the user provided when starting the work package.
+The user-supplied issue reference or request — the issue key, URL, or surrounding text the user provided, whether in the request that started the work package or in the response to the `issue-verification` gate.
 
 ## Outputs
 
