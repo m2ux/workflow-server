@@ -1,8 +1,8 @@
 {
   "label": "baseline",
-  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-08-17 against workflows@cf4d0774. The July A0 reference recorded 1,355,532 delivery characters at workflows@a1409d5b; the same walk measured 1,780,292 on 2026-08-17 before the delivery corrections in .engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/EVALUATION-REPORT.md.",
+  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-08-17 against workflows@c3a0754a. Delivery is 634 characters above the workflows@cf4d0774 recording of 1,296,760, which buys a step that derives the build-artifact regeneration commands and a project-type clause on the two gates that present them; the same clause drops the walk from 11 checkpoint round trips to 10, since a project with no build-dependent artifacts is no longer asked about them. The July A0 reference recorded 1,355,532 delivery characters at workflows@a1409d5b; the same walk measured 1,780,292 on 2026-08-17 before the delivery corrections in .engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/EVALUATION-REPORT.md.",
   "contextMode": "fresh",
-  "workflowsRev": "cf4d0774",
+  "workflowsRev": "c3a0754a",
   "agentId": "bench-solo",
   "path": [
     "start-work-package",
@@ -26,12 +26,12 @@
     "get_activity": 12,
     "get_technique": 23,
     "get_resource": 162,
-    "yield_checkpoint": 11,
-    "respond_checkpoint": 11,
-    "resume_checkpoint": 11
+    "yield_checkpoint": 10,
+    "respond_checkpoint": 10,
+    "resume_checkpoint": 10
   },
   "chars": {
-    "get_activity": 518679,
+    "get_activity": 519313,
     "get_workflow": 108280,
     "get_resource": 527683,
     "get_technique": 142118
@@ -45,7 +45,7 @@
   "resourceLedgerKeys": 77,
   "unchangedResourceAnswers": 0,
   "unchangedTechniqueAnswers": 0,
-  "getActivityChars": 518679,
+  "getActivityChars": 519313,
   "getWorkflowChars": 108280,
   "getResourceChars": 527683,
   "getTechniqueChars": 142118

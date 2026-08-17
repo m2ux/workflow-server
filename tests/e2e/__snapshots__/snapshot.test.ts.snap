@@ -55,8 +55,8 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "detect-review-mode",
         "derive-host-repo",
         "resolve-repo-root",
-        "analyze-repo-with-gitnexus",
         "verify-signing-precondition",
+        "analyze-repo-with-gitnexus",
         "detect-merge-strategy",
         "detect-project-type",
         "announce-project-type",
@@ -371,13 +371,6 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           },
         },
         {
-          "id": "build-artifact-check",
-          "option": "none-needed",
-          "setVariable": {
-            "build_dependent_artifacts_pending": false,
-          },
-        },
-        {
           "id": "review-outcome",
           "option": "approved",
           "setVariable": {
@@ -498,8 +491,8 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "detect-review-mode",
         "derive-host-repo",
         "resolve-repo-root",
-        "analyze-repo-with-gitnexus",
         "verify-signing-precondition",
+        "analyze-repo-with-gitnexus",
         "detect-merge-strategy",
         "detect-project-type",
         "announce-project-type",
@@ -878,13 +871,6 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           },
         },
         {
-          "id": "build-artifact-check",
-          "option": "none-needed",
-          "setVariable": {
-            "build_dependent_artifacts_pending": false,
-          },
-        },
-        {
           "id": "review-outcome",
           "option": "approved",
           "setVariable": {
@@ -1008,8 +994,8 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "detect-review-mode",
         "derive-host-repo",
         "resolve-repo-root",
-        "analyze-repo-with-gitnexus",
         "verify-signing-precondition",
+        "analyze-repo-with-gitnexus",
         "detect-merge-strategy",
         "detect-project-type",
         "announce-project-type",
@@ -1416,13 +1402,6 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           },
         },
         {
-          "id": "build-artifact-check",
-          "option": "none-needed",
-          "setVariable": {
-            "build_dependent_artifacts_pending": false,
-          },
-        },
-        {
           "id": "review-outcome",
           "option": "approved",
           "setVariable": {
@@ -1545,8 +1524,8 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "detect-review-mode",
         "derive-host-repo",
         "resolve-repo-root",
-        "analyze-repo-with-gitnexus",
         "verify-signing-precondition",
+        "analyze-repo-with-gitnexus",
         "detect-merge-strategy",
         "detect-project-type",
         "announce-project-type",
@@ -1913,13 +1892,6 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           },
         },
         {
-          "id": "build-artifact-check",
-          "option": "none-needed",
-          "setVariable": {
-            "build_dependent_artifacts_pending": false,
-          },
-        },
-        {
           "id": "review-outcome",
           "option": "approved",
           "setVariable": {
@@ -2028,8 +2000,8 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "seed-review-mode-outcomes",
         "derive-host-repo",
         "resolve-repo-root",
-        "analyze-repo-with-gitnexus",
         "verify-signing-precondition",
+        "analyze-repo-with-gitnexus",
         "detect-merge-strategy",
         "detect-project-type",
         "announce-project-type",
@@ -2417,8 +2389,8 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "detect-review-mode",
         "derive-host-repo",
         "resolve-repo-root",
-        "analyze-repo-with-gitnexus",
         "verify-signing-precondition",
+        "analyze-repo-with-gitnexus",
         "detect-merge-strategy",
         "detect-project-type",
         "announce-project-type",
@@ -2730,13 +2702,6 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           "setVariable": {
             "body_conforms": true,
             "body_override_recorded": true,
-          },
-        },
-        {
-          "id": "build-artifact-check",
-          "option": "none-needed",
-          "setVariable": {
-            "build_dependent_artifacts_pending": false,
           },
         },
         {
