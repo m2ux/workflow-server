@@ -1,5 +1,5 @@
 id: dispatch-client-workflow
-version: 5.7.0
+version: 5.8.0
 name: Dispatch Client Workflow
 description: Drive the client workflow's activity loop, each worker carrying a bounded run of activities.
 required: true
@@ -95,6 +95,13 @@ steps:
           - action: set
             target: worker_agent_id
             value: null
+  - kind: action
+    id: record-client-completion
+    when: current_activity == null
+    actions:
+      - action: set
+        target: client_workflow_completed
+        value: true
 transitions:
   - to: end-workflow
     condition:
@@ -107,3 +114,4 @@ outcome:
   - Each worker carried a bounded run of activities in one context, so the harness baseline was paid once a run rather than once an activity
   - The user retained control over every decision point — checkpoints surfaced to them and their selections steered the workflow
   - The client workflow has no further activities to run, so the meta can proceed to close it out
+  - Reaching the end of the activity loop is recorded, so close-out can tell a completed run from one that stopped at the iteration bound
