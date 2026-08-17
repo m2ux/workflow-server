@@ -252,6 +252,7 @@
           <tr><td><code>variables_changed</code></td><td><code>object</code></td><td>no</td><td>Variable assignments the completing activity produced — relay the worker's <code>activity_complete</code> <code>variables_changed</code> map verbatim. The server writes them into the session variable bag and records one <code>variable_set</code> history event per name, so the bag a later get_workflow_status / inspect_session returns reflects worker outputs and survives a lost agent context. Declared types are validated warn-only: a mismatch is stored as written and surfaced in _meta.validation. Omit when the activity changed nothing.</td></tr>
           <tr><td><code>artifacts_produced</code></td><td><code>object[]</code></td><td>no</td><td>Artifacts the completing activity produced: [{id, name, path?}]. Merged by id into the session declared-artifact accumulation; planning-folder reconciliation joins on id (warn-only).</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
+          <tr><td><code>context_tokens</code></td><td><code>integer</code></td><td>no</td><td>Your worker context window in tokens. Required so the server can size inline technique bundling.</td></tr>
           </tbody>
         </table>
         </div>
@@ -394,6 +395,7 @@
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
           <tr><td><code>step_id</code></td><td><code>string</code></td><td>no</td><td>Step within the current activity. Omit to get the first technique for the activity or workflow.</td></tr>
+          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>no</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: use an id from <code>transitions</code>.</td></tr>
           <tr><td><code>bundle</code></td><td><code>&quot;reference&quot; | &quot;full&quot;</code></td><td>no</td><td><code>reference</code>: return unchanged markers for content already delivered. <code>full</code>: always return complete text.</td></tr>
           <tr><td><code>full</code></td><td><code>boolean</code></td><td>no</td><td>Force full content even when persistent mode would return an unchanged marker (<code>get_technique</code> or <code>get_resource</code>).</td></tr>
           </tbody>

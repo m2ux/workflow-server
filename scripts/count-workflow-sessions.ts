@@ -12,8 +12,11 @@
  *
  * Counts every state in the tree whose `workflowId` matches, optionally filtered by `status`.
  *
+ * Also the pre-landing count of runs a definition change reaches mid-flight — see
+ * docs/development.md § Sessions in flight.
+ *
  * Run:
- *   npx tsx scripts/count-workflow-sessions.ts --workflow workflow-design --status running --list
+ *   npm run sessions:census -- --workflow work-package --status running --list
  *
  * Options:
  *   --workflow <id>   workflow id to count (required)

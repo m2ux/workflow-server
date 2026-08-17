@@ -274,14 +274,43 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         // A resume carries a fresh request from the user — rebind it so the bag
         // describes why the session is running now, not why it opened.
         const requestDrift = user_request !== undefined && state.variables?.['user_request'] !== user_request;
+        // Definition drift: declarations added since this session opened are absent from its bag, so
+        // seed the ones it lacks. A value already present is a decision, not a stale default.
+        const versionDrift = effectiveWorkflowVersion !== ''
+          && state.workflowVersion !== effectiveWorkflowVersion;
+        const lateSeed = versionDrift && wfPreLoad.success
+          ? Object.fromEntries(
+            Object.entries(seedDefaults(wfPreLoad.value.variables))
+              .filter(([name]) => state.variables?.[name] === undefined),
+          )
+          : {};
+        const lateSeedNames = Object.keys(lateSeed);
+        // A fresh context retains nothing it was sent, so its ledger no longer describes it.
+        const disownsPriorDeliveries = modeDrift && context_mode === 'fresh';
         let nextState = state;
-        if (pathDrift || agentDrift || modeDrift || requestDrift) {
+        if (pathDrift || agentDrift || modeDrift || requestDrift || versionDrift) {
           nextState = {
             ...nextState,
             ...(agentDrift ? { agentId: agent_id } : {}),
             ...(pathDrift ? { planningFolderPath: canonicalFolder } : {}),
             ...(modeDrift ? { contextMode: context_mode } : {}),
-            ...(requestDrift ? { variables: { ...nextState.variables, user_request } } : {}),
+            ...(disownsPriorDeliveries && state.deliveredContent
+              ? {
+                deliveredContent: Object.fromEntries(
+                  Object.entries(state.deliveredContent).filter(([s]) => s !== agent_id),
+                ),
+              }
+              : {}),
+            ...(versionDrift ? { workflowVersion: effectiveWorkflowVersion } : {}),
+            ...(requestDrift || lateSeedNames.length
+              ? {
+                variables: {
+                  ...lateSeed,
+                  ...nextState.variables,
+                  ...(requestDrift ? { user_request } : {}),
+                },
+              }
+              : {}),
           };
         }
         const repoBindRaw = repo?.trim() || sessionRoot.repo;
@@ -608,10 +637,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       ...sessionIndexParam,
       ...agentIdParam,
       step_id: z.string().optional().describe('Optional. Step id whose bound technique to load; omit for the activity/workflow first technique.'),
+      activity_id: z.string().optional().describe('Optional. The activity you were dispatched for. A step id resolves against the session\'s CURRENT activity, so passing this turns a pointer that has moved on into an error instead of a technique from the wrong activity.'),
       bundle: z.enum(['reference', 'full']).optional().describe('Optional. "reference" collapses a refetch already delivered to THIS agent_id scope. "full" forces full delivery. Defaults from context_mode.'),
       full: z.boolean().optional().describe('Optional. Force full content when reference delivery would return an unchanged-reference (e.g. after summarization). Overrides bundle.'),
     },
-    withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, agent_id, step_id, bundle, full }) => {
+    withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, agent_id, step_id, activity_id, bundle, full }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -619,6 +649,16 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       const scope = deliveryScope(state, agent_id);
 
       assertNoActiveCheckpoint(state);
+
+      // A step id resolves against the session pointer, which any context in the session can move.
+      if (activity_id !== undefined && state.currentActivity !== activity_id) {
+        throw new Error(
+          `get_technique: this session's current activity is '${state.currentActivity ?? '(none)'}', `
+          + `not the '${activity_id}' you were dispatched for. A step id resolves against the current `
+          + 'activity, so fetching now would return another activity\'s technique. Report the mismatch '
+          + 'to your orchestrator rather than retrying without activity_id.',
+        );
+      }
 
       const wfDiag = await loadWorkflowWithDiagnostics(config.workflowDir, workflow_id);
       if (!wfDiag.success) throw wfDiag.error;

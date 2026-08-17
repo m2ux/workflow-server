@@ -15,6 +15,7 @@ import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
 import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
+import { bothGates, gateAnswer, variablesWrittenIn } from '../utils/gate-liveness.js';
 import { withAuditLog, logInfo, logWarn } from '../logging.js';
 import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
@@ -525,8 +526,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       agent_id: z.string().min(1).optional().describe(
         'Optional. Worker context that completed the exiting activity — scopes technique-fetch fidelity and step_completed attribution.',
       ),
+      context_tokens: z.number().int().positive().optional().describe(
+        'Optional, with agent_id. That context\'s declared window, so `_meta.batch` reports whether it may take this activity — a reading that counts the lazy fetches the exiting activity made. Continue the worker on `may_continue: true`; spawn a fresh agent_id otherwise.',
+      ),
     },
-    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, variables_changed, artifacts_produced, agent_id }) => {
+    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, variables_changed, artifacts_produced, agent_id, context_tokens }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -735,6 +739,24 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const meta: Record<string, unknown> = { session_index, validation };
 
+      // Where the exiting worker stands, read at the boundary so the lazy fetches of the activity it
+      // just finished are counted (docs/dispatch_model.md § Batching a run of activities).
+      if (agent_id && context_tokens !== undefined && !isTerminal) {
+        const bound = batchBound(context_tokens, {
+          headroomFraction: config.batchHeadroomFraction ?? DEFAULT_BATCH_HEADROOM_FRACTION,
+          maxActivities: config.batchMaxActivities ?? DEFAULT_BATCH_MAX_ACTIVITIES,
+          charsPerToken: config.bundleCharsPerToken ?? DEFAULT_BUNDLE_CHARS_PER_TOKEN,
+        });
+        const stand = batchState(state, agent_id, bound);
+        meta['batch'] = {
+          activities: stand.activities.length,
+          max_activities: bound.maxActivities,
+          delivered_chars: stand.chars,
+          budget_chars: bound.budgetChars,
+          may_continue: batchRefusal(state, agent_id, activity_id, bound) === undefined,
+        };
+      }
+
       if (config.traceStore) {
         const segment = config.traceStore.getSegmentAndAdvanceCursor(state.sessionIndex);
         if (segment.events.length > 0) {
@@ -850,6 +872,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // content that was delivered under the default full mode.
       const newDeliveries: Record<string, string> = {};
 
+      // Whether this scope's ledger describes what it is holding. Governs the blocks identical on
+      // every activity — see docs/resource_resolution_model.md § Reference Delivery.
+      const mayReferBack = bundle !== 'full' && (referenceMode || hasDispatch(state, scope));
+
       // Bundle the techniques the activity references (delivered as full protocols), deduped with
       // the workflow-level techniques inherited by every activity (`techniques.activity`, injected
       // here so a common technique is declared once on the workflow) and the core worker techniques.
@@ -868,7 +894,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         for (const [key, body] of Object.entries(bundleTechniques)) {
           const hash = contentHash(stringifyForResponse(body));
           const ledgerKey = `bundle:${key}`;
-          if (referenceMode && deliveredHash(state, ledgerKey, scope) === hash) {
+          if (mayReferBack && deliveredHash(state, ledgerKey, scope) === hash) {
             bundleTechniques[key] = unchangedMarker(hash);
           } else {
             newDeliveries[ledgerKey] = hash;
@@ -882,12 +908,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (bundleData['rules'] !== undefined) {
         const rulesHash = contentHash(stringifyForResponse(bundleData['rules']));
         const rulesKey = `bundle:rules:${rulesHash}`;
-        if (referenceMode && deliveredHash(state, rulesKey, scope) === rulesHash) {
+        if (mayReferBack && deliveredHash(state, rulesKey, scope) === rulesHash) {
           bundleData['rules'] = unchangedMarker(rulesHash);
         } else {
           newDeliveries[rulesKey] = rulesHash;
         }
       }
+
+      // What the worker bundle costs this response, markers included: it opens the eager tally below.
+      const workerBundleChars = stringifyForResponse(bundleData).length;
 
       // Automatic, per-agent context-derived step-technique bundling (#189 C1c): every activity
       // eagerly inlines its small, ungated step-bound techniques — no per-activity opt-in. The
@@ -904,6 +933,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // identical by construction. Bundled entries share the `technique:<resolvedId>` delivery-
       // ledger key with get_technique, so persistent-context refetches of bundled content collapse
       // to unchanged-references in either direction.
+      // A gated step joins the bundle when its gate answers true for the whole activity; a false or
+      // unanswered gate stays lazy (src/utils/gate-liveness.ts).
       const bundledStepTechniques: Record<string, unknown> = {};
       // `chars` is the FULL composed size on both paths and `delivery` says which path ran, so the
       // technique_bundled / resource_fetched events below report delivered and saved characters
@@ -933,25 +964,46 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // Running total of full-content characters committed to the eager bundle. An unchanged-reference
       // marker costs effectively nothing, so it never draws down the budget; only full-content
       // entries do. Held here so the delivery's cost line can report it against the budget.
-      let spentChars = 0;
+      let spentChars = workerBundleChars;
+      /** Technique steps left for get_technique, by the answer their gate gave. */
+      let lazyUnansweredGates = 0;
+      let lazyFalseGates = 0;
       if (!optedOut && result.success && activity) {
-        const eligible: Array<Step & { kind: 'technique' }> = [];
-        const collectUngated = (steps: Step[] | undefined): void => {
-          for (const s of steps ?? []) {
-            if (s.when !== undefined || s.condition !== undefined) continue;
-            if (s.kind === 'loop') { collectUngated(s.steps as Step[]); continue; }
-            if (s.kind === 'technique' && s.id) eligible.push(s);
-          }
-        };
-        collectUngated((activity as Activity).steps);
-
-        if (eligible.length > 0) {
+        // One pass serves both the gate reading (which bag entries this activity produces) and the
+        // provenance decoration further down.
+        const bindsTechnique = flattenActivitySteps(activity as Activity)
+          .some((s) => s.kind === 'technique' && s.id !== undefined);
+        if (bindsTechnique) {
           producerIndex = await buildProducerIndex({
             workflow: result.value,
             workflowDir: config.workflowDir,
             activitySourceWorkflow,
           });
         }
+        const writtenInActivity = producerIndex
+          ? variablesWrittenIn(producerIndex.producers, activity_id)
+          : new Set<string>();
+        const bagAtOpen = state.variables ?? {};
+
+        const eligible: Array<Step & { kind: 'technique' }> = [];
+        // An enclosing loop's gate narrows its body, so a step joins only where every gate above it
+        // also answers true.
+        const collect = (steps: Step[] | undefined, outer: boolean | undefined): void => {
+          for (const s of steps ?? []) {
+            const answer = bothGates(outer, gateAnswer({
+              when: s.when,
+              condition: s.condition,
+              variables: bagAtOpen,
+              writtenInActivity,
+            }));
+            if (s.kind === 'loop') { collect(s.steps as Step[], answer); continue; }
+            if (s.kind !== 'technique' || s.id === undefined) continue;
+            if (answer === true) eligible.push(s);
+            else if (answer === false) lazyFalseGates++;
+            else lazyUnansweredGates++;
+          }
+        };
+        collect((activity as Activity).steps, true);
 
         for (const step of eligible) {
           const ref = techniqueName(step.technique);
@@ -962,7 +1014,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           // An unresolvable ref is the binding guard's business; delivery skips it (the step's
           // own get_technique fetch will surface the error to the worker).
           if (!composedStep.success) continue;
-          const { techniqueId } = composedStep.value;
+          const { techniqueId, sourceWorkflowId: techniqueWorkflowId } = composedStep.value;
           let technique = composedStep.value.technique;
           let provenanceWarnings: string[] = [];
           const ctx = producerIndex
@@ -982,7 +1034,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           if (text.length > perTechniqueCap) continue;
           const ledgerKey = `technique:${techniqueId}`;
           const hash = contentHash(text);
-          const alreadyDelivered = referenceMode && (deliveredHash(state, ledgerKey, scope) === hash || newDeliveries[ledgerKey] === hash);
+          // The ledger half needs a context that retains prior payloads; the response-local half is
+          // readable by any recipient, the copy being in this same response.
+          const heldByContext = referenceMode && deliveredHash(state, ledgerKey, scope) === hash;
+          const earlierInResponse = newDeliveries[ledgerKey] === hash;
+          const alreadyDelivered = heldByContext || earlierInResponse;
           // ▼ STEP arrival marker: each entry is a discrete, self-describing unit that substitutes
           // for the intentional get_technique { step_id } call inlining removes (#189 C1c(C)1).
           const stepMarker = `▼ STEP ${step.id!} · technique ${techniqueId}`;
@@ -1000,18 +1056,20 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             newDeliveries[ledgerKey] = hash;
             // The arrival marker leads the block; the composed technique fields follow at the same
             // level, so a bundled entry reads exactly like a get_technique fetch with a step header.
-            // Under reference mode, collapse any shared contract/rules block already delivered (by a
-            // sibling bundled step or an earlier fetch) to a marker while the core stays full.
-            const projected = referenceMode
-              ? dedupTechniqueBlocks(projectTechnique(technique), state, newDeliveries, scope)
-              : projectTechnique(technique);
+            // Shared contract/rules blocks collapse in every mode; reference mode widens the pass to
+            // what this context received on an earlier call.
+            const projected = dedupTechniqueBlocks(
+              projectTechnique(technique), state, newDeliveries, scope, referenceMode,
+            );
             bundledStepTechniques[step.id!] = { marker: stepMarker, ...projected };
           }
           // Collect linked resource ids from the full composed technique text even when this
           // delivery collapses to an unchanged-marker (markers omit link text). Only for steps
           // actually included in the bundle (after the budget break above).
+          // Qualified against the workflow the TECHNIQUE file was found in, not the activity's: a
+          // bare link in a meta technique names a resource under meta/resources/ whoever binds it.
           for (const rawId of extractResourceIds(text)) {
-            linkedResourceIds.add(qualifyResourceId(rawId, sourceWorkflowId, workflow_id));
+            linkedResourceIds.add(qualifyResourceId(rawId, techniqueWorkflowId, workflow_id));
           }
           bundledSteps.push({
             stepId: step.id!, techniqueId,
@@ -1124,7 +1182,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
           bundleData['step_techniques'] = bundledStepTechniques;
           bundleData['step_techniques_note'] =
-            'Each step_techniques entry is a discrete ▼ STEP block whose composed technique is identical to a get_technique { step_id } fetch. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resource bodies are NEVER nested inside a step_techniques entry — `resources_note` states how this response delivers the technique-linked resources. Technique steps absent from this map (gated, or past the derived eager-delivery budget / a per-activity size cap) still require get_technique { step_id } before execution.';
+            'Each step_techniques entry is a discrete ▼ STEP block whose composed technique is identical to a get_technique { step_id } fetch. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resource bodies are NEVER nested inside a step_techniques entry — `resources_note` states how this response delivers the technique-linked resources. An entry for a step inside a loop body is the protocol for EVERY iteration: engage it once per iteration from the copy you hold, and do not re-fetch it per pass. Technique steps absent from this map (a gate whose reading is not available at delivery time, a gate this activity reads as no, or past the derived eager-delivery budget / a per-activity size cap) still require get_technique { step_id } before execution.';
           if (bundledResourceDeliveries.length > 0) bundleData['resources'] = bundledResources;
           if (resourceRefIds.length > 0) bundleData['resource_refs'] = resourceRefIds;
           if (linkedIds.length > 0) {
@@ -1140,10 +1198,17 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ...bundlingWarnings,
       );
 
-      const opsData = referenceMode
+      // The note names whichever referents this response can actually produce.
+      const inResponseNote = 'A marker may point at a byte-identical copy EARLIER IN THIS RESPONSE — a sibling step_techniques entry, or one shared inherited_inputs/inherited_outputs/rules block several of this activity\'s techniques inherit from the same ancestor group. Find that copy by its content_hash and read it there.';
+      const priorCallNote = 'A marker may point at content already in your context from an earlier call to this session — reuse it from there. Re-fetch one technique with get_technique { step_id, full: true }, or the whole payload with get_activity { bundle: "full" }.';
+      const markerNotes = [
+        ...(bundledSteps.length > 1 ? [inResponseNote] : []),
+        ...(mayReferBack ? [priorCallNote] : []),
+      ];
+      const opsData = markerNotes.length
         ? {
-            bundle_mode: 'reference',
-            bundle_note: 'Entries marked { delivery: "unchanged", content_hash } are already in your context — reuse them. A marker may also replace a single inherited_inputs/inherited_outputs/rules block inside an otherwise-full step_techniques entry (that shared block came from a sibling technique). Re-fetch a technique with get_technique { step_id, full: true }, or get_activity { bundle: "full" } to re-deliver the whole bundle.',
+            ...(referenceMode ? { bundle_mode: 'reference' } : {}),
+            bundle_note: `Entries marked { delivery: "unchanged", content_hash } are content you already hold. ${markerNotes.join(' ')}`,
             ...bundleData,
           }
         : bundleData;
@@ -1198,7 +1263,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (inheritedRules.length) {
         const inheritedRulesHash = contentHash(stringifyForResponse(inheritedRules));
         const inheritedRulesKey = `activity_rules:${inheritedRulesHash}`;
-        if (referenceMode && deliveredHash(state, inheritedRulesKey, scope) === inheritedRulesHash) {
+        if (mayReferBack && deliveredHash(state, inheritedRulesKey, scope) === inheritedRulesHash) {
           activityRulesBlock = `${stringifyForResponse({ activity_rules: unchangedMarker(inheritedRulesHash) })}\n\n`;
         } else {
           newDeliveries[inheritedRulesKey] = inheritedRulesHash;
@@ -1286,6 +1351,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         bundled_steps: bundledSteps.length,
         bundled_steps_collapsed: bundledSteps.filter((b) => b.delivery === 'unchanged').length,
         bundled_resources: bundledResourceDeliveries.length,
+        worker_bundle_chars: workerBundleChars,
+        lazy_gate_unanswered: lazyUnansweredGates,
+        lazy_gate_false: lazyFalseGates,
         spent_chars: spentChars,
         eager_budget_chars: Math.floor(eagerBudgetChars),
         response_chars: responseText.length,

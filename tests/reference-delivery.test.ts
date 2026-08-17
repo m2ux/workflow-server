@@ -167,25 +167,50 @@ describe('reference-not-repeat delivery (B1)', () => {
     return result;
   }
 
-  describe('get_activity default mode is unchanged', () => {
-    it('repeats the full bundle on every call and never emits markers', async () => {
+  describe('get_activity in the default mode', () => {
+    it('delivers the worker bundle in full to an identity the server has not met', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
       await enterActivity(idx, 'start-work-package');
 
       const first = splitActivityResponse(await getActivity(idx));
-      const second = splitActivityResponse(await getActivity(idx));
-
-      for (const parsed of [first, second]) {
-        expect(parsed.bundle['bundle_mode']).toBeUndefined();
-        const techniques = parsed.bundle['techniques'] as Record<string, unknown>;
-        expect(Object.keys(techniques).length).toBeGreaterThan(0);
-        for (const value of Object.values(techniques)) {
-          expect(isUnchangedMarker(value)).toBe(false);
-        }
+      expect(first.bundle['bundle_mode']).toBeUndefined();
+      const techniques = first.bundle['techniques'] as Record<string, unknown>;
+      expect(Object.keys(techniques).length).toBeGreaterThan(0);
+      for (const value of Object.values(techniques)) {
+        expect(isUnchangedMarker(value)).toBe(false);
       }
-      // Byte-identical repetition — the pre-B1 behaviour full mode preserves.
-      expect(responseText(await getActivity(idx))).toBe(responseText(await getActivity(idx)));
+    });
+
+    it('refers an identity it has already delivered to back to the bundle it holds', async () => {
+      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const idx = session['session_index'] as string;
+      await enterActivity(idx, 'start-work-package');
+      await getActivity(idx);
+
+      // Same agent_id, no context_mode declared: the orchestrator holds one identity for as long as
+      // a worker carries its batch, so a second delivery under it is that same context arriving again.
+      const second = splitActivityResponse(await getActivity(idx));
+      const techniques = second.bundle['techniques'] as Record<string, unknown>;
+      for (const [key, value] of Object.entries(techniques)) {
+        expect(isUnchangedMarker(value), `expected a marker for ${key}`).toBe(true);
+      }
+      expect(isUnchangedMarker(second.bundle['rules'])).toBe(true);
+      expect(second.bundle['bundle_note']).toBeDefined();
+      // The activity body is never collapsed, whatever the identity holds.
+      expect(second.bodyText.length).toBeGreaterThan(0);
+    });
+
+    it('re-delivers everything to a fresh identity in the same session', async () => {
+      const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
+      const idx = session['session_index'] as string;
+      await enterActivity(idx, 'start-work-package');
+      await getActivity(idx);
+
+      const replacement = splitActivityResponse(await getActivity(idx, { agent_id: 'w2' }));
+      for (const value of Object.values(replacement.bundle['techniques'] as Record<string, unknown>)) {
+        expect(isUnchangedMarker(value)).toBe(false);
+      }
     });
   });
 
@@ -390,10 +415,13 @@ describe('reference-not-repeat delivery (B1)', () => {
       }
       expect(isUnchangedMarker(referenced.bundle['rules'])).toBe(true);
 
-      // Omitting the opt-in returns to full delivery.
+      // Omitting the opt-in drops `bundle_mode`, and `bundle: "full"` is what re-delivers the
+      // bundle this identity has already been sent.
       const backToFull = splitActivityResponse(await getActivity(idx));
       expect(backToFull.bundle['bundle_mode']).toBeUndefined();
-      for (const value of Object.values(backToFull.bundle['techniques'] as Record<string, unknown>)) {
+
+      const forced = splitActivityResponse(await getActivity(idx, { bundle: 'full' }));
+      for (const value of Object.values(forced.bundle['techniques'] as Record<string, unknown>)) {
         expect(isUnchangedMarker(value)).toBe(false);
       }
     });

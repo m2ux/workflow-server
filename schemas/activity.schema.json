@@ -44,7 +44,7 @@
             "maxChars"
           ],
           "additionalProperties": false,
-          "description": "Opt-in hybrid bundling: get_activity inlines each ungated step technique whose composed wire form is at most maxChars; larger and gated ones remain lazy-fetched via get_technique. Bundled deliveries are recorded as technique_bundled history events and satisfy the manifest fidelity check."
+          "description": "Opt-in hybrid bundling: get_activity inlines each step technique whose composed wire form is at most maxChars and whose gate answers true at activity open; larger ones, and those whose gate has no answer yet, remain lazy-fetched via get_technique. Bundled deliveries are recorded as technique_bundled history events and satisfy the manifest fidelity check."
         },
         "steps": {
           "type": "array",

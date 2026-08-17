@@ -11,7 +11,7 @@ import { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
 import { createServer } from '../src/server.js';
 import { resolve, join } from 'node:path';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { seedDefaults, jsonTypeOf, isTemplateReference } from '../src/utils/variable-seed.js';
 import { createInitialSessionFile } from '../src/schema/session.schema.js';
@@ -412,5 +412,79 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       await call('next_activity', { session_index: sessionIndex, activity_id: 'followup-activity' });
       expect(readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage')).toHaveLength(0);
     });
+  });
+});
+
+/**
+ * Definition drift on resume: the bag is seeded from the declarations that were on disk when the
+ * session was created, and a resume runs whatever is on disk now. A declaration added since is
+ * absent from the bag, so a gate on it reads unbound.
+ *
+ * Runs against a COPY of the fixture corpus so the definition can be edited under a live session.
+ */
+describe('resume against an edited workflow definition', () => {
+  let client: Client;
+  let closeTransport: () => Promise<void>;
+  let workspaceDir: string;
+  let corpusDir: string;
+  const slug = '2026-08-17-definition-drift';
+  const planningFolder = () => join(workspaceDir, '.engineering/artifacts/planning', slug);
+  const readSession = () => JSON.parse(readFileSync(join(planningFolder(), 'session.json'), 'utf8'));
+  const workflowPath = () => join(corpusDir, 'seed-fixture/workflow.yaml');
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async function call(name: string, args: Record<string, unknown>): Promise<any> {
+    const result = await client.callTool({ name, arguments: args });
+    if (result.isError) throw new Error(`${name} failed: ${(result.content as { text: string }[])[0]?.text}`);
+    return result;
+  }
+
+  beforeAll(async () => {
+    workspaceDir = mkdtempSync(join(tmpdir(), 'wf-drift-ws-'));
+    corpusDir = mkdtempSync(join(tmpdir(), 'wf-drift-corpus-'));
+    cpSync(resolve(import.meta.dirname, 'fixtures/variable-model'), corpusDir, { recursive: true });
+    const server = createServer({
+      workflowDir: corpusDir,
+      schemasDir: resolve(import.meta.dirname, '../schemas'),
+      workspaceDir,
+      serverName: 'test-workflow-server',
+      serverVersion: '1.0.0',
+      minCheckpointResponseSeconds: 0,
+    });
+    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
+    await server.connect(serverTransport);
+    client = new Client({ name: 'test-client', version: '1.0.0' }, {});
+    await client.connect(clientTransport);
+    closeTransport = async () => { await client.close(); };
+  });
+
+  afterAll(async () => {
+    await closeTransport();
+    rmSync(workspaceDir, { recursive: true, force: true });
+    rmSync(corpusDir, { recursive: true, force: true });
+  });
+
+  it('seeds declarations the bag lacks and re-stamps the recorded version', async () => {
+    await call('start_session', {
+      workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(),
+    });
+    const created = readSession();
+    expect(created.workflowVersion).toBe('1.0.0');
+    expect(created.variables.late_gate).toBeUndefined();
+    // A run decision the resume must not overwrite with the declared default.
+    expect(created.variables.mode_label).toBe('standard');
+
+    const edited = readFileSync(workflowPath(), 'utf8')
+      .replace('version: 1.0.0', 'version: 1.1.0')
+      + '\n  - name: late_gate\n    type: boolean\n    description: Declared after the session opened.\n    defaultValue: false\n';
+    writeFileSync(workflowPath(), edited);
+
+    await call('start_session', {
+      workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(),
+    });
+    const resumed = readSession();
+    expect(resumed.workflowVersion).toBe('1.1.0');
+    expect(resumed.variables.late_gate).toBe(false);
+    expect(resumed.variables.mode_label).toBe('standard');
   });
 });

@@ -164,6 +164,13 @@ Reference delivery belongs to the **agent context**, not to the session:
 
 A marker is only ever valid for the context that received the bytes it stands for.
 
+Two things establish that a context holds a payload, and they are independent:
+
+- **Its own ledger.** A scope the server has already delivered an activity to is that same context arriving again — the orchestrator mints one `agent_id` per dispatch and reuses it verbatim for as long as that worker carries its batch. So the **invariant blocks** (the worker technique bundle, its `rules`, and the inherited `activity_rules`) collapse for a returning identity in *every* delivery mode, not only under `persistent`. A replacement worker arrives under a new `agent_id`, reads an empty ledger, and takes them in full.
+- **The response itself.** A marker may instead point at a byte-identical copy earlier in the *same* response. That needs no ledger and no mode: the copy travels in the payload the marker travels in, so any recipient that can read the marker can read the copy. See [Blocks inside a technique](#blocks-inside-a-technique).
+
+Resuming with `context_mode: "fresh"` drops that scope's ledger entries, because the caller is stating this identity retains nothing it was sent. The next delivery to it is therefore full. `bundle: "full"` does the same for one call without touching the ledger.
+
 ### Turning it on
 
 | How | Applies to |
@@ -184,7 +191,7 @@ The orchestrator mints an `agent_id` per dispatch and reuses it verbatim for as 
 
 ### What collapses, call by call
 
-- **`get_activity`** — the response carries `bundle_mode: reference` and a `bundle_note`. Any bundled technique whose composed content is byte-identical to an earlier delivery collapses to a marker, as do the `rules` and `activity_rules` blocks. Techniques new to the activity, or whose content changed, arrive in full. The activity body itself is always delivered.
+- **`get_activity`** — under reference delivery the response carries `bundle_mode: reference`. Any bundled technique whose composed content is byte-identical to an earlier delivery collapses to a marker, as do the `rules` and `activity_rules` blocks. Techniques new to the activity, or whose content changed, arrive in full. The activity body itself is always delivered. In the default mode the invariant blocks still collapse for a returning identity, and shared blocks still collapse within the response — so a `bundle_note` accompanies any response that carries a marker, in either mode, naming which referents that response can produce.
 - **`get_technique`** — a byte-identical refetch returns `delivery: unchanged` and a `content_hash` instead of the composed technique. Step-bound provenance annotations (`source:` / `destination:`) are part of that content. They are fixed for a given corpus and step, so refetching the same step collapses; fetching the same operation from a *different* step re-delivers in full rather than handing back a stale reference.
 - **`get_resource`** — a byte-identical refetch of the same `resource_id` returns `delivery: unchanged` and a `content_hash` instead of the body. The key is the caller's exact `resource_id`, anchor included, so `pr-description` and `pr-description#templates` occupy independent slots.
 - **`get_workflow`** — under `context_mode: "persistent"` the orchestrator ops bundle (everything above the `---` separator) is keyed under `workflow_bundle:<hash>`. On a resume where the agent already holds it, the whole bundle collapses to a single marker, while the workflow summary below the separator stays full.
@@ -196,6 +203,10 @@ The orchestrator mints an `agent_id` per dispatch and reuses it verbatim for as 
 Collapsing can go finer than a whole technique. Techniques sharing a workflow contract share blocks: the contract-inherited `inherited_inputs` and `inherited_outputs`, and the merged `rules`. Each is hashed on its own, under `technique:<block>:<hash>`.
 
 So when a technique is new to the context but one of its shared blocks already arrived with a sibling technique, that block becomes a marker in place while the technique-specific core arrives in full. This happens both on the `get_technique` full-delivery path and inside each eagerly inlined `get_activity` `step_techniques` entry.
+
+Inside one `get_activity` response this pass runs **in every delivery mode**, because composition merges each ancestor group's rules into every technique that group covers: a response bundling ten techniques of one group would otherwise carry that group's rules ten times. The marker points at the sibling entry in the same payload, so it is readable by a worker holding nothing from before. Widening it to the ledger — collapsing against what arrived on an *earlier call* — is what reference delivery adds.
+
+Two steps bound to the same technique in one activity collapse the same way: the second entry is a marker naming the first.
 
 Hashing the content is what keeps this from going stale: a block annotated with binding-seam provenance hashes differently, so it correctly arrives in full.
 
@@ -211,11 +222,11 @@ Hashing the content is what keeps this from going stale: a block annotated with 
 
 **Sizes are summable.** `technique_fetched`, `technique_bundled` and `resource_fetched` each carry `chars` — always the full payload size, on both paths — and `delivery: "full" | "unchanged"`. Characters delivered and characters saved are therefore both totals you can add up from the ledger.
 
-**Benchmarks.** `npm run bench:token` compares delivery cost per session mode over a fixed `work-package` walk, against the frozen pre-optimisation A0 reference ([`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts); `vsReference.deliveryCostIndex` reports A0 = 100, lower is better). `npm run bench:dispatch` measures the other axis — a fresh worker dispatch against the same worker resumed ([`scripts/run-dispatch-benchmark.ts`](../scripts/run-dispatch-benchmark.ts)). See [development.md](development.md#token-delivery-benchmark).
+**Benchmarks.** `npm run bench:token` compares delivery cost per session mode over a fixed `work-package` walk, against the committed baseline ([`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts); `vsReference.deliveryCostIndex` reports baseline = 100, lower is better). The Verify workflow gates on it at 1%, so a definition change that adds delivery is priced at merge — see [development.md](development.md#the-gate-runs-on-every-pull-request). `npm run bench:dispatch` measures the other axis — a fresh worker dispatch against the same worker resumed ([`scripts/run-dispatch-benchmark.ts`](../scripts/run-dispatch-benchmark.ts)). See [development.md](development.md#token-delivery-benchmark).
 
 ## 12. Hybrid Technique Bundling
 
-`get_activity` inlines the composed content of an activity's small, ungated step techniques under a `step_techniques` map, so those steps run without a fetch round-trip. This is automatic and corpus-wide — there is no per-activity opt-in. What sizes the bundle is the worker's REQUIRED `context_tokens`.
+`get_activity` inlines the composed content of an activity's small step techniques under a `step_techniques` map, so those steps run without a fetch round-trip. This is automatic and corpus-wide — there is no per-activity opt-in. What sizes the bundle is the worker's REQUIRED `context_tokens`.
 
 ### The budget
 
@@ -227,15 +238,31 @@ context_tokens × headroomFraction × charsPerToken
 
 `headroomFraction` (default 0.80) and `charsPerToken` (default 4) are server config, overridable with `BUNDLE_HEADROOM_FRACTION` and `BUNDLE_CHARS_PER_TOKEN`.
 
-That budget governs everything inlined eagerly. Technique bodies draw on it first, in document order; eagerly bundled resource bodies then draw on the same counter. Each loop stops at the first entry that would overflow what remains, and the rest stay lazy. Unchanged-reference markers cost almost nothing and never draw it down.
+That budget governs everything inlined eagerly, so the worker technique bundle opens the tally at what it costs this response. Step technique bodies draw on the remainder, in document order; eagerly bundled resource bodies then draw on the same counter. Each loop stops at the first entry that would overflow what remains, and the rest stay lazy. Unchanged-reference markers cost almost nothing and never draw it down.
+
+`spent_chars` on the delivery cost line is that whole tally, against `eager_budget_chars`; `worker_bundle_chars` reports the invariant part on its own.
 
 This is how `context_tokens` comes to bound the eager bundle, which is the budget policy's stated purpose in [`src/config.ts`](../src/config.ts).
 
 ### Which steps get inlined
 
-Each ungated technique-kind step, in document order, until the budget runs out.
+Each technique-kind step whose gate answers **true**, in document order, until the budget runs out. A step with no gate answers true.
 
-A `when` or `condition` — on the step itself, or on a loop enclosing it — keeps that step lazy, so bundling never ships content for a step that might not run.
+The server holds the variable bag and the reference gate evaluators, so it can take that answer itself. A gate has an answer for the whole activity when every variable it compares is already bound *and* no step of this activity produces one of them. Otherwise it is **unanswered**, and the step stays lazy:
+
+| Gate reads | Answer | Delivery |
+|---|---|---|
+| variables bound before the activity opened, none of them written inside it | `true` | inlined — the worker certainly reaches this step |
+| the same, evaluating false | `false` | lazy, and nothing is shipped for a step the run will not execute |
+| a variable this activity produces | unanswered | lazy |
+| a variable absent from the bag | unanswered | lazy — both evaluators return false for an unbound read, which is not the same as a negative one |
+| an expression that does not parse | unanswered | lazy; the malformed expression is the corpus guards' business |
+
+An enclosing loop's gate narrows its body, so a step is inlined only where every gate above it also answers true. A body inlined under a gated loop is the protocol for **every** iteration — engage it once per pass from the copy already held, rather than re-fetching it each time.
+
+Whatever the executing agent evaluates when it reaches the step is still what decides execution. This answer decides only how the content travels.
+
+`lazy_gate_unanswered` and `lazy_gate_false` on the delivery cost line count the steps each reading left behind.
 
 An activity may also set `bundleTechniques: { maxChars: <n> }`, a per-technique size cap layered on the budget: any single technique larger than `maxChars` stays lazy. `maxChars: 0` opts the activity out of eager bundling altogether. Anything not inlined stays a `get_technique { step_id }` fetch.
 
