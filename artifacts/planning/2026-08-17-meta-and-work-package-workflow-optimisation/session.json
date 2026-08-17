@@ -1,0 +1,1313 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "5.22.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "HZAU7B",
+  "currentActivity": "dispatch-client-workflow",
+  "currentTechnique": "workflow-engine::commit-and-persist",
+  "condition": "isDefault: dispatch-client-workflow",
+  "seq": 25,
+  "ts": 1786949284,
+  "startedAt": "2026-08-17T06:17:44.568Z",
+  "completedActivities": [
+    "discover-session",
+    "initialize-session",
+    "resolve-target"
+  ],
+  "skippedActivities": [],
+  "variables": {
+    "abort_completion": false,
+    "client_initial_activity": "scope-definition",
+    "client_planning_slug": "2026-08-17-meta-and-work-package-workflow-optimisation",
+    "client_session_index": "PD2H26",
+    "client_workflow_completed": false,
+    "component_path": ".",
+    "component_selection_needed": false,
+    "has_saved_state": false,
+    "host_binding_mismatch": false,
+    "host_repo_path": "/home/mike1/projects/dev/workflow-server",
+    "identifying_context": {},
+    "initiative_name": "meta-and-work-package-workflow-optimisation",
+    "is_monorepo": false,
+    "is_resuming": false,
+    "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation",
+    "resume_intent_requested": false,
+    "submodules": [],
+    "target_repo": "m2ux/workflow-server",
+    "target_workflow_id": "prism-evaluate",
+    "user_request": "Start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. Many operations that are agent-driven can be mechanised. For example, if the user provides a named component, an issue or a PR, a TypeScript or Python script can extract the repo name and match it against a mono-repo component purely mechanically without agent interaction — saving a lot of time and tokens. There are no doubt many other opportunities to do this. I want a report detailing any and all opportunities for optimisation of the meta and work-package workflows. Use the example provided as a guide but do not limit the report to it.",
+    "workflow_catalog": [
+      "cicd-pipeline-security-audit",
+      "codebase-wiki",
+      "midnight-system-review",
+      "plain-language",
+      "ponytail",
+      "prism",
+      "prism-audit",
+      "prism-evaluate",
+      "prism-update",
+      "remediate-vuln",
+      "requirements-refinement",
+      "substrate-node-security-audit",
+      "work-package",
+      "work-packages",
+      "workflow-authoring",
+      "workflow-design"
+    ],
+    "workflow_match_ambiguous": false
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-08-17T06:17:44.568Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "abort_completion": false,
+          "client_workflow_completed": false,
+          "component_path": ".",
+          "component_selection_needed": false,
+          "has_saved_state": false,
+          "host_binding_mismatch": false,
+          "is_monorepo": false,
+          "is_resuming": false,
+          "resume_intent_requested": false,
+          "submodules": [],
+          "user_request": "Start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. Many operations that are agent-driven can be mechanised. For example, if the user provides a named component, an issue or a PR, a TypeScript or Python script can extract the repo name and match it against a mono-repo component purely mechanically without agent interaction — saving a lot of time and tokens. There are no doubt many other opportunities to do this. I want a report detailing any and all opportunities for optimisation of the meta and work-package workflows. Use the example provided as a guide but do not limit the report to it.",
+          "workflow_match_ambiguous": false
+        }
+      },
+      "timestamp": "2026-08-17T06:17:44.568Z",
+      "type": "variables_seeded"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-08-17T06:18:21.345Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 106142,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-17T06:18:46.121Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 7947,
+        "delivery": "full",
+        "stepId": "resolve-host-repo",
+        "techniqueId": "version-control::resolve-host-repo"
+      },
+      "timestamp": "2026-08-17T06:18:46.121Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "resolve-host-repo"
+      },
+      "timestamp": "2026-08-17T06:18:46.121Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 10264,
+        "delivery": "full",
+        "stepId": "list-available-workflows",
+        "techniqueId": "workflow-engine::list-workflows"
+      },
+      "timestamp": "2026-08-17T06:18:46.121Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "list-available-workflows"
+      },
+      "timestamp": "2026-08-17T06:18:46.121Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 11661,
+        "delivery": "full",
+        "stepId": "match-target",
+        "techniqueId": "workflow-engine::match-target-workflow"
+      },
+      "timestamp": "2026-08-17T06:18:46.121Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "match-target"
+      },
+      "timestamp": "2026-08-17T06:18:46.121Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 10585,
+        "delivery": "full",
+        "stepId": "detect-resume-intent",
+        "techniqueId": "workflow-engine::detect-resume-intent"
+      },
+      "timestamp": "2026-08-17T06:18:46.121Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "detect-resume-intent"
+      },
+      "timestamp": "2026-08-17T06:18:46.121Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 11122,
+        "delivery": "full",
+        "stepId": "extract-context",
+        "techniqueId": "workflow-engine::extract-identifying-context"
+      },
+      "timestamp": "2026-08-17T06:18:46.121Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "extract-context"
+      },
+      "timestamp": "2026-08-17T06:18:46.121Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 11594,
+        "delivery": "full",
+        "stepId": "name-initiative",
+        "techniqueId": "workflow-engine::derive-initiative-name"
+      },
+      "timestamp": "2026-08-17T06:18:46.121Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "name-initiative"
+      },
+      "timestamp": "2026-08-17T06:18:46.121Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 1431,
+        "delivery": "full",
+        "resourceId": "meta/resume-intent-lexicon"
+      },
+      "timestamp": "2026-08-17T06:20:38.075Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "usage": {
+          "duration_ms": 172819,
+          "subagent_tokens": 79603,
+          "tool_uses": 12
+        }
+      },
+      "timestamp": "2026-08-17T06:21:39.611Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "target_repo",
+        "source": "variables_changed",
+        "value": "m2ux/workflow-server"
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "host_repo_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server"
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "host_binding_mismatch",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "workflow_catalog",
+        "source": "variables_changed",
+        "value": [
+          "cicd-pipeline-security-audit",
+          "codebase-wiki",
+          "midnight-system-review",
+          "plain-language",
+          "ponytail",
+          "prism",
+          "prism-audit",
+          "prism-evaluate",
+          "prism-update",
+          "remediate-vuln",
+          "requirements-refinement",
+          "substrate-node-security-audit",
+          "work-package",
+          "work-packages",
+          "workflow-authoring",
+          "workflow-design"
+        ]
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "target_workflow_id",
+        "source": "variables_changed",
+        "value": "prism-evaluate"
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "workflow_match_ambiguous",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "resume_intent_requested",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "identifying_context",
+        "source": "variables_changed",
+        "value": {}
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "initiative_name",
+        "source": "variables_changed",
+        "value": "meta-and-work-package-workflow-optimisation"
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "has_saved_state",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "resolve-host-repo"
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "list-available-workflows"
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "match-target"
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "detect-resume-intent"
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "extract-context"
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "name-initiative"
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "record-no-match"
+      },
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-08-17T06:21:57.125Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "chars": 50435,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-17T06:22:13.213Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "chars": 12531,
+        "delivery": "full",
+        "stepId": "start-or-resume-session",
+        "techniqueId": "workflow-engine::create-session"
+      },
+      "timestamp": "2026-08-17T06:22:13.213Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "stepId": "start-or-resume-session"
+      },
+      "timestamp": "2026-08-17T06:22:13.213Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "chars": 5997,
+        "delivery": "full",
+        "stepId": "derive-planning-slug",
+        "techniqueId": "version-control::initialize-folder"
+      },
+      "timestamp": "2026-08-17T06:23:02.537Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "stepId": "derive-planning-slug"
+      },
+      "timestamp": "2026-08-17T06:23:02.537Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "sessionIndex": "PD2H26",
+        "workflowId": "prism-evaluate"
+      },
+      "timestamp": "2026-08-17T06:23:19.586Z",
+      "type": "workflow_triggered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "usage": {
+          "duration_ms": 103199,
+          "subagent_tokens": 51790,
+          "tool_uses": 9
+        }
+      },
+      "timestamp": "2026-08-17T06:23:53.625Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-08-17T06:24:20.155Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_planning_slug",
+        "source": "variables_changed",
+        "value": "2026-08-17-meta-and-work-package-workflow-optimisation"
+      },
+      "timestamp": "2026-08-17T06:24:20.155Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_session_index",
+        "source": "variables_changed",
+        "value": "PD2H26"
+      },
+      "timestamp": "2026-08-17T06:24:20.155Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "planning_folder_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation"
+      },
+      "timestamp": "2026-08-17T06:24:20.155Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_initial_activity",
+        "source": "variables_changed",
+        "value": "scope-definition"
+      },
+      "timestamp": "2026-08-17T06:24:20.155Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "stepId": "derive-planning-slug"
+      },
+      "timestamp": "2026-08-17T06:24:20.155Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "stepId": "start-or-resume-session"
+      },
+      "timestamp": "2026-08-17T06:24:20.155Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-08-17T06:24:20.155Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "chars": 45650,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-17T06:24:52.333Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "chars": 5864,
+        "delivery": "full",
+        "stepId": "detect-monorepo",
+        "techniqueId": "version-control::detect-repo-type"
+      },
+      "timestamp": "2026-08-17T06:24:52.333Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "stepId": "detect-monorepo"
+      },
+      "timestamp": "2026-08-17T06:24:52.333Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "usage": {
+          "duration_ms": 85054,
+          "subagent_tokens": 44713,
+          "tool_uses": 7
+        }
+      },
+      "timestamp": "2026-08-17T06:25:56.143Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-08-17T06:26:16.786Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "is_monorepo",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-17T06:26:16.786Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "component_path",
+        "source": "variables_changed",
+        "value": "."
+      },
+      "timestamp": "2026-08-17T06:26:16.786Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "stepId": "announce-start"
+      },
+      "timestamp": "2026-08-17T06:26:16.786Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "stepId": "detect-monorepo"
+      },
+      "timestamp": "2026-08-17T06:26:16.786Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "stepId": "validate-binding-agreement"
+      },
+      "timestamp": "2026-08-17T06:26:16.786Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "stepId": "validate-git-tree"
+      },
+      "timestamp": "2026-08-17T06:26:16.786Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-08-17T06:26:16.786Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 39014,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-17T06:26:31.802Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 19906,
+        "delivery": "full",
+        "stepId": "dispatch-activity",
+        "techniqueId": "workflow-engine::dispatch-activity"
+      },
+      "timestamp": "2026-08-17T06:27:14.773Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "stepId": "dispatch-activity"
+      },
+      "timestamp": "2026-08-17T06:27:14.773Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 1535,
+        "delivery": "full",
+        "resourceId": "meta/planning-readme#progress-status-call-sites"
+      },
+      "timestamp": "2026-08-17T06:27:40.650Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 14975,
+        "delivery": "full",
+        "stepId": "continue-batched-worker",
+        "techniqueId": "workflow-engine::continue-batch"
+      },
+      "timestamp": "2026-08-17T06:27:41.276Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "stepId": "continue-batched-worker"
+      },
+      "timestamp": "2026-08-17T06:27:41.276Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 1612,
+        "delivery": "full",
+        "resourceId": "meta/planning-readme#status-vocabulary"
+      },
+      "timestamp": "2026-08-17T06:28:07.227Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 12933,
+        "delivery": "full",
+        "stepId": "present-yielded-checkpoint",
+        "techniqueId": "workflow-engine::present-checkpoint-to-user"
+      },
+      "timestamp": "2026-08-17T06:33:47.005Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "stepId": "present-yielded-checkpoint"
+      },
+      "timestamp": "2026-08-17T06:33:47.005Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "usage": {
+          "duration_ms": 488202,
+          "subagent_tokens": 87027,
+          "tool_uses": 22
+        }
+      },
+      "timestamp": "2026-08-17T06:43:30.182Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 5385,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-08-17T06:44:02.909Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 13710,
+        "delivery": "full",
+        "stepId": "resume-yielded-worker",
+        "techniqueId": "workflow-engine::resume-worker"
+      },
+      "timestamp": "2026-08-17T06:44:13.543Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "stepId": "resume-yielded-worker"
+      },
+      "timestamp": "2026-08-17T06:44:13.543Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 16022,
+        "delivery": "full",
+        "stepId": "commit-activity-artifacts",
+        "techniqueId": "workflow-engine::commit-and-persist"
+      },
+      "timestamp": "2026-08-17T06:47:26.970Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "stepId": "commit-activity-artifacts"
+      },
+      "timestamp": "2026-08-17T06:47:26.970Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 15399,
+        "delivery": "full",
+        "resourceId": "meta/planning-readme"
+      },
+      "timestamp": "2026-08-17T06:48:04.620Z",
+      "type": "resource_fetched"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "PD2H26",
+      "state": {
+        "agentId": "orchestrator",
+        "checkpointResponses": {
+          "scope-definition-confirm-scope": {
+            "effects": {
+              "variablesSet": {
+                "scope_confirmed": true
+              }
+            },
+            "optionId": "accept",
+            "respondedAt": "2026-08-17T06:43:10.000Z"
+          }
+        },
+        "completedActivities": [],
+        "condition": "",
+        "currentActivity": "scope-definition",
+        "currentTechnique": "",
+        "deliveredContent": {
+          "worker-00-scope-definition-a": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+            "bundle:variable-binding": "86e00a6d087f9e58",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:default-dimensions": "08706e45968f91c0",
+            "resource:default-dimensions#codebase": "57c8547305769121",
+            "resource:default-dimensions#custom-targets": "941cb148d62008ba",
+            "resource:default-dimensions#dimension-object-structure": "2292b63d01cd5d9d",
+            "resource:default-dimensions#mixed-targets": "0988bec6de2b79ae",
+            "technique:plan-evaluation::classify-target": "9816ee0b66dda8e9",
+            "technique:plan-evaluation::collect-scope": "f8f6f57dbf858453",
+            "technique:plan-evaluation::create-output-folder": "e6f8b617991dc1c6",
+            "technique:plan-evaluation::derive-dimensions": "dbde8e69b63768d7",
+            "technique:plan-evaluation::summarize-scope": "f7e8e7c7a25d2002"
+          }
+        },
+        "history": [
+          {
+            "timestamp": "2026-08-17T06:23:19.588Z",
+            "type": "workflow_started"
+          },
+          {
+            "data": {
+              "variables": {
+                "accepted_count": 0,
+                "dimensions_confirmed": false,
+                "gitnexus_available": false,
+                "pipeline_mode": "full-prism",
+                "resolution_requested": false,
+                "scope_confirmed": false,
+                "user_request": "Start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. Many operations that are agent-driven can be mechanised. For example, if the user provides a named component, an issue or a PR, a TypeScript or Python script can extract the repo name and match it against a mono-repo component purely mechanically without agent interaction — saving a lot of time and tokens. There are no doubt many other opportunities to do this. I want a report detailing any and all opportunities for optimisation of the meta and work-package workflows. Use the example provided as a guide but do not limit the report to it."
+              }
+            },
+            "timestamp": "2026-08-17T06:23:19.588Z",
+            "type": "variables_seeded"
+          },
+          {
+            "activity": "scope-definition",
+            "timestamp": "2026-08-17T06:29:14.011Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "chars": 50685,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-17T06:29:44.378Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "chars": 3467,
+              "delivery": "full",
+              "stepId": "collect-inputs",
+              "techniqueId": "plan-evaluation::collect-scope"
+            },
+            "timestamp": "2026-08-17T06:29:44.378Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "stepId": "collect-inputs"
+            },
+            "timestamp": "2026-08-17T06:29:44.378Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "chars": 2308,
+              "delivery": "full",
+              "stepId": "classify-target",
+              "techniqueId": "plan-evaluation::classify-target"
+            },
+            "timestamp": "2026-08-17T06:29:44.378Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "stepId": "classify-target"
+            },
+            "timestamp": "2026-08-17T06:29:44.378Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "chars": 2540,
+              "delivery": "full",
+              "stepId": "derive-dimensions",
+              "techniqueId": "plan-evaluation::derive-dimensions"
+            },
+            "timestamp": "2026-08-17T06:29:44.378Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "stepId": "derive-dimensions"
+            },
+            "timestamp": "2026-08-17T06:29:44.378Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "chars": 1672,
+              "delivery": "full",
+              "stepId": "create-output-directory",
+              "techniqueId": "plan-evaluation::create-output-folder"
+            },
+            "timestamp": "2026-08-17T06:29:44.378Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "stepId": "create-output-directory"
+            },
+            "timestamp": "2026-08-17T06:29:44.378Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "chars": 1985,
+              "delivery": "full",
+              "stepId": "summarize-scope",
+              "techniqueId": "plan-evaluation::summarize-scope"
+            },
+            "timestamp": "2026-08-17T06:29:44.378Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "stepId": "summarize-scope"
+            },
+            "timestamp": "2026-08-17T06:29:44.378Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "chars": 2397,
+              "delivery": "full",
+              "resourceId": "default-dimensions"
+            },
+            "timestamp": "2026-08-17T06:31:08.102Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-definition",
+            "checkpoint": "confirm-scope",
+            "timestamp": "2026-08-17T06:32:44.381Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "usage": {
+                "duration_ms": 222517,
+                "subagent_tokens": 71853,
+                "tool_uses": 18
+              }
+            },
+            "timestamp": "2026-08-17T06:33:45.851Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "scope-definition",
+            "checkpoint": "confirm-scope",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-08-17T06:43:10.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "scope_confirmed",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-17T06:43:10.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "chars": 6852,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-17T06:45:21.397Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "chars": 3467,
+              "delivery": "unchanged",
+              "stepId": "collect-inputs",
+              "techniqueId": "plan-evaluation::collect-scope"
+            },
+            "timestamp": "2026-08-17T06:45:21.397Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "chars": 2308,
+              "delivery": "unchanged",
+              "stepId": "classify-target",
+              "techniqueId": "plan-evaluation::classify-target"
+            },
+            "timestamp": "2026-08-17T06:45:21.397Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "chars": 2540,
+              "delivery": "unchanged",
+              "stepId": "derive-dimensions",
+              "techniqueId": "plan-evaluation::derive-dimensions"
+            },
+            "timestamp": "2026-08-17T06:45:21.397Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "chars": 1672,
+              "delivery": "unchanged",
+              "stepId": "create-output-directory",
+              "techniqueId": "plan-evaluation::create-output-folder"
+            },
+            "timestamp": "2026-08-17T06:45:21.397Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "chars": 1985,
+              "delivery": "unchanged",
+              "stepId": "summarize-scope",
+              "techniqueId": "plan-evaluation::summarize-scope"
+            },
+            "timestamp": "2026-08-17T06:45:21.397Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "bundled": true,
+              "chars": 627,
+              "delivery": "full",
+              "resourceId": "default-dimensions#codebase"
+            },
+            "timestamp": "2026-08-17T06:45:21.397Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "bundled": true,
+              "chars": 306,
+              "delivery": "full",
+              "resourceId": "default-dimensions#mixed-targets"
+            },
+            "timestamp": "2026-08-17T06:45:21.397Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "bundled": true,
+              "chars": 395,
+              "delivery": "full",
+              "resourceId": "default-dimensions#custom-targets"
+            },
+            "timestamp": "2026-08-17T06:45:21.397Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "worker-00-scope-definition-a",
+              "bundled": true,
+              "chars": 168,
+              "delivery": "full",
+              "resourceId": "default-dimensions#dimension-object-structure"
+            },
+            "timestamp": "2026-08-17T06:45:21.397Z",
+            "type": "resource_fetched"
+          }
+        ],
+        "repo": "m2ux/workflow-server",
+        "schemaVersion": 1,
+        "seq": 8,
+        "sessionIndex": "PD2H26",
+        "skippedActivities": [],
+        "startedAt": "2026-08-17T06:23:19.588Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1786949121,
+        "variables": {
+          "accepted_count": 0,
+          "dimensions_confirmed": false,
+          "gitnexus_available": false,
+          "pipeline_mode": "full-prism",
+          "resolution_requested": false,
+          "scope_confirmed": true,
+          "user_request": "Start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. Many operations that are agent-driven can be mechanised. For example, if the user provides a named component, an issue or a PR, a TypeScript or Python script can extract the repo name and match it against a mono-repo component purely mechanically without agent interaction — saving a lot of time and tokens. There are no doubt many other opportunities to do this. I want a report detailing any and all opportunities for optimisation of the meta and work-package workflows. Use the example provided as a guide but do not limit the report to it."
+        },
+        "workflowId": "prism-evaluate",
+        "workflowVersion": "1.3.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-08-17T06:23:19.586Z",
+      "triggeredFrom": {
+        "activityId": "initialize-session"
+      },
+      "workflowId": "prism-evaluate"
+    }
+  ],
+  "deliveredContent": {
+    "worker-00-discover-session-a": {
+      "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+      "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+      "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+      "resource:meta/resume-intent-lexicon": "702fd9d05d73ea59",
+      "technique:version-control::resolve-host-repo": "da0a8d216d72dbcd",
+      "technique:workflow-engine::derive-initiative-name": "bfbcf5bbb11aaaca",
+      "technique:workflow-engine::detect-resume-intent": "b98260c8b411f2d9",
+      "technique:workflow-engine::extract-identifying-context": "7900198316102095",
+      "technique:workflow-engine::list-workflows": "fb76525498c90f02",
+      "technique:workflow-engine::match-target-workflow": "41806d93ecb8056f"
+    },
+    "worker-01-initialize-session-a": {
+      "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+      "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+      "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+      "technique:inherited_inputs.items:13b9f9019e9b2d7b": "13b9f9019e9b2d7b",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:8523594312b4a179": "8523594312b4a179",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:b7415c0f0d1a9c70": "b7415c0f0d1a9c70",
+      "technique:version-control::initialize-folder": "6d42879983c06fbc",
+      "technique:workflow-engine::create-session": "d0fe7af461e03e40"
+    },
+    "worker-02-resolve-target-a": {
+      "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+      "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+      "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+      "technique:version-control::detect-repo-type": "12a6bff445fbf872"
+    },
+    "worker-03-dispatch-client-workflow-a": {
+      "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+      "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+      "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+      "resource:meta/planning-readme": "2b447d6bafa4a4dd",
+      "resource:meta/planning-readme#progress-status-call-sites": "ea2abfbf2468d8e1",
+      "resource:meta/planning-readme#status-vocabulary": "3b0737f9e37953f6",
+      "technique:inherited_inputs.items:597a0c34be634888": "597a0c34be634888",
+      "technique:inherited_inputs.items:f351d5762d78fa43": "f351d5762d78fa43",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:61351655c5970c45": "61351655c5970c45",
+      "technique:inherited_inputs:ae2b09344c726b6f": "ae2b09344c726b6f",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:5141c705e0a4e43b": "5141c705e0a4e43b",
+      "technique:rules:86b379f1841e9cae": "86b379f1841e9cae",
+      "technique:rules:a96f40559b9864bb": "a96f40559b9864bb",
+      "technique:rules:be94a1e5beea0046": "be94a1e5beea0046",
+      "technique:rules:c2ef3a53bc169006": "c2ef3a53bc169006",
+      "technique:workflow-engine::commit-and-persist": "e92365ff7814212c",
+      "technique:workflow-engine::continue-batch": "c161bc70199c54fd",
+      "technique:workflow-engine::dispatch-activity": "6cbc94bcabc9a417",
+      "technique:workflow-engine::present-checkpoint-to-user": "f5a407ae812a9276",
+      "technique:workflow-engine::resume-worker": "32d4059bf337dd44"
+    }
+  },
+  "repo": "m2ux/workflow-server"
+}
