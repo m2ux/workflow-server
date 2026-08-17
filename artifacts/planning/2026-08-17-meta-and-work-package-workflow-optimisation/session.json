@@ -975,16 +975,102 @@
         },
         "completedActivities": [
           "scope-definition",
-          "dimension-planning"
+          "dimension-planning",
+          "execute-analysis"
         ],
-        "condition": "dimensions_confirmed == true",
-        "currentActivity": "execute-analysis",
+        "condition": "isDefault: consolidate-report",
+        "currentActivity": "consolidate-report",
         "currentTechnique": "",
         "declaredArtifacts": [
           {
             "id": "evaluation_plan",
             "name": "evaluation-plan.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/01-evaluation-plan.md"
+          },
+          {
+            "id": "mech-analysis-plan",
+            "name": "Mechanisation Potential analysis plan",
+            "path": "mechanisation-potential/analysis-plan.md"
+          },
+          {
+            "id": "mech-structural-analysis",
+            "name": "Mechanisation Potential structural analysis",
+            "path": "mechanisation-potential/structural-analysis.md"
+          },
+          {
+            "id": "mech-adversarial-analysis",
+            "name": "Mechanisation Potential adversarial analysis",
+            "path": "mechanisation-potential/adversarial-analysis.md"
+          },
+          {
+            "id": "mech-synthesis",
+            "name": "Mechanisation Potential synthesis",
+            "path": "mechanisation-potential/synthesis.md"
+          },
+          {
+            "id": "mech-report",
+            "name": "Mechanisation Potential report",
+            "path": "mechanisation-potential/REPORT.md"
+          },
+          {
+            "id": "mech-definitive-findings",
+            "name": "Mechanisation Potential definitive findings",
+            "path": "mechanisation-potential/DEFINITIVE-FINDINGS.md"
+          },
+          {
+            "id": "mech-run-manifest",
+            "name": "Mechanisation Potential run manifest",
+            "path": "mechanisation-potential/RUN-MANIFEST.json"
+          },
+          {
+            "id": "portfolio-claim",
+            "name": "Lens 07 claim — Change Economics",
+            "path": "dimensions/portfolio-claim.md"
+          },
+          {
+            "id": "portfolio-scarcity",
+            "name": "Lens 08 scarcity — Change Economics",
+            "path": "dimensions/portfolio-scarcity.md"
+          },
+          {
+            "id": "portfolio-degradation",
+            "name": "Lens 10 degradation — Redundant Work",
+            "path": "dimensions/portfolio-degradation.md"
+          },
+          {
+            "id": "portfolio-sdl-coupling",
+            "name": "Lens 14 sdl-coupling — Orchestration Topology",
+            "path": "dimensions/portfolio-sdl-coupling.md"
+          },
+          {
+            "id": "portfolio-sdl-abstraction",
+            "name": "Lens 15 sdl-abstraction — Context Economy",
+            "path": "dimensions/portfolio-sdl-abstraction.md"
+          },
+          {
+            "id": "portfolio-optimize",
+            "name": "Lens 20 optimize — Context Economy",
+            "path": "dimensions/portfolio-optimize.md"
+          },
+          {
+            "id": "portfolio-reachability",
+            "name": "Lens 30 reachability — Redundant Work",
+            "path": "dimensions/portfolio-reachability.md"
+          },
+          {
+            "id": "portfolio-architect",
+            "name": "Lens 51 architect — Orchestration Topology",
+            "path": "dimensions/portfolio-architect.md"
+          },
+          {
+            "id": "portfolio-synthesis",
+            "name": "Portfolio synthesis across the eight lenses",
+            "path": "dimensions/portfolio-synthesis.md"
+          },
+          {
+            "id": "portfolio-run-manifest",
+            "name": "Portfolio group run manifest",
+            "path": "dimensions/RUN-MANIFEST.json"
           }
         ],
         "deliveredContent": {
@@ -1033,6 +1119,24 @@
             "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
             "technique:execute-analysis::read-run-manifest": "6c347adbdda15913",
             "technique:workflow-engine::handle-sub-workflow": "035bfec615e79d50"
+          },
+          "worker-consolidate-report-a": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+            "bundle:variable-binding": "86e00a6d087f9e58",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:evaluation-plan-template": "bcff2fe503621d3e",
+            "resource:evaluation-report-template#evaluation-report-template": "dd2a94ec88a26202",
+            "resource:meta/writing-register": "8507cccabfe3996e",
+            "resource:prism-evaluate/README#planning-artifact-to-guide-map": "639df678ad1e80c1",
+            "technique:compose-evaluation-report::compose-report": "ab7d1a84d64efdc9",
+            "technique:compose-evaluation-report::extract-findings": "331c295124c535ba",
+            "technique:compose-evaluation-report::identify-patterns": "3dc04be2d442b3ac",
+            "technique:compose-evaluation-report::verify-report": "77c982e682807974",
+            "technique:verify-artifact-conforms": "b52408b38bb583c7"
           },
           "worker-execute-analysis-b": {
             "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
@@ -2096,11 +2200,414 @@
             },
             "timestamp": "2026-08-17T08:36:03.036Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "execute-analysis",
+            "timestamp": "2026-08-17T08:37:51.781Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "name": "completed_analyses",
+              "source": "variables_changed",
+              "value": [
+                {
+                  "definitive_findings_path": "mechanisation-potential/DEFINITIVE-FINDINGS.md",
+                  "dimension": "Mechanisation Potential",
+                  "output_subdir": "mechanisation-potential/",
+                  "pipeline_mode": "full-prism",
+                  "report_path": "mechanisation-potential/REPORT.md",
+                  "status": "complete"
+                },
+                {
+                  "definitive_findings_path": null,
+                  "dimension": "Context Economy, Orchestration Topology, Redundant Work, Change Economics",
+                  "output_subdir": "dimensions/",
+                  "pipeline_mode": "portfolio",
+                  "report_path": "dimensions/portfolio-synthesis.md",
+                  "status": "complete"
+                }
+              ]
+            },
+            "timestamp": "2026-08-17T08:37:51.781Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "name": "all_artifact_paths",
+              "source": "variables_changed",
+              "value": [
+                "mechanisation-potential/analysis-plan.md",
+                "mechanisation-potential/structural-analysis.md",
+                "mechanisation-potential/adversarial-analysis.md",
+                "mechanisation-potential/synthesis.md",
+                "mechanisation-potential/REPORT.md",
+                "mechanisation-potential/DEFINITIVE-FINDINGS.md",
+                "mechanisation-potential/RUN-MANIFEST.json",
+                "dimensions/portfolio-claim.md",
+                "dimensions/portfolio-scarcity.md",
+                "dimensions/portfolio-degradation.md",
+                "dimensions/portfolio-sdl-coupling.md",
+                "dimensions/portfolio-sdl-abstraction.md",
+                "dimensions/portfolio-optimize.md",
+                "dimensions/portfolio-reachability.md",
+                "dimensions/portfolio-architect.md",
+                "dimensions/portfolio-synthesis.md",
+                "dimensions/RUN-MANIFEST.json"
+              ]
+            },
+            "timestamp": "2026-08-17T08:37:51.781Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "stepId": "verify-preconditions"
+            },
+            "timestamp": "2026-08-17T08:37:51.781Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "stepId": "log-execution-plan"
+            },
+            "timestamp": "2026-08-17T08:37:51.781Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "stepId": "prepare-triggers"
+            },
+            "timestamp": "2026-08-17T08:37:51.781Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "stepId": "set-trigger-context#mechanisation-potential"
+            },
+            "timestamp": "2026-08-17T08:37:51.781Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "stepId": "trigger-prism#mechanisation-potential"
+            },
+            "timestamp": "2026-08-17T08:37:51.781Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "stepId": "read-run-manifest#mechanisation-potential"
+            },
+            "timestamp": "2026-08-17T08:37:51.781Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "stepId": "set-trigger-context#dimensions"
+            },
+            "timestamp": "2026-08-17T08:37:51.781Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "stepId": "trigger-prism#dimensions"
+            },
+            "timestamp": "2026-08-17T08:37:51.781Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "stepId": "read-run-manifest#dimensions"
+            },
+            "timestamp": "2026-08-17T08:37:51.781Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "consolidate-report",
+            "timestamp": "2026-08-17T08:37:51.781Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 66952,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-17T08:38:25.183Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 5626,
+              "delivery": "full",
+              "stepId": "extract-findings",
+              "techniqueId": "compose-evaluation-report::extract-findings"
+            },
+            "timestamp": "2026-08-17T08:38:25.184Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "stepId": "extract-findings"
+            },
+            "timestamp": "2026-08-17T08:38:25.184Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 5053,
+              "delivery": "full",
+              "stepId": "identify-patterns",
+              "techniqueId": "compose-evaluation-report::identify-patterns"
+            },
+            "timestamp": "2026-08-17T08:38:25.184Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "stepId": "identify-patterns"
+            },
+            "timestamp": "2026-08-17T08:38:25.184Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 5604,
+              "delivery": "full",
+              "stepId": "compose-report",
+              "techniqueId": "compose-evaluation-report::compose-report"
+            },
+            "timestamp": "2026-08-17T08:38:25.184Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "stepId": "compose-report"
+            },
+            "timestamp": "2026-08-17T08:38:25.184Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 7103,
+              "delivery": "full",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "verify-artifact-conforms"
+            },
+            "timestamp": "2026-08-17T08:38:25.184Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "stepId": "verify-artifact-conformance"
+            },
+            "timestamp": "2026-08-17T08:38:25.184Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 4875,
+              "delivery": "full",
+              "stepId": "verify-report",
+              "techniqueId": "compose-evaluation-report::verify-report"
+            },
+            "timestamp": "2026-08-17T08:38:25.184Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "stepId": "verify-report"
+            },
+            "timestamp": "2026-08-17T08:38:25.184Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 3018,
+              "delivery": "full",
+              "resourceId": "evaluation-report-template#evaluation-report-template"
+            },
+            "timestamp": "2026-08-17T08:39:36.507Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 1986,
+              "delivery": "full",
+              "resourceId": "meta/writing-register"
+            },
+            "timestamp": "2026-08-17T08:39:36.900Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 1546,
+              "delivery": "full",
+              "resourceId": "prism-evaluate/README#planning-artifact-to-guide-map"
+            },
+            "timestamp": "2026-08-17T08:40:33.957Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 2066,
+              "delivery": "full",
+              "resourceId": "evaluation-plan-template"
+            },
+            "timestamp": "2026-08-17T08:53:51.156Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 4627,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-17T08:54:52.376Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 5626,
+              "delivery": "unchanged",
+              "stepId": "extract-findings",
+              "techniqueId": "compose-evaluation-report::extract-findings"
+            },
+            "timestamp": "2026-08-17T08:54:52.376Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 5053,
+              "delivery": "unchanged",
+              "stepId": "identify-patterns",
+              "techniqueId": "compose-evaluation-report::identify-patterns"
+            },
+            "timestamp": "2026-08-17T08:54:52.376Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 5604,
+              "delivery": "unchanged",
+              "stepId": "compose-report",
+              "techniqueId": "compose-evaluation-report::compose-report"
+            },
+            "timestamp": "2026-08-17T08:54:52.376Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 7103,
+              "delivery": "unchanged",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "verify-artifact-conforms"
+            },
+            "timestamp": "2026-08-17T08:54:52.376Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "chars": 4875,
+              "delivery": "unchanged",
+              "stepId": "verify-report",
+              "techniqueId": "compose-evaluation-report::verify-report"
+            },
+            "timestamp": "2026-08-17T08:54:52.376Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "bundled": true,
+              "chars": 1907,
+              "delivery": "unchanged",
+              "resourceId": "meta/writing-register"
+            },
+            "timestamp": "2026-08-17T08:54:52.376Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "bundled": true,
+              "chars": 2897,
+              "delivery": "unchanged",
+              "resourceId": "evaluation-report-template#evaluation-report-template"
+            },
+            "timestamp": "2026-08-17T08:54:52.376Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "worker-consolidate-report-a",
+              "usage": {
+                "duration_ms": 1056931,
+                "subagent_tokens": 302232,
+                "tool_uses": 50
+              }
+            },
+            "timestamp": "2026-08-17T08:56:04.422Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 25,
+        "seq": 33,
         "sessionIndex": "PD2H26",
         "skippedActivities": [],
         "startedAt": "2026-08-17T06:23:19.588Z",
@@ -3124,9 +3631,46 @@
             "workflowId": "prism"
           }
         ],
-        "ts": 1786955763,
+        "ts": 1786956964,
         "variables": {
           "accepted_count": 0,
+          "all_artifact_paths": [
+            "mechanisation-potential/analysis-plan.md",
+            "mechanisation-potential/structural-analysis.md",
+            "mechanisation-potential/adversarial-analysis.md",
+            "mechanisation-potential/synthesis.md",
+            "mechanisation-potential/REPORT.md",
+            "mechanisation-potential/DEFINITIVE-FINDINGS.md",
+            "mechanisation-potential/RUN-MANIFEST.json",
+            "dimensions/portfolio-claim.md",
+            "dimensions/portfolio-scarcity.md",
+            "dimensions/portfolio-degradation.md",
+            "dimensions/portfolio-sdl-coupling.md",
+            "dimensions/portfolio-sdl-abstraction.md",
+            "dimensions/portfolio-optimize.md",
+            "dimensions/portfolio-reachability.md",
+            "dimensions/portfolio-architect.md",
+            "dimensions/portfolio-synthesis.md",
+            "dimensions/RUN-MANIFEST.json"
+          ],
+          "completed_analyses": [
+            {
+              "definitive_findings_path": "mechanisation-potential/DEFINITIVE-FINDINGS.md",
+              "dimension": "Mechanisation Potential",
+              "output_subdir": "mechanisation-potential/",
+              "pipeline_mode": "full-prism",
+              "report_path": "mechanisation-potential/REPORT.md",
+              "status": "complete"
+            },
+            {
+              "definitive_findings_path": null,
+              "dimension": "Context Economy, Orchestration Topology, Redundant Work, Change Economics",
+              "output_subdir": "dimensions/",
+              "pipeline_mode": "portfolio",
+              "report_path": "dimensions/portfolio-synthesis.md",
+              "status": "complete"
+            }
+          ],
           "dimension_plan": [
             {
               "analysis_focus": "Evaluate the mechanisation potential of agent-executed technique prose in workflows/meta (150 technique files, ~34,900 words) and workflows/work-package (112 files, ~66,300 words): find every protocol step that is a deterministic procedure a script or server tool could compute. Use repo/component/issue/PR coordinate resolution (version-control::resolve-host-repo, monorepo component matching) as guide, not boundary; examine also path derivation, repo- and project-type detection, artifact link and anchor checking, sync-progress-status Progress-table writes, git and worktree state checks, classification steps that are fixed decision tables, and artifact format and schema validation. Judge each against the available surface: 16 registered MCP tools, all session control-plane, no domain-computation tool; 12,343 LOC in src/; 26 check-*.ts guards reachable only as CI. For each candidate, test whether the procedure is genuinely deterministic or whether the prose hides a judgement call.",
