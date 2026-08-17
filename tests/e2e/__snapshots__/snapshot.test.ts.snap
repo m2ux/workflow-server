@@ -24,11 +24,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
     {
       "activity": "start-work-package",
       "artifacts": [
-        "prior-feedback-triage.md",
+        "prior-feedback-triage.json",
         "README.md",
       ],
       "artifactsWritten": [
-        "01-prior-feedback-triage.md",
+        "01-prior-feedback-triage.json",
         "01-README.md",
       ],
       "checkpoints": [
@@ -115,9 +115,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
+        "codebase-comprehension.md",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
+        "15-codebase-comprehension.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -130,8 +132,10 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         "initial-deep-dive",
         "update-artifact-initial",
         "revise-initial-questions",
+        "record-log-initial",
         "analyse-challenge-pass",
         "update-artifact",
+        "record-log",
       ],
       "unresolved": [],
     },
@@ -221,11 +225,11 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "debt-ledger.md",
+        "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-debt-ledger.md",
+        "09-debt-ledger.json",
         "09-lean-change.md",
       ],
       "checkpoints": [
@@ -463,11 +467,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
     {
       "activity": "start-work-package",
       "artifacts": [
-        "prior-feedback-triage.md",
+        "prior-feedback-triage.json",
         "README.md",
       ],
       "artifactsWritten": [
-        "01-prior-feedback-triage.md",
+        "01-prior-feedback-triage.json",
         "01-README.md",
       ],
       "checkpoints": [
@@ -554,9 +558,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
+        "codebase-comprehension.md",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
+        "15-codebase-comprehension.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -569,8 +575,10 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         "initial-deep-dive",
         "update-artifact-initial",
         "revise-initial-questions",
+        "record-log-initial",
         "analyse-challenge-pass",
         "update-artifact",
+        "record-log",
       ],
       "unresolved": [],
     },
@@ -724,11 +732,11 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "debt-ledger.md",
+        "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-debt-ledger.md",
+        "09-debt-ledger.json",
         "09-lean-change.md",
       ],
       "checkpoints": [
@@ -969,11 +977,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
     {
       "activity": "start-work-package",
       "artifacts": [
-        "prior-feedback-triage.md",
+        "prior-feedback-triage.json",
         "README.md",
       ],
       "artifactsWritten": [
-        "01-prior-feedback-triage.md",
+        "01-prior-feedback-triage.json",
         "01-README.md",
       ],
       "checkpoints": [
@@ -1060,9 +1068,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
+        "codebase-comprehension.md",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
+        "15-codebase-comprehension.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -1075,8 +1085,10 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         "initial-deep-dive",
         "update-artifact-initial",
         "revise-initial-questions",
+        "record-log-initial",
         "analyse-challenge-pass",
         "update-artifact",
+        "record-log",
       ],
       "unresolved": [],
     },
@@ -1258,11 +1270,11 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "debt-ledger.md",
+        "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-debt-ledger.md",
+        "09-debt-ledger.json",
         "09-lean-change.md",
       ],
       "checkpoints": [
@@ -1502,11 +1514,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
     {
       "activity": "start-work-package",
       "artifacts": [
-        "prior-feedback-triage.md",
+        "prior-feedback-triage.json",
         "README.md",
       ],
       "artifactsWritten": [
-        "01-prior-feedback-triage.md",
+        "01-prior-feedback-triage.json",
         "01-README.md",
       ],
       "checkpoints": [
@@ -1593,9 +1605,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
+        "codebase-comprehension.md",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
+        "15-codebase-comprehension.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -1608,8 +1622,10 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         "initial-deep-dive",
         "update-artifact-initial",
         "revise-initial-questions",
+        "record-log-initial",
         "analyse-challenge-pass",
         "update-artifact",
+        "record-log",
       ],
       "unresolved": [],
     },
@@ -1751,11 +1767,11 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "debt-ledger.md",
+        "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-debt-ledger.md",
+        "09-debt-ledger.json",
         "09-lean-change.md",
       ],
       "checkpoints": [
@@ -1993,11 +2009,11 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
     {
       "activity": "start-work-package",
       "artifacts": [
-        "prior-feedback-triage.md",
+        "prior-feedback-triage.json",
         "README.md",
       ],
       "artifactsWritten": [
-        "01-prior-feedback-triage.md",
+        "01-prior-feedback-triage.json",
         "01-README.md",
       ],
       "checkpoints": [],
@@ -2059,9 +2075,11 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
+        "codebase-comprehension.md",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
+        "15-codebase-comprehension.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -2074,8 +2092,10 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
         "initial-deep-dive",
         "update-artifact-initial",
         "revise-initial-questions",
+        "record-log-initial",
         "analyse-challenge-pass",
         "update-artifact",
+        "record-log",
       ],
       "unresolved": [],
     },
@@ -2155,11 +2175,11 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "debt-ledger.md",
+        "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-debt-ledger.md",
+        "09-debt-ledger.json",
         "09-lean-change.md",
       ],
       "checkpoints": [],
@@ -2366,11 +2386,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
     {
       "activity": "start-work-package",
       "artifacts": [
-        "prior-feedback-triage.md",
+        "prior-feedback-triage.json",
         "README.md",
       ],
       "artifactsWritten": [
-        "01-prior-feedback-triage.md",
+        "01-prior-feedback-triage.json",
         "01-README.md",
       ],
       "checkpoints": [
@@ -2457,9 +2477,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "activity": "codebase-comprehension",
       "artifacts": [
         "{codebase_area}.md",
+        "codebase-comprehension.md",
       ],
       "artifactsWritten": [
         "15-codebase_area.md",
+        "15-codebase-comprehension.md",
       ],
       "checkpoints": [],
       "manifestStatus": "warning",
@@ -2472,8 +2494,10 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         "initial-deep-dive",
         "update-artifact-initial",
         "revise-initial-questions",
+        "record-log-initial",
         "analyse-challenge-pass",
         "update-artifact",
+        "record-log",
       ],
       "unresolved": [],
     },
@@ -2563,11 +2587,11 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
     {
       "activity": "lean-coding-audit",
       "artifacts": [
-        "debt-ledger.md",
+        "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
-        "09-debt-ledger.md",
+        "09-debt-ledger.json",
         "09-lean-change.md",
       ],
       "checkpoints": [

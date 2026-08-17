@@ -11,11 +11,11 @@ export type TechniquesReference = z.infer<typeof TechniquesReferenceSchema>;
 
 // Hybrid technique bundling (#189 C1c) — optional per-activity override on the automatic,
 // context-derived eager bundling get_activity performs for EVERY activity. get_activity inlines
-// the composed content of the activity's small, ungated step-bound techniques under a
-// `step_techniques` map, sized to a cumulative budget derived from the caller's `context_tokens`.
-// `maxChars` is an explicit per-technique size cap layered on that budget; `maxChars: 0` opts the
-// activity out of eager bundling entirely. Gated steps (a `when`/`condition` on the step or an
-// enclosing loop) always stay lazy via get_technique.
+// the composed content of the activity's small step-bound techniques under a `step_techniques` map,
+// sized to a cumulative budget derived from the caller's `context_tokens`. `maxChars` is an explicit
+// per-technique size cap layered on that budget; `maxChars: 0` opts the activity out of eager
+// bundling entirely. A step whose gate has no fixed answer at delivery time — it reads a variable
+// this activity produces, or one absent from the bag — stays lazy via get_technique.
 export const BundleTechniquesSchema = z.object({
   maxChars: z.number().int().nonnegative().describe('Per-technique character cap layered on the server-derived per-activity eager-delivery budget: a step technique whose composed wire form exceeds this is not inlined and is fetched with get_technique { step_id }. Set to 0 to opt this activity out of eager step-technique bundling entirely.'),
 }).strict();
@@ -284,7 +284,7 @@ export const ActivitySchema = z.object({
   techniques: TechniquesReferenceSchema.optional(),
 
   // Opt-in hybrid bundling of step-bound techniques into get_activity (#166 B11).
-  bundleTechniques: BundleTechniquesSchema.optional().describe('Opt-in hybrid bundling: get_activity inlines each ungated step technique whose composed wire form is at most maxChars; larger and gated ones remain lazy-fetched via get_technique. Bundled deliveries are recorded as technique_bundled history events and satisfy the manifest fidelity check.'),
+  bundleTechniques: BundleTechniquesSchema.optional().describe('Opt-in hybrid bundling: get_activity inlines each step technique whose composed wire form is at most maxChars and whose gate answers true at activity open; larger ones, and those whose gate has no answer yet, remain lazy-fetched via get_technique. Bundled deliveries are recorded as technique_bundled history events and satisfy the manifest fidelity check.'),
 
   // Execution — the single ordered list of kind-tagged steps (technique | action | checkpoint | loop).
   // Checkpoints are inline kind:checkpoint steps and loops are compound kind:loop steps: there are no

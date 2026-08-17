@@ -213,12 +213,30 @@ Stdout is one JSON object with per-activity fresh/resume characters and the aggr
 
 [`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts) measures payload-char and history/ledger cost for a fixed headless walk (`work-package` / e2e `skip-optional`), comparing `context_mode: fresh` vs `persistent` and resource reference delivery. It reuses the e2e harness/walker and probes `get_resource` for linked + hot templates (the robot walker does not call `get_resource` on its own).
 
-By default each run compares against the frozen pre-optimisation reference
-[`scripts/fixtures/token-benchmark-a0-reference.json`](../scripts/fixtures/token-benchmark-a0-reference.json)
-(A0: fresh, recorded 2026-07-16 against `workflows@a1409d5b`). Stderr prints a
+By default each run compares against the committed baseline
+[`scripts/fixtures/token-benchmark-baseline.json`](../scripts/fixtures/token-benchmark-baseline.json)
+(fresh mode, recorded 2026-08-17 against `workflows@34cd5429`). Stderr prints a
 compact scorecard; stdout JSON includes `vsReference` with absolute/percent deltas
-and a **deliveryCostIndex** (A0 = 100, lower is better — sum of activity + workflow
-+ resource + technique chars).
+and a **deliveryCostIndex** (baseline = 100, lower is better — sum of activity +
+workflow + resource + technique chars).
+
+#### The gate runs on every pull request
+
+The [Verify](../.github/workflows/verify.yml) workflow runs `--gate` at the 1% default
+against the pinned corpus. No guard can measure this, because delivery cost is a
+property of a walk rather than of a file — so until the job existed, delivery rose
+31.3% in 32 days with nothing reporting it.
+
+**A definition change that adds delivery fails the gate, and that is the gate working.**
+Pricing corpus growth at merge is the point. When the increase is wanted:
+
+1. Confirm it — a new activity or a widened contract legitimately costs characters.
+2. Re-record the fixture from a `--no-compare` run on the same corpus commit, in the
+   same commit as the change.
+3. Say in the fixture's `description` what the corpus gained for the characters.
+
+A fixture recorded against a different corpus makes ordinary authoring read as a
+regression, which is how a gate stops being run at all.
 
 #### A persistent-only comparison is not a valid ship gate
 
@@ -240,8 +258,8 @@ measurement of the reference-delivery win, never the gate.
 WORKFLOWS_DIR=/path/to/workflows npm run --silent bench:token -- \
   --label=AFTER --context-mode=fresh --gate --max-regression-pct=1
 
-# Baseline (full redelivery) — expect deliveryCostIndex ≈ 100
-npm run --silent bench:token -- --label=A0 --context-mode=fresh
+# Re-record the baseline (same corpus commit as the change that moved it)
+npm run --silent bench:token -- --label=baseline --context-mode=fresh --no-compare
 
 # Supplementary: the reference-delivery win. Banner-warned as cross-mode, not a gate.
 npm run --silent bench:token -- --label=opt --context-mode=persistent
@@ -374,6 +392,27 @@ than as six unrelated regressions. Bump it in the same commit that bumps the sub
 npm run test:ci -- -u      # re-baseline the walk
 npm run baseline:stamp     # record the corpus commit it was baselined against
 ```
+
+The binding-fidelity triage carries the same coupling: its 69 verdicts are judgements about
+definitions as they stood at `corpusSha`. The guard prints how far the corpus has moved since,
+without failing on it — a verdict usually survives edits elsewhere, and an entry whose finding no
+longer occurs is already reported by name as stale.
+
+### Sessions in flight
+
+A definition edit reaches the runs already walking that workflow. Their variable bags were seeded
+from the declarations on disk when they opened, so a declaration added since is absent until they
+resume: on resume the server seeds what the bag lacks and re-stamps the recorded version. What that
+does *not* cover is a run part-way through an activity whose steps changed under it.
+
+Count them before landing:
+
+```bash
+npm run sessions:census -- --workflow work-package --status running --list
+```
+
+Zero means the edit reaches nothing in flight. A non-zero count is the set of runs that will pick it
+up, and the `--list` output names each one's folder, recorded version and current activity.
 
 ## Branch Structure
 

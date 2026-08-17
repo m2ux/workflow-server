@@ -6,16 +6,22 @@
  * technique-linked resources plus a fixed hot-template set on every `get_activity`
  * (cross-activity resource repeat tax). Prints one JSON metrics object to stdout.
  *
- * By default, stdout also includes `vsReference`: relative deltas against the frozen
- * pre-optimisation A0 fixture (`scripts/fixtures/token-benchmark-a0-reference.json`).
- * A compact scorecard is written to stderr.
+ * By default, stdout also includes `vsReference`: relative deltas against the committed
+ * baseline fixture (`scripts/fixtures/token-benchmark-baseline.json`). A compact
+ * scorecard is written to stderr.
+ *
+ * `--gate` is what the Verify workflow runs, at the 1% default. A definition change that
+ * adds delivery is therefore priced at merge: confirm the increase is wanted, re-record the
+ * fixture from a `--no-compare` run in the same commit, and say in the description what the
+ * corpus gained. The threshold is meaningful only against a fixture recorded on the corpus
+ * commit under review — a stale one makes ordinary authoring read as a regression.
  *
  * Usage (from a server checkout with `node_modules` and a `workflows/` worktree):
  *
- *   npm run bench:token -- --label=A0 --context-mode=fresh
+ *   npm run bench:token -- --label=check --context-mode=fresh --gate
  *   npm run bench:token -- --label=opt --context-mode=persistent
  *   WORKFLOWS_DIR=/path/to/workflows npm run bench:token -- \
- *     --label=A3 --context-mode=persistent --server-root=$PWD
+ *     --label=rerecord --context-mode=fresh --no-compare --server-root=$PWD
  *
  * Flags:
  *   --workflow=<id>            Workflow to walk (default: work-package). Recorded in the output; a
@@ -24,7 +30,7 @@
  *   --context-mode=fresh|persistent   Forced on start_session (default: fresh)
  *   --agent-id=<string>        Forced agent_id / ledger key (default: bench-solo)
  *   --server-root=<path>       Server checkout root (default: cwd)
- *   --reference=<path>         A0 fixture path (default: <server-root>/scripts/fixtures/…)
+ *   --reference=<path>         Baseline fixture path (default: <server-root>/scripts/fixtures/…)
  *   --no-compare               Skip vs-reference scorecard
  *   --gate                     Fail (exit 3) on a delivery-char regression beyond the threshold
  *   --max-regression-pct=<n>   Gate threshold in percent (default: 1)
@@ -164,7 +170,7 @@ const HOT_RESOURCES = [
   'review-mode#review-type-selection',
 ] as const;
 
-const DEFAULT_REFERENCE = 'scripts/fixtures/token-benchmark-a0-reference.json';
+const DEFAULT_REFERENCE = 'scripts/fixtures/token-benchmark-baseline.json';
 
 /** Default `--gate` threshold: total delivery chars may not regress by more than this percent. */
 const DEFAULT_MAX_REGRESSION_PCT = 1;
@@ -291,7 +297,7 @@ function formatPct(deltaPct: number | null): string {
 function writeScorecard(vs: VsReference, contextMode: ContextMode, corpusNote?: string): void {
   const lines: string[] = [
     '',
-    `vs ${vs.referenceLabel} (pre-optimisation reference) · ${contextMode}-mode · deliveryCostIndex ${vs.deliveryCostIndex.relative} (A0 = 100, lower is better)`,
+    `vs ${vs.referenceLabel} · ${contextMode}-mode · deliveryCostIndex ${vs.deliveryCostIndex.relative} (baseline = 100, lower is better)`,
     '─'.repeat(72),
   ];
   if (!vs.modeMatched) lines.push(`  ⚠ NOT A VALID GATE — ${vs.caveat}`, '');

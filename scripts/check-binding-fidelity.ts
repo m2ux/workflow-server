@@ -60,6 +60,7 @@ import { injectCheckpointFragmentBodies, resolveCheckpointFragment } from '../sr
 import { fragmentsLookupSync } from './fragments-index.js';
 import { assertScanned } from './workflows-root.js';
 import { findingKey, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
+import { spawnSync } from 'node:child_process';
 
 // Resolve paths from this file's own URL (reliable under both tsx CLI and the vitest runner,
 // where import.meta.dirname is not populated).
@@ -747,6 +748,29 @@ export function loadTriage(): TriageFile {
   return JSON.parse(readFileSync(TRIAGE, 'utf-8')) as TriageFile;
 }
 
+/**
+ * How far the corpus has moved since these verdicts were made, when that can be established.
+ *
+ * Each entry is a human judgement about a definition as it stood at `corpusSha`. Nothing here fails
+ * on drift — a verdict usually survives edits elsewhere in the corpus, and a stale entry is already
+ * reported as a finding by name. What drift does mean is that the file's authority is older than the
+ * corpus, which the reader can only weigh if the guard says so.
+ */
+export function triageStampNote(corpusSha: string, root: string = ROOT): string | null {
+  if (!corpusSha) return null;
+  const head = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf-8' });
+  if (head.status !== 0) return null;
+  const current = head.stdout.trim();
+  if (!current || current === corpusSha) return null;
+  const behind = spawnSync(
+    'git', ['-C', root, 'rev-list', '--count', `${corpusSha}..${current}`], { encoding: 'utf-8' },
+  );
+  const commits = behind.status === 0 ? behind.stdout.trim() : '';
+  const distance = commits && commits !== '0' ? ` — ${commits} corpus commit(s) since` : '';
+  return `triage verdicts were made against corpus ${corpusSha.slice(0, 12)}, `
+    + `the checkout is at ${current.slice(0, 12)}${distance}`;
+}
+
 export interface TriagedResult {
   findings: Finding[];
   counts: Record<TriageVerdict | 'untriaged' | 'stale', number>;
@@ -816,6 +840,8 @@ if (isMain) {
     process.stdout.write(`binding-fidelity: ${total} violation(s) — ${counts.harmless} harmless, `
       + `${counts['fix-later']} fix-later, ${counts['live-bug']} live bug(s), ${counts.untriaged} untriaged`
       + `${counts.stale ? `, ${counts.stale} stale triage entr(ies)` : ''}\n`);
+    const stamp = triageStampNote(loadTriage().corpusSha);
+    if (stamp) process.stdout.write(`binding-fidelity: ${stamp}\n`);
   }
   report('binding-fidelity', findings, {
     okMessage: `no live or untriaged binding defects (${counts.harmless + counts['fix-later']} triaged as accepted debt)`,

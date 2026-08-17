@@ -12,8 +12,13 @@
  *
  * Counts every state in the tree whose `workflowId` matches, optionally filtered by `status`.
  *
+ * Run before landing a definition change, so the sessions that will pick that change up mid-run are
+ * a number rather than an assumption. A resume re-seeds declarations the bag lacks and re-stamps the
+ * recorded version (docs/state_management_model.md), so what this count names is the set of runs that
+ * will do so — if it is zero, a definition edit reaches nothing in flight.
+ *
  * Run:
- *   npx tsx scripts/count-workflow-sessions.ts --workflow workflow-design --status running --list
+ *   npm run sessions:census -- --workflow work-package --status running --list
  *
  * Options:
  *   --workflow <id>   workflow id to count (required)
