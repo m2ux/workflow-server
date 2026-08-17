@@ -112,6 +112,40 @@ Fields:
 
 A checkpoint reused at several sites is declared once as a **checkpoint fragment** under `fragments.checkpoints` in the owning workflow's `workflow.yaml`, and each site imports it by reference — the step carries only `kind: checkpoint`, its site-local `id`, and `ref: [workflow::]name` (plus a `condition` when the fragment declares none). The loader materializes the fragment body into the step before delivery, so the yield/present/respond flow and every consumer below see an ordinary full checkpoint; the `check:fragments` guard rejects an inline body that duplicates a fragment (issue #166 B10).
 
+## Where a Checkpoint Belongs
+
+A checkpoint's position in the step list decides whether its answer can steer anything. Every step
+gated on a variable the checkpoint decides has to run after it: a gate reading an unbound variable is
+false, so the step is skipped, and the answer arrives with nothing left to apply it to. The run
+completes, having asked a question that changed nothing.
+
+`check:decision-order` holds the line mechanically — it reports a checkpoint whose decision a step
+before it is already gated on. Five cases are exempt, because in each the earlier read has an answer
+or loses nothing by not firing:
+
+| Exempt | Why |
+|--------|-----|
+| The variable declares a `defaultValue` | Seeding puts it in the bag at session creation, so the earlier gate reads the default rather than nothing |
+| The earlier gate reads by `exists` / `notExists` | A presence test answers on a missing variable; absence is one of its two answers |
+| The earlier step only messages or logs | An announcement that does not fire costs nothing, and gating one on a not-yet-decided value is the ordinary way to stay quiet until it is known |
+| The deciding option carries `transitionTo` | Re-entry sends the run back through the earlier step, which then reads what the option wrote |
+| The two gates demand incompatible values of one variable | No single run reaches both steps, so the earlier one was never waiting on this decision |
+
+The last two carve out the corpus's standard way of settling a value: a technique derives it, an
+announcement reports it when the derivation was confident, a checkpoint decides it when the derivation
+was ambiguous, and the announcement and the checkpoint carry opposite gates on the ambiguity flag. On
+the corpus the guard was written against, the rule without its exemptions reports 14 pairs and 12 of
+them are that shape or one of the other four; every exemption is load-bearing, and removing any single
+one puts a working pattern back on the report.
+
+Requirements come from conjuncts only. An `or` proves nothing about which branch a run took, so a
+gate built from one contributes no exclusion — the guard reports rather than assumes.
+
+Positioning interacts with the entry rule: `check:checkpoint-entry` refuses a checkpoint as an
+activity's first step, because that dispatch pays full delivery and yields before doing any work. A
+decision that has to precede all of an activity's work belongs at the preceding activity's tail or as
+the orchestrator's precondition on dispatching at all.
+
 ## Why this Architecture?
 
 1. **Clean UI Boundaries:** Sub-agents running in hidden background tasks never attempt to prompt the user directly, preventing frozen processes.
