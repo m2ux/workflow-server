@@ -1,8 +1,15 @@
 id: post-impl-review
-version: 1.20.0
+version: 1.21.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 required: true
+triggers:
+  - workflow: prism
+    description: Run the full analytical pipeline over the change surface when the problem is complex; a simpler one binds prism/structural-analysis inline instead.
+    passContext:
+      - target_path
+      - component_name
+      - issue_title
 steps:
   - kind: action
     id: announce-start
@@ -76,10 +83,13 @@ steps:
       inputs:
         findings_destination: code-review.md
     when: problem_complexity != 'complex'
-  - kind: action
+  - kind: technique
     id: dispatch-prism
     when: problem_complexity == 'complex'
-    actions: []
+    technique:
+      name: workflow-engine::handle-sub-workflow
+      inputs:
+        workflow_id: prism
   - kind: technique
     id: test-suite-review
     technique: review-test-suite
