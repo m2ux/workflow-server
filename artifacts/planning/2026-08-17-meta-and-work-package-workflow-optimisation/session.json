@@ -8,8 +8,8 @@
   "currentActivity": "dispatch-client-workflow",
   "currentTechnique": "workflow-engine::commit-and-persist",
   "condition": "isDefault: dispatch-client-workflow",
-  "seq": 30,
-  "ts": 1786955763,
+  "seq": 32,
+  "ts": 1786957443,
   "startedAt": "2026-08-17T06:17:44.568Z",
   "completedActivities": [
     "discover-session",
@@ -946,6 +946,29 @@
       },
       "timestamp": "2026-08-17T08:36:03.457Z",
       "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-b",
+        "usage": {
+          "duration_ms": 3478082,
+          "subagent_tokens": 129179,
+          "tool_uses": 36
+        }
+      },
+      "timestamp": "2026-08-17T09:02:27.388Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-b",
+        "chars": 5385,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-08-17T09:04:03.503Z",
+      "type": "activity_dispatched"
     }
   ],
   "triggeredWorkflows": [
@@ -954,6 +977,15 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "deliver-results-resolution-offer": {
+            "effects": {
+              "variablesSet": {
+                "resolution_requested": false
+              }
+            },
+            "optionId": "external",
+            "respondedAt": "2026-08-17T09:03:34.000Z"
+          },
           "dimension-planning-confirm-plan": {
             "effects": {
               "variablesSet": {
@@ -976,10 +1008,11 @@
         "completedActivities": [
           "scope-definition",
           "dimension-planning",
-          "execute-analysis"
+          "execute-analysis",
+          "consolidate-report"
         ],
-        "condition": "isDefault: consolidate-report",
-        "currentActivity": "consolidate-report",
+        "condition": "isDefault: deliver-results",
+        "currentActivity": "deliver-results",
         "currentTechnique": "",
         "declaredArtifacts": [
           {
@@ -1071,6 +1104,11 @@
             "id": "portfolio-run-manifest",
             "name": "Portfolio group run manifest",
             "path": "dimensions/RUN-MANIFEST.json"
+          },
+          {
+            "id": "evaluation-report",
+            "name": "EVALUATION-REPORT.md",
+            "path": "EVALUATION-REPORT.md"
           }
         ],
         "deliveredContent": {
@@ -1137,6 +1175,27 @@
             "technique:compose-evaluation-report::identify-patterns": "3dc04be2d442b3ac",
             "technique:compose-evaluation-report::verify-report": "77c982e682807974",
             "technique:verify-artifact-conforms": "b52408b38bb583c7"
+          },
+          "worker-deliver-results-a": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+            "bundle:variable-binding": "86e00a6d087f9e58",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "technique:compose-evaluation-report::compile-and-present": "c71b062c6bab2505"
+          },
+          "worker-deliver-results-b": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+            "bundle:variable-binding": "86e00a6d087f9e58",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:evaluation-report-template#evaluation-report-template": "dd2a94ec88a26202",
+            "technique:compose-evaluation-report::compile-and-present": "c71b062c6bab2505"
           },
           "worker-execute-analysis-b": {
             "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
@@ -2603,11 +2662,340 @@
             },
             "timestamp": "2026-08-17T08:56:04.422Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "consolidate-report",
+            "timestamp": "2026-08-17T08:56:38.466Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "name": "evaluation_report_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/EVALUATION-REPORT.md"
+            },
+            "timestamp": "2026-08-17T08:56:38.466Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "name": "evaluation_report",
+              "source": "variables_changed",
+              "value": {
+                "artifact": "EVALUATION-REPORT.md",
+                "audience": "human",
+                "core_finding": "The expensive work is already built; what is missing is the connection.",
+                "cross_cutting_patterns": 6,
+                "dimension_findings": [
+                  {
+                    "count": 12,
+                    "dimension": "Mechanisation Potential",
+                    "high": 3,
+                    "ids": "MECH-01..MECH-12",
+                    "low": 3,
+                    "medium": 6
+                  },
+                  {
+                    "count": 9,
+                    "dimension": "Context Economy",
+                    "high": 2,
+                    "ids": "CTX-01..CTX-09",
+                    "low": 2,
+                    "medium": 5
+                  },
+                  {
+                    "count": 11,
+                    "dimension": "Orchestration Topology",
+                    "high": 3,
+                    "ids": "TOP-01..TOP-11",
+                    "low": 2,
+                    "medium": 6
+                  },
+                  {
+                    "count": 10,
+                    "dimension": "Redundant Work",
+                    "high": 3,
+                    "ids": "RED-01..RED-10",
+                    "low": 2,
+                    "medium": 5
+                  },
+                  {
+                    "count": 10,
+                    "dimension": "Change Economics",
+                    "high": 4,
+                    "ids": "ECO-01..ECO-10",
+                    "low": 1,
+                    "medium": 5
+                  }
+                ],
+                "recommendations": {
+                  "immediate": 7,
+                  "short_term": 10,
+                  "structural": 19
+                },
+                "severity_totals": {
+                  "critical": 0,
+                  "high": 15,
+                  "low": 10,
+                  "medium": 27
+                },
+                "total_findings": 52
+              }
+            },
+            "timestamp": "2026-08-17T08:56:38.466Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "name": "artifact_conformance",
+              "source": "variables_changed",
+              "value": {
+                "conforms": false,
+                "violations": [
+                  {
+                    "detail": "552 lines against a ~200-line budget; preserved because the enumeration with per-opportunity saving and build cost is content the user asked for explicitly.",
+                    "file": "EVALUATION-REPORT.md",
+                    "fixed": false,
+                    "rule": "line-budget"
+                  },
+                  {
+                    "detail": "Workflow names marked as code symbols pushed sentences over the one-symbol limit; unmarked in 36 places.",
+                    "file": "EVALUATION-REPORT.md",
+                    "fixed": true,
+                    "rule": "writing-register"
+                  },
+                  {
+                    "detail": "All-zero Critical column collapsed to a sentence beneath the summary table.",
+                    "file": "EVALUATION-REPORT.md",
+                    "fixed": true,
+                    "rule": "guide-is-the-standard"
+                  }
+                ]
+              }
+            },
+            "timestamp": "2026-08-17T08:56:38.466Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "stepId": "extract-findings"
+            },
+            "timestamp": "2026-08-17T08:56:38.466Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "stepId": "identify-patterns"
+            },
+            "timestamp": "2026-08-17T08:56:38.466Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "stepId": "compose-report"
+            },
+            "timestamp": "2026-08-17T08:56:38.466Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "stepId": "verify-artifact-conformance"
+            },
+            "timestamp": "2026-08-17T08:56:38.466Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "stepId": "verify-report"
+            },
+            "timestamp": "2026-08-17T08:56:38.466Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "deliver-results",
+            "timestamp": "2026-08-17T08:56:38.466Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "worker-deliver-results-a",
+              "chars": 43830,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-17T08:57:02.689Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "worker-deliver-results-a",
+              "chars": 5378,
+              "delivery": "full",
+              "stepId": "compile-and-present",
+              "techniqueId": "compose-evaluation-report::compile-and-present"
+            },
+            "timestamp": "2026-08-17T08:57:02.689Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "worker-deliver-results-a",
+              "stepId": "compile-and-present"
+            },
+            "timestamp": "2026-08-17T08:57:02.689Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "deliver-results",
+            "checkpoint": "resolution-offer",
+            "timestamp": "2026-08-17T08:59:29.880Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "worker-deliver-results-a",
+              "usage": {
+                "duration_ms": 246150,
+                "note": "partial dispatch; paused at the resolution-offer gate",
+                "subagent_tokens": 96191,
+                "tool_uses": 7
+              }
+            },
+            "timestamp": "2026-08-17T09:01:21.523Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "deliver-results",
+            "checkpoint": "resolution-offer",
+            "data": {
+              "optionId": "external"
+            },
+            "timestamp": "2026-08-17T09:03:34.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "name": "resolution_requested",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-17T09:03:34.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "worker-deliver-results-b",
+              "chars": 43830,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-17T09:06:41.175Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "worker-deliver-results-b",
+              "chars": 43830,
+              "priorAgentId": "worker-deliver-results-a"
+            },
+            "timestamp": "2026-08-17T09:06:41.176Z",
+            "type": "activity_redelivered"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "worker-deliver-results-b",
+              "chars": 5378,
+              "delivery": "full",
+              "stepId": "compile-and-present",
+              "techniqueId": "compose-evaluation-report::compile-and-present"
+            },
+            "timestamp": "2026-08-17T09:06:41.176Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "worker-deliver-results-b",
+              "stepId": "compile-and-present"
+            },
+            "timestamp": "2026-08-17T09:06:41.176Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "worker-deliver-results-b",
+              "chars": 8048,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-17T09:08:10.247Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "worker-deliver-results-b",
+              "chars": 5378,
+              "delivery": "unchanged",
+              "stepId": "compile-and-present",
+              "techniqueId": "compose-evaluation-report::compile-and-present"
+            },
+            "timestamp": "2026-08-17T09:08:10.247Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "worker-deliver-results-b",
+              "bundled": true,
+              "chars": 2897,
+              "delivery": "full",
+              "resourceId": "evaluation-report-template#evaluation-report-template"
+            },
+            "timestamp": "2026-08-17T09:08:10.247Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "deliver-results",
+            "checkpoint": "resolution-offer",
+            "data": {
+              "optionId": "external"
+            },
+            "timestamp": "2026-08-17T09:08:21.750Z",
+            "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "worker-deliver-results-b",
+              "usage": {
+                "duration_ms": 259110,
+                "note": "replacement worker after the resumed context was lost; completed the activity under the replayed resolution-offer response",
+                "subagent_tokens": 111515,
+                "tool_uses": 12
+              }
+            },
+            "timestamp": "2026-08-17T09:11:08.382Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 33,
+        "seq": 44,
         "sessionIndex": "PD2H26",
         "skippedActivities": [],
         "startedAt": "2026-08-17T06:23:19.588Z",
@@ -3631,7 +4019,7 @@
             "workflowId": "prism"
           }
         ],
-        "ts": 1786956964,
+        "ts": 1786957868,
         "variables": {
           "accepted_count": 0,
           "all_artifact_paths": [
@@ -3653,6 +4041,29 @@
             "dimensions/portfolio-synthesis.md",
             "dimensions/RUN-MANIFEST.json"
           ],
+          "artifact_conformance": {
+            "conforms": false,
+            "violations": [
+              {
+                "detail": "552 lines against a ~200-line budget; preserved because the enumeration with per-opportunity saving and build cost is content the user asked for explicitly.",
+                "file": "EVALUATION-REPORT.md",
+                "fixed": false,
+                "rule": "line-budget"
+              },
+              {
+                "detail": "Workflow names marked as code symbols pushed sentences over the one-symbol limit; unmarked in 36 places.",
+                "file": "EVALUATION-REPORT.md",
+                "fixed": true,
+                "rule": "writing-register"
+              },
+              {
+                "detail": "All-zero Critical column collapsed to a sentence beneath the summary table.",
+                "file": "EVALUATION-REPORT.md",
+                "fixed": true,
+                "rule": "guide-is-the-standard"
+              }
+            ]
+          },
           "completed_analyses": [
             {
               "definitive_findings_path": "mechanisation-potential/DEFINITIVE-FINDINGS.md",
@@ -3790,6 +4201,67 @@
           "dimensions_confirmed": true,
           "evaluation_description": "Find every opportunity to make the meta and work-package workflows faster and cheaper to run. The primary lead is mechanisation: agent-executed technique prose that is in fact a deterministic procedure a script or server tool could compute without agent involvement — the worked example is resolving a named component, issue or PR to a repository and matching it against a monorepo component, treated as a guide rather than a boundary. In scope as subject: workflows/meta/** and workflows/work-package/**. In scope as mechanisation surface: src/** and scripts/**. Deliverable is a report enumerating opportunities, each with the saving it buys and what it costs to build.",
           "evaluation_plan_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/01-evaluation-plan.md",
+          "evaluation_report": {
+            "artifact": "EVALUATION-REPORT.md",
+            "audience": "human",
+            "core_finding": "The expensive work is already built; what is missing is the connection.",
+            "cross_cutting_patterns": 6,
+            "dimension_findings": [
+              {
+                "count": 12,
+                "dimension": "Mechanisation Potential",
+                "high": 3,
+                "ids": "MECH-01..MECH-12",
+                "low": 3,
+                "medium": 6
+              },
+              {
+                "count": 9,
+                "dimension": "Context Economy",
+                "high": 2,
+                "ids": "CTX-01..CTX-09",
+                "low": 2,
+                "medium": 5
+              },
+              {
+                "count": 11,
+                "dimension": "Orchestration Topology",
+                "high": 3,
+                "ids": "TOP-01..TOP-11",
+                "low": 2,
+                "medium": 6
+              },
+              {
+                "count": 10,
+                "dimension": "Redundant Work",
+                "high": 3,
+                "ids": "RED-01..RED-10",
+                "low": 2,
+                "medium": 5
+              },
+              {
+                "count": 10,
+                "dimension": "Change Economics",
+                "high": 4,
+                "ids": "ECO-01..ECO-10",
+                "low": 1,
+                "medium": 5
+              }
+            ],
+            "recommendations": {
+              "immediate": 7,
+              "short_term": 10,
+              "structural": 19
+            },
+            "severity_totals": {
+              "critical": 0,
+              "high": 15,
+              "low": 10,
+              "medium": 27
+            },
+            "total_findings": 52
+          },
+          "evaluation_report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/EVALUATION-REPORT.md",
           "execution_groups": [
             {
               "analysis_focus": "The Mechanisation Potential focus, run through structural, adversarial and synthesis passes.",
