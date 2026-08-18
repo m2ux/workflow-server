@@ -739,6 +739,16 @@ export interface PathSet {
   branchesKnown: number;
   /** Of those, how many were actually exercised by some walk. */
   branchesCovered: number;
+  /**
+   * Every branch key some walk reached a decision on, and the subset a walk actually took.
+   *
+   * `known` is what the walks encountered, so it is not the workflow's declared decision space: a
+   * checkpoint no walk reaches contributes to neither set, and the ratio then reads 100% with the
+   * checkpoint unvisited. Measure against `declaredOptions` in coverage.ts for a denominator that
+   * does not move with the walk.
+   */
+  knownBranches: string[];
+  coveredBranches: string[];
 }
 
 /**
@@ -838,5 +848,9 @@ export async function enumeratePaths(
     }
   }
 
-  return { workflowId, paths, distinctPaths: [...seenPaths], errors, walks, capped, branchesKnown: known.size, branchesCovered: covered.size };
+  return {
+    workflowId, paths, distinctPaths: [...seenPaths], errors, walks, capped,
+    branchesKnown: known.size, branchesCovered: covered.size,
+    knownBranches: [...known].sort(), coveredBranches: [...covered].sort(),
+  };
 }
