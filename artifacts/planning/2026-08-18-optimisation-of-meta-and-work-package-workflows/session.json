@@ -955,6 +955,15 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "dimension-planning-confirm-plan": {
+            "effects": {
+              "variablesSet": {
+                "dimensions_confirmed": true
+              }
+            },
+            "optionId": "accept",
+            "respondedAt": "2026-08-18T13:49:20.000Z"
+          },
           "scope-definition-confirm-scope": {
             "effects": {
               "transitionedTo": "scope-definition"
@@ -972,9 +981,11 @@
             "respondedAt": "2026-08-18T11:31:25.000Z"
           }
         },
-        "completedActivities": [],
-        "condition": "",
-        "currentActivity": "scope-definition",
+        "completedActivities": [
+          "scope-definition"
+        ],
+        "condition": "scope_confirmed == true",
+        "currentActivity": "dimension-planning",
         "currentTechnique": "",
         "deliveredContent": {
           "client-worker-01": {
@@ -1022,6 +1033,29 @@
             "technique:plan-evaluation::derive-dimensions": "dbde8e69b63768d7",
             "technique:plan-evaluation::summarize-scope": "f7e8e7c7a25d2002",
             "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be"
+          },
+          "client-worker-03": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+            "bundle:variable-binding": "86e00a6d087f9e58",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:dimension-lens-mapping": "9999ed404e304a8f",
+            "resource:dimension-lens-mapping#custom-dimension-mappings": "89d8be3859e2ebe5",
+            "resource:dimension-lens-mapping#output-subdirectory-convention": "b5d4ef16ee3af16a",
+            "resource:dimension-lens-mapping#standard-mappings": "7ee50e5fadd48fbc",
+            "resource:evaluation-plan-template#evaluation-plan-template": "c8dc2e83d795ff6a",
+            "technique:inherited_inputs.items:b6ad6262b70beb76": "b6ad6262b70beb76",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:c5c5526a2499b15b": "c5c5526a2499b15b",
+            "technique:plan-evaluation::group-for-execution": "61a879efcf052948",
+            "technique:plan-evaluation::map-dimensions-to-lenses": "611d4c538ad3c6ff",
+            "technique:plan-evaluation::survey-target": "45b480e1c918036c",
+            "technique:plan-evaluation::write-evaluation-plan": "21b8aa010b168e5f",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:3db2220993ede73e": "3db2220993ede73e"
           }
         },
         "history": [
@@ -1507,24 +1541,596 @@
             },
             "timestamp": "2026-08-18T11:33:24.048Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "scope-definition",
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "target_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server"
+            },
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "target_name",
+              "source": "variables_changed",
+              "value": "workflow-server"
+            },
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "target_type",
+              "source": "variables_changed",
+              "value": "mixed"
+            },
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "evaluation_description",
+              "source": "variables_changed",
+              "value": "Enumerate every remaining opportunity to make the workflow-server `meta` and `work-package` workflows faster and cheaper to run, measured against the build as it stands after the optimisation work merged on 2026-08-17/18 (server PRs #467, #471; definition PRs #468, #470). The 2026-08-17 evaluation report at .engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/EVALUATION-REPORT.md is the worked example for shape and rigour, and explicitly not the boundary of what may be found. Both halves of the complaint are in scope: token cost and wall-clock latency."
+            },
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "output_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows"
+            },
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "scope_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "dimensions",
+              "source": "variables_changed",
+              "value": [
+                {
+                  "description": "What the recent optimisation work actually changed and what it measurably bought, so that 'remaining' is measured against the current build rather than against the prior report.",
+                  "focus_areas": [
+                    "Re-measure the benchmark walk against the recorded baseline and attribute the 26.8% fall from 1,780,292 to 1,302,319 delivery characters to specific changes",
+                    "Which of the prior report's 52 findings (15 high, 27 medium, 10 low) are closed, which partly addressed, which untouched",
+                    "Whether gate-liveness bundling (src/utils/gate-liveness.ts) reduced the permanently-lazy step counts (89 of 174 in work-package, 12 of 23 in meta) against the 83 and 19 when-gated steps counted today",
+                    "Whether the delivery-cost gate in .github/workflows/verify.yml runs, and whether its resolution distinguishes the changes it guards from noise",
+                    "The workflow-version drift exposure on resumed sessions, named as the largest risk in the prior report: closed, mitigated, or open",
+                    "Regressions introduced by the remediation itself"
+                  ],
+                  "name": "Remediation Effect"
+                },
+                {
+                  "description": "The bytes still shipped into agent contexts per run, and the abstraction that would collapse each remaining duplication.",
+                  "focus_areas": [
+                    "get_resource as the largest bucket: 527,683 characters over 162 calls, 146 fetches against 77 distinct ledger keys",
+                    "get_activity at 520,075 characters over 12 calls; the eager bundling budget and per-activity size caps",
+                    "get_workflow at 108,356 characters in one call at session open",
+                    "Content bundled then refetched: a technique bundled into get_activity does not satisfy a later standalone get_technique for the same body",
+                    "Inherited-input and rules blocks restated per technique across 262 technique files",
+                    "Resources delivered whole where a step reads one section, and sections fetched repeatedly where the whole file would serve",
+                    "Prose in the 909 KB corpus that restates what schemas/ already enforces"
+                  ],
+                  "name": "Delivery Economy"
+                },
+                {
+                  "description": "How the run is distributed across agents, turns and round trips, and what sets its wall-clock — the 'slow' half of the brief, which the prior report addressed only through byte counts.",
+                  "focus_areas": [
+                    "242 tool calls for a 12-activity walk: which sit on the critical path, which could be batched, elided or made concurrent",
+                    "The batch bound still at defaults (BATCH_MAX_ACTIVITIES 3, BATCH_HEADROOM_FRACTION 0.35) — re-measure what raising it buys now delivery is 26.8% smaller",
+                    "Checkpoint density and placement: 44 gates in work-package across 13 of 15 activities (10 in 01-start-work-package, 9 in 13-submit-for-review, 0 in 11-validate and 14-complete), 5 in meta with 3 in 00-discover-session",
+                    "10 yield/respond/resume triples per walk, each a full context handover",
+                    "Serial steps that could run concurrently; sub-agent spawn and context re-establishment at every activity boundary",
+                    "Sequential model turns as the dominant wall-clock term, weighed against per-call server latency"
+                  ],
+                  "name": "Orchestration Topology and Critical Path"
+                },
+                {
+                  "description": "Protocol steps in the ~117,000 words of agent-executed prose that are deterministic procedures a script or server tool could compute, re-priced against the cost instrument that now exists.",
+                  "focus_areas": [
+                    "The 12 candidates the prior run identified: still present, and now measurable against a CI cost gate that did not exist then",
+                    "Repo/component/issue/PR coordinate resolution, path derivation, project-type detection, artifact link and anchor checking, Progress-table writes, git and worktree state checks",
+                    "Classification steps that are fixed decision tables",
+                    "18 registered tools, all session control-plane: whether a domain-computation tool is the right home for each candidate, or a script, or a definition edit",
+                    "28 check-*.ts guards reachable only as CI, never as a workflow operation",
+                    "For each candidate, whether the prose hides a judgement call"
+                  ],
+                  "name": "Mechanisation Potential"
+                },
+                {
+                  "description": "Steps, artifacts and verification the workflows perform that produce nothing the run consumes.",
+                  "focus_areas": [
+                    "Activities and techniques never reached in practice across meta's 5 activities and work-package's 15",
+                    "Artifacts written but never read downstream",
+                    "Verification repeated at multiple stages: 28 check-*.ts guards alongside in-workflow verify-artifact-conforms and the validators",
+                    "Optional branches that always resolve the same way — the remediation closed four gates that cannot open; whether more remain",
+                    "Duplication across the two trees, including parallel TECHNIQUE.md group files and shared technique basenames",
+                    "Rare-but-load-bearing paths distinguished from genuinely dead ones"
+                  ],
+                  "name": "Redundant Work"
+                },
+                {
+                  "description": "What each remaining opportunity costs to build, what it risks, and the order the opportunities should be taken in.",
+                  "focus_areas": [
+                    "Implementation surface per opportunity: a server change in src/ (12,628 LOC, 18 tools), a script under scripts/ (47 files, 9,935 LOC), or a definition edit in the 909 KB corpus",
+                    "Guard and test coverage protecting each change (82 test files, 18,955 LOC; 28 guards; the new tests/gate-liveness.test.ts and scripts/check-decision-order.ts)",
+                    "Saved-session and backwards compatibility for sessions holding an older definition shape",
+                    "Whether each saving is resolvable by the CI cost gate or falls below its noise floor",
+                    "The submodule boundary: definitions land in the workflows submodule, server changes in the superproject, and a paired change needs both",
+                    "Sequencing dependencies, and which costs are immovable regardless of redesign"
+                  ],
+                  "name": "Change Economics"
+                }
+              ]
+            },
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "scope_summary",
+              "source": "variables_changed",
+              "value": "Target /home/mike1/projects/dev/workflow-server (workflow-server), classified mixed — package.json and tsconfig.json make it a codebase, and the subject of the evaluation is 909 KB / ~117,000 words of definition markdown carried in the workflows git submodule. Output directory .engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows, created and verified writable. Pipeline mode full-prism; no lens overrides supplied; six dimensions derived (none supplied by the user): Remediation Effect, Delivery Economy, Orchestration Topology and Critical Path, Mechanisation Potential, Redundant Work, Change Economics. Measured starting position: workflows/meta 171 files (160 md, 11 yaml), 291 KB, ~37,961 words, 5 activities, 23 technique steps, 5 checkpoints, 19 when-gated steps; workflows/work-package 168 files (152 md), 619 KB, ~79,032 words, 15 activities, 176 technique steps, 44 checkpoints, 83 when-gated steps; src/ 55 TypeScript files, 12,628 LOC, 18 registered MCP tools all session control-plane; scripts/ 47 files, 9,935 LOC including 28 check-*.ts guards; tests/ 82 files, 18,955 LOC. Recorded benchmark walk (12 activities, fresh context): 1,302,319 delivery characters over 242 tool calls — get_resource 162 calls / 527,683 chars / 146 fetches against 77 distinct ledger keys, get_activity 12 calls / 520,075 chars with 66 techniques bundled and 24 fetched separately, get_technique 24 calls / 146,205 chars, get_workflow 1 call / 108,356 chars, plus 10 yield/respond/resume triples. Delivery trajectory 1,355,532 (July) to 1,780,292 (2026-08-17, pre-remediation) to 1,302,319 (now). Recent remediation: 42 files, 1,861 insertions, 297 deletions across server PRs #467 and #471 and definition PRs #468 and #470. Batch bound still at defaults: BATCH_MAX_ACTIVITIES 3, BATCH_HEADROOM_FRACTION 0.35."
+            },
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-02",
+              "stepId": "collect-inputs"
+            },
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-02",
+              "stepId": "classify-target"
+            },
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-02",
+              "stepId": "derive-dimensions"
+            },
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-02",
+              "stepId": "create-output-directory"
+            },
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-02",
+              "stepId": "summarize-scope"
+            },
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-02",
+              "stepId": "confirm-scope"
+            },
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "dimension-planning",
+            "timestamp": "2026-08-18T11:35:04.937Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "chars": 48371,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-18T11:35:21.036Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "chars": 3132,
+              "delivery": "full",
+              "stepId": "survey-target",
+              "techniqueId": "plan-evaluation::survey-target"
+            },
+            "timestamp": "2026-08-18T11:35:21.036Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "stepId": "survey-target"
+            },
+            "timestamp": "2026-08-18T11:35:21.036Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "chars": 3763,
+              "delivery": "full",
+              "stepId": "map-dimensions",
+              "techniqueId": "plan-evaluation::map-dimensions-to-lenses"
+            },
+            "timestamp": "2026-08-18T11:35:21.036Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "stepId": "map-dimensions"
+            },
+            "timestamp": "2026-08-18T11:35:21.036Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "chars": 2213,
+              "delivery": "full",
+              "stepId": "group-dimensions",
+              "techniqueId": "plan-evaluation::group-for-execution"
+            },
+            "timestamp": "2026-08-18T11:35:21.036Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "stepId": "group-dimensions"
+            },
+            "timestamp": "2026-08-18T11:35:21.036Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "chars": 3287,
+              "delivery": "full",
+              "stepId": "write-plan",
+              "techniqueId": "plan-evaluation::write-evaluation-plan"
+            },
+            "timestamp": "2026-08-18T11:35:21.036Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "stepId": "write-plan"
+            },
+            "timestamp": "2026-08-18T11:35:21.036Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "chars": 3018,
+              "delivery": "full",
+              "resourceId": "dimension-lens-mapping"
+            },
+            "timestamp": "2026-08-18T11:37:22.543Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "chars": 2091,
+              "delivery": "full",
+              "resourceId": "evaluation-plan-template#evaluation-plan-template"
+            },
+            "timestamp": "2026-08-18T11:38:49.156Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "checkpoint": "confirm-plan",
+            "timestamp": "2026-08-18T11:40:40.489Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "usage": {
+                "duration_ms": 343064,
+                "subagent_tokens": 104679,
+                "tool_uses": 30
+              }
+            },
+            "timestamp": "2026-08-18T11:41:02.411Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "dimension-planning",
+            "checkpoint": "confirm-plan",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-08-18T13:49:20.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "dimensions_confirmed",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-18T13:49:20.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "chars": 7636,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-18T13:49:40.183Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "chars": 3132,
+              "delivery": "unchanged",
+              "stepId": "survey-target",
+              "techniqueId": "plan-evaluation::survey-target"
+            },
+            "timestamp": "2026-08-18T13:49:40.183Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "chars": 3763,
+              "delivery": "unchanged",
+              "stepId": "map-dimensions",
+              "techniqueId": "plan-evaluation::map-dimensions-to-lenses"
+            },
+            "timestamp": "2026-08-18T13:49:40.183Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "chars": 2213,
+              "delivery": "unchanged",
+              "stepId": "group-dimensions",
+              "techniqueId": "plan-evaluation::group-for-execution"
+            },
+            "timestamp": "2026-08-18T13:49:40.183Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "chars": 3287,
+              "delivery": "unchanged",
+              "stepId": "write-plan",
+              "techniqueId": "plan-evaluation::write-evaluation-plan"
+            },
+            "timestamp": "2026-08-18T13:49:40.183Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "bundled": true,
+              "chars": 1066,
+              "delivery": "full",
+              "resourceId": "dimension-lens-mapping#standard-mappings"
+            },
+            "timestamp": "2026-08-18T13:49:40.183Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "bundled": true,
+              "chars": 593,
+              "delivery": "full",
+              "resourceId": "dimension-lens-mapping#custom-dimension-mappings"
+            },
+            "timestamp": "2026-08-18T13:49:40.183Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "bundled": true,
+              "chars": 186,
+              "delivery": "full",
+              "resourceId": "dimension-lens-mapping#output-subdirectory-convention"
+            },
+            "timestamp": "2026-08-18T13:49:40.183Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "bundled": true,
+              "chars": 1976,
+              "delivery": "unchanged",
+              "resourceId": "evaluation-plan-template#evaluation-plan-template"
+            },
+            "timestamp": "2026-08-18T13:49:40.183Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "usage": {
+                "duration_ms": 78685,
+                "subagent_tokens": 107413,
+                "tool_uses": 3
+              }
+            },
+            "timestamp": "2026-08-18T13:50:51.870Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 14,
+        "seq": 24,
         "sessionIndex": "QR6FTR",
         "skippedActivities": [],
         "startedAt": "2026-08-18T10:01:56.532Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1787052804,
+        "ts": 1787061051,
         "variables": {
           "accepted_count": 0,
-          "dimensions_confirmed": false,
+          "dimensions": [
+            {
+              "description": "What the recent optimisation work actually changed and what it measurably bought, so that 'remaining' is measured against the current build rather than against the prior report.",
+              "focus_areas": [
+                "Re-measure the benchmark walk against the recorded baseline and attribute the 26.8% fall from 1,780,292 to 1,302,319 delivery characters to specific changes",
+                "Which of the prior report's 52 findings (15 high, 27 medium, 10 low) are closed, which partly addressed, which untouched",
+                "Whether gate-liveness bundling (src/utils/gate-liveness.ts) reduced the permanently-lazy step counts (89 of 174 in work-package, 12 of 23 in meta) against the 83 and 19 when-gated steps counted today",
+                "Whether the delivery-cost gate in .github/workflows/verify.yml runs, and whether its resolution distinguishes the changes it guards from noise",
+                "The workflow-version drift exposure on resumed sessions, named as the largest risk in the prior report: closed, mitigated, or open",
+                "Regressions introduced by the remediation itself"
+              ],
+              "name": "Remediation Effect"
+            },
+            {
+              "description": "The bytes still shipped into agent contexts per run, and the abstraction that would collapse each remaining duplication.",
+              "focus_areas": [
+                "get_resource as the largest bucket: 527,683 characters over 162 calls, 146 fetches against 77 distinct ledger keys",
+                "get_activity at 520,075 characters over 12 calls; the eager bundling budget and per-activity size caps",
+                "get_workflow at 108,356 characters in one call at session open",
+                "Content bundled then refetched: a technique bundled into get_activity does not satisfy a later standalone get_technique for the same body",
+                "Inherited-input and rules blocks restated per technique across 262 technique files",
+                "Resources delivered whole where a step reads one section, and sections fetched repeatedly where the whole file would serve",
+                "Prose in the 909 KB corpus that restates what schemas/ already enforces"
+              ],
+              "name": "Delivery Economy"
+            },
+            {
+              "description": "How the run is distributed across agents, turns and round trips, and what sets its wall-clock — the 'slow' half of the brief, which the prior report addressed only through byte counts.",
+              "focus_areas": [
+                "242 tool calls for a 12-activity walk: which sit on the critical path, which could be batched, elided or made concurrent",
+                "The batch bound still at defaults (BATCH_MAX_ACTIVITIES 3, BATCH_HEADROOM_FRACTION 0.35) — re-measure what raising it buys now delivery is 26.8% smaller",
+                "Checkpoint density and placement: 44 gates in work-package across 13 of 15 activities (10 in 01-start-work-package, 9 in 13-submit-for-review, 0 in 11-validate and 14-complete), 5 in meta with 3 in 00-discover-session",
+                "10 yield/respond/resume triples per walk, each a full context handover",
+                "Serial steps that could run concurrently; sub-agent spawn and context re-establishment at every activity boundary",
+                "Sequential model turns as the dominant wall-clock term, weighed against per-call server latency"
+              ],
+              "name": "Orchestration Topology and Critical Path"
+            },
+            {
+              "description": "Protocol steps in the ~117,000 words of agent-executed prose that are deterministic procedures a script or server tool could compute, re-priced against the cost instrument that now exists.",
+              "focus_areas": [
+                "The 12 candidates the prior run identified: still present, and now measurable against a CI cost gate that did not exist then",
+                "Repo/component/issue/PR coordinate resolution, path derivation, project-type detection, artifact link and anchor checking, Progress-table writes, git and worktree state checks",
+                "Classification steps that are fixed decision tables",
+                "18 registered tools, all session control-plane: whether a domain-computation tool is the right home for each candidate, or a script, or a definition edit",
+                "28 check-*.ts guards reachable only as CI, never as a workflow operation",
+                "For each candidate, whether the prose hides a judgement call"
+              ],
+              "name": "Mechanisation Potential"
+            },
+            {
+              "description": "Steps, artifacts and verification the workflows perform that produce nothing the run consumes.",
+              "focus_areas": [
+                "Activities and techniques never reached in practice across meta's 5 activities and work-package's 15",
+                "Artifacts written but never read downstream",
+                "Verification repeated at multiple stages: 28 check-*.ts guards alongside in-workflow verify-artifact-conforms and the validators",
+                "Optional branches that always resolve the same way — the remediation closed four gates that cannot open; whether more remain",
+                "Duplication across the two trees, including parallel TECHNIQUE.md group files and shared technique basenames",
+                "Rare-but-load-bearing paths distinguished from genuinely dead ones"
+              ],
+              "name": "Redundant Work"
+            },
+            {
+              "description": "What each remaining opportunity costs to build, what it risks, and the order the opportunities should be taken in.",
+              "focus_areas": [
+                "Implementation surface per opportunity: a server change in src/ (12,628 LOC, 18 tools), a script under scripts/ (47 files, 9,935 LOC), or a definition edit in the 909 KB corpus",
+                "Guard and test coverage protecting each change (82 test files, 18,955 LOC; 28 guards; the new tests/gate-liveness.test.ts and scripts/check-decision-order.ts)",
+                "Saved-session and backwards compatibility for sessions holding an older definition shape",
+                "Whether each saving is resolvable by the CI cost gate or falls below its noise floor",
+                "The submodule boundary: definitions land in the workflows submodule, server changes in the superproject, and a paired change needs both",
+                "Sequencing dependencies, and which costs are immovable regardless of redesign"
+              ],
+              "name": "Change Economics"
+            }
+          ],
+          "dimensions_confirmed": true,
+          "evaluation_description": "Enumerate every remaining opportunity to make the workflow-server `meta` and `work-package` workflows faster and cheaper to run, measured against the build as it stands after the optimisation work merged on 2026-08-17/18 (server PRs #467, #471; definition PRs #468, #470). The 2026-08-17 evaluation report at .engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/EVALUATION-REPORT.md is the worked example for shape and rigour, and explicitly not the boundary of what may be found. Both halves of the complaint are in scope: token cost and wall-clock latency.",
           "gitnexus_available": false,
+          "output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows",
           "pipeline_mode": "full-prism",
           "resolution_requested": false,
           "scope_confirmed": true,
+          "scope_summary": "Target /home/mike1/projects/dev/workflow-server (workflow-server), classified mixed — package.json and tsconfig.json make it a codebase, and the subject of the evaluation is 909 KB / ~117,000 words of definition markdown carried in the workflows git submodule. Output directory .engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows, created and verified writable. Pipeline mode full-prism; no lens overrides supplied; six dimensions derived (none supplied by the user): Remediation Effect, Delivery Economy, Orchestration Topology and Critical Path, Mechanisation Potential, Redundant Work, Change Economics. Measured starting position: workflows/meta 171 files (160 md, 11 yaml), 291 KB, ~37,961 words, 5 activities, 23 technique steps, 5 checkpoints, 19 when-gated steps; workflows/work-package 168 files (152 md), 619 KB, ~79,032 words, 15 activities, 176 technique steps, 44 checkpoints, 83 when-gated steps; src/ 55 TypeScript files, 12,628 LOC, 18 registered MCP tools all session control-plane; scripts/ 47 files, 9,935 LOC including 28 check-*.ts guards; tests/ 82 files, 18,955 LOC. Recorded benchmark walk (12 activities, fresh context): 1,302,319 delivery characters over 242 tool calls — get_resource 162 calls / 527,683 chars / 146 fetches against 77 distinct ledger keys, get_activity 12 calls / 520,075 chars with 66 techniques bundled and 24 fetched separately, get_technique 24 calls / 146,205 chars, get_workflow 1 call / 108,356 chars, plus 10 yield/respond/resume triples. Delivery trajectory 1,355,532 (July) to 1,780,292 (2026-08-17, pre-remediation) to 1,302,319 (now). Recent remediation: 42 files, 1,861 insertions, 297 deletions across server PRs #467 and #471 and definition PRs #468 and #470. Batch bound still at defaults: BATCH_MAX_ACTIVITIES 3, BATCH_HEADROOM_FRACTION 0.35.",
+          "target_name": "workflow-server",
+          "target_path": "/home/mike1/projects/dev/workflow-server",
+          "target_type": "mixed",
           "user_request": "start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. I want a report detailing any/all opportunities for optimisation of meta and work package workflows. use the example provided as a guide but do not limit to this. Many optimisations were done recently to address this. I want a further report elucidating remaining opportunities."
         },
         "workflowId": "prism-evaluate",
