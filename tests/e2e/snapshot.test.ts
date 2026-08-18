@@ -49,9 +49,10 @@ describe('work-package walk snapshots (baseline)', () => {
     researchOnlyPolicy, elicitationOnlyPolicy, reviewModePolicy,
   ];
 
-  // Which steps each activity ran, unioned over the matrix. Filled as the walks above run so the
-  // report below costs no extra walk, and read by the final test in this describe.
+  // Which steps each activity ran, unioned over the matrix, and the server's gate readings summed
+  // over every delivery. Filled as the walks above run so the reports below cost no extra walk.
   const executedByActivity = new Map<string, Set<string>>();
+  const lazyGates = { pending: 0, unbound: 0, unparsed: 0, deliveries: 0 };
 
   for (const policy of policies) {
     it(`[${policy.name}] matches committed baseline`, async () => {
@@ -60,6 +61,12 @@ describe('work-package walk snapshots (baseline)', () => {
         const seen = executedByActivity.get(step.activityId) ?? new Set<string>();
         for (const id of step.stepsExecuted) seen.add(id);
         executedByActivity.set(step.activityId, seen);
+        if (step.lazyGates) {
+          lazyGates.deliveries++;
+          lazyGates.pending += step.lazyGates.pending;
+          lazyGates.unbound += step.lazyGates.unbound;
+          lazyGates.unparsed += step.lazyGates.unparsed;
+        }
       }
       expect(snapshotWalk(result)).toMatchSnapshot();
     });
@@ -75,6 +82,35 @@ describe('work-package walk snapshots (baseline)', () => {
    * (#472). Recorded rather than asserted: most of the gap needs an agent to bind a technique
    * output, not another policy, so a threshold here would be a number chosen to pass.
    */
+  /**
+   * The server's own gate readings, summed over every activity delivery in the matrix.
+   *
+   * Only one of the three can be held at zero, and it is worth knowing which. Over 79 deliveries the
+   * matrix sees 313 `pending` and 168 `unbound`, so neither is an invariant: `pending` is a technique
+   * step gated on a variable its own activity produces, which is lazy delivery working as designed
+   * and would be forbidden by a zero here; `unbound` is structural, recurring at the same count per
+   * activity under every policy, and needs an agent to bind a technique output rather than another
+   * policy. Both are in the committed snapshots per activity, where a change to either shows up.
+   *
+   * `unparsed` is different. A gate expression the parser cannot read has no correct answer at all —
+   * the step is deferred because the server declined to guess, not because of anything about the run.
+   * It is zero across the corpus today and there is no reason for it ever not to be, so it is the one
+   * that is asserted (#472).
+   */
+  it('never delivers an activity whose gate expression it cannot parse', () => {
+    expect(lazyGates.deliveries, 'no delivery reported a gate reading').toBeGreaterThan(0);
+    expect(
+      lazyGates.unparsed,
+      'a gated technique step stayed lazy because its when/condition does not parse. The expression '
+      + 'is malformed: find it with the corpus guards (npm run check:all) rather than here.',
+    ).toBe(0);
+    // eslint-disable-next-line no-console
+    console.log(
+      `[lazy gates] over ${lazyGates.deliveries} activity deliveries: `
+      + `pending=${lazyGates.pending} unbound=${lazyGates.unbound} unparsed=${lazyGates.unparsed}`,
+    );
+  });
+
   it('records how much of each activity the matrix runs', async () => {
     const declared = await declaredSteps(['work-package']);
     const rows = stepCoverage(declared, executedByActivity);

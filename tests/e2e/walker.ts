@@ -17,7 +17,7 @@ import { join } from 'node:path';
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { evaluateCondition, type Condition } from '../../src/schema/condition.schema.js';
 import { evaluateWhenExpression } from '../../src/schema/when-expression.js';
-import { unboundPositiveReads } from '../../src/utils/gate-liveness.js';
+import { unboundPositiveReads, type GateUnansweredCounts } from '../../src/utils/gate-liveness.js';
 import { TERMINAL_SENTINEL } from '../../src/loaders/workflow-loader.js';
 import { parseToolResponse, parseWorkflowResponse, parseBundle, rawText, isError, type Harness } from './harness.js';
 
@@ -137,6 +137,12 @@ export interface WalkStep {
   unresolved: string[];
   /** Number of operation refs the activity declares (from its definition). */
   declaredOperations: number;
+  /**
+   * The server's own reading of this activity's gated technique steps at delivery: how many stayed
+   * lazy because this activity produces the variable (`pending`), because nothing on the path so far
+   * has written it (`unbound`), or because the expression does not parse (`unparsed`).
+   */
+  lazyGates?: GateUnansweredCounts;
   nextActivity: string | null;
 }
 
@@ -293,7 +299,10 @@ async function getActivity(
   client: Client,
   sessionIndex: string,
   worker?: { agentId: string; bundle?: 'reference' },
-): Promise<{ def: ActivityDef; unresolved: string[]; bundledSteps: string[]; chars: number; dispatch?: string }> {
+): Promise<{
+  def: ActivityDef; unresolved: string[]; bundledSteps: string[]; chars: number;
+  dispatch?: string; lazyGates?: GateUnansweredCounts;
+}> {
   const res = await client.callTool({
     name: 'get_activity',
     arguments: {
@@ -312,7 +321,9 @@ async function getActivity(
   // Hybrid bundling (#166 B11): step ids whose techniques arrived inline in this response —
   // the robot skips their per-step get_technique, as a real worker should.
   const bundledSteps = ((res._meta as { bundled_steps?: string[] } | undefined)?.bundled_steps) ?? [];
-  return { def, unresolved, bundledSteps, chars, dispatch };
+  // Why the server left each gated technique step lazy. Absent when every gate had an answer.
+  const lazyGates = (res._meta as { lazy_gates?: GateUnansweredCounts } | undefined)?.lazy_gates;
+  return { def, unresolved, bundledSteps, chars, dispatch, lazyGates };
 }
 
 async function transition(
@@ -620,8 +631,9 @@ export async function walk(
     let act: ActivityDef;
     let unresolved: string[];
     let bundledSteps: string[];
+    let lazyGates: GateUnansweredCounts | undefined;
     try {
-      ({ def: act, unresolved, bundledSteps } = await getActivity(client, sessionIndex, worker));
+      ({ def: act, unresolved, bundledSteps, lazyGates } = await getActivity(client, sessionIndex, worker));
     } catch (e) {
       if (opts.autoAdvance) { loadErrors.push(`${current}: ${(e as Error).message}`); break; }
       throw e;
@@ -693,6 +705,7 @@ export async function walk(
       orphanCheckpoints: findOrphanCheckpoints(act),
       unresolved,
       declaredOperations: (act.operations ?? []).length,
+      lazyGates,
       nextActivity: next,
     });
 

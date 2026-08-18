@@ -11,6 +11,13 @@
  * like a step correctly gated out, since both are simply absent from
  * `stepsExecuted`. Recording which variable each skipped gate had nothing to
  * read puts the reason in the artifact (#469).
+ *
+ * `lazyGates` is the server's own reading of the same question, taken at delivery
+ * against the real bag rather than reconstructed here: how many gated technique
+ * steps it left lazy because this activity produces the variable (`pending`),
+ * because nothing on the path so far has written it (`unbound`), or because the
+ * expression does not parse (`unparsed`). The two are worth having side by side —
+ * one is what the walk could see, the other what the server saw (#472).
  */
 import type { WalkResult } from './walker.js';
 
@@ -21,6 +28,7 @@ export interface StepSnapshot {
   artifactsWritten: string[];
   stepsExecuted: string[];
   gatesReadUnbound: string[];
+  lazyGates?: { pending: number; unbound: number; unparsed: number };
   manifestStatus?: string;
   orphanCheckpoints: string[];
   unresolved: string[];
@@ -52,6 +60,7 @@ export function snapshotWalk(w: WalkResult): WalkSnapshot {
       artifactsWritten: s.artifactsWritten,
       stepsExecuted: s.stepsExecuted,
       gatesReadUnbound: [...new Set(s.gatesReadUnbound)].sort(),
+      lazyGates: s.lazyGates,
       manifestStatus: s.manifestStatus,
       orphanCheckpoints: [...s.orphanCheckpoints].sort(),
       unresolved: [...s.unresolved].sort(),
