@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.15.0
+version: 1.16.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 required: true
@@ -272,6 +272,10 @@ steps:
           variable: stealth_mode
           operator: "!="
           value: true
+        - type: simple
+          variable: project_type
+          operator: ==
+          value: rust-substrate
     message: Do any build-dependent artifacts need user-owned regeneration (e.g. .scale / node metadata)?
     blocking: true
     options:
@@ -287,6 +291,13 @@ steps:
         effect:
           setVariable:
             build_dependent_artifacts_pending: true
+  - kind: action
+    id: derive-regen-commands
+    when: build_dependent_artifacts_pending == true
+    actions:
+      - action: set
+        target: build_dependent_artifact_commands
+        message: The commands that regenerate this project's build-dependent artifacts, read from its build manifest and scripts, with a note on who owns each. One command per line.
   - kind: checkpoint
     id: build-artifact-handoff
     condition:

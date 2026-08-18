@@ -1,5 +1,5 @@
 id: assumptions-review
-version: 2.6.0
+version: 2.7.0
 name: Assumptions Review
 description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
 required: true
@@ -83,10 +83,6 @@ steps:
   - kind: technique
     id: update-assumptions-log
     technique: review-assumptions::record
-  - kind: technique
-    id: post-summary-jira
-    technique: atlassian-operations::comment-jira-issue
-    when: stealth_mode != true && is_review_mode != true && issue_platform == 'jira' && has_deferred_assumptions == true && post_jira_comment != false
   - kind: checkpoint
     id: post-summary-review
     condition:
@@ -115,19 +111,26 @@ steps:
       - id: post-summary
         label: Post summary to issue tracker
         description: Post the resolution summary
+        effect:
+          setVariable:
+            post_summary_approved: true
       - id: skip-posting
         label: Skip posting
         description: Do not post to issue tracker
         effect:
           setVariable:
-            post_jira_comment: false
+            post_summary_approved: false
+  - kind: technique
+    id: post-summary-jira
+    technique: atlassian-operations::comment-jira-issue
+    when: stealth_mode != true && is_review_mode != true && issue_platform == 'jira' && has_deferred_assumptions == true && post_summary_approved == true
   - kind: technique
     id: post-summary-github
     technique:
       name: github-cli-protocol::comment-issue
       inputs:
         repo_path: component_git_dir
-    when: stealth_mode != true && is_review_mode != true && issue_platform == 'github' && has_deferred_assumptions == true
+    when: stealth_mode != true && is_review_mode != true && issue_platform == 'github' && has_deferred_assumptions == true && post_summary_approved == true
 transitions:
   - to: codebase-comprehension
     condition:

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.2.0
+  version: 3.3.0
 ---
 
 ## Capability
@@ -51,7 +51,7 @@ URL of the verified or newly created issue.
 ### 2. Resolve Platform For Creation
 
 - Runs when no existing issue key was given. Set `{needs_issue_creation}` to true.
-- If the platform is ambiguous (user did not select GitHub or Jira), obtain the user's platform selection and set `{issue_platform}` before creating.
+- `{issue_platform}` carries the choice made at the `platform-selection` gate, which the activity presents before this technique runs. Use it as given; do not re-ask.
 
 ### 3. Create Github Issue
 

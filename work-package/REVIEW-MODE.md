@@ -54,7 +54,7 @@ The create path and the review path each carry their own findings gate, because 
 
 The same boundary gates the `review-fix-cycle` loop out of review mode. `code_findings_actionable` and `test_findings_actionable` say a finding reached the severity that warrants action; on the review path the action is raising it to the author, and no component file is edited.
 
-`jira-project-selection` (`start-work-package`) is gated `issue_platform == jira` inside the issue-creation branch and never fires in review mode (which references an existing PR/issue), so it needs no review-mode treatment.
+`jira-project-selection` (`start-work-package`) is gated `issue_platform == jira && needs_issue_creation == true`, and a review run references an existing PR and issue, so it never fires there and needs no review-mode treatment.
 
 ---
 
