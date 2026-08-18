@@ -4,7 +4,7 @@
  * ones that keep a step on its `get_technique` fetch.
  */
 import { describe, it, expect } from 'vitest';
-import { bothGates, gateAnswer, variablesWrittenIn } from '../src/utils/gate-liveness.js';
+import { bothGates, gateAnswer, unboundPositiveReads, variablesWrittenIn } from '../src/utils/gate-liveness.js';
 import type { ProducerSite } from '../src/utils/binding-provenance.js';
 import type { Condition } from '../src/schema/condition.schema.js';
 
@@ -93,5 +93,42 @@ describe('variablesWrittenIn', () => {
   it('reduces a dotted producer name to the bag entry it writes', () => {
     expect(variablesWrittenIn([site('plan.tasks', 'intake', 'output')], 'intake'))
       .toEqual(new Set(['plan']));
+  });
+});
+
+describe('unboundPositiveReads', () => {
+  const bag = { platform: 'jira' };
+
+  it('names a variable an equality gate needs and the bag lacks', () => {
+    expect(unboundPositiveReads("issue_platform == 'jira'", undefined, bag)).toEqual(['issue_platform']);
+  });
+
+  it('says nothing when the bag has the value', () => {
+    expect(unboundPositiveReads("platform == 'jira'", undefined, bag)).toEqual([]);
+  });
+
+  it('leaves out a negative comparison, which absence answers', () => {
+    expect(unboundPositiveReads('is_review_mode != true', undefined, bag)).toEqual([]);
+  });
+
+  it('leaves out presence operators, which absence answers', () => {
+    const condition = { type: 'simple', variable: 'branch_name', operator: 'notExists' } as unknown as Condition;
+    expect(unboundPositiveReads(undefined, condition, bag)).toEqual([]);
+  });
+
+  it('reaches into both arms of a conjunction, and reduces a dotted read to its bag entry', () => {
+    const found = unboundPositiveReads('plan.tasks == 3 && needs_issue_creation == true', undefined, bag);
+    expect(found.sort()).toEqual(['needs_issue_creation', 'plan']);
+  });
+
+  it('walks a structured and/or tree', () => {
+    const condition = {
+      type: 'and',
+      conditions: [
+        { type: 'simple', variable: 'issue_platform', operator: '==', value: 'jira' },
+        { type: 'or', conditions: [{ type: 'simple', variable: 'jira_project', operator: '==', value: 'selected' }] },
+      ],
+    } as unknown as Condition;
+    expect(unboundPositiveReads(undefined, condition, bag).sort()).toEqual(['issue_platform', 'jira_project']);
   });
 });

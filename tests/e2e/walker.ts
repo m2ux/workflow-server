@@ -17,6 +17,7 @@ import { join } from 'node:path';
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { evaluateCondition, type Condition } from '../../src/schema/condition.schema.js';
 import { evaluateWhenExpression } from '../../src/schema/when-expression.js';
+import { unboundPositiveReads } from '../../src/utils/gate-liveness.js';
 import { TERMINAL_SENTINEL } from '../../src/loaders/workflow-loader.js';
 import { parseToolResponse, parseWorkflowResponse, parseBundle, rawText, isError, type Harness } from './harness.js';
 
@@ -122,6 +123,12 @@ export interface WalkStep {
   artifactsWritten: string[];
   /** Step ids the robot worker executed in order (3c mode). */
   stepsExecuted: string[];
+  /**
+   * `<step>:<variable>` for each gate this activity evaluated with nothing in the bag to read. A walk
+   * has no agent, so technique outputs stay unbound and some of these are structural. What the list
+   * makes visible is the rest: a step skipped because its decision had not been taken yet (#469).
+   */
+  gatesReadUnbound: string[];
   /** next_activity manifest-validation status when leaving this activity (3c mode). */
   manifestStatus?: string;
   /** Checkpoints declared by the activity but referenced by no step/loop step (definition smell). */
@@ -331,10 +338,30 @@ function evaluateWhen(expr: string, vars: Record<string, unknown>): boolean {
   return evaluateWhenExpression(expr, vars);
 }
 
+/** Variables the activity's own checkpoints and `set` actions bind, at any depth. */
+function activityDecidedVariables(act: ActivityDef): Set<string> {
+  const decided = new Set<string>();
+  const collect = (steps: StepDef[] | undefined): void => {
+    for (const step of steps ?? []) {
+      if (step.kind === 'loop') { collect(step.steps); continue; }
+      for (const option of step.options ?? []) {
+        for (const name of Object.keys(option.effect?.setVariable ?? {})) decided.add(name);
+      }
+      for (const a of step.actions ?? []) {
+        if (a.action === 'set' && a.target) decided.add(a.target.split('.')[0]!);
+      }
+    }
+  };
+  collect(act.steps);
+  return decided;
+}
+
 interface StepExecution {
   cpRecords: CheckpointRecord[];
   manifest: Array<{ step_id: string; output: string }>;
   stepsExecuted: string[];
+  /** `<step>:<variable>` for each gate read with nothing in the bag to read. */
+  gatesReadUnbound: string[];
   transitionOverride?: string;
 }
 
@@ -357,6 +384,8 @@ async function executeActivitySteps(
   const cpRecords: CheckpointRecord[] = [];
   const manifest: Array<{ step_id: string; output: string }> = [];
   const stepsExecuted: string[] = [];
+  const gatesReadUnbound: string[] = [];
+  const decidedLater = activityDecidedVariables(act);
   let transitionOverride: string | undefined;
 
   const fireCheckpoint = async (cp: CheckpointDef): Promise<void> => {
@@ -411,6 +440,12 @@ async function executeActivitySteps(
   // steps record into the manifest and apply explicit `set` actions.
   const walk = async (steps: StepDef[] | undefined): Promise<void> => {
     for (const step of steps ?? []) {
+      // A gate this activity itself decides later, read before that decision is taken, is false for
+      // want of an answer — and once the step is skipped that is indistinguishable from a real "no".
+      // Record it, because a step absent from stepsExecuted is otherwise silent about why (#469).
+      for (const name of unboundPositiveReads(step.when, step.condition as Condition | undefined, variables)) {
+        if (decidedLater.has(name)) gatesReadUnbound.push(`${step.id ?? '?'}:${name}`);
+      }
       if (step.condition && !evaluateCondition(step.condition, variables)) continue;
       if (step.when && !evaluateWhen(step.when, variables)) continue;
       if (step.kind === 'checkpoint') { await fireCheckpoint(step as unknown as CheckpointDef); continue; }
@@ -424,7 +459,7 @@ async function executeActivitySteps(
     }
   };
   await walk(act.steps);
-  return { cpRecords, manifest, stepsExecuted, transitionOverride };
+  return { cpRecords, manifest, stepsExecuted, gatesReadUnbound, transitionOverride };
 }
 
 /** The activity's checkpoint definitions in document order: the inline kind:checkpoint steps,
@@ -595,6 +630,7 @@ export async function walk(
     let cpRecords: CheckpointRecord[];
     let transitionOverride: string | undefined;
     let stepsExecuted: string[] = [];
+    let gatesReadUnbound: string[] = [];
     let artifactsWritten: string[] = [];
 
     if (mode === 'robot') {
@@ -602,6 +638,7 @@ export async function walk(
       cpRecords = exec.cpRecords;
       transitionOverride = exec.transitionOverride;
       stepsExecuted = exec.stepsExecuted;
+      gatesReadUnbound = exec.gatesReadUnbound;
       pendingManifest = exec.manifest;
       artifactsWritten = writeArtifactStubs(act, variables, planningFolder, activityPrefixes.get(current));
     } else {
@@ -651,6 +688,7 @@ export async function walk(
       artifacts: artifactNames(act, variables),
       artifactsWritten,
       stepsExecuted,
+      gatesReadUnbound,
       manifestStatus,
       orphanCheckpoints: findOrphanCheckpoints(act),
       unresolved,

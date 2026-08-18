@@ -76,6 +76,61 @@ export function variablesWrittenIn(
 }
 
 /**
+ * Bag entries a gate can only be satisfied by a *present* value of, absent from `variables`. Such a
+ * gate is false for want of an answer rather than because the answer is no, and once its step is
+ * skipped the two are indistinguishable.
+ *
+ * Negative and presence forms are left out, because absence answers them: `x != true` and
+ * `notExists x` hold on a missing variable, which is how this corpus spells "not in that mode".
+ */
+export function unboundPositiveReads(
+  when: string | undefined,
+  condition: Condition | undefined,
+  variables: Record<string, unknown>,
+): string[] {
+  const paths = new Set<string>();
+  const fromWhen = (ast: WhenAst): void => {
+    switch (ast.kind) {
+      case 'literal':
+        return;
+      case 'truthy':
+        paths.add(ast.path);
+        return;
+      case 'cmp':
+        if (ast.op !== '!=') paths.add(ast.path);
+        return;
+      case 'not':
+        return; // negation is satisfied by absence
+      default:
+        fromWhen(ast.left);
+        fromWhen(ast.right);
+    }
+  };
+  if (when !== undefined) {
+    const parsed = parseWhen(when);
+    if (parsed.ok) fromWhen(parsed.ast);
+  }
+  const fromCondition = (c: Condition): void => {
+    if (c.type === 'simple') {
+      if (c.operator !== '!=' && c.operator !== 'exists' && c.operator !== 'notExists') {
+        paths.add(c.variable);
+      }
+      return;
+    }
+    if (c.type === 'and' || c.type === 'or') {
+      for (const sub of c.conditions) fromCondition(sub);
+    }
+  };
+  if (condition !== undefined) fromCondition(condition);
+
+  const unbound: string[] = [];
+  for (const path of paths) {
+    if (readPath(path, variables) === undefined) unbound.push(rootOf(path));
+  }
+  return unbound;
+}
+
+/**
  * What a step's gate evaluates to for the whole of the activity being delivered, or `undefined` where
  * it has no answer yet. `when` and `condition` combine under and-semantics; no gate answers `true`.
  * The cases and what each means for delivery: docs/resource_resolution_model.md § Which steps get inlined.
