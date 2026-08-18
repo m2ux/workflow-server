@@ -5,6 +5,12 @@
  * classify what the migration changed. The non-deterministic sessionIndex and
  * the full variable bag (derivable from checkpoint effects) are deliberately
  * excluded so diffs are meaningful.
+ *
+ * `gatesReadUnbound` is the exception to that exclusion, and it is here because
+ * omitting it hid a defect: a step skipped for want of a decision looks exactly
+ * like a step correctly gated out, since both are simply absent from
+ * `stepsExecuted`. Recording which variable each skipped gate had nothing to
+ * read puts the reason in the artifact (#469).
  */
 import type { WalkResult } from './walker.js';
 
@@ -14,6 +20,7 @@ export interface StepSnapshot {
   artifacts: string[];
   artifactsWritten: string[];
   stepsExecuted: string[];
+  gatesReadUnbound: string[];
   manifestStatus?: string;
   orphanCheckpoints: string[];
   unresolved: string[];
@@ -44,6 +51,7 @@ export function snapshotWalk(w: WalkResult): WalkSnapshot {
       artifacts: s.artifacts,
       artifactsWritten: s.artifactsWritten,
       stepsExecuted: s.stepsExecuted,
+      gatesReadUnbound: [...new Set(s.gatesReadUnbound)].sort(),
       manifestStatus: s.manifestStatus,
       orphanCheckpoints: [...s.orphanCheckpoints].sort(),
       unresolved: [...s.unresolved].sort(),

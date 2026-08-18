@@ -215,7 +215,7 @@ Stdout is one JSON object with per-activity fresh/resume characters and the aggr
 
 By default each run compares against the committed baseline
 [`scripts/fixtures/token-benchmark-baseline.json`](../scripts/fixtures/token-benchmark-baseline.json)
-(fresh mode, recorded 2026-08-17 against `workflows@34cd5429`). Stderr prints a
+(fresh mode, recorded 2026-08-17 against `workflows@72db28ae`). Stderr prints a
 compact scorecard; stdout JSON includes `vsReference` with absolute/percent deltas
 and a **deliveryCostIndex** (baseline = 100, lower is better — sum of activity +
 workflow + resource + technique chars).
