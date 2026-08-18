@@ -131,8 +131,37 @@ export function unboundPositiveReads(
 }
 
 /**
- * What a step's gate evaluates to for the whole of the activity being delivered, or `undefined` where
- * it has no answer yet. `when` and `condition` combine under and-semantics; no gate answers `true`.
+ * Why a gate has no answer at delivery time. The three are separate because they call for different
+ * responses, and one counter over all of them says only that something was deferred:
+ *
+ * - `pending` — this activity produces the variable, so the answer arrives while the run is under
+ *   way. Ordinary lazy delivery, and the expected reason on a healthy activity.
+ * - `unbound` — the variable is absent from the bag and no step of this activity writes it, so
+ *   nothing on the path taken so far has produced it. Either an upstream activity should have set
+ *   it, or the gate reads a name that never gets bound.
+ * - `unparsed` — the expression does not parse, so it has no reading at all. The corpus guards own
+ *   this one; delivery only declines to guess.
+ */
+export type GateUnanswered = 'pending' | 'unbound' | 'unparsed';
+
+/** A tally of unanswered gates by reason, one field per `GateUnanswered`. */
+export interface GateUnansweredCounts {
+  pending: number;
+  unbound: number;
+  unparsed: number;
+}
+
+/**
+ * What the gate evaluates to for the whole activity, and where there is no answer, why. The two
+ * arms carry the reason exactly where one exists, so reading it needs no assertion.
+ */
+export type GateVerdict =
+  | { answer: boolean; reason?: undefined }
+  | { answer: undefined; reason: GateUnanswered };
+
+/**
+ * What a step's gate evaluates to for the whole of the activity being delivered, or no answer and
+ * the reason why. `when` and `condition` combine under and-semantics; no gate answers `true`.
  * The cases and what each means for delivery: docs/resource_resolution_model.md § Which steps get inlined.
  */
 export function gateAnswer(args: {
@@ -140,36 +169,42 @@ export function gateAnswer(args: {
   condition?: Condition | undefined;
   variables: Record<string, unknown>;
   writtenInActivity: ReadonlySet<string>;
-}): boolean | undefined {
+}): GateVerdict {
   const { when, condition, variables, writtenInActivity } = args;
-  if (when === undefined && condition === undefined) return true;
+  if (when === undefined && condition === undefined) return { answer: true };
 
   const valuePaths = new Set<string>();
   const presencePaths = new Set<string>();
   if (when !== undefined) {
     const parsed = parseWhen(when);
-    if (!parsed.ok) return undefined;
+    if (!parsed.ok) return { answer: undefined, reason: 'unparsed' };
     collectWhenPaths(parsed.ast, valuePaths);
   }
   if (condition !== undefined) collectConditionPaths(condition, valuePaths, presencePaths);
 
   for (const path of [...valuePaths, ...presencePaths]) {
-    if (writtenInActivity.has(rootOf(path))) return undefined;
+    if (writtenInActivity.has(rootOf(path))) return { answer: undefined, reason: 'pending' };
   }
   // Both evaluators return false for an unbound read and for a false one. A compared value that is
   // absent is the first, so it has no answer rather than a negative one.
   for (const path of valuePaths) {
-    if (readPath(path, variables) === undefined) return undefined;
+    if (readPath(path, variables) === undefined) return { answer: undefined, reason: 'unbound' };
   }
 
   const whenSays = when === undefined ? true : evaluateWhenExpression(when, variables);
   const conditionSays = condition === undefined ? true : evaluateCondition(condition, variables);
-  return whenSays && conditionSays;
+  return { answer: whenSays && conditionSays };
 }
 
-/** And-combine an enclosing gate's answer with a step's own. */
-export function bothGates(outer: boolean | undefined, own: boolean | undefined): boolean | undefined {
-  if (outer === false || own === false) return false;
-  if (outer === undefined || own === undefined) return undefined;
-  return true;
+/**
+ * And-combine an enclosing gate's verdict with a step's own.
+ *
+ * Where both lack an answer the enclosing reason is the one reported: it strands the whole body
+ * whatever the body's own gate would have said, so it is the reason the step stayed lazy.
+ */
+export function bothGates(outer: GateVerdict, own: GateVerdict): GateVerdict {
+  if (outer.answer === false || own.answer === false) return { answer: false };
+  if (outer.answer === undefined) return outer;
+  if (own.answer === undefined) return own;
+  return { answer: true };
 }
