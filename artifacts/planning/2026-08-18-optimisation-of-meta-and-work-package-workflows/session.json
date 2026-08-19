@@ -955,6 +955,15 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "deliver-results-resolution-offer": {
+            "effects": {
+              "variablesSet": {
+                "resolution_requested": true
+              }
+            },
+            "optionId": "proceed",
+            "respondedAt": "2026-08-19T09:11:43.000Z"
+          },
           "dimension-planning-confirm-plan": {
             "effects": {
               "variablesSet": {
@@ -984,10 +993,11 @@
         "completedActivities": [
           "scope-definition",
           "dimension-planning",
-          "execute-analysis"
+          "execute-analysis",
+          "consolidate-report"
         ],
-        "condition": "isDefault: consolidate-report",
-        "currentActivity": "consolidate-report",
+        "condition": "isDefault: deliver-results",
+        "currentActivity": "deliver-results",
         "currentTechnique": "",
         "declaredArtifacts": [
           {
@@ -1064,6 +1074,11 @@
             "id": "portfolio-scarcity",
             "name": "Change Economics — Scarcity (08)",
             "path": "dimensions/portfolio-scarcity.md"
+          },
+          {
+            "id": "evaluation-report",
+            "name": "EVALUATION-REPORT.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/EVALUATION-REPORT.md"
           }
         ],
         "deliveredContent": {
@@ -1203,6 +1218,25 @@
             "technique:rules:487a67946d79b011": "487a67946d79b011",
             "technique:rules:c7fcb616e4103f20": "c7fcb616e4103f20",
             "technique:verify-artifact-conforms": "b52408b38bb583c7"
+          },
+          "client-worker-07": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+            "bundle:variable-binding": "86e00a6d087f9e58",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:evaluation-report-template#evaluation-report-template": "15a4e5310c1d2c2b",
+            "technique:compose-evaluation-report::compile-and-present": "c71b062c6bab2505",
+            "technique:inherited_inputs.items:a8ece513981f0039": "a8ece513981f0039",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:e0b3d1c3406529d1": "e0b3d1c3406529d1",
+            "technique:inherited_outputs.items:cc83af84097d0e92": "cc83af84097d0e92",
+            "technique:inherited_outputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+            "technique:inherited_outputs:5f7e0eedc65c0c16": "5f7e0eedc65c0c16",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:487a67946d79b011": "487a67946d79b011"
           }
         },
         "history": [
@@ -2923,11 +2957,224 @@
             },
             "timestamp": "2026-08-19T08:24:50.359Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "consolidate-report",
+            "timestamp": "2026-08-19T08:25:27.250Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "name": "evaluation_report_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/EVALUATION-REPORT.md"
+            },
+            "timestamp": "2026-08-19T08:25:27.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "name": "artifact_conformance",
+              "source": "variables_changed",
+              "value": {
+                "conforms": false,
+                "violations": [
+                  {
+                    "detail": "285 lines against the guide's ~200; condensed from 296. Residual is structural: 53 finding rows across six dimension tables plus the summary are 74 table lines and the mandated sections add 25 headings, so the enumeration the request asked for cannot fit under 200. Preserved under the register's explicit-request clause.",
+                    "file": "EVALUATION-REPORT.md",
+                    "fixed": false,
+                    "rule": "line-budget"
+                  },
+                  {
+                    "detail": "Key topics field carried four to six code symbols per sentence against the one-symbol-per-sentence rule. Split into seven bullets, one claim each, every figure preserved. 46 lines to 55, inside the ~60 guide.",
+                    "file": "01-evaluation-plan.md",
+                    "fixed": true,
+                    "rule": "writing-register"
+                  },
+                  {
+                    "detail": "The bound guide map carries three rows and none maps the 14 per-dimension analysis filenames under dimensions/ and remediation-effect/. Those files were left unmeasured rather than measured against a template they were not written to. Correcting the map means editing the workflow definition, outside this activity.",
+                    "file": "(folder)",
+                    "fixed": false,
+                    "rule": "no-guide"
+                  }
+                ]
+              }
+            },
+            "timestamp": "2026-08-19T08:25:27.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "stepId": "extract-findings"
+            },
+            "timestamp": "2026-08-19T08:25:27.250Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "stepId": "identify-patterns"
+            },
+            "timestamp": "2026-08-19T08:25:27.250Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "stepId": "compose-report"
+            },
+            "timestamp": "2026-08-19T08:25:27.250Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "stepId": "verify-artifact-conformance"
+            },
+            "timestamp": "2026-08-19T08:25:27.250Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "stepId": "verify-report"
+            },
+            "timestamp": "2026-08-19T08:25:27.250Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "deliver-results",
+            "timestamp": "2026-08-19T08:25:27.250Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-07",
+              "chars": 44075,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-19T08:25:41.585Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-07",
+              "chars": 5378,
+              "delivery": "full",
+              "stepId": "compile-and-present",
+              "techniqueId": "compose-evaluation-report::compile-and-present"
+            },
+            "timestamp": "2026-08-19T08:25:41.585Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-07",
+              "stepId": "compile-and-present"
+            },
+            "timestamp": "2026-08-19T08:25:41.585Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "deliver-results",
+            "checkpoint": "resolution-offer",
+            "timestamp": "2026-08-19T08:26:50.684Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-07",
+              "usage": {
+                "duration_ms": 181951,
+                "subagent_tokens": 84356,
+                "tool_uses": 9
+              }
+            },
+            "timestamp": "2026-08-19T08:28:40.779Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "deliver-results",
+            "checkpoint": "resolution-offer",
+            "data": {
+              "optionId": "proceed"
+            },
+            "timestamp": "2026-08-19T09:11:43.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "name": "resolution_requested",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-19T09:11:43.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-07",
+              "chars": 8209,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-19T09:12:04.438Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-07",
+              "chars": 5378,
+              "delivery": "unchanged",
+              "stepId": "compile-and-present",
+              "techniqueId": "compose-evaluation-report::compile-and-present"
+            },
+            "timestamp": "2026-08-19T09:12:04.438Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-07",
+              "bundled": true,
+              "chars": 2897,
+              "delivery": "full",
+              "resourceId": "evaluation-report-template#evaluation-report-template"
+            },
+            "timestamp": "2026-08-19T09:12:04.438Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-07",
+              "usage": {
+                "duration_ms": 95561,
+                "subagent_tokens": 87352,
+                "tool_uses": 3
+              }
+            },
+            "timestamp": "2026-08-19T09:13:32.988Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 42,
+        "seq": 50,
         "sessionIndex": "QR6FTR",
         "skippedActivities": [],
         "startedAt": "2026-08-18T10:01:56.532Z",
@@ -3422,7 +3669,7 @@
             "workflowId": "prism"
           }
         ],
-        "ts": 1787127890,
+        "ts": 1787130812,
         "variables": {
           "accepted_count": 0,
           "all_artifact_paths": [
@@ -3441,6 +3688,29 @@
             ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-claim.md",
             ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-scarcity.md"
           ],
+          "artifact_conformance": {
+            "conforms": false,
+            "violations": [
+              {
+                "detail": "285 lines against the guide's ~200; condensed from 296. Residual is structural: 53 finding rows across six dimension tables plus the summary are 74 table lines and the mandated sections add 25 headings, so the enumeration the request asked for cannot fit under 200. Preserved under the register's explicit-request clause.",
+                "file": "EVALUATION-REPORT.md",
+                "fixed": false,
+                "rule": "line-budget"
+              },
+              {
+                "detail": "Key topics field carried four to six code symbols per sentence against the one-symbol-per-sentence rule. Split into seven bullets, one claim each, every figure preserved. 46 lines to 55, inside the ~60 guide.",
+                "file": "01-evaluation-plan.md",
+                "fixed": true,
+                "rule": "writing-register"
+              },
+              {
+                "detail": "The bound guide map carries three rows and none maps the 14 per-dimension analysis filenames under dimensions/ and remediation-effect/. Those files were left unmeasured rather than measured against a template they were not written to. Correcting the map means editing the workflow definition, outside this activity.",
+                "file": "(folder)",
+                "fixed": false,
+                "rule": "no-guide"
+              }
+            ]
+          },
           "completed_analyses": [
             {
               "definitive_findings_path": null,
@@ -3549,12 +3819,13 @@
           "evaluation_description": "Enumerate every remaining opportunity to make the workflow-server `meta` and `work-package` workflows faster and cheaper to run, measured against the build as it stands after the optimisation work merged on 2026-08-17/18 (server PRs #467, #471; definition PRs #468, #470). The 2026-08-17 evaluation report at .engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/EVALUATION-REPORT.md is the worked example for shape and rigour, and explicitly not the boundary of what may be found. Both halves of the complaint are in scope: token cost and wall-clock latency.",
           "evaluation_plan": "Composed evaluation-plan document; written as the artifact below.",
           "evaluation_plan_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/01-evaluation-plan.md",
+          "evaluation_report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/EVALUATION-REPORT.md",
           "execution_groups": "Two-entry array of { pipeline_mode, lenses, dimensions, analysis_focus, output_subdir }, full-prism first then portfolio, as reported in steps_completed[group-dimensions].",
           "gitnexus_available": false,
           "key_topics": "Delivery trajectory and the unattributed 26.8% fall; gate-liveness and the verify.yml cost gate unmeasured; batch bound at defaults; get_resource and get_activity dominating delivery; large persisting bodies; uneven checkpoint density; 28 CI-only guards and 18 control-plane tools.",
           "output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows",
           "pipeline_mode": "full-prism",
-          "resolution_requested": false,
+          "resolution_requested": true,
           "scope_confirmed": true,
           "scope_summary": "Target /home/mike1/projects/dev/workflow-server (workflow-server), classified mixed — package.json and tsconfig.json make it a codebase, and the subject of the evaluation is 909 KB / ~117,000 words of definition markdown carried in the workflows git submodule. Output directory .engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows, created and verified writable. Pipeline mode full-prism; no lens overrides supplied; six dimensions derived (none supplied by the user): Remediation Effect, Delivery Economy, Orchestration Topology and Critical Path, Mechanisation Potential, Redundant Work, Change Economics. Measured starting position: workflows/meta 171 files (160 md, 11 yaml), 291 KB, ~37,961 words, 5 activities, 23 technique steps, 5 checkpoints, 19 when-gated steps; workflows/work-package 168 files (152 md), 619 KB, ~79,032 words, 15 activities, 176 technique steps, 44 checkpoints, 83 when-gated steps; src/ 55 TypeScript files, 12,628 LOC, 18 registered MCP tools all session control-plane; scripts/ 47 files, 9,935 LOC including 28 check-*.ts guards; tests/ 82 files, 18,955 LOC. Recorded benchmark walk (12 activities, fresh context): 1,302,319 delivery characters over 242 tool calls — get_resource 162 calls / 527,683 chars / 146 fetches against 77 distinct ledger keys, get_activity 12 calls / 520,075 chars with 66 techniques bundled and 24 fetched separately, get_technique 24 calls / 146,205 chars, get_workflow 1 call / 108,356 chars, plus 10 yield/respond/resume triples. Delivery trajectory 1,355,532 (July) to 1,780,292 (2026-08-17, pre-remediation) to 1,302,319 (now). Recent remediation: 42 files, 1,861 insertions, 297 deletions across server PRs #467 and #471 and definition PRs #468 and #470. Batch bound still at defaults: BATCH_MAX_ACTIVITIES 3, BATCH_HEADROOM_FRACTION 0.35.",
           "structure_inventory": "9-row inventory of meta, work-package, src/, src/tools, scripts/, tests/, schemas/ and the recorded benchmark walk, as reported in steps_completed[survey-target].",
