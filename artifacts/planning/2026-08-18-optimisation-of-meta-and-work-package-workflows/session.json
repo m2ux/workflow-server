@@ -982,11 +982,19 @@
           }
         },
         "completedActivities": [
-          "scope-definition"
+          "scope-definition",
+          "dimension-planning"
         ],
-        "condition": "scope_confirmed == true",
-        "currentActivity": "dimension-planning",
+        "condition": "dimensions_confirmed == true",
+        "currentActivity": "execute-analysis",
         "currentTechnique": "",
+        "declaredArtifacts": [
+          {
+            "id": "evaluation_plan",
+            "name": "evaluation-plan.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/01-evaluation-plan.md"
+          }
+        ],
         "deliveredContent": {
           "client-worker-01": {
             "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
@@ -1056,6 +1064,45 @@
             "technique:plan-evaluation::write-evaluation-plan": "21b8aa010b168e5f",
             "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
             "technique:rules:3db2220993ede73e": "3db2220993ede73e"
+          },
+          "client-worker-04": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:1654f244e34d336f": "1654f244e34d336f",
+            "bundle:scatter-gather": "af12d4486241b5af",
+            "bundle:variable-binding": "86e00a6d087f9e58",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "technique:execute-analysis::read-run-manifest": "6c347adbdda15913",
+            "technique:inherited_inputs.items:b6ad6262b70beb76": "b6ad6262b70beb76",
+            "technique:inherited_inputs.items:b7b9139fa020b17b": "b7b9139fa020b17b",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:c5c5526a2499b15b": "c5c5526a2499b15b",
+            "technique:inherited_inputs:f57c2ac5fcfc13b6": "f57c2ac5fcfc13b6",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:workflow-engine::handle-sub-workflow": "035bfec615e79d50"
+          },
+          "client-worker-05": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:1654f244e34d336f": "1654f244e34d336f",
+            "bundle:scatter-gather": "af12d4486241b5af",
+            "bundle:variable-binding": "86e00a6d087f9e58",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:prism/degradation": "71fe0cfd30743d85",
+            "resource:prism/l12-synthesis": "9ef599b13bbe95bd",
+            "resource:prism/writer": "1f2e4a05ee6d74e8",
+            "technique:execute-analysis::read-run-manifest": "6c347adbdda15913",
+            "technique:inherited_inputs.items:b6ad6262b70beb76": "b6ad6262b70beb76",
+            "technique:inherited_inputs.items:b7b9139fa020b17b": "b7b9139fa020b17b",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:c5c5526a2499b15b": "c5c5526a2499b15b",
+            "technique:inherited_inputs:f57c2ac5fcfc13b6": "f57c2ac5fcfc13b6",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:workflow-engine::handle-sub-workflow": "035bfec615e79d50"
           }
         },
         "history": [
@@ -2032,19 +2079,843 @@
             },
             "timestamp": "2026-08-18T13:50:51.870Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "dimension-planning",
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "target_summary",
+              "source": "variables_changed",
+              "value": "Mixed target: TypeScript MCP server plus a 909 KB workflow-definition corpus; subject is the meta and work-package trees measured against the post-remediation build of 2026-08-17/18."
+            },
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "structure_inventory",
+              "source": "variables_changed",
+              "value": "9-row inventory of meta, work-package, src/, src/tools, scripts/, tests/, schemas/ and the recorded benchmark walk, as reported in steps_completed[survey-target]."
+            },
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "key_topics",
+              "source": "variables_changed",
+              "value": "Delivery trajectory and the unattributed 26.8% fall; gate-liveness and the verify.yml cost gate unmeasured; batch bound at defaults; get_resource and get_activity dominating delivery; large persisting bodies; uneven checkpoint density; 28 CI-only guards and 18 control-plane tools."
+            },
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "declaredType": "array",
+              "name": "dimension_plan",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": "Six-entry array of { dimension, pipeline_mode, lenses, analysis_focus, output_subdir }, as reported in steps_completed[map-dimensions].",
+              "valueType": "string"
+            },
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "declaredType": "array",
+              "name": "execution_groups",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": "Two-entry array of { pipeline_mode, lenses, dimensions, analysis_focus, output_subdir }, full-prism first then portfolio, as reported in steps_completed[group-dimensions].",
+              "valueType": "string"
+            },
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "evaluation_plan",
+              "source": "variables_changed",
+              "value": "Composed evaluation-plan document; written as the artifact below."
+            },
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "evaluation_plan_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/01-evaluation-plan.md"
+            },
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "dimensions_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "stepId": "survey-target"
+            },
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "stepId": "map-dimensions"
+            },
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "stepId": "group-dimensions"
+            },
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "stepId": "write-plan"
+            },
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-03",
+              "stepId": "confirm-plan"
+            },
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "timestamp": "2026-08-18T13:51:18.682Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-04",
+              "chars": 48589,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-18T13:51:42.388Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-04",
+              "chars": 2140,
+              "delivery": "full",
+              "stepId": "trigger-prism",
+              "techniqueId": "workflow-engine::handle-sub-workflow"
+            },
+            "timestamp": "2026-08-18T13:51:42.388Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-04",
+              "stepId": "trigger-prism"
+            },
+            "timestamp": "2026-08-18T13:51:42.388Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-04",
+              "chars": 3074,
+              "delivery": "full",
+              "stepId": "read-run-manifest",
+              "techniqueId": "execute-analysis::read-run-manifest"
+            },
+            "timestamp": "2026-08-18T13:51:42.388Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-04",
+              "stepId": "read-run-manifest"
+            },
+            "timestamp": "2026-08-18T13:51:42.388Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "sessionIndex": "NJOOEH",
+              "workflowId": "prism"
+            },
+            "timestamp": "2026-08-18T13:53:28.868Z",
+            "type": "workflow_triggered"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "sessionIndex": "HK6JPQ",
+              "workflowId": "prism"
+            },
+            "timestamp": "2026-08-18T13:59:46.357Z",
+            "type": "workflow_triggered"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-04",
+              "usage": {
+                "duration_ms": 564386,
+                "note": "dispatch ended without an envelope; harness reported stall after 600s with no progress",
+                "subagent_tokens": 138434,
+                "tool_uses": 57
+              }
+            },
+            "timestamp": "2026-08-19T05:49:01.532Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 48589,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-19T05:49:23.118Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 48589,
+              "priorAgentId": "client-worker-04"
+            },
+            "timestamp": "2026-08-19T05:49:23.118Z",
+            "type": "activity_redelivered"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 2140,
+              "delivery": "full",
+              "stepId": "trigger-prism",
+              "techniqueId": "workflow-engine::handle-sub-workflow"
+            },
+            "timestamp": "2026-08-19T05:49:23.118Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "stepId": "trigger-prism"
+            },
+            "timestamp": "2026-08-19T05:49:23.118Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 3074,
+              "delivery": "full",
+              "stepId": "read-run-manifest",
+              "techniqueId": "execute-analysis::read-run-manifest"
+            },
+            "timestamp": "2026-08-19T05:49:23.118Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "stepId": "read-run-manifest"
+            },
+            "timestamp": "2026-08-19T05:49:23.118Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 492,
+              "delivery": "full",
+              "resourceId": "prism/degradation"
+            },
+            "timestamp": "2026-08-19T05:51:23.982Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 1304,
+              "delivery": "full",
+              "resourceId": "prism/l12-synthesis"
+            },
+            "timestamp": "2026-08-19T05:51:36.868Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 3278,
+              "delivery": "full",
+              "resourceId": "prism/writer"
+            },
+            "timestamp": "2026-08-19T05:51:56.775Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "usage": {
+                "duration_ms": 8230657,
+                "note": "replacement worker; returned activity_complete. Excludes the orphaned lens sub-agents of the killed client-worker-04 dispatch, which continued running outside any dispatch this session owns.",
+                "subagent_tokens": 99496,
+                "tool_uses": 33
+              }
+            },
+            "timestamp": "2026-08-19T08:07:25.218Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 24,
+        "seq": 34,
         "sessionIndex": "QR6FTR",
         "skippedActivities": [],
         "startedAt": "2026-08-18T10:01:56.532Z",
         "status": "running",
-        "triggeredWorkflows": [],
-        "ts": 1787061051,
+        "triggeredWorkflows": [
+          {
+            "sessionIndex": "NJOOEH",
+            "state": {
+              "agentId": "workflow-orchestrator",
+              "checkpointResponses": {},
+              "completedActivities": [
+                "select-mode"
+              ],
+              "condition": "isDefault: pipeline_mode is full-prism, matching none of the named mode transitions",
+              "currentActivity": "structural-pass",
+              "currentTechnique": "",
+              "deliveredContent": {
+                "client-worker-04": {
+                  "activity_rules:df60226b63c3f6ae": "df60226b63c3f6ae",
+                  "bundle:rules:8207196071c9d93e": "8207196071c9d93e",
+                  "bundle:variable-binding": "fc19a1a690c26bd4",
+                  "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+                  "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+                  "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+                  "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+                  "resource:run-manifest": "1e37a5553d17700b",
+                  "technique:inherited_inputs.items:8f4c7a7b274cacb4": "8f4c7a7b274cacb4",
+                  "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+                  "technique:inherited_inputs:6131206b19a50605": "6131206b19a50605",
+                  "technique:plan-analysis": "2af35b78c37666f7",
+                  "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+                  "technique:rules:56ca8c7f23e4daa8": "56ca8c7f23e4daa8"
+                }
+              },
+              "history": [
+                {
+                  "timestamp": "2026-08-18T13:53:28.868Z",
+                  "type": "workflow_started"
+                },
+                {
+                  "data": {
+                    "variables": {
+                      "gitnexus_available": false,
+                      "output_path": ".",
+                      "target_type": "code",
+                      "user_request": "start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. I want a report detailing any/all opportunities for optimisation of meta and work package workflows. use the example provided as a guide but do not limit to this. Many optimisations were done recently to address this. I want a further report elucidating remaining opportunities."
+                    }
+                  },
+                  "timestamp": "2026-08-18T13:53:28.868Z",
+                  "type": "variables_seeded"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "target",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server"
+                  },
+                  "timestamp": "2026-08-18T13:54:28.794Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "target_type",
+                    "source": "variables_changed",
+                    "value": "general"
+                  },
+                  "timestamp": "2026-08-18T13:54:28.794Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "target_description",
+                    "source": "variables_changed",
+                    "value": "The workflow-server meta and work-package workflow definitions plus the server, scripts and CI that serve them, evaluated for the effect of the optimisation work merged 2026-08-17/18 (server PRs #467 and #471, definition PRs #468 and #470) on the time and token cost of one run."
+                  },
+                  "timestamp": "2026-08-18T13:54:28.794Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "output_path",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/remediation-effect"
+                  },
+                  "timestamp": "2026-08-18T13:54:28.794Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "pipeline_mode",
+                    "source": "variables_changed",
+                    "value": "full-prism"
+                  },
+                  "timestamp": "2026-08-18T13:54:28.794Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "declaredType": "array",
+                    "name": "selected_lenses",
+                    "source": "variables_changed",
+                    "typeMismatch": true,
+                    "value": "L12 pipeline (00 structural, 01 adversarial, 02 synthesis)",
+                    "valueType": "string"
+                  },
+                  "timestamp": "2026-08-18T13:54:28.794Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "analysis_focus",
+                    "source": "variables_changed",
+                    "value": "Evaluate the remediation effect of the work merged 2026-08-17/18 - server PRs #467 and #471, definition PRs #468 and #470, 42 files, 1,861 insertions, 297 deletions. Re-measure the 12-activity walk (1,302,319 characters over 242 calls today, against 1,780,292 pre-remediation and 1,355,532 in July) and attribute the 26.8% fall to specific changes. Establish per finding which of the prior report's 52 (15 high, 27 medium, 10 low) are closed, which partly addressed, which untouched, so that 'remaining' is measured against the current build rather than the prior report. Test whether src/utils/gate-liveness.ts actually reduces the permanently-lazy step counts the prior report measured (89 of 174 work-package steps, 12 of 23 meta steps) against the 83 and 19 when-gated steps counted today; whether the verify.yml delivery-cost gate runs and resolves the changes it guards above its noise floor; and whether the workflow-version drift on resumed sessions, named as the largest risk, is closed, mitigated or open. Include regressions the remediation itself introduced."
+                  },
+                  "timestamp": "2026-08-18T13:54:28.794Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "timestamp": "2026-08-18T13:54:28.794Z",
+                  "type": "activity_entered"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "client-worker-04",
+                    "chars": 63903,
+                    "dispatch": "fresh"
+                  },
+                  "timestamp": "2026-08-18T13:54:33.143Z",
+                  "type": "activity_dispatched"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "client-worker-04",
+                    "chars": 20166,
+                    "delivery": "full",
+                    "stepId": "plan",
+                    "techniqueId": "plan-analysis"
+                  },
+                  "timestamp": "2026-08-18T13:54:33.143Z",
+                  "type": "technique_bundled"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "client-worker-04",
+                    "stepId": "plan"
+                  },
+                  "timestamp": "2026-08-18T13:54:33.143Z",
+                  "type": "step_started"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "client-worker-04",
+                    "chars": 3207,
+                    "delivery": "full",
+                    "resourceId": "run-manifest"
+                  },
+                  "timestamp": "2026-08-18T13:54:57.468Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "select-mode",
+                  "timestamp": "2026-08-18T14:00:01.769Z",
+                  "type": "activity_exited"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "analysis_units",
+                    "source": "variables_changed",
+                    "value": [
+                      {
+                        "lens_name": "l12",
+                        "pipeline_mode": "full-prism",
+                        "target": "/home/mike1/projects/dev/workflow-server",
+                        "unit": "Remediation Effect",
+                        "unit_output_subdir": "."
+                      }
+                    ]
+                  },
+                  "timestamp": "2026-08-18T14:00:01.769Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "gitnexus_available",
+                    "source": "variables_changed",
+                    "value": false
+                  },
+                  "timestamp": "2026-08-18T14:00:01.769Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "client-worker-04",
+                    "stepId": "plan"
+                  },
+                  "timestamp": "2026-08-18T14:00:01.769Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "client-worker-04",
+                    "stepId": "apply-plan"
+                  },
+                  "timestamp": "2026-08-18T14:00:01.769Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "timestamp": "2026-08-18T14:00:01.769Z",
+                  "type": "activity_entered"
+                }
+              ],
+              "repo": "m2ux/workflow-server",
+              "schemaVersion": 1,
+              "seq": 4,
+              "sessionIndex": "NJOOEH",
+              "skippedActivities": [],
+              "startedAt": "2026-08-18T13:53:28.868Z",
+              "status": "running",
+              "triggeredWorkflows": [],
+              "ts": 1787061601,
+              "variables": {
+                "analysis_focus": "Evaluate the remediation effect of the work merged 2026-08-17/18 - server PRs #467 and #471, definition PRs #468 and #470, 42 files, 1,861 insertions, 297 deletions. Re-measure the 12-activity walk (1,302,319 characters over 242 calls today, against 1,780,292 pre-remediation and 1,355,532 in July) and attribute the 26.8% fall to specific changes. Establish per finding which of the prior report's 52 (15 high, 27 medium, 10 low) are closed, which partly addressed, which untouched, so that 'remaining' is measured against the current build rather than the prior report. Test whether src/utils/gate-liveness.ts actually reduces the permanently-lazy step counts the prior report measured (89 of 174 work-package steps, 12 of 23 meta steps) against the 83 and 19 when-gated steps counted today; whether the verify.yml delivery-cost gate runs and resolves the changes it guards above its noise floor; and whether the workflow-version drift on resumed sessions, named as the largest risk, is closed, mitigated or open. Include regressions the remediation itself introduced.",
+                "analysis_units": [
+                  {
+                    "lens_name": "l12",
+                    "pipeline_mode": "full-prism",
+                    "target": "/home/mike1/projects/dev/workflow-server",
+                    "unit": "Remediation Effect",
+                    "unit_output_subdir": "."
+                  }
+                ],
+                "gitnexus_available": false,
+                "output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/remediation-effect",
+                "pipeline_mode": "full-prism",
+                "selected_lenses": "L12 pipeline (00 structural, 01 adversarial, 02 synthesis)",
+                "target": "/home/mike1/projects/dev/workflow-server",
+                "target_description": "The workflow-server meta and work-package workflow definitions plus the server, scripts and CI that serve them, evaluated for the effect of the optimisation work merged 2026-08-17/18 (server PRs #467 and #471, definition PRs #468 and #470) on the time and token cost of one run.",
+                "target_type": "general",
+                "user_request": "start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. I want a report detailing any/all opportunities for optimisation of meta and work package workflows. use the example provided as a guide but do not limit to this. Many optimisations were done recently to address this. I want a further report elucidating remaining opportunities."
+              },
+              "workflowId": "prism",
+              "workflowVersion": "2.4.0"
+            },
+            "status": "running",
+            "triggeredAt": "2026-08-18T13:53:28.868Z",
+            "triggeredFrom": {
+              "activityId": "execute-analysis"
+            },
+            "workflowId": "prism"
+          },
+          {
+            "sessionIndex": "HK6JPQ",
+            "state": {
+              "agentId": "workflow-orchestrator",
+              "checkpointResponses": {},
+              "completedActivities": [
+                "select-mode"
+              ],
+              "condition": "isDefault: pipeline_mode is portfolio, matching none of the named mode transitions",
+              "currentActivity": "structural-pass",
+              "currentTechnique": "",
+              "history": [
+                {
+                  "timestamp": "2026-08-18T13:59:46.357Z",
+                  "type": "workflow_started"
+                },
+                {
+                  "data": {
+                    "variables": {
+                      "gitnexus_available": false,
+                      "output_path": ".",
+                      "target_type": "code",
+                      "user_request": "start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. I want a report detailing any/all opportunities for optimisation of meta and work package workflows. use the example provided as a guide but do not limit to this. Many optimisations were done recently to address this. I want a further report elucidating remaining opportunities."
+                    }
+                  },
+                  "timestamp": "2026-08-18T13:59:46.357Z",
+                  "type": "variables_seeded"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "target",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server"
+                  },
+                  "timestamp": "2026-08-18T13:59:57.248Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "target_type",
+                    "source": "variables_changed",
+                    "value": "general"
+                  },
+                  "timestamp": "2026-08-18T13:59:57.248Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "target_description",
+                    "source": "variables_changed",
+                    "value": "Five dimensions of remaining optimisation opportunity in the workflow-server meta and work-package workflows: Delivery Economy, Orchestration Topology and Critical Path, Mechanisation Potential, Redundant Work, and Change Economics."
+                  },
+                  "timestamp": "2026-08-18T13:59:57.248Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "output_path",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions"
+                  },
+                  "timestamp": "2026-08-18T13:59:57.248Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "pipeline_mode",
+                    "source": "variables_changed",
+                    "value": "portfolio"
+                  },
+                  "timestamp": "2026-08-18T13:59:57.248Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "declaredType": "array",
+                    "name": "selected_lenses",
+                    "source": "variables_changed",
+                    "typeMismatch": true,
+                    "value": "claim, scarcity, degradation, sdl-coupling, sdl-abstraction, optimize, reachability, audit-code, architect, blindspot, counterfactual",
+                    "valueType": "string"
+                  },
+                  "timestamp": "2026-08-18T13:59:57.248Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "analysis_focus",
+                    "source": "variables_changed",
+                    "value": "Each lens runs against its own dimension's focus and writes its own artifact within the shared subdirectory; the five foci are not merged into one prompt. Delivery Economy takes sdl-abstraction (15) and optimize (20). Orchestration Topology and Critical Path takes sdl-coupling (14), architect (51) and counterfactual (54). Mechanisation Potential takes audit-code (34) and blindspot (52). Redundant Work takes reachability (30) and degradation (10). Change Economics takes claim (07) and scarcity (08)."
+                  },
+                  "timestamp": "2026-08-18T13:59:57.248Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "timestamp": "2026-08-18T13:59:57.248Z",
+                  "type": "activity_entered"
+                },
+                {
+                  "activity": "select-mode",
+                  "timestamp": "2026-08-18T14:00:12.330Z",
+                  "type": "activity_exited"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "analysis_units",
+                    "source": "variables_changed",
+                    "value": [
+                      {
+                        "lenses": [
+                          "claim",
+                          "scarcity",
+                          "degradation",
+                          "sdl-coupling",
+                          "sdl-abstraction",
+                          "optimize",
+                          "reachability",
+                          "audit-code",
+                          "architect",
+                          "blindspot",
+                          "counterfactual"
+                        ],
+                        "pipeline_mode": "portfolio",
+                        "target": "/home/mike1/projects/dev/workflow-server",
+                        "unit": "Five-dimension portfolio",
+                        "unit_output_subdir": "."
+                      }
+                    ]
+                  },
+                  "timestamp": "2026-08-18T14:00:12.330Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "gitnexus_available",
+                    "source": "variables_changed",
+                    "value": false
+                  },
+                  "timestamp": "2026-08-18T14:00:12.330Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "client-worker-04",
+                    "stepId": "plan"
+                  },
+                  "timestamp": "2026-08-18T14:00:12.330Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "client-worker-04",
+                    "stepId": "apply-plan"
+                  },
+                  "timestamp": "2026-08-18T14:00:12.330Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "timestamp": "2026-08-18T14:00:12.330Z",
+                  "type": "activity_entered"
+                }
+              ],
+              "repo": "m2ux/workflow-server",
+              "schemaVersion": 1,
+              "seq": 2,
+              "sessionIndex": "HK6JPQ",
+              "skippedActivities": [],
+              "startedAt": "2026-08-18T13:59:46.357Z",
+              "status": "running",
+              "triggeredWorkflows": [],
+              "ts": 1787061612,
+              "variables": {
+                "analysis_focus": "Each lens runs against its own dimension's focus and writes its own artifact within the shared subdirectory; the five foci are not merged into one prompt. Delivery Economy takes sdl-abstraction (15) and optimize (20). Orchestration Topology and Critical Path takes sdl-coupling (14), architect (51) and counterfactual (54). Mechanisation Potential takes audit-code (34) and blindspot (52). Redundant Work takes reachability (30) and degradation (10). Change Economics takes claim (07) and scarcity (08).",
+                "analysis_units": [
+                  {
+                    "lenses": [
+                      "claim",
+                      "scarcity",
+                      "degradation",
+                      "sdl-coupling",
+                      "sdl-abstraction",
+                      "optimize",
+                      "reachability",
+                      "audit-code",
+                      "architect",
+                      "blindspot",
+                      "counterfactual"
+                    ],
+                    "pipeline_mode": "portfolio",
+                    "target": "/home/mike1/projects/dev/workflow-server",
+                    "unit": "Five-dimension portfolio",
+                    "unit_output_subdir": "."
+                  }
+                ],
+                "gitnexus_available": false,
+                "output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions",
+                "pipeline_mode": "portfolio",
+                "selected_lenses": "claim, scarcity, degradation, sdl-coupling, sdl-abstraction, optimize, reachability, audit-code, architect, blindspot, counterfactual",
+                "target": "/home/mike1/projects/dev/workflow-server",
+                "target_description": "Five dimensions of remaining optimisation opportunity in the workflow-server meta and work-package workflows: Delivery Economy, Orchestration Topology and Critical Path, Mechanisation Potential, Redundant Work, and Change Economics.",
+                "target_type": "general",
+                "user_request": "start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. I want a report detailing any/all opportunities for optimisation of meta and work package workflows. use the example provided as a guide but do not limit to this. Many optimisations were done recently to address this. I want a further report elucidating remaining opportunities."
+              },
+              "workflowId": "prism",
+              "workflowVersion": "2.4.0"
+            },
+            "status": "running",
+            "triggeredAt": "2026-08-18T13:59:46.357Z",
+            "triggeredFrom": {
+              "activityId": "execute-analysis"
+            },
+            "workflowId": "prism"
+          }
+        ],
+        "ts": 1787126845,
         "variables": {
           "accepted_count": 0,
+          "dimension_plan": "Six-entry array of { dimension, pipeline_mode, lenses, analysis_focus, output_subdir }, as reported in steps_completed[map-dimensions].",
           "dimensions": [
             {
               "description": "What the recent optimisation work actually changed and what it measurably bought, so that 'remaining' is measured against the current build rather than against the prior report.",
@@ -2122,14 +2993,20 @@
           ],
           "dimensions_confirmed": true,
           "evaluation_description": "Enumerate every remaining opportunity to make the workflow-server `meta` and `work-package` workflows faster and cheaper to run, measured against the build as it stands after the optimisation work merged on 2026-08-17/18 (server PRs #467, #471; definition PRs #468, #470). The 2026-08-17 evaluation report at .engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/EVALUATION-REPORT.md is the worked example for shape and rigour, and explicitly not the boundary of what may be found. Both halves of the complaint are in scope: token cost and wall-clock latency.",
+          "evaluation_plan": "Composed evaluation-plan document; written as the artifact below.",
+          "evaluation_plan_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/01-evaluation-plan.md",
+          "execution_groups": "Two-entry array of { pipeline_mode, lenses, dimensions, analysis_focus, output_subdir }, full-prism first then portfolio, as reported in steps_completed[group-dimensions].",
           "gitnexus_available": false,
+          "key_topics": "Delivery trajectory and the unattributed 26.8% fall; gate-liveness and the verify.yml cost gate unmeasured; batch bound at defaults; get_resource and get_activity dominating delivery; large persisting bodies; uneven checkpoint density; 28 CI-only guards and 18 control-plane tools.",
           "output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows",
           "pipeline_mode": "full-prism",
           "resolution_requested": false,
           "scope_confirmed": true,
           "scope_summary": "Target /home/mike1/projects/dev/workflow-server (workflow-server), classified mixed — package.json and tsconfig.json make it a codebase, and the subject of the evaluation is 909 KB / ~117,000 words of definition markdown carried in the workflows git submodule. Output directory .engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows, created and verified writable. Pipeline mode full-prism; no lens overrides supplied; six dimensions derived (none supplied by the user): Remediation Effect, Delivery Economy, Orchestration Topology and Critical Path, Mechanisation Potential, Redundant Work, Change Economics. Measured starting position: workflows/meta 171 files (160 md, 11 yaml), 291 KB, ~37,961 words, 5 activities, 23 technique steps, 5 checkpoints, 19 when-gated steps; workflows/work-package 168 files (152 md), 619 KB, ~79,032 words, 15 activities, 176 technique steps, 44 checkpoints, 83 when-gated steps; src/ 55 TypeScript files, 12,628 LOC, 18 registered MCP tools all session control-plane; scripts/ 47 files, 9,935 LOC including 28 check-*.ts guards; tests/ 82 files, 18,955 LOC. Recorded benchmark walk (12 activities, fresh context): 1,302,319 delivery characters over 242 tool calls — get_resource 162 calls / 527,683 chars / 146 fetches against 77 distinct ledger keys, get_activity 12 calls / 520,075 chars with 66 techniques bundled and 24 fetched separately, get_technique 24 calls / 146,205 chars, get_workflow 1 call / 108,356 chars, plus 10 yield/respond/resume triples. Delivery trajectory 1,355,532 (July) to 1,780,292 (2026-08-17, pre-remediation) to 1,302,319 (now). Recent remediation: 42 files, 1,861 insertions, 297 deletions across server PRs #467 and #471 and definition PRs #468 and #470. Batch bound still at defaults: BATCH_MAX_ACTIVITIES 3, BATCH_HEADROOM_FRACTION 0.35.",
+          "structure_inventory": "9-row inventory of meta, work-package, src/, src/tools, scripts/, tests/, schemas/ and the recorded benchmark walk, as reported in steps_completed[survey-target].",
           "target_name": "workflow-server",
           "target_path": "/home/mike1/projects/dev/workflow-server",
+          "target_summary": "Mixed target: TypeScript MCP server plus a 909 KB workflow-definition corpus; subject is the meta and work-package trees measured against the post-remediation build of 2026-08-17/18.",
           "target_type": "mixed",
           "user_request": "start a new prism-evaluate workflow. At present workflow-server workflows are slow and expensive to run. I want a report detailing any/all opportunities for optimisation of meta and work package workflows. use the example provided as a guide but do not limit to this. Many optimisations were done recently to address this. I want a further report elucidating remaining opportunities."
         },
