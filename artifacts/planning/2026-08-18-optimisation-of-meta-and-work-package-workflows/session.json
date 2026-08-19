@@ -983,16 +983,87 @@
         },
         "completedActivities": [
           "scope-definition",
-          "dimension-planning"
+          "dimension-planning",
+          "execute-analysis"
         ],
-        "condition": "dimensions_confirmed == true",
-        "currentActivity": "execute-analysis",
+        "condition": "isDefault: consolidate-report",
+        "currentActivity": "consolidate-report",
         "currentTechnique": "",
         "declaredArtifacts": [
           {
             "id": "evaluation_plan",
             "name": "evaluation-plan.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/01-evaluation-plan.md"
+          },
+          {
+            "id": "remediation-effect-structural",
+            "name": "Remediation Effect — Structural Analysis",
+            "path": "remediation-effect/structural-analysis.md"
+          },
+          {
+            "id": "remediation-effect-adversarial",
+            "name": "Remediation Effect — Adversarial Analysis",
+            "path": "remediation-effect/adversarial-analysis.md"
+          },
+          {
+            "id": "remediation-effect-synthesis",
+            "name": "Remediation Effect — Synthesis",
+            "path": "remediation-effect/synthesis.md"
+          },
+          {
+            "id": "portfolio-sdl-abstraction",
+            "name": "Delivery Economy — SDL Abstraction (15)",
+            "path": "dimensions/portfolio-sdl-abstraction.md"
+          },
+          {
+            "id": "portfolio-optimize",
+            "name": "Delivery Economy — Optimize (20)",
+            "path": "dimensions/portfolio-optimize.md"
+          },
+          {
+            "id": "portfolio-sdl-coupling",
+            "name": "Orchestration Topology — SDL Coupling (14)",
+            "path": "dimensions/portfolio-sdl-coupling.md"
+          },
+          {
+            "id": "portfolio-architect",
+            "name": "Orchestration Topology — Architect (51)",
+            "path": "dimensions/portfolio-architect.md"
+          },
+          {
+            "id": "portfolio-counterfactual",
+            "name": "Orchestration Topology — Counterfactual (54)",
+            "path": "dimensions/portfolio-counterfactual.md"
+          },
+          {
+            "id": "portfolio-audit-code",
+            "name": "Mechanisation Potential — Audit Code (34)",
+            "path": "dimensions/portfolio-audit-code.md"
+          },
+          {
+            "id": "portfolio-blindspot",
+            "name": "Mechanisation Potential — Blindspot (52)",
+            "path": "dimensions/portfolio-blindspot.md"
+          },
+          {
+            "id": "portfolio-reachability",
+            "name": "Redundant Work — Reachability (30)",
+            "path": "dimensions/portfolio-reachability.md"
+          },
+          {
+            "id": "portfolio-degradation",
+            "name": "Redundant Work — Degradation (10)",
+            "path": "dimensions/portfolio-degradation.md"
+          },
+          {
+            "id": "portfolio-claim",
+            "name": "Change Economics — Claim (07)",
+            "path": "dimensions/portfolio-claim.md"
+          },
+          {
+            "id": "portfolio-scarcity",
+            "name": "Change Economics — Scarcity (08)",
+            "path": "dimensions/portfolio-scarcity.md"
           }
         ],
         "deliveredContent": {
@@ -1103,6 +1174,35 @@
             "technique:inherited_inputs:f57c2ac5fcfc13b6": "f57c2ac5fcfc13b6",
             "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
             "technique:workflow-engine::handle-sub-workflow": "035bfec615e79d50"
+          },
+          "client-worker-06": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+            "bundle:variable-binding": "86e00a6d087f9e58",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:evaluation-plan-template": "9083017c7e319f17",
+            "resource:evaluation-report-template#evaluation-report-template": "15a4e5310c1d2c2b",
+            "resource:meta/writing-register": "1772b677fba42059",
+            "resource:prism-evaluate/README#planning-artifact-to-guide-map": "bb84e3f4c33e5e3e",
+            "technique:compose-evaluation-report::compose-report": "ab7d1a84d64efdc9",
+            "technique:compose-evaluation-report::extract-findings": "331c295124c535ba",
+            "technique:compose-evaluation-report::identify-patterns": "3dc04be2d442b3ac",
+            "technique:compose-evaluation-report::verify-report": "77c982e682807974",
+            "technique:inherited_inputs.items:a8ece513981f0039": "a8ece513981f0039",
+            "technique:inherited_inputs.items:b6ad6262b70beb76": "b6ad6262b70beb76",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:c5c5526a2499b15b": "c5c5526a2499b15b",
+            "technique:inherited_inputs:e0b3d1c3406529d1": "e0b3d1c3406529d1",
+            "technique:inherited_outputs.items:cc83af84097d0e92": "cc83af84097d0e92",
+            "technique:inherited_outputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+            "technique:inherited_outputs:5f7e0eedc65c0c16": "5f7e0eedc65c0c16",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:487a67946d79b011": "487a67946d79b011",
+            "technique:rules:c7fcb616e4103f20": "c7fcb616e4103f20",
+            "technique:verify-artifact-conforms": "b52408b38bb583c7"
           }
         },
         "history": [
@@ -2413,11 +2513,421 @@
             },
             "timestamp": "2026-08-19T08:07:25.218Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "execute-analysis",
+            "timestamp": "2026-08-19T08:08:08.425Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "name": "completed_analyses",
+              "source": "variables_changed",
+              "value": [
+                {
+                  "definitive_findings_path": null,
+                  "dimension": "Remediation Effect",
+                  "group": 1,
+                  "note": "All three L12 passes complete (structural, adversarial, synthesis). Child NJOOEH never reached generate-report, so no RUN-MANIFEST.json, report, or definitive-findings file exists.",
+                  "output_subdir": "remediation-effect/",
+                  "pipeline_mode": "full-prism",
+                  "report_path": null,
+                  "status": "partial"
+                },
+                {
+                  "definitive_findings_path": null,
+                  "dimensions": [
+                    "Delivery Economy",
+                    "Orchestration Topology and Critical Path",
+                    "Mechanisation Potential",
+                    "Redundant Work",
+                    "Change Economics"
+                  ],
+                  "group": 2,
+                  "note": "All 11 planned lens artifacts complete (07, 08, 10, 14, 15, 20, 30, 34, 51, 52, 54). Child HK6JPQ never reached generate-report, so no RUN-MANIFEST.json, report, definitive-findings, or cross-lens portfolio-synthesis.md exists.",
+                  "output_subdir": "dimensions/",
+                  "pipeline_mode": "portfolio",
+                  "report_path": null,
+                  "status": "partial"
+                }
+              ]
+            },
+            "timestamp": "2026-08-19T08:08:08.425Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "name": "all_artifact_paths",
+              "source": "variables_changed",
+              "value": [
+                ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/remediation-effect/structural-analysis.md",
+                ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/remediation-effect/adversarial-analysis.md",
+                ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/remediation-effect/synthesis.md",
+                ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-sdl-abstraction.md",
+                ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-optimize.md",
+                ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-sdl-coupling.md",
+                ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-architect.md",
+                ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-counterfactual.md",
+                ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-audit-code.md",
+                ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-blindspot.md",
+                ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-reachability.md",
+                ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-degradation.md",
+                ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-claim.md",
+                ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-scarcity.md"
+              ]
+            },
+            "timestamp": "2026-08-19T08:08:08.425Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "stepId": "verify-preconditions"
+            },
+            "timestamp": "2026-08-19T08:08:08.425Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "stepId": "log-execution-plan"
+            },
+            "timestamp": "2026-08-19T08:08:08.425Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "stepId": "prepare-triggers"
+            },
+            "timestamp": "2026-08-19T08:08:08.425Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "stepId": "group-iteration"
+            },
+            "timestamp": "2026-08-19T08:08:08.425Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "stepId": "set-trigger-context"
+            },
+            "timestamp": "2026-08-19T08:08:08.425Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "stepId": "trigger-prism"
+            },
+            "timestamp": "2026-08-19T08:08:08.425Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "stepId": "read-run-manifest"
+            },
+            "timestamp": "2026-08-19T08:08:08.425Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-05",
+              "stepId": "recover-missing-analyses"
+            },
+            "timestamp": "2026-08-19T08:08:08.425Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "consolidate-report",
+            "timestamp": "2026-08-19T08:08:08.425Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 55082,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-19T08:08:39.150Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 5626,
+              "delivery": "full",
+              "stepId": "extract-findings",
+              "techniqueId": "compose-evaluation-report::extract-findings"
+            },
+            "timestamp": "2026-08-19T08:08:39.150Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "stepId": "extract-findings"
+            },
+            "timestamp": "2026-08-19T08:08:39.150Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 5053,
+              "delivery": "full",
+              "stepId": "identify-patterns",
+              "techniqueId": "compose-evaluation-report::identify-patterns"
+            },
+            "timestamp": "2026-08-19T08:08:39.150Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "stepId": "identify-patterns"
+            },
+            "timestamp": "2026-08-19T08:08:39.150Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 5604,
+              "delivery": "full",
+              "stepId": "compose-report",
+              "techniqueId": "compose-evaluation-report::compose-report"
+            },
+            "timestamp": "2026-08-19T08:08:39.150Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "stepId": "compose-report"
+            },
+            "timestamp": "2026-08-19T08:08:39.150Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 7103,
+              "delivery": "full",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "verify-artifact-conforms"
+            },
+            "timestamp": "2026-08-19T08:08:39.150Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "stepId": "verify-artifact-conformance"
+            },
+            "timestamp": "2026-08-19T08:08:39.150Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 4875,
+              "delivery": "full",
+              "stepId": "verify-report",
+              "techniqueId": "compose-evaluation-report::verify-report"
+            },
+            "timestamp": "2026-08-19T08:08:39.150Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "stepId": "verify-report"
+            },
+            "timestamp": "2026-08-19T08:08:39.150Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 3018,
+              "delivery": "full",
+              "resourceId": "evaluation-report-template#evaluation-report-template"
+            },
+            "timestamp": "2026-08-19T08:09:06.250Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 1986,
+              "delivery": "full",
+              "resourceId": "meta/writing-register"
+            },
+            "timestamp": "2026-08-19T08:09:09.574Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 1546,
+              "delivery": "full",
+              "resourceId": "prism-evaluate/README#planning-artifact-to-guide-map"
+            },
+            "timestamp": "2026-08-19T08:09:13.541Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 2066,
+              "delivery": "full",
+              "resourceId": "evaluation-plan-template"
+            },
+            "timestamp": "2026-08-19T08:22:20.607Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 5087,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-19T08:23:38.993Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 5626,
+              "delivery": "unchanged",
+              "stepId": "extract-findings",
+              "techniqueId": "compose-evaluation-report::extract-findings"
+            },
+            "timestamp": "2026-08-19T08:23:38.993Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 5053,
+              "delivery": "unchanged",
+              "stepId": "identify-patterns",
+              "techniqueId": "compose-evaluation-report::identify-patterns"
+            },
+            "timestamp": "2026-08-19T08:23:38.993Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 5604,
+              "delivery": "unchanged",
+              "stepId": "compose-report",
+              "techniqueId": "compose-evaluation-report::compose-report"
+            },
+            "timestamp": "2026-08-19T08:23:38.993Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 7103,
+              "delivery": "unchanged",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "verify-artifact-conforms"
+            },
+            "timestamp": "2026-08-19T08:23:38.993Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "chars": 4875,
+              "delivery": "unchanged",
+              "stepId": "verify-report",
+              "techniqueId": "compose-evaluation-report::verify-report"
+            },
+            "timestamp": "2026-08-19T08:23:38.993Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "bundled": true,
+              "chars": 1907,
+              "delivery": "unchanged",
+              "resourceId": "meta/writing-register"
+            },
+            "timestamp": "2026-08-19T08:23:38.993Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "bundled": true,
+              "chars": 2897,
+              "delivery": "unchanged",
+              "resourceId": "evaluation-report-template#evaluation-report-template"
+            },
+            "timestamp": "2026-08-19T08:23:38.993Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-06",
+              "usage": {
+                "duration_ms": 977353,
+                "subagent_tokens": 368338,
+                "tool_uses": 58
+              }
+            },
+            "timestamp": "2026-08-19T08:24:50.359Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 34,
+        "seq": 42,
         "sessionIndex": "QR6FTR",
         "skippedActivities": [],
         "startedAt": "2026-08-18T10:01:56.532Z",
@@ -2912,9 +3422,53 @@
             "workflowId": "prism"
           }
         ],
-        "ts": 1787126845,
+        "ts": 1787127890,
         "variables": {
           "accepted_count": 0,
+          "all_artifact_paths": [
+            ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/remediation-effect/structural-analysis.md",
+            ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/remediation-effect/adversarial-analysis.md",
+            ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/remediation-effect/synthesis.md",
+            ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-sdl-abstraction.md",
+            ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-optimize.md",
+            ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-sdl-coupling.md",
+            ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-architect.md",
+            ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-counterfactual.md",
+            ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-audit-code.md",
+            ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-blindspot.md",
+            ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-reachability.md",
+            ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-degradation.md",
+            ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-claim.md",
+            ".engineering/artifacts/planning/2026-08-18-optimisation-of-meta-and-work-package-workflows/dimensions/portfolio-scarcity.md"
+          ],
+          "completed_analyses": [
+            {
+              "definitive_findings_path": null,
+              "dimension": "Remediation Effect",
+              "group": 1,
+              "note": "All three L12 passes complete (structural, adversarial, synthesis). Child NJOOEH never reached generate-report, so no RUN-MANIFEST.json, report, or definitive-findings file exists.",
+              "output_subdir": "remediation-effect/",
+              "pipeline_mode": "full-prism",
+              "report_path": null,
+              "status": "partial"
+            },
+            {
+              "definitive_findings_path": null,
+              "dimensions": [
+                "Delivery Economy",
+                "Orchestration Topology and Critical Path",
+                "Mechanisation Potential",
+                "Redundant Work",
+                "Change Economics"
+              ],
+              "group": 2,
+              "note": "All 11 planned lens artifacts complete (07, 08, 10, 14, 15, 20, 30, 34, 51, 52, 54). Child HK6JPQ never reached generate-report, so no RUN-MANIFEST.json, report, definitive-findings, or cross-lens portfolio-synthesis.md exists.",
+              "output_subdir": "dimensions/",
+              "pipeline_mode": "portfolio",
+              "report_path": null,
+              "status": "partial"
+            }
+          ],
           "dimension_plan": "Six-entry array of { dimension, pipeline_mode, lenses, analysis_focus, output_subdir }, as reported in steps_completed[map-dimensions].",
           "dimensions": [
             {

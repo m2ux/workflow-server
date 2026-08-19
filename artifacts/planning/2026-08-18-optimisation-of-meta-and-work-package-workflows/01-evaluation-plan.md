@@ -20,7 +20,15 @@
 | `tests/` and `schemas/` | 82 test files, 18,955 LOC; 7 schema files, 3,837 lines |
 | Recorded benchmark walk | 12 activities, fresh context: 1,302,319 delivery characters over 242 tool calls, 10 yield/respond/resume triples |
 
-**Key topics:** Delivery cost has moved 1,355,532 (July) → 1,780,292 (pre-remediation) → 1,302,319 (now), a 26.8% fall not yet attributed to specific changes. The remediation added `src/utils/gate-liveness.ts` (6.0 KB) with `tests/gate-liveness.test.ts` and `scripts/check-decision-order.ts`, and wired a delivery-cost gate into `.github/workflows/verify.yml` (`bench:token --label=ci --context-mode=fresh --gate`); neither has been re-measured against the prior report's claims. The batch bound remains at its `src/config.ts` defaults, `BATCH_MAX_ACTIVITIES` 3 and `BATCH_HEADROOM_FRACTION` 0.35. Per-run delivery is dominated by `get_resource` (527,683 characters over 162 calls, 146 fetches against 77 ledger keys) and `get_activity` (520,075 over 12 calls). Large bodies persist: `review-mode.md` 21.1 KB, `codebase-comprehension.md` 18.1 KB, `planning-readme.md` 15.3 KB, `workflow-package/workflow.yaml` 27.6 KB, `01-start-work-package.yaml` 21.4 KB. Checkpoint density stays uneven — 10 gates in `01-start-work-package`, 9 in `13-submit-for-review`, 0 in `11-validate` and `14-complete`. The 28 guards remain reachable only as repo CI, never as a workflow operation, and all 18 server tools remain control-plane.
+**Key topics:**
+
+- Delivery cost has moved 1,355,532 (July) to 1,780,292 (pre-remediation) to 1,302,319 (now). The 26.8% fall is not yet attributed to specific changes.
+- The remediation added gate-liveness machinery under `src/utils/` with its own test, added a decision-order guard, and wired a delivery-cost gate into CI. Neither addition has been re-measured against the prior report's claims.
+- The batch bound remains at its defaults in `src/config.ts` — maximum activities 3, headroom fraction 0.35.
+- Per-run delivery is dominated by `get_resource` at 527,683 characters over 162 calls, and by `get_activity` at 520,075 over 12 calls.
+- Large bodies persist: `review-mode.md` 21.1 KB, `codebase-comprehension.md` 18.1 KB, `planning-readme.md` 15.3 KB, `workflow.yaml` 27.6 KB, `01-start-work-package.yaml` 21.4 KB.
+- Checkpoint density stays uneven — 10 gates in `01-start-work-package`, 9 in `13-submit-for-review`, 0 in two activities.
+- The 28 guards remain reachable only as repository CI, never as a workflow operation, and all 18 server tools remain control-plane.
 
 ## 2. Dimension Plan
 
