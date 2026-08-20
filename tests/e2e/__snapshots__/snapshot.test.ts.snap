@@ -253,10 +253,12 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
     {
       "activity": "lean-coding-audit",
       "artifacts": [
+        "review-findings.md",
         "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
+        "09-review-findings.md",
         "09-debt-ledger.json",
         "09-lean-change.md",
       ],
@@ -319,7 +321,6 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "announce-start",
-        "gitnexus-detect-changes-preflight",
         "manual-diff-review",
         "code-review",
         "structural-analysis-inline",
@@ -789,10 +790,12 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
     {
       "activity": "lean-coding-audit",
       "artifacts": [
+        "review-findings.md",
         "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
+        "09-review-findings.md",
         "09-debt-ledger.json",
         "09-lean-change.md",
       ],
@@ -855,7 +858,6 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "announce-start",
-        "gitnexus-detect-changes-preflight",
         "manual-diff-review",
         "code-review",
         "structural-analysis-inline",
@@ -1357,10 +1359,12 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
     {
       "activity": "lean-coding-audit",
       "artifacts": [
+        "review-findings.md",
         "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
+        "09-review-findings.md",
         "09-debt-ledger.json",
         "09-lean-change.md",
       ],
@@ -1423,7 +1427,6 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "announce-start",
-        "gitnexus-detect-changes-preflight",
         "manual-diff-review",
         "code-review",
         "dispatch-prism",
@@ -1883,10 +1886,12 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
     {
       "activity": "lean-coding-audit",
       "artifacts": [
+        "review-findings.md",
         "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
+        "09-review-findings.md",
         "09-debt-ledger.json",
         "09-lean-change.md",
       ],
@@ -1949,7 +1954,6 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "announce-start",
-        "gitnexus-detect-changes-preflight",
         "manual-diff-review",
         "code-review",
         "structural-analysis-inline",
@@ -2309,10 +2313,12 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
     {
       "activity": "lean-coding-audit",
       "artifacts": [
+        "review-findings.md",
         "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
+        "09-review-findings.md",
         "09-debt-ledger.json",
         "09-lean-change.md",
       ],
@@ -2367,7 +2373,6 @@ exports[`work-package walk snapshots (baseline) > [review-mode] matches committe
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "announce-start",
-        "gitnexus-detect-changes-preflight",
         "manual-diff-review",
         "code-review",
         "structural-analysis-inline",
@@ -2755,10 +2760,12 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
     {
       "activity": "lean-coding-audit",
       "artifacts": [
+        "review-findings.md",
         "debt-ledger.json",
         "lean-change.md",
       ],
       "artifactsWritten": [
+        "09-review-findings.md",
         "09-debt-ledger.json",
         "09-lean-change.md",
       ],
@@ -2821,7 +2828,6 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
       "orphanCheckpoints": [],
       "stepsExecuted": [
         "announce-start",
-        "gitnexus-detect-changes-preflight",
         "manual-diff-review",
         "code-review",
         "structural-analysis-inline",

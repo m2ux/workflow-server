@@ -80,13 +80,28 @@ export function extractResourceIds(text: string): string[] {
   for (const m of text.matchAll(/\]\(([^)]+)\)/g)) {
     let href = m[1]!.trim();
     if (href.startsWith('http') || href.startsWith('#') || href.includes('://')) continue;
-    href = href.replace(/\.md$/i, '');
+    // Split the anchor off before stripping the extension, so a link carrying both
+    // yields one normalised id rather than one with `.md` buried mid-string.
+    const hashIdx = href.indexOf('#');
+    const anchor = hashIdx >= 0 ? href.slice(hashIdx) : '';
+    href = (hashIdx >= 0 ? href.slice(0, hashIdx) : href).replace(/\.md$/i, '') + anchor;
     const resourcesIdx = href.lastIndexOf('resources/');
     if (resourcesIdx >= 0) {
-      ids.add(href.slice(resourcesIdx + 'resources/'.length));
+      // A link crossing into another workflow's tree carries that workflow in the
+      // segment before `resources/`; the id it yields keeps that qualifier, so the
+      // ref resolves against the tree the link points at rather than the reader's own.
+      const owner = href.slice(0, resourcesIdx).replace(/\/$/, '').split('/').pop() ?? '';
+      const slug = href.slice(resourcesIdx + 'resources/'.length);
+      ids.add(/^[a-z0-9][a-z0-9-]*$/i.test(owner) ? `${owner}/${slug}` : slug);
       continue;
     }
-    if (/^[a-z0-9][a-z0-9_/-]*(?:#[a-z0-9][a-z0-9_-]*)?$/i.test(href) && !href.includes('::')) {
+    // A resource id is `[<workflow>/]<slug>`, so at most one slash. A deeper path is a
+    // filesystem path — an illustrative one in prose, or a link into a non-resource tree.
+    if (
+      /^[a-z0-9][a-z0-9_/-]*(?:#[a-z0-9][a-z0-9_-]*)?$/i.test(href) &&
+      !href.includes('::') &&
+      (href.match(/\//g)?.length ?? 0) <= 1
+    ) {
       ids.add(href);
     }
   }
