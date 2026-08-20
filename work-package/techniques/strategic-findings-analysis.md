@@ -68,7 +68,7 @@ Only significant scope, over-engineering, or investigation-artifact findings rec
 
 ### recommendation-holds-only-its-own-domain
 
-`{recommended_strategic_option}` holds one of the three values its contract declares and nothing else. A decision taken elsewhere is a different fact with a different domain: writing one here replaces what was recommended with what was chosen, and the record that the two differed is the thing that goes.
+`{recommended_strategic_option}` holds one of the three values its contract declares and nothing else. A decision taken elsewhere is a different fact with a different domain, and each keeps its own record — so a run where the recommendation and the decision diverged still shows both.
 
 ### summary-stays-concise
 

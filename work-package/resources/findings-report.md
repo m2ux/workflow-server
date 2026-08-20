@@ -82,7 +82,7 @@ Each finding carries a stable designator: the prefix its report declares, then i
 
 **Findings order by ID.** A findings list and a findings table both run in ascending designator order. Class, severity and category are fields, not sort keys: grouping by any of them leaves the one column a reader scans for an ID out of order.
 
-**A designator belongs to the pass that raised the finding.** A pass mints designators for what it found and carries every other finding under the designator it arrived with; a traceability table does not restore an identity that earlier artifacts, gates and citations were already using. A consolidation therefore indexes each finding under the designator its own report defines, so one identifier space spans the run without any pass owning all of it.
+**A designator belongs to the pass that raised the finding.** A pass mints designators for what it found and carries every other finding under the designator it arrived with, which is where that finding's identity lives for every earlier artifact, gate and citation that cites it. A consolidation therefore indexes each finding under the designator its own report defines, so one identifier space spans the run while each pass owns its own part of it.
 
 ## Severity
 
