@@ -17,7 +17,7 @@ import { join } from 'node:path';
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { evaluateCondition, type Condition } from '../../src/schema/condition.schema.js';
 import { evaluateWhenExpression } from '../../src/schema/when-expression.js';
-import { unboundPositiveReads } from '../../src/utils/gate-liveness.js';
+import { unboundPositiveReads, type GateUnansweredCounts } from '../../src/utils/gate-liveness.js';
 import { TERMINAL_SENTINEL } from '../../src/loaders/workflow-loader.js';
 import { parseToolResponse, parseWorkflowResponse, parseBundle, rawText, isError, type Harness } from './harness.js';
 
@@ -137,6 +137,12 @@ export interface WalkStep {
   unresolved: string[];
   /** Number of operation refs the activity declares (from its definition). */
   declaredOperations: number;
+  /**
+   * The server's own reading of this activity's gated technique steps at delivery: how many stayed
+   * lazy because this activity produces the variable (`pending`), because nothing on the path so far
+   * has written it (`unbound`), or because the expression does not parse (`unparsed`).
+   */
+  lazyGates?: GateUnansweredCounts;
   nextActivity: string | null;
 }
 
@@ -293,7 +299,10 @@ async function getActivity(
   client: Client,
   sessionIndex: string,
   worker?: { agentId: string; bundle?: 'reference' },
-): Promise<{ def: ActivityDef; unresolved: string[]; bundledSteps: string[]; chars: number; dispatch?: string }> {
+): Promise<{
+  def: ActivityDef; unresolved: string[]; bundledSteps: string[]; chars: number;
+  dispatch?: string; lazyGates?: GateUnansweredCounts;
+}> {
   const res = await client.callTool({
     name: 'get_activity',
     arguments: {
@@ -312,7 +321,9 @@ async function getActivity(
   // Hybrid bundling (#166 B11): step ids whose techniques arrived inline in this response —
   // the robot skips their per-step get_technique, as a real worker should.
   const bundledSteps = ((res._meta as { bundled_steps?: string[] } | undefined)?.bundled_steps) ?? [];
-  return { def, unresolved, bundledSteps, chars, dispatch };
+  // Why the server left each gated technique step lazy. Absent when every gate had an answer.
+  const lazyGates = (res._meta as { lazy_gates?: GateUnansweredCounts } | undefined)?.lazy_gates;
+  return { def, unresolved, bundledSteps, chars, dispatch, lazyGates };
 }
 
 async function transition(
@@ -620,8 +631,9 @@ export async function walk(
     let act: ActivityDef;
     let unresolved: string[];
     let bundledSteps: string[];
+    let lazyGates: GateUnansweredCounts | undefined;
     try {
-      ({ def: act, unresolved, bundledSteps } = await getActivity(client, sessionIndex, worker));
+      ({ def: act, unresolved, bundledSteps, lazyGates } = await getActivity(client, sessionIndex, worker));
     } catch (e) {
       if (opts.autoAdvance) { loadErrors.push(`${current}: ${(e as Error).message}`); break; }
       throw e;
@@ -693,6 +705,7 @@ export async function walk(
       orphanCheckpoints: findOrphanCheckpoints(act),
       unresolved,
       declaredOperations: (act.operations ?? []).length,
+      lazyGates,
       nextActivity: next,
     });
 
@@ -739,6 +752,16 @@ export interface PathSet {
   branchesKnown: number;
   /** Of those, how many were actually exercised by some walk. */
   branchesCovered: number;
+  /**
+   * Every branch key some walk reached a decision on, and the subset a walk actually took.
+   *
+   * `known` is what the walks encountered, so it is not the workflow's declared decision space: a
+   * checkpoint no walk reaches contributes to neither set, and the ratio then reads 100% with the
+   * checkpoint unvisited. Measure against `declaredOptions` in coverage.ts for a denominator that
+   * does not move with the walk.
+   */
+  knownBranches: string[];
+  coveredBranches: string[];
 }
 
 /**
@@ -753,7 +776,20 @@ export interface PathSet {
 export async function enumeratePaths(
   harness: Harness,
   workflowId: string,
-  opts: { maxVisits?: number; maxPaths?: number; maxWalks?: number; coverageMode?: boolean; maxDryWalks?: number } = {},
+  opts: {
+    maxVisits?: number; maxPaths?: number; maxWalks?: number; coverageMode?: boolean;
+    maxDryWalks?: number;
+    /**
+     * Per-activity agent-outcome variables, as a Policy's `simulate` supplies them.
+     *
+     * The enumerator varies *decisions*; it cannot invent a bag value. So an activity reached only
+     * once a convergence signal is set — the loop-exit and completion flags a real worker writes in
+     * step prose — is unreachable to it, and every checkpoint beyond that point counts as uncovered
+     * for a reason that has nothing to do with the definitions. Passing the same simulation the
+     * hand-tuned policy walks use lets coverage speak for the graph rather than for the enumerator.
+     */
+    simulate?: Record<string, Record<string, unknown>>;
+  } = {},
 ): Promise<PathSet> {
   const maxVisits = opts.maxVisits ?? 6;
   const maxPaths = opts.maxPaths ?? 256;
@@ -809,6 +845,7 @@ export async function enumeratePaths(
         name: 'enum',
         choose: (ctx: PolicyContext) => (ctx.checkpoint.defaultOption && ctx.checkpoint.options.some((o) => o.id === ctx.checkpoint.defaultOption)
           ? ctx.checkpoint.defaultOption : ctx.checkpoint.options[0]!.id),
+        ...(opts.simulate ? { simulate: (ctx) => opts.simulate![ctx.activityId] } : {}),
       };
       r = await walk(harness, workflowId, enumPolicy, { mode: 'graph', maxVisits, decide, localCheckpoints: true });
     } catch (e) {
@@ -838,5 +875,9 @@ export async function enumeratePaths(
     }
   }
 
-  return { workflowId, paths, distinctPaths: [...seenPaths], errors, walks, capped, branchesKnown: known.size, branchesCovered: covered.size };
+  return {
+    workflowId, paths, distinctPaths: [...seenPaths], errors, walks, capped,
+    branchesKnown: known.size, branchesCovered: covered.size,
+    knownBranches: [...known].sort(), coveredBranches: [...covered].sort(),
+  };
 }

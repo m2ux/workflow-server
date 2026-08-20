@@ -15,7 +15,10 @@ import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
 import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
-import { bothGates, gateAnswer, variablesWrittenIn } from '../utils/gate-liveness.js';
+import {
+  bothGates, gateAnswer, variablesWrittenIn,
+  type GateUnansweredCounts, type GateVerdict,
+} from '../utils/gate-liveness.js';
 import { withAuditLog, logInfo, logWarn } from '../logging.js';
 import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
@@ -965,9 +968,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // marker costs effectively nothing, so it never draws down the budget; only full-content
       // entries do. Held here so the delivery's cost line can report it against the budget.
       let spentChars = workerBundleChars;
-      /** Technique steps left for get_technique, by the answer their gate gave. */
-      let lazyUnansweredGates = 0;
+      /**
+       * Technique steps left for get_technique, by the answer their gate gave. The unanswered ones
+       * are counted by reason, because they mean different things: `pending` is this activity's own
+       * production arriving during the run, `unbound` is a gate nothing on this path has written.
+       */
       let lazyFalseGates = 0;
+      const lazyUnanswered: GateUnansweredCounts = { pending: 0, unbound: 0, unparsed: 0 };
       if (!optedOut && result.success && activity) {
         // One pass serves both the gate reading (which bag entries this activity produces) and the
         // provenance decoration further down.
@@ -988,22 +995,22 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         const eligible: Array<Step & { kind: 'technique' }> = [];
         // An enclosing loop's gate narrows its body, so a step joins only where every gate above it
         // also answers true.
-        const collect = (steps: Step[] | undefined, outer: boolean | undefined): void => {
+        const collect = (steps: Step[] | undefined, outer: GateVerdict): void => {
           for (const s of steps ?? []) {
-            const answer = bothGates(outer, gateAnswer({
+            const verdict = bothGates(outer, gateAnswer({
               when: s.when,
               condition: s.condition,
               variables: bagAtOpen,
               writtenInActivity,
             }));
-            if (s.kind === 'loop') { collect(s.steps as Step[], answer); continue; }
+            if (s.kind === 'loop') { collect(s.steps as Step[], verdict); continue; }
             if (s.kind !== 'technique' || s.id === undefined) continue;
-            if (answer === true) eligible.push(s);
-            else if (answer === false) lazyFalseGates++;
-            else lazyUnansweredGates++;
+            if (verdict.answer === undefined) lazyUnanswered[verdict.reason]++;
+            else if (verdict.answer) eligible.push(s);
+            else lazyFalseGates++;
           }
         };
-        collect((activity as Activity).steps, true);
+        collect((activity as Activity).steps, { answer: true });
 
         for (const step of eligible) {
           const ref = techniqueName(step.technique);
@@ -1352,7 +1359,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         bundled_steps_collapsed: bundledSteps.filter((b) => b.delivery === 'unchanged').length,
         bundled_resources: bundledResourceDeliveries.length,
         worker_bundle_chars: workerBundleChars,
-        lazy_gate_unanswered: lazyUnansweredGates,
+        lazy_gate_pending: lazyUnanswered.pending,
+        lazy_gate_unbound: lazyUnanswered.unbound,
+        lazy_gate_unparsed: lazyUnanswered.unparsed,
         lazy_gate_false: lazyFalseGates,
         spent_chars: spentChars,
         eager_budget_chars: Math.floor(eagerBudgetChars),
@@ -1364,6 +1373,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         _meta: {
           session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules,
           dispatch, batch,
+          // Why each gated technique step stayed lazy. On the response and not only the log because a
+          // caller cannot assert what it has to scrape stderr to read, and `unbound` is the reading
+          // worth asserting on: nothing the run has done so far binds that gate (#472).
+          ...(lazyUnanswered.unbound + lazyUnanswered.pending + lazyUnanswered.unparsed > 0
+            ? { lazy_gates: { ...lazyUnanswered } } : {}),
           ...(bundledSteps.length > 0 ? { bundled_steps: bundledSteps.map(b => b.stepId) } : {}),
           ...(bundledResourceDeliveries.length > 0 ? { bundled_resources: bundledResourceDeliveries.map(r => r.resourceId) } : {}),
           ...(resourceRefIds.length > 0 ? { resource_refs: resourceRefIds } : {}),

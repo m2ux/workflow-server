@@ -4,7 +4,10 @@
  * ones that keep a step on its `get_technique` fetch.
  */
 import { describe, it, expect } from 'vitest';
-import { bothGates, gateAnswer, unboundPositiveReads, variablesWrittenIn } from '../src/utils/gate-liveness.js';
+import {
+  bothGates, gateAnswer, unboundPositiveReads, variablesWrittenIn,
+  type GateUnanswered, type GateVerdict,
+} from '../src/utils/gate-liveness.js';
 import type { ProducerSite } from '../src/utils/binding-provenance.js';
 import type { Condition } from '../src/schema/condition.schema.js';
 
@@ -14,7 +17,17 @@ const answer = (
   gate: { when?: string; condition?: Condition },
   variables: Record<string, unknown>,
   writtenInActivity: ReadonlySet<string> = NOTHING_WRITTEN,
-): boolean | undefined => gateAnswer({ ...gate, variables, writtenInActivity });
+): boolean | undefined => gateAnswer({ ...gate, variables, writtenInActivity }).answer;
+
+/** Why a gate has no answer — undefined where it has one. */
+const reason = (
+  gate: { when?: string; condition?: Condition },
+  variables: Record<string, unknown>,
+  writtenInActivity: ReadonlySet<string> = NOTHING_WRITTEN,
+): string | undefined => gateAnswer({ ...gate, variables, writtenInActivity }).reason;
+
+const verdict = (answer: boolean | undefined, why?: GateUnanswered): GateVerdict =>
+  (answer === undefined ? { answer, reason: why ?? 'unbound' } : { answer });
 
 describe('gateAnswer', () => {
   it('answers true for a step with no gate', () => {
@@ -63,15 +76,48 @@ describe('gateAnswer', () => {
   });
 });
 
+describe('gateAnswer reasons', () => {
+  it('says nothing about a reason where the gate has an answer', () => {
+    expect(reason({}, {})).toBeUndefined();
+    expect(reason({ when: 'a == true' }, { a: true })).toBeUndefined();
+    expect(reason({ when: 'a == true' }, { a: false })).toBeUndefined();
+  });
+
+  it('calls a gate the activity itself produces pending', () => {
+    expect(reason({ when: 'platform == "github"' }, { platform: 'github' }, new Set(['platform'])))
+      .toBe('pending');
+    // Production by this activity outranks absence: the answer is coming, so it is not yet missing.
+    expect(reason({ when: 'platform == "github"' }, {}, new Set(['platform']))).toBe('pending');
+  });
+
+  it('calls a gate nothing on this path has written unbound', () => {
+    expect(reason({ when: 'is_review_mode == true' }, {})).toBe('unbound');
+    expect(reason({ when: 'a == true && b == true' }, { a: true })).toBe('unbound');
+  });
+
+  it('calls an expression it cannot parse unparsed', () => {
+    expect(reason({ when: 'a == && b' }, { a: true, b: true })).toBe('unparsed');
+  });
+});
+
 describe('bothGates', () => {
   it('lets one false limb decide, and one unanswered limb withhold', () => {
-    expect(bothGates(true, true)).toBe(true);
-    expect(bothGates(false, true)).toBe(false);
-    expect(bothGates(true, false)).toBe(false);
+    expect(bothGates(verdict(true), verdict(true)).answer).toBe(true);
+    expect(bothGates(verdict(false), verdict(true)).answer).toBe(false);
+    expect(bothGates(verdict(true), verdict(false)).answer).toBe(false);
     // A false enclosing gate settles the body even where the body's own gate is unanswered.
-    expect(bothGates(false, undefined)).toBe(false);
-    expect(bothGates(undefined, true)).toBeUndefined();
-    expect(bothGates(true, undefined)).toBeUndefined();
+    expect(bothGates(verdict(false), verdict(undefined)).answer).toBe(false);
+    expect(bothGates(verdict(undefined), verdict(true)).answer).toBeUndefined();
+    expect(bothGates(verdict(true), verdict(undefined)).answer).toBeUndefined();
+  });
+
+  it('reports the enclosing reason where both limbs lack an answer', () => {
+    // The loop's gate strands its body whatever the body's own gate would have said, so that is the
+    // reason the step stayed lazy.
+    expect(bothGates(verdict(undefined, 'pending'), verdict(undefined, 'unbound')).reason)
+      .toBe('pending');
+    // With an answered enclosing gate the body's own reason is the only one there is.
+    expect(bothGates(verdict(true), verdict(undefined, 'unparsed')).reason).toBe('unparsed');
   });
 });
 

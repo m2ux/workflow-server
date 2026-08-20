@@ -254,15 +254,23 @@ The server holds the variable bag and the reference gate evaluators, so it can t
 |---|---|---|
 | variables bound before the activity opened, none of them written inside it | `true` | inlined — the worker certainly reaches this step |
 | the same, evaluating false | `false` | lazy, and nothing is shipped for a step the run will not execute |
-| a variable this activity produces | unanswered | lazy |
-| a variable absent from the bag | unanswered | lazy — both evaluators return false for an unbound read, which is not the same as a negative one |
-| an expression that does not parse | unanswered | lazy; the malformed expression is the corpus guards' business |
+| a variable this activity produces | unanswered, `pending` | lazy |
+| a variable absent from the bag | unanswered, `unbound` | lazy — both evaluators return false for an unbound read, which is not the same as a negative one |
+| an expression that does not parse | unanswered, `unparsed` | lazy; the malformed expression is the corpus guards' business |
+
+A gate this activity produces is checked before a gate that is merely absent, so an activity's own
+production is reported as `pending` whether or not the variable happens to be in the bag already.
 
 An enclosing loop's gate narrows its body, so a step is inlined only where every gate above it also answers true. A body inlined under a gated loop is the protocol for **every** iteration — engage it once per pass from the copy already held, rather than re-fetching it each time.
 
 Whatever the executing agent evaluates when it reaches the step is still what decides execution. This answer decides only how the content travels.
 
-`lazy_gate_unanswered` and `lazy_gate_false` on the delivery cost line count the steps each reading left behind.
+`lazy_gate_false` on the delivery cost line counts the steps the false reading left behind, and
+`lazy_gate_pending` / `lazy_gate_unbound` / `lazy_gate_unparsed` count the unanswered ones by reason.
+The three are separate because they call for different responses: `pending` is this activity's own
+production arriving during the run and is expected on a healthy activity, whereas `unbound` says
+nothing the run has done so far binds that gate. Where any of them is non-zero the same tally rides
+on the response as `_meta.lazy_gates`, so a caller can assert on it without reading the log.
 
 An activity may also set `bundleTechniques: { maxChars: <n> }`, a per-technique size cap layered on the budget: any single technique larger than `maxChars` stays lazy. `maxChars: 0` opts the activity out of eager bundling altogether. Anything not inlined stays a `get_technique { step_id }` fetch.
 
