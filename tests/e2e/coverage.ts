@@ -68,7 +68,9 @@ export async function declaredCheckpoints(workflowIds: readonly string[]): Promi
   const byActivity = new Map<string, DeclaredCheckpoint>();
   for (const workflowId of workflowIds) {
     const loaded = await loadWorkflow(root, workflowId);
-    if (!loaded.success) continue;
+    // Skipping a workflow that will not load would shrink the denominator and report the coverage
+    // of what remains as the coverage of the corpus. Unmeasured is not the same as covered.
+    if (!loaded.success) throw new Error(`cannot count options in '${workflowId}': ${loaded.error.message}`);
     for (const activity of loaded.value.activities ?? []) {
       const gates = gatesById(activity);
       const inLoop = loopBodyStepIds(activity);
@@ -139,7 +141,7 @@ export async function declaredSteps(workflowIds: readonly string[]): Promise<Map
   const byActivity = new Map<string, string[]>();
   for (const workflowId of workflowIds) {
     const loaded = await loadWorkflow(root, workflowId);
-    if (!loaded.success) continue;
+    if (!loaded.success) throw new Error(`cannot count steps in '${workflowId}': ${loaded.error.message}`);
     for (const activity of loaded.value.activities ?? []) {
       if (byActivity.has(activity.id)) continue;
       const ids = flattenActivitySteps(activity).map((s) => s.id).filter((id): id is string => id !== undefined);
@@ -192,18 +194,25 @@ export interface CheckpointGap {
   declared: number;
   gate?: string;
   inLoop: boolean;
+  /**
+   * Whether any walk entered the activity at all. False is the more basic cause and hides the rest:
+   * a checkpoint in an activity nothing entered is uncovered whatever its own gate says.
+   */
+  activityEntered: boolean;
 }
 
 /**
- * The gap grouped by checkpoint rather than by option, with the gate that explains it.
+ * The gap grouped by checkpoint rather than by option, with what explains it.
  *
  * Options come in sets, so an unreached checkpoint shows up once per option it declares and inflates
  * the count without adding a cause. Grouping states the cause once: a checkpoint whose every option
- * is missed was never reached at all, and its gate — or the loop it sits in — says why.
+ * is missed was never reached at all, and its gate — or the loop it sits in, or the fact that no walk
+ * entered its activity — says why.
  */
 export function checkpointGaps(
   checkpoints: readonly DeclaredCheckpoint[],
   uncovered: readonly string[],
+  activitiesEntered: ReadonlySet<string> = new Set(),
 ): CheckpointGap[] {
   const missedBy = new Map<string, number>();
   for (const key of uncovered) {
@@ -219,6 +228,7 @@ export function checkpointGaps(
       workflowIds: cp.workflowIds,
       missed,
       declared: cp.optionIds.length,
+      activityEntered: activitiesEntered.has(cp.activityId),
       gate: cp.gate,
       inLoop: cp.inLoop,
     }));

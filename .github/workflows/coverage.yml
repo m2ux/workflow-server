@@ -1,0 +1,67 @@
+name: Coverage walk
+
+# Every checkpoint option the corpus declares is taken by some walk, or listed as one this matrix
+# does not reach.
+#
+# This is a job of its own because it is slow — fourteen full coverage walks, each driving a workflow
+# through the real server — and because it was already written and switched off. `enumeratePaths` in
+# coverage mode has existed for some time behind WF_PATH_COVERAGE=1, unset in CI, and its assertions
+# were all about reference resolution. Nothing measured coverage, and its own ratio read 100% for
+# nine workflows while three of them were at 20%, 24% and 33% of what they declare (issue #472).
+#
+# Runs alongside `verify` rather than inside it: `npm run test:ci` stays a fast suite, and this job
+# fails on its own terms so a coverage regression is not read as a unit-test failure.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: coverage-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage-walk:
+    name: Every declared checkpoint option is reached
+    runs-on: ubuntu-latest
+    # The ceiling that says the walk is stuck rather than merely slow — several times the measured
+    # cost, because a shared runner is slower than the machine this was measured on and a walk that
+    # merely takes longer is not the failure worth reporting. The test carries its own timeout too.
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # As in verify.yml: `.engineering` nests a private repo this runner cannot clone, so the
+          # corpus is checked out on its own below rather than with `submodules: recursive`.
+          submodules: false
+
+      - name: Resolve the pinned workflows-corpus commit
+        id: corpus
+        run: echo "sha=$(git rev-parse HEAD:workflows)" >> "$GITHUB_OUTPUT"
+
+      # The PINNED commit, not the `workflows` branch tip: this job measures the corpus the tree
+      # under review actually adopts.
+      - name: Check out the workflows corpus at the pinned commit
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ github.repository }}
+          ref: ${{ steps.corpus.outputs.sha }}
+          path: workflows
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # The expectation file lists the options no walk reaches. A newly unreached option is not on it
+      # and fails here; an option that becomes reachable is on it with nothing to explain it and also
+      # fails, so the list can only shrink.
+      - name: Walk every checkpoint option
+        run: npm run test:coverage-walk

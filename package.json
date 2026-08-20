@@ -18,6 +18,7 @@
     "dev:http": "tsx src/index.ts --transport=http",
     "test": "vitest",
     "test:ci": "vitest run",
+    "test:coverage-walk": "WF_OPTION_COVERAGE=1 vitest run tests/e2e/option-coverage.test.ts",
     "typecheck": "tsc --noEmit",
     "check:binding": "tsx scripts/check-binding-fidelity.ts",
     "check:identifiers": "tsx scripts/check-identifier-qualification.ts",

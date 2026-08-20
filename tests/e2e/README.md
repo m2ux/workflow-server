@@ -63,7 +63,9 @@ green. It is four test files:
 - **`snapshot.test.ts`** — a normalized, committed **baseline** per policy (path,
   checkpoint decisions, artifacts written, manifest status, unresolved refs).
   *Catches:* any unintended change to behaviour; update intentionally with
-  `npx vitest run tests/e2e -u`.
+  `npx vitest run tests/e2e -u`. It also records **step coverage per activity** —
+  what each activity declares against what any policy runs — so the executed-step
+  lists above are read next to the share of the workflow they speak for.
 
 **Benefits:** fast, free, reproducible, CI-able; pinpoints machinery and
 definition regressions precisely.
@@ -71,6 +73,13 @@ definition regressions precisely.
 *interpret* the prose, and it cannot reach **situational checkpoints** (ones a
 worker yields on a runtime branch rather than from a step's `checkpoint` field —
 6 of these are recorded in `robot-execution.test.ts`).
+
+**What these four record versus what they assert.** Every one of them keys on the
+walk that happened. An activity, step, or checkpoint option no policy reaches is
+simply absent, and absent is indistinguishable from correctly gated out — so a
+green suite is not a statement that the corpus was covered. That is what the
+coverage walk below measures, and why it has a denominator taken from the
+definitions rather than from the walk.
 
 ### A note on the two walker modes
 The engine supports `mode: 'robot'` (default — Layer 3c, executes steps) and
@@ -80,7 +89,44 @@ smoke.
 
 ---
 
-## 2. Standalone 3c run — inspect one walk
+## 2. Coverage walk — every declared checkpoint option
+
+```bash
+npm run test:coverage-walk        # ~14 minutes, 14 workflows
+```
+
+Runs `enumeratePaths` in coverage mode over most of the corpus and asserts that
+every checkpoint option the definitions declare is taken by some walk, or is
+listed in [`option-coverage.json`](option-coverage.json) with the reason no walk
+reaches it. A newly unreached option is not on the list and fails; an option that
+becomes reachable is on the list with nothing to explain it and also fails, so
+the list can only shrink.
+
+The denominator comes from the **loader**, not from reading the YAML, for two
+reasons: a checkpoint may arrive by fragment `ref`, which raw YAML shows as a step
+with no options at all; and an activity one workflow borrows from another is
+reached by whichever of them a walk enters, so coverage is a corpus-wide question
+with one entry per declared option.
+
+This replaces the number the walk used to report about itself. `enumeratePaths`
+gives `branchesCovered/branchesKnown`, and `known` is what the walks encountered
+— so a checkpoint no walk reaches sits in neither the numerator nor the
+denominator, and the ratio read 100% for nine workflows while three of them were
+at 20%, 24% and 33% of what they declare.
+
+Own CI job ([`coverage.yml`](../../.github/workflows/coverage.yml)) rather than
+part of `test:ci`: fourteen full walks do not belong in the suite every unit-test
+run waits for, and a coverage regression should not read as a unit-test failure.
+`WF_OPTION_COVERAGE=1` is what the job sets, so nobody has to remember to.
+
+Related and still opt-in: **`all-paths-walk.test.ts`** (`WF_PATH_COVERAGE=1`)
+walks the same coverage mode across every workflow and asserts only that each
+path loads and resolves cleanly — a drift guard on the branches, not a coverage
+measurement.
+
+---
+
+## 3. Standalone 3c run — inspect one walk
 
 ```bash
 npx tsx scripts/run-3c.ts --policy=full-workflow      # default policy: full-workflow
@@ -99,7 +145,7 @@ viewer, not a gate.
 
 ---
 
-## 3. Agent smoke-run (Layer 3a) — real worker, deterministic orchestrator
+## 4. Agent smoke-run (Layer 3a) — real worker, deterministic orchestrator
 
 ```bash
 npm run build                                                  # required first
@@ -129,7 +175,7 @@ scoped** (`--activities=1` or `2`) before a full walk.
 
 ---
 
-## 4. Dual-agent run (Layer 3b) — `--orchestrator=agent`
+## 5. Dual-agent run (Layer 3b) — `--orchestrator=agent`
 
 ```bash
 npx tsx scripts/smoke/smoke-orchestrator.ts --orchestrator=agent --activities=2
@@ -149,9 +195,10 @@ never a gate. Run scoped first.
 ## Choosing a mechanism
 
 - **Did I break the machinery / a reference / a branch?** → deterministic suite (1).
-- **Show me exactly what an activity does now.** → standalone 3c run (2).
-- **Can an agent still follow this after my change?** → 3a agent smoke-run (3).
-- **Does the whole two-agent system still work?** → 3b (4, when built).
+- **Does some walk still reach every decision the corpus offers?** → coverage walk (2).
+- **Show me exactly what an activity does now.** → standalone 3c run (3).
+- **Can an agent still follow this after my change?** → 3a agent smoke-run (4).
+- **Does the whole two-agent system still work?** → 3b (5, when built).
 
 Day to day, run (1) on every change. Reach for (3) when the change touches prose
 agents read (technique/activity wording, operation bundles), not just structure.

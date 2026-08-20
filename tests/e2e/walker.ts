@@ -776,7 +776,20 @@ export interface PathSet {
 export async function enumeratePaths(
   harness: Harness,
   workflowId: string,
-  opts: { maxVisits?: number; maxPaths?: number; maxWalks?: number; coverageMode?: boolean; maxDryWalks?: number } = {},
+  opts: {
+    maxVisits?: number; maxPaths?: number; maxWalks?: number; coverageMode?: boolean;
+    maxDryWalks?: number;
+    /**
+     * Per-activity agent-outcome variables, as a Policy's `simulate` supplies them.
+     *
+     * The enumerator varies *decisions*; it cannot invent a bag value. So an activity reached only
+     * once a convergence signal is set — the loop-exit and completion flags a real worker writes in
+     * step prose — is unreachable to it, and every checkpoint beyond that point counts as uncovered
+     * for a reason that has nothing to do with the definitions. Passing the same simulation the
+     * hand-tuned policy walks use lets coverage speak for the graph rather than for the enumerator.
+     */
+    simulate?: Record<string, Record<string, unknown>>;
+  } = {},
 ): Promise<PathSet> {
   const maxVisits = opts.maxVisits ?? 6;
   const maxPaths = opts.maxPaths ?? 256;
@@ -832,6 +845,7 @@ export async function enumeratePaths(
         name: 'enum',
         choose: (ctx: PolicyContext) => (ctx.checkpoint.defaultOption && ctx.checkpoint.options.some((o) => o.id === ctx.checkpoint.defaultOption)
           ? ctx.checkpoint.defaultOption : ctx.checkpoint.options[0]!.id),
+        ...(opts.simulate ? { simulate: (ctx) => opts.simulate![ctx.activityId] } : {}),
       };
       r = await walk(harness, workflowId, enumPolicy, { mode: 'graph', maxVisits, decide, localCheckpoints: true });
     } catch (e) {
