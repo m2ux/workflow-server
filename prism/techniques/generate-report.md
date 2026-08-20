@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -113,12 +113,13 @@ Full filesystem path to `DEFINITIVE-FINDINGS.md`
 
 ### 6. Assign Ids
 
-- Create a mapping from source IDs to unified report IDs
-- If `{analysis_focus}` provides dimension names or categories, use dimension-based prefixes (e.g., CON-xx for consistency, VER-xx for veracity)
-- If no dimensions, use severity-ordered sequential numbering (e.g., F-01, F-02)
-- For multi-unit analyses, prefix with a short unit identifier where needed to avoid collisions
-- If two findings from different units or lenses map to the same report ID, add a unit or lens prefix to disambiguate and report the collision.
-- Record the full mapping: `report_id → { source_artifact_path, original_id, original_severity }`
+- **A finding that arrived with a designator keeps it.** Carry it through unchanged, whatever series it belongs to. Minting a local identifier over someone else's destroys the identity every artifact, gate and citation upstream of this run already used, and a traceability appendix does not restore it — a reader holding the original has to be told the mapping exists before it helps them.
+- Mint identifiers only for findings this run raised, and only in a range that cannot collide with a carried one.
+  > When `{analysis_focus}` provides dimension names or categories, mint dimension-based prefixes (e.g., CON-xx for consistency, VER-xx for veracity).
+  > Otherwise mint severity-ordered sequential numbering (e.g., F-01, F-02).
+- For multi-unit analyses, prefix a minted identifier with a short unit identifier where needed to avoid collisions.
+- If two findings hold the same identifier, disambiguate the **minted** one — never the carried one — and report the collision.
+- Record, for every finding in the report, `report_id → { source_artifact_path, original_id, original_severity }`, so a carried identifier reads as carried and a minted one names what it was minted for.
 
 ### 7. Compose Report
 
@@ -134,6 +135,7 @@ Full filesystem path to `DEFINITIVE-FINDINGS.md`
 ### 8. Write Artifact
 
 - Write the complete report as `{analysis_report}` into `{output_path}`, capturing its full filesystem path as `{report_path}`
+  > Where the harness refuses the write for the declared filename, return the complete body to the dispatching context to persist under that name, and leave `{report_path}` unset until it is written. Renaming the artifact to get past the refusal is what breaks every consumer that reads it by name, so the name stands and the write moves.
 
 ### 9. Write Definitive Findings
 

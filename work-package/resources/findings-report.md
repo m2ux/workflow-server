@@ -105,3 +105,5 @@ A parenthetical mention inside another finding's text is not a classification. A
 ## Anchor Integrity
 
 Every `[…](file#anchor)` within the planning folder resolves against the target file's actual headings. A markdown anchor that does not resolve renders as a working link that goes nowhere, so removing a heading, renaming a designator, or converting a finding to a bold title invalidates every link into it with nothing failing. Resolve the whole folder after any restructuring, not the files that were edited.
+
+**A designator and its destination are one edit.** Relabelling a designator without repointing its link leaves a row naming one finding and resolving to another — a link that works, in a report the row does not belong to. And a check that generates the label and the anchor from the same value cannot see the mismatch, because both sides move together in the check and only one moved in the artifact. Resolve each destination against the headings on disk instead.

@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.14.0
+version: 2.15.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 required: true
