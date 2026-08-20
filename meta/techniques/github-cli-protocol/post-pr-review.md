@@ -37,7 +37,7 @@ Id of the review the API accepted — the handle a later update addresses.
 
 ### live_review_body
 
-The body the API holds for `{review_id}`, read before any replacement. Unset when no `{review_id}` was supplied.
+The body the API holds for `{review_id}` as it stood before this call's write. Unset when no `{review_id}` was supplied.
 
 ## Protocol
 

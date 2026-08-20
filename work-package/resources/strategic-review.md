@@ -18,7 +18,6 @@ Designators use the prefix declared for this report's category at [Strategic Rev
 | Declaration | Value |
 |---|---|
 | `Category` vocabulary | Investigation Artifact / Over-Engineering / Orphaned Infrastructure / Scope Creep / PR Body Conformance |
-| Extension field | none |
 
 On a strategic finding, `Description` states what the change carries, `Impact` what carrying it costs the reader or the maintainer, and `Recommendation` opens with the verb it asks for — remove, simplify, or keep — followed by the argument for it.
 

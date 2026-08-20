@@ -135,7 +135,7 @@ Full filesystem path to `DEFINITIVE-FINDINGS.md`
 ### 8. Write Artifact
 
 - Write the complete report as `{analysis_report}` into `{output_path}`, capturing its full filesystem path as `{report_path}`
-  > Where the harness refuses the write for the declared filename, return the complete body to the dispatching context to persist under that name, and leave `{report_path}` unset until it is written. Renaming the artifact to get past the refusal is what breaks every consumer that reads it by name, so the name stands and the write moves.
+  > Where the harness refuses the write for the declared filename, return the complete body verbatim and leave `{report_path}` unset. The declared name is what every consumer reads the artifact by, so a refusal moves the write and never the name.
 
 ### 9. Write Definitive Findings
 

@@ -50,7 +50,6 @@ Designators use the prefix declared for this report's category at [Test Review](
 | Declaration | Value |
 |---|---|
 | `Category` vocabulary | Coverage Gap / Anti-Pattern / Redundancy / Harness Defect / Reported Failure |
-| Extension field | none |
 
 On a test finding, `Description` opens with an inline link to the test, `Impact` states what goes unverified or what a passing run fails to prove.
 

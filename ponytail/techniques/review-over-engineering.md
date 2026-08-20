@@ -37,7 +37,7 @@ The tagged findings for the change, each under a stable `LC-{n}` designator so a
 
 ### 2. Record one line per finding
 
-- Write each finding as a single line in `{review_findings}`, under its own `LC-{n}` designator ascending from `LC-1`: the tag, the location, the simpler alternative, and the lines it would save. The designator is what a caller's summary indexes the finding by, so it stays stable across a re-score.
+- Write each finding as a single line in `{review_findings}`, under its own designator per [Finding Format](../../ponytail/resources/review-taxonomy.md#finding-format): the tag, the location, the simpler alternative, and the lines it would save.
 - Keep to over-engineering. Do not record correctness, security, or performance findings — those belong to the [safety floor](../../ponytail/resources/the-ladder.md#safety-floor), not this review.
 - Never emit a `delete` finding against the lone smoke test or assert-based self-check — it is the ponytail minimum, not bloat.
 - This review reports only: it lists findings into `{review_findings}` and applies nothing. The fixes are not made here.
