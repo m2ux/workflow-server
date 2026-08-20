@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -12,14 +12,6 @@ Apply L12 structural analysis lens to code for deep structural findings, conserv
 ### analysis_focus
 
 *(optional)* Optional focus area to guide the analysis (e.g., 'error handling', 'state management', 'concurrency')
-
-### findings_destination
-
-*(optional)* Artifact file the analysis is written into. When a caller supplies an existing review artifact (e.g. a consolidated code-review report), the analysis is written as a `## Structural Analysis` section of that artifact, updated in place.
-
-#### default
-
-`structural-analysis.md` (standalone, in `{output_path}`)
 
 ## Outputs
 
@@ -96,8 +88,8 @@ The conservation law names a resource the code must conserve (a storage record, 
 
 ### 5. Write Artifact
 
-- Write the complete analysis as `{structural_analysis}` to `{findings_destination}` — the standalone default in `{output_path}`, or, when the caller supplied an existing review artifact, as that artifact's `## Structural Analysis` section updated in place. If the write fails, verify the destination exists and is writable.
-- For a standalone write, include a YAML front-matter header with target file, analysis date, and lens used (L12 structural); for a section write, open with a one-line context header instead
+- Write the complete analysis as `{structural_analysis}` to its own artifact in `{output_path}`. If the write fails, verify the destination exists and is writable.
+- Include a YAML front-matter header with target file, analysis date, and lens used (L12 structural)
 
 ### 6. Format Output
 

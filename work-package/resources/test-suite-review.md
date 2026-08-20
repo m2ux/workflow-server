@@ -2,7 +2,7 @@
 name: test-suite-review
 description: Guidelines for reviewing and evaluating test suites. Covers test quality assessment, coverage analysis, anti-pattern detection, and improvement recommendations.
 metadata:
-  version: 1.2.0
+  version: 1.3.0
   order: 17
   legacy_id: 17
 ---
@@ -45,15 +45,13 @@ High-value patterns to encourage: protocol compliance (calculated values vs prot
 
 ## Field List
 
-Designators use the prefix declared for this report's category at [Test Review](./review-mode.md#test-review). Declared fields, in this order, laid out per [Finding Layout](./findings-report.md#finding-layout):
+Designators use the prefix declared for this report's category at [Test Review](./review-mode.md#test-review). Every finding carries the five fields of [Fields](./findings-report.md#fields), laid out per [Finding Layout](./findings-report.md#finding-layout). This report declares:
 
-| Field | Holds |
+| Declaration | Value |
 |---|---|
-| `Category` | Coverage Gap / Anti-Pattern / Redundancy / Harness Defect / Reported Failure |
-| `Severity` | A value from the render scale, per [Severity](./findings-report.md#severity) |
-| `Description` | What the test does or fails to do, opening with an inline link to the test |
-| `Impact` | What goes unverified, or what a passing run fails to prove |
-| `Recommendation` | The concrete improvement |
+| `Category` vocabulary | Coverage Gap / Anti-Pattern / Redundancy / Harness Defect / Reported Failure |
+
+On a test finding, `Description` opens with an inline link to the test, `Impact` states what goes unverified or what a passing run fails to prove.
 
 ## Report Template
 

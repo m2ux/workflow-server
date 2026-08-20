@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.10.0
+  version: 1.11.0
 ---
 
 ## Capability
@@ -55,6 +55,10 @@ The structured consolidated review summary text, organized per the Review Commen
 
 Every slot in `{review_summary}` whose measured size exceeds its budget in the format's Reference-Don't-Restate table, as `{ slot, measured, budget }` entries. Empty when every slot is within budget.
 
+### summary_completeness_findings
+
+Every way `{review_summary}` disagrees with the reports it renders from, as `{ check, detail }` entries — a designator sequence with a gap, a row whose link resolves to no heading in the report it names, a stated total that differs from the rows counted, a finding with no Action Items entry. Empty when the summary accounts for every finding its sources hold.
+
 
 ## Protocol
 
@@ -72,10 +76,11 @@ Every slot in `{review_summary}` whose measured size exceeds its budget in the f
 ### 3. Render the Summary
 
 - Enforce the findings-constraint: every rendered finding names a file within the authored surface `{changed_files}`. Findings on files in `{changed_files}` render as the PR's findings; findings on other files render under a separate "pre-existing" grouping.
-- Populate the template from `{classified_findings}`: executive summary, per-category findings (code, test, documentation, validation, branch hygiene, strategic review), what the change gets right, action items, and severity definitions.
+- Populate the template from `{classified_findings}`: executive summary, per-category findings (code, test, structural analysis, lean-coding audit, documentation, validation, branch hygiene, strategic review), what the change gets right, action items, and severity definitions.
+- **Every row of every section comes from `{classified_findings}` and nothing else.** One finding is one row, under the designator its own report defines, in ascending designator order per [Designators](../resources/findings-report.md#designators). A section drawing its order from a second enumeration — a priority list, a remediation order — renders siblings inconsistently, and a row standing for a group of findings hides each of them from the totals and from the Action Items.
 - Reference, don't restate: each finding renders as its item designator, `@` locus link, one-line title, and severity only. The designator links to that finding's section in its associated report (the artifact named in the `Reports` header) when one exists, else it renders as plain text; the `@` cell is a hyperlinked `>` onto the pertinent locus — reviewed code under `{reviewed_code_base}` with a line anchor, or the test, document, CI run, or commit the category declares. Descriptions, evidence, and suggestions stay in the linked report artifacts.
 - Render the Strategic Review section from the run's cleanup and scope-fit recommendations as a findings table on the shared format, and carry each recommendation into the Action Items tier its severity assigns.
-- Render `What This Change Gets Right` between Strategic Review and Action Items, one bullet per specific strength with its `@` locus link; omit the section when the review found none.
+- Render `What This Change Gets Right` between Strategic Review and Action Items, one bullet per specific strength and no source pointer beside it, per [What This Change Gets Right](../resources/review-mode.md#what-this-change-gets-right); omit the section when the review found none.
 - Hold every prose passage to the [Prose Register](../resources/review-mode.md#prose-register) and every caveat to the [Caveat Form](../resources/review-mode.md#caveat-form).
 - Render the header fields in order — `PR`, then `Plan` on its own line immediately after `PR` (linking the planning folder's `README.md`, the work package's canonical home, via the engineering-artifacts base URL with `{eng_publish_ref}`), then `Activities`, `Reports`, and `Date`. Every `Plan`, `Reports`, and `Activities` hyperlink is mandatory — the posting step posts them verbatim.
 - Render the `Reports` field — one hyperlinked entry per report this run produced, each linking the report name to its artifact under the engineering-artifacts base URL with `{eng_publish_ref}`. Include an entry only for a report actually produced this run; omit categories with no report. Each report's concrete artifact filename and content are owned by the technique that produced it — this step iterates over whatever reports were produced, it does not enumerate them.
@@ -92,6 +97,16 @@ Every slot in `{review_summary}` whose measured size exceeds its budget in the f
 - Record every slot over its budget as a `{summary_budget_overruns}` entry with its measured size and its budget.
 - Cut each overrun by moving the absorbed content to the report section that owns it and leaving the link, then re-measure — a shorter paraphrase of report content is still restatement.
 - Emit `{summary_budget_overruns}` so the binding activity can gate on it; leave it empty when every slot is within budget.
+
+### 5. Check the Summary Against Its Sources
+
+Four checks, each mechanical against the reports the summary renders from, and each catching a class a reader would otherwise catch after publication.
+
+- **Each section's designator sequence is complete and gapless.** Enumerate the designators the section's report defines and compare the sets, per [Delivery Completeness](../resources/findings-report.md#delivery-completeness) — a missing designator is a finding that reached no reader, and a range read off the rows cannot see one.
+- **Each row's link resolves to a heading that exists in the report the row names.** Resolve the anchor against that report's headings on disk, per [Anchor Integrity](../resources/findings-report.md#anchor-integrity). Generating the designator and its destination from one value cannot see a mismatch, so the destination is checked against the file.
+- **Every total stated in prose equals the rows counted.** Re-derive each from the rendered table rather than from the figure the source report asserts.
+- **Every finding in a table has an Action Items entry**, and every Action Items entry names a designator a table holds.
+- Record each disagreement as a `{summary_completeness_findings}` entry naming the check and what it found; repair the summary and re-run the checks. Emit the list so the binding activity can gate on it, and leave it empty when every check passes.
 
 ## Rules
 

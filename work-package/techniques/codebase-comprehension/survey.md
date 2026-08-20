@@ -15,7 +15,7 @@ Initial mental model of the codebase area — architecture, abstractions, design
 
 ### gitnexus_indexed
 
-Whether `{host_repo_path}` has a usable GitNexus index; selects between gitnexus-operations and grep/read/glob for structural analysis.
+Whether the codebase under work has a usable GitNexus index; selects between gitnexus-operations and grep/read/glob for structural analysis.
 
 ## Outputs
 
@@ -50,7 +50,7 @@ Mapping of domain-specific terms to the technical modules/constructs that implem
 
 ### 2. Check Gitnexus
 
-- Honor the `{gitnexus_indexed}` flag resolved by start-work-package — it already determined whether `{host_repo_path}` has a usable GitNexus index; do not re-probe unless it is unset (if you must, read `gitnexus://repo/{name}/context` per `gitnexus-operations.index-freshness-first`)
+- Honor the bound `{gitnexus_indexed}` flag — it records whether the codebase under work has a usable index; do not re-probe unless it is unset (if you must, read `gitnexus://repo/{name}/context` per `gitnexus-operations.index-freshness-first`)
 - If `{gitnexus_indexed}` is true: structural analysis throughout this technique goes through the gitnexus-operations operations (`query`, `context`, `impact`, `cypher`) — they are REQUIRED for structural analysis here, the default over grep
 - Only when `{gitnexus_indexed}` is false (the codebase is genuinely not indexed or stale): fall back to grep/read/glob for all exploration steps
 

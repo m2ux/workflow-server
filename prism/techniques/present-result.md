@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -38,7 +38,7 @@ The accumulated artifact paths produced across the analysis run, listed for refe
 ### 2. Format Cross-References
 
 - Hyperlink every finding ID in a domain summary table — a plain-text finding ID is a formatting violation — to its `### {REPORT-ID}` heading in `DEFINITIVE-FINDINGS.md`, where the finding's full field set (Impact, Recommendation, Adversarial confirmation, and more) lives. REPORT.md and DEFINITIVE-FINDINGS.md share the same report IDs, so the link target always exists.
-- Hyperlink every file path in an artifact reference table to the referenced file as `[display-path](relative/path/to/file.md)` — a plain-text or backtick-only path in a reference table is a formatting violation; for a cross-cutting document append a section anchor as `[file.md §N](file.md#section-heading-anchor)`.
+- Hyperlink every file path in an artifact reference table to the referenced file, the display path as the link text and the file's path relative to the table as the target — a plain-text or backtick-only path in a reference table is a formatting violation; for a cross-cutting document append the section anchor to that target.
 - Generate each section anchor by GitHub-flavored markdown rules — lowercase, spaces to hyphens, punctuation removed except hyphens (`### CON-01 — Timeout not enforced` → `#con-01--timeout-not-enforced`) — and verify it matches an actual heading in the target document.
 
 ### 3. Present Result

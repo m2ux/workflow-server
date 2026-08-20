@@ -2,7 +2,7 @@
 name: strategic-review
 description: Strategic review artifact template for speculative-change, over-engineering, and orphaned-infrastructure findings.
 metadata:
-  version: 1.3.0
+  version: 1.4.0
   order: 18
   legacy_id: 18
 ---
@@ -13,17 +13,13 @@ Problem-solving commonly leaves behind speculative changes, debugging infrastruc
 
 ## Field List
 
-Designators use the prefix declared for this report's category at [Strategic Review](./review-mode.md#strategic-review). Declared fields, in this order, laid out per [Finding Layout](./findings-report.md#finding-layout):
+Designators use the prefix declared for this report's category at [Strategic Review](./review-mode.md#strategic-review). Every finding carries the five fields of [Fields](./findings-report.md#fields), laid out per [Finding Layout](./findings-report.md#finding-layout). This report declares:
 
-| Field | Holds |
+| Declaration | Value |
 |---|---|
-| `Category` | Investigation Artifact / Over-Engineering / Orphaned Infrastructure / Scope Creep / PR Body Conformance |
-| `Severity` | A value from the render scale, per [Severity](./findings-report.md#severity) |
-| `Description` | What the change carries and why the problem it states does not need it, opening with an inline link to the named thing |
-| `Action` | Remove / Simplify / Keep |
-| `Rationale` | The argument for that action |
+| `Category` vocabulary | Investigation Artifact / Over-Engineering / Orphaned Infrastructure / Scope Creep / PR Body Conformance |
 
-`Rationale` argues for the action the finding names, which is a different claim from the consequence a finding states elsewhere.
+On a strategic finding, `Description` states what the change carries, `Impact` what carrying it costs the reader or the maintainer, and `Recommendation` opens with the verb it asks for — remove, simplify, or keep — followed by the argument for it.
 
 ## Strategic Review Artifact Template
 
@@ -46,9 +42,9 @@ Designators use the prefix declared for this report's category at [Strategic Rev
 
 **Description:** [what the change carries, opening with an inline link to the named thing]
 
-**Action:** [Remove / Simplify / Keep]
+**Impact:** [what carrying it costs]
 
-**Rationale:** [the argument for that action]
+**Recommendation:** [remove / simplify / keep, then the argument for it]
 
 ## Cleanup Actions Taken
 

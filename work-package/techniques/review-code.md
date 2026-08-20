@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.4.0
+  version: 2.5.0
 ---
 
 ## Capability
@@ -25,7 +25,7 @@ The authored surface — the PR's changed-files set, produced canonically by `re
 
 ### code_review_report
 
-Code review [report](../resources/rust-substrate-code-review.md#report-template) stating the change's findings and the review outcome. The single canonical home for the change's review findings — manual diff review, structural analysis, and lean-coding sections each land in a dedicated section of this artifact.
+Code review [report](../resources/rust-substrate-code-review.md#report-template) stating this review's findings and its outcome. The home for the code-review findings and the manual diff review's; each other review pass states its findings in the report it owns, under its own designator series.
 
 #### artifact
 
@@ -79,7 +79,7 @@ When the diff changes a `Config` impl, an associated type, or any trait-implemen
 ### 4. Document Findings
 
 - State each finding in the shape [Finding Layout](../resources/findings-report.md#finding-layout) declares, carrying the fields under [Field List](../resources/rust-substrate-code-review.md#field-list) and no others, with its severity derived through the map per [Severity](../resources/findings-report.md#severity)
-- Create the `{code_review_report}` in `{planning_folder_path}` — or update it in place when an earlier review (manual diff, structural analysis, lean-coding) already created it; each contributing review owns its `##` section and this review writes the code-review sections
+- Create the `{code_review_report}` in `{planning_folder_path}` — or update it in place when the manual diff review already created it, which owns its own `##` section within it
 - Emit a brief summary of critical and high findings as part of the bindable report output for the binding activity to surface
 
 ### 5. Record the Method

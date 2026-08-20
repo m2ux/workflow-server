@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.14.0
+version: 2.15.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 required: true
@@ -51,7 +51,7 @@ steps:
     technique:
       name: verify-artifact-conforms
       inputs:
-        canonical_home_map: manage-artifacts#canonical-home-map
+        canonical_home_map: work-package/techniques/manage-artifacts#canonical-home-map
         guide_map: work-package/README#planning-artifact-to-guide-map
   - kind: technique
     id: verify-readme
@@ -90,7 +90,10 @@ steps:
     technique: summarize-architecture
   - kind: technique
     id: analyze-strategic-findings
-    technique: strategic-findings-analysis
+    technique:
+      name: strategic-findings-analysis
+      inputs:
+        is_review_mode: "{is_review_mode}"
   - kind: checkpoint
     id: review-findings
     condition:

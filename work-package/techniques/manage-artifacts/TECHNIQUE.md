@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 3.7.0
+  version: 3.8.0
 ---
 
 ## Capability
@@ -64,6 +64,8 @@ Symbol and test references hyperlink to their definition line (the definition, n
 | Anything else outside the planning folder | full URL |
 
 A path relative to a checkout is never a citation form: the checkout it resolves against is removed at close-out, so the link dies inside the run that wrote it. A resource or technique id is never a link target — ids address the loader, not the git host.
+
+A line anchor on a **markdown** blob needs `?plain=1` before the fragment — `…/NOTES.md?plain=1#L1-L131`. The host serves a rendered page for a markdown blob and a rendered page has no line numbers, so the fragment is dropped and the link lands at the top of the file with nothing failing. Every other extension resolves the fragment as written.
 
 [verify-artifact-links](./verify-artifact-links.md) resolves every link at the close-out boundary against the ref the published links point at, so a folder whose links break only in the published tree is caught rather than shipped.
 

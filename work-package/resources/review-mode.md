@@ -2,7 +2,7 @@
 name: review-mode
 description: Reference content for a structured pull-request review — the review comment template, and one section per review category carrying that category's findings fragment and population rules. Organized for per-section delivery.
 metadata:
-  version: 1.16.0
+  version: 1.17.0
   order: 24
   legacy_id: 24
 ---
@@ -70,11 +70,13 @@ Every findings table, across all categories, follows one shape — four columns 
 | Column | Holds |
 |--------|-------|
 | `#` | The item designator (the category's prefix plus its number). Hyperlinked to the finding's own heading anchor within its report when the category has a report in the `Reports` header; plain text when it has none. |
-| `@` | The source locus, rendered as a hyperlinked ASCII `>` and nothing else. Position 2, immediately after `#`. |
 | `Finding` | One line naming the finding, within the [Reference, Don't Restate](#reference-dont-restate) budget. |
 | `Severity` | A value from [Severity Definitions](#severity-definitions). |
+| `@` | The source locus, rendered as a hyperlinked ASCII `>` and nothing else. Final position, so the designator and the finding text a reader scans down sit side by side. |
 
 Tables list only non-passing findings — positive items belong in [What This Change Gets Right](#what-this-change-gets-right).
+
+**A table opens with one line naming its subject** — what part of the change it examines, not how many rows it holds or which designators fall in it. The rows sit beneath the line, so a count restates them and goes stale on the next one added.
 
 The `@` cell is `[>](url)`, never the filename, path, test name, or run label as link text: filename link text sets the column to the width of the longest path and wraps every other cell on the row. The link target is whatever locus the category declares (code blob URL, test, document, CI run, commit) and every one resolves at the ref the ref-split assigns it under [Header Fields](#header-fields). Validate each `@` target against the actual source at that ref before inclusion; line numbers carried over from earlier analysis are re-read, not trusted.
 
@@ -114,13 +116,15 @@ A caveat is one line: the claim, then a link to the report section holding its b
 
 Findings tables carry only non-passing items, so this section is the home for what the change does well. It sits between Strategic Review and Action Items.
 
-One bullet per item: what the change gets right, in the [Prose Register](#prose-register), with an `@` link to the locus that shows it. Specific, not generic — "the close path clears the storage record it opened" earns a bullet; "code is well structured" does not. Omit the section when the review found nothing above that bar.
+One bullet per item: what the change gets right, in the [Prose Register](#prose-register). Specific, not generic — "the close path clears the storage record it opened" earns a bullet; "code is well structured" does not. Omit the section when the review found nothing above that bar.
+
+The bullets carry no source pointer: each claim is about the change's design rather than about a line, and stands on its own at that altitude.
 
 ```markdown
 ### What This Change Gets Right
 
-- The governance-close path clears every record it opened — [>]({REVIEWED_CODE_BASE_URL}/src/governance.rs#L212)
-- Migration is idempotent, so a partial upgrade re-runs safely — [>]({REVIEWED_CODE_BASE_URL}/src/migration.rs#L44)
+- The governance-close path clears every record it opened
+- Migration is idempotent, so a partial upgrade re-runs safely
 ```
 
 ### Action Items
@@ -177,7 +181,7 @@ The Overall Rating rendered in the summary maps to the posted review type:
 ### Skeleton
 
 ```markdown
-## PR Review Summary
+## PR Review
 
 **PR**: #XXX - Title  
 **Plan**: [work package README](.../planning/{PLANNING_FOLDER}/README.md)  
@@ -187,7 +191,7 @@ The Overall Rating rendered in the summary maps to the posted review type:
 
 ### Executive Summary
 
-[1-2 sentence overall assessment]
+[1-2 sentence overall assessment, naming what the change does and where it stands — no finding counts and no severity tallies, which the tables below already hold]
 
 **Overall Rating**: [Approve / Request Changes / Comment Only]
 
@@ -202,6 +206,14 @@ The Overall Rating rendered in the summary maps to the posted review type:
 ---
 
 {test_review_findings}
+
+---
+
+{structural_analysis_findings}
+
+---
+
+{lean_coding_audit_findings}
 
 ---
 
@@ -317,10 +329,12 @@ Disposition of every prior comment and review on the PR (human and bot), determi
 ```markdown
 ### Code Review Findings
 
-| # | @ | Finding | Severity |
-|---|---|---------|----------|
-| [CR-1]({report-url}#cr-1) | [>]({REVIEWED_CODE_BASE_URL}/src/file.rs#L42) | Missing null check in handler | High |
-| [CR-2]({report-url}#cr-2) | [>]({REVIEWED_CODE_BASE_URL}/src/handler.rs#L78) | N+1 query pattern in loop | Medium |
+[one line naming what part of the change this table examines]
+
+| # | Finding | Severity | @ |
+|---|---------|----------|---|
+| [CR-1]({report-url}#cr-1) | Missing null check in handler | High | [>]({REVIEWED_CODE_BASE_URL}/src/file.rs#L42) |
+| [CR-2]({report-url}#cr-2) | N+1 query pattern in loop | Medium | [>]({REVIEWED_CODE_BASE_URL}/src/handler.rs#L78) |
 ```
 
 ## Test Review
@@ -332,10 +346,48 @@ Disposition of every prior comment and review on the PR (human and bot), determi
 ```markdown
 ### Test Review Findings
 
-| # | @ | Finding | Severity |
-|---|---|---------|----------|
-| [TR-1]({report-url}#tr-1) | [>]({REVIEWED_CODE_BASE_URL}/tests/module_test.rs#L88) | Missing edge case coverage | Medium |
-| [TR-2]({report-url}#tr-2) | [>]({REVIEWED_CODE_BASE_URL}/tests/module_test.rs#L210-L240) | No error path tests | High |
+[one line naming what part of the change this table examines]
+
+| # | Finding | Severity | @ |
+|---|---------|----------|---|
+| [TR-1]({report-url}#tr-1) | Missing edge case coverage | Medium | [>]({REVIEWED_CODE_BASE_URL}/tests/module_test.rs#L88) |
+| [TR-2]({report-url}#tr-2) | No error path tests | High | [>]({REVIEWED_CODE_BASE_URL}/tests/module_test.rs#L210-L240) |
+```
+
+## Structural Analysis
+
+**Prefix:** `SA`
+
+Structural analysis states what the change's shape makes possible, and the conservation law it holds or breaks.
+
+**Population:** one row per structural finding. `@` links the locus the finding turns on at the reviewed sha. Designator links to the finding's section in the structural-analysis report. Where a child workflow raised the finding, the row carries the designator that workflow assigned it, unchanged — per [Designators](./findings-report.md#designators).
+
+```markdown
+### Structural Analysis
+
+[one line naming what part of the change this table examines]
+
+| # | Finding | Severity | @ |
+|---|---------|----------|---|
+| [SA-1]({report-url}#sa-1) | Governance record has no clearer on the error path | High | [>]({REVIEWED_CODE_BASE_URL}/src/governance.rs#L212) |
+```
+
+## Lean-Coding Audit
+
+**Prefix:** `LC`
+
+The lean-coding audit states what the change carries that a simpler construct would do, each finding with the lines it would save.
+
+**Population:** one row per audit finding, never an aggregate standing for several — an aggregate hides each finding inside it from the totals and from the Action Items. `@` links the construct at the reviewed sha. Designator links to the finding in the audit's own report.
+
+```markdown
+### Lean-Coding Audit
+
+[one line naming what part of the change this table examines]
+
+| # | Finding | Severity | @ |
+|---|---------|----------|---|
+| [LC-1]({report-url}#lc-1) | Trait wrapper restates the stdlib conversion it calls | Low | [>]({REVIEWED_CODE_BASE_URL}/src/convert.rs#L18) |
 ```
 
 ## Documentation Review
@@ -347,9 +399,11 @@ Disposition of every prior comment and review on the PR (human and bot), determi
 ```markdown
 ### Documentation Review
 
-| # | @ | Finding | Severity |
-|---|---|---------|----------|
-| `DR-1` | [>]({REVIEWED_CODE_BASE_URL}/CHANGELOG.md) | Change file missing | High |
+[one line naming what part of the change this table examines]
+
+| # | Finding | Severity | @ |
+|---|---------|----------|---|
+| `DR-1` | Change file missing | High | [>]({REVIEWED_CODE_BASE_URL}/CHANGELOG.md) |
 ```
 
 ## Validation
@@ -361,9 +415,11 @@ Disposition of every prior comment and review on the PR (human and bot), determi
 ```markdown
 ### Validation Findings
 
-| # | @ | Finding | Severity |
-|---|---|---------|----------|
-| `VF-1` | [>](ci-run-url) | Lint — 3 clippy warnings | Low |
+[one line naming what part of the change this table examines]
+
+| # | Finding | Severity | @ |
+|---|---------|----------|---|
+| `VF-1` | Lint — 3 clippy warnings | Low | [>](ci-run-url) |
 ```
 
 ## Branch Hygiene
@@ -375,9 +431,11 @@ Disposition of every prior comment and review on the PR (human and bot), determi
 ```markdown
 ### Branch Hygiene
 
-| # | @ | Finding | Severity |
-|---|---|---------|----------|
-| `BH-1` | [>](commit-url) | Branch freshness — behind main | Low |
+[one line naming what part of the change this table examines]
+
+| # | Finding | Severity | @ |
+|---|---------|----------|---|
+| `BH-1` | Branch freshness — behind main | Low | [>](commit-url) |
 ```
 
 ## Strategic Review
@@ -391,8 +449,10 @@ Review-mode strategic review produces cleanup and scope-fit **recommendations** 
 ```markdown
 ### Strategic Review
 
-| # | @ | Finding | Severity |
-|---|---|---------|----------|
-| [SR-1]({report-url}#sr-1) | [>]({REVIEWED_CODE_BASE_URL}/src/lib.rs#L1) | Trait abstraction carries one implementor | Medium |
-| [SR-2]({report-url}#sr-2) | [>]({REVIEWED_CODE_BASE_URL}/src/debug.rs#L60) | Debug scaffolding ships with the change | Low |
+[one line naming what part of the change this table examines]
+
+| # | Finding | Severity | @ |
+|---|---------|----------|---|
+| [SR-1]({report-url}#sr-1) | Trait abstraction carries one implementor | Medium | [>]({REVIEWED_CODE_BASE_URL}/src/lib.rs#L1) |
+| [SR-2]({report-url}#sr-2) | Debug scaffolding ships with the change | Low | [>]({REVIEWED_CODE_BASE_URL}/src/debug.rs#L60) |
 ```

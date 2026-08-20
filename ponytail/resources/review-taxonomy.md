@@ -31,19 +31,19 @@ Comment and doc-block bulk must stay proportional to the surrounding code. A why
 
 ## Finding Format
 
-One line per finding, no prose paragraphs:
+One line per finding, no prose paragraphs, each under its own designator:
 
 ```
-L<line>: <tag> <what>. <replacement>.
+LC-<n> L<line>: <tag> <what>. <replacement>.
 ```
 
 For a multi-file diff or repo-wide pass, prefix the location with the file:
 
 ```
-<file>:L<line>: <tag> <what>. <replacement>.
+LC-<n> <file>:L<line>: <tag> <what>. <replacement>.
 ```
 
-The line reference locates it, the tag classifies it, `<what>` names the construct, and `<replacement>` names the simpler rung. A higher intensity lowers the bar for what is flagged: an `ultra` pass flags any construct a lazier rung could replace, a `lite` pass flags only the clear wins.
+The designator is the stable handle a reader, a later pass, or a caller's summary refers to the finding by — assigned by this pass, ascending from `LC-1`, and unchanged by anything that consumes it. The line reference locates it, the tag classifies it, `<what>` names the construct, and `<replacement>` names the simpler rung. A higher intensity lowers the bar for what is flagged: an `ultra` pass flags any construct a lazier rung could replace, a `lite` pass flags only the clear wins.
 
 ---
 
