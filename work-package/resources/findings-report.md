@@ -26,6 +26,7 @@ A negative result is methodology, not a finding: *every added line scanned, no d
 Two boundaries decide what goes where:
 
 - **A finding's own evidence stays with the finding.** The split is between the review's method and its conclusions, never between a conclusion and its support. The arithmetic that shows a limit is exceeded belongs to the finding; the sweep that found no occurrences anywhere is method.
+- **The record states the derivation, not what was missing.** It names the sources read and the commands and tools that produced each enumeration, so a reader can rebuild it. A capability the review did not have is a finding, recorded where findings go — narrating its absence here leaves the reader neither the derivation nor an actionable finding.
 - **The methodology record is checked like the report.** It is the half nobody re-reads, so it is the half a stale claim survives in. Whatever conformance pass runs over the report runs over it.
 
 ## Fields
