@@ -454,7 +454,7 @@ variables:
     defaultValue: false
   - name: recommended_strategic_option
     type: string
-    description: "Agent-recommended action after strategic review analysis (fix-findings|acceptable)."
+    description: "Agent-recommended action after strategic review analysis (fix-findings|raise-findings|acceptable)."
   - name: squash_merge_supported
     type: boolean
     description: True when the target repo allows squash merges (allow_squash_merge=true from GitHub API).

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -17,11 +17,15 @@ The strategic-review findings and recommendations, categorized by type (investig
 
 *(optional)* The accumulated strategic-review findings, when carried in the bag separately from the artifact document.
 
+### is_review_mode
+
+*(optional)* True when the run audited an external change; false or unset when it produced an implementation. Selects which action the recommendation names, since a run that judges someone else's change has none of its own to alter.
+
 ## Outputs
 
 ### recommended_strategic_option
 
-The recommended outcome based on the severity assessment: `fix-findings` when significant findings are present, otherwise `acceptable`.
+The recommended outcome based on the severity assessment: `acceptable` when findings are minor or absent, and with significant findings present, `fix-findings` where the run owns the change or `raise-findings` where it audited someone else's.
 
 ### strategic_findings_summary
 
@@ -40,8 +44,10 @@ A concise multi-line summary of the strategic-review findings — one line per f
 
 ### 2. Recommend an Outcome
 
-- Set `{recommended_strategic_option}` to `fix-findings` when one or more significant findings are present.
 - Set `{recommended_strategic_option}` to `acceptable` when findings are minor or absent.
+- With one or more significant findings present, set it to the action the run can take on them.
+  > When `{is_review_mode}` is true, that action is `raise-findings` — the change belongs to its author, and what this run decides is which findings the posted review carries.
+  > Otherwise it is `fix-findings` — the run owns the change and can alter it.
 
 ### 3. Summarize Findings
 
@@ -56,9 +62,13 @@ A concise multi-line summary of the strategic-review findings — one line per f
 
 ## Rules
 
-### significant-findings-route-to-fix
+### significant-findings-route-to-action
 
-Only significant scope, over-engineering, or investigation-artifact findings recommend `fix-findings`. Minor observations recommend `acceptable` and are left for the user to defer at their discretion.
+Only significant scope, over-engineering, or investigation-artifact findings recommend an action on the findings. Minor observations recommend `acceptable` and are left for the user to defer at their discretion.
+
+### recommendation-is-not-the-decision
+
+`{recommended_strategic_option}` records what this analysis recommends; the gate that follows records what the user decided. The two are separate values with separate domains, so a gate answer is never written back over the recommendation — a recommendation overwritten with the decision leaves no record that they differed.
 
 ### summary-stays-concise
 
