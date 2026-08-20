@@ -113,7 +113,7 @@ Full filesystem path to `DEFINITIVE-FINDINGS.md`
 
 ### 6. Assign Ids
 
-- **A finding that arrived with a designator keeps it.** Carry it through unchanged, whatever series it belongs to. Minting a local identifier over someone else's destroys the identity every artifact, gate and citation upstream of this run already used, and a traceability appendix does not restore it — a reader holding the original has to be told the mapping exists before it helps them.
+- **A finding that arrived with a designator keeps it**, whatever series it belongs to. A traceability appendix does not restore an identity the upstream artifacts, gates and citations were already using.
 - Mint identifiers only for findings this run raised, and only in a range that cannot collide with a carried one.
   > When `{analysis_focus}` provides dimension names or categories, mint dimension-based prefixes (e.g., CON-xx for consistency, VER-xx for veracity).
   > Otherwise mint severity-ordered sequential numbering (e.g., F-01, F-02).

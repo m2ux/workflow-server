@@ -66,9 +66,9 @@ A concise multi-line summary of the strategic-review findings — one line per f
 
 Only significant scope, over-engineering, or investigation-artifact findings recommend an action on the findings. Minor observations recommend `acceptable` and are left for the user to defer at their discretion.
 
-### recommendation-is-not-the-decision
+### recommendation-holds-only-its-own-domain
 
-`{recommended_strategic_option}` records what this analysis recommends; the gate that follows records what the user decided. The two are separate values with separate domains, so a gate answer is never written back over the recommendation — a recommendation overwritten with the decision leaves no record that they differed.
+`{recommended_strategic_option}` holds one of the three values its contract declares and nothing else. A decision taken elsewhere is a different fact with a different domain: writing one here replaces what was recommended with what was chosen, and the record that the two differed is the thing that goes.
 
 ### summary-stays-concise
 
