@@ -11,7 +11,7 @@ metadata:
 
 ### repo_path
 
-Filesystem path to the repository to index. For monorepos, pass the monorepo ROOT — gitnexus walks the working tree from there and indexes every source file it encounters, including content that physically lives inside submodule directories, producing a single unified index keyed under the monorepo's name. For standalone repos, pass the repo root.
+Filesystem path of the tree to index. GitNexus walks the working tree from here and indexes every source file it encounters, including content that physically lives inside submodule directories, and keys the resulting index under this tree's basename — the name every later operation addresses its answers by.
 
 ### force_rebuild
 
@@ -43,6 +43,6 @@ Post-analyze symbol / relationship / process counts emitted by the CLI
 
 ## Rules
 
-### no-per-submodule-analyze
+### one-index-per-addressed-tree
 
-Do NOT analyze each submodule separately when the monorepo root has already been (or will be) analyzed — that produces duplicate, harder-to-reason-about indexes.
+Index the tree whose answers the caller will ask for, and index that tree once. A component folded into a superproject's index is reachable only under the superproject's name, so an operation addressing the component by its own name finds nothing; a component indexed both separately and as part of its superproject answers from two graphs of different scope.

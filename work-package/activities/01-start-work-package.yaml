@@ -161,11 +161,11 @@ steps:
     technique:
       name: gitnexus-operations::analyze
       inputs:
-        repo_path: host_repo_path
+        repo_path: component_git_dir
     actions:
       - action: set
         target: gitnexus_indexed
-        value: true
+        description: true when indexing the component tree succeeds, false otherwise
   - kind: technique
     id: detect-merge-strategy
     technique: manage-git::detect-merge-strategy

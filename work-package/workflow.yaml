@@ -539,7 +539,7 @@ variables:
     defaultValue: false
   - name: gitnexus_indexed
     type: boolean
-    description: Whether host_repo_path has a usable GitNexus index.
+    description: Whether the component under work has a usable GitNexus index.
     defaultValue: false
   - name: problem_type
     type: string
