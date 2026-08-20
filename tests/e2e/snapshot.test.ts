@@ -50,10 +50,11 @@ describe('work-package walk snapshots (baseline)', () => {
    * Every walk, run once before any test reads one.
    *
    * The two reports below are about the matrix as a whole, so they need all six. Accumulating into
-   * shared state as each test ran made them depend on all six having finished first — which held
-   * locally and did not on CI, where the totals came out one step short. A figure that depends on
-   * test order is not a measurement. Walking up front costs nothing extra and removes the ordering
-   * from the picture entirely.
+   * shared state as each test ran made them depend on every one of those tests having finished
+   * first, which is a coupling worth removing on its own account: it costs nothing to walk up front,
+   * and `allWalks` can then say which walk is missing rather than quietly totalling what happened to
+   * be ready. It did not, in the event, explain the CI difference that prompted it — that turned out
+   * to be a branch in post-impl-review, #479 — so this stands as structure rather than as a fix.
    */
   const walks = new Map<string, WalkResult>();
   beforeAll(async () => {
