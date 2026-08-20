@@ -30,26 +30,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # `.engineering` nests a private repo this runner cannot clone, so submodules are checked
-          # out one at a time below rather than with `submodules: recursive`.
+          # `.engineering` nests a private repo this runner cannot clone, so the corpus is checked out
+          # on its own below rather than with `submodules: recursive`.
           submodules: false
 
-      # Both submodules are branches of THIS repo behind an SSH URL, which the default token cannot
-      # use. A second checkout of the pinned gitlink commit avoids submodule machinery and credential
-      # rewriting entirely. `HEAD:workflows` reads the gitlink from the superproject tree, so it
-      # resolves without the submodule ever being initialised.
-      - name: Resolve the pinned workflows-corpus commit
-        id: corpus
-        run: echo "sha=$(git rev-parse HEAD:workflows)" >> "$GITHUB_OUTPUT"
-
-      # The PINNED commit, not the `workflows` branch tip: this job verifies the corpus the tree under
-      # review actually adopts. Corpus drift ahead of the pin is the submodule bump's business.
-      - name: Check out the workflows corpus at the pinned commit
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository }}
-          ref: ${{ steps.corpus.outputs.sha }}
-          path: workflows
+      # The corpus the tree under review adopts, and a check that the branch's baselines were recorded
+      # against it. Corpus drift ahead of the gitlink is the submodule bump's business.
+      - uses: ./.github/actions/workflows-corpus
 
       - uses: actions/setup-node@v4
         with:

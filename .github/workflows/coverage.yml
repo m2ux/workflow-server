@@ -41,18 +41,10 @@ jobs:
           # corpus is checked out on its own below rather than with `submodules: recursive`.
           submodules: false
 
-      - name: Resolve the pinned workflows-corpus commit
-        id: corpus
-        run: echo "sha=$(git rev-parse HEAD:workflows)" >> "$GITHUB_OUTPUT"
-
-      # The PINNED commit, not the `workflows` branch tip: this job measures the corpus the tree
-      # under review actually adopts.
-      - name: Check out the workflows corpus at the pinned commit
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository }}
-          ref: ${{ steps.corpus.outputs.sha }}
-          path: workflows
+      # The corpus the tree under review adopts, and a check that the branch's baselines were recorded
+      # against it — which costs seconds and is worth the whole hour this job may otherwise spend
+      # measuring one corpus against a ratchet recorded on another.
+      - uses: ./.github/actions/workflows-corpus
 
       - uses: actions/setup-node@v4
         with:
