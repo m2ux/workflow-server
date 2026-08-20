@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { createHarness, type Harness } from './harness.js';
-import { walk } from './walker.js';
+import { walk, type WalkResult } from './walker.js';
 import { snapshotWalk } from './snapshot.js';
 import {
   defaultPolicy,
@@ -39,49 +39,42 @@ describe('walk baseline corpus stamp', () => {
   });
 });
 
+const policies = [
+  defaultPolicy, skipOptionalPolicy, fullWorkflowPolicy,
+  researchOnlyPolicy, elicitationOnlyPolicy, reviewModePolicy,
+];
+
 describe('work-package walk snapshots (baseline)', () => {
   let h: Harness;
-  beforeAll(async () => { h = await createHarness(); });
+  /**
+   * Every walk, run once before any test reads one.
+   *
+   * The two reports below are about the matrix as a whole, so they need all six. Accumulating into
+   * shared state as each test ran made them depend on all six having finished first — which held
+   * locally and did not on CI, where the totals came out one step short. A figure that depends on
+   * test order is not a measurement. Walking up front costs nothing extra and removes the ordering
+   * from the picture entirely.
+   */
+  const walks = new Map<string, WalkResult>();
+  beforeAll(async () => {
+    h = await createHarness();
+    for (const policy of policies) walks.set(policy.name, await walk(h, 'work-package', policy));
+  }, 600_000);
   afterAll(async () => { await h.close(); });
 
-  const policies = [
-    defaultPolicy, skipOptionalPolicy, fullWorkflowPolicy,
-    researchOnlyPolicy, elicitationOnlyPolicy, reviewModePolicy,
-  ];
-
-  // Which steps each activity ran, unioned over the matrix, and the server's gate readings summed
-  // over every delivery. Filled as the walks above run so the reports below cost no extra walk.
-  const executedByActivity = new Map<string, Set<string>>();
-  const lazyGates = { pending: 0, unbound: 0, unparsed: 0, deliveries: 0 };
+  /** Every walk the matrix ran, or a clear failure rather than a total quietly short of one. */
+  function allWalks(): WalkResult[] {
+    const missing = policies.filter((p) => !walks.has(p.name)).map((p) => p.name);
+    if (missing.length) throw new Error(`walk missing for ${missing.join(', ')} — totals would be short`);
+    return policies.map((p) => walks.get(p.name)!);
+  }
 
   for (const policy of policies) {
-    it(`[${policy.name}] matches committed baseline`, async () => {
-      const result = await walk(h, 'work-package', policy);
-      for (const step of result.steps) {
-        const seen = executedByActivity.get(step.activityId) ?? new Set<string>();
-        for (const id of step.stepsExecuted) seen.add(id);
-        executedByActivity.set(step.activityId, seen);
-        if (step.lazyGates) {
-          lazyGates.deliveries++;
-          lazyGates.pending += step.lazyGates.pending;
-          lazyGates.unbound += step.lazyGates.unbound;
-          lazyGates.unparsed += step.lazyGates.unparsed;
-        }
-      }
-      expect(snapshotWalk(result)).toMatchSnapshot();
+    it(`[${policy.name}] matches committed baseline`, () => {
+      expect(snapshotWalk(walks.get(policy.name)!)).toMatchSnapshot();
     });
   }
 
-  /**
-   * How much of each activity the six policies actually run.
-   *
-   * The snapshots above record the steps that executed. That is what happened, and on its own it
-   * reads as coverage: an absent step is indistinguishable from one correctly gated out. Against the
-   * count the activity declares it reads as what it is — the share of the workflow this matrix
-   * speaks for, and therefore the share of it these snapshots could not have caught a defect in
-   * (#472). Recorded rather than asserted: most of the gap needs an agent to bind a technique
-   * output, not another policy, so a threshold here would be a number chosen to pass.
-   */
   /**
    * The server's own gate readings, summed over every activity delivery in the matrix.
    *
@@ -98,20 +91,48 @@ describe('work-package walk snapshots (baseline)', () => {
    * that is asserted (#472).
    */
   it('never delivers an activity whose gate expression it cannot parse', () => {
-    expect(lazyGates.deliveries, 'no delivery reported a gate reading').toBeGreaterThan(0);
+    const tally = { pending: 0, unbound: 0, unparsed: 0, deliveries: 0 };
+    for (const result of allWalks()) {
+      for (const step of result.steps) {
+        if (!step.lazyGates) continue;
+        tally.deliveries++;
+        tally.pending += step.lazyGates.pending;
+        tally.unbound += step.lazyGates.unbound;
+        tally.unparsed += step.lazyGates.unparsed;
+      }
+    }
+    expect(tally.deliveries, 'no delivery reported a gate reading').toBeGreaterThan(0);
     expect(
-      lazyGates.unparsed,
+      tally.unparsed,
       'a gated technique step stayed lazy because its when/condition does not parse. The expression '
       + 'is malformed: find it with the corpus guards (npm run check:all) rather than here.',
     ).toBe(0);
     // eslint-disable-next-line no-console
     console.log(
-      `[lazy gates] over ${lazyGates.deliveries} activity deliveries: `
-      + `pending=${lazyGates.pending} unbound=${lazyGates.unbound} unparsed=${lazyGates.unparsed}`,
+      `[lazy gates] over ${tally.deliveries} activity deliveries: `
+      + `pending=${tally.pending} unbound=${tally.unbound} unparsed=${tally.unparsed}`,
     );
   });
 
+  /**
+   * How much of each activity the six policies actually run.
+   *
+   * The snapshots above record the steps that executed. That is what happened, and on its own it
+   * reads as coverage: an absent step is indistinguishable from one correctly gated out. Against the
+   * count the activity declares it reads as what it is — the share of the workflow this matrix
+   * speaks for, and therefore the share of it these snapshots could not have caught a defect in
+   * (#472). Recorded rather than asserted: most of the gap needs an agent to bind a technique
+   * output, not another policy, so a threshold here would be a number chosen to pass.
+   */
   it('records how much of each activity the matrix runs', async () => {
+    const executedByActivity = new Map<string, Set<string>>();
+    for (const result of allWalks()) {
+      for (const step of result.steps) {
+        const seen = executedByActivity.get(step.activityId) ?? new Set<string>();
+        for (const id of step.stepsExecuted) seen.add(id);
+        executedByActivity.set(step.activityId, seen);
+      }
+    }
     const declared = await declaredSteps(['work-package']);
     const rows = stepCoverage(declared, executedByActivity);
     const declaredTotal = rows.reduce((n, r) => n + r.declared, 0);
