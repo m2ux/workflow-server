@@ -63,9 +63,11 @@ green. It is four test files:
 - **`snapshot.test.ts`** — a normalized, committed **baseline** per policy (path,
   checkpoint decisions, artifacts written, manifest status, unresolved refs).
   *Catches:* any unintended change to behaviour; update intentionally with
-  `npx vitest run tests/e2e -u`. It also records **step coverage per activity** —
+  `npx vitest run tests/e2e -u`. It also pins **step coverage per activity** —
   what each activity declares against what any policy runs — so the executed-step
-  lists above are read next to the share of the workflow they speak for.
+  lists above are read next to the share of the workflow they speak for. Both
+  sides are a pure function of the corpus and these six policies, so a move in
+  either is a move in one of those, and the per-activity rows say where.
 
 **Benefits:** fast, free, reproducible, CI-able; pinpoints machinery and
 definition regressions precisely.
