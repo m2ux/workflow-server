@@ -202,3 +202,22 @@ any tree.
 
 **B — typecheck costing.** Full parity **364 errors** (`src/` **0**, `scripts/` 179, `tests/` 185); **240
 (66%) are `TS4111`**, mechanical. `scripts/guards.ts` alone: **2**, both closed by MEC-08.
+
+## 12. Defects in the workflows that produced this plan
+
+Eight defects in the evaluation and meta definitions, found by running them end to end rather than by
+reading them. They are not findings about the target and carry no mitigation here — they are tracked at
+[m2ux/workflow-server#477](https://github.com/m2ux/workflow-server/issues/477), which carries the
+evidence and the proposed fixes.
+
+The one that bears on this plan's own standing: the conformance step measured **2 of the 16 artifacts
+this run produced**, because the map binding a filename to its writing guide has three rows and none
+covers the fourteen per-dimension analyses. So the run's closing outcome check records artifact
+conformance as **unmet** — not because the analyses are wrong, but because nothing could measure them.
+That outcome cannot be cleared from inside the workflow; it needs a definition edit.
+
+The others: declining to apply mitigations routes into the activity that applies them; a gate cannot be
+named for work an activity did not anticipate; one step composes an output path from itself; two
+references point at material no delivery tool serves; the meta close-out checks against a variable with
+one producer in nineteen trees; and both analysis child runs stopped before reporting, leaving 577,124
+bytes of analysis whose cost reaches no ledger.
