@@ -121,10 +121,20 @@ describe('work-package walk snapshots (baseline)', () => {
    * reads as coverage: an absent step is indistinguishable from one correctly gated out. Against the
    * count the activity declares it reads as what it is — the share of the workflow this matrix
    * speaks for, and therefore the share of it these snapshots could not have caught a defect in
-   * (#472). Recorded rather than asserted: most of the gap needs an agent to bind a technique
-   * output, not another policy, so a threshold here would be a number chosen to pass.
+   * (#472).
+   *
+   * The executed share is logged rather than snapshotted, and that is a deliberate retreat. Pinning
+   * it failed on CI at 149 against 150 here, and the difference is one step: five policies run
+   * `structural-analysis-inline` in post-impl-review where a sixth runs `dispatch-prism`, so the
+   * total hangs on a single either/or that does not settle the same way on every machine. A number
+   * that moves with the runner is not a baseline, whatever it is measuring — #479 has the detail.
+   *
+   * What is asserted is the part that holds: every step some walk ran is a step its activity
+   * declares. That is what would break on an id rename or a manifest drifting from the definition,
+   * which is the drift worth catching here. The declared side is snapshotted on its own, because it
+   * is a pure function of the corpus and moves only when the corpus does.
    */
-  it('records how much of each activity the matrix runs', async () => {
+  it('runs only steps the activity declares, and records how much of each it runs', async () => {
     const executedByActivity = new Map<string, Set<string>>();
     for (const result of allWalks()) {
       for (const step of result.steps) {
@@ -142,11 +152,19 @@ describe('work-package walk snapshots (baseline)', () => {
       `[step coverage] ${executedTotal}/${declaredTotal} steps over ${rows.length} activities entered\n`
       + rows.map((r) => `  ${r.activity}: ${r.executed}/${r.declared}`).join('\n'),
     );
+
+    const undeclared = [...executedByActivity].flatMap(([activity, ran]) =>
+      [...ran].filter((id) => !(declared.get(activity) ?? []).includes(id)).map((id) => `${activity}/${id}`));
+    expect(
+      undeclared.sort(),
+      'a walk ran a step its activity does not declare — an id rename, or a step manifest that has '
+      + 'drifted from the definition',
+    ).toEqual([]);
+
     expect({
       activitiesEntered: rows.length,
       declaredTotal,
-      executedTotal,
-      perActivity: rows.map((r) => ({ activity: r.activity, declared: r.declared, executed: r.executed })),
+      declaredPerActivity: rows.map((r) => ({ activity: r.activity, declared: r.declared })),
     }).toMatchSnapshot();
   });
 });
