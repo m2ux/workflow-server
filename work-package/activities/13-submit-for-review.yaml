@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.16.0
+version: 1.17.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 required: true
@@ -35,6 +35,9 @@ steps:
       - action: validate
         target: summary_budget_overruns == []
         message: "Consolidated review summary exceeds the review-mode format budget: {summary_budget_overruns}. Move the over-budget content into the report section that owns it, leave the link, and re-run."
+      - action: validate
+        target: summary_completeness_findings == []
+        message: "Consolidated review summary disagrees with the reports it renders from: {summary_completeness_findings}. Reconcile each entry against the report it names, then re-run."
   - kind: action
     id: present-summary-to-user
     when: is_review_mode == true

@@ -13,19 +13,19 @@ Review the change under the lens against the over-engineering [taxonomy](../../p
 
 *(optional)* The change under review — the diff or solution to scan for over-engineering. When absent, the change is read from `{target_path}` within the chosen `{pass_scope}`.
 
-### findings_destination
-
-*(optional)* Artifact file the findings are written into. When a caller supplies an existing review artifact (e.g. a consolidated code-review report), the findings are written as a `## Lean-Coding Audit` section of that artifact, updated in place.
-
-#### default
-
-`review-findings.md` (standalone)
-
 ## Outputs
 
 ### review_findings
 
-The tagged findings for the change — one line per finding, each carrying a [taxonomy](../../ponytail/resources/review-taxonomy.md#tags) tag, the location, the simpler alternative, and the lines it would save — closing with a `net: -N lines` scoreboard. Records a clean result when the change is already lean. Written to `{findings_destination}`.
+The tagged findings for the change, each under a stable `LC-{n}` designator so a reader and a caller reference the same finding — carrying a [taxonomy](../../ponytail/resources/review-taxonomy.md#tags) tag, the location, the simpler alternative, and the lines it would save — closing with a `net: -N lines` scoreboard. Records a clean result when the change is already lean.
+
+#### artifact
+
+`review-findings.md`
+
+#### audience
+
+`human`
 
 ## Protocol
 
@@ -37,7 +37,7 @@ The tagged findings for the change — one line per finding, each carrying a [ta
 
 ### 2. Record one line per finding
 
-- Write each finding as a single line in `{review_findings}` at `{findings_destination}` (standalone by default; a section of the caller's review artifact when supplied): the tag, the location, the simpler alternative, and the lines it would save.
+- Write each finding as a single line in `{review_findings}`, under its own `LC-{n}` designator ascending from `LC-1`: the tag, the location, the simpler alternative, and the lines it would save. The designator is what a caller's summary indexes the finding by, so it stays stable across a re-score.
 - Keep to over-engineering. Do not record correctness, security, or performance findings — those belong to the [safety floor](../../ponytail/resources/the-ladder.md#safety-floor), not this review.
 - Never emit a `delete` finding against the lone smoke test or assert-based self-check — it is the ponytail minimum, not bloat.
 - This review reports only: it lists findings into `{review_findings}` and applies nothing. The fixes are not made here.

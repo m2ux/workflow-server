@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.18.0
+version: 3.19.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 required: true

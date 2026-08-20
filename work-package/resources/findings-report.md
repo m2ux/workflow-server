@@ -2,7 +2,7 @@
 name: findings-report
 description: Shared shape for every report that states findings — the finding layout, the designator and severity contracts, and the split between a report and its methodology record.
 metadata:
-  version: 1.0.0
+  version: 1.1.0
   order: 14
 ---
 
@@ -12,7 +12,7 @@ metadata:
 
 A report that states findings has an addressee: the person who must act on them. Every report of that kind carries its findings in one shape, so a reader moving between two of them meets the same object twice rather than re-learning where the remedy sits.
 
-This guide owns that shape. A report guide declares only what is its own — its designator prefix and its field list — and states them against the sections below, which no report restates.
+This guide owns that shape. A report guide declares only what is its own — its designator prefix, the values its `Category` admits, and any extension field it carries — and states them against the sections below, which no report restates.
 
 ## Report and Methodology
 
@@ -28,9 +28,30 @@ Two boundaries decide what goes where:
 - **A finding's own evidence stays with the finding.** The split is between the review's method and its conclusions, never between a conclusion and its support. The arithmetic that shows a limit is exceeded belongs to the finding; the sweep that found no occurrences anywhere is method.
 - **The methodology record is checked like the report.** It is the half nobody re-reads, so it is the half a stale claim survives in. Whatever conformance pass runs over the report runs over it.
 
+## Fields
+
+Every finding carries the same five fields, in this order, whichever report states it:
+
+| Field | Holds |
+|---|---|
+| `Category` | The finding's class within the vocabulary its report declares |
+| `Severity` | A value from the render scale, per [Severity](#severity) |
+| `Description` | The technical explanation, opening with an inline link to the named thing it is about |
+| `Impact` | The consequence of leaving it as it stands |
+| `Recommendation` | The specific actionable fix |
+
+A reader moving between two reports meets the same five, so a summary that renders findings from every report needs no per-report mapping to do it.
+
+Two extension points carry what the five do not, and a report declares which of them it uses:
+
+- **A field the raising pass needs**, where that pass carries something the five have no room for — `Lines saved` on a leanness finding, `Classification` where a pass separates a structural defect from a fixable one, `Code Example` where a fix reads more clearly shown than described. Named for what it holds.
+- **`Adjudication`**, where a later pass reached a verdict on a finding. It sits on the finding it judges, in the report that defines it, so a reader who arrives at that finding learns its remedy was rejected. A verdict held in a table elsewhere reaches only a reader who went looking. Where the verdict revises a severity, the severity on the finding is the revised one.
+
+A field that restates one of the five is not an extension: `Action` names the verb of a `Recommendation`, `Rationale` argues for one, and `Location` states the site the `Description`'s link already carries.
+
 ## Finding Layout
 
-A finding is a heading, then one labelled paragraph per declared field, in the order the report declares them.
+A finding is a heading, then one labelled paragraph per field, in the order above, with any extension field the report declares after them.
 
 ```markdown
 ### CR-1 — the cursor advances before the bounds check
@@ -47,7 +68,7 @@ A finding is a heading, then one labelled paragraph per declared field, in the o
 Four properties make it checkable:
 
 - **A finding is a heading.** It is the anchor the summary's designator column links to, and bold title text is unlinkable. One heading per finding, with no grouping heading between them — a severity or category heading inserted between findings breaks every anchor pointing past it, and severity is a field.
-- **The label set is closed.** Only the report's declared fields may open a paragraph, and content that does not fit one of them belongs inside the field it qualifies, never under a new heading of its own. The permitted labels for a findings section are exactly the report's declared list, so a paragraph opening with anything else is a breach rather than a judgement call:
+- **The label set is closed.** Only the five fields and the report's declared extensions may open a paragraph, and content that does not fit one of them belongs inside the field it qualifies, never under a new heading of its own. That set is the permitted labels for a findings section, so a paragraph opening with anything else is a breach rather than a judgement call:
 
   ```
   ^\*\*(Field|Field|…):\*\*
@@ -61,6 +82,8 @@ Four properties make it checkable:
 Each finding carries a stable designator: the prefix its report declares, then its number. A report's prefix is the one declared for the summary section that indexes it, in [Review Categories](./review-mode.md#review-categories) — link text and link target naming different things is what an undeclared prefix produces, and a reader clicking one lands on a section headed by the other.
 
 **Findings order by ID.** A findings list and a findings table both run in ascending designator order. Class, severity and category are fields, not sort keys: grouping by any of them leaves the one column a reader scans for an ID out of order.
+
+**A designator belongs to the pass that raised the finding.** A pass mints designators for what it found, and carries every finding it did not find under the designator it arrived with. Renumbering someone else's finding into a local series destroys the identity every earlier artifact, gate and citation already used, and a traceability table mapping the old identifiers to the new does not restore it — a reader holding the old designator has to be told the mapping exists before it helps them. This binds a pass consolidating several reports as much as one report reading another: the consolidation indexes each finding under the designator its report defines, so one identifier space spans the run without any pass owning all of it.
 
 ## Severity
 

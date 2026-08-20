@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.21.0
+version: 1.22.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 required: true
@@ -78,10 +78,7 @@ steps:
     technique: review-code
   - kind: technique
     id: structural-analysis-inline
-    technique:
-      name: prism/structural-analysis
-      inputs:
-        findings_destination: code-review.md
+    technique: prism/structural-analysis
     when: problem_complexity != 'complex'
   - kind: technique
     id: dispatch-prism
