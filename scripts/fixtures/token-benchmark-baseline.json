@@ -1,8 +1,8 @@
 {
   "label": "baseline",
-  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-08-17 against workflows@72db28ae. Delivery is 5,559 characters above the workflows@cf4d0774 recording of 1,296,760, buying: a step that derives the build-artifact regeneration commands, a project-type clause on the two gates that present them, and a second binding of the issue-reference detector so the not-creating path binds a platform at all. The detector's second delivery is a full 4,054-character fetch rather than a ledger hit, because a technique bundled into get_activity does not satisfy a later standalone get_technique for the same content. The project-type clause drops the walk from 11 checkpoint round trips to 10, since a project with no build-dependent artifacts is no longer asked about them. The July A0 reference recorded 1,355,532 delivery characters at workflows@a1409d5b; the same walk measured 1,780,292 on 2026-08-17 before the delivery corrections in .engineering/artifacts/planning/2026-08-17-meta-and-work-package-workflow-optimisation/EVALUATION-REPORT.md.",
+  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-08-20 against workflows@0de5e31b. Delivery is 30,199 characters above the workflows@72db28ae recording of 1,302,319, and every character of the rise is resource delivery (+31,343); technique delivery falls 2,329 as a retired input and two trimmed protocol steps come out. Resource text is refetched on each activity, so a sentence added to a hot template is paid once per activity \u2014 which is what makes this rise large against 11,000 characters of net new resource text. What it buys: one canonical five-field finding shape with declared extension points, replacing three report guides that each declared their own field list and drifted; a declared designator prefix and review category for the structural analysis and the lean-coding audit, whose absence is why a run improvised identifiers and rendered sixteen findings as two rows on a live pull request; the rule that a designator belongs to the pass that raised the finding; and a findings table that opens on its subject rather than a count that goes stale. 2,155 of the characters are meta/writing-register, delivered for the first time because the resource-reference extractor now keeps the workflow a cross-workflow citation points at \u2014 the register was cited and silently never delivered before. Findings and evidence: https://github.com/m2ux/workflow-server/issues/474.",
   "contextMode": "fresh",
-  "workflowsRev": "72db28ae",
+  "workflowsRev": "0de5e31b",
   "agentId": "bench-solo",
   "path": [
     "start-work-package",
@@ -24,29 +24,65 @@
     "get_workflow": 1,
     "next_activity": 12,
     "get_activity": 12,
-    "get_technique": 24,
-    "get_resource": 162,
+    "get_resource": 163,
     "yield_checkpoint": 10,
     "respond_checkpoint": 10,
-    "resume_checkpoint": 10
+    "resume_checkpoint": 10,
+    "get_technique": 23
   },
   "chars": {
-    "get_activity": 520075,
-    "get_workflow": 108356,
-    "get_resource": 527683,
-    "get_technique": 146205
+    "start_session": 789,
+    "get_workflow": 108381,
+    "next_activity": 1195,
+    "get_activity": 521235,
+    "get_resource": 559026,
+    "yield_checkpoint": 2930,
+    "respond_checkpoint": 2098,
+    "resume_checkpoint": 1800,
+    "get_technique": 143876
   },
   "history": {
     "technique_bundled": 66,
-    "technique_fetched": 24,
-    "resource_fetched": 146
+    "technique_fetched": 23,
+    "resource_fetched": 147
   },
   "deliveredContentKeys": 265,
-  "resourceLedgerKeys": 77,
+  "resourceLedgerKeys": 78,
   "unchangedResourceAnswers": 0,
   "unchangedTechniqueAnswers": 0,
-  "getActivityChars": 520075,
-  "getWorkflowChars": 108356,
-  "getResourceChars": 527683,
-  "getTechniqueChars": 146205
+  "getActivityChars": 521235,
+  "getWorkflowChars": 108381,
+  "getResourceChars": 559026,
+  "getTechniqueChars": 143876,
+  "workflowId": "work-package",
+  "workflowsDir": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/474-review-run-friction/workflows",
+  "serverRoot": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/474-review-run-friction",
+  "repeatedResources": [
+    {
+      "resourceId": "pr-description#template-initial",
+      "count": 13
+    },
+    {
+      "resourceId": "pr-description#template-final",
+      "count": 13
+    },
+    {
+      "resourceId": "pr-description#link-row-forms",
+      "count": 13
+    },
+    {
+      "resourceId": "pr-description",
+      "count": 12
+    },
+    {
+      "resourceId": "review-mode",
+      "count": 12
+    },
+    {
+      "resourceId": "review-mode#review-type-selection",
+      "count": 12
+    }
+  ],
+  "contextModeOnDisk": "fresh",
+  "agentIdOnDisk": "bench-solo"
 }
