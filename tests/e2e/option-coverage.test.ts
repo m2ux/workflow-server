@@ -81,6 +81,17 @@ interface Expected {
   groups: Array<{ reason: string; options: string[] }>;
 }
 
+/**
+ * Consecutive walks exercising no new option before the enumerator calls a workflow done.
+ *
+ * The tail is not wasted work, which is worth recording because it looks like it should be. Measured
+ * over the whole set: 8 covers 151 options in 303 seconds, 16 covers 152, and 30 covers 155 in 794.
+ * So more than half the wall clock buys the last four options — and coverage is the point of the
+ * exercise, so it is bought. Overridable from the environment to re-check that trade, but the
+ * expectation file is recorded against the committed value.
+ */
+const DRY_WALKS = Number(process.env.WF_DRY_WALKS ?? '30');
+
 const EXPECTED_PATH = join(import.meta.dirname, 'option-coverage.json');
 /** What to call the file in a failure message, since the absolute path is the runner's, not a reader's. */
 const EXPECTED_LABEL = 'tests/e2e/option-coverage.json';
@@ -160,6 +171,7 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
         // stalls at the first activity that needs one, and every checkpoint past that point reads as
         // uncovered for a reason about the enumerator rather than about the definitions.
         simulate: baseSimulation,
+        maxDryWalks: DRY_WALKS,
       });
       covered.push(...ps.coveredBranches);
       for (const e of ps.errors) walkErrors.push(`${id}: ${e.message}`);
@@ -207,5 +219,8 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
       `these options are now covered but are still listed as unreachable in ${EXPECTED_LABEL}. `
       + 'Remove them — the list is only allowed to shrink.',
     ).toEqual([]);
-  }, 900_000);
+    // Fourteen walks measured 794 seconds here and timed out at 900 on a shared runner, having
+    // reached 87 of the 276 options — a partial walk reports a gap it simply had not got to yet, so
+    // the ceiling has to sit well clear of the real cost rather than near it.
+  }, 2_700_000);
 });

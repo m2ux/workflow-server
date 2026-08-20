@@ -29,10 +29,11 @@ jobs:
   coverage-walk:
     name: Every declared checkpoint option is reached
     runs-on: ubuntu-latest
-    # The ceiling that says the walk is stuck rather than merely slow — several times the measured
-    # cost, because a shared runner is slower than the machine this was measured on and a walk that
-    # merely takes longer is not the failure worth reporting. The test carries its own timeout too.
-    timeout-minutes: 30
+    # The ceiling that says the walk is stuck rather than merely slow. The fourteen walks measured
+    # about thirteen minutes on a quiet machine and a shared runner is appreciably slower, so this
+    # sits well clear of the real cost: a walk cut off part-way reports a gap it had not reached yet,
+    # which is worse than a slow job. The test carries its own timeout below this one.
+    timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
         with:
