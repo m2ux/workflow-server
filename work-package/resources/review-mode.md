@@ -76,7 +76,7 @@ Every findings table, across all categories, follows one shape — four columns 
 
 Tables list only non-passing findings — positive items belong in [What This Change Gets Right](#what-this-change-gets-right).
 
-**A table opens with one line naming its subject** — what part of the change this table examines. Not how many rows it holds and not which designators fall in it: the rows are visible beneath the line, so a count restates them and goes stale the moment one is added, and a designator range tells a reader nothing about what was looked at.
+**A table opens with one line naming its subject** — what part of the change it examines, not how many rows it holds or which designators fall in it. The rows sit beneath the line, so a count restates them and goes stale on the next one added.
 
 The `@` cell is `[>](url)`, never the filename, path, test name, or run label as link text: filename link text sets the column to the width of the longest path and wraps every other cell on the row. The link target is whatever locus the category declares (code blob URL, test, document, CI run, commit) and every one resolves at the ref the ref-split assigns it under [Header Fields](#header-fields). Validate each `@` target against the actual source at that ref before inclusion; line numbers carried over from earlier analysis are re-read, not trusted.
 
@@ -118,7 +118,7 @@ Findings tables carry only non-passing items, so this section is the home for wh
 
 One bullet per item: what the change gets right, in the [Prose Register](#prose-register). Specific, not generic — "the close path clears the storage record it opened" earns a bullet; "code is well structured" does not. Omit the section when the review found nothing above that bar.
 
-The bullets carry no source pointer. Each claim is about the change's design rather than about a line, so a pointer beside it reads as a citation the reader is expected to check, and the claim stands on its own at that altitude.
+The bullets carry no source pointer: each claim is about the change's design rather than about a line, and stands on its own at that altitude.
 
 ```markdown
 ### What This Change Gets Right
@@ -358,7 +358,7 @@ Disposition of every prior comment and review on the PR (human and bot), determi
 
 **Prefix:** `SA`
 
-Structural analysis states what the change's shape makes possible, and the conservation law it holds or breaks. Its findings reach the comment as a table on the shared [Table Format](#table-format).
+Structural analysis states what the change's shape makes possible, and the conservation law it holds or breaks.
 
 **Population:** one row per structural finding. `@` links the locus the finding turns on at the reviewed sha. Designator links to the finding's section in the structural-analysis report. Where a child workflow raised the finding, the row carries the designator that workflow assigned it, unchanged — per [Designators](./findings-report.md#designators).
 
@@ -376,9 +376,9 @@ Structural analysis states what the change's shape makes possible, and the conse
 
 **Prefix:** `LC`
 
-The lean-coding audit states what the change carries that a simpler construct would do, each finding with the lines it would save. Its findings reach the comment as a table on the shared [Table Format](#table-format).
+The lean-coding audit states what the change carries that a simpler construct would do, each finding with the lines it would save.
 
-**Population:** one row per audit finding, never an aggregate row standing for several — a row that stands for a group hides every finding inside it from the summary's totals and from the Action Items. `@` links the construct at the reviewed sha. Designator links to the finding in the audit's own report.
+**Population:** one row per audit finding, never an aggregate standing for several — an aggregate hides each finding inside it from the totals and from the Action Items. `@` links the construct at the reviewed sha. Designator links to the finding in the audit's own report.
 
 ```markdown
 ### Lean-Coding Audit

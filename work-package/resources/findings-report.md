@@ -40,8 +40,6 @@ Every finding carries the same five fields, in this order, whichever report stat
 | `Impact` | The consequence of leaving it as it stands |
 | `Recommendation` | The specific actionable fix |
 
-A reader moving between two reports meets the same five, so a summary that renders findings from every report needs no per-report mapping to do it.
-
 Two extension points carry what the five do not, and a report declares which of them it uses:
 
 - **A field the raising pass needs**, where that pass carries something the five have no room for — `Lines saved` on a leanness finding, `Classification` where a pass separates a structural defect from a fixable one, `Code Example` where a fix reads more clearly shown than described. Named for what it holds.
@@ -83,7 +81,7 @@ Each finding carries a stable designator: the prefix its report declares, then i
 
 **Findings order by ID.** A findings list and a findings table both run in ascending designator order. Class, severity and category are fields, not sort keys: grouping by any of them leaves the one column a reader scans for an ID out of order.
 
-**A designator belongs to the pass that raised the finding.** A pass mints designators for what it found, and carries every finding it did not find under the designator it arrived with. Renumbering someone else's finding into a local series destroys the identity every earlier artifact, gate and citation already used, and a traceability table mapping the old identifiers to the new does not restore it — a reader holding the old designator has to be told the mapping exists before it helps them. This binds a pass consolidating several reports as much as one report reading another: the consolidation indexes each finding under the designator its report defines, so one identifier space spans the run without any pass owning all of it.
+**A designator belongs to the pass that raised the finding.** A pass mints designators for what it found and carries every other finding under the designator it arrived with; a traceability table does not restore an identity that earlier artifacts, gates and citations were already using. A consolidation therefore indexes each finding under the designator its own report defines, so one identifier space spans the run without any pass owning all of it.
 
 ## Severity
 
@@ -106,4 +104,4 @@ A parenthetical mention inside another finding's text is not a classification. A
 
 Every `[…](file#anchor)` within the planning folder resolves against the target file's actual headings. A markdown anchor that does not resolve renders as a working link that goes nowhere, so removing a heading, renaming a designator, or converting a finding to a bold title invalidates every link into it with nothing failing. Resolve the whole folder after any restructuring, not the files that were edited.
 
-**A designator and its destination are one edit.** Relabelling a designator without repointing its link leaves a row naming one finding and resolving to another — a link that works, in a report the row does not belong to. And a check that generates the label and the anchor from the same value cannot see the mismatch, because both sides move together in the check and only one moved in the artifact. Resolve each destination against the headings on disk instead.
+**A designator and its destination are one edit.** Relabelling one without repointing the other leaves a row naming one finding and resolving into another — a working link into a report the row does not belong to. A check generating the label and the anchor from one value cannot see that mismatch, so resolve each destination against the headings on disk.
