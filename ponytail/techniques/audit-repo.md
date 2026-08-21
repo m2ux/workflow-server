@@ -11,7 +11,7 @@ Hunt over-engineering across the whole tree at `{target_path}`, biggest-cut-firs
 
 ### audit_findings
 
-The repo-wide findings ranked biggest-cut-first — each written as `<tag> <what to cut>. <replacement>. [path]` carrying a [taxonomy](../../ponytail/resources/review-taxonomy.md#tags) tag, the path locator, the simpler alternative, and the lines and dependencies it would remove — closing with a `net: -N lines, -M deps possible.` scoreboard, or `Lean already. Ship.` when nothing is cuttable.
+The repo-wide findings ranked biggest-cut-first — each carrying a [taxonomy](../resources/review-taxonomy.md#tags) tag, the path locator, the simpler alternative, and the lines and dependencies it would remove — closing with the repo-wide [scoreboard](../resources/review-taxonomy.md#scoreboard).
 
 #### artifact
 
@@ -34,4 +34,4 @@ The repo-wide findings ranked biggest-cut-first — each written as `<tag> <what
 
 ### 3. Score the net
 
-- Close `{audit_findings}` with a `net: -N lines, -M deps possible.` scoreboard summing the lines and dependencies the audit would remove across all findings. When nothing is cuttable, close with `Lean already. Ship.` instead.
+- Close `{audit_findings}` with the repo-wide [scoreboard](../resources/review-taxonomy.md#scoreboard), summing the lines and dependencies the audit would remove across all findings.

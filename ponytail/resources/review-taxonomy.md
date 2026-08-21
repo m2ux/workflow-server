@@ -49,16 +49,20 @@ The designator is the stable handle a reader, a later pass, or a caller's summar
 
 ## Scoreboard
 
-A review closes with one scoreboard line summing the savings across all findings:
+A pass closes with one scoreboard line summing the savings across all its findings. A diff-scoped review counts lines:
 
 ```
 net: -<N> lines possible.
 ```
 
-When the change carries no over-engineering, the scoreboard states it plainly:
+A repo-wide audit also counts the dependencies it would drop, which a diff-scoped review has none of:
+
+```
+net: -<N> lines, -<M> deps possible.
+```
+
+When the pass found nothing cuttable, the scoreboard states that instead, and is the whole of the output:
 
 ```
 Lean already. Ship.
 ```
-
-A repo-wide audit extends the scoreboard with the dependencies it would drop: `net: -<N> lines, -<M> deps`.

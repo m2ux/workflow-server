@@ -25,6 +25,6 @@ net: -{N} lines, -{M} deps possible.
 - **The tag comes from the taxonomy.** Classification is a lookup, not a description — see [review-taxonomy](./review-taxonomy.md#tags).
 - **Ranked biggest-cut-first.** Order by lines removed plus dependencies dropped, so the largest wins surface first rather than the ones found first.
 - **A replacement is named, not implied.** "Remove this wrapper" without what replaces it is not actionable.
-- **The scoreboard closes the file.** `net: -N lines, -M deps possible.` sums every finding. When nothing is cuttable, the whole file is `Lean already. Ship.` instead.
+- **The scoreboard closes the file**, in the form [Scoreboard](./review-taxonomy.md#scoreboard) gives for the pass that wrote it — a repo-wide pass counts dependencies as well as lines, a diff-scoped one counts lines alone.
 - **Nothing is applied.** This is a report; the cuts are the reader's decision.
 - **Line budget:** one line per finding, and no section headings between them.

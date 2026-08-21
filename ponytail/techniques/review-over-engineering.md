@@ -17,7 +17,7 @@ Review the change under the lens against the over-engineering [taxonomy](../../p
 
 ### review_findings
 
-The tagged findings for the change, each under a stable `LC-{n}` designator so a reader and a caller reference the same finding — carrying a [taxonomy](../../ponytail/resources/review-taxonomy.md#tags) tag, the location, the simpler alternative, and the lines it would save — closing with a `net: -N lines` scoreboard. Records a clean result when the change is already lean.
+The tagged findings for the change, each under a stable `LC-{n}` designator so a reader and a caller reference the same finding — carrying a [taxonomy](../resources/review-taxonomy.md#tags) tag, the location, the simpler alternative, and the lines it would save — closing with the diff-scoped [scoreboard](../resources/review-taxonomy.md#scoreboard).
 
 #### artifact
 
@@ -44,4 +44,4 @@ The tagged findings for the change, each under a stable `LC-{n}` designator so a
 
 ### 3. Score the net
 
-- Close with a `net: -N lines` scoreboard summing the savings across all findings. When the change carries no over-engineering, record the clean result as `Lean already. Ship.`
+- Close `{review_findings}` with the diff-scoped [scoreboard](../resources/review-taxonomy.md#scoreboard), summing the savings across all findings.
