@@ -11,7 +11,7 @@ Resolves the context one execution group's analysis run is dispatched with, tran
 
 ### target
 
-The evaluation target the group's run analyses, which is the target under evaluation.
+The path the group's run analyses, which is the target under evaluation.
 
 ### target_type
 
@@ -50,6 +50,10 @@ What the group's run examines, taken from `{current_group}`. Naming the group's 
 ### 3. Describe the Group's Scope
 
 - Set `{target_description}` from the dimension name(s) and focus `{current_group}` carries.
+
+### 4. Carry the Rest Across
+
+- Emit `{target}`, `{pipeline_mode}`, `{selected_lenses}` and `{analysis_focus}` per their Output criteria.
 
 ## Rules
 

@@ -15,7 +15,7 @@ The mitigation proposed for the finding: its tier, target location, text, and re
 
 ### finding_disposition
 
-The disposition taken on the finding: `accept`, `modify`, or `skip`.
+The disposition taken on the finding: `accept`, `modify`, `skip`, or `discuss` where the dialogue reached its refinement limit without settling.
 
 ## Outputs
 
@@ -28,10 +28,5 @@ One finding's recorded disposition: `{ finding_id, finding_severity, mitigation_
 ### 1. Record the Disposition
 
 - Record `{finding_decision}` from `{current_finding}`, `{finding_disposition}`, and the text of `{proposed_mitigation}`.  
-  > Under a `modify` disposition, the recorded text is the adjusted wording rather than the proposal's.
-
-## Rules
-
-### skipped-findings-carry-no-text
-
-A `skip` disposition records the finding and its severity with no mitigation text, so a skipped finding has nothing the application step could apply.
+  > Under a `modify` disposition, the recorded text is the adjusted wording rather than the proposal's.  
+  > Under `skip` or `discuss`, the record carries the finding and its severity with no mitigation text, and `discuss` records the dialogue as unsettled.

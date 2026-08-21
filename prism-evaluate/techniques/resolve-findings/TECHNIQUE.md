@@ -63,4 +63,4 @@ A change reaches the target only under an `accept` or `modify` disposition. A sk
 
 ### striking-a-claim-is-last-resort
 
-A mitigation that removes a claim outright is reserved for a `T4` finding no other tier can answer, and the plan states the removal and why the claim was unanswerable. Silent removal leaves neither.
+A mitigation that removes a claim outright is reserved for a `T4` finding no other tier can answer.

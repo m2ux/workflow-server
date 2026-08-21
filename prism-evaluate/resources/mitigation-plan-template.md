@@ -28,7 +28,7 @@ A finding's tier states how far the target has to move to answer it.
 
 | ID | Severity | Tier | Decision |
 |----|----------|------|----------|
-| {PREFIX-01} | {CRITICAL | HIGH | MEDIUM | LOW} | {T1 | T2 | T3 | T4} | {accept | modify | skip} |
+| {PREFIX-01} | {CRITICAL | HIGH | MEDIUM | LOW} | {T1 | T2 | T3 | T4} | {accept | modify | skip | unsettled} |
 
 ## Detailed Changes
 
@@ -74,7 +74,7 @@ A finding's tier states how far the target has to move to answer it.
 
 ## Rules
 
-- **Every finding gets a row.** The summary table carries accepted, modified and skipped findings alike; a finding absent from the table reads as one nobody looked at.
+- **Every finding gets a row.** The summary table carries accepted, modified, skipped and unsettled findings alike; a finding absent from the table reads as one nobody looked at.
 - **An accepted mitigation carries its full text.** The plan is applied from itself, so a change specified only by reference cannot be made.
 - **A removed claim is stated as one.** Where a `T4` mitigation strikes a claim, its entry says so and says why no other tier answered it.
 - **Line budget:** ~100 lines. One entry per mitigation; the finding it answers is cited, not restated.

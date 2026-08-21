@@ -16,7 +16,7 @@ steps:
           The full evaluation is in [the evaluation report]({evaluation_report_path}).
   - kind: checkpoint
     id: resolution-offer
-    message: The evaluation is complete, and its findings can be worked through one at a time into a mitigation plan.
+    message: The evaluation is complete.
     options:
       - id: proceed
         label: Work through the findings
