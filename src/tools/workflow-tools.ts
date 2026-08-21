@@ -235,11 +235,25 @@ export function projectActivities(s: SessionFile): Record<string, unknown> {
       outcome: e.data?.['outcome'],
       ...(e.data?.['transitionCondition'] !== undefined ? { transitionCondition: e.data['transitionCondition'] } : {}),
     }));
+  // Activities entered whose in-progress mark the dispatch did not publish, and those it
+  // said nothing about. The mark exists for someone watching a long activity in flight,
+  // and the completion status overwrites the cell it was written in, so these two lists
+  // are what remains answerable afterwards (#473).
+  const entered = (s.history ?? []).filter(e => e.type === 'activity_entered' && e.activity !== undefined);
+  const reported = new Map<string, boolean>();
+  for (const e of s.history ?? []) {
+    if (e.type !== 'progress_published' || e.activity === undefined) continue;
+    reported.set(e.activity, e.data?.['published'] === true);
+  }
+  const progress_mark_unpublished = [...new Set(entered.map(e => e.activity!))].filter(a => reported.get(a) === false);
+  const progress_mark_unreported = [...new Set(entered.map(e => e.activity!))].filter(a => !reported.has(a));
   return {
     completed: s.completedActivities ?? [],
     skipped: s.skippedActivities ?? [],
     current: s.currentActivity,
     outcomes,
+    progress_mark_unpublished,
+    progress_mark_unreported,
   };
 }
 
@@ -683,8 +697,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       context_tokens: z.number().int().positive().optional().describe(
         'Optional, with agent_id. That context\'s declared window, so `_meta.batch` reports whether it may take this activity — a reading that counts the lazy fetches the exiting activity made. Continue the worker on `may_continue: true`; spawn a fresh agent_id otherwise.',
       ),
+      progress_published: z.boolean().optional().describe(
+        'Whether the in-progress Progress mark for this activity is committed and pushed before the worker spawns. Recorded as a `progress_published` event, so an activity opened without one is answerable from the session rather than only from whoever was watching the working tree at the time. Omit only where the session has no planning folder to mark.',
+      ),
     },
-    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, variables_changed, artifacts_produced, agent_id, context_tokens }) => {
+    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, variables_changed, artifacts_produced, agent_id, context_tokens, progress_published }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -815,6 +832,17 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         draft.condition = transition_condition ?? '';
         delete draft.activeCheckpoint;
         draft.history.push({ timestamp: now, type: 'activity_entered', activity: activity_id });
+        // Whether the dispatch published this activity's in-progress mark. The mark lives
+        // in a README cell the completion status overwrites when the activity ends, so
+        // this event is the only lasting evidence either way (#473).
+        if (progress_published !== undefined && !isTerminal) {
+          draft.history.push({
+            timestamp: now,
+            type: 'progress_published',
+            activity: activity_id,
+            data: { published: progress_published },
+          });
+        }
         // Terminal-state transition emits a workflow_completed event and flips
         // status. The activity id 'complete' is the canonical terminal marker
         // across the work-package, prism, and meta workflows; the TERMINAL_SENTINEL

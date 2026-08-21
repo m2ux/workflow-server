@@ -1384,6 +1384,33 @@ describe('mcp-server integration', () => {
       expect(rows[0]!.outcome).toContain('planning folder');
     });
 
+    it('an unpublished progress mark is answerable from the session afterwards (#473)', async () => {
+      // Two dispatches: one that published the in-progress mark, one that did not, and one
+      // that said nothing about it. The mark itself is a README cell the completion status
+      // overwrites, so the report is what survives the activity ending.
+      await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: sessionToken, activity_id: 'start-work-package', progress_published: true },
+      });
+      await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: sessionToken, activity_id: 'design-philosophy', progress_published: false },
+      });
+      await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: sessionToken, activity_id: 'plan-prepare' },
+      });
+
+      const activities = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'activities' },
+      }));
+      expect(activities.progress_mark_unpublished).toContain('design-philosophy');
+      expect(activities.progress_mark_unpublished).not.toContain('start-work-package');
+      expect(activities.progress_mark_unreported).toContain('plan-prepare');
+      expect(activities.progress_mark_unreported).not.toContain('design-philosophy');
+    });
+
     it('withAuditLog re-resolves session_index and populates trace event with sid/wf/act/aid from session.json', async () => {
       // Mutate the session: transition to a non-initial activity so the
       // expected `act` field is distinguishable from the start-session state.

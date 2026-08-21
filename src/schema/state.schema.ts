@@ -67,6 +67,14 @@ export const HistoryEventTypeSchema = z.enum([
   // what its own activities delivered. One event per activity per report; a
   // manifest re-sent for an activity already carrying one adds nothing.
   'activity_outcome',
+  // Progress-mark observability (#473): whether the activity being entered had its
+  // in-progress Progress mark published before the worker spawned, as the orchestrator
+  // reported it. `activity` is the activity entered; `data` carries { published }.
+  // The mark itself lives in the planning README, which the completion status overwrites
+  // once the activity ends — so without this event a run that skipped the write is
+  // indistinguishable from one that made it, and a required write whose omission leaves
+  // no trace gets omitted.
+  'progress_published',
 ]);
 export type HistoryEventType = z.infer<typeof HistoryEventTypeSchema>;
 
