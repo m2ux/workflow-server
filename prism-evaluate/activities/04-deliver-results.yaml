@@ -12,11 +12,9 @@ steps:
           {evaluation_report.core_finding}
 
           {evaluation_metrics}
-
-          The full evaluation is in [the evaluation report]({evaluation_report_path}).
   - kind: checkpoint
     id: resolution-offer
-    message: The evaluation is complete.
+    message: The findings are set out in [the evaluation report]({evaluation_report_path}).
     options:
       - id: proceed
         label: Work through the findings
