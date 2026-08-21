@@ -16,7 +16,8 @@ graph LR
     CR --> DR["04 deliver-results"]
     DR -->|"resolution requested"| RES["05 resolution-dialogue"]
     DR -->|"evaluation only"| End(["__terminal__"])
-    RES --> AM["06 apply-mitigations"]
+    RES -->|"apply"| AM["06 apply-mitigations"]
+    RES -->|"plan only"| End
 ```
 
 Steps bind their domain operation via `step.technique`; the cross-cutting `variable-binding` strategy technique is declared once at the workflow level and inherited by every activity. The bound operations per activity are catalogued in the [technique library](../techniques/README.md).
@@ -67,7 +68,7 @@ Definition: [`04-deliver-results.yaml`](04-deliver-results.yaml). Leads to [Reso
 
 Load the findings from the report and tier-classify them by mitigation difficulty, then work through them one finding at a time — proposing a finding-specific mitigation and collecting the user's decision on each — compile the dispositions into `MITIGATION-PLAN.md`, and close with the final confirmation to apply them. **Value:** every finding has a mitigation the user has explicitly decided on, preserving the nuance a batch review would lose, and the plan carries the user's decision to apply it before any change reaches the target.
 
-Definition: [`05-resolution-dialogue.yaml`](05-resolution-dialogue.yaml). Leads to [Apply Accepted Mitigations](#06-apply-accepted-mitigations).
+Definition: [`05-resolution-dialogue.yaml`](05-resolution-dialogue.yaml). Leads to [Apply Accepted Mitigations](#06-apply-accepted-mitigations) when the user asks for the plan to be applied; otherwise the workflow ends with the plan as its final deliverable.
 
 ---
 

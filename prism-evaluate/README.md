@@ -44,11 +44,12 @@ graph TD
 
     RES -->|"per finding: propose + decide"| RES
     RES --> AC{"apply or plan-only?"}
-    AC --> AM["06 apply-mitigations"]
+    AC -->|"plan-only — target untouched"| Done
+    AC -->|"apply"| AM["06 apply-mitigations"]
     AM --> Done
 ```
 
-The spine is linear — scope, plan, analyse, consolidate, deliver — and ends at `deliver-results` unless the user opts into the resolution dialogue, which then iterates through findings one at a time and applies the accepted mitigations. Two scope/plan checkpoints can loop back to re-scope or re-plan, and `execute-analysis` is a loop: each execution group triggers its own prism run.
+The spine is linear — scope, plan, analyse, consolidate, deliver — and ends at `deliver-results` unless the user opts into the resolution dialogue, which then iterates through findings one at a time. Two scope/plan checkpoints can loop back to re-scope or re-plan, and `execute-analysis` is a loop: each execution group triggers its own prism run. The dialogue ends at the apply confirmation: `apply-mitigations` runs on the answer that asks for it, and the mitigation plan is the final deliverable on the answer that does not.
 
 User checkpoints gate the scope, the plan, the resolution offer, each finding's mitigation, and the final apply; the authoritative options and effects live in each activity's YAML.
 
