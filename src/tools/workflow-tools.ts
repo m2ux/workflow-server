@@ -219,12 +219,26 @@ export function projectCheckpoints(s: SessionFile): Record<string, unknown> {
   return out;
 }
 
-/** Activity projection: completed / skipped lists plus the current activity. */
+/**
+ * Activity projection: completed / skipped lists, the current activity, and the
+ * outcome each completed activity reported. `outcomes` is what close-out
+ * measures a run against where the client workflow seeded no outcome list of its
+ * own, so a run is judged on what its own activities delivered. A completed
+ * activity absent from `outcomes` is one whose dispatch reported no manifest.
+ */
 export function projectActivities(s: SessionFile): Record<string, unknown> {
+  const outcomes = (s.history ?? [])
+    .filter(e => e.type === 'activity_outcome' && e.activity !== undefined)
+    .map(e => ({
+      activity: e.activity!,
+      outcome: e.data?.['outcome'],
+      ...(e.data?.['transitionCondition'] !== undefined ? { transitionCondition: e.data['transitionCondition'] } : {}),
+    }));
   return {
     completed: s.completedActivities ?? [],
     skipped: s.skippedActivities ?? [],
     current: s.currentActivity,
+    outcomes,
   };
 }
 
@@ -593,6 +607,29 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           draft.history.push({ timestamp: now, type: 'activity_exited', activity: exitingActivity });
           if (!draft.completedActivities.includes(exitingActivity)) {
             draft.completedActivities.push(exitingActivity);
+          }
+        }
+        // What each completed activity delivered, as the orchestrator reported
+        // it. Close-out measures a run against these where the client workflow
+        // seeded no outcome list, so the list has to reach the store rather
+        // than being validated and dropped. One event per activity: a manifest
+        // re-sent across several calls names activities already recorded.
+        if (activity_manifest) {
+          const recorded = new Set(
+            draft.history.filter(h => h.type === 'activity_outcome' && h.activity !== undefined).map(h => h.activity!),
+          );
+          for (const entry of activity_manifest as ActivityManifestEntry[]) {
+            if (recorded.has(entry.activity_id)) continue;
+            recorded.add(entry.activity_id);
+            draft.history.push({
+              timestamp: now,
+              type: 'activity_outcome',
+              activity: entry.activity_id,
+              data: {
+                outcome: entry.outcome,
+                ...(entry.transition_condition !== undefined ? { transitionCondition: entry.transition_condition } : {}),
+              },
+            });
           }
         }
         // Persist the completing activity's worker outputs into the bag. These

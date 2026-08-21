@@ -1171,6 +1171,41 @@ describe('mcp-server integration', () => {
       expect(result.isError).toBeFalsy();
     });
 
+    it('activity_manifest outcomes reach the activities projection, once per activity (#477)', async () => {
+      await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: sessionToken,
+          activity_id: 'start-work-package',
+          activity_manifest: [
+            { activity_id: 'start-work-package', outcome: 'The work package has a planning folder and a branch' },
+          ],
+        },
+      });
+      // The same activity named again by a later manifest adds no second row —
+      // the outcome is a property of the activity, not of the report.
+      await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: sessionToken,
+          activity_id: 'design-philosophy',
+          activity_manifest: [
+            { activity_id: 'start-work-package', outcome: 'The work package has a planning folder and a branch' },
+          ],
+        },
+      });
+
+      const inspected = await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'activities' },
+      });
+      const activities = parseToolResponse(inspected);
+      const rows = (activities.outcomes as Array<{ activity: string; outcome: string }>)
+        .filter(r => r.activity === 'start-work-package');
+      expect(rows).toHaveLength(1);
+      expect(rows[0]!.outcome).toContain('planning folder');
+    });
+
     it('withAuditLog re-resolves session_index and populates trace event with sid/wf/act/aid from session.json', async () => {
       // Mutate the session: transition to a non-initial activity so the
       // expected `act` field is distinguishable from the start-session state.

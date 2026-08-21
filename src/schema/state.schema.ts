@@ -59,6 +59,14 @@ export const HistoryEventTypeSchema = z.enum([
   // maxActivities, budgetChars }. Counting these per limit is what the
   // conservative starting settings are revised from. See src/utils/batch.ts.
   'batch_refused',
+  // Outcome accounting (#477): the outcome the orchestrator reported for one
+  // completed activity, from the `activity_manifest` on next_activity.
+  // `activity` is the activity that ran; `data` carries { outcome,
+  // transitionCondition? }. Close-out measures a run against these where the
+  // client workflow seeded no outcome list of its own, so a run is judged on
+  // what its own activities delivered. One event per activity per report; a
+  // manifest re-sent for an activity already carrying one adds nothing.
+  'activity_outcome',
 ]);
 export type HistoryEventType = z.infer<typeof HistoryEventTypeSchema>;
 
