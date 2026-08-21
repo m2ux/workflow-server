@@ -36,6 +36,13 @@ steps:
                 safety_floor_cleared: false
 transitions:
   - to: over-engineering-review
+    condition:
+      type: simple
+      variable: safety_floor_cleared
+      operator: ==
+      value: true
+  - to: __terminal__
     isDefault: true
 outcome:
   - The minimal solution is built and verified to clear the safety floor, with its deliberate ceilings marked for later harvest
+  - A change that cannot clear the floor within the refinement limit ends the run rather than carrying an unsafe solution into review
