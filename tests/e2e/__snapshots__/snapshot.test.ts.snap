@@ -3374,68 +3374,84 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
 exports[`work-package walk snapshots (baseline) > runs only steps the activity declares, and records how much of each it runs 1`] = `
 {
   "activitiesEntered": 15,
-  "declaredPerActivity": [
+  "declaredTotal": 266,
+  "executedTotal": 149,
+  "perActivity": [
     {
       "activity": "assumptions-review",
       "declared": 13,
+      "executed": 3,
     },
     {
       "activity": "codebase-comprehension",
       "declared": 12,
+      "executed": 10,
     },
     {
       "activity": "complete",
       "declared": 15,
+      "executed": 14,
     },
     {
       "activity": "design-philosophy",
       "declared": 11,
+      "executed": 9,
     },
     {
       "activity": "implement",
       "declared": 18,
+      "executed": 10,
     },
     {
       "activity": "implementation-analysis",
       "declared": 13,
+      "executed": 7,
     },
     {
       "activity": "lean-coding-audit",
       "declared": 9,
+      "executed": 2,
     },
     {
       "activity": "plan-prepare",
       "declared": 11,
+      "executed": 10,
     },
     {
       "activity": "post-impl-review",
       "declared": 19,
+      "executed": 8,
     },
     {
       "activity": "requirements-elicitation",
       "declared": 12,
+      "executed": 7,
     },
     {
       "activity": "research",
       "declared": 20,
+      "executed": 10,
     },
     {
       "activity": "start-work-package",
       "declared": 53,
+      "executed": 26,
     },
     {
       "activity": "strategic-review",
       "declared": 15,
+      "executed": 11,
     },
     {
       "activity": "submit-for-review",
       "declared": 34,
+      "executed": 19,
     },
     {
       "activity": "validate",
       "declared": 11,
+      "executed": 3,
     },
   ],
-  "declaredTotal": 266,
 }
 `;

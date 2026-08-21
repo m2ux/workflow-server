@@ -24,6 +24,12 @@ describe('walk baseline corpus stamp', () => {
   // These snapshots describe a walk through the corpus, so they are only meaningful against the corpus
   // they were generated from. Checking the stamp first turns "six unrelated tests are red" into one
   // named cause (#327 S3).
+  //
+  // The stamp answers that question for the tree in front of it. It is a file recording the provenance
+  // of sibling files, so a merge can take it from one parent and the baselines it speaks for from the
+  // other — matching, and silent, while the two describe different corpora (#479). Two gitlinks cannot
+  // be separated that way, so the pull-request check in .github/actions/workflows-corpus compares
+  // those instead, and covers the case this cannot see.
   it('was generated against the corpus commit now checked out', () => {
     const stamp = readStamp();
     const current = currentCorpusSha();
@@ -49,12 +55,9 @@ describe('work-package walk snapshots (baseline)', () => {
   /**
    * Every walk, run once before any test reads one.
    *
-   * The two reports below are about the matrix as a whole, so they need all six. Accumulating into
-   * shared state as each test ran made them depend on every one of those tests having finished
-   * first, which is a coupling worth removing on its own account: it costs nothing to walk up front,
-   * and `allWalks` can then say which walk is missing rather than quietly totalling what happened to
-   * be ready. It did not, in the event, explain the CI difference that prompted it — that turned out
-   * to be a branch in post-impl-review, #479 — so this stands as structure rather than as a fix.
+   * The two reports below are about the matrix as a whole, so they need all six. Walking up front
+   * costs nothing and keeps them independent of the order the snapshot tests run in; `allWalks` then
+   * names the walk that is missing rather than quietly totalling what happened to be ready.
    */
   const walks = new Map<string, WalkResult>();
   beforeAll(async () => {
@@ -124,16 +127,21 @@ describe('work-package walk snapshots (baseline)', () => {
    * speaks for, and therefore the share of it these snapshots could not have caught a defect in
    * (#472).
    *
-   * The executed share is logged rather than snapshotted, and that is a deliberate retreat. Pinning
-   * it failed on CI at 149 against 150 here, and the difference is one step: five policies run
-   * `structural-analysis-inline` in post-impl-review where a sixth runs `dispatch-prism`, so the
-   * total hangs on a single either/or that does not settle the same way on every machine. A number
-   * that moves with the runner is not a baseline, whatever it is measuring — #479 has the detail.
+   * Both sides are pinned. The declared side is a pure function of the corpus. The executed side is
+   * a pure function of the corpus and these six policies together: the walker evaluates every gate
+   * itself against the bag it has built, with no agent and no clock in it, so the same corpus and the
+   * same policies give the same total everywhere. A move in either figure is a move in the corpus or
+   * in the policies, and the per-activity rows say which activity to look at.
    *
-   * What is asserted is the part that holds: every step some walk ran is a step its activity
-   * declares. That is what would break on an id rename or a manifest drifting from the definition,
-   * which is the drift worth catching here. The declared side is snapshotted on its own, because it
-   * is a pure function of the corpus and moves only when the corpus does.
+   * That the executed side is corpus-coupled is the whole of its subtlety, and it is not visible in
+   * the number. A corpus bump that stops binding one variable can retire a step nothing else
+   * mentions — `gitnexus_indexed` losing its bound value took `gitnexus-detect-changes-preflight`
+   * out of all six walks and one step off this total (#479). Re-baseline in the commit that bumps the
+   * submodule; CI checks that the branch walked the corpus its merge adopts, because a baseline
+   * measured against a corpus the tree does not adopt reports drift as a code regression.
+   *
+   * Also asserted, and independent of both totals: every step some walk ran is a step its activity
+   * declares. That is what an id rename or a manifest drifting from the definition would break.
    */
   it('runs only steps the activity declares, and records how much of each it runs', async () => {
     const executedByActivity = new Map<string, Set<string>>();
@@ -146,14 +154,6 @@ describe('work-package walk snapshots (baseline)', () => {
     }
     const declared = await declaredSteps(['work-package']);
     const rows = stepCoverage(declared, executedByActivity);
-    const declaredTotal = rows.reduce((n, r) => n + r.declared, 0);
-    const executedTotal = rows.reduce((n, r) => n + r.executed, 0);
-    // eslint-disable-next-line no-console
-    console.log(
-      `[step coverage] ${executedTotal}/${declaredTotal} steps over ${rows.length} activities entered\n`
-      + rows.map((r) => `  ${r.activity}: ${r.executed}/${r.declared}`).join('\n'),
-    );
-
     const undeclared = [...executedByActivity].flatMap(([activity, ran]) =>
       [...ran].filter((id) => !(declared.get(activity) ?? []).includes(id)).map((id) => `${activity}/${id}`));
     expect(
@@ -164,8 +164,9 @@ describe('work-package walk snapshots (baseline)', () => {
 
     expect({
       activitiesEntered: rows.length,
-      declaredTotal,
-      declaredPerActivity: rows.map((r) => ({ activity: r.activity, declared: r.declared })),
+      executedTotal: rows.reduce((n, r) => n + r.executed, 0),
+      declaredTotal: rows.reduce((n, r) => n + r.declared, 0),
+      perActivity: rows.map((r) => ({ activity: r.activity, executed: r.executed, declared: r.declared })),
     }).toMatchSnapshot();
   });
 });
