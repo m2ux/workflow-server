@@ -51,8 +51,8 @@ The written `evaluation-plan.md` path.
 
 ### 1. Compose the Plan
 
-- Compose `{evaluation_plan}` per the [Evaluation Plan Template](../../resources/evaluation-plan-template.md#evaluation-plan-template), populating `{evaluation_plan.target_overview}` from `{target_type}`, `{target_summary}`, `{structure_inventory}` and `{key_topics}`, and `{evaluation_plan.dimension_mapping}` from `{dimension_plan}` and `{execution_groups}`.
+- Compose `{evaluation_plan}` per the [Evaluation Plan Template](../../resources/evaluation-plan-template.md#evaluation-plan-template), populating `{evaluation_plan.target_overview}` from `{evaluation_target_type}`, `{target_summary}`, `{structure_inventory}` and `{key_topics}`, and `{evaluation_plan.dimension_mapping}` from `{dimension_plan}` and `{execution_groups}`.
 
 ### 2. Write It Out
 
-- Write `{evaluation_plan}` into `{output_path}` and record `{evaluation_plan_path}`.
+- Write `{evaluation_plan}` into `{evaluation_output_path}` and record `{evaluation_plan_path}`.

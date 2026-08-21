@@ -139,7 +139,7 @@ Each run's `analysis_focus` names its dimension, which is what yields dimension-
 For a four-dimension evaluation of a proposal (Consistency, Veracity, Plausibility, Feasibility):
 
 ```
-{output_path}/
+{evaluation_output_path}/
 ├── evaluation-plan.md              (dimension-to-lens mapping)
 ├── EVALUATION-REPORT.md            (consolidated evaluation)
 ├── consistency/                    (a full-prism dimension's own run)

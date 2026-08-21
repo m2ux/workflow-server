@@ -21,7 +21,7 @@ The target's base name.
 
 The user's description of evaluation goals, focus areas, and concerns.
 
-### output_path
+### evaluation_output_path
 
 Directory for the evaluation artifacts: the directory the user supplied, or one named from `{target_name}` and the current date when the user supplied none.
 
@@ -41,4 +41,4 @@ Directory for the evaluation artifacts: the directory the user supplied, or one 
 
 ### 2. Resolve the Scope
 
-- Resolve `{output_path}`, and capture `{dimensions}` and `{lens_overrides}` where the request carries them.
+- Resolve `{evaluation_output_path}`, and capture `{dimensions}` and `{lens_overrides}` where the request carries them.

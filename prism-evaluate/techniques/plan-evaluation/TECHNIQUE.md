@@ -9,10 +9,6 @@ Turns an evaluation request into a runnable plan: what the target is, which dime
 
 ## Inputs
 
-### target_type
-
-The target's kind: `document`, `document-set`, `codebase`, or `mixed`.
-
 ### dimensions
 
 *(optional)* The evaluation dimensions, each `{ name, description, focus_areas }`.

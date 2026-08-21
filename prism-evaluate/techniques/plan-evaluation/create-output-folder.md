@@ -11,9 +11,9 @@ Materialises the evaluation's output directory, so the artifacts have somewhere 
 
 ### 1. Create the Directory
 
-- Run `mkdir -p {output_path}`.
+- Run `mkdir -p {evaluation_output_path}`.
 
 ### 2. Confirm It Is Writable
 
-- Confirm `{output_path}` exists and accepts writes.  
+- Confirm `{evaluation_output_path}` exists and accepts writes.  
   > When it does not, report the path and the reason rather than continuing against a directory the artifacts cannot reach.

@@ -21,7 +21,7 @@ How many findings carry an accepted or modified disposition.
 
 ### 1. Compile the Plan
 
-- Compile `{mitigation_plan}` into `{output_path}` per the [Mitigation Plan Template](../../resources/mitigation-plan-template.md#mitigation-plan-template), populating `{mitigation_plan.summary_table}`, `{mitigation_plan.detailed_mitigations}`, and `{mitigation_plan.implementation_priority}` from `{accepted_mitigations}`.
+- Compile `{mitigation_plan}` into `{evaluation_output_path}` per the [Mitigation Plan Template](../../resources/mitigation-plan-template.md#mitigation-plan-template), populating `{mitigation_plan.summary_table}`, `{mitigation_plan.detailed_mitigations}`, and `{mitigation_plan.implementation_priority}` from `{accepted_mitigations}`.
 - Record `{mitigation_plan_path}` as the path the document was written to.
 
 ### 2. Verify Coverage

@@ -21,4 +21,4 @@ The written `EVALUATION-REPORT.md` path.
 
 ### 2. Write It Out
 
-- Write `{evaluation_report}` into `{output_path}` and record `{evaluation_report_path}`.
+- Write `{evaluation_report}` into `{evaluation_output_path}` and record `{evaluation_report_path}`.

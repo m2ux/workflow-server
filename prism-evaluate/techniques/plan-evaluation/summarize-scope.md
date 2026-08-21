@@ -17,5 +17,5 @@ The evaluation scope in one piece: the target and its classified kind, the dimen
 
 ### 1. Assemble the Summary
 
-- Assemble `{scope_summary}` from `{target_path}`, `{target_type}`, `{dimensions}`, `{evaluation_description}`, and `{output_path}`.  
+- Assemble `{scope_summary}` from `{target_path}`, `{evaluation_target_type}`, `{dimensions}`, `{evaluation_description}`, and `{evaluation_output_path}`.  
   > Where `{dimensions}` is unresolved, the summary names it as the open item rather than omitting the dimension section.

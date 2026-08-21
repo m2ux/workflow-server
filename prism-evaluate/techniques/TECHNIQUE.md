@@ -17,6 +17,10 @@ Path to the document, proposal, codebase, or artifact set being evaluated.
 
 The user's description of what to evaluate, the evaluation goals, focus areas, and concerns.
 
-### output_path
+### evaluation_target_type
+
+The target's kind: `document`, `document-set`, `codebase`, or `mixed`.
+
+### evaluation_output_path
 
 Directory the evaluation artifacts are read from and written to.
