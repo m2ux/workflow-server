@@ -2795,6 +2795,11 @@ describe('mcp-server integration', () => {
         completed: ['start-work-package', 'research', 'wp-plan'],
         skipped: ['codebase-comprehension'],
         current: 'implement',
+        // This fixture reports neither outcomes nor progress marks, so every activity it
+        // entered is unreported and none is known to have skipped the write.
+        outcomes: [],
+        progress_mark_unpublished: [],
+        progress_mark_unreported: ['start-work-package', 'research'],
       });
 
       const checkpoints = parseToolResponse(await callInspect({ view: 'checkpoints' }));
@@ -2821,6 +2826,11 @@ describe('mcp-server integration', () => {
         status: 'running',
         currentActivity: 'triage',
         completed: ['intake'],
+        // Still running with no usage reported: the figure is unavailable, which the
+        // digest says rather than showing a zero.
+        cost_known: false,
+        rows: 0,
+        totals: {},
       }]);
 
       const variables = parseToolResponse(await callInspect({ view: 'variables' }));
@@ -2936,6 +2946,11 @@ describe('mcp-server integration', () => {
         status: 'running',
         currentActivity: 'plan',
         completed: [],
+        // The grandchild is running and has reported no usage, so its cost is
+        // unavailable rather than nil.
+        cost_known: false,
+        rows: 0,
+        totals: {},
       }]);
 
       const summary = parseToolResponse(await callInspect({ child_index: 0, view: 'summary' }));

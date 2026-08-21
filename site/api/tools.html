@@ -174,7 +174,7 @@
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot; | &quot;usage&quot;</code></td><td>no</td><td>Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-activity token rows and plain-sum totals from record_usage). Default: <code>&quot;summary&quot;</code></td></tr>
+          <tr><td><code>view</code></td><td><code>&quot;summary&quot; | &quot;identity&quot; | &quot;variables&quot; | &quot;checkpoints&quot; | &quot;activities&quot; | &quot;history&quot; | &quot;children&quot; | &quot;usage&quot;</code></td><td>no</td><td>Projection: summary (default), identity, variables, checkpoints, activities (completed, skipped, and the outcome each reported), history, children, or usage (per-activity token rows with their basis and measured wall clock, delta totals, each agent's latest cumulative figure, the completed activities holding no row, and each child's cost outside those totals). Default: <code>&quot;summary&quot;</code></td></tr>
           <tr><td><code>child_index</code></td><td><code>integer</code></td><td>no</td><td>Optional. Project triggeredWorkflows[child_index].state instead of the parent session.</td></tr>
           <tr><td><code>variable</code></td><td><code>string</code></td><td>no</td><td>Optional. With view=variables, return a single variable by name.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
@@ -253,6 +253,7 @@
           <tr><td><code>artifacts_produced</code></td><td><code>object[]</code></td><td>no</td><td>Artifacts the completing activity produced: [{id, name, path?}]. Merged by id into the session declared-artifact accumulation; planning-folder reconciliation joins on id (warn-only).</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
           <tr><td><code>context_tokens</code></td><td><code>integer</code></td><td>no</td><td>Your worker context window in tokens. Required so the server can size inline technique bundling.</td></tr>
+          <tr><td><code>progress_published</code></td><td><code>boolean</code></td><td>no</td><td>Whether the in-progress Progress mark for this activity is committed and pushed before the worker spawns. Recorded as a <code>progress_published</code> event, so an activity opened without one is answerable from the session rather than only from whoever was watching the working tree at the time. Omit only where the session has no planning folder to mark.</td></tr>
           </tbody>
         </table>
         </div>
@@ -315,9 +316,25 @@
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           <tr><td><code>checkpoint_id</code></td><td><code>string</code></td><td>yes</td><td>Id of the checkpoint step you are yielding.</td></tr>
+          <tr><td><code>message</code></td><td><code>string</code></td><td>no</td><td>Only for a decision the activity does not declare: the question put to the user. Forbidden on a declared checkpoint, whose definition owns the wording.</td></tr>
+          <tr><td><code>options</code></td><td><code>object[]</code></td><td>no</td><td>Only for a decision the activity does not declare: at least two answers. The decision is recorded; an option here sets no variable, so a value the run must read belongs on a declared checkpoint.</td></tr>
           </tbody>
         </table>
         </div>
+        <details class="tool-details">
+          <summary>Nested fields</summary>
+          <p class="table-caption">Each item in these arrays is an object with the fields below.</p>
+        <div class="table-wrap">
+        <table class="param-table param-table--nested">
+          <thead><tr><th scope="col">In</th><th scope="col">Field</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
+          <tbody>
+          <tr class="param-row--nested"><td class="param-scope" rowspan="3"><code>options[]</code></td><td><code>id</code></td><td><code>string</code></td><td>yes</td><td>Option id the orchestrator answers with.</td></tr>
+          <tr class="param-row--nested"><td><code>label</code></td><td><code>string</code></td><td>yes</td><td>Option text shown to the user.</td></tr>
+          <tr class="param-row--nested"><td><code>description</code></td><td><code>string</code></td><td>no</td><td>What choosing this option means.</td></tr>
+          </tbody>
+        </table>
+        </div>
+        </details>
       </section>
       <section class="tool" id="resume_checkpoint">
         <h3><code>resume_checkpoint</code></h3>
@@ -460,7 +477,8 @@
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           <tr><td><code>activity</code></td><td><code>string</code></td><td>yes</td><td>Activity this figure is attributed to, whether or not the session is still on it. One call per activity a dispatch covers.</td></tr>
-          <tr><td><code>usage</code></td><td><code>object</code></td><td>yes</td><td>Harness-reported token DELTA for this ONE dispatch, as reported. Omit the call entirely when the harness surfaced nothing rather than passing zeros — the worker cannot self-measure, so absence must stay distinguishable from a measured zero.</td></tr>
+          <tr><td><code>usage</code></td><td><code>object</code></td><td>yes</td><td>Harness-reported token figure for this ONE activity, as reported. Omit the call entirely when the harness surfaced nothing rather than passing zeros — the worker cannot self-measure, so absence must stay distinguishable from a measured zero.</td></tr>
+          <tr><td><code>basis</code></td><td><code>&quot;delta&quot; | &quot;cumulative&quot;</code></td><td>yes</td><td>What the figure counts. <code>delta</code> is this activity's own spend and sums with its siblings. <code>cumulative</code> is a running total for this agent context, which several harnesses report — those are carried as the latest figure per agent, since summing them counts every earlier activity again. Read the harness output rather than assuming: a cumulative figure passed as a delta is what makes a total wrong in a direction nothing reveals.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
           </tbody>
         </table>
