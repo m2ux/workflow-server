@@ -10,14 +10,14 @@ metadata:
 
 ## Mitigation Tiers
 
-A finding's tier states what answering it would take, and fixes the shape its mitigation takes.
+A finding's tier states how far the target has to move to answer it.
 
-| Tier | Name | The finding is answered by |
+| Tier | Name | A finding is this tier when |
 |------|------|----------------------------|
-| `T1` | Direct correction | Replacing wrong text — a number, a term, a name — with the right text and its source |
-| `T2` | Reframing & caveating | Qualifying a claim that overreaches, holding its intent under honest scoping |
-| `T3` | Novel mitigation | Adding a mechanism, structure, or section that answers the critique without striking the claim |
-| `T4` | Structural / immovable | Acknowledging a constraint the target cannot resolve within itself |
+| `T1` | Direct correction | A stated fact is wrong and the correct one is available |
+| `T2` | Reframing & caveating | The claim overreaches what supports it, but holds under a narrower scope |
+| `T3` | Novel mitigation | The critique stands and nothing already in the target answers it |
+| `T4` | Structural / immovable | The constraint the finding names sits outside the target's reach |
 
 ## Mitigation Plan Template
 

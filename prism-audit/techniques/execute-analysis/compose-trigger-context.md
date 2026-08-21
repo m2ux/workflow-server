@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Compose the prism trigger context for the current audit scope: unpack `{current_scope}` into the target, target description, output path, pipeline mode, and analysis focus that the prism trigger passes to the run.
+Resolves the context one audit scope's analysis run is dispatched with.
 
 ## Outputs
 

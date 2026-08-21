@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Compose the prism trigger context for one execution group: the target, its type in prism's vocabulary, the scope description, the output location, the pipeline mode, the lens selection, and the analysis focus the run is dispatched with.
+Resolves the context one execution group's analysis run is dispatched with, translating the evaluation's own terms into the ones that run reads.
 
 ## Outputs
 
 ### target
 
-The evaluation target the group's run analyses.
+The evaluation target the group's run analyses, which is the target under evaluation.
 
 ### target_type
 
@@ -39,16 +39,17 @@ What the group's run examines, taken from `{current_group}`. Naming the group's 
 
 ## Protocol
 
-### 1. Unpack the Group
+### 1. Locate the Group's Output
 
-- Set `{pipeline_mode}`, `{selected_lenses}`, and `{analysis_focus}` from the corresponding fields of `{current_group}`.
 - Set `{output_path}` to the group's `output_subdir` under `{evaluation_output_path}`.
 
-### 2. Resolve the Target
+### 2. Translate the Target's Kind
 
-- Set `{target}` to `{target_path}`.
 - Set `{target_type}` from `{evaluation_target_type}` per `target-type-vocabulary`.
-- Set `{target_description}` from the group's dimension name(s) and focus.
+
+### 3. Describe the Group's Scope
+
+- Set `{target_description}` from the dimension name(s) and focus `{current_group}` carries.
 
 ## Rules
 

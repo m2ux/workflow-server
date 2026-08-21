@@ -17,7 +17,7 @@ steps:
     technique:
       name: version-control::commit-regular-files
       inputs:
-        paths: committed_paths
+        paths: changed_paths
         commit_message: "docs({target_name}): apply evaluation mitigations"
         branch: current
 outcome:
