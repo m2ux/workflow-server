@@ -11,19 +11,19 @@ steps:
     technique: compose-audit-prompt::identify-security-characteristics
   - kind: checkpoint
     id: no-security-characteristics
-    message: No security-relevant patterns were found in the target codebase. This may indicate a purely presentational or data-only codebase. Would you like to proceed with a generic structural analysis instead, or abort the audit?
+    message: No security-relevant patterns were found in {target_path}, which is the shape a purely presentational or data-only codebase takes.
     condition:
       type: simple
       variable: security_characteristics_count
       operator: ==
       value: 0
     options:
-      - id: proceed-generic
-        label: Proceed with generic analysis
-        description: Continue with a generic structural analysis prompt instead of a security-focused one
+      - id: proceed
+        label: Continue the audit
+        description: The prompt is composed from the codebase's structure, with no security characteristics to ground its domains
       - id: abort
-        label: Abort audit
-        description: Stop the audit workflow
+        label: Abort the audit
+        description: The codebase carries no security surface for this audit to examine
         effect:
           transitionTo: deliver-audit
     blocking: true
@@ -41,7 +41,7 @@ steps:
     technique: compose-audit-prompt::compose-prompt
     actions:
       - action: message
-        message: "Audit prompt written to {audit_prompt_path} — every prism run for this audit reads it."
+        message: "The audit prompt every analysis run for this audit reads: [audit-prompt.md]({audit_prompt_path})."
   - kind: technique
     id: build-audit-scopes
     technique: compose-audit-prompt::build-audit-scopes

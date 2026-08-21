@@ -5,6 +5,24 @@ description: The audit domains a security audit groups a target's characteristic
 
 # Audit Domain Rubric
 
+## Security Characteristics
+
+A characteristic is a security-relevant pattern a codebase actually contains. These are what a scan looks for, and what it finds is what grounds the domains below in evidence rather than in a checklist.
+
+| Category | Patterns |
+|----------|----------|
+| Cryptography | Hashing (SHA, Blake, Poseidon), signing (Ed25519, ECDSA, Schnorr), encryption (AES, ChaCha), key derivation, commitment schemes, zero-knowledge proof systems |
+| Authentication and authorisation | Password handling, token validation, session management, role and permission checks, access control |
+| Network-exposed surface | HTTP servers and handlers, RPC endpoints, WebSocket listeners, gRPC services |
+| State management | Database connections, cache layers, persistent storage, Merkle trees, state machines |
+| Untrusted-input deserialisation | Custom deserialisation, binary parsing, protobuf or JSON carrying external input, tagged encoding |
+| Unsafe code | Unsafe blocks, FFI and native bindings, raw pointer manipulation, transmute |
+| WASM target | wasm-bindgen, wasm-pack, WASM-specific modules |
+| Security-gating feature flag | Test-only features, mock verification, debug modes, feature-gated bypass |
+| Custom VM or interpreter | Bytecode execution, instruction dispatch, gas or cost metering |
+
+A codebase in which none of these appears has no security surface, and the count of characteristics found is what says so.
+
 ## Domains
 
 A domain groups a target's observed characteristics into one area of security concern. A domain enters an audit only where the target holds code for it.

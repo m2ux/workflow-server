@@ -1,17 +1,14 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Identify concerns that span multiple audit domains — error-handling patterns, feature-flag discipline, trust-boundary consistency, and dependency risk — so they are examined across the codebase rather than within a single domain.
+Names the concerns that run across a codebase's domains rather than sitting inside any one of them.
 
 ## Protocol
 
-### 1. Identify Cross Cutting
+### 1. Identify the Cross-Cutting Concerns
 
-- Error handling patterns: how the codebase handles errors across modules (panic vs Result, unwrap usage, silent error swallowing)
-- Feature flag discipline: which features gate security-critical behaviour, risk of test/mock code in production
-- Trust boundary consistency: where trust transitions occur and whether they are consistently enforced
-- Dependency risk: third-party dependencies with known vulnerabilities or unmaintained status
+- Record `{audit_prompt.cross_cutting}`: how errors are handled across modules (panic against result, unwrap usage, silently swallowed errors), which feature flags gate security-critical behaviour and what risk test or mock code reaching production carries, where trust transitions occur and whether they are enforced consistently, and which third-party dependencies carry known vulnerabilities or are unmaintained.
