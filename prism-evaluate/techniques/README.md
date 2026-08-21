@@ -55,7 +55,7 @@ The technique library for the prism-evaluate workflow. Each operation is one cap
 |-----------|------------|
 | [`load-and-classify`](resolve-findings/load-and-classify.md) | Load findings from the report and tier-classify them by mitigation difficulty |
 | [`propose-mitigation-by-tier`](resolve-findings/propose-mitigation-by-tier.md) | Propose a finding-specific mitigation according to its tier |
-| [`present-and-collect-per-finding`](resolve-findings/present-and-collect-per-finding.md) | Present each finding individually and collect the user's decision |
+| [`record-finding-decision`](resolve-findings/record-finding-decision.md) | Record one finding's disposition with the mitigation text it applies to |
 | [`compile-plan`](resolve-findings/compile-plan.md) | Compile the per-finding dispositions into `MITIGATION-PLAN.md` |
 | [`apply-changes`](resolve-findings/apply-changes.md) | Apply the accepted mitigations to the target in tier and severity order |
 

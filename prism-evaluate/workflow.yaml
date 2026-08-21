@@ -104,6 +104,13 @@ variables:
     description: "Findings extracted from the evaluation report, iterated during the resolution dialogue (each: finding ID, severity, claim, critique, mitigation tier)."
   - name: accepted_count
     type: number
-    description: Count of accepted mitigations, interpolated into the confirm-apply checkpoint message.
+    description: How many findings carry an accepted or modified disposition
     defaultValue: 0
+  - name: finding_disposition
+    type: string
+    description: "Disposition taken on the current finding: accept | modify | skip | discuss"
+  - name: mitigations_apply_approved
+    type: boolean
+    description: Whether the user approved applying the mitigation plan to the target
+    defaultValue: false
 initialActivity: scope-definition
