@@ -1,5 +1,5 @@
 id: apply-mitigations
-version: 1.4.0
+version: 2.0.0
 name: Apply Accepted Mitigations
 description: Apply accepted mitigations to the target document.
 steps:
