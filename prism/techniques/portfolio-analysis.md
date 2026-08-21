@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -93,7 +93,7 @@ All findings with lens attribution and convergent/unique classification
 
 ### 5. Write Artifacts
 
-- Capture the applied lens's name as `{$lens_name}`, then write each lens output (see [writer](../resources/writer.md)) as `{per_lens_artifacts}` into `{output_path}` — one `portfolio-{lens_name}.md` per applied lens. If a write fails, verify `{output_path}` exists and is writable.
+- Capture the applied lens's name as `{$lens_name}`, then write each lens output as `{per_lens_artifacts}` into `{output_path}` — one `portfolio-{lens_name}.md` per applied lens, shaped by the lens resource that `{$lens_name}` names, which is the guide the [artifact map](../resources/README.md#planning-artifact-to-guide-map) resolves that filename to. If a write fails, verify `{output_path}` exists and is writable.
 
 ### 6. Cross Lens Synthesis
 

@@ -21,7 +21,7 @@ Maps evaluation dimensions to prism pipeline modes and lens configurations.
 
 ## Custom Dimension Mappings
 
-For dimensions not matching the standard patterns above, match the dimension's analytical goal against prism's authoritative goal-mapping matrix in the [plan-analysis](../../prism/techniques/plan-analysis.md) technique, rather than a copy maintained here — prism owns the goal→lens catalog, and duplicating a subset of it would drift. Take the lenses prism's matrix recommends for the closest goal (exploration, assumptions, quality, degradation, knowledge-boundary, and the rest) and, when the dimension maps to no clear goal, request a `{lens_overrides}` entry.
+For dimensions not matching the standard patterns above, match the dimension's analytical goal against prism's own catalog: the [lens index](../../prism/resources/README.md) names every lens by family, and [recommended combinations](../../prism/resources/README.md#recommended-combinations) pairs the lenses that serve a goal together. prism owns that catalog and keeps it loadable by any workflow, so this resource carries no copy of it to drift against. Take the lenses the closest goal names (exploration, assumptions, quality, degradation, knowledge-boundary, and the rest) and, when the dimension maps to no clear goal, request a `{lens_overrides}` entry.
 
 ## Output Subdirectory Convention
 
