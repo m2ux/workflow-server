@@ -69,6 +69,10 @@ The report names no analytical methodology: no lens names (`L12`, `claim-inversi
 
 The report is readable and actionable by someone who knows nothing of the analysis that produced it, in the voice of a professional, evidence-based evaluation.
 
+### findings-come-from-the-run-contract
+
+Findings are read from each run's declared contract artifacts — its manifest, its report, its definitive findings. A run's internal pass artifacts are not a findings source: what they hold has already been reconciled into the definitive findings, and reading them reintroduces claims the run withdrew.
+
 ### findings-carry-their-source-identity
 
 Each finding appears under the ID and severity its source analysis assigned. Where two groups assign the same ID, the report adds a group qualifier to one of them.

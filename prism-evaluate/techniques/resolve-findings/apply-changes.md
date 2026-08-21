@@ -13,6 +13,10 @@ Makes the planned changes to the target, each one checked against the text it ex
 
 What reached the target: per change, its finding ID, the location it landed at, and whether verification found the new text there. A change the target could not accept appears with its conflict.
 
+### committed_paths
+
+The files this application leaves changed on disk: the target it modified, and the plan the changes were made from.
+
 ## Protocol
 
 ### 1. Apply Each Change
@@ -29,3 +33,4 @@ What reached the target: per change, its finding ID, the location it landed at, 
 ### 3. Record What Changed
 
 - Record `{applied_changes}`: per change, its finding ID, the location it reached, and whether verification found it.
+- Record `{committed_paths}` as `{target_path}` and `{mitigation_plan_path}`.
