@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Shared Inputs, Outputs, Rules, and Errors for every technique in this set.
+Holds the evaluation's standing context — what is under evaluation, the goals it is judged against, and the directory its artifacts occupy.
 
 ## Inputs
 
@@ -19,4 +19,4 @@ The user's description of what to evaluate, the evaluation goals, focus areas, a
 
 ### output_path
 
-Directory where the evaluation artifacts are read from and written to.
+Directory the evaluation artifacts are read from and written to.

@@ -1,21 +1,21 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Assemble a comprehensive summary of the evaluation scope — target path, classified target type, the evaluation dimensions, the user's evaluation description and focus areas, and the output directory — for user confirmation.
+Gathers the settled evaluation scope into one summary a reader can judge in a single pass.
 
 ## Outputs
 
 ### scope_summary
 
-Formatted summary of the evaluation scope covering target, target type, dimensions, description, and output directory
+The evaluation scope in one piece: the target and its classified kind, the dimensions and their focus areas, the evaluation's stated goals, and the output directory.
 
 ## Protocol
 
-### 1. Summarize Scope
+### 1. Assemble the Summary
 
-- Assemble the scope summary from `{target_path}`, the classified `{target_type}`, the `{dimensions}` array, the user's `{evaluation_description}` and focus areas, and the `{output_path}`.
-- Format the assembled `{scope_summary}` for user review.
+- Assemble `{scope_summary}` from `{target_path}`, `{target_type}`, `{dimensions}`, `{evaluation_description}`, and `{output_path}`.  
+  > Where `{dimensions}` is unresolved, the summary names it as the open item rather than omitting the dimension section.
