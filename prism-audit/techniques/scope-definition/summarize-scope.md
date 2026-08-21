@@ -17,5 +17,5 @@ Formatted summary of the audit scope covering target, language, size, indexing s
 
 ### 1. Summarize Scope
 
-- Assemble the scope summary from the target codebase path, `{target_metadata}` (detected language/framework, estimated size, top-level structure), `{gitnexus_available}` indexing status, the user's `{audit_description}` and focus areas, and the `{output_path}`.
+- Assemble the scope summary from the target codebase path, `{target_metadata}` (detected language/framework, estimated size, top-level structure), `{gitnexus_available}` indexing status, the user's `{audit_description}` and focus areas, and the `{audit_output_path}`.
 - Format the assembled `{scope_summary}` for user review.

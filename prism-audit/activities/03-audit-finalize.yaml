@@ -20,7 +20,7 @@ steps:
     technique:
       name: verify-artifact-conforms
       inputs:
-        artifact_dir: output_path
+        artifact_dir: audit_output_path
         guide_map: prism-audit/README#planning-artifact-to-guide-map
   - kind: technique
     id: verify-artifacts

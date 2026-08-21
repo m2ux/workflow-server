@@ -65,7 +65,7 @@ The spine is linear — scope, prompt, analyse, finalize, deliver — with two b
 
 ## Deliverables
 
-The workflow writes all artifacts under the user-supplied `output_path`:
+The workflow writes all artifacts under the user-supplied `audit_output_path`:
 
 | Artifact | Produced by | Contents |
 |----------|-------------|----------|

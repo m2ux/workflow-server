@@ -19,7 +19,7 @@ A short description of the scope for prism's Executive Summary scope statement �
 
 ### output_path
 
-The scope's output location — its `output_subdir` under the audit output directory.
+The scope's own output location, which the run it is dispatched to writes into.
 
 ### pipeline_mode
 
@@ -33,7 +33,7 @@ The scope's analysis focus, taken from `{current_scope}` — the audit prompt co
 
 - Set `{target}`, `{pipeline_mode}`, and `{analysis_focus}` from the corresponding fields of `{current_scope}`.
 - Set `{target_description}` to a short description of the scope derived from its focus.
-- Set `{output_path}` to the scope's output location (its `output_subdir` under the audit output directory).
+- Set `{output_path}` to the scope's `output_subdir` under `{audit_output_path}`.
 
 ## Rules
 

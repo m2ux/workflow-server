@@ -34,14 +34,17 @@ variables:
     required: true
   - name: target
     type: string
-    description: Per-scope evaluation target passed to the triggered prism run — set by execute-analysis::compose-trigger-context from the current scope
+    description: The evaluation target an analysis run analyses
   - name: target_description
     type: string
-    description: Per-scope description passed to the triggered prism run for its report scope statement — set by execute-analysis::compose-trigger-context
+    description: Short description of what an audit scope covers
+  - name: audit_output_path
+    type: string
+    description: Directory the audit artifacts are written to
+    required: true
   - name: output_path
     type: string
-    description: Directory to write all audit artifacts (prompt, analysis, reports)
-    required: true
+    description: The output location of the audit scope under analysis
   - name: audit_prompt
     type: string
     description: Generated audit prompt text produced by the prompt-generation activity

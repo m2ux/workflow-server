@@ -17,7 +17,7 @@ Path to the codebase or directory to audit
 
 User's description of what to audit, focus areas, and specific concerns
 
-### output_path
+### audit_output_path
 
 Directory to write the audit prompt artifact
 

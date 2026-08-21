@@ -17,7 +17,7 @@ Path to the codebase or directory to audit
 
 User's description of what to audit, focus areas, and specific concerns
 
-### output_path
+### audit_output_path
 
 Directory to write all audit artifacts, derived from the target name and current date when the user did not specify one
 
@@ -27,5 +27,5 @@ Directory to write all audit artifacts, derived from the target name and current
 
 - Extract `{target_path}` from the user's request: the path to the codebase or directory to audit.
 - Extract `{audit_description}` from the user's request: what to audit and any focus areas or specific concerns.
-- Extract `{output_path}` from the user's request: the directory for all audit artifacts.
-- If the user did not specify an output path, derive `{output_path}` from the target's base name and the current date.
+- Extract `{audit_output_path}` from the user's request: the directory for all audit artifacts.
+- If the user did not specify an output path, derive `{audit_output_path}` from the target's base name and the current date.

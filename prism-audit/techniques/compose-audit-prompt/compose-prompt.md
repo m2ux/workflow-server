@@ -24,4 +24,4 @@ File path to the written audit prompt artifact
 - Section 4: Cross-Cutting Concerns — error handling, feature flags, trust boundaries, dependencies
 - Section 5: Output Requirements — 'Produce findings with: ID, severity (using Impact x Feasibility rubric), description, location (file:line), impact, recommendation. Organise by domain and severity.'
 - The prompt must be self-contained: readable and actionable without additional context beyond the codebase path
-- Write the completed audit prompt as its declared `audit-prompt.md` artifact into `{output_path}`; record the written path as `{audit_prompt_path}`
+- Write the completed audit prompt as its declared `audit-prompt.md` artifact into `{audit_output_path}`; record the written path as `{audit_prompt_path}`
