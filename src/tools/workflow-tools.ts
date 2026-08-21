@@ -63,14 +63,15 @@ const activityManifestSchema = z.array(z.object({
 })).optional().describe('Orchestrator activity-completion manifest: [{activity_id, outcome, transition_condition?}].');
 
 const usageSchema = z.record(z.unknown()).describe(
-  'Harness-reported token usage for ONE activity (DELTA since the last figure recorded for this \n'
-  + 'dispatch — not a cumulative session total). A dispatch carrying a run of activities records one \n'
-  + 'call per activity as it completes, so cost keeps a figure per activity and a batch size can be \n'
-  + 'calibrated from real runs. Include numeric token fields the harness reports (`input_tokens`, \n'
-  + '`output_tokens`, `total_tokens`, `subagent_tokens`, cache/model fields). Recorded as an \n'
-  + '`activity_usage` history event keyed to the activity that ran; inspect_session view:usage \n'
-  + 'projects each row and plain-sums known token keys across rows. Workers cannot self-measure: \n'
-  + 'omit the record_usage call entirely when the harness surfaces nothing rather than passing zeros.',
+  'Harness-reported token usage for ONE activity, on the basis the sibling `basis` parameter states. \n'
+  + 'A dispatch carrying a run of activities records one call per activity as it completes, so cost \n'
+  + 'keeps a figure per activity and a batch size can be calibrated from real runs. Include numeric \n'
+  + 'token fields the harness reports (`input_tokens`, `output_tokens`, `total_tokens`, \n'
+  + '`subagent_tokens`, cache/model fields). Recorded as an `activity_usage` history event keyed to \n'
+  + 'the activity that ran; inspect_session view:usage sums the delta rows, carries each agent\'s \n'
+  + 'latest cumulative figure, and names the completed activities holding no row. Workers cannot \n'
+  + 'self-measure: omit the record_usage call entirely when the harness surfaces nothing rather than \n'
+  + 'passing zeros.',
 );
 
 const artifactsProducedSchema = z.array(z.object({
@@ -296,47 +297,141 @@ export const USAGE_TOKEN_KEYS = [
 ] as const;
 
 /**
- * Usage projection (#324 B1, #346 DI-33, #365 S3): one entry per `activity_usage`
- * event in record order (one per activity a dispatch covered), plus a plain-sum
- * token aggregate over those rows. Rows are DELTA figures for one activity, so a
- * dispatch carrying a run of activities appears as several rows sharing an
- * `agentId`; the aggregate is the arithmetic sum of known numeric token keys
- * across the projected rows. When
- * `agentId` is set, only rows whose `data.agentId` matches are included
+ * Wall-clock span of each activity, from the server's own `activity_entered` and
+ * `activity_exited` timestamps. An activity entered more than once — resumed after a
+ * checkpoint, re-dispatched after a timeout — takes the span from its first entry to its
+ * last exit, and an activity still running has no span.
+ *
+ * These spans nest and they include the time a user spent at a checkpoint, so they are
+ * not additive: the run's own elapsed time is the span from its first event to its last,
+ * never the sum of the parts (#474 F7).
+ */
+function activityWallClockMs(s: SessionFile): Map<string, number> {
+  const first = new Map<string, number>();
+  const last = new Map<string, number>();
+  for (const e of s.history ?? []) {
+    if (e.activity === undefined) continue;
+    const t = new Date(e.timestamp).getTime();
+    if (!Number.isFinite(t)) continue;
+    if (e.type === 'activity_entered') {
+      const prior = first.get(e.activity);
+      if (prior === undefined || t < prior) first.set(e.activity, t);
+    } else if (e.type === 'activity_exited') {
+      const prior = last.get(e.activity);
+      if (prior === undefined || t > prior) last.set(e.activity, t);
+    }
+  }
+  const spans = new Map<string, number>();
+  for (const [activity, start] of first) {
+    const end = last.get(activity);
+    if (end !== undefined && end >= start) spans.set(activity, end - start);
+  }
+  return spans;
+}
+
+/**
+ * Usage projection (#324 B1, #346 DI-33, #365 S3, #474 F7): one entry per
+ * `activity_usage` event in record order (one per activity a dispatch covered), the token
+ * aggregate over the rows that can be summed, the measured wall clock, and the completed
+ * activities that carry no row at all.
+ *
+ * Three things keep the figures honest, each answering a way the record read as sound and
+ * was not.
+ *
+ * **A row states its basis.** `delta` rows carry this activity's own spend and sum.
+ * `cumulative` rows carry a running total for their agent context, which is what several
+ * harnesses report, and summing those double-counts every earlier activity — so they are
+ * reported as the latest figure per agent instead. A row whose basis the caller did not
+ * state sums nowhere and is counted in `unstated_basis`, because a figure of unknown basis
+ * is not a figure.
+ *
+ * **Wall clock is measured, not reported.** Each row carries the span the server timed for
+ * its activity. `wall_clock_ms_not_additive` says what the spans are: they nest and they
+ * include user think time at checkpoints, so `elapsed_ms` — first event to last — is the
+ * only sound aggregate.
+ *
+ * **Absence is named.** `activities_without_usage` lists the completed activities holding
+ * no row, so a total that covers part of a run says which part. A worker cannot
+ * self-measure, so a missing row means the harness surfaced nothing, never a zero.
+ *
+ * When `agentId` is set, only rows whose `data.agentId` matches are included
  * (unattributed rows — no agentId — are excluded from a filtered view).
  */
 export function projectUsage(
   s: SessionFile,
   agentId?: string,
-): { rows: Array<Record<string, unknown>>; totals: Record<string, number> } {
+): {
+  rows: Array<Record<string, unknown>>;
+  totals: Record<string, number>;
+  cumulative_latest_by_agent: Record<string, Record<string, number>>;
+  unstated_basis: number;
+  elapsed_ms?: number;
+  wall_clock_ms_not_additive: boolean;
+  activities_without_usage: string[];
+} {
   const events = (s.history ?? []).filter(e => e.type === 'activity_usage');
   const filtered = agentId === undefined
     ? events
     : events.filter(e => e.data?.['agentId'] === agentId);
+  const spans = activityWallClockMs(s);
   const rows = filtered.map(e => {
     const row: Record<string, unknown> = {
       activity: e.activity,
       timestamp: e.timestamp,
       usage: e.data?.['usage'],
+      basis: typeof e.data?.['basis'] === 'string' ? e.data['basis'] : 'unstated',
     };
-    if (typeof e.data?.['agentId'] === 'string') {
-      row['agentId'] = e.data['agentId'];
-    }
+    if (typeof e.data?.['agentId'] === 'string') row['agentId'] = e.data['agentId'];
+    const span = e.activity !== undefined ? spans.get(e.activity) : undefined;
+    if (span !== undefined) row['wall_clock_ms'] = span;
     return row;
   });
-  const totals: Record<string, number> = {};
-  for (const row of rows) {
-    const usage = row['usage'];
-    if (!usage || typeof usage !== 'object') continue;
+
+  const tokenKeys = (usage: unknown): Record<string, number> => {
+    const out: Record<string, number> = {};
+    if (!usage || typeof usage !== 'object') return out;
     const u = usage as Record<string, unknown>;
     for (const key of USAGE_TOKEN_KEYS) {
       const v = u[key];
-      if (typeof v === 'number' && Number.isFinite(v)) {
-        totals[key] = (totals[key] ?? 0) + v;
-      }
+      if (typeof v === 'number' && Number.isFinite(v)) out[key] = v;
+    }
+    return out;
+  };
+
+  const totals: Record<string, number> = {};
+  const cumulative_latest_by_agent: Record<string, Record<string, number>> = {};
+  let unstated_basis = 0;
+  for (const row of rows) {
+    const keys = tokenKeys(row['usage']);
+    if (row['basis'] === 'delta') {
+      for (const [k, v] of Object.entries(keys)) totals[k] = (totals[k] ?? 0) + v;
+    } else if (row['basis'] === 'cumulative') {
+      // Later rows for one agent supersede earlier ones: a cumulative figure already
+      // contains everything that agent spent before it.
+      const key = typeof row['agentId'] === 'string' ? row['agentId'] : 'unattributed';
+      cumulative_latest_by_agent[key] = { ...(cumulative_latest_by_agent[key] ?? {}), ...keys };
+    } else {
+      unstated_basis += 1;
     }
   }
-  return { rows, totals };
+
+  const stamps = (s.history ?? [])
+    .map(e => new Date(e.timestamp).getTime())
+    .filter(t => Number.isFinite(t));
+  const elapsed_ms = stamps.length > 1 ? Math.max(...stamps) - Math.min(...stamps) : undefined;
+
+  const measured = new Set(events.map(e => e.activity).filter((a): a is string => a !== undefined));
+  const activities_without_usage = (s.completedActivities ?? []).filter(a => !measured.has(a));
+
+  return {
+    rows,
+    totals,
+    cumulative_latest_by_agent,
+    unstated_basis,
+    ...(elapsed_ms !== undefined ? { elapsed_ms } : {}),
+    wall_clock_ms_not_additive: true,
+    activities_without_usage,
+  };
 }
 
 /** Summary (default) view: the composite of all projections for the addressed session. */
@@ -1557,9 +1652,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ...sessionIndexParam,
       activity: z.string().describe('Activity this figure is attributed to, whether or not the session is still on it. One call per activity a dispatch covers.'),
       usage: usageSchema.describe(
-        'Harness-reported token DELTA for this ONE dispatch, as reported. Omit the call entirely when the harness '
+        'Harness-reported token figure for this ONE activity, as reported. Omit the call entirely when the harness '
         + 'surfaced nothing rather than passing zeros — the worker cannot self-measure, so absence must stay '
         + 'distinguishable from a measured zero.',
+      ),
+      basis: z.enum(['delta', 'cumulative']).describe(
+        'What the figure counts. `delta` is this activity\'s own spend and sums with its siblings. `cumulative` is a '
+        + 'running total for this agent context, which several harnesses report — those are carried as the latest '
+        + 'figure per agent, since summing them counts every earlier activity again. Read the harness output rather '
+        + 'than assuming: a cumulative figure passed as a delta is what makes a total wrong in a direction nothing '
+        + 'reveals.',
       ),
       agent_id: z.string().min(1).optional().describe(
         'Optional. Worker context that incurred this usage — the same identity used on get_activity for that dispatch. '
@@ -1568,7 +1670,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         + 'Omit when attribution is unknown; the row remains valid as an unattributed bucket.',
       ),
     },
-    withAuditLog('record_usage', withSessionStoreErrors(async ({ session_index, activity, usage, agent_id }) => {
+    withAuditLog('record_usage', withSessionStoreErrors(async ({ session_index, activity, usage, basis, agent_id }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -1580,7 +1682,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // there by the time the figure arrives. A dispatch covering a run of activities
         // contributes one row apiece, which is the resolution a batch size is calibrated
         // from. Optional agent_id scopes the row to a worker.
-        const data: Record<string, unknown> = { usage };
+        const data: Record<string, unknown> = { usage, basis };
         if (agent_id !== undefined) data['agentId'] = agent_id;
         draft.history.push({
           timestamp: recordedAt, type: 'activity_usage', activity, data,

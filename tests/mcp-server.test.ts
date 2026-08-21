@@ -968,6 +968,7 @@ describe('mcp-server integration', () => {
             session_index: sessionToken,
             activity: 'start-work-package',
             usage: { input_tokens: total, output_tokens: 7, total_tokens: total + 7 },
+            basis: 'delta',
           },
         });
         expect(res.isError).toBeFalsy();
@@ -992,7 +993,7 @@ describe('mcp-server integration', () => {
     it('record_usage rejects an unknown session', async () => {
       const res = await client.callTool({
         name: 'record_usage',
-        arguments: { session_index: 'NOPE00', activity: 'x', usage: { total_tokens: 1 } },
+        arguments: { session_index: 'NOPE00', activity: 'x', usage: { total_tokens: 1 }, basis: 'delta' },
       });
       expect(res.isError).toBeTruthy();
     });
@@ -1004,6 +1005,7 @@ describe('mcp-server integration', () => {
           session_index: sessionToken,
           activity: 'start-work-package',
           usage: { input_tokens: 10, output_tokens: 2, total_tokens: 12 },
+          basis: 'delta',
           agent_id: 'worker-a',
         },
       });
@@ -1013,6 +1015,7 @@ describe('mcp-server integration', () => {
           session_index: sessionToken,
           activity: 'start-work-package',
           usage: { input_tokens: 3, output_tokens: 1, total_tokens: 4 },
+          basis: 'delta',
         },
       });
       const all = parseToolResponse(await client.callTool({
@@ -1043,6 +1046,77 @@ describe('mcp-server integration', () => {
         if (typeof r.usage?.input_tokens === 'number') sumIn += r.usage.input_tokens;
       }
       if (sumIn > 0) expect(view.totals.input_tokens).toBe(sumIn);
+    });
+
+    it('a cumulative row is carried per agent rather than summed (#474 F7)', async () => {
+      const before = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      }));
+      const deltaBefore = before.totals.total_tokens ?? 0;
+
+      // A harness reporting a running total per agent: the second figure already
+      // contains the first, so summing the two counts the first activity twice.
+      for (const total of [500, 900]) {
+        const res = await client.callTool({
+          name: 'record_usage',
+          arguments: {
+            session_index: sessionToken,
+            activity: 'start-work-package',
+            usage: { total_tokens: total },
+            basis: 'cumulative',
+            agent_id: 'worker-cumulative',
+          },
+        });
+        expect(res.isError).toBeFalsy();
+      }
+
+      const after = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      }));
+      // The delta total is untouched by either cumulative row.
+      expect(after.totals.total_tokens ?? 0).toBe(deltaBefore);
+      // The agent's latest figure is the one that stands, not 1400.
+      expect(after.cumulative_latest_by_agent['worker-cumulative'].total_tokens).toBe(900);
+    });
+
+    it('a row states its basis, and one that does not is counted apart (#474 F7)', async () => {
+      const view = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      }));
+      expect(view.rows.every((r: { basis?: string }) => r.basis === 'delta' || r.basis === 'cumulative')).toBe(true);
+      expect(view.unstated_basis).toBe(0);
+    });
+
+    it('wall clock is measured and declared non-additive, and absence is named (#474 F7)', async () => {
+      const view = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      }));
+      // Spans nest and hold user think time, so the run's elapsed time is the
+      // outer span rather than the sum of the parts.
+      expect(view.wall_clock_ms_not_additive).toBe(true);
+      expect(typeof view.elapsed_ms).toBe('number');
+      const measured = view.rows.filter((r: { wall_clock_ms?: number }) => typeof r.wall_clock_ms === 'number');
+      for (const row of measured) expect(row.wall_clock_ms).toBeLessThanOrEqual(view.elapsed_ms);
+      // Every completed activity carrying no row is listed rather than quietly
+      // reducing the total.
+      expect(Array.isArray(view.activities_without_usage)).toBe(true);
+      expect(view.activities_without_usage).not.toContain('start-work-package');
+    });
+
+    it('record_usage refuses a figure whose basis is unstated (#474 F7)', async () => {
+      const res = await client.callTool({
+        name: 'record_usage',
+        arguments: {
+          session_index: sessionToken,
+          activity: 'start-work-package',
+          usage: { total_tokens: 5 },
+        },
+      });
+      expect(res.isError).toBeTruthy();
     });
 
     it('PR366-TC-06: stale usage-on-next_activity phrases are absent from tool surface', async () => {
