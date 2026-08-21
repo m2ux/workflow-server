@@ -406,6 +406,30 @@ describe('mcp-server integration', () => {
       const meta = result._meta as Record<string, unknown>;
       expect(meta['session_index']).toBe(nextToken);
     });
+
+    it('the batch reading arrives in the response body, not only in _meta (#473)', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: nextToken, context_tokens: 200_000, agent_id: 'worker-batch-read' },
+      });
+      const text = (result.content as Array<{ text: string }>)[0]!.text;
+      // A definition can tell a worker to report its own bound, so the reading has to be
+      // where a worker reads. Protocol metadata is not a place the harness guarantees to
+      // put in front of it.
+      expect(text).toMatch(/^batch:$/m);
+      expect(text).toMatch(/^ {2}may_continue: (true|false)$/m);
+      expect(text).toMatch(/^ {2}max_activities: \d+$/m);
+      expect(text).toMatch(/^ {2}activities: \d+$/m);
+
+      // The same figures, so a caller asserting on either reads one answer.
+      const batch = (result._meta as { batch?: Record<string, number | boolean> }).batch!;
+      expect(batch).toBeDefined();
+      expect(text).toContain(`max_activities: ${batch['max_activities']}`);
+      expect(text).toContain(`activities: ${batch['activities']}`);
+      expect(text).toContain(`may_continue: ${batch['may_continue']}`);
+    });
   });
 
   describe('tool: yield_checkpoint', () => {

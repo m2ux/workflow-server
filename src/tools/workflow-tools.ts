@@ -970,7 +970,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     'Under persistent/`bundle: "reference"`, already-delivered content may collapse to unchanged markers — ONLY valid when THIS agent received the earlier payloads; technique-linked resource BODIES also arrive under a sibling `resources` map. ' +
     'Under full delivery, that map is not sent: the linked ids arrive under `resource_refs` and you fetch the ones you need with get_resource. `resources_note` states which shape this response used. ' +
     'Use `bundle: "full"` after summarization; a FRESH worker must not pass `bundle: "reference"` (it holds no prior delivery), but a RESUMED worker that passes its dispatch `agent_id` may. ' +
-    'A dispatch carrying a run of activities walks them under ONE `agent_id`: `_meta.batch` reports how many that context has taken, what it has been delivered, and `may_continue` — false means report the next activity as needing its own dispatch and stop. ' +
+    'A dispatch carrying a run of activities walks them under ONE `agent_id`: a `batch` block at the end of the response — and the same reading on `_meta.batch` — reports how many that context has taken, what it has been delivered, and `may_continue`, where false means report the next activity as needing its own dispatch and stop. ' +
     'Asking past the bound is refused with the payload undelivered.',
     {
       ...sessionIndexParam,
@@ -1518,6 +1518,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         budget_chars: bound.budgetChars,
         may_continue: stand.mayContinue,
       };
+      // The same reading in the response body, because that is where a worker reads. A
+      // definition can tell a worker to report its own bound, and a reading that arrives
+      // only as protocol metadata is one the harness may never put in front of it — six
+      // activities of one measured child run inferred `may_continue` from delivery not
+      // being refused, which held for two boundaries and then did not (#473). The block
+      // sits outside the delivery measurement: it reports on the handover rather than
+      // being part of what was handed over, and counting it would put the figure inside
+      // the number it reports.
+      const batchBlock = `\n\n${stringifyForResponse({ batch })}`;
 
       // What this delivery cost to build and to send, on one line. `resolved_techniques` is the
       // distinct bound ops the producer scan read for the whole request and `provenance_passes` the
@@ -1543,7 +1552,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       });
 
       return {
-        content: [{ type: 'text' as const, text: responseText }],
+        content: [{ type: 'text' as const, text: responseText + batchBlock }],
         _meta: {
           session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules,
           dispatch, batch,
