@@ -32,20 +32,20 @@ variables:
     required: true
   - name: evaluation_output_path
     type: string
-    description: Directory to write this evaluation's own artifacts — the plan, the report, and the mitigation plan. Each triggered prism run writes into a subdirectory of it.
+    description: Directory holding this evaluation's own artifacts — the plan, the report, and the mitigation plan
     required: true
   - name: output_path
     type: string
-    description: Per-group output directory passed to the triggered prism run — set from evaluation_output_path and the group's output_subdir in the execute-analysis set-trigger-context step
+    description: Per-group output directory for the triggered prism run, one subdirectory of the evaluation output path
   - name: target_type
     type: string
     description: "Classification of the target: 'document' (single file), 'document-set' (directory of documents), 'codebase' (directory with build files), or 'mixed'"
   - name: target
     type: string
-    description: Per-group evaluation target passed to the triggered prism run — set from target_path in the execute-analysis set-trigger-context step
+    description: Per-group evaluation target for the triggered prism run
   - name: target_description
     type: string
-    description: Per-group description passed to the triggered prism run for its report scope statement — the group's dimension name(s) and focus, set in the execute-analysis set-trigger-context step
+    description: Per-group description for the triggered prism run's report scope statement — the group's dimension names and focus
   - name: dimensions
     type: array
     description: "Evaluation dimensions to assess. Each dimension: { name, description, focus_areas }. User-supplied or derived from evaluation_description during scope-definition."
@@ -111,6 +111,6 @@ variables:
     defaultValue: 0
   - name: mitigations_apply_requested
     type: boolean
-    description: Whether the user asked for the accepted mitigations to be applied to the target at the confirm-apply checkpoint. False keeps the mitigation plan as the run's final deliverable and ends the run.
+    description: Whether the user asked for the accepted mitigations to be applied to the target
     defaultValue: false
 initialActivity: scope-definition

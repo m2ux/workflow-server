@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Conformance of a folder's persisted artifacts to the guide each filename maps to, the canonical-home map the caller declares, and the artifact writing register — corrected in place, with the artifacts no guide covers reported as unmeasured rather than as wrong.
+Conformance of a folder's persisted artifacts to the guide each filename maps to, the canonical-home map the caller declares, and the artifact writing register — corrected in place. Artifacts the map covers no guide for are reported as unmeasured, apart from the verdict.
 
 ## Inputs
 
@@ -41,7 +41,7 @@ array of `{ file, rule, detail, fixed }` entries — one per breach of a guide t
 
 #### unmeasured
 
-array of `{ file, reason }` entries — one per artifact the pass held against no guide, where `reason` is `no-guide` when the folder's map names no guide for the filename. A verdict on the artifact's shape is absent rather than negative, and the correction belongs to whoever owns the map, so no rework inside this run clears one.
+array of `{ file, reason }` entries — one per artifact the pass held against no guide, where `reason` is `no-guide` when the folder's map names no guide for the filename. An entry carries no verdict on the artifact's shape, and its correction belongs to whoever owns the map, so no rework inside this run clears one.
 
 ## Protocol
 

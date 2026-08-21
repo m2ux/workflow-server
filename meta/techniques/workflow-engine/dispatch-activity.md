@@ -65,7 +65,7 @@ Opaque HMAC-signed trace token from the `next_activity` response `_meta.trace_to
 
 ### dispatch-mark-reaches-the-remote
 
-The in-progress mark travels in its own commit, pushed before the worker spawns. The mark exists for someone watching a long activity while it runs, and that reader is looking at the remote — so a mark left in the working tree is visible only to whoever holds that tree. It is also short-lived: [commit-and-persist](./commit-and-persist.md) writes the completion status onto the same cell once the activity finishes, so the next commit to touch the README carries the outcome and never the dispatch. One commit per dispatch is what makes the in-progress state a thing the record holds rather than a thing only the local tree ever saw.
+A Progress mark is unreadable to anyone who does not hold the working tree it was written in, and the mark for a running activity exists for a reader watching from the remote. That mark is also short-lived: [commit-and-persist](./commit-and-persist.md) writes the completion status onto the same cell once the activity finishes, so any commit made after the activity ends carries the outcome and never the dispatch. Both together fix the window: the only commit that can publish the in-progress state is one made while the activity is still in flight.
 
 ### account-every-activity
 
