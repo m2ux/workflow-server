@@ -25,9 +25,9 @@ Filesystem path to the written DETAILED-FINDINGS.md (the detailed-findings docum
 
 ### 1. Consolidate Definitive Findings
 
-- Read each scope's DEFINITIVE-FINDINGS.md at the `definitive_findings_path` in `{completed_analyses}`.
-- For a single-scope audit, its findings are the working set as-is.
-- For a multi-scope audit, merge the per-scope findings: deduplicate findings reported in more than one scope (keeping the highest severity and citing every scope it appeared in) and surface patterns recurring across scopes as systemic findings.
+- Read each scope's DEFINITIVE-FINDINGS.md at the `definitive_findings_path` in `{completed_analyses}` into the working set.  
+  > For a single-scope audit, that scope's findings are the working set as they stand.  
+  > For a multi-scope audit, merge them: deduplicate findings reported in more than one scope, keeping the highest severity and citing every scope it appeared in, and surface patterns recurring across scopes as systemic findings.
 
 ### 2. Create Detailed Findings
 
