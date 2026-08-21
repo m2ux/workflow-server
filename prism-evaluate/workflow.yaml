@@ -109,8 +109,8 @@ variables:
   - name: finding_disposition
     type: string
     description: "Disposition taken on the current finding: accept | modify | skip | discuss"
-  - name: mitigations_apply_approved
+  - name: mitigations_apply_requested
     type: boolean
-    description: Whether the user approved applying the mitigation plan to the target
+    description: Whether the user asked for the accepted mitigations to be applied to the target
     defaultValue: false
 initialActivity: scope-definition

@@ -19,7 +19,7 @@ metadata:
 
 ## Custom Dimension Mappings
 
-A dimension outside the standard patterns is matched by its analytical goal — exploration, assumptions, quality, degradation, knowledge boundaries, and the rest — against the goal-to-lens catalog prism owns, and takes the lenses that catalog recommends for the closest goal.
+A dimension outside the standard patterns is matched by its analytical goal — exploration, assumptions, quality, degradation, knowledge boundaries, and the rest — against prism's own catalog, where the [lens index](../../prism/resources/README.md) names every lens by family and [recommended combinations](../../prism/resources/README.md#recommended-combinations) pairs the lenses that serve one goal. The dimension takes the lenses its closest goal names.
 
 A dimension that matches no goal in that catalog carries no derived mapping, and needs an explicit lens override supplied for it.
 

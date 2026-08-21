@@ -176,6 +176,8 @@ Orchestrator guidance for when to Apply [sync-progress-status](../techniques/wor
 
 An activity that cannot produce a meaningful Progress complete sets `{mark_progress_na}` — that is what routes it to the cancelled/N/A row in [Status vocabulary](#status-vocabulary), rather than inventing a user-reported hand-off to claim completion with.
 
+The dispatch moment publishes: its write reaches the remote in a commit of its own before the worker spawns, per [dispatch-mark-reaches-the-remote](../techniques/workflow-engine/dispatch-activity.md#dispatch-mark-reaches-the-remote). Every other moment in the table rides the commit its own operation already makes.
+
 ## Matching
 
 How Progress writers select rows and which cells they may change. Techniques cite this section; they do not restate column glyphs or geometry.

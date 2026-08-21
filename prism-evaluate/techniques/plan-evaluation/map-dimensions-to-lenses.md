@@ -27,9 +27,9 @@ An array of `{ dimension, pipeline_mode, lenses, analysis_focus, output_subdir }
 
 ### 1. Match Each Dimension to a Lens Set
 
-- For each dimension, match against [Standard Mappings](../../resources/dimension-lens-mapping.md#standard-mappings); when no standard mapping matches, derive one per [Custom Dimension Mappings](../../resources/dimension-lens-mapping.md#custom-dimension-mappings), taking the goal-to-lens catalog from `prism.plan-analysis.goal-mapping-matrix`.  
+- For each dimension, match against [Standard Mappings](../../resources/dimension-lens-mapping.md#standard-mappings); when no standard mapping matches, derive one per [Custom Dimension Mappings](../../resources/dimension-lens-mapping.md#custom-dimension-mappings), which names the lens catalog to match the dimension's goal against.  
   > Where `{lens_overrides}` holds an entry for a dimension name, the override values stand in place of the matched mapping.  
-  > Where a dimension matches no goal in that catalog, record the closest lens set as a proposal and leave the dimension unmapped pending an override for it.
+  > Where a dimension matches no goal the catalog names, record the closest lens set as a proposal and leave the dimension unmapped pending an override for it.
 
 ### 2. Compose Each Analysis Focus
 

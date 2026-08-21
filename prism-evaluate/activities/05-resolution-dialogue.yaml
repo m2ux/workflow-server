@@ -79,19 +79,19 @@ steps:
         description: The target document takes every accepted mitigation
         effect:
           setVariable:
-            mitigations_apply_approved: true
+            mitigations_apply_requested: true
       - id: plan-only
         label: Keep the plan and leave the target unmodified
         description: The mitigation plan stands as the deliverable
         effect:
           setVariable:
-            mitigations_apply_approved: false
+            mitigations_apply_requested: false
     blocking: true
 transitions:
   - to: apply-mitigations
     condition:
       type: simple
-      variable: mitigations_apply_approved
+      variable: mitigations_apply_requested
       operator: ==
       value: true
   - to: __terminal__

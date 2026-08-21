@@ -16,7 +16,7 @@ graph LR
     CR --> DR["04 deliver-results"]
     DR -->|"resolution requested"| RES["05 resolution-dialogue"]
     DR -->|"evaluation only"| End(["__terminal__"])
-    RES -->|"apply approved"| AM["06 apply-mitigations"]
+    RES -->|"apply"| AM["06 apply-mitigations"]
     RES -->|"plan only"| End
 ```
 
@@ -66,7 +66,7 @@ Definition: [`04-deliver-results.yaml`](04-deliver-results.yaml). Leads to [Reso
 
 **Value:** every finding gets a mitigation the user decided on individually, preserving the nuance a batch review loses, and the plan carries their decision on whether it reaches the target at all.
 
-Definition: [`05-resolution-dialogue.yaml`](05-resolution-dialogue.yaml). Leads to [Apply Accepted Mitigations](#06-apply-accepted-mitigations) under an approved apply; otherwise the plan is the deliverable.
+Definition: [`05-resolution-dialogue.yaml`](05-resolution-dialogue.yaml). Leads to [Apply Accepted Mitigations](#06-apply-accepted-mitigations) when the user asks for the plan to be applied; otherwise the plan is the final deliverable.
 
 ---
 
