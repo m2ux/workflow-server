@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Assemble a comprehensive summary of the audit scope — target codebase, detected language and framework, estimated size, GitNexus indexing status, the user's audit description and focus areas, and the output directory — for user confirmation.
+Gathers the settled audit scope into one summary a reader can judge in a single pass.
 
 ## Outputs
 
@@ -17,5 +17,4 @@ Formatted summary of the audit scope covering target, language, size, indexing s
 
 ### 1. Summarize Scope
 
-- Assemble the scope summary from the target codebase path, `{target_metadata}` (detected language/framework, estimated size, top-level structure), `{gitnexus_available}` indexing status, the user's `{audit_description}` and focus areas, and the `{audit_output_path}`.
-- Format the assembled `{scope_summary}` for user review.
+- Assemble `{scope_summary}` from `{target_path}`, `{target_metadata}`, `{gitnexus_available}`, `{audit_description}`, and `{audit_output_path}`.
