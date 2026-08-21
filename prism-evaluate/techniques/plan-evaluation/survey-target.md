@@ -25,9 +25,10 @@ A summary of the target's scope, goals, and major content.
 
 ### 1. Inventory the Structure
 
-- List the files and directories at the top level of `{target_path}`, and record `{structure_inventory}` as the sections or modules found with their sizes.  
-  > For a `codebase` target, and the code half of a `mixed` one, the units are modules or packages sized by line count, read from the directory layout and the build manifest.  
-  > For a `document` or `document-set` target, and the document half of a `mixed` one, the units are documents and their major sections, sized by word or section count.  
+- List the files and directories at the top level of `{target_path}`.
+- For a `codebase` target, and the code half of a `mixed` one, apply the structure survey `prism::plan-analysis` defines — build-system detection, module and package enumeration, per-module line counts, test-directory location, and the GitNexus functional-area and community-cluster survey through `gitnexus-operations::verify-index` then `::query` where the codebase is indexed — so both workflows survey code the same way.
+- For a `document` or `document-set` target, and the document half of a `mixed` one, inventory the documents, their topics, structure and cross-references, with a total word or section count.
+- Record `{structure_inventory}` as the sections or modules found, with their sizes.  
   > When `{target_path}` holds no readable files, report the empty target rather than an empty inventory.
 
 ### 2. Read for Substance

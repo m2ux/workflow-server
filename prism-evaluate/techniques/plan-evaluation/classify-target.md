@@ -11,11 +11,12 @@ Classify an evaluation target from its path, resolving the target type that gove
 
 ### evaluation_target_type
 
-The target's kind, one of four values. A single file is `document`. A directory carrying a project marker (`package.json`, `Cargo.toml`, `go.mod`, `pyproject.toml`) is `codebase`. A directory of documents without one is `document-set`. A directory holding both source and substantive documentation is `mixed`.
+The target's kind: `document` for a single file, `document-set` for a directory of documents without build infrastructure, `codebase` for source with build files, or `mixed` for both code and substantive documentation.
 
 ## Protocol
 
 ### 1. Classify the Target
 
-- Resolve `{evaluation_target_type}` from `{target_path}` against the four kinds the Output defines.  
+- Apply the target classification `prism::plan-analysis` defines to `{target_path}`, which is where the build-marker detection separating a `codebase` from a `document-set` lives, so both workflows classify a target the same way.
+- Resolve `{evaluation_target_type}` to the kind that classification yields.  
   > When `{target_path}` resolves to nothing on the filesystem, report the path as unreadable rather than classifying it.
