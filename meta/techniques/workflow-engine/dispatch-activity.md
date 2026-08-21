@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.20.0
+  version: 1.21.0
 ---
 
 ## Capability
@@ -69,7 +69,9 @@ A Progress mark is unreadable to anyone who does not hold the working tree it wa
 
 ### account-every-activity
 
-Every activity carries exactly one usage entry, recorded with `record_usage { session_index, activity, usage, agent_id: worker_agent_id }` — the first worker, each continuation, each activity of a batch, each replacement worker, and any dispatch made out of band alike. A dispatch carrying a run of activities records the delta at each activity boundary, so cost keeps a figure per activity; the bound those figures inform is the server's, not this operation's ([batch-is-bounded-by-the-server](#batch-is-bounded-by-the-server)). Cost travels on its own entry, so coverage follows the activities rather than the graph: the terminal activity's own entry and anything after the final transition carry one like any other. A worker cannot self-measure, so an activity with no entry is one whose harness reported nothing, never one that cost zero — where the harness surfaces no figure the entry is omitted rather than zeroed.
+Every activity carries exactly one usage entry, recorded with `record_usage { session_index, activity, usage, basis, agent_id: worker_agent_id }` — the first worker, each continuation, each activity of a batch, each replacement worker, and any dispatch made out of band alike. A dispatch carrying a run of activities records a figure at each activity boundary, so cost keeps a figure per activity; the bound those figures inform is the server's, not this operation's ([batch-is-bounded-by-the-server](#batch-is-bounded-by-the-server)). Cost travels on its own entry, so coverage follows the activities rather than the graph: the terminal activity's own entry and anything after the final transition carry one like any other. A worker cannot self-measure, so an activity with no entry is one whose harness reported nothing, never one that cost zero — where the harness surfaces no figure the entry is omitted rather than zeroed.
+
+`basis` states what the figure counts, read off the harness output rather than assumed: `delta` for this activity's own spend, `cumulative` for a running total the harness keeps per agent context. The two are summed differently, and a cumulative figure passed as a delta counts every earlier activity again — an error in a direction nothing reveals, since the total it produces is a plausible number.
 
 ### distrust-then-reconcile
 
