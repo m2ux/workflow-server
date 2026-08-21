@@ -1,3 +1,8 @@
+---
+name: ponytail-marker-convention
+description: How a deliberate simplification is marked in code so its ceiling and upgrade trigger can be harvested.
+---
+
 # Ponytail Marker Convention
 
 The single source for how a deliberate simplification is marked in code so it can be harvested later. A ponytail marker is an inline comment that records a ceiling — a point where the lazy solution stops — together with the trigger that would justify climbing past it.

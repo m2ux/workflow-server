@@ -5,13 +5,13 @@ metadata:
 
 ## Capability
 
-Harvest every [ponytail marker](../../ponytail/resources/ponytail-marker-convention.md#convention) across `{target_path}` into a debt ledger — one row per marker recording where it is, what was simplified, the ceiling it sets, and the trigger that would justify upgrading past it — and flag any marker missing an upgrade trigger.
+Collects the deliberate simplifications standing in the tree into a ledger that can be tracked and paid down.
 
 ## Outputs
 
 ### debt_ledger
 
-The debt ledger — one row per [ponytail marker](../../ponytail/resources/ponytail-marker-convention.md#convention) in the form `<file>:<line>, <what was simplified>. ceiling: <the limit>. upgrade: <the trigger>.`, grouped by file. Markers with no trigger are flagged as [no-trigger](../../ponytail/resources/ponytail-marker-convention.md#no-trigger) so they can be given one. The ledger is the workflow's artifact form of the source's optional persisted file (`PONYTAIL-DEBT.md`).
+The debt ledger, in the shape [debt-ledger](../resources/debt-ledger.md#template) defines: one entry per [ponytail marker](../resources/ponytail-marker-convention.md#convention) grouped under the file it sits in, with the counts that total them. A marker carrying no trigger is entered as [no-trigger](../resources/ponytail-marker-convention.md#no-trigger).
 
 #### artifact
 
@@ -33,7 +33,7 @@ Whether any ponytail marker was found — true when the ledger has at least one 
 
 ### 2. Build the ledger
 
-- Add an entry per marker to `{debt_ledger}` in `{artifact_dir}` per [debt-ledger](../resources/debt-ledger.md#template) and its [Rules](../resources/debt-ledger.md#rules), with the ceiling and upgrade trigger drawn from the [marker convention](../../ponytail/resources/ponytail-marker-convention.md#convention) and a missing trigger flagged [no-trigger](../../ponytail/resources/ponytail-marker-convention.md#no-trigger)
+- Add an entry per marker to `{debt_ledger}` in `{artifact_dir}` per [debt-ledger](../resources/debt-ledger.md#template) and its [Rules](../resources/debt-ledger.md#rules), with the ceiling and upgrade trigger drawn from the [marker convention](../resources/ponytail-marker-convention.md#convention) and a missing trigger flagged [no-trigger](../resources/ponytail-marker-convention.md#no-trigger)
 - For an owner per row, optionally append the output of `git blame -L<line>,<line>` for the marker's line.
 
 ### 3. Signal the result

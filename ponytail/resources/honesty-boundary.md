@@ -1,3 +1,8 @@
+---
+name: honesty-boundary
+description: What may and may not be claimed when the gain from a lazy pass is reported.
+---
+
 # Honesty Boundary
 
 The single source for what may and may not be claimed when the gain from a lazy pass is reported. The discipline exists because the unbuilt version was never written — so the savings against it cannot be measured, only estimated.

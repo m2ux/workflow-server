@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Own the lean-coding capability — capture and trace the task, climb the lazy [ladder](../../ponytail/resources/the-ladder.md#rungs) to the minimal solution that still clears the [safety floor](../../ponytail/resources/the-ladder.md#safety-floor), review and audit for over-engineering, harvest the deliberate-simplification debt, and report the honest gain.
+Holds the lean-coding contract: what the pass is working on, how strict a lens it runs under, and the discipline every operation in the set applies.
 
 ## Inputs
 

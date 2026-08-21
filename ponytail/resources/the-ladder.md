@@ -1,3 +1,8 @@
+---
+name: the-ladder
+description: The rungs of the lazy ladder, the order they are climbed, and the safety floor no rung may climb past.
+---
+
 # The Ladder
 
 The lazy senior developer's discipline: the best code is the code that is never written. Lazy here means efficient, not careless — every line that exists is a line to read, test, secure, and maintain, so the leanest solution that still works is the best one. This resource is the single source for the rungs of the ladder, the order they are climbed, and the safety floor that no rung may climb past.

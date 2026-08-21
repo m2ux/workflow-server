@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Review the change under the lens against the over-engineering [taxonomy](../../ponytail/resources/review-taxonomy.md#tags) — one line per finding, each tagged and carrying its line saving — and close with a net line-count scoreboard. Scope is over-engineering only: correctness, security, and performance are out of scope, since the [safety floor](../../ponytail/resources/the-ladder.md#safety-floor) already protects them.
+Tags what the change over-builds, one line per finding, with the lines each cut would save.
 
 ## Inputs
 
@@ -31,7 +31,7 @@ The tagged findings for the change, each under a stable `LC-{n}` designator so a
 
 ### 1. Scan against the taxonomy
 
-- Read the change under review — `{lean_change}` when present, otherwise the change read from `{target_path}` within the chosen `{pass_scope}`. For each construct, ask whether one of the [taxonomy](../../ponytail/resources/review-taxonomy.md#tags) tags applies: a deletion, a standard-library replacement, a language-native replacement, a YAGNI abstraction, or a shrinkable block.
+- Read the change under review — `{lean_change}` when present, otherwise the change read from `{target_path}` within the chosen `{pass_scope}`. For each construct, ask whether one of the [taxonomy](../resources/review-taxonomy.md#tags) tags applies: a deletion, a standard-library replacement, a language-native replacement, a YAGNI abstraction, or a shrinkable block.
 - Flag disproportionate comment and doc blocks per [Comment proportionality](../resources/review-taxonomy.md#comment-proportionality).
 - A higher `{lazy_intensity}` lowers the bar for flagging — `ultra` flags any construct a lazier rung could replace; `lite` flags only the clear wins.
 

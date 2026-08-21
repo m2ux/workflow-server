@@ -24,4 +24,5 @@ steps:
 
           {gain_scoreboard}
 outcome:
-  - Every deliberate simplification is recorded as trackable debt with its upgrade trigger, and the honest gain is shown
+  - Every deliberate simplification is recorded as trackable debt with its upgrade trigger
+  - Where the tree carries any such debt, the ledger also states what the pass can honestly claim for it
