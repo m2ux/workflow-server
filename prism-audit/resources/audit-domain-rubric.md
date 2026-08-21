@@ -7,39 +7,39 @@ description: The audit domains a security audit groups a target's characteristic
 
 ## Security Characteristics
 
-A characteristic is a security-relevant pattern a codebase actually contains. These are what a scan looks for, and what it finds is what grounds the domains below in evidence rather than in a checklist.
+A characteristic is a security-relevant pattern a codebase actually contains. These are what a scan looks for, and what it finds is what grounds the domains below in evidence rather than in a checklist. The examples name common forms; they are not the whole of any category.
 
-| Category | Patterns |
-|----------|----------|
-| Cryptography | Hashing (SHA, Blake, Poseidon), signing (Ed25519, ECDSA, Schnorr), encryption (AES, ChaCha), key derivation, commitment schemes, zero-knowledge proof systems |
-| Authentication and authorisation | Password handling, token validation, session management, role and permission checks, access control |
-| Network-exposed surface | HTTP servers and handlers, RPC endpoints, WebSocket listeners, gRPC services |
-| State management | Database connections, cache layers, persistent storage, Merkle trees, state machines |
-| Untrusted-input deserialisation | Custom deserialisation, binary parsing, protobuf or JSON carrying external input, tagged encoding |
-| Unsafe code | Unsafe blocks, FFI and native bindings, raw pointer manipulation, transmute |
-| WASM target | wasm-bindgen, wasm-pack, WASM-specific modules |
-| Security-gating feature flag | Test-only features, mock verification, debug modes, feature-gated bypass |
-| Custom VM or interpreter | Bytecode execution, instruction dispatch, gas or cost metering |
+| Category | What to look for | Forms it takes |
+|----------|------------------|----------------|
+| Cryptography | Anywhere the code chooses or composes a primitive | Hashing, signing, encryption, key derivation, commitment schemes, proof systems |
+| Identity and access | Anywhere the code decides who may do what | Credential handling, token or session validation, role and permission checks, access-control middleware |
+| Untrusted input | Anywhere external data becomes internal structure | Deserialisation, binary and text parsing, schema-driven decoding, file and upload handling |
+| External interface | Anywhere the process is reachable from outside itself | HTTP and RPC handlers, sockets, message consumers, scheduled or webhook entry points |
+| Stored state | Anywhere data outlives the request that made it | Databases, caches, queues, filesystem writes, state machines, authenticated data structures |
+| Value and assets | Anywhere the system tracks something whose amount matters | Balances, credits, quotas, inventory, ledgers, transfer and settlement paths |
+| Memory and type safety | Anywhere the language's guarantees are set aside | Escape hatches such as Rust `unsafe`, C interop and FFI, pointer arithmetic, reinterpreting casts |
+| Alternate execution | Anywhere code runs somewhere other than the main binary | Embedded interpreters, bytecode engines, expression evaluators, resource or cost metering, sandboxes |
+| Alternate build target | Anywhere the artifact differs from the one under test | WebAssembly, native extensions, cross-compiled or vendored builds |
+| Configuration and gating | Anywhere behaviour differs between environments | Feature flags, debug and test modes, mocked verification, environment-driven branches |
+| Dependencies | Anywhere trust extends past the repository | Third-party packages, transitive pins, unmaintained or vendored code |
 
 A codebase in which none of these appears has no security surface, and the count of characteristics found is what says so.
 
 ## Domains
 
-A domain groups a target's observed characteristics into one area of security concern. A domain enters an audit only where the target holds code for it.
+A domain groups a target's characteristics into one area of concern that an audit can reason about as a whole. A domain enters an audit only where the target holds code for it, and a target whose concerns fall outside these takes a domain named for what its own code does.
 
-| Domain | Covers |
-|--------|--------|
-| Cryptographic Correctness | Hashing, signing, commitments, proofs |
-| Value/Token Conservation | Balance equations, minting, burning, transfer integrity |
-| Transaction Safety | Ordering, atomicity, replay protection |
-| Execution Safety | VM, interpreter, cost model |
-| Storage Integrity | Merkle trees, state transitions, garbage collection |
-| Serialisation Safety | Parsing, type confusion, malformed input |
-| Network/API Security | HTTP, RPC, CORS, denial of service |
-| Error Handling | Panic safety, silent degradation, error recovery |
-| Feature Flag Discipline | Test features, mock gates |
-
-These are the domains recurring often enough to be worth a name. A target whose concerns fall outside them takes a domain named for what its own code does.
+| Domain | The question it asks |
+|--------|----------------------|
+| Cryptographic correctness | Are the primitives sound, correctly composed, and used with the parameters they require? |
+| Access control | Can an actor reach something they should not, or act beyond what they were granted? |
+| Input trust | Can external data reach a decision, a parser, or a store without being validated first? |
+| Interface exposure | What is reachable from outside the process, and what can be done with it? |
+| State integrity | Can stored data be corrupted, lost, or transitioned into a state the system does not expect? |
+| Asset conservation | Can something of value be created, destroyed, or moved in a way the rules do not permit? |
+| Execution safety | Can code or input escape the limits meant to contain it — memory, types, resources, or sandbox? |
+| Failure behaviour | When something fails, does the system lose data, degrade silently, or expose more than it should? |
+| Supply and configuration | Can a dependency, a flag, or an environment difference change the security posture? |
 
 ## Risk Levels
 
@@ -47,7 +47,7 @@ A domain's risk is calibrated against what a flaw in it would reach — its expo
 
 | Level | A flaw in this domain |
 |-------|-----------------------|
-| `CRITICAL` | Directly compromises system integrity or user assets |
+| `CRITICAL` | Directly compromises system integrity or the assets it holds |
 | `HIGH` | Degrades a security guarantee, or enables privilege escalation |
 | `MEDIUM` | Has limited blast radius, or needs specific conditions to reach |
 | `LOW` | Is informational, or a defence-in-depth improvement |

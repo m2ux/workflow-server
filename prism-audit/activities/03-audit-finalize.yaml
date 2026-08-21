@@ -25,23 +25,6 @@ steps:
   - kind: technique
     id: verify-artifacts
     technique: verify-audit-consistency
-  - kind: action
-    id: verify-outcomes
-    actions:
-      - action: validate
-        description: All three audit deliverables exist before delivery
-        condition:
-          type: and
-          conditions:
-            - type: simple
-              variable: audit_report_path
-              operator: exists
-            - type: simple
-              variable: detailed_findings_path
-              operator: exists
-            - type: simple
-              variable: trade_offs_path
-              operator: exists
 outcome:
   - "The consumer has a cross-validated, severity-calibrated audit they can act on: a navigable summary, expanded per-finding write-ups, and the design trade-offs behind the findings"
 transitions:

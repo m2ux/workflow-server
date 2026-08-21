@@ -25,5 +25,7 @@ Filesystem path to the written AUDIT-REPORT.md (the summary report).
 
 ### 1. Split Report
 
-- Locate the source report(s) from the `report_path` in `{completed_analyses}`. For a single-scope audit, that one REPORT.md is the source; for a multi-scope audit, merge the per-scope REPORT.md summaries (executive summaries, domain tables, systemic patterns) into one.
+- Locate the source reports from the `report_path` in `{completed_analyses}`.  
+  > For a single-scope audit, that one report is the source.  
+  > For a multi-scope audit, merge the per-scope executive summaries, domain tables and systemic patterns into one.
 - Write the summary report to `{audit_report_path}` per [audit-report](../../resources/audit-report.md#template) and its [Rules](../../resources/audit-report.md#rules), which own the reference line that replaces the lifted section and the renumbering it forces.

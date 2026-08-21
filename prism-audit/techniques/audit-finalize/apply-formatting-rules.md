@@ -1,19 +1,18 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Apply the audit's formatting rules to the summary report: rewrite finding-ID hyperlinks to the detailed-findings anchors, convert full-details lines to hyperlinks, ensure remediation tables carry an Impact column, hyperlink artifact-reference paths, add the Design Trade-Offs metadata row, and confirm no old-style links remain.
+Links the summary report to the detailed findings, which can only be done once both documents exist.
 
 ## Protocol
 
-### 1. Apply Formatting Rules
+### 1. Point Every Finding at Its Write-Up
 
-- Update all finding-ID hyperlinks in `{audit_report_path}` to point to the detailed-findings document's per-finding anchors.
-- Convert 'Full details' lines to hyperlinks.
-- Ensure every priority remediation table (P0, P1, P2, P3) includes an Impact column as its final column.
-- Hyperlink all paths in artifact-reference tables.
-- Add a Design Trade-Offs row to the introductory metadata table.
-- Verify zero old-style links remain.
+- Rewrite each finding-ID reference in `{audit_report_path}` as a hyperlink to that finding's anchor in `{detailed_findings_path}`, and convert each "Full details" line to the same.
+
+### 2. Confirm None Was Missed
+
+- Verify no reference to a finding remains in the report's pre-split form.
