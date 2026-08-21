@@ -32,16 +32,19 @@ The tagged findings for the change, each under a stable `LC-{n}` designator so a
 ### 1. Scan against the taxonomy
 
 - Read the change under review — `{lean_change}` when present, otherwise the change read from `{target_path}` within the chosen `{pass_scope}`. For each construct, ask whether one of the [taxonomy](../../ponytail/resources/review-taxonomy.md#tags) tags applies: a deletion, a standard-library replacement, a language-native replacement, a YAGNI abstraction, or a shrinkable block.
-- **Comment proportionality (hard trim):** Flag comment / doc blocks whose bulk is not proportional to the surrounding code they annotate — why-rationale does not excuse a comment larger than the code beneath it. Prefer `delete` (restating or disposable) or `shrink` (keep a short why). See [taxonomy — comment proportionality](../../ponytail/resources/review-taxonomy.md#comment-proportionality).
+- Flag disproportionate comment and doc blocks per [Comment proportionality](../resources/review-taxonomy.md#comment-proportionality).
 - A higher `{lazy_intensity}` lowers the bar for flagging — `ultra` flags any construct a lazier rung could replace; `lite` flags only the clear wins.
 
 ### 2. Record one line per finding
 
-- Write each finding as a single line in `{review_findings}`, under its own designator per [Finding Format](../../ponytail/resources/review-taxonomy.md#finding-format): the tag, the location, the simpler alternative, and the lines it would save.
-- Keep to over-engineering. Do not record correctness, security, or performance findings — those belong to the [safety floor](../../ponytail/resources/the-ladder.md#safety-floor), not this review.
-- Never emit a `delete` finding against the lone smoke test or assert-based self-check — it is the ponytail minimum, not bloat.
-- This review reports only: it lists findings into `{review_findings}` and applies nothing. The fixes are not made here.
+- Write each finding as a single line in `{review_findings}`, under its own designator per [Finding Format](../resources/review-taxonomy.md#finding-format).
 
 ### 3. Score the net
 
 - Close `{review_findings}` with the diff-scoped [scoreboard](../resources/review-taxonomy.md#scoreboard), summing the savings across all findings.
+
+## Rules
+
+### the-lone-check-is-not-bloat
+
+A `delete` finding is never raised against the single smoke test or assert-based self-check a change carries. That check is the safety floor's minimum, so removing it is not a saving.

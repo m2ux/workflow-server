@@ -29,7 +29,7 @@ Whether any ponytail marker was found — true when the ledger has at least one 
 
 ### 1. Grep the markers
 
-- Search `{target_path}` for the comment-anchored marker token with `grep -rnE '(#|//) ?ponytail:' .`, skipping `node_modules`, `.git`, and build output. The comment prefix is what keeps prose that merely mentions the convention out of the ledger; add other comment prefixes if the stack uses them. Each hit is one deliberate simplification.
+- Search `{target_path}` for the marker token [Convention](../resources/ponytail-marker-convention.md#convention) defines, skipping `node_modules`, `.git`, and build output. Each hit is one deliberate simplification.
 
 ### 2. Build the ledger
 

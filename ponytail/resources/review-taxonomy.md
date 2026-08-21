@@ -43,7 +43,7 @@ For a multi-file diff or repo-wide pass, prefix the location with the file:
 LC-<n> <file>:L<line>: <tag> <what>. <replacement>.
 ```
 
-The designator is the stable handle a reader, a later pass, or a caller's summary refers to the finding by — assigned by this pass, ascending from `LC-1`, and unchanged by anything that consumes it. The line reference locates it, the tag classifies it, `<what>` names the construct, and `<replacement>` names the simpler rung. A higher intensity lowers the bar for what is flagged: an `ultra` pass flags any construct a lazier rung could replace, a `lite` pass flags only the clear wins.
+The designator is the stable handle a reader, a later pass, or a caller's summary refers to the finding by — assigned by the pass that raised it, ascending from `LC-1`, and unchanged by anything that consumes it. The line reference locates it, the tag classifies it, `<what>` names the construct, and `<replacement>` names the simpler rung.
 
 ---
 

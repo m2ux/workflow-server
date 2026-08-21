@@ -23,7 +23,7 @@ Path to the code or repo under the lazy lens.
 
 ### lazy_intensity
 
-Strictness of the lazy lens — `lite`, `full`, or `ultra`. A higher intensity widens the review and lowers the bar for flagging an over-engineered construct.
+Strictness of the lazy lens: `lite`, `full`, or `ultra`.
 
 #### default
 
