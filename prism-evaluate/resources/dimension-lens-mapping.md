@@ -8,8 +8,6 @@ metadata:
 
 # Dimension-to-Lens Mapping Matrix
 
-Maps evaluation dimensions to prism pipeline modes and lens configurations.
-
 ## Standard Mappings
 
 | Dimension Pattern | Pipeline Mode | Lenses | Rationale |
@@ -21,21 +19,19 @@ Maps evaluation dimensions to prism pipeline modes and lens configurations.
 
 ## Custom Dimension Mappings
 
-For dimensions not matching the standard patterns above, match the dimension's analytical goal against prism's authoritative goal-mapping matrix in the [plan-analysis](../../prism/techniques/plan-analysis.md) technique, rather than a copy maintained here — prism owns the goal→lens catalog, and duplicating a subset of it would drift. Take the lenses prism's matrix recommends for the closest goal (exploration, assumptions, quality, degradation, knowledge-boundary, and the rest) and, when the dimension maps to no clear goal, request a `{lens_overrides}` entry.
+A dimension outside the standard patterns is matched by its analytical goal — exploration, assumptions, quality, degradation, knowledge boundaries, and the rest — against the goal-to-lens catalog prism owns, and takes the lenses that catalog recommends for the closest goal.
+
+A dimension that matches no goal in that catalog carries no derived mapping, and needs an explicit lens override supplied for it.
 
 ## Output Subdirectory Convention
 
 - Full-prism dimensions: use the dimension name lowercased as the subdirectory (e.g., `consistency/`)
 - Portfolio dimensions: group under `dimensions/`
 
-## Per-Dimension Findings Source
+## Pipeline Mode Selection
 
-Each triggered prism run writes its authoritative findings to `DEFINITIVE-FINDINGS.md` in the dimension's output subdirectory (see prism's [definitive-findings contract](../../prism/resources/definitive-findings-template.md)), alongside `REPORT.md` and `RUN-MANIFEST.json`. Consolidation reads DEFINITIVE-FINDINGS.md as the per-dimension findings source — it does not read the raw pass artifacts (`synthesis.md`, `portfolio-*.md`).
+Pipeline-mode semantics belong to prism; the mapping below decides only which mode a dimension takes.
 
-## Pipeline Mode Selection Guidance
-
-Pipeline-mode semantics are defined by prism (see the modes table in the [prism README](../../prism/README.md)); this workflow only decides how dimensions map onto them:
-
-- **full-prism**: each full-prism dimension gets its own execution group.
-- **portfolio**: portfolio dimensions can be combined into a single execution group with merged lens sets.
-- **single**: use when a dimension maps cleanly to exactly one lens and deep multi-pass analysis is unnecessary.
+- **full-prism**: each full-prism dimension takes its own execution group.
+- **portfolio**: portfolio dimensions combine into a single execution group with merged lens sets.
+- **single**: for a dimension that maps cleanly to exactly one lens, where multi-pass analysis adds nothing.
