@@ -1,5 +1,5 @@
 id: harvest-debt-and-report
-version: 1.1.0
+version: 1.2.0
 name: Harvest Debt and Report
 description: Harvest the deliberate-simplification markers into a debt ledger and, when markers exist, append an honesty-bounded gain scoreboard.
 steps:

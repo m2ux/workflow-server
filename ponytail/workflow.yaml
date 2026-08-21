@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: ponytail
-version: 1.0.0
+version: 2.0.0
 title: Ponytail Lean-Coding Workflow
 description: Drive a coding task, change, or codebase toward the leanest solution that still clears a non-negotiable safety floor, tracking every deliberate simplification as ponytail debt.
 author: m2ux
