@@ -357,6 +357,7 @@ describe('batched dispatch (#407)', () => {
           activity: activityId,
           agent_id: scope,
           usage: { input_tokens: 1_000 * (index + 1), output_tokens: 100 },
+          basis: 'delta',
         },
       });
       if (isError(recorded)) throw new Error(`record_usage ${activityId} failed: ${rawText(recorded)}`);

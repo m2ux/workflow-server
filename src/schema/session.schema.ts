@@ -45,6 +45,21 @@ export const ActiveCheckpointSchema = z.object({
   checkpointId: z.string().min(1),
   activityId: z.string().min(1),
   yieldedAt: z.string().datetime(),
+  /**
+   * The decision itself, for a gate the activity does not declare (#477). Work
+   * admitted part-way through a run needs somewhere to be decided, and its
+   * identifier says what it decides rather than borrowing one that describes
+   * something else. Present and respond read the decision from here; a gate the
+   * activity declares carries none of this and reads from the definition.
+   */
+  adhoc: z.object({
+    message: z.string().min(1),
+    options: z.array(z.object({
+      id: z.string().min(1),
+      label: z.string().min(1),
+      description: z.string().optional(),
+    })).min(2),
+  }).optional(),
 });
 export type ActiveCheckpoint = z.infer<typeof ActiveCheckpointSchema>;
 

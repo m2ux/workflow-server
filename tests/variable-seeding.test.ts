@@ -162,6 +162,34 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     expect(child.history.filter((h: { type: string }) => h.type === 'variables_seeded')).toHaveLength(1);
   });
 
+  it('a child that reported no usage is recorded as cost unknown, outside the parent totals (#477)', async () => {
+    const slug = '2026-07-07-child-cost';
+    const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
+    const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+    await call('dispatch_child', { session_index: sessionIndex, workflow_id: 'child-fixture' });
+    // The parent records its own spend; the child is dispatched and reports nothing,
+    // which is the shape a stalled analysis run leaves behind.
+    await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
+    await call('record_usage', {
+      session_index: sessionIndex,
+      activity: 'checkpoint-activity',
+      usage: { total_tokens: 40 },
+      basis: 'delta',
+    });
+
+    const usage = JSON.parse(
+      ((await call('inspect_session', { session_index: sessionIndex, view: 'usage' })).content as Array<{ text: string }>)[0]!.text,
+    );
+    expect(usage.totals.total_tokens).toBe(40);
+    expect(usage.children_outside_totals).toHaveLength(1);
+    const child = usage.children_outside_totals[0];
+    expect(child.workflowId).toBe('child-fixture');
+    // The figure is unavailable, which is a different claim from nil.
+    expect(child.cost_known).toBe(false);
+    expect(child.rows).toBe(0);
+    expect(child.totals).toEqual({});
+  });
+
   it('next_activity persists variables_changed into the bag, attributed to the activity being exited', async () => {
     const slug = '2026-07-07-worker-outputs';
     const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
@@ -361,12 +389,12 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
       const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
       await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
-      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage });
+      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage, basis: 'delta' });
 
       const events = readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage');
       expect(events).toHaveLength(1);
       expect(events[0].activity).toBe('checkpoint-activity');
-      expect(events[0].data).toEqual({ usage });
+      expect(events[0].data).toEqual({ usage, basis: 'delta' });
 
       const view = await call('inspect_session', { session_index: sessionIndex, view: 'usage' });
       const projected = JSON.parse((view.content as { text: string }[])[0]!.text);
@@ -384,7 +412,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
       const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
       await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
-      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage });
+      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage, basis: 'delta' });
 
       const rows = readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage');
       expect(rows).toHaveLength(1);
@@ -396,8 +424,8 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
       const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
       await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
-      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage: { total_tokens: 10 } });
-      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage: { total_tokens: 20 } });
+      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage: { total_tokens: 10 }, basis: 'delta' });
+      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage: { total_tokens: 20 }, basis: 'delta' });
 
       const rows = readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage');
       expect(rows).toHaveLength(2);
