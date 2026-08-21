@@ -8,8 +8,6 @@ metadata:
 
 # Evaluation Report Template
 
-Template for the consolidated evaluation report, which gathers prism analysis artifacts across all evaluation dimensions into one standalone document.
-
 ## Evaluation Report Template
 
 The report MUST NOT contain methodology metadata — no lens names, pipeline modes, pass descriptions, or process narratives; findings are presented as conclusions.
@@ -89,10 +87,8 @@ bullets, never a single large block. Bold the key takeaway.}
 - {deeper structural recommendation}
 ```
 
-**What good looks like:** finding IDs use a 3-letter dimension prefix and are unique (CON-01, VER-03,
-PLB-01, FEA-07); severity counts in the executive summary table match the per-dimension detail; the
-report stands alone and contains no references to lenses, passes, or pipeline modes.
-
 ## Rules
 
+- **Finding IDs are unique and prefixed.** A three-letter dimension prefix and a two-digit number (`CON-01`, `VER-03`, `PLB-01`, `FEA-07`), each appearing once.
+- **The counts agree.** Severity counts in the executive summary table match the per-dimension detail.
 - **Line budget:** ~200 lines. Per-dimension findings cite the analysis artifacts rather than reproducing them.

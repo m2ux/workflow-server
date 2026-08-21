@@ -1,22 +1,22 @@
 # Evaluation Workflow
 
-> v1.2.0 — Orchestrate multi-dimensional evaluations of any target by mapping evaluation dimensions to [prism](../prism/README.md) analytical lenses, consolidating prism's definitive-findings contract into a unified report, then optionally resolving and applying mitigations for the findings.
+> Evaluate any target across several analytical dimensions at once, by mapping each dimension onto [prism](../prism/README.md) lenses, consolidating what the runs found into one report, and optionally working the findings through into applied mitigations.
 
 ---
 
 ## Overview
 
-`prism-evaluate` codifies a repeatable pattern for evaluating documents, proposals, codebases, or mixed artifact sets through multiple analytical dimensions. A user provides a target and evaluation description; the workflow classifies the target, derives or accepts evaluation dimensions, maps each dimension to prism modes and lenses, triggers prism runs, and consolidates results into a standalone evaluation report.
+`prism-evaluate` is for judging a document, proposal, codebase, or mixed artifact set along more than one axis in a single pass. A user supplies a target and says what the evaluation is for; the workflow classifies the target, settles the dimensions that judge it, maps each dimension to the lenses that will surface its findings, runs one analysis per group, and consolidates the results into a report that stands on its own.
 
-**Relationship to other workflows:**
+**Where it sits among its siblings:**
 
 | Workflow | Purpose |
 |----------|---------|
-| [`prism`](../prism/README.md) | Core analytical engine (lenses, passes, modes) — unchanged |
-| [`prism-audit`](../prism-audit/README.md) | Security-specific audit orchestration over prism — unchanged |
-| `prism-evaluate` | General evaluation orchestration over prism |
+| [`prism`](../prism/README.md) | The analytical engine — lenses, passes, and pipeline modes |
+| [`prism-audit`](../prism-audit/README.md) | Security audit orchestration over prism, with trust-boundary scanning and GitNexus integration |
+| `prism-evaluate` | General evaluation orchestration over prism, along user-defined dimensions |
 
-`prism-evaluate` does NOT replace `prism-audit`. Security audits have domain-specific logic (trust-boundary scanning, GitNexus integration) that belongs in a specialised workflow. `prism-evaluate` is for evaluating any target through user-defined analytical dimensions.
+A security audit belongs in `prism-audit`, whose domain logic this workflow does not carry.
 
 ---
 
@@ -39,18 +39,19 @@ graph TD
     CR --> DR["04 deliver-results"]
 
     DR --> RO{"resolution requested?"}
-    RO -->|"no — evaluation only"| Done([End])
-    RO -->|"yes"| RES["05 resolution-dialogue"]
+    RO -->|"stop with the evaluation"| Done([End])
+    RO -->|"work through the findings"| RES["05 resolution-dialogue"]
 
     RES -->|"per finding: propose + decide"| RES
     RES --> AC{"apply or plan-only?"}
-    AC --> AM["06 apply-mitigations"]
+    AC -->|"apply"| AM["06 apply-mitigations"]
+    AC -->|"plan only"| Done
     AM --> Done
 ```
 
-The spine is linear — scope, plan, analyse, consolidate, deliver — and ends at `deliver-results` unless the user opts into the resolution dialogue, which then iterates through findings one at a time and applies the accepted mitigations. Two scope/plan checkpoints can loop back to re-scope or re-plan, and `execute-analysis` is a loop: each execution group triggers its own prism run.
+The spine is linear — scope, plan, analyse, consolidate, deliver — and ends at delivery unless the user opts into resolving the findings, which then works through them one at a time and applies the ones they accepted. The scope and plan gates can each send the run back a stage, and analysis is a loop: one triggered prism run per execution group.
 
-User checkpoints gate the scope, the plan, the resolution offer, each finding's mitigation, and the final apply; the authoritative options and effects live in each activity's YAML.
+The authoritative gates, options and effects live in each activity's YAML.
 
 ---
 
@@ -58,32 +59,30 @@ User checkpoints gate the scope, the plan, the resolution offer, each finding's 
 
 | # | Activity | Purpose |
 |---|----------|---------|
-| 00 | [**Define Evaluation Scope**](./activities/README.md#00-define-evaluation-scope) (`scope-definition`) | Collect the target, classify its type, and derive evaluation dimensions; user confirms scope before planning |
-| 01 | [**Plan Dimension Analysis**](./activities/README.md#01-plan-dimension-analysis) (`dimension-planning`) | Survey the target, map each dimension to prism lenses, and group dimensions for execution; user confirms the plan |
-| 02 | [**Execute Prism Analyses**](./activities/README.md#02-execute-prism-analyses) (`execute-analysis`) | Trigger a prism run per execution group and collect the results |
-| 03 | [**Consolidate Evaluation Report**](./activities/README.md#03-consolidate-evaluation-report) (`consolidate-report`) | Extract findings, identify cross-dimensional patterns, and compose the evaluation report |
-| 04 | [**Deliver Evaluation Results**](./activities/README.md#04-deliver-evaluation-results) (`deliver-results`) | Present the results and artifact index, then offer the optional resolution dialogue |
-| 05 | [**Resolution Dialogue**](./activities/README.md#05-resolution-dialogue) (`resolution-dialogue`) | Tier-classify findings and propose mitigations one finding at a time, compiling a mitigation plan and collecting the final confirmation to apply it |
-| 06 | [**Apply Accepted Mitigations**](./activities/README.md#06-apply-accepted-mitigations) (`apply-mitigations`) | Apply the accepted mitigations to the target under the confirmation already collected |
+| 00 | [**Define Evaluation Scope**](./activities/README.md#00-define-evaluation-scope) (`scope-definition`) | Settle what is being evaluated, what kind of thing it is, and along which dimensions |
+| 01 | [**Plan Dimension Analysis**](./activities/README.md#01-plan-dimension-analysis) (`dimension-planning`) | Fix each dimension's lens configuration and group the dimensions into runs |
+| 02 | [**Execute Prism Analyses**](./activities/README.md#02-execute-prism-analyses) (`execute-analysis`) | Run the analysis once per group and record what each run produced |
+| 03 | [**Consolidate Evaluation Report**](./activities/README.md#03-consolidate-evaluation-report) (`consolidate-report`) | Bring the per-dimension findings into one evaluation, with what holds across them |
+| 04 | [**Deliver Evaluation Results**](./activities/README.md#04-deliver-evaluation-results) (`deliver-results`) | Present the evaluation and its deliverables, and offer to resolve the findings |
+| 05 | [**Resolution Dialogue**](./activities/README.md#05-resolution-dialogue) (`resolution-dialogue`) | Decide a mitigation for each finding and compile them into a plan |
+| 06 | [**Apply Accepted Mitigations**](./activities/README.md#06-apply-accepted-mitigations) (`apply-mitigations`) | Make the accepted changes to the target and commit them |
 
-**Detailed documentation:** See [activities/README.md](./activities/README.md) for the per-activity orientation map. The authoritative step/checkpoint/transition definitions live in each activity YAML and are served by `get_activity`.
+**Detailed documentation:** [activities/README.md](./activities/README.md) for the per-activity orientation map; the authoritative definitions are the activity YAMLs.
 
 ---
 
 ## Techniques
 
-Each activity step binds exactly one operation via `step.technique`. The operations are organised into four operation-groups (a `TECHNIQUE.md` shared contract plus one operation file per phase), all inheriting the workflow-root [`TECHNIQUE.md`](./techniques/TECHNIQUE.md) base contract. The cross-cutting meta [`variable-binding`](../meta/techniques/variable-binding.md) strategy technique is declared once at `workflow.techniques.activity` and inherited by every activity; `execute-analysis` and `resolution-dialogue` additionally declare the meta [`scatter-gather`](../meta/techniques/scatter-gather.md) strategy technique for their fan-out loops.
-
 | Technique group | Capability |
 |-----------------|------------|
-| [`plan-evaluation`](./techniques/plan-evaluation/TECHNIQUE.md) | Target classification, dimension derivation, target survey, dimension-to-lens mapping, execution grouping, and plan authoring |
-| [`execute-analysis`](./techniques/execute-analysis/TECHNIQUE.md) | Record a triggered prism run from its `RUN-MANIFEST.json` into the evaluation accumulators |
-| [`compose-evaluation-report`](./techniques/compose-evaluation-report/TECHNIQUE.md) | Cross-artifact extraction, cross-dimensional synthesis, report composition and verification, result presentation |
-| [`resolve-findings`](./techniques/resolve-findings/TECHNIQUE.md) | Finding tier-classification, one-by-one mitigation proposal, mitigation-plan composition, and change application |
+| [`plan-evaluation`](./techniques/plan-evaluation/TECHNIQUE.md) | Turning an evaluation request into a runnable plan |
+| [`execute-analysis`](./techniques/execute-analysis/TECHNIQUE.md) | Composing each run's trigger context and recording its result |
+| [`compose-evaluation-report`](./techniques/compose-evaluation-report/TECHNIQUE.md) | Consolidating sibling runs into one evaluation of the target |
+| [`resolve-findings`](./techniques/resolve-findings/TECHNIQUE.md) | Carrying a finding from criticism to decided change |
 
-The prism analysis itself is reached through the trigger mechanism: `execute-analysis` binds meta [`workflow-engine::handle-sub-workflow`](../meta/techniques/workflow-engine/handle-sub-workflow.md) to dispatch prism as a child workflow per execution group, and `apply-mitigations` binds meta [`version-control::commit-regular-files`](../meta/techniques/version-control/commit-regular-files.md) to commit applied changes.
+The analysis itself is reached by trigger: `execute-analysis` dispatches prism as a child workflow per execution group, and `apply-mitigations` commits through a shared version-control operation.
 
-**Detailed documentation:** See [techniques/README.md](./techniques/README.md) for the full library index with per-group operation breakdowns.
+**Detailed documentation:** [techniques/README.md](./techniques/README.md) for the operation index.
 
 ---
 
@@ -91,19 +90,19 @@ The prism analysis itself is reached through the trigger mechanism: `execute-ana
 
 | Resource | Description |
 |----------|-------------|
-| [Default Dimensions](./resources/default-dimensions.md) | Default dimension sets by target type (proposal, codebase, mixed) |
-| [Dimension-Lens Mapping](./resources/dimension-lens-mapping.md) | Standard and custom dimension-to-prism-lens mapping matrix |
+| [Default Dimensions](./resources/default-dimensions.md) | Dimension sets by target kind, for when the user names none |
+| [Dimension-Lens Mapping](./resources/dimension-lens-mapping.md) | Which lens configuration a dimension takes |
 | [Evaluation Plan Template](./resources/evaluation-plan-template.md) | Structure for the `evaluation-plan.md` artifact |
 | [Evaluation Report Template](./resources/evaluation-report-template.md) | Structure for the `EVALUATION-REPORT.md` artifact |
-| [Mitigation Plan Template](./resources/mitigation-plan-template.md) | Structure for the `MITIGATION-PLAN.md` artifact |
+| [Mitigation Plan Template](./resources/mitigation-plan-template.md) | Mitigation tiers, and structure for the `MITIGATION-PLAN.md` artifact |
 
-**Detailed documentation:** See [resources/README.md](./resources/README.md).
+**Detailed documentation:** [resources/README.md](./resources/README.md).
 
 ---
 
 ## Orchestration Model
 
-This workflow uses an **orchestrator with disposable workers**, the pattern defined in the `meta` layer. The orchestrator manages transitions and triggers; workers execute activities in fresh contexts with full read/write permission and write artifacts directly to the output path. The prism analysis is reached through the trigger mechanism, not called inline: each execution group triggers a separate prism run with its own pipeline mode, lens selection, and output subdirectory.
+An orchestrator drives the graph and triggers the analyses; workers execute activities in fresh contexts and write their artifacts directly. Each execution group is a separate child run with its own pipeline mode, lens selection, and output subdirectory, so the dimensions do not contend for one analysis.
 
 ```mermaid
 sequenceDiagram
@@ -131,36 +130,31 @@ sequenceDiagram
     Orch->>User: report, mitigation plan, artifact index
 ```
 
-**Contract reuse:** the orchestrator sets prism's `analysis_focus` to the dimension-specific evaluation guidance (naming the dimension so prism assigns dimension-prefixed finding IDs). The evaluation then reads only prism's contract artifacts — `RUN-MANIFEST.json`, `REPORT.md`, `DEFINITIVE-FINDINGS.md` — and never re-derives what prism already produced (finding extraction, blast-radius enrichment, methodology-stripping, ID assignment). Consolidation adds the one thing prism cannot do across sibling runs: cross-dimensional synthesis.
+Each run's `analysis_focus` names its dimension, which is what yields dimension-prefixed finding IDs the consolidation can carry through unchanged. What consolidation adds over any single run is the reading across them.
 
 ---
 
 ## Output Artifact Structure
 
-For a standard 4-dimension evaluation (Consistency, Veracity, Plausibility, Feasibility):
+For a four-dimension evaluation of a proposal (Consistency, Veracity, Plausibility, Feasibility):
 
 ```
 {output_path}/
 ├── evaluation-plan.md              (dimension-to-lens mapping)
 ├── EVALUATION-REPORT.md            (consolidated evaluation)
-├── consistency/
-│   ├── RUN-MANIFEST.json             (prism contract — run artifacts + status)
-│   ├── REPORT.md                   (prism contract — lean report)
-│   ├── DEFINITIVE-FINDINGS.md      (prism contract — findings source consolidation reads)
-│   ├── structural-analysis.md      (prism raw pass — full-prism)
-│   ├── adversarial-analysis.md     (prism raw pass — full-prism)
-│   └── synthesis.md                (prism raw pass — full-prism)
-└── dimensions/
-    ├── RUN-MANIFEST.json             (prism contract)
-    ├── REPORT.md                   (prism contract)
-    ├── DEFINITIVE-FINDINGS.md      (prism contract — findings source)
-    ├── claim-inversion.md          (Veracity — lens 07)
-    ├── knowledge-audit.md          (Veracity — lens 40)
-    ├── rejected-paths.md           (Plausibility — lens 09)
-    └── scarcity.md                 (Feasibility — lens 08)
+├── consistency/                    (a full-prism dimension's own run)
+│   ├── RUN-MANIFEST.json
+│   ├── REPORT.md
+│   ├── DEFINITIVE-FINDINGS.md
+│   └── …                           (the run's internal pass artifacts)
+└── dimensions/                     (the portfolio dimensions, one run)
+    ├── RUN-MANIFEST.json
+    ├── REPORT.md
+    ├── DEFINITIVE-FINDINGS.md
+    └── …                           (one artifact per selected lens)
 ```
 
-Consolidation reads each dimension's `DEFINITIVE-FINDINGS.md` (located from its `RUN-MANIFEST.json`); the raw pass artifacts are prism's internals, not read by this workflow. The resolution dialogue additionally produces a `MITIGATION-PLAN.md`.
+Consolidation reads each run's contract artifacts, located from its manifest. The resolution dialogue adds a `MITIGATION-PLAN.md`.
 
 ---
 
@@ -170,27 +164,12 @@ Consolidation reads each dimension's `DEFINITIVE-FINDINGS.md` (located from its 
 workflows/prism-evaluate/
 ├── workflow.yaml                     # Workflow metadata, rules, and variable declarations
 ├── README.md                         # This file
-├── activities/
-│   ├── README.md                     # Per-activity orientation map
-│   ├── 00-scope-definition.yaml      # Collect inputs, classify target, derive dimensions
-│   ├── 01-dimension-planning.yaml    # Survey target, map to lenses, group for execution
-│   ├── 02-execute-analysis.yaml      # Trigger prism per execution group (forEach loop)
-│   ├── 03-consolidate-report.yaml    # Extract findings, compose EVALUATION-REPORT.md
-│   ├── 04-deliver-results.yaml       # Present results and artifact index; offer resolution
-│   ├── 05-resolution-dialogue.yaml   # Tier-classify findings, propose mitigations, compile plan
-│   └── 06-apply-mitigations.yaml     # Apply accepted mitigations to the target and commit
-├── techniques/
-│   ├── README.md                     # Technique library index
-│   ├── TECHNIQUE.md                  # Workflow-root base contract (inherited by all)
-│   ├── plan-evaluation/              # Target classification, dimension-to-lens mapping (one op per phase)
-│   ├── execute-analysis/             # Record each prism run from its RUN-MANIFEST.json
-│   ├── compose-evaluation-report/    # Cross-dimensional synthesis, report composition
-│   └── resolve-findings/             # Finding tier-classification, mitigation, change application
-└── resources/
-    ├── README.md                     # Resource index
-    ├── default-dimensions.md         # Default dimension sets by target type
-    ├── dimension-lens-mapping.md     # Dimension-to-lens mapping matrix
-    ├── evaluation-plan-template.md   # evaluation-plan.md structure
-    ├── evaluation-report-template.md # EVALUATION-REPORT.md structure
-    └── mitigation-plan-template.md   # MITIGATION-PLAN.md structure
+├── activities/                       # One YAML per activity, plus the orientation map
+├── techniques/                       # Operation groups, each with a shared contract
+│   ├── TECHNIQUE.md                  # The evaluation's standing context
+│   ├── plan-evaluation/              # Request → runnable plan
+│   ├── execute-analysis/             # Trigger context and run records
+│   ├── compose-evaluation-report/    # Consolidation and delivery figures
+│   └── resolve-findings/             # Finding → decided change
+└── resources/                        # Dimension sets, lens mapping, artifact guides
 ```
