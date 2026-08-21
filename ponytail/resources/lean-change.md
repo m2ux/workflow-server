@@ -26,9 +26,8 @@ Creation guide for bare filename `lean-change.md`. The code leads and the explan
 ## Rules
 
 - **Code first.** The change leads. A reader who stops after the code block has the whole answer.
-- **The highest reachable rung wins.** Where two rungs both solve the problem, the higher one is taken, and the rung is named so the choice is reviewable.
+- **The rung taken is named.** The header records which rung the change sits on, so the choice is reviewable without re-deriving it.
 - **Three lines at most on what was skipped.** Each names the omission and the trigger. If the explanation runs longer than the code, the explanation goes.
 - **One runnable check for non-trivial logic.** The safety floor includes a way to prove the change works, so the check is part of the change and not a follow-up.
 - **Every ceiling carries its marker.** A hard-coded value, a skipped abstraction, a narrowed scope — each is annotated in the code with its ceiling and upgrade trigger, which is what makes it harvestable later.
-- **No safety-floor obligation is deferred.** The floor is not a rung to climb past; an obligation the brief listed is satisfied here or the change is not done.
 - **Line budget:** the explanation stays under the length of the change.

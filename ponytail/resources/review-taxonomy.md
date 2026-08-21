@@ -1,3 +1,8 @@
+---
+name: review-taxonomy
+description: The over-engineering tags, the one-line finding format, and the scoreboard that closes a pass.
+---
+
 # Review Taxonomy
 
 The single source for the over-engineering tags, the one-line-per-finding format, and the scoreboard that closes a review.
@@ -43,22 +48,26 @@ For a multi-file diff or repo-wide pass, prefix the location with the file:
 LC-<n> <file>:L<line>: <tag> <what>. <replacement>.
 ```
 
-The designator is the stable handle a reader, a later pass, or a caller's summary refers to the finding by — assigned by this pass, ascending from `LC-1`, and unchanged by anything that consumes it. The line reference locates it, the tag classifies it, `<what>` names the construct, and `<replacement>` names the simpler rung. A higher intensity lowers the bar for what is flagged: an `ultra` pass flags any construct a lazier rung could replace, a `lite` pass flags only the clear wins.
+The designator is the stable handle a reader, a later pass, or a caller's summary refers to the finding by — assigned by the pass that raised it, ascending from `LC-1`, and unchanged by anything that consumes it. The line reference locates it, the tag classifies it, `<what>` names the construct, and `<replacement>` names the simpler rung.
 
 ---
 
 ## Scoreboard
 
-A review closes with one scoreboard line summing the savings across all findings:
+A pass closes with one scoreboard line summing the savings across all its findings. A diff-scoped review counts lines:
 
 ```
 net: -<N> lines possible.
 ```
 
-When the change carries no over-engineering, the scoreboard states it plainly:
+A repo-wide audit also counts the dependencies it would drop, which a diff-scoped review has none of:
+
+```
+net: -<N> lines, -<M> deps possible.
+```
+
+When the pass found nothing cuttable, the scoreboard states that instead, and is the whole of the output:
 
 ```
 Lean already. Ship.
 ```
-
-A repo-wide audit extends the scoreboard with the dependencies it would drop: `net: -<N> lines, -<M> deps`.

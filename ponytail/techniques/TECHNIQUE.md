@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Own the lean-coding capability — capture and trace the task, climb the lazy [ladder](../../ponytail/resources/the-ladder.md#rungs) to the minimal solution that still clears the [safety floor](../../ponytail/resources/the-ladder.md#safety-floor), review and audit for over-engineering, harvest the deliberate-simplification debt, and report the honest gain.
+Holds the lean-coding contract: what the pass is working on, how strict a lens it runs under, and the discipline every operation in the set applies.
 
 ## Inputs
 
@@ -23,7 +23,7 @@ Path to the code or repo under the lazy lens.
 
 ### lazy_intensity
 
-Strictness of the lazy lens — `lite`, `full`, or `ultra`. A higher intensity widens the review and lowers the bar for flagging an over-engineered construct.
+Strictness of the lazy lens: `lite`, `full`, or `ultra`.
 
 #### default
 
@@ -43,13 +43,9 @@ Breadth of the pass — `change` (diff-scoped) or `repo` (whole-tree).
 
 Lead with the code; follow it with at most three lines of prose (what was skipped, and the trigger that would justify adding it). Produce no unrequested explanation, summary, or documentation. If the explanation runs longer than the code, delete the explanation — every paragraph defending a simplification is complexity smuggled back in as prose. Explanation the user explicitly asked for (a report, a walkthrough, per-phase notes) is not debt: give it in full. The rule targets only *unrequested* prose, not requested artifacts.
 
-### take-higher-rung
+### boring-over-clever
 
-When two [rungs](../../ponytail/resources/the-ladder.md#rungs) of the ladder both solve the problem, take the higher (lazier) one. Deletion is preferred over addition; no abstraction is introduced before a second concrete case exists.
-
-### deletion-over-addition
-
-The leanest change that satisfies the task and clears the [safety floor](../../ponytail/resources/the-ladder.md#safety-floor) wins. Removing code, dependencies, or indirection counts as progress; adding any of them must earn its place against a present, concrete need. Prefer boring over clever — clever is what someone decodes at 3am — and the fewest files possible.
+Prefer boring over clever — clever is what someone decodes at 3am — and the fewest files the change can occupy.
 
 ### shortest-diff-once-understood
 
@@ -65,4 +61,4 @@ When two options at the same rung are equal in size, take the one that is correc
 
 ### report-only-no-apply
 
-The review, audit, debt-harvest, and gain operations report only and apply nothing — they list findings into their artifact and change no code. Only `apply-ladder` changes code; the read-only operations never edit the tree.
+Only the climb changes code. Every other operation writes what it found into its own artifact and leaves the tree untouched.

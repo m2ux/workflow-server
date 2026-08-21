@@ -1,5 +1,5 @@
 id: apply-ladder
-version: 1.1.0
+version: 2.0.0
 name: Apply Ladder
 description: Produce the minimal solution by climbing the rungs, marking deliberate simplifications and leaving one runnable check, then confirm it clears the safety floor.
 steps:
@@ -20,7 +20,7 @@ steps:
       - kind: checkpoint
         id: safety-floor-cleared
         blocking: true
-        message: "Confirm the minimal solution clears the safety floor — input validation, error handling, security, accessibility, calibration, and the one runnable check — before the over-engineering review."
+        message: "The minimal solution stands at its chosen rung, with every safety-floor obligation the change implicates either satisfied or still open."
         options:
           - id: confirmed
             label: Safety floor cleared
@@ -36,6 +36,13 @@ steps:
                 safety_floor_cleared: false
 transitions:
   - to: over-engineering-review
+    condition:
+      type: simple
+      variable: safety_floor_cleared
+      operator: ==
+      value: true
+  - to: __terminal__
     isDefault: true
 outcome:
   - The minimal solution is built and verified to clear the safety floor, with its deliberate ceilings marked for later harvest
+  - No change reaches the over-engineering review without having cleared the floor

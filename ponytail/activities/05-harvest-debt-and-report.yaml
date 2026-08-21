@@ -1,5 +1,5 @@
 id: harvest-debt-and-report
-version: 1.1.0
+version: 1.2.0
 name: Harvest Debt and Report
 description: Harvest the deliberate-simplification markers into a debt ledger and, when markers exist, append an honesty-bounded gain scoreboard.
 steps:
@@ -24,4 +24,5 @@ steps:
 
           {gain_scoreboard}
 outcome:
-  - Every deliberate simplification is recorded as trackable debt with its upgrade trigger, and the honest gain is shown
+  - Every deliberate simplification is recorded as trackable debt with its upgrade trigger
+  - Where the tree carries any such debt, the ledger also states what the pass can honestly claim for it
