@@ -34,7 +34,7 @@ Whether any ponytail marker was found — true when the ledger has at least one 
 ### 2. Build the ledger
 
 - Add an entry per marker to `{debt_ledger}` in `{artifact_dir}` per [debt-ledger](../resources/debt-ledger.md#template) and its [Rules](../resources/debt-ledger.md#rules), with the ceiling and upgrade trigger drawn from the [marker convention](../resources/ponytail-marker-convention.md#convention) and a missing trigger flagged [no-trigger](../resources/ponytail-marker-convention.md#no-trigger)
-- For an owner per row, optionally append the output of `git blame -L<line>,<line>` for the marker's line.
 
 ### 3. Signal the result
+
 - Set `{has_debt_markers}` to true when the ledger has at least one row, false when no markers were found.

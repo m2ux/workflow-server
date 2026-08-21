@@ -45,4 +45,4 @@ transitions:
     isDefault: true
 outcome:
   - The minimal solution is built and verified to clear the safety floor, with its deliberate ceilings marked for later harvest
-  - A change that cannot clear the floor within the refinement limit ends the run rather than carrying an unsafe solution into review
+  - No change reaches the over-engineering review without having cleared the floor

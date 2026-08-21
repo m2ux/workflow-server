@@ -13,35 +13,35 @@ steps:
     options:
       - id: lite-change
         label: Lite intensity, change scope
-        description: Lightest pass over the diff only — minimal review depth, no repo audit.
+        description: Lightest pass, over the diff only.
         effect:
           setVariable:
             lazy_intensity: lite
             pass_scope: change
       - id: full-change
         label: Full intensity, change scope
-        description: Standard pass over the diff — full review depth, no repo audit.
+        description: Standard pass, over the diff.
         effect:
           setVariable:
             lazy_intensity: full
             pass_scope: change
       - id: ultra-change
         label: Ultra intensity, change scope
-        description: Strictest pass over the diff — adds the repo-wide audit.
+        description: Strictest pass, over the diff.
         effect:
           setVariable:
             lazy_intensity: ultra
             pass_scope: change
       - id: full-repo
         label: Full intensity, repo scope
-        description: Standard pass over the whole tree — adds the repo-wide audit.
+        description: Standard pass, over the whole tree.
         effect:
           setVariable:
             lazy_intensity: full
             pass_scope: repo
       - id: ultra-repo
         label: Ultra intensity, repo scope
-        description: Strictest pass over the whole tree — adds the repo-wide audit.
+        description: Strictest pass, over the whole tree.
         effect:
           setVariable:
             lazy_intensity: ultra

@@ -47,4 +47,4 @@ The tagged findings for the change, each under a stable `LC-{n}` designator so a
 
 ### the-lone-check-is-not-bloat
 
-A `delete` finding is never raised against the single smoke test or assert-based self-check a change carries. That check is the safety floor's minimum, so removing it is not a saving.
+A `delete` finding is never raised against the single smoke test or assert-based self-check a change carries.
