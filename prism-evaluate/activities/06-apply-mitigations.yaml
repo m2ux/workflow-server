@@ -6,6 +6,12 @@ steps:
   - kind: technique
     id: apply-changes
     technique: resolve-findings::apply-changes
+    actions:
+      - action: message
+        message: |-
+          {applied_changes}
+
+          The target is [{target_name}]({target_path}); the plan it was applied from is [the mitigation plan]({mitigation_plan_path}).
   - kind: technique
     id: commit-changes
     technique:

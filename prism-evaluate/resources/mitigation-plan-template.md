@@ -8,10 +8,16 @@ metadata:
 
 # Mitigation Plan Template
 
-Template for the mitigation plan. The plan records the
-disposition of every finding from the evaluation report after one-by-one dialogue with the user, with
-the full proposed text for each accepted mitigation so the plan is self-contained. Findings are classified into tiers: T1 (direct
-correction), T2 (reframing & caveating), T3 (novel mitigation), T4 (structural / immovable).
+## Mitigation Tiers
+
+A finding's tier states what answering it would take, and fixes the shape its mitigation takes.
+
+| Tier | Name | The finding is answered by |
+|------|------|----------------------------|
+| `T1` | Direct correction | Replacing wrong text — a number, a term, a name — with the right text and its source |
+| `T2` | Reframing & caveating | Qualifying a claim that overreaches, holding its intent under honest scoping |
+| `T3` | Novel mitigation | Adding a mechanism, structure, or section that answers the critique without striking the claim |
+| `T4` | Structural / immovable | Acknowledging a constraint the target cannot resolve within itself |
 
 ## Mitigation Plan Template
 
@@ -58,9 +64,6 @@ correction), T2 (reframing & caveating), T3 (novel mitigation), T4 (structural /
 - **Constraint:** {why no mitigation can resolve this within the target}
 - **Acknowledgement language:** {honest statement of the constraint and how the target relates to it}
 
-> Findings where no mitigation can address the critique without removing the claim entirely are flagged
-> as non-feasible with an explicit explanation.
-
 ## Implementation Priority
 
 1. {T1 changes — Critical first, then High, Medium, Low}
@@ -69,10 +72,9 @@ correction), T2 (reframing & caveating), T3 (novel mitigation), T4 (structural /
 4. {T4 acknowledgements}
 ```
 
-**What good looks like:** every finding from the report has a corresponding entry (accepted, modified,
-or skipped); accepted mitigations include their full proposed text so the plan is self-contained;
-changes are ordered T1 → T2 → T3 → T4 and within each tier by severity.
-
 ## Rules
 
+- **Every finding gets a row.** The summary table carries accepted, modified and skipped findings alike; a finding absent from the table reads as one nobody looked at.
+- **An accepted mitigation carries its full text.** The plan is applied from itself, so a change specified only by reference cannot be made.
+- **A removed claim is stated as one.** Where a `T4` mitigation strikes a claim, its entry says so and says why no other tier answered it.
 - **Line budget:** ~100 lines. One entry per mitigation; the finding it answers is cited, not restated.

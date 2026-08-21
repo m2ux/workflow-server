@@ -1,16 +1,31 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Read the mitigation plan and apply the accepted mitigations to the target in implementation-priority order, verifying each change at its expected location, then present the applied-change summary with the modified-target and plan paths.
+Makes the planned changes to the target, each one checked against the text it expects to find and the text it leaves behind.
+
+## Outputs
+
+### applied_changes
+
+What reached the target: per change, its finding ID, the location it landed at, and whether verification found the new text there. A change the target could not accept appears with its conflict.
 
 ## Protocol
 
-- Apply the accepted mitigations in `{mitigation_plan.implementation_priority}` order (`T1`, then `T2`, `T3`, `T4`), producing `{modified_target}`.
-- Before applying each change, verify the target text matches the expected current text.  
-  > When an earlier mitigation shifted text locations and a later change no longer matches, search for the expected text elsewhere in `{modified_target}`; apply it at the new location if found, otherwise report the conflict and skip.
-- After each change, verify the new text is present at the expected location; report any change that fails verification and continue with the remaining changes.
-- Present the applied-change summary with the verification results, the `{modified_target}` path (`{target_path}`), and the `{mitigation_plan_path}`.
+### 1. Apply Each Change
+
+- Work through `{mitigation_plan.implementation_priority}`, and for each change verify the target text at `{target_path}` matches what the plan expects before making it.  
+  > Where an earlier change moved the text, search for the expected text elsewhere in the target and apply the change at that location.  
+  > Where the expected text is nowhere in the target, record the conflict and leave that change unapplied.
+
+### 2. Verify Each Change Landed
+
+- After each change, verify the new text is present where it was applied.  
+  > Where verification fails, record the failure against that change and continue with the remaining ones.
+
+### 3. Record What Changed
+
+- Record `{applied_changes}`: per change, its finding ID, the location it reached, and whether verification found it.
