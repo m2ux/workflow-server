@@ -1,11 +1,17 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
 
 Gathers the settled audit scope into one summary a reader can judge in a single pass.
+
+## Inputs
+
+### target_metadata
+
+The validated target's structural metadata: its primary language and build system, its top-level layout, and its estimated size.
 
 ## Outputs
 

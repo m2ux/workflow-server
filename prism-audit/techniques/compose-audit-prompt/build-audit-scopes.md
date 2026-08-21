@@ -1,19 +1,20 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Assemble the `{audit_scopes}` array that downstream prism workflows consume — a single full-codebase scope for most audits, or multiple trust-domain-focused scopes for very large codebases — each with its own focused analysis focus.
+Assembles the scope set an audit runs as, each scope carrying its own focused prompt.
 
 ## Protocol
 
-### 1. Build Scopes
+### 1. Decide How Many Scopes
 
-- Assemble the `{audit_scopes}` array that downstream prism workflows will consume
-- For most audits: create a single scope entry covering the entire codebase
-- Single scope: `{ target: {target_path}, output_subdir: 'analysis', pipeline_mode: 'full-prism', analysis_focus: <composed prompt summary> }`
-- For very large codebases (>100K LOC) with clearly separable security boundaries: consider multiple scopes, each focused on a distinct trust domain
-- If `{total_loc}` exceeds 200K, single-scope analysis becomes impractical — split into multiple scopes by trust domain or module group, giving each scope its own focused prompt.
-- Set `analysis_focus` for each scope to a focused description derived from the prompt, naming the scope's security domains so prism assigns domain-prefixed finding IDs
+- Take one scope covering the whole codebase.  
+  > Where `{total_loc}` exceeds 200K, or the codebase is smaller but its security boundaries are clearly separable, take one scope per trust domain or module group instead.
+
+### 2. Assemble the Scopes
+
+- Record `{audit_scopes}`, one entry per scope in the shape `{audit_scopes.scopes}` declares, `output_subdir` naming where that scope's run writes.
+- Set each scope's `analysis_focus` from the composed prompt, narrowed to what that scope covers and naming its security domains, which is what yields domain-prefixed finding IDs.
