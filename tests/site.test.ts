@@ -2,11 +2,14 @@ import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { renderSitePages, checkSiteNavigation } from '../scripts/generate-site-data.js';
-import { checkSiteLinks } from '../scripts/check-site-links.js';
-import { checkSvgLayout } from '../scripts/check-svg-layout.js';
 
 const SITE_DIR = resolve(import.meta.dirname, '../site');
 
+/**
+ * The generated site regions and its navigation. Links, anchors and SVG geometry are held by the
+ * `site-links` and `svg-layout` guards, which the registry runs; these two properties have no guard,
+ * because staleness is a comparison against a render rather than a reading of the committed file.
+ */
 describe('documentation site', () => {
   it('generated regions match the server source (stale? run npm run build:site)', () => {
     for (const { relPath, content } of renderSitePages()) {
@@ -17,13 +20,5 @@ describe('documentation site', () => {
 
   it('every page has global navigation linking all registered routes', () => {
     expect(checkSiteNavigation()).toEqual([]);
-  });
-
-  it('internal links, anchors, and GitHub repo links resolve', () => {
-    expect(checkSiteLinks()).toEqual([]);
-  });
-
-  it('SVG diagram text stays clear of boxes, lines, and sibling text', () => {
-    expect(checkSvgLayout()).toEqual([]);
   });
 });

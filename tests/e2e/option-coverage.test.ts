@@ -129,13 +129,16 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
    */
   it('was recorded against the corpus commit now checked out', () => {
     const current = currentCorpusSha();
-    if (current === null) return; // corpus is not a git checkout (e.g. a CI path-checkout)
+    // An unreadable corpus commit voids the comparison, so it fails rather than passing with nothing
+    // compared.
+    // ponytail: requires a git corpus checkout, add a skip when a build vendors the corpus instead
+    expect(current, 'the corpus is not a git checkout, so the stamp cannot be verified').not.toBeNull();
     const stamp = readStamp();
     expect(stamp, `no corpus stamp at ${STAMP_PATH} — run 'npm run baseline:stamp'`).not.toBeNull();
     expect(
       stamp!.corpusSha,
       `${EXPECTED_LABEL} was recorded against corpus ${stamp!.corpusSha.slice(0, 12)} but the `
-      + `checkout is at ${current.slice(0, 12)}. A coverage change below may be corpus drift rather `
+      + `checkout is at ${current!.slice(0, 12)}. A coverage change below may be corpus drift rather `
       + `than a regression: confirm the corpus change is intended, then re-record the expectation `
       + `and run 'npm run baseline:stamp' in the same commit.`,
     ).toBe(current);

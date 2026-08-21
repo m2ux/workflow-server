@@ -110,14 +110,6 @@ describe('migration converter', () => {
     });
   });
 
-  describe('auto-trigger from start_session', () => {
-    // Verified via the mcp-server integration test below; here we just
-    // assert the public API surface that start_session calls.
-    it('exports migratePlanningFolder for start_session to call', () => {
-      expect(typeof migratePlanningFolder).toBe('function');
-    });
-  });
-
   describe('clean cutover (no coexistence)', () => {
     it('removes the legacy workflow-state.json after a successful conversion', async () => {
       copyFileSync(join(FIXTURE_DIR, LEGACY_STATE_FILE_NAME), join(folder, LEGACY_STATE_FILE_NAME));

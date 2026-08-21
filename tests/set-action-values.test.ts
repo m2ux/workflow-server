@@ -3,7 +3,6 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { collectFindings } from '../scripts/check-set-action-values.js';
-import { corpusRoot } from './corpus-root.js';
 
 /**
  * A `set` action writes somewhere, and braces what it reads.
@@ -52,10 +51,6 @@ const stepChecks = (steps: string, subdir = ''): string[] =>
   collectFindings(rootWithSteps(steps, subdir)).map((f) => f.check);
 
 describe('set action values', () => {
-  it('every set action in the corpus names where it writes, and braces what it reads', () => {
-    expect(collectFindings(corpusRoot()).map((f) => `[${f.check}] ${f.site} — ${f.detail}`)).toEqual([]);
-  });
-
   it('refuses a set action with nowhere to write', () => {
     // The shape three of these wore in the corpus: plainly a target and a value, writing neither.
     expect(checks('      - action: set\n        message: reconnaissance_complete=true'))

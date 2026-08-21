@@ -1,27 +1,18 @@
 import { describe, it, expect } from 'vitest';
-import { applyTriage, loadTriage, expressionReads, collectViolations, consumerReaches, deadOutputSatisfier } from '../scripts/check-binding-fidelity.js';
+import { loadTriage, expressionReads, collectViolations, consumerReaches, deadOutputSatisfier } from '../scripts/check-binding-fidelity.js';
 
 /**
  * Binding-fidelity gate. The corpus carries triaged debt, recorded per finding with a verdict and a
- * rationale in scripts/binding-fidelity-triage.json; this asserts the two states that must never
- * ship: a finding nobody has judged, and a finding judged a live bug.
+ * rationale in scripts/binding-fidelity-triage.json. The `binding-fidelity` guard holds the two
+ * states that must never ship — a finding nobody has judged, and a finding judged a live bug — and
+ * reports an entry whose finding no longer occurs. What it reads past is a rationale key the triage
+ * file never defines, which resolves to the key itself and reads as a reason.
  *
  * There is no baseline and no re-snapshot command. A new finding is classified by hand — the act the
  * retired baseline let a `--update-baseline` skip, which is how two live defects reached a session
  * (#324 A1/A2). "Did MY change add this?" is `npm run check:delta`.
  */
 describe('binding-fidelity gate', () => {
-  const { findings, counts, total } = applyTriage();
-
-  it('leaves no finding untriaged and no live bug unfixed', () => {
-    expect(findings.map((v) => `[${v.check}] ${v.site} — ${v.detail}`)).toEqual([]);
-  });
-
-  it('accounts for every violation with a verdict', () => {
-    expect(counts.harmless + counts['fix-later'] + counts['live-bug'] + counts.untriaged).toBe(total);
-    expect(counts.untriaged).toBe(0);
-  });
-
   it('names a rationale that the triage file defines for every entry', () => {
     const triage = loadTriage();
     const undefinedRationales = triage.entries

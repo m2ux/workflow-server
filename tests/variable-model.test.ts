@@ -1,10 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { parse } from 'yaml';
-import {
-  collectVariableModelViolations,
-  lintDeclarations,
-  lintDocument,
-} from '../scripts/check-variable-model.js';
+import { lintDeclarations, lintDocument } from '../scripts/check-variable-model.js';
 
 /**
  * Variable-model guard (B7, issue #166): the corpus stays coherent with the
@@ -62,9 +58,5 @@ options:
   it('accepts matching assignments', () => {
     const doc = parse('effect: { setVariable: { review_needed: true, repo_root: some/path } }');
     expect(lintDocument(doc, DECLS, 'x.yaml')).toEqual([]);
-  });
-
-  it('the corpus is coherent with the seeded variable model', () => {
-    expect(collectVariableModelViolations().map(v => `[${v.rule}] ${v.file}: ${v.detail}`)).toEqual([]);
   });
 });

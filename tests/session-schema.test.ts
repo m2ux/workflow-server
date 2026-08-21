@@ -1,6 +1,5 @@
 import { describe, it, expect } from 'vitest';
 import {
-  SessionFileSchema,
   safeValidateSessionFile,
   validateSessionFile,
   createInitialSessionFile,
@@ -330,14 +329,9 @@ describe('SessionFile schema', () => {
   });
 
   describe('schema exports', () => {
-    it('SessionFileSchema is a Zod schema', () => {
-      expect(SessionFileSchema).toBeDefined();
-      expect(typeof SessionFileSchema.parse).toBe('function');
-      expect(typeof SessionFileSchema.safeParse).toBe('function');
-    });
-
-    it('exposes PARENT_CHAIN_DEPTH_WARN_THRESHOLD as a numeric constant', () => {
-      expect(typeof PARENT_CHAIN_DEPTH_WARN_THRESHOLD).toBe('number');
+    // The soft warning in resource-tools reads this threshold and quotes it in its message, so the
+    // value is part of what a reader is told. Nothing else pins it.
+    it('warns above a parent-chain depth of five', () => {
       expect(PARENT_CHAIN_DEPTH_WARN_THRESHOLD).toBe(5);
     });
   });

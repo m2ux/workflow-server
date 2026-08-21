@@ -310,11 +310,9 @@ describe('context-window sweep — graduated cumulative bundling (#189 C1c)', ()
     const second = await getActivity(idx, 8_000);
     const st = second.ops['step_techniques'] as Record<string, Record<string, unknown>>;
 
-    const secondT1 = st['t1']!;
-    expect(secondT1['delivery']).toBe('unchanged');
-    expect(typeof secondT1['content_hash']).toBe('string');
-    expect(secondT1['marker']).toBe('▼ STEP t1 · technique t1');
-    // t2 likewise collapses to an unchanged marker.
+    // The marker's own shape — its content_hash and ▼ STEP line — belongs to hybrid-bundling; what
+    // this file is about is the budget the collapse frees.
+    expect(st['t1']!['delivery']).toBe('unchanged');
     expect(st['t2']!['delivery']).toBe('unchanged');
 
     // t3 and t4 are delivered full this time (never delivered before), so they

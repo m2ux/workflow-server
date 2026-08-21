@@ -2063,105 +2063,6 @@ describe('mcp-server integration', () => {
       expect(state.history.some((e: { type: string }) => e.type === 'workflow_completed')).toBe(true);
     });
 
-    it.skip('parent.triggeredWorkflows gets a backlink when a child is dispatched, and flips to completed when the child terminates (legacy parent_planning_slug; see dispatch_child test above)', async () => {
-      const { readFile } = await import('node:fs/promises');
-      const parentSlug = 'parent-with-backlink';
-      const childSlug = 'child-of-backlink';
-      // Parents live at the workspace top level; persistent children nest
-      // UNDER their parent's folder.
-      const parentFolder = join(workspaceDir, '.engineering/artifacts/planning', parentSlug);
-      const childFolder = join(parentFolder, childSlug);
-
-      // Persistent parent (work-package, not meta) so the backlink is durable.
-      const parent = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(parentSlug) },
-      });
-      const parentIdx = parseToolResponse(parent).session_index;
-
-      // Dispatch a child.
-      const child = await client.callTool({
-        name: 'start_session',
-        arguments: {
-          workflow_id: 'work-package',
-          agent_id: 'worker-1',
-          planning_folder: planningFolder(childSlug),
-          parent_planning_slug:  parentSlug,
-        },
-      });
-      const childIdx = parseToolResponse(child).session_index;
-
-      // Parent.session.json now has a triggeredWorkflows entry for the child.
-      let parentState = JSON.parse(await readFile(join(parentFolder, 'session.json'), 'utf8'));
-      expect(parentState.triggeredWorkflows).toHaveLength(1);
-      expect(parentState.triggeredWorkflows[0]).toMatchObject({
-        workflowId: 'work-package',
-        sessionIndex: childIdx,
-        status: 'running',
-      });
-      expect(parentState.history.some((e: { type: string }) => e.type === 'workflow_triggered')).toBe(true);
-
-      // Walk the child to its terminal activity.
-      await client.callTool({ name: 'next_activity', arguments: { session_index: childIdx, activity_id: 'start-work-package' } });
-      await client.callTool({ name: 'next_activity', arguments: { session_index: childIdx, activity_id: 'complete' } });
-
-      // Parent's TWR entry should now be `completed` with a completedAt set.
-      parentState = JSON.parse(await readFile(join(parentFolder, 'session.json'), 'utf8'));
-      expect(parentState.triggeredWorkflows[0].status).toBe('completed');
-      expect(parentState.triggeredWorkflows[0].completedAt).toBeTruthy();
-      expect(parentState.history.some((e: { type: string }) => e.type === 'workflow_returned')).toBe(true);
-
-      // Child's session.json is intact and resumable — `parentIdx` still
-      // resolves to the same parent folder, child's own state is sealed.
-      const childState = JSON.parse(await readFile(join(childFolder, 'session.json'), 'utf8'));
-      expect(childState.status).toBe('completed');
-      expect(childState.currentActivity).toBe('complete');
-      expect(childState.parentSession?.sessionIndex).toBe(parentIdx);
-    });
-
-    it.skip('persistent children nest UNDER their persistent parent (legacy separate-folder layout; replaced by embedded-state design — see dispatch_child test)', async () => {
-      const { existsSync } = await import('node:fs');
-      const parentSlug = 'nest-parent';
-      const childSlug = 'nest-child';
-      const parentFolder = join(workspaceDir, '.engineering/artifacts/planning', parentSlug);
-      // Top-level peer location (where the child would have lived under the
-      // old flat layout) — must NOT exist after nesting takes effect.
-      const wrongPeerFolder = join(workspaceDir, '.engineering/artifacts/planning', childSlug);
-      // The nested location — where the child actually lives.
-      const nestedChildFolder = join(parentFolder, childSlug);
-
-      // Persistent parent (work-package, not meta).
-      await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'orchestrator', planning_folder: planningFolder(parentSlug) },
-      });
-      // Child of persistent parent.
-      const child = await client.callTool({
-        name: 'start_session',
-        arguments: {
-          workflow_id: 'work-package',
-          agent_id: 'worker-1',
-          planning_folder: planningFolder(childSlug),
-          parent_planning_slug:  parentSlug,
-        },
-      });
-      expect(child.isError).toBeFalsy();
-
-      // Child sits under the parent — not at the planning-root top level.
-      expect(existsSync(join(nestedChildFolder, 'session.json'))).toBe(true);
-      expect(existsSync(join(nestedChildFolder, '.session-token'))).toBe(true);
-      expect(existsSync(wrongPeerFolder)).toBe(false);
-
-      // Resume by slug still finds the nested child — resolveSessionLocation
-      // recurses through the tree.
-      const childIdx = parseToolResponse(child).session_index;
-      const resumed = await client.callTool({
-        name: 'start_session',
-        arguments: { workflow_id: 'work-package', agent_id: 'worker-1', planning_folder: planningFolder(childSlug), parent_planning_slug:  parentSlug },
-      });
-      expect(parseToolResponse(resumed).session_index).toBe(childIdx);
-    });
-
     it('dispatch_child embeds the child SessionFile under parent.triggeredWorkflows[N].state and returns its session_index', async () => {
       const { readFile } = await import('node:fs/promises');
       const slug = 'embed-parent';
@@ -2647,18 +2548,11 @@ describe('mcp-server integration', () => {
       const jsonPath = join(planningFolder(fixtureSlug), 'session.json');
       const scriptPath = resolve(import.meta.dirname, 'fixtures/inspect-session/inspect_session.py');
 
-      // Skip gracefully if python3 is unavailable (keeps CI green where the
-      // interpreter is absent); the TS-side view assertions above still guard shape.
-      let python: string | null = 'python3';
-      try {
-        execFileSync(python, ['--version'], { stdio: 'ignore' });
-      } catch {
-        python = null;
-      }
-      if (!python) return;
-
+      // The oracle IS this test, so an absent interpreter fails it rather than passing it with
+      // nothing compared.
+      // ponytail: requires python3 on PATH, add a skip when a target runner ships without it
       const runReference = (args: string[]): unknown =>
-        JSON.parse(execFileSync(python!, [scriptPath, jsonPath, ...args], { encoding: 'utf8' }));
+        JSON.parse(execFileSync('python3', [scriptPath, jsonPath, ...args], { encoding: 'utf8' }));
 
       // Derive the parity loop from the server export so a missing oracle view fails loud (SC-12).
       const { INSPECT_SESSION_VIEWS } = await import('../src/tools/workflow-tools.js');

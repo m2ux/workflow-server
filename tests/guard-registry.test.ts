@@ -47,6 +47,19 @@ describe('guard registry', () => {
       .toEqual(['site-links', 'source-encoding', 'svg-layout']);
   });
 
+  /**
+   * The registry is the only thing holding the corpus at zero: no test re-runs a guard against the
+   * live corpus, because the sweep does it in the same CI job. That makes the sweep's presence in
+   * the job a load-bearing fact rather than a convention, so it is read here.
+   */
+  it('is swept by the same CI job that runs the suite', () => {
+    // ponytail: matches the job file as text, add a YAML parse when the sweep spans several jobs
+    const verify = readFileSync(join(REPO, '.github/workflows/verify.yml'), 'utf-8');
+    expect(verify, 'the guard sweep left the verify job — the corpus is now held at zero by nothing')
+      .toContain('npm run check:all');
+    expect(verify, 'the suite left the verify job').toContain('npm run test:ci');
+  });
+
   it('covers every check:* script in package.json', () => {
     const aggregate = new Set(['check:all', 'check:delta']);
     const uncovered = Object.keys(pkg.scripts)

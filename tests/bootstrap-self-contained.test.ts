@@ -3,7 +3,6 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { collectFindings, MIN_PROSE_LINES } from '../scripts/check-bootstrap-self-contained.js';
-import { corpusRoot } from './corpus-root.js';
 
 /**
  * Bootstrap self-containment guard: the text `discover` returns before a session exists must send the
@@ -69,11 +68,6 @@ const checks = (body: string): string[] => collectFindings(rootWith(body)).map((
 const prose = (text: string): string => `# Bootstrap\n\n${text}\n`;
 
 describe('bootstrap self-containment guard', () => {
-  it('the pre-session bootstrap text sends the reader nowhere it cannot go', () => {
-    // Reads the corpus this run measures, so a worktree checks its own tree and not the parent's.
-    expect(collectFindings(corpusRoot()).map((f) => `[${f.check}] ${f.site} — ${f.detail}`)).toEqual([]);
-  });
-
   it('refuses a link into the corpus in every spelling markdown allows', () => {
     const target = '../techniques/version-control/resolve-host-repo.md';
     // A plain destination, a destination wearing the title CommonMark permits after it, an angle-bracket

@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { readFileSync } from 'node:fs';
-import { collectFramingFindings, TRIAGE_PATH } from '../scripts/check-section-framing.js';
+import { TRIAGE_PATH } from '../scripts/check-section-framing.js';
 
 /**
  * Section-framing guard. A resource cited by anchor is delivered one section at a time, so prose
@@ -8,13 +8,6 @@ import { collectFramingFindings, TRIAGE_PATH } from '../scripts/check-section-fr
  * the corpus's `section-framing-triage.json` carries the judgement of whether the prose is an
  * obligation or an orientation, and an untriaged site is reported.
  */
-describe('section-framing guard (corpus)', () => {
-  it('leaves no framing site untriaged and no triage entry stale', () => {
-    const findings = collectFramingFindings();
-    expect(findings.map((f) => `[${f.check}] ${f.site}`)).toEqual([]);
-  });
-});
-
 describe('section-framing triage', () => {
   const triage = JSON.parse(
     readFileSync(TRIAGE_PATH, 'utf-8'),

@@ -27,12 +27,15 @@ describe('walk baseline corpus stamp', () => {
   it('was generated against the corpus commit now checked out', () => {
     const stamp = readStamp();
     const current = currentCorpusSha();
-    if (current === null) return; // corpus is not a git checkout (e.g. a CI path-checkout): nothing to compare
+    // An unreadable corpus commit voids the comparison, so it fails rather than passing with nothing
+    // compared.
+    // ponytail: requires a git corpus checkout, add a skip when a build vendors the corpus instead
+    expect(current, 'the corpus is not a git checkout, so the stamp cannot be verified').not.toBeNull();
     expect(stamp, `no corpus stamp at ${STAMP_PATH} — run 'npm run baseline:stamp'`).not.toBeNull();
     expect(
       stamp!.corpusSha,
       `walk snapshots were generated against corpus ${stamp!.corpusSha.slice(0, 12)} but the checkout `
-      + `is at ${current.slice(0, 12)}. Any snapshot diff below may be corpus drift, not a code `
+      + `is at ${current!.slice(0, 12)}. Any snapshot diff below may be corpus drift, not a code `
       + `regression. Confirm the corpus change is intended, re-baseline with 'npm run test:ci -- -u', `
       + `then run 'npm run baseline:stamp' in the same commit.`,
     ).toBe(current);
@@ -70,11 +73,93 @@ describe('work-package walk snapshots (baseline)', () => {
     return policies.map((p) => walks.get(p.name)!);
   }
 
+  /**
+   * The branch each policy exists to steer, named rather than left to the snapshot.
+   *
+   * A snapshot says the walk is what it was; these say what it must be. The distinction matters at
+   * the moment a snapshot is re-baselined with `-u`, which accepts whatever the walk now does — a
+   * policy that stopped reaching its branch would be recorded rather than reported.
+   */
+  const branches: Record<string, { mustInclude?: string[]; mustExclude?: string[] }> = {
+    [defaultPolicy.name]: {},
+    [skipOptionalPolicy.name]: { mustExclude: ['requirements-elicitation', 'research'] },
+    [fullWorkflowPolicy.name]: { mustInclude: ['requirements-elicitation', 'research', 'implementation-analysis'] },
+    [researchOnlyPolicy.name]: { mustInclude: ['research'], mustExclude: ['requirements-elicitation'] },
+    // Elicitation-only (needs_research=false) skips research: requirements-elicitation routes
+    // straight to implementation-analysis.
+    [elicitationOnlyPolicy.name]: {
+      mustInclude: ['requirements-elicitation', 'implementation-analysis'],
+      mustExclude: ['research'],
+    },
+    // Review mode routes around the create-only implement activity entirely: assumptions-review
+    // carries an is_review_mode transition to lean-coding-audit.
+    [reviewModePolicy.name]: { mustExclude: ['implement'] },
+  };
+
   for (const policy of policies) {
+    it(`[${policy.name}] reaches the terminal activity down its own branch`, () => {
+      const result = walks.get(policy.name)!;
+      expect(result.path[0]).toBe('start-work-package');
+      expect(result.path).toContain('complete');
+      expect(result.finalStatus).toBe('completed');
+      const { mustInclude, mustExclude } = branches[policy.name]!;
+      for (const a of mustInclude ?? []) expect(result.path, policy.name).toContain(a);
+      for (const a of mustExclude ?? []) expect(result.path, policy.name).not.toContain(a);
+    });
+
+    // The snapshot key is this test's name, so it stays as written — a rename orphans the
+    // committed baseline and silently re-records it.
     it(`[${policy.name}] matches committed baseline`, () => {
       expect(snapshotWalk(walks.get(policy.name)!)).toMatchSnapshot();
     });
   }
+
+  /**
+   * Layer 2 — definition lint, over the same six walks.
+   *
+   * The likeliest breakage in a rename is a dangling reference: an activity, or a core op, pointing
+   * at a technique/operation/rule the loader cannot resolve. The six policies together visit every
+   * activity, so the unresolved set they report is the corpus's. It is empty and stays empty —
+   * group-prefix rule expansion in `resolveTechniques`, the `core-ops.ts` names, and the fallback to
+   * the current workflow for an unprefixed ref are what hold it there.
+   */
+  it('reports no unresolved operation refs', () => {
+    const observed = new Set<string>();
+    for (const w of allWalks()) {
+      for (const ref of w.orchestratorUnresolved) observed.add(ref);
+      for (const step of w.steps) for (const ref of step.unresolved) observed.add(ref);
+    }
+    expect([...observed].sort()).toEqual([]);
+  });
+
+  it('reaches every declared activity across the policy matrix', () => {
+    const all = allWalks();
+    const declared = new Set(all[0]!.declaredActivities);
+    const visited = new Set<string>();
+    for (const w of all) for (const a of w.path) visited.add(a);
+    // eslint-disable-next-line no-console
+    console.log(`[coverage] visited ${visited.size}/${declared.size} declared activities`);
+    expect([...declared].filter((a) => !visited.has(a)), 'activities never reached by any policy').toEqual([]);
+  });
+
+  /**
+   * Review mode presents ONLY the checkpoints whose outcome the mode does not already determine.
+   * Every checkpoint below is either in an activity review mode skips (implement) or is gated
+   * `is_review_mode != true`; one surfacing in a review walk is a spurious "skip this create step"
+   * prompt back in the review path.
+   */
+  it('[review-mode] presents no create-mode checkpoints', () => {
+    const fired = new Set(walks.get(reviewModePolicy.name)!.steps.flatMap((s) => s.checkpoints.map((c) => c.checkpointId)));
+    const forbidden = [
+      'switch-model-pre-impl', 'switch-model-post-impl', 'symbol-provenance-confirmed',
+      'implementation-assumption-interview', 'pr-creation', 'issue-verification',
+      'approach-confirmed', 'dco-sign-off-confirmation', 'body-non-conformant',
+      'review-received', 'review-outcome',
+    ];
+    for (const cp of forbidden) expect([...fired]).not.toContain(cp);
+    // The review path IS exercised — not excluding everything by dying early.
+    expect([...fired]).toContain('review-summary-approval');
+  });
 
   /**
    * The server's own gate readings, summed over every activity delivery in the matrix.

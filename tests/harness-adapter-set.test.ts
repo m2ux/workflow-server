@@ -3,7 +3,6 @@ import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { collectFindings } from '../scripts/check-harness-adapter-set.js';
-import { corpusRoot } from './corpus-root.js';
 
 /**
  * The harness adapters are reached through the VALUE of a variable — a harness kind becomes a file and an
@@ -79,10 +78,6 @@ const REGISTERED = { 'claude-code': null, cursor: null, cline: null, generic: nu
 const ALL = ['spawn', 'resume', 'concurrent'];
 
 describe('harness adapter set', () => {
-  it('every harness kind in the corpus resolves to an adapter with exactly the callable slices', () => {
-    expect(collectFindings(corpusRoot()).map((f) => `[${f.check}] ${f.site} — ${f.detail}`)).toEqual([]);
-  });
-
   it('refuses an adapter missing a slice a caller can ask for', () => {
     // Resolving that operation kind would name a section the file does not have.
     expect(checks({ ...REGISTERED, 'claude-code': ['spawn'], cursor: ALL, cline: ALL, generic: ALL }))

@@ -2,8 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { collectUnmappedArtifacts, collectFindings } from '../scripts/check-artifact-guides.js';
-import { corpusRoot } from './corpus-root.js';
+import { collectUnmappedArtifacts } from '../scripts/check-artifact-guides.js';
 
 /**
  * Creation-guide mapping guard (#403 W5). Design principle 28 and the `no-template-creation-guide`
@@ -28,15 +27,6 @@ async function writeResource(resourcesDir: string, name: string, body: string[])
   await mkdir(resourcesDir, { recursive: true });
   await writeFile(join(resourcesDir, name), body.join('\n') + '\n', 'utf-8');
 }
-
-describe('artifact-guides guard (corpus)', () => {
-  // Every corpus artifact either resolves to a guide or is classified in the baseline, so the guard
-  // is clean without suppressing anything silently.
-  it('resolves a guide for every persisted artifact, or finds it triaged', async () => {
-    const findings = await collectFindings(corpusRoot());
-    expect(findings.map((f) => `${f.site} — ${f.detail}`)).toEqual([]);
-  });
-});
 
 describe('artifact-guides guard (fixture corpus)', () => {
   let tempDir: string;
