@@ -45,4 +45,4 @@ The safety floor is never simplified away. No rung above is climbed at the cost 
 - **Anything explicitly requested.** A behaviour the user asked for is in scope by definition and is never simplified away as "unnecessary."
 - **One runnable assert-based check.** Any non-trivial logic carries one runnable check — the smallest thing that fails if the logic breaks: an assert-based `demo()`/`__main__` self-check or one small test file. No frameworks, no fixtures, no per-function suites unless asked. Trivial one-liners need no test; YAGNI applies to tests too.
 
-Everything else is fair game for the ladder. Correctness, security, and performance live here on the floor, which is why the over-engineering review leaves them out of scope: the floor already protects them.
+Everything else is fair game for the ladder. Correctness, security, and performance live here on the floor.

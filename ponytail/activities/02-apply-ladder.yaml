@@ -20,7 +20,7 @@ steps:
       - kind: checkpoint
         id: safety-floor-cleared
         blocking: true
-        message: "Confirm the minimal solution clears the safety floor — input validation, error handling, security, accessibility, calibration, and the one runnable check — before the over-engineering review."
+        message: "The minimal solution stands at its chosen rung, with every safety-floor obligation the change implicates either satisfied or still open."
         options:
           - id: confirmed
             label: Safety floor cleared

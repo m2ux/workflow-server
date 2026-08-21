@@ -46,8 +46,7 @@ The minimal change that solves the problem at the highest reachable [rung](../..
 
 ### 3. Hold the safety floor
 
-- Before settling the change, walk the [safety floor](../../ponytail/resources/the-ladder.md#safety-floor): problem understood, input validation at trust boundaries, error handling that prevents data loss, security, accessibility, hardware calibration, anything explicitly requested. None of these is a rung to climb past.
-- Leave one runnable assert-based check for any non-trivial logic — the floor includes a way to prove the change works.
+- Walk the [safety floor](../resources/the-ladder.md#safety-floor) against the change: every obligation it places is satisfied before the change settles.
 
 ### 4. Mark the ceilings
 

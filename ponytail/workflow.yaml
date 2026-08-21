@@ -12,7 +12,7 @@ tags:
   - yagni
 rules:
   universal:
-    - "safety-floor-never-simplified: The safety floor is never simplified away — understanding the problem, input validation at trust boundaries, error handling that prevents data loss, security, accessibility, hardware calibration, anything explicitly requested, and one runnable assert-based check for non-trivial logic. Backed by the safety-floor-cleared blocking checkpoint and the safety_floor_cleared gate."
+    - "safety-floor-never-simplified: No rung is climbed at the cost of an obligation the ladder places on its safety floor."
     - "understand-before-climb: The real end-to-end flow a change touches is read and traced before a rung is selected. Backed by intake-and-scope preceding apply-ladder in the activity graph."
   workflow:
     - "intensity-and-scope-gate-before-optional: Honour the confirmed intensity and scope before dispatching the optional repo-audit activity — repo-audit is reached only when lazy_intensity is ultra or pass_scope is repo."
