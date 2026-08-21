@@ -32,8 +32,7 @@ The minimal change that solves the problem at the highest reachable [rung](../..
 ### 1. Choose the rung
 
 - When `{lean_brief}` is present, start from its traced flow, reachable rungs, and safety-floor obligations rather than re-deriving them.
-- Walk the [rungs](../../ponytail/resources/the-ladder.md#rungs) from the laziest down: do nothing, delete, reuse what exists, reach for the standard library, reach for a language native, lean on an already-installed dependency, write the one line, write the minimum code that works.
-- Take the highest rung that solves the problem. When two rungs both work, take the higher one.
+- Walk the [rungs](../resources/the-ladder.md#rungs) from the laziest down and take the highest one that solves the understood problem.
 - Let `{lazy_intensity}` govern *how* the code is built, not just how a review flags it:
   - **lite** — build what was asked, then name the lazier alternative in one line and let the user pick.
   - **full** — enforce the ladder as written: highest reachable rung, shortest working diff, shortest explanation.

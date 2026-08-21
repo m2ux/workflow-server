@@ -77,7 +77,7 @@ graph TD
 
 The cross-cutting [`variable-binding`](../meta/techniques/variable-binding.md) technique is declared once at the workflow level and inherited by every activity. Every step binds one of the workflow's standalone techniques.
 
-The lean-coding capability is owned by six standalone top-level techniques, each inheriting the workflow-root [`techniques/TECHNIQUE.md`](techniques/TECHNIQUE.md) base contract. The base contract holds the shared inputs (`task_description`, `target_path`, `lazy_intensity`, `pass_scope`) and rules (`output-discipline`, `take-higher-rung`, `deletion-over-addition`); every technique inherits them and is bound bare as `<op>`.
+The lean-coding capability is owned by standalone top-level techniques, each inheriting the workflow-root [`techniques/TECHNIQUE.md`](techniques/TECHNIQUE.md) base contract and bound bare as `<op>`.
 
 | Technique | Capability |
 |-----------|------------|

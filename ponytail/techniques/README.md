@@ -8,7 +8,7 @@ The technique library for the ponytail workflow. Each operation is one capabilit
 
 ## Base Contract and Standalone Techniques
 
-[`TECHNIQUE.md`](TECHNIQUE.md) holds shared Inputs (`task_description`, `target_path`, `lazy_intensity`, `pass_scope`) and Rules (`output-discipline`, `take-higher-rung`, `deletion-over-addition`) for every technique here.
+[`TECHNIQUE.md`](TECHNIQUE.md) holds the inputs and rules every technique here inherits.
 
 | Technique | Capability | Artifact |
 |-----------|------------|----------|
