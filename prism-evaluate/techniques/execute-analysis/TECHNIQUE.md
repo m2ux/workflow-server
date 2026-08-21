@@ -1,14 +1,14 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Record a triggered prism run from its RUN-MANIFEST.json — the report, definitive findings, artifact paths, and prism-reported completion status — into the evaluation's accumulators. prism generates, enriches, and verifies its own results, so this set only reads the manifest; it does not re-extract findings, re-scan the output directory, or re-verify completion.
+Composes each execution group's prism trigger context and records the resulting run into the evaluation's accumulators, so the analysis stage holds the run's contract artifacts and its reported status.
 
 ## Inputs
 
 ### current_group
 
-The execution group whose prism run is being recorded: `{ pipeline_mode, lenses, dimensions, analysis_focus, output_subdir }`. `read-run-manifest` reads that group's run manifest from its `output_subdir`.
+The execution group being run: `{ pipeline_mode, lenses, dimensions, analysis_focus, output_subdir }`.

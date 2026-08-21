@@ -37,6 +37,7 @@ The technique library for the prism-evaluate workflow. Each operation is one cap
 
 | Operation | Capability |
 |-----------|------------|
+| [`compose-trigger-context`](execute-analysis/compose-trigger-context.md) | Compose one execution group's prism trigger context |
 | [`read-run-manifest`](execute-analysis/read-run-manifest.md) | Record a prism run from its `RUN-MANIFEST.json` (report + definitive-findings paths + status) into the evaluation accumulators |
 
 ### compose-evaluation-report (Consolidate Evaluation Report + Deliver Evaluation Results)
