@@ -121,6 +121,11 @@ part of `test:ci`: fourteen full walks do not belong in the suite every unit-tes
 run waits for, and a coverage regression should not read as a unit-test failure.
 `WF_OPTION_COVERAGE=1` is what the job sets, so nobody has to remember to.
 
+It runs on main and on request, not on every pull request — twenty-five minutes
+is too long to sit in front of a diff, and what it measures is a property of the
+corpus as merged. A change that expects to move coverage can ask for a run on its
+own branch; anything else that moves it turns main red and is fixed forward.
+
 Related and still opt-in: **`all-paths-walk.test.ts`** (`WF_PATH_COVERAGE=1`)
 walks the same coverage mode across every workflow and asserts only that each
 path loads and resolves cleanly — a drift guard on the branches, not a coverage
