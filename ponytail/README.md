@@ -1,6 +1,6 @@
 # Ponytail Lean-Coding Workflow
 
-> v1.0.0 — Drive a coding task, change, or codebase toward the leanest solution that still clears a non-negotiable safety floor, tracking every deliberate simplification as ponytail debt.
+> Drive a coding task, change, or codebase toward the leanest solution that still clears a non-negotiable safety floor, tracking every deliberate simplification as ponytail debt.
 
 ---
 
@@ -15,16 +15,16 @@ Ponytail encodes the discipline of the lazy senior developer — lazy meaning *e
 - Surface and track the deliberate simplifications already sitting in a codebase
 - Get an honest accounting of the lean gain without fabricated savings numbers
 
-The lazy lens has two dials. **Intensity** (`lite` / `full` / `ultra`) sets how aggressively a construct is flagged and how the code is built; **scope** (`change` / `repo`) sets whether the pass covers the diff or the whole tree. Setting either to its widest — `ultra` intensity or `repo` scope — adds the repo-wide audit.
+The lazy lens has two dials. **Intensity** (`lite` / `full` / `ultra`) sets how aggressively a construct is flagged and how the code is built; **scope** (`change` / `repo`) sets whether the pass covers the diff or the whole tree.
 
 ---
 
 ## Adaptation notes (skill → workflow)
 
-This workflow distills the original **[Ponytail](https://github.com/DietrichGebert/ponytail)** project by Dietrich Gebert — an always-on "lazy senior developer" skill set (the ladder, the safety floor, and the over-engineering review / repo audit / debt / gain skills) — into the workflow-server model. Two divergences from the source are intentional:
+This workflow distills the **[Ponytail](https://github.com/DietrichGebert/ponytail)** project by Dietrich Gebert — an always-on "lazy senior developer" skill set — into the workflow-server model.
 
-- **Invoked, not persistent.** The original skill is a per-response lens active on every reply until switched off. This workflow is invoked for a piece of work: intensity is selected once at intake and held for the pass, rather than persisting across a whole session.
-- **Governs what is built, not how you talk.** The skill pairs with Caveman to also shape conversational style; that pairing is out of scope here. The `output-discipline` rule constrains only *unrequested* code-adjacent prose (design notes, feature tours) — not user-facing communication, and never the report artifacts the workflow's own techniques are asked to produce.
+- **Invoked for a piece of work.** Intensity is selected once at intake and held for the pass.
+- **Governs what is built.** The lens shapes the code and the artifacts the pass writes, not conversational style.
 
 ---
 
@@ -60,19 +60,6 @@ graph TD
 
 ---
 
-## Variables
-
-| Variable | Type | Default | Required | Purpose |
-|----------|------|---------|----------|---------|
-| `task_description` | string | — | yes | The coding task, change, or audit target to be made lean |
-| `target_path` | string | `.` | no | Path to the code or repo under the lazy lens |
-| `lazy_intensity` | string | `full` | no | `lite` / `full` / `ultra` — review depth; `ultra` gates in the repo audit |
-| `pass_scope` | string | `change` | no | `change` (diff-scoped) or `repo` (whole-tree); `repo` gates in the repo audit |
-| `safety_floor_cleared` | boolean | `false` | no | Set by the safety-floor checkpoint; gates the transition into review |
-| `has_debt_markers` | boolean | `false` | no | Set during harvest; gates the gain-report tail |
-
----
-
 ## Techniques
 
 The cross-cutting [`variable-binding`](../meta/techniques/variable-binding.md) technique is declared once at the workflow level and inherited by every activity. Every step binds one of the workflow's standalone techniques.
@@ -88,7 +75,7 @@ The lean-coding capability is owned by standalone top-level techniques, each inh
 | `harvest-debt` | Harvest ponytail markers into a debt ledger |
 | `report-gain` | Append an honesty-bounded gain scoreboard to the ledger |
 
-`scope-intake` also binds the cross-workflow [`gitnexus-operations`](../meta/techniques/gitnexus-operations/TECHNIQUE.md) `query` / `context` operations for flow tracing when the codebase is indexed.
+`scope-intake` also reaches the cross-workflow [`gitnexus-operations`](../meta/techniques/gitnexus-operations/TECHNIQUE.md) `query` / `context` operations for flow tracing when the codebase is indexed.
 
 **Detailed documentation:** See [techniques/README.md](techniques/README.md) and [techniques/TECHNIQUE.md](techniques/TECHNIQUE.md).
 
@@ -96,7 +83,7 @@ The lean-coding capability is owned by standalone top-level techniques, each inh
 
 ## Resources
 
-Four single-source reference files carry the discipline the operations apply:
+The reference files carry the discipline the operations apply; each artifact a pass writes also has a creation guide, catalogued in [resources/README.md](resources/README.md).
 
 | Resource | Owns |
 |----------|------|
@@ -113,7 +100,7 @@ Four single-source reference files carry the discipline the operations apply:
 
 ```
 workflows/ponytail/
-├── workflow.yaml                              # Workflow definition (6 variables, audience-partitioned rules, 5 activities)
+├── workflow.yaml                              # Workflow definition — rules, variables, activity graph
 ├── README.md                                  # This file
 ├── activities/
 │   ├── README.md                              # Activities orientation map
@@ -133,8 +120,8 @@ workflows/ponytail/
 │   └── report-gain.md                         # Honesty-bounded gain scoreboard (fills the ledger gain field)
 └── resources/
     ├── README.md                              # Resource catalog
-    ├── the-ladder.md                          # 7 rungs + safety floor + understand-first
-    ├── review-taxonomy.md                     # 5 tags: delete / stdlib / native / yagni / shrink
+    ├── the-ladder.md                          # The rungs, the safety floor, understand-first
+    ├── review-taxonomy.md                     # The over-engineering tags, finding format, scoreboard
     ├── ponytail-marker-convention.md          # ponytail: marker convention + no-trigger
     └── honesty-boundary.md                    # Gain-reporting honesty rule
 ```
