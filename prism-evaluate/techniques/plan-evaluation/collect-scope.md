@@ -21,9 +21,9 @@ The target's base name, derived from `{target_path}`.
 
 The user's description of evaluation goals, focus areas, and concerns.
 
-### output_path
+### evaluation_output_path
 
-Directory for the evaluation artifacts. Used as supplied by the user, or derived from `{target_name}` and the current date when none is supplied.
+Directory for this evaluation's own artifacts. Used as supplied by the user, or derived from `{target_name}` and the current date when none is supplied.
 
 ### dimensions
 
@@ -37,5 +37,5 @@ Directory for the evaluation artifacts. Used as supplied by the user, or derived
 
 - Read `{target_path}` (the path to evaluate) and `{evaluation_description}` (the user's evaluation goals, focus areas, and concerns) from the request.
 - Derive `{target_name}` as the base name of `{target_path}`.
-- Resolve `{output_path}`: use the directory the user supplied, or derive it from `{target_name}` and the current date when none is supplied.
+- Resolve `{evaluation_output_path}`: use the directory the user supplied, or derive it from `{target_name}` and the current date when none is supplied.
 - Capture `{dimensions}` and `{lens_overrides}` when the user provides them; leave each absent otherwise.

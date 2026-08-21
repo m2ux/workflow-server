@@ -30,10 +30,13 @@ variables:
     type: string
     description: Path to the document, proposal, codebase, or artifact set to evaluate
     required: true
+  - name: evaluation_output_path
+    type: string
+    description: Directory to write this evaluation's own artifacts — the plan, the report, and the mitigation plan. Each triggered prism run writes into a subdirectory of it.
+    required: true
   - name: output_path
     type: string
-    description: Directory to write all evaluation artifacts (plan, analysis, report)
-    required: true
+    description: Per-group output directory passed to the triggered prism run — set from evaluation_output_path and the group's output_subdir in the execute-analysis set-trigger-context step
   - name: target_type
     type: string
     description: "Classification of the target: 'document' (single file), 'document-set' (directory of documents), 'codebase' (directory with build files), or 'mixed'"

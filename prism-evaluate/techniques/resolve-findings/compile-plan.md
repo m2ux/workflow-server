@@ -15,6 +15,6 @@ The written `MITIGATION-PLAN.md` path.
 
 ## Protocol
 
-- Compile `{mitigation_plan}` into `{output_path}` using the [mitigation plan template](../../resources/mitigation-plan-template.md#mitigation-plan-template): a `{mitigation_plan.summary_table}` (ID, severity, tier, decision), `{mitigation_plan.detailed_mitigations}` grouped by tier with the full proposed text for each accepted mitigation, and a `{mitigation_plan.implementation_priority}` order.
+- Compile `{mitigation_plan}` into `{evaluation_output_path}` using the [mitigation plan template](../../resources/mitigation-plan-template.md#mitigation-plan-template): a `{mitigation_plan.summary_table}` (ID, severity, tier, decision), `{mitigation_plan.detailed_mitigations}` grouped by tier with the full proposed text for each accepted mitigation, and a `{mitigation_plan.implementation_priority}` order.
 - Record `{mitigation_plan_path}` as the path the `MITIGATION-PLAN.md` document was written to.
 - Verify every finding in `{evaluation_report}` has a corresponding entry in `{mitigation_plan}` (accepted, modified, or skipped).

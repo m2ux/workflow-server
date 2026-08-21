@@ -141,7 +141,7 @@ sequenceDiagram
 For a standard 4-dimension evaluation (Consistency, Veracity, Plausibility, Feasibility):
 
 ```
-{output_path}/
+{evaluation_output_path}/
 ├── evaluation-plan.md              (dimension-to-lens mapping)
 ├── EVALUATION-REPORT.md            (consolidated evaluation)
 ├── consistency/
@@ -161,7 +161,9 @@ For a standard 4-dimension evaluation (Consistency, Veracity, Plausibility, Feas
     └── scarcity.md                 (Feasibility — lens 08)
 ```
 
-Consolidation reads each dimension's `DEFINITIVE-FINDINGS.md` (located from its `RUN-MANIFEST.json`); the raw pass artifacts are prism's internals, not read by this workflow. The resolution dialogue additionally produces a `MITIGATION-PLAN.md`.
+Consolidation reads each dimension's `DEFINITIVE-FINDINGS.md` (located from its `RUN-MANIFEST.json`); the raw pass artifacts are prism's internals, read by prism. The resolution dialogue additionally produces a `MITIGATION-PLAN.md`.
+
+Each per-dimension subdirectory is a triggered prism run's own output folder, addressed as that run's `output_path` and measured for conformance by prism against [prism's guide map](../prism/resources/README.md#planning-artifact-to-guide-map). The three artifacts at the root are this workflow's own, and the ones its [guide map](./resources/README.md#planning-artifact-to-guide-map) covers.
 
 ---
 

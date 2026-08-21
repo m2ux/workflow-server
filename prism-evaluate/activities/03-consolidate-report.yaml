@@ -17,7 +17,7 @@ steps:
     technique:
       name: verify-artifact-conforms
       inputs:
-        artifact_dir: output_path
+        artifact_dir: evaluation_output_path
         guide_map: prism-evaluate/README#planning-artifact-to-guide-map
   - kind: technique
     id: verify-report
