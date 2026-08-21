@@ -1,15 +1,23 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Verify the composed report's finding-ID uniqueness, severity-count consistency between summary and detail, and the absence of any analytical-methodology metadata, then report the written artifact's path, size, and format-validation status.
+Checks the written report against the invariants its readers depend on — unique findings, counts that agree, and no methodology showing through.
 
 ## Protocol
 
-- Verify every finding ID is unique and follows the dimension-prefix convention.
+### 1. Verify Finding Identity
+
+- Verify every finding ID in `{evaluation_report}` is unique and carries its dimension prefix.
+
+### 2. Verify the Counts Agree
+
 - Verify the severity counts in `{evaluation_report.executive_summary}` match the per-dimension detail.
-- Verify `{evaluation_report}` contains no methodology metadata — no lens names, passes, pipeline modes, or analytical-process descriptions.
-- Report the written artifact's path (`{evaluation_report_path}`), size, and format-validation status.
+
+### 3. Verify the Voice
+
+- Verify `{evaluation_report}` names no lens, pass, pipeline mode, or analytical process (`methodology-stripping`).  
+  > Where a check fails, correct the report in place and re-run the three checks over it.

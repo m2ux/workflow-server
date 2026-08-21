@@ -4,8 +4,8 @@ name: Deliver Evaluation Results
 description: Present the final evaluation results to the user.
 steps:
   - kind: technique
-    id: compile-and-present
-    technique: compose-evaluation-report::compile-and-present
+    id: compile-delivery-metrics
+    technique: compose-evaluation-report::compile-delivery-metrics
     actions:
       - action: message
         message: |-

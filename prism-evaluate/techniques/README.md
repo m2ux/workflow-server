@@ -48,7 +48,7 @@ The technique library for the prism-evaluate workflow. Each operation is one cap
 | [`identify-patterns`](compose-evaluation-report/identify-patterns.md) | Identify cross-dimensional patterns across the findings |
 | [`compose-report`](compose-evaluation-report/compose-report.md) | Compose the unified, methodology-stripped `EVALUATION-REPORT.md` |
 | [`verify-report`](compose-evaluation-report/verify-report.md) | Verify the report is standalone, severity-calibrated, and free of methodology language |
-| [`compile-and-present`](compose-evaluation-report/compile-and-present.md) | Compile the delivery metrics and present the results with a deliverable index |
+| [`compile-delivery-metrics`](compose-evaluation-report/compile-delivery-metrics.md) | Compile the evaluation's figures and the index of every artifact produced |
 
 ### resolve-findings (Resolution Dialogue + Apply Accepted Mitigations)
 

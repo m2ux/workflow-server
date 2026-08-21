@@ -1,16 +1,24 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Read each dimension's findings from the prism run's DEFINITIVE-FINDINGS.md contract into the report's per-dimension findings — inheriting prism's IDs, severities, and per-finding fields rather than re-extracting or re-numbering.
+Draws each dimension's findings out of its analysis run and into the report's per-dimension sections, under the identities the run gave them.
 
 ## Protocol
 
-- For each execution group's run in `{completed_analyses}`, read its DEFINITIVE-FINDINGS.md at the `definitive_findings_path`. This is the findings source — the raw pass artifacts (synthesis.md, portfolio-*.md) are never read here.
-- Take each finding's ID, severity, title, description, and remaining fields directly from DEFINITIVE-FINDINGS.md. prism assigned dimension-prefixed IDs (`finding-id-convention`) and post-reconciliation severities (`severity-rubric`); the consolidation inherits both and does not re-number or re-grade.
-- Attribute each finding to its dimension(s) — a group may cover more than one dimension sharing a pipeline mode; use the group's `dimensions` to label them.
-- Record per dimension: dimension name, finding count, finding count by severity, and the list of findings with IDs into `{evaluation_report.dimension_findings}`.  
-  > When a run's manifest `status` is `error` or `partial`, still include its dimension(s) with a note that coverage was incomplete for that dimension, rather than dropping it silently. When a dimension's DEFINITIVE-FINDINGS.md contains no findings, include the dimension with a note that no significant findings were identified.
+### 1. Read Each Run's Findings
+
+- For each run in `{completed_analyses}`, read the findings at its `definitive_findings_path`, taking each finding's ID, severity, title, description, and remaining fields as they stand (`findings-carry-their-source-identity`).
+
+### 2. Attribute Findings to Dimensions
+
+- Label each finding with the dimension it belongs to, from the group's `dimensions` — a group covering more than one dimension shares a pipeline mode across them.
+
+### 3. Record the Per-Dimension Sections
+
+- Record `{evaluation_report.dimension_findings}`: per dimension, its name, finding count, count by severity, and the findings with their IDs.  
+  > A run whose status is `partial` or `error` keeps its dimension in the report, noted as incomplete coverage.  
+  > A dimension whose run found nothing keeps its section, noted as no significant findings.
