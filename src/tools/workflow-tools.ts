@@ -1576,7 +1576,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         lazy_gate_false: lazyFalseGates,
         spent_chars: spentChars,
         eager_budget_chars: Math.floor(eagerBudgetChars),
-        response_chars: responseText.length,
+        // The wire length, batch block included. The block is outside the delivery ledger
+        // — it reports on the handover rather than being part of it — but it does go over
+        // the wire, and this figure is the one that claims to say what did.
+        response_chars: responseText.length + batchBlock.length,
       });
 
       return {
