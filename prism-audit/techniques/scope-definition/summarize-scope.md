@@ -23,4 +23,4 @@ Formatted summary of the audit scope covering target, language, size, indexing s
 
 ### 1. Summarize Scope
 
-- Assemble `{scope_summary}` from `{target_path}`, `{target_metadata}`, `{gitnexus_available}`, `{audit_description}`, and `{audit_output_path}`.
+- Assemble `{scope_summary}` from `{target_path}`, `{target_metadata}`, `{audit_description}`, and `{audit_output_path}`.

@@ -19,9 +19,11 @@ Map of each security-critical symbol to its blast radius `{ direct_callers, affe
 
 ## Protocol
 
-### 1. Map Trust Boundaries
+### 1. Find the Boundary Crossings
 
-- If GitNexus is unavailable (`gitnexus_available` is false), skip this step entirely.
-- Use [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[cypher](../../../meta/techniques/gitnexus-operations/cypher.md) to find cross-community call edges: `MATCH (caller)-[:CodeRelation {type: 'CALLS'}]->(callee), (caller)-[:CodeRelation {type: 'MEMBER_OF'}]->(c1:Community), (callee)-[:CodeRelation {type: 'MEMBER_OF'}]->(c2:Community) WHERE c1 <> c2 RETURN c1.heuristicLabel, c2.heuristicLabel, caller.name, callee.name`. These edges represent trust boundary crossings where validation may be absent.
-- Use [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[impact](../../../meta/techniques/gitnexus-operations/impact.md)`(direction: 'upstream')` on each security-critical symbol identified during characteristic scanning to map its blast radius — every upstream caller is a potential attack vector. Record `{security_blast_radii}`: a map of symbol to `{ direct_callers, affected_processes, affected_modules, risk }`.
-- Record `{trust_boundaries}`: an array of `{ from_community, to_community, crossing_symbols }`. Domains containing trust-boundary-crossing code will receive elevated risk during domain mapping.
+- Query the indexed graph for call edges whose caller and callee sit in different communities, and record `{trust_boundaries}` from them — each crossing is a point where validation may be absent.  
+  > Where the target carries no index, record `{trust_boundaries}` and `{security_blast_radii}` as empty; there is no graph to read them from.
+
+### 2. Measure Each Blast Radius
+
+- For each security-critical symbol the characteristic scan found, measure its upstream reach and record `{security_blast_radii}` — every upstream caller is a path an attacker could arrive by.

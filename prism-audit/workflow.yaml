@@ -75,10 +75,6 @@ variables:
   - name: trade_offs_path
     type: string
     description: Path to DESIGN-TRADE-OFFS.md
-  - name: gitnexus_available
-    type: boolean
-    description: Whether GitNexus has indexed the target codebase — set during scope-definition index-codebase step
-    defaultValue: false
   - name: scope_confirmed
     type: boolean
     description: Whether the user confirmed the audit scope at the confirm-scope checkpoint

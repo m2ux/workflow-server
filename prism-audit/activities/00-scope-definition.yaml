@@ -15,10 +15,6 @@ steps:
       name: gitnexus-operations::analyze
       inputs:
         repo_path: target_path
-    actions:
-      - action: set
-        target: gitnexus_available
-        description: true when indexing succeeds, false otherwise
   - kind: technique
     id: summarize-scope
     technique: summarize-scope
@@ -46,7 +42,7 @@ steps:
     technique: create-output-folder
 outcome:
   - Analysis can begin against a user-confirmed, validated target with a place to land its outputs
-  - The target's GitNexus indexing status is recorded, gating the optional call-graph steps
+  - The target's call graph is indexed, so the prompt can be grounded in what actually calls what
 transitions:
   - to: prompt-generation
     isDefault: true
