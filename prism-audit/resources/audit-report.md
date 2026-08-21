@@ -36,5 +36,5 @@ Creation guide for bare filename `AUDIT-REPORT.md`. The summary a reader opens f
 - **One section is replaced, not summarised.** The inline detailed-findings section becomes the reference line to `DETAILED-FINDINGS.md`. A shortened paraphrase of the findings in its place defeats the split.
 - **Section numbers close the gap.** Lifting a section renumbers the ones after it, and every internal cross-reference that pointed at an old number is corrected. A stale number is a broken report, not a cosmetic issue.
 - **Multi-scope audits merge before writing.** Executive summaries, domain tables and systemic patterns from each scope's report consolidate into one; per-scope reports are not concatenated.
-- **Severities and IDs are inherited.** Both come from the findings contract unchanged — see [detailed-findings](detailed-findings.md).
+- **Severities and IDs are the findings contract's own** — see [detailed-findings](detailed-findings.md).
 - **Line budget:** ~120 lines. A summary longer than that has absorbed content the detailed-findings document owns.

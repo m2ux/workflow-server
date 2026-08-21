@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Assemble the three security-audit deliverables — a summary report, a detailed-findings document, and a design trade-off analysis — from prism's contract artifacts (REPORT.md and DEFINITIVE-FINDINGS.md), and cross-validate them. prism has already extracted findings, enriched blast radius, stripped methodology, and unified IDs, so this set only splits, expands, distils, formats, and verifies — it never re-reads the raw pass artifacts. The operations decompose that into the report-splitting, detailed-findings, trade-off, formatting, and verification phases.
+Assembles the three security-audit deliverables — a summary report, a detailed-findings document, and a design trade-off analysis — from the analysis runs' contract artifacts, and cross-validates them against each other.
 
 ## Inputs
 
@@ -55,7 +55,7 @@ File path to the design trade-off analysis.
 
 ### contract-sources
 
-The deliverables are built solely from prism's contract artifacts, located per scope from `{completed_analyses}`: REPORT.md is the input to report-splitting; DEFINITIVE-FINDINGS.md is the input to detailed-findings and trade-off analysis. Finalization NEVER re-reads the raw pass artifacts (structural-analysis.md, adversarial-analysis.md, synthesis.md, portfolio-*.md) — prism has already extracted, blast-radius-enriched, methodology-stripped, and ID-unified those into its contract artifacts.
+The deliverables are built from each scope's declared contract artifacts, located from `{completed_analyses}`: its report supplies the material the summary report is split from; its definitive findings supply the detailed findings and the trade-off analysis. A run's internal pass artifacts are not a source: what they hold has already been reconciled into the definitive findings, and reading them reintroduces claims the run withdrew.
 
 ### multi-scope-consolidation
 

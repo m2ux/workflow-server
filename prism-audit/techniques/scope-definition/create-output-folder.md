@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Create the audit output directory, materialising `{audit_output_path}` when it does not already exist so subsequent activities can write artifacts into it.
+Materialises the audit's output directory, so the artifacts have somewhere to land.
 
 ## Protocol
 

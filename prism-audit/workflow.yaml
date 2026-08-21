@@ -13,7 +13,6 @@ tags:
 rules:
   workflow:
     - ref: orchestration-model
-    - "CONTRACT REUSE: prism owns analysis, per-unit iteration, blast-radius enrichment, methodology-stripping, finding-ID assignment, and consolidation within a run. This workflow adds only what prism does not: audit-prompt generation (security characteristics, trust boundaries, audit domains), cross-scope consolidation, and the audit deliverables. It sets analysis_focus to the generated audit prompt (naming the scope's security domains so prism assigns domain-prefixed finding IDs), reads prism's contract artifacts (`RUN-MANIFEST.json`, `REPORT.md`, `DEFINITIVE-FINDINGS.md`), and never re-reads prism's raw pass artifacts."
   activity:
     - ref: prism::worker-permissions
     - ref: prism::artifact-verification

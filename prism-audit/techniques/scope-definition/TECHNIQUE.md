@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Establish the audit's scope before analysis begins: collect the target, description, and output location from the user's request; validate that the target is an analysable codebase and gather its structural metadata; summarise the assembled scope for confirmation; and create the output directory. The operations in this set decompose that setup into the input-collection, target-validation, scope-summary, and output-folder phases.
+Settles what the audit covers: the target and its structural metadata, the concerns the audit is for, and the directory its artifacts occupy.
 
 ## Inputs
 

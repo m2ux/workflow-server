@@ -27,7 +27,7 @@ The prism pipeline mode for the scope, taken from `{current_scope}`.
 
 ### analysis_focus
 
-The scope's analysis focus, taken from `{current_scope}` — the audit prompt content describing the scope's security focus areas. Naming the scope's security domain(s) here lets prism assign domain-prefixed finding IDs, so the audit does not re-number findings downstream.
+The scope's analysis focus, taken from `{current_scope}` — the audit prompt content naming the scope's security domains and focus areas. Naming the domains here is what yields domain-prefixed finding IDs the audit deliverables carry through.
 
 ## Protocol
 

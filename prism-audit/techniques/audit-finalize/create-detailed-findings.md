@@ -42,4 +42,4 @@ Every finding in DETAILED-FINDINGS.md carries exactly five fields — Descriptio
 
 ### severities-inherited
 
-Severities are inherited verbatim from DEFINITIVE-FINDINGS.md — prism's post-reconciliation Impact × Feasibility assignments. The audit never re-grades a finding; an intuitive or recomputed severity is a formatting violation.
+Every finding carries the severity its source analysis assigned. A severity arrived at any other way — recomputed, or judged by intuition — is a formatting error in this document, not an assessment of the finding.
