@@ -44,11 +44,12 @@ graph TD
 
     RES -->|"per finding: propose + decide"| RES
     RES --> AC{"apply or plan-only?"}
-    AC --> AM["06 apply-mitigations"]
+    AC -->|"plan-only — target untouched"| Done
+    AC -->|"apply"| AM["06 apply-mitigations"]
     AM --> Done
 ```
 
-The spine is linear — scope, plan, analyse, consolidate, deliver — and ends at `deliver-results` unless the user opts into the resolution dialogue, which then iterates through findings one at a time and applies the accepted mitigations. Two scope/plan checkpoints can loop back to re-scope or re-plan, and `execute-analysis` is a loop: each execution group triggers its own prism run.
+The spine is linear — scope, plan, analyse, consolidate, deliver — and ends at `deliver-results` unless the user opts into the resolution dialogue, which then iterates through findings one at a time. Two scope/plan checkpoints can loop back to re-scope or re-plan, and `execute-analysis` is a loop: each execution group triggers its own prism run. The dialogue ends at the apply confirmation: `apply-mitigations` runs on the answer that asks for it, and the mitigation plan is the final deliverable on the answer that does not.
 
 User checkpoints gate the scope, the plan, the resolution offer, each finding's mitigation, and the final apply; the authoritative options and effects live in each activity's YAML.
 
@@ -140,7 +141,7 @@ sequenceDiagram
 For a standard 4-dimension evaluation (Consistency, Veracity, Plausibility, Feasibility):
 
 ```
-{output_path}/
+{evaluation_output_path}/
 ├── evaluation-plan.md              (dimension-to-lens mapping)
 ├── EVALUATION-REPORT.md            (consolidated evaluation)
 ├── consistency/
@@ -160,7 +161,9 @@ For a standard 4-dimension evaluation (Consistency, Veracity, Plausibility, Feas
     └── scarcity.md                 (Feasibility — lens 08)
 ```
 
-Consolidation reads each dimension's `DEFINITIVE-FINDINGS.md` (located from its `RUN-MANIFEST.json`); the raw pass artifacts are prism's internals, not read by this workflow. The resolution dialogue additionally produces a `MITIGATION-PLAN.md`.
+Consolidation reads each dimension's `DEFINITIVE-FINDINGS.md` (located from its `RUN-MANIFEST.json`); the raw pass artifacts are prism's internals, read by prism. The resolution dialogue additionally produces a `MITIGATION-PLAN.md`.
+
+Each per-dimension subdirectory is a triggered prism run's own output folder, addressed as that run's `output_path` and measured for conformance by prism against [prism's guide map](../prism/resources/README.md#planning-artifact-to-guide-map). The three artifacts at the root are this workflow's own, and the ones its [guide map](./resources/README.md#planning-artifact-to-guide-map) covers.
 
 ---
 

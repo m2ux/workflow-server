@@ -17,6 +17,6 @@ Path to the document, proposal, codebase, or artifact set being evaluated.
 
 The user's description of what to evaluate, the evaluation goals, focus areas, and concerns.
 
-### output_path
+### evaluation_output_path
 
-Directory where the evaluation artifacts are read from and written to.
+Directory where this evaluation's own artifacts are read from and written to. Each triggered prism run writes into a subdirectory of it, addressed through `output_path`.

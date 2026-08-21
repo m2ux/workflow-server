@@ -138,7 +138,7 @@ variables:
     description: True when the work package reviews an existing PR instead of producing a new implementation.
   - name: target_workflow_outcomes
     type: string
-    description: Mode-seeded plain outcome list for meta verify-outcomes. Review mode seeds a review-native list at start-work-package; create path leaves this unset and uses activity outcome lists.
+    description: Plain outcome list a review run is measured against at close-out
   - name: review_mode_ambiguous
     type: boolean
     description: True when review vs create intent cannot be derived confidently from the request.

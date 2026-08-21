@@ -61,7 +61,7 @@ steps:
             description: "A short description of what this group evaluates — the group's dimension name(s) and focus — for prism's report scope statement."
           - action: set
             target: output_path
-            value: "{output_path}/{current_group.output_subdir}"
+            value: "{evaluation_output_path}/{current_group.output_subdir}"
           - action: set
             target: pipeline_mode
             value: "{current_group.pipeline_mode}"

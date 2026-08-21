@@ -17,5 +17,5 @@ Formatted summary of the evaluation scope covering target, target type, dimensio
 
 ### 1. Summarize Scope
 
-- Assemble the scope summary from `{target_path}`, the classified `{target_type}`, the `{dimensions}` array, the user's `{evaluation_description}` and focus areas, and the `{output_path}`.
+- Assemble the scope summary from `{target_path}`, the classified `{target_type}`, the `{dimensions}` array, the user's `{evaluation_description}` and focus areas, and the `{evaluation_output_path}`.
 - Format the assembled `{scope_summary}` for user review.

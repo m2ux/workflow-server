@@ -49,7 +49,7 @@ The written `evaluation-plan.md` path.
 
 ## Protocol
 
-- Compose `{evaluation_plan}` into `{output_path}` using the [evaluation plan template](../../resources/evaluation-plan-template.md#evaluation-plan-template):
+- Compose `{evaluation_plan}` into `{evaluation_output_path}` using the [evaluation plan template](../../resources/evaluation-plan-template.md#evaluation-plan-template):
   - Target Overview — `{target_type}`, `{target_summary}`, `{structure_inventory}`, `{key_topics}`.
   - Dimension Plan — a table mapping each dimension to its `pipeline_mode`, `lenses`, focus areas, and `output_subdir`.
   - Execution Groups — how dimensions are grouped, execution order, and estimated sub-agent dispatch count.

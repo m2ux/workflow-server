@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -25,9 +25,9 @@ Machine-readable dimension-to-lens mapping: an array of `{ dimension, pipeline_m
 
 ## Protocol
 
-- For each dimension, match against the standard table in [dimension-lens-mapping](../../resources/dimension-lens-mapping.md#standard-mappings); when no standard mapping matches, use the [custom dimension mappings](../../resources/dimension-lens-mapping.md#custom-dimension-mappings) table.
+- For each dimension, match against the standard table in [dimension-lens-mapping](../../resources/dimension-lens-mapping.md#standard-mappings); when no standard mapping matches, follow [custom dimension mappings](../../resources/dimension-lens-mapping.md#custom-dimension-mappings) to prism's own lens catalog.
 - When `{lens_overrides}` holds an entry for a dimension name, use the override values in place of the matched mapping.  
-  > When a user-supplied dimension maps to no known prism lens pattern, suggest the closest lens match from the [custom dimension mappings](../../resources/dimension-lens-mapping.md#custom-dimension-mappings) and request confirmation or a `{lens_overrides}` entry for that dimension.
+  > When a user-supplied dimension maps to no known prism lens pattern, suggest the closest lens the catalog names and request confirmation or a `{lens_overrides}` entry for that dimension.
 - For each dimension, compose a substantive `analysis_focus` string describing what to examine within the dimension, drawing on `{structure_inventory}` and `{key_topics}`.
 - Assign each dimension an `output_subdir` per the [output subdirectory convention](../../resources/dimension-lens-mapping.md#output-subdirectory-convention).
 - Record `{dimension_plan}`: an array of `{ dimension, pipeline_mode, lenses, analysis_focus, output_subdir }`.

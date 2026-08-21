@@ -136,7 +136,7 @@ steps:
     actions:
       - action: set
         target: target_workflow_outcomes
-        message: "Seed target_workflow_outcomes with the review-native plain list (no mode predicates in prose): (1) The review close-out (findings, disposition, retrospective) is recorded under the planning folder; (2) Lessons learned are captured to improve future work packages; (3) The temporary worktree this work package created is cleaned up, leaving no orphaned workspaces; (4) Reference monorepo left untouched; (5) Ready for next work package. Create path leaves this unset and uses activity outcome lists."
+        message: "Seed target_workflow_outcomes with the review-native plain list (no mode predicates in prose): (1) The review close-out (findings, disposition, retrospective) is recorded under the planning folder; (2) Lessons learned are captured to improve future work packages; (3) The temporary worktree this work package created is cleaned up, leaving no orphaned workspaces; (4) Reference monorepo left untouched; (5) Ready for next work package. A create run leaves this unset and is measured against the outcomes its own activities reported."
   - kind: technique
     id: derive-host-repo
     technique: version-control::resolve-host-repo

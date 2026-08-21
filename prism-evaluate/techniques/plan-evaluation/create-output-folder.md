@@ -5,11 +5,11 @@ metadata:
 
 ## Capability
 
-Create the evaluation output directory, materialising `{output_path}` when it does not already exist so subsequent activities can write artifacts into it.
+Create the evaluation output directory, materialising `{evaluation_output_path}` when it does not already exist so subsequent activities can write artifacts into it.
 
 ## Protocol
 
 ### 1. Create Output Folder
 
-- Run `mkdir -p {output_path}` to create the output directory when it does not already exist.
+- Run `mkdir -p {evaluation_output_path}` to create the output directory when it does not already exist.
 - Verify the directory exists and is writable before proceeding.
