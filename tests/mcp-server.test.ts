@@ -423,6 +423,86 @@ describe('mcp-server integration', () => {
       expect(content.status).toBe('yielded');
       expect(content.session_index).toBe(nextToken);
     });
+
+    it('admits a gate the activity does not declare when it carries the decision (#477)', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+
+      const yielded = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: {
+          session_index: nextToken,
+          checkpoint_id: 'accept-reviewer-scope-request',
+          message: 'The reviewer asked for the migration script to be covered too. Take it into this work package?',
+          options: [
+            { id: 'accept', label: 'Cover the migration script' },
+            { id: 'defer', label: 'Leave it out and raise it separately' },
+          ],
+        },
+      });
+      expect(parseToolResponse(yielded).status).toBe('yielded');
+
+      // The orchestrator presents the decision the worker supplied, under the id
+      // that says what it decides.
+      const presented = await client.callTool({
+        name: 'present_checkpoint',
+        arguments: { session_index: nextToken },
+      });
+      const checkpoint = parseToolResponse(presented);
+      expect(checkpoint.id).toBe('accept-reviewer-scope-request');
+      expect(checkpoint.declared).toBe(false);
+      expect(checkpoint.message).toContain('migration script');
+      expect((checkpoint.options as Array<{ id: string }>).map(o => o.id)).toEqual(['accept', 'defer']);
+
+      await new Promise(r => setTimeout(r, 3100));
+      const responded = await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_index: nextToken, option_id: 'defer' },
+      });
+      expect(responded.isError).toBeFalsy();
+      expect(parseToolResponse(responded).resolved_option).toBe('defer');
+    });
+
+    it('rejects an option the admitted gate does not offer (#477)', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: {
+          session_index: nextToken,
+          checkpoint_id: 'accept-late-scope',
+          message: 'Take the extra file into scope?',
+          options: [{ id: 'yes', label: 'Yes' }, { id: 'no', label: 'No' }],
+        },
+      });
+      await new Promise(r => setTimeout(r, 3100));
+      const bad = await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_index: nextToken, option_id: 'maybe' },
+      });
+      expect(bad.isError).toBeTruthy();
+    });
+
+    it('a mistyped id with no decision still fails (#477)', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const result = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'issue-verifcation' },
+      });
+      expect(result.isError).toBeTruthy();
+    });
+
+    it('refuses a decision supplied for a checkpoint the activity declares (#477)', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const result = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: {
+          session_index: nextToken,
+          checkpoint_id: 'issue-verification',
+          message: 'Something else entirely',
+          options: [{ id: 'a', label: 'A' }, { id: 'b', label: 'B' }],
+        },
+      });
+      expect(result.isError).toBeTruthy();
+    });
   });
 
 

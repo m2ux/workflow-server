@@ -1423,12 +1423,18 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('yield_checkpoint', 'Worker tool: mark a checkpoint active and yield to the orchestrator (emit `<checkpoint_yield>` with the returned session_index).',
+  server.tool('yield_checkpoint', 'Worker tool: mark a checkpoint active and yield to the orchestrator (emit `<checkpoint_yield>` with the returned session_index). An id the activity declares needs nothing else. A decision the activity did not anticipate carries `message` and `options`, and its id is free to say what it decides.',
     {
       ...sessionIndexParam,
-      checkpoint_id: z.string().describe('Checkpoint id being yielded.'),
+      checkpoint_id: z.string().describe('Checkpoint id being yielded. Matches a checkpoint the current activity declares, or names a decision the activity did not anticipate — the latter requires `message` and `options`.'),
+      message: z.string().min(1).optional().describe('Only for a decision the activity does not declare: the question put to the user. Forbidden on a declared checkpoint, whose definition owns the wording.'),
+      options: z.array(z.object({
+        id: z.string().min(1).describe('Option id the orchestrator answers with.'),
+        label: z.string().min(1).describe('Option text shown to the user.'),
+        description: z.string().optional().describe('What choosing this option means.'),
+      })).min(2).optional().describe('Only for a decision the activity does not declare: at least two answers. The decision is recorded; an option here sets no variable, so a value the run must read belongs on a declared checkpoint.'),
     },
-    withAuditLog('yield_checkpoint', withSessionStoreErrors(async ({ session_index, checkpoint_id }) => {
+    withAuditLog('yield_checkpoint', withSessionStoreErrors(async ({ session_index, checkpoint_id, message, options }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -1443,7 +1449,29 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (!result.success) throw result.error;
 
       const checkpoint = getCheckpoint(result.value, activity_id, checkpoint_id);
-      if (!checkpoint) throw new Error(`Checkpoint not found: ${checkpoint_id} in activity ${activity_id}`);
+      // Two kinds of gate reach this call. One the activity declares, which owns
+      // its wording and its effects. And one for work admitted part-way through
+      // the run, which the activity could not have anticipated and so names its
+      // own decision here (#477). Supplying the decision is what admits the
+      // second kind, so a mistyped id still fails the way it always has — a typo
+      // never arrives carrying a message and two options.
+      const adhoc = message !== undefined && options !== undefined ? { message, options } : undefined;
+      if (checkpoint && adhoc) {
+        throw new Error(
+          `Checkpoint '${checkpoint_id}' is declared by activity '${activity_id}', which owns its message and options. Yield it by id alone.`,
+        );
+      }
+      if (!checkpoint && !adhoc) {
+        throw new Error(
+          `Checkpoint not found: ${checkpoint_id} in activity ${activity_id}. ` +
+          `To decide something this activity does not declare, pass 'message' and at least two 'options' with this id.`,
+        );
+      }
+      if (!checkpoint && (message !== undefined) !== (options !== undefined)) {
+        throw new Error(
+          `Checkpoint '${checkpoint_id}' is not declared by activity '${activity_id}', so it needs both 'message' and 'options'.`,
+        );
+      }
 
       const view = sessionView(state);
       const validation = buildValidation(
@@ -1502,6 +1530,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           checkpointId: checkpoint_id,
           activityId: activity_id,
           yieldedAt,
+          ...(adhoc ? { adhoc } : {}),
         };
         draft.history.push({
           timestamp: yieldedAt,
@@ -1620,7 +1649,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const workflow_id = state.workflowId;
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
-      const checkpoint = getCheckpoint(result.value, active.activityId, active.checkpointId);
+      // A gate for work the activity did not anticipate carries its own decision
+      // on activeCheckpoint, so there is no definition to look up (#477).
+      const checkpoint = active.adhoc
+        ? { id: active.checkpointId, ...active.adhoc, blocking: true, declared: false }
+        : getCheckpoint(result.value, active.activityId, active.checkpointId);
       if (!checkpoint) throw new Error(`Checkpoint not found: ${active.checkpointId} in activity ${active.activityId}`);
 
       const view = sessionView(state);
@@ -1664,7 +1697,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const result = await loadWorkflow(config.workflowDir, state.workflowId);
       if (!result.success) throw result.error;
-      const checkpoint = getCheckpoint(result.value, active.activityId, checkpoint_id);
+      // A gate the activity did not declare carries its options on
+      // activeCheckpoint (#477). It has no defaultOption and no autoAdvanceMs,
+      // so auto-advance and condition-not-met both refuse it below — a decision
+      // admitted mid-run is answered, never timed out.
+      const checkpoint = active.adhoc
+        ? { options: active.adhoc.options, condition: undefined, defaultOption: undefined, autoAdvanceMs: undefined }
+        : getCheckpoint(result.value, active.activityId, checkpoint_id);
       if (!checkpoint) throw new Error(`Checkpoint definition not found: ${checkpoint_id} in activity ${active.activityId}`);
 
       const now = Math.floor(Date.now() / 1000);
@@ -1687,7 +1726,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           throw new Error(`Invalid option '${option_id}' for checkpoint '${checkpoint_id}'. Valid options: [${validIds.join(', ')}]`);
         }
         resolvedOptionId = option_id;
-        effect = option.effect as Record<string, unknown> | undefined;
+        // A gate admitted mid-run records the decision and applies nothing: its
+        // options carry no effect, so a value the run must read belongs on a
+        // checkpoint the activity declares, where the variable model can see it.
+        effect = 'effect' in option ? option.effect as Record<string, unknown> | undefined : undefined;
       } else if (auto_advance) {
         if (!checkpoint.defaultOption || !checkpoint.autoAdvanceMs) {
           throw new Error(
