@@ -270,9 +270,37 @@ export function projectHistory(s: SessionFile, agentId?: string): Record<string,
 }
 
 /**
+ * What one session's own `activity_usage` rows add up to, counting the delta rows and
+ * saying how many rows there were. A session with no rows reports `cost_known: false` —
+ * a child that stopped before reporting still spent, and an absent figure is a gap in
+ * the record rather than a zero (#477).
+ */
+function sessionCost(s: SessionFile | undefined): { cost_known: boolean; rows: number; totals: Record<string, number> } {
+  const events = (s?.history ?? []).filter(e => e.type === 'activity_usage');
+  const totals: Record<string, number> = {};
+  for (const e of events) {
+    if (e.data?.['basis'] !== 'delta') continue;
+    const usage = e.data?.['usage'];
+    if (!usage || typeof usage !== 'object') continue;
+    const u = usage as Record<string, unknown>;
+    for (const key of USAGE_TOKEN_KEYS) {
+      const v = u[key];
+      if (typeof v === 'number' && Number.isFinite(v)) totals[key] = (totals[key] ?? 0) + v;
+    }
+  }
+  return { cost_known: events.length > 0, rows: events.length, totals };
+}
+
+/**
  * Children digest: one line per `triggeredWorkflows` entry of the addressed
- * session. Positional `index`, the child's own identity, and the running
- * status/activity/completed trace read from its embedded `state`.
+ * session. Positional `index`, the child's own identity, the running
+ * status/activity/completed trace read from its embedded `state`, and what that child's
+ * own usage rows come to.
+ *
+ * A child's cost is its own, so it never joins the parent's totals. What it must not do
+ * is vanish: a child that ran and stopped before reporting is the largest single expense
+ * a run can hide, so `cost_known` false says the figure is unavailable rather than nil
+ * (#477).
  */
 export function projectChildren(s: SessionFile): Array<Record<string, unknown>> {
   return (s.triggeredWorkflows ?? []).map((c, i) => {
@@ -284,6 +312,7 @@ export function projectChildren(s: SessionFile): Array<Record<string, unknown>> 
       status: st?.status,
       currentActivity: st?.currentActivity,
       completed: st?.completedActivities ?? [],
+      ...sessionCost(st),
     };
   });
 }
@@ -368,6 +397,7 @@ export function projectUsage(
   elapsed_ms?: number;
   wall_clock_ms_not_additive: boolean;
   activities_without_usage: string[];
+  children_outside_totals: Array<Record<string, unknown>>;
 } {
   const events = (s.history ?? []).filter(e => e.type === 'activity_usage');
   const filtered = agentId === undefined
@@ -423,6 +453,17 @@ export function projectUsage(
   const measured = new Set(events.map(e => e.activity).filter((a): a is string => a !== undefined));
   const activities_without_usage = (s.completedActivities ?? []).filter(a => !measured.has(a));
 
+  // A child workflow spends under its own session, so its cost is not in `totals`. Saying
+  // so, with each child's own figure or `cost_known: false`, is what keeps the largest
+  // expense of a run from being absent from every total at once (#477).
+  const children_outside_totals = (s.triggeredWorkflows ?? []).map((c, i) => ({
+    index: i,
+    sessionIndex: c.sessionIndex,
+    workflowId: c.workflowId,
+    status: c.state?.status,
+    ...sessionCost(c.state),
+  }));
+
   return {
     rows,
     totals,
@@ -431,6 +472,7 @@ export function projectUsage(
     ...(elapsed_ms !== undefined ? { elapsed_ms } : {}),
     wall_clock_ms_not_additive: true,
     activities_without_usage,
+    children_outside_totals,
   };
 }
 
@@ -2104,7 +2146,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     {
       ...sessionIndexParam,
       view: z.enum(INSPECT_SESSION_VIEWS).default('summary')
-        .describe('Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-activity token rows and plain-sum totals from record_usage).'),
+        .describe('Projection: summary (default), identity, variables, checkpoints, activities (completed, skipped, and the outcome each reported), history, children, or usage (per-activity token rows with their basis and measured wall clock, delta totals, each agent\'s latest cumulative figure, the completed activities holding no row, and each child\'s cost outside those totals).'),
       child_index: z.number().int().nonnegative().optional()
         .describe('Optional. Project triggeredWorkflows[child_index].state instead of the parent session.'),
       variable: z.string().optional()
