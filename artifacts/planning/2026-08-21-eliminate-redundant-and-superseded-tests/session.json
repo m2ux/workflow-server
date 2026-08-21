@@ -1,0 +1,1430 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "5.22.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "ESDXHA",
+  "currentActivity": "dispatch-client-workflow",
+  "currentTechnique": "workflow-engine::dispatch-activity",
+  "condition": "isDefault: dispatch-client-workflow",
+  "seq": 18,
+  "ts": 1787318803,
+  "startedAt": "2026-08-21T12:56:30.130Z",
+  "completedActivities": [
+    "discover-session",
+    "initialize-session",
+    "resolve-target"
+  ],
+  "skippedActivities": [],
+  "variables": {
+    "abort_completion": false,
+    "client_initial_activity": "intake-and-scope",
+    "client_planning_slug": "2026-08-21-eliminate-redundant-and-superseded-tests",
+    "client_session_index": "SHG3VM",
+    "client_workflow_completed": false,
+    "component_path": ".",
+    "component_selection_needed": false,
+    "has_saved_state": false,
+    "host_binding_mismatch": false,
+    "host_repo_path": "/home/mike1/projects/dev/workflow-server",
+    "initiative_name": "eliminate-redundant-and-superseded-tests",
+    "is_monorepo": false,
+    "is_resuming": false,
+    "meta_session_index": "ESDXHA",
+    "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-21-eliminate-redundant-and-superseded-tests",
+    "resume_intent_requested": false,
+    "submodules": [],
+    "target_repo": "m2ux/workflow-server",
+    "target_workflow_id": "ponytail",
+    "user_request": "Run the ponytail workflow over the workflow-server test suite: it has grown to 1000+ tests and many are suspected redundant, test theatre, or superseded. Eliminate as many as possible while retaining real value.",
+    "workflow_match_ambiguous": false
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-08-21T12:56:30.130Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "abort_completion": false,
+          "client_workflow_completed": false,
+          "component_path": ".",
+          "component_selection_needed": false,
+          "has_saved_state": false,
+          "host_binding_mismatch": false,
+          "is_monorepo": false,
+          "is_resuming": false,
+          "resume_intent_requested": false,
+          "submodules": [],
+          "user_request": "Run the ponytail workflow over the workflow-server test suite: it has grown to 1000+ tests and many are suspected redundant, test theatre, or superseded. Eliminate as many as possible while retaining real value.",
+          "workflow_match_ambiguous": false
+        }
+      },
+      "timestamp": "2026-08-21T12:56:30.130Z",
+      "type": "variables_seeded"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-08-21T12:57:11.148Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 82860,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-21T12:57:32.857Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 7947,
+        "delivery": "full",
+        "stepId": "resolve-host-repo",
+        "techniqueId": "version-control::resolve-host-repo"
+      },
+      "timestamp": "2026-08-21T12:57:32.857Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "resolve-host-repo"
+      },
+      "timestamp": "2026-08-21T12:57:32.857Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 10264,
+        "delivery": "full",
+        "stepId": "list-available-workflows",
+        "techniqueId": "workflow-engine::list-workflows"
+      },
+      "timestamp": "2026-08-21T12:57:32.857Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "list-available-workflows"
+      },
+      "timestamp": "2026-08-21T12:57:32.857Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 11661,
+        "delivery": "full",
+        "stepId": "match-target",
+        "techniqueId": "workflow-engine::match-target-workflow"
+      },
+      "timestamp": "2026-08-21T12:57:32.857Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "match-target"
+      },
+      "timestamp": "2026-08-21T12:57:32.857Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 10585,
+        "delivery": "full",
+        "stepId": "detect-resume-intent",
+        "techniqueId": "workflow-engine::detect-resume-intent"
+      },
+      "timestamp": "2026-08-21T12:57:32.857Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "detect-resume-intent"
+      },
+      "timestamp": "2026-08-21T12:57:32.857Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 11122,
+        "delivery": "full",
+        "stepId": "extract-context",
+        "techniqueId": "workflow-engine::extract-identifying-context"
+      },
+      "timestamp": "2026-08-21T12:57:32.857Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "extract-context"
+      },
+      "timestamp": "2026-08-21T12:57:32.857Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 11594,
+        "delivery": "full",
+        "stepId": "name-initiative",
+        "techniqueId": "workflow-engine::derive-initiative-name"
+      },
+      "timestamp": "2026-08-21T12:57:32.857Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "name-initiative"
+      },
+      "timestamp": "2026-08-21T12:57:32.857Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 10506,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-08-21T12:58:26.468Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 7947,
+        "delivery": "unchanged",
+        "stepId": "resolve-host-repo",
+        "techniqueId": "version-control::resolve-host-repo"
+      },
+      "timestamp": "2026-08-21T12:58:26.468Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 10264,
+        "delivery": "unchanged",
+        "stepId": "list-available-workflows",
+        "techniqueId": "workflow-engine::list-workflows"
+      },
+      "timestamp": "2026-08-21T12:58:26.468Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 11661,
+        "delivery": "unchanged",
+        "stepId": "match-target",
+        "techniqueId": "workflow-engine::match-target-workflow"
+      },
+      "timestamp": "2026-08-21T12:58:26.468Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 10585,
+        "delivery": "unchanged",
+        "stepId": "detect-resume-intent",
+        "techniqueId": "workflow-engine::detect-resume-intent"
+      },
+      "timestamp": "2026-08-21T12:58:26.468Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 11122,
+        "delivery": "unchanged",
+        "stepId": "extract-context",
+        "techniqueId": "workflow-engine::extract-identifying-context"
+      },
+      "timestamp": "2026-08-21T12:58:26.468Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "chars": 11594,
+        "delivery": "unchanged",
+        "stepId": "name-initiative",
+        "techniqueId": "workflow-engine::derive-initiative-name"
+      },
+      "timestamp": "2026-08-21T12:58:26.468Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "bundled": true,
+        "chars": 1342,
+        "delivery": "full",
+        "resourceId": "meta/resume-intent-lexicon"
+      },
+      "timestamp": "2026-08-21T12:58:26.468Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "usage": {
+          "duration_ms": 118293,
+          "subagent_tokens": 73910,
+          "tool_uses": 14
+        }
+      },
+      "timestamp": "2026-08-21T12:59:30.519Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "target_repo",
+        "source": "variables_changed",
+        "value": "m2ux/workflow-server"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "host_repo_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "host_binding_mismatch",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "target_workflow_id",
+        "source": "variables_changed",
+        "value": "ponytail"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "workflow_match_ambiguous",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "resume_intent_requested",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "initiative_name",
+        "source": "variables_changed",
+        "value": "eliminate-redundant-and-superseded-tests"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "has_saved_state",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "resolve-host-repo"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "host-binding-mismatch"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "list-available-workflows"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "match-target"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "workflow-selection"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "detect-resume-intent"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "extract-context"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "name-initiative"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "scan-planning-folders"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "match-session"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "record-match"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "resume-session"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "worker-00-discover-session-a",
+        "stepId": "record-no-match"
+      },
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-08-21T12:59:46.519Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "chars": 55619,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-21T13:00:02.654Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "chars": 5997,
+        "delivery": "full",
+        "stepId": "derive-planning-slug",
+        "techniqueId": "version-control::initialize-folder"
+      },
+      "timestamp": "2026-08-21T13:00:02.654Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "stepId": "derive-planning-slug"
+      },
+      "timestamp": "2026-08-21T13:00:02.654Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "chars": 12531,
+        "delivery": "full",
+        "stepId": "start-or-resume-session",
+        "techniqueId": "workflow-engine::create-session"
+      },
+      "timestamp": "2026-08-21T13:00:02.654Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "stepId": "start-or-resume-session"
+      },
+      "timestamp": "2026-08-21T13:00:02.654Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "sessionIndex": "SHG3VM",
+        "workflowId": "ponytail"
+      },
+      "timestamp": "2026-08-21T13:00:36.086Z",
+      "type": "workflow_triggered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "usage": {
+          "duration_ms": 57967,
+          "subagent_tokens": 54985,
+          "tool_uses": 7
+        }
+      },
+      "timestamp": "2026-08-21T13:00:58.200Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-08-21T13:01:06.403Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_planning_slug",
+        "source": "variables_changed",
+        "value": "2026-08-21-eliminate-redundant-and-superseded-tests"
+      },
+      "timestamp": "2026-08-21T13:01:06.403Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_session_index",
+        "source": "variables_changed",
+        "value": "SHG3VM"
+      },
+      "timestamp": "2026-08-21T13:01:06.403Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_initial_activity",
+        "source": "variables_changed",
+        "value": "intake-and-scope"
+      },
+      "timestamp": "2026-08-21T13:01:06.403Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "planning_folder_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-21-eliminate-redundant-and-superseded-tests"
+      },
+      "timestamp": "2026-08-21T13:01:06.403Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "meta_session_index",
+        "source": "variables_changed",
+        "value": "ESDXHA"
+      },
+      "timestamp": "2026-08-21T13:01:06.403Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "stepId": "derive-planning-slug"
+      },
+      "timestamp": "2026-08-21T13:01:06.403Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "worker-01-initialize-session-a",
+        "stepId": "start-or-resume-session"
+      },
+      "timestamp": "2026-08-21T13:01:06.403Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-08-21T13:01:06.403Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "chars": 45895,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-21T13:01:22.151Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "chars": 5864,
+        "delivery": "full",
+        "stepId": "detect-monorepo",
+        "techniqueId": "version-control::detect-repo-type"
+      },
+      "timestamp": "2026-08-21T13:01:22.151Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "stepId": "detect-monorepo"
+      },
+      "timestamp": "2026-08-21T13:01:22.151Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "usage": {
+          "duration_ms": 58992,
+          "subagent_tokens": 48842,
+          "tool_uses": 7
+        }
+      },
+      "timestamp": "2026-08-21T13:02:15.697Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-08-21T13:02:22.205Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "is_monorepo",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-21T13:02:22.205Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "component_path",
+        "source": "variables_changed",
+        "value": "."
+      },
+      "timestamp": "2026-08-21T13:02:22.205Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "stepId": "announce-start"
+      },
+      "timestamp": "2026-08-21T13:02:22.205Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "stepId": "detect-monorepo"
+      },
+      "timestamp": "2026-08-21T13:02:22.205Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "stepId": "validate-binding-agreement"
+      },
+      "timestamp": "2026-08-21T13:02:22.205Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "worker-02-resolve-target-a",
+        "stepId": "validate-git-tree"
+      },
+      "timestamp": "2026-08-21T13:02:22.205Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-08-21T13:02:22.205Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 39332,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-21T13:02:36.814Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 20844,
+        "delivery": "full",
+        "stepId": "dispatch-activity",
+        "techniqueId": "workflow-engine::dispatch-activity"
+      },
+      "timestamp": "2026-08-21T13:03:04.941Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "stepId": "dispatch-activity"
+      },
+      "timestamp": "2026-08-21T13:03:04.941Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 15826,
+        "delivery": "full",
+        "resourceId": "meta/planning-readme"
+      },
+      "timestamp": "2026-08-21T13:03:28.696Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-03-dispatch-client-workflow-a",
+        "chars": 5619,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-08-21T13:26:43.789Z",
+      "type": "activity_dispatched"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "SHG3VM",
+      "state": {
+        "agentId": "orchestrator",
+        "checkpointResponses": {
+          "apply-ladder-safety-floor-cleared": {
+            "effects": {
+              "variablesSet": {
+                "safety_floor_cleared": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-08-21T14:14:56.000Z"
+          },
+          "intake-and-scope-intensity-and-scope-confirmed": {
+            "effects": {
+              "variablesSet": {
+                "lazy_intensity": "ultra",
+                "pass_scope": "repo"
+              }
+            },
+            "optionId": "ultra-repo",
+            "respondedAt": "2026-08-21T13:25:59.000Z"
+          }
+        },
+        "completedActivities": [
+          "intake-and-scope"
+        ],
+        "condition": "isDefault: apply-ladder",
+        "currentActivity": "apply-ladder",
+        "currentTechnique": "apply-ladder",
+        "declaredArtifacts": [
+          {
+            "id": "lean_brief",
+            "name": "lean-brief.md",
+            "path": ".ponytail/01-lean-brief.md"
+          }
+        ],
+        "deliveredContent": {
+          "ponytail-worker-a": {
+            "activity_rules:4c5e1c1bbff0d1d7": "4c5e1c1bbff0d1d7",
+            "bundle:rules:253663a8cb4b9c1b": "253663a8cb4b9c1b",
+            "bundle:variable-binding": "60406e1bffd5f7df",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:lean-brief": "8a039b3ff42025ce",
+            "resource:lean-brief#rules": "c5b8fd4b2af855b5",
+            "resource:lean-brief#template": "b59a18cb76713b53",
+            "resource:the-ladder": "f46033ae0cad66de",
+            "resource:the-ladder#rungs": "5909d96c6190d81b",
+            "resource:the-ladder#safety-floor": "5307fc83e47dd9e9",
+            "resource:the-ladder#understand-first": "6cb0437787c34381",
+            "technique:inherited_inputs.items:5ba61f678280008c": "5ba61f678280008c",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:67079c00c41ed96f": "67079c00c41ed96f",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:806155ef2fe1ce90": "806155ef2fe1ce90",
+            "technique:scope-intake": "8d96c384400ae9bc"
+          },
+          "ponytail-worker-b": {
+            "activity_rules:4c5e1c1bbff0d1d7": "4c5e1c1bbff0d1d7",
+            "bundle:rules:253663a8cb4b9c1b": "253663a8cb4b9c1b",
+            "bundle:variable-binding": "60406e1bffd5f7df",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:lean-change": "ff591480ade014b2",
+            "resource:ponytail-marker-convention#convention": "b36f6f425802f273",
+            "resource:the-ladder": "f46033ae0cad66de",
+            "technique:apply-ladder": "4f9cc4f8d7346382",
+            "technique:inherited_inputs.items:84e433f8644f2356": "84e433f8644f2356",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:e23351e96c7ff3b6": "e23351e96c7ff3b6",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:806155ef2fe1ce90": "806155ef2fe1ce90"
+          }
+        },
+        "history": [
+          {
+            "timestamp": "2026-08-21T13:00:36.087Z",
+            "type": "workflow_started"
+          },
+          {
+            "data": {
+              "variables": {
+                "artifact_dir": ".ponytail",
+                "has_debt_markers": false,
+                "lazy_intensity": "full",
+                "pass_scope": "change",
+                "safety_floor_cleared": false,
+                "target_path": ".",
+                "user_request": "Run the ponytail workflow over the workflow-server test suite: it has grown to 1000+ tests and many are suspected redundant, test theatre, or superseded. Eliminate as many as possible while retaining real value."
+              }
+            },
+            "timestamp": "2026-08-21T13:00:36.087Z",
+            "type": "variables_seeded"
+          },
+          {
+            "activity": "intake-and-scope",
+            "timestamp": "2026-08-21T13:04:47.795Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "chars": 44889,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-21T13:05:07.106Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "chars": 5022,
+              "delivery": "full",
+              "stepId": "capture-and-trace",
+              "techniqueId": "scope-intake"
+            },
+            "timestamp": "2026-08-21T13:05:07.106Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "stepId": "capture-and-trace"
+            },
+            "timestamp": "2026-08-21T13:05:07.106Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "chars": 4864,
+              "delivery": "full",
+              "resourceId": "the-ladder"
+            },
+            "timestamp": "2026-08-21T13:05:35.694Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "chars": 1633,
+              "delivery": "full",
+              "resourceId": "lean-brief"
+            },
+            "timestamp": "2026-08-21T13:05:38.316Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-scope",
+            "checkpoint": "intensity-and-scope-confirmed",
+            "timestamp": "2026-08-21T13:14:27.124Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "usage": {
+                "duration_ms": 601220,
+                "subagent_tokens": 65977,
+                "tool_uses": 12
+              }
+            },
+            "timestamp": "2026-08-21T13:15:12.411Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "intake-and-scope",
+            "checkpoint": "intensity-and-scope-confirmed",
+            "data": {
+              "optionId": "ultra-repo"
+            },
+            "timestamp": "2026-08-21T13:25:59.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "name": "lazy_intensity",
+              "source": "setVariable",
+              "value": "ultra"
+            },
+            "timestamp": "2026-08-21T13:25:59.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "name": "pass_scope",
+              "source": "setVariable",
+              "value": "repo"
+            },
+            "timestamp": "2026-08-21T13:25:59.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "chars": 11121,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-21T13:27:38.169Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "chars": 5022,
+              "delivery": "unchanged",
+              "stepId": "capture-and-trace",
+              "techniqueId": "scope-intake"
+            },
+            "timestamp": "2026-08-21T13:27:38.169Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "bundled": true,
+              "chars": 1130,
+              "delivery": "full",
+              "resourceId": "the-ladder#understand-first"
+            },
+            "timestamp": "2026-08-21T13:27:38.169Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "bundled": true,
+              "chars": 1671,
+              "delivery": "full",
+              "resourceId": "the-ladder#safety-floor"
+            },
+            "timestamp": "2026-08-21T13:27:38.169Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "bundled": true,
+              "chars": 607,
+              "delivery": "full",
+              "resourceId": "lean-brief#template"
+            },
+            "timestamp": "2026-08-21T13:27:38.169Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "bundled": true,
+              "chars": 662,
+              "delivery": "full",
+              "resourceId": "lean-brief#rules"
+            },
+            "timestamp": "2026-08-21T13:27:38.169Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "bundled": true,
+              "chars": 1576,
+              "delivery": "full",
+              "resourceId": "the-ladder#rungs"
+            },
+            "timestamp": "2026-08-21T13:27:38.169Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "usage": {
+                "duration_ms": 74494,
+                "note": "continuation delta past the intensity-and-scope gate",
+                "subagent_tokens": 71766,
+                "tool_uses": 6
+              }
+            },
+            "timestamp": "2026-08-21T13:28:49.418Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "intake-and-scope",
+            "timestamp": "2026-08-21T13:28:57.612Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "name": "lean_brief",
+              "source": "variables_changed",
+              "value": ".ponytail/01-lean-brief.md"
+            },
+            "timestamp": "2026-08-21T13:28:57.612Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "name": "lazy_intensity",
+              "source": "variables_changed",
+              "value": "ultra"
+            },
+            "timestamp": "2026-08-21T13:28:57.612Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "name": "pass_scope",
+              "source": "variables_changed",
+              "value": "repo"
+            },
+            "timestamp": "2026-08-21T13:28:57.612Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "stepId": "capture-and-trace"
+            },
+            "timestamp": "2026-08-21T13:28:57.612Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-scope",
+            "data": {
+              "agentId": "ponytail-worker-a",
+              "stepId": "intensity-and-scope-confirmed"
+            },
+            "timestamp": "2026-08-21T13:28:57.612Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "apply-ladder",
+            "timestamp": "2026-08-21T13:28:57.612Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "ponytail-worker-b",
+              "chars": 37952,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-21T13:29:19.896Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "ponytail-worker-b",
+              "chars": 5073,
+              "delivery": "full",
+              "stepId": "climb-ladder",
+              "techniqueId": "apply-ladder"
+            },
+            "timestamp": "2026-08-21T13:29:26.871Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "ponytail-worker-b",
+              "stepId": "climb-ladder"
+            },
+            "timestamp": "2026-08-21T13:29:26.871Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "ponytail-worker-b",
+              "chars": 4864,
+              "delivery": "full",
+              "resourceId": "the-ladder"
+            },
+            "timestamp": "2026-08-21T13:29:45.383Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "ponytail-worker-b",
+              "chars": 1540,
+              "delivery": "full",
+              "resourceId": "lean-change"
+            },
+            "timestamp": "2026-08-21T13:29:48.107Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "ponytail-worker-b",
+              "chars": 1493,
+              "delivery": "full",
+              "resourceId": "ponytail-marker-convention#convention"
+            },
+            "timestamp": "2026-08-21T13:29:51.153Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "apply-ladder",
+            "checkpoint": "safety-floor-cleared",
+            "timestamp": "2026-08-21T14:03:05.064Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "ponytail-worker-b",
+              "usage": {
+                "duration_ms": 2053269,
+                "subagent_tokens": 226197,
+                "tool_uses": 163
+              }
+            },
+            "timestamp": "2026-08-21T14:05:00.139Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "apply-ladder",
+            "checkpoint": "safety-floor-cleared",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-08-21T14:14:56.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "name": "safety_floor_cleared",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-21T14:14:56.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "ponytail-worker-b",
+              "chars": 2825,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-21T14:15:35.518Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "ponytail-worker-b",
+              "usage": {
+                "duration_ms": 68484,
+                "note": "continuation delta past the safety-floor gate",
+                "subagent_tokens": 221392,
+                "tool_uses": 4
+              }
+            },
+            "timestamp": "2026-08-21T14:16:56.555Z",
+            "type": "activity_usage"
+          }
+        ],
+        "repo": "m2ux/workflow-server",
+        "schemaVersion": 1,
+        "seq": 22,
+        "sessionIndex": "SHG3VM",
+        "skippedActivities": [],
+        "startedAt": "2026-08-21T13:00:36.087Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1787321816,
+        "variables": {
+          "artifact_dir": ".ponytail",
+          "has_debt_markers": false,
+          "lazy_intensity": "ultra",
+          "lean_brief": ".ponytail/01-lean-brief.md",
+          "pass_scope": "repo",
+          "safety_floor_cleared": true,
+          "target_path": ".",
+          "user_request": "Run the ponytail workflow over the workflow-server test suite: it has grown to 1000+ tests and many are suspected redundant, test theatre, or superseded. Eliminate as many as possible while retaining real value."
+        },
+        "workflowId": "ponytail",
+        "workflowVersion": "2.0.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-08-21T13:00:36.086Z",
+      "triggeredFrom": {
+        "activityId": "initialize-session"
+      },
+      "workflowId": "ponytail"
+    }
+  ],
+  "deliveredContent": {
+    "worker-00-discover-session-a": {
+      "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+      "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+      "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+      "resource:meta/resume-intent-lexicon": "bf916e23964b842d",
+      "technique:inherited_inputs.items:13b9f9019e9b2d7b": "13b9f9019e9b2d7b",
+      "technique:inherited_inputs.items:bc00dc1c96282770": "bc00dc1c96282770",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:8523594312b4a179": "8523594312b4a179",
+      "technique:inherited_inputs:b142eecc28c90202": "b142eecc28c90202",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:0dc19d41349208db": "0dc19d41349208db",
+      "technique:rules:747dfeb00117d373": "747dfeb00117d373",
+      "technique:rules:be94a1e5beea0046": "be94a1e5beea0046",
+      "technique:rules:bebf7182af1f0a1d": "bebf7182af1f0a1d",
+      "technique:version-control::resolve-host-repo": "da0a8d216d72dbcd",
+      "technique:workflow-engine::derive-initiative-name": "bfbcf5bbb11aaaca",
+      "technique:workflow-engine::detect-resume-intent": "b98260c8b411f2d9",
+      "technique:workflow-engine::extract-identifying-context": "7900198316102095",
+      "technique:workflow-engine::list-workflows": "fb76525498c90f02",
+      "technique:workflow-engine::match-target-workflow": "41806d93ecb8056f"
+    },
+    "worker-01-initialize-session-a": {
+      "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+      "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+      "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+      "technique:inherited_inputs.items:13b9f9019e9b2d7b": "13b9f9019e9b2d7b",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:8523594312b4a179": "8523594312b4a179",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:b7415c0f0d1a9c70": "b7415c0f0d1a9c70",
+      "technique:rules:be94a1e5beea0046": "be94a1e5beea0046",
+      "technique:version-control::initialize-folder": "6d42879983c06fbc",
+      "technique:workflow-engine::create-session": "d0fe7af461e03e40"
+    },
+    "worker-02-resolve-target-a": {
+      "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+      "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+      "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+      "technique:inherited_inputs.items:7f611a069f20416a": "7f611a069f20416a",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:ef999f0b85d386ef": "ef999f0b85d386ef",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:b7415c0f0d1a9c70": "b7415c0f0d1a9c70",
+      "technique:version-control::detect-repo-type": "12a6bff445fbf872"
+    },
+    "worker-03-dispatch-client-workflow-a": {
+      "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+      "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+      "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+      "resource:meta/planning-readme": "ff7003e07d680f06",
+      "technique:inherited_inputs.items:597a0c34be634888": "597a0c34be634888",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:61351655c5970c45": "61351655c5970c45",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:3bb041a8f7f55836": "3bb041a8f7f55836",
+      "technique:workflow-engine::dispatch-activity": "dfb373fd77d863d7"
+    }
+  },
+  "repo": "m2ux/workflow-server"
+}
