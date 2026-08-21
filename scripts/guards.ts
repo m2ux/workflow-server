@@ -137,6 +137,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'no step interpolates its own set target into its technique inputs',
   },
   {
+    id: 'self-composed-set',
+    script: 'scripts/check-self-composed-set.ts',
+    npmScript: 'check:self-composed-set',
+    scope: 'corpus',
+    json: false,
+    proves: 'no set action builds its value out of the variable it writes',
+  },
+  {
     id: 'activity-technique-overlap',
     script: 'scripts/check-activity-technique-overlap.ts',
     npmScript: 'check:activity-tech',
