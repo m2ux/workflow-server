@@ -81,7 +81,7 @@ These techniques are inherited or bound cross-workflow, not authored here:
 |-----------|----------|
 | [`variable-binding`](../../meta/techniques/variable-binding.md) | Declared once at the workflow level (`techniques.activity`) and inherited by every activity — binds each step's operation to the workflow-scoped variable bag |
 | [`workflow-engine::handle-sub-workflow`](../../meta/techniques/workflow-engine/handle-sub-workflow.md) | Bound in `execute-analysis` to trigger the prism workflow as a child, once per audit scope |
-| [`gitnexus-operations::analyze`](../../meta/techniques/gitnexus-operations/analyze.md) | Bound in `scope-definition` to index the target codebase (sets `gitnexus_available`) |
+| [`gitnexus-operations::analyze`](../../meta/techniques/gitnexus-operations/analyze.md) | Bound in `scope-definition` to index the target codebase |
 | [`scatter-gather`](../../meta/techniques/scatter-gather.md) | Declared on the `execute-analysis` activity as its activity-wide strategy technique for the per-scope trigger loop |
 
 For the full technique-to-activity picture with capability summaries, see the [workflow README](../README.md#techniques).

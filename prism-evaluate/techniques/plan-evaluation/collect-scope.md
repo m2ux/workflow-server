@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Establish the evaluation scope from the user's request: read the target path and the evaluation description, capture any user-supplied dimensions and lens overrides, derive the target's base name, and resolve the output directory.
+Establishes the evaluation scope from the user's request — what to evaluate, against what goals, and where the artifacts land.
 
 ## Outputs
 
@@ -15,7 +15,7 @@ Path to the target to evaluate, as supplied by the user.
 
 ### target_name
 
-The target's base name, derived from `{target_path}`.
+The target's base name.
 
 ### evaluation_description
 
@@ -23,19 +23,22 @@ The user's description of evaluation goals, focus areas, and concerns.
 
 ### evaluation_output_path
 
-Directory for this evaluation's own artifacts. Used as supplied by the user, or derived from `{target_name}` and the current date when none is supplied.
+Directory for the evaluation artifacts: the directory the user supplied, or one named from `{target_name}` and the current date when the user supplied none.
 
 ### dimensions
 
-*(optional)* Evaluation dimensions supplied by the user, each `{ name, description, focus_areas }`. Absent when the user provides none — `derive-dimensions` then derives them.
+*(optional)* Evaluation dimensions supplied by the user, each `{ name, description, focus_areas }`. Absent when the user supplied none.
 
 ### lens_overrides
 
-*(optional)* User-specified lens overrides per dimension. Keys are dimension names, values are `{ pipeline_mode, lenses }`. Absent when the user provides none.
+*(optional)* Lens overrides supplied by the user, keyed by dimension name, each `{ pipeline_mode, lenses }`. Absent when the user supplied none.
 
 ## Protocol
 
-- Read `{target_path}` (the path to evaluate) and `{evaluation_description}` (the user's evaluation goals, focus areas, and concerns) from the request.
-- Derive `{target_name}` as the base name of `{target_path}`.
-- Resolve `{evaluation_output_path}`: use the directory the user supplied, or derive it from `{target_name}` and the current date when none is supplied.
-- Capture `{dimensions}` and `{lens_overrides}` when the user provides them; leave each absent otherwise.
+### 1. Read the Request
+
+- Read `{target_path}` and `{evaluation_description}` from the request, and derive `{target_name}` as the base name of `{target_path}`.
+
+### 2. Resolve the Scope
+
+- Resolve `{evaluation_output_path}`, and capture `{dimensions}` and `{lens_overrides}` where the request carries them.

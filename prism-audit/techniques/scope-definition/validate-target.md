@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Confirm the target is an analysable codebase and gather its structural metadata: verify the path exists and holds source files, detect project markers to identify the build system and primary language, and report the top-level structure and estimated size.
+Establishes that the target is a codebase an audit can analyse, and what kind of codebase it is.
 
 ## Outputs
 
@@ -27,11 +27,11 @@ The target's top-level directory layout
 
 ## Protocol
 
-### 1. Validate Target
+### 1. Confirm the Target Is Analysable
 
-- Verify `{target_path}` exists and contains analysable source files.
-- Check for project markers to confirm it is a codebase: `Cargo.toml` (Rust), `package.json` (JS/TS), `go.mod` (Go), `pyproject.toml` (Python), and equivalents.
-- Identify the primary language and build system from the detected markers.
-- Report the top-level directory structure.
-- Estimate the codebase size (lines of code, excluding tests, docs, and generated files).
-  > If `{target_path}` does not exist or contains no analysable source files, surface the path as invalid and request a corrected target before proceeding.
+- Verify `{target_path}` exists and holds source files, and check it for the project markers that mark a codebase: `Cargo.toml` (Rust), `package.json` (JS/TS), `go.mod` (Go), `pyproject.toml` (Python), and their equivalents.  
+  > Where the path is absent or holds no source files, record it as an invalid target rather than a codebase whose metadata came back empty.
+
+### 2. Gather the Structural Metadata
+
+- Record `{target_metadata}`: `{target_metadata.primary_language}` from the markers found, `{target_metadata.top_level_structure}` from the directory layout, and `{target_metadata.estimated_size}` in lines of code, excluding tests, docs, and generated files.

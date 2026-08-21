@@ -1,17 +1,23 @@
 id: apply-mitigations
-version: 1.4.0
+version: 2.0.0
 name: Apply Accepted Mitigations
 description: Apply accepted mitigations to the target document.
 steps:
   - kind: technique
     id: apply-changes
     technique: resolve-findings::apply-changes
+    actions:
+      - action: message
+        message: |-
+          {applied_changes}
+
+          The target is [{target_name}]({target_path}); the plan it was applied from is [the mitigation plan]({mitigation_plan_path}).
   - kind: technique
     id: commit-changes
     technique:
       name: version-control::commit-regular-files
       inputs:
-        paths: target_path, mitigation_plan_path
+        paths: changed_paths
         commit_message: "docs({target_name}): apply evaluation mitigations"
         branch: current
 outcome:

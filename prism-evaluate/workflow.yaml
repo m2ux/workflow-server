@@ -1,5 +1,5 @@
 id: prism-evaluate
-version: 1.4.0
+version: 2.0.0
 title: Evaluation Workflow
 description: Orchestrate multi-dimensional evaluations by mapping user-defined evaluation dimensions to prism analytical lenses.
 author: m2ux
@@ -13,8 +13,6 @@ tags:
 rules:
   workflow:
     - ref: prism-audit::orchestration-model
-    - Agents MUST NOT proceed past blocking checkpoints without user confirmation — auto-resolving a checkpoint is a protocol violation
-    - "CONTRACT REUSE: prism owns analysis, per-unit iteration, blast-radius enrichment, methodology-stripping, finding-ID assignment, and consolidation within a run. This workflow adds only what prism does not: evaluation dimensions, cross-dimensional synthesis, and the resolution dialogue. It sets analysis_focus to the dimension-specific evaluation guidance (naming the dimension so prism assigns dimension-prefixed IDs), reads prism's contract artifacts (`RUN-MANIFEST.json`, `REPORT.md`, `DEFINITIVE-FINDINGS.md`), and never re-reads prism's raw pass artifacts."
   activity:
     - ref: prism::worker-permissions
     - ref: prism::artifact-verification
@@ -24,7 +22,7 @@ techniques:
 variables:
   - name: evaluation_description
     type: string
-    description: User's description of what to evaluate, the evaluation goals, and any specific focus areas or concerns
+    description: What to evaluate, the evaluation's goals, and its focus areas or concerns
     required: true
   - name: target_path
     type: string
@@ -32,83 +30,85 @@ variables:
     required: true
   - name: evaluation_output_path
     type: string
-    description: Directory holding this evaluation's own artifacts — the plan, the report, and the mitigation plan
+    description: Directory the evaluation artifacts are written to
     required: true
-  - name: output_path
+  - name: evaluation_target_type
     type: string
-    description: Per-group output directory for the triggered prism run, one subdirectory of the evaluation output path
-  - name: target_type
-    type: string
-    description: "Classification of the target: 'document' (single file), 'document-set' (directory of documents), 'codebase' (directory with build files), or 'mixed'"
+    description: "The target's kind: document | document-set | codebase | mixed"
   - name: target
     type: string
-    description: Per-group evaluation target for the triggered prism run
+    description: The evaluation target an analysis run analyses
+  - name: target_type
+    type: string
+    description: "The target's kind in the analysis run's vocabulary: general | code"
+  - name: output_path
+    type: string
+    description: The output location of the execution group under analysis
   - name: target_description
     type: string
-    description: Per-group description for the triggered prism run's report scope statement — the group's dimension names and focus
+    description: Short description of what an execution group evaluates
   - name: dimensions
     type: array
-    description: "Evaluation dimensions to assess. Each dimension: { name, description, focus_areas }. User-supplied or derived from evaluation_description during scope-definition."
+    description: "The evaluation dimensions, each { name, description, focus_areas }"
   - name: dimension_plan
     type: array
-    description: "Maps each dimension to prism configuration: { dimension, pipeline_mode, lenses, analysis_focus, output_subdir }. Produced by dimension-planning."
+    description: "Per-dimension prism configuration, each { dimension, pipeline_mode, lenses, analysis_focus, output_subdir }"
   - name: lens_overrides
     type: object
-    description: Optional user-specified lens overrides per dimension. Keys are dimension names, values are { pipeline_mode, lenses }. When provided, override the derived mapping for that dimension.
+    description: "Lens overrides keyed by dimension name, each { pipeline_mode, lenses }"
   - name: execution_groups
     type: array
-    description: "Dimensions grouped by pipeline mode for efficient prism triggering. Each group: { pipeline_mode, lenses, dimensions, analysis_focus, output_subdir }."
+    description: "Dimensions grouped for triggering, each { pipeline_mode, lenses, dimensions, analysis_focus, output_subdir }"
   - name: current_group
     type: object
-    description: Current execution group during the execute-analysis iteration loop
+    description: The execution group under analysis
   - name: completed_analyses
     type: array
-    description: "Array of completed prism runs, each read from that run's `RUN-MANIFEST.json`: { report_path, definitive_findings_path, status } plus the run's group reference"
+    description: "Completed analysis runs, each { report_path, definitive_findings_path, status }"
   - name: all_artifact_paths
     type: array
-    description: Accumulated paths to all analysis artifacts across triggered prism workflows
+    description: Paths to every analysis artifact the runs produced
   - name: evaluation_report_path
     type: string
-    description: Path to the final `EVALUATION-REPORT.md`
+    description: Path to the `EVALUATION-REPORT.md` artifact
   - name: evaluation_plan_path
     type: string
     description: Path to the `evaluation-plan.md` artifact
   - name: scope_confirmed
     type: boolean
-    description: Whether the user confirmed the evaluation scope at the confirm-scope checkpoint
+    description: Whether the user confirmed the evaluation scope
     defaultValue: false
   - name: dimensions_confirmed
     type: boolean
-    description: Whether the user confirmed the dimension-to-lens mapping at the confirm-plan checkpoint
+    description: Whether the user confirmed the dimension-to-lens mapping
     defaultValue: false
   - name: pipeline_mode
     type: string
-    description: Prism pipeline mode for the current execution group. Set per-group during execute-analysis from the dimension plan — not used as a global default. Fallback value applies only to custom dimensions where no mapping pattern matches.
+    description: "The prism pipeline mode an execution group runs under: full-prism | portfolio | single"
     defaultValue: full-prism
-  - name: gitnexus_available
-    type: boolean
-    description: Whether GitNexus has indexed the target — relevant only for codebase targets
-    defaultValue: false
   - name: resolution_requested
     type: boolean
-    description: Whether the user opted to proceed with the resolution dialogue after evaluation delivery
+    description: Whether the user opted into the resolution dialogue
     defaultValue: false
   - name: mitigation_plan_path
     type: string
-    description: Path to the `MITIGATION-PLAN.md` artifact produced by the resolution dialogue
+    description: Path to the `MITIGATION-PLAN.md` artifact
   - name: current_finding
     type: object
-    description: Current finding being presented during the resolution dialogue iteration loop
+    description: The finding under consideration
   - name: accepted_mitigations
     type: array
-    description: "Array of accepted mitigation decisions: { finding_id, finding_severity, mitigation_type, mitigation_summary, user_decision }"
+    description: "Per-finding dispositions, each { finding_id, finding_severity, mitigation_type, mitigation_summary, user_decision }"
   - name: evaluation_findings
     type: array
-    description: "Findings extracted from the evaluation report, iterated during the resolution dialogue (each: finding ID, severity, claim, critique, mitigation tier)."
+    description: "The report's findings, each carrying an ID, severity, claim, critique, and mitigation tier"
   - name: accepted_count
     type: number
-    description: Count of accepted mitigations, interpolated into the confirm-apply checkpoint message.
+    description: How many findings carry an accepted or modified disposition
     defaultValue: 0
+  - name: finding_disposition
+    type: string
+    description: "Disposition taken on the current finding: accept | modify | skip | discuss"
   - name: mitigations_apply_requested
     type: boolean
     description: Whether the user asked for the accepted mitigations to be applied to the target

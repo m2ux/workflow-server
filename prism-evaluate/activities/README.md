@@ -2,11 +2,11 @@
 
 > Part of the [Evaluation Workflow](../README.md)
 
-## Activities (7)
+## Activities
 
-A pipeline that classifies a target, plans dimension-to-lens mappings, runs prism per dimension group, consolidates a report, and optionally resolves and applies mitigations. Several activities gate on a user checkpoint; the final two run only when the user opts into resolution.
+A pipeline that classifies a target, plans its dimension-to-lens mappings, runs one analysis per dimension group, consolidates a report, and optionally resolves and applies mitigations.
 
-This file is an orientation map. The authoritative definition of each activity — its steps, checkpoints, conditions, loops, and transitions — lives in the per-activity YAML linked from each section below and is served by `get_activity`.
+This file orients. Each activity's steps, checkpoints, conditions, loops and transitions are defined in the YAML linked from its section.
 
 ```mermaid
 graph LR
@@ -20,13 +20,11 @@ graph LR
     RES -->|"plan only"| End
 ```
 
-Steps bind their domain operation via `step.technique`; the cross-cutting `variable-binding` strategy technique is declared once at the workflow level and inherited by every activity. The bound operations per activity are catalogued in the [technique library](../techniques/README.md).
-
 ---
 
 ### 00. Define Evaluation Scope
 
-Collect the target, evaluation description, and output path; classify the target type (document / document-set / codebase / mixed); derive or validate the evaluation dimensions; and summarise the assembled scope for user confirmation before planning. **Value:** planning starts against a confirmed, classified target with an agreed dimension set and a place to land outputs.
+**Value:** planning starts against a target whose kind is known, a dimension set the user agreed to, and a directory the outputs can land in.
 
 Definition: [`00-scope-definition.yaml`](00-scope-definition.yaml). Leads to [Plan Dimension Analysis](#01-plan-dimension-analysis).
 
@@ -34,7 +32,7 @@ Definition: [`00-scope-definition.yaml`](00-scope-definition.yaml). Leads to [Pl
 
 ### 01. Plan Dimension Analysis
 
-Survey the target, map each dimension to prism pipeline modes and lenses (respecting any user lens overrides), group dimensions that share a pipeline mode into execution groups, and write the human-readable `evaluation-plan.md` for user confirmation before any prism run. **Value:** each dimension is matched to the lenses that will surface its target-specific findings, grouped into runnable batches the analysis stage can execute directly.
+**Value:** each dimension is matched to the lenses that will surface its findings in this particular target, grouped into runs the analysis stage can execute directly.
 
 Definition: [`01-dimension-planning.yaml`](01-dimension-planning.yaml). Leads to [Execute Prism Analyses](#02-execute-prism-analyses).
 
@@ -42,7 +40,7 @@ Definition: [`01-dimension-planning.yaml`](01-dimension-planning.yaml). Leads to
 
 ### 02. Execute Prism Analyses
 
-Trigger the generic prism workflow once per execution group and record each run from its `RUN-MANIFEST.json` — prism verifies its own completion, so a run the manifest flags `partial`/`error` is surfaced rather than dropped. **Value:** every planned dimension is analysed through the prism pipeline, yielding the per-dimension `DEFINITIVE-FINDINGS.md` consolidation draws on, with gaps made visible.
+**Value:** every planned dimension is analysed, and a run that came back incomplete is visible as a coverage gap rather than a missing dimension.
 
 Definition: [`02-execute-analysis.yaml`](02-execute-analysis.yaml). Leads to [Consolidate Evaluation Report](#03-consolidate-evaluation-report).
 
@@ -50,7 +48,7 @@ Definition: [`02-execute-analysis.yaml`](02-execute-analysis.yaml). Leads to [Co
 
 ### 03. Consolidate Evaluation Report
 
-Read each dimension's findings from prism's `DEFINITIVE-FINDINGS.md` (inheriting prism's IDs and severities), identify cross-dimensional patterns, compose the unified `EVALUATION-REPORT.md`, and verify it. The report is methodology-stripped (no lens or pipeline-mode names), standalone, and severity-calibrated on the Impact × Feasibility rubric prism already applied. **Value:** the consumer gets a single severity-calibrated evaluation — cross-dimensional findings and actionable recommendations to decide from.
+**Value:** one severity-calibrated evaluation to decide from, carrying what holds across dimensions and reading as a document about the target rather than about the analysis.
 
 Definition: [`03-consolidate-report.yaml`](03-consolidate-report.yaml). Leads to [Deliver Evaluation Results](#04-deliver-evaluation-results).
 
@@ -58,7 +56,7 @@ Definition: [`03-consolidate-report.yaml`](03-consolidate-report.yaml). Leads to
 
 ### 04. Deliver Evaluation Results
 
-Compile the delivery metrics and present the results with a complete artifact index, then offer the choice to continue into the resolution dialogue or stop with the report as the final deliverable. **Value:** the user can see what the evaluation found and where every deliverable lives, and decides whether to move into resolving the findings or stop here.
+**Value:** the user can see what the evaluation found and where every deliverable lives, and chooses whether to carry on into resolving the findings.
 
 Definition: [`04-deliver-results.yaml`](04-deliver-results.yaml). Leads to [Resolution Dialogue](#05-resolution-dialogue) when resolution is requested; otherwise the workflow ends.
 
@@ -66,14 +64,14 @@ Definition: [`04-deliver-results.yaml`](04-deliver-results.yaml). Leads to [Reso
 
 ### 05. Resolution Dialogue
 
-Load the findings from the report and tier-classify them by mitigation difficulty, then work through them one finding at a time — proposing a finding-specific mitigation and collecting the user's decision on each — compile the dispositions into `MITIGATION-PLAN.md`, and close with the final confirmation to apply them. **Value:** every finding has a mitigation the user has explicitly decided on, preserving the nuance a batch review would lose, and the plan carries the user's decision to apply it before any change reaches the target.
+**Value:** every finding gets a mitigation the user decided on individually, preserving the nuance a batch review loses, and the plan carries their decision on whether it reaches the target at all.
 
-Definition: [`05-resolution-dialogue.yaml`](05-resolution-dialogue.yaml). Leads to [Apply Accepted Mitigations](#06-apply-accepted-mitigations) when the user asks for the plan to be applied; otherwise the workflow ends with the plan as its final deliverable.
+Definition: [`05-resolution-dialogue.yaml`](05-resolution-dialogue.yaml). Leads to [Apply Accepted Mitigations](#06-apply-accepted-mitigations) when the user asks for the plan to be applied; otherwise the plan is the final deliverable.
 
 ---
 
 ### 06. Apply Accepted Mitigations
 
-Under the confirmation resolution-dialogue collected, the accepted mitigations are applied to the target in priority order and committed. **Value:** the target reflects every accepted mitigation, applied in priority order and committed, with verification confirming what changed.
+**Value:** the target reflects every accepted mitigation, applied in priority order and committed, with verification recording what landed and what did not.
 
 Definition: [`06-apply-mitigations.yaml`](06-apply-mitigations.yaml). Terminal activity.

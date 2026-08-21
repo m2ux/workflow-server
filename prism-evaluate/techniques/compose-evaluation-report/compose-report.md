@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Compose and write the consolidated evaluation report from the per-dimension findings, core finding, and cross-cutting patterns, structured for a reader who knows nothing of the analysis methodology.
+Renders the consolidated evaluation as the standalone document its reader decides from.
 
 ## Outputs
 
@@ -15,6 +15,10 @@ The written `EVALUATION-REPORT.md` path.
 
 ## Protocol
 
-- Write `{evaluation_report}` to `{evaluation_output_path}` using the [evaluation report template](../../resources/evaluation-report-template.md#evaluation-report-template), with sections: Executive Summary (what was evaluated, framed from `{evaluation_description}`, with total findings by dimension and severity), Overall Assessment (a `### Verdict` sub-heading plus a headline-risk sub-heading), The Core Finding (labelled `###` facet sub-sections plus a `### Testable prediction`), Per-Dimension Findings (one sub-section per dimension with description, severity table, key findings, and the dimension's most important insight), Cross-Cutting Patterns, and Corrections and Recommendations grouped into immediate / short-term / structural into `{evaluation_report.recommendations}`.
-- In every section before Per-Dimension Findings, present enumerable framing (scope, rollout stages, target components) as a compact table or bullet list under a `###` sub-heading, written to the [Artifact Writing Register](../../../meta/resources/writing-register.md).
-- Record `{evaluation_report_path}` as the path the `EVALUATION-REPORT.md` document was written to.
+### 1. Compose the Report
+
+- Compose `{evaluation_report}` per the [Evaluation Report Template](../../resources/evaluation-report-template.md#evaluation-report-template), framing the executive summary from `{evaluation_description}` and populating `{evaluation_report.recommendations}` from the findings, grouped immediate, short-term and structural.
+
+### 2. Write It Out
+
+- Write `{evaluation_report}` into `{evaluation_output_path}` and record `{evaluation_report_path}`.

@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
 
-Read the triggered prism run's RUN-MANIFEST.json and record the run into the audit's accumulators — its report, definitive findings, artifact paths, and prism-reported completion status — without re-scanning the output directory. The scope's `output_subdir` (from the inherited `{current_scope}`) locates the run's `RUN-MANIFEST.json`.
+Records a completed analysis run into the audit's accumulators from the run's own manifest — its report, its definitive findings, its artifacts, and the status it reported.
 
 ## Outputs
 

@@ -30,11 +30,11 @@ Default dimension sets derived from target type when the user does not supply ex
 
 ## Mixed Targets
 
-Combine document and code dimension patterns based on which aspect the evaluation_description emphasises. If the evaluation focuses on a proposal that includes code, weight toward proposal dimensions. If it focuses on code with supporting documentation, weight toward codebase dimensions.
+Combine the document and code patterns in the proportion the evaluation's stated goals emphasise. An evaluation of a proposal that happens to include code weights toward the proposal dimensions; one of code with supporting documentation weights toward the codebase dimensions.
 
 ## Custom Targets
 
-For targets that don't match the above patterns, derive dimensions from the evaluation_description. Each dimension should represent an independent analytical axis that contributes to the overall evaluation.
+For a target none of the above patterns fit, each dimension is inferred from the evaluation's stated goals. A dimension is worth naming only where it is an independent analytical axis — one that contributes a reading the others do not.
 
 ### Dimension Object Structure
 

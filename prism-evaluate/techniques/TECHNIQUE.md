@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Shared Inputs, Outputs, Rules, and Errors for every technique in this set.
+Holds the evaluation's standing context — what is under evaluation, the goals it is judged against, and the directory its artifacts occupy.
 
 ## Inputs
 
@@ -17,6 +17,10 @@ Path to the document, proposal, codebase, or artifact set being evaluated.
 
 The user's description of what to evaluate, the evaluation goals, focus areas, and concerns.
 
+### evaluation_target_type
+
+The target's kind: `document`, `document-set`, `codebase`, or `mixed`.
+
 ### evaluation_output_path
 
-Directory where this evaluation's own artifacts are read from and written to. Each triggered prism run writes into a subdirectory of it, addressed through `output_path`.
+Directory the evaluation artifacts are read from and written to.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 2.0.0
 ---
 
 ## Capability
@@ -25,21 +25,11 @@ Filesystem path to the written DETAILED-FINDINGS.md (the detailed-findings docum
 
 ### 1. Consolidate Definitive Findings
 
-- Read each scope's DEFINITIVE-FINDINGS.md at the `definitive_findings_path` in `{completed_analyses}`. This is the findings source — the raw pass artifacts are never read here.
-- For a single-scope audit, its findings are the working set as-is.
-- For a multi-scope audit, merge the per-scope findings: deduplicate findings reported in more than one scope (keeping the highest severity and citing every scope it appeared in) and surface patterns recurring across scopes as systemic findings.
+- Read each scope's DEFINITIVE-FINDINGS.md at the `definitive_findings_path` in `{completed_analyses}` into the working set.  
+  > For a single-scope audit, that scope's findings are the working set as they stand.  
+  > For a multi-scope audit, merge them: deduplicate findings reported in more than one scope, keeping the highest severity and citing every scope it appeared in, and surface patterns recurring across scopes as systemic findings.
 
 ### 2. Create Detailed Findings
 
 - Write an expanded write-up for every finding in the consolidated set — not just Critical and High — to `{detailed_findings_path}` per [detailed-findings](../../resources/detailed-findings.md#template) and its [Rules](../../resources/detailed-findings.md#rules)
-- Take each finding's fields directly from DEFINITIVE-FINDINGS.md; none is re-derived, and a Blast radius recorded there carries through as that finding's Graph Evidence
-
-## Rules
-
-### detailed-finding-fields
-
-Every finding in DETAILED-FINDINGS.md carries exactly five fields — Description, Impact, Location, Recommendation, Adversarial confirmation — plus an optional sixth, Graph Evidence, present when DEFINITIVE-FINDINGS.md recorded a blast radius. Every field is taken from DEFINITIVE-FINDINGS.md; none is recomputed or re-derived.
-
-### severities-inherited
-
-Severities are inherited verbatim from DEFINITIVE-FINDINGS.md — prism's post-reconciliation Impact × Feasibility assignments. The audit never re-grades a finding; an intuitive or recomputed severity is a formatting violation.
+- Take each finding's fields from DEFINITIVE-FINDINGS.md, carrying a Blast radius recorded there through as that finding's Graph Evidence

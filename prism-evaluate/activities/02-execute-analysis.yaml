@@ -1,5 +1,5 @@
 id: execute-analysis
-version: 1.4.0
+version: 2.0.0
 name: Execute Prism Analyses
 description: Trigger the prism workflow for each execution group.
 techniques:
@@ -20,19 +20,16 @@ steps:
     id: verify-preconditions
     actions:
       - action: validate
-        message: Verify execution_groups is non-empty before starting the trigger loop
+        message: No execution groups are set. Re-run dimension planning to produce them.
         condition:
           type: simple
           variable: execution_groups
           operator: exists
   - kind: action
-    id: log-execution-plan
-    actions:
-      - action: log
-        message: Log the execution group count, their pipeline modes, and total dimensions covered.
-  - kind: action
     id: prepare-triggers
     actions:
+      - action: log
+        message: Triggering one prism run per execution group in {execution_groups}.
       - action: set
         target: completed_analyses
         value: "[]"
@@ -47,30 +44,9 @@ steps:
     over: execution_groups
     maxIterations: 10
     steps:
-      - kind: action
+      - kind: technique
         id: set-trigger-context
-        actions:
-          - action: set
-            target: target
-            value: "{target_path}"
-          - action: set
-            target: target_type
-            description: "Prism's expected value mapped from the classification: 'document', 'document-set', and 'mixed' to 'general'; 'codebase' to 'code'."
-          - action: set
-            target: target_description
-            description: "A short description of what this group evaluates — the group's dimension name(s) and focus — for prism's report scope statement."
-          - action: set
-            target: output_path
-            value: "{evaluation_output_path}/{current_group.output_subdir}"
-          - action: set
-            target: pipeline_mode
-            value: "{current_group.pipeline_mode}"
-          - action: set
-            target: selected_lenses
-            value: "{current_group.lenses}"
-          - action: set
-            target: analysis_focus
-            value: "{current_group.analysis_focus}"
+        technique: compose-trigger-context
       - kind: technique
         id: trigger-prism
         technique:

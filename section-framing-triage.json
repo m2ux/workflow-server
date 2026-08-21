@@ -186,21 +186,6 @@
       "rationale": "orientation-only"
     },
     {
-      "site": "prism-evaluate/resources/evaluation-plan-template.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "prism-evaluate/resources/evaluation-report-template.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
-      "site": "prism-evaluate/resources/mitigation-plan-template.md",
-      "verdict": "harmless",
-      "rationale": "orientation-only"
-    },
-    {
       "site": "prism/resources/analysis-plan.md",
       "verdict": "harmless",
       "rationale": "orientation-only"

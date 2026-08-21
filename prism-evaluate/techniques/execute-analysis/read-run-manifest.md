@@ -1,27 +1,29 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Read the triggered prism run's RUN-MANIFEST.json and record the run into the evaluation's accumulators — its report, definitive findings, artifact paths, and prism-reported completion status — without re-scanning the output directory. The group's `output_subdir` (from the inherited `{current_group}`) locates the run's `RUN-MANIFEST.json`.
+Records a completed prism run into the evaluation's accumulators from the run's own manifest — its report, its definitive findings, its artifacts, and the status it reported.
 
 ## Outputs
 
 ### completed_analyses
 
-Array of completed prism run references, each with its report path, definitive-findings path, and prism-reported completion status.
+Completed prism run references, each with its report path, definitive-findings path, and reported completion status.
 
 ### all_artifact_paths
 
-Accumulated paths to all analysis artifacts across triggered prism runs, taken from each run's manifest.
+Every analysis artifact path the triggered runs produced, taken from their manifests.
 
 ## Protocol
 
-### 1. Read Run Manifest
+### 1. Read the Manifest
 
-- Read `RUN-MANIFEST.json` from the group's output location (its `output_subdir` under the evaluation output directory).
-- From the manifest, take the run's `report_path`, `definitive_findings_path`, listed artifact paths, and its `status` (`complete` / `partial` / `error`) — prism has already verified completion, so no directory re-scan or per-artifact existence check is needed here.
-- Append the run's reference — `report_path`, `definitive_findings_path`, and the manifest `status` — to `{completed_analyses}`, and append the manifest's artifact paths to `{all_artifact_paths}`.
-  > When the manifest reports `partial` or `error`, carry that status through on the run's `{completed_analyses}` entry so consolidation surfaces the incomplete run rather than silently dropping a dimension.
+- Read `RUN-MANIFEST.json` from the group's output location, and take the run's `report_path`, `definitive_findings_path`, listed artifact paths, and `status` (`complete` / `partial` / `error`).
+
+### 2. Accumulate the Run
+
+- Append the run's reference to `{completed_analyses}` and its artifact paths to `{all_artifact_paths}`.  
+  > A `partial` or `error` status travels on the run's `{completed_analyses}` entry, so consolidation surfaces the incomplete run rather than dropping the dimension.

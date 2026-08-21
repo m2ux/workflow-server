@@ -1,31 +1,31 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Compose the human-readable evaluation plan document — target overview, dimension plan, and execution groups — write it to the output directory, and present its summary for confirmation.
+Renders the settled plan as the human-readable document a reader approves the evaluation from.
 
 ## Inputs
 
 ### target_summary
 
-A summary of the target's scope, goals, and major content, rendered into the plan's target overview.
+A summary of the target's scope, goals, and major content.
 
 ### structure_inventory
 
-Sections or modules with their sizes, rendered into the plan's target overview.
+Sections or modules with their sizes.
 
 ### key_topics
 
-The target's key topics and claims, rendered into the plan's target overview.
+The target's key topics and claims.
 
 ## Outputs
 
 ### evaluation_plan
 
-The composed [evaluation plan](../../resources/evaluation-plan-template.md#evaluation-plan-template) document.
+The composed evaluation plan document.
 
 #### artifact
 
@@ -37,11 +37,11 @@ The composed [evaluation plan](../../resources/evaluation-plan-template.md#evalu
 
 #### target_overview
 
-Target classification and structure summary.
+The target's classification and structure.
 
-#### dimension_plan_section
+#### dimension_mapping
 
-Per-dimension lens mapping and analysis focus.
+Each dimension's lens configuration and analysis focus.
 
 ### evaluation_plan_path
 
@@ -49,9 +49,10 @@ The written `evaluation-plan.md` path.
 
 ## Protocol
 
-- Compose `{evaluation_plan}` into `{evaluation_output_path}` using the [evaluation plan template](../../resources/evaluation-plan-template.md#evaluation-plan-template):
-  - Target Overview — `{target_type}`, `{target_summary}`, `{structure_inventory}`, `{key_topics}`.
-  - Dimension Plan — a table mapping each dimension to its `pipeline_mode`, `lenses`, focus areas, and `output_subdir`.
-  - Execution Groups — how dimensions are grouped, execution order, and estimated sub-agent dispatch count.
-- Record `{evaluation_plan_path}` as the path the `evaluation-plan.md` document was written to.
-- Present the dimension-to-lens mapping and execution-group summary for user confirmation before triggering prism analyses.
+### 1. Compose the Plan
+
+- Compose `{evaluation_plan}` per the [Evaluation Plan Template](../../resources/evaluation-plan-template.md#evaluation-plan-template), populating `{evaluation_plan.target_overview}` from `{evaluation_target_type}`, `{target_summary}`, `{structure_inventory}` and `{key_topics}`, and `{evaluation_plan.dimension_mapping}` from `{dimension_plan}` and `{execution_groups}`.
+
+### 2. Write It Out
+
+- Write `{evaluation_plan}` into `{evaluation_output_path}` and record `{evaluation_plan_path}`.

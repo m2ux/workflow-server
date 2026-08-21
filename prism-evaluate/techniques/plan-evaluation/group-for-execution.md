@@ -1,21 +1,26 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Group the dimensions sharing a pipeline mode into ordered execution groups so each prism run can be triggered with the correct mode and lens set.
+Collects the planned dimensions into the execution groups the analysis stage triggers, one run per group.
 
 ## Outputs
 
 ### execution_groups
 
-Dimensions grouped by `pipeline_mode` for prism triggering: an array of `{ pipeline_mode, lenses, dimensions, analysis_focus, output_subdir }`.
+An array of `{ pipeline_mode, lenses, dimensions, analysis_focus, output_subdir }`, ordered `full-prism` groups first, then `portfolio` groups.
 
 ## Protocol
 
-- Group dimensions sharing a `pipeline_mode` into execution groups.
-- Place each `full-prism` dimension in its own group (the 3-pass pipeline cannot be combined).
-- Combine `portfolio` dimensions into a single group with `pipeline_mode` `portfolio` and the union of their lens indices; each lens writes its own artifact within the group's `output_subdir`.
-- Record `{execution_groups}`: an array of `{ pipeline_mode, lenses, dimensions, analysis_focus, output_subdir }`, ordered `full-prism` groups first, then `portfolio` groups.
+### 1. Group by Pipeline Mode
+
+- Group the dimensions of `{dimension_plan}` that share a `pipeline_mode`.  
+  > A `full-prism` dimension takes a group of its own — its three passes run over one target and admit no second dimension.  
+  > `portfolio` dimensions combine into one group carrying the union of their lens indices, each lens writing its own artifact under the group's `output_subdir`.
+
+### 2. Record the Groups
+
+- Record `{execution_groups}` in run order, `full-prism` groups ahead of `portfolio` groups.

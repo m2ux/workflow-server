@@ -1,25 +1,25 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Consolidate the per-dimension DEFINITIVE-FINDINGS.md contracts prism produced into a unified evaluation report — inheriting prism's findings, IDs, and severities and adding the one thing prism cannot do across sibling runs: cross-dimensional synthesis. Then compile and present the report's metrics and deliverable index. prism's raw pass artifacts are never re-read; findings are never re-extracted or re-numbered.
+Consolidates the per-dimension findings of sibling analysis runs into one evaluation of the target, adding the reading no single run reaches: what holds across dimensions.
 
 ## Inputs
 
 ### dimension_plan
 
-The dimension-to-lens mapping, used to label and interpret each group's findings.
+Each dimension's lens configuration, which labels and interprets a group's findings.
 
 ### completed_analyses
 
-Array of completed prism runs, each carrying that group's `report_path`, `definitive_findings_path`, and prism-reported `status`. DEFINITIVE-FINDINGS.md is the findings source for consolidation.
+Completed prism run references, each with its report path, definitive-findings path, and reported completion status.
 
 ### all_artifact_paths
 
-Accumulated paths to every analysis artifact produced across the triggered prism runs, for the deliverable index.
+Every analysis artifact path the triggered runs produced.
 
 ### evaluation_plan_path
 
@@ -29,7 +29,7 @@ Path to the evaluation plan document.
 
 ### evaluation_report
 
-The consolidated [evaluation report](../../resources/evaluation-report-template.md#evaluation-report-template), built up across the consolidation phases and read by the verification and presentation phases.
+The consolidated evaluation of the target.
 
 #### artifact
 
@@ -41,11 +41,11 @@ The consolidated [evaluation report](../../resources/evaluation-report-template.
 
 #### executive_summary
 
-Overall assessment with finding counts and core insight.
+The overall assessment, with finding counts and the core insight.
 
 #### core_finding
 
-Deepest cross-dimensional insight.
+The deepest cross-dimensional insight.
 
 #### dimension_findings
 
@@ -53,7 +53,7 @@ Per-dimension findings with severity tables.
 
 #### cross_cutting_patterns
 
-Cross-dimensional patterns.
+Patterns spanning more than one dimension.
 
 #### recommendations
 
@@ -63,16 +63,16 @@ Prioritised corrections and recommendations.
 
 ### methodology-stripping
 
-The report contains no references to analytical methodology: no lens names (`L12`, `claim-inversion`, `knowledge-audit`), no pipeline-mode names (`full-prism`, `portfolio`), no pass descriptions (structural pass, adversarial pass, synthesis), and no process narratives (`the analysis first examined X then challenged Y`). prism's DEFINITIVE-FINDINGS.md is already methodology-free, so consolidation preserves that voice rather than re-stripping raw artifacts.
+The report names no analytical methodology: no lens names (`L12`, `claim-inversion`, `knowledge-audit`), no pipeline-mode names (`full-prism`, `portfolio`), no pass descriptions, and no process narratives. Findings read as conclusions about the target.
 
 ### standalone-report
 
-The report is readable and actionable by someone who knows nothing about prism, lenses, or evaluation methodology, reading as a professional, evidence-based evaluation document.
+The report is readable and actionable by someone who knows nothing of the analysis that produced it, in the voice of a professional, evidence-based evaluation.
 
-### finding-id-convention
+### findings-come-from-the-run-contract
 
-Finding IDs are inherited from prism's DEFINITIVE-FINDINGS.md, which assigns a 3-letter dimension prefix, a dash, and a two-digit number (`CON-01`, `VER-03`, `PLB-01`, `FEA-07`) from the dimension names passed in `analysis_focus`. Consolidation preserves these IDs and does not re-number; it only disambiguates a genuine collision between two groups by adding a group qualifier.
+Findings are read from each run's declared contract artifacts — its manifest, its report, its definitive findings. A run's internal pass artifacts are not a findings source: what they hold has already been reconciled into the definitive findings, and reading them reintroduces claims the run withdrew.
 
-### severity-rubric
+### findings-carry-their-source-identity
 
-Severities are inherited from DEFINITIVE-FINDINGS.md, which carries prism's post-reconciliation Impact x Feasibility assignments (`CRITICAL` undermines the target's core purpose; `HIGH` degrades significant guarantees; `MEDIUM` has limited scope; `LOW` is informational). Consolidation does not re-grade findings.
+Each finding appears under the ID and severity its source analysis assigned. Where two groups assign the same ID, the report adds a group qualifier to one of them.

@@ -1,8 +1,18 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Collect the evaluation scope, classify an evaluation target, derive or validate evaluation dimensions, survey the target's structure, and map each dimension to prism analytical lens and pipeline-mode configurations, producing both a machine-readable dimension plan and a human-readable evaluation plan document. The set also creates the output directory and summarises the assembled scope for confirmation. The user-supplied `dimensions` and `lens_overrides` are captured by `collect-scope` and flow to the members that consume them.
+Turns an evaluation request into a runnable plan: what the target is, which dimensions judge it, and the prism configuration each dimension takes.
+
+## Inputs
+
+### dimensions
+
+*(optional)* The evaluation dimensions, each `{ name, description, focus_areas }`.
+
+### lens_overrides
+
+*(optional)* Lens overrides keyed by dimension name, each `{ pipeline_mode, lenses }`, taking precedence over a derived mapping.

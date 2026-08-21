@@ -2,20 +2,21 @@
 
 > Part of the [Prism Audit Workflow](../README.md)
 
-One reference file holding the shape of the workflow's central artifact — the self-contained, codebase-tailored audit prompt.
+The reference files hold the shape of the workflow's central artifact — the self-contained, codebase-tailored audit prompt — and the rubric its domains are calibrated against. Each artifact the audit writes also has a creation guide.
 
-The authoritative content lives in the `.md` file and is served by `get_resource`. This file is the catalog — what the resource owns.
+The authoritative content lives in each `.md` file and is served by `get_resource`. This file is the catalog — what each resource owns.
 
 ---
 
 ## Resource Catalog
 
-| Resource | Owns | Anchor |
-|----------|------|--------|
-| [audit-prompt-template.md](audit-prompt-template.md) | The structure of the self-contained `audit-prompt.md` — codebase overview, evidence-based audit domains, the GitNexus-gated trust-boundary map, cross-cutting concerns, and output requirements — plus its "what good looks like" bar | `#audit-prompt-template` |
-| [audit-report.md](audit-report.md) | Creation guide: `AUDIT-REPORT.md` — the summary report and the reference line that replaces its lifted findings section | `#template` |
-| [detailed-findings.md](detailed-findings.md) | Creation guide: `DETAILED-FINDINGS.md` — the five inherited fields, the severity-then-domain grouping, and the ID heading form | `#template` |
-| [design-trade-offs.md](design-trade-offs.md) | Creation guide: `DESIGN-TRADE-OFFS.md` — the trade-off catalogue, interaction map, and decision register | `#template` |
+| Resource | Owns |
+|----------|------|
+| [audit-prompt-template.md](audit-prompt-template.md) | The structure of the self-contained `audit-prompt.md` — codebase overview, evidence-based audit domains, the GitNexus-gated trust-boundary map, cross-cutting concerns, and output requirements — plus its "what good looks like" bar |
+| [audit-domain-rubric.md](audit-domain-rubric.md) | The audit domains a target's characteristics are grouped into, and the risk levels each is calibrated against |
+| [audit-report.md](audit-report.md) | Creation guide: `AUDIT-REPORT.md` — the summary report and the reference line that replaces its lifted findings section |
+| [detailed-findings.md](detailed-findings.md) | Creation guide: `DETAILED-FINDINGS.md` — the five inherited fields, the severity-then-domain grouping, and the ID heading form |
+| [design-trade-offs.md](design-trade-offs.md) | Creation guide: `DESIGN-TRADE-OFFS.md` — the trade-off catalogue, interaction map, and decision register |
 
 ---
 
@@ -27,14 +28,6 @@ The authoritative content lives in the `.md` file and is served by `get_resource
 | `AUDIT-REPORT.md` | [audit-report](audit-report.md) |
 | `DETAILED-FINDINGS.md` | [detailed-findings](detailed-findings.md) |
 | `DESIGN-TRADE-OFFS.md` | [design-trade-offs](design-trade-offs.md) |
-
----
-
-## What the Resource Owns
-
-### audit-prompt-template.md
-
-The single source of truth for the audit prompt's shape. It defines the five sections a generated `audit-prompt.md` must contain — **Codebase Overview** (language, build system, LOC, architecture summary, module layout), **Audit Domains** (one risk-calibrated subsection per domain, included only when the target has corresponding code), **Trust Boundary Map** (cross-community call edges and security-critical symbol blast radii, present only when GitNexus indexed the target), **Cross-Cutting Concerns**, and **Output Requirements** — and sets the bar: a reviewer can begin auditing from the prompt and the codebase path alone, with no other context. The prompt this template shapes becomes the `analysis_focus` handed to the triggered prism workflow.
 
 ---
 

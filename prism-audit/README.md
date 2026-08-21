@@ -8,7 +8,7 @@
 
 The prism-audit workflow orchestrates a security audit in two halves. First it **reads the target codebase** and composes a detailed, self-contained audit prompt grounded in that codebase's actual architecture, language, and risk exposure. Then it **triggers the generic [prism](../prism/README.md) workflow** to run the analysis against that prompt, and assembles prism's contract artifacts into the security-audit deliverables.
 
-All audit-specific customisation — prompt generation, domain mapping, trust-boundary analysis, cross-scope consolidation, the report split — lives in this workflow. Everything prism already provides is reused, not reimplemented: prism runs its lenses, enriches findings with blast radius, strips methodology, assigns finding IDs, and writes its contract artifacts (RUN-MANIFEST.json, REPORT.md, DEFINITIVE-FINDINGS.md). This workflow reads those and never re-opens prism's raw pass artifacts.
+The audit-specific work lives here — prompt generation, domain mapping, trust-boundary analysis, cross-scope consolidation, the report split. The analysis itself is prism's: it runs the lenses, enriches findings with blast radius, strips methodology, assigns finding IDs, and writes the contract artifacts this workflow reads (`RUN-MANIFEST.json`, `REPORT.md`, `DEFINITIVE-FINDINGS.md`).
 
 **Why a dedicated audit workflow rather than prompting prism directly?**
 
@@ -65,7 +65,7 @@ The spine is linear — scope, prompt, analyse, finalize, deliver — with two b
 
 ## Deliverables
 
-The workflow writes all artifacts under the user-supplied `output_path`:
+The workflow writes all artifacts under the user-supplied `audit_output_path`:
 
 | Artifact | Produced by | Contents |
 |----------|-------------|----------|
@@ -113,7 +113,7 @@ Like the other workflows in this library, prism-audit runs under the **orchestra
 
 The prism analysis is reached through the **trigger mechanism**, not called inline: `execute-analysis` uses [`workflow-engine::handle-sub-workflow`](../meta/techniques/workflow-engine/handle-sub-workflow.md) to dispatch prism as a child workflow per audit scope. Two rules keep the boundary clean:
 
-- **Contract reuse.** The orchestrator sets prism's `analysis_focus` to the generated audit-prompt content (naming the scope's security domains so prism assigns domain-prefixed finding IDs). The audit then reads only prism's contract artifacts — `RUN-MANIFEST.json`, `REPORT.md`, `DEFINITIVE-FINDINGS.md` — and never re-derives what prism already produced (finding extraction, blast-radius enrichment, methodology-stripping, within-run consolidation).
+- **Contract reuse.** Each run's `analysis_focus` is the generated audit prompt, whose named security domains are what yield the domain-prefixed finding IDs the deliverables carry through. The audit reads each run's declared contract artifacts — `RUN-MANIFEST.json`, `REPORT.md`, `DEFINITIVE-FINDINGS.md` — which is where the run's reconciled result lives.
 - **Sequential execution.** Audit scopes are triggered one prism run at a time, so each run has full system resources and no cross-analysis context interference.
 
 ---

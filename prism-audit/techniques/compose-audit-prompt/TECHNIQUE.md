@@ -1,25 +1,17 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Analyse a codebase to identify security-relevant characteristics, map its trust boundaries and audit domains, and compose a detailed, self-contained audit prompt tailored to its architecture, language, and risk profile. The operations in this set decompose that work into the survey, characteristic-scan, trust-boundary, domain-mapping, cross-cutting, prompt-composition, and scope-building phases.
+Turns a codebase into the self-contained audit prompt an analysis run works from, tailored to that codebase's architecture, language and risk exposure.
 
 ## Inputs
 
-### target_path
+### security_characteristics
 
-Path to the codebase or directory to audit
-
-### audit_description
-
-User's description of what to audit, focus areas, and specific concerns
-
-### output_path
-
-Directory to write the audit prompt artifact
+The security-relevant patterns the scan found, each `{ category, location, description, severity_relevance }`.
 
 ### total_loc
 
@@ -27,11 +19,11 @@ Total lines of code across the surveyed modules, excluding tests, docs, and gene
 
 ### trust_boundaries
 
-Array of trust-boundary crossings, each `{ from_community, to_community, crossing_symbols }`; absent when GitNexus is unavailable.
+Trust-boundary crossings, each `{ from_community, to_community, crossing_symbols }`. Empty where the target carries no index.
 
 ### security_blast_radii
 
-Map of each security-critical symbol to its blast radius `{ direct_callers, affected_processes, affected_modules, risk }`; absent when GitNexus is unavailable.
+Each security-critical symbol mapped to its blast radius `{ direct_callers, affected_processes, affected_modules, risk }`. Empty where the target carries no index.
 
 ## Outputs
 

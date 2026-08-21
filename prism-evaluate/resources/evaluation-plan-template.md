@@ -8,10 +8,6 @@ metadata:
 
 # Evaluation Plan Template
 
-Template for the human-readable evaluation plan. The plan
-classifies the target, surveys its structure, maps each dimension to prism lens and pipeline-mode
-configurations, and groups dimensions for execution.
-
 ## Evaluation Plan Template
 
 ```markdown
@@ -47,10 +43,8 @@ configurations, and groups dimensions for execution.
 - **Estimated sub-agent dispatches:** {count}
 ```
 
-**What good looks like:** every dimension maps to a pipeline mode and a substantive `analysis_focus`
-that names the dimension (so prism assigns dimension-prefixed finding IDs); full-prism dimensions sit
-in their own group, portfolio dimensions are merged into a single group with their lens indices unioned.
-
 ## Rules
 
+- **Every dimension carries a substantive focus.** An `analysis_focus` cell that restates the dimension's name tells the run nothing; it names content this target holds.
+- **Grouping follows the mode.** A full-prism dimension occupies a group alone; portfolio dimensions share one group with their lens indices unioned.
 - **Line budget:** ~60 lines. A plan longer than that is doing the evaluation rather than scoping it.

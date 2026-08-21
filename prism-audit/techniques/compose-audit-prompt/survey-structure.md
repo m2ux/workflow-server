@@ -1,28 +1,35 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 2.0.0
 ---
 
 ## Capability
 
-Survey the target codebase to produce a structural inventory: primary language and build system, module/crate/package layout, total and per-module size, dependency graph, and test coverage structure, optionally enriched with GitNexus functional areas and fan-in.
+Surveys the target codebase into the structural inventory an audit prompt is built from.
 
 ## Outputs
 
+### build_system
+
+The target's primary language and the build system it is assembled by.
+
+### module_inventory
+
+The target's modules, each `{ name, path, line_count, purpose, fan_in }`, in the layout the build configuration declares. `fan_in` carries a caller count where the codebase is indexed, and is absent otherwise.
+
 ### total_loc
 
-Total lines of code across the surveyed modules, excluding tests, docs, and generated files
+Total lines of code across the surveyed modules, excluding tests, docs, and generated files.
 
 ## Protocol
 
-### 1. Survey Structure
+### 1. Identify the Build System
 
-- List files and directories at the top level of `{target_path}`
-- Identify the build system: `Cargo.toml` (Rust), `package.json` (JS/TS), `go.mod` (Go), `pyproject.toml` (Python), etc.
-- For workspace/monorepo projects, enumerate all packages/crates/modules from the build configuration
-- Count lines of code per module (excluding tests, docs, generated files)
-- Identify test directories and test file patterns
-- If GitNexus is available (check via [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[verify-index](../../../meta/techniques/gitnexus-operations/verify-index.md)): use [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[query](../../../meta/techniques/gitnexus-operations/query.md) to discover functional areas, execution flows, and community clusters — these produce better module boundaries and dependency maps than directory layout alone
-- If GitNexus is available: use [gitnexus-operations](../../../meta/techniques/gitnexus-operations/TECHNIQUE.md)::[context](../../../meta/techniques/gitnexus-operations/context.md) on high-risk modules to check fan-in (number of callers) — high fan-in modules have larger blast radius and should be elevated in risk classification
-- Record: language, `build_system`, modules (array of `{ name, path, line_count, purpose, fan_in (if GitNexus available) }`), `{total_loc}`, `{gitnexus_available}` (boolean)
-- If `{target_path}` contains no analysable source files, verify the path is correct and check whether submodules need initialisation before proceeding.
+- Resolve `{build_system}` by applying the target classification `prism::plan-analysis` defines, which is where the marker detection identifying a build system lives.  
+  > For a workspace or monorepo, the build configuration also declares the member packages, which the next phase enumerates from it.
+
+### 2. Inventory the Modules
+
+- Record `{module_inventory}` from the layout the build configuration declares, with each module's line count excluding tests, docs and generated files, and `{total_loc}` as their sum. Note the test directories and the file patterns they follow.  
+  > Where the codebase is indexed, apply `gitnexus-operations::query` for functional areas, execution flows and community clusters, which bound modules better than directory layout alone, and `gitnexus-operations::context` on the high-risk ones for a caller count.  
+  > Where `{target_path}` holds no analysable source files, report the path as unsurveyable and whether submodules appear uninitialised, rather than an empty inventory.

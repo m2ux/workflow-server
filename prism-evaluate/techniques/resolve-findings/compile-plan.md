@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -13,8 +13,18 @@ Compile the collected per-finding decisions into the mitigation plan and verify 
 
 The written `MITIGATION-PLAN.md` path.
 
+### accepted_count
+
+How many findings carry an accepted or modified disposition.
+
 ## Protocol
 
-- Compile `{mitigation_plan}` into `{evaluation_output_path}` using the [mitigation plan template](../../resources/mitigation-plan-template.md#mitigation-plan-template): a `{mitigation_plan.summary_table}` (ID, severity, tier, decision), `{mitigation_plan.detailed_mitigations}` grouped by tier with the full proposed text for each accepted mitigation, and a `{mitigation_plan.implementation_priority}` order.
-- Record `{mitigation_plan_path}` as the path the `MITIGATION-PLAN.md` document was written to.
-- Verify every finding in `{evaluation_report}` has a corresponding entry in `{mitigation_plan}` (accepted, modified, or skipped).
+### 1. Compile the Plan
+
+- Compile `{mitigation_plan}` into `{evaluation_output_path}` per the [Mitigation Plan Template](../../resources/mitigation-plan-template.md#mitigation-plan-template), populating `{mitigation_plan.summary_table}`, `{mitigation_plan.detailed_mitigations}`, and `{mitigation_plan.implementation_priority}` from `{accepted_mitigations}`.
+- Record `{mitigation_plan_path}` as the path the document was written to.
+
+### 2. Verify Coverage
+
+- Verify every finding in `{evaluation_findings}` has an entry in `{mitigation_plan}`.
+- Count the accepted and modified dispositions into `{accepted_count}`.

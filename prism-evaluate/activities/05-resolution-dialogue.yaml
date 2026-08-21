@@ -1,5 +1,5 @@
 id: resolution-dialogue
-version: 1.4.0
+version: 2.0.0
 name: Resolution Dialogue
 description: Propose mitigations for each evaluation finding one-by-one.
 techniques:
@@ -16,50 +16,73 @@ steps:
     over: evaluation_findings
     maxIterations: 100
     steps:
+      - kind: loop
+        id: proposal-refinement
+        name: Proposal Refinement
+        loopType: doWhile
+        maxIterations: 5
+        condition:
+          type: simple
+          variable: finding_disposition
+          operator: ==
+          value: discuss
+        steps:
+          - kind: technique
+            id: propose-mitigation
+            technique: resolve-findings::propose-mitigation-by-tier
+          - kind: checkpoint
+            id: finding-decision
+            message: "Finding {current_finding.id} ({current_finding.severity}, tier {current_finding.tier}), with a proposed mitigation for it."
+            options:
+              - id: accept
+                label: Accept
+                description: Take the proposed mitigation as written
+                effect:
+                  setVariable:
+                    finding_disposition: accept
+              - id: modify
+                label: Accept with modifications
+                description: Take the mitigation's intent with adjusted wording or approach
+                effect:
+                  setVariable:
+                    finding_disposition: modify
+              - id: skip
+                label: Skip
+                description: Leave this finding unmitigated
+                effect:
+                  setVariable:
+                    finding_disposition: skip
+              - id: discuss
+                label: Discuss
+                description: Supply context and see a revised proposal
+                effect:
+                  setVariable:
+                    finding_disposition: discuss
+            blocking: true
       - kind: technique
-        id: propose-mitigation
-        technique: resolve-findings::propose-mitigation-by-tier
-      - kind: technique
-        id: present-and-collect-decision
-        technique: resolve-findings::present-and-collect-per-finding
+        id: record-decision
+        technique: resolve-findings::record-finding-decision
         actions:
           - action: set
             target: accepted_mitigations
             value: "{finding_decision}"
-            description: Append the finding's recorded decision.
-      - kind: checkpoint
-        id: finding-decision
-        message: "Finding {current_finding.id} ({current_finding.severity}): Here is the proposed mitigation. How would you like to proceed?"
-        options:
-          - id: accept
-            label: Accept
-            description: Accept the proposed mitigation as-is
-          - id: modify
-            label: Accept with modifications
-            description: Accept the intent but adjust the wording or approach
-          - id: skip
-            label: Skip
-            description: Skip this finding — no mitigation
-          - id: discuss
-            label: Discuss
-            description: Discuss this finding further before deciding
-        blocking: true
+            description: Append the finding's recorded disposition.
   - kind: technique
     id: compile-plan
     technique: resolve-findings::compile-plan
   - kind: checkpoint
     id: confirm-apply
-    message: Ready to apply {accepted_count} accepted mitigations to the target. Changes will be applied in priority order. Proceed?
+    message: "{accepted_count} accepted mitigations, ordered by tier and severity in [the mitigation plan]({mitigation_plan_path})."
     options:
       - id: apply
-        label: Apply all accepted mitigations
-        description: Apply changes to the target document
+        label: Apply the accepted mitigations to the target
+        description: The target document takes every accepted mitigation
         effect:
           setVariable:
             mitigations_apply_requested: true
       - id: plan-only
-        label: Keep plan only — do not modify target
-        description: Save the mitigation plan without applying changes to the target
+        label: Keep the plan and leave the target unmodified
+        description: The mitigation plan stands as the deliverable
         effect:
           setVariable:
             mitigations_apply_requested: false
@@ -76,4 +99,4 @@ transitions:
 outcome:
   - Every finding has a mitigation the user has explicitly decided on, preserving the nuance that batch review would lose
   - The accepted mitigations are captured as a priority-ordered, change-specified plan precise enough to apply to the target
-  - The user's answer on whether to apply that plan decides where the run goes next, so a run that keeps the plan alone ends with the target untouched
+  - The target is modified only where the user approved the plan for application
