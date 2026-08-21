@@ -13,11 +13,7 @@ tags:
 rules:
   universal:
     - "safety-floor-never-simplified: No rung is climbed at the cost of an obligation the ladder places on its safety floor."
-    - "understand-before-climb: The real end-to-end flow a change touches is read and traced before a rung is selected. Backed by intake-and-scope preceding apply-ladder in the activity graph."
-  workflow:
-    - "intensity-and-scope-gate-before-optional: Honour the confirmed intensity and scope before dispatching the optional repo-audit activity — repo-audit is reached only when lazy_intensity is ultra or pass_scope is repo."
-  activity:
-    - "present-approach-before-implementation: Present the approach for a change before implementing it, so the user sees what will be built and which rung was chosen before any code lands."
+    - "understand-before-climb: The real end-to-end flow a change touches is read and traced before a rung is selected."
 techniques:
   activity:
     - variable-binding
@@ -32,22 +28,22 @@ variables:
     defaultValue: "."
   - name: artifact_dir
     type: string
-    description: Directory the pass writes its brief, change note, audit findings and debt ledger into. A dedicated folder under the target, so the four artifacts are identifiable as the pass's own and never mixed with the code they describe.
+    description: Directory the pass writes its artifacts into
     defaultValue: .ponytail
   - name: lazy_intensity
     type: string
-    description: Strictness of the lazy lens — lite, full, or ultra. Governs review depth and gates the repo-audit activity.
+    description: "Strictness of the lazy lens: lite, full, or ultra"
     defaultValue: full
   - name: pass_scope
     type: string
-    description: Breadth of the pass — change (diff-scoped) or repo (whole-tree). Gates the repo-audit activity.
+    description: "Breadth of the pass: change (diff-scoped) or repo (whole-tree)"
     defaultValue: change
   - name: safety_floor_cleared
     type: boolean
-    description: Whether the minimal solution clears the safety floor — set by the safety-floor-cleared checkpoint, gates the transition into over-engineering-review.
+    description: Whether the minimal solution clears the safety floor
     defaultValue: false
   - name: has_debt_markers
     type: boolean
-    description: Whether ponytail markers were found during harvest — gates the gain report tail.
+    description: Whether the harvest found any ponytail marker
     defaultValue: false
 initialActivity: intake-and-scope

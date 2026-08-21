@@ -9,7 +9,7 @@ steps:
   - kind: checkpoint
     id: intensity-and-scope-confirmed
     blocking: true
-    message: "Confirm the lazy lens before climbing. Intensity: lite, full, or ultra. Scope: change (diff only) or repo (whole tree). Ultra intensity or repo scope adds the repo-wide audit."
+    message: "The lazy lens for {task_description} at {target_path} — how strict the pass is, and how wide."
     options:
       - id: lite-change
         label: Lite intensity, change scope
