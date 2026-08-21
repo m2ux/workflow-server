@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
 
-Conformance of a folder's persisted artifacts to the guide each filename maps to, the canonical-home map the caller declares, and the artifact writing register — corrected in place.
+Conformance of a folder's persisted artifacts to the guide each filename maps to, the canonical-home map the caller declares, and the artifact writing register — corrected in place, with the artifacts no guide covers reported as unmeasured rather than as wrong.
 
 ## Inputs
 
@@ -29,22 +29,27 @@ Conformance of a folder's persisted artifacts to the guide each filename maps to
 
 ### artifact_conformance
 
-The conformance envelope — the violation list plus the aggregate verdict:
+The conformance envelope — what was measured and found wanting, what could not be measured, and the aggregate verdict over the first:
 
 #### conforms
 
-true iff every entry in `violations` carries `fixed` true — nothing is left standing. A folder whose only remaining violations sit in artifacts under a published contract reports false, since the shape is still wrong wherever it is corrected.
+true iff every entry in `violations` carries `fixed` true — nothing measured is left standing. A folder whose only remaining violations sit in artifacts under a published contract reports false, since the shape is still wrong wherever it is corrected. Entries in `unmeasured` leave the verdict alone.
 
 #### violations
 
-array of `{ file, rule, detail, fixed }` entries — one per detected violation, where `rule` is the slug the breached discipline carries in the guide, the map, or the writing register that owns it (`no-guide` when no guide maps the filename) and `fixed` records whether the in-place fix was applied.
+array of `{ file, rule, detail, fixed }` entries — one per breach of a guide the artifact was held against, where `rule` is the slug the breached discipline carries in the guide, the map, or the writing register that owns it, and `fixed` records whether the in-place fix was applied.
+
+#### unmeasured
+
+array of `{ file, reason }` entries — one per artifact the pass held against no guide, where `reason` is `no-guide` when the folder's map names no guide for the filename. A verdict on the artifact's shape is absent rather than negative, and the correction belongs to whoever owns the map, so no rework inside this run clears one.
 
 ## Protocol
 
 ### 1. Enumerate and Resolve
 
 - Enumerate the human-audience artifacts this run persisted into `{artifact_dir}` and resolve each one's guide through `{guide_map}` when it is bound, otherwise through the guide that names the filename
-  > A file the run did not write, and an artifact declared `agent`, are both out of scope.
+  > A file the run did not write, a child run's output folder, and an artifact declared `agent`, are all out of scope.
+- Record an artifact whose guide no map names in `unmeasured` and carry it no further
 
 ### 2. Measure Against the Guide and the Map
 
@@ -60,18 +65,19 @@ array of `{ file, rule, detail, fixed }` entries — one per detected violation,
 
 ### 4. Surface the Exceptions
 
-- Compose `{artifact_conformance}`: its `violations` array carries every detected violation with its fix status, and `conforms` is true iff every entry was fixed
+- Compose `{artifact_conformance}`: its `violations` array carries every detected violation with its fix status, its `unmeasured` array carries every artifact held against no guide, and `conforms` is true iff every violation was fixed
 - Report exceptions only — an artifact that already conformed gets no line
+- State the two claims apart: a violation says the artifact's shape is wrong, an `unmeasured` entry says the folder's map names no guide to judge it by
 
 ## Rules
 
 ### only-what-this-run-wrote
 
-Measure the human-audience artifacts this run persisted, and nothing else in the directory. Two exclusions carry the weight. A caller whose artifact directory is a checkout, a code path, or any folder it shares with content the run did not write would otherwise have unrelated files measured against guides they were never written to, and corrected in place against them. And an agent-audience artifact is structured data whose conformance is its declared schema — a template and a line budget say nothing about it, so measuring one against them reports noise and correcting one against them corrupts it.
+Measure the human-audience artifacts this run persisted, and nothing else in the directory. Three exclusions carry the weight. A caller whose artifact directory is a checkout, a code path, or any folder it shares with content the run did not write would otherwise have unrelated files measured against guides they were never written to, and corrected in place against them. An agent-audience artifact is structured data whose conformance is its declared schema — a template and a line budget say nothing about it, so measuring one against them reports noise and correcting one against them corrupts it. And a folder holding a child run's own output belongs to that run: the child's workflow declares the guides its artifacts follow and binds its own conformance pass over them, so a caller that descends into one measures another workflow's artifacts against a map that was never written for them.
 
 ### guide-is-the-standard
 
-An artifact is measured against the guide its own filename maps to. Where no guide maps the filename, that missing mapping is the finding — a `no-guide` violation against the folder rather than against the artifact.
+An artifact is measured against the guide its own filename maps to. Where no guide maps the filename, the artifact is unmeasured and the missing mapping is what gets reported — a claim about the folder's map, not about the artifact's shape. Keeping the two apart matters because they are cleared by different people: a violation is a defect in a file the run can correct, and a gap in the map is a definition edit no amount of rework inside the run reaches.
 
 ### published-contracts-are-reported
 
