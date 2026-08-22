@@ -1,3 +1,5 @@
+import { classifyLink } from './reference-grammar.js';
+
 /**
  * Parse a resource reference that may include a workflow prefix and/or `#section`.
  * Format: "workflow/id" for cross-workflow, or bare "id" for local.
@@ -78,32 +80,24 @@ export function extractResourceIds(text: string): string[] {
     }
   }
   for (const m of text.matchAll(/\]\(([^)]+)\)/g)) {
-    let href = m[1]!.trim();
-    if (href.startsWith('http') || href.startsWith('#') || href.includes('://')) continue;
-    // Split the anchor off before stripping the extension, so a link carrying both
-    // yields one normalised id rather than one with `.md` buried mid-string.
-    const hashIdx = href.indexOf('#');
-    const anchor = hashIdx >= 0 ? href.slice(hashIdx) : '';
-    href = (hashIdx >= 0 ? href.slice(0, hashIdx) : href).replace(/\.md$/i, '') + anchor;
-    const resourcesIdx = href.lastIndexOf('resources/');
+    // Claiming is delegated to the shared grammar, which partitions the link space by destination
+    // shape. Classifying before the extension is stripped is what keeps a technique link out of
+    // the resource id set under every spelling: `op.md` and `./op.md` classify alike.
+    const classified = classifyLink(m[1]!);
+    if (classified.kind !== 'resource') continue;
+    const anchor = classified.anchor ? `#${classified.anchor}` : '';
+    const base = classified.path.replace(/\.md$/i, '');
+    const resourcesIdx = base.lastIndexOf('resources/');
     if (resourcesIdx >= 0) {
       // A link crossing into another workflow's tree carries that workflow in the
       // segment before `resources/`; the id it yields keeps that qualifier, so the
       // ref resolves against the tree the link points at rather than the reader's own.
-      const owner = href.slice(0, resourcesIdx).replace(/\/$/, '').split('/').pop() ?? '';
-      const slug = href.slice(resourcesIdx + 'resources/'.length);
-      ids.add(/^[a-z0-9][a-z0-9-]*$/i.test(owner) ? `${owner}/${slug}` : slug);
+      const owner = base.slice(0, resourcesIdx).replace(/\/$/, '').split('/').pop() ?? '';
+      const slug = base.slice(resourcesIdx + 'resources/'.length);
+      ids.add((/^[a-z0-9][a-z0-9-]*$/i.test(owner) ? `${owner}/${slug}` : slug) + anchor);
       continue;
     }
-    // A resource id is `[<workflow>/]<slug>`, so at most one slash. A deeper path is a
-    // filesystem path — an illustrative one in prose, or a link into a non-resource tree.
-    if (
-      /^[a-z0-9][a-z0-9_/-]*(?:#[a-z0-9][a-z0-9_-]*)?$/i.test(href) &&
-      !href.includes('::') &&
-      (href.match(/\//g)?.length ?? 0) <= 1
-    ) {
-      ids.add(href);
-    }
+    ids.add(base + anchor);
   }
   return [...ids];
 }
