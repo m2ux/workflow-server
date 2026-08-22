@@ -2,7 +2,7 @@
 name: test-suite-review
 description: Guidelines for reviewing and evaluating test suites. Covers test quality assessment, coverage analysis, anti-pattern detection, and improvement recommendations.
 metadata:
-  version: 1.3.0
+  version: 1.4.0
   order: 17
   legacy_id: 17
 ---
@@ -45,7 +45,7 @@ High-value patterns to encourage: protocol compliance (calculated values vs prot
 
 ## Field List
 
-Designators use the prefix declared for this report's category at [Test Review](./review-mode.md#test-review). Every finding carries the five fields of [Fields](./findings-report.md#fields), laid out per [Finding Layout](./findings-report.md#finding-layout). This report declares:
+Designators use the prefix declared for this report's category at [Test Review](./review-mode.md#test-review). Every finding carries the six fields of [Fields](./findings-report.md#fields), laid out per [Finding Layout](./findings-report.md#finding-layout). This report declares:
 
 | Declaration | Value |
 |---|---|

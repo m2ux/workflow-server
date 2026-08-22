@@ -2,7 +2,7 @@
 name: rust-substrate-code-review
 description: Guidelines for conducting code reviews of Rust and Substrate codebases. Covers scope determination, review criteria, and report generation.
 metadata:
-  version: 1.4.0
+  version: 1.5.0
   order: 16
   legacy_id: 16
 ---
@@ -28,14 +28,14 @@ Report file: optional for implementation and PR reviews; required for module aud
 
 ### Field List
 
-Designators use the prefix declared for this report's category at [Code Review](./review-mode.md#code-review). Every finding carries the five fields of [Fields](./findings-report.md#fields), laid out per [Finding Layout](./findings-report.md#finding-layout). This report declares:
+Designators use the prefix declared for this report's category at [Code Review](./review-mode.md#code-review). Every finding carries the six fields of [Fields](./findings-report.md#fields), laid out per [Finding Layout](./findings-report.md#finding-layout). This report declares:
 
 | Declaration | Value |
 |---|---|
 | `Category` vocabulary | Rust Idioms / Substrate Framework / Architecture / Documentation / Testing / Security |
 | Extension field | `Code Example` — current versus suggested, where the fix reads more clearly shown than described |
 
-`Code Example` is optional and comes last; the five appear on every finding.
+`Code Example` is optional and comes last; the six appear on every finding.
 
 ### Report Template
 

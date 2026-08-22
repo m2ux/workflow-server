@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -38,7 +38,7 @@ Method [record](../../resources/strategic-review.md#method-record-template) of h
 
 ### 1. Document Findings
 
-- State each finding in the `{strategic_review_doc}` in the shape [Finding Layout](../../resources/findings-report.md#finding-layout) declares, carrying the fields under [Field List](../../resources/strategic-review.md#field-list) and no others, with its severity derived through the map per [Severity](../../resources/findings-report.md#severity)
+- State each finding in the `{strategic_review_doc}` in the shape [Finding Layout](../../resources/findings-report.md#finding-layout) declares, carrying the fields under [Field List](../../resources/strategic-review.md#field-list) and no others, with its severity derived through the map per [Severity](../../resources/findings-report.md#severity) and its reachability settled from the code the finding cites per [Reachability](../../resources/findings-report.md#reachability)
 - Categorize each finding per the group's [finding-categories](./TECHNIQUE.md#finding-categories), assigning each a stable designator that downstream surfaces reference, per [Designators](../../resources/findings-report.md#designators)
 - Report exceptions only: a clean review result is one line ("all changes justified — no findings"), never a per-section template fill; findings from other reviews are referenced by ID
 - Record any deferred finding as a deferred-items register row (shape per the [deferred-items template](../../resources/deferred-items.md#template)) linked from the finding

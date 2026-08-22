@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 2.3.0
+  version: 2.4.0
 ---
 
 ## Capability
@@ -87,7 +87,7 @@ When `{prior_feedback_triage}` is present, every entry tagged as a reported runt
 
 ### 5. Document Findings
 
-- State each finding in the shape [Finding Layout](../resources/findings-report.md#finding-layout) declares, carrying the fields under [Field List](../resources/test-suite-review.md#field-list) and no others, with its severity derived through the map per [Severity](../resources/findings-report.md#severity)
+- State each finding in the shape [Finding Layout](../resources/findings-report.md#finding-layout) declares, carrying the fields under [Field List](../resources/test-suite-review.md#field-list) and no others, with its severity derived through the map per [Severity](../resources/findings-report.md#severity) and its reachability settled from the code the finding cites per [Reachability](../resources/findings-report.md#reachability)
 - Create the `{test_suite_review_report}` in `{planning_folder_path}`
 - Emit a brief summary of coverage gaps and critical issues as part of the bindable report output for the binding activity to surface
 
