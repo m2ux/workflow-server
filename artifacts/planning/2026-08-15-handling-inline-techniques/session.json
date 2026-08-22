@@ -8,8 +8,8 @@
   "currentActivity": "dispatch-client-workflow",
   "currentTechnique": "workflow-engine::commit-and-persist",
   "condition": "isDefault: dispatch-client-workflow",
-  "seq": 45,
-  "ts": 1787400428,
+  "seq": 47,
+  "ts": 1787401998,
   "startedAt": "2026-08-15T09:54:31.892Z",
   "completedActivities": [
     "discover-session",
@@ -1191,17 +1191,42 @@
       },
       "timestamp": "2026-08-22T12:06:16.000Z",
       "type": "checkpoint_response"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 1177915,
+          "segment": "loop-implementation-analysis-to-gate",
+          "subagent_tokens": 130175,
+          "tool_uses": 18
+        }
+      },
+      "timestamp": "2026-08-22T12:26:38.807Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 103811,
+          "segment": "relay-ia11-resolution",
+          "subagent_tokens": 145311,
+          "tool_uses": 6
+        }
+      },
+      "timestamp": "2026-08-22T12:33:18.919Z",
+      "type": "activity_usage"
     }
   ],
   "triggeredWorkflows": [
     {
       "sessionIndex": "KLN3OI",
       "state": {
-        "activeCheckpoint": {
-          "activityId": "implementation-analysis",
-          "checkpointId": "analysis-assumption-interview",
-          "yieldedAt": "2026-08-22T12:24:15.322Z"
-        },
         "agentId": "orchestrator",
         "checkpointResponses": {
           "codebase-comprehension-comprehension-sufficient": {
@@ -1251,6 +1276,16 @@
             },
             "optionId": "full-workflow",
             "respondedAt": "2026-08-15T11:58:28.000Z"
+          },
+          "implementation-analysis-analysis-assumption-interview": {
+            "effects": {
+              "variablesSet": {
+                "assumption_batch_accepted": true,
+                "assumption_resolved_inline": true
+              }
+            },
+            "optionId": "accept-agent-positions",
+            "respondedAt": "2026-08-22T12:31:05.000Z"
           },
           "requirements-elicitation-elicitation-complete": {
             "effects": {
@@ -1392,6 +1427,10 @@
             "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
             "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
             "resource:assumptions-review": "ef6c16f18489dec3",
+            "resource:assumptions-review#assumptions-log-template": "a140149edbbd5bb6",
+            "resource:assumptions-review#classification-vocabulary": "f65d3b0a3185cfc9",
+            "resource:assumptions-review#probe-vocabulary": "2b0e6e31f3c05e40",
+            "resource:deferred-items#template": "793860242a14d21b",
             "resource:implementation-analysis": "274a3a4cc62eec5d",
             "technique:analyse-challenge::run-loop": "92e3060108458b65",
             "technique:implementation-analysis::analyze": "f71f7c1ae790f8b1",
@@ -5733,25 +5772,228 @@
             "checkpoint": "analysis-assumption-interview",
             "timestamp": "2026-08-22T12:24:15.322Z",
             "type": "checkpoint_reached"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "basis": "delta",
+              "usage": {
+                "coverage_note": "Segment from activity entry to the analysis-assumption-interview gate. The worker's own harness surfaced no figure to it; this is the parent harness reading. A resume past the gate adds a further delta.",
+                "duration_ms": 930373,
+                "source": "claude-code Agent tool usage block for the implementation-analysis dispatch",
+                "subagent_tokens": 238312,
+                "tool_uses": 42
+              }
+            },
+            "timestamp": "2026-08-22T12:25:44.385Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "implementation-analysis",
+            "checkpoint": "analysis-assumption-interview",
+            "data": {
+              "optionId": "accept-agent-positions"
+            },
+            "timestamp": "2026-08-22T12:31:05.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "assumption_resolved_inline",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-22T12:31:05.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "name": "assumption_batch_accepted",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-22T12:31:05.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "chars": 15335,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-22T12:32:46.825Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "chars": 6230,
+              "delivery": "unchanged",
+              "stepId": "analyze-implementation",
+              "techniqueId": "implementation-analysis::analyze"
+            },
+            "timestamp": "2026-08-22T12:32:46.825Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "chars": 5367,
+              "delivery": "unchanged",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-22T12:32:46.825Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "chars": 4149,
+              "delivery": "unchanged",
+              "stepId": "document",
+              "techniqueId": "implementation-analysis::document"
+            },
+            "timestamp": "2026-08-22T12:32:46.825Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "chars": 4413,
+              "delivery": "unchanged",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-22T12:32:46.825Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "chars": 7961,
+              "delivery": "unchanged",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-22T12:32:46.825Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "chars": 6551,
+              "delivery": "unchanged",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::interview"
+            },
+            "timestamp": "2026-08-22T12:32:46.825Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "bundled": true,
+              "chars": 4708,
+              "delivery": "unchanged",
+              "resourceId": "implementation-analysis"
+            },
+            "timestamp": "2026-08-22T12:32:46.825Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "bundled": true,
+              "chars": 2654,
+              "delivery": "full",
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-08-22T12:32:46.825Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "bundled": true,
+              "chars": 1038,
+              "delivery": "full",
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-08-22T12:32:46.825Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "bundled": true,
+              "chars": 1159,
+              "delivery": "full",
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-08-22T12:32:46.825Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "bundled": true,
+              "chars": 316,
+              "delivery": "full",
+              "resourceId": "deferred-items#template"
+            },
+            "timestamp": "2026-08-22T12:32:46.825Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "implementation-analysis",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "basis": "delta",
+              "usage": {
+                "duration_ms": 222620,
+                "segment": "resume-past-gate-to-completion",
+                "source": "parent-harness-reading; the worker's own harness surfaced no figure to it",
+                "subagent_tokens": 221870,
+                "tool_uses": 13
+              }
+            },
+            "timestamp": "2026-08-22T12:36:03.067Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 74,
+        "seq": 79,
         "sessionIndex": "KLN3OI",
         "skippedActivities": [],
         "startedAt": "2026-08-15T10:00:34.754Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1787401455,
+        "ts": 1787402163,
         "variables": {
           "applicable_patterns": "Lexical over dynamic scope; cycle-tolerant linking via a visited set; one narrow grammar module shared by checker and runtime; normative grammar published with conformance fixtures",
           "artifact_name": "",
           "artifact_publish_ref": "",
-          "assumption_batch_accepted": false,
+          "assumption_batch_accepted": true,
           "assumption_decisions": "RE-2 accept W0 into scope; RE-4 adopt SC-3; RE-14 technique-keyed with annotations carried as a separate block",
           "assumption_deferred": false,
-          "assumption_resolved_inline": false,
+          "assumption_resolved_inline": true,
           "assumption_review_presentation": "Empty — analyse-challenge resolved all 7 research assumptions against code and corpus evidence",
           "assumptions_log": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-15-handling-inline-techniques/02-assumptions-log.md",
           "attestation_option": "certify",

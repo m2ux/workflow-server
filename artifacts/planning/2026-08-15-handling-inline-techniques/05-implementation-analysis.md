@@ -139,9 +139,12 @@ link to a technique file, inside a Protocol section, fences skipped, `resources/
   head, 19 site identities change, the total moves 135 to 134, and the worklist moves 94 to 93.
 - **The conversion is smaller in tools than in call sites.** The 23 sites that become tool calls resolve
   to 11 distinct operations, so the server's tool surface grows from 18 to at most 29 rather than to 44.
-- **SC-7's headroom figure and SC-3's ninth term disagree about the same closure.** 46,865 bytes reproduces
-  exactly with the qualified pair counted as two edges; the term SC-3 publishes collapses it, giving 40,671
-  bytes. The two members that separate them are group `TECHNIQUE.md` files.
+- **SC-7's headroom figure moves under a convention SC-3 itself mandates.** The heaviest closure is 46,865
+  bytes over 14 members with a qualified `group::op` pair counted as two edges, and 40,671 bytes over 12
+  members once that pair collapses to one call as SC-3's ninth term directs. Both reproduce exactly; the
+  two members between them are group `TECHNIQUE.md` files. Both sit inside the 640,000-character budget, at
+  7.3% and 6.4%, so **feasibility is untouched** — what moves is which figure the criterion asserts, and a
+  lone number here is what this area has been burned by repeatedly.
 
 ## Gap Analysis
 
@@ -149,7 +152,7 @@ link to a technique file, inside a Protocol section, fences skipped, `resources/
 |----|-----|---------------|---------------|--------|----------|
 | G1 | Ancestry resolves from the caller's tree (SC-1) | 2 of 3 resolution sites pass the requested workflow id; 1 passes the callee's source workflow | All three pass the callee's home tree | A borrowed or cross-workflow callee silently composes against the wrong container contracts | HIGH |
 | G2 | No cross-door identity test, and the doors differ at the payload (SC-1) | Two near-neighbour tests stop at provenance fields and ledger semantics | One test asserting inputs, outputs, rules and protocol across both doors | SC-1's verification does not exist, and the assertion must target the shared projection rather than the response | HIGH |
-| G3 | A tenth grammar term is free (SC-3, SC-5) | Nine terms published; whether an unresolvable target counts is undecided | The term published and pinned by a fixture | Moves the GitHub bin 38/39 and the domain bin 11/10; SC-5's repair changes the answer mid-change | HIGH |
+| G3 | A tenth grammar term is owed in the guard (SC-3, SC-5) | Nine terms published; the tenth is settled at the analysis gate and not yet in SC-3 or the guard's grammar | Ten terms published, each pinned by a fixture | Bin attribution moves GitHub 38/39 and domain 11/10 while the worklist total holds at 94; SC-5's repair changes the answer mid-change | HIGH |
 | G4 | SC-7's asserted bytes carry no grammar term | 46,865 bytes stated without the convention that produces it | The figure stated with its term, and the container-delivery question settled | The same closure is 40,671 bytes under the package's own published grammar | HIGH |
 | G5 | SC-7's verification names a construct that does not exist | Four benchmark harnesses, no scenario mechanism, 7 enumerated hot resources all non-technique | A scenario mechanism, then a referenced-technique scenario in it | SC-7's verification is a harness change, not a table row | MEDIUM |
 | G6 | The third door has no per-technique ledger key (SC-7a, SC-10) | `get_workflow` collapses the whole bundle under one content hash, all-or-nothing, and takes no `context_tokens` or `agent_id` | A decision on whether the third door delivers folded bodies, and against which counter | SC-7a's collapse "at both doors" has no key to collapse against at the door the 11 attributed entries reach | HIGH |
@@ -160,6 +163,30 @@ link to a technique file, inside a Protocol section, fences skipped, `resources/
 | G11 | The stealth scan is scoped to one technique and one workflow (SC-9) | Per reachable step it composes one technique and scans its protocol, for one workflow chosen by flag | The scan running over the delivered closure across the corpus | SC-9 is a scope change on two axes; its cost evidence stays n=2 | MEDIUM |
 | G12 | SC-7a's denominator does not reproduce (SC-7a) | 81 distinct techniques asserted; the published grammar gives 64, with 64 to 87 across variations | A denominator re-derived at the delivered commit through the loader | The 31-of-81 dual-reach ratio is the figure the keying decision rests on | MEDIUM |
 | G13 | The test baseline moves underneath the package (SC-12) | A sibling branch rewrites the suite and already carries coverage and a triage entry this baseline lacks | A stated test baseline commit and a merge order | Whether F-4's untested-extractor gap is open at delivery depends on merge order | MEDIUM |
+
+### Two constraints the plan inherits
+
+**"Within the existing delivery budget" is a weaker guarantee than it reads.** SC-7's phrase names a budget
+that is already partly spent when the first step technique is considered. The eager counter opens at the
+serialised size of the operations bundle — the channel that has no budget and no per-item cap — so the
+uncapped channel draws down the capped one before any technique body is bundled, and because that seed is
+measured after unchanged-marker collapse, how much room remains depends on what this agent context has
+already been delivered. Two consequences the plan carries rather than rediscovers: a folded body competes
+with step techniques whichever of the two channels it is nominally charged to, and eager coverage is
+delivery-history dependent, so the same activity can bundle a different number of steps on a second visit.
+This is [F-3](04-kb-research.md#findings) and [F-2](04-kb-research.md#findings) resolving into one question
+about one counter, which is why [G6](#gap-analysis) and [G7](#gap-analysis) are answered together or not
+at all.
+
+**The six-deliverable surface is reviewable; the hazard is ordering, not size.** The measured risk is that
+the conversion removes 41 of 135 logical call sites from the corpus the new guard asserts totals over, so a
+guard baselined before the conversion lands is green against a corpus the same change is still editing, and
+a reviewer cannot separate a guard defect from a legitimate re-baseline. SC-13 already keys its re-baseline
+to the delivered corpus commit, so the criterion answers this without a scope change. What `plan-prepare`
+turns it into is commit sequencing: land the corpus-affecting work — the conversion, and SC-5's repair of
+the dangling target — before the commit that baselines the guard's published totals, and take the corpus
+submodule pin to the delivered commit in between. Splitting the pull request is not required and is not
+recommended; sequencing the commits inside it is.
 
 ## Opportunities for Improvement
 
@@ -213,8 +240,9 @@ contributes baselines and gaps. Two analysis-derived targets, each mapped to a g
 ## Counting this area
 
 The standing practice is that a count is restated with its unit or re-derived before anything is planned
-against it. This activity re-derived twelve figures. Nine reproduce exactly. Three do not, and one new
-free term surfaced.
+against it. This activity re-derived the corpus census in full, plus six figures the record carries
+individually. **The census reproduces exactly.** Of the six, two reproduce once the grammar term behind
+them is named, one is superseded and three are corrected. One new free term surfaced.
 
 | Figure as carried | Unit as carried | Re-derived | Verdict |
 |---|---|---|---|
@@ -225,17 +253,43 @@ free term surfaced.
 | Four documented narrowings in the binding guard | narrowings | 3 documented; the producer test's order-blindness is unstated in the file | Corrected |
 | `context_tokens` appears only in the `get_activity` handler | handlers | Two handlers take it as a parameter; it is absent from `get_workflow` | Corrected; the substantive claim stands |
 
-The new term is the tenth: **whether a call site whose target does not resolve counts as a call site, and
-which callee bin owns it.** It is recorded as the one open assumption at
-[IA-11](02-assumptions-log.md#ia-11-a-tenth-free-grammar-term). It is the eighth count in this area to move
-under a definition change, and it was found the same way as the nine before it — by measuring, not by
-reading the definition, which reads complete each time.
+The census is the first set of figures in this package to survive re-derivation unchanged, which is worth
+stating because it tells a later reader which numbers have earned trust and which carry a history.
 
-Two properties of the reproduction are worth carrying. The worklist total of 94 is **invariant** under the
-new term, because the site it moves travels between bins rather than into or out of the worklist; the
-published sub-bins of 49 and 11 are what move, to 50 and 10. And totals reproducing is weaker evidence
-than it looks: across the pinned and measured corpora every total is identical while 2 site identities
-differ, so a guard asserting totals alone would pass over a corpus it had never seen.
+### The tenth term
+
+**Whether a call site whose target does not resolve counts as a call site, and which callee bin owns it.**
+SC-3 publishes it, settled at the `analysis-assumption-interview` gate and recorded at
+[IA-11](02-assumptions-log.md#log). Two reasons. SC-5 repairs the dangling target in the same change that
+introduces the guard, so the answer changes *during* the delivery — the exact circumstance in which an
+unstated term becomes two defensible readings of one guard run. And each of the nine terms before it was
+found by measuring rather than by reading, every one of them having read complete beforehand; a tenth found
+the same way earns the same treatment.
+
+**The tenth term does not change the size of the job.** The worklist total is **94 logical call sites**
+under either reading, and the converted population is **41** under either, because the site the term moves
+travels between bins rather than into or out of the worklist. What moves is bin attribution: GitHub between
+38 and 39, domain between 11 and 10. After SC-5's repair the site resolves and the bins settle at 39 and 10.
+
+### Fixtures rather than totals, reached twice by independent routes
+
+The case for pinning each grammar term with a fixture instead of an asserted total now rests on two
+measurements that share no method.
+
+The first is the ninth term's overlap, established by elicitation: container-target inclusion and counting
+unit are largely measuring one form, the qualified `group::op` pair, so a published list of terms cannot
+show that two of its entries are the same term seen twice.
+
+The second is corpus drift, measured here. Between the commit this branch pins and the commit the figures
+are taken at, **every total is identical while 2 call-site identities differ**. Between that commit and the
+current corpus head, **19 identities change**, the logical call sites move 135 to 134 and the worklist 94 to
+93. So a guard asserting totals alone passes over a corpus it has never seen, and does so in the ordinary
+case rather than a contrived one.
+
+One route reaches the conclusion from the grammar's internal structure and the other from the corpus's
+movement over seven days. **Two independent routes to one conclusion is corroboration**, and it is stronger
+than either measurement alone: a fixture set fails when a term's meaning changes *and* when the corpus
+underneath it changes, where a total fails for neither reason reliably.
 
 One figure this activity did not replicate: SC-9's scan cost of 22.3 ms against 0.29 ms remains sample-size
 two and unreplicated, as [RS-7](02-assumptions-log.md#log) routed here. The scan's **input** is replicated
@@ -257,8 +311,11 @@ as unreplicated rather than carried as confirmed.
 | `scripts/binding-fidelity-triage.json` | Triage | 69 entries; 38 unconsumed-output, 35 under one rationale |
 | `tests/`, `scripts/run-*-benchmark.ts` | Tests | No cross-door identity test; no scenario construct |
 
-**Note on length.** This runs past the guide's ~150-line budget. The overrun is the Baseline Metrics and
-Counting sections, which are the deliverable: this package has now had eight counts move under a definition
-change, and a measurement compressed to its conclusion is the failure that produced them.
+**Note on length.** This runs past the guide's ~150-line budget. Three sections carry the overrun and each
+is the deliverable rather than commentary: Baseline Metrics, because the measurements are the payload;
+Counting this area, because this package has now had eight counts move under a definition change and a
+measurement compressed to its conclusion is the failure that produced them; and the two constraints under
+Gap Analysis, because both are conclusions `plan-prepare` would otherwise have to rediscover from the same
+evidence.
 
 **Status:** Ready for plan-prepare activity
