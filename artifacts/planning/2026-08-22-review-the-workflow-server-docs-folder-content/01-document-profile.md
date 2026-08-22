@@ -57,9 +57,17 @@ The rewrite holds every document to five tests, drawn from the request and from 
 
 The two normative specifications are the deliberate exception to that last test. A contract document's token names are the contract, so precise identifiers stay in `technique-protocol-specification.md` and `orchestra-specification.md`. Those two documents get the plain-language treatment in their explanatory prose and keep their exact terms in their normative clauses.
 
-**Deliberately out of scope.** The rewrite does not touch documents outside `docs/`: the project README, the shared install sequence, the two transport documents, the schema guide, the HTML site, the agent instruction files, or the documentation carried inside workflow definitions. Cross-references into those files stay valid, and where a `docs/` rewrite leaves a statement in one of them inconsistent, the run records a follow-up rather than editing it.
+**Deliberately out of scope.** The rewrite does not touch the prose of documents outside `docs/`: the project README, the shared install sequence, the two transport documents, the schema guide, the HTML site, the agent instruction files, or the documentation carried inside workflow definitions. Where a `docs/` rewrite leaves a statement in one of them inconsistent, the run records a follow-up rather than editing it. The one edit the run does make outside `docs/` is mechanical: a link whose target this run renames is repointed wherever it appears, under the second scope decision below.
 
 The rewrite also carries no design rationale and no account of how the documentation changed. The repository keeps standing rationale on its design pages and evolution narrative in engineering artifacts, and this set states current behaviour in the present tense.
+
+## Scope decisions
+
+Two questions the source analysis raised are settled by the user and bind the drafting pass. Both are decided; the draft does not reopen either.
+
+**The Orchestra specification is a design that was never built.** `orchestra-specification.md` describes an activity language the server cannot load: it lays out steps as a map with a `skill:` key alongside `decisions:`, `loops:` and `flows:` sections and a mandatory `main` flow, where the schema the loader validates against is an array of steps discriminated by kind, with transitions alongside. The document is presented as what it is — a design proposal that the implementation did not follow — and it comes off the path a workflow author is routed down. Two companion edits carry that through: the source map in `documentation-system.md` and the router table in `api-reference.md` both stop directing authors to it. The reframing states what the document is, in present tense, without narrating how it used to be presented.
+
+**The five snake_case filenames are renamed to kebab-case.** `docs/` carries five files whose names use underscores against ten that use hyphens: `artifact_management_model.md`, `checkpoint_model.md`, `dispatch_model.md`, `resource_resolution_model.md` and `state_management_model.md`. Each takes the kebab-case form of its own name, moved with `git mv` so history follows the file. Every in-repo reference is repointed — not only the ones in `docs/`, but those in the project README, the HTML site, the scripts, the schemas, the source, the tests, and the workflow definitions — and anchors travelling with those links survive the move. The repository's reference checker runs afterwards, and a failure it reports is unfinished work rather than a known exception. Links reaching these files from outside the repository stop resolving; that cost is accepted, and the run adds no redirect stubs or compatibility aliases to soften it.
 
 ## Controlled language
 
