@@ -1466,10 +1466,11 @@
           "requirements-elicitation",
           "research",
           "implementation-analysis",
-          "plan-prepare"
+          "plan-prepare",
+          "assumptions-review"
         ],
-        "condition": "isDefault: assumptions-review",
-        "currentActivity": "assumptions-review",
+        "condition": "isDefault: implement",
+        "currentActivity": "implement",
         "currentTechnique": "analyse-challenge::run-loop",
         "declaredArtifacts": [
           {
@@ -7396,17 +7397,254 @@
             },
             "timestamp": "2026-08-22T14:42:58.346Z",
             "type": "step_started"
+          },
+          {
+            "activity": "assumptions-review",
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "outcome": "complete",
+              "transitionCondition": "isDefault: implement"
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "activity_outcome"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "value": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/02-assumptions-log.md"
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "name": "assumption_resolved_inline",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "name": "assumption_batch_accepted",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "name": "needs_individual_interview",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "name": "post_summary_approved",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "name": "needs_comprehension",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "name": "needs_plan_revision",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "name": "needs_further_discussion",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "evaluate-open-assumptions"
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "present-residual-assumptions"
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "residual-assumption-batch"
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "record-batch-decision"
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "assumption-interview-loop"
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "post-summary-review"
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "post-summary-jira"
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "post-summary-github"
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "implement",
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "published": true
+            },
+            "timestamp": "2026-08-22T14:46:04.428Z",
+            "type": "progress_published"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 94,
+        "seq": 95,
         "sessionIndex": "KLN3OI",
         "skippedActivities": [],
         "startedAt": "2026-08-15T10:00:34.754Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1787409778,
+        "ts": 1787409964,
         "variables": {
           "analysis_document": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/05-implementation-analysis.md",
           "applicable_patterns": "Lexical over dynamic scope; cycle-tolerant linking via a visited set; one narrow grammar module shared by checker and runtime; normative grammar published with conformance fixtures",
@@ -7464,7 +7702,7 @@
           "has_debt_markers": false,
           "has_deferred_assumptions": false,
           "has_flagged_blocks": false,
-          "has_open_assumptions": true,
+          "has_open_assumptions": false,
           "has_open_questions": false,
           "has_reconcilable_research": false,
           "has_resolvable_assumptions": false,
@@ -7500,16 +7738,13 @@
           "needs_research": true,
           "needs_simplification": false,
           "on_feature_branch": true,
-          "open_assumptions": [
-            "PL-1",
-            "PL-2",
-            "PL-3"
-          ],
+          "open_assumptions": [],
           "open_questions": "None open. All 23 worked questions are closed; the ledger-keying choice is recorded as a costed decision for requirements elicitation.",
           "path_rationale": "Recorded in 02-design-philosophy.md under Workflow Path Decision.",
           "plan_document": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/06-work-package-plan.md",
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-15-handling-inline-techniques",
           "post_jira_comment": false,
+          "post_summary_approved": false,
           "pr_exists": true,
           "pr_number": 466,
           "pr_skipped": false,
