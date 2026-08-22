@@ -502,7 +502,7 @@ activity's `::` references resolve to a technique or rule — an `unresolved` en
 definition defect, which the definition-lint gate enforces.
 
 The file shape of §3 is normative, and the `check:technique-template` guard
-(`scripts/check-technique-template.ts`, also a Vitest test) enforces it corpus-wide: frontmatter
+(`scripts/check-technique-template.ts`, run by `check:all`) enforces it corpus-wide: frontmatter
 carries `metadata.version` and nothing else; no H1 title; the H2 sections are the canonical five in
 canonical order (Outputs precede Protocol); entry ids are `snake_case` (a tool-parameter mirror
 keeps the tool's spelling, §3.2); rule names are `kebab-case`; every `{$name}` binding is

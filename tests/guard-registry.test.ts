@@ -47,6 +47,14 @@ describe('guard registry', () => {
       .toEqual(['site-links', 'source-encoding', 'svg-layout']);
   });
 
+  /** No test re-runs a guard against the live corpus; the sweep in this job is what holds it at zero. */
+  it('is swept by the same CI job that runs the suite', () => {
+    const verify = readFileSync(join(REPO, '.github/workflows/verify.yml'), 'utf-8');
+    expect(verify, 'the guard sweep left the verify job — the corpus is now held at zero by nothing')
+      .toContain('npm run check:all');
+    expect(verify, 'the suite left the verify job').toContain('npm run test:ci');
+  });
+
   it('covers every check:* script in package.json', () => {
     const aggregate = new Set(['check:all', 'check:delta']);
     const uncovered = Object.keys(pkg.scripts)

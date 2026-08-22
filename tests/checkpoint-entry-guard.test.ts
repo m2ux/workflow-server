@@ -4,7 +4,6 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { collectFindings } from '../scripts/check-checkpoint-entry.js';
 import { UnreachableCorpusError } from '../scripts/workflows-root.js';
-import { corpusRoot } from './corpus-root.js';
 
 /**
  * Checkpoint-at-entry guard (#353 §1.4): no activity opens with a checkpoint.
@@ -40,10 +39,6 @@ describe('checkpoint-entry guard', () => {
     id: do-work
     technique: some::op
 `;
-
-  it('reports no violation over the real corpus', () => {
-    expect(collectFindings(corpusRoot()).map(f => `${f.site}: ${f.detail}`)).toEqual([]);
-  });
 
   it('flags an activity whose first step is a checkpoint', () => {
     const findings = findingsFor(`id: thing\nsteps:\n${CHECKPOINT}${TECHNIQUE}`);

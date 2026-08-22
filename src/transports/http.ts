@@ -24,8 +24,8 @@ export const SHUTDOWN_TIMEOUT_MS = 10_000;
  * Build the HTTP/SSE transport's express app: `/mcp` (via
  * `StreamableHTTPServerTransport`), plus `/health` and `/ready`. Built from
  * the same `createServer(config)` used by the stdio transport — no change to
- * tool/resource registration. Split out from `startHttpServer` so tests can
- * exercise routes (e.g. via supertest) without binding a real socket.
+ * tool/resource registration. Separate from `startHttpServer` so a caller owns
+ * the bind: tests listen on an ephemeral port, production on the configured one.
  */
 export function createHttpApp(config: ServerConfig): Express {
   const host = config.host ?? 'localhost';

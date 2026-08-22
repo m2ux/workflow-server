@@ -4,7 +4,6 @@ import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import { collectFindings } from '../scripts/check-decision-order.js';
 import { UnreachableCorpusError } from '../scripts/workflows-root.js';
-import { corpusRoot } from './corpus-root.js';
 
 /**
  * Decision-order guard (#469): no checkpoint decides a value a step before it is already gated on.
@@ -43,10 +42,6 @@ describe('decision-order guard', () => {
           setVariable:
             platform: jira
 `;
-
-  it('reports no violation over the real corpus', () => {
-    expect(collectFindings(corpusRoot()).map(f => `${f.site}: ${f.detail}`)).toEqual([]);
-  });
 
   it('flags a checkpoint that decides what an earlier step is gated on', () => {
     const findings = findingsFor(`${READER}${DECIDER}`);

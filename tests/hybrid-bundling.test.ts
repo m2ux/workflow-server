@@ -1,13 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { createServer } from '../src/server.js';
+import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { join } from 'node:path';
 import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { parse } from 'yaml';
-import type { HistoryEntry } from '../src/schema/state.schema.js';
 import { safeValidateActivity } from '../src/schema/activity.schema.js';
+import { createHarness, type Harness } from './e2e/harness.js';
+import { sessionOps, type SessionOps } from './session-ops.js';
 
 /**
  * Automatic, per-agent context-derived step-technique bundling (#189 C1c):
@@ -19,23 +18,16 @@ import { safeValidateActivity } from '../src/schema/activity.schema.js';
  * wire against a fixture corpus.
  */
 describe('hybrid technique bundling (#189 C1c)', () => {
+  let harness: Harness;
   let client: Client;
-  let closeTransport: () => Promise<void>;
+  let session: SessionOps;
   let workflowDir: string;
-  let workspaceDir: string;
-
-  const planningFolder = (slug: string) => join(workspaceDir, '.engineering/artifacts/planning', slug);
-  const sessionHistory = (slug: string): HistoryEntry[] => {
-    const state = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8')) as { history: HistoryEntry[] };
-    return state.history;
-  };
 
   const op = (capability: string, body: string): string =>
     `---\nmetadata:\n  version: 1.0.0\n---\n\n## Capability\n\n${capability}\n\n${body}`;
 
   beforeAll(async () => {
     workflowDir = mkdtempSync(join(tmpdir(), 'wf-bundling-corpus-'));
-    workspaceDir = mkdtempSync(join(tmpdir(), 'wf-bundling-ws-'));
 
     const wf = join(workflowDir, 'bundlewf');
     mkdirSync(join(wf, 'activities'), { recursive: true });
@@ -190,54 +182,15 @@ describe('hybrid technique bundling (#189 C1c)', () => {
       '## Protocol\n\n### 1. Go\n\n- Read [oversized-both](../resources/oversized-both.md), then [Slice](../resources/oversized-both.md#slice).\n',
     ));
 
-    const config = {
-      workflowDir,
-      schemasDir: join(import.meta.dirname, '../schemas'),
-      workspaceDir,
-      serverName: 'test-workflow-server',
-      serverVersion: '1.0.0',
-      minCheckpointResponseSeconds: 0,
-    };
-    const server = createServer(config);
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    await server.connect(serverTransport);
-    client = new Client({ name: 'test-client', version: '1.0.0' }, {});
-    await client.connect(clientTransport);
-    closeTransport = async () => {
-      await client.close();
-      await server.close();
-    };
+    harness = await createHarness({ workflowDir });
+    client = harness.client;
+    session = sessionOps(harness, 'bundlewf');
   });
 
   afterAll(async () => {
-    await closeTransport();
-    for (const dir of [workflowDir, workspaceDir]) {
-      try { rmSync(dir, { recursive: true, force: true }); } catch { /* ignore */ }
-    }
+    await harness.close();
+    try { rmSync(workflowDir, { recursive: true, force: true }); } catch { /* ignore */ }
   });
-
-  async function startSession(slug: string, agentId: string, contextMode?: string): Promise<string> {
-    const result = await client.callTool({
-      name: 'start_session',
-      arguments: {
-        workflow_id: 'bundlewf',
-        agent_id: agentId,
-        planning_folder: planningFolder(slug),
-        ...(contextMode ? { context_mode: contextMode } : {}),
-      },
-    });
-    expect(result.isError).toBeFalsy();
-    const body = JSON.parse((result.content as Array<{ text: string }>)[0]!.text) as Record<string, unknown>;
-    return body['session_index'] as string;
-  }
-
-  async function enterActivity(sessionIndex: string, activityId: string): Promise<void> {
-    const result = await client.callTool({
-      name: 'next_activity',
-      arguments: { session_index: sessionIndex, activity_id: activityId },
-    });
-    expect(result.isError).toBeFalsy();
-  }
 
   type ToolResult = { isError?: boolean; content?: Array<{ text: string }>; _meta?: Record<string, unknown> };
 
@@ -254,8 +207,8 @@ describe('hybrid technique bundling (#189 C1c)', () => {
 
   it('inlines small ungated step techniques and leaves large and gated ones lazy', async () => {
     const slug = 'b11-shape';
-    const idx = await startSession(slug, 'w1');
-    await enterActivity(idx, 'work');
+    const idx = await session.start(slug, 'w1');
+    await session.enter(idx, 'work');
     const { ops, meta } = await getActivity(idx);
 
     const stepTechniques = ops['step_techniques'] as Record<string, Record<string, unknown>>;
@@ -282,8 +235,8 @@ describe('hybrid technique bundling (#189 C1c)', () => {
 
   it('eager-bundles technique-linked resource BODIES as a sibling resources map under reference delivery', async () => {
     const slug = 'b11-resources';
-    const idx = await startSession(slug, 'w1', 'persistent');
-    await enterActivity(idx, 'work');
+    const idx = await session.start(slug, 'w1', 'persistent');
+    await session.enter(idx, 'work');
     const { ops, meta } = await getActivity(idx);
 
     const resources = ops['resources'] as Record<string, Record<string, unknown>>;
@@ -296,7 +249,7 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     expect(ops['resource_refs']).toBeUndefined();
     expect(meta['resource_refs']).toBeUndefined();
 
-    const history = sessionHistory(slug);
+    const history = session.history(slug);
     expect(history.some((h) =>
       h.type === 'resource_fetched' &&
       (h.data as { resourceId?: string; bundled?: boolean } | undefined)?.resourceId === 'guide#overview' &&
@@ -306,8 +259,8 @@ describe('hybrid technique bundling (#189 C1c)', () => {
 
   it('delivers the file alone when a technique cites a resource whole and by section', async () => {
     const slug = 'b11-grain-small';
-    const idx = await startSession(slug, 'w1', 'persistent');
-    await enterActivity(idx, 'cite-small');
+    const idx = await session.start(slug, 'w1', 'persistent');
+    await session.enter(idx, 'cite-small');
     const { ops, meta } = await getActivity(idx);
 
     const resources = ops['resources'] as Record<string, Record<string, unknown>>;
@@ -322,8 +275,8 @@ describe('hybrid technique bundling (#189 C1c)', () => {
 
   it('still delivers the section when the file it belongs to is over the eager cap', async () => {
     const slug = 'b11-grain-oversized';
-    const idx = await startSession(slug, 'w1', 'persistent');
-    await enterActivity(idx, 'cite-oversized');
+    const idx = await session.start(slug, 'w1', 'persistent');
+    await session.enter(idx, 'cite-oversized');
     const { ops, meta } = await getActivity(idx);
 
     const resources = ops['resources'] as Record<string, Record<string, unknown>>;
@@ -338,8 +291,8 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     // A fresh worker context cannot collapse a repeat delivery, so a body inlined here would ship
     // again in full in every activity that links it. The ids are what the worker needs.
     const slug = 'b11-resources-fresh';
-    const idx = await startSession(slug, 'w1');
-    await enterActivity(idx, 'work');
+    const idx = await session.start(slug, 'w1');
+    await session.enter(idx, 'work');
     const { ops, meta } = await getActivity(idx);
 
     expect(ops['resources']).toBeUndefined();
@@ -353,7 +306,7 @@ describe('hybrid technique bundling (#189 C1c)', () => {
 
     // No `resources` map was delivered, so no resource:* ledger key is written — under the old
     // behaviour these were recorded and never read.
-    const state = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8')) as {
+    const state = JSON.parse(readFileSync(join(session.folder(slug), 'session.json'), 'utf8')) as {
       deliveredContent?: Record<string, Record<string, string>>;
     };
     const keys = Object.keys(state.deliveredContent?.['w1'] ?? {});
@@ -361,7 +314,7 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     expect(keys.filter((k) => k.startsWith('resource:'))).toEqual([]);
 
     // And no bundled resource_fetched event claims a delivery that never happened.
-    expect(sessionHistory(slug).filter((h) =>
+    expect(session.history(slug).filter((h) =>
       h.type === 'resource_fetched' && (h.data as { bundled?: boolean } | undefined)?.bundled === true,
     )).toHaveLength(0);
   });
@@ -370,8 +323,8 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     // `wide` links two bulk resources. The budget is sized to admit the technique plus the first
     // body only, so the second must be excluded — and the whole eager bundle must stay under it.
     const slug = 'b11-resource-budget';
-    const idx = await startSession(slug, 'w1', 'persistent');
-    await enterActivity(idx, 'wide');
+    const idx = await session.start(slug, 'w1', 'persistent');
+    await session.enter(idx, 'wide');
 
     const contextTokens = 4_000;
     const budget = contextTokens * 0.8 * 4;
@@ -398,8 +351,8 @@ describe('hybrid technique bundling (#189 C1c)', () => {
 
   it('collapses eagerly bundled resources under persistent mode and shares the get_resource ledger', async () => {
     const slug = 'b11-resources-persistent';
-    const idx = await startSession(slug, 'w1', 'persistent');
-    await enterActivity(idx, 'work');
+    const idx = await session.start(slug, 'w1', 'persistent');
+    await session.enter(idx, 'work');
     const first = await getActivity(idx);
     const firstRes = (first.ops['resources'] as Record<string, Record<string, unknown>>)['guide#overview']!;
     expect(firstRes['content']).toBeDefined();
@@ -420,8 +373,8 @@ describe('hybrid technique bundling (#189 C1c)', () => {
 
   it('decorates bundled entries with binding-seam provenance, like a step-bound get_technique', async () => {
     const slug = 'b11-provenance';
-    const idx = await startSession(slug, 'w1');
-    await enterActivity(idx, 'work');
+    const idx = await session.start(slug, 'w1');
+    await session.enter(idx, 'work');
     const { ops } = await getActivity(idx);
 
     const record = (ops['step_techniques'] as Record<string, Record<string, unknown>>)['record']!;
@@ -435,11 +388,11 @@ describe('hybrid technique bundling (#189 C1c)', () => {
 
   it('records one technique_bundled history event per bundled step', async () => {
     const slug = 'b11-history';
-    const idx = await startSession(slug, 'w7');
-    await enterActivity(idx, 'work');
+    const idx = await session.start(slug, 'w7');
+    await session.enter(idx, 'work');
     await getActivity(idx);
 
-    const bundled = sessionHistory(slug).filter(h => h.type === 'technique_bundled');
+    const bundled = session.history(slug).filter(h => h.type === 'technique_bundled');
     expect(bundled).toHaveLength(4);
     for (const entry of bundled) {
       expect(entry.activity).toBe('work');
@@ -452,8 +405,8 @@ describe('hybrid technique bundling (#189 C1c)', () => {
 
   it('bundled steps satisfy the manifest fidelity check; lazy steps still need a fetch', async () => {
     const slug = 'b11-fidelity';
-    const idx = await startSession(slug, 'w1');
-    await enterActivity(idx, 'work');
+    const idx = await session.start(slug, 'w1');
+    await session.enter(idx, 'work');
     await getActivity(idx);
 
     const result = await client.callTool({
@@ -480,8 +433,8 @@ describe('hybrid technique bundling (#189 C1c)', () => {
 
   it('shares the delivery ledger with get_technique in persistent context, both directions', async () => {
     const slug = 'b11-ledger';
-    const idx = await startSession(slug, 'solo', 'persistent');
-    await enterActivity(idx, 'work');
+    const idx = await session.start(slug, 'solo', 'persistent');
+    await session.enter(idx, 'work');
 
     // First delivery is full.
     const first = await getActivity(idx);
@@ -513,7 +466,7 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     // Even the collapsed entry keeps its ▼ STEP arrival marker.
     expect(secondGather['marker']).toBe('▼ STEP gather · technique gather');
     expect(second.meta['bundled_steps']).toEqual(['classify', 'gather', 'record', 'loop-op']);
-    const bundledEvents = sessionHistory(slug).filter(h => h.type === 'technique_bundled');
+    const bundledEvents = session.history(slug).filter(h => h.type === 'technique_bundled');
     expect(bundledEvents).toHaveLength(8);
 
     // bundle: "full" forces full re-delivery.
@@ -526,26 +479,26 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     // `wrap` declares no bundleTechniques, yet under automatic context-derived bundling its one
     // ungated technique step (gather) is inlined — the opt-in requirement is gone (#189 C1c).
     const slug = 'auto-no-optin';
-    const idx = await startSession(slug, 'w1');
-    await enterActivity(idx, 'wrap');
+    const idx = await session.start(slug, 'w1');
+    await session.enter(idx, 'wrap');
     const { ops, meta } = await getActivity(idx);
     const stepTechniques = ops['step_techniques'] as Record<string, Record<string, unknown>>;
     expect(stepTechniques).toBeDefined();
     expect(stepTechniques['gather']!['capability']).toContain('Gather');
     expect(meta['bundled_steps']).toEqual(['gather']);
-    expect(sessionHistory(slug).filter(h => h.type === 'technique_bundled')).toHaveLength(1);
+    expect(session.history(slug).filter(h => h.type === 'technique_bundled')).toHaveLength(1);
   });
 
   it('a tiny context_tokens budget bundles nothing — every step stays lazy', async () => {
     // budget = context_tokens × 0.8 × 4 chars/token. context_tokens: 1 → ~3.2 chars, below any
     // composed technique, so document-order inlining stops before the first entry.
     const slug = 'tiny-budget';
-    const idx = await startSession(slug, 'w1');
-    await enterActivity(idx, 'work');
+    const idx = await session.start(slug, 'w1');
+    await session.enter(idx, 'work');
     const { ops, meta } = await getActivity(idx, { context_tokens: 1 });
     expect(ops['step_techniques']).toBeUndefined();
     expect(meta['bundled_steps']).toBeUndefined();
-    expect(sessionHistory(slug).filter(h => h.type === 'technique_bundled')).toHaveLength(0);
+    expect(session.history(slug).filter(h => h.type === 'technique_bundled')).toHaveLength(0);
   });
 
   it('bundleTechniques.maxChars: 0 opts the activity out of eager bundling entirely', async () => {
@@ -565,18 +518,18 @@ describe('hybrid technique bundling (#189 C1c)', () => {
     ].join('\n'));
     // Point the fixture workflow's initial-activity transition at it so next_activity accepts it.
     const slug = 'optout';
-    const idx = await startSession(slug, 'w1');
-    await enterActivity(idx, 'optout');
+    const idx = await session.start(slug, 'w1');
+    await session.enter(idx, 'optout');
     const { ops, meta } = await getActivity(idx);
     expect(ops['step_techniques']).toBeUndefined();
     expect(meta['bundled_steps']).toBeUndefined();
-    expect(sessionHistory(slug).filter(h => h.type === 'technique_bundled')).toHaveLength(0);
+    expect(session.history(slug).filter(h => h.type === 'technique_bundled')).toHaveLength(0);
   });
 
   it('rejects get_activity without the required context_tokens param', async () => {
     const slug = 'required-param';
-    const idx = await startSession(slug, 'w1');
-    await enterActivity(idx, 'work');
+    const idx = await session.start(slug, 'w1');
+    await session.enter(idx, 'work');
     const result = await client.callTool({
       name: 'get_activity',
       arguments: { session_index: idx },

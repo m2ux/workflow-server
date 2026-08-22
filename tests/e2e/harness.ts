@@ -25,6 +25,11 @@ export interface Harness {
 export interface HarnessOptions {
   /** Use a specific workspace dir (e.g. a sandbox shared with a worker process) instead of a fresh temp. */
   workspaceDir?: string;
+  /** Serve a fixture corpus in place of the repo's workflows root. */
+  workflowDir?: string;
+  /** Multi-root layouts: where checkouts live, and the install root the server binds against. */
+  engineeringDir?: string;
+  installDir?: string;
 }
 
 /** Create a connected client + server pair backed by a workspace (fresh temp by default). */
@@ -32,9 +37,10 @@ export async function createHarness(opts: HarnessOptions = {}): Promise<Harness>
   const workspaceDir = opts.workspaceDir ?? mkdtempSync(join(tmpdir(), 'wf-e2e-'));
   // One corpus resolution for the whole suite, in parity with the guards' resolveWorkflowsRoot, so a
   // change under review in a worktree is walked by the tests and the guards alike.
-  const workflowDir = corpusRoot();
   const config = {
-    workflowDir,
+    workflowDir: opts.workflowDir ?? corpusRoot(),
+    ...(opts.engineeringDir ? { engineeringDir: opts.engineeringDir } : {}),
+    ...(opts.installDir ? { installDir: opts.installDir } : {}),
     schemasDir: resolve(import.meta.dirname, '../../schemas'),
     workspaceDir,
     serverName: 'e2e-workflow-server',

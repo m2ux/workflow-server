@@ -1,7 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
-import request from 'supertest';
 import type { Express } from 'express';
-import type { Server as HttpServer } from 'node:http';
+import type { Server as HttpServer, AddressInfo } from 'node:net';
 import { resolve, join } from 'node:path';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -23,6 +22,43 @@ function buildConfig(overrides: Partial<ServerConfig> = {}): ServerConfig {
   };
 }
 
+interface Response {
+  status: number;
+  headers: Record<string, string>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  body: any;
+}
+
+/**
+ * Issue one request against `app` over a real socket on an ephemeral port.
+ *
+ * Session state lives on the app rather than the listener, so successive calls share it. A body
+ * that is not JSON is discarded unread — an open event stream would otherwise keep the listener
+ * from closing.
+ */
+async function call(app: Express, path: string, init: RequestInit = {}): Promise<Response> {
+  const server: HttpServer = await new Promise((ready) => {
+    const s = app.listen(0, '127.0.0.1', () => ready(s));
+  });
+  try {
+    const { port } = server.address() as AddressInfo;
+    const res = await fetch(`http://127.0.0.1:${port}${path}`, init);
+    // ponytail: no test reads an event-stream body, read the stream instead of cancelling when one does
+    const isJson = res.headers.get('content-type')?.includes('application/json') ?? false;
+    const body = isJson ? await res.json().catch(() => ({})) : (await res.body?.cancel(), {});
+    return { status: res.status, headers: Object.fromEntries(res.headers), body };
+  } finally {
+    server.closeAllConnections();
+    await new Promise((closed) => server.close(closed));
+  }
+}
+
+const get = (app: Express, path: string, headers: Record<string, string> = {}): Promise<Response> =>
+  call(app, path, { headers });
+
+const postJson = (app: Express, path: string, body: unknown, headers: Record<string, string> = {}): Promise<Response> =>
+  call(app, path, { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body: JSON.stringify(body) });
+
 describe('HTTP transport', () => {
   let app: Express;
   let workspaceDir: string;
@@ -39,13 +75,13 @@ describe('HTTP transport', () => {
 
   describe('health and readiness', () => {
     it('GET /health returns 200 with status ok', async () => {
-      const res = await request(app).get('/health');
+      const res = await get(app, '/health');
       expect(res.status).toBe(200);
       expect(res.body).toEqual({ status: 'ok' });
     });
 
     it('GET /ready returns 200 with status ready when all directories exist', async () => {
-      const res = await request(app).get('/ready');
+      const res = await get(app, '/ready');
       expect(res.status).toBe(200);
       expect(res.body.status).toBe('ready');
       expect(res.body.checks).toEqual({
@@ -59,7 +95,7 @@ describe('HTTP transport', () => {
     it('GET /ready returns 503 with status not-ready when workspaceDir is missing', async () => {
       const config = buildConfig({ workspaceDir: '/nonexistent/workspace/path' });
       const readyApp = createHttpApp(config);
-      const res = await request(readyApp).get('/ready');
+      const res = await get(readyApp, '/ready');
       expect(res.status).toBe(503);
       expect(res.body.status).toBe('not-ready');
       expect(res.body.checks.workspaceDir).toBe(false);
@@ -70,7 +106,7 @@ describe('HTTP transport', () => {
       // Root-owned path non-root tests cannot create (typical Docker HOME=/ failure mode).
       process.env['WORKFLOW_SERVER_KEY_DIR'] = '/.workflow-server-unwritable-probe';
       try {
-        const res = await request(app).get('/ready');
+        const res = await get(app, '/ready');
         expect(res.status).toBe(503);
         expect(res.body.status).toBe('not-ready');
         expect(res.body.checks.sessionKeyWritable).toBe(false);
@@ -93,7 +129,7 @@ describe('HTTP transport', () => {
           planningRelativeDir: loaded.planningRelativeDir,
         });
         const readyApp = createHttpApp(config);
-        const res = await request(readyApp).get('/ready');
+        const res = await get(readyApp, '/ready');
         expect(res.status).toBe(200);
         expect(res.body.status).toBe('ready');
         expect(res.body.checks.workspaceDir).toBe(true);
@@ -112,12 +148,12 @@ describe('HTTP transport', () => {
 
   describe('request-id propagation', () => {
     it('echoes an inbound x-request-id header back on the response', async () => {
-      const res = await request(app).get('/health').set('x-request-id', 'test-request-id-123');
+      const res = await get(app, '/health', { 'x-request-id': 'test-request-id-123' });
       expect(res.headers['x-request-id']).toBe('test-request-id-123');
     });
 
     it('generates a fresh request id when none is supplied', async () => {
-      const res = await request(app).get('/health');
+      const res = await get(app, '/health');
       expect(res.headers['x-request-id']).toBeTruthy();
       expect(typeof res.headers['x-request-id']).toBe('string');
     });
@@ -125,7 +161,7 @@ describe('HTTP transport', () => {
 
   describe('error shape', () => {
     it('returns a { error, message, requestId, timestamp } JSON body for an unknown route', async () => {
-      const res = await request(app).get('/no-such-route');
+      const res = await get(app, '/no-such-route');
       expect(res.status).toBe(404);
       expect(res.body).toMatchObject({ error: 'NotFoundError' });
       expect(typeof res.body.message).toBe('string');
@@ -144,7 +180,7 @@ describe('HTTP transport', () => {
           '/.well-known/oauth-protected-resource',
           '/.well-known/oauth-protected-resource/mcp',
         ]) {
-          const res = await request(app).get(path);
+          const res = await get(app, path);
           expect(res.status).toBe(404);
           expect(res.body.error).toBe('NotFoundError');
         }
@@ -163,17 +199,14 @@ describe('HTTP transport', () => {
     });
 
     it('POST /mcp without a session id or initialize request returns 400 with the shared error shape', async () => {
-      const res = await request(app).post('/mcp').send({ jsonrpc: '2.0', method: 'tools/list', id: 1 });
+      const res = await postJson(app, '/mcp', { jsonrpc: '2.0', method: 'tools/list', id: 1 });
       expect(res.status).toBe(400);
       expect(res.body.error).toBe('BadRequest');
       expect(typeof res.body.requestId).toBe('string');
     });
 
     it('POST /mcp with an unknown mcp-session-id returns 404 with the shared error shape', async () => {
-      const res = await request(app)
-        .post('/mcp')
-        .set('mcp-session-id', 'unknown-session')
-        .send({ jsonrpc: '2.0', method: 'tools/list', id: 1 });
+      const res = await postJson(app, '/mcp', { jsonrpc: '2.0', method: 'tools/list', id: 1 }, { 'mcp-session-id': 'unknown-session' });
       expect(res.status).toBe(404);
       expect(res.body.error).toBe('SessionNotFound');
     });
@@ -181,29 +214,25 @@ describe('HTTP transport', () => {
 
   describe('MCP session lifecycle', () => {
     it('establishes a session on initialize and accepts a follow-up request under it', async () => {
-      const initRes = await request(app)
-        .post('/mcp')
-        .set('Accept', 'application/json, text/event-stream')
-        .send({
-          jsonrpc: '2.0',
-          method: 'initialize',
-          params: {
-            protocolVersion: '2025-11-25',
-            capabilities: {},
-            clientInfo: { name: 'http-transport-test', version: '1.0.0' },
-          },
-          id: 1,
-        });
+      const initRes = await postJson(app, '/mcp', {
+        jsonrpc: '2.0',
+        method: 'initialize',
+        params: {
+          protocolVersion: '2025-11-25',
+          capabilities: {},
+          clientInfo: { name: 'http-transport-test', version: '1.0.0' },
+        },
+        id: 1,
+      }, { Accept: 'application/json, text/event-stream' });
 
       expect(initRes.status).toBe(200);
       const sessionId = initRes.headers['mcp-session-id'];
       expect(typeof sessionId).toBe('string');
 
-      const listRes = await request(app)
-        .post('/mcp')
-        .set('Accept', 'application/json, text/event-stream')
-        .set('mcp-session-id', sessionId)
-        .send({ jsonrpc: '2.0', method: 'tools/list', params: {}, id: 2 });
+      const listRes = await postJson(app, '/mcp', { jsonrpc: '2.0', method: 'tools/list', params: {}, id: 2 }, {
+        Accept: 'application/json, text/event-stream',
+        'mcp-session-id': sessionId,
+      });
 
       expect(listRes.status).toBe(200);
     });

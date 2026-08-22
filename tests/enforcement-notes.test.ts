@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { createServer } from '../src/server.js';
+import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { join } from 'node:path';
 import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
+import { createHarness, type Harness } from './e2e/harness.js';
+import { sessionOps, type SessionOps } from './session-ops.js';
 
 /**
  * Payload-borne enforcement hints (#189 C7, R7): get_activity annotates, at delivery time, only the
@@ -13,18 +13,16 @@ import { tmpdir } from 'node:os';
  * with neither carries no block. Exercised over the MCP wire against a fixture corpus.
  */
 describe('payload-borne enforcement hints (#189 C7)', () => {
+  let harness: Harness;
   let client: Client;
-  let closeTransport: () => Promise<void>;
+  let session: SessionOps;
   let workflowDir: string;
-  let workspaceDir: string;
 
-  const planningFolder = (slug: string) => join(workspaceDir, '.engineering/artifacts/planning', slug);
   const op = (capability: string, body: string): string =>
     `---\nmetadata:\n  version: 1.0.0\n---\n\n## Capability\n\n${capability}\n\n${body}`;
 
   beforeAll(async () => {
     workflowDir = mkdtempSync(join(tmpdir(), 'wf-enforce-corpus-'));
-    workspaceDir = mkdtempSync(join(tmpdir(), 'wf-enforce-ws-'));
 
     const wf = join(workflowDir, 'efwf');
     mkdirSync(join(wf, 'activities'), { recursive: true });
@@ -81,50 +79,17 @@ describe('payload-borne enforcement hints (#189 C7)', () => {
 
     writeFileSync(join(wf, 'techniques', 'work.md'), op('Do the work.', '## Protocol\n\n### 1. Go\n\n- Do it.\n'));
 
-    const config = {
-      workflowDir,
-      schemasDir: join(import.meta.dirname, '../schemas'),
-      workspaceDir,
-      serverName: 'test-workflow-server',
-      serverVersion: '2.1.0',
-      minCheckpointResponseSeconds: 0,
-    };
-    const server = createServer(config);
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    await server.connect(serverTransport);
-    client = new Client({ name: 'test-client', version: '1.0.0' }, {});
-    await client.connect(clientTransport);
-    closeTransport = async () => {
-      await client.close();
-      await server.close();
-    };
+    harness = await createHarness({ workflowDir });
+    client = harness.client;
+    session = sessionOps(harness, 'efwf');
   });
 
   afterAll(async () => {
-    await closeTransport();
-    for (const dir of [workflowDir, workspaceDir]) {
-      try { rmSync(dir, { recursive: true, force: true }); } catch { /* ignore */ }
-    }
+    await harness.close();
+    try { rmSync(workflowDir, { recursive: true, force: true }); } catch { /* ignore */ }
   });
 
   type ToolResult = { isError?: boolean; content?: Array<{ text: string }>; _meta?: Record<string, unknown> };
-
-  async function startSession(slug: string): Promise<string> {
-    const result = await client.callTool({
-      name: 'start_session',
-      arguments: { workflow_id: 'efwf', agent_id: 'w1', planning_folder: planningFolder(slug) },
-    }) as ToolResult;
-    expect(result.isError).toBeFalsy();
-    return (JSON.parse(result.content![0]!.text) as { session_index: string }).session_index;
-  }
-
-  async function enter(sessionIndex: string, activityId: string): Promise<void> {
-    const result = await client.callTool({
-      name: 'next_activity',
-      arguments: { session_index: sessionIndex, activity_id: activityId },
-    }) as ToolResult;
-    expect(result.isError).toBeFalsy();
-  }
 
   async function getActivity(sessionIndex: string): Promise<{ text: string; meta: Record<string, unknown> }> {
     const result = await client.callTool({
@@ -136,8 +101,8 @@ describe('payload-borne enforcement hints (#189 C7)', () => {
   }
 
   it('emits both enforcement notes for an activity with action verbs and an auto-advance checkpoint', async () => {
-    const idx = await startSession('c7-acts');
-    await enter(idx, 'acts');
+    const idx = await session.start('c7-acts', 'w1');
+    await session.enter(idx, 'acts');
     const { text, meta } = await getActivity(idx);
 
     const notes = meta['enforcement_notes'] as Record<string, string> | undefined;
@@ -152,9 +117,9 @@ describe('payload-borne enforcement hints (#189 C7)', () => {
   });
 
   it('emits no enforcement_notes for an activity with neither construct', async () => {
-    const idx = await startSession('c7-plain');
-    await enter(idx, 'acts');
-    await enter(idx, 'plain');
+    const idx = await session.start('c7-plain', 'w1');
+    await session.enter(idx, 'acts');
+    await session.enter(idx, 'plain');
     const { text, meta } = await getActivity(idx);
 
     expect(meta['enforcement_notes']).toBeUndefined();

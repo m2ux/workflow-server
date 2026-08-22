@@ -22,17 +22,20 @@ import {
 import { createInitialSessionFile } from '../src/schema/session.schema.js';
 import { computeSessionIndex } from '../src/utils/session/derivation.js';
 
+/** A multi-root install: worktrees beside a projects root, with no repo pinned. */
+const MULTI_ROOT = {
+  workflowDir: '/w',
+  schemasDir: '/s',
+  workspaceDir: '/tmp/inst/worktrees',
+  engineeringDir: '/tmp/inst/projects',
+  installDir: '/tmp/inst',
+  serverName: 't',
+  serverVersion: '1',
+};
+
 describe('session scope (multi-root)', () => {
   it('detects multi-root when engineeringDir is $INSTALL/projects and no process repo', () => {
-    const scope = buildSessionScope({
-      workflowDir: '/w',
-      schemasDir: '/s',
-      workspaceDir: '/tmp/inst/worktrees',
-      engineeringDir: '/tmp/inst/projects',
-      installDir: '/tmp/inst',
-      serverName: 't',
-      serverVersion: '1',
-    });
+    const scope = buildSessionScope(MULTI_ROOT);
     expect(scope.mode).toBe('multi');
     expect(scope.engineeringMultiRoot).toBe(resolve('/tmp/inst/projects'));
     expect(scope.planningRelativeDir).toBe(REPO_PLANNING_RELATIVE_DIR);
@@ -40,14 +43,10 @@ describe('session scope (multi-root)', () => {
 
   it('stays single when process is pinned with repo', () => {
     const scope = buildSessionScope({
-      workflowDir: '/w',
-      schemasDir: '/s',
+      ...MULTI_ROOT,
       workspaceDir: '/tmp/inst/projects/app/.worktrees',
       engineeringDir: '/tmp/inst/projects/app/.engineering',
-      installDir: '/tmp/inst',
       repo: 'acme/app',
-      serverName: 't',
-      serverVersion: '1',
     });
     expect(scope.mode).toBe('single');
     expect(scope.engineeringDir).toBe(resolve('/tmp/inst/projects/app/.engineering'));
@@ -86,15 +85,7 @@ describe('session scope (multi-root)', () => {
   });
 
   it('resolveSessionRoot requires repo on multi-root and writes under basename checkout', () => {
-    const scope = buildSessionScope({
-      workflowDir: '/w',
-      schemasDir: '/s',
-      workspaceDir: '/tmp/inst/worktrees',
-      engineeringDir: '/tmp/inst/projects',
-      installDir: '/tmp/inst',
-      serverName: 't',
-      serverVersion: '1',
-    });
+    const scope = buildSessionScope(MULTI_ROOT);
     expect(() => resolveSessionRoot(scope, {})).toThrow(/repo is required/);
     const root = resolveSessionRoot(scope, { repo: 'acme/app' });
     expect(root.engineeringDir).toBe(resolve('/tmp/inst/projects/app/.engineering'));
@@ -103,15 +94,7 @@ describe('session scope (multi-root)', () => {
   });
 
   it('resolveSessionRoot rejects basename-only path hint without explicit repo', () => {
-    const scope = buildSessionScope({
-      workflowDir: '/w',
-      schemasDir: '/s',
-      workspaceDir: '/tmp/inst/worktrees',
-      engineeringDir: '/tmp/inst/projects',
-      installDir: '/tmp/inst',
-      serverName: 't',
-      serverVersion: '1',
-    });
+    const scope = buildSessionScope(MULTI_ROOT);
     // Canonical basename path is not a substitute for owner/repo on session.repo.
     expect(() =>
       resolveSessionRoot(scope, {
@@ -121,15 +104,7 @@ describe('session scope (multi-root)', () => {
   });
 
   it('resolveSessionRoot accepts owner/repo embedded in legacy planning_folder', () => {
-    const scope = buildSessionScope({
-      workflowDir: '/w',
-      schemasDir: '/s',
-      workspaceDir: '/tmp/inst/worktrees',
-      engineeringDir: '/tmp/inst/projects',
-      installDir: '/tmp/inst',
-      serverName: 't',
-      serverVersion: '1',
-    });
+    const scope = buildSessionScope(MULTI_ROOT);
     const root = resolveSessionRoot(scope, {
       planningFolder:
         '/tmp/inst/projects/acme/app/.engineering/artifacts/planning/slug-1',
@@ -140,15 +115,7 @@ describe('session scope (multi-root)', () => {
   });
 
   it('resolveSessionRoot does not treat basename path alone as owner/repo bind', () => {
-    const scope = buildSessionScope({
-      workflowDir: '/w',
-      schemasDir: '/s',
-      workspaceDir: '/tmp/inst/worktrees',
-      engineeringDir: '/tmp/inst/projects',
-      installDir: '/tmp/inst',
-      serverName: 't',
-      serverVersion: '1',
-    });
+    const scope = buildSessionScope(MULTI_ROOT);
     expect(() =>
       resolveSessionRoot(scope, {
         planningFolder: '/tmp/inst/projects/app/.engineering/artifacts/planning/slug-1',
@@ -157,15 +124,7 @@ describe('session scope (multi-root)', () => {
   });
 
   it('resolveSessionRoot error text tells agents to pass repo from AGENTS.md', () => {
-    const scope = buildSessionScope({
-      workflowDir: '/w',
-      schemasDir: '/s',
-      workspaceDir: '/tmp/inst/worktrees',
-      engineeringDir: '/tmp/inst/projects',
-      installDir: '/tmp/inst',
-      serverName: 't',
-      serverVersion: '1',
-    });
+    const scope = buildSessionScope(MULTI_ROOT);
     expect(() => resolveSessionRoot(scope, {})).toThrow(/AGENTS\.md/);
   });
 });
