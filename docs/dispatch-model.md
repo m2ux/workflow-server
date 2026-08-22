@@ -1,45 +1,28 @@
-# Hierarchical Dispatch Model
+# Dispatch Model
 
-The Workflow Server utilizes a **Hierarchical Dispatch Model** to execute workflows. This architecture leverages multi-agent delegation, where specialized agents spawn sub-agents to handle specific scopes of work, ensuring clear boundaries between high-level user interaction, workflow state management, and low-level task execution.
+One agent cannot run a whole workflow well. Talking to the user, tracking where a long run has got to, and writing code are three different jobs, and an agent doing all three fills its context with material irrelevant to whichever one it is currently doing. So the work is handed down a chain: each agent spawns the next for a narrower scope and takes its report back. That is the dispatch model.
 
-The model is host-agnostic: any IDE or agent harness that supports spawning background sub-agents can drive it (Cursor's `Task` tool is one such mechanism). For environments without sub-agent support, see "Environment Considerations" at the bottom of this document.
+Any IDE or agent harness that can spawn background sub-agents can drive it — Cursor's `Task` tool is one such mechanism. Hosts without sub-agents run the same workflow inline, described at the end of this document.
 
-## The Three Layers of Orchestration
+## The three roles
 
-### 1. Meta Orchestrator (Level 0)
-- **Role:** The user-facing top-level agent. It discovers workflows, handles high-level user goals, and dispatches the appropriate client workflows.
-- **Responsibilities:**
-  - Finding and selecting workflows (`discover`, `list_workflows`).
-  - Starting sessions via `start_session({ agent_id })` (optionally with `planning_slug` once a planning folder exists).
-  - Dispatching workflow orchestrators via `start_session` with `parent_planning_slug` to establish parent-child trace correlation.
-  - Acting as the sole interface for user prompts (e.g., presenting checkpoints).
-  - **Never** executes domain work or tracks detailed workflow state.
+**The user-facing agent** is the only one that talks to the person. It finds and selects workflows, opens a session, spawns an orchestrator for the chosen workflow, and presents every question the run raises. It executes no domain work and tracks no step-level state.
 
-### 2. Workflow Orchestrator (Level 1)
-- **Role:** A persistent background sub-agent dedicated to managing a single client workflow from start to finish.
-- **Responsibilities:**
-  - Evaluating state variables and determining the `next_activity` to execute.
-  - Dispatching Activity Workers to perform the actual steps.
-  - Managing Git artifacts, state persistence, and mechanical/semantic tracing.
-  - Relaying checkpoints yielded by workers up to the Meta Orchestrator.
-  - Checking workflow status via `get_workflow_status`.
+**The orchestrator** runs in the background and owns one workflow from start to finish. It reads the state variables, decides which activity comes next, dispatches a worker to run it, commits the artifacts that come back, and passes any question the worker raises upward without trying to answer it.
 
-### 3. Activity Worker (Level 2)
-- **Role:** An ephemeral sub-sub-agent dispatched to execute one specific activity.
-- **Responsibilities:**
-  - Loading activity definitions via `get_activity` and executing steps sequentially.
-  - Using domain-specific tools to write code, review PRs, or modify files.
-  - Yielding execution when hitting a blocking checkpoint via `yield_checkpoint`.
-  - Returning a structured result containing modified variables and created artifacts.
+**The worker** is dispatched to run activities and nothing else. It loads each activity, executes its steps in order using whatever tools the work needs, pauses at any gate it reaches, and returns a structured result naming the variables it changed and the artifacts it wrote.
+
+The boundaries are the point. The user-facing agent never holds step detail, the orchestrator never does domain work, and the worker never talks to the user.
 
 ---
 
 ## Mechanics of Dispatch
 
-The dispatch process safely hands off execution from one layer to the next. Each session has a 6-character `session_index` (base32, deterministically derived from the planning slug); agents pass the index — not a token — on every authenticated call. The canonical state lives in the server-owned `session.json` (see [State Management](state_management_model.md#5-persistence)).
+The dispatch process safely hands off execution from one layer to the next. Each session has a 6-character `session_index` (base32, deterministically derived from the planning slug); agents pass the index — not a token — on every authenticated call. The canonical state lives in the server-owned `session.json` (see [State Management](state-management-model.md#5-persistence)).
 
-### Dispatching the Workflow Orchestrator (L0 → L1)
-When the Meta Orchestrator decides to start a workflow (e.g., `work-package`), it calls `start_session` with the parent's `planning_slug`:
+### Spawning the orchestrator
+
+When the user-facing agent decides to start a workflow (e.g., `work-package`), it calls `start_session` with the parent's `planning_slug`:
 
 ```javascript
 start_session({
@@ -52,7 +35,7 @@ start_session({
 
 This creates a **child session** under the child planning folder; the server snapshots the parent's `session.json` (after seal-verifying it) under the child's `parentSession` field for trace correlation and recursive parent traversal. A trace event in the parent's trace store links the two sessions. The response includes a `session_index` for the child session.
 
-The Meta Orchestrator then uses the host's sub-agent spawn mechanism (e.g., Cursor's `Task` tool) to start a background workflow orchestrator:
+The user-facing agent then uses the host's spawn mechanism to start the orchestrator in the background:
 ```javascript
 Task({
   subagent_type: "generalPurpose",
@@ -60,12 +43,13 @@ Task({
 })
 ```
 
-### Dispatching the Activity Worker (L1 → L2)
-The Workflow Orchestrator evaluates the workflow, determines the next activity to run, and passes its own `session_index` to the worker.
+### Spawning a worker
 
-Unlike the L0 → L1 transition (which creates a new child session), the L1 → L2 transition **shares the same `session_index`**. The worker uses this index directly to call `get_activity`, `get_technique`, and `next_activity`; the server resolves the index to the same `session.json` the orchestrator is reading, so both agents see a single canonical state.
+The orchestrator reads the state, decides which activity runs next, and passes its own session index to the worker.
 
-The Workflow Orchestrator uses the host's sub-agent spawn mechanism to spawn the Activity Worker:
+Spawning a worker does not create a session. The worker **shares the orchestrator's index**, so both resolve to the same state file and neither can drift from the other. Spawning an orchestrator is the opposite case: it opens a child session of its own.
+
+The orchestrator spawns the worker the same way:
 ```javascript
 Task({
   subagent_type: "generalPurpose",
@@ -73,7 +57,7 @@ Task({
 })
 ```
 
-### Batching a Run of Activities (#407)
+### Batching a run of activities
 
 One dispatch may carry a **run** of activities rather than exactly one. The worker walks them under a single `agent_id`, so it pays the harness's context establishment — system prompt, project instructions, tool schemas — once for the run rather than once an activity. On the profiled setup walk that is where the saving is: skipping two respawns saves roughly two to four times what the delivered content collapsing saves, once the establishment figures are counted once per response.
 
@@ -86,17 +70,19 @@ The run pauses at every activity boundary, because the orchestrator owns the com
 | Cumulative delivered characters | `context_tokens × BATCH_HEADROOM_FRACTION × BUNDLE_CHARS_PER_TOKEN` | fraction `0.35` |
 | Distinct activities | `BATCH_MAX_ACTIVITIES` | `3` |
 
-The character budget carries a headroom fraction of its own because `BUNDLE_HEADROOM_FRACTION` answers a different question — how much of one activity's window may go to inlined step techniques — and at `0.80` the arithmetic admits thirteen of the main workflow's fifteen activities into one context. The activity cap covers what a character count is blind to: the establishment the server never delivers, the code the worker reads, the artifacts it drafts, and degradation across a long walk.
+The character budget takes a headroom fraction of its own rather than reusing the bundling one. The bundling fraction answers a different question — how much of a single activity's window may go to inlined step techniques — and at 0.80 it would admit thirteen of the main workflow's fifteen activities into one context.
 
-**Which limit binds depends on the workflow, and both cases are wanted.** The two rest on different evidence. `npm run bench:batch` measures activity payloads only — it never fetches a technique or resource lazily — so its figure for the three-activity analysis run is the *eager floor*, not what a batch really accumulates. The lazy half is usually the larger one.
+The activity cap covers what a character count cannot see: the context the harness establishes and the server never delivers, the code the worker reads, the artifacts it drafts, and the degradation that comes with a long walk.
 
-At a 200,000-token window, giving a 280,000-character budget, **the cap binds first on measured content**. The benchmark's three activities cost 159,093 characters batched — 78,128, then 58,588, then 22,377 — which is 57% of budget, because a batch's second and later activities collapse the invariant blocks and the ancestor contract their techniques share (see [Reference Delivery](resource_resolution_model.md#11-reference-delivery)). Standalone, the same three cost 232,954. Reaching the budget takes roughly seven activities of that weight, and a worker declaring a smaller window is bounded proportionally: the budget takes over below roughly 114,000 declared tokens on this workload.
+**Which limit binds depends on the workflow, and both cases are wanted.** The two rest on different evidence. `npm run bench:batch` measures activity payloads only and never fetches a technique or resource lazily, so its figure is a floor: the least a batch can cost, counting only what arrives eagerly. What a batch really accumulates includes everything the worker goes back for, and that half is usually the larger one.
+
+At a 200,000-token window, giving a 280,000-character budget, **the cap binds first on measured content**. The benchmark's three activities cost 159,093 characters batched — 78,128, then 58,588, then 22,377 — which is 57% of budget, because a batch's second and later activities collapse the invariant blocks and the ancestor contract their techniques share (see [Reference Delivery](resource-resolution-model.md#11-reference-delivery)). Standalone, the same three cost 232,954. Reaching the budget takes roughly seven activities of that weight, and a worker declaring a smaller window is bounded proportionally: the budget takes over below roughly 114,000 declared tokens on this workload.
 
 Admission is checked *before* a delivery rather than after, so the admitted activity can carry a batch past the budget by up to one heavy activity. Refusing after composing would pay the composition and still not un-deliver it.
 
 **Revising either value needs evidence a byte count cannot supply.** The cap covers the context establishment the server never delivers, the code the worker reads and the artifacts it drafts — so `batch_refused` counts and per-activity usage rows over real runs are what a revision rests on, not a benchmark that only sees payloads.
 
-Both limits count each delivery once. An `activity_dispatched` size is the whole `get_activity` response, so the techniques and resources it bundled eagerly are already inside it and their own observability events are not added again; what counts on top is only what the worker went back for lazily. Counting the bundled entries twice inflated one activity of the main workflow by 48% and a run of three by 70%, which made a nominal 280,000-character budget bind at 164,540.
+Both limits count each delivery once. A dispatch's recorded size is the whole activity response, so anything it bundled eagerly is already inside that figure; what counts on top is only what the worker went back for lazily. Counting a bundled entry both ways would overstate a single activity by 48% and a run of three by 70%, binding a nominal 280,000-character budget at 164,540.
 
 `get_activity` reports where a context stands in `_meta.batch` (`activities`, `max_activities`, `delivered_chars`, `budget_chars`, `may_continue`), so the ordinary end of a batch is the worker stopping. Asking past the bound is refused with the payload undelivered and a `batch_refused` history event naming the limit — recorded once per scope, activity and limit, so the tally counts how often a limit bound rather than how often a worker retried. That tally is what the starting settings are revised from.
 
@@ -108,7 +94,7 @@ Three carve-outs keep the bound aimed at what it is for:
 - **An activity the context already holds is always served.** That is a worker resuming after a gate asking for the payload it is sitting on, and thirteen of the main workflow's fifteen activities carry a gate.
 - **The session's own agent is unbounded.** A scope equal to `session.agentId` is the context that owns the whole walk by construction, which is what `contextMode: "persistent"` describes; its run is the session, not a batch. Note that `agentId` is caller-set: `dispatch_child` defaults it to `"worker"`, and a resume rebinds it to the resuming caller's `agent_id`. So a dispatched worker that passes the session's own identity is unbounded, and which context holds the exemption can move across a resume. Minting one identity per dispatch, which the corpus already requires, is what keeps the exemption where it belongs.
 
-**Rolling back after a refusal.** `batch_refused` is a new history event in a strictly-validated enum, and session load validates the whole file including nested child sessions. An earlier server reading a session that has recorded a refusal fails that validation, and the failure surfaces as `SEAL_MISMATCH` — the error normally read as tampering or a rotated key. A rollback therefore needs those events stripped, or the session retired. The forward direction — this server reading an older session — is unaffected.
+**A refusal pins the session to this server version.** The refusal is recorded as a history event, and loading a session validates every event in the file against a strict list. An older server meeting an event it does not know fails that validation, and the failure surfaces as `SEAL_MISMATCH` — the error usually read as tampering or a rotated key. Downgrading therefore means stripping those events or retiring the session. Reading an older session on this server is unaffected.
 
 **A failed resume costs one activity, not the batch.** The worker reports each activity as it completes, so the session cursor tracks the run. A replacement worker picks up the current activity, takes full delivery, and re-crosses already-answered gates silently — checkpoint responses are keyed `activityId-checkpointId`, with no agent component, so `yield_checkpoint` replays them for any worker.
 
@@ -148,4 +134,4 @@ This appends the new instructions directly to the sub-agent's existing context w
 
 The Hierarchical Dispatch Model is optimised for hosts that support background sub-agents (e.g., Cursor's `Task` tool).
 
-In environments that do not support sub-agent spawning, the top-level agent must execute the workflow **inline**. A single agent sequentially adopts the personas of the Meta Orchestrator, Workflow Orchestrator, and Activity Worker, executing all instructions within a single contiguous conversation thread. The server's enforcement layers (HMAC tokens, checkpoint gates, manifests, trace tokens) function identically in either mode — only the persona-switching mechanism changes.
+In environments that do not support sub-agent spawning, the top-level agent must execute the workflow **inline**. One agent takes each of the three roles in turn within a single conversation. Everything the server enforces — the seal over session state, the checkpoint gate, the manifests and the trace — behaves identically either way. Only the way the roles change hands differs.

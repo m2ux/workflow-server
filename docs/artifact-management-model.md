@@ -4,7 +4,7 @@ The Workflow Server operates with strict boundaries between **orchestration meta
 
 ## 1. Directory Structure Isolation
 
-Agents are explicitly instructed to respect distinct directory scopes:
+Four directory scopes, and an agent stays inside whichever one its current work belongs to:
 
 1. **`target_path` / feature worktree:** The user's actual codebase under the **worktree root** (`ServerConfig.workspaceDir`). All domain-specific execution (writing code, running tests, refactoring, building) must occur strictly within this directory. With `--repo=owner/repo`, feature trees live under `$HOST_PROJECTS_ROOT/<repo>/.worktrees/<slug>/`.
 2. **Engineering root:** Orchestration metadata — plans, session state, traces, ADRs. Bound as `ServerConfig.engineeringDir`:
@@ -27,13 +27,16 @@ When a workflow session begins, a "planning folder" is established under the eng
 (`PLANNING_SLUG` overrides the relative segment.) This folder acts as the isolated "brain" for the session.
 
 It contains:
-* `README.md`: The central progress tracker.
-* `session.json`: The persisted variable and session state, server-managed and validated against `schemas/session-file.schema.json`. The companion `.session-token` is an HMAC-signed seal binding `session.json` to the engineering root.
-* `workflow-trace.json`: The semantic and mechanical logs of everything the agents have done.
+* `README.md`: the index a person opens to see what this work is and where it stands.
+* `session.json`: the session and variable state, server-managed and validated against `schemas/session-file.schema.json`. Its history array carries the mechanical record of what the agents did.
+* `.session-token`: an HMAC-signed seal binding `session.json` to the engineering root.
+* The artifacts each activity produces, named under the prefix rule below.
 
-### Mandatory Progress Tracking
+The server writes the first two files itself, and only those two. There is no separate trace file: the mechanical log lives in `session.json#history`, and [workflow fidelity](workflow-fidelity.md) covers how it is recorded and read back.
 
-Before an Activity Worker can yield an `activity_complete` result, its `finalize` protocol strictly mandates updating the `README.md` inside the planning folder. The worker must check off items in the Progress Table, update the descriptive status, and ensure the artifact list is accurate. This ensures human operators can always look at the README to instantly understand the workflow's state without parsing logs.
+### Progress tracking
+
+The planning `README.md` carries a Progress table, and its Status cells are the quickest read on where a run has got to. Writing them is the orchestrator's job, not the worker's — a worker reports the artifacts it produced in its `activity_complete` result and nothing more. The orchestrator marks a row in progress before it dispatches, and complete once the activity's work is committed, so the table advances even when a worker is lost and replaced.
 
 ## 3. Artifact Naming Conventions
 

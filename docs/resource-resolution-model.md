@@ -187,7 +187,7 @@ Keys are namespaced by delivery channel — `bundle:*`, `technique:*`, `activity
 
 The ledger is keyed on the **delivery scope**: the per-call `agent_id` when one is supplied, otherwise the session's recorded `agentId`. This matters because a dispatched worker authenticates against the orchestrator's `session_index`, and several workers can hold that index at once — the scope names the agent context a payload went to, rather than the session they share.
 
-The orchestrator mints an `agent_id` per dispatch and reuses it verbatim for as long as that worker lives — when it resumes it after a gate, and when it advances it to the next activity of its batch ([Batching a Run of Activities](dispatch_model.md#batching-a-run-of-activities-407)). So a fresh spawn reads an empty ledger and takes full delivery, that same context reads its own entries and gets markers, and a sibling worker is unaffected either way. Starting a session under a different `agent_id` likewise begins from an empty ledger.
+The orchestrator mints an `agent_id` per dispatch and reuses it verbatim for as long as that worker lives — when it resumes it after a gate, and when it advances it to the next activity of its batch (see how a worker [carries a run of activities](dispatch-model.md#batching-a-run-of-activities)). So a fresh spawn reads an empty ledger and takes full delivery, that same context reads its own entries and gets markers, and a sibling worker is unaffected either way. Starting a session under a different `agent_id` likewise begins from an empty ledger.
 
 ### What collapses, call by call
 

@@ -1,6 +1,6 @@
-# State Management & Deterministic Transitions
+# State Management and Deterministic Transitions
 
-The Workflow Server strictly enforces **deterministic state machine transitions**. Instead of relying on an LLM to probabilistically "guess" what to do next based on conversational context, the system utilizes a rigid variable-based state evaluation model.
+Ask a model what to do next and it will answer, but not always the same way twice. Two runs of the same workflow over the same facts can then take different paths, and neither is reproducible or auditable. So the server does not ask. Every branch is a structured condition evaluated against a bag of declared variables, and the first condition that holds decides the next activity.
 
 ## 1. Variable Initialization
 

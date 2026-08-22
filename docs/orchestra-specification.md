@@ -922,7 +922,7 @@ TBD — Orchestra grammar and constraints for the technique primitive are not ye
 
 A technique addresses another by its `::` path: a same-workflow path is implicit, an unqualified path resolves current-workflow-first then `meta`, and slashes are normalized. When a descendant technique is resolved, the server wraps its protocol in each ancestor's `Initial` and `Final` blocks, recursing through the chain, and renumbers the combined protocol. Resolved references are returned in the bundle buckets `techniques`, `rules`, and `unresolved`.
 
-See [Technique & Resource Resolution Architecture](resource_resolution_model.md) for resolution semantics.
+See [Technique & Resource Resolution Architecture](resource-resolution-model.md) for resolution semantics.
 
 ---
 

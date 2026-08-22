@@ -1,87 +1,90 @@
-# Checkpoint Model (JIT Checkpointing)
+# Checkpoint Model
 
-The Workflow Server utilizes a **Just-In-Time (JIT) Checkpoint Model** to handle execution pauses. Checkpoints are declarative gates defined within activity steps that halt the workflow until an external condition is met—usually explicit user confirmation.
+A workflow sometimes has to stop and ask. Which directory to target, whether a pull request is ready, which of two readings of a request was meant — none of these can be settled from state, and a wrong guess produces work nobody wanted. A **checkpoint** is a declared pause for exactly that question: a gate written into an activity's steps that holds the run until someone answers.
 
-Because the system uses a [Hierarchical Dispatch Model](dispatch_model.md), sub-agents (workers) do not have the authority or capability to ask the user questions directly. Checkpoints must therefore "bubble up" from the executing worker to the top-level user-facing agent.
+The agent that reaches the gate is not the agent that can ask. Work is [dispatched down a chain of sub-agents](dispatch-model.md), and the ones at the bottom run in the background with no channel to the user, so the question has to travel up to the user-facing agent and the answer has to travel back down. Because the pause comes into being at the moment a worker reaches it rather than being declared ahead of the run, this is just-in-time checkpointing.
 
-## The Checkpoint Flow
+## The checkpoint flow
 
-### 1. Yielding at the Worker (Level 2)
-When an Activity Worker reaches a step that defines a `checkpoint` ID, it halts its domain work and calls the server API:
+### The worker pauses
+
+On reaching a `kind: checkpoint` step, the worker stops its domain work and calls the server:
+
 ```javascript
 yield_checkpoint({ session_index, checkpoint_id: "verify-issue" })
 ```
-The server records the active checkpoint in the session's `session.json` (`activeCheckpoint`) and mints a one-shot `checkpoint_handle` (an opaque, HMAC-signed string) that the worker passes up the chain. The persistent session state continues to live under `session_index`; the handle is purely a transport for the JIT bubble-up.
 
-**Hard gate during yield:** Cannot yield a new checkpoint while another checkpoint is already active in `session.json`. This prevents nested checkpoint yields.
+The server records the pause in the session's `activeCheckpoint` field, stamps it with the time, and answers with a status the worker branches on:
 
-To pass this pause up the chain, the worker outputs a specialized JSON block in its final text response and stops:
-```json
-<checkpoint_yield>
-{
-  "checkpoint_handle": "<opaque_handle_string>"
-}
-</checkpoint_yield>
-```
+- **`yielded`** — the pause is recorded. The worker emits a `<checkpoint_yield>` block and stops. The block carries no payload; the active checkpoint lives in the session, and whoever presents it reads it from there.
+- **`replayed`** — this checkpoint already has a recorded answer. The worker applies that answer and carries straight on, without pausing and without emitting anything.
 
-### 2. Relaying through the Orchestrator (Level 1)
-The Workflow Orchestrator (a background sub-agent) receives the worker's text output. It sees the `<checkpoint_yield>` block and recognizes that the worker is blocked.
+The replay path is what makes a lost worker cheap. Responses are keyed by activity and checkpoint with no agent component, so a replacement worker re-crossing a gate its predecessor already answered crosses it silently.
 
-The Workflow Orchestrator does not attempt to resolve the checkpoint itself. It simply echoes the exact same `<checkpoint_yield>` block up to its parent in its own final text response and goes to sleep.
+Only one checkpoint may be active at a time. Yielding a second while one is outstanding is refused by name, which stops a run nesting pauses it cannot unwind.
 
-### 3. Presenting and Resolving at the Meta Orchestrator (Level 0)
-The Meta Orchestrator (the user-facing agent) receives the yield block. It extracts the `checkpoint_handle` and queries the server for the human-readable metadata:
+A worker that meets a decision its activity never declared may yield one anyway, supplying its own `message` and `options`. A declared gate owns its own wording, so those two fields are refused there.
+
+### The orchestrator relays
+
+The workflow orchestrator is itself a background sub-agent, so it cannot resolve the gate either. It finds the `<checkpoint_yield>` block in the worker's output, echoes it upward unchanged, and goes to sleep.
+
+### The user-facing agent presents and resolves
+
+The top-level agent receives the block and asks what the question is:
+
 ```javascript
-present_checkpoint({ checkpoint_handle: "<opaque_handle_string>" })
+present_checkpoint({ session_index })
 ```
-The server decodes the handle, looks up the active checkpoint recorded in `session.json`, locates the matching checkpoint in the workflow definition, and returns the message, options, and effects.
 
-The Meta Orchestrator then calls its host UI tool (e.g., Cursor's `AskQuestion`, Claude Code's interactive prompts) to present the options to the human user.
+The server reads `activeCheckpoint`, finds the matching definition in the workflow, and returns the message, the options, and the effects each option carries. The agent puts those to the user through whatever prompt its host offers, then records the answer:
 
-Once the user selects an option, the Meta Orchestrator finalizes the resolution on the server:
 ```javascript
-respond_checkpoint({ checkpoint_handle: "<opaque_handle_string>", option_id: "proceed" })
+respond_checkpoint({ session_index, option_id: "proceed" })
 ```
-The server clears `activeCheckpoint` from `session.json`, records the decision and any `effects` in the persistent session state, and returns those effects to the caller. Enforcement is per-effect: `setVariable` is applied to the session variable bag, `skipActivities` is recorded in `skippedActivities` bookkeeping, and `transitionTo` is returned for the orchestrator to enact via `next_activity` — resolving the checkpoint does not itself move the session.
 
-**Three resolution modes:**
+The server clears `activeCheckpoint`, records the decision, and applies each effect on its own terms. A `setVariable` effect is written into the session variable bag. A `skipActivities` effect is recorded as bookkeeping. A `transitionTo` effect is handed back for the orchestrator to enact, because resolving a checkpoint does not itself move the session.
 
-1. **`option_id`** — The user's selected option. The server validates the option against the checkpoint definition and enforces a minimum response time (default 3 seconds since the checkpoint was yielded). This prevents instant auto-resolve without user interaction.
+### Three ways to resolve one
 
-2. **`auto_advance: true`** — For checkpoints that define both `defaultOption` and `autoAdvanceMs`, the server uses the `defaultOption` but only after the full timer has elapsed. The elapsed time is measured from the `yieldedAt` timestamp recorded in `session.json` when the checkpoint was yielded. The server checks only those two fields — `blocking` is an orchestrator directive it does not consult, so a checkpoint intended to block must not declare `defaultOption`/`autoAdvanceMs`.
+| Mode | What it means | Timing |
+|------|---------------|--------|
+| `option_id` | The user picked this option | At least three seconds must have passed since the pause was recorded |
+| `auto_advance` | Take the checkpoint's own `defaultOption` | The full `autoAdvanceMs` must have passed |
+| `condition_not_met` | The checkpoint's prerequisite is false, so dismiss it | None |
 
-3. **`condition_not_met: true`** — Dismisses a conditional checkpoint whose prerequisite evaluated to false. Only valid when the checkpoint has a structured `condition` field; a checkpoint gated with the inline `when` expression is not dismissible this way. The server validates the presence of the condition field but cannot verify the condition's actual truth value — the agent evaluates it.
+The server validates the chosen option against the definition, and exactly one of the three modes may be supplied. Both timers are measured from the moment the pause was recorded, so an orchestrator that answers instantly is rejected rather than trusted — a gate resolved in under three seconds cannot have been shown to anyone.
 
-## The Resume Protocol
+Auto-advance needs both `defaultOption` and `autoAdvanceMs` on the checkpoint. A gate that must genuinely wait for a person therefore declares neither. The `blocking` field does not affect this: the server does not consult it, and it reads as a directive to the orchestrator.
 
-Once the server has resolved the checkpoint, the agents must be woken back up in reverse order using the host's sub-agent resume mechanism (e.g., Cursor's `Task(resume=…)`). For inline (single-agent) execution, the "wake" is a no-op — the same agent simply switches persona back to the worker and continues.
+Dismissal by `condition_not_met` is only open to a checkpoint carrying a structured `condition`; one gated by an inline `when` expression cannot be dismissed this way. The server checks that the condition field is present but cannot check whether it is true, so the agent's evaluation is taken on trust and recorded for audit.
 
-**Waking the Orchestrator (L0 → L1):**
-The Meta Orchestrator resumes the Workflow Orchestrator, passing the effects via plain text conversation:
-> "The checkpoint has been resolved. Please update your state with these variables: `is_monorepo = true`. Resume the worker."
+## The resume protocol
 
-**Waking the Worker (L1 → L2):**
-The Workflow Orchestrator updates its internal JSON state tracker, and then resumes the Activity Worker:
-> "The checkpoint has been resolved. Apply these variable updates: `is_monorepo = true`. Call `resume_checkpoint` to proceed."
+With the checkpoint resolved, the agents wake in reverse order through the host's sub-agent resume mechanism. Under single-agent execution the wake is a no-op: the same agent switches back to its worker persona and continues.
 
-**Clearing the Local Lock (L2 API Call):**
-Before the Activity Worker can resume calling regular workflow tools (like `next_activity`), it must signal the unblock to the server with its `session_index` and the one-shot handle:
+The user-facing agent resumes the orchestrator, passing the variable updates in plain text. The orchestrator updates its own state and resumes the worker the same way. The worker then clears its own pause with the server:
+
 ```javascript
-resume_checkpoint({ session_index, checkpoint_handle: "<opaque_handle_string>" })
+resume_checkpoint({ session_index })
 ```
-The server verifies that the checkpoint has been resolved (by the Meta Orchestrator) and that `activeCheckpoint` is cleared in `session.json`, then returns the recorded variable effects so the worker can apply them locally. The Activity Worker uses its existing `session_index` for the next step.
 
-**Hard gate on resume:** `resume_checkpoint` throws a hard error if `activeCheckpoint` is still set in `session.json` — the checkpoint must be resolved before the worker can proceed.
+The server verifies that `activeCheckpoint` really has been cleared and returns the recorded effects so the worker can apply them locally. Calling this while the checkpoint is still active is a hard error — the answer has to exist before the worker moves.
 
-## Checkpoint Schema
+## Declaring a checkpoint
 
-Checkpoints are defined in activity YAML files with this structure:
+A checkpoint is a step in an activity's `steps` list, tagged with its kind:
 
 ```yaml
-checkpoints:
-  - id: verify-issue
-    name: "Verify Issue"
+steps:
+  - kind: checkpoint
+    id: verify-issue
     message: "Please confirm the issue details are correct."
+    blocking: true
+    condition:
+      type: simple
+      variable: has_issue
+      operator: exists
     options:
       - id: proceed
         label: "Proceed"
@@ -95,24 +98,24 @@ checkpoints:
         effect:
           setVariable:
             issue_verified: false
-    condition:
-      type: simple
-      variable: has_issue
-      operator: exists
 ```
 
-Fields:
-- `id` — Unique identifier for the checkpoint within the activity
-- `name` — Human-readable name
-- `message` — Prompt text presented to the user
-- `condition` — Optional `ConditionSchema` that must be true for the checkpoint to be presented. If false, the checkpoint is skipped.
-- `options` — Array of at least one option, each with `id`, `label`, `description`, and optional `effect`
-- `defaultOption` — Optional option ID to auto-select when `autoAdvanceMs` elapses
-- `autoAdvanceMs` — Optional milliseconds to wait before auto-selecting `defaultOption`
+| Field | Role |
+|-------|------|
+| `id` | Identifies the checkpoint within its activity |
+| `message` | The question put to the user |
+| `options` | At least one option, each with `id`, `label`, `description` and an optional `effect` |
+| `condition` | Structured condition that must hold for the gate to be presented; when false it is skipped |
+| `when` | Inline expression alternative to `condition`, and not dismissible by `condition_not_met` |
+| `blocking` | Advisory signal to the orchestrator; the server does not read it |
+| `defaultOption` | Option to take when `autoAdvanceMs` elapses |
+| `autoAdvanceMs` | Milliseconds to wait before taking `defaultOption` |
+| `ref` | Names a shared checkpoint body instead of writing one inline |
+| `required` | Authoring metadata |
 
-A checkpoint reused at several sites is declared once as a **checkpoint fragment** under `fragments.checkpoints` in the owning workflow's `workflow.yaml`, and each site imports it by reference — the step carries only `kind: checkpoint`, its site-local `id`, and `ref: [workflow::]name` (plus a `condition` when the fragment declares none). The loader materializes the fragment body into the step before delivery, so the yield/present/respond flow and every consumer below see an ordinary full checkpoint; the `check:fragments` guard rejects an inline body that duplicates a fragment (issue #166 B10).
+A checkpoint used at several sites is declared once as a fragment under `fragments.checkpoints` in the owning workflow's `workflow.yaml`, and each site imports it with `ref`. The site keeps only its own `id`, the `ref`, and a `condition` where the fragment declares none. The loader splices the fragment body into the step before delivery, so every consumer downstream sees an ordinary checkpoint. The `check:fragments` guard rejects an inline body that duplicates a fragment.
 
-## Where a Checkpoint Belongs
+## Where a checkpoint belongs
 
 A checkpoint's position in the step list decides whether its answer can steer anything. Every step
 gated on a variable the checkpoint decides has to run after it: a gate reading an unbound variable is
@@ -146,10 +149,12 @@ activity's first step, because that dispatch pays full delivery and yields befor
 decision that has to precede all of an activity's work belongs at the preceding activity's tail or as
 the orchestrator's precondition on dispatching at all.
 
-## Why this Architecture?
+## What the design buys
 
-1. **Clean UI Boundaries:** Sub-agents running in hidden background tasks never attempt to prompt the user directly, preventing frozen processes.
-2. **Stateless Hand-offs:** The `checkpoint_handle` encapsulates all necessary state cryptographically. The intermediate agents don't need to parse, understand, or store the checkpoint's prompt or options.
-3. **Conversation as State:** Variable effects are passed down through natural language prompts during the `Task` resume sequence, eliminating the need to write intermediate state to disk just to sync the agents.
-4. **Timing Enforcement:** Minimum response times and auto-advance timers prevent gaming of the checkpoint system.
-5. **Flexible Resolution:** Three resolution modes (option selection, auto-advance, conditional dismissal) cover all checkpoint use cases without requiring separate tool implementations.
+**Background agents never try to prompt.** A sub-agent with no user channel that attempts to ask a question hangs. Routing every question to the one agent that has a channel is what keeps that from happening.
+
+**Relaying costs nothing to understand.** The orchestrator in the middle passes a block it never parses. It needs no view of the question, the options or the effects, so a gate can be added to an activity without touching anything between the worker and the user.
+
+**The pause survives the agent.** Because the active checkpoint and its answer live in the session rather than in an agent's context, a worker that dies mid-gate loses no decision. Its replacement replays the answer and continues.
+
+**Instant resolution is refused.** The two timers make the cheapest way to fake a checkpoint fail. They cannot prove a human saw the question, which [workflow fidelity](workflow-fidelity.md) records among its limits.

@@ -272,7 +272,7 @@ Pin `WORKFLOWS_DIR` to the corpus the fixture names (`workflowsRev`) for a gate 
 — a delta measured against a different corpus is not attributable to server code,
 and the scorecard warns when the two disagree.
 
-Stderr: compact scorecard, plus a `gate: PASS|FAIL` line under `--gate`. Stdout: one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals, optional `vsReference` and `gate`). Exit `2` if the walk does not complete, `3` on gate failure. See [Reference Delivery](resource_resolution_model.md#11-reference-delivery) for the contract under test.
+Stderr: compact scorecard, plus a `gate: PASS|FAIL` line under `--gate`. Stdout: one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals, optional `vsReference` and `gate`). Exit `2` if the walk does not complete, `3` on gate failure. See [Reference Delivery](resource-resolution-model.md#11-reference-delivery) for the contract under test.
 
 ### Run profiler
 

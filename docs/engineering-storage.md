@@ -64,4 +64,4 @@ Full flags: `./deploy.sh --help`.
 
 No install-side materialisation step. Ensure the checkout sits under `$HOST_PROJECTS_ROOT/<repo>/` and pass `repo: "owner/repo"` on `start_session`.
 
-See [setup.md §2](../setup.md#2-initialise-a-target-repo). Artifact boundaries and git procedures: [artifact_management_model.md](artifact_management_model.md).
+See [setup.md §2](../setup.md#2-initialise-a-target-repo). Artifact boundaries and git procedures: [artifact-management-model.md](artifact-management-model.md).
