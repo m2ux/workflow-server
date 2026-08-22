@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.4.0
+  version: 1.5.0
 ---
 
 ## Capability
@@ -37,7 +37,7 @@ What the conservation law itself conceals — the deeper finding
 
 #### bug_table
 
-Every concrete bug with location, severity, and fixable/structural classification — including each unmatched producer surfaced by the producer/clearer ledger
+Every concrete bug with location, severity, fixable/structural classification, and the reachability of the state that triggers it — including each unmatched producer surfaced by the producer/clearer ledger
 
 #### concealment_mechanism
 

@@ -1,6 +1,6 @@
 ---
 name: definitive-findings-template
-description: Document skeleton for DEFINITIVE-FINDINGS.md — the detailed, stable findings contract prism emits alongside REPORT.md. Carries the full per-finding field set (Description, Impact, Location, Recommendation, Classification, Blast radius, Adversarial confirmation) plus the surviving conservation laws / design trade-offs and the core finding. Factual voice; consumers build audit and evaluation deliverables from this without re-reading raw pass artifacts.
+description: Document skeleton for DEFINITIVE-FINDINGS.md — the detailed, stable findings contract prism emits alongside REPORT.md. Carries the full per-finding field set (Description, Impact, Location, Recommendation, Classification, Reachability, Blast radius, Adversarial confirmation) plus the surviving conservation laws / design trade-offs and the core finding. Factual voice; consumers build audit and evaluation deliverables from this without re-reading raw pass artifacts.
 metadata:
   order: 65
   legacy_id: 65
@@ -42,14 +42,15 @@ Findings are ordered by severity (Critical, High, Medium, Low). Finding IDs matc
 
 - **Severity:** {Critical | High | Medium | Low}
 - **Classification:** {Fixable | Structural | ...}
+- **Reachability:** {reachable | conditional | parameter-gated | privileged-action | unreachable} — {the path that reaches the triggering state, or what would have to change first}
 - **Description:** {factual statement of what breaks and where.}
 - **Impact:** {the consequence if unaddressed — what it causes, not the mechanism.}
 - **Location:** {file:symbol or region}
 - **Recommendation:** {concrete corrective action.}
 - **Blast radius:** {e.g. "14 direct callers, 3 execution flows, 2 modules" — omit if no graph data}
 - **Adversarial confirmation:** {full-prism only: how the adversarial pass confirmed or corrected the
-  finding, stated factually — e.g. "confirmed", "severity raised from Medium", "underclaim promoted".
-  Omit for single and portfolio findings.}
+  finding, stated factually — e.g. "confirmed", "severity raised from Medium", "underclaim promoted",
+  "reachability narrowed to parameter-gated". Omit for single and portfolio findings.}
 
 ## Conservation Laws & Design Trade-offs
 
