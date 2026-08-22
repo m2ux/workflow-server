@@ -863,16 +863,28 @@
           }
         },
         "completedActivities": [
-          "intake-and-scope"
+          "intake-and-scope",
+          "apply-ladder",
+          "over-engineering-review"
         ],
-        "condition": "isDefault: apply-ladder",
-        "currentActivity": "apply-ladder",
+        "condition": "or(lazy_intensity == ultra, pass_scope == repo)",
+        "currentActivity": "repo-audit",
         "currentTechnique": "apply-ladder",
         "declaredArtifacts": [
           {
             "id": "lean_brief",
             "name": "lean-brief.md",
             "path": ".ponytail/01-lean-brief.md"
+          },
+          {
+            "id": "lean_change",
+            "name": "lean-change.md",
+            "path": ".ponytail/02-lean-change.md"
+          },
+          {
+            "id": "review_findings",
+            "name": "review-findings.md",
+            "path": ".ponytail/03-review-findings.md"
           }
         ],
         "deliveredContent": {
@@ -910,6 +922,39 @@
             "resource:ponytail-marker-convention#convention": "b36f6f425802f273",
             "resource:the-ladder": "f46033ae0cad66de",
             "technique:apply-ladder": "4f9cc4f8d7346382",
+            "technique:inherited_inputs.items:84e433f8644f2356": "84e433f8644f2356",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:e23351e96c7ff3b6": "e23351e96c7ff3b6",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:806155ef2fe1ce90": "806155ef2fe1ce90"
+          },
+          "ponytail-worker-c": {
+            "activity_rules:4c5e1c1bbff0d1d7": "4c5e1c1bbff0d1d7",
+            "bundle:rules:253663a8cb4b9c1b": "253663a8cb4b9c1b",
+            "bundle:variable-binding": "60406e1bffd5f7df",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:review-taxonomy": "b6b6ac05a227f75f",
+            "technique:inherited_inputs.items:84e433f8644f2356": "84e433f8644f2356",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:e23351e96c7ff3b6": "e23351e96c7ff3b6",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:review-over-engineering": "613a86e699e275ad",
+            "technique:rules:5db7674e1cc7466b": "5db7674e1cc7466b"
+          },
+          "ponytail-worker-d": {
+            "activity_rules:4c5e1c1bbff0d1d7": "4c5e1c1bbff0d1d7",
+            "bundle:rules:253663a8cb4b9c1b": "253663a8cb4b9c1b",
+            "bundle:variable-binding": "60406e1bffd5f7df",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:audit-findings": "71b4f414d8631b32",
+            "resource:review-taxonomy": "b6b6ac05a227f75f",
+            "technique:audit-repo": "41fe3b6933f64d89",
             "technique:inherited_inputs.items:84e433f8644f2356": "84e433f8644f2356",
             "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
             "technique:inherited_inputs:e23351e96c7ff3b6": "e23351e96c7ff3b6",
@@ -1322,23 +1367,214 @@
             },
             "timestamp": "2026-08-21T14:16:56.555Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "apply-ladder",
+            "timestamp": "2026-08-21T14:25:35.132Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "name": "safety_floor_cleared",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-21T14:25:35.132Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "name": "lean_change",
+              "source": "variables_changed",
+              "value": ".ponytail/02-lean-change.md"
+            },
+            "timestamp": "2026-08-21T14:25:35.132Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "apply-ladder",
+            "data": {
+              "agentId": "ponytail-worker-b",
+              "stepId": "climb-until-safe"
+            },
+            "timestamp": "2026-08-21T14:25:35.132Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "over-engineering-review",
+            "timestamp": "2026-08-21T14:25:35.132Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "ponytail-worker-c",
+              "chars": 43492,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-21T14:25:58.177Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "ponytail-worker-c",
+              "chars": 4722,
+              "delivery": "full",
+              "stepId": "review-change",
+              "techniqueId": "review-over-engineering"
+            },
+            "timestamp": "2026-08-21T14:25:58.177Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "ponytail-worker-c",
+              "stepId": "review-change"
+            },
+            "timestamp": "2026-08-21T14:25:58.177Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "ponytail-worker-c",
+              "chars": 3710,
+              "delivery": "full",
+              "resourceId": "review-taxonomy"
+            },
+            "timestamp": "2026-08-21T14:26:07.649Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "ponytail-worker-c",
+              "usage": {
+                "duration_ms": 322796,
+                "subagent_tokens": 105675,
+                "tool_uses": 27
+              }
+            },
+            "timestamp": "2026-08-21T14:31:31.526Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "over-engineering-review",
+            "timestamp": "2026-08-21T14:31:52.346Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "name": "review_findings",
+              "source": "variables_changed",
+              "value": ".ponytail/03-review-findings.md"
+            },
+            "timestamp": "2026-08-21T14:31:52.346Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "over-engineering-review",
+            "data": {
+              "agentId": "ponytail-worker-c",
+              "stepId": "review-change"
+            },
+            "timestamp": "2026-08-21T14:31:52.346Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "repo-audit",
+            "timestamp": "2026-08-21T14:31:52.346Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "agentId": "ponytail-worker-d",
+              "chars": 42441,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-21T14:32:19.829Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "agentId": "ponytail-worker-d",
+              "chars": 4074,
+              "delivery": "full",
+              "stepId": "audit-repo",
+              "techniqueId": "audit-repo"
+            },
+            "timestamp": "2026-08-21T14:32:19.829Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "agentId": "ponytail-worker-d",
+              "stepId": "audit-repo"
+            },
+            "timestamp": "2026-08-21T14:32:19.829Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "agentId": "ponytail-worker-d",
+              "chars": 3710,
+              "delivery": "full",
+              "resourceId": "review-taxonomy"
+            },
+            "timestamp": "2026-08-21T14:32:29.486Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "agentId": "ponytail-worker-d",
+              "chars": 1880,
+              "delivery": "full",
+              "resourceId": "audit-findings"
+            },
+            "timestamp": "2026-08-21T14:32:32.615Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "repo-audit",
+            "data": {
+              "agentId": "ponytail-worker-d",
+              "usage": {
+                "duration_ms": 713022,
+                "subagent_tokens": 182988,
+                "tool_uses": 71
+              }
+            },
+            "timestamp": "2026-08-21T14:44:17.012Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 22,
+        "seq": 31,
         "sessionIndex": "SHG3VM",
         "skippedActivities": [],
         "startedAt": "2026-08-21T13:00:36.087Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1787321816,
+        "ts": 1787323457,
         "variables": {
           "artifact_dir": ".ponytail",
           "has_debt_markers": false,
           "lazy_intensity": "ultra",
           "lean_brief": ".ponytail/01-lean-brief.md",
+          "lean_change": ".ponytail/02-lean-change.md",
           "pass_scope": "repo",
+          "review_findings": ".ponytail/03-review-findings.md",
           "safety_floor_cleared": true,
           "target_path": ".",
           "user_request": "Run the ponytail workflow over the workflow-server test suite: it has grown to 1000+ tests and many are suspected redundant, test theatre, or superseded. Eliminate as many as possible while retaining real value."
