@@ -281,12 +281,15 @@ export async function resolveTechniques(
     // auto-include its rules. A technique IS deliverable — not just its subs. The
     // parent workflow is implicit (current-first) unless the path names one.
     if (path.subName === undefined) {
-      const tRes = await readTechnique(path.workflow ? `${path.workflow}/${path.technique}` : path.technique, workflowDir, path.workflow ?? currentWorkflow);
+      const tRes = await readTechniqueWithSource(path.workflow ? `${path.workflow}/${path.technique}` : path.technique, workflowDir, path.workflow ?? currentWorkflow);
       if (tRes.success) {
-        const wholeDir = getWorkflowTechniquesDir(workflowDir, path.workflow ?? currentWorkflow ?? META_WORKFLOW_ID);
-        const body = await composeLoaded(tRes.value, [path.technique], wholeDir);
+        // Ancestor contracts come from the workflow the file was FOUND in, not the one the caller
+        // asked from. A technique reached through the meta fallback composes against meta's
+        // container tree, so its inherited contract is the one that actually governs it.
+        const wholeDir = getWorkflowTechniquesDir(workflowDir, tRes.value.sourceWorkflowId);
+        const body = await composeLoaded(tRes.value.technique, [path.technique], wholeDir);
         results.push({ source: path.technique, workflow: path.workflow, name: '', type: 'technique', body: projectTechniqueBody(body), ref });
-        touchedSkills.set(skillKey(path.workflow, path.technique), { workflow: path.workflow, technique: path.technique, cached: tRes.value });
+        touchedSkills.set(skillKey(path.workflow, path.technique), { workflow: path.workflow, technique: path.technique, cached: tRes.value.technique });
       } else {
         results.push({ source: path.technique, workflow: path.workflow, name: '', type: 'not-found', body: null, ref });
       }
@@ -608,7 +611,10 @@ export async function composeTechniqueWithSource(
   // Strip any leading 'workflow/' cross-workflow prefix, then split on '::'.
   const rawId = techniqueId.includes('/') ? (techniqueId.split('/', 2)[1] ?? techniqueId) : techniqueId;
   const pathSegments = rawId.split('::').filter(s => s.length > 0);
-  const techniquesDir = getWorkflowTechniquesDir(workflowDir, workflowId);
+  // The callee's own home tree owns its ancestor contracts. A cross-workflow or meta-shared
+  // callee therefore inherits the containers that govern it where it lives, rather than the
+  // same-named containers of whichever workflow requested it.
+  const techniquesDir = getWorkflowTechniquesDir(workflowDir, base.value.sourceWorkflowId);
 
   return ok({
     technique: await composeLoaded(base.value.technique, pathSegments, techniquesDir),

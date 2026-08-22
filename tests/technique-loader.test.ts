@@ -807,3 +807,84 @@ describe('technique-loader', () => {
     });
   });
 });
+
+/* -------------------------------------------------------------------------- */
+/* Home-tree ancestry: a callee's container contracts come from the workflow   */
+/* its file lives in, not the workflow that asked for it.                     */
+/* -------------------------------------------------------------------------- */
+
+describe('home-tree ancestry for cross-workflow references', () => {
+  let tempDir: string;
+
+  const FM = ['---', 'metadata:', '  version: 1.0.0', '---', ''];
+
+  /** A workflow root contract declaring one distinctive input, so inheritance is attributable. */
+  const rootContract = (inputId: string): string =>
+    [...FM, '## Capability', '', 'Root contract.', '', '## Inputs', '', '### ' + inputId, '',
+      'Declared by the workflow root.', ''].join('\n');
+
+  const operation = [...FM, '## Capability', '', 'Do the thing.', '', '## Inputs', '', '### op_input', '',
+    'The operation own input.', '', '## Protocol', '', '1. Do it.', '',
+    '## Outputs', '', '### op_output', '', 'The result.', ''].join('\n');
+
+  const inheritedIds = (t: { inherited_inputs?: { items?: Array<{ id: string }> } }): string[] =>
+    (t.inherited_inputs?.items ?? []).map((i) => i.id);
+
+  beforeEach(async () => {
+    tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'ancestry-')));
+    const roots: Array<[string, string]> = [['alpha', 'alpha_only'], ['beta', 'beta_only'], ['meta', 'meta_only']];
+    for (const [wf, input] of roots) {
+      const dir = join(tempDir, wf, 'techniques');
+      await mkdir(dir, { recursive: true });
+      await writeFile(join(dir, 'TECHNIQUE.md'), rootContract(input), 'utf-8');
+    }
+    await writeFile(join(tempDir, 'beta', 'techniques', 'shared-op.md'), operation, 'utf-8');
+    await writeFile(join(tempDir, 'meta', 'techniques', 'meta-op.md'), operation, 'utf-8');
+  });
+
+  afterEach(async () => {
+    await rm(tempDir, { recursive: true, force: true });
+  });
+
+  it('inherits the callee home workflow root contract, not the requesting workflow one', async () => {
+    const composed = await composeTechnique('beta/shared-op', tempDir, 'alpha');
+    expect(composed.success).toBe(true);
+    if (composed.success) {
+      expect(inheritedIds(composed.value)).toEqual(['beta_only']);
+      expect((composed.value.inputs ?? []).map((i) => i.id)).toEqual(['op_input']);
+    }
+  });
+
+  it('inherits the meta root contract for a technique reached through the meta fallback', async () => {
+    const composed = await composeTechnique('meta-op', tempDir, 'alpha');
+    expect(composed.success).toBe(true);
+    if (composed.success) {
+      expect(inheritedIds(composed.value)).toEqual(['meta_only']);
+    }
+  });
+
+  it('resolves the same home tree whichever workflow requests the callee', async () => {
+    const fromAlpha = await composeTechnique('beta/shared-op', tempDir, 'alpha');
+    const fromBeta = await composeTechnique('beta/shared-op', tempDir, 'beta');
+    expect(fromAlpha.success && fromBeta.success).toBe(true);
+    if (fromAlpha.success && fromBeta.success) {
+      expect(inheritedIds(fromAlpha.value)).toEqual(inheritedIds(fromBeta.value));
+    }
+  });
+
+  it('composes one cross-workflow reference identically through both delivery doors', async () => {
+    const stepBound = await composeTechnique('beta/shared-op', tempDir, 'alpha');
+    const [bundled] = await resolveTechniques(['beta::shared-op'], tempDir, 'alpha');
+    expect(stepBound.success).toBe(true);
+    expect(bundled?.type).toBe('technique');
+    if (stepBound.success && bundled?.type === 'technique') {
+      const body = bundled.body as Record<string, unknown>;
+      expect(body['capability']).toEqual(stepBound.value.capability);
+      expect(body['inputs']).toEqual(stepBound.value.inputs);
+      expect(body['outputs']).toEqual(stepBound.value.outputs);
+      expect(body['protocol']).toEqual(stepBound.value.protocol);
+      expect(body['inherited_inputs']).toEqual(stepBound.value.inherited_inputs);
+      expect(body['inherited_outputs']).toEqual(stepBound.value.inherited_outputs);
+    }
+  });
+});
