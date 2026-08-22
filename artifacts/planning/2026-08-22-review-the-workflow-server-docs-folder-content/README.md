@@ -22,7 +22,7 @@ This run rewrites the fifteen markdown documents under `docs/` — about 29,400 
 |---|------|-------------|----------|--------|
 | 1 | Intake and profile | Operation, reader profile, content selection | 10-20m | ✅ |
 | 2 | [Document profile](01-document-profile.md) | Readers, purpose, context, content | 10-20m | ✅ |
-| 3 | Source analysis | Findings against the existing document | 15-30m | ⬚ |
+| 3 | Source analysis | Findings against the existing document | 15-30m | 🟡 |
 | 4 | Draft | The plain-language document | 20-60m | ⬚ |
 | 5 | [Evaluation report](04-evaluation-report.md) | Verdict by principle, open issues | 15-30m | ⬚ |
 | 6 | [ISO checklist](04-iso-checklist.md) | Completed Annex B checklist | 10-15m | ⬚ |
