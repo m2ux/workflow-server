@@ -1,7 +1,8 @@
 # Deferred Items
 
-> Handling Inline Techniques · [#397](https://github.com/m2ux/workflow-server/issues/397) · updated 2026-08-17
+> Handling Inline Techniques · [#397](https://github.com/m2ux/workflow-server/issues/397) · updated 2026-08-22
 
 | ID | Deferred at | Item | Reason | Follow-up |
 |----|-------------|------|--------|-----------|
 | D-1 | Requirements elicitation (`stakeholder-transcript`) | Borrowed activities are only ever checked against the workflow that authored them, leaving 143 bind sites unverified in the scope they actually run in | Independent of inline calls and large enough to distort this package's scope | Ticket filed through the follow-ups activity while the evidence is fresh; body carries the measured finding, written to the repo's plain-language mandate |
+| D-2 | Requirements elicitation (re-entered pass, routing) | An activity the run can return to has no way back out. Requirements elicitation chooses its exit by reading a flag that says whether this package's path includes a research activity, and that flag is set once, when the path is first chosen, and cleared by nothing afterwards. So on a second visit the activity routes to research again however long ago research finished, and the exit that skips it is unreachable because no step can clear what it tests. The invariant: an activity that can be re-entered needs an exit that does not depend on a flag no step can clear | A defect in the workflow definition rather than in the inline-technique work, and the second such defect this package has surfaced without going looking for one, after D-1 | Ticket filed through the follow-ups activity, written to the repo's plain-language mandate. The user settled this run's routing at the meta gate `reentered-elicitation-routing`, which records the decision but does not repair the definition |
