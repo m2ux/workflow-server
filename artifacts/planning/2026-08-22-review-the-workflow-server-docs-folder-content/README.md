@@ -4,6 +4,8 @@
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
+> **Token use:** 1 340 775 subagent tokens across the client and meta sessions, over 141.5 minutes of client wall clock. Cost is unpriced — see [05-token-usage.md](05-token-usage.md).
+
 ## 🎯 Executive Summary
 
 This run rewrites the fifteen markdown documents under `docs/` — about 29,400 words — so they are accurate against the current tree, concise, and readable in plain language. It applies the repository house style throughout: hyperlinks flow inside sentences, and identifiers copied from the code appear only where a reader has to type or search for the exact token. The result is documentation a contributor, a workflow author, or an integrator can land in mid-task and get an answer from without reading the source instead.
@@ -27,6 +29,8 @@ This run rewrites the fifteen markdown documents under `docs/` — about 29,400 
 | 5 | [Evaluation report](04-evaluation-report.md) | Verdict by principle, open issues | 15-30m | ✅ |
 | 6 | [ISO checklist](04-iso-checklist.md) | Completed Annex B checklist | 10-15m | ✅ |
 | 7 | Delivery | The document written to its output path | 5-10m | ✅ |
+| 8 | [Session trace](05-session-trace.md) | Dispatches, checkpoints, durations, mechanical notes | 5-10m | ✅ |
+| 9 | [Token usage](05-token-usage.md) | Per-activity ledger, coverage, run totals | 5-10m | ✅ |
 
 **Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
