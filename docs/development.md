@@ -44,82 +44,27 @@ npm run start:http
 
 ## Project Structure
 
-```
-workflow-server/
-├── src/
-│   ├── index.ts              # Entry point: config → dispatch to the transport it selects
-│   ├── server.ts             # MCP server creation and tool/resource registration (shared by every transport)
-│   ├── config.ts             # ServerConfig: workflowDir, schemasDir, workspaceDir, engineeringDir, repo, installDir, planningRelativeDir, transport, port, host, …
-│   ├── transports/           # One module per transport, each owning that transport's connect/listen/shutdown lifecycle
-│   │   ├── stdio.ts          # Default transport — unchanged behavior from before dual-transport support
-│   │   └── http.ts           # Opt-in transport: Express app, /health + /ready, /mcp (StreamableHTTPServerTransport), graceful shutdown
-│   ├── middleware/            # HTTP-only cross-cutting concerns, no footprint on the stdio path
-│   │   ├── request-id.ts     # Correlation id generation/propagation
-│   │   ├── logging.ts        # Structured per-request log line
-│   │   └── error-handler.ts  # Shared { error, message, requestId, timestamp } JSON error body
-│   ├── errors.ts             # Custom error classes (WorkflowNotFoundError, etc.)
-│   ├── result.ts             # Result<T, E> monad for typed error handling
-│   ├── logging.ts            # Structured JSON logging + audit event wrapper (withAuditLog)
-│   ├── trace.ts              # TraceStore, TraceEvent, trace token encode/decode
-│   ├── schema/               # Zod runtime schemas for validation
-│   │   ├── workflow.schema.ts
-│   │   ├── activity.schema.ts
-│   │   ├── technique.schema.ts
-│   │   ├── condition.schema.ts
-│   │   ├── state.schema.ts
-│   │   ├── resource.schema.ts
-│   │   └── common.ts
-│   ├── types/                # Re-export layer (types + schemas)
-│   ├── loaders/              # File loaders (filesystem → validated objects)
-│   │   ├── workflow-loader.ts
-│   │   ├── activity-loader.ts
-│   │   ├── technique-loader.ts          # Includes resolveTechniques (resolves techniques via :: paths)
-│   │   ├── markdown-technique-loader.ts # Parses markdown technique files into Technique objects
-│   │   ├── resource-loader.ts
-│   │   ├── core-ops.ts       # CORE_ORCHESTRATOR_TECHNIQUES / CORE_WORKER_TECHNIQUES (core technique refs bundled into get_workflow / get_activity)
-│   │   ├── schema-loader.ts
-│   │   ├── filename-utils.ts
-│   │   └── index.ts          # Barrel exports
-│   ├── tools/                # MCP tool implementations
-│   │   ├── workflow-tools.ts # discover, list_workflows, get_workflow, next_activity, get_activity, yield_checkpoint, resume_checkpoint, present_checkpoint, respond_checkpoint, get_trace, health_check, get_workflow_status
-│   │   ├── resource-tools.ts # start_session, dispatch_child, get_technique, get_resource
-│   │   └── index.ts          # Tool registration entry point
-│   ├── resources/            # MCP resource registration
-│   │   └── schema-resources.ts # workflow-server://schemas
-│   └── utils/                # Utility functions
-│       ├── yaml.ts           # YAML format parser wrapper
-│       ├── session.ts        # Session token create/decode/advance (HMAC-SHA256)
-│       ├── validation.ts     # Transition, manifest, and activity validation
-│       ├── crypto.ts         # AES-256-GCM encryption, HMAC signing
-│       └── index.ts          # Barrel exports
-├── schemas/                  # JSON Schema files for IDE tooling
-│   ├── workflow.schema.json
-│   ├── activity.schema.json
-│   ├── technique.schema.json
-│   ├── condition.schema.json
-│   └── state.schema.json
-├── scripts/                  # Build, corpus guards, install helpers, benchmarks
-│   ├── install.sh            # Local install layout (helpers, workflows, projects/, worktrees/, env)
-│   ├── start.sh / stop.sh    # GHCR container runner (loads $INSTALL/env)
-│   ├── update-workflows.sh
-│   ├── generate-schemas.ts
-│   ├── validate-workflow-yaml.ts
-│   ├── run-token-benchmark.ts    # Delivery cost per session mode
-│   ├── run-dispatch-benchmark.ts # What a re-dispatch costs
-│   └── run-profile.ts            # Profiles a real run from its session transcript
-├── tests/                    # Test suites
-├── workflows/                # Worktree (workflows branch)
-│   ├── meta/                 # Bootstrap workflow
-│   │   ├── workflow.yaml
-│   │   ├── activities/
-│   │   └── techniques/
-│   └── {workflow-id}/        # Each workflow folder
-│       ├── workflow.yaml
-│       ├── activities/
-│       ├── resources/
-│       └── techniques/
-└── docs/                     # Documentation
-```
+The directories, and what each one owns:
+
+| Path | Contents |
+|------|----------|
+| `src/index.ts` | Entry point: read config, then hand off to the transport it selects |
+| `src/server.ts` | MCP server creation, and the registration of every tool and resource |
+| `src/config.ts` | `ServerConfig` — the resolved roots, transport, port, and the delivery-budget settings |
+| `src/transports/` | One module per transport, each owning its own connect, listen and shutdown lifecycle |
+| `src/middleware/` | Request id, per-request logging and the shared JSON error body — HTTP only, no footprint on the stdio path |
+| `src/schema/` | The Zod schemas everything is validated against, plus the identifier rules and the `when` expression evaluator |
+| `src/loaders/` | Filesystem to validated object: workflows, techniques, resources, schemas, and the `::` reference resolver |
+| `src/tools/` | The MCP tool implementations, split between `workflow-tools.ts` and `resource-tools.ts` |
+| `src/utils/` | Session storage and sealing under `session/`, plus delivery accounting, batching, validation and variable seeding |
+| `src/trace.ts` | The trace store and the encoding of trace tokens |
+| `schemas/` | JSON Schemas generated from the Zod sources, for editor tooling |
+| `scripts/` | Install and container helpers, schema generation, the corpus guards, and the benchmarks |
+| `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` |
+| `workflows/` | A worktree of the `workflows` branch: one directory per workflow, each with `workflow.yaml`, `activities/`, `techniques/` and `resources/` |
+| `docs/` | This documentation |
+
+For anything finer-grained than a directory, read the directory — a file list in prose goes stale the first time someone splits a module.
 
 ## Environment Variables
 
@@ -176,26 +121,17 @@ npm test -- --run
 # Run specific test file
 npm test -- --run tests/mcp-server.test.ts
 
-# Run with coverage
-npm test -- --run --coverage
+# Run one directory
+npm test -- --run tests/e2e
 ```
+
+Coverage needs `@vitest/coverage-v8`, which is not a dependency of this repository — install it before passing `--coverage`.
 
 ### Test Suites
 
-| Test Suite | Coverage |
-|------------|----------|
-| `workflow-loader.test.ts` | Workflow loading, transitions, validation |
-| `schema-validation.test.ts` | All Zod schemas |
-| `schema-loader.test.ts` | JSON Schema loading and serving |
-| `mcp-server.test.ts` | All MCP tools, trace lifecycle, activity manifest, technique bundles |
-| `activity-loader.test.ts` | Activity loading and dynamic index |
-| `technique-loader.test.ts` | Technique loading, dynamic index, technique resolution |
-| `session.test.ts` | Token create/decode/advance, sid, aid, parent context |
-| `trace.test.ts` | TraceStore, trace token encode/decode |
-| `validation.test.ts` | Transition, manifest, condition validation |
-| `dispatch.test.ts` | Workflow dispatch, status, parent-child trace correlation |
+The suite is large enough that naming its files here would go stale faster than it helps. `tests/` holds the unit and integration suites, `tests/e2e/` holds the end-to-end walks through the workflow corpus, and `npm test -- --run` prints the live inventory with the pass and fail counts.
 
-Run `npm test -- --run` for the live count and pass/fail summary.
+Two things about the suite are worth knowing before changing anything in it. Several corpus guards run as Vitest tests as well as under `check:all`, so a guard finding fails `npm test` too. And the end-to-end walks are snapshotted against a specific corpus commit, which is why a submodule bump and a re-baseline belong in the same change — see [Corpus-coupled baselines](#corpus-coupled-baselines) below.
 
 ### Test Infrastructure
 
@@ -213,12 +149,13 @@ Stdout is one JSON object with per-activity fresh/resume characters and the aggr
 
 [`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts) measures payload-char and history/ledger cost for a fixed headless walk (`work-package` / e2e `skip-optional`), comparing `context_mode: fresh` vs `persistent` and resource reference delivery. It reuses the e2e harness/walker and probes `get_resource` for linked + hot templates (the robot walker does not call `get_resource` on its own).
 
-By default each run compares against the committed baseline
-[`scripts/fixtures/token-benchmark-baseline.json`](../scripts/fixtures/token-benchmark-baseline.json)
-(fresh mode, recorded 2026-08-17 against `workflows@72db28ae`). Stderr prints a
-compact scorecard; stdout JSON includes `vsReference` with absolute/percent deltas
-and a **deliveryCostIndex** (baseline = 100, lower is better — sum of activity +
-workflow + resource + technique chars).
+By default each run compares against the committed baseline in
+[`scripts/fixtures/token-benchmark-baseline.json`](../scripts/fixtures/token-benchmark-baseline.json).
+The fixture records its own context mode, corpus revision and recording date, so read the
+provenance there rather than from this page. Stderr prints a
+compact scorecard; stdout JSON includes `vsReference` with absolute and percent deltas
+and a **deliveryCostIndex** (baseline = 100, lower is better — the sum of activity,
+workflow, resource and technique characters).
 
 #### The gate runs on every pull request
 
@@ -472,8 +409,6 @@ Resources are stored in a `resources/` subdirectory within each workflow as slug
 3. Resources are auto-discovered - no manifest update needed
 4. Access via: `get_resource` with the resource slug (referenced from a technique); cross-workflow refs use `{workflow}/{slug}`
 5. Commit to the `workflows` branch
-
-Note: For backwards compatibility, the loader also checks the `guides/` folder if `resources/` doesn't exist.
 
 ## Adding New Techniques
 

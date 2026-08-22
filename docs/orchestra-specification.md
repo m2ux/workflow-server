@@ -1,24 +1,14 @@
-# Orchestra DSL Specification
+# Orchestra: a proposed activity language
 
-| | |
-|---|---|
-| **Version** | 1.0.0 |
-| **Date** | 2026-02-10 (last reviewed 2026-05-14) |
-| **Status** | Draft |
+Orchestra is a design for writing an activity's control flow down explicitly — its steps, its branch points, its loops — so the path through an activity is legible in the file rather than reconstructed by an agent reading it. The server implements a different shape, so nothing on this page describes a file the loader accepts.
 
-## Before the formal rules
+**Read this for the design, not to author a definition.** The language the server does load is covered by the [schema guide](../schemas/README.md), and the generated [schema reference](../site/api/schemas.html) gives each file shape field by field. An activity there is a list of steps, each tagged with the kind of work it does, followed by the transitions leading out of the activity. There are no flow declarations and no `skill:` key, and the grammar below assumes both.
 
-**Who this is for:** authors who define workflow and activity structure in the Orchestra language and related schemas.
+**Who this is for:** anyone weighing the design — how an explicit control-flow language would work, and what it would take — rather than anyone writing workflow definitions today. If you are authoring, the [technique protocol specification](technique-protocol-specification.md) and the schema guide are the two documents you need.
 
-**In one sentence:** Orchestra makes the path through an activity explicit (steps, decisions, loops) so agents follow a deterministic sequence instead of inventing control flow.
+What follows is the design as specified: the rationale, a formal grammar for activities, the semantic constraints, a worked example, and a table of validation rules. The workflow, technique and resource primitives were never specified.
 
-**Practical path**
-
-1. Learn the product model: workflow → activities → techniques → tools ([README](../README.md)).
-2. Use [schemas/README.md](../schemas/README.md) and the generated [schema reference](../site/api/schemas.html) for file shapes you author today.
-3. Treat the activity grammar in this document as the normative control-flow contract; where a section is still TBD for a primitive, follow the linked JSON Schema.
-
-Illustrated architecture context: [docs/architecture.md](architecture.md) and the [site specifications hub](../site/specifications.html).
+For the architecture the server actually has, start at the [architecture overview](architecture.md) or the [site specifications hub](../site/specifications.html).
 
 ---
 
@@ -26,20 +16,20 @@ Illustrated architecture context: [docs/architecture.md](architecture.md) and th
 
 ### Purpose
 
-Orchestra is a domain-specific language for defining workflow definitions that AI agents interpret and execute. Workflow definitions reside in the `workflows` branch and describe structured sequences of operations — from multi-step engineering tasks to security audits to code reviews. The fundamental purpose of Orchestra is to provide a **deterministic landscape** for agents to navigate: given the same workflow definition and the same state, any conforming agent must follow the same execution path. This eliminates ambiguity in workflow interpretation and makes agent behavior predictable, auditable, and reproducible.
+Workflow definitions describe structured sequences of operations, from multi-step engineering tasks to security audits to code reviews, and they live on the `workflows` branch. Orchestra sets out to make those sequences deterministic: given the same definition and the same state, any conforming agent takes the same path. An agent left to infer the path can infer it differently on two runs, which is what makes behaviour hard to audit and hard to reproduce.
 
 ### Scope
 
-Orchestra defines the grammar and semantic constraints for the four workflow primitives:
+The design covers four workflow primitives, one of them in full:
 
-| Primitive | Description | Orchestra Status |
-|-----------|-------------|----------------|
-| **Workflow** | Top-level container: metadata, variables, activity sequencing, orchestrator technique refs | Legacy — Orchestra variant TBD |
-| **Activity** | Execution unit: steps, decisions, loops composed into flows; references techniques via a flat `techniques[]` list | **Defined in this specification** |
-| **Technique** | Markdown definition of a capability, optional inputs/outputs, an ordered protocol, and rules; may contain nested techniques | Legacy — Orchestra variant TBD |
-| **Resource** | Reference material: documentation, templates, guides | Legacy — Orchestra variant TBD |
+| Primitive | Description | Design coverage |
+|-----------|-------------|-----------------|
+| **Workflow** | Top-level container: metadata, variables, activity sequencing, orchestrator technique refs | Not specified |
+| **Activity** | Execution unit: steps, decisions, loops composed into flows | Specified below |
+| **Technique** | Markdown definition of a capability, optional inputs/outputs, an ordered protocol, and rules; may contain nested techniques | Not specified |
+| **Resource** | Reference material: documentation, templates, guides | Not specified |
 
-This specification fully defines the Orchestra grammar and constraints for **activities**. The workflow, technique, and resource primitives continue to use the prior schema definitions (see `schemas/*.schema.json`) until their Orchestra variants are designed.
+Only the activity primitive is worked out. The shapes the server actually loads for all four are in `schemas/*.schema.json`, and the technique primitive has a specification of its own in [technique-protocol-specification.md](technique-protocol-specification.md).
 
 ### Design Goal
 
@@ -49,7 +39,7 @@ Three primitives — **steps**, **decisions**, and **loops** — are composed in
 
 ## 2. Workflow
 
-TBD — Orchestra grammar and constraints for the workflow primitive (top-level container: metadata, variables, activity sequencing) are not yet defined. See `schemas/workflow.schema.json` for the current legacy schema.
+The design does not cover the workflow primitive — the top-level container holding metadata, variables and activity sequencing. `schemas/workflow.schema.json` carries the shape the server loads.
 
 ---
 
@@ -67,7 +57,7 @@ A step is a unit of work. Trivial steps are performed directly by the agent. Non
 
 **Rules live in techniques**: Steps do not carry rules. If a step requires behavioural constraints, that signals a rule is needed, and rules live in the technique definition. They are pulled into the activity's bundled response when the activity references the technique. This keeps steps as pure references and rules co-located with the procedural knowledge that enforces them.
 
-**Deterministic vs. dynamic questions**: Fixed-option questions with known branches are handled by interactive decisions (see Section 2.2). Dynamic questions — where the content, phrasing, or follow-up logic depends on runtime context — are steps backed by a technique. The technique declares its own context inputs (current domain, prior responses, etc.) and produces structured outputs (question text, user response, adaptation signals). These resolve from the environment automatically.
+**Deterministic vs. dynamic questions**: Fixed-option questions with known branches are handled by interactive decisions (Section 3.1.2). Dynamic questions — where the content, phrasing, or follow-up logic depends on runtime context — are steps backed by a technique. The technique declares its own context inputs (current domain, prior responses, etc.) and produces structured outputs (question text, user response, adaptation signals). These resolve from the environment automatically.
 
 **EBNF**:
 
@@ -242,7 +232,7 @@ decisions:
 
 #### 3.1.3 Loops
 
-A loop iterates a named flow over a collection. Only `forEach` is supported. While-like behavior is achieved through decision self-reference (see Section 2.2).
+A loop iterates a named flow over a collection. Only `forEach` is supported. While-like behavior is achieved through decision self-reference (Section 3.1.2).
 
 A `break` instruction within a loop's flow exits the **innermost containing loop only** and resumes the parent flow after the loop reference. `break` does not propagate to outer loops.
 
@@ -853,14 +843,14 @@ flows:
 
 Machine-interpretable rules derived from the Alloy constraints. Each rule has an ID, severity, description, and the Alloy fact it implements.
 
-### Provenance
+#### Provenance
 
 | Rule | Severity | Description | Alloy Ref |
 |------|----------|-------------|-----------|
 | `PROV-001` | ERROR | Every required technique input (declared in the technique definition) must resolve from the scoping chain at the step's invocation point | `InputProvenance` |
 | `PROV-002` | ERROR | Cross-activity references in technique input declarations must use qualified `NN.step-id.name` form | `QualifiedCrossRef` |
 
-### Symbol Uniqueness
+#### Symbol Uniqueness
 
 | Rule | Severity | Description | Alloy Ref |
 |------|----------|-------------|-----------|
@@ -869,7 +859,7 @@ Machine-interpretable rules derived from the Alloy constraints. Each rule has an
 | `SYM-003` | ERROR | Loop IDs unique within activity | `LoopUniqueness` |
 | `SYM-004` | ERROR | Flow IDs unique within activity | `FlowUniqueness` |
 
-### Flow Structure
+#### Flow Structure
 
 | Rule | Severity | Description | Alloy Ref |
 |------|----------|-------------|-----------|
@@ -877,7 +867,7 @@ Machine-interpretable rules derived from the Alloy constraints. Each rule has an
 | `FLOW-002` | WARN | Every named flow must be referenced by a loop, decision, or flow | `FlowReachability` |
 | `FLOW-003` | ERROR | Flow references (`- flow:` / loop `flow:`) must resolve to existing flow IDs | `FlowRefValid` |
 
-### Loop Validation
+#### Loop Validation
 
 | Rule | Severity | Description | Alloy Ref |
 |------|----------|-------------|-----------|
@@ -885,7 +875,7 @@ Machine-interpretable rules derived from the Alloy constraints. Each rule has an
 | `LOOP-002` | ERROR | `break` only valid within a loop's reachable flow graph | `BreakContext` |
 | `LOOP-003` | INFO | `break` exits the innermost enclosing loop only | `BreakInnermost` |
 
-### Decision Validation
+#### Decision Validation
 
 | Rule | Severity | Description | Alloy Ref |
 |------|----------|-------------|-----------|
@@ -894,14 +884,14 @@ Machine-interpretable rules derived from the Alloy constraints. Each rule has an
 | `DEC-003` | ERROR | Interactive decisions (with `message:`) must not have `variable:` or `condition:` | `InteractiveForm` |
 | `DEC-004` | ERROR | Programmatic decisions must have exactly one of `variable:` or `condition:` | `ProgrammaticForm` |
 
-### Terminal Instructions
+#### Terminal Instructions
 
 | Rule | Severity | Description | Alloy Ref |
 |------|----------|-------------|-----------|
 | `TERM-001` | INFO | `activity:` terminates the entire activity scope immediately | — |
 | `TERM-002` | ERROR | Decision branches rejoin unless they contain a terminal (`break`, `activity:`) | `branchRejoins` |
 
-### Variable Scoping
+#### Variable Scoping
 
 | Rule | Severity | Description | Alloy Ref |
 |------|----------|-------------|-----------|
@@ -912,7 +902,7 @@ Machine-interpretable rules derived from the Alloy constraints. Each rule has an
 
 ## 4. Technique
 
-TBD — Orchestra grammar and constraints for the technique primitive are not yet defined. See `schemas/technique.schema.json` for the current schema. A technique is authored as markdown. A technique can contain nested techniques, and there is one kind of technique throughout. Its anatomy is:
+The design does not cover the technique primitive, and it does not need to: techniques have a specification of their own in [technique-protocol-specification.md](technique-protocol-specification.md), and `schemas/technique.schema.json` carries the shape the server loads. A technique is authored as markdown. A technique can contain nested techniques, and there is one kind of technique throughout. Its anatomy is:
 
 * **Frontmatter** — carries `metadata.version`.
 * **`## Capability`** — what the technique accomplishes.
@@ -928,4 +918,4 @@ See [Technique & Resource Resolution Architecture](resource-resolution-model.md)
 
 ## 5. Resource
 
-TBD — Orchestra grammar and constraints for the resource primitive (reference material: documentation, templates, guides) are not yet defined.
+The design does not cover the resource primitive — the reference material a technique links to. How the server resolves and delivers resources is in [resource-resolution-model.md](resource-resolution-model.md).

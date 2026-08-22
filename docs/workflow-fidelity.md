@@ -9,167 +9,80 @@ AI agents executing multi-step workflows face two reliability challenges:
 1. **Context degradation** — as conversations grow, earlier instructions (including workflow definitions) fall out of the model's effective attention window, leading to skipped steps, wrong transitions, and hallucinated procedures
 2. **Behavioral drift** — without enforcement, agents may take shortcuts, skip checkpoints, or fabricate state rather than following the defined execution path
 
-The workflow server addresses these through seven layers of enforcement, each operating at a different granularity.
+The workflow server addresses these through seven layers of enforcement, each operating at a different granularity. Two are hard gates that refuse the call; the other five record warnings and evidence, so a drifting agent is visible rather than stopped.
 
 ## Enforcement Layers
 
-```
-┌─────────────────────────────────────────────┐
-│  Layer 1: Token Integrity (HMAC)            │
-│  Every call — prevents fabrication           │
-├─────────────────────────────────────────────┤
-│  Layer 2: Checkpoint Gate                    │
-│  At transitions — blocks until resolved      │
-├─────────────────────────────────────────────┤
-│  Layer 3: Cross-Activity Validation          │
-│  Between activities — checks consistency     │
-├─────────────────────────────────────────────┤
-│  Layer 4: Transition Condition Tracking      │
-│  At transitions — verifies condition logic   │
-├─────────────────────────────────────────────┤
-│  Layer 5: Step Completion Manifest           │
-│  Within activities — verifies completeness   │
-├─────────────────────────────────────────────┤
-│  Layer 6: Activity Manifest                  │
-│  Across activities — tracks workflow journey  │
-├─────────────────────────────────────────────┤
-│  Layer 7: Execution Trace                    │
-│  Entire session — mechanical audit trail      │
-└─────────────────────────────────────────────┘
-```
+### The shape of a transition
 
-### Enforcement Flow
-
-The following diagram shows a typical two-activity progression through a workflow, annotating where each enforcement layer activates. Hard gates (blocking) are marked with solid borders; advisory checks (warnings) are marked with dashed borders.
+Most enforcement happens where one activity hands over to the next, so that moment is worth seeing whole.
 
 ```mermaid
 flowchart TD
-    subgraph bootstrap [Session Bootstrap]
-        startSession["start_session(agent_id)"]
-        getWorkflow["get_workflow(session_index)"]
-        startSession -->|"L1: HMAC signed token issued"| getWorkflow
-    end
-
-    subgraph actA [Activity A]
-        nextA["next_activity(activity_id=A)"]
-        cpGateA{{"L2: bcp populated\nwith required checkpoints"}}
-        toolsBlocked["All tools BLOCKED\nexcept present_checkpoint\nand respond_checkpoint"]
-        respondCp["respond_checkpoint\nfor each pending checkpoint"]
-        cpTiming{{"L2: Timing enforced\noption validated against definition"}}
-        bcpClear["bcp cleared — tools unblocked"]
-        getTechnique["get_technique(step_id) + get_resource"]
-        executeSteps["Execute activity steps"]
-    end
-
-    subgraph transition [Transition A to B]
-        nextB["next_activity(activity_id=B,\nstep_manifest, activity_manifest,\ntransition_condition)"]
-        hardGate{{"L2: bcp empty?\nHARD GATE"}}
-        transCheck["L3: A→B in transition graph?"]
-        condCheck["L4: condition matches table?"]
-        stepCheck["L5: step_manifest complete?"]
-        actCheck["L6: activity_manifest valid?"]
-        tracePackage["L7: Trace token packaged\nfor Activity A"]
-    end
-
-    subgraph actB [Activity B]
-        cpGateB{{"L2: bcp populated\nfor Activity B checkpoints"}}
-        continueB["Resolve checkpoints,\nexecute steps..."]
-    end
-
-    getWorkflow -->|"L7: trace event"| nextA
-    nextA --> cpGateA
-    cpGateA --> toolsBlocked
-    toolsBlocked --> respondCp
-    respondCp --> cpTiming
-    cpTiming -->|"Each checkpoint resolved"| respondCp
-    cpTiming -->|"All checkpoints resolved"| bcpClear
-    bcpClear --> getTechnique
-    getTechnique -->|"L1: HMAC verified"| executeSteps
-
-    executeSteps --> nextB
-    nextB --> hardGate
-    hardGate -->|"bcp non-empty"| toolsBlocked
-    hardGate -->|"bcp empty"| transCheck
-    transCheck -.-> condCheck
-    condCheck -.-> stepCheck
-    stepCheck -.-> actCheck
-    actCheck --> tracePackage
-    tracePackage --> cpGateB
-    cpGateB --> continueB
+    startSession["start_session"] --> getWorkflow["get_workflow"]
+    getWorkflow --> nextA["next_activity(A)"]
+    nextA --> steps["get_activity, get_technique,\nexecute the activity's steps"]
+    steps --> yieldCp["yield_checkpoint\n(a step reaches a gate)"]
+    yieldCp --> gate{{"L2: activeCheckpoint set —\nnext_activity and resume_checkpoint refuse"}}
+    gate --> respond["respond_checkpoint\nL2: option validated, timer enforced"]
+    respond --> cleared["activeCheckpoint cleared"]
+    cleared --> nextB["next_activity(B, step_manifest,\nactivity_manifest, transition_condition)"]
+    nextB --> hardGate{{"L2: activeCheckpoint empty?"}}
+    hardGate --> transCheck["L3: is A to B a declared transition?"]
+    transCheck -.-> condCheck["L4: does the claimed condition match?"]
+    condCheck -.-> stepCheck["L5: is the step manifest complete?"]
+    stepCheck -.-> actCheck["L6: is the activity manifest valid?"]
+    actCheck --> tracePackage["L7: trace token packaged for A"]
 ```
 
-**Legend:**
-- Double-bordered nodes (`{{...}}`) are hard enforcement gates — they block execution until satisfied
-- Dashed lines (`-.-`) indicate advisory validation that produces warnings but does not block
-- `L1` through `L7` reference the enforcement layers described below
-- Every tool call in the diagram verifies the HMAC signature (L1) and records a trace event (L7); only the first occurrence is annotated to avoid clutter
+Double-bordered nodes are hard gates: they refuse the call until satisfied. Dashed arrows are advisory checks that add a warning to `_meta.validation` and let the call through. Every call verifies the session seal (L1) and records a trace event (L7); annotating those on each edge would only clutter the picture.
 
-### Layer 1: Token Integrity
+### Layer 1: Session Integrity
 
-Every session token is HMAC-SHA256 signed using a server-held key. Default path is `~/.workflow-server/secret`. Override with `WORKFLOW_SERVER_KEY_DIR` (key file `<dir>/secret`) or `WORKFLOW_SERVER_STATE_DIR`. Docker `start.sh` mounts `$INSTALL/state` → `/var/lib/workflow-server/state` and sets `WORKFLOW_SERVER_KEY_DIR` so the key does not depend on `HOME` (non-root containers often have `HOME=/`). The token format is `<base64url-payload>.<hmac-signature>`.
+Session state is not something an agent carries. Agents hold a six-character `session_index`, derived deterministically from the planning slug, and the server keeps the state itself on disk beside the planning folder. So what has to be protected is the file, not a credential in a prompt.
 
-The token payload carries:
+Each session folder holds two files. `session.json` is plaintext and schema-validated. `.session-token` beside it is a sealed envelope binding those exact bytes to the engineering root and to a server-held signing key, using HMAC-SHA256. The server verifies the seal on every read and raises `SEAL_MISMATCH` when the two disagree.
 
-| Field | Purpose |
-|-------|---------|
-| `wf` | Workflow ID — locks the session to a single workflow |
-| `act` | Current activity — records the agent's position |
-| `technique` | Last loaded technique — tracks technique usage |
-| `cond` | Last transition condition — records the agent's claimed reason for transitioning |
-| `v` | Workflow version — detects definition drift |
-| `seq` | Sequence counter — increments on every call, ensuring uniqueness |
-| `ts` | Creation timestamp |
-| `sid` | Session UUID — uniquely identifies this execution session across all tool calls |
-| `aid` | Agent ID — identifies which agent (orchestrator vs. worker) made the call |
-| `bcp` | Active blocking checkpoint ID — gates activity transitions until resolved |
-| `psid` | Parent session ID — for trace correlation when a workflow is dispatched from another |
-| `pwf` | Parent workflow ID — for resume routing in dispatched workflows |
-| `pact` | Parent activity — for resume routing in dispatched workflows |
-| `pv` | Parent workflow version — for resume routing in dispatched workflows |
+The signing key lives in a file named `secret`. The server looks for its directory in `WORKFLOW_SERVER_KEY_DIR` first, then `WORKFLOW_SERVER_STATE_DIR`, falling back to `~/.workflow-server`. Docker's `start.sh` sets the key directory explicitly, because non-root containers often run with `HOME=/` and the key would otherwise land somewhere unwritable.
 
 **What it enforces:**
-- Agents cannot fabricate tokens — the server rejects any token it didn't issue
-- Agents cannot tamper with token fields — modifying any field invalidates the signature
-- Each tool call produces a new token with an incremented counter, ensuring tokens are unique per exchange
-- The `sid` field binds all tool calls to a single session, enabling trace correlation
-- The `aid` field distinguishes orchestrator from worker calls in multi-agent execution patterns
-- The `bcp` field blocks activity transitions until the checkpoint is resolved via `respond_checkpoint`
-- Parent context fields (`psid`, `pwf`, `pact`, `pv`) link dispatched child workflows back to their parent for trace correlation
+- State edited outside the server is detected on the next read rather than silently trusted
+- A session index is a lookup key, not a bearer credential — the seal, not the index, attests that the state is the server's own
+- Rotating or losing the signing key invalidates existing seals, which surfaces as `SEAL_MISMATCH` rather than as quiet acceptance
 
-**How it works:** The server verifies the HMAC signature on every tool call before processing. Invalid signatures cause immediate rejection — with one exception: `start_session` implements **token adoption** to handle server restarts gracefully. When a saved session token is passed to `start_session` but fails HMAC verification (because the server was restarted and generated a new signing key), the server decodes the payload without signature verification. If the payload is structurally valid and the workflow matches, the server re-signs it with the current key and returns `adopted: true` — the session state (ID, activity position) is fully preserved. If the payload is also corrupted, the server falls back to a fresh session and returns `recovered: true` — the previous state was NOT inherited and must be reconstructed from saved state. This recovery mechanism prevents the common failure mode where a server restart makes all saved tokens permanently unusable.
+Because the state lives in the file rather than in an agent's context, a server restart is transparent. There is no adoption, re-signing or recovery step for an agent to perform.
 
 ### Layer 2: Checkpoint Gate
 
-When a worker yields a checkpoint via `yield_checkpoint`, the server embeds the checkpoint ID in the token's `bcp` field. The token then **hard-blocks** most tool calls until the checkpoint is resolved. `assertCheckpointsResolved()` is called in nearly every tool handler to enforce this gate.
+When a worker yields a checkpoint, the server records it in the session's `activeCheckpoint` field. Three operations then refuse until it is cleared:
 
-**Tools exempt from the checkpoint gate:**
-- `present_checkpoint` — the orchestrator needs this to read checkpoint details for resolution
-- `respond_checkpoint` — this is the resolution mechanism itself
+| Operation | Why it refuses |
+|-----------|----------------|
+| `next_activity` | The run must not advance past a question nobody answered |
+| `yield_checkpoint` | A second pause on top of an outstanding one cannot be unwound |
+| `resume_checkpoint` | A worker must not continue before the answer exists |
 
-**Resolution via `respond_checkpoint`:**
+Everything else stays open, deliberately. `inspect_session` in particular is usable while a checkpoint is active, which is how an orchestrator diagnoses a run that has stopped.
 
-The agent must call `respond_checkpoint` for each pending checkpoint, using exactly one of three resolution modes:
+**Resolution via `respond_checkpoint`** takes exactly one of three modes:
 
 | Mode | When to use | Timing enforcement |
 |------|-------------|-------------------|
-| `option_id` | User selected an option | Minimum response time (default 3s since token timestamp) |
-| `auto_advance` | Checkpoint declares `defaultOption` + `autoAdvanceMs` and the timer elapsed | Full `autoAdvanceMs` must elapse since token timestamp |
-| `condition_not_met` | Conditional checkpoint's condition is false (agent-evaluated) | None (but checkpoint must have a structured `condition` field — a `when` gate does not qualify) |
+| `option_id` | The user selected an option | At least three seconds since the pause was recorded |
+| `auto_advance` | The checkpoint declares `defaultOption` and `autoAdvanceMs`, and the timer elapsed | The full `autoAdvanceMs` since the pause was recorded |
+| `condition_not_met` | The checkpoint's condition is false, as the agent evaluated it | None, but the checkpoint must carry a structured `condition`; a `when` gate does not qualify |
 
 **What it enforces:**
-- Agents cannot skip checkpoints — `next_activity` throws a hard error if `bcp` is set when transitioning to a different activity
-- Agents cannot forge responses — `option_id` is validated against the checkpoint definition
-- Agents cannot instant-auto-resolve — the server enforces minimum elapsed time for user-answered checkpoints and the full `autoAdvanceMs` timer for auto-advanced ones
-- Agents cannot dismiss unconditional checkpoints — `condition_not_met` is rejected unless the checkpoint has a `condition` field
-- Agents cannot tamper with `bcp` — the field is in the HMAC-signed token payload
+- Agents cannot advance past an unresolved checkpoint — `next_activity` throws while `activeCheckpoint` is set
+- Agents cannot forge a response — `option_id` is validated against the checkpoint definition
+- Agents cannot resolve instantly — both timers run from the recorded pause time, so answering faster than a person could read is refused
+- Agents cannot dismiss an unconditional checkpoint — `condition_not_met` is rejected without a `condition` field
 
-**How it works:** `yield_checkpoint` populates `bcp` on the outgoing token. The agent calls `respond_checkpoint` with the checkpoint handle (or session token), which clears `bcp` and returns effects (`setVariable`, `transitionTo`, `skipActivities`). The server applies `setVariable` to the session variable bag; `transitionTo` and `skipActivities` are recorded and returned for the orchestrator to enact. Only when `bcp` is cleared can the agent transition to the next activity.
-
-**Anti-gaming:** The timing enforcement prevents the pathological case where an orchestrator calls `respond_checkpoint` immediately after `yield_checkpoint` without presenting the checkpoint to the user. In legitimate orchestrator-worker flows, worker execution naturally takes minutes, so the timing check is transparent. The token's `ts` timestamp is used to estimate elapsed time since the checkpoint was yielded.
+**Anti-gaming:** the timers close off the cheapest way to fake a checkpoint, which is calling `respond_checkpoint` straight after `yield_checkpoint` without showing anyone anything. Real worker execution takes minutes, so the check never fires on a legitimate run. What it cannot do is prove a person saw the question; that limit is recorded below.
 
 ### Layer 3: Cross-Activity Validation
 
-When an agent makes a tool call, the server compares the token's recorded state (from the previous call) against the current call's explicit parameters. Warnings are returned in `_meta.validation`.
+When an agent makes a tool call, the server compares the position it recorded on the previous call against what this call claims. Warnings are returned in `_meta.validation`.
 
 **Checks performed:**
 
@@ -189,7 +102,7 @@ When calling `next_activity` to transition to a new activity, agents can include
 **What it enforces:**
 - The claimed condition actually maps to the target activity in the transition table
 - Default transitions are correctly reported (no false condition claims)
-- The condition is recorded in the HMAC-signed token, creating an immutable audit trail
+- The condition is recorded in the sealed session state and in the trace, so the agent cannot revise it afterwards
 
 **What it cannot verify in real-time:** Whether the condition is actually true in the agent's state. However, conditions are typically set by user choices at checkpoints, which are logged. Post-hoc review can cross-reference claimed conditions against checkpoint responses and trace data.
 
@@ -250,7 +163,7 @@ The server automatically captures a mechanical trace of every tool call in a ses
 | `ts` | Timestamp (Unix seconds) |
 | `ms` | Duration (milliseconds) |
 | `s` | Status (`ok` or `error`) |
-| `wf`, `act`, `aid` | Workflow, activity, and agent ID from the decoded token |
+| `wf`, `act`, `aid` | Workflow, activity, and agent id the call was made under |
 | `err` | Error message (on failure) |
 | `vw` | Validation warnings from `_meta.validation` |
 | `psid` | Parent session ID (for dispatched workflows) |
@@ -273,7 +186,7 @@ The server automatically captures a mechanical trace of every tool call in a ses
 
 **Trace token properties:**
 - Self-contained — full event data is embedded, not just references to in-memory state
-- HMAC-signed — tamper-proof, uses the same signing mechanism as session tokens
+- HMAC-signed — tamper-evident, using the same key that seals session state
 - Compact — compressed field names minimize context window impact
 - Degradation-resilient — tokens remain valid attestations even if the server restarts
 
@@ -329,7 +242,7 @@ Resume is a single call: `start_session({ agent_id, planning_folder })`. The ser
 - **Condition truth is not verified** — the server checks that a claimed condition maps to the target activity, but cannot verify whether the condition is actually true in the agent's state. Post-hoc audit via checkpoint logs and trace data can cross-reference claimed conditions against observed behavior.
 - **Checkpoint user presence is not provable** — the checkpoint gate ensures the agent *calls* `respond_checkpoint` with a valid option, but cannot prove a human saw the checkpoint. The timing enforcement raises the bar (instant auto-resolve is rejected), and the trace records all checkpoint interactions for audit. However, an agent could wait the minimum time and then submit a fabricated response. This is an inherent limitation of agent-mediated systems where the agent controls the communication channel.
 - **Conditional checkpoint dismissal relies on agent honesty** — when an agent calls `respond_checkpoint` with `condition_not_met`, the server validates that the checkpoint has a `condition` field but cannot verify the condition is actually false. The trace records the dismissal for post-hoc audit.
-- **Replay is not detected** — an agent could present an old valid token. The HMAC proves authenticity but not freshness (the server is stateless). The `sid` field makes replay across sessions detectable, but within-session replay remains possible.
+- **A repeated call is not distinguished from a fresh one** — the server holds the session state, so a call is checked against the position it recorded rather than against anything the agent presents. What it cannot tell is whether an agent is re-issuing a call it already made in the same session. The trace records both, so a repeat is visible after the fact.
 - **Warnings are advisory** — a confused agent may ignore validation warnings. The enforcement is detection-oriented, not prevention-oriented. Validation warnings are captured in the execution trace, making ignored warnings visible in post-hoc review.
 - **In-memory trace lifespan** — the `TraceStore` lives in server memory. On server restart, accumulated events are lost. Trace tokens issued before the restart remain valid as self-contained attestations (event data is embedded), but ad-hoc `get_trace` queries without tokens return empty results for prior sessions.
 - **Semantic trace is agent-dependent** — the agent-written semantic trace (step outputs, checkpoint responses, variable changes) relies on agent discipline. The server cannot verify that the agent wrote it or that it is complete.
