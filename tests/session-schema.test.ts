@@ -329,8 +329,7 @@ describe('SessionFile schema', () => {
   });
 
   describe('schema exports', () => {
-    // The soft warning in resource-tools reads this threshold and quotes it in its message, so the
-    // value is part of what a reader is told. Nothing else pins it.
+    // Nothing else pins this value, which resource-tools quotes in its soft-warning message.
     it('warns above a parent-chain depth of five', () => {
       expect(PARENT_CHAIN_DEPTH_WARN_THRESHOLD).toBe(5);
     });

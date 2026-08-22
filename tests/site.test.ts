@@ -5,11 +5,7 @@ import { renderSitePages, checkSiteNavigation } from '../scripts/generate-site-d
 
 const SITE_DIR = resolve(import.meta.dirname, '../site');
 
-/**
- * The generated site regions and its navigation. Links, anchors and SVG geometry are held by the
- * `site-links` and `svg-layout` guards, which the registry runs; these two properties have no guard,
- * because staleness is a comparison against a render rather than a reading of the committed file.
- */
+/** Staleness is a comparison against a render, so no guard can read it from the committed file. */
 describe('documentation site', () => {
   it('generated regions match the server source (stale? run npm run build:site)', () => {
     for (const { relPath, content } of renderSitePages()) {

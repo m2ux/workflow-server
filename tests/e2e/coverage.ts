@@ -1,10 +1,10 @@
 /**
  * Option coverage — what the corpus declares, against what the walks reach.
  *
- * `enumeratePaths` reports `branchesCovered/branchesKnown`, and `known` is what the walks happened
- * to encounter. A checkpoint no walk reaches contributes to neither side, so the ratio reads 100%
- * with the checkpoint unvisited: the same shape as the executed-step list, which records what
- * happened rather than what should have (#472).
+ * `enumeratePaths` reports `coveredBranches` — what the walks reached — which is a numerator only.
+ * A denominator drawn from the same walks contributes nothing for a checkpoint no walk reaches, so
+ * such a ratio reads 100% with the checkpoint unvisited: the same shape as the executed-step list,
+ * which records what happened rather than what should have (#472).
  *
  * The denominator here comes from the definitions instead, so it does not move when the walk does.
  * Two things make the loader the only honest source for it. A checkpoint may arrive by fragment

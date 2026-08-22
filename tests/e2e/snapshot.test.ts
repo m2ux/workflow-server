@@ -11,7 +11,26 @@ import {
   reviewModePolicy,
 } from './policies.js';
 import { declaredSteps, stepCoverage } from './coverage.js';
-import { currentCorpusSha, readStamp, STAMP_PATH } from '../corpus-stamp.js';
+import { expectStampFresh } from '../stamp-freshness.js';
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
+import { corpusRoot } from '../corpus-root.js';
+
+/**
+ * Expected numeric prefix of each activity, read from the activity FILENAMES
+ * (e.g. 02-design-philosophy.yaml → design-philosophy: "02"). Independent of the server's
+ * artifactPrefix computation, so comparing written artifact names against it verifies the whole
+ * chain: filename → server artifactPrefix → get_workflow exposure → robot application.
+ */
+function expectedActivityPrefixes(): Map<string, string> {
+  const dir = join(corpusRoot(), 'work-package/activities');
+  const map = new Map<string, string>();
+  for (const f of readdirSync(dir)) {
+    const m = f.match(/^(\d+)-(.+)\.yaml$/);
+    if (m) map.set(m[2]!, m[1]!);
+  }
+  return map;
+}
 
 /**
  * Baseline snapshots — the committed reference for the work-package walk under
@@ -21,24 +40,12 @@ import { currentCorpusSha, readStamp, STAMP_PATH } from '../corpus-stamp.js';
  * snapshots reveal exactly what the skills→techniques migration changed.
  */
 describe('walk baseline corpus stamp', () => {
-  // These snapshots describe a walk through the corpus, so they are only meaningful against the corpus
-  // they were generated from. Checking the stamp first turns "six unrelated tests are red" into one
-  // named cause (#327 S3).
   it('was generated against the corpus commit now checked out', () => {
-    const stamp = readStamp();
-    const current = currentCorpusSha();
-    // An unreadable corpus commit voids the comparison, so it fails rather than passing with nothing
-    // compared.
-    // ponytail: requires a git corpus checkout, add a skip when a build vendors the corpus instead
-    expect(current, 'the corpus is not a git checkout, so the stamp cannot be verified').not.toBeNull();
-    expect(stamp, `no corpus stamp at ${STAMP_PATH} — run 'npm run baseline:stamp'`).not.toBeNull();
-    expect(
-      stamp!.corpusSha,
-      `walk snapshots were generated against corpus ${stamp!.corpusSha.slice(0, 12)} but the checkout `
-      + `is at ${current!.slice(0, 12)}. Any snapshot diff below may be corpus drift, not a code `
-      + `regression. Confirm the corpus change is intended, re-baseline with 'npm run test:ci -- -u', `
-      + `then run 'npm run baseline:stamp' in the same commit.`,
-    ).toBe(current);
+    expectStampFresh((stampSha, currentSha) =>
+      `walk snapshots were generated against corpus ${stampSha} but the checkout is at ${currentSha}. `
+      + `Any snapshot diff below may be corpus drift, not a code regression. Confirm the corpus change `
+      + `is intended, re-baseline with 'npm run test:ci -- -u', then run 'npm run baseline:stamp' in `
+      + `the same commit.`);
   });
 });
 
@@ -81,7 +88,6 @@ describe('work-package walk snapshots (baseline)', () => {
    * policy that stopped reaching its branch would be recorded rather than reported.
    */
   const branches: Record<string, { mustInclude?: string[]; mustExclude?: string[] }> = {
-    [defaultPolicy.name]: {},
     [skipOptionalPolicy.name]: { mustExclude: ['requirements-elicitation', 'research'] },
     [fullWorkflowPolicy.name]: { mustInclude: ['requirements-elicitation', 'research', 'implementation-analysis'] },
     [researchOnlyPolicy.name]: { mustInclude: ['research'], mustExclude: ['requirements-elicitation'] },
@@ -102,7 +108,7 @@ describe('work-package walk snapshots (baseline)', () => {
       expect(result.path[0]).toBe('start-work-package');
       expect(result.path).toContain('complete');
       expect(result.finalStatus).toBe('completed');
-      const { mustInclude, mustExclude } = branches[policy.name]!;
+      const { mustInclude, mustExclude } = branches[policy.name] ?? {};
       for (const a of mustInclude ?? []) expect(result.path, policy.name).toContain(a);
       for (const a of mustExclude ?? []) expect(result.path, policy.name).not.toContain(a);
     });
@@ -119,9 +125,7 @@ describe('work-package walk snapshots (baseline)', () => {
    *
    * The likeliest breakage in a rename is a dangling reference: an activity, or a core op, pointing
    * at a technique/operation/rule the loader cannot resolve. The six policies together visit every
-   * activity, so the unresolved set they report is the corpus's. It is empty and stays empty —
-   * group-prefix rule expansion in `resolveTechniques`, the `core-ops.ts` names, and the fallback to
-   * the current workflow for an unprefixed ref are what hold it there.
+   * activity, so the unresolved set they report is the corpus's.
    */
   it('reports no unresolved operation refs', () => {
     const observed = new Set<string>();
@@ -137,8 +141,6 @@ describe('work-package walk snapshots (baseline)', () => {
     const declared = new Set(all[0]!.declaredActivities);
     const visited = new Set<string>();
     for (const w of all) for (const a of w.path) visited.add(a);
-    // eslint-disable-next-line no-console
-    console.log(`[coverage] visited ${visited.size}/${declared.size} declared activities`);
     expect([...declared].filter((a) => !visited.has(a)), 'activities never reached by any policy').toEqual([]);
   });
 
@@ -252,5 +254,87 @@ describe('work-package walk snapshots (baseline)', () => {
       declaredTotal,
       declaredPerActivity: rows.map((r) => ({ activity: r.activity, declared: r.declared })),
     }).toMatchSnapshot();
+  });
+
+  /**
+   * Layer 3c — deterministic robot-worker execution, read off the full-workflow walk the matrix
+   * above already ran. Robot mode executes each activity's STEPS in order: fires the checkpoint a
+   * step declares at that step, writes a stub for every declared planning artifact, and submits
+   * step manifests. This validates the original acceptance criteria — "all planning files created,
+   * all decision points presented" — deterministically, with no LLM. The full-workflow policy
+   * visits all 14 activities, so one walk covers the whole definition.
+   */
+  describe('robot execution (Layer 3c)', () => {
+    // ponytail: reads the matrix's full-workflow walk, add a walk of its own if that policy leaves the matrix
+    const full = () => walks.get(fullWorkflowPolicy.name)!;
+
+    it('reaches the terminal activity executing steps (not just walking the graph)', () => {
+      expect(full().finalStatus).toBe('completed');
+      const totalSteps = full().steps.reduce((n, s) => n + s.stepsExecuted.length, 0);
+      expect(totalSteps).toBeGreaterThan(0);
+    });
+
+    it('writes a stub for every declared planning artifact as it executes', () => {
+      const totalWritten = full().steps.reduce((n, s) => n + s.artifactsWritten.length, 0);
+      expect(totalWritten, 'planning artifacts written across the walk').toBeGreaterThan(0);
+
+      // design-philosophy declares design-philosophy.md + assumptions-log.md (planning).
+      const dp = full().steps.find(s => s.activityId === 'design-philosophy');
+      expect(dp?.artifactsWritten.some(n => n.endsWith('design-philosophy.md')), 'design-philosophy.md written').toBe(true);
+      expect(dp?.artifactsWritten.some(n => n.endsWith('assumptions-log.md')), 'assumptions-log.md written').toBe(true);
+    });
+
+    it('prefixes each artifact with its CREATING activity\'s filename-derived number', () => {
+      // With update-in-place, an artifact keeps the prefix of the activity that
+      // first created it; later activities that update it reuse that same file.
+      // So check each artifact against the FIRST activity (walk order) that wrote it.
+      const expected = expectedActivityPrefixes();
+      const seen = new Set<string>();
+      const wrong: string[] = [];
+      for (const s of full().steps) {
+        const prefix = expected.get(s.activityId);
+        expect(prefix, `no filename prefix known for activity ${s.activityId}`).toBeDefined();
+        for (const name of s.artifactsWritten) {
+          const bare = name.replace(/^\d+-/, '');
+          if (seen.has(bare)) continue; // already created by an earlier activity — keeps its prefix
+          seen.add(bare);
+          if (!name.startsWith(`${prefix}-`)) wrong.push(`${s.activityId} created ${name} (expected ${prefix}-*)`);
+        }
+      }
+      expect(wrong, 'newly-created artifacts whose prefix does not match the creating activity').toEqual([]);
+    });
+
+    it('keeps exactly one numbered instance per logical artifact (update-in-place)', () => {
+      // Group every written artifact by its bare filename (strip the <NN>- prefix);
+      // a logical artifact must map to exactly one distinct full filename across the walk.
+      const byBare = new Map<string, Set<string>>();
+      for (const s of full().steps) {
+        for (const f of s.artifactsWritten) {
+          const bare = f.replace(/^\d+-/, '');
+          if (!byBare.has(bare)) byBare.set(bare, new Set());
+          byBare.get(bare)!.add(f);
+        }
+      }
+      const multi = [...byBare.entries()]
+        .filter(([, set]) => set.size > 1)
+        .map(([bare, set]) => `${bare}: ${[...set].sort().join(', ')}`);
+      expect(multi, 'logical artifacts written under more than one number').toEqual([]);
+    });
+
+    it('submits step manifests the server accepts (no validation errors)', () => {
+      for (const s of full().steps) {
+        if (s.manifestStatus !== undefined) {
+          expect(['valid', 'warning'], `${s.activityId} manifest`).toContain(s.manifestStatus);
+        }
+      }
+    });
+
+    // Every checkpoint is an inline kind:checkpoint step at a concrete position, so an activity
+    // declares none the robot cannot reach.
+    it('surfaces no unbound checkpoints (all are inline kind:checkpoint steps)', () => {
+      const unbound: string[] = [];
+      for (const s of full().steps) for (const o of s.orphanCheckpoints) unbound.push(`${s.activityId}::${o}`);
+      expect(unbound.sort()).toEqual([]);
+    });
   });
 });

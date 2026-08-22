@@ -1,13 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { createServer } from '../src/server.js';
+import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { loadResourceDelivery } from '../src/utils/resource-delivery.js';
 import { resolveWorkflowsRoot } from '../scripts/workflows-root.js';
 import { join, resolve } from 'node:path';
-import { existsSync, mkdtempSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import { existsSync } from 'node:fs';
 import { parse } from 'yaml';
+import { createHarness, type Harness } from './e2e/harness.js';
+import { sessionOps, type SessionOps } from './session-ops.js';
 
 /**
  * Delivery regression guard for `workflow-authoring`'s criteria bundle.
@@ -90,45 +89,20 @@ const CRITERIA_IDS = [
 ];
 
 describe.skipIf(!TREE_PRESENT)(`workflow-authoring criteria delivery (workflows root: ${WORKFLOWS_ROOT})`, () => {
+  let harness: Harness;
   let client: Client;
-  let closeTransport: () => Promise<void>;
-  let workspaceDir: string;
+  let session: SessionOps;
   let sessionIndex: string;
   let ops: Record<string, unknown>;
   let meta: Record<string, unknown>;
 
   beforeAll(async () => {
-    workspaceDir = mkdtempSync(join(tmpdir(), 'wf-authoring-delivery-'));
-    const server = createServer({
-      workflowDir: WORKFLOWS_ROOT,
-      schemasDir: join(import.meta.dirname, '../schemas'),
-      workspaceDir,
-      serverName: 'test-workflow-server',
-      serverVersion: '1.0.0',
-      minCheckpointResponseSeconds: 0,
-    });
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    await server.connect(serverTransport);
-    client = new Client({ name: 'test-client', version: '1.0.0' }, {});
-    await client.connect(clientTransport);
-    closeTransport = async () => { await client.close(); await server.close(); };
+    harness = await createHarness({ workflowDir: WORKFLOWS_ROOT });
+    client = harness.client;
+    session = sessionOps(harness, 'workflow-authoring');
 
-    const started = await client.callTool({
-      name: 'start_session',
-      arguments: {
-        workflow_id: 'workflow-authoring',
-        agent_id: 'orchestrator',
-        planning_folder: join(workspaceDir, '.engineering/artifacts/planning/delivery-probe'),
-      },
-    }) as { isError?: boolean; content?: Array<{ text: string }> };
-    expect(started.isError).toBeFalsy();
-    sessionIndex = (JSON.parse(started.content![0]!.text) as { session_index: string }).session_index;
-
-    const entered = await client.callTool({
-      name: 'next_activity',
-      arguments: { session_index: sessionIndex, activity_id: 'quality-review' },
-    }) as { isError?: boolean };
-    expect(entered.isError).toBeFalsy();
+    sessionIndex = await session.start('delivery-probe', 'orchestrator');
+    await session.enter(sessionIndex, 'quality-review');
 
     const delivered = await client.callTool({
       name: 'get_activity',
@@ -139,10 +113,7 @@ describe.skipIf(!TREE_PRESENT)(`workflow-authoring criteria delivery (workflows 
     meta = delivered._meta ?? {};
   });
 
-  afterAll(async () => {
-    await closeTransport?.();
-    try { rmSync(workspaceDir, { recursive: true, force: true }); } catch { /* ignore */ }
-  });
+  afterAll(async () => { await harness.close(); });
 
   it('delivers exactly the eager-eligible step techniques', () => {
     const stepTechniques = ops['step_techniques'] as Record<string, unknown> | undefined;

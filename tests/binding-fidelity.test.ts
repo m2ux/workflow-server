@@ -7,10 +7,6 @@ import { loadTriage, expressionReads, collectViolations, consumerReaches, deadOu
  * states that must never ship — a finding nobody has judged, and a finding judged a live bug — and
  * reports an entry whose finding no longer occurs. What it reads past is a rationale key the triage
  * file never defines, which resolves to the key itself and reads as a reason.
- *
- * There is no baseline and no re-snapshot command. A new finding is classified by hand — the act the
- * retired baseline let a `--update-baseline` skip, which is how two live defects reached a session
- * (#324 A1/A2). "Did MY change add this?" is `npm run check:delta`.
  */
 describe('binding-fidelity gate', () => {
   it('names a rationale that the triage file defines for every entry', () => {

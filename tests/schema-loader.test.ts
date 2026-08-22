@@ -9,7 +9,6 @@ describe('schema-loader', () => {
   it('names every schema it can load', () => {
     const ids = listSchemaIds();
     for (const id of IDS) expect(ids).toContain(id);
-    expect(ids.length).toBeGreaterThanOrEqual(IDS.length);
   });
 
   it('loads each named schema as a JSON Schema titled after its id', async () => {

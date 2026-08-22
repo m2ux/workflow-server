@@ -1,21 +1,13 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { createServer } from '../src/server.js';
+import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { join, resolve } from 'node:path';
-import { corpusRoot } from './corpus-root.js';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function parseToolResponse(result: any): any {
-  const text = (result.content[0] as { type: 'text'; text: string }).text;
-  return JSON.parse(text);
-}
+import { join } from 'node:path';
+import { createHarness, parseToolResponse, type Harness } from './e2e/harness.js';
 
 describe('session.repo bootstrap binding', () => {
+  let harness: Harness;
   let client: Client;
-  let closeTransport: () => Promise<void>;
   let installDir: string;
   let engMulti: string;
   let wsMulti: string;
@@ -28,32 +20,12 @@ describe('session.repo bootstrap binding', () => {
     mkdirSync(join(engMulti, 'app', '.engineering'), { recursive: true });
     mkdirSync(join(engMulti, 'app', '.worktrees'), { recursive: true });
 
-    const config = {
-      workflowDir: corpusRoot(),
-      schemasDir: resolve(import.meta.dirname, '../schemas'),
-      workspaceDir: wsMulti,
-      engineeringDir: engMulti,
-      installDir,
-      serverName: 'test-multi-root',
-      serverVersion: '1.0.0',
-      minCheckpointResponseSeconds: 0,
-    };
-
-    const server = createServer(config);
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    await server.connect(serverTransport);
-
-    client = new Client({ name: 'test-client', version: '1.0.0' }, {});
-    await client.connect(clientTransport);
-
-    closeTransport = async () => {
-      await client.close();
-      await server.close();
-    };
+    harness = await createHarness({ workspaceDir: wsMulti, engineeringDir: engMulti, installDir });
+    client = harness.client;
   });
 
   afterAll(async () => {
-    await closeTransport();
+    await harness.close();
     try {
       rmSync(installDir, { recursive: true, force: true });
     } catch {

@@ -6,18 +6,18 @@ import { enumeratePaths } from './walker.js';
 import { baseSimulation } from './policies.js';
 import { declaredCheckpoints, declaredOptions, optionCoverage, checkpointGaps } from './coverage.js';
 import { corpusRoot } from '../corpus-root.js';
-import { currentCorpusSha, readStamp, STAMP_PATH } from '../corpus-stamp.js';
+import { expectStampFresh } from '../stamp-freshness.js';
 
 /**
  * Every checkpoint option the corpus declares gets taken by some walk, or is listed as one this
  * matrix does not reach.
  *
- * The walks already had a coverage number — `enumeratePaths` reports `branchesCovered/branchesKnown`
- * — and it read 100% for nine of the corpus's workflows. `known` is what the walks encountered, so a
- * checkpoint no walk reaches is in neither the numerator nor the denominator and the ratio is silent
- * about it. Measured against what the definitions declare, three of those nine are at 20%, 24% and
- * 33%. That is the same shape as the executed-step list this suite already committed: a record of
- * what happened, read as a statement about what should have (#472).
+ * `enumeratePaths` reports `coveredBranches` — the branches the walks took — which is a numerator
+ * only. A ratio taking its denominator from the same walks is silent about a checkpoint no walk
+ * reaches, and reads 100% for nine of the corpus's workflows; measured against what the definitions
+ * declare, three of those nine are at 20%, 24% and 33%. That is the same shape as the executed-step
+ * list this suite already committed: a record of what happened, read as a statement about what
+ * should have (#472).
  *
  * So the denominator here comes from the definitions, and the expectation file below carries the
  * options no walk reaches. A newly unreached option is not on the list and fails; an option that
@@ -116,34 +116,20 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
   beforeAll(async () => { h = await createHarness(); });
   afterAll(async () => { await h.close(); });
 
+  it('was recorded against the corpus commit now checked out', () => {
+    expectStampFresh((stampSha, currentSha) =>
+      `${EXPECTED_LABEL} was recorded against corpus ${stampSha} but the checkout is at ${currentSha}. `
+      + `A coverage change below may be corpus drift rather than a regression: confirm the corpus `
+      + `change is intended, then re-record the expectation and run 'npm run baseline:stamp' in the `
+      + `same commit.`);
+  });
+
   /**
    * The two lists above are hand-maintained, which makes them a second home for which workflows
    * exist. A workflow added to the corpus and to neither list would be measured by nothing, and
    * nothing would report that it had been skipped — so the corpus itself is the authority on the
    * roster, and this is what says the lists have not drifted from it.
    */
-  /**
-   * The expectation file describes a corpus, so it is only meaningful against the corpus checked
-   * out. Checking the stamp first turns "an option changed reachability" into one named cause: the
-   * corpus moved.
-   */
-  it('was recorded against the corpus commit now checked out', () => {
-    const current = currentCorpusSha();
-    // An unreadable corpus commit voids the comparison, so it fails rather than passing with nothing
-    // compared.
-    // ponytail: requires a git corpus checkout, add a skip when a build vendors the corpus instead
-    expect(current, 'the corpus is not a git checkout, so the stamp cannot be verified').not.toBeNull();
-    const stamp = readStamp();
-    expect(stamp, `no corpus stamp at ${STAMP_PATH} — run 'npm run baseline:stamp'`).not.toBeNull();
-    expect(
-      stamp!.corpusSha,
-      `${EXPECTED_LABEL} was recorded against corpus ${stamp!.corpusSha.slice(0, 12)} but the `
-      + `checkout is at ${current!.slice(0, 12)}. A coverage change below may be corpus drift rather `
-      + `than a regression: confirm the corpus change is intended, then re-record the expectation `
-      + `and run 'npm run baseline:stamp' in the same commit.`,
-    ).toBe(current);
-  });
-
   it('accounts for every workflow the corpus holds', () => {
     const accounted = new Set<string>([...WALKED, ...NOT_WALKED]);
     const corpus = corpusWorkflows();
@@ -169,7 +155,7 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
     const entered = new Set<string>();
     for (const id of WALKED) {
       const ps = await enumeratePaths(h, id, {
-        coverageMode: true, localCheckpoints: true, maxVisits: 3, maxWalks: 120,
+        maxVisits: 3, maxWalks: 120,
         // The same convergence signals the hand-tuned policy walks use. Without them the enumerator
         // stalls at the first activity that needs one, and every checkpoint past that point reads as
         // uncovered for a reason about the enumerator rather than about the definitions.

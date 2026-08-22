@@ -1,60 +1,10 @@
 import { describe, it, expect, beforeAll, afterAll, beforeEach } from 'vitest';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { createServer } from '../src/server.js';
-import { resolve, join } from 'node:path';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
+import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { parse } from 'yaml';
-import { corpusRoot } from './corpus-root.js';
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function parseToolResponse(result: any): any {
-  const text = (result.content[0] as { type: 'text'; text: string }).text;
-
-  // Try JSON first (tier 3 tools: yield/respond/resume checkpoint, get_trace, health_check, etc.)
-  try { return JSON.parse(text); } catch { /* not JSON */ }
-
-  // Try YAML decode (handles stringifyForResponse output AND header+YAML body since
-  // YAML treats blank lines as whitespace between top-level keys)
-  try { return parse(text); } catch { /* not pure YAML */ }
-
-  // Fallback: split header from body on first double-newline
-  const splitIdx = text.indexOf('\n\n');
-  if (splitIdx > 0) {
-    const header = text.substring(0, splitIdx);
-    const body = text.substring(splitIdx + 2);
-    const meta: Record<string, string> = {};
-    for (const line of header.split('\n')) {
-      const colonIdx = line.indexOf(': ');
-      if (colonIdx > 0) meta[line.substring(0, colonIdx)] = line.substring(colonIdx + 2);
-    }
-    // Try decoding body as YAML
-    try { return { ...meta, ...parse(body) }; } catch { /* body is not YAML */ }
-    return { ...meta, _body: body };
-  }
-
-  return { _raw: text };
-}
-
-/**
- * Parse a get_workflow response which begins with the technique-bundle section
- * followed by a --- separator and the workflow definition.
- * Returns the workflow portion as a parsed object.
- */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function parseWorkflowResponse(result: any): any {
-  const text = (result.content[0] as { type: 'text'; text: string }).text;
-  // Split on --- separator (technique comes first, workflow after)
-  const sepIdx = text.indexOf('\n\n---\n\n');
-  const workflowText = sepIdx >= 0 ? text.substring(sepIdx + 5) : text;
-  // Try JSON first
-  try { return JSON.parse(workflowText); } catch { /* not JSON */ }
-  // Try YAML decode
-  try { return parse(workflowText); } catch { /* not pure YAML */ }
-  // Fallback to parseToolResponse on the workflow portion
-  return parseToolResponse({ content: [{ type: 'text' as const, text: workflowText }] });
-}
+import { createHarness, parseToolResponse, parseWorkflowResponse, type Harness } from './e2e/harness.js';
+import { planningFolderPath } from './session-ops.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function resolveCheckpoints(client: Client, sessionIndex: string, activityResponse: any): Promise<string> {
@@ -109,38 +59,20 @@ async function transitionToActivity(client: Client, sessionIndex: string, activi
 const SEMVER_RE = /^\d+\.\d+\.\d+$/;
 
 describe('mcp-server integration', () => {
+  let harness: Harness;
   let client: Client;
-  let closeTransport: () => Promise<void>;
   let workspaceDir: string;
   /** session_index for a fresh work-package session (set per-test in beforeEach). */
   let sessionToken: string;
   /** session_index for a fresh meta session (set per-test in beforeEach). */
   let metaToken: string;
   /** Helper: resolve a slug to its absolute planning-folder path under the test workspace. */
-  const planningFolder = (slug: string) => join(workspaceDir, '.engineering/artifacts/planning', slug);
+  const planningFolder = (slug: string) => planningFolderPath(workspaceDir, slug);
 
   beforeAll(async () => {
-    workspaceDir = mkdtempSync(join(tmpdir(), 'wf-mcp-test-'));
-    const config = {
-      workflowDir: corpusRoot(),
-      schemasDir: resolve(import.meta.dirname, '../schemas'),
-      workspaceDir,
-      serverName: 'test-workflow-server',
-      serverVersion: '1.0.0',
-      minCheckpointResponseSeconds: 0,
-    };
-
-    const server = createServer(config);
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    await server.connect(serverTransport);
-
-    client = new Client({ name: 'test-client', version: '1.0.0' }, {});
-    await client.connect(clientTransport);
-
-    closeTransport = async () => {
-      await client.close();
-      await server.close();
-    };
+    harness = await createHarness();
+    client = harness.client;
+    workspaceDir = harness.workspaceDir;
   });
 
   beforeEach(async () => {
@@ -157,10 +89,7 @@ describe('mcp-server integration', () => {
     metaToken = parseToolResponse(metaResult).session_index;
   });
 
-  afterAll(async () => {
-    await closeTransport();
-    try { rmSync(workspaceDir, { recursive: true, force: true }); } catch { /* ignore */ }
-  });
+  afterAll(async () => { await harness.close(); });
 
   // ============== Bootstrap Tools ==============
 
@@ -277,43 +206,24 @@ describe('mcp-server integration', () => {
 
   // ============== Old Tool Names Removed ==============
 
-  describe('old tool names removed', () => {
-    it('should reject get_activities', async () => {
-      const result = await client.callTool({ name: 'get_activities', arguments: {} });
-      expect(result.isError).toBe(true);
-      expect(result.content.length).toBeGreaterThan(0);
-      expect((result.content[0] as { type: string; text: string }).text).toBeTruthy();
-    });
+  describe('registered tool surface', () => {
+    // The registered set in full, so a tool added without a test here fails this
+    // assertion, and a name the server no longer serves fails it too.
+    const TOOLS = [
+      'discover', 'dispatch_child', 'get_activity', 'get_resource', 'get_technique',
+      'get_trace', 'get_workflow', 'get_workflow_status', 'health_check',
+      'inspect_session', 'list_workflows', 'next_activity', 'present_checkpoint',
+      'record_usage', 'respond_checkpoint', 'resume_checkpoint', 'start_session',
+      'yield_checkpoint',
+    ];
 
-    it('should reject get_rules', async () => {
-      const result = await client.callTool({ name: 'get_rules', arguments: {} });
-      expect(result.isError).toBe(true);
-      expect(result.content.length).toBeGreaterThan(0);
-      expect((result.content[0] as { type: string; text: string }).text).toBeTruthy();
-    });
-
-    it('should reject match_goal', async () => {
-      const result = await client.callTool({ name: 'match_goal', arguments: { prompt: 'test' } });
-      expect(result.isError).toBe(true);
-      expect(result.content.length).toBeGreaterThan(0);
-      expect((result.content[0] as { type: string; text: string }).text).toBeTruthy();
+    it('serves exactly the registered tools', async () => {
+      const { tools } = await client.listTools();
+      expect(tools.map(t => t.name).sort()).toEqual(TOOLS);
     });
   });
 
   // ============== Workflow Tools ==============
-
-  describe('tool: get_workflow', () => {
-    it('should get workflow for session workflow', async () => {
-      const result = await client.callTool({
-        name: 'get_workflow',
-        arguments: { session_index: sessionToken },
-      });
-      expect(result.content).toBeDefined();
-      const workflow = parseWorkflowResponse(result);
-      expect(workflow.id).toBe('work-package');
-      expect(workflow.version).toMatch(SEMVER_RE);
-    });
-  });
 
   describe('tool: next_activity', () => {
     it('should get activity with explicit params', async () => {
@@ -2269,14 +2179,6 @@ describe('mcp-server integration', () => {
   });
 
   describe('removed legacy surface', () => {
-    it('dispatch_workflow tool is not registered', async () => {
-      const result = await client.callTool({
-        name: 'dispatch_workflow',
-        arguments: { workflow_id: 'work-package' },
-      });
-      expect(result.isError).toBe(true);
-    });
-
     it('start_session rejects the deleted parent_session_index parameter (replaced by parent_planning_slug)', async () => {
       const result = await client.callTool({
         name: 'start_session',
@@ -2548,9 +2450,7 @@ describe('mcp-server integration', () => {
       const jsonPath = join(planningFolder(fixtureSlug), 'session.json');
       const scriptPath = resolve(import.meta.dirname, 'fixtures/inspect-session/inspect_session.py');
 
-      // The oracle IS this test, so an absent interpreter fails it rather than passing it with
-      // nothing compared.
-      // ponytail: requires python3 on PATH, add a skip when a target runner ships without it
+      // The oracle IS this test.
       const runReference = (args: string[]): unknown =>
         JSON.parse(execFileSync('python3', [scriptPath, jsonPath, ...args], { encoding: 'utf8' }));
 

@@ -43,15 +43,16 @@ npx vitest run tests/e2e/snapshot.test.ts   # the branch matrix and its baseline
 ```
 
 No LLM, runs in seconds, fully reproducible. This is the gate that should stay
-green. It is two test files:
+green. It lives in `snapshot.test.ts`:
 
-- **`robot-execution.test.ts`** — **Layer 3c**, the deterministic "robot worker."
-  Executes each activity's *steps* in order, firing the checkpoint a step
-  declares, writing a stub for every declared planning artifact, and submitting
-  step manifests. *Catches:* missing/renamed artifacts, steps that no longer
-  produce their declared files, manifest (step-id) drift, checkpoints that fire
-  at the wrong point. This is the deterministic proof of "all planning files
-  created, all decision points presented."
+- **`robot execution (Layer 3c)`** — the deterministic "robot worker," read off
+  the full-workflow walk. Robot mode executes each activity's *steps* in order,
+  firing the checkpoint a step declares, writing a stub for every declared
+  planning artifact, and submitting step manifests. *Catches:* missing/renamed
+  artifacts, steps that no longer produce their declared files, manifest
+  (step-id) drift, checkpoints that fire at the wrong point. This is the
+  deterministic proof of "all planning files created, all decision points
+  presented."
 - **`snapshot.test.ts`** — the **6-policy branch matrix**, its **Layer 2**
   definition lint, and its baselines, all over one set of walks. Each policy
   walks a distinct path to the terminal `complete` activity; the matrix asserts
@@ -62,22 +63,17 @@ green. It is two test files:
   (path, checkpoint decisions, artifacts written, manifest status, unresolved
   refs). The named assertions are what a re-baseline cannot silently absorb:
   `npx vitest run tests/e2e -u` accepts a changed snapshot, and a policy that
-  stopped reaching its branch fails regardless. *Catches:* broken transitions,
-  unreachable terminals, branch-gating regressions, dangling refs from a rename,
-  and any unintended change to behaviour. It also records **step coverage per
-  activity** — what each activity declares against what any policy runs — so the
-  executed-step lists above are read next to the share of the workflow they
+  stopped reaching its branch fails regardless. It also records **step coverage
+  per activity** — what each activity declares against what any policy runs — so
+  the executed-step lists above are read next to the share of the workflow they
   speak for.
-
-  The six walks are shared: the matrix, the lint, and the baselines are three
-  readings of one traversal rather than three traversals.
 
 **Benefits:** fast, free, reproducible, CI-able; pinpoints machinery and
 definition regressions precisely.
 **Costs / limits:** no LLM, so it does **not** test whether an agent can
-*interpret* the prose, and it cannot reach **situational checkpoints** (ones a
-worker yields on a runtime branch rather than from a step's `checkpoint` field —
-6 of these are recorded in `robot-execution.test.ts`).
+*interpret* the prose. Any **situational checkpoint** — one a worker yields on a
+runtime branch rather than from its position in the step sequence — would be out
+of its reach; the Layer 3c block asserts the corpus declares none.
 
 **What these three record versus what they assert.** Every one of them keys on the
 walk that happened. An activity, step, or checkpoint option no policy reaches is
@@ -113,21 +109,15 @@ with no options at all; and an activity one workflow borrows from another is
 reached by whichever of them a walk enters, so coverage is a corpus-wide question
 with one entry per declared option.
 
-This replaces the number the walk used to report about itself. `enumeratePaths`
-gives `branchesCovered/branchesKnown`, and `known` is what the walks encountered
-— so a checkpoint no walk reaches sits in neither the numerator nor the
-denominator, and the ratio read 100% for nine workflows while three of them were
-at 20%, 24% and 33% of what they declare.
+`enumeratePaths` reports `coveredBranches` — the branches the walks took — which
+is a numerator only. A ratio drawn from the walks on both sides is silent about a
+checkpoint no walk reaches: such a ratio reads 100% for nine workflows while three
+of them are at 20%, 24% and 33% of what they declare (issue #472).
 
 Own CI job ([`coverage.yml`](../../.github/workflows/coverage.yml)) rather than
 part of `test:ci`: fourteen full walks do not belong in the suite every unit-test
 run waits for, and a coverage regression should not read as a unit-test failure.
 `WF_OPTION_COVERAGE=1` is what the job sets, so nobody has to remember to.
-
-Related and still opt-in: **`all-paths-walk.test.ts`** (`WF_PATH_COVERAGE=1`)
-walks the same coverage mode across every workflow and asserts only that each
-path loads and resolves cleanly — a drift guard on the branches, not a coverage
-measurement.
 
 ---
 
@@ -216,12 +206,9 @@ The deterministic layers record current state as baselines and fail on *new*
 drift, surfacing known issues without going red.
 
 **From the deterministic layers (L2 / 3c):**
-- **Unresolved op refs** (`snapshot.test.ts`, the Layer 2 lint): the set is
-  empty. Core conduct ops (`agent-conduct::*`, `workflow-engine::*`) and the
-  grouped-technique ops (`cargo-operations`, `validate-build`,
-  `manage-artifacts`) all resolve.
-- **Step-unbound (situational) checkpoints** (`robot-execution.test.ts`): 6
-  checkpoints aren't bound to a step; only the agent runs reach them.
+- **Step-unbound (situational) checkpoints** (`snapshot.test.ts`, the Layer 3c
+  block): none. Every checkpoint is an inline `kind: checkpoint` step at a
+  concrete position, so the robot reaches them all.
 - **Routing**: `elicitation-only` still routes through the `research` activity.
 
 **From the agent runs (3a/3b) — things no deterministic layer can see:**

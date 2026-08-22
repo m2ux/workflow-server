@@ -1,14 +1,14 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { createServer } from '../src/server.js';
-import { resolve, join } from 'node:path';
+import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { join } from 'node:path';
 import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { parse } from 'yaml';
 import { contentHash, deliveredHash, recordDeliveries, unchangedMarker } from '../src/utils/delivery.js';
 import { createInitialSessionFile, safeValidateSessionFile } from '../src/schema/session.schema.js';
 import { corpusRoot } from './corpus-root.js';
+import { createHarness, type Harness } from './e2e/harness.js';
+import { sessionOps, type SessionOps } from './session-ops.js';
 
 /** An unchanged-reference marker as it appears in a parsed bundle. */
 interface UnchangedMarker {
@@ -108,53 +108,24 @@ describe('session schema: contextMode + deliveredContent', () => {
 });
 
 describe('reference-not-repeat delivery (B1)', () => {
+  let harness: Harness;
   let client: Client;
-  let closeTransport: () => Promise<void>;
-  let workspaceDir: string;
+  let mcp: SessionOps;
 
-  const planningFolder = (slug: string) => join(workspaceDir, '.engineering/artifacts/planning', slug);
+  const planningFolder = (slug: string) => mcp.folder(slug);
 
   beforeAll(async () => {
-    workspaceDir = mkdtempSync(join(tmpdir(), 'wf-refdel-test-'));
-    const config = {
-      workflowDir: corpusRoot(),
-      schemasDir: resolve(import.meta.dirname, '../schemas'),
-      workspaceDir,
-      serverName: 'test-workflow-server',
-      serverVersion: '1.0.0',
-      minCheckpointResponseSeconds: 0,
-    };
-
-    const server = createServer(config);
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    await server.connect(serverTransport);
-
-    client = new Client({ name: 'test-client', version: '1.0.0' }, {});
-    await client.connect(clientTransport);
-
-    closeTransport = async () => {
-      await client.close();
-      await server.close();
-    };
+    harness = await createHarness();
+    client = harness.client;
+    mcp = sessionOps(harness, 'work-package');
   });
 
-  afterAll(async () => {
-    await closeTransport();
-    try { rmSync(workspaceDir, { recursive: true, force: true }); } catch { /* ignore */ }
-  });
+  afterAll(async () => { await harness.close(); });
 
   async function startSession(args: Record<string, unknown>): Promise<Record<string, unknown>> {
     const result = await client.callTool({ name: 'start_session', arguments: args });
     expect(result.isError).toBeFalsy();
     return JSON.parse(responseText(result)) as Record<string, unknown>;
-  }
-
-  async function enterActivity(sessionIndex: string, activityId: string): Promise<void> {
-    const result = await client.callTool({
-      name: 'next_activity',
-      arguments: { session_index: sessionIndex, activity_id: activityId },
-    });
-    expect(result.isError).toBeFalsy();
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -171,7 +142,7 @@ describe('reference-not-repeat delivery (B1)', () => {
     it('delivers the worker bundle in full to an identity the server has not met', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
 
       const first = splitActivityResponse(await getActivity(idx));
       expect(first.bundle['bundle_mode']).toBeUndefined();
@@ -185,7 +156,7 @@ describe('reference-not-repeat delivery (B1)', () => {
     it('refers an identity it has already delivered to back to the bundle it holds', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
       await getActivity(idx);
 
       // Same agent_id, no context_mode declared: the orchestrator holds one identity for as long as
@@ -204,7 +175,7 @@ describe('reference-not-repeat delivery (B1)', () => {
     it('re-delivers everything to a fresh identity in the same session', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
       await getActivity(idx);
 
       const replacement = splitActivityResponse(await getActivity(idx, { agent_id: 'w2' }));
@@ -224,7 +195,7 @@ describe('reference-not-repeat delivery (B1)', () => {
       });
       expect(session['context_mode']).toBe('persistent');
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
 
       const first = splitActivityResponse(await getActivity(idx));
       expect(first.bundle['bundle_mode']).toBe('reference');
@@ -272,7 +243,7 @@ describe('reference-not-repeat delivery (B1)', () => {
         context_mode: 'persistent',
       });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'intake-and-analyze');
+      await mcp.enter(idx, 'intake-and-analyze');
 
       const firstBody = parse(splitActivityResponse(await getActivity(idx)).bodyText) as Record<string, unknown>;
       expect(Array.isArray(firstBody['activity_rules'])).toBe(true);
@@ -293,13 +264,13 @@ describe('reference-not-repeat delivery (B1)', () => {
       });
       const idx = session['session_index'] as string;
 
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
       const first = splitActivityResponse(await getActivity(idx));
       const firstTechniques = first.bundle['techniques'] as Record<string, unknown>;
 
       // `implement` declares its own activity-level technique (scatter-gather)
       // on top of the workflow-inherited set.
-      await enterActivity(idx, 'implement');
+      await mcp.enter(idx, 'implement');
       const second = splitActivityResponse(await getActivity(idx));
       const secondTechniques = second.bundle['techniques'] as Record<string, unknown>;
 
@@ -324,7 +295,7 @@ describe('reference-not-repeat delivery (B1)', () => {
         context_mode: 'persistent',
       });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
       await getActivity(idx);
 
       const forced = splitActivityResponse(await getActivity(idx, { bundle: 'full' }));
@@ -347,7 +318,7 @@ describe('reference-not-repeat delivery (B1)', () => {
         context_mode: 'persistent',
       });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'intake-and-analyze');
+      await mcp.enter(idx, 'intake-and-analyze');
       await getActivity(idx);
 
       const onDisk = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
@@ -370,7 +341,7 @@ describe('reference-not-repeat delivery (B1)', () => {
         context_mode: 'persistent',
       });
       const idx = sessionA['session_index'] as string;
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
       await getActivity(idx);
       // Same agent: refetch collapses.
       const collapsed = splitActivityResponse(await getActivity(idx));
@@ -400,7 +371,7 @@ describe('reference-not-repeat delivery (B1)', () => {
     it('references content recorded by earlier full-mode deliveries', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
 
       // Default full-mode call: delivers and records.
       const first = splitActivityResponse(await getActivity(idx));
@@ -444,7 +415,7 @@ describe('reference-not-repeat delivery (B1)', () => {
         context_mode: 'persistent',
       });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'codebase-comprehension');
+      await mcp.enter(idx, 'codebase-comprehension');
       const stepId = await findTechniqueStepId(idx);
 
       // Eager bundling may already have delivered this step's technique via get_activity, so
@@ -481,7 +452,7 @@ describe('reference-not-repeat delivery (B1)', () => {
     it('never returns references on a default (fresh-context) session', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'codebase-comprehension');
+      await mcp.enter(idx, 'codebase-comprehension');
       const stepId = await findTechniqueStepId(idx);
 
       const first = await client.callTool({
@@ -545,7 +516,7 @@ describe('reference-not-repeat delivery (B1)', () => {
     it('a step-bound fetch annotates own inputs and noteworthy inherited ones', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'post-impl-review');
+      await mcp.enter(idx, 'post-impl-review');
 
       const result = await client.callTool({
         name: 'get_technique',
@@ -567,7 +538,7 @@ describe('reference-not-repeat delivery (B1)', () => {
       expect(own.get('changed_files')).toMatch(/output of step '.+' \(activity '.+'\)/);
       // The optional-with-no-producer form is pinned on a technique that has one: every own input
       // of `review-code` resolves to a producer, so it cannot exhibit that annotation.
-      await enterActivity(idx, 'design-philosophy');
+      await mcp.enter(idx, 'design-philosophy');
       const optionalCase = await client.callTool({
         name: 'get_technique',
         arguments: { session_index: idx, step_id: 'define-problem' },
@@ -621,7 +592,7 @@ describe('reference-not-repeat delivery (B1)', () => {
         context_mode: 'persistent',
       });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
       await getActivity(idx);
       // Sanity: reference mode is active before the downgrade.
       const collapsed = splitActivityResponse(await getActivity(idx));
@@ -650,7 +621,7 @@ describe('reference-not-repeat delivery (B1)', () => {
         planning_folder: planningFolder(slug),
       });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
       // Full-mode delivery records to the ledger.
       await getActivity(idx);
 
@@ -687,7 +658,7 @@ describe('reference-not-repeat delivery (B1)', () => {
       const childIdx = (JSON.parse(responseText(dispatch)) as Record<string, unknown>)['session_index'] as string;
       expect(childIdx).not.toBe(parentIdx);
 
-      await enterActivity(childIdx, 'start-work-package');
+      await mcp.enter(childIdx, 'start-work-package');
       const first = splitActivityResponse(await getActivity(childIdx));
       expect(first.bundle['bundle_mode']).toBe('reference');
       const second = splitActivityResponse(await getActivity(childIdx));
@@ -712,36 +683,16 @@ describe('reference-not-repeat delivery (B1)', () => {
       // Second server over a mutable copy of the workflows dir, so the
       // definition can change between calls without touching the shared copy.
       const mutableWorkflowDir = mkdtempSync(join(tmpdir(), 'wf-refdel-mutable-'));
-      const mutableWorkspace = mkdtempSync(join(tmpdir(), 'wf-refdel-ws2-'));
       cpSync(corpusRoot(), mutableWorkflowDir, {
         recursive: true,
         filter: (src) => !src.includes('.git'),
       });
-      const server2 = createServer({
-        workflowDir: mutableWorkflowDir,
-        schemasDir: resolve(import.meta.dirname, '../schemas'),
-        workspaceDir: mutableWorkspace,
-        serverName: 'test-workflow-server-2',
-        serverVersion: '1.0.0',
-        minCheckpointResponseSeconds: 0,
-      });
-      const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-      await server2.connect(serverTransport);
-      const client2 = new Client({ name: 'test-client-2', version: '1.0.0' }, {});
-      await client2.connect(clientTransport);
+      const mutable = await createHarness({ workflowDir: mutableWorkflowDir });
+      const client2 = mutable.client;
+      const mutableSession = sessionOps(mutable, 'work-package');
 
       try {
-        const startResult = await client2.callTool({
-          name: 'start_session',
-          arguments: {
-            workflow_id: 'work-package',
-            agent_id: 'solo',
-            planning_folder: join(mutableWorkspace, '.engineering/artifacts/planning', '2026-07-03-mutable'),
-            context_mode: 'persistent',
-          },
-        });
-        expect(startResult.isError).toBeFalsy();
-        const idx = (JSON.parse(responseText(startResult)) as Record<string, unknown>)['session_index'] as string;
+        const idx = await mutableSession.start('2026-07-03-mutable', 'solo', 'persistent');
         await client2.callTool({
           name: 'next_activity',
           arguments: { session_index: idx, activity_id: 'start-work-package' },
@@ -781,10 +732,8 @@ describe('reference-not-repeat delivery (B1)', () => {
         })());
         expect(isUnchangedMarker((call3.bundle['techniques'] as Record<string, unknown>)['variable-binding'])).toBe(true);
       } finally {
-        await client2.close();
-        await server2.close();
+        await mutable.close();
         try { rmSync(mutableWorkflowDir, { recursive: true, force: true }); } catch { /* ignore */ }
-        try { rmSync(mutableWorkspace, { recursive: true, force: true }); } catch { /* ignore */ }
       }
     });
   });
@@ -810,7 +759,7 @@ describe('reference-not-repeat delivery (B1)', () => {
     async function findTwoTechniqueStepIds(activityId: string): Promise<[string, string]> {
       const probe = await startSession({ workflow_id: 'work-package', agent_id: 'probe' });
       const probeIdx = probe['session_index'] as string;
-      await enterActivity(probeIdx, activityId);
+      await mcp.enter(probeIdx, activityId);
       const parsed = splitActivityResponse(await getActivity(probeIdx, { bundle: 'full' }));
       const body = parse(parsed.bodyText) as { steps?: Array<{ id?: string; technique?: unknown }> };
       const flat: Array<{ id?: string; technique?: unknown }> = [];
@@ -839,7 +788,7 @@ describe('reference-not-repeat delivery (B1)', () => {
       // construction, and nothing delivered twice would be there to collapse.
       const stepA = 'review-strategy';
       const stepB = 'document-findings';
-      await enterActivity(idx, 'strategic-review');
+      await mcp.enter(idx, 'strategic-review');
 
       // Technique A (persistent, no prior get_activity) delivers in full and establishes
       // the shared contract blocks in the ledger.
@@ -886,7 +835,7 @@ describe('reference-not-repeat delivery (B1)', () => {
       });
       const idx = session['session_index'] as string;
       const [stepA, stepB] = await findTwoTechniqueStepIds('implement');
-      await enterActivity(idx, 'implement');
+      await mcp.enter(idx, 'implement');
 
       await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepA } });
       // B under reference delivery would collapse shared blocks; full: true forces full.
@@ -905,7 +854,7 @@ describe('reference-not-repeat delivery (B1)', () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'w1' });
       const idx = session['session_index'] as string;
       const [stepA, stepB] = await findTwoTechniqueStepIds('implement');
-      await enterActivity(idx, 'implement');
+      await mcp.enter(idx, 'implement');
 
       await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepA } });
       const second = await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepB } });
@@ -925,7 +874,7 @@ describe('reference-not-repeat delivery (B1)', () => {
       });
       const idx = session['session_index'] as string;
       const [stepA] = await findTwoTechniqueStepIds('implement');
-      await enterActivity(idx, 'implement');
+      await mcp.enter(idx, 'implement');
       await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepA } });
 
       const onDisk = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
@@ -948,7 +897,7 @@ describe('reference-not-repeat delivery (B1)', () => {
       const idx = session['session_index'] as string;
       // Entry activity: no transition prerequisites, and it eager-bundles several
       // technique steps that share the work-package contract.
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
 
       const { bundle } = splitActivityResponse(await getActivity(idx));
       expect(bundle['bundle_mode']).toBe('reference');
@@ -985,7 +934,7 @@ describe('reference-not-repeat delivery (B1)', () => {
       });
       const idx = session['session_index'] as string;
       const [stepA, stepB] = await findTwoTechniqueStepIds('implement');
-      await enterActivity(idx, 'implement');
+      await mcp.enter(idx, 'implement');
       const first = await client.callTool({
         name: 'get_technique',
         arguments: { session_index: idx, step_id: stepA },
@@ -1014,7 +963,7 @@ describe('reference-not-repeat delivery (B1)', () => {
       });
       const idx = session['session_index'] as string;
       const [stepA, stepB] = await findTwoTechniqueStepIds('implement');
-      await enterActivity(idx, 'implement');
+      await mcp.enter(idx, 'implement');
       await client.callTool({ name: 'get_technique', arguments: { session_index: idx, step_id: stepA } });
       const second = await client.callTool({
         name: 'get_technique',
@@ -1294,7 +1243,7 @@ describe('reference-not-repeat delivery (B1)', () => {
     it('delivers a fresh worker scope in full and the same scope resumed as references', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'orchestrator' });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
 
       // Fresh spawn: no prior deliveries under this scope, so asking for reference delivery still
       // yields full content — the property that makes the opt-in safe to hand a worker.
@@ -1314,7 +1263,7 @@ describe('reference-not-repeat delivery (B1)', () => {
     it('never hands one worker the markers of another worker on the same session', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'orchestrator' });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
 
       await getActivity(idx, { agent_id: 'worker-a', bundle: 'reference' });
       await getActivity(idx, { agent_id: 'worker-a', bundle: 'reference' });
@@ -1331,7 +1280,7 @@ describe('reference-not-repeat delivery (B1)', () => {
     it('scopes get_technique and get_resource on the same identity', async () => {
       const session = await startSession({ workflow_id: 'work-package', agent_id: 'orchestrator' });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
       const stepId = await (async () => {
         const parsed = splitActivityResponse(await getActivity(idx, { bundle: 'full' }));
         const body = parse(parsed.bodyText) as { steps?: Array<{ id?: string; technique?: unknown }> };
@@ -1372,7 +1321,7 @@ describe('reference-not-repeat delivery (B1)', () => {
         planning_folder: planningFolder(slug),
       });
       const idx = session['session_index'] as string;
-      await enterActivity(idx, 'start-work-package');
+      await mcp.enter(idx, 'start-work-package');
       await getActivity(idx, { agent_id: 'worker-7' });
 
       const onDisk = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));

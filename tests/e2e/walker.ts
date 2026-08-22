@@ -178,7 +178,6 @@ export interface GateRefetch {
 }
 
 export interface WalkOptions {
-  agentId?: string;
   /**
    * Dispatch each activity under its own worker identity, carried on every `get_activity` and
    * `get_technique` that activity makes, and re-request the activity under that same identity
@@ -577,7 +576,7 @@ export async function walk(
 
   const startRes = await client.callTool({
     name: 'start_session',
-    arguments: { workflow_id: workflowId, agent_id: opts.agentId ?? 'e2e-walker' },
+    arguments: { workflow_id: workflowId, agent_id: 'e2e-walker' },
   });
   if (isError(startRes)) throw new Error(`start_session(${workflowId}) failed`);
   const startBody = parseToolResponse(startRes);
@@ -740,44 +739,36 @@ export interface PathSet {
   workflowId: string;
   /** One WalkResult per distinct path discovered (deduped by activity sequence). */
   paths: WalkResult[];
-  /** `path.join(' > ')` for each distinct path. */
-  distinctPaths: string[];
   /** Branches whose walk threw (e.g. an unresolvable checkpoint/transition on that path). */
   errors: Array<{ prefix: string[]; message: string }>;
   /** Number of full walks run (≈ choice-prefixes explored). */
   walks: number;
-  /** True if the maxPaths/maxWalks cap was hit before exhausting the decision tree. */
-  capped: boolean;
-  /** Distinct decision-option branches discovered (`<kind>:<activity>:<id>=<option>`). */
-  branchesKnown: number;
-  /** Of those, how many were actually exercised by some walk. */
-  branchesCovered: number;
   /**
-   * Every branch key some walk reached a decision on, and the subset a walk actually took.
+   * Every decision-option branch a walk actually took (`<kind>:<activity>:<id>=<option>`).
    *
-   * `known` is what the walks encountered, so it is not the workflow's declared decision space: a
-   * checkpoint no walk reaches contributes to neither set, and the ratio then reads 100% with the
-   * checkpoint unvisited. Measure against `declaredOptions` in coverage.ts for a denominator that
-   * does not move with the walk.
+   * This is what the walks reached, not the workflow's declared decision space: a checkpoint no
+   * walk reaches contributes nothing here. Measure against `declaredOptions` in coverage.ts for a
+   * denominator that does not move with the walk.
    */
-  knownBranches: string[];
   coveredBranches: string[];
 }
 
 /**
- * Enumerate every distinct path through a workflow's decision graph — not just the happy path.
+ * Cover every decision-option branch through a workflow's decision graph — not just the happy path.
  *
  * Each path is one full walk under a scripted policy that fixes the checkpoint-option choices; the
  * enumerator systematically varies those choices (the workflow's real branch points) breadth-first,
- * forking at every un-taken option, and dedupes by the resulting activity sequence. `autoAdvance`
- * drives any non-checkpoint forward gate, and `maxVisits` bounds loops, so the tree is finite. Every
- * discovered path is a WalkResult validated like any other (zero unresolved refs, no loadErrors).
+ * forking at every un-taken option that no earlier walk exercised, and dedupes by the resulting
+ * activity sequence. Forking only on un-exercised branches keeps the traversal linear in edges
+ * rather than combinatorial in paths. `autoAdvance` drives any non-checkpoint forward gate, and
+ * `maxVisits` bounds loops, so the tree is finite. Every discovered path is a WalkResult validated
+ * like any other (zero unresolved refs, no loadErrors).
  */
 export async function enumeratePaths(
   harness: Harness,
   workflowId: string,
   opts: {
-    maxVisits?: number; maxPaths?: number; maxWalks?: number; coverageMode?: boolean;
+    maxVisits?: number; maxWalks?: number;
     maxDryWalks?: number;
     /**
      * Per-activity agent-outcome variables, as a Policy's `simulate` supplies them.
@@ -792,31 +783,23 @@ export async function enumeratePaths(
   } = {},
 ): Promise<PathSet> {
   const maxVisits = opts.maxVisits ?? 6;
-  const maxPaths = opts.maxPaths ?? 256;
   const maxWalks = opts.maxWalks ?? 2000;
-  // coverageMode: fork a branch only while it is still UN-exercised — turning the combinatorial
-  // per-path enumeration into linear edge/option coverage (every decision-option hit at least once).
-  const coverageMode = opts.coverageMode ?? false;
   // Early-stop once branch coverage plateaus: after this many consecutive walks that exercise NO
   // new decision-option (a coverage dry-streak), the reachable branch set is covered and further
   // walks only re-tread it. Bounds wall-clock on large borrowed-activity workflows (e.g. remediate-
   // vuln) without an arbitrary walk cap — it never stops while new branches are still being found.
-  // Only meaningful in coverageMode (the goal IS branch coverage); plain path-enumeration may find
-  // new PATHS without covering new branches, so there the dry-streak is disabled.
-  const maxDryWalks = opts.maxDryWalks ?? (coverageMode ? 30 : Infinity);
+  const maxDryWalks = opts.maxDryWalks ?? 30;
   const seenPaths = new Set<string>();
   const triedPrefixes = new Set<string>();
   const covered = new Set<string>();
-  const known = new Set<string>();
   const paths: WalkResult[] = [];
   const errors: Array<{ prefix: string[]; message: string }> = [];
   const queue: string[][] = [[]];
   let walks = 0;
-  let capped = false;
   let dryStreak = 0;
 
   while (queue.length) {
-    if (paths.length >= maxPaths || walks >= maxWalks) { capped = queue.length > 0; break; }
+    if (walks >= maxWalks) break;
     if (dryStreak >= maxDryWalks) break; // coverage plateaued — remaining queue only re-treads covered branches
     const prefix = queue.shift()!;
     const pk = prefix.join(',');
@@ -830,7 +813,6 @@ export async function enumeratePaths(
     let idx = 0;
     const decide = (d: { kind: string; activityId: string; id: string; options: string[]; suggested: string }): string => {
       const key = `${d.kind}:${d.activityId}:${d.id}`;
-      for (const o of d.options) known.add(`${key}=${o}`);
       // Within the prefix, take the scripted choice; past it, take the natural (happy) suggestion
       // so the base path is the happy path and every fork is an explicit alternative branch.
       const chosen = idx < prefix.length && d.options.includes(prefix[idx]!) ? prefix[idx]! : d.suggested;
@@ -863,21 +845,16 @@ export async function enumeratePaths(
     for (const rec of recorder) covered.add(`${rec.key}=${rec.chosen}`);
     dryStreak = covered.size > coveredBefore ? 0 : dryStreak + 1;
 
-    // Fork: enqueue the prefix that takes each un-chosen option at each decision. In coverageMode,
-    // skip a fork whose branch is already exercised — so each branch is walked ~once (linear), not
-    // every combination (combinatorial).
+    // Fork: enqueue the prefix that takes each un-chosen option at each decision, skipping any
+    // branch already exercised — so each branch is walked ~once (linear), not every combination.
     for (let i = 0; i < recorder.length; i++) {
       for (const opt of recorder[i]!.options) {
         if (opt === recorder[i]!.chosen) continue;
-        if (coverageMode && covered.has(`${recorder[i]!.key}=${opt}`)) continue;
+        if (covered.has(`${recorder[i]!.key}=${opt}`)) continue;
         queue.push([...recorder.slice(0, i).map((x) => x.chosen), opt]);
       }
     }
   }
 
-  return {
-    workflowId, paths, distinctPaths: [...seenPaths], errors, walks, capped,
-    branchesKnown: known.size, branchesCovered: covered.size,
-    knownBranches: [...known].sort(), coveredBranches: [...covered].sort(),
-  };
+  return { workflowId, paths, errors, walks, coveredBranches: [...covered].sort() };
 }

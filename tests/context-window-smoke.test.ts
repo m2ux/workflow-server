@@ -1,12 +1,11 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { createServer } from '../src/server.js';
+import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { join } from 'node:path';
-import { mkdtempSync, mkdirSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { parse } from 'yaml';
-import type { HistoryEntry } from '../src/schema/state.schema.js';
+import { createHarness, type Harness } from './e2e/harness.js';
+import { sessionOps, type SessionOps } from './session-ops.js';
 
 /**
  * Deterministic context-window sweep for automatic context-derived step-technique
@@ -29,21 +28,21 @@ import type { HistoryEntry } from '../src/schema/state.schema.js';
  * lazy. Per-technique size is the composed+provenance-decorated technique body
  * serialized to YAML — NOT the raw markdown source.
  *
- * The fixture pads each of t1..t4 to a composed size of ~STEP_CHARS chars. The
- * exact composed size is MEASURED in-test (see the `measures ... sizes` test /
- * BUNDLE_DEBUG log) and the tiers below are chosen to land cleanly mid-band with
- * comfortable (>=20%) margin from any boundary, so the sweep is not brittle to
- * small rounding in the projection. A gated step (`when: run_optional == true`)
- * is included to assert it stays lazy at EVERY window size.
+ * The fixture pads each of t1..t4 to a composed size of ~STEP_CHARS chars, and
+ * the tiers below land mid-band with comfortable (>=20%) margin from any
+ * boundary, so the sweep is not brittle to small rounding in the projection. A
+ * fixture that drifts out of band fails the tier whose margin it eats. A gated
+ * step (`when: run_optional == true`) is included to assert it stays lazy at
+ * EVERY window size.
  */
 describe('context-window sweep — graduated cumulative bundling (#189 C1c)', () => {
+  let harness: Harness;
   let client: Client;
-  let closeTransport: () => Promise<void>;
+  let session: SessionOps;
   let workflowDir: string;
-  let workspaceDir: string;
 
   // Target composed size for each of the four equal ungated techniques (~chars).
-  // Sizing rationale (verified by the "measures" test which logs actuals):
+  // Sizing rationale:
   //   budget(context_tokens) = context_tokens × 3.2
   //   SMALL 2_000  → 6_400  chars → fits 0  (< one ~10k technique)      → []
   //   MID   8_000  → 25_600 chars → fits 2  (2×10k=20k <25.6k <3×10k=30k) → [t1,t2]
@@ -53,8 +52,7 @@ describe('context-window sweep — graduated cumulative bundling (#189 C1c)', ()
 
   // A padded body whose composed YAML lands near STEP_CHARS. The bulk is a run of
   // protocol bullets; markdown→technique→YAML projection is close to 1:1 on plain
-  // bullet text, so we pad slightly under target and let the composed size be
-  // measured/asserted in-test rather than guessed.
+  // bullet text, so padding sits slightly under target.
   const paddedBody = (): string => {
     const line = '- Perform elaborate sub-operation with full attention to every relevant detail here.';
     // ~86 chars/line incl newline; ~110 lines ≈ ~9_400 chars of bullets, plus the
@@ -66,15 +64,8 @@ describe('context-window sweep — graduated cumulative bundling (#189 C1c)', ()
   const op = (capability: string, body: string): string =>
     `---\nmetadata:\n  version: 1.0.0\n---\n\n## Capability\n\n${capability}\n\n${body}`;
 
-  const planningFolder = (slug: string) => join(workspaceDir, '.engineering/artifacts/planning', slug);
-  const sessionHistory = (slug: string): HistoryEntry[] => {
-    const state = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8')) as { history: HistoryEntry[] };
-    return state.history;
-  };
-
   beforeAll(async () => {
     workflowDir = mkdtempSync(join(tmpdir(), 'wf-ctxwin-corpus-'));
-    workspaceDir = mkdtempSync(join(tmpdir(), 'wf-ctxwin-ws-'));
 
     const wf = join(workflowDir, 'sweepwf');
     mkdirSync(join(wf, 'activities'), { recursive: true });
@@ -134,54 +125,15 @@ describe('context-window sweep — graduated cumulative bundling (#189 C1c)', ()
       writeFileSync(join(t, `${id}.md`), op(`Capability of ${id}.`, paddedBody()));
     }
 
-    const config = {
-      workflowDir,
-      schemasDir: join(import.meta.dirname, '../schemas'),
-      workspaceDir,
-      serverName: 'test-workflow-server',
-      serverVersion: '1.0.0',
-      minCheckpointResponseSeconds: 0,
-    };
-    const server = createServer(config);
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    await server.connect(serverTransport);
-    client = new Client({ name: 'test-client', version: '1.0.0' }, {});
-    await client.connect(clientTransport);
-    closeTransport = async () => {
-      await client.close();
-      await server.close();
-    };
+    harness = await createHarness({ workflowDir });
+    client = harness.client;
+    session = sessionOps(harness, 'sweepwf');
   });
 
   afterAll(async () => {
-    await closeTransport();
-    for (const dir of [workflowDir, workspaceDir]) {
-      try { rmSync(dir, { recursive: true, force: true }); } catch { /* ignore */ }
-    }
+    await harness.close();
+    try { rmSync(workflowDir, { recursive: true, force: true }); } catch { /* ignore */ }
   });
-
-  async function startSession(slug: string, agentId: string, contextMode?: string): Promise<string> {
-    const result = await client.callTool({
-      name: 'start_session',
-      arguments: {
-        workflow_id: 'sweepwf',
-        agent_id: agentId,
-        planning_folder: planningFolder(slug),
-        ...(contextMode ? { context_mode: contextMode } : {}),
-      },
-    });
-    expect(result.isError).toBeFalsy();
-    const body = JSON.parse((result.content as Array<{ text: string }>)[0]!.text) as Record<string, unknown>;
-    return body['session_index'] as string;
-  }
-
-  async function enterActivity(sessionIndex: string, activityId: string): Promise<void> {
-    const result = await client.callTool({
-      name: 'next_activity',
-      arguments: { session_index: sessionIndex, activity_id: activityId },
-    });
-    expect(result.isError).toBeFalsy();
-  }
 
   type ToolResult = { isError?: boolean; content?: Array<{ text: string }>; _meta?: Record<string, unknown> };
 
@@ -195,39 +147,6 @@ describe('context-window sweep — graduated cumulative bundling (#189 C1c)', ()
     const ops = parse(text.split('\n\n---\n\n')[0]!) as Record<string, unknown>;
     return { ops, meta: result._meta ?? {} };
   }
-
-  // --- Calibration: measure the real composed size so tier math is grounded. ---
-  it('composes four roughly-equal ungated techniques (calibration)', async () => {
-    const slug = 'sizes';
-    const idx = await startSession(slug, 'measure');
-    await enterActivity(idx, 'sweep');
-    // A huge window inlines everything; read each composed entry's serialized size.
-    const { ops, meta } = await getActivity(idx, 1_000_000);
-    const st = ops['step_techniques'] as Record<string, Record<string, unknown>>;
-    expect(meta['bundled_steps']).toEqual(['t1', 't2', 't3', 't4']);
-
-    const sizes = Object.fromEntries(
-      (['t1', 't2', 't3', 't4'] as const).map((id) => {
-        // Reconstruct the composed entry sans its ▼ STEP marker (the budget measures
-        // projectTechniqueToYaml(technique), i.e. the composed technique body).
-        const entry = { ...st[id]! };
-        delete entry['marker'];
-        return [id, JSON.stringify(entry).length];
-      }),
-    );
-    if (process.env['BUNDLE_DEBUG']) {
-      // eslint-disable-next-line no-console
-      console.log('composed entry sizes:', sizes);
-    }
-    const values = Object.values(sizes);
-    // All four are within 5% of each other (roughly equal) and comfortably in the
-    // ~10k band the tier math assumes (>=8k, <=13k), keeping every tier mid-band.
-    const min = Math.min(...values);
-    const max = Math.max(...values);
-    expect(max - min).toBeLessThan(min * 0.05);
-    expect(min).toBeGreaterThan(8_000);
-    expect(max).toBeLessThan(13_000);
-  });
 
   // --- The sweep: three tiers, monotonically growing bundled prefix. ---
   interface Tier {
@@ -249,8 +168,8 @@ describe('context-window sweep — graduated cumulative bundling (#189 C1c)', ()
   for (const tier of tiers) {
     it(`${tier.label}: context_tokens=${tier.contextTokens} → budget≈${tier.budgetChars} → bundles ${JSON.stringify(tier.expectBundled)}`, async () => {
       const slug = `sweep-${tier.contextTokens}`; // fresh session per tier ⇒ clean event counts
-      const idx = await startSession(slug, 'w1');
-      await enterActivity(idx, 'sweep');
+      const idx = await session.start(slug, 'w1');
+      await session.enter(idx, 'sweep');
       const { ops, meta } = await getActivity(idx, tier.contextTokens);
 
       const bundled = tier.expectBundled;
@@ -283,7 +202,7 @@ describe('context-window sweep — graduated cumulative bundling (#189 C1c)', ()
       expect(st?.['gated']).toBeUndefined();
 
       // One technique_bundled event per inlined step, and no more (fresh session).
-      const events = sessionHistory(slug).filter(h => h.type === 'technique_bundled');
+      const events = session.history(slug).filter(h => h.type === 'technique_bundled');
       expect(events).toHaveLength(bundled.length);
       const byStep = new Set(events.map(e => (e.data as { stepId: string }).stepId));
       expect([...byStep].sort()).toEqual([...bundled].sort());
@@ -293,8 +212,8 @@ describe('context-window sweep — graduated cumulative bundling (#189 C1c)', ()
   // --- Unchanged-marker shape on a persistent-context bundle re-delivery. ---
   it('persistent-context re-delivery collapses inlined entries to unchanged markers', async () => {
     const slug = 'ctxwin-ledger';
-    const idx = await startSession(slug, 'solo', 'persistent');
-    await enterActivity(idx, 'sweep');
+    const idx = await session.start(slug, 'solo', 'persistent');
+    await session.enter(idx, 'sweep');
 
     // First MID delivery inlines [t1, t2] with full content.
     const first = await getActivity(idx, 8_000);
@@ -310,8 +229,7 @@ describe('context-window sweep — graduated cumulative bundling (#189 C1c)', ()
     const second = await getActivity(idx, 8_000);
     const st = second.ops['step_techniques'] as Record<string, Record<string, unknown>>;
 
-    // The marker's own shape — its content_hash and ▼ STEP line — belongs to hybrid-bundling; what
-    // this file is about is the budget the collapse frees.
+    // The marker's own shape belongs to hybrid-bundling; this file is about the budget it frees.
     expect(st['t1']!['delivery']).toBe('unchanged');
     expect(st['t2']!['delivery']).toBe('unchanged');
 

@@ -3,10 +3,8 @@ import { readFileSync } from 'node:fs';
 import { TRIAGE_PATH } from '../scripts/check-section-framing.js';
 
 /**
- * Section-framing guard. A resource cited by anchor is delivered one section at a time, so prose
- * above the first `##` never reaches a section consumer. The guard finds those sites mechanically;
- * the corpus's `section-framing-triage.json` carries the judgement of whether the prose is an
- * obligation or an orientation, and an untriaged site is reported.
+ * The `section-framing` guard reports untriaged sites; the judgement for each lives in
+ * `section-framing-triage.json`. The guard does not read that file's shape, so this does.
  */
 describe('section-framing triage', () => {
   const triage = JSON.parse(

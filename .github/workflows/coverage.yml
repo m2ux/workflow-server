@@ -4,10 +4,9 @@ name: Coverage walk
 # does not reach.
 #
 # This is a job of its own because it is slow — fourteen full coverage walks, each driving a workflow
-# through the real server — and because it was already written and switched off. `enumeratePaths` in
-# coverage mode has existed for some time behind WF_PATH_COVERAGE=1, unset in CI, and its assertions
-# were all about reference resolution. Nothing measured coverage, and its own ratio read 100% for
-# nine workflows while three of them were at 20%, 24% and 33% of what they declare (issue #472).
+# through the real server. An earlier ratio counted only the checkpoints a walk reached, so it read
+# 100% for nine workflows while three of them were at 20%, 24% and 33% of what they declare
+# (issue #472); this job measures against what the corpus declares.
 #
 # Runs alongside `verify` rather than inside it: `npm run test:ci` stays a fast suite, and this job
 # fails on its own terms so a coverage regression is not read as a unit-test failure.

@@ -7,14 +7,14 @@
  * real corpus is kept mismatch-free by check:variable-model.
  */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { createServer } from '../src/server.js';
+import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { resolve, join } from 'node:path';
 import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { seedDefaults, jsonTypeOf, isTemplateReference } from '../src/utils/variable-seed.js';
 import { createInitialSessionFile } from '../src/schema/session.schema.js';
+import { createHarness, type Harness } from './e2e/harness.js';
+import { planningFolderPath } from './session-ops.js';
 
 const SEEDED_FIXTURE_BAG = {
   review_needed: false,
@@ -75,10 +75,9 @@ describe('createInitialSessionFile variable seeding', () => {
 });
 
 describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
+  let harness: Harness;
   let client: Client;
-  let closeTransport: () => Promise<void>;
-  let workspaceDir: string;
-  const planningFolder = (slug: string) => join(workspaceDir, '.engineering/artifacts/planning', slug);
+  const planningFolder = (slug: string) => planningFolderPath(harness.workspaceDir, slug);
   const readSession = (slug: string) => JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -98,26 +97,11 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
   }
 
   beforeAll(async () => {
-    workspaceDir = mkdtempSync(join(tmpdir(), 'wf-b7-test-'));
-    const server = createServer({
-      workflowDir: resolve(import.meta.dirname, 'fixtures/variable-model'),
-      schemasDir: resolve(import.meta.dirname, '../schemas'),
-      workspaceDir,
-      serverName: 'test-workflow-server',
-      serverVersion: '1.0.0',
-      minCheckpointResponseSeconds: 0,
-    });
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    await server.connect(serverTransport);
-    client = new Client({ name: 'test-client', version: '1.0.0' }, {});
-    await client.connect(clientTransport);
-    closeTransport = async () => { await client.close(); };
+    harness = await createHarness({ workflowDir: resolve(import.meta.dirname, 'fixtures/variable-model') });
+    client = harness.client;
   });
 
-  afterAll(async () => {
-    await closeTransport();
-    rmSync(workspaceDir, { recursive: true, force: true });
-  });
+  afterAll(async () => { await harness.close(); });
 
   it('start_session seeds declared defaults — including false, "" and 0 — and skips undeclared defaults', async () => {
     const slug = '2026-07-07-seed-basic';
@@ -423,12 +407,11 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
  * Runs against a COPY of the fixture corpus so the definition can be edited under a live session.
  */
 describe('resume against an edited workflow definition', () => {
+  let harness: Harness;
   let client: Client;
-  let closeTransport: () => Promise<void>;
-  let workspaceDir: string;
   let corpusDir: string;
   const slug = '2026-08-17-definition-drift';
-  const planningFolder = () => join(workspaceDir, '.engineering/artifacts/planning', slug);
+  const planningFolder = () => planningFolderPath(harness.workspaceDir, slug);
   const readSession = () => JSON.parse(readFileSync(join(planningFolder(), 'session.json'), 'utf8'));
   const workflowPath = () => join(corpusDir, 'seed-fixture/workflow.yaml');
 
@@ -440,27 +423,14 @@ describe('resume against an edited workflow definition', () => {
   }
 
   beforeAll(async () => {
-    workspaceDir = mkdtempSync(join(tmpdir(), 'wf-drift-ws-'));
     corpusDir = mkdtempSync(join(tmpdir(), 'wf-drift-corpus-'));
     cpSync(resolve(import.meta.dirname, 'fixtures/variable-model'), corpusDir, { recursive: true });
-    const server = createServer({
-      workflowDir: corpusDir,
-      schemasDir: resolve(import.meta.dirname, '../schemas'),
-      workspaceDir,
-      serverName: 'test-workflow-server',
-      serverVersion: '1.0.0',
-      minCheckpointResponseSeconds: 0,
-    });
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    await server.connect(serverTransport);
-    client = new Client({ name: 'test-client', version: '1.0.0' }, {});
-    await client.connect(clientTransport);
-    closeTransport = async () => { await client.close(); };
+    harness = await createHarness({ workflowDir: corpusDir });
+    client = harness.client;
   });
 
   afterAll(async () => {
-    await closeTransport();
-    rmSync(workspaceDir, { recursive: true, force: true });
+    await harness.close();
     rmSync(corpusDir, { recursive: true, force: true });
   });
 
