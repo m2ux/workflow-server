@@ -45,7 +45,7 @@ High-value patterns to encourage: protocol compliance (calculated values vs prot
 
 ## Field List
 
-Designators use the prefix declared for this report's category at [Test Review](./review-mode.md#test-review). Every finding carries the six fields of [Fields](./findings-report.md#fields), laid out per [Finding Layout](./findings-report.md#finding-layout). This report declares:
+Designators use the prefix declared for this report's category at [Test Review](./review-mode.md#test-review). Every finding carries the fields of [Fields](./findings-report.md#fields), laid out per [Finding Layout](./findings-report.md#finding-layout). This report declares:
 
 | Declaration | Value |
 |---|---|

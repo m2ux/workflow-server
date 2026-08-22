@@ -13,7 +13,7 @@ Problem-solving commonly leaves behind speculative changes, debugging infrastruc
 
 ## Field List
 
-Designators use the prefix declared for this report's category at [Strategic Review](./review-mode.md#strategic-review). Every finding carries the six fields of [Fields](./findings-report.md#fields), laid out per [Finding Layout](./findings-report.md#finding-layout). This report declares:
+Designators use the prefix declared for this report's category at [Strategic Review](./review-mode.md#strategic-review). Every finding carries the fields of [Fields](./findings-report.md#fields), laid out per [Finding Layout](./findings-report.md#finding-layout). This report declares:
 
 | Declaration | Value |
 |---|---|
