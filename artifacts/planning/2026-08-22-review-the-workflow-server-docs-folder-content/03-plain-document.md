@@ -4,13 +4,16 @@ The deliverable of this rewrite is the `docs/` tree itself, not a single file. I
 
 ## What landed
 
-Three commits, in this order.
+Four commits, in this order.
 
 | Commit | Subject | Shape |
 |--------|---------|-------|
 | `6a3f5bb9` | Name the five architecture model documents in kebab-case | Pure rename, 0 insertions, 0 deletions |
 | `06e2d1ba` | Rewrite the docs set in plain language and correct it against the code | 25 files |
 | `e0cf4320` | Correct the fidelity and development guides against the code | 5 files |
+| `b89c7498` | Hold every document in the set to the plain-language profile | 14 files |
+
+All fifteen documents carry substantive change. Against `origin/main` the set is 645 insertions and 934 deletions.
 
 The rename is a commit of its own so that git records all five moves at full similarity and history follows each file. A rewrite folded into the same commit would have dropped the checkpoint model below the rename-detection threshold, and its history would have ended at the new name.
 
@@ -61,7 +64,7 @@ The remaining eleven:
 
 **The architecture hub was six headings that were themselves links.** It reads as prose now, each link flowing inside a sentence that says what the reader would go there for. That serves the house style and the screen-reader need behind it: pulled out of context, the link text still means something.
 
-**Agent tiers are named rather than numbered.** "Meta Orchestrator (Level 0)" and the section headings "(L0 → L1)" and "(L1 → L2)" are gone in favour of the user-facing agent, the orchestrator and the worker.
+**Agent tiers are named rather than numbered.** The level numbers and the "(L0 → L1)" section headings are gone, and the set names the three roles one way throughout: the user-facing agent, the orchestrator and the worker. The capitalised proper-noun forms survive only inside a code block quoting a literal prompt string.
 
 **"Utilizes" and "leverages" no longer appear anywhere in `docs/`.**
 
@@ -73,12 +76,26 @@ The remaining eleven:
 
 **Two broken internal cross-references** in the Orchestra specification pointed at a section 2.2 that does not exist; both meant section 3.1.2. Seven headings under section 3.5 sat at the same level as their parent and are demoted.
 
+## The second pass
+
+The first pass reached about half the set. Eight documents carried only a link repoint, a single new opening paragraph, or nothing at all, which left the contributor reading pre-rewrite prose in the two largest behavioural models and the integrator reading note-form fragments in both documents assigned to that group. The second pass holds all fifteen to the profile's five tests.
+
+**The untouched documents got the pass.** The install-layout and IDE-setup pages read as complete sentences, with headings that name what the reader is doing and the path formula introduced before the variables that fill it. Both trailing link lists are folded into prose that says what each target is for. The technique protocol specification's explanatory opening is prose rather than bold-shouted labels, and its normative clauses keep their exact identifiers by decision.
+
+**The resource resolution model opens on the problem before naming the design**, and its `### Benefits` list of shouted noun phrases is prose. The state model's opening register carries through its body: the bold-shouted "Rule of Determinism" is a sentence, and the raw function and schema-file symbols are named as concepts.
+
+**The set runs one heading convention.** The three behavioural models drop their section numbers and take sentence case; the two normative specifications keep numbered clauses, because a clause number is how a reader cites a contract term, and the documentation-system conventions now say so. The anchors that carried the old numbers are repointed, and every markdown anchor in the set resolves.
+
+**One mechanism, one home.** Session persistence was documented in full in both the state model and the fidelity document, with the fidelity copy linking to the state copy for the file layout it had just restated. The state model keeps it; the fidelity document points there and keeps the seal, which is its own Layer 1 subject.
+
+**A command that failed now works.** The development guide instructed `git worktree add ./workflows workflows` in both its setup and its branch sections. `workflows` is a submodule bound by `.gitmodules`, so that command fails against an occupied path — and it was the first command a new contributor ran. Both sections give the submodule sequence, and the setup section points at `worktree:provision` for the linked-worktree case.
+
+**The conventions match the tree.** The filename rule states the condition under which a rename is warranted, rather than forbidding what the first commit did. The source map gains rows for the install-layout page and for the conventions page itself.
+
 ## Left open
 
-**Three references to the old filename survive**, all pointing at `docs/state_management_model.md`: two in `workflows/meta/README.md` and one in `workflows/meta/resources/README.md`. These live in the `workflows` submodule, which is a separate repository on its own shared branch, and this worktree has it at a detached HEAD. A commit there would be unreachable and would break the pointer, so the three are left for a change made on that branch directly. They are the only in-repo references still using an old name; everything under `.engineering/` is a historical planning record and correctly untouched.
+**Three references to the old filename survive**, all pointing at `docs/state_management_model.md`: two in `workflows/meta/README.md` and one in `workflows/meta/resources/README.md`. These live in the `workflows` submodule, which is a separate repository on its own shared branch, and this worktree has it at a detached HEAD. The fix belongs on that branch directly, in the main checkout's copy of the submodule, and it lands with or after this branch merges — until then the kebab-case target does not exist on the default branch. Nothing reports them: the anchor guard walks the workflow corpus and skips any destination resolving outside it, and the site guard walks only the HTML.
 
-**The remaining findings are prose quality, not correctness.** The two normative specifications keep their identifier density by decision. Anti-pattern references and issue-number citations in the technique protocol specification and the development guide still need expanding into stated meanings. Change narrative survives in a few places in the dispatch model and the development guide, against the repository's own present-tense convention. Tone is still uneven between the terse sections and the expansive ones. None of these would mislead a reader who acted on them.
+**Two follow-ups sit outside `docs/`.** `README.md` claims 17 MCP tools where 18 are registered. The fix is to delete the tally rather than correct it, since the repository's own conventions rule out fixed inventory counts in prose and point readers at the generated catalogue. And `package.json` carries version `0.2.0` while the server reports `2.1.0`, so an operator checking a running install against the health endpoint sees a number matching no released artifact.
 
-**Two follow-ups sit outside `docs/`.** `README.md` claims 17 MCP tools where 18 are registered, and it sits outside the globs the docs-drift guard inspects. And `package.json` carries version `0.2.0` while the server reports `2.1.0`, so an operator checking a running install against the health endpoint sees a number matching no released artifact.
-
-**No guard checks whether a path named in prose exists.** Eleven dead paths accumulated in one document without anything reporting it. A guard resolving every path in a code span against the filesystem would have caught all of them and would keep catching them.
+**No guard checks repository markdown.** Nothing resolves a link or a path written in `README.md` or in `docs/`, which is why the eleven dead paths in the development guide accumulated unreported and why the three submodule references above survive. Extending reference checking to repository markdown catches dead links cheaply. Resolving every path named in prose is a second layer and needs a design first: run naively over this set it reports 90 of 354 candidates, and essentially all 90 are legitimate — templates, placeholders, home paths, HTTP routes, globs, deployed-workspace paths, and a markdown link inside a sentence explaining markdown link syntax.

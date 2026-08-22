@@ -719,6 +719,15 @@
             },
             "optionId": "revise",
             "respondedAt": "2026-08-22T05:13:30.000Z"
+          },
+          "evaluate-evaluation-reviewed#1": {
+            "effects": {
+              "variablesSet": {
+                "needs_revision": false
+              }
+            },
+            "optionId": "accept",
+            "respondedAt": "2026-08-22T05:33:02.000Z"
           }
         },
         "completedActivities": [
@@ -729,7 +738,7 @@
         ],
         "condition": "isDefault: evaluate",
         "currentActivity": "evaluate",
-        "currentTechnique": "evaluate-document",
+        "currentTechnique": "draft-document",
         "declaredArtifacts": [
           {
             "id": "document_profile",
@@ -812,8 +821,10 @@
             "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
             "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
             "resource:evaluation-report": "69b221868de5d938",
+            "resource:iso-checklist": "61e51e3d1c73d0ea",
             "resource:plain-language-standard": "8eb988eac008c6f5",
             "technique:complete-checklist": "66338a0fba2342b6",
+            "technique:draft-document": "6ebeca92de6f07d2",
             "technique:evaluate-document": "dab8dadf8ecf197b",
             "technique:inherited_inputs.items:a64d59ad7d5403f8": "a64d59ad7d5403f8",
             "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
@@ -1815,17 +1826,102 @@
             },
             "timestamp": "2026-08-22T05:13:30.000Z",
             "type": "variable_set"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "basis": "delta",
+              "usage": {
+                "duration_ms": 539759,
+                "subagent_tokens": 140868,
+                "tool_uses": 60
+              }
+            },
+            "timestamp": "2026-08-22T05:13:33.248Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "chars": 4637,
+              "delivery": "full",
+              "stepId": "revise-document",
+              "techniqueId": "draft-document"
+            },
+            "timestamp": "2026-08-22T05:14:29.195Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "stepId": "revise-document"
+            },
+            "timestamp": "2026-08-22T05:14:29.195Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "evaluate",
+            "checkpoint": "evaluation-reviewed#1",
+            "timestamp": "2026-08-22T05:31:49.411Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "evaluate",
+            "checkpoint": "evaluation-reviewed#1",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-08-22T05:33:02.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "name": "needs_revision",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-22T05:33:02.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "basis": "delta",
+              "usage": {
+                "duration_ms": 1107260,
+                "subagent_tokens": 294801,
+                "tool_uses": 90
+              }
+            },
+            "timestamp": "2026-08-22T05:33:06.794Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "chars": 1902,
+              "delivery": "full",
+              "resourceId": "iso-checklist"
+            },
+            "timestamp": "2026-08-22T05:33:26.495Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 28,
+        "seq": 36,
         "sessionIndex": "OC4BF5",
         "skippedActivities": [],
         "startedAt": "2026-08-22T03:18:44.031Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1787375610,
+        "ts": 1787376806,
         "variables": {
           "checklist_path": "",
           "controlled_language": false,
@@ -1839,7 +1935,7 @@
           "finding_count": 46,
           "headless_mode": true,
           "intent_needs_confirmation": false,
-          "needs_revision": true,
+          "needs_revision": false,
           "open_issue_count": 0,
           "operation_type": "rewrite",
           "output_path": "",
