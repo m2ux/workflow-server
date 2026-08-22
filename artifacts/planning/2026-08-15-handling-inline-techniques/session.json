@@ -1574,6 +1574,29 @@
             "technique:review-assumptions::collect": "655544fbd2bf77f9",
             "technique:review-assumptions::record": "9a2d2b12296ff79f"
           },
+          "worker-implement-1": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:1654f244e34d336f": "1654f244e34d336f",
+            "bundle:scatter-gather": "231021ae4411fad4",
+            "bundle:variable-binding": "69962c9fd66c4d9a",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "technique:analyse-challenge::run-loop": "920249ad1ee0d03a",
+            "technique:inherited_inputs.items:aa0414d0654c9047": "aa0414d0654c9047",
+            "technique:inherited_inputs.items:e434ee2a018e66a0": "e434ee2a018e66a0",
+            "technique:inherited_inputs.items:ed4eef8536f9ef6e": "ed4eef8536f9ef6e",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:518c354c00993876": "518c354c00993876",
+            "technique:inherited_inputs:ce32ee1b0407f697": "ce32ee1b0407f697",
+            "technique:inherited_inputs:e2ed5503394b8275": "e2ed5503394b8275",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:review-assumptions::collect": "c79da31ca13a8496",
+            "technique:review-assumptions::record": "ecfe2105989ab831",
+            "technique:rules:1312287948d72037": "1312287948d72037",
+            "technique:rules:7ee01840785973f0": "7ee01840785973f0"
+          },
           "worker-implementation-analysis-1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
             "bundle:rules:1654f244e34d336f": "1654f244e34d336f",
@@ -7290,17 +7313,100 @@
             },
             "timestamp": "2026-08-22T14:39:20.684Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implement-1",
+              "chars": 67649,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-22T14:42:58.345Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implement-1",
+              "chars": 67649,
+              "priorAgentId": "worker-implementation-analysis-1"
+            },
+            "timestamp": "2026-08-22T14:42:58.345Z",
+            "type": "activity_redelivered"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implement-1",
+              "chars": 5253,
+              "delivery": "full",
+              "stepId": "evaluate-open-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-22T14:42:58.346Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implement-1",
+              "stepId": "evaluate-open-assumptions"
+            },
+            "timestamp": "2026-08-22T14:42:58.346Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implement-1",
+              "chars": 7961,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-22T14:42:58.346Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implement-1",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-22T14:42:58.346Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implement-1",
+              "chars": 4413,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-22T14:42:58.346Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implement-1",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-22T14:42:58.346Z",
+            "type": "step_started"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 93,
+        "seq": 94,
         "sessionIndex": "KLN3OI",
         "skippedActivities": [],
         "startedAt": "2026-08-15T10:00:34.754Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1787409560,
+        "ts": 1787409778,
         "variables": {
           "analysis_document": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/05-implementation-analysis.md",
           "applicable_patterns": "Lexical over dynamic scope; cycle-tolerant linking via a visited set; one narrow grammar module shared by checker and runtime; normative grammar published with conformance fixtures",
