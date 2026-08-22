@@ -10,11 +10,17 @@ name: Coverage walk
 #
 # Runs alongside `verify` rather than inside it: `npm run test:ci` stays a fast suite, and this job
 # fails on its own terms so a coverage regression is not read as a unit-test failure.
+#
+# On main, and on request. Twenty-five minutes is too long to sit in front of every pull request, and
+# the measurement is a property of the corpus rather than of a diff, so the natural place to take it
+# is the corpus as merged. The cost is that a change reducing coverage turns main red rather than its
+# own pull request, and is fixed forward. `workflow_dispatch` takes a ref, so a change that expects to
+# move coverage — a corpus bump, an edit to the walker or the expectation file — can be measured
+# before it merges by asking for a run on its branch.
 
 on:
   push:
     branches: [main]
-  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -40,18 +46,9 @@ jobs:
           # corpus is checked out on its own below rather than with `submodules: recursive`.
           submodules: false
 
-      - name: Resolve the pinned workflows-corpus commit
-        id: corpus
-        run: echo "sha=$(git rev-parse HEAD:workflows)" >> "$GITHUB_OUTPUT"
-
-      # The PINNED commit, not the `workflows` branch tip: this job measures the corpus the tree
-      # under review actually adopts.
-      - name: Check out the workflows corpus at the pinned commit
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository }}
-          ref: ${{ steps.corpus.outputs.sha }}
-          path: workflows
+      # The corpus this tree adopts. Its pull-request check is inert here, both triggers above naming a
+      # real commit rather than a merge, and the action is shared with verify.yml where that check runs.
+      - uses: ./.github/actions/workflows-corpus
 
       - uses: actions/setup-node@v4
         with:

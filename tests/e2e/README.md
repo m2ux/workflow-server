@@ -66,7 +66,9 @@ green. It lives in `snapshot.test.ts`:
   stopped reaching its branch fails regardless. It also records **step coverage
   per activity** — what each activity declares against what any policy runs — so
   the executed-step lists above are read next to the share of the workflow they
-  speak for.
+  speak for. Both sides are a pure function of the corpus and these six
+  policies, so a move in either is a move in one of those, and the per-activity
+  rows say where.
 
 **Benefits:** fast, free, reproducible, CI-able; pinpoints machinery and
 definition regressions precisely.
@@ -118,6 +120,11 @@ Own CI job ([`coverage.yml`](../../.github/workflows/coverage.yml)) rather than
 part of `test:ci`: fourteen full walks do not belong in the suite every unit-test
 run waits for, and a coverage regression should not read as a unit-test failure.
 `WF_OPTION_COVERAGE=1` is what the job sets, so nobody has to remember to.
+
+It runs on main and on request, not on every pull request — twenty-five minutes
+is too long to sit in front of a diff, and what it measures is a property of the
+corpus as merged. A change that expects to move coverage can ask for a run on its
+own branch; anything else that moves it turns main red and is fixed forward.
 
 ---
 

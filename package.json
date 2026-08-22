@@ -25,6 +25,7 @@
     "check:inherited-inputs": "tsx scripts/check-inherited-inputs.ts",
     "check:framing": "tsx scripts/check-section-framing.ts",
     "check:self-input": "tsx scripts/check-self-provisioned-input.ts",
+    "check:self-composed-set": "tsx scripts/check-self-composed-set.ts",
     "check:activity-tech": "tsx scripts/check-activity-technique-overlap.ts",
     "check:prism-lenses": "tsx scripts/check-prism-lens-reachability.ts",
     "check:anchors": "tsx scripts/check-resource-anchors.ts",

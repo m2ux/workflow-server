@@ -316,6 +316,30 @@ describe('mcp-server integration', () => {
       const meta = result._meta as Record<string, unknown>;
       expect(meta['session_index']).toBe(nextToken);
     });
+
+    it('the batch reading arrives in the response body, not only in _meta (#473)', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+
+      const result = await client.callTool({
+        name: 'get_activity',
+        arguments: { session_index: nextToken, context_tokens: 200_000, agent_id: 'worker-batch-read' },
+      });
+      const text = (result.content as Array<{ text: string }>)[0]!.text;
+      // A definition can tell a worker to report its own bound, so the reading has to be
+      // where a worker reads. Protocol metadata is not a place the harness guarantees to
+      // put in front of it.
+      expect(text).toMatch(/^batch:$/m);
+      expect(text).toMatch(/^ {2}may_continue: (true|false)$/m);
+      expect(text).toMatch(/^ {2}max_activities: \d+$/m);
+      expect(text).toMatch(/^ {2}activities: \d+$/m);
+
+      // The same figures, so a caller asserting on either reads one answer.
+      const batch = (result._meta as { batch?: Record<string, number | boolean> }).batch!;
+      expect(batch).toBeDefined();
+      expect(text).toContain(`max_activities: ${batch['max_activities']}`);
+      expect(text).toContain(`activities: ${batch['activities']}`);
+      expect(text).toContain(`may_continue: ${batch['may_continue']}`);
+    });
   });
 
   describe('tool: yield_checkpoint', () => {
@@ -332,6 +356,86 @@ describe('mcp-server integration', () => {
       const content = parseToolResponse(result);
       expect(content.status).toBe('yielded');
       expect(content.session_index).toBe(nextToken);
+    });
+
+    it('admits a gate the activity does not declare when it carries the decision (#477)', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+
+      const yielded = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: {
+          session_index: nextToken,
+          checkpoint_id: 'accept-reviewer-scope-request',
+          message: 'The reviewer asked for the migration script to be covered too. Take it into this work package?',
+          options: [
+            { id: 'accept', label: 'Cover the migration script' },
+            { id: 'defer', label: 'Leave it out and raise it separately' },
+          ],
+        },
+      });
+      expect(parseToolResponse(yielded).status).toBe('yielded');
+
+      // The orchestrator presents the decision the worker supplied, under the id
+      // that says what it decides.
+      const presented = await client.callTool({
+        name: 'present_checkpoint',
+        arguments: { session_index: nextToken },
+      });
+      const checkpoint = parseToolResponse(presented);
+      expect(checkpoint.id).toBe('accept-reviewer-scope-request');
+      expect(checkpoint.declared).toBe(false);
+      expect(checkpoint.message).toContain('migration script');
+      expect((checkpoint.options as Array<{ id: string }>).map(o => o.id)).toEqual(['accept', 'defer']);
+
+      await new Promise(r => setTimeout(r, 3100));
+      const responded = await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_index: nextToken, option_id: 'defer' },
+      });
+      expect(responded.isError).toBeFalsy();
+      expect(parseToolResponse(responded).resolved_option).toBe('defer');
+    });
+
+    it('rejects an option the admitted gate does not offer (#477)', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: {
+          session_index: nextToken,
+          checkpoint_id: 'accept-late-scope',
+          message: 'Take the extra file into scope?',
+          options: [{ id: 'yes', label: 'Yes' }, { id: 'no', label: 'No' }],
+        },
+      });
+      await new Promise(r => setTimeout(r, 3100));
+      const bad = await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_index: nextToken, option_id: 'maybe' },
+      });
+      expect(bad.isError).toBeTruthy();
+    });
+
+    it('a mistyped id with no decision still fails (#477)', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const result = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'issue-verifcation' },
+      });
+      expect(result.isError).toBeTruthy();
+    });
+
+    it('refuses a decision supplied for a checkpoint the activity declares (#477)', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      const result = await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: {
+          session_index: nextToken,
+          checkpoint_id: 'issue-verification',
+          message: 'Something else entirely',
+          options: [{ id: 'a', label: 'A' }, { id: 'b', label: 'B' }],
+        },
+      });
+      expect(result.isError).toBeTruthy();
     });
   });
 
@@ -798,6 +902,7 @@ describe('mcp-server integration', () => {
             session_index: sessionToken,
             activity: 'start-work-package',
             usage: { input_tokens: total, output_tokens: 7, total_tokens: total + 7 },
+            basis: 'delta',
           },
         });
         expect(res.isError).toBeFalsy();
@@ -822,7 +927,7 @@ describe('mcp-server integration', () => {
     it('record_usage rejects an unknown session', async () => {
       const res = await client.callTool({
         name: 'record_usage',
-        arguments: { session_index: 'NOPE00', activity: 'x', usage: { total_tokens: 1 } },
+        arguments: { session_index: 'NOPE00', activity: 'x', usage: { total_tokens: 1 }, basis: 'delta' },
       });
       expect(res.isError).toBeTruthy();
     });
@@ -834,6 +939,7 @@ describe('mcp-server integration', () => {
           session_index: sessionToken,
           activity: 'start-work-package',
           usage: { input_tokens: 10, output_tokens: 2, total_tokens: 12 },
+          basis: 'delta',
           agent_id: 'worker-a',
         },
       });
@@ -843,6 +949,7 @@ describe('mcp-server integration', () => {
           session_index: sessionToken,
           activity: 'start-work-package',
           usage: { input_tokens: 3, output_tokens: 1, total_tokens: 4 },
+          basis: 'delta',
         },
       });
       const all = parseToolResponse(await client.callTool({
@@ -873,6 +980,77 @@ describe('mcp-server integration', () => {
         if (typeof r.usage?.input_tokens === 'number') sumIn += r.usage.input_tokens;
       }
       if (sumIn > 0) expect(view.totals.input_tokens).toBe(sumIn);
+    });
+
+    it('a cumulative row is carried per agent rather than summed (#474 F7)', async () => {
+      const before = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      }));
+      const deltaBefore = before.totals.total_tokens ?? 0;
+
+      // A harness reporting a running total per agent: the second figure already
+      // contains the first, so summing the two counts the first activity twice.
+      for (const total of [500, 900]) {
+        const res = await client.callTool({
+          name: 'record_usage',
+          arguments: {
+            session_index: sessionToken,
+            activity: 'start-work-package',
+            usage: { total_tokens: total },
+            basis: 'cumulative',
+            agent_id: 'worker-cumulative',
+          },
+        });
+        expect(res.isError).toBeFalsy();
+      }
+
+      const after = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      }));
+      // The delta total is untouched by either cumulative row.
+      expect(after.totals.total_tokens ?? 0).toBe(deltaBefore);
+      // The agent's latest figure is the one that stands, not 1400.
+      expect(after.cumulative_latest_by_agent['worker-cumulative'].total_tokens).toBe(900);
+    });
+
+    it('a row states its basis, and one that does not is counted apart (#474 F7)', async () => {
+      const view = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      }));
+      expect(view.rows.every((r: { basis?: string }) => r.basis === 'delta' || r.basis === 'cumulative')).toBe(true);
+      expect(view.unstated_basis).toBe(0);
+    });
+
+    it('wall clock is measured and declared non-additive, and absence is named (#474 F7)', async () => {
+      const view = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'usage' },
+      }));
+      // Spans nest and hold user think time, so the run's elapsed time is the
+      // outer span rather than the sum of the parts.
+      expect(view.wall_clock_ms_not_additive).toBe(true);
+      expect(typeof view.elapsed_ms).toBe('number');
+      const measured = view.rows.filter((r: { wall_clock_ms?: number }) => typeof r.wall_clock_ms === 'number');
+      for (const row of measured) expect(row.wall_clock_ms).toBeLessThanOrEqual(view.elapsed_ms);
+      // Every completed activity carrying no row is listed rather than quietly
+      // reducing the total.
+      expect(Array.isArray(view.activities_without_usage)).toBe(true);
+      expect(view.activities_without_usage).not.toContain('start-work-package');
+    });
+
+    it('record_usage refuses a figure whose basis is unstated (#474 F7)', async () => {
+      const res = await client.callTool({
+        name: 'record_usage',
+        arguments: {
+          session_index: sessionToken,
+          activity: 'start-work-package',
+          usage: { total_tokens: 5 },
+        },
+      });
+      expect(res.isError).toBeTruthy();
     });
 
     it('PR366-TC-06: stale usage-on-next_activity phrases are absent from tool surface', async () => {
@@ -1079,6 +1257,68 @@ describe('mcp-server integration', () => {
         },
       });
       expect(result.isError).toBeFalsy();
+    });
+
+    it('activity_manifest outcomes reach the activities projection, once per activity (#477)', async () => {
+      await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: sessionToken,
+          activity_id: 'start-work-package',
+          activity_manifest: [
+            { activity_id: 'start-work-package', outcome: 'The work package has a planning folder and a branch' },
+          ],
+        },
+      });
+      // The same activity named again by a later manifest adds no second row —
+      // the outcome is a property of the activity, not of the report.
+      await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: sessionToken,
+          activity_id: 'design-philosophy',
+          activity_manifest: [
+            { activity_id: 'start-work-package', outcome: 'The work package has a planning folder and a branch' },
+          ],
+        },
+      });
+
+      const inspected = await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'activities' },
+      });
+      const activities = parseToolResponse(inspected);
+      const rows = (activities.outcomes as Array<{ activity: string; outcome: string }>)
+        .filter(r => r.activity === 'start-work-package');
+      expect(rows).toHaveLength(1);
+      expect(rows[0]!.outcome).toContain('planning folder');
+    });
+
+    it('an unpublished progress mark is answerable from the session afterwards (#473)', async () => {
+      // Two dispatches: one that published the in-progress mark, one that did not, and one
+      // that said nothing about it. The mark itself is a README cell the completion status
+      // overwrites, so the report is what survives the activity ending.
+      await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: sessionToken, activity_id: 'start-work-package', progress_published: true },
+      });
+      await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: sessionToken, activity_id: 'design-philosophy', progress_published: false },
+      });
+      await client.callTool({
+        name: 'next_activity',
+        arguments: { session_index: sessionToken, activity_id: 'plan-prepare' },
+      });
+
+      const activities = parseToolResponse(await client.callTool({
+        name: 'inspect_session',
+        arguments: { session_index: sessionToken, view: 'activities' },
+      }));
+      expect(activities.progress_mark_unpublished).toContain('design-philosophy');
+      expect(activities.progress_mark_unpublished).not.toContain('start-work-package');
+      expect(activities.progress_mark_unreported).toContain('plan-prepare');
+      expect(activities.progress_mark_unreported).not.toContain('design-philosophy');
     });
 
     it('withAuditLog re-resolves session_index and populates trace event with sid/wf/act/aid from session.json', async () => {
@@ -2358,6 +2598,11 @@ describe('mcp-server integration', () => {
         completed: ['start-work-package', 'research', 'wp-plan'],
         skipped: ['codebase-comprehension'],
         current: 'implement',
+        // This fixture reports neither outcomes nor progress marks, so every activity it
+        // entered is unreported and none is known to have skipped the write.
+        outcomes: [],
+        progress_mark_unpublished: [],
+        progress_mark_unreported: ['start-work-package', 'research'],
       });
 
       const checkpoints = parseToolResponse(await callInspect({ view: 'checkpoints' }));
@@ -2384,6 +2629,11 @@ describe('mcp-server integration', () => {
         status: 'running',
         currentActivity: 'triage',
         completed: ['intake'],
+        // Still running with no usage reported: the figure is unavailable, which the
+        // digest says rather than showing a zero.
+        cost_known: false,
+        rows: 0,
+        totals: {},
       }]);
 
       const variables = parseToolResponse(await callInspect({ view: 'variables' }));
@@ -2490,6 +2740,11 @@ describe('mcp-server integration', () => {
         status: 'running',
         currentActivity: 'plan',
         completed: [],
+        // The grandchild is running and has reported no usage, so its cost is
+        // unavailable rather than nil.
+        cost_known: false,
+        rows: 0,
+        totals: {},
       }]);
 
       const summary = parseToolResponse(await callInspect({ child_index: 0, view: 'summary' }));

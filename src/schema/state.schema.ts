@@ -59,6 +59,22 @@ export const HistoryEventTypeSchema = z.enum([
   // maxActivities, budgetChars }. Counting these per limit is what the
   // conservative starting settings are revised from. See src/utils/batch.ts.
   'batch_refused',
+  // Outcome accounting (#477): the outcome the orchestrator reported for one
+  // completed activity, from the `activity_manifest` on next_activity.
+  // `activity` is the activity that ran; `data` carries { outcome,
+  // transitionCondition? }. Close-out measures a run against these where the
+  // client workflow seeded no outcome list of its own, so a run is judged on
+  // what its own activities delivered. One event per activity per report; a
+  // manifest re-sent for an activity already carrying one adds nothing.
+  'activity_outcome',
+  // Progress-mark observability (#473): whether the activity being entered had its
+  // in-progress Progress mark published before the worker spawned, as the orchestrator
+  // reported it. `activity` is the activity entered; `data` carries { published }.
+  // The mark itself lives in the planning README, which the completion status overwrites
+  // once the activity ends — so without this event a run that skipped the write is
+  // indistinguishable from one that made it, and a required write whose omission leaves
+  // no trace gets omitted.
+  'progress_published',
 ]);
 export type HistoryEventType = z.infer<typeof HistoryEventTypeSchema>;
 

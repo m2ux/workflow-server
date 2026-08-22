@@ -1,0 +1,59 @@
+name: Workflows corpus
+description: >
+  Check out the workflows corpus this tree adopts, and confirm the branch's committed baselines were
+  recorded against it.
+
+# The corpus lives in the `workflows` submodule, which is a branch of THIS repo behind an SSH URL the
+# default token cannot use. A second checkout of the gitlink commit avoids submodule machinery and
+# credential rewriting entirely: `HEAD:workflows` reads the gitlink from the superproject tree, so it
+# resolves without the submodule ever being initialised.
+#
+# Every job that reads the corpus wants the same three steps, so they live here once.
+
+runs:
+  using: composite
+  steps:
+    - name: Resolve the corpus commit this tree adopts
+      id: corpus
+      shell: bash
+      run: echo "sha=$(git rev-parse HEAD:workflows)" >> "$GITHUB_OUTPUT"
+
+    # A pull request is tested as the merge of its head into the base, so the corpus resolved above is
+    # the merge tree's gitlink — and that is the BASE's whenever the base moved the submodule and the
+    # branch did not. The branch's committed walk baselines were recorded against the branch's own
+    # gitlink, so they then describe a corpus this tree does not walk, and every corpus-coupled
+    # measurement drifts against it: the walk snapshots, the delivery-cost fixture, the option-coverage
+    # ratchet. Each reports a diff, and each reports it as a property of the code under review.
+    #
+    # That is how one step became a regression report. A corpus bump on the base replaced `value: true`
+    # on the action that binds `gitnexus_indexed` with a description, so `gitnexus-detect-changes-preflight`
+    # stopped being reached, post-impl-review went from nine executed steps to eight, and a pinned total
+    # failed on the runner while passing locally — twice, from the same commit (issue #479).
+    #
+    # The corpus stamp does not catch this. It records the corpus the baselines were generated against
+    # in a file of its own, and a merge takes that file from whichever side last touched it: on the run
+    # above it came from the base, matched the base's corpus, and passed while the snapshots it speaks
+    # for came from the branch. A claim stored beside its subject can be separated from it. Two gitlinks
+    # cannot, which is why the check below reads them rather than the stamp.
+    - name: Confirm the branch walked the corpus this merge adopts
+      if: github.event_name == 'pull_request'
+      shell: bash
+      env:
+        HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        MERGE_CORPUS: ${{ steps.corpus.outputs.sha }}
+      run: |
+        git fetch --no-tags --depth=1 origin "$HEAD_SHA"
+        branch_corpus="$(git rev-parse "$HEAD_SHA:workflows")"
+        if [ "$branch_corpus" = "$MERGE_CORPUS" ]; then
+          echo "Branch and merge both adopt corpus ${MERGE_CORPUS}."
+          exit 0
+        fi
+        echo "::error::The base branch moved the workflows corpus. This merge adopts ${MERGE_CORPUS}; the branch pins ${branch_corpus}. Every committed baseline on the branch was recorded against the branch's corpus, so measuring them against the merge's would report corpus drift as a code regression. Merge the base in, then re-baseline the walk (npm run test:ci -- -u) and re-stamp it (npm run baseline:stamp) in the same commit."
+        exit 1
+
+    - name: Check out the corpus this tree adopts
+      uses: actions/checkout@v4
+      with:
+        repository: ${{ github.repository }}
+        ref: ${{ steps.corpus.outputs.sha }}
+        path: workflows

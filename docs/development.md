@@ -377,7 +377,13 @@ It checks out the submodules the worktree records and makes `node_modules` resol
 
 [`.github/workflows/verify.yml`](../.github/workflows/verify.yml) runs `npm run typecheck`,
 `npm run test:ci`, and `npm run check:all` on every pull request, against the corpus commit the tree
-under review pins. Guards that also run as Vitest tests (`tests/binding-fidelity.test.ts`,
+under review adopts. That tree is the merge of the branch into its base, so the corpus is the base's
+whenever the base moved the submodule and the branch did not — and the branch's baselines were then
+recorded against a different one.
+[`.github/actions/workflows-corpus`](../.github/actions/workflows-corpus/action.yml) checks the two
+gitlinks agree before either job measures anything, so that case fails saying to merge and
+re-baseline rather than reporting corpus drift as a code regression.
+Guards that also run as Vitest tests (`tests/binding-fidelity.test.ts`,
 `tests/technique-template.test.ts`, `tests/fragments-guard.test.ts`, `tests/audience-guard.test.ts`,
 `tests/review-mode-gating.test.ts`, `tests/identifier-qualification.test.ts`) fail `npm test` too.
 
@@ -392,6 +398,16 @@ than as six unrelated regressions. Bump it in the same commit that bumps the sub
 npm run test:ci -- -u      # re-baseline the walk
 npm run baseline:stamp     # record the corpus commit it was baselined against
 ```
+
+The stamp is a file describing the provenance of sibling files, and a merge takes each file from
+whichever side last touched it. A branch that leaves both alone therefore inherits its base's stamp
+while keeping its own baselines, and the two agree with the base's corpus while describing another —
+which is what the gitlink check in CI is for.
+
+How little a corpus bump has to change to move a walk is worth knowing. Replacing `value: true` with
+a description on the action that binds `gitnexus_indexed` left every gate expression in the corpus
+untouched and still retired `gitnexus-detect-changes-preflight` from all six walks, because the
+walker binds a `set` action only when it carries an explicit value (#479).
 
 The binding-fidelity triage carries the same coupling: its 69 verdicts are judgements about
 definitions as they stood at `corpusSha`. The guard prints how far the corpus has moved since,
