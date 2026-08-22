@@ -2,7 +2,7 @@
 
 How the workflow server ensures agents follow workflows correctly.
 
-## The Problem
+## The problem
 
 AI agents executing multi-step workflows face two reliability challenges:
 
@@ -11,7 +11,7 @@ AI agents executing multi-step workflows face two reliability challenges:
 
 The workflow server addresses these through seven layers of enforcement, each operating at a different granularity. Two are hard gates that refuse the call; the other five record warnings and evidence, so a drifting agent is visible rather than stopped.
 
-## Enforcement Layers
+## Enforcement layers
 
 ### The shape of a transition
 
@@ -37,7 +37,7 @@ flowchart TD
 
 Double-bordered nodes are hard gates: they refuse the call until satisfied. Dashed arrows are advisory checks that add a warning to `_meta.validation` and let the call through. Every call verifies the session seal (L1) and records a trace event (L7); annotating those on each edge would only clutter the picture.
 
-### Layer 1: Session Integrity
+### Layer 1: session integrity
 
 Session state is not something an agent carries. Agents hold a six-character `session_index`, derived deterministically from the planning slug, and the server keeps the state itself on disk beside the planning folder. So what has to be protected is the file, not a credential in a prompt.
 
@@ -54,7 +54,7 @@ Because the state lives in the file rather than in an agent's context, a server 
 
 The file layout itself — what the state file carries, where the planning folder sits under the engineering root, and how a resume call works — is described once in [the state management model](state-management-model.md#persistence).
 
-### Layer 2: Checkpoint Gate
+### Layer 2: checkpoint gate
 
 When a worker yields a checkpoint, the server records it in the session's `activeCheckpoint` field. Three operations then refuse until it is cleared:
 
@@ -82,7 +82,7 @@ Everything else stays open, deliberately. `inspect_session` in particular is usa
 
 **Anti-gaming:** the timers close off the cheapest way to fake a checkpoint, which is calling `respond_checkpoint` straight after `yield_checkpoint` without showing anyone anything. Real worker execution takes minutes, so the check never fires on a legitimate run. What it cannot do is prove a person saw the question; that limit is recorded below.
 
-### Layer 3: Cross-Activity Validation
+### Layer 3: cross-activity validation
 
 When an agent makes a tool call, the server compares the position it recorded on the previous call against what this call claims. Warnings are returned in `_meta.validation`.
 
@@ -97,7 +97,7 @@ When an agent makes a tool call, the server compares the position it recorded on
 
 **Design principle:** Warnings don't block execution — the tool still returns its result. This allows agents to self-correct rather than being hard-blocked, while making violations visible. All validation warnings are captured in the execution trace (Layer 7).
 
-### Layer 4: Transition Condition Tracking
+### Layer 4: transition condition tracking
 
 When calling `next_activity` to transition to a new activity, agents can include a `transition_condition` parameter — the condition string (from the `transitions` field of the current activity's definition) that caused the transition.
 
@@ -108,7 +108,7 @@ When calling `next_activity` to transition to a new activity, agents can include
 
 **What it cannot verify in real-time:** Whether the condition is actually true in the agent's state. However, conditions are typically set by user choices at checkpoints, which are logged. Post-hoc review can cross-reference claimed conditions against checkpoint responses and trace data.
 
-### Layer 5: Step Completion Manifest
+### Layer 5: step completion manifest
 
 When transitioning between activities via `next_activity`, agents include a `step_manifest` parameter — a structured summary of each step completed in the previous activity.
 
@@ -132,7 +132,7 @@ When transitioning between activities via `next_activity`, agents include a `ste
 
 **Technique-fetch fidelity:** the server records every `get_technique` fetch as a `technique_fetched` event in the session history (resolved technique id, bound `step_id` when supplied, agent — recorded on both delivery paths, so an unchanged-reference answer in persistent context mode still counts), and every inline step-technique delivery from a bundling activity's `get_activity` as a `technique_bundled` event. `get_resource` fetches are recorded as `resource_fetched` events for observability only. All three delivery events carry the payload magnitude — `chars` (the full payload size, on both delivery paths) and `delivery: "full" | "unchanged"` — so delivered and saved characters are summable from the history rather than estimated ([Reference delivery](resource-resolution-model.md#reference-delivery)). When validating a `step_manifest`, a manifested technique step with no delivery recorded during the current activity visit warns — the step was reported complete but its composed technique content was never loaded, the silent-degradation signature. A step is covered by a step-bound fetch, by any in-activity fetch that resolved to the same technique operation, or by an inline bundle delivery, and a loop-back revisit needs its own fetches. Advisory, like the rest of the layer. Inline delivery mechanics: [Hybrid technique bundling](resource-resolution-model.md#hybrid-technique-bundling).
 
-### Layer 6: Activity Manifest
+### Layer 6: activity manifest
 
 When transitioning between activities via `next_activity`, agents can include an `activity_manifest` — a structured summary of activities completed so far in the workflow.
 
@@ -153,7 +153,7 @@ When transitioning between activities via `next_activity`, agents can include an
 
 **Design principle:** Activity manifest validation is advisory — it produces warnings, not rejections. This matches the design principle of Layer 3. The manifest provides a workflow-level audit trail that complements the step-level detail of Layer 5, particularly in orchestrator/worker patterns where the orchestrator tracks the workflow journey and the worker tracks step execution.
 
-### Layer 7: Execution Trace
+### Layer 7: execution trace
 
 The server automatically captures a mechanical trace of every tool call in a session. Trace data is packaged as HMAC-signed trace tokens — opaque, compact references that the agent accumulates and can resolve via `get_trace`.
 
@@ -192,15 +192,15 @@ The server automatically captures a mechanical trace of every tool call in a ses
 - Compact — compressed field names minimize context window impact
 - Degradation-resilient — tokens remain valid attestations even if the server restarts
 
-## Context Pressure Mitigation
+## Context pressure mitigation
 
 Beyond enforcement, the server reduces the context burden on agents:
 
-### Lightweight Workflow Metadata
+### Lightweight workflow metadata
 
 `get_workflow` returns lightweight metadata (~2KB) rather than the full workflow definition (~13KB): the orchestrator gets rules, variables, `initialActivity`, and activity stubs without consuming its context window with step-level detail. Step detail and the worker-facing `rules.activity` / `techniques.activity` reach workers through `get_activity`. The response is preceded by the technique bundle (the workflow's `techniques.workflow` plus the core orchestrator techniques), so the orchestrator receives its execution surface in a single round-trip.
 
-### Transitions in Activity Definitions
+### Transitions in activity definitions
 
 `get_activity` returns the complete activity definition including its `transitions` field with human-readable conditions. The agent matches conditions against its state variables to determine the next activity:
 
@@ -215,15 +215,15 @@ Beyond enforcement, the server reduces the context burden on agents:
 
 Transitions are also derived from `decisions` (branch `transitionTo` fields) and `checkpoints` (option `effect.transitionTo` fields), giving the orchestrator a complete view of all possible next activities.
 
-### Technique and Resource Loading
+### Technique and resource loading
 
 `get_workflow` and `get_activity` pre-resolve the activity's `techniques[]` references and return them as the bundled technique set in the response preamble — agents read technique bodies (capability, flow, inputs, protocol, outputs) directly from the bundle rather than chasing per-step loads. `get_technique` loads a single fully composed technique on demand — the workflow's first declared technique before any activity, or the technique for the current activity (optionally a `step_id`'s technique). Call `get_resource` with the resource index when a technique references reference material that wasn't bundled.
 
-### Self-Describing Bootstrap
+### Self-describing bootstrap
 
 The `discover` tool returns the complete bootstrap procedure and available workflows. Agents learn how to use the server from the server itself, reducing reliance on IDE-side configuration that may go stale.
 
-### Trace Token Efficiency
+### Trace token efficiency
 
 Trace tokens use compressed field names and HMAC-signed opaque encoding. A 10-activity session produces ~3KB of accumulated tokens. The agent stores tokens as opaque strings without parsing, keeping the mechanical trace out of the reasoning context until explicitly resolved via `get_trace`.
 

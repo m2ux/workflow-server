@@ -16,7 +16,7 @@ The boundaries are the point. The user-facing agent never holds step detail, the
 
 ---
 
-## Mechanics of Dispatch
+## Mechanics of dispatch
 
 The dispatch process safely hands off execution from one layer to the next. Each session has a 6-character `session_index` (base32, deterministically derived from the planning slug); agents pass the index — not a token — on every authenticated call. The canonical state lives in the server-owned `session.json` (see [State Management](state-management-model.md#persistence)).
 
@@ -100,7 +100,7 @@ Three carve-outs keep the bound aimed at what it is for:
 
 **Cost keeps its per-activity resolution.** `record_usage` records one `activity_usage` row per activity a dispatch covered, sharing an `agent_id`, rather than one figure per dispatch attributed to whichever activity the orchestrator names. Without that, a batch size cannot be calibrated from real runs.
 
-## Workflow Status Polling
+## Workflow status polling
 
 The user-facing agent can poll the status of a dispatched workflow using `get_workflow_status`:
 
@@ -117,7 +117,7 @@ This returns:
 
 The status is determined from the session state: `blocked` when `activeCheckpoint` is set in `session.json`, `completed` when the workflow has no more activities, and `active` otherwise.
 
-## Resuming Sub-Agents
+## Resuming sub-agents
 
 When an agent pauses (e.g., waiting for a checkpoint resolution), it doesn't die. Hosts that support sub-agents typically expose a `resume` mechanism that re-enters a previously spawned sub-agent with new instructions appended to its existing context (Cursor's `Task` tool, for example, accepts a `resume` parameter keyed on the sub-agent's ID).
 
@@ -130,7 +130,7 @@ Task({
 ```
 This appends the new instructions directly to the sub-agent's existing context window, allowing it to seamlessly continue its execution loop without losing its memory of the codebase or workflow state.
 
-## Environment Considerations (Inline Fallback)
+## Environment considerations (inline fallback)
 
 The Hierarchical Dispatch Model is optimised for hosts that support background sub-agents (e.g., Cursor's `Task` tool).
 

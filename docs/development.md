@@ -29,7 +29,7 @@ npm run dev:http      # hot reload over HTTP
 npm run start:http    # production HTTP entry point
 ```
 
-## Project Structure
+## Project structure
 
 The directories, and what each one owns:
 
@@ -53,7 +53,7 @@ The directories, and what each one owns:
 
 For anything finer-grained than a directory, read the directory — a file list in prose goes stale the first time someone splits a module.
 
-## Environment Variables
+## Environment variables
 
 Root binding (one of workspace path **or** `--repo` is required at startup):
 
@@ -96,7 +96,7 @@ The install sequence these settings fit into is in [setup.md](../setup.md), and 
 
 ## Testing
 
-### Running Tests
+### Running tests
 
 ```bash
 # Run all tests (watch mode)
@@ -114,13 +114,13 @@ npm test -- --run tests/e2e
 
 Coverage needs `@vitest/coverage-v8`, which is not a dependency of this repository — install it before passing `--coverage`.
 
-### Test Suites
+### Test suites
 
 The suite is large enough that naming its files here would go stale faster than it helps. `tests/` holds the unit and integration suites, `tests/e2e/` holds the end-to-end walks through the workflow corpus, and `npm test -- --run` prints the live inventory with the pass and fail counts.
 
 Two things about the suite are worth knowing before changing anything in it. Several corpus guards run as Vitest tests as well as under `check:all`, so a guard finding fails `npm test` too. And the end-to-end walks are snapshotted against a specific corpus commit, which is why a submodule bump and a re-baseline belong in the same change — see [Corpus-coupled baselines](#corpus-coupled-baselines) below.
 
-### Test Infrastructure
+### Test infrastructure
 
 - **Framework:** [Vitest](https://vitest.dev/)
 - **MCP Testing:** Uses `InMemoryTransport` for integration tests
@@ -220,7 +220,7 @@ The harness writes one transcript record per content block of a response and rep
 
 Every total is reported beside `recordSummed`, what a summation over records yields for the same span, and their `ratio`. A figure quoted from a per-record count can then be reconciled against a profile rather than merely contradicted by it — over the whole 27 July 2026 run, main and worker context together reconcile at 2.09×, and the worker column across that run's startup window at 2.42× ([#409](https://github.com/m2ux/workflow-server/issues/409)).
 
-## Validating Workflows
+## Validating workflows
 
 ### One sweep, one registry
 

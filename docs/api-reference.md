@@ -18,7 +18,7 @@ When the server starts with `--transport=http` (or `TRANSPORT=http` / `npm run s
 
 Responses include an `x-request-id` header (echoed when the client supplies one). Place the listener behind network access control or a reverse proxy; the server does not implement application-level authentication. Local `mcp-remote` clients may probe OAuth well-known URLs (`/.well-known/oauth-*`) and receive 404s; that is expected without auth and is logged as info, not error. See [setup.md](../setup.md), [http.md](../http.md) / [stdio.md](../stdio.md) (transports), and [development.md](development.md) for process env (developers).
 
-## MCP Tools
+## MCP tools
 
 Most tools take a `session_index` from `start_session`. Bootstrap tools do not. Each authenticated response includes `session_index` and advisory `_meta.validation` where applicable.
 
@@ -77,6 +77,6 @@ Require `session_index`. Workflow identity comes from the session.
 | Technique bundles, composition, resources | [Resource resolution](resource-resolution-model.md) |
 | Reference delivery and eager step bundling | [Reference delivery](resource-resolution-model.md#reference-delivery) and [hybrid technique bundling](resource-resolution-model.md#hybrid-technique-bundling) |
 | What the server enforces vs agents | [Schema enforcement model](../schemas/README.md#enforcement-model) |
-| Wire descriptions & parameter schemas | [Site API](../site/api/tools.html) (generated from `src/tools/`) |
+| Wire descriptions and parameter schemas | [Site API](../site/api/tools.html) (generated from `src/tools/`) |
 | Technique file shape | [Technique protocol](technique-protocol-specification.md) |
 | Workflow / activity file shapes | [Schema guide](../schemas/README.md) |
