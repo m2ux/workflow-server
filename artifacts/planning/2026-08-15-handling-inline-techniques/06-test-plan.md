@@ -41,7 +41,8 @@ Key changes to validate:
 | PR466-TC-17 | Verify a call site's binding annotations arrive as a block separate from the callee body | Unit |
 | PR466-TC-18 | Verify the three correctly-authored cycle members load without error and each body is delivered once | Integration |
 | PR466-TC-19 | Verify a synthetic deep reference chain terminates and its queue depth is bounded | Unit |
-| PR466-TC-20 | Verify a group container body is not a closure member, so a callee's container rules stay out of the caller's obligation set | Unit |
+| PR466-TC-20 | Verify a group container body is not a delivered closure member when the qualified pair naming its operation collapses | Unit |
+| PR466-TC-31 | Verify a folded callee's container rules reach the agent executing that call, and that the caller's own obligation set gains no rule from a container tree it does not belong to | Integration |
 | PR466-TC-21 | Verify the reachable-text scan runs over the delivered closure across the whole corpus rather than one technique in one workflow | Integration |
 | PR466-TC-22 | Verify the scan's cost stays a rounding error against composition on the heaviest closure | Performance |
 | PR466-TC-23 | Verify an attributed core-operations entry is removed only once the reference standing in for it delivers at that entry's own door | Integration |
@@ -67,6 +68,7 @@ Key changes to validate:
 | SC-6 | Value-named callees enumerated, closure checked where a set is enumerable | PR466-TC-12, PR466-TC-13 |
 | SC-7 | Bodies arrive deduplicated and transitively within the delivery budget | PR466-TC-14, PR466-TC-15 |
 | SC-7a | A folded callee is keyed as a technique and collapses against a step-bound delivery | PR466-TC-16, PR466-TC-17, PR466-TC-20 |
+| PL-1 (open) | A folded callee executes under the constraints that govern it | PR466-TC-31 |
 | SC-8 | Each body delivered once, traversal continuing at a revisit | PR466-TC-18, PR466-TC-19 |
 | SC-9 | The reachable-text scan runs over the delivered closure | PR466-TC-21, PR466-TC-22 |
 | SC-10 | Attributed baseline entries retire against the door that serves them | PR466-TC-23, PR466-TC-24 |
@@ -75,9 +77,14 @@ Key changes to validate:
 | SC-13 | The already tool-backed call sites reach their operation through a typed tool, no host-credentialed path in the server | PR466-TC-26, PR466-TC-27, PR466-TC-28 |
 | G10 (analysis-derived) | Every corpus guard can report unmeasured | PR466-TC-29 |
 
-Every criterion maps to at least one case. Two coverage notes rather than gaps: SC-11 is verified by
-reading three prose authorities and has no mechanical case, and SC-9's cost case replicates figures whose
-current evidence is sample-size two.
+Every criterion maps to at least one case. Three coverage notes rather than gaps: SC-11 is verified by
+reading three prose authorities and has no mechanical case; SC-9's cost case replicates figures whose
+current evidence is sample-size two; and PR466-TC-31's expected result is fixed by whichever position
+[PL-1](02-assumptions-log.md#pl-1-what-a-folded-closure-contains) settles on, so the case is listed with
+its objective and authored once that decision lands. Closure membership and rule enforcement are separate
+cases because they are separate questions — the first follows from the counting grammar, the second does
+not follow from anything yet decided, and one case covering both would pass while the enforcement question
+stayed open.
 
 ## Running Tests
 

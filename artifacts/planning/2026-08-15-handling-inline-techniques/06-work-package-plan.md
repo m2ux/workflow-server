@@ -33,11 +33,15 @@ across a depth-first walk, delivering each body once and continuing at a revisit
 reachability problem rather than an evaluation problem: no closure member computes a value another member
 consumes, which is why revisit-tolerance is correct independently of what the corpus happens to contain.
 
-**A folded callee delivers the operation body alone** (PL-1). A qualified call is two links naming one
-operation, and delivery follows the counting grammar in collapsing them, so a group container body is not
-a closure member and a callee's container rules stay out of the caller's obligation set. One decision
-settles three questions: closure contents, rule propagation, and what SC-7 asserts — 40,671 bytes over 12
-members for the heaviest caller.
+**A folded closure carries operation bodies; how the callee's constraints reach the agent is open** (PL-1).
+A qualified call is two links naming one operation, and delivery follows the counting grammar in collapsing
+them, so a group container body is not a delivered closure member. What does not follow from that is how a
+callee's container rules are enforced. A step-bound technique arrives today with its group's rules
+attached, which is what makes those rules binding; a folded callee carrying no rules at all would execute
+its protocol with none of the constraints that govern it — including the three that are the reason a
+wrapper is prose rather than code, the human agreement before replying to review feedback, the instruction
+to read the target repository's own guidance, and the escape hatch for a graph with no edge. The three
+options and their measured costs are in the [log](02-assumptions-log.md#pl-1-what-a-folded-closure-contains).
 
 **Folded bodies ride the channel their compensation already rides** (PL-2). The eleven core-operations
 entries attributed to non-delivery are served at the orchestrator door, which carries no budget parameter
@@ -60,6 +64,18 @@ space. They are not restated here. The two decisions this plan settles on its ow
 | Commit sequencing inside one pull request | Keeps the shared grammar module in one reviewable change with its three consumers | Requires the ordering below to be honoured | **Selected** |
 | Splitting the pull request per work item | Matches the epic's stated convention | Separates the grammar module from the guard, the traversal and the authorities that consume it | Rejected |
 
+### Evidence captured while planning
+
+Three declared inputs went unsatisfied while this activity executed its own steps, and they are recorded
+here so the [provenance log](08-provenance-log.md) carries them rather than losing them: the stakeholder
+overview's `source_material`, which the server marked UNRESOLVED with no variable, prior output or binding
+supplying it; and `default_branch` and `github_issue_number`, both declared by their steps and absent from
+the session bag, resolved from `origin/HEAD` and from the pull request's own issue link rather than
+guessed. These are live instances of the defect this package exists to fix, met in the ordinary course of
+running the workflow rather than found by scanning for them, which makes them first-hand evidence for the
+activity-layer contract gap measured at 82 of 748 bind sites. The provenance log is their home; this
+subsection is the pointer to it.
+
 ### Commit sequencing
 
 The review hazard is ordering, not size. The conversion removes 41 of 135 logical call sites from the
@@ -76,11 +92,19 @@ legitimate re-baseline. The ordering that removes it:
 ### Assumptions
 
 Assumptions underlying the approach: [assumptions log](02-assumptions-log.md). Three of them are open
-design decisions — what a folded closure contains, which counter a folded body draws on, and whether one
-classifier owns the link space. They are settled at the assumptions-review activity, which this plan
-transitions to, and not at this activity's approach gate: that gate is non-blocking and auto-advances to
-`confirmed`, so a decision reached by its timer is not a decision anyone made. PL-2 is path-committing and
-is the one to settle first.
+design decisions — what a folded closure contains and how the callee's constraints are enforced (PL-1),
+which counter a folded body draws on (PL-2), and whether one classifier owns the link space (PL-3). They
+are settled at the assumptions-review activity, which this plan transitions to, and not at this activity's
+approach gate: that gate is non-blocking and auto-advances to `confirmed`, so a decision reached by its
+timer is not a decision anyone made.
+
+**PL-1 and PL-2 are settled together, not in isolation.** PL-1's third option carries the callee's
+container rules as material scoped to the call, and material has to travel on a channel — which is the
+counter PL-2 chooses. Settling PL-2 first while assuming PL-1's first option would pick a counter for a
+payload whose size is not yet fixed: the three options span 40,671, 46,251 and 46,865 bytes on the heaviest
+caller. PL-2 remains the path-committing one and still leads; PL-1 is no longer the low-stakes member of
+the three, because one of its options changes what delivery carries rather than only what the traversal
+walks.
 
 ## Implementation Tasks
 
@@ -150,6 +174,7 @@ binding annotations carried as a separate block.
 **Deliverables:**
 - `src/utils/delivery.ts` - folded callees keyed by technique identifier; annotation block keyed separately
 - `tests/delivery.test.ts` - one body when the same operation arrives both ways in one agent context
+- an attributed rules block, and the per-call decoration pass extended to cover rules - only if PL-1 settles on carrying the callee's container rules scoped to the call; rules reach the response without their container body already, so this task's variable part is the attribution rather than the delivery
 
 ### Task 10: Door coverage and the charging rule (60-90 min)
 **Goal:** Each door either delivers folded bodies or is documented as not delivering them, and the counter
@@ -215,7 +240,7 @@ it reports unmeasured rather than failing.
 | Task total exceeds the estimate the work package was scoped with | MEDIUM | HIGH | Stated plainly: thirteen tasks at 10-15h agentic against the 1-4h placeholder carried for implementation |
 | Tool surface grows from 18 registered tools to as many as 29 | LOW | HIGH | Bounded by measurement: eleven distinct operations, not forty-one call sites |
 
-**Note on length.** This runs to 218 lines against the guide's 150-line budget, and the deviation is
+**Note on length.** This runs to roughly 250 lines against the guide's 150-line budget, and the deviation is
 stated rather than absorbed by cutting. The task blocks account for roughly half the document: thirteen
 tasks, each carrying the goal and concrete deliverable paths the guide itself mandates. The compressible
 material has been compressed — the decision spaces of the three open assumptions now live only in the
