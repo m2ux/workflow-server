@@ -96,6 +96,7 @@ The conservation law names a resource the code must conserve (a storage record, 
 - Structure `{structural_analysis}` with clear section headers: Claim, Dialectic, Concealment Mechanism, Improvements, Structural Invariant, Conservation Law, Meta-Law, Bug Table
 - Render the producer/clearer ledger as a table within the Conservation Law section — one row per resource with its producers, clearers, and the matched/unmatched verdict per termination path
 - In the Bug Table, classify each finding as fixable or structural based on whether the conservation law predicts it can be resolved; every unmatched producer from the ledger appears as a Bug-Table entry
+- Give each Bug-Table entry the reachability of the state that triggers it — whether the code reaches that state under its current configuration, naming the path that reaches it or what would have to change first. The termination-path trace of the producer/clearer ledger and the execution flows from step 3 are where the answer is already established
 - Include file paths, line numbers, and specific function names for every finding
 
 ## Rules
