@@ -36,7 +36,7 @@ import { stringifyForResponse } from './serialization.js';
  * `get_technique { full: true }`, `get_resource { full: true }`.
  *
  * A response-local marker points at an earlier entry of the same response and needs no ledger; see
- * docs/resource_resolution_model.md § Reference Delivery.
+ * docs/resource-resolution-model.md § Reference Delivery.
  */
 
 /** Hash used for delivery-ledger comparison: sha256, truncated for payload brevity. */

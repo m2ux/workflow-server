@@ -1,127 +1,59 @@
 # Development Guide
 
-This guide covers development setup, commands, and testing for the MCP Workflow Server.
+Setting up, building and testing the workflow server.
 
-## Prerequisites
+## What you need
 
-- Node.js 18+
-- npm or yarn
-- Git (for worktree setup)
+Node.js 18 or later, npm, and Git.
 
-## Setup
+## Getting a working checkout
+
+The workflow definitions are a submodule of this repository, so cloning the server on its own leaves `workflows/` empty and every corpus guard with nothing to measure. Take both:
 
 ```bash
-# Clone the repository
 git clone https://github.com/m2ux/workflow-server.git
 cd workflow-server
-
-# Install dependencies
+git submodule update --init --recursive
 npm install
-
-# Set up workflow data (worktree for orphan branch)
-git worktree add ./workflows workflows
 ```
 
-## Development Commands
+A linked worktree needs the same two things and starts with neither. `npm run worktree:provision` supplies them — see [running guards in a worktree](#running-guards-in-a-worktree).
+
+## Commands
 
 ```bash
-# Install dependencies
-npm install
-
-# Type check
-npm run typecheck
-
-# Build for production
-npm run build
-
-# Run in development mode (with hot reload via tsx) — stdio default
-npm run dev
-
-# Run over HTTP (development / production entry points)
-npm run dev:http
-npm run start:http
+npm run typecheck     # type check
+npm run build         # production build
+npm run dev           # hot reload via tsx, stdio transport
+npm run dev:http      # hot reload over HTTP
+npm run start:http    # production HTTP entry point
 ```
 
-## Project Structure
+## Project structure
 
-```
-workflow-server/
-├── src/
-│   ├── index.ts              # Entry point: config → dispatch to the transport it selects
-│   ├── server.ts             # MCP server creation and tool/resource registration (shared by every transport)
-│   ├── config.ts             # ServerConfig: workflowDir, schemasDir, workspaceDir, engineeringDir, repo, installDir, planningRelativeDir, transport, port, host, …
-│   ├── transports/           # One module per transport, each owning that transport's connect/listen/shutdown lifecycle
-│   │   ├── stdio.ts          # Default transport — unchanged behavior from before dual-transport support
-│   │   └── http.ts           # Opt-in transport: Express app, /health + /ready, /mcp (StreamableHTTPServerTransport), graceful shutdown
-│   ├── middleware/            # HTTP-only cross-cutting concerns, no footprint on the stdio path
-│   │   ├── request-id.ts     # Correlation id generation/propagation
-│   │   ├── logging.ts        # Structured per-request log line
-│   │   └── error-handler.ts  # Shared { error, message, requestId, timestamp } JSON error body
-│   ├── errors.ts             # Custom error classes (WorkflowNotFoundError, etc.)
-│   ├── result.ts             # Result<T, E> monad for typed error handling
-│   ├── logging.ts            # Structured JSON logging + audit event wrapper (withAuditLog)
-│   ├── trace.ts              # TraceStore, TraceEvent, trace token encode/decode
-│   ├── schema/               # Zod runtime schemas for validation
-│   │   ├── workflow.schema.ts
-│   │   ├── activity.schema.ts
-│   │   ├── technique.schema.ts
-│   │   ├── condition.schema.ts
-│   │   ├── state.schema.ts
-│   │   ├── resource.schema.ts
-│   │   └── common.ts
-│   ├── types/                # Re-export layer (types + schemas)
-│   ├── loaders/              # File loaders (filesystem → validated objects)
-│   │   ├── workflow-loader.ts
-│   │   ├── activity-loader.ts
-│   │   ├── technique-loader.ts          # Includes resolveTechniques (resolves techniques via :: paths)
-│   │   ├── markdown-technique-loader.ts # Parses markdown technique files into Technique objects
-│   │   ├── resource-loader.ts
-│   │   ├── core-ops.ts       # CORE_ORCHESTRATOR_TECHNIQUES / CORE_WORKER_TECHNIQUES (core technique refs bundled into get_workflow / get_activity)
-│   │   ├── schema-loader.ts
-│   │   ├── filename-utils.ts
-│   │   └── index.ts          # Barrel exports
-│   ├── tools/                # MCP tool implementations
-│   │   ├── workflow-tools.ts # discover, list_workflows, get_workflow, next_activity, get_activity, yield_checkpoint, resume_checkpoint, present_checkpoint, respond_checkpoint, get_trace, health_check, get_workflow_status
-│   │   ├── resource-tools.ts # start_session, dispatch_child, get_technique, get_resource
-│   │   └── index.ts          # Tool registration entry point
-│   ├── resources/            # MCP resource registration
-│   │   └── schema-resources.ts # workflow-server://schemas
-│   └── utils/                # Utility functions
-│       ├── yaml.ts           # YAML format parser wrapper
-│       ├── session.ts        # Session token create/decode/advance (HMAC-SHA256)
-│       ├── validation.ts     # Transition, manifest, and activity validation
-│       ├── crypto.ts         # AES-256-GCM encryption, HMAC signing
-│       └── index.ts          # Barrel exports
-├── schemas/                  # JSON Schema files for IDE tooling
-│   ├── workflow.schema.json
-│   ├── activity.schema.json
-│   ├── technique.schema.json
-│   ├── condition.schema.json
-│   └── state.schema.json
-├── scripts/                  # Build, corpus guards, install helpers, benchmarks
-│   ├── install.sh            # Local install layout (helpers, workflows, projects/, worktrees/, env)
-│   ├── start.sh / stop.sh    # GHCR container runner (loads $INSTALL/env)
-│   ├── update-workflows.sh
-│   ├── generate-schemas.ts
-│   ├── validate-workflow-yaml.ts
-│   ├── run-token-benchmark.ts    # Delivery cost per session mode
-│   ├── run-dispatch-benchmark.ts # What a re-dispatch costs
-│   └── run-profile.ts            # Profiles a real run from its session transcript
-├── tests/                    # Test suites
-├── workflows/                # Worktree (workflows branch)
-│   ├── meta/                 # Bootstrap workflow
-│   │   ├── workflow.yaml
-│   │   ├── activities/
-│   │   └── techniques/
-│   └── {workflow-id}/        # Each workflow folder
-│       ├── workflow.yaml
-│       ├── activities/
-│       ├── resources/
-│       └── techniques/
-└── docs/                     # Documentation
-```
+The directories, and what each one owns:
 
-## Environment Variables
+| Path | Contents |
+|------|----------|
+| `src/index.ts` | Entry point: read config, then hand off to the transport it selects |
+| `src/server.ts` | MCP server creation, and the registration of every tool and resource |
+| `src/config.ts` | `ServerConfig` — the resolved roots, transport, port, and the delivery-budget settings |
+| `src/transports/` | One module per transport, each owning its own connect, listen and shutdown lifecycle |
+| `src/middleware/` | Request id, per-request logging and the shared JSON error body — HTTP only, no footprint on the stdio path |
+| `src/schema/` | The Zod schemas everything is validated against, plus the identifier rules and the `when` expression evaluator |
+| `src/loaders/` | Filesystem to validated object: workflows, techniques, resources, schemas, and the `::` reference resolver |
+| `src/tools/` | The MCP tool implementations, split between `workflow-tools.ts` and `resource-tools.ts` |
+| `src/utils/` | Session storage and sealing under `session/`, plus delivery accounting, batching, validation and variable seeding |
+| `src/trace.ts` | The trace store and the encoding of trace tokens |
+| `schemas/` | JSON Schemas generated from the Zod sources, for editor tooling |
+| `scripts/` | Install and container helpers, schema generation, the corpus guards, and the benchmarks |
+| `tests/` | The test suite, with the end-to-end walks under `tests/e2e/` |
+| `workflows/` | A worktree of the `workflows` branch: one directory per workflow, each with `workflow.yaml`, `activities/`, `techniques/` and `resources/` |
+| `docs/` | This documentation |
+
+For anything finer-grained than a directory, read the directory — a file list in prose goes stale the first time someone splits a module.
+
+## Environment variables
 
 Root binding (one of workspace path **or** `--repo` is required at startup):
 
@@ -160,11 +92,11 @@ node dist/index.js --repo=m2ux/workflow-server --transport=http
 npm run start:http   # or: node dist/index.js --transport=http --port=3000 --host=localhost
 ```
 
-See also [setup.md](../setup.md), [http.md](../http.md), and [stdio.md](../stdio.md).
+The install sequence these settings fit into is in [setup.md](../setup.md), and what differs between the two transports is covered in [http.md](../http.md) and [stdio.md](../stdio.md).
 
 ## Testing
 
-### Running Tests
+### Running tests
 
 ```bash
 # Run all tests (watch mode)
@@ -176,28 +108,19 @@ npm test -- --run
 # Run specific test file
 npm test -- --run tests/mcp-server.test.ts
 
-# Run with coverage
-npm test -- --run --coverage
+# Run one directory
+npm test -- --run tests/e2e
 ```
 
-### Test Suites
+Coverage needs `@vitest/coverage-v8`, which is not a dependency of this repository — install it before passing `--coverage`.
 
-| Test Suite | Coverage |
-|------------|----------|
-| `workflow-loader.test.ts` | Workflow loading, transitions, validation |
-| `schema-validation.test.ts` | All Zod schemas |
-| `schema-loader.test.ts` | JSON Schema loading and serving |
-| `mcp-server.test.ts` | All MCP tools, trace lifecycle, activity manifest, technique bundles |
-| `activity-loader.test.ts` | Activity loading and dynamic index |
-| `technique-loader.test.ts` | Technique loading, dynamic index, technique resolution |
-| `session.test.ts` | Token create/decode/advance, sid, aid, parent context |
-| `trace.test.ts` | TraceStore, trace token encode/decode |
-| `validation.test.ts` | Transition, manifest, condition validation |
-| `dispatch.test.ts` | Workflow dispatch, status, parent-child trace correlation |
+### Test suites
 
-Run `npm test -- --run` for the live count and pass/fail summary.
+The suite is large enough that naming its files here would go stale faster than it helps. `tests/` holds the unit and integration suites, `tests/e2e/` holds the end-to-end walks through the workflow corpus, and `npm test -- --run` prints the live inventory with the pass and fail counts.
 
-### Test Infrastructure
+Two things about the suite are worth knowing before changing anything in it. Several corpus guards run as Vitest tests as well as under `check:all`, so a guard finding fails `npm test` too. And the end-to-end walks are snapshotted against a specific corpus commit, which is why a submodule bump and a re-baseline belong in the same change — see [Corpus-coupled baselines](#corpus-coupled-baselines) below.
+
+### Test infrastructure
 
 - **Framework:** [Vitest](https://vitest.dev/)
 - **MCP Testing:** Uses `InMemoryTransport` for integration tests
@@ -213,12 +136,13 @@ Stdout is one JSON object with per-activity fresh/resume characters and the aggr
 
 [`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts) measures payload-char and history/ledger cost for a fixed headless walk (`work-package` / e2e `skip-optional`), comparing `context_mode: fresh` vs `persistent` and resource reference delivery. It reuses the e2e harness/walker and probes `get_resource` for linked + hot templates (the robot walker does not call `get_resource` on its own).
 
-By default each run compares against the committed baseline
-[`scripts/fixtures/token-benchmark-baseline.json`](../scripts/fixtures/token-benchmark-baseline.json)
-(fresh mode, recorded 2026-08-17 against `workflows@72db28ae`). Stderr prints a
-compact scorecard; stdout JSON includes `vsReference` with absolute/percent deltas
-and a **deliveryCostIndex** (baseline = 100, lower is better — sum of activity +
-workflow + resource + technique chars).
+By default each run compares against the committed baseline in
+[`scripts/fixtures/token-benchmark-baseline.json`](../scripts/fixtures/token-benchmark-baseline.json).
+The fixture records its own context mode, corpus revision and recording date, so read the
+provenance there rather than from this page. Stderr prints a
+compact scorecard; stdout JSON includes `vsReference` with absolute and percent deltas
+and a **deliveryCostIndex** (baseline = 100, lower is better — the sum of activity,
+workflow, resource and technique characters).
 
 #### The gate runs on every pull request
 
@@ -272,7 +196,7 @@ Pin `WORKFLOWS_DIR` to the corpus the fixture names (`workflowsRev`) for a gate 
 — a delta measured against a different corpus is not attributable to server code,
 and the scorecard warns when the two disagree.
 
-Stderr: compact scorecard, plus a `gate: PASS|FAIL` line under `--gate`. Stdout: one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals, optional `vsReference` and `gate`). Exit `2` if the walk does not complete, `3` on gate failure. See [Reference Delivery](resource_resolution_model.md#11-reference-delivery) for the contract under test.
+Stderr: compact scorecard, plus a `gate: PASS|FAIL` line under `--gate`. Stdout: one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals, optional `vsReference` and `gate`). Exit `2` if the walk does not complete, `3` on gate failure. See [Reference delivery](resource-resolution-model.md#reference-delivery) for the contract under test.
 
 ### Run profiler
 
@@ -296,7 +220,7 @@ The harness writes one transcript record per content block of a response and rep
 
 Every total is reported beside `recordSummed`, what a summation over records yields for the same span, and their `ratio`. A figure quoted from a per-record count can then be reconciled against a profile rather than merely contradicted by it — over the whole 27 July 2026 run, main and worker context together reconcile at 2.09×, and the worker column across that run's startup window at 2.42× ([#409](https://github.com/m2ux/workflow-server/issues/409)).
 
-## Validating Workflows
+## Validating workflows
 
 ### One sweep, one registry
 
@@ -430,86 +354,54 @@ npm run sessions:census -- --workflow work-package --status running --list
 Zero means the edit reaches nothing in flight. A non-zero count is the set of runs that will pick it
 up, and the `--list` output names each one's folder, recorded version and current activity.
 
-## Branch Structure
+## The two branches
 
-| Branch | Content | Purpose |
-|--------|---------|---------|
-| `main` | TypeScript server code | Implementation |
-| `workflows` | YAML workflows + resources | Data (orphan branch) |
+Server code lives on `main`. The workflow definitions — the YAML, the techniques and the resources — live on `workflows`, an orphan branch with a history of its own, which the main tree carries as a submodule at `workflows/`.
 
-### Working with the Workflows Branch
+### Working on the definitions
 
-The `workflows` branch is an orphan branch with separate history. Access it via worktree:
+The submodule is a checkout of that branch, so edit the definitions in place and commit them there:
 
 ```bash
-# Add worktree (one-time setup)
-git worktree add ./workflows workflows
-
-# Update workflow data
+git submodule update --init --recursive   # first time, and after a pull moves the pointer
 cd workflows
 git pull origin workflows
-
-# Commit workflow changes
-cd workflows
+# edit definitions
 git add -A
-git commit -m "feat: update workflow"
+git commit -m "Describe the definition change"
 git push origin workflows
 ```
 
-## Adding New Workflows
+A definition change lands as two commits: one on the `workflows` branch, and one on `main` moving the submodule pointer to it. The guards and the end-to-end walks both read that pointer, so the two belong in the same pull request — [corpus-coupled baselines](#corpus-coupled-baselines) covers what happens when they separate.
 
-1. Create a new directory in `workflows/{workflow-id}/`
-2. Create `workflow.yaml` workflow definition in that directory
-3. Validate with: `npx tsx scripts/validate-workflow-yaml.ts <path>`, then run `npx tsx scripts/check-all-refs.ts` and `npm run check:binding` to confirm references resolve and no binding drift
-4. Commit to the `workflows` branch
+## Adding a workflow
 
-## Adding New Resources
+Create a directory under `workflows/{workflow-id}/` with a `workflow.yaml` in it, then check it before committing:
 
-Resources are stored in a `resources/` subdirectory within each workflow as slug-named markdown files:
+```bash
+npx tsx scripts/validate-workflow-yaml.ts <path>
+npm run check:refs
+npm run check:binding
+```
 
-1. Create `{slug}.md` in `workflows/{workflow-id}/resources/`
-2. The filename slug is the resource id (the frontmatter `name:` should match)
-3. Resources are auto-discovered - no manifest update needed
-4. Access via: `get_resource` with the resource slug (referenced from a technique); cross-workflow refs use `{workflow}/{slug}`
-5. Commit to the `workflows` branch
+The first validates the definition against the schema. The other two confirm that every technique reference resolves and that no binding has drifted.
 
-Note: For backwards compatibility, the loader also checks the `guides/` folder if `resources/` doesn't exist.
+## Adding a resource
 
-## Adding New Techniques
+A resource is a slug-named markdown file under a workflow's `resources/` directory, and that slug is the id techniques refer to it by — the frontmatter `name:` matches it. Nothing registers it: the server discovers resources by reading the directory, so creating the file is the whole of the work. A technique in another workflow reaches it through the prefixed form `{workflow}/{slug}`.
 
-Techniques are markdown files. They can be **universal** (apply to all workflows, stored in `meta`) or **workflow-specific**. A technique lives at `techniques/{slug}.md`. A technique can contain nested techniques in its folder; a nested technique is itself a technique, addressed by appending its slug to the parent's path.
+## Adding a technique
 
-### Technique File Format
+A technique is a markdown file under a `techniques/` directory. Put it in the `meta` workflow when every workflow should have it, or in one workflow's own directory when only that workflow does — a workflow-local technique shadows a `meta` one of the same name. A technique may hold nested techniques in a folder of its own, and a nested technique is addressed by appending its slug to the parent's path. Like resources, techniques are discovered by reading the directory.
 
-A technique file has:
+### What a technique file contains
 
-- **YAML frontmatter** carrying `metadata.version`.
+- YAML frontmatter carrying the version.
 - **`## Capability`** — what the technique does.
-- **`## Inputs`** / **`## Outputs`** (optional) — each `### entry` may carry `####` sub-section components, plus the reserved `#### artifact` (output persistence filename) and `#### default` (input default).
-- **`## Protocol`** — ordered blocks `### N. Title` with step bullets, or a flat list. Failure handling is written inline in the protocol step that gives rise to it.
-- **`## Rules`** — constraints the technique enforces.
+- **`## Inputs`** and **`## Outputs`**, both optional. Each `###` entry may carry `####` sub-sections for its components, plus the reserved `#### artifact`, naming the file an output persists to, and `#### default`, giving an input's default.
+- **`## Protocol`** — the ordered procedure, written either as `### N. Title` blocks or as a flat list, with failure handling inline in the step that gives rise to it.
+- **`## Rules`** — the constraints the technique enforces.
 
-### Universal Techniques
+### How a technique is addressed
 
-Universal techniques are stored in the `meta` workflow's `techniques/` subdirectory:
-
-1. Create `techniques/{slug}.md` under `workflows/meta/`
-2. Access via: `get_technique` (workflow- or activity-level first declared technique, optionally a step's technique via `step_id`)
-3. Commit to the `workflows` branch
-
-### Workflow-Specific Techniques
-
-Workflow-specific techniques are stored in each workflow's `techniques/` subdirectory:
-
-1. Create `techniques/{slug}.md` in `workflows/{workflow-id}/`
-2. Techniques are auto-discovered - no manifest update needed
-3. Access via: `get_technique { session_index, step_id: "{step-id}" }` (when referenced by a step)
-4. Commit to the `workflows` branch
-
-### Technique Resolution
-
-Techniques are addressed by `::`-delimited paths: `[workflow::]technique[::nested…]`. A same-workflow reference omits the workflow prefix. A `{workflow}/{technique}` slash form is normalized to the `::` form.
-
-When loading a technique, the workflow is determined from the session's `session.json` (resolved via `session_index`):
-1. First checks the session's workflow (current-workflow-first)
-2. Falls back to the `meta` layer (universal)
+Techniques are addressed by `::`-delimited paths — `[workflow::]technique[::nested…]` — and a reference within a single workflow omits the workflow segment. The slash form `{workflow}/{technique}` normalises to the same thing. Resolution reads the workflow from the session, looks in that workflow's own directory first, and falls back to the shared `meta` layer. [Technique and resource resolution](resource-resolution-model.md) has the full rules.

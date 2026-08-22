@@ -5,7 +5,7 @@
  * checkpoint that would have bound it runs later and its answer arrives too late to steer anything.
  * The run completes, having asked a question that changed nothing.
  *
- * What the rule keys on, and why each exemption holds: docs/checkpoint_model.md § Where a Checkpoint
+ * What the rule keys on, and why each exemption holds: docs/checkpoint-model.md § Where a Checkpoint
  * Belongs.
  *
  * Run: npx tsx scripts/check-decision-order.ts [--root <workflows-dir>] [--json]

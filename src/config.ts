@@ -159,7 +159,7 @@ export const DEFAULT_BUNDLE_CHARS_PER_TOKEN = 4;
  * Batch bound policy (#407): a worker context is bounded by cumulative delivered
  * characters, `context_tokens × batchHeadroomFraction × charsPerToken`, and by a cap
  * on distinct activities. Which one binds, the measurements behind these two values,
- * and what revising them needs: docs/dispatch_model.md § Batching a run of activities.
+ * and what revising them needs: docs/dispatch-model.md § Batching a run of activities.
  */
 export const DEFAULT_BATCH_HEADROOM_FRACTION = 0.35;
 export const DEFAULT_BATCH_MAX_ACTIVITIES = 3;

@@ -162,7 +162,7 @@ export type GateVerdict =
 /**
  * What a step's gate evaluates to for the whole of the activity being delivered, or no answer and
  * the reason why. `when` and `condition` combine under and-semantics; no gate answers `true`.
- * The cases and what each means for delivery: docs/resource_resolution_model.md § Which steps get inlined.
+ * The cases and what each means for delivery: docs/resource-resolution-model.md § Which steps get inlined.
  */
 export function gateAnswer(args: {
   when?: string | undefined;
