@@ -1,6 +1,6 @@
 # Requirements Elicitation: Handling Inline Techniques
 
-> 2026-08-17 · [#397](https://github.com/m2ux/workflow-server/issues/397) · Confirmed
+> 2026-08-17 · [#397](https://github.com/m2ux/workflow-server/issues/397) · Reopened — wrapper-code scope decision pending
 
 ## Problem Statement
 
@@ -51,6 +51,8 @@ Every inline technique call is resolved, argument-checked and delivered by the s
 
 This package carries **four deliverables**. The epic's stated convention is one pull request per work item, and four work items in one pull request departs from it; that was chosen knowingly over splitting W0 out first. If planning finds the combined review surface untenable, that is a planning finding for its own gate rather than a licence to re-cut scope.
 
+> **Pending at the reopened `elicitation-complete` gate.** Whether the wrapper population converts to MCP tools, and if so on what terms, is undecided. The evidence is complete and is recorded under [The wrapper-code alternative](#the-wrapper-code-alternative); what remains is the stakeholder's call. A conversion would be a **fifth deliverable** rather than a substitution, since the fold is still owed for the 45 remaining call sites, and it would widen the departure from one-pull-request-per-work-item from four work items to five. That convention question is named here and settled at planning, not here.
+
 1. **W0 — cross-workflow ancestry.** One documented ancestry rule for cross-workflow references, applied identically by both delivery doors, with the specification section and the composition routine's comments stating it, and a test composing one cross-workflow reference through both doors. Its direction is settled rather than open: W3a composes under home-tree ancestry, so W0 resolves to *contract follows the file's home tree*. It is the smallest of the four — the fix is confined to which techniques directory the composition routine resolves ancestors from, one specification section, and one test.
 2. **W2 — check the calls we already write.** A guard resolves every inline reference through the same loader the server uses and checks arguments against the callee's declared inputs. Its grammar lives in a shared module that fold delivery later imports. Unambiguous defects fail hard from day one, including the three rule-addressed-as-operation sites and the one dangling target, repaired in the same change; contract classes are delta-gated. The same scan resolves the neighbouring reference kinds with no static check today — dotted rule citations, bare resource links, artifact-name tokens. Call sites whose callee is a value are enumerated and reported as beyond static reach, with closure over the enumerable set where one exists.
 3. **W3a — deliver the referenced techniques.** Referenced bodies arrive deduplicated, transitively, within the delivery budget, composed under W0's ancestry rule, with a delivery event per body and the stealth reachable-text scan running over the delivered closure. A delivered callee is **keyed in the delivery ledger as a technique**, so it collapses against a step-bound delivery of the same operation at both doors; the call site's binding annotations ride as a separate block rather than being baked into the body, which is what keeps that collapse available. The core-operations workarounds retire.
@@ -76,6 +78,85 @@ What that falsifies is the blanket hoist, which the visibility rule never propos
 
 The correction is the cycle rule. Under the conservative reading the corpus contains exactly **one cycle and two self-references**, all three correct as authored — a retry-and-confirm pair between the index-freshness check and the indexing operation, the freshness check applying itself after re-indexing, and cloud-site resolution applying itself for error recovery, which is the shape the specification explicitly sanctions. Three of 87 callers reach one. A rule that fails the load on cycles rejects all three. Stop-at-revisit was simulated across the corpus: every caller terminates, the deepest walk queues **26 entries**, and the heaviest delivered closure is **46,865 bytes** — identical to a traversal that cannot meet a cycle at all. The policy costs nothing, and it is not new: the resource loop already gathers identifiers into a set before loading, and the ledger already stages a hash per body and consults it before staging the next.
 
+## The wrapper-code alternative
+
+A second reading of the corpus asks whether the techniques these calls reach could be replaced by code — an MCP tool per operation — so that a nested technique call becomes a tool call and needs no fold mechanism at all. It is a scope question rather than an implementation one, so it is settled here. Everything below is measured at corpus commit `34cd5429`, the commit the rest of this document measures at, and every count names its unit.
+
+### The population does divide, and the ratio is the one figure here that holds
+
+Grouping inline calls by the directory that owns the callee separates two populations. Operations that wrap a single external call — GitHub, GitNexus, Jira and Confluence, git — sit on one side. Operations that start an agent, reach a person, or supply judgement sit on the other.
+
+| Callee group | Logical call sites | Class |
+|---|---|---|
+| `github-cli-protocol` | 38 | wraps an external call |
+| `gitnexus-operations` | 38 | wraps an external call |
+| `workflow-engine` | 22 | engine |
+| `harness-compat` | 12 | engine |
+| `version-control` | 6 | wraps an external call |
+| `manage-git` | 4 | wraps an external call |
+| `atlassian-operations` | 3 | wraps an external call |
+| `cargo-operations` | 1 | wraps an external call |
+| eight domain and analytical callees | 11 | neither |
+| **Total** | **135** | |
+
+That is **90 wrapper sites, 34 engine sites and 11 domain sites**. The wrapper share is 67%, and it is stable in a way nothing else in this area has been: 68% of raw link occurrences, 67% of logical call sites, 68% of deduplicated pairs. Six counts here have moved under a change of definition and a seventh moved during this pass; this ratio moves by one point across three units. The division is real.
+
+The absolute figures the proposal was framed with are all low. The wrapper population is 90 sites rather than 68, the engine population 34 rather than 22, and the total 135 rather than about 90 — the numeral 90 turning out to name the wrapper part rather than the whole. GitNexus is the largest single correction at 38 sites rather than 22. GitHub is the closest at 38 against 39, and `resolve-repo-coordinates` reproduces exactly at 17 sites, the most-called inline technique in the corpus.
+
+One population named in the proposal is not in this census at all. The analytical callees — reconcile, challenge, combine — are reached by binding a variable to a technique name, not by a link a scanner can read. They are the class [SC-6](#success-criteria) exists for, and counting them beside link-borne calls mixes a statically visible population with a statically invisible one. Their true count is zero under this unit, and the question of what they cost belongs to SC-6.
+
+### Half of these calls disappear rather than convert
+
+Every one of the 17 calls to `resolve-repo-coordinates` comes from a sibling in its own group: seventeen GitHub operations each resolving owner and repository before their REST call, and no caller anywhere else. Across the corpus **69 of 135 logical call sites are intra-group** — GitHub 17 of 38, GitNexus 15 of 38, `workflow-engine` 21 of 22.
+
+This matters more than the conversion question it sits inside. When a group becomes a set of tools, its internal calls do not become tool calls: they become ordinary function calls inside the implementation, invisible to the corpus and to any guard over it. `resolve-repo-coordinates` does not become the eighteenth tool; it becomes a helper the other seventeen call. So converting the GitHub group alone removes 38 call sites — 28% of the whole inline-call population — of which 17 vanish outright rather than moving to a new mechanism.
+
+### Where the code would run is the question the proposal does not ask
+
+The proposal prefers tools to scripts on the ground that scripts would make the server execute code, a new capability and a new trust boundary, while tools live where tools already live. That holds for part of the population and inverts for the larger part.
+
+**Already tool-backed — 41 sites.** GitNexus operations call `gitnexus_*` tools and read `gitnexus://` resources; Atlassian operations call the Atlassian tools. The prose is genuinely a second layer over a validated typed call, and converting it crosses no boundary that is not already crossed.
+
+**Shell-backed and host-credentialed — 49 sites.** GitHub, `version-control`, `manage-git` and `cargo` shell out. GitHub's own group contract is explicit that this is deliberate: every `gh` invocation runs on the host shell, with host credentials, host network and host SSH agent, and `GH_TOKEN` and `GITHUB_TOKEN` stay unset unless a known-good token is intentionally supplied. A server-hosted tool runs in the server process and would need a credential the contract says to leave unset. Converting these moves GitHub and git write access across exactly the boundary the proposal invokes tools to avoid.
+
+So the mechanism splits the population a second time, on a different axis than the first, and the two axes do not agree: the largest wrapper group is the one where conversion is most costly.
+
+### The reasoning is in the containers, not the operations
+
+Counted per operation the proposal is right. Of the 37 wrapper operations an inline call reaches, **33 carry no rule of their own**; group-wide it is 77 of 84. Counted per contract it does not follow, because every one of those operations inherits its group container, and the five wrapper containers carry **27 rule entries** between them — nine in `version-control`, six in GitNexus, five in Atlassian, four in GitHub, three in `manage-git`.
+
+Three of those are the reason a wrapper is prose. GitHub's `ask-before-replying` requires the user's agreement before replying to review feedback — a human channel, inside the largest wrapper group. `version-control`'s `read-agents-md` requires reading the target repository's own instructions and honouring them, which is interpretation of a document written after the code. GitNexus's `edges-the-parser-cannot-see` is the escape hatch: where the graph holds no edge, re-derive the caller set by hand and record which basis the rating rests on.
+
+Three others are gains, and the proposal is right that code sometimes removes a rule rather than losing it. `rest-only` and `github-access-only-here` become structurally true once the tool is the only path to GitHub. `resolve-cloud-id-once` becomes a cache rather than an instruction. `named-tree-outranks-the-binding` becomes impossible to violate once the fallback order is a function signature.
+
+The escape hatches concentrate in the operations that carry an interpretive tail. `impact` calls one tool and then derives a risk level against thresholds, falls back to a hand-derived caller set when the graph is blind, and requires HIGH or CRITICAL risk to be surfaced to a person before an edit proceeds. It converts as a tool plus a thin interpreting technique, not as a tool. **Of the 37 wrapper operations reached, 5 convert with nothing left over; 32 either carry a rule, cross a threshold, hold an escape hatch, reach a person, or call another technique.** The clean five carry one call site each.
+
+### Loud at runtime is real, and it is not a substitute for the guard
+
+The proposal's central mechanism claim holds. A tool schema declares its required arguments and the transport rejects a call that omits one, so a contract violation announces itself to an agent that can read the error and fix it. That is a genuine improvement on the 56 omitted inputs the technique side carries today, which fail silently and went unnoticed for exactly that reason.
+
+The limit is coverage. Loud-at-runtime fires only on a path that executes, and the branches carrying the escape hatches are the cold ones — the graph with no edge, the symbol that will not resolve, the index found stale, the retry after re-indexing. For those, conversion turns "silent forever" into "loud the first time anyone runs it", which may be a long time and is not a check. A guard enumerates every site whether or not it runs. The two are complementary, and neither replaces the other.
+
+### What this does to the guard, and what it does not
+
+If the wrapper population converts, the guard's disposition worklist shrinks from 135 logical call sites to the 45 that remain — 34 engine, 11 domain — plus the interpreting halves of the operations that split. That is a smaller worklist, not a smaller grammar. Every term [SC-3](#success-criteria) publishes still has to be fixed for 45 sites for the same reason it has to be fixed for 135: a term left free admits two readings of the same file. **The conversion changes the size of the problem and not its shape**, so SC-3 stands as written and grows the terms owed to it below.
+
+### The two convergences do not hold
+
+Two claims that the wrapper boundary coincides with boundaries already drawn were tested, and neither survives.
+
+**The engine-target exclusion is not the same boundary.** Of the 34 engine-target call sites, **30 are engine calling engine**, which the doctrine's exclusion explicitly permits, having considered and rejected excluding intra-engine folds. Three come from `orchestration-patterns`, which [F-8](04-kb-research.md#findings) already records as neither engine nor a product workflow, so the exclusion's terms do not decide them. **One** is unambiguously a product caller reaching an engine callee. The exclusion therefore removes between one and four of 34 sites, where the mechanisation boundary removes all 34. The two name the same groups and carve out populations an order of magnitude apart; naming the same groups is not carving out the same set. This corroborates F-8's finding that the exclusion is nearly a no-op, from the opposite direction.
+
+**The four inexpressible shapes are not confined to the remainder.** Three of comprehension's four — a call between two protocol bullets, a value crossing it as protocol-scoped scratch state, a call gated on something known only mid-protocol — are present throughout the wrapper population. A GitHub operation applying `resolve-repo-coordinates` and then using owner and repository in its next bullet is the first two shapes exactly. Only the fourth, repetition a technique itself determines, is distinctive to the analytical remainder.
+
+What follows is not that the fold is unnecessary but that the reason for it changes. Those four shapes are obstacles to **hoisting a call to activity level**, and code does not express them — it removes them, a mid-protocol call becoming a function call and scratch state becoming a local. The remainder needs a fold for a different reason: its operations start an agent, address a person, or supply the judgement the agent exists for, and none of those is a call code can make. That reason is stronger than the inherited one and does not depend on the shape argument at all.
+
+**So the fold mechanism is still needed.** It is needed for 45 logical call sites rather than 135, and W2's guard targets that smaller set, but nothing in the wrapper analysis reaches the engine layer.
+
+### Converting the wrappers does not settle the door question
+
+[SC-10](#success-criteria) withdraws eleven baseline entries served only at `get_workflow`, a door the fold was never costed against. Converting an entry to a tool would remove it from every door at once, which looks like it dissolves the collision. Measured against the eleven, it does not. **Two of them are wrapper operations** — the two `version-control` commit operations. **Nine are engine**: compose-prompt, sync-progress-status, spawn-agent, continue-agent, resolve-harness-operation and the four harness adapter files. Conversion removes 2 of 11 and leaves the 9 that cannot convert, so [F-2](04-kb-research.md#findings) and [F-3](04-kb-research.md#findings) survive almost intact and still have to be answered before SC-10 removes anything.
+
 ## Counting this area
 
 Five measurement defects were self-caught across comprehension's four passes, and every one was a unit or definition error rather than a coding mistake. Every count below names its unit. Two figures this package had been carrying were re-derived at corpus commit `34cd5429`, and **neither reproduces**.
@@ -84,7 +165,11 @@ Five measurement defects were self-caught across comprehension's four passes, an
 |---|---|---|---|
 | 118 call edges | unstated | 148 to 235 deduplicated (caller file, callee file) pairs, depending on the verb list | Superseded; not reproducible under any verb list |
 | 137 raw `Apply`-link occurrences across 88 files | link occurrences | 217 link occurrences across 92 files | Superseded |
-| 822 technique-link occurrences across 192 files | link occurrences | 822 across 192 files | Reproduces exactly |
+| 822 technique-link occurrences across 192 files | link occurrences | 822 across 192 files — **only when anchored links are counted**; 721 across 179 without them | Reproduces exactly, under the opposite anchoring rule to the edge count beside it |
+| Three rule-addressed-as-operation sites | unstated | 2 under this document's baseline grammar; 6 if any invoking verb and any section count | Superseded; reproduces under neither boundary |
+| 11 of 28 orchestrator baseline entries ([RE-7](02-assumptions-log.md#log)) | baseline entries | 11 of **20** — the orchestrator list is 20 entries and the worker list 8; 28 is the total across both roles | Corrected, first-hand from the source |
+
+Two of those rows are corrections this pass owns rather than inherits. The 822 figure — the one figure the record singles out as reproducing — reproduces exactly and only when anchored links are counted, which is the opposite of the rule the edge count printed beside it in the same table uses. No criterion is keyed to it, so it is harmless in itself; as evidence it is another instance of the pattern this section exists to record. And the retirement denominator at [RE-7](02-assumptions-log.md#log) is load-bearing rather than cosmetic, because [SC-10](#success-criteria) makes retirement per-entry against that list: the attributed share is 55% of the orchestrator baseline, not 39% of both baselines together.
 
 The edge spread is the finding, not the number. The definition both comprehension artifacts state — an invoking verb followed by whitespace, an unanchored relative link to a technique file, inside a Protocol section, fences skipped — is under-specified in one term: **which words count as an invoking verb is not enumerated anywhere**. Holding every other criterion fixed and varying only that list:
 
@@ -98,6 +183,18 @@ The edge spread is the finding, not the number. The definition both comprehensio
 
 A 59% spread under wordings that read identically in prose. Comprehension's published figure of 168 edges over 87 callers sits between the third and fourth rows and is not reproducible from the definition as written.
 
+### Two more free terms, and one of them subsumes two the grammar already names
+
+[F-1](04-kb-research.md#findings) fixes seven terms and [RC-4](04-kb-research.md#open-research-candidates) adds an eighth — whether a technique-link destination must carry a leading dot. A ninth surfaced while re-deriving the wrapper population, and it is the second most material term measured to date.
+
+A qualified call is written as two markdown links: `[group](TECHNIQUE.md)::[op](op.md)`. One logical call, two links, and every scanner counting links counts it twice. **37 of 172 raw occurrences are the container half of such a pair** — 22% of the corpus. Collapsing each pair to the operation it names takes 172 raw occurrences to 135 logical call sites and 144 deduplicated pairs to 121.
+
+The term also explains two of F-1's seven rather than joining them. Excluding container targets moves the count 18% and switching the unit to link occurrences moves it 20%, and both are largely measuring this one form: once qualified pairs collapse, only **2 of 135** logical call sites still target a group container, both of them the rule-addressed-as-operation defect [SC-5](#success-criteria) repairs. Two terms the grammar treats as independent are mostly one term seen twice — which is the strongest evidence yet that a grammar published as a list of terms needs fixtures rather than totals behind it, because a list cannot show that two of its entries overlap.
+
+This document's own scanner reproduces F-1's ratios and not its absolute figures: 144 deduplicated pairs against F-1's 142, with the same offset of two on nearly every row and every ratio matching within a point. It independently reproduces the three calibration figures — the single dangling target in `prism-update/submit-update`, both correctly-authored self-references, and the 822 link total. The two-edge offset is unexplained and is stated rather than reconciled; it does not bear on any criterion, and the ratio form is what the sensitivity argument rests on.
+
+The count of free terms is now **nine**, which is itself the finding: each was discovered by measuring rather than by reading the definition, and the definition reads complete each time.
+
 This has a direct consequence for acceptance. The epic's W2 criterion — that the guard "reproduces the 118-edge inventory" — is **not testable as written**, on two counts: the target number reproduces under no verb list, and the definition it would be measured against does not fix its own terms. It is replaced by [SC-3](#success-criteria), which keys acceptance to a grammar the guard itself publishes with its totals asserted — reproducible by construction rather than by agreement.
 
 This is the sixth count in this area to move under a change of definition, after the five comprehension self-caught, so it is a property of the area rather than a run of bad luck. The standing rule holds without exception: a count is restated with its unit or re-derived before anything is planned against it, and that includes the figures still carried in [02-design-philosophy.md](02-design-philosophy.md), which have not been re-derived under this discipline.
@@ -110,9 +207,9 @@ One re-derivation reproduces comprehension exactly and is carried forward: the s
 |----|-----------|---------------------|
 | SC-1 | One documented ancestry rule for cross-workflow references, applied identically by the activity-bundle door and the step-bound door, with the addressing specification and the composition routine's comments stating it | A test composes one cross-workflow reference through both doors and asserts identical inputs, outputs, rules and protocol; the graph-navigation group's five shared rules either travel through both doors or are explicitly restated |
 | SC-2 | The reference grammar is one shared module, consumed by both the guard and — later — fold delivery, and it contains no anchor-slug computation | Single-definition check: no second grammar or slugger in the tree; #398 W1's surface untouched |
-| SC-3 | The guard enumerates every inline call site under a **normative** grammar it publishes — the verb list included — and asserts the resulting totals, so a new site fails the guard rather than joining an unmeasured remainder | The guard's own definition is the reference, not a historical count. A verb added to or removed from the published list changes the asserted totals and fails the assertion until re-baselined |
+| SC-3 | The guard enumerates every inline call site under a **normative** grammar it publishes in full, and asserts the resulting totals, so a new site fails the guard rather than joining an unmeasured remainder. The grammar fixes **nine** terms: the verb list, case sensitivity of the invoking verb, verb-to-link adjacency, counting unit, container-target inclusion, section scope, anchoring, whether a leading dot is required of a technique-link destination, and whether a qualified `group::op` citation written as two links counts as one call or two | The guard's own definition is the reference, not a historical count. Changing any published term changes the asserted totals and fails the assertion until re-baselined. Each term is pinned by a fixture rather than by a total alone, because two of the nine were found to overlap and a total cannot show that |
 | SC-4 | Argument conformance is classified across all inline call sites into name-match-satisfied versus genuinely unbound | Guard output, bins asserted; the bins are the disposition worklist |
-| SC-5 | Unambiguous defect classes fail hard from day one, with the known sites repaired in the same change: the three rule-addressed-as-operation sites and the one dangling pull-request-creation target | Guard exits non-zero on a seeded instance of each class; the four known sites are green after repair |
+| SC-5 | Unambiguous defect classes fail hard from day one, with the known sites repaired in the same change: the rule-addressed-as-operation sites and the one dangling pull-request-creation target | Guard exits non-zero on a seeded instance of each class, and the known sites are green after repair. The site count is stated with the grammar term that produces it, not carried as a bare number: **2** rule-addressed sites under the published baseline (both citing `version-control::infrastructure-submodule-paths`), **6** if any invoking verb and any section count. The previously recorded three reproduces under neither |
 | SC-6 | Call sites whose callee is named by a value are enumerated and reported as beyond static reach, with the total asserted; where the value is drawn from a set the corpus enumerates, closure over that set is checked instead | Guard output distinguishes unmeasured from clean. The class is three shapes, not one: table-drawn and bind-supplied both resolve; only catalog-selected is genuinely out of reach, and it selects a resource rather than a technique |
 | SC-7 | Referenced bodies arrive deduplicated and transitively, within the existing delivery budget, with a delivery event per body | Token benchmark carries a referenced-technique scenario; the heaviest closure in the corpus is 46,865 bytes against a 640,000-character budget at a 200,000-token declared context |
 | SC-7a | A delivered callee is keyed as a technique, collapsing against a step-bound delivery of the same operation at both doors, with any call-site binding annotation delivered as a separate block | Of the 81 distinct techniques an inline call reaches, 31 are also bound as an activity step: a delivery test asserts one body, not two, when the same operation arrives both ways in one agent context. No new key namespace appears |
@@ -138,6 +235,12 @@ Assumptions surfaced during elicitation: [assumptions log](02-assumptions-log.md
 | Scope | How much of the epic does this package deliver? | The full arc. Working that through establishes it means four deliverables, not three — W0 is pulled in, and accepted |
 | Success | Are the epic's acceptance criteria usable as written? | Two are not. The 118-edge reproduction criterion is untestable and is replaced by SC-3; the 554-file criterion is keyed to a stale count and is restated against the delivered corpus commit |
 | Success | How is a delivered callee keyed in the delivery ledger? | As a technique, with call-site binding annotations carried as a separate block — keeping the collapse against a step-bound delivery for the 31 techniques reached both ways |
+| Scope | Could the callee techniques be replaced by wrapper code, removing the need for a fold? | Partly. 90 of 135 logical call sites wrap an external call and 45 do not; the division is real and the ratio stable across three units. The remainder cannot mechanise, so the fold is still owed — for 45 sites rather than 135 |
+| Scope | Which operations convert cleanly? | 5 of the 37 wrapper operations reached convert with nothing left over, carrying one call site each. 32 carry a rule, a threshold, an escape hatch, a human channel or a nested call, and split into a tool plus a thin interpreting technique |
+| Context | Does the tools-not-scripts argument clear the whole wrapper population? | No. 41 sites already call a typed tool and cross no new boundary; 49 shell out under a contract that mandates host credentials and unset tokens, so converting those moves write access into the server process |
+| Success | Does conversion moot SC-3's grammar, or the guard? | Neither. It shrinks the worklist from 135 sites to 45 and leaves every grammar term to be fixed for the same reason. Loud-at-runtime is a real gain but covers only executed paths, and the escape hatches are on cold ones |
+| Success | Does conversion settle the door question at SC-10? | No. 2 of the 11 attributed entries are wrapper operations and 9 are engine, so F-2 and F-3 survive and still gate the retirement |
+| Problem | Do the wrapper boundary and the engine-target exclusion agree? | No — a shared blind spot rather than corroboration. The exclusion removes 1 to 4 of 34 engine-target sites; 30 are engine calling engine, which it permits in full |
 
 ### Clarifications Made
 
@@ -146,14 +249,25 @@ Assumptions surfaced during elicitation: [assumptions log](02-assumptions-log.md
 - **The flag reassurance does not cover W3a.** The note carried against this package's scope — that activation is staged behind a server flag so the corpus never half-folds — describes W3b, which ships flag-gated. W3a has no flag and needs none: it is additive delivery, and call sites keep prose semantics. The half-fold risk belongs to the migration batches, which are out of scope.
 - **The cycle correction reaches further than the doctrine record.** The epic body's own W3a description states that referenced bodies are "followed transitively with reference cycles failing the load". Correcting the rule therefore amends the epic text and its acceptance criteria, not only the doctrine decision record.
 
+### Clarifications made on the reopened pass
+
+- **The wrapper hypothesis was verified operation by operation, and its ratio survived while its counts did not.** The 67% wrapper share is stable across three units, which in an area where seven counts have moved under a definition change is the strongest form of evidence available here. Every absolute figure it was framed with was low, and the analytical callees it counted are not in this census at all.
+- **Converting a group deletes its internal calls rather than converting them.** 69 of 135 logical call sites are intra-group, and all 17 calls to the corpus's most-called inline technique come from its own siblings. This is the largest single effect measured on the reopened pass and it favours conversion.
+- **The proposal's own trust-boundary argument does not clear its largest group.** GitHub's group contract mandates the host shell and unset tokens; a server-hosted tool needs the credential the contract says to leave unset.
+- **A ninth free grammar term was found, and it subsumes two the grammar already names.** The qualified `group::op` two-link form is 22% of raw occurrences, and container-target inclusion and counting unit are largely measuring it. A published list of terms cannot show that two of its entries overlap, which is the case for fixtures rather than totals.
+
 ### Open Questions Resolved
 
 - Whether the activity layer properly handles technique use, as the hoist proposal assumed — no; 82 of 748 bind sites carry the same contract defect.
 - Whether fragments could carry a hoisted technique — no; strict two-key container, no reference field on a technique step, resolver visits checkpoints only.
 - Whether stop-at-revisit costs anything against fail-the-load — no; measured identical.
+- Whether the fold is still needed if the wrappers convert — yes, for 45 logical call sites; nothing in the wrapper analysis reaches the engine layer.
+- Whether comprehension's four inexpressible shapes live only in the non-mechanical remainder — no; three of the four are present throughout the wrapper population. They obstruct a hoist, not mechanisation, and the remainder resists code for a different and stronger reason.
 
 ## Confirmation
 
-**Confirmed by:** User, at checkpoints `stakeholder-transcript` and `elicitation-complete`.
+**Confirmed by:** User, at checkpoints `stakeholder-transcript` and `elicitation-complete` (first pass).
 **Date:** 2026-08-17
 **Notes:** Seven decisions settled — keep the visibility rule and correct its cycle input; deliver the full arc; accept W0 as a fourth deliverable knowing it departs from one-pull-request-per-work-item; file the borrowed-activity gap as its own ticket through the follow-ups activity; key a delivered callee as a technique with annotations carried separately; replace the 118-edge acceptance criterion with SC-3; restate the 554-file criterion against the delivered corpus commit.
+
+**Reopened pass:** awaiting the stakeholder at `elicitation-complete#reopen-wrapper-code`. Carried into requirements without a gate, because each is a measurement or a correction rather than a choice: SC-3 strengthened to nine published grammar terms; SC-5's site count restated with the term that produces it; RE-7's denominator corrected to 11 of 20; the 822 anchoring mismatch recorded. Awaiting decision: whether the wrapper population converts, and whether that makes a fifth deliverable.

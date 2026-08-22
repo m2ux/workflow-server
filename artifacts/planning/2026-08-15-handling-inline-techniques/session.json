@@ -1186,10 +1186,11 @@
           "start-work-package",
           "design-philosophy",
           "codebase-comprehension",
-          "requirements-elicitation"
+          "requirements-elicitation",
+          "research"
         ],
-        "condition": "condition: elicitation_complete == true &amp;&amp; needs_research == true → research",
-        "currentActivity": "research",
+        "condition": "orchestrator override on user direction: research evaluated isDefault: implementation-analysis, but the user introduced a foundational alternative (replacing mechanical callee techniques with wrapper code / MCP tools) that reopens scope, so routing back to requirements-elicitation with elicitation_complete reset to false",
+        "currentActivity": "requirements-elicitation",
         "currentTechnique": "analyse-challenge::run-loop",
         "declaredArtifacts": [
           {
@@ -1231,6 +1232,11 @@
             "id": "deferred_items",
             "name": "Deferred items",
             "path": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/deferred-items.md"
+          },
+          {
+            "id": "research_document",
+            "name": "KB research",
+            "path": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/04-kb-research.md"
           }
         ],
         "deliveredContent": {
@@ -1291,6 +1297,22 @@
             "resource:deferred-items#template": "793860242a14d21b",
             "resource:requirements-elicitation#document-template": "8c39ba923d7278f2",
             "resource:requirements-elicitation#question-domain-reference": "59b1c64da1857839",
+            "technique:requirements-elicitation::ask-question": "6ce396e622d6a367",
+            "technique:requirements-elicitation::create-document": "95cfb4a1b3e6bd8b",
+            "technique:requirements-elicitation::discuss": "a9dec38382eb4df6",
+            "technique:requirements-elicitation::elicit": "c35caac324f6d7df",
+            "technique:review-assumptions::collect": "fb0e04d3569d3c25",
+            "technique:review-assumptions::reconcile": "5352f61341ff052a",
+            "technique:review-assumptions::record": "ecfe2105989ab831"
+          },
+          "worker-requirements-elicitation-e2": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+            "bundle:variable-binding": "69962c9fd66c4d9a",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
             "technique:requirements-elicitation::ask-question": "6ce396e622d6a367",
             "technique:requirements-elicitation::create-document": "95cfb4a1b3e6bd8b",
             "technique:requirements-elicitation::discuss": "a9dec38382eb4df6",
@@ -4539,24 +4561,484 @@
             },
             "timestamp": "2026-08-17T06:47:02.254Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "research",
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "kb_findings",
+              "source": "variables_changed",
+              "value": "No relevant content in the concept-rag library — general software-engineering corpus with no coverage of reference resolution in a delivery pipeline; gap recorded in the artifact"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "web_findings",
+              "source": "variables_changed",
+              "value": "7 primary sources: TC39 ECMAScript modules, Ajv/JSON Schema, Rust RFC 2912 + rustc_lexer, GNU Emacs Lisp manual, Monnier & Sperber HOPL IV 2020, CommonMark spec, ratchet implementations"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "findings_synthesis",
+              "source": "variables_changed",
+              "value": "4 design choices corroborated (W0 lexical ancestry, cycle tolerance, shared grammar module, asserted-total guard — the last qualified); 8 probe findings"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "applicable_patterns",
+              "source": "variables_changed",
+              "value": "Lexical over dynamic scope; cycle-tolerant linking via a visited set; one narrow grammar module shared by checker and runtime; normative grammar published with conformance fixtures"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "synthesis_assumptions",
+              "source": "variables_changed",
+              "value": "7, recorded as RS-1..RS-7 in the assumptions log"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "declaredType": "array",
+              "name": "research_candidates",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": "7 candidates: RC-1 Resolved (SC-3 strengthened at the gate); RC-2..RC-6 Irreconcilable (stakeholder); RC-7 Irreconcilable (code-analysis)",
+              "valueType": "string"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_reconcilable_research",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "research_document",
+              "source": "variables_changed",
+              "value": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/04-kb-research.md"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "value": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/02-assumptions-log.md"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": []
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "assumption_review_presentation",
+              "source": "variables_changed",
+              "value": "Empty — analyse-challenge resolved all 7 research assumptions against code and corpus evidence"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "context_scope",
+              "source": "variables_changed",
+              "value": "mixed"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "context_scope_uncertain",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "name": "elicitation_complete",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-r1",
+              "stepId": "research-knowledge-base"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-r1",
+              "stepId": "synthesize"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-r1",
+              "stepId": "triage-research-candidates"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-r1",
+              "stepId": "research-reconciliation"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-r1",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-r1",
+              "stepId": "document"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-r1",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-r1",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-r1",
+              "stepId": "present-resolved-assumptions"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-r1",
+              "stepId": "derive-context-scope"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "research",
+            "data": {
+              "agentId": "worker-research-r1",
+              "stepId": "announce-derived-context-scope"
+            },
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "timestamp": "2026-08-17T06:48:37.733Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "chars": 85872,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "chars": 85872,
+              "priorAgentId": "worker-requirements-elicitation-e1"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "activity_redelivered"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "chars": 4175,
+              "delivery": "full",
+              "stepId": "stakeholder-discussion",
+              "techniqueId": "requirements-elicitation::discuss"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "stepId": "stakeholder-discussion"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "chars": 4991,
+              "delivery": "full",
+              "stepId": "elicit-requirements",
+              "techniqueId": "requirements-elicitation::elicit"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "stepId": "elicit-requirements"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "chars": 4449,
+              "delivery": "full",
+              "stepId": "ask-question",
+              "techniqueId": "requirements-elicitation::ask-question"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "stepId": "ask-question"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "chars": 5396,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "chars": 4275,
+              "delivery": "full",
+              "stepId": "create-document",
+              "techniqueId": "requirements-elicitation::create-document"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "stepId": "create-document"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "chars": 4413,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "chars": 12609,
+              "delivery": "full",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-e2",
+              "stepId": "reconcile-assumptions"
+            },
+            "timestamp": "2026-08-17T06:49:52.671Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "stakeholder-transcript",
+            "data": {
+              "optionId": "provide-transcript"
+            },
+            "timestamp": "2026-08-17T06:59:11.893Z",
+            "type": "checkpoint_replayed"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 63,
+        "seq": 66,
         "sessionIndex": "KLN3OI",
         "skippedActivities": [],
         "startedAt": "2026-08-15T10:00:34.754Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1786949222,
+        "ts": 1786949951,
         "variables": {
+          "applicable_patterns": "Lexical over dynamic scope; cycle-tolerant linking via a visited set; one narrow grammar module shared by checker and runtime; normative grammar published with conformance fixtures",
           "artifact_name": "",
           "artifact_publish_ref": "",
           "assumption_batch_accepted": false,
           "assumption_decisions": "RE-2 accept W0 into scope; RE-4 adopt SC-3; RE-14 technique-keyed with annotations carried as a separate block",
           "assumption_deferred": false,
           "assumption_resolved_inline": false,
+          "assumption_review_presentation": "Empty — analyse-challenge resolved all 7 research assumptions against code and corpus evidence",
           "assumptions_log": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/02-assumptions-log.md",
           "attestation_option": "certify",
           "audit_confirmed": false,
@@ -4582,16 +5064,17 @@
           "comprehension_dir": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/comprehension",
           "comprehension_log": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-15-handling-inline-techniques/15-codebase-comprehension.md",
           "comprehension_survey": "Corpus-template survey of technique reference resolution across loader, delivery doors and guard registry",
-          "context_scope": "repo-only",
+          "context_scope": "mixed",
           "context_scope_uncertain": false,
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-15-handling-inline-techniques/README.md",
           "current_block_index": 0,
           "current_branch": "",
           "design_philosophy_doc": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/02-design-philosophy.md",
-          "elicitation_complete": true,
+          "elicitation_complete": false,
           "elicitation_log": "Five domains worked; four clarifications recorded, three open questions resolved",
           "existing_pr_number": "",
           "findings_raised_to_author": "all",
+          "findings_synthesis": "4 design choices corroborated (W0 lexical ancestry, cycle tolerance, shared grammar module, asserted-total guard — the last qualified); 8 probe findings",
           "github_issue_found": false,
           "gitnexus_indexed": true,
           "has_critical_blocker": false,
@@ -4620,6 +5103,7 @@
           "issue_type_ambiguous": false,
           "issue_url": "https://github.com/m2ux/workflow-server/issues/397",
           "jira_issue_key": "",
+          "kb_findings": "No relevant content in the concept-rag library — general software-engineering corpus with no coverage of reference resolution in a delivery pipeline; gap recorded in the artifact",
           "mark_progress_na": false,
           "needs_cleanup": false,
           "needs_comprehension": false,
@@ -4650,6 +5134,8 @@
           "push_remote_url": "",
           "requirements": "Four in-scope deliverables (W0, W2, W3a, canon/specification amendment) plus the cycle-rule correction; recorded in 03-requirements-elicitation.md",
           "requirements_document": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/03-requirements-elicitation.md",
+          "research_candidates": "7 candidates: RC-1 Resolved (SC-3 strengthened at the gate); RC-2..RC-6 Irreconcilable (stakeholder); RC-7 Irreconcilable (code-analysis)",
+          "research_document": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/04-kb-research.md",
           "resign_unsigned_commits_requested": false,
           "review_comments_summary": "",
           "review_mode_ambiguous": false,
@@ -4677,6 +5163,7 @@
           "submission_aborted": false,
           "success_criteria": "13 criteria SC-1..SC-12 plus SC-7a, each with a verification method; SC-3 replaces the epic's untestable 118-edge reproduction criterion and SC-12 replaces its stale 554-file count",
           "summary_budget_overruns": [],
+          "synthesis_assumptions": "7, recorded as RS-1..RS-7 in the assumptions log",
           "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-15-handling-inline-techniques/",
           "target_repo": "m2ux/workflow-server",
           "test_findings_actionable": false,
@@ -4688,6 +5175,7 @@
           "use_existing_pr": false,
           "user_request": "Resolve how best to handle techniques referenced inline from other techniques. Decide between (a) fragmenting techniques that refer to other techniques by hoisting the fragments to activity level, where technique use is properly handled, or (b) determining a canonical mechanism for handling inline techniques that honors and correctly binds the contract surface. Background investigation is complete at /home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-02-inline-technique-fold-investigation (README + 3 documents: composition-pipeline trace, guards/canon/schema survey, corpus survey). Host issue #394.",
           "validation_passed": false,
+          "web_findings": "7 primary sources: TC39 ECMAScript modules, Ajv/JSON Schema, Rust RFC 2912 + rustc_lexer, GNU Emacs Lisp manual, Monnier & Sperber HOPL IV 2020, CommonMark spec, ratchet implementations",
           "worktree_created": true
         },
         "workflowId": "work-package",
