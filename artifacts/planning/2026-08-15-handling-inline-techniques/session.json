@@ -6,10 +6,10 @@
   "agentId": "orchestrator",
   "sessionIndex": "3M75ZX",
   "currentActivity": "dispatch-client-workflow",
-  "currentTechnique": "workflow-engine::resume-worker",
+  "currentTechnique": "workflow-engine::commit-and-persist",
   "condition": "isDefault: dispatch-client-workflow",
-  "seq": 38,
-  "ts": 1786948839,
+  "seq": 41,
+  "ts": 1787400125,
   "startedAt": "2026-08-15T09:54:31.892Z",
   "completedActivities": [
     "discover-session",
@@ -1094,6 +1094,68 @@
       },
       "timestamp": "2026-08-17T06:40:39.361Z",
       "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "chars": 39332,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-22T11:51:03.146Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "chars": 39332,
+        "priorAgentId": "worker-dispatch-client-d2"
+      },
+      "timestamp": "2026-08-22T11:51:03.146Z",
+      "type": "activity_redelivered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "chars": 20844,
+        "delivery": "full",
+        "stepId": "dispatch-activity",
+        "techniqueId": "workflow-engine::dispatch-activity"
+      },
+      "timestamp": "2026-08-22T11:51:22.578Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "stepId": "dispatch-activity"
+      },
+      "timestamp": "2026-08-22T11:51:22.578Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "chars": 16022,
+        "delivery": "full",
+        "stepId": "commit-activity-artifacts",
+        "techniqueId": "workflow-engine::commit-and-persist"
+      },
+      "timestamp": "2026-08-22T12:02:05.817Z",
+      "type": "technique_fetched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "stepId": "commit-activity-artifacts"
+      },
+      "timestamp": "2026-08-22T12:02:05.817Z",
+      "type": "step_started"
     }
   ],
   "triggeredWorkflows": [
@@ -1320,6 +1382,40 @@
             "technique:review-assumptions::collect": "fb0e04d3569d3c25",
             "technique:review-assumptions::reconcile": "5352f61341ff052a",
             "technique:review-assumptions::record": "ecfe2105989ab831"
+          },
+          "worker-requirements-elicitation-reopen-3": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+            "bundle:variable-binding": "69962c9fd66c4d9a",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "technique:inherited_inputs.items:271d2f2f32b0c1fc": "271d2f2f32b0c1fc",
+            "technique:inherited_inputs.items:5e17dc978ffe6fef": "5e17dc978ffe6fef",
+            "technique:inherited_inputs.items:901d02d9f77ad0a4": "901d02d9f77ad0a4",
+            "technique:inherited_inputs.items:aa0414d0654c9047": "aa0414d0654c9047",
+            "technique:inherited_inputs.items:d316f29fd6b9a127": "d316f29fd6b9a127",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:0d4e31ef790ff6af": "0d4e31ef790ff6af",
+            "technique:inherited_inputs:239aa7bb2e524762": "239aa7bb2e524762",
+            "technique:inherited_inputs:546d52362f6050f3": "546d52362f6050f3",
+            "technique:inherited_inputs:90f26f13a8a6dfe6": "90f26f13a8a6dfe6",
+            "technique:inherited_inputs:ce32ee1b0407f697": "ce32ee1b0407f697",
+            "technique:inherited_outputs.items:1359ba5616deacb8": "1359ba5616deacb8",
+            "technique:inherited_outputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+            "technique:inherited_outputs:3c87e229bfe60204": "3c87e229bfe60204",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:requirements-elicitation::ask-question": "6ce396e622d6a367",
+            "technique:requirements-elicitation::create-document": "95cfb4a1b3e6bd8b",
+            "technique:requirements-elicitation::discuss": "a9dec38382eb4df6",
+            "technique:requirements-elicitation::elicit": "c35caac324f6d7df",
+            "technique:review-assumptions::collect": "fb0e04d3569d3c25",
+            "technique:review-assumptions::reconcile": "5352f61341ff052a",
+            "technique:review-assumptions::record": "ecfe2105989ab831",
+            "technique:rules:1312287948d72037": "1312287948d72037",
+            "technique:rules:4f701c4353967287": "4f701c4353967287",
+            "technique:rules:7f493d9ccbe57e53": "7f493d9ccbe57e53"
           },
           "worker-research-r1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
@@ -5019,17 +5115,193 @@
             },
             "timestamp": "2026-08-17T06:59:11.893Z",
             "type": "checkpoint_replayed"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "chars": 77509,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "chars": 77509,
+              "priorAgentId": "worker-requirements-elicitation-e2"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "activity_redelivered"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "chars": 4175,
+              "delivery": "full",
+              "stepId": "stakeholder-discussion",
+              "techniqueId": "requirements-elicitation::discuss"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "stepId": "stakeholder-discussion"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "chars": 4991,
+              "delivery": "full",
+              "stepId": "elicit-requirements",
+              "techniqueId": "requirements-elicitation::elicit"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "stepId": "elicit-requirements"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "chars": 4449,
+              "delivery": "full",
+              "stepId": "ask-question",
+              "techniqueId": "requirements-elicitation::ask-question"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "stepId": "ask-question"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "chars": 5396,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "chars": 4275,
+              "delivery": "full",
+              "stepId": "create-document",
+              "techniqueId": "requirements-elicitation::create-document"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "stepId": "create-document"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "chars": 4413,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "chars": 12609,
+              "delivery": "full",
+              "stepId": "reconcile-assumptions",
+              "techniqueId": "review-assumptions::reconcile"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "data": {
+              "agentId": "worker-requirements-elicitation-reopen-3",
+              "stepId": "reconcile-assumptions"
+            },
+            "timestamp": "2026-08-22T11:53:19.862Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "requirements-elicitation",
+            "checkpoint": "elicitation-complete",
+            "data": {
+              "optionId": "complete"
+            },
+            "timestamp": "2026-08-22T12:00:51.537Z",
+            "type": "checkpoint_replayed"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 66,
+        "seq": 68,
         "sessionIndex": "KLN3OI",
         "skippedActivities": [],
         "startedAt": "2026-08-15T10:00:34.754Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1786949951,
+        "ts": 1787400051,
         "variables": {
           "applicable_patterns": "Lexical over dynamic scope; cycle-tolerant linking via a visited set; one narrow grammar module shared by checker and runtime; normative grammar published with conformance fixtures",
           "artifact_name": "",
@@ -5243,6 +5515,16 @@
       "technique:workflow-engine::commit-and-persist": "e92365ff7814212c",
       "technique:workflow-engine::dispatch-activity": "6cbc94bcabc9a417",
       "technique:workflow-engine::resume-worker": "32d4059bf337dd44"
+    },
+    "worker-dispatch-client-d3": {
+      "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+      "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+      "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+      "technique:workflow-engine::commit-and-persist": "e92365ff7814212c",
+      "technique:workflow-engine::dispatch-activity": "dfb373fd77d863d7"
     },
     "worker-initialize-session-b1": {
       "bundle:rules:10a1d5254cc0b16f": "10a1d5254cc0b16f",
