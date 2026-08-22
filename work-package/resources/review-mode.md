@@ -2,7 +2,7 @@
 name: review-mode
 description: Reference content for a structured pull-request review — the review comment template, and one section per review category carrying that category's findings fragment and population rules. Organized for per-section delivery.
 metadata:
-  version: 1.17.0
+  version: 1.18.0
   order: 24
   legacy_id: 24
 ---
@@ -131,6 +131,10 @@ The bullets carry no source pointer: each claim is about the change's design rat
 
 A separate Action Items section at the end consolidates all actionable findings from every table into prioritized tiers with interactive checkboxes. Every non-passing finding from every table must appear as a checklist item. Cross-reference findings using the category prefixes to avoid GitHub auto-linking `#N` as issue references.
 
+**`Must Address (Blocking)` admits a finding whose `Reachability` is `reachable` or `conditional`**, on the value set under [Reachability](./findings-report.md#reachability). At `parameter-gated`, `privileged-action`, or `unreachable`, a finding is a hardening recommendation whatever its impact, and enters no tier above `Should Address (Recommended)`. Severity places a finding within the tiers reachability leaves open to it.
+
+An item carrying no finding block tiers on its severity alone: a validation diagnostic is a failure already observed rather than a state predicted, and a Confirmed blocker-class entry reaches Blocking on its disposition, per [Prior Feedback Triage](#prior-feedback-triage).
+
 ### Category Reference
 
 Review mode produces review-specific variants of the standard planning artifacts. The rendering and persist steps name the concrete artifacts they write; this table summarizes the content difference per review category, not the authoritative filenames.
@@ -165,7 +169,7 @@ Findings are classified on the classification scale (Critical / Major / Minor / 
 | Nit | Low |
 | Informational | (omitted from the tables — recorded in the report only) |
 
-A correct-but-harmful finding (one classified Major or Critical on an impact axis such as unbounded state growth, economic/spam, liveness/halt, or migration/upgrade) therefore renders at High or Critical and reaches the Action Items as a blocking item — it is not downgraded to "safe" at the render boundary.
+A correct-but-harmful finding (one classified Major or Critical on an impact axis such as unbounded state growth, economic/spam, liveness/halt, or migration/upgrade) therefore renders at High or Critical, and reaches the Action Items at the tier [Action Items](#action-items) admits for that severity and its reachability.
 
 ### Review Type Selection
 

@@ -1,17 +1,17 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
 
-Single-scale severity classification for review or validation findings, with routing flags for downstream fix cycles.
+Single-scale severity classification for review or validation findings, tiered for delivery against the reachability each finding states, with routing flags for downstream fix cycles.
 
 ## Inputs
 
 ### findings_to_classify
 
-The findings or diagnostics to classify. Each entry carries enough context to judge severity — a description, the affected file/symbol, and (for validation diagnostics) the failing check id and its output.
+The findings or diagnostics to classify. Each entry carries enough context to judge severity — a description, the affected file/symbol, and (for validation diagnostics) the failing check id and its output. An entry stated as a finding block also carries its `Reachability` value and the evidence for it.
 
 ### code_review_findings
 
@@ -33,7 +33,7 @@ True when any test-suite finding has severity >= Minor (Critical, Major, or Mino
 
 ### classified_findings
 
-The input findings, each carrying its assigned severity and — where one applies — its `impact_axis` (the dimension on which a behaviourally correct change is nonetheless harmful: unbounded-state-growth, economic-spam, liveness-halt, or migration-upgrade). Downstream rendering reads the severity to place each finding on the render scale and reads the impact axis to justify a correct-but-harmful classification.
+The input findings, each carrying its assigned severity, its `action_tier` (the Action Items tier the finding is delivered under), and — where one applies — its `impact_axis` (the dimension on which a behaviourally correct change is nonetheless harmful: unbounded-state-growth, economic-spam, liveness-halt, or migration-upgrade). Downstream rendering reads the severity to place each finding on the render scale, the tier to place it in the Action Items, and the impact axis to justify a correct-but-harmful classification.
 
 ## Protocol
 
@@ -54,17 +54,23 @@ Code-correctness is one axis of severity; system impact is another, orthogonal t
 
 A finding that is correct on the code-correctness axis but lands on any impact axis is **correct-but-harmful**. Classify a correct-but-harmful finding at **Major** at minimum, and at **Critical** when the impact is unrecoverable without intervention (state already corrupted, funds already lost, chain already halted). Because correct-but-harmful classifies Major or above, it is ≥ Minor and therefore sets `{code_findings_actionable}` through the existing routing rule — the impact axes add severity without changing the routing threshold.
 
-### 2. Route Code Findings
+### 2. Tier for Delivery
+
+- Assign every finding in `{findings_to_classify}` the Action Items tier that [Action Items](../resources/review-mode.md#action-items) admits for its severity and its stated reachability, and record it as that entry's `action_tier`.
+- A finding whose reachability keeps it out of the blocking tier holds that ceiling at every severity the impact axes raise it to.
+- An entry with no reachability value — a validation diagnostic, a reviewer-reported issue — takes the tier its severity assigns.
+
+### 3. Route Code Findings
 
 - Inspect the code-review subset (`{code_review_findings}`).
 - Set `{code_findings_actionable}`=true when any code-review finding is Minor or above; otherwise false.
 
-### 3. Route Test Findings
+### 4. Route Test Findings
 
 - Inspect the test-suite subset (`{test_review_findings}`).
 - Set `{test_findings_actionable}`=true when any test-suite finding is Minor or above; otherwise false.
 
-### 4. Record Triage Notes
+### 5. Record Triage Notes
 
 - Leave Nit and Informational findings unflagged — they are documented in their review reports for the user to triage at their discretion, never auto-fixed.
 - A run with only Nit/Informational findings, and a clean run with no findings, both leave the routing flags false so the work proceeds without a fix cycle.
