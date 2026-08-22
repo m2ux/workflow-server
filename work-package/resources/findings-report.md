@@ -1,8 +1,8 @@
 ---
 name: findings-report
-description: Shared shape for every report that states findings — the finding layout, the designator and severity contracts, and the split between a report and its methodology record.
+description: Shared shape for every report that states findings — the finding layout, the designator, severity and reachability contracts, and the split between a report and its methodology record.
 metadata:
-  version: 1.1.0
+  version: 1.2.0
   order: 14
 ---
 
@@ -31,22 +31,23 @@ Two boundaries decide what goes where:
 
 ## Fields
 
-Every finding carries the same five fields, in this order, whichever report states it:
+Every finding carries the same six fields, in this order, whichever report states it:
 
 | Field | Holds |
 |---|---|
 | `Category` | The finding's class within the vocabulary its report declares |
 | `Severity` | A value from the render scale, per [Severity](#severity) |
+| `Reachability` | Whether the state that triggers the finding can be reached, per [Reachability](#reachability) |
 | `Description` | The technical explanation, opening with an inline link to the named thing it is about |
 | `Impact` | The consequence of leaving it as it stands |
 | `Recommendation` | The specific actionable fix |
 
-Two extension points carry what the five do not, and a report declares which of them it uses:
+Two extension points carry what the six do not, and a report declares which of them it uses:
 
-- **A field the raising pass needs**, where that pass carries something the five have no room for — `Lines saved` on a leanness finding, `Classification` where a pass separates a structural defect from a fixable one, `Code Example` where a fix reads more clearly shown than described. Named for what it holds.
+- **A field the raising pass needs**, where that pass carries something the six have no room for — `Lines saved` on a leanness finding, `Classification` where a pass separates a structural defect from a fixable one, `Code Example` where a fix reads more clearly shown than described. Named for what it holds.
 - **`Adjudication`**, where a later pass reached a verdict on a finding. It sits on the finding it judges, in the report that defines it, so a reader who arrives at that finding learns its remedy was rejected. A verdict held in a table elsewhere reaches only a reader who went looking. Where the verdict revises a severity, the severity on the finding is the revised one.
 
-A field that restates one of the five is not an extension: `Action` names the verb of a `Recommendation`, `Rationale` argues for one, and `Location` states the site the `Description`'s link already carries.
+A field that restates one of the six is not an extension: `Action` names the verb of a `Recommendation`, `Rationale` argues for one, and `Location` states the site the `Description`'s link already carries.
 
 ## Finding Layout
 
@@ -56,6 +57,10 @@ A finding is a heading, then one labelled paragraph per field, in the order abov
 ### CR-1 — the cursor advances before the bounds check
 
 **Category:** Rust Idioms
+
+**Severity:** High
+
+**Reachability:** reachable — the parser takes this path on every request it serves.
 
 **Description:** [resolve_cursor](https://github.com/owner/repo/blob/<sha>/src/parser.rs#L190) advances the cursor before the bounds check, so a request at the limit reads one element past the end.
 
@@ -67,7 +72,7 @@ A finding is a heading, then one labelled paragraph per field, in the order abov
 Four properties make it checkable:
 
 - **A finding is a heading.** It is the anchor the summary's designator column links to, and bold title text is unlinkable. One heading per finding, with no grouping heading between them — a severity or category heading inserted between findings breaks every anchor pointing past it, and severity is a field.
-- **The label set is closed.** Only the five fields and the report's declared extensions may open a paragraph, and content that does not fit one of them belongs inside the field it qualifies, never under a new heading of its own. That set is the permitted labels for a findings section, so a paragraph opening with anything else is a breach rather than a judgement call:
+- **The label set is closed.** Only the six fields and the report's declared extensions may open a paragraph, and content that does not fit one of them belongs inside the field it qualifies, never under a new heading of its own. That set is the permitted labels for a findings section, so a paragraph opening with anything else is a breach rather than a judgement call:
 
   ```
   ^\*\*(Field|Field|…):\*\*
@@ -94,6 +99,24 @@ Two constraints, both checkable from what the run already records:
 - **The value equals the map applied to that finding's own classification.** The classified severity is recorded on the finding, so this is a lookup rather than a judgement.
 
 A qualifier is not part of a severity value: `Medium (harness defect)` is a severity and a note sharing one cell, and the note belongs in the finding's description.
+
+## Reachability
+
+Every finding states whether the state that triggers it can be reached, on this closed value set:
+
+| Value | Meaning |
+|---|---|
+| `reachable` | on a path the change takes in normal operation |
+| `conditional` | needs a specific state that occurs in practice |
+| `parameter-gated` | needs a configuration or governance parameter change |
+| `privileged-action` | needs a privileged operator or governance action whose result is already undefined |
+| `unreachable` | no path reaches it under the current configuration |
+
+Three constraints, all settled from the same code the finding already cites:
+
+- **The value carries the evidence for itself.** `conditional` names the state, `parameter-gated` names the parameter, `privileged-action` names the action, `unreachable` names what refuses every path. One clause after the value, on the same line.
+- **A reachability statement is not part of another field.** *Unreachable at current parameters*, written inside `Description` or `Impact`, is this field's value in a place no reader of the field can find it.
+- **A finding whose subject is the text rather than a runtime state is `reachable`** — a missing change file, a construct a simpler one replaces. The text is present on every read.
 
 ## Delivery Completeness
 

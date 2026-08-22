@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -86,8 +86,8 @@ Full filesystem path to `DEFINITIVE-FINDINGS.md`
 
 ### 3. Extract Findings
 
-- From each authoritative artifact, extract every finding with its full field set: original ID, title, description, severity, classification (fixable/structural/etc), location reference, **impact** (the consequence if unaddressed), and **recommendation** (the concrete corrective action). REPORT.md later carries only a subset of these fields; DEFINITIVE-FINDINGS.md carries them all — so extract the full set once, here.
-- For full-prism: use the Definitive Findings Table in the synthesis artifact. Severities in this table are post-reconciliation and final. For each finding, also capture its **adversarial confirmation** — how the adversarial pass confirmed or corrected it (e.g. "confirmed", "severity raised from Medium", "underclaim promoted") — stated as a factual outcome, not a narrative.
+- From each authoritative artifact, extract every finding with its full field set: original ID, title, description, severity, classification (fixable/structural/etc), **reachability** (whether the triggering state is reached, and by what path), location reference, **impact** (the consequence if unaddressed), and **recommendation** (the concrete corrective action). REPORT.md later carries only a subset of these fields; DEFINITIVE-FINDINGS.md carries them all — so extract the full set once, here.
+- For full-prism: use the Definitive Findings Table in the synthesis artifact. Severities in this table are post-reconciliation and final. For each finding, also capture its **adversarial confirmation** — how the adversarial pass confirmed or corrected it (e.g. "confirmed", "severity raised from Medium", "underclaim promoted", "reachability narrowed to parameter-gated") — stated as a factual outcome, not a narrative. A reachability the adversarial pass narrowed is the finding's reachability, and the re-tier that follows from it stands.
 - For portfolio: findings are per-lens. Extract from each lens artifact's findings or problem list.
 - For behavioral: extract from the behavioral-synthesis convergence analysis.
 - For single: extract from the L12 findings table in the structural artifact.
@@ -140,7 +140,7 @@ Full filesystem path to `DEFINITIVE-FINDINGS.md`
 ### 9. Write Definitive Findings
 
 - Write the detailed [definitive findings](../resources/definitive-findings-template.md#definitive-findingsmd-template) document as `{definitive_findings}` into `{output_path}`, capturing its full filesystem path as `{definitive_findings_path}`
-- Include every finding from step 3 with its complete field set — Severity, Classification, Description, Impact, Location, Recommendation, Blast radius (where graph data exists), and Adversarial confirmation (full-prism only). Finding IDs are the same unified report IDs assigned in step 6, so DEFINITIVE-FINDINGS.md and REPORT.md agree exactly.
+- Include every finding from step 3 with its complete field set — Severity, Classification, Reachability, Description, Impact, Location, Recommendation, Blast radius (where graph data exists), and Adversarial confirmation (full-prism only). Finding IDs are the same unified report IDs assigned in step 6, so DEFINITIVE-FINDINGS.md and REPORT.md agree exactly.
 - Add the Conservation Laws & Design Trade-offs section from the surviving laws captured in step 3 (present for full-prism and behavioral). Omit the section when no law survived.
 - The voice remains factual: adversarial confirmation and conservation laws are recorded as evidence and constraints, never as process narration (no "ANALYSIS 1", "the adversarial pass", scorecards, or overclaim/underclaim tables).
 
@@ -156,7 +156,7 @@ REPORT.md contains no reference to the analytical process. Forbidden phrasing in
 
 ### definitive-findings-complete
 
-DEFINITIVE-FINDINGS.md carries every finding with its full field set — Severity, Classification, Description, Impact, Location, Recommendation, Blast radius (where graph data exists), and Adversarial confirmation (full-prism only) — plus the surviving conservation laws for full-prism and behavioral runs. A finding missing Impact or Recommendation, or a surviving law absent from the trade-offs section, is a contract violation: consumers rely on these fields and must never fall back to reading the raw pass artifacts.
+DEFINITIVE-FINDINGS.md carries every finding with its full field set — Severity, Classification, Reachability, Description, Impact, Location, Recommendation, Blast radius (where graph data exists), and Adversarial confirmation (full-prism only) — plus the surviving conservation laws for full-prism and behavioral runs. A finding missing Impact, Recommendation, or Reachability, or a surviving law absent from the trade-offs section, is a contract violation: consumers rely on these fields and must never fall back to reading the raw pass artifacts.
 
 ### definitive-findings-factual
 
