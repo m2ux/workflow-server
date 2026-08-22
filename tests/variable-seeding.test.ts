@@ -7,14 +7,14 @@
  * real corpus is kept mismatch-free by check:variable-model.
  */
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { createServer } from '../src/server.js';
+import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { resolve, join } from 'node:path';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
+import { cpSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { seedDefaults, jsonTypeOf, isTemplateReference } from '../src/utils/variable-seed.js';
 import { createInitialSessionFile } from '../src/schema/session.schema.js';
+import { createHarness, type Harness } from './e2e/harness.js';
+import { planningFolderPath } from './session-ops.js';
 
 const SEEDED_FIXTURE_BAG = {
   review_needed: false,
@@ -75,10 +75,9 @@ describe('createInitialSessionFile variable seeding', () => {
 });
 
 describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
+  let harness: Harness;
   let client: Client;
-  let closeTransport: () => Promise<void>;
-  let workspaceDir: string;
-  const planningFolder = (slug: string) => join(workspaceDir, '.engineering/artifacts/planning', slug);
+  const planningFolder = (slug: string) => planningFolderPath(harness.workspaceDir, slug);
   const readSession = (slug: string) => JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8'));
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -98,26 +97,11 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
   }
 
   beforeAll(async () => {
-    workspaceDir = mkdtempSync(join(tmpdir(), 'wf-b7-test-'));
-    const server = createServer({
-      workflowDir: resolve(import.meta.dirname, 'fixtures/variable-model'),
-      schemasDir: resolve(import.meta.dirname, '../schemas'),
-      workspaceDir,
-      serverName: 'test-workflow-server',
-      serverVersion: '1.0.0',
-      minCheckpointResponseSeconds: 0,
-    });
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    await server.connect(serverTransport);
-    client = new Client({ name: 'test-client', version: '1.0.0' }, {});
-    await client.connect(clientTransport);
-    closeTransport = async () => { await client.close(); };
+    harness = await createHarness({ workflowDir: resolve(import.meta.dirname, 'fixtures/variable-model') });
+    client = harness.client;
   });
 
-  afterAll(async () => {
-    await closeTransport();
-    rmSync(workspaceDir, { recursive: true, force: true });
-  });
+  afterAll(async () => { await harness.close(); });
 
   it('start_session seeds declared defaults — including false, "" and 0 — and skips undeclared defaults', async () => {
     const slug = '2026-07-07-seed-basic';
@@ -160,6 +144,34 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
     const child = stored.triggeredWorkflows[0].state;
     expect(child.variables).toEqual({ child_ready: false, child_label: 'seeded' });
     expect(child.history.filter((h: { type: string }) => h.type === 'variables_seeded')).toHaveLength(1);
+  });
+
+  it('a child that reported no usage is recorded as cost unknown, outside the parent totals (#477)', async () => {
+    const slug = '2026-07-07-child-cost';
+    const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
+    const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
+    await call('dispatch_child', { session_index: sessionIndex, workflow_id: 'child-fixture' });
+    // The parent records its own spend; the child is dispatched and reports nothing,
+    // which is the shape a stalled analysis run leaves behind.
+    await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
+    await call('record_usage', {
+      session_index: sessionIndex,
+      activity: 'checkpoint-activity',
+      usage: { total_tokens: 40 },
+      basis: 'delta',
+    });
+
+    const usage = JSON.parse(
+      ((await call('inspect_session', { session_index: sessionIndex, view: 'usage' })).content as Array<{ text: string }>)[0]!.text,
+    );
+    expect(usage.totals.total_tokens).toBe(40);
+    expect(usage.children_outside_totals).toHaveLength(1);
+    const child = usage.children_outside_totals[0];
+    expect(child.workflowId).toBe('child-fixture');
+    // The figure is unavailable, which is a different claim from nil.
+    expect(child.cost_known).toBe(false);
+    expect(child.rows).toBe(0);
+    expect(child.totals).toEqual({});
   });
 
   it('next_activity persists variables_changed into the bag, attributed to the activity being exited', async () => {
@@ -361,12 +373,12 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
       const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
       await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
-      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage });
+      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage, basis: 'delta' });
 
       const events = readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage');
       expect(events).toHaveLength(1);
       expect(events[0].activity).toBe('checkpoint-activity');
-      expect(events[0].data).toEqual({ usage });
+      expect(events[0].data).toEqual({ usage, basis: 'delta' });
 
       const view = await call('inspect_session', { session_index: sessionIndex, view: 'usage' });
       const projected = JSON.parse((view.content as { text: string }[])[0]!.text);
@@ -384,7 +396,7 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
       const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
       await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
-      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage });
+      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage, basis: 'delta' });
 
       const rows = readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage');
       expect(rows).toHaveLength(1);
@@ -396,8 +408,8 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       const started = await call('start_session', { workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(slug) });
       const sessionIndex = (started._meta as Record<string, unknown>).session_index as string;
       await call('next_activity', { session_index: sessionIndex, activity_id: 'checkpoint-activity' });
-      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage: { total_tokens: 10 } });
-      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage: { total_tokens: 20 } });
+      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage: { total_tokens: 10 }, basis: 'delta' });
+      await call('record_usage', { session_index: sessionIndex, activity: 'checkpoint-activity', usage: { total_tokens: 20 }, basis: 'delta' });
 
       const rows = readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage');
       expect(rows).toHaveLength(2);
@@ -412,5 +424,65 @@ describe('B7 seeding + setVariable type validation (fixture corpus)', () => {
       await call('next_activity', { session_index: sessionIndex, activity_id: 'followup-activity' });
       expect(readSession(slug).history.filter((h: { type: string }) => h.type === 'activity_usage')).toHaveLength(0);
     });
+  });
+});
+
+/**
+ * Definition drift on resume: the bag is seeded from the declarations that were on disk when the
+ * session was created, and a resume runs whatever is on disk now. A declaration added since is
+ * absent from the bag, so a gate on it reads unbound.
+ *
+ * Runs against a COPY of the fixture corpus so the definition can be edited under a live session.
+ */
+describe('resume against an edited workflow definition', () => {
+  let harness: Harness;
+  let client: Client;
+  let corpusDir: string;
+  const slug = '2026-08-17-definition-drift';
+  const planningFolder = () => planningFolderPath(harness.workspaceDir, slug);
+  const readSession = () => JSON.parse(readFileSync(join(planningFolder(), 'session.json'), 'utf8'));
+  const workflowPath = () => join(corpusDir, 'seed-fixture/workflow.yaml');
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  async function call(name: string, args: Record<string, unknown>): Promise<any> {
+    const result = await client.callTool({ name, arguments: args });
+    if (result.isError) throw new Error(`${name} failed: ${(result.content as { text: string }[])[0]?.text}`);
+    return result;
+  }
+
+  beforeAll(async () => {
+    corpusDir = mkdtempSync(join(tmpdir(), 'wf-drift-corpus-'));
+    cpSync(resolve(import.meta.dirname, 'fixtures/variable-model'), corpusDir, { recursive: true });
+    harness = await createHarness({ workflowDir: corpusDir });
+    client = harness.client;
+  });
+
+  afterAll(async () => {
+    await harness.close();
+    rmSync(corpusDir, { recursive: true, force: true });
+  });
+
+  it('seeds declarations the bag lacks and re-stamps the recorded version', async () => {
+    await call('start_session', {
+      workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(),
+    });
+    const created = readSession();
+    expect(created.workflowVersion).toBe('1.0.0');
+    expect(created.variables.late_gate).toBeUndefined();
+    // A run decision the resume must not overwrite with the declared default.
+    expect(created.variables.mode_label).toBe('standard');
+
+    const edited = readFileSync(workflowPath(), 'utf8')
+      .replace('version: 1.0.0', 'version: 1.1.0')
+      + '\n  - name: late_gate\n    type: boolean\n    description: Declared after the session opened.\n    defaultValue: false\n';
+    writeFileSync(workflowPath(), edited);
+
+    await call('start_session', {
+      workflow_id: 'seed-fixture', agent_id: 'orchestrator', planning_folder: planningFolder(),
+    });
+    const resumed = readSession();
+    expect(resumed.workflowVersion).toBe('1.1.0');
+    expect(resumed.variables.late_gate).toBe(false);
+    expect(resumed.variables.mode_label).toBe('standard');
   });
 });

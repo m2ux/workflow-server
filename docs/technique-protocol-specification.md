@@ -1,25 +1,12 @@
 # Technique Protocol Specification
 
-Authoritative schema: [`schemas/technique.schema.json`](../schemas/technique.schema.json) /
-[`src/schema/technique.schema.ts`](../src/schema/technique.schema.ts). Loaders:
-[`src/loaders/markdown-technique-loader.ts`](../src/loaders/markdown-technique-loader.ts),
-[`src/loaders/technique-loader.ts`](../src/loaders/technique-loader.ts).
-
 ## Before the formal rules
 
-**Who this is for:** workflow authors and contributors who write or change technique markdown.
+This page is for workflow authors and contributors who write or change technique markdown. A technique is a reusable capability file — what it does, what it needs, the ordered steps to follow, and any rules that hold across them — which an activity step names so that the agent knows how to act. That chain is the product model in full: a user's goal becomes a workflow, a workflow is a sequence of activities, an activity's steps name techniques, and a technique reaches for tools.
 
-**In one sentence:** a technique is a reusable capability file — what it does, what it needs, the ordered steps to follow, and optional rules — that an activity step names so the agent knows how to act.
+Writing one takes three things. Put the file under a workflow's `techniques/` directory, in one of the shapes §2 sets out. Give it a clear capability statement, inputs and outputs where they earn their place, and an ordered protocol. Then reference it from an activity step, and the server loads and composes it as the run reaches that step.
 
-**Practical path**
-
-1. Put technique files under a workflow’s `techniques/` directory (see §2).
-2. Give each technique a clear capability, inputs/outputs when useful, and an ordered protocol.
-3. Reference techniques from activity steps; the server loads and composes them at run time.
-
-**Product model:** `User goal → Workflow → Activities → Techniques → Tools`.
-
-The sections below are the normative contract (addressing, composition, delivery). For a short catalog of MCP tools, see [api-reference.md](api-reference.md).
+Everything from §1 onward is the normative contract — addressing, composition and delivery — and it is written to be precise rather than brisk. The identifiers in it are the contract, so they appear exactly as the loader expects them. The schema those rules are checked against is [`technique.schema.json`](../schemas/technique.schema.json), generated from [its Zod source](../src/schema/technique.schema.ts), and the code that reads a technique off disk is split between [the markdown loader](../src/loaders/markdown-technique-loader.ts) and [the resolver](../src/loaders/technique-loader.ts). For a short catalogue of the MCP tools involved, see the [API reference](api-reference.md).
 
 ---
 
@@ -515,7 +502,7 @@ activity's `::` references resolve to a technique or rule — an `unresolved` en
 definition defect, which the definition-lint gate enforces.
 
 The file shape of §3 is normative, and the `check:technique-template` guard
-(`scripts/check-technique-template.ts`, also a Vitest test) enforces it corpus-wide: frontmatter
+(`scripts/check-technique-template.ts`, run by `check:all`) enforces it corpus-wide: frontmatter
 carries `metadata.version` and nothing else; no H1 title; the H2 sections are the canonical five in
 canonical order (Outputs precede Protocol); entry ids are `snake_case` (a tool-parameter mirror
 keeps the tool's spelling, §3.2); rule names are `kebab-case`; every `{$name}` binding is

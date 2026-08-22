@@ -1,0 +1,64 @@
+name: Coverage walk
+
+# Every checkpoint option the corpus declares is taken by some walk, or listed as one this matrix
+# does not reach.
+#
+# This is a job of its own because it is slow — fourteen full coverage walks, each driving a workflow
+# through the real server. An earlier ratio counted only the checkpoints a walk reached, so it read
+# 100% for nine workflows while three of them were at 20%, 24% and 33% of what they declare
+# (issue #472); this job measures against what the corpus declares.
+#
+# Runs alongside `verify` rather than inside it: `npm run test:ci` stays a fast suite, and this job
+# fails on its own terms so a coverage regression is not read as a unit-test failure.
+#
+# On main, and on request. Twenty-five minutes is too long to sit in front of every pull request, and
+# the measurement is a property of the corpus rather than of a diff, so the natural place to take it
+# is the corpus as merged. The cost is that a change reducing coverage turns main red rather than its
+# own pull request, and is fixed forward. `workflow_dispatch` takes a ref, so a change that expects to
+# move coverage — a corpus bump, an edit to the walker or the expectation file — can be measured
+# before it merges by asking for a run on its branch.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: coverage-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  coverage-walk:
+    name: Every declared checkpoint option is reached
+    runs-on: ubuntu-latest
+    # The ceiling that says the walk is stuck rather than merely slow. The fourteen walks measured
+    # about thirteen minutes on a quiet machine and a shared runner is appreciably slower, so this
+    # sits well clear of the real cost: a walk cut off part-way reports a gap it had not reached yet,
+    # which is worse than a slow job. The test carries its own timeout below this one.
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # As in verify.yml: `.engineering` nests a private repo this runner cannot clone, so the
+          # corpus is checked out on its own below rather than with `submodules: recursive`.
+          submodules: false
+
+      # The corpus this tree adopts. Its pull-request check is inert here, both triggers above naming a
+      # real commit rather than a merge, and the action is shared with verify.yml where that check runs.
+      - uses: ./.github/actions/workflows-corpus
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      # The expectation file lists the options no walk reaches. A newly unreached option is not on it
+      # and fails here; an option that becomes reachable is on it with nothing to explain it and also
+      # fails, so the list can only shrink.
+      - name: Walk every checkpoint option
+        run: npm run test:coverage-walk

@@ -2,8 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { collectAudienceViolations, collectFindings } from '../scripts/check-audience.js';
-import { corpusRoot } from './corpus-root.js';
+import { collectAudienceViolations } from '../scripts/check-audience.js';
 
 /**
  * Audience convention guard (#224 V4): an output declared `audience: agent` that also carries an
@@ -27,14 +26,6 @@ async function writeTechnique(techniquesDir: string, id: string, outputsBody: st
     'utf-8',
   );
 }
-
-describe('audience guard (corpus)', () => {
-  // PR227-TC-10 — the real corpus declares no non-JSON agent-audience artifact.
-  it('names every agent-audience artifact as JSON', async () => {
-    const findings = await collectFindings(corpusRoot());
-    expect(findings.map((f) => `${f.site} — ${f.detail}`)).toEqual([]);
-  });
-});
 
 describe('audience guard (fixture corpus)', () => {
   let tempDir: string;

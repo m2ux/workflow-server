@@ -30,26 +30,13 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # `.engineering` nests a private repo this runner cannot clone, so submodules are checked
-          # out one at a time below rather than with `submodules: recursive`.
+          # `.engineering` nests a private repo this runner cannot clone, so the corpus is checked out
+          # on its own below rather than with `submodules: recursive`.
           submodules: false
 
-      # Both submodules are branches of THIS repo behind an SSH URL, which the default token cannot
-      # use. A second checkout of the pinned gitlink commit avoids submodule machinery and credential
-      # rewriting entirely. `HEAD:workflows` reads the gitlink from the superproject tree, so it
-      # resolves without the submodule ever being initialised.
-      - name: Resolve the pinned workflows-corpus commit
-        id: corpus
-        run: echo "sha=$(git rev-parse HEAD:workflows)" >> "$GITHUB_OUTPUT"
-
-      # The PINNED commit, not the `workflows` branch tip: this job verifies the corpus the tree under
-      # review actually adopts. Corpus drift ahead of the pin is the submodule bump's business.
-      - name: Check out the workflows corpus at the pinned commit
-        uses: actions/checkout@v4
-        with:
-          repository: ${{ github.repository }}
-          ref: ${{ steps.corpus.outputs.sha }}
-          path: workflows
+      # The corpus the tree under review adopts, and a check that the branch's baselines were recorded
+      # against it. Corpus drift ahead of the gitlink is the submodule bump's business.
+      - uses: ./.github/actions/workflows-corpus
 
       - uses: actions/setup-node@v4
         with:
@@ -70,3 +57,14 @@ jobs:
       # its corpus exits 2 and fails the job — an unmeasured guard is never folded into a pass.
       - name: Run every guard
         run: npm run check:all
+
+      # Delivery cost is the one property no guard measures, because it is a property of a WALK
+      # rather than of a file: the gate walks work-package end to end and compares the characters
+      # delivered against scripts/fixtures/token-benchmark-baseline.json. The corpus above is the
+      # pinned commit, so a delta is attributable to what this tree changed.
+      #
+      # A definition change that adds delivery fails here at 1%. That is the gate working: confirm
+      # the increase is wanted, re-record the fixture in the same commit, and say what the corpus
+      # gained. Left unrun, delivery rose 31.3% in 32 days with nothing reporting it.
+      - name: Gate delivery cost against the recorded baseline
+        run: npm run --silent bench:token -- --label=ci --context-mode=fresh --gate > /dev/null

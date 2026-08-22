@@ -97,6 +97,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'no activity opens with a checkpoint, so no dispatch exists only to ask a question',
   },
   {
+    id: 'decision-order',
+    script: 'scripts/check-decision-order.ts',
+    npmScript: 'check:decision-order',
+    scope: 'corpus',
+    json: true,
+    proves: 'no checkpoint decides a value a step before it is already gated on',
+  },
+  {
     id: 'bootstrap-self-contained',
     script: 'scripts/check-bootstrap-self-contained.ts',
     npmScript: 'check:bootstrap',
@@ -127,6 +135,14 @@ export const GUARDS: GuardSpec[] = [
     scope: 'corpus',
     json: false,
     proves: 'no step interpolates its own set target into its technique inputs',
+  },
+  {
+    id: 'self-composed-set',
+    script: 'scripts/check-self-composed-set.ts',
+    npmScript: 'check:self-composed-set',
+    scope: 'corpus',
+    json: false,
+    proves: 'no set action builds its value out of the variable it writes',
   },
   {
     id: 'activity-technique-overlap',

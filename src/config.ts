@@ -156,46 +156,10 @@ export const DEFAULT_BUNDLE_HEADROOM_FRACTION = 0.8;
 export const DEFAULT_BUNDLE_CHARS_PER_TOKEN = 4;
 
 /**
- * Batch bound policy (#407). One dispatched worker context walks a run of
- * activities, and the run is bounded twice: by cumulative delivered characters,
- * `context_tokens × batchHeadroomFraction × charsPerToken`, and by a hard cap on
- * distinct activities.
- *
- * WHICH LIMIT BINDS DEPENDS ON THE WORKFLOW, and both cases are wanted.
- *
- * The two rest on different evidence. `npm run bench:batch` measures activity
- * payloads only — it never fetches a technique or a resource lazily — so its
- * 161,027 characters for the three-activity analysis run is the EAGER floor, not
- * what a batch really accumulates. Read off 112 worker contexts in the sealed
- * session records, one activity costs a median 74,109 characters once its lazy
- * fetches are counted, with a 90th percentile of 182,642 and a maximum of 261,827.
- * The lazy half is usually the larger one.
- *
- * So at a 200,000-token window, giving a 280,000-character budget:
- *
- * - On the main workflow, whose activities are heavy, the BUDGET binds first — two
- *   real runs reach it after two activities. That is the mechanism working: three
- *   heavy activities would put over half the declared window into workflow content
- *   before a line of code is read.
- * - On the setup sequence, whose activities cost 33,000 to 154,000, the CAP binds
- *   first. That sequence is batching's first user, and a character budget alone
- *   would admit more of it than a context should hold.
- * - A worker declaring a smaller window is bounded proportionally, and where the
- *   third activity is refused depends on what the first two cost. On the median
- *   activity the budget binds before the cap below roughly 106,000 declared tokens;
- *   on the 90th percentile, below roughly 261,000 — so on heavy content the budget
- *   is the binding limit at any window worth declaring. The lighter run the
- *   benchmark walks puts the crossover near 99,000.
- *
- * Admission is checked BEFORE a delivery rather than after, so the activity that
- * is admitted can carry a batch past the budget — by up to one heavy activity,
- * 261,827 characters on measured content. Refusing after composing would pay the
- * composition and still not un-deliver it.
- *
- * The bundling fraction of 0.80 would admit thirteen of fifteen activities into
- * one context. Both values are revised from `batch_refused` counts and
- * per-activity usage rows over real runs, where the context establishment a byte
- * count cannot see is finally visible.
+ * Batch bound policy (#407): a worker context is bounded by cumulative delivered
+ * characters, `context_tokens × batchHeadroomFraction × charsPerToken`, and by a cap
+ * on distinct activities. Which one binds, the measurements behind these two values,
+ * and what revising them needs: docs/dispatch-model.md § Batching a run of activities.
  */
 export const DEFAULT_BATCH_HEADROOM_FRACTION = 0.35;
 export const DEFAULT_BATCH_MAX_ACTIVITIES = 3;

@@ -226,15 +226,25 @@ describe('client activity loop walked (#407)', () => {
   it('carries the frame a batch of any length needs, outside the body', () => {
     const def = activityDef();
 
-    // Exactly these steps, in this order. Naming positions instead would miss a step inserted between
-    // the prime and the loop — one that nulls the pointer keeps the loop from ever running — and a step
-    // appended after it that re-primes, and a second `kind: loop` the walk's own `find` cannot see.
-    expect(def.steps.map((s) => s.id)).toEqual([
+    // Exactly these steps up to and including the loop, in this order. Naming positions instead would
+    // miss a step inserted between the prime and the loop — one that nulls the pointer keeps the loop
+    // from ever running — and a second `kind: loop` the walk's own `find` cannot see.
+    const ids = def.steps.map((s) => s.id);
+    const loopAt = ids.indexOf('client-activity-loop');
+    expect(ids.slice(0, loopAt + 1)).toEqual([
       'verify-preconditions',
       'prime-initial-activity',
       'client-activity-loop',
     ]);
     expect(def.steps.filter((s) => s.kind === 'loop')).toHaveLength(1);
+    // A step after the loop reads the pointer to say how the loop ended; one that WRITES it re-primes a
+    // spent walk, so the activity's transition never fires and close-out is never reached.
+    for (const after of def.steps.slice(loopAt + 1)) {
+      expect(
+        after.actions?.some((a) => a.action === 'set' && a.target === 'current_activity'),
+        `step '${after.id}' sits after the loop and re-primes the pointer`,
+      ).toBeFalsy();
+    }
 
     const [precondition, prime] = def.steps;
     const l = loop();

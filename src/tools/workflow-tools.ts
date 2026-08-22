@@ -15,6 +15,10 @@ import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders
 import { readResourceRaw } from '../loaders/resource-loader.js';
 import { injectResolvedStepIds, techniqueName, flattenActivitySteps, type Activity, type Step } from '../schema/activity.schema.js';
 import { buildProducerIndex, provenanceContextFor, decorateTechniqueProvenance } from '../utils/binding-provenance.js';
+import {
+  bothGates, gateAnswer, variablesWrittenIn,
+  type GateUnansweredCounts, type GateVerdict,
+} from '../utils/gate-liveness.js';
 import { withAuditLog, logInfo, logWarn } from '../logging.js';
 import { applyVariableWrites } from '../utils/variable-seed.js';
 import { stringifyForResponse } from '../utils/serialization.js';
@@ -59,14 +63,15 @@ const activityManifestSchema = z.array(z.object({
 })).optional().describe('Orchestrator activity-completion manifest: [{activity_id, outcome, transition_condition?}].');
 
 const usageSchema = z.record(z.unknown()).describe(
-  'Harness-reported token usage for ONE activity (DELTA since the last figure recorded for this \n'
-  + 'dispatch — not a cumulative session total). A dispatch carrying a run of activities records one \n'
-  + 'call per activity as it completes, so cost keeps a figure per activity and a batch size can be \n'
-  + 'calibrated from real runs. Include numeric token fields the harness reports (`input_tokens`, \n'
-  + '`output_tokens`, `total_tokens`, `subagent_tokens`, cache/model fields). Recorded as an \n'
-  + '`activity_usage` history event keyed to the activity that ran; inspect_session view:usage \n'
-  + 'projects each row and plain-sums known token keys across rows. Workers cannot self-measure: \n'
-  + 'omit the record_usage call entirely when the harness surfaces nothing rather than passing zeros.',
+  'Harness-reported token usage for ONE activity, on the basis the sibling `basis` parameter states. \n'
+  + 'A dispatch carrying a run of activities records one call per activity as it completes, so cost \n'
+  + 'keeps a figure per activity and a batch size can be calibrated from real runs. Include numeric \n'
+  + 'token fields the harness reports (`input_tokens`, `output_tokens`, `total_tokens`, \n'
+  + '`subagent_tokens`, cache/model fields). Recorded as an `activity_usage` history event keyed to \n'
+  + 'the activity that ran; inspect_session view:usage sums the delta rows, carries each agent\'s \n'
+  + 'latest cumulative figure, and names the completed activities holding no row. Workers cannot \n'
+  + 'self-measure: omit the record_usage call entirely when the harness surfaces nothing rather than \n'
+  + 'passing zeros.',
 );
 
 const artifactsProducedSchema = z.array(z.object({
@@ -215,12 +220,40 @@ export function projectCheckpoints(s: SessionFile): Record<string, unknown> {
   return out;
 }
 
-/** Activity projection: completed / skipped lists plus the current activity. */
+/**
+ * Activity projection: completed / skipped lists, the current activity, and the
+ * outcome each completed activity reported. `outcomes` is what close-out
+ * measures a run against where the client workflow seeded no outcome list of its
+ * own, so a run is judged on what its own activities delivered. A completed
+ * activity absent from `outcomes` is one whose dispatch reported no manifest.
+ */
 export function projectActivities(s: SessionFile): Record<string, unknown> {
+  const outcomes = (s.history ?? [])
+    .filter(e => e.type === 'activity_outcome' && e.activity !== undefined)
+    .map(e => ({
+      activity: e.activity!,
+      outcome: e.data?.['outcome'],
+      ...(e.data?.['transitionCondition'] !== undefined ? { transitionCondition: e.data['transitionCondition'] } : {}),
+    }));
+  // Activities entered whose in-progress mark the dispatch did not publish, and those it
+  // said nothing about. The mark exists for someone watching a long activity in flight,
+  // and the completion status overwrites the cell it was written in, so these two lists
+  // are what remains answerable afterwards (#473).
+  const entered = (s.history ?? []).filter(e => e.type === 'activity_entered' && e.activity !== undefined);
+  const reported = new Map<string, boolean>();
+  for (const e of s.history ?? []) {
+    if (e.type !== 'progress_published' || e.activity === undefined) continue;
+    reported.set(e.activity, e.data?.['published'] === true);
+  }
+  const progress_mark_unpublished = [...new Set(entered.map(e => e.activity!))].filter(a => reported.get(a) === false);
+  const progress_mark_unreported = [...new Set(entered.map(e => e.activity!))].filter(a => !reported.has(a));
   return {
     completed: s.completedActivities ?? [],
     skipped: s.skippedActivities ?? [],
     current: s.currentActivity,
+    outcomes,
+    progress_mark_unpublished,
+    progress_mark_unreported,
   };
 }
 
@@ -251,9 +284,37 @@ export function projectHistory(s: SessionFile, agentId?: string): Record<string,
 }
 
 /**
+ * What one session's own `activity_usage` rows add up to, counting the delta rows and
+ * saying how many rows there were. A session with no rows reports `cost_known: false` —
+ * a child that stopped before reporting still spent, and an absent figure is a gap in
+ * the record rather than a zero (#477).
+ */
+function sessionCost(s: SessionFile | undefined): { cost_known: boolean; rows: number; totals: Record<string, number> } {
+  const events = (s?.history ?? []).filter(e => e.type === 'activity_usage');
+  const totals: Record<string, number> = {};
+  for (const e of events) {
+    if (e.data?.['basis'] !== 'delta') continue;
+    const usage = e.data?.['usage'];
+    if (!usage || typeof usage !== 'object') continue;
+    const u = usage as Record<string, unknown>;
+    for (const key of USAGE_TOKEN_KEYS) {
+      const v = u[key];
+      if (typeof v === 'number' && Number.isFinite(v)) totals[key] = (totals[key] ?? 0) + v;
+    }
+  }
+  return { cost_known: events.length > 0, rows: events.length, totals };
+}
+
+/**
  * Children digest: one line per `triggeredWorkflows` entry of the addressed
- * session. Positional `index`, the child's own identity, and the running
- * status/activity/completed trace read from its embedded `state`.
+ * session. Positional `index`, the child's own identity, the running
+ * status/activity/completed trace read from its embedded `state`, and what that child's
+ * own usage rows come to.
+ *
+ * A child's cost is its own, so it never joins the parent's totals. What it must not do
+ * is vanish: a child that ran and stopped before reporting is the largest single expense
+ * a run can hide, so `cost_known` false says the figure is unavailable rather than nil
+ * (#477).
  */
 export function projectChildren(s: SessionFile): Array<Record<string, unknown>> {
   return (s.triggeredWorkflows ?? []).map((c, i) => {
@@ -265,6 +326,7 @@ export function projectChildren(s: SessionFile): Array<Record<string, unknown>> 
       status: st?.status,
       currentActivity: st?.currentActivity,
       completed: st?.completedActivities ?? [],
+      ...sessionCost(st),
     };
   });
 }
@@ -278,47 +340,154 @@ export const USAGE_TOKEN_KEYS = [
 ] as const;
 
 /**
- * Usage projection (#324 B1, #346 DI-33, #365 S3): one entry per `activity_usage`
- * event in record order (one per activity a dispatch covered), plus a plain-sum
- * token aggregate over those rows. Rows are DELTA figures for one activity, so a
- * dispatch carrying a run of activities appears as several rows sharing an
- * `agentId`; the aggregate is the arithmetic sum of known numeric token keys
- * across the projected rows. When
- * `agentId` is set, only rows whose `data.agentId` matches are included
+ * Wall-clock span of each activity, from the server's own `activity_entered` and
+ * `activity_exited` timestamps. An activity entered more than once — resumed after a
+ * checkpoint, re-dispatched after a timeout — takes the span from its first entry to its
+ * last exit, and an activity still running has no span.
+ *
+ * These spans nest and they include the time a user spent at a checkpoint, so they are
+ * not additive: the run's own elapsed time is the span from its first event to its last,
+ * never the sum of the parts (#474 F7).
+ */
+function activityWallClockMs(s: SessionFile): Map<string, number> {
+  const first = new Map<string, number>();
+  const last = new Map<string, number>();
+  for (const e of s.history ?? []) {
+    if (e.activity === undefined) continue;
+    const t = new Date(e.timestamp).getTime();
+    if (!Number.isFinite(t)) continue;
+    if (e.type === 'activity_entered') {
+      const prior = first.get(e.activity);
+      if (prior === undefined || t < prior) first.set(e.activity, t);
+    } else if (e.type === 'activity_exited') {
+      const prior = last.get(e.activity);
+      if (prior === undefined || t > prior) last.set(e.activity, t);
+    }
+  }
+  const spans = new Map<string, number>();
+  for (const [activity, start] of first) {
+    const end = last.get(activity);
+    if (end !== undefined && end >= start) spans.set(activity, end - start);
+  }
+  return spans;
+}
+
+/**
+ * Usage projection (#324 B1, #346 DI-33, #365 S3, #474 F7): one entry per
+ * `activity_usage` event in record order (one per activity a dispatch covered), the token
+ * aggregate over the rows that can be summed, the measured wall clock, and the completed
+ * activities that carry no row at all.
+ *
+ * Three things keep the figures honest, each answering a way the record read as sound and
+ * was not.
+ *
+ * **A row states its basis.** `delta` rows carry this activity's own spend and sum.
+ * `cumulative` rows carry a running total for their agent context, which is what several
+ * harnesses report, and summing those double-counts every earlier activity — so they are
+ * reported as the latest figure per agent instead. A row whose basis the caller did not
+ * state sums nowhere and is counted in `unstated_basis`, because a figure of unknown basis
+ * is not a figure.
+ *
+ * **Wall clock is measured, not reported.** Each row carries the span the server timed for
+ * its activity. `wall_clock_ms_not_additive` says what the spans are: they nest and they
+ * include user think time at checkpoints, so `elapsed_ms` — first event to last — is the
+ * only sound aggregate.
+ *
+ * **Absence is named.** `activities_without_usage` lists the completed activities holding
+ * no row, so a total that covers part of a run says which part. A worker cannot
+ * self-measure, so a missing row means the harness surfaced nothing, never a zero.
+ *
+ * When `agentId` is set, only rows whose `data.agentId` matches are included
  * (unattributed rows — no agentId — are excluded from a filtered view).
  */
 export function projectUsage(
   s: SessionFile,
   agentId?: string,
-): { rows: Array<Record<string, unknown>>; totals: Record<string, number> } {
+): {
+  rows: Array<Record<string, unknown>>;
+  totals: Record<string, number>;
+  cumulative_latest_by_agent: Record<string, Record<string, number>>;
+  unstated_basis: number;
+  elapsed_ms?: number;
+  wall_clock_ms_not_additive: boolean;
+  activities_without_usage: string[];
+  children_outside_totals: Array<Record<string, unknown>>;
+} {
   const events = (s.history ?? []).filter(e => e.type === 'activity_usage');
   const filtered = agentId === undefined
     ? events
     : events.filter(e => e.data?.['agentId'] === agentId);
+  const spans = activityWallClockMs(s);
   const rows = filtered.map(e => {
     const row: Record<string, unknown> = {
       activity: e.activity,
       timestamp: e.timestamp,
       usage: e.data?.['usage'],
+      basis: typeof e.data?.['basis'] === 'string' ? e.data['basis'] : 'unstated',
     };
-    if (typeof e.data?.['agentId'] === 'string') {
-      row['agentId'] = e.data['agentId'];
-    }
+    if (typeof e.data?.['agentId'] === 'string') row['agentId'] = e.data['agentId'];
+    const span = e.activity !== undefined ? spans.get(e.activity) : undefined;
+    if (span !== undefined) row['wall_clock_ms'] = span;
     return row;
   });
-  const totals: Record<string, number> = {};
-  for (const row of rows) {
-    const usage = row['usage'];
-    if (!usage || typeof usage !== 'object') continue;
+
+  const tokenKeys = (usage: unknown): Record<string, number> => {
+    const out: Record<string, number> = {};
+    if (!usage || typeof usage !== 'object') return out;
     const u = usage as Record<string, unknown>;
     for (const key of USAGE_TOKEN_KEYS) {
       const v = u[key];
-      if (typeof v === 'number' && Number.isFinite(v)) {
-        totals[key] = (totals[key] ?? 0) + v;
-      }
+      if (typeof v === 'number' && Number.isFinite(v)) out[key] = v;
+    }
+    return out;
+  };
+
+  const totals: Record<string, number> = {};
+  const cumulative_latest_by_agent: Record<string, Record<string, number>> = {};
+  let unstated_basis = 0;
+  for (const row of rows) {
+    const keys = tokenKeys(row['usage']);
+    if (row['basis'] === 'delta') {
+      for (const [k, v] of Object.entries(keys)) totals[k] = (totals[k] ?? 0) + v;
+    } else if (row['basis'] === 'cumulative') {
+      // Later rows for one agent supersede earlier ones: a cumulative figure already
+      // contains everything that agent spent before it.
+      const key = typeof row['agentId'] === 'string' ? row['agentId'] : 'unattributed';
+      cumulative_latest_by_agent[key] = { ...(cumulative_latest_by_agent[key] ?? {}), ...keys };
+    } else {
+      unstated_basis += 1;
     }
   }
-  return { rows, totals };
+
+  const stamps = (s.history ?? [])
+    .map(e => new Date(e.timestamp).getTime())
+    .filter(t => Number.isFinite(t));
+  const elapsed_ms = stamps.length > 1 ? Math.max(...stamps) - Math.min(...stamps) : undefined;
+
+  const measured = new Set(events.map(e => e.activity).filter((a): a is string => a !== undefined));
+  const activities_without_usage = (s.completedActivities ?? []).filter(a => !measured.has(a));
+
+  // A child workflow spends under its own session, so its cost is not in `totals`. Saying
+  // so, with each child's own figure or `cost_known: false`, is what keeps the largest
+  // expense of a run from being absent from every total at once (#477).
+  const children_outside_totals = (s.triggeredWorkflows ?? []).map((c, i) => ({
+    index: i,
+    sessionIndex: c.sessionIndex,
+    workflowId: c.workflowId,
+    status: c.state?.status,
+    ...sessionCost(c.state),
+  }));
+
+  return {
+    rows,
+    totals,
+    cumulative_latest_by_agent,
+    unstated_basis,
+    ...(elapsed_ms !== undefined ? { elapsed_ms } : {}),
+    wall_clock_ms_not_additive: true,
+    activities_without_usage,
+    children_outside_totals,
+  };
 }
 
 /** Summary (default) view: the composite of all projections for the addressed session. */
@@ -525,8 +694,14 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       agent_id: z.string().min(1).optional().describe(
         'Optional. Worker context that completed the exiting activity — scopes technique-fetch fidelity and step_completed attribution.',
       ),
+      context_tokens: z.number().int().positive().optional().describe(
+        'Optional, with agent_id. That context\'s declared window, so `_meta.batch` reports whether it may take this activity — a reading that counts the lazy fetches the exiting activity made. Continue the worker on `may_continue: true`; spawn a fresh agent_id otherwise.',
+      ),
+      progress_published: z.boolean().optional().describe(
+        'Whether the in-progress Progress mark for this activity is committed and pushed before the worker spawns. Recorded as a `progress_published` event, so an activity opened without one is answerable from the session rather than only from whoever was watching the working tree at the time. Omit only where the session has no planning folder to mark.',
+      ),
     },
-    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, variables_changed, artifacts_produced, agent_id }) => {
+    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, variables_changed, artifacts_produced, agent_id, context_tokens, progress_published }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -588,6 +763,29 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             draft.completedActivities.push(exitingActivity);
           }
         }
+        // What each completed activity delivered, as the orchestrator reported
+        // it. Close-out measures a run against these where the client workflow
+        // seeded no outcome list, so the list has to reach the store rather
+        // than being validated and dropped. One event per activity: a manifest
+        // re-sent across several calls names activities already recorded.
+        if (activity_manifest) {
+          const recorded = new Set(
+            draft.history.filter(h => h.type === 'activity_outcome' && h.activity !== undefined).map(h => h.activity!),
+          );
+          for (const entry of activity_manifest as ActivityManifestEntry[]) {
+            if (recorded.has(entry.activity_id)) continue;
+            recorded.add(entry.activity_id);
+            draft.history.push({
+              timestamp: now,
+              type: 'activity_outcome',
+              activity: entry.activity_id,
+              data: {
+                outcome: entry.outcome,
+                ...(entry.transition_condition !== undefined ? { transitionCondition: entry.transition_condition } : {}),
+              },
+            });
+          }
+        }
         // Persist the completing activity's worker outputs into the bag. These
         // are attributed to the activity being exited, not the one entered —
         // they are its results. Without this the bag holds only seeded defaults
@@ -634,6 +832,17 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         draft.condition = transition_condition ?? '';
         delete draft.activeCheckpoint;
         draft.history.push({ timestamp: now, type: 'activity_entered', activity: activity_id });
+        // Whether the dispatch published this activity's in-progress mark. The mark lives
+        // in a README cell the completion status overwrites when the activity ends, so
+        // this event is the only lasting evidence either way (#473).
+        if (progress_published !== undefined && !isTerminal) {
+          draft.history.push({
+            timestamp: now,
+            type: 'progress_published',
+            activity: activity_id,
+            data: { published: progress_published },
+          });
+        }
         // Terminal-state transition emits a workflow_completed event and flips
         // status. The activity id 'complete' is the canonical terminal marker
         // across the work-package, prism, and meta workflows; the TERMINAL_SENTINEL
@@ -735,6 +944,24 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const meta: Record<string, unknown> = { session_index, validation };
 
+      // Where the exiting worker stands, read at the boundary so the lazy fetches of the activity it
+      // just finished are counted (docs/dispatch-model.md § Batching a run of activities).
+      if (agent_id && context_tokens !== undefined && !isTerminal) {
+        const bound = batchBound(context_tokens, {
+          headroomFraction: config.batchHeadroomFraction ?? DEFAULT_BATCH_HEADROOM_FRACTION,
+          maxActivities: config.batchMaxActivities ?? DEFAULT_BATCH_MAX_ACTIVITIES,
+          charsPerToken: config.bundleCharsPerToken ?? DEFAULT_BUNDLE_CHARS_PER_TOKEN,
+        });
+        const stand = batchState(state, agent_id, bound);
+        meta['batch'] = {
+          activities: stand.activities.length,
+          max_activities: bound.maxActivities,
+          delivered_chars: stand.chars,
+          budget_chars: bound.budgetChars,
+          may_continue: batchRefusal(state, agent_id, activity_id, bound) === undefined,
+        };
+      }
+
       if (config.traceStore) {
         const segment = config.traceStore.getSegmentAndAdvanceCursor(state.sessionIndex);
         if (segment.events.length > 0) {
@@ -771,7 +998,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     'Under persistent/`bundle: "reference"`, already-delivered content may collapse to unchanged markers — ONLY valid when THIS agent received the earlier payloads; technique-linked resource BODIES also arrive under a sibling `resources` map. ' +
     'Under full delivery, that map is not sent: the linked ids arrive under `resource_refs` and you fetch the ones you need with get_resource. `resources_note` states which shape this response used. ' +
     'Use `bundle: "full"` after summarization; a FRESH worker must not pass `bundle: "reference"` (it holds no prior delivery), but a RESUMED worker that passes its dispatch `agent_id` may. ' +
-    'A dispatch carrying a run of activities walks them under ONE `agent_id`: `_meta.batch` reports how many that context has taken, what it has been delivered, and `may_continue` — false means report the next activity as needing its own dispatch and stop. ' +
+    'A dispatch carrying a run of activities walks them under ONE `agent_id`: a `batch` block at the end of the response — and the same reading on `_meta.batch` — reports how many that context has taken, what it has been delivered, and `may_continue`, where false means report the next activity as needing its own dispatch and stop. ' +
     'Asking past the bound is refused with the payload undelivered.',
     {
       ...sessionIndexParam,
@@ -850,6 +1077,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // content that was delivered under the default full mode.
       const newDeliveries: Record<string, string> = {};
 
+      // Whether this scope's ledger describes what it is holding. Governs the blocks identical on
+      // every activity — see docs/resource-resolution-model.md § Reference Delivery.
+      const mayReferBack = bundle !== 'full' && (referenceMode || hasDispatch(state, scope));
+
       // Bundle the techniques the activity references (delivered as full protocols), deduped with
       // the workflow-level techniques inherited by every activity (`techniques.activity`, injected
       // here so a common technique is declared once on the workflow) and the core worker techniques.
@@ -868,7 +1099,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         for (const [key, body] of Object.entries(bundleTechniques)) {
           const hash = contentHash(stringifyForResponse(body));
           const ledgerKey = `bundle:${key}`;
-          if (referenceMode && deliveredHash(state, ledgerKey, scope) === hash) {
+          if (mayReferBack && deliveredHash(state, ledgerKey, scope) === hash) {
             bundleTechniques[key] = unchangedMarker(hash);
           } else {
             newDeliveries[ledgerKey] = hash;
@@ -882,12 +1113,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (bundleData['rules'] !== undefined) {
         const rulesHash = contentHash(stringifyForResponse(bundleData['rules']));
         const rulesKey = `bundle:rules:${rulesHash}`;
-        if (referenceMode && deliveredHash(state, rulesKey, scope) === rulesHash) {
+        if (mayReferBack && deliveredHash(state, rulesKey, scope) === rulesHash) {
           bundleData['rules'] = unchangedMarker(rulesHash);
         } else {
           newDeliveries[rulesKey] = rulesHash;
         }
       }
+
+      // What the worker bundle costs this response, markers included: it opens the eager tally below.
+      const workerBundleChars = stringifyForResponse(bundleData).length;
 
       // Automatic, per-agent context-derived step-technique bundling (#189 C1c): every activity
       // eagerly inlines its small, ungated step-bound techniques — no per-activity opt-in. The
@@ -904,6 +1138,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // identical by construction. Bundled entries share the `technique:<resolvedId>` delivery-
       // ledger key with get_technique, so persistent-context refetches of bundled content collapse
       // to unchanged-references in either direction.
+      // A gated step joins the bundle when its gate answers true for the whole activity; a false or
+      // unanswered gate stays lazy (src/utils/gate-liveness.ts).
       const bundledStepTechniques: Record<string, unknown> = {};
       // `chars` is the FULL composed size on both paths and `delivery` says which path ran, so the
       // technique_bundled / resource_fetched events below report delivered and saved characters
@@ -933,25 +1169,50 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // Running total of full-content characters committed to the eager bundle. An unchanged-reference
       // marker costs effectively nothing, so it never draws down the budget; only full-content
       // entries do. Held here so the delivery's cost line can report it against the budget.
-      let spentChars = 0;
+      let spentChars = workerBundleChars;
+      /**
+       * Technique steps left for get_technique, by the answer their gate gave. The unanswered ones
+       * are counted by reason, because they mean different things: `pending` is this activity's own
+       * production arriving during the run, `unbound` is a gate nothing on this path has written.
+       */
+      let lazyFalseGates = 0;
+      const lazyUnanswered: GateUnansweredCounts = { pending: 0, unbound: 0, unparsed: 0 };
       if (!optedOut && result.success && activity) {
-        const eligible: Array<Step & { kind: 'technique' }> = [];
-        const collectUngated = (steps: Step[] | undefined): void => {
-          for (const s of steps ?? []) {
-            if (s.when !== undefined || s.condition !== undefined) continue;
-            if (s.kind === 'loop') { collectUngated(s.steps as Step[]); continue; }
-            if (s.kind === 'technique' && s.id) eligible.push(s);
-          }
-        };
-        collectUngated((activity as Activity).steps);
-
-        if (eligible.length > 0) {
+        // One pass serves both the gate reading (which bag entries this activity produces) and the
+        // provenance decoration further down.
+        const bindsTechnique = flattenActivitySteps(activity as Activity)
+          .some((s) => s.kind === 'technique' && s.id !== undefined);
+        if (bindsTechnique) {
           producerIndex = await buildProducerIndex({
             workflow: result.value,
             workflowDir: config.workflowDir,
             activitySourceWorkflow,
           });
         }
+        const writtenInActivity = producerIndex
+          ? variablesWrittenIn(producerIndex.producers, activity_id)
+          : new Set<string>();
+        const bagAtOpen = state.variables ?? {};
+
+        const eligible: Array<Step & { kind: 'technique' }> = [];
+        // An enclosing loop's gate narrows its body, so a step joins only where every gate above it
+        // also answers true.
+        const collect = (steps: Step[] | undefined, outer: GateVerdict): void => {
+          for (const s of steps ?? []) {
+            const verdict = bothGates(outer, gateAnswer({
+              when: s.when,
+              condition: s.condition,
+              variables: bagAtOpen,
+              writtenInActivity,
+            }));
+            if (s.kind === 'loop') { collect(s.steps as Step[], verdict); continue; }
+            if (s.kind !== 'technique' || s.id === undefined) continue;
+            if (verdict.answer === undefined) lazyUnanswered[verdict.reason]++;
+            else if (verdict.answer) eligible.push(s);
+            else lazyFalseGates++;
+          }
+        };
+        collect((activity as Activity).steps, { answer: true });
 
         for (const step of eligible) {
           const ref = techniqueName(step.technique);
@@ -962,7 +1223,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           // An unresolvable ref is the binding guard's business; delivery skips it (the step's
           // own get_technique fetch will surface the error to the worker).
           if (!composedStep.success) continue;
-          const { techniqueId } = composedStep.value;
+          const { techniqueId, sourceWorkflowId: techniqueWorkflowId } = composedStep.value;
           let technique = composedStep.value.technique;
           let provenanceWarnings: string[] = [];
           const ctx = producerIndex
@@ -982,7 +1243,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           if (text.length > perTechniqueCap) continue;
           const ledgerKey = `technique:${techniqueId}`;
           const hash = contentHash(text);
-          const alreadyDelivered = referenceMode && (deliveredHash(state, ledgerKey, scope) === hash || newDeliveries[ledgerKey] === hash);
+          // The ledger half needs a context that retains prior payloads; the response-local half is
+          // readable by any recipient, the copy being in this same response.
+          const heldByContext = referenceMode && deliveredHash(state, ledgerKey, scope) === hash;
+          const earlierInResponse = newDeliveries[ledgerKey] === hash;
+          const alreadyDelivered = heldByContext || earlierInResponse;
           // ▼ STEP arrival marker: each entry is a discrete, self-describing unit that substitutes
           // for the intentional get_technique { step_id } call inlining removes (#189 C1c(C)1).
           const stepMarker = `▼ STEP ${step.id!} · technique ${techniqueId}`;
@@ -1000,18 +1265,20 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             newDeliveries[ledgerKey] = hash;
             // The arrival marker leads the block; the composed technique fields follow at the same
             // level, so a bundled entry reads exactly like a get_technique fetch with a step header.
-            // Under reference mode, collapse any shared contract/rules block already delivered (by a
-            // sibling bundled step or an earlier fetch) to a marker while the core stays full.
-            const projected = referenceMode
-              ? dedupTechniqueBlocks(projectTechnique(technique), state, newDeliveries, scope)
-              : projectTechnique(technique);
+            // Shared contract/rules blocks collapse in every mode; reference mode widens the pass to
+            // what this context received on an earlier call.
+            const projected = dedupTechniqueBlocks(
+              projectTechnique(technique), state, newDeliveries, scope, referenceMode,
+            );
             bundledStepTechniques[step.id!] = { marker: stepMarker, ...projected };
           }
           // Collect linked resource ids from the full composed technique text even when this
           // delivery collapses to an unchanged-marker (markers omit link text). Only for steps
           // actually included in the bundle (after the budget break above).
+          // Qualified against the workflow the TECHNIQUE file was found in, not the activity's: a
+          // bare link in a meta technique names a resource under meta/resources/ whoever binds it.
           for (const rawId of extractResourceIds(text)) {
-            linkedResourceIds.add(qualifyResourceId(rawId, sourceWorkflowId, workflow_id));
+            linkedResourceIds.add(qualifyResourceId(rawId, techniqueWorkflowId, workflow_id));
           }
           bundledSteps.push({
             stepId: step.id!, techniqueId,
@@ -1124,7 +1391,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
           bundleData['step_techniques'] = bundledStepTechniques;
           bundleData['step_techniques_note'] =
-            'Each step_techniques entry is a discrete ▼ STEP block whose composed technique is identical to a get_technique { step_id } fetch. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resource bodies are NEVER nested inside a step_techniques entry — `resources_note` states how this response delivers the technique-linked resources. Technique steps absent from this map (gated, or past the derived eager-delivery budget / a per-activity size cap) still require get_technique { step_id } before execution.';
+            'Each step_techniques entry is a discrete ▼ STEP block whose composed technique is identical to a get_technique { step_id } fetch. Engage the inlined steps strictly in step order: on reaching each step, EMIT a one-line "▶ step <step_id>" begin-beat before executing it — that deliberate beat is the intentional act inlining moves off the get_technique call, and it is the stepwise observability trace for bundled steps (do NOT ping the server per bundled step; delivery-time technique_bundled events already record coverage). Resource bodies are NEVER nested inside a step_techniques entry — `resources_note` states how this response delivers the technique-linked resources. An entry for a step inside a loop body is the protocol for EVERY iteration: engage it once per iteration from the copy you hold, and do not re-fetch it per pass. Technique steps absent from this map (a gate whose reading is not available at delivery time, a gate this activity reads as no, or past the derived eager-delivery budget / a per-activity size cap) still require get_technique { step_id } before execution.';
           if (bundledResourceDeliveries.length > 0) bundleData['resources'] = bundledResources;
           if (resourceRefIds.length > 0) bundleData['resource_refs'] = resourceRefIds;
           if (linkedIds.length > 0) {
@@ -1140,10 +1407,17 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         ...bundlingWarnings,
       );
 
-      const opsData = referenceMode
+      // The note names whichever referents this response can actually produce.
+      const inResponseNote = 'A marker may point at a byte-identical copy EARLIER IN THIS RESPONSE — a sibling step_techniques entry, or one shared inherited_inputs/inherited_outputs/rules block several of this activity\'s techniques inherit from the same ancestor group. Find that copy by its content_hash and read it there.';
+      const priorCallNote = 'A marker may point at content already in your context from an earlier call to this session — reuse it from there. Re-fetch one technique with get_technique { step_id, full: true }, or the whole payload with get_activity { bundle: "full" }.';
+      const markerNotes = [
+        ...(bundledSteps.length > 1 ? [inResponseNote] : []),
+        ...(mayReferBack ? [priorCallNote] : []),
+      ];
+      const opsData = markerNotes.length
         ? {
-            bundle_mode: 'reference',
-            bundle_note: 'Entries marked { delivery: "unchanged", content_hash } are already in your context — reuse them. A marker may also replace a single inherited_inputs/inherited_outputs/rules block inside an otherwise-full step_techniques entry (that shared block came from a sibling technique). Re-fetch a technique with get_technique { step_id, full: true }, or get_activity { bundle: "full" } to re-deliver the whole bundle.',
+            ...(referenceMode ? { bundle_mode: 'reference' } : {}),
+            bundle_note: `Entries marked { delivery: "unchanged", content_hash } are content you already hold. ${markerNotes.join(' ')}`,
             ...bundleData,
           }
         : bundleData;
@@ -1198,7 +1472,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (inheritedRules.length) {
         const inheritedRulesHash = contentHash(stringifyForResponse(inheritedRules));
         const inheritedRulesKey = `activity_rules:${inheritedRulesHash}`;
-        if (referenceMode && deliveredHash(state, inheritedRulesKey, scope) === inheritedRulesHash) {
+        if (mayReferBack && deliveredHash(state, inheritedRulesKey, scope) === inheritedRulesHash) {
           activityRulesBlock = `${stringifyForResponse({ activity_rules: unchangedMarker(inheritedRulesHash) })}\n\n`;
         } else {
           newDeliveries[inheritedRulesKey] = inheritedRulesHash;
@@ -1272,6 +1546,15 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         budget_chars: bound.budgetChars,
         may_continue: stand.mayContinue,
       };
+      // The same reading in the response body, because that is where a worker reads. A
+      // definition can tell a worker to report its own bound, and a reading that arrives
+      // only as protocol metadata is one the harness may never put in front of it — six
+      // activities of one measured child run inferred `may_continue` from delivery not
+      // being refused, which held for two boundaries and then did not (#473). The block
+      // sits outside the delivery measurement: it reports on the handover rather than
+      // being part of what was handed over, and counting it would put the figure inside
+      // the number it reports.
+      const batchBlock = `\n\n${stringifyForResponse({ batch })}`;
 
       // What this delivery cost to build and to send, on one line. `resolved_techniques` is the
       // distinct bound ops the producer scan read for the whole request and `provenance_passes` the
@@ -1286,16 +1569,29 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         bundled_steps: bundledSteps.length,
         bundled_steps_collapsed: bundledSteps.filter((b) => b.delivery === 'unchanged').length,
         bundled_resources: bundledResourceDeliveries.length,
+        worker_bundle_chars: workerBundleChars,
+        lazy_gate_pending: lazyUnanswered.pending,
+        lazy_gate_unbound: lazyUnanswered.unbound,
+        lazy_gate_unparsed: lazyUnanswered.unparsed,
+        lazy_gate_false: lazyFalseGates,
         spent_chars: spentChars,
         eager_budget_chars: Math.floor(eagerBudgetChars),
-        response_chars: responseText.length,
+        // The wire length, batch block included. The block is outside the delivery ledger
+        // — it reports on the handover rather than being part of it — but it does go over
+        // the wire, and this figure is the one that claims to say what did.
+        response_chars: responseText.length + batchBlock.length,
       });
 
       return {
-        content: [{ type: 'text' as const, text: responseText }],
+        content: [{ type: 'text' as const, text: responseText + batchBlock }],
         _meta: {
           session_index, validation, artifact_prefix: artifactPrefix, artifacts: composedArtifacts, activity_rules: inheritedRules,
           dispatch, batch,
+          // Why each gated technique step stayed lazy. On the response and not only the log because a
+          // caller cannot assert what it has to scrape stderr to read, and `unbound` is the reading
+          // worth asserting on: nothing the run has done so far binds that gate (#472).
+          ...(lazyUnanswered.unbound + lazyUnanswered.pending + lazyUnanswered.unparsed > 0
+            ? { lazy_gates: { ...lazyUnanswered } } : {}),
           ...(bundledSteps.length > 0 ? { bundled_steps: bundledSteps.map(b => b.stepId) } : {}),
           ...(bundledResourceDeliveries.length > 0 ? { bundled_resources: bundledResourceDeliveries.map(r => r.resourceId) } : {}),
           ...(resourceRefIds.length > 0 ? { resource_refs: resourceRefIds } : {}),
@@ -1304,12 +1600,18 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('yield_checkpoint', 'Worker tool: mark a checkpoint active and yield to the orchestrator (emit `<checkpoint_yield>` with the returned session_index).',
+  server.tool('yield_checkpoint', 'Worker tool: mark a checkpoint active and yield to the orchestrator (emit `<checkpoint_yield>` with the returned session_index). An id the activity declares needs nothing else. A decision the activity did not anticipate carries `message` and `options`, and its id is free to say what it decides.',
     {
       ...sessionIndexParam,
-      checkpoint_id: z.string().describe('Checkpoint id being yielded.'),
+      checkpoint_id: z.string().describe('Checkpoint id being yielded. Matches a checkpoint the current activity declares, or names a decision the activity did not anticipate — the latter requires `message` and `options`.'),
+      message: z.string().min(1).optional().describe('Only for a decision the activity does not declare: the question put to the user. Forbidden on a declared checkpoint, whose definition owns the wording.'),
+      options: z.array(z.object({
+        id: z.string().min(1).describe('Option id the orchestrator answers with.'),
+        label: z.string().min(1).describe('Option text shown to the user.'),
+        description: z.string().optional().describe('What choosing this option means.'),
+      })).min(2).optional().describe('Only for a decision the activity does not declare: at least two answers. The decision is recorded; an option here sets no variable, so a value the run must read belongs on a declared checkpoint.'),
     },
-    withAuditLog('yield_checkpoint', withSessionStoreErrors(async ({ session_index, checkpoint_id }) => {
+    withAuditLog('yield_checkpoint', withSessionStoreErrors(async ({ session_index, checkpoint_id, message, options }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -1324,7 +1626,29 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (!result.success) throw result.error;
 
       const checkpoint = getCheckpoint(result.value, activity_id, checkpoint_id);
-      if (!checkpoint) throw new Error(`Checkpoint not found: ${checkpoint_id} in activity ${activity_id}`);
+      // Two kinds of gate reach this call. One the activity declares, which owns
+      // its wording and its effects. And one for work admitted part-way through
+      // the run, which the activity could not have anticipated and so names its
+      // own decision here (#477). Supplying the decision is what admits the
+      // second kind, so a mistyped id still fails the way it always has — a typo
+      // never arrives carrying a message and two options.
+      const adhoc = message !== undefined && options !== undefined ? { message, options } : undefined;
+      if (checkpoint && adhoc) {
+        throw new Error(
+          `Checkpoint '${checkpoint_id}' is declared by activity '${activity_id}', which owns its message and options. Yield it by id alone.`,
+        );
+      }
+      if (!checkpoint && !adhoc) {
+        throw new Error(
+          `Checkpoint not found: ${checkpoint_id} in activity ${activity_id}. ` +
+          `To decide something this activity does not declare, pass 'message' and at least two 'options' with this id.`,
+        );
+      }
+      if (!checkpoint && (message !== undefined) !== (options !== undefined)) {
+        throw new Error(
+          `Checkpoint '${checkpoint_id}' is not declared by activity '${activity_id}', so it needs both 'message' and 'options'.`,
+        );
+      }
 
       const view = sessionView(state);
       const validation = buildValidation(
@@ -1383,6 +1707,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           checkpointId: checkpoint_id,
           activityId: activity_id,
           yieldedAt,
+          ...(adhoc ? { adhoc } : {}),
         };
         draft.history.push({
           timestamp: yieldedAt,
@@ -1409,9 +1734,16 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       ...sessionIndexParam,
       activity: z.string().describe('Activity this figure is attributed to, whether or not the session is still on it. One call per activity a dispatch covers.'),
       usage: usageSchema.describe(
-        'Harness-reported token DELTA for this ONE dispatch, as reported. Omit the call entirely when the harness '
+        'Harness-reported token figure for this ONE activity, as reported. Omit the call entirely when the harness '
         + 'surfaced nothing rather than passing zeros — the worker cannot self-measure, so absence must stay '
         + 'distinguishable from a measured zero.',
+      ),
+      basis: z.enum(['delta', 'cumulative']).describe(
+        'What the figure counts. `delta` is this activity\'s own spend and sums with its siblings. `cumulative` is a '
+        + 'running total for this agent context, which several harnesses report — those are carried as the latest '
+        + 'figure per agent, since summing them counts every earlier activity again. Read the harness output rather '
+        + 'than assuming: a cumulative figure passed as a delta is what makes a total wrong in a direction nothing '
+        + 'reveals.',
       ),
       agent_id: z.string().min(1).optional().describe(
         'Optional. Worker context that incurred this usage — the same identity used on get_activity for that dispatch. '
@@ -1420,7 +1752,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         + 'Omit when attribution is unknown; the row remains valid as an unattributed bucket.',
       ),
     },
-    withAuditLog('record_usage', withSessionStoreErrors(async ({ session_index, activity, usage, agent_id }) => {
+    withAuditLog('record_usage', withSessionStoreErrors(async ({ session_index, activity, usage, basis, agent_id }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -1432,7 +1764,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // there by the time the figure arrives. A dispatch covering a run of activities
         // contributes one row apiece, which is the resolution a batch size is calibrated
         // from. Optional agent_id scopes the row to a worker.
-        const data: Record<string, unknown> = { usage };
+        const data: Record<string, unknown> = { usage, basis };
         if (agent_id !== undefined) data['agentId'] = agent_id;
         draft.history.push({
           timestamp: recordedAt, type: 'activity_usage', activity, data,
@@ -1501,7 +1833,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const workflow_id = state.workflowId;
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
-      const checkpoint = getCheckpoint(result.value, active.activityId, active.checkpointId);
+      // A gate for work the activity did not anticipate carries its own decision
+      // on activeCheckpoint, so there is no definition to look up (#477).
+      const checkpoint = active.adhoc
+        ? { id: active.checkpointId, ...active.adhoc, blocking: true, declared: false }
+        : getCheckpoint(result.value, active.activityId, active.checkpointId);
       if (!checkpoint) throw new Error(`Checkpoint not found: ${active.checkpointId} in activity ${active.activityId}`);
 
       const view = sessionView(state);
@@ -1545,7 +1881,13 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
 
       const result = await loadWorkflow(config.workflowDir, state.workflowId);
       if (!result.success) throw result.error;
-      const checkpoint = getCheckpoint(result.value, active.activityId, checkpoint_id);
+      // A gate the activity did not declare carries its options on
+      // activeCheckpoint (#477). It has no defaultOption and no autoAdvanceMs,
+      // so auto-advance and condition-not-met both refuse it below — a decision
+      // admitted mid-run is answered, never timed out.
+      const checkpoint = active.adhoc
+        ? { options: active.adhoc.options, condition: undefined, defaultOption: undefined, autoAdvanceMs: undefined }
+        : getCheckpoint(result.value, active.activityId, checkpoint_id);
       if (!checkpoint) throw new Error(`Checkpoint definition not found: ${checkpoint_id} in activity ${active.activityId}`);
 
       const now = Math.floor(Date.now() / 1000);
@@ -1568,7 +1910,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           throw new Error(`Invalid option '${option_id}' for checkpoint '${checkpoint_id}'. Valid options: [${validIds.join(', ')}]`);
         }
         resolvedOptionId = option_id;
-        effect = option.effect as Record<string, unknown> | undefined;
+        // A gate admitted mid-run records the decision and applies nothing: its
+        // options carry no effect, so a value the run must read belongs on a
+        // checkpoint the activity declares, where the variable model can see it.
+        effect = 'effect' in option ? option.effect as Record<string, unknown> | undefined : undefined;
       } else if (auto_advance) {
         if (!checkpoint.defaultOption || !checkpoint.autoAdvanceMs) {
           throw new Error(
@@ -1841,7 +2186,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
     {
       ...sessionIndexParam,
       view: z.enum(INSPECT_SESSION_VIEWS).default('summary')
-        .describe('Projection: summary (default), identity, variables, checkpoints, activities, history, children, or usage (per-activity token rows and plain-sum totals from record_usage).'),
+        .describe('Projection: summary (default), identity, variables, checkpoints, activities (completed, skipped, and the outcome each reported), history, children, or usage (per-activity token rows with their basis and measured wall clock, delta totals, each agent\'s latest cumulative figure, the completed activities holding no row, and each child\'s cost outside those totals).'),
       child_index: z.number().int().nonnegative().optional()
         .describe('Optional. Project triggeredWorkflows[child_index].state instead of the parent session.'),
       variable: z.string().optional()

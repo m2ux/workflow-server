@@ -7,8 +7,8 @@ export default defineConfig({
     include: ['tests/**/*.test.ts'],
     // The e2e walks replay full multi-activity workflow sessions against the live corpus; their
     // duration scales with corpus size, so the 5s vitest default is too tight. A GitHub runner is
-    // roughly 4x slower than a local machine, and a single walk sits near 30s there — see
-    // tests/e2e/budgets.ts, which owns the per-walk budget the multi-walk hooks derive from.
+    // roughly 4x slower than a local machine, and a single walk sits near 30s there; a hook that
+    // performs several walks up front carries its own timeout.
     testTimeout: 60_000,
     coverage: {
       provider: 'v8',

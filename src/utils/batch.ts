@@ -1,7 +1,7 @@
 import type { SessionFile } from '../schema/session.schema.js';
 
 /**
- * The batch bound (#407) — see `docs/dispatch_model.md` for the model and
+ * The batch bound (#407) — see `docs/dispatch-model.md` for the model and
  * `DEFAULT_BATCH_HEADROOM_FRACTION` in `src/config.ts` for the measurements behind the settings.
  *
  * A batch is not declared: it IS the run of activities one delivery scope takes delivery of, derived

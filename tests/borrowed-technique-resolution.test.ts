@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
 import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
 import { composeActivityTechnique } from '../src/loaders/technique-loader.js';
+import { qualifyResourceId } from '../src/utils/resource-ref.js';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -55,6 +56,24 @@ describe('borrowed-activity technique resolution', () => {
       '## Capability', '', 'Standalone operation.', '', '## Protocol', '', '1. Operate.',
     ].join('\n'));
 
+    // A meta technique linking a resource of its own, bare. Whoever binds it, the link names
+    // meta/resources/shared-template.
+    const metaDir = join(fixtureDir, 'meta');
+    mkdirSync(join(metaDir, 'techniques'), { recursive: true });
+    mkdirSync(join(metaDir, 'resources'), { recursive: true });
+    writeFileSync(join(metaDir, 'workflow.yaml'), [
+      'id: meta',
+      'version: 1.0.0',
+      'title: Meta Fixture',
+      'initialActivity: shared-work',
+    ].join('\n'));
+    writeFileSync(join(metaDir, 'techniques', 'shared-op.md'), [
+      '---', 'metadata:', '  version: 1.0.0', '---', '',
+      '## Capability', '', 'Shared operation with its own resource.', '',
+      '## Protocol', '', '1. Follow [the template](../resources/shared-template.md).',
+    ].join('\n'));
+    writeFileSync(join(metaDir, 'resources', 'shared-template.md'), '# Shared Template\n');
+
     // Borrower: no techniques of its own; borrows the source workflow's activity by string ref.
     const borrowerDir = join(fixtureDir, 'borrower-wf');
     mkdirSync(join(borrowerDir, 'activities'), { recursive: true });
@@ -101,6 +120,22 @@ describe('borrowed-activity technique resolution', () => {
   it('resolves a borrowed standalone ref under the source-workflow scope', async () => {
     const composed = await composeActivityTechnique('standalone-op', fixtureDir, 'source-wf', 'shared-work');
     expect(composed.success).toBe(true);
+  });
+
+  it('names the workflow a technique file was found in, not the one that asked for it', async () => {
+    // Resolved locally: the source workflow holds the file.
+    const local = await composeActivityTechnique('do-thing', fixtureDir, 'source-wf', 'shared-work');
+    expect(local.success).toBe(true);
+    if (local.success) expect(local.value.sourceWorkflowId).toBe('source-wf');
+
+    // Resolved through the meta shared layer: source-wf asked, meta answered. A bare resource link
+    // in that file resolves under meta/resources/, so this is the id qualification must use.
+    const shared = await composeActivityTechnique('shared-op', fixtureDir, 'source-wf', 'shared-work');
+    expect(shared.success).toBe(true);
+    if (!shared.success) return;
+    expect(shared.value.sourceWorkflowId).toBe('meta');
+    expect(qualifyResourceId('shared-template', shared.value.sourceWorkflowId, 'source-wf'))
+      .toBe('meta/shared-template');
   });
 
   it('maps the real corpus: remediate-vuln borrows work-package activities', async () => {

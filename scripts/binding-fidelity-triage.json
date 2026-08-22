@@ -326,6 +326,13 @@
     },
     {
       "check": "orphan-input",
+      "site": "work-package :: meta::workflow-engine::handle-sub-workflow",
+      "detail": "own input 'parent_session_index' has no producer in workflow 'work-package' (no step-binding entry, workflow variable, step output, or default)",
+      "verdict": "harmless",
+      "rationale": "shared-op-caller-argument"
+    },
+    {
+      "check": "orphan-input",
       "site": "substrate-node-security-audit :: execute-sub-agent",
       "detail": "own input 'agent_id' has no producer in workflow 'substrate-node-security-audit' (no step-binding entry, workflow variable, step output, or default)",
       "verdict": "harmless",

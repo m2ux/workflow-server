@@ -17,6 +17,7 @@ import { join } from 'node:path';
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { evaluateCondition, type Condition } from '../../src/schema/condition.schema.js';
 import { evaluateWhenExpression } from '../../src/schema/when-expression.js';
+import { unboundPositiveReads, type GateUnansweredCounts } from '../../src/utils/gate-liveness.js';
 import { TERMINAL_SENTINEL } from '../../src/loaders/workflow-loader.js';
 import { parseToolResponse, parseWorkflowResponse, parseBundle, rawText, isError, type Harness } from './harness.js';
 
@@ -122,6 +123,12 @@ export interface WalkStep {
   artifactsWritten: string[];
   /** Step ids the robot worker executed in order (3c mode). */
   stepsExecuted: string[];
+  /**
+   * `<step>:<variable>` for each gate this activity evaluated with nothing in the bag to read. A walk
+   * has no agent, so technique outputs stay unbound and some of these are structural. What the list
+   * makes visible is the rest: a step skipped because its decision had not been taken yet (#469).
+   */
+  gatesReadUnbound: string[];
   /** next_activity manifest-validation status when leaving this activity (3c mode). */
   manifestStatus?: string;
   /** Checkpoints declared by the activity but referenced by no step/loop step (definition smell). */
@@ -130,6 +137,12 @@ export interface WalkStep {
   unresolved: string[];
   /** Number of operation refs the activity declares (from its definition). */
   declaredOperations: number;
+  /**
+   * The server's own reading of this activity's gated technique steps at delivery: how many stayed
+   * lazy because this activity produces the variable (`pending`), because nothing on the path so far
+   * has written it (`unbound`), or because the expression does not parse (`unparsed`).
+   */
+  lazyGates?: GateUnansweredCounts;
   nextActivity: string | null;
 }
 
@@ -165,7 +178,6 @@ export interface GateRefetch {
 }
 
 export interface WalkOptions {
-  agentId?: string;
   /**
    * Dispatch each activity under its own worker identity, carried on every `get_activity` and
    * `get_technique` that activity makes, and re-request the activity under that same identity
@@ -286,7 +298,10 @@ async function getActivity(
   client: Client,
   sessionIndex: string,
   worker?: { agentId: string; bundle?: 'reference' },
-): Promise<{ def: ActivityDef; unresolved: string[]; bundledSteps: string[]; chars: number; dispatch?: string }> {
+): Promise<{
+  def: ActivityDef; unresolved: string[]; bundledSteps: string[]; chars: number;
+  dispatch?: string; lazyGates?: GateUnansweredCounts;
+}> {
   const res = await client.callTool({
     name: 'get_activity',
     arguments: {
@@ -305,7 +320,9 @@ async function getActivity(
   // Hybrid bundling (#166 B11): step ids whose techniques arrived inline in this response —
   // the robot skips their per-step get_technique, as a real worker should.
   const bundledSteps = ((res._meta as { bundled_steps?: string[] } | undefined)?.bundled_steps) ?? [];
-  return { def, unresolved, bundledSteps, chars, dispatch };
+  // Why the server left each gated technique step lazy. Absent when every gate had an answer.
+  const lazyGates = (res._meta as { lazy_gates?: GateUnansweredCounts } | undefined)?.lazy_gates;
+  return { def, unresolved, bundledSteps, chars, dispatch, lazyGates };
 }
 
 async function transition(
@@ -331,10 +348,30 @@ function evaluateWhen(expr: string, vars: Record<string, unknown>): boolean {
   return evaluateWhenExpression(expr, vars);
 }
 
+/** Variables the activity's own checkpoints and `set` actions bind, at any depth. */
+function activityDecidedVariables(act: ActivityDef): Set<string> {
+  const decided = new Set<string>();
+  const collect = (steps: StepDef[] | undefined): void => {
+    for (const step of steps ?? []) {
+      if (step.kind === 'loop') { collect(step.steps); continue; }
+      for (const option of step.options ?? []) {
+        for (const name of Object.keys(option.effect?.setVariable ?? {})) decided.add(name);
+      }
+      for (const a of step.actions ?? []) {
+        if (a.action === 'set' && a.target) decided.add(a.target.split('.')[0]!);
+      }
+    }
+  };
+  collect(act.steps);
+  return decided;
+}
+
 interface StepExecution {
   cpRecords: CheckpointRecord[];
   manifest: Array<{ step_id: string; output: string }>;
   stepsExecuted: string[];
+  /** `<step>:<variable>` for each gate read with nothing in the bag to read. */
+  gatesReadUnbound: string[];
   transitionOverride?: string;
 }
 
@@ -357,6 +394,8 @@ async function executeActivitySteps(
   const cpRecords: CheckpointRecord[] = [];
   const manifest: Array<{ step_id: string; output: string }> = [];
   const stepsExecuted: string[] = [];
+  const gatesReadUnbound: string[] = [];
+  const decidedLater = activityDecidedVariables(act);
   let transitionOverride: string | undefined;
 
   const fireCheckpoint = async (cp: CheckpointDef): Promise<void> => {
@@ -411,6 +450,12 @@ async function executeActivitySteps(
   // steps record into the manifest and apply explicit `set` actions.
   const walk = async (steps: StepDef[] | undefined): Promise<void> => {
     for (const step of steps ?? []) {
+      // A gate this activity itself decides later, read before that decision is taken, is false for
+      // want of an answer — and once the step is skipped that is indistinguishable from a real "no".
+      // Record it, because a step absent from stepsExecuted is otherwise silent about why (#469).
+      for (const name of unboundPositiveReads(step.when, step.condition as Condition | undefined, variables)) {
+        if (decidedLater.has(name)) gatesReadUnbound.push(`${step.id ?? '?'}:${name}`);
+      }
       if (step.condition && !evaluateCondition(step.condition, variables)) continue;
       if (step.when && !evaluateWhen(step.when, variables)) continue;
       if (step.kind === 'checkpoint') { await fireCheckpoint(step as unknown as CheckpointDef); continue; }
@@ -424,7 +469,7 @@ async function executeActivitySteps(
     }
   };
   await walk(act.steps);
-  return { cpRecords, manifest, stepsExecuted, transitionOverride };
+  return { cpRecords, manifest, stepsExecuted, gatesReadUnbound, transitionOverride };
 }
 
 /** The activity's checkpoint definitions in document order: the inline kind:checkpoint steps,
@@ -531,7 +576,7 @@ export async function walk(
 
   const startRes = await client.callTool({
     name: 'start_session',
-    arguments: { workflow_id: workflowId, agent_id: opts.agentId ?? 'e2e-walker' },
+    arguments: { workflow_id: workflowId, agent_id: 'e2e-walker' },
   });
   if (isError(startRes)) throw new Error(`start_session(${workflowId}) failed`);
   const startBody = parseToolResponse(startRes);
@@ -585,8 +630,9 @@ export async function walk(
     let act: ActivityDef;
     let unresolved: string[];
     let bundledSteps: string[];
+    let lazyGates: GateUnansweredCounts | undefined;
     try {
-      ({ def: act, unresolved, bundledSteps } = await getActivity(client, sessionIndex, worker));
+      ({ def: act, unresolved, bundledSteps, lazyGates } = await getActivity(client, sessionIndex, worker));
     } catch (e) {
       if (opts.autoAdvance) { loadErrors.push(`${current}: ${(e as Error).message}`); break; }
       throw e;
@@ -595,6 +641,7 @@ export async function walk(
     let cpRecords: CheckpointRecord[];
     let transitionOverride: string | undefined;
     let stepsExecuted: string[] = [];
+    let gatesReadUnbound: string[] = [];
     let artifactsWritten: string[] = [];
 
     if (mode === 'robot') {
@@ -602,6 +649,7 @@ export async function walk(
       cpRecords = exec.cpRecords;
       transitionOverride = exec.transitionOverride;
       stepsExecuted = exec.stepsExecuted;
+      gatesReadUnbound = exec.gatesReadUnbound;
       pendingManifest = exec.manifest;
       artifactsWritten = writeArtifactStubs(act, variables, planningFolder, activityPrefixes.get(current));
     } else {
@@ -651,10 +699,12 @@ export async function walk(
       artifacts: artifactNames(act, variables),
       artifactsWritten,
       stepsExecuted,
+      gatesReadUnbound,
       manifestStatus,
       orphanCheckpoints: findOrphanCheckpoints(act),
       unresolved,
       declaredOperations: (act.operations ?? []).length,
+      lazyGates,
       nextActivity: next,
     });
 
@@ -689,60 +739,67 @@ export interface PathSet {
   workflowId: string;
   /** One WalkResult per distinct path discovered (deduped by activity sequence). */
   paths: WalkResult[];
-  /** `path.join(' > ')` for each distinct path. */
-  distinctPaths: string[];
   /** Branches whose walk threw (e.g. an unresolvable checkpoint/transition on that path). */
   errors: Array<{ prefix: string[]; message: string }>;
   /** Number of full walks run (≈ choice-prefixes explored). */
   walks: number;
-  /** True if the maxPaths/maxWalks cap was hit before exhausting the decision tree. */
-  capped: boolean;
-  /** Distinct decision-option branches discovered (`<kind>:<activity>:<id>=<option>`). */
-  branchesKnown: number;
-  /** Of those, how many were actually exercised by some walk. */
-  branchesCovered: number;
+  /**
+   * Every decision-option branch a walk actually took (`<kind>:<activity>:<id>=<option>`).
+   *
+   * This is what the walks reached, not the workflow's declared decision space: a checkpoint no
+   * walk reaches contributes nothing here. Measure against `declaredOptions` in coverage.ts for a
+   * denominator that does not move with the walk.
+   */
+  coveredBranches: string[];
 }
 
 /**
- * Enumerate every distinct path through a workflow's decision graph — not just the happy path.
+ * Cover every decision-option branch through a workflow's decision graph — not just the happy path.
  *
  * Each path is one full walk under a scripted policy that fixes the checkpoint-option choices; the
  * enumerator systematically varies those choices (the workflow's real branch points) breadth-first,
- * forking at every un-taken option, and dedupes by the resulting activity sequence. `autoAdvance`
- * drives any non-checkpoint forward gate, and `maxVisits` bounds loops, so the tree is finite. Every
- * discovered path is a WalkResult validated like any other (zero unresolved refs, no loadErrors).
+ * forking at every un-taken option that no earlier walk exercised, and dedupes by the resulting
+ * activity sequence. Forking only on un-exercised branches keeps the traversal linear in edges
+ * rather than combinatorial in paths. `autoAdvance` drives any non-checkpoint forward gate, and
+ * `maxVisits` bounds loops, so the tree is finite. Every discovered path is a WalkResult validated
+ * like any other (zero unresolved refs, no loadErrors).
  */
 export async function enumeratePaths(
   harness: Harness,
   workflowId: string,
-  opts: { maxVisits?: number; maxPaths?: number; maxWalks?: number; coverageMode?: boolean; maxDryWalks?: number } = {},
+  opts: {
+    maxVisits?: number; maxWalks?: number;
+    maxDryWalks?: number;
+    /**
+     * Per-activity agent-outcome variables, as a Policy's `simulate` supplies them.
+     *
+     * The enumerator varies *decisions*; it cannot invent a bag value. So an activity reached only
+     * once a convergence signal is set — the loop-exit and completion flags a real worker writes in
+     * step prose — is unreachable to it, and every checkpoint beyond that point counts as uncovered
+     * for a reason that has nothing to do with the definitions. Passing the same simulation the
+     * hand-tuned policy walks use lets coverage speak for the graph rather than for the enumerator.
+     */
+    simulate?: Record<string, Record<string, unknown>>;
+  } = {},
 ): Promise<PathSet> {
   const maxVisits = opts.maxVisits ?? 6;
-  const maxPaths = opts.maxPaths ?? 256;
   const maxWalks = opts.maxWalks ?? 2000;
-  // coverageMode: fork a branch only while it is still UN-exercised — turning the combinatorial
-  // per-path enumeration into linear edge/option coverage (every decision-option hit at least once).
-  const coverageMode = opts.coverageMode ?? false;
   // Early-stop once branch coverage plateaus: after this many consecutive walks that exercise NO
   // new decision-option (a coverage dry-streak), the reachable branch set is covered and further
   // walks only re-tread it. Bounds wall-clock on large borrowed-activity workflows (e.g. remediate-
   // vuln) without an arbitrary walk cap — it never stops while new branches are still being found.
-  // Only meaningful in coverageMode (the goal IS branch coverage); plain path-enumeration may find
-  // new PATHS without covering new branches, so there the dry-streak is disabled.
-  const maxDryWalks = opts.maxDryWalks ?? (coverageMode ? 30 : Infinity);
+  const maxDryWalks = opts.maxDryWalks ?? 30;
   const seenPaths = new Set<string>();
   const triedPrefixes = new Set<string>();
   const covered = new Set<string>();
-  const known = new Set<string>();
   const paths: WalkResult[] = [];
   const errors: Array<{ prefix: string[]; message: string }> = [];
   const queue: string[][] = [[]];
   let walks = 0;
-  let capped = false;
   let dryStreak = 0;
 
   while (queue.length) {
-    if (paths.length >= maxPaths || walks >= maxWalks) { capped = queue.length > 0; break; }
+    if (walks >= maxWalks) break;
     if (dryStreak >= maxDryWalks) break; // coverage plateaued — remaining queue only re-treads covered branches
     const prefix = queue.shift()!;
     const pk = prefix.join(',');
@@ -756,7 +813,6 @@ export async function enumeratePaths(
     let idx = 0;
     const decide = (d: { kind: string; activityId: string; id: string; options: string[]; suggested: string }): string => {
       const key = `${d.kind}:${d.activityId}:${d.id}`;
-      for (const o of d.options) known.add(`${key}=${o}`);
       // Within the prefix, take the scripted choice; past it, take the natural (happy) suggestion
       // so the base path is the happy path and every fork is an explicit alternative branch.
       const chosen = idx < prefix.length && d.options.includes(prefix[idx]!) ? prefix[idx]! : d.suggested;
@@ -771,6 +827,7 @@ export async function enumeratePaths(
         name: 'enum',
         choose: (ctx: PolicyContext) => (ctx.checkpoint.defaultOption && ctx.checkpoint.options.some((o) => o.id === ctx.checkpoint.defaultOption)
           ? ctx.checkpoint.defaultOption : ctx.checkpoint.options[0]!.id),
+        ...(opts.simulate ? { simulate: (ctx) => opts.simulate![ctx.activityId] } : {}),
       };
       r = await walk(harness, workflowId, enumPolicy, { mode: 'graph', maxVisits, decide, localCheckpoints: true });
     } catch (e) {
@@ -788,17 +845,16 @@ export async function enumeratePaths(
     for (const rec of recorder) covered.add(`${rec.key}=${rec.chosen}`);
     dryStreak = covered.size > coveredBefore ? 0 : dryStreak + 1;
 
-    // Fork: enqueue the prefix that takes each un-chosen option at each decision. In coverageMode,
-    // skip a fork whose branch is already exercised — so each branch is walked ~once (linear), not
-    // every combination (combinatorial).
+    // Fork: enqueue the prefix that takes each un-chosen option at each decision, skipping any
+    // branch already exercised — so each branch is walked ~once (linear), not every combination.
     for (let i = 0; i < recorder.length; i++) {
       for (const opt of recorder[i]!.options) {
         if (opt === recorder[i]!.chosen) continue;
-        if (coverageMode && covered.has(`${recorder[i]!.key}=${opt}`)) continue;
+        if (covered.has(`${recorder[i]!.key}=${opt}`)) continue;
         queue.push([...recorder.slice(0, i).map((x) => x.chosen), opt]);
       }
     }
   }
 
-  return { workflowId, paths, distinctPaths: [...seenPaths], errors, walks, capped, branchesKnown: known.size, branchesCovered: covered.size };
+  return { workflowId, paths, errors, walks, coveredBranches: [...covered].sort() };
 }

@@ -98,6 +98,20 @@ export async function readTechnique(
   workflowDir: string,
   workflowId?: string,
 ): Promise<Result<Technique, TechniqueNotFoundError>> {
+  const found = await readTechniqueWithSource(techniqueId, workflowDir, workflowId);
+  return found.success ? ok(found.value.technique) : found;
+}
+
+/**
+ * `readTechnique`, plus the workflow the file was found in — which differs from the `workflowId`
+ * asked for under a cross-workflow prefix or a meta fallback. This is the id a technique's own bare
+ * resource links qualify against.
+ */
+export async function readTechniqueWithSource(
+  techniqueId: string,
+  workflowDir: string,
+  workflowId?: string,
+): Promise<Result<{ technique: Technique; sourceWorkflowId: string }, TechniqueNotFoundError>> {
   if (techniqueId.includes('/')) {
     const [targetWorkflow, actualSkillId] = techniqueId.split('/', 2);
     if (!targetWorkflow || !actualSkillId) {
@@ -106,7 +120,7 @@ export async function readTechnique(
     const technique = await tryLoadSkillInWorkflow(workflowDir, targetWorkflow, actualSkillId);
     if (technique) {
       logInfo('Technique loaded (explicit prefix)', { id: techniqueId, targetWorkflow });
-      return ok(technique);
+      return ok({ technique, sourceWorkflowId: targetWorkflow });
     }
     return err(new TechniqueNotFoundError(techniqueId));
   }
@@ -128,7 +142,7 @@ export async function readTechnique(
           : await tryLoadNestedTechnique(getWorkflowTechniquesDir(workflowDir, targetWorkflow), rest[0]!, rest.slice(1).join('/'));
         if (t) {
           logInfo('Technique loaded (cross-workflow ::)', { id: techniqueId, targetWorkflow });
-          return ok(t);
+          return ok({ technique: t, sourceWorkflowId: targetWorkflow });
         }
       } catch (error) {
         if (!(error instanceof MarkdownTechniqueParseError)) throw error;
@@ -145,7 +159,7 @@ export async function readTechnique(
         const t = await tryLoadNestedTechnique(getWorkflowTechniquesDir(workflowDir, wf), group, opPath);
         if (t) {
           logInfo('Technique loaded (nested)', { id: techniqueId, workflowId: wf });
-          return ok(t);
+          return ok({ technique: t, sourceWorkflowId: wf });
         }
       } catch (error) {
         if (!(error instanceof MarkdownTechniqueParseError)) throw error;
@@ -159,7 +173,7 @@ export async function readTechnique(
     const local = await tryLoadSkillInWorkflow(workflowDir, workflowId, techniqueId);
     if (local) {
       logInfo('Technique loaded (workflow-local)', { id: techniqueId, workflowId });
-      return ok(local);
+      return ok({ technique: local, sourceWorkflowId: workflowId });
     }
   }
 
@@ -168,7 +182,7 @@ export async function readTechnique(
     const shared = await tryLoadSkillInWorkflow(workflowDir, META_WORKFLOW_ID, techniqueId);
     if (shared) {
       logInfo('Technique loaded (meta shared layer)', { id: techniqueId, workflowId: workflowId ?? '(none)' });
-      return ok(shared);
+      return ok({ technique: shared, sourceWorkflowId: META_WORKFLOW_ID });
     }
   }
 
@@ -577,7 +591,17 @@ export async function composeTechnique(
   workflowDir: string,
   workflowId: string,
 ): Promise<Result<Technique, TechniqueNotFoundError>> {
-  const base = await readTechnique(techniqueId, workflowDir, workflowId);
+  const composed = await composeTechniqueWithSource(techniqueId, workflowDir, workflowId);
+  return composed.success ? ok(composed.value.technique) : composed;
+}
+
+/** `composeTechnique`, plus the workflow the technique file was found in (`readTechniqueWithSource`). */
+export async function composeTechniqueWithSource(
+  techniqueId: string,
+  workflowDir: string,
+  workflowId: string,
+): Promise<Result<{ technique: Technique; sourceWorkflowId: string }, TechniqueNotFoundError>> {
+  const base = await readTechniqueWithSource(techniqueId, workflowDir, workflowId);
   if (!base.success) return base;
 
   // Derive path segments within the workflow's techniques directory.
@@ -586,7 +610,10 @@ export async function composeTechnique(
   const pathSegments = rawId.split('::').filter(s => s.length > 0);
   const techniquesDir = getWorkflowTechniquesDir(workflowDir, workflowId);
 
-  return ok(await composeLoaded(base.value, pathSegments, techniquesDir));
+  return ok({
+    technique: await composeLoaded(base.value.technique, pathSegments, techniquesDir),
+    sourceWorkflowId: base.value.sourceWorkflowId,
+  });
 }
 
 /**
@@ -596,7 +623,8 @@ export async function composeTechnique(
  * and an op that shares its group's name resolves to the op, not the group base. Foreign/
  * cross-group refs are written qualified and resolve as-authored; if no group named after the
  * activity holds the op, the bare ref falls back to as-authored. Returns the RESOLVED id
- * alongside the composition — the id the delivery ledger and fidelity events are keyed by.
+ * alongside the composition — the id the delivery ledger and fidelity events are keyed by — and the
+ * workflow the technique file was found in, which its own bare resource links resolve against.
  * The single resolution implementation behind step-bound get_technique and get_activity's
  * hybrid step-technique bundling, so both deliver identical composition by construction.
  */
@@ -605,16 +633,16 @@ export async function composeActivityTechnique(
   workflowDir: string,
   workflowId: string,
   activityId?: string,
-): Promise<Result<{ techniqueId: string; technique: Technique }, TechniqueNotFoundError>> {
+): Promise<Result<{ techniqueId: string; technique: Technique; sourceWorkflowId: string }, TechniqueNotFoundError>> {
   if (!techniqueRef.includes('::') && activityId) {
-    const viaGroup = await composeTechnique(`${activityId}::${techniqueRef}`, workflowDir, workflowId);
+    const viaGroup = await composeTechniqueWithSource(`${activityId}::${techniqueRef}`, workflowDir, workflowId);
     if (viaGroup.success) {
-      return ok({ techniqueId: `${activityId}::${techniqueRef}`, technique: viaGroup.value });
+      return ok({ techniqueId: `${activityId}::${techniqueRef}`, ...viaGroup.value });
     }
   }
-  const composed = await composeTechnique(techniqueRef, workflowDir, workflowId);
+  const composed = await composeTechniqueWithSource(techniqueRef, workflowDir, workflowId);
   if (!composed.success) return composed;
-  return ok({ techniqueId: techniqueRef, technique: composed.value });
+  return ok({ techniqueId: techniqueRef, ...composed.value });
 }
 
 /**

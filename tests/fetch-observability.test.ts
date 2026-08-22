@@ -1,12 +1,9 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest';
-import { Client } from '@modelcontextprotocol/sdk/client/index.js';
-import { InMemoryTransport } from '@modelcontextprotocol/sdk/inMemory.js';
-import { createServer } from '../src/server.js';
-import { resolve, join } from 'node:path';
-import { mkdtempSync, readFileSync, rmSync } from 'node:fs';
-import { tmpdir } from 'node:os';
-import type { HistoryEntry } from '../src/schema/state.schema.js';
-import { corpusRoot } from './corpus-root.js';
+import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
+import { join } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { createHarness, type Harness } from './e2e/harness.js';
+import { sessionOps, type SessionOps } from './session-ops.js';
 
 /**
  * Fidelity observability (#166 B8): `get_technique` / `get_resource` record
@@ -15,72 +12,22 @@ import { corpusRoot } from './corpus-root.js';
  * fetch. Exercised against the real workflows corpus through the MCP wire.
  */
 describe('fetch observability (#166 B8)', () => {
+  let harness: Harness;
   let client: Client;
-  let closeTransport: () => Promise<void>;
-  let workspaceDir: string;
-
-  const planningFolder = (slug: string) => join(workspaceDir, '.engineering/artifacts/planning', slug);
-  const sessionHistory = (slug: string): HistoryEntry[] => {
-    const state = JSON.parse(readFileSync(join(planningFolder(slug), 'session.json'), 'utf8')) as { history: HistoryEntry[] };
-    return state.history;
-  };
+  let session: SessionOps;
 
   beforeAll(async () => {
-    workspaceDir = mkdtempSync(join(tmpdir(), 'wf-fetchobs-test-'));
-    const config = {
-      workflowDir: corpusRoot(),
-      schemasDir: resolve(import.meta.dirname, '../schemas'),
-      workspaceDir,
-      serverName: 'test-workflow-server',
-      serverVersion: '1.0.0',
-      minCheckpointResponseSeconds: 0,
-    };
-
-    const server = createServer(config);
-    const [clientTransport, serverTransport] = InMemoryTransport.createLinkedPair();
-    await server.connect(serverTransport);
-
-    client = new Client({ name: 'test-client', version: '1.0.0' }, {});
-    await client.connect(clientTransport);
-
-    closeTransport = async () => {
-      await client.close();
-      await server.close();
-    };
+    harness = await createHarness();
+    client = harness.client;
+    session = sessionOps(harness, 'work-package');
   });
 
-  afterAll(async () => {
-    await closeTransport();
-    try { rmSync(workspaceDir, { recursive: true, force: true }); } catch { /* ignore */ }
-  });
-
-  async function startSession(slug: string, agentId: string, contextMode?: string): Promise<string> {
-    const result = await client.callTool({
-      name: 'start_session',
-      arguments: {
-        workflow_id: 'work-package',
-        agent_id: agentId,
-        planning_folder: planningFolder(slug),
-        ...(contextMode ? { context_mode: contextMode } : {}),
-      },
-    });
-    expect(result.isError).toBeFalsy();
-    const body = JSON.parse((result.content as Array<{ text: string }>)[0]!.text) as Record<string, unknown>;
-    return body['session_index'] as string;
-  }
-
-  async function enterActivity(sessionIndex: string, activityId: string): Promise<void> {
-    const result = await client.callTool({
-      name: 'next_activity',
-      arguments: { session_index: sessionIndex, activity_id: activityId },
-    });
-    expect(result.isError).toBeFalsy();
-  }
+  afterAll(async () => { await harness.close(); });
 
   it('get_technique records a technique_fetched history event with step, technique, and agent', async () => {
     const slug = '2026-07-07-b8-technique-fetch';
-    const idx = await startSession(slug, 'w1');
-    await enterActivity(idx, 'start-work-package');
+    const idx = await session.start(slug, 'w1');
+    await session.enter(idx, 'start-work-package');
 
     const result = await client.callTool({
       name: 'get_technique',
@@ -88,7 +35,7 @@ describe('fetch observability (#166 B8)', () => {
     });
     expect(result.isError).toBeFalsy();
 
-    const fetches = sessionHistory(slug).filter(h => h.type === 'technique_fetched');
+    const fetches = session.history(slug).filter(h => h.type === 'technique_fetched');
     expect(fetches).toHaveLength(1);
     expect(fetches[0]!.activity).toBe('start-work-package');
     const data = fetches[0]!.data as { techniqueId: string; stepId: string; agentId: string };
@@ -100,8 +47,8 @@ describe('fetch observability (#166 B8)', () => {
 
   it('get_resource records a resource_fetched history event', async () => {
     const slug = '2026-07-07-b8-resource-fetch';
-    const idx = await startSession(slug, 'w2');
-    await enterActivity(idx, 'start-work-package');
+    const idx = await session.start(slug, 'w2');
+    await session.enter(idx, 'start-work-package');
 
     const result = await client.callTool({
       name: 'get_resource',
@@ -109,7 +56,7 @@ describe('fetch observability (#166 B8)', () => {
     });
     expect(result.isError).toBeFalsy();
 
-    const fetches = sessionHistory(slug).filter(h => h.type === 'resource_fetched');
+    const fetches = session.history(slug).filter(h => h.type === 'resource_fetched');
     expect(fetches).toHaveLength(1);
     expect(fetches[0]!.activity).toBe('start-work-package');
     const data = fetches[0]!.data as { resourceId: string; agentId: string };
@@ -119,8 +66,8 @@ describe('fetch observability (#166 B8)', () => {
 
   it('an unchanged-reference answer in persistent mode still records the fetch', async () => {
     const slug = '2026-07-07-b8-stub-fetch';
-    const idx = await startSession(slug, 'solo', 'persistent');
-    await enterActivity(idx, 'start-work-package');
+    const idx = await session.start(slug, 'solo', 'persistent');
+    await session.enter(idx, 'start-work-package');
 
     for (let i = 0; i < 2; i++) {
       const result = await client.callTool({
@@ -130,14 +77,14 @@ describe('fetch observability (#166 B8)', () => {
       expect(result.isError).toBeFalsy();
     }
 
-    const fetches = sessionHistory(slug).filter(h => h.type === 'technique_fetched');
+    const fetches = session.history(slug).filter(h => h.type === 'technique_fetched');
     expect(fetches).toHaveLength(2);
   });
 
   it('next_activity warns on manifested technique steps with no recorded fetch, and not on fetched ones', async () => {
     const slug = '2026-07-07-b8-manifest-warning';
-    const idx = await startSession(slug, 'w3');
-    await enterActivity(idx, 'start-work-package');
+    const idx = await session.start(slug, 'w3');
+    await session.enter(idx, 'start-work-package');
 
     const fetchRes = await client.callTool({
       name: 'get_technique',
@@ -176,8 +123,8 @@ describe('fetch observability (#166 B8)', () => {
   describe('dispatch accounting and delivery magnitude (#353)', () => {
     it('records one activity_dispatched per get_activity, fresh then resume', async () => {
       const slug = '2026-07-30-dispatch-events';
-      const idx = await startSession(slug, 'orchestrator');
-      await enterActivity(idx, 'start-work-package');
+      const idx = await session.start(slug, 'orchestrator');
+      await session.enter(idx, 'start-work-package');
 
       const spawn = await client.callTool({
         name: 'get_activity',
@@ -190,7 +137,7 @@ describe('fetch observability (#166 B8)', () => {
       expect((spawn._meta as Record<string, unknown>)['dispatch']).toBe('fresh');
       expect((resume._meta as Record<string, unknown>)['dispatch']).toBe('resume');
 
-      const dispatches = sessionHistory(slug).filter(h => h.type === 'activity_dispatched');
+      const dispatches = session.history(slug).filter(h => h.type === 'activity_dispatched');
       expect(dispatches.map(d => (d.data as { dispatch: string }).dispatch)).toEqual(['fresh', 'resume']);
       expect(dispatches.every(d => d.activity === 'start-work-package')).toBe(true);
       expect(dispatches.every(d => (d.data as { agentId: string }).agentId === 'w-1')).toBe(true);
@@ -204,8 +151,8 @@ describe('fetch observability (#166 B8)', () => {
 
     it('reads a second worker on the same session as its own fresh dispatch', async () => {
       const slug = '2026-07-30-dispatch-two-workers';
-      const idx = await startSession(slug, 'orchestrator');
-      await enterActivity(idx, 'start-work-package');
+      const idx = await session.start(slug, 'orchestrator');
+      await session.enter(idx, 'start-work-package');
 
       for (const agent of ['w-a', 'w-b']) {
         const result = await client.callTool({
@@ -215,15 +162,15 @@ describe('fetch observability (#166 B8)', () => {
         expect((result._meta as Record<string, unknown>)['dispatch']).toBe('fresh');
       }
 
-      const dispatches = sessionHistory(slug).filter(h => h.type === 'activity_dispatched');
+      const dispatches = session.history(slug).filter(h => h.type === 'activity_dispatched');
       expect(dispatches).toHaveLength(2);
       expect(dispatches.every(d => (d.data as { dispatch: string }).dispatch === 'fresh')).toBe(true);
     });
 
     it('records an out-of-band dispatch that only ever fetches a technique or resource', async () => {
       const slug = '2026-07-30-dispatch-out-of-band';
-      const idx = await startSession(slug, 'orchestrator');
-      await enterActivity(idx, 'start-work-package');
+      const idx = await session.start(slug, 'orchestrator');
+      await session.enter(idx, 'start-work-package');
 
       // No get_activity at all — the shape of the run's out-of-band prism analysis, which cost
       // 176K tokens and left no server record. Its own agent_id is enough to record the dispatch.
@@ -240,7 +187,7 @@ describe('fetch observability (#166 B8)', () => {
       });
 
       // One event for the dispatch, not one per call.
-      const dispatches = sessionHistory(slug).filter(h => h.type === 'activity_dispatched');
+      const dispatches = session.history(slug).filter(h => h.type === 'activity_dispatched');
       expect(dispatches).toHaveLength(1);
       expect((dispatches[0]!.data as { agentId: string; dispatch: string })).toMatchObject({
         agentId: 'prism-oob',
@@ -250,8 +197,8 @@ describe('fetch observability (#166 B8)', () => {
 
     it('carries chars and a full/unchanged discriminator on every delivery event', async () => {
       const slug = '2026-07-30-delivery-magnitude';
-      const idx = await startSession(slug, 'orchestrator');
-      await enterActivity(idx, 'start-work-package');
+      const idx = await session.start(slug, 'orchestrator');
+      await session.enter(idx, 'start-work-package');
 
       for (const bundle of [undefined, 'reference']) {
         await client.callTool({
@@ -264,7 +211,7 @@ describe('fetch observability (#166 B8)', () => {
         });
       }
 
-      const history = sessionHistory(slug);
+      const history = session.history(slug);
       const deliveries = history.filter(h => h.type === 'technique_fetched' || h.type === 'resource_fetched');
       expect(deliveries.length).toBe(4);
       for (const event of deliveries) {
@@ -286,8 +233,8 @@ describe('fetch observability (#166 B8)', () => {
 
     it('counts a dispatch per bundled activity delivery alongside its per-step magnitudes', async () => {
       const slug = '2026-07-30-bundled-magnitude';
-      const idx = await startSession(slug, 'orchestrator');
-      await enterActivity(idx, 'start-work-package');
+      const idx = await session.start(slug, 'orchestrator');
+      await session.enter(idx, 'start-work-package');
 
       await client.callTool({
         name: 'get_activity',
@@ -298,7 +245,7 @@ describe('fetch observability (#166 B8)', () => {
         arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1', bundle: 'reference' },
       });
 
-      const bundled = sessionHistory(slug).filter(h => h.type === 'technique_bundled');
+      const bundled = session.history(slug).filter(h => h.type === 'technique_bundled');
       expect(bundled.length).toBeGreaterThan(0);
       for (const event of bundled) {
         const data = event.data as { chars?: number; delivery?: string; agentId?: string };
@@ -324,14 +271,14 @@ describe('fetch observability (#166 B8)', () => {
   describe('delivery identity across a gate (#408)', () => {
     it('reads a context the server has already met as a resume, whatever activity it asks for', async () => {
       const slug = '2026-08-03-scope-spans-activities';
-      const idx = await startSession(slug, 'orchestrator');
+      const idx = await session.start(slug, 'orchestrator');
 
-      await enterActivity(idx, 'start-work-package');
+      await session.enter(idx, 'start-work-package');
       const first = await client.callTool({
         name: 'get_activity',
         arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1' },
       });
-      await enterActivity(idx, 'design-philosophy');
+      await session.enter(idx, 'design-philosophy');
       const second = await client.callTool({
         name: 'get_activity',
         arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1', bundle: 'reference' },
@@ -340,14 +287,14 @@ describe('fetch observability (#166 B8)', () => {
       expect((first._meta as Record<string, unknown>)['dispatch']).toBe('fresh');
       expect((second._meta as Record<string, unknown>)['dispatch']).toBe('resume');
 
-      const dispatches = sessionHistory(slug).filter(h => h.type === 'activity_dispatched');
+      const dispatches = session.history(slug).filter(h => h.type === 'activity_dispatched');
       expect(dispatches.map(d => (d.data as { dispatch: string }).dispatch)).toEqual(['fresh', 'resume']);
     });
 
     it('records a second full delivery of one activity to a second identity', async () => {
       const slug = '2026-08-03-redelivery-visible';
-      const idx = await startSession(slug, 'orchestrator');
-      await enterActivity(idx, 'start-work-package');
+      const idx = await session.start(slug, 'orchestrator');
+      await session.enter(idx, 'start-work-package');
 
       await client.callTool({
         name: 'get_activity',
@@ -358,7 +305,7 @@ describe('fetch observability (#166 B8)', () => {
         arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-b' },
       });
 
-      const redelivered = sessionHistory(slug).filter(h => h.type === 'activity_redelivered');
+      const redelivered = session.history(slug).filter(h => h.type === 'activity_redelivered');
       expect(redelivered).toHaveLength(1);
       expect(redelivered[0]!.activity).toBe('start-work-package');
       expect(redelivered[0]!.data as Record<string, unknown>).toMatchObject({
@@ -371,8 +318,8 @@ describe('fetch observability (#166 B8)', () => {
 
     it('records nothing when the identity that took the activity asks for it again', async () => {
       const slug = '2026-08-03-redelivery-quiet-on-resume';
-      const idx = await startSession(slug, 'orchestrator');
-      await enterActivity(idx, 'start-work-package');
+      const idx = await session.start(slug, 'orchestrator');
+      await session.enter(idx, 'start-work-package');
 
       for (const bundle of [undefined, 'reference', 'reference']) {
         await client.callTool({
@@ -381,15 +328,15 @@ describe('fetch observability (#166 B8)', () => {
         });
       }
 
-      expect(sessionHistory(slug).filter(h => h.type === 'activity_redelivered')).toHaveLength(0);
+      expect(session.history(slug).filter(h => h.type === 'activity_redelivered')).toHaveLength(0);
     });
   });
 
   describe('PR366 context fidelity and observability', () => {
     it('PR366-TC-21: bundled path emits idempotent step_started', async () => {
       const slug = '2026-07-31-pr366-step-started-bundle';
-      const idx = await startSession(slug, 'orchestrator');
-      await enterActivity(idx, 'start-work-package');
+      const idx = await session.start(slug, 'orchestrator');
+      await session.enter(idx, 'start-work-package');
       await client.callTool({
         name: 'get_activity',
         arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1' },
@@ -398,7 +345,7 @@ describe('fetch observability (#166 B8)', () => {
         name: 'get_activity',
         arguments: { session_index: idx, context_tokens: 200_000, agent_id: 'w-1' },
       });
-      const started = sessionHistory(slug).filter(h => h.type === 'step_started');
+      const started = session.history(slug).filter(h => h.type === 'step_started');
       expect(started.length).toBeGreaterThan(0);
       const keys = started.map(e => `${e.activity}|${(e.data as { stepId: string }).stepId}|${(e.data as { agentId: string }).agentId}`);
       expect(new Set(keys).size).toBe(keys.length);
@@ -406,8 +353,8 @@ describe('fetch observability (#166 B8)', () => {
 
     it('PR366-TC-22: step_manifest path emits step_completed at transition', async () => {
       const slug = '2026-07-31-pr366-step-completed';
-      const idx = await startSession(slug, 'orchestrator');
-      await enterActivity(idx, 'start-work-package');
+      const idx = await session.start(slug, 'orchestrator');
+      await session.enter(idx, 'start-work-package');
       await client.callTool({
         name: 'get_technique',
         arguments: { session_index: idx, step_id: 'detect-review-mode', agent_id: 'w-1' },
@@ -424,7 +371,7 @@ describe('fetch observability (#166 B8)', () => {
         },
       });
       expect(result.isError).toBeFalsy();
-      const completed = sessionHistory(slug).filter(h => h.type === 'step_completed');
+      const completed = session.history(slug).filter(h => h.type === 'step_completed');
       expect(completed.some(e =>
         e.activity === 'start-work-package'
         && (e.data as { stepId: string }).stepId === 'detect-review-mode'
@@ -434,8 +381,8 @@ describe('fetch observability (#166 B8)', () => {
 
     it('PR366-TC-23: multi lazy get_technique starts can carry distinct timestamps', async () => {
       const slug = '2026-07-31-pr366-multi-start-ts';
-      const idx = await startSession(slug, 'orchestrator');
-      await enterActivity(idx, 'start-work-package');
+      const idx = await session.start(slug, 'orchestrator');
+      await session.enter(idx, 'start-work-package');
       await client.callTool({
         name: 'get_technique',
         arguments: { session_index: idx, step_id: 'detect-review-mode', agent_id: 'w-1' },
@@ -446,7 +393,7 @@ describe('fetch observability (#166 B8)', () => {
         name: 'get_technique',
         arguments: { session_index: idx, step_id: 'resolve-repo-root', agent_id: 'w-1' },
       });
-      const started = sessionHistory(slug).filter(h => h.type === 'step_started' && (h.data as { agentId?: string }).agentId === 'w-1');
+      const started = session.history(slug).filter(h => h.type === 'step_started' && (h.data as { agentId?: string }).agentId === 'w-1');
       // Distinct timestamps are allowed when the clock advances; equal is ok if coarse — contract is "can".
       expect(started.length).toBeGreaterThanOrEqual(2);
     });
@@ -454,11 +401,11 @@ describe('fetch observability (#166 B8)', () => {
     it('PR366-TC-24/25: undeclared planning file warned; outside-folder unknown; success', async () => {
       const { writeFileSync, mkdirSync } = await import('node:fs');
       const slug = '2026-07-31-pr366-artifacts';
-      const folder = planningFolder(slug);
-      const idx = await startSession(slug, 'orchestrator');
-      await enterActivity(idx, 'start-work-package');
+      const folder = session.folder(slug);
+      const idx = await session.start(slug, 'orchestrator');
+      await session.enter(idx, 'start-work-package');
       writeFileSync(join(folder, 'rogue-undeclared.md'), '# rogue\n', 'utf8');
-      const outside = join(workspaceDir, 'outside-plan.md');
+      const outside = join(harness.workspaceDir, 'outside-plan.md');
       writeFileSync(outside, '# out\n', 'utf8');
       const result = await client.callTool({
         name: 'next_activity',
@@ -488,9 +435,9 @@ describe('fetch observability (#166 B8)', () => {
     it('PR366-TC-26: declaration at activity N suppresses warning at N+1', async () => {
       const { writeFileSync } = await import('node:fs');
       const slug = '2026-07-31-pr366-artifacts-accum';
-      const folder = planningFolder(slug);
-      const idx = await startSession(slug, 'orchestrator');
-      await enterActivity(idx, 'start-work-package');
+      const folder = session.folder(slug);
+      const idx = await session.start(slug, 'orchestrator');
+      await session.enter(idx, 'start-work-package');
       writeFileSync(join(folder, 'kept-artifact.md'), '# keep\n', 'utf8');
       const first = await client.callTool({
         name: 'next_activity',
