@@ -1,23 +1,20 @@
-# Technique & Resource Resolution Architecture
+# Technique and Resource Resolution
 
-LLM context windows are precious. Loading an entire workflow's worth of instructions, rules, and system prompts into an agent's context window on bootstrap leads to context degradation, high latency, and increased costs.
+A workflow's full set of instructions runs to tens of thousands of characters. Hand all of it to an agent when the run opens and most of it is irrelevant to whatever that agent is doing at any given moment: the part that matters is crowded out by the part that does not, responses slow, and every later call carries the whole of it again.
 
-The Workflow Server solves this via a **lazy-loading resource architecture** layered on top of a **technique model** in which all behaviour is composed from techniques.
+So the server hands over one piece at a time. Behaviour is broken into techniques — a technique being a markdown definition of a single capability — and an activity names the ones it needs. The server composes those on demand and delivers what the current step calls for, leaving the bulkier reference material behind until something asks for it.
 
-## 1. Canonical IDs (Slugs)
+## How a technique or resource is named
 
-Techniques and resources are stored on disk as markdown files whose **slug** is the canonical id. A standalone technique is `techniques/{slug}.md`; a grouped technique is a folder `techniques/{group}/TECHNIQUE.md` plus one `{sub}.md` per nested technique; a resource is `resources/{slug}.md`. The slug equals the filename (and the frontmatter `name:`).
+Techniques and resources are markdown files on disk, and each one's filename is its id. A standalone technique is `techniques/{slug}.md`; a grouped technique is a folder holding a `TECHNIQUE.md` index plus one `{sub}.md` per nested technique; a resource is `resources/{slug}.md`. The id matches the filename, and the frontmatter repeats it.
 
-* File: `techniques/workflow-engine.md`
-* Canonical ID: `workflow-engine`
+So the file `techniques/workflow-engine.md` is the technique `workflow-engine`, and that is the name an agent asks for it by.
 
-Agents reference techniques and resources by their canonical slugs.
+## What a technique is
 
-## 2. Techniques
+There is one kind of technique. It is either a single markdown file, or a folder whose `TECHNIQUE.md` index carries nested techniques as sibling files. A nested technique is itself a technique: same shape, same delivery.
 
-There is one kind of technique. A technique is a markdown file (standalone) or a grouped folder whose `TECHNIQUE.md` index contains nested techniques as sibling `{sub}.md` files. A **nested technique is itself a technique** — it has the same shape and is delivered the same way.
-
-A technique's published shape is:
+A technique publishes:
 
 * **`id`**, **`version`**, **`capability`** — the identity and the capability statement.
 * **`inputs`** (optional) — an array of entries, each with `id`, `description`, `required`, `default`, and optional `components` (named sub-members).
@@ -27,7 +24,7 @@ A technique's published shape is:
 
 The `tools` map keys an MCP server name (e.g. `workflow-server`, `atlassian`, `gitnexus`) or one of the reserved keys `shell` / `harness`.
 
-## 3. Technique & Rule References
+## Referring to a technique or a rule
 
 Activities and workflows compose behaviour by listing technique references. A reference is a `::`-delimited path:
 
@@ -61,7 +58,7 @@ steps:
 
 The inline form points at the same technique body. Agents read the technique from the bundled response rather than re-fetching it.
 
-## 4. Resolution
+## How a reference resolves
 
 Each reference resolves as follows:
 
@@ -81,53 +78,48 @@ The result of resolving a list of references is a bundle grouped into three buck
 
 Empty buckets are omitted. The lookup is structural and requires no session token; most clients receive it indirectly through the bundles that `get_workflow` and `get_activity` produce.
 
-## 5. Protocol Composition
+## How an ancestor's protocol wraps a descendant's
 
 When a technique is delivered, an ancestor container's `Initial` and `Final` protocol blocks wrap the descendant's protocol recursively. Every ancestor along the path — the workflow-root `TECHNIQUE.md` and each containing group's `TECHNIQUE.md` — contributes its `Initial` blocks (before) and `Final` blocks (after) the technique's own protocol. The server renumbers the combined sequence for display. Any other ancestor block is parent-only: it appears solely when that ancestor is referenced directly.
 
-## 6. Delivery at Workflow / Activity Granularity
+## What arrives with a workflow and with an activity
 
-The server resolves an activity's `techniques[]` and bundles them into the `techniques`, `rules`, and `unresolved` buckets, so agents never chain resolution calls themselves at runtime.
+The server resolves an activity's declared references and bundles them into the same three buckets, so an agent never chains resolution calls of its own at runtime.
 
-### `get_workflow` — orchestrator bundle
+### The orchestrator bundle
 
 The response is the union of the workflow's declared technique references and the core orchestrator technique references the server auto-includes (`CORE_ORCHESTRATOR_TECHNIQUES` in `src/loaders/core-ops.ts`): the engine traversal, checkpoint flow, state-persistence, sub-agent dispatch, and orchestrator-discipline references every orchestrator needs. Duplicates are deduplicated.
 
-### `get_activity` — worker bundle
+### The worker bundle
 
 The response is the union of the activity's declared technique references and the core worker technique references the server auto-includes (`CORE_WORKER_TECHNIQUES` in `src/loaders/core-ops.ts`): the worker role itself, the yield/resume checkpoint, finalize-activity, and worker-side `agent-conduct` rule references every worker needs. The role is in that set because every worker stub names it and only the meta workflow declares it, so a client worker would otherwise be told to apply a technique its bundle never carried.
 
-### Core technique reference sets (`src/loaders/core-ops.ts`)
+### What the two core sets contain
 
 | Set | Technique references |
 |-----|----------------------|
 | `CORE_ORCHESTRATOR_TECHNIQUES` | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `compose-prompt`, `present-checkpoint-to-user`, `respond-checkpoint`; `version-control::commit-submodule`, `commit-regular-files`; `harness-compat::spawn-agent`, `continue-agent`; `agent-conduct::orchestrator`, `checkpoint-discipline`, `operational-discipline` |
 | `CORE_WORKER_TECHNIQUES` | `workflow-engine::activity-worker`, `yield-checkpoint`, `resume-from-checkpoint`, `finalize-activity`; `agent-conduct::checkpoint-discipline`, `operational-discipline`, `file-sensitivity`, `code-commentary` |
 
-## 7. Shared-Layer Technique Resolution
+## The shared meta layer
 
-Standard agent behaviours (workflow engine procedures, agent conduct rules, etc.) live once in the `meta` shared layer, so a workflow need not redefine them.
+The behaviours every workflow needs — how the engine advances, how agents are expected to conduct themselves — are written once in a shared workflow called `meta`, so no other workflow has to restate them.
 
-When resolving a technique, the server uses a two-step path:
+Resolution therefore looks in two places, in order: the current workflow's own technique folder first, and the shared layer second. A workflow that defines a technique under a name the shared layer also uses shadows the shared one, which is how a workflow overrides a standard behaviour without the shared copy having to know about it.
 
-1. **Workflow-local scope:** look in the current workflow's technique folder (e.g. `workflows/work-package/techniques/`).
-2. **Meta shared layer:** if not found locally, fall back to `workflows/meta/techniques/`.
-
-This lets workflows inherit standard meta capability techniques (`workflow-engine`, `agent-conduct`, `atlassian-operations`, …) while still being able to override them — a workflow-local technique of the same id shadows the meta one.
-
-## 8. Workflow-Level Techniques
+## Techniques declared at the workflow level
 
 A workflow declares techniques partitioned by audience (mirroring `rules`): `techniques.workflow` for the orchestrator and `techniques.activity` for techniques inherited by every activity. The composed body of the first `techniques.workflow` entry is returned by `get_technique` (before any activity); those orchestrator techniques are also covered by the `get_workflow` technique bundle rather than appearing as a separate preamble. The `techniques.activity` references are injected into every `get_activity` technique bundle ahead of the activity's own `techniques[]`, so a technique common to all activities (e.g. variable-binding) is declared once at the workflow level instead of duplicated per activity. Workflows compose behaviour by referencing capability techniques rather than maintaining a monolithic technique.
 
-## 9. Resources
+## Resources
 
 Even with techniques tightly scoped, large reference material (Git CLI tutorials, API guides, templates) does not belong inline. A technique references a resource by id through a normal markdown hyperlink in its content (for example, a template linked from an Input or Output). When the server projects a technique for delivery, it **rewrites those resource hyperlinks into `get_resource`-callable refs** — the bare id form `{id}[#section]`, or the cross-workflow form `{workflow}/{id}[#section]`. Technique links are left untouched.
 
 Server responses do not bundle resource bodies. The agent loads a resource only when it actually needs it.
 
-## 10. Lazy Loading via `get_resource`
+## Loading a resource when it is needed
 
-When the agent encounters a resource reference it needs, it calls:
+When an agent reaches a resource reference it needs, it asks for it:
 
 ```javascript
 get_resource({ session_index, resource_id: "meta/activity-worker-prompt" })
@@ -140,15 +132,11 @@ The server resolves the reference:
 
 An optional `#section` anchor (a GitHub-style heading slug) narrows the result to that section and its body — used to fetch just the template a technique references without the whole file. The content is loaded from `workflows/{workflow}/resources/{slug}.md` and returned alongside the resource `id` and `version`.
 
-Under `context_mode: "persistent"`, a byte-identical refetch of the same exact `resource_id` (including any `#section`) returns a short `{ delivery: "unchanged", content_hash }` marker instead of the body — the same reference-delivery contract as `get_technique` (see [Reference Delivery](#11-reference-delivery)). Bare and sectioned ids are independent ledger keys. Pass `full: true` to force the full body when the calling context no longer holds the earlier delivery. Fresh/default sessions always receive the full resource body. Each call still appends a `resource_fetched` history event (observability only), including when the answer is an unchanged marker.
+Under `context_mode: "persistent"`, a byte-identical refetch of the same exact `resource_id` (including any `#section`) returns a short `{ delivery: "unchanged", content_hash }` marker instead of the body — the same reference-delivery contract as `get_technique` (see [Reference delivery](#reference-delivery)). Bare and sectioned ids are independent ledger keys. Pass `full: true` to force the full body when the calling context no longer holds the earlier delivery. Fresh/default sessions always receive the full resource body. Each call still appends a `resource_fetched` history event (observability only), including when the answer is an unchanged marker.
 
-### Benefits
+Three things follow from loading resources this way. An agent carries only the guides the technique in front of it actually cites, and under reference delivery it does not pay a second time for one that has not changed. A guide with several callers — how to format a pull request, how to drive the Git command line — is written once and linked from every technique that needs it, across any number of workflows. And the prefixed form lets a technique in one workflow reach the shared library in `meta`, so a resource is reused rather than copied.
 
-* **Context Economy:** Agents load only the exact Markdown guides they need for the technique they are currently performing; persistent sessions avoid re-paying unchanged templates on later fetches.
-* **Modularity:** Reference guides (PR formatting, Git CLI usage, etc.) live in single markdown files and are referenced from many techniques across many workflows without duplication.
-* **Cross-workflow sharing:** The `{workflow}/{slug}` prefix lets techniques in any workflow pull from a shared resource library in the `meta` workflow.
-
-## 11. Reference Delivery
+## Reference delivery
 
 By default the server sends every payload in full, every time. A freshly spawned worker starts with an empty context, so that repetition is what gives it the content at all.
 
@@ -224,7 +212,7 @@ Hashing the content is what keeps this from going stale: a block annotated with 
 
 **Benchmarks.** `npm run bench:token` compares delivery cost per session mode over a fixed `work-package` walk, against the committed baseline ([`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts); `vsReference.deliveryCostIndex` reports baseline = 100, lower is better). The Verify workflow gates on it at 1%, so a definition change that adds delivery is priced at merge — see [development.md](development.md#the-gate-runs-on-every-pull-request). `npm run bench:dispatch` measures the other axis — a fresh worker dispatch against the same worker resumed ([`scripts/run-dispatch-benchmark.ts`](../scripts/run-dispatch-benchmark.ts)). See [development.md](development.md#token-delivery-benchmark).
 
-## 12. Hybrid Technique Bundling
+## Hybrid technique bundling
 
 `get_activity` inlines the composed content of an activity's small step techniques under a `step_techniques` map, so those steps run without a fetch round-trip. This is automatic and corpus-wide — there is no per-activity opt-in. What sizes the bundle is the worker's REQUIRED `context_tokens`.
 

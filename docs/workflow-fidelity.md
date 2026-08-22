@@ -15,7 +15,7 @@ The workflow server addresses these through seven layers of enforcement, each op
 
 ### The shape of a transition
 
-Most enforcement happens where one activity hands over to the next, so that moment is worth seeing whole.
+Most enforcement happens where one activity hands over to the next, so that moment is worth seeing whole. The labels `L1` to `L7` in the diagram are the seven layers, which the sections below then take in turn: the seal over session state, the checkpoint gate, the cross-activity check, the transition condition, the step manifest, the activity manifest, and the trace.
 
 ```mermaid
 flowchart TD
@@ -51,6 +51,8 @@ The signing key lives in a file named `secret`. The server looks for its directo
 - Rotating or losing the signing key invalidates existing seals, which surfaces as `SEAL_MISMATCH` rather than as quiet acceptance
 
 Because the state lives in the file rather than in an agent's context, a server restart is transparent. There is no adoption, re-signing or recovery step for an agent to perform.
+
+The file layout itself — what the state file carries, where the planning folder sits under the engineering root, and how a resume call works — is described once in [the state management model](state-management-model.md#persistence).
 
 ### Layer 2: Checkpoint Gate
 
@@ -128,7 +130,7 @@ When transitioning between activities via `next_activity`, agents include a `ste
 
 **Gated and loop-body steps:** a step gated by `when` or `condition` may be omitted from the manifest — the agent evaluated the gate and skipped the step. Loop-body step ids are accepted (one entry per iteration if useful) but never required, since the iteration count is agent-determined and may be zero. `step.required` is a worker hint the validator does not consult.
 
-**Technique-fetch fidelity:** the server records every `get_technique` fetch as a `technique_fetched` event in the session history (resolved technique id, bound `step_id` when supplied, agent — recorded on both delivery paths, so an unchanged-reference answer in persistent context mode still counts), and every inline step-technique delivery from a bundling activity's `get_activity` as a `technique_bundled` event. `get_resource` fetches are recorded as `resource_fetched` events for observability only. All three delivery events carry the payload magnitude — `chars` (the full payload size, on both delivery paths) and `delivery: "full" | "unchanged"` — so delivered and saved characters are summable from the history rather than estimated ([Reference delivery](resource-resolution-model.md#11-reference-delivery)). When validating a `step_manifest`, a manifested technique step with no delivery recorded during the current activity visit warns — the step was reported complete but its composed technique content was never loaded, the silent-degradation signature. A step is covered by a step-bound fetch, by any in-activity fetch that resolved to the same technique operation, or by an inline bundle delivery, and a loop-back revisit needs its own fetches. Advisory, like the rest of the layer. Inline delivery mechanics: [Hybrid Technique Bundling](resource-resolution-model.md#12-hybrid-technique-bundling).
+**Technique-fetch fidelity:** the server records every `get_technique` fetch as a `technique_fetched` event in the session history (resolved technique id, bound `step_id` when supplied, agent — recorded on both delivery paths, so an unchanged-reference answer in persistent context mode still counts), and every inline step-technique delivery from a bundling activity's `get_activity` as a `technique_bundled` event. `get_resource` fetches are recorded as `resource_fetched` events for observability only. All three delivery events carry the payload magnitude — `chars` (the full payload size, on both delivery paths) and `delivery: "full" | "unchanged"` — so delivered and saved characters are summable from the history rather than estimated ([Reference delivery](resource-resolution-model.md#reference-delivery)). When validating a `step_manifest`, a manifested technique step with no delivery recorded during the current activity visit warns — the step was reported complete but its composed technique content was never loaded, the silent-degradation signature. A step is covered by a step-bound fetch, by any in-activity fetch that resolved to the same technique operation, or by an inline bundle delivery, and a loop-back revisit needs its own fetches. Advisory, like the rest of the layer. Inline delivery mechanics: [Hybrid technique bundling](resource-resolution-model.md#hybrid-technique-bundling).
 
 ### Layer 6: Activity Manifest
 
@@ -225,17 +227,6 @@ The `discover` tool returns the complete bootstrap procedure and available workf
 
 Trace tokens use compressed field names and HMAC-signed opaque encoding. A 10-activity session produces ~3KB of accumulated tokens. The agent stores tokens as opaque strings without parsing, keeping the mechanical trace out of the reasoning context until explicitly resolved via `get_trace`.
 
-## State Persistence
-
-State persistence is **server-managed**. The server owns the canonical session state and writes it to disk atomically on every authenticated tool call. Agents pass only a 6-character `session_index` (base32, deterministically derived from the planning slug); they do not read or write session state themselves.
-
-For each session the server maintains two files under the planning folder (under the **engineering root** — see [State Management](state-management-model.md#5-persistence)):
-
-* **`session.json`** — Plaintext, JSON-Schema-validated state (`schemas/session-file.schema.json`).
-* **`.session-token`** — A sealed, HMAC-signed envelope binding `session.json` to the engineering root + server signing key. Mismatch between the two raises a hard `SealMismatchError`.
-
-Resume is a single call: `start_session({ agent_id, planning_folder })`. The server loads `session.json`, verifies the seal, and returns the same `session_index`. Because state lives in `session.json` rather than in an agent-held token, server restarts are transparent — there is no separate adoption, re-signing, or recovery step the agent has to handle. See [State Management & Deterministic Transitions](state-management-model.md#5-persistence) for the full file layout.
-
 ## Limitations
 
 - **Step execution is not provable** — the manifest validates that the agent *reported* each step, not that it *performed* the work. The output descriptions are agent-generated. However, the mechanical trace independently confirms which tool calls were made, providing corroborating evidence.
@@ -247,8 +238,6 @@ Resume is a single call: `start_session({ agent_id, planning_folder })`. The ser
 - **In-memory trace lifespan** — the `TraceStore` lives in server memory. On server restart, accumulated events are lost. Trace tokens issued before the restart remain valid as self-contained attestations (event data is embedded), but ad-hoc `get_trace` queries without tokens return empty results for prior sessions.
 - **Semantic trace is agent-dependent** — the agent-written semantic trace (step outputs, checkpoint responses, variable changes) relies on agent discipline. The server cannot verify that the agent wrote it or that it is complete.
 
-## Related
+## Where else to look
 
-- [API Reference](api-reference.md) — tool catalog
-- [Site API](../site/api/tools.html) — wire descriptions from source
-- [IDE Setup](ide-setup.md) — bootstrap configuration
+The tools these layers sit behind are catalogued in the [API reference](api-reference.md), with the [generated wire descriptions](../site/api/tools.html) giving each parameter schema. Getting an agent talking to the server in the first place is [IDE setup](ide-setup.md).

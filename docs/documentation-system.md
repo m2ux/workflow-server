@@ -19,6 +19,7 @@ How this repository's documentation is organized: what each source is for, who i
 | [`README.md`](../README.md) | Project overview, quick start, the workflow model at a glance | Everyone — first contact |
 | [`setup.md`](../setup.md) | Shared install sequence: transport, deploy, checkout under `HOST_PROJECTS_ROOT`, Cursor workspace, update workflows | Integrators |
 | [`docs/engineering-storage.md`](engineering-storage.md) | How product repos store engineering (orphan, shared monorepo, in-branch) | Integrators |
+| [`docs/install-projects-worktrees.md`](install-projects-worktrees.md) | Where checkouts, planning roots and feature worktrees sit on disk, and what creates each | Integrators |
 | [`http.md`](../http.md) / [`stdio.md`](../stdio.md) | Transport-only differences (Docker/HTTP vs local stdio MCP config) | Integrators |
 | [`docs/ide-setup.md`](ide-setup.md) | The always-applied bootstrap rule and connection verification | Integrators configuring an agent |
 | [`docs/api-reference.md`](api-reference.md) | Catalog of MCP tools and HTTP routes (brief; links out for depth) | Integrators |
@@ -28,6 +29,7 @@ How this repository's documentation is organized: what each source is for, who i
 | [`docs/technique-protocol-specification.md`](technique-protocol-specification.md) | Normative contract for technique files: anatomy, addressing, composition, delivery | Workflow authors |
 | [`docs/orchestra-specification.md`](orchestra-specification.md) | A proposed activity control-flow language the implementation did not follow — a design record, not an authoring guide | Anyone weighing the design |
 | [`docs/development.md`](development.md) | Contributing to the server: build, test, conventions | Contributors |
+| [`docs/documentation-system.md`](documentation-system.md) | This page: what each source is for, where new documentation belongs, and the conventions all of it follows | Anyone adding or changing documentation |
 | [`schemas/README.md`](../schemas/README.md) | Schema guide for authoring workflow definitions | Workflow authors |
 | `schemas/*.schema.json` | JSON Schemas generated from the Zod sources (`npm run build:schemas`) | Authoring-time validation and tooling |
 | [`site/`](../site/) | The rendered documentation site: user guide, technical specs, API reference, design | Readers in a browser |
@@ -51,5 +53,6 @@ Workflow definitions themselves (the `workflows` branch, checked out as a worktr
 
 - **Describe the system as it is.** Documentation states current behaviour in plain present tense; evolution narratives belong in engineering planning artifacts. Standing reasons behind decisions may appear on `site/design/` pages — still present tense, never a changelog.
 - **Avoid brittle counts.** Do not put fixed tallies of tools, routes, files, or similar inventory numbers in prose unless a number is required to complete a procedure. Point readers at generated catalogs (for example the [tool reference](../site/api/tools.html)) when they need the current list.
-- **Filenames are stable.** Documents are heavily cross-linked (from this repository and beyond), so structure changes are expressed through linking and navigation, never by renaming or moving existing files.
+- **Filenames are kebab-case, and a rename is exceptional.** Documents are heavily cross-linked from this repository and beyond, so structure changes are expressed through linking and navigation. A rename is warranted only where the name itself is wrong. It moves the file with `git mv` so history follows it, repoints every reference in the repository in the same change, and passes `npm run check:site` and `npm run check:anchors` before it lands. Links reaching the old name from outside the repository stop resolving, and that cost is accepted with the decision rather than softened by a redirect stub.
+- **Section headings are sentence case and carry no numbers.** A reader cites a section by its title, so the anchor stays readable and survives a reordering. Document titles spell out "and" rather than using an ampersand. The two normative specifications are the exception: a numbered clause is how a reader cites a contract term, so the [technique protocol specification](technique-protocol-specification.md) and the [orchestra specification](orchestra-specification.md) keep their numbering.
 - **Everything is reachable.** Every HTML page is listed in `SITE_ROUTES` and linked from the generated global navigation. The home page "Where to start" table and section hubs provide additional entry points. No document should depend on full-text search alone.

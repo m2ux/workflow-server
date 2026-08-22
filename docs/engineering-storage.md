@@ -1,12 +1,10 @@
 # Engineering storage patterns
 
-How product repos store workflow-server engineering content (planning, ADRs, session state). Chosen at deploy time via [`scripts/deploy.sh`](../scripts/deploy.sh) inside the product checkout you manage under `$HOST_PROJECTS_ROOT`.
-
-For the operator install sequence, see [setup.md](../setup.md).
+A repository that runs workflows accumulates engineering content — plans, decision records, session state — and where that content lives is a choice worth making deliberately. What suits a single repository owning its own history is not what suits an organisation running a dozen of them, and neither is what suits an experiment. [`scripts/deploy.sh`](../scripts/deploy.sh), run inside the product checkout under your projects root, sets this up, and the install sequence it belongs to is in [setup.md](../setup.md).
 
 ## Patterns
 
-`deploy.sh` supports three layouts. Pick one per project (or per org convention):
+`deploy.sh` supports three layouts. Pick one per project, or per organisation convention:
 
 | Pattern | Command | Where engineering history lives |
 |---------|---------|----------------------------------|
@@ -64,4 +62,4 @@ Full flags: `./deploy.sh --help`.
 
 No install-side materialisation step. Ensure the checkout sits under `$HOST_PROJECTS_ROOT/<repo>/` and pass `repo: "owner/repo"` on `start_session`.
 
-See [setup.md §2](../setup.md#2-initialise-a-target-repo). Artifact boundaries and git procedures: [artifact-management-model.md](artifact-management-model.md).
+Initialising a target repository is covered in [setup.md](../setup.md#2-initialise-a-target-repo), and the boundaries these layouts exist to keep — what belongs in the engineering tree, what belongs in the feature worktree, and how each is committed — are in [artifact and workspace isolation](artifact-management-model.md).

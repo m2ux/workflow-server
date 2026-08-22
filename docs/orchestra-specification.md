@@ -357,7 +357,7 @@ flows:
 
 ### 3.2 EBNF Grammar
 
-Complete formal grammar for a Orchestra activity file. See also `grammar/activity.ebnf`.
+The complete formal grammar for an Orchestra activity file. The same grammar is kept as a machine-readable file at [`grammar/activity.ebnf`](../grammar/activity.ebnf).
 
 ```ebnf
 (* ===== Top-level structure ===== *)
@@ -462,7 +462,7 @@ DIGIT           ::= [0-9]
 
 ### 3.3 Semantic Constraints (Alloy-style)
 
-See also `constraints/activity.als`.
+The constraints below are also written as an Alloy model at [`constraints/activity.als`](../constraints/activity.als), which is what makes them machine-checkable.
 
 #### 3.3.1 Signatures
 
@@ -912,7 +912,7 @@ The design does not cover the technique primitive, and it does not need to: tech
 
 A technique addresses another by its `::` path: a same-workflow path is implicit, an unqualified path resolves current-workflow-first then `meta`, and slashes are normalized. When a descendant technique is resolved, the server wraps its protocol in each ancestor's `Initial` and `Final` blocks, recursing through the chain, and renumbers the combined protocol. Resolved references are returned in the bundle buckets `techniques`, `rules`, and `unresolved`.
 
-See [Technique & Resource Resolution Architecture](resource-resolution-model.md) for resolution semantics.
+See [Technique and resource resolution](resource-resolution-model.md) for resolution semantics.
 
 ---
 

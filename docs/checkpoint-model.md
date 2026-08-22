@@ -27,7 +27,7 @@ A worker that meets a decision its activity never declared may yield one anyway,
 
 ### The orchestrator relays
 
-The workflow orchestrator is itself a background sub-agent, so it cannot resolve the gate either. It finds the `<checkpoint_yield>` block in the worker's output, echoes it upward unchanged, and goes to sleep.
+The orchestrator is itself a background sub-agent, so it cannot resolve the gate either. It finds the `<checkpoint_yield>` block in the worker's output, echoes it upward unchanged, and goes to sleep.
 
 ### The user-facing agent presents and resolves
 

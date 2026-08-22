@@ -18,7 +18,7 @@ The boundaries are the point. The user-facing agent never holds step detail, the
 
 ## Mechanics of Dispatch
 
-The dispatch process safely hands off execution from one layer to the next. Each session has a 6-character `session_index` (base32, deterministically derived from the planning slug); agents pass the index — not a token — on every authenticated call. The canonical state lives in the server-owned `session.json` (see [State Management](state-management-model.md#5-persistence)).
+The dispatch process safely hands off execution from one layer to the next. Each session has a 6-character `session_index` (base32, deterministically derived from the planning slug); agents pass the index — not a token — on every authenticated call. The canonical state lives in the server-owned `session.json` (see [State Management](state-management-model.md#persistence)).
 
 ### Spawning the orchestrator
 
@@ -76,7 +76,7 @@ The activity cap covers what a character count cannot see: the context the harne
 
 **Which limit binds depends on the workflow, and both cases are wanted.** The two rest on different evidence. `npm run bench:batch` measures activity payloads only and never fetches a technique or resource lazily, so its figure is a floor: the least a batch can cost, counting only what arrives eagerly. What a batch really accumulates includes everything the worker goes back for, and that half is usually the larger one.
 
-At a 200,000-token window, giving a 280,000-character budget, **the cap binds first on measured content**. The benchmark's three activities cost 159,093 characters batched — 78,128, then 58,588, then 22,377 — which is 57% of budget, because a batch's second and later activities collapse the invariant blocks and the ancestor contract their techniques share (see [Reference Delivery](resource-resolution-model.md#11-reference-delivery)). Standalone, the same three cost 232,954. Reaching the budget takes roughly seven activities of that weight, and a worker declaring a smaller window is bounded proportionally: the budget takes over below roughly 114,000 declared tokens on this workload.
+At a 200,000-token window, giving a 280,000-character budget, **the cap binds first on measured content**. The benchmark's three activities cost 159,093 characters batched — 78,128, then 58,588, then 22,377 — which is 57% of budget, because a batch's second and later activities collapse the invariant blocks and the ancestor contract their techniques share (see [Reference delivery](resource-resolution-model.md#reference-delivery)). Standalone, the same three cost 232,954. Reaching the budget takes roughly seven activities of that weight, and a worker declaring a smaller window is bounded proportionally: the budget takes over below roughly 114,000 declared tokens on this workload.
 
 Admission is checked *before* a delivery rather than after, so the admitted activity can carry a batch past the budget by up to one heavy activity. Refusing after composing would pay the composition and still not un-deliver it.
 
@@ -102,7 +102,7 @@ Three carve-outs keep the bound aimed at what it is for:
 
 ## Workflow Status Polling
 
-The meta orchestrator can poll the status of a dispatched workflow using `get_workflow_status`:
+The user-facing agent can poll the status of a dispatched workflow using `get_workflow_status`:
 
 ```javascript
 get_workflow_status({ session_index: "<child_index>" })

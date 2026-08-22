@@ -34,7 +34,7 @@ Most tools take a `session_index` from `start_session`. Bootstrap tools do not. 
 
 | Tool | Parameters | Returns | Description |
 |------|------------|---------|-------------|
-| `start_session` | `agent_id`, `workflow_id?`, `planning_folder?`, `repo?`, `context_mode?`, `user_request?` | `session_index`, planning path, workflow info, optional `repo` | Open or resume a top-level session (default workflow: `meta`). Always pass `repo: "owner/repo"` — written to `session.json#repo` (multi-root plans under `$HOST_PROJECTS_ROOT/<repo>/.engineering/…`). `user_request` seeds the opening request into the variable bag, and children inherit it. [State](state-management-model.md) · [Reference delivery](resource-resolution-model.md#11-reference-delivery) |
+| `start_session` | `agent_id`, `workflow_id?`, `planning_folder?`, `repo?`, `context_mode?`, `user_request?` | `session_index`, planning path, workflow info, optional `repo` | Open or resume a top-level session (default workflow: `meta`). Always pass `repo: "owner/repo"` — written to `session.json#repo` (multi-root plans under `$HOST_PROJECTS_ROOT/<repo>/.engineering/…`). `user_request` seeds the opening request into the variable bag, and children inherit it. [State](state-management-model.md) · [Reference delivery](resource-resolution-model.md#reference-delivery) |
 | `dispatch_child` | `session_index`, `workflow_id`, `agent_id?`, `planning_slug?`, `repo?`, `context_mode?` | Child `session_index` | Start a nested workflow under the current session. Uses `session.repo`; optional `repo` binds if missing (must match if set). [Dispatch](dispatch-model.md) |
 | `get_workflow_status` | `session_index` | Status, current/completed activities, checkpoint hint | Snapshot of where the session is. |
 | `inspect_session` | `session_index`, `view?`, `child_index?`, `variable?`, `agent_id?` | Compact projection | Read-only view of session state, usable while a checkpoint is active. `agent_id` narrows history and usage to one worker context. |
@@ -47,7 +47,7 @@ Require `session_index`. Workflow identity comes from the session.
 |------|------------|---------|-------------|
 | `get_workflow` | `session_index` | Orchestrator technique bundle + workflow stubs | Orchestrator load: rules, variables, `initialActivity`, activity list. [Resolution](resource-resolution-model.md) |
 | `next_activity` | `session_index`, `activity_id`, manifests? | `activity_id`, `name`; trace in `_meta` | Advance to an activity (does not return its body). [Fidelity](workflow-fidelity.md) |
-| `get_activity` | `session_index`, `context_tokens`, `agent_id?`, `bundle?` | Worker bundle + activity body, `_meta.dispatch` | Worker load for the current activity. `context_tokens` is required; `agent_id` scopes delivery to this worker context. [Bundling](resource-resolution-model.md#12-hybrid-technique-bundling) · [Reference delivery](resource-resolution-model.md#11-reference-delivery) |
+| `get_activity` | `session_index`, `context_tokens`, `agent_id?`, `bundle?` | Worker bundle + activity body, `_meta.dispatch` | Worker load for the current activity. `context_tokens` is required; `agent_id` scopes delivery to this worker context. [Bundling](resource-resolution-model.md#hybrid-technique-bundling) · [Reference delivery](resource-resolution-model.md#reference-delivery) |
 | `yield_checkpoint` | `session_index`, `checkpoint_id`, `message?`, `options?` | `yielded` or `replayed` | Pause for a user decision, or replay a prior answer. `message` and `options` raise a decision the activity did not declare, and are refused on one it did. [Checkpoints](checkpoint-model.md) |
 | `resume_checkpoint` | `session_index` | Status | Worker continues after the checkpoint is resolved. |
 | `present_checkpoint` | `session_index` | Message, options, effects | Load the active checkpoint for the user. |
@@ -57,7 +57,7 @@ Require `session_index`. Workflow identity comes from the session.
 
 | Tool | Parameters | Returns | Description |
 |------|------------|---------|-------------|
-| `get_technique` | `session_index`, `step_id?`, `activity_id?`, `agent_id?`, `bundle?`, `full?` | Composed technique (or unchanged marker) | Load one technique on demand. Passing `activity_id` fails a step id that resolves against a moved activity pointer, rather than returning a technique from the wrong activity. [Resolution](resource-resolution-model.md) · [Reference delivery](resource-resolution-model.md#11-reference-delivery) |
+| `get_technique` | `session_index`, `step_id?`, `activity_id?`, `agent_id?`, `bundle?`, `full?` | Composed technique (or unchanged marker) | Load one technique on demand. Passing `activity_id` fails a step id that resolves against a moved activity pointer, rather than returning a technique from the wrong activity. [Resolution](resource-resolution-model.md) · [Reference delivery](resource-resolution-model.md#reference-delivery) |
 | `get_resource` | `session_index`, `resource_id`, `agent_id?`, `bundle?`, `full?` | Resource body (or unchanged marker) | Load reference material by slug (`workflow/id` or `#section`). |
 
 ### Trace and accounting
@@ -75,7 +75,7 @@ Require `session_index`. Workflow identity comes from the session.
 | Yield / present / respond / resume | [Checkpoint model](checkpoint-model.md) |
 | Manifests, `_meta.validation`, trace tokens | [Workflow fidelity](workflow-fidelity.md) |
 | Technique bundles, composition, resources | [Resource resolution](resource-resolution-model.md) |
-| Reference delivery & eager step bundling | [Resource resolution §11–12](resource-resolution-model.md#11-reference-delivery) |
+| Reference delivery and eager step bundling | [Reference delivery](resource-resolution-model.md#reference-delivery) and [hybrid technique bundling](resource-resolution-model.md#hybrid-technique-bundling) |
 | What the server enforces vs agents | [Schema enforcement model](../schemas/README.md#enforcement-model) |
 | Wire descriptions & parameter schemas | [Site API](../site/api/tools.html) (generated from `src/tools/`) |
 | Technique file shape | [Technique protocol](technique-protocol-specification.md) |

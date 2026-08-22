@@ -1,45 +1,32 @@
 # Development Guide
 
-This guide covers development setup, commands, and testing for the MCP Workflow Server.
+Setting up, building and testing the workflow server.
 
-## Prerequisites
+## What you need
 
-- Node.js 18+
-- npm or yarn
-- Git (for worktree setup)
+Node.js 18 or later, npm, and Git.
 
-## Setup
+## Getting a working checkout
+
+The workflow definitions are a submodule of this repository, so cloning the server on its own leaves `workflows/` empty and every corpus guard with nothing to measure. Take both:
 
 ```bash
-# Clone the repository
 git clone https://github.com/m2ux/workflow-server.git
 cd workflow-server
-
-# Install dependencies
+git submodule update --init --recursive
 npm install
-
-# Set up workflow data (worktree for orphan branch)
-git worktree add ./workflows workflows
 ```
 
-## Development Commands
+A linked worktree needs the same two things and starts with neither. `npm run worktree:provision` supplies them — see [running guards in a worktree](#running-guards-in-a-worktree).
+
+## Commands
 
 ```bash
-# Install dependencies
-npm install
-
-# Type check
-npm run typecheck
-
-# Build for production
-npm run build
-
-# Run in development mode (with hot reload via tsx) — stdio default
-npm run dev
-
-# Run over HTTP (development / production entry points)
-npm run dev:http
-npm run start:http
+npm run typecheck     # type check
+npm run build         # production build
+npm run dev           # hot reload via tsx, stdio transport
+npm run dev:http      # hot reload over HTTP
+npm run start:http    # production HTTP entry point
 ```
 
 ## Project Structure
@@ -105,7 +92,7 @@ node dist/index.js --repo=m2ux/workflow-server --transport=http
 npm run start:http   # or: node dist/index.js --transport=http --port=3000 --host=localhost
 ```
 
-See also [setup.md](../setup.md), [http.md](../http.md), and [stdio.md](../stdio.md).
+The install sequence these settings fit into is in [setup.md](../setup.md), and what differs between the two transports is covered in [http.md](../http.md) and [stdio.md](../stdio.md).
 
 ## Testing
 
@@ -209,7 +196,7 @@ Pin `WORKFLOWS_DIR` to the corpus the fixture names (`workflowsRev`) for a gate 
 — a delta measured against a different corpus is not attributable to server code,
 and the scorecard warns when the two disagree.
 
-Stderr: compact scorecard, plus a `gate: PASS|FAIL` line under `--gate`. Stdout: one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals, optional `vsReference` and `gate`). Exit `2` if the walk does not complete, `3` on gate failure. See [Reference Delivery](resource-resolution-model.md#11-reference-delivery) for the contract under test.
+Stderr: compact scorecard, plus a `gate: PASS|FAIL` line under `--gate`. Stdout: one JSON object (`getActivityChars`, `getResourceChars`, unchanged-marker counts, ledger keys, tool-call totals, optional `vsReference` and `gate`). Exit `2` if the walk does not complete, `3` on gate failure. See [Reference delivery](resource-resolution-model.md#reference-delivery) for the contract under test.
 
 ### Run profiler
 
@@ -367,84 +354,54 @@ npm run sessions:census -- --workflow work-package --status running --list
 Zero means the edit reaches nothing in flight. A non-zero count is the set of runs that will pick it
 up, and the `--list` output names each one's folder, recorded version and current activity.
 
-## Branch Structure
+## The two branches
 
-| Branch | Content | Purpose |
-|--------|---------|---------|
-| `main` | TypeScript server code | Implementation |
-| `workflows` | YAML workflows + resources | Data (orphan branch) |
+Server code lives on `main`. The workflow definitions — the YAML, the techniques and the resources — live on `workflows`, an orphan branch with a history of its own, which the main tree carries as a submodule at `workflows/`.
 
-### Working with the Workflows Branch
+### Working on the definitions
 
-The `workflows` branch is an orphan branch with separate history. Access it via worktree:
+The submodule is a checkout of that branch, so edit the definitions in place and commit them there:
 
 ```bash
-# Add worktree (one-time setup)
-git worktree add ./workflows workflows
-
-# Update workflow data
+git submodule update --init --recursive   # first time, and after a pull moves the pointer
 cd workflows
 git pull origin workflows
-
-# Commit workflow changes
-cd workflows
+# edit definitions
 git add -A
-git commit -m "feat: update workflow"
+git commit -m "Describe the definition change"
 git push origin workflows
 ```
 
-## Adding New Workflows
+A definition change lands as two commits: one on the `workflows` branch, and one on `main` moving the submodule pointer to it. The guards and the end-to-end walks both read that pointer, so the two belong in the same pull request — [corpus-coupled baselines](#corpus-coupled-baselines) covers what happens when they separate.
 
-1. Create a new directory in `workflows/{workflow-id}/`
-2. Create `workflow.yaml` workflow definition in that directory
-3. Validate with: `npx tsx scripts/validate-workflow-yaml.ts <path>`, then run `npx tsx scripts/check-all-refs.ts` and `npm run check:binding` to confirm references resolve and no binding drift
-4. Commit to the `workflows` branch
+## Adding a workflow
 
-## Adding New Resources
+Create a directory under `workflows/{workflow-id}/` with a `workflow.yaml` in it, then check it before committing:
 
-Resources are stored in a `resources/` subdirectory within each workflow as slug-named markdown files:
+```bash
+npx tsx scripts/validate-workflow-yaml.ts <path>
+npm run check:refs
+npm run check:binding
+```
 
-1. Create `{slug}.md` in `workflows/{workflow-id}/resources/`
-2. The filename slug is the resource id (the frontmatter `name:` should match)
-3. Resources are auto-discovered - no manifest update needed
-4. Access via: `get_resource` with the resource slug (referenced from a technique); cross-workflow refs use `{workflow}/{slug}`
-5. Commit to the `workflows` branch
+The first validates the definition against the schema. The other two confirm that every technique reference resolves and that no binding has drifted.
 
-## Adding New Techniques
+## Adding a resource
 
-Techniques are markdown files. They can be **universal** (apply to all workflows, stored in `meta`) or **workflow-specific**. A technique lives at `techniques/{slug}.md`. A technique can contain nested techniques in its folder; a nested technique is itself a technique, addressed by appending its slug to the parent's path.
+A resource is a slug-named markdown file under a workflow's `resources/` directory, and that slug is the id techniques refer to it by — the frontmatter `name:` matches it. Nothing registers it: the server discovers resources by reading the directory, so creating the file is the whole of the work. A technique in another workflow reaches it through the prefixed form `{workflow}/{slug}`.
 
-### Technique File Format
+## Adding a technique
 
-A technique file has:
+A technique is a markdown file under a `techniques/` directory. Put it in the `meta` workflow when every workflow should have it, or in one workflow's own directory when only that workflow does — a workflow-local technique shadows a `meta` one of the same name. A technique may hold nested techniques in a folder of its own, and a nested technique is addressed by appending its slug to the parent's path. Like resources, techniques are discovered by reading the directory.
 
-- **YAML frontmatter** carrying `metadata.version`.
+### What a technique file contains
+
+- YAML frontmatter carrying the version.
 - **`## Capability`** — what the technique does.
-- **`## Inputs`** / **`## Outputs`** (optional) — each `### entry` may carry `####` sub-section components, plus the reserved `#### artifact` (output persistence filename) and `#### default` (input default).
-- **`## Protocol`** — ordered blocks `### N. Title` with step bullets, or a flat list. Failure handling is written inline in the protocol step that gives rise to it.
-- **`## Rules`** — constraints the technique enforces.
+- **`## Inputs`** and **`## Outputs`**, both optional. Each `###` entry may carry `####` sub-sections for its components, plus the reserved `#### artifact`, naming the file an output persists to, and `#### default`, giving an input's default.
+- **`## Protocol`** — the ordered procedure, written either as `### N. Title` blocks or as a flat list, with failure handling inline in the step that gives rise to it.
+- **`## Rules`** — the constraints the technique enforces.
 
-### Universal Techniques
+### How a technique is addressed
 
-Universal techniques are stored in the `meta` workflow's `techniques/` subdirectory:
-
-1. Create `techniques/{slug}.md` under `workflows/meta/`
-2. Access via: `get_technique` (workflow- or activity-level first declared technique, optionally a step's technique via `step_id`)
-3. Commit to the `workflows` branch
-
-### Workflow-Specific Techniques
-
-Workflow-specific techniques are stored in each workflow's `techniques/` subdirectory:
-
-1. Create `techniques/{slug}.md` in `workflows/{workflow-id}/`
-2. Techniques are auto-discovered - no manifest update needed
-3. Access via: `get_technique { session_index, step_id: "{step-id}" }` (when referenced by a step)
-4. Commit to the `workflows` branch
-
-### Technique Resolution
-
-Techniques are addressed by `::`-delimited paths: `[workflow::]technique[::nested…]`. A same-workflow reference omits the workflow prefix. A `{workflow}/{technique}` slash form is normalized to the `::` form.
-
-When loading a technique, the workflow is determined from the session's `session.json` (resolved via `session_index`):
-1. First checks the session's workflow (current-workflow-first)
-2. Falls back to the `meta` layer (universal)
+Techniques are addressed by `::`-delimited paths — `[workflow::]technique[::nested…]` — and a reference within a single workflow omits the workflow segment. The slash form `{workflow}/{technique}` normalises to the same thing. Resolution reads the workflow from the session, looks in that workflow's own directory first, and falls back to the shared `meta` layer. [Technique and resource resolution](resource-resolution-model.md) has the full rules.
