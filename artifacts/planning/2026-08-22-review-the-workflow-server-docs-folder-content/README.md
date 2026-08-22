@@ -1,6 +1,6 @@
 # Workflow Server docs/ documentation set — August 2026
 
-> Rewrite · Created 2026-08-22 · **Status:** Drafting
+> Rewrite · Created 2026-08-22 · **Status:** Evaluating
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -23,9 +23,9 @@ This run rewrites the fifteen markdown documents under `docs/` — about 29,400 
 | 1 | Intake and profile | Operation, reader profile, content selection | 10-20m | ✅ |
 | 2 | [Document profile](01-document-profile.md) | Readers, purpose, context, content | 10-20m | ✅ |
 | 3 | [Source analysis](02-source-analysis.md) | Findings against the existing document | 15-30m | ✅ |
-| 4 | Draft | The plain-language document | 20-60m | 🟡 |
-| 5 | [Evaluation report](04-evaluation-report.md) | Verdict by principle, open issues | 15-30m | ⬚ |
-| 6 | [ISO checklist](04-iso-checklist.md) | Completed Annex B checklist | 10-15m | ⬚ |
+| 4 | [Draft](03-plain-document.md) | The plain-language document | 20-60m | ✅ |
+| 5 | [Evaluation report](04-evaluation-report.md) | Verdict by principle, open issues | 15-30m | 🟡 |
+| 6 | [ISO checklist](04-iso-checklist.md) | Completed Annex B checklist | 10-15m | 🟡 |
 | 7 | Delivery | The document written to its output path | 5-10m | ⬚ |
 
 **Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
