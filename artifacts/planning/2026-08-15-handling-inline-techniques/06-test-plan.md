@@ -42,7 +42,8 @@ Key changes to validate:
 | PR466-TC-18 | Verify the three correctly-authored cycle members load without error and each body is delivered once | Integration |
 | PR466-TC-19 | Verify a synthetic deep reference chain terminates and its queue depth is bounded | Unit |
 | PR466-TC-20 | Verify a group container body is not a delivered closure member when the qualified pair naming its operation collapses | Unit |
-| PR466-TC-31 | Verify a folded callee's container rules reach the agent executing that call, and that the caller's own obligation set gains no rule from a container tree it does not belong to | Integration |
+| PR466-TC-31 | Verify a folded callee's inherited rules reach the agent executing that call, attributed to that call, and that the caller's own obligation set gains no rule from a container tree it does not belong to | Integration |
+| PR466-TC-32 | Verify a folded callee's inherited inputs and outputs arrive in the same partitioned blocks it receives when bound as a step, so inherited context is not lost by being called | Integration |
 | PR466-TC-21 | Verify the reachable-text scan runs over the delivered closure across the whole corpus rather than one technique in one workflow | Integration |
 | PR466-TC-22 | Verify the scan's cost stays a rounding error against composition on the heaviest closure | Performance |
 | PR466-TC-23 | Verify an attributed core-operations entry is removed only once the reference standing in for it delivers at that entry's own door | Integration |
@@ -68,7 +69,7 @@ Key changes to validate:
 | SC-6 | Value-named callees enumerated, closure checked where a set is enumerable | PR466-TC-12, PR466-TC-13 |
 | SC-7 | Bodies arrive deduplicated and transitively within the delivery budget | PR466-TC-14, PR466-TC-15 |
 | SC-7a | A folded callee is keyed as a technique and collapses against a step-bound delivery | PR466-TC-16, PR466-TC-17, PR466-TC-20 |
-| PL-1 (open) | A folded callee executes under the constraints that govern it | PR466-TC-31 |
+| SC-14 | A folded call site's closure carries what its callee would inherit at step level — inherited rules, and inherited inputs and outputs | PR466-TC-31, PR466-TC-32 |
 | SC-8 | Each body delivered once, traversal continuing at a revisit | PR466-TC-18, PR466-TC-19 |
 | SC-9 | The reachable-text scan runs over the delivered closure | PR466-TC-21, PR466-TC-22 |
 | SC-10 | Attributed baseline entries retire against the door that serves them | PR466-TC-23, PR466-TC-24 |
@@ -77,14 +78,22 @@ Key changes to validate:
 | SC-13 | The already tool-backed call sites reach their operation through a typed tool, no host-credentialed path in the server | PR466-TC-26, PR466-TC-27, PR466-TC-28 |
 | G10 (analysis-derived) | Every corpus guard can report unmeasured | PR466-TC-29 |
 
-Every criterion maps to at least one case. Three coverage notes rather than gaps: SC-11 is verified by
-reading three prose authorities and has no mechanical case; SC-9's cost case replicates figures whose
-current evidence is sample-size two; and PR466-TC-31's expected result is fixed by whichever position
-[PL-1](02-assumptions-log.md#pl-1-what-a-folded-closure-contains) settles on, so the case is listed with
-its objective and authored once that decision lands. Closure membership and rule enforcement are separate
-cases because they are separate questions — the first follows from the counting grammar, the second does
-not follow from anything yet decided, and one case covering both would pass while the enforcement question
-stayed open.
+Every criterion maps to at least one case. Three coverage notes rather than gaps.
+
+SC-11 is verified by reading three prose authorities and has no mechanical case, and SC-9's cost case
+replicates figures whose current evidence is sample-size two.
+
+SC-14 takes two cases because it asserts two halves. PR466-TC-31 already covers the rules half and is not
+duplicated for it; the inherited inputs and outputs half is a genuine shortfall in the existing set, so
+PR466-TC-32 is new rather than TC-31 stretched to cover it. The two halves have different costs behind
+them: the I/O half passes on machinery that already exists, since the own-versus-inherited partition is
+computed inside composition and a callee composed as a reference receives it exactly as one composed as a
+step, while the rules half depends on the attributed block Task 9 builds. TC-32 is therefore expected to
+pass early and to act as a regression guard on parity rather than as a check on new work.
+
+Closure membership and rule enforcement stay separate cases because they are separate questions: the first
+follows from the counting grammar, the second from the governing principle, and one case covering both
+would pass while enforcement went unchecked.
 
 ## Running Tests
 

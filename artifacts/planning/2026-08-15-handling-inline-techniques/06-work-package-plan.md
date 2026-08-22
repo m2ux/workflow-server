@@ -1,6 +1,6 @@
 # Handling Inline Techniques - Implementation Plan
 
-> plan · HIGH · Ready · 10-15h agentic + 3-4h review · 2026-08-22
+> plan · HIGH · Ready · 11-16h agentic + 3-4h review · 2026-08-22
 
 ## Overview
 
@@ -33,48 +33,111 @@ across a depth-first walk, delivering each body once and continuing at a revisit
 reachability problem rather than an evaluation problem: no closure member computes a value another member
 consumes, which is why revisit-tolerance is correct independently of what the corpus happens to contain.
 
-**A folded closure carries operation bodies; how the callee's constraints reach the agent is open** (PL-1).
-A qualified call is two links naming one operation, and delivery follows the counting grammar in collapsing
-them, so a group container body is not a delivered closure member. What does not follow from that is how a
-callee's container rules are enforced. A step-bound technique arrives today with its group's rules
-attached, which is what makes those rules binding; a folded callee carrying no rules at all would execute
-its protocol with none of the constraints that govern it — including the three that are the reason a
-wrapper is prose rather than code, the human agreement before replying to review feedback, the instruction
-to read the target repository's own guidance, and the escape hatch for a graph with no edge. The three
-options and their measured costs are in the [log](02-assumptions-log.md#pl-1-what-a-folded-closure-contains).
+**A folded callee arrives governed as it would at step level** (PL-1, settled). The governing principle is
+that anything a callee would normally inherit is not lost because the callee was called: its rules and its
+inputs and outputs travel with it. A qualified call is two links naming one operation, so the closure
+carries the operation body and not the group container body — but the callee's inherited context rides
+beside that body, scoped to the call. The caller therefore joins no container tree and gains no permanent
+obligation, while the callee runs under the constraints that govern it. Parity is the test: what the callee
+would inherit as a step, it inherits when folded.
 
-**Folded bodies ride the channel their compensation already rides** (PL-2). The eleven core-operations
-entries attributed to non-delivery are served at the orchestrator door, which carries no budget parameter
-and cannot drop content, so charging folded bodies to that same operations-bundle channel makes the
-retirement like-for-like. The cost is stated rather than hidden: that channel's serialised size seeds the
-eager counter at the activity door, so the budget SC-7 speaks of is partly spent before any step technique
-is considered, and every task claiming to fit it names which channel it was measured against.
+The alternative readings are closed for stated reasons. Delivering the body with no inherited context at
+all is the loss the principle forbids, and it would silently drop the three rules the wrapper analysis
+identified as the reason a wrapper is prose rather than code — the human agreement before replying to
+review feedback, the instruction to read the target repository's own guidance, and the escape hatch that
+re-derives a caller set where the graph holds no edge. Delivering the container bodies does not lose the
+inheritance but discharges it by merging the callee's obligations permanently into the caller's set,
+changing the caller beyond the call.
+
+**What this costs, measured rather than estimated.** The heaviest caller's closure is 12 operation bodies
+at 40,671 bytes, and the inherited rules text adds 5,580, for 46,251 — against 46,865 for the discarded
+option that ships whole container bodies. The two are 614 bytes apart, 1.3%, because rules text is 90% of
+the container bodies it replaces, so **no delivery-cost argument separates them**; the decision is about
+obligation scope alone. All the readings sit between 6.35% and 7.32% of the 640,000-character budget, and
+the cost is accepted rather than minimised.
+
+**Half the mechanism exists, and the half that does not is the load-bearing half.** Delivering a
+technique's rules without its container body is already the normal case: the rule set is aggregated from a
+separately computed set of rule-source techniques rather than from the set of delivered bodies, and a
+qualified `group::op` reference already has the loader deliver the operation body while putting the group
+container in the rule-source set alone. The inherited inputs and outputs are likewise free — the
+own-versus-inherited partition is computed inside composition, so a callee composed by the same routine
+receives its `inherited_inputs` and `inherited_outputs` blocks whether it arrives as a step or as a
+reference. **Two things are genuinely owed.** Rules opt out of that partition, being written back as one
+merged map, and their in-flight attribution is discarded at formatting — so an attributed rules block is
+needed. And the per-call decoration pass that annotates inputs and outputs is keyed on a bound step id and
+a step binding, neither of which a call site has, so it needs a call-site identity before it can be
+extended to rules. **Without both, the design degrades to the option it rejected**: the rules arrive merged
+and unattributed, the caller carries them as its own, and the only thing gained is the absence of two
+container bodies. The attributed block is not a refinement on top of this decision — it is the mechanism
+that makes the decision real, which is why [SC-14](03-requirements-elicitation.md#success-criteria) asserts
+the property rather than trusting it.
+
+**Folded bodies ride the channel their compensation already rides** (PL-2, settled). The eleven
+core-operations entries attributed to non-delivery are served at the orchestrator door, which carries no
+budget parameter and cannot drop content, so charging folded bodies to that same operations-bundle channel
+makes the retirement like-for-like: compensation and replacement ride one channel, and SC-10 cannot outrun
+SC-7 for those eleven entries.
+
+The two alternatives lost for different reasons, and the difference matters. **Charging the budgeted eager
+channel is disqualified rather than rejected** — it would move eleven entries whose whole purpose is
+compensating for non-delivery onto a channel that drops content at first overflow, with no flag, turning a
+channel that cannot lose content into one that loses it silently. That is precisely the failure this
+package exists to remove, so taking it would have the package reintroduce its own subject. **Adding a
+budget parameter to the orchestrator door lost on measurement, not on principle**, and is recorded here as
+available and not taken: it is the option that makes the third door legible and answers
+[F-2](04-kb-research.md#findings) and [F-3](04-kb-research.md#findings) head-on, and it was declined only
+because the starvation it guards against is not live — the heaviest closure sits at roughly 7.2% of the
+640,000-character budget. Adding contract surface to a door that has never carried a budget, to pre-empt a
+problem the measurements say is absent, is the speculative abstraction the design principles rule out. A
+later package facing a larger corpus should revisit it on that measurement rather than rediscovering the
+argument.
+
+The cost is stated rather than hidden: this channel's serialised size seeds the eager counter at the
+activity door, so the budget SC-7 speaks of is partly spent before any step technique is considered, and
+**every task claiming to fit that budget names which channel it was measured against.** And this choice
+does not close F-2 or F-3. They remain open findings: the door inventory and the counter behaviour they
+describe are unchanged by deciding which counter a folded body draws on.
 
 ### Alternatives Considered
 
-Three of this approach's decisions are still open, and their alternatives and trade-offs home in the
-[log's Open Assumptions entries](02-assumptions-log.md#open-assumptions) — PL-1 on what a folded closure
-contains, PL-2 on which counter a folded body draws on, PL-3 on whether one classifier owns the link
-space. They are not restated here. The two decisions this plan settles on its own authority:
+The two decisions carrying the most weight — a folded callee arriving governed, and the counter a folded
+body draws on — are narrated in the Solution Design above, each with the readings it closes and why. The
+remaining decisions:
 
 | Option | Pros | Cons | Decision |
 |--------|------|------|----------|
+| One classifier owns the technique-versus-resource link partition | The blind spot is spelling-dependent: a bare one-slash technique path is claimed as a resource id while its dot-prefixed spelling is not, making it invisible to exactly the guard SC-3 exists to make total | Slightly wider than the minimum SC-2 demands | **Selected** |
+| Leave the link-space collision to follow-ups | A smaller first change | The second scan is built on the predicate carrying the defect, so it inherits it; the module is a deliverable either way, so the saving is only the partition's own tests | Rejected |
 | Acceptance pinned by a fixture per grammar term | Reproducible by construction; matches the repo's existing per-finding triage convention | New machinery — no guard in the registry asserts a total today | **Selected** |
 | Acceptance pinned by an asserted total plus a re-baseline | One line of verification | A regenerable baseline with the reason field removed, which is the mechanism this repo retired and recorded its reasons for retiring | Rejected |
 | Commit sequencing inside one pull request | Keeps the shared grammar module in one reviewable change with its three consumers | Requires the ordering below to be honoured | **Selected** |
 | Splitting the pull request per work item | Matches the epic's stated convention | Separates the grammar module from the guard, the traversal and the authorities that consume it | Rejected |
 
-### Evidence captured while planning
+### Evidence this run produced about itself
 
-Three declared inputs went unsatisfied while this activity executed its own steps, and they are recorded
-here so the [provenance log](08-provenance-log.md) carries them rather than losing them: the stakeholder
-overview's `source_material`, which the server marked UNRESOLVED with no variable, prior output or binding
-supplying it; and `default_branch` and `github_issue_number`, both declared by their steps and absent from
-the session bag, resolved from `origin/HEAD` and from the pull request's own issue link rather than
-guessed. These are live instances of the defect this package exists to fix, met in the ordinary course of
-running the workflow rather than found by scanning for them, which makes them first-hand evidence for the
-activity-layer contract gap measured at 82 of 748 bind sites. The provenance log is their home; this
-subsection is the pointer to it.
+Three records for the later activities, each with a home other than this plan; this subsection is the
+pointer so none is lost.
+
+**The binding-gap rate, for the [provenance log](08-provenance-log.md).** Four declared inputs went
+unsatisfied while this run executed its own steps — `source_material`, which the server marked UNRESOLVED;
+`default_branch` and `github_issue_number`, both declared and absent from the session bag, resolved from
+`origin/HEAD` and from the pull request's own issue link rather than guessed; and `assumption_categories`,
+whose description says it arrives by step binding where the binding activity supplies none. **The finding
+is the rate, not the list.** Every one was met while executing a step, and none was found by scanning for
+it — so this defect surfaces at a rate an execution path reveals and a corpus scan does not. That is
+first-hand evidence for the activity-layer contract gap measured at 82 of 748 bind sites, and it is
+stronger than the count of four, which is only as large as this run happened to be.
+
+**A commit message superseded by its artifact.** The message for `470eeea` records SC-10 as retiring 2 of
+11 baseline entries where the measurement is 0 of 11. The history stands as written under the no-amend
+rule; anything citing that commit cites the artifact figure and notes the message is superseded.
+
+**The batch block is intermittent, not absent.** Every activity of this run before assumptions-review
+reported no `batch:` block on its delivery, and each worker correctly defaulted to taking no further
+activity rather than assuming room. The block was present on the assumptions-review delivery. So the
+behaviour is intermittent rather than missing, which is a different and more useful finding than the
+suspected server defect the earlier notes recorded — for the close-out.
 
 ### Commit sequencing
 
@@ -91,20 +154,12 @@ legitimate re-baseline. The ordering that removes it:
 
 ### Assumptions
 
-Assumptions underlying the approach: [assumptions log](02-assumptions-log.md). Three of them are open
-design decisions — what a folded closure contains and how the callee's constraints are enforced (PL-1),
-which counter a folded body draws on (PL-2), and whether one classifier owns the link space (PL-3). They
-are settled at the assumptions-review activity, which this plan transitions to, and not at this activity's
-approach gate: that gate is non-blocking and auto-advances to `confirmed`, so a decision reached by its
-timer is not a decision anyone made.
-
-**PL-1 and PL-2 are settled together, not in isolation.** PL-1's third option carries the callee's
-container rules as material scoped to the call, and material has to travel on a channel — which is the
-counter PL-2 chooses. Settling PL-2 first while assuming PL-1's first option would pick a counter for a
-payload whose size is not yet fixed: the three options span 40,671, 46,251 and 46,865 bytes on the heaviest
-caller. PL-2 remains the path-committing one and still leads; PL-1 is no longer the low-stakes member of
-the three, because one of its options changes what delivery carries rather than only what the traversal
-walks.
+Assumptions underlying the approach: [assumptions log](02-assumptions-log.md). All are settled — none open,
+none deferred. The three design decisions this plan rests on are recorded above: a folded callee arrives
+governed (PL-1), folded bodies are charged to the operations bundle (PL-2), and the shared grammar module
+owns the technique-versus-resource link partition (PL-3). PL-1's resolution puts an attributed rules block
+of 5,580 bytes on the channel PL-2 selects, above the 40,671 of operation bodies on the heaviest caller, so
+the two are consistent by construction rather than by coincidence.
 
 ## Implementation Tasks
 
@@ -168,13 +223,20 @@ continuing at a revisit.
 - `src/loaders/reference-traversal.ts` - depth-first walk carrying a visited set, emitting a delivery event per body
 - `tests/reference-traversal.test.ts` - the three correctly-authored cycle members, and a synthetic deep chain
 
-### Task 9: Folded bodies are keyed as techniques (30-45 min)
-**Goal:** A delivered callee collapses against a step-bound delivery of the same operation, with call-site
-binding annotations carried as a separate block.
+### Task 9: Folded bodies are keyed as techniques and arrive governed (90-120 min)
+**Goal:** A delivered callee collapses against a step-bound delivery of the same operation, and carries the
+inherited context that governs it, scoped to the call.
 **Deliverables:**
 - `src/utils/delivery.ts` - folded callees keyed by technique identifier; annotation block keyed separately
+- `src/loaders/technique-loader.ts` - rules join the own-versus-inherited partition, emitted as an attributed block rather than one merged map
+- `src/utils/binding-provenance.ts` - the decoration pass takes a call-site identity where a bound step id does not exist, and covers rules alongside inputs and outputs
 - `tests/delivery.test.ts` - one body when the same operation arrives both ways in one agent context
-- an attributed rules block, and the per-call decoration pass extended to cover rules - only if PL-1 settles on carrying the callee's container rules scoped to the call; rules reach the response without their container body already, so this task's variable part is the attribution rather than the delivery
+- `tests/technique-loader.test.ts` - a folded callee's inherited rules and inherited I/O both present and attributed to the call
+
+Inherited inputs and outputs need no work here: the partition is computed inside composition, so a callee
+composed as a reference receives them exactly as one composed as a step. The task is the rules half plus
+the call-site key. This is the one re-estimate in the plan — 30-45 minutes to 90-120 — which moves the
+total from 10-15h to **11-16h agentic**, the header figure carrying the change.
 
 ### Task 10: Door coverage and the charging rule (60-90 min)
 **Goal:** Each door either delivers folded bodies or is documented as not delivering them, and the counter
@@ -237,14 +299,17 @@ it reports unmeasured rather than failing.
 | The sibling `refactor/lean-test-suite` branch rewrites the suite these tasks extend | MEDIUM | HIGH | State the test baseline commit; rebase before Tasks 1-2 land |
 | Folded bodies grow the operations bundle, shrinking eager step coverage | MEDIUM | MEDIUM | Each task states the channel its budget claim is measured against; the benchmark gate already fails a 1% delivery regression |
 | The eleven attributed entries retire ahead of the door serving them | HIGH | LOW | Task 11 retires per door, reporting residue rather than removing optimistically |
-| Task total exceeds the estimate the work package was scoped with | MEDIUM | HIGH | Stated plainly: thirteen tasks at 10-15h agentic against the 1-4h placeholder carried for implementation |
+| Task total exceeds the estimate the work package was scoped with | MEDIUM | HIGH | Stated plainly: thirteen tasks at 11-16h agentic against the 1-4h placeholder carried for implementation |
+| The attributed rules block is treated as optional, degrading the design to the option it rejected | HIGH | MEDIUM | SC-14 asserts the property per call site, so the degradation fails a check rather than passing unnoticed |
 | Tool surface grows from 18 registered tools to as many as 29 | LOW | HIGH | Bounded by measurement: eleven distinct operations, not forty-one call sites |
 
-**Note on length.** This runs to roughly 250 lines against the guide's 150-line budget, and the deviation is
-stated rather than absorbed by cutting. The task blocks account for roughly half the document: thirteen
-tasks, each carrying the goal and concrete deliverable paths the guide itself mandates. The compressible
-material has been compressed — the decision spaces of the three open assumptions now live only in the
-log, where an open assumption's alternatives belong, and every homed section is a link rather than a
-restatement. What remains over budget is one task block per unit of work across six deliverables.
+**Note on length.** This runs to roughly 315 lines against the guide's 150-line budget, and the deviation is
+stated rather than absorbed by cutting. Two things account for it. Thirteen task blocks carry roughly a
+third of the document, each with the goal and concrete deliverable paths the guide itself mandates. And the
+three design decisions this plan rests on are narrated with the readings they close and why — which is the
+plan's own canonical content, the guide naming Proposed Approach as where design decisions and their
+alternatives home. Every homed section elsewhere is a link rather than a restatement, and the compressible
+material has been compressed: while those decisions were open their decision spaces lived only in the
+assumptions log, and they moved here when they were settled rather than being duplicated in both.
 
 **Status:** Ready for implementation

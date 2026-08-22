@@ -221,6 +221,16 @@ One re-derivation reproduces comprehension exactly and is carried forward: the s
 | SC-12 | The corpus loads with unchanged meaning at the corpus commit this package delivers at | Zero regressions across the technique corpus, stated against the delivered submodule commit and its file count rather than against a historical count |
 | SC-13 | The 41 already tool-backed logical call sites reach their operation through a typed tool — GitNexus's 38 and Atlassian's 3 — with the 15 intra-group GitNexus calls becoming ordinary calls inside the implementation and the other 26 becoming tool calls. Operations carrying an interpretive tail deliver a tool plus a thin interpreting technique, and those halves enter the guard's worklist. The 49 shell-backed sites keep their prose form, and no `gh` or git write path runs in the server process | The guard's disposition worklist counts **94 logical call sites** at the delivered corpus commit, with the grammar's totals re-baselined against that commit rather than against `34cd5429`; a scan of the server process for a `gh` invocation or a git write returns nothing; each converted operation's tool declares the arguments its prose named |
 
+| SC-14 | A folded call site's delivered closure carries what its callee would inherit at step level — the callee's inherited rules and its inherited inputs and outputs — so a callee is governed when it is folded exactly as it is when it is bound as a step | Per call site, the guard asserts the delivered closure contains the callee's inherited rule set and its inherited I/O blocks. The assertion is the general property rather than a list of named rules, so a group gaining a rule needs no criterion edit. Runtime compliance is out of scope: whether an agent honours a delivered rule is no more statically knowable for a folded callee than for any other rule, and a criterion claiming otherwise would be untestable in the way the 118-edge criterion was |
+
+SC-14 exists because this package was opened over prose obligations that no mechanism checked, and the
+cost of that is already measured here: 56 call sites omitting a required input, unnoticed for months
+precisely because nothing looked, plus three declared inputs left unsatisfied while this run executed its
+own steps. Resting the design's central decision — that a folded callee arrives governed — on another
+unchecked prose obligation would reproduce the failure the package exists to remove. The marginal cost is
+small: the attributed rules block the decision requires is being built regardless, so the criterion checks
+a property of machinery already in scope rather than asking for new machinery.
+
 ## Assumptions
 
 Assumptions surfaced during elicitation: [assumptions log](02-assumptions-log.md) — record each there (categories: Requirement Interpretation, Scope Boundaries, Implicit Requirements, Success Criteria Interpretation), not here.

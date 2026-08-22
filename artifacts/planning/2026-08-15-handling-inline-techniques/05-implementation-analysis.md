@@ -256,6 +256,17 @@ them is named, one is superseded and three are corrected. One new free term surf
 The census is the first set of figures in this package to survive re-derivation unchanged, which is worth
 stating because it tells a later reader which numbers have earned trust and which carry a history.
 
+**As of the planning pass, eight figures have moved under a definition or unit change, and exactly two sets
+have survived re-derivation: this census, and the closure byte measurements.** The eighth is [F-7](04-kb-research.md#findings)'s
+obligation trade of 2 entries against 14, whose unit is unstated: counting rule sub-headings within a
+`## Rules` section at corpus `34cd5429` gives 13 entries across the two containers outside the caller's
+ancestry and 19 own-rule entries across the 12 closure members, reproducing neither of F-7's 3 and 9. The
+trade is kept as attributed and the non-reproduction is reported rather than reconciled, the direction it
+establishes — a large multiple — not being in question. The decisions that rested on it were settled on the
+byte figures instead, which are first-hand: 40,671 bytes of operation bodies, 5,580 of inherited rules text,
+46,865 for whole container bodies. A later reader should treat the census and the byte figures as load-bearing
+and every inherited entry count as owing a unit before anything is planned against it.
+
 ### The tenth term
 
 **Whether a call site whose target does not resolve counts as a call site, and which callee bin owns it.**

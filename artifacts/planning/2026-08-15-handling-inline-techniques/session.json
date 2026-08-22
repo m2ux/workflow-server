@@ -8,8 +8,8 @@
   "currentActivity": "dispatch-client-workflow",
   "currentTechnique": "workflow-engine::continue-batch",
   "condition": "isDefault: dispatch-client-workflow",
-  "seq": 50,
-  "ts": 1787404250,
+  "seq": 55,
+  "ts": 1787409399,
   "startedAt": "2026-08-15T09:54:31.892Z",
   "completedActivities": [
     "discover-session",
@@ -1272,6 +1272,81 @@
       },
       "timestamp": "2026-08-22T13:10:50.541Z",
       "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 670406,
+          "segment": "commit-plan-and-dispatch-assumptions-review",
+          "subagent_tokens": 191689,
+          "tool_uses": 14
+        }
+      },
+      "timestamp": "2026-08-22T13:20:52.437Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 740784,
+          "segment": "relay-pl1-resolution-to-assumptions-review",
+          "subagent_tokens": 207813,
+          "tool_uses": 17
+        }
+      },
+      "timestamp": "2026-08-22T13:21:45.053Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 808603,
+          "segment": "relay-criterion-decision",
+          "subagent_tokens": 211911,
+          "tool_uses": 19
+        }
+      },
+      "timestamp": "2026-08-22T13:22:48.768Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 113537,
+          "segment": "refuse-premature-advance-and-resume-worker",
+          "subagent_tokens": 226882,
+          "tool_uses": 8
+        }
+      },
+      "timestamp": "2026-08-22T14:34:09.095Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 258156,
+          "segment": "investigate-follow-ups-activity",
+          "subagent_tokens": 236171,
+          "tool_uses": 14
+        }
+      },
+      "timestamp": "2026-08-22T14:36:39.112Z",
+      "type": "activity_usage"
     }
   ],
   "triggeredWorkflows": [
@@ -1280,6 +1355,16 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "assumptions-review-residual-assumption-batch": {
+            "effects": {
+              "variablesSet": {
+                "assumption_batch_accepted": true,
+                "assumption_resolved_inline": true
+              }
+            },
+            "optionId": "accept-agent-positions",
+            "respondedAt": "2026-08-22T14:31:26.000Z"
+          },
           "codebase-comprehension-comprehension-sufficient": {
             "effects": {
               "variablesSet": {
@@ -1380,10 +1465,11 @@
           "codebase-comprehension",
           "requirements-elicitation",
           "research",
-          "implementation-analysis"
+          "implementation-analysis",
+          "plan-prepare"
         ],
-        "condition": "isDefault: plan-prepare",
-        "currentActivity": "plan-prepare",
+        "condition": "isDefault: assumptions-review",
+        "currentActivity": "assumptions-review",
         "currentTechnique": "analyse-challenge::run-loop",
         "declaredArtifacts": [
           {
@@ -1435,6 +1521,16 @@
             "id": "analysis_document",
             "name": "05-implementation-analysis.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-15-handling-inline-techniques/05-implementation-analysis.md"
+          },
+          {
+            "id": "plan_document",
+            "name": "06-work-package-plan.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-15-handling-inline-techniques/06-work-package-plan.md"
+          },
+          {
+            "id": "test_plan_document",
+            "name": "06-test-plan.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-15-handling-inline-techniques/06-test-plan.md"
           }
         ],
         "deliveredContent": {
@@ -1504,7 +1600,7 @@
             "resource:test-plan#templates": "d4151a43f79fd5da",
             "resource:test-plan#test-plan-structure": "b1d0573e94a8ed08",
             "resource:wp-plan": "49966ff8c9ec579b",
-            "technique:analyse-challenge::run-loop": "9606e54b1282d559",
+            "technique:analyse-challenge::run-loop": "920249ad1ee0d03a",
             "technique:create-test-plan": "894b75e3d8e70dc7",
             "technique:implementation-analysis::analyze": "f71f7c1ae790f8b1",
             "technique:implementation-analysis::document": "240f175868ad7bc5",
@@ -1517,7 +1613,9 @@
             "technique:inherited_inputs.items:cc99a6439f9423e1": "cc99a6439f9423e1",
             "technique:inherited_inputs.items:ccccc71edcfa853d": "ccccc71edcfa853d",
             "technique:inherited_inputs.items:d14a2bc0f74accd4": "d14a2bc0f74accd4",
+            "technique:inherited_inputs.items:e434ee2a018e66a0": "e434ee2a018e66a0",
             "technique:inherited_inputs.items:e8603578d7268e71": "e8603578d7268e71",
+            "technique:inherited_inputs.items:ed4eef8536f9ef6e": "ed4eef8536f9ef6e",
             "technique:inherited_inputs.items:f7b30eb7fe902403": "f7b30eb7fe902403",
             "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
             "technique:inherited_inputs:1c0522e608b5d102": "1c0522e608b5d102",
@@ -1525,11 +1623,13 @@
             "technique:inherited_inputs:34445a1355ddf32f": "34445a1355ddf32f",
             "technique:inherited_inputs:36686facf3dee7ad": "36686facf3dee7ad",
             "technique:inherited_inputs:4b012002ff637a3e": "4b012002ff637a3e",
+            "technique:inherited_inputs:518c354c00993876": "518c354c00993876",
             "technique:inherited_inputs:547f67717aa8f5cc": "547f67717aa8f5cc",
             "technique:inherited_inputs:8840479d1b9da642": "8840479d1b9da642",
             "technique:inherited_inputs:8dfaf465aa1f54d3": "8dfaf465aa1f54d3",
             "technique:inherited_inputs:947aeaa21d8c5657": "947aeaa21d8c5657",
             "technique:inherited_inputs:ce32ee1b0407f697": "ce32ee1b0407f697",
+            "technique:inherited_inputs:e2ed5503394b8275": "e2ed5503394b8275",
             "technique:inherited_inputs:ea8668cfd6ed05da": "ea8668cfd6ed05da",
             "technique:inherited_outputs.items:21315b9922c3d036": "21315b9922c3d036",
             "technique:inherited_outputs.items:26b1aa1d676e3f42": "26b1aa1d676e3f42",
@@ -1544,7 +1644,7 @@
             "technique:plan-prepare::create-todos": "2718b2c523678177",
             "technique:plan-prepare::plan": "7af114445144083a",
             "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
-            "technique:review-assumptions::collect": "adedffe3c828a62a",
+            "technique:review-assumptions::collect": "c79da31ca13a8496",
             "technique:review-assumptions::interview": "cfa1850adcdeee98",
             "technique:review-assumptions::record": "ecfe2105989ab831",
             "technique:rules:1312287948d72037": "1312287948d72037",
@@ -6749,17 +6849,458 @@
             },
             "timestamp": "2026-08-22T13:17:53.479Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "plan-prepare",
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "outcome": "complete",
+              "transitionCondition": "isDefault: assumptions-review"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "activity_outcome"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "plan_document",
+              "source": "variables_changed",
+              "value": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/06-work-package-plan.md"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "test_plan_document",
+              "source": "variables_changed",
+              "value": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/06-test-plan.md"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "assumptions_log",
+              "source": "variables_changed",
+              "value": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/02-assumptions-log.md"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "stakeholder_overview",
+              "source": "variables_changed",
+              "value": "Two paragraphs under README '## Solution Overview'"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "todo_tasks",
+              "source": "variables_changed",
+              "value": "13 atomic tasks; task 9 reads 'folded bodies keyed as techniques, with an attributed rules block only under PL-1(c)'"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "rendered_pr_body",
+              "source": "variables_changed",
+              "value": "Live on PR 466, draft, 5,648 characters"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "open_assumptions",
+              "source": "variables_changed",
+              "value": [
+                "PL-1",
+                "PL-2",
+                "PL-3"
+              ]
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "has_open_assumptions",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "has_resolvable_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "has_deferred_assumptions",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "name": "default_branch",
+              "source": "variables_changed",
+              "value": "main"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "declaredType": "string",
+              "name": "github_issue_number",
+              "source": "variables_changed",
+              "typeMismatch": true,
+              "value": 397,
+              "valueType": "number"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "env-prerequisites"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "create-plan"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "create-test-plan"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "present-solution-overview"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "create-todos"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "sync-branch"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "update-pr"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "plan-prepare",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "approach-confirmed"
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "assumptions-review",
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "published": true
+            },
+            "timestamp": "2026-08-22T13:19:28.591Z",
+            "type": "progress_published"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "chars": 22496,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-22T13:20:09.800Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "chars": 5253,
+              "delivery": "full",
+              "stepId": "evaluate-open-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-22T13:20:09.800Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "evaluate-open-assumptions"
+            },
+            "timestamp": "2026-08-22T13:20:09.800Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "chars": 7961,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-22T13:20:09.800Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-22T13:20:09.800Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "chars": 4413,
+              "delivery": "unchanged",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-22T13:20:09.800Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-22T13:20:09.800Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "bundled": true,
+              "chars": 2654,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#assumptions-log-template"
+            },
+            "timestamp": "2026-08-22T13:20:09.800Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "bundled": true,
+              "chars": 1038,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#probe-vocabulary"
+            },
+            "timestamp": "2026-08-22T13:20:09.800Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "bundled": true,
+              "chars": 1159,
+              "delivery": "unchanged",
+              "resourceId": "assumptions-review#classification-vocabulary"
+            },
+            "timestamp": "2026-08-22T13:20:09.800Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "bundled": true,
+              "chars": 316,
+              "delivery": "unchanged",
+              "resourceId": "deferred-items#template"
+            },
+            "timestamp": "2026-08-22T13:20:09.800Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "assumptions-review",
+            "checkpoint": "residual-assumption-batch",
+            "timestamp": "2026-08-22T13:27:18.084Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "basis": "delta",
+              "usage": {
+                "duration_ms": 476512,
+                "segment": "assumptions-review-to-gate",
+                "source": "parent-harness-reading; the worker's own harness surfaced no figure to it",
+                "subagent_tokens": 417276,
+                "tool_uses": 35
+              }
+            },
+            "timestamp": "2026-08-22T13:28:23.883Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "assumptions-review",
+            "checkpoint": "residual-assumption-batch",
+            "data": {
+              "optionId": "accept-agent-positions"
+            },
+            "timestamp": "2026-08-22T14:31:26.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "name": "assumption_resolved_inline",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-22T14:31:26.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "name": "assumption_batch_accepted",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-22T14:31:26.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "assumptions-review",
+            "data": {
+              "agentId": "worker-implementation-analysis-1",
+              "basis": "delta",
+              "usage": {
+                "duration_ms": 247709,
+                "segment": "resume-past-gate-to-completion",
+                "source": "parent-harness-reading; the worker's own harness surfaced no figure to it",
+                "subagent_tokens": 438048,
+                "tool_uses": 17
+              }
+            },
+            "timestamp": "2026-08-22T14:39:20.684Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 86,
+        "seq": 93,
         "sessionIndex": "KLN3OI",
         "skippedActivities": [],
         "startedAt": "2026-08-15T10:00:34.754Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1787404673,
+        "ts": 1787409560,
         "variables": {
           "analysis_document": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/05-implementation-analysis.md",
           "applicable_patterns": "Lexical over dynamic scope; cycle-tolerant linking via a visited set; one narrow grammar module shared by checker and runtime; normative grammar published with conformance fixtures",
@@ -6801,6 +7342,7 @@
           "created_readme": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-15-handling-inline-techniques/README.md",
           "current_block_index": 0,
           "current_branch": "",
+          "default_branch": "main",
           "design_philosophy_doc": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/02-design-philosophy.md",
           "effectiveness_assessment": "Five HIGH-confidence working capabilities; seven evidenced defects, the load-bearing ones being ancestry resolved from the caller's tree at 2 of 3 sites, the unbudgeted operations bundle seeding the budgeted eager counter, and anchorless dangling links checked by no guard",
           "elicitation_complete": true,
@@ -6810,12 +7352,13 @@
           "findings_synthesis": "4 design choices corroborated (W0 lexical ancestry, cycle tolerance, shared grammar module, asserted-total guard — the last qualified); 8 probe findings",
           "gaps_identified": "G1..G13 mapped to SC-1, SC-3, SC-5, SC-7, SC-7a, SC-9, SC-10, SC-12 and SC-13; six HIGH priority; plus two constraints framed for plan-prepare (the budget coupling, and commit sequencing over PR splitting)",
           "github_issue_found": false,
+          "github_issue_number": 397,
           "gitnexus_indexed": true,
           "has_critical_blocker": false,
           "has_debt_markers": false,
           "has_deferred_assumptions": false,
           "has_flagged_blocks": false,
-          "has_open_assumptions": false,
+          "has_open_assumptions": true,
           "has_open_questions": false,
           "has_reconcilable_research": false,
           "has_resolvable_assumptions": false,
@@ -6851,9 +7394,14 @@
           "needs_research": true,
           "needs_simplification": false,
           "on_feature_branch": true,
-          "open_assumptions": [],
+          "open_assumptions": [
+            "PL-1",
+            "PL-2",
+            "PL-3"
+          ],
           "open_questions": "None open. All 23 worked questions are closed; the ledger-keying choice is recorded as a costed decision for requirements elicitation.",
           "path_rationale": "Recorded in 02-design-philosophy.md under Workflow Path Decision.",
+          "plan_document": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/06-work-package-plan.md",
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-15-handling-inline-techniques",
           "post_jira_comment": false,
           "pr_exists": true,
@@ -6867,6 +7415,7 @@
           "provenance_log_path": "",
           "push_remote": "origin",
           "push_remote_url": "",
+          "rendered_pr_body": "Live on PR 466, draft, 5,648 characters",
           "requirements": "Six in-scope deliverables — W0, W2, W3a, the canon/specification amendment, the cycle-rule correction, and conversion of the 41 already tool-backed logical call sites; recorded in 03-requirements-elicitation.md",
           "requirements_document": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/03-requirements-elicitation.md",
           "research_candidates": "7 candidates: RC-1 Resolved (SC-3 strengthened at the gate); RC-2..RC-6 Irreconcilable (stakeholder); RC-7 Irreconcilable (code-analysis)",
@@ -6888,6 +7437,7 @@
           "skip_assumption_review": false,
           "skip_optional_activities": false,
           "squash_merge_supported": true,
+          "stakeholder_overview": "Two paragraphs under README '## Solution Overview'",
           "stakeholder_review_complete": false,
           "stakeholder_transcript": "Stakeholder record captured at the gate — the user acting as product owner and domain expert; seven decisions settled",
           "stealth_mode": false,
@@ -6902,8 +7452,10 @@
           "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-15-handling-inline-techniques/",
           "target_repo": "m2ux/workflow-server",
           "test_findings_actionable": false,
+          "test_plan_document": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/06-test-plan.md",
           "ticket_gaps_documented": false,
           "ticket_refactor_needed": false,
+          "todo_tasks": "13 atomic tasks; task 9 reads 'folded bodies keyed as techniques, with an attributed rules block only under PL-1(c)'",
           "uncertain_symbols": "",
           "unsigned_commit_list_summary": "",
           "unsigned_commits_in_pr": false,
