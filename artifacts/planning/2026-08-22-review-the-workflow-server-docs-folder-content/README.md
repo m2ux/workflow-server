@@ -1,6 +1,6 @@
 # Workflow Server docs/ documentation set — August 2026
 
-> Rewrite · Created 2026-08-22 · **Status:** Delivering
+> Rewrite · Created 2026-08-22 · **Status:** Delivered
 
 > **Note:** effort estimates are agentic (AI-assisted) development time plus separate human review time.
 
@@ -26,7 +26,7 @@ This run rewrites the fifteen markdown documents under `docs/` — about 29,400 
 | 4 | [Draft](03-plain-document.md) | The plain-language document | 20-60m | ✅ |
 | 5 | [Evaluation report](04-evaluation-report.md) | Verdict by principle, open issues | 15-30m | ✅ |
 | 6 | [ISO checklist](04-iso-checklist.md) | Completed Annex B checklist | 10-15m | ✅ |
-| 7 | Delivery | The document written to its output path | 5-10m | 🟡 |
+| 7 | Delivery | The document written to its output path | 5-10m | ✅ |
 
 **Status:** ⬚ pending · 🟡 in progress · ✅ complete · ❌ blocked · ⊘ cancelled / N/A
 
@@ -35,4 +35,4 @@ This run rewrites the fifteen markdown documents under `docs/` — about 29,400 
 | Resource | Link |
 |----------|------|
 | Source document | `docs/` in worktree `.worktrees/plain-language-docs-audit` |
-| Delivered document | *Set at delivery* |
+| Delivered document | `docs/` on branch `workflow/plain-language-docs-audit` at `7c464fed` |

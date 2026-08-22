@@ -2,16 +2,18 @@
 
 **Round:** 1 · **Open issues:** 0
 
-All sixteen issues from round 0 are closed. The set now reaches every one of the fifteen documents the profile places in scope, runs one heading convention, one title convention and one set of agent-role names, and documents session persistence in a single place. The command that failed for a new contributor works. Three items stay recorded rather than fixed, each for a reason that holds independently of this round; they are listed at the end with their owners.
+All sixteen issues from round 0 are closed, and the set now reaches every one of the fifteen documents the profile places in scope. Three items stay recorded rather than fixed, each for a reason that holds independently of this round.
 
 ## Verdict by principle
 
 | Principle | Verdict | Basis |
 |-----------|---------|-------|
-| Relevant | met | Every document in scope carries substantive change — 645 insertions and 934 deletions against `origin/main`, with no document left at a bare link repoint. The source map has a row for all fifteen. The conventions state the filename, heading and title rules as they now hold, and the tree satisfies each. ([Relevance](plain-language-standard#relevance) — select the content readers need; content matches the readers' needs, purpose and context) |
-| Findable | met | One heading convention across the set: sentence case and no numbers, with the two normative specifications keeping numbered clauses because a clause number is how a contract term is cited — an exception the conventions state rather than leave implicit. Every markdown anchor in the set resolves, including the ones the renumbering moved. No document closes on a bare link list. ([Findability](plain-language-standard#findability) — structure for readers; use headings consistently) |
-| Understandable | met | The three agent roles carry one set of names throughout the prose. Each behavioural model opens on the situation before naming the design. Abbreviations are expanded where they first appear, including the fidelity layer labels the diagram uses ahead of the sections that define them. Note-form fragments, bold-shouted labels and arrow glyphs standing in for verbs are gone from the two integrator documents and from the specification's explanatory opening. ([Understandability](plain-language-standard#understandability) — familiar words, one idea per sentence, same word for the same meaning, coherence) |
-| Usable | met | A contributor following the setup section now runs a command that works against the current repository. An integrator reading either of the two documents assigned to that group gets complete sentences and the path formula before the variables that fill it. Both reader groups can finish the task the document exists for. ([Usability](plain-language-standard#usability) — reread with the readers' purpose and context in mind and revise on the result) |
+| Relevant | met | Every document in scope carries substantive change, and the source map has a row for all fifteen ([Relevance](plain-language-standard#relevance) — select the content readers need) |
+| Findable | met | One heading convention across the set, and every anchor resolves ([Findability](plain-language-standard#findability) — structure for readers; use headings consistently) |
+| Understandable | met | One set of names for the three roles, each model opening on the situation, and abbreviations expanded at first use ([Understandability](plain-language-standard#understandability) — familiar words, same word for the same meaning, coherence) |
+| Usable | met | Both reader groups can finish the task their document exists for ([Usability](plain-language-standard#usability) — revise on the result of rereading as the reader) |
+
+Against `origin/main` the set is 645 insertions and 934 deletions, with no document left at a bare link repoint. The two normative specifications keep numbered clauses, because a clause number is how a contract term is cited, and the conventions state that exception rather than leaving it to inference. The command that failed for a new contributor works.
 
 ## Open issues
 
@@ -19,24 +21,22 @@ None.
 
 ## How each round-0 issue was closed
 
-| # | Issue | Disposition |
-|---|-------|-------------|
-| 1 | Eight documents effectively skipped | All fifteen hold to the profile's five tests. The three with no prior change — the IDE-setup, install-layout and technique-protocol pages — carry a full pass. |
-| 2 | `resource-resolution-model.md` | Opens on the problem before naming the design. Twelve numbered headings are sentence-case and unnumbered; the `### Benefits` list is prose. |
-| 3 | `state-management-model.md` register | The opening register carries through the body. The bold-shouted determinism rule is a sentence, and the raw function and schema-file symbols are named as concepts. |
-| 4 | `artifact-management-model.md` opening | Opens on the situation — two kinds of output that bury each other when committed together — before naming the boundary. |
-| 5 | Two vocabularies for three roles | One set of names across the prose. The capitalised forms survive only inside a code block quoting a literal prompt string, where they are the string's content. The plain-document record is corrected. |
-| 6 | Persistence documented twice | The state model keeps it. The fidelity document keeps the seal, which is its own Layer 1 subject, and points at the state model for the file layout. |
-| 7 | Two heading conventions | One convention, stated in the documentation-system conventions with its exception. Heading slugs lowercase, so sentence-casing moved no anchor; the anchors that carried section numbers are repointed. |
-| 8 | Two title conventions | Titles spell out "and". The link text naming the old ampersand form is updated. |
-| 9 | Two documents missing from the source map | Both rows added. Every document in `docs/` now appears. |
-| 10 | Filename convention contradicted by the tree | The convention states when a rename is warranted and what it must do — `git mv`, every reference in the repository repointed in the same change, the site and anchor guards passing, and external link rot accepted rather than softened. The rename itself is settled and is not reopened. |
-| 11 | Setup command fails | Both sections give `git submodule update --init --recursive`, and the setup section points at `worktree:provision` for the linked-worktree case. |
-| 12 | `development.md` register | The head and tail match the middle. The numbered "Access via:" recipes are prose, the hyphen standing in for a dash is gone, and the trailing see-also is a sentence. |
-| 13 | `ide-setup.md` | Full pass. Complete sentences, a nine-item link list folded into prose that says what each target is for. |
-| 14 | `install-projects-worktrees.md` | Full pass. Headings name what the reader is doing, the path formula comes before the variables, and the claims are re-verified against `install.sh` and `start.sh`. |
-| 15 | `workflow-fidelity.md` bare link list | Folded into a sentence under the same "Where else to look" heading the architecture hub uses. |
-| 16 | `orchestra-specification.md` copy | Article corrected; both bare pointers are sentences naming what each file holds, and both are links. |
+1. **Eight documents effectively skipped.** All fifteen hold to the profile's five tests, and the three with no prior change carry a full pass.
+2. **`resource-resolution-model.md`.** Opens on the problem before naming the design, its headings are sentence case and unnumbered, and the benefits list is prose.
+3. **`state-management-model.md` register.** The opening register carries through the body. The bold-shouted determinism rule is a sentence, and the raw function and schema-file symbols are named as concepts.
+4. **`artifact-management-model.md` opening.** Opens on two kinds of output that bury each other when committed together, before naming the boundary.
+5. **Two vocabularies for three roles.** One set of names across the prose. The capitalised forms survive only inside a code block quoting a literal prompt string, where they are the string's content. The plain-document record is corrected.
+6. **Persistence documented twice.** The state model keeps it. The fidelity document keeps the seal, its own Layer 1 subject, and points at the state model for the file layout.
+7. **Two heading conventions.** One convention, stated with its exception. Heading slugs lowercase, so sentence-casing moved no anchor; the anchors carrying section numbers are repointed.
+8. **Two title conventions.** Titles spell out "and", and the link text naming the old ampersand form is updated.
+9. **Two documents missing from the source map.** Both rows added.
+10. **Filename convention contradicted by the tree.** The convention states when a rename is warranted and what it must do. The rename itself is settled and is not reopened.
+11. **Setup command fails.** Both sections give the submodule sequence, and setup points at `worktree:provision` for the linked-worktree case.
+12. **`development.md` register.** The head and tail match the middle. The numbered "Access via:" recipes are prose, and the trailing see-also is a sentence.
+13. **`ide-setup.md`.** Full pass, with a nine-item link list folded into prose saying what each target is for.
+14. **`install-projects-worktrees.md`.** Full pass. Headings name what the reader is doing, and the claims are re-verified against `install.sh` and `start.sh`.
+15. **`workflow-fidelity.md` bare link list.** Folded into a sentence under the heading the architecture hub uses.
+16. **`orchestra-specification.md` copy.** Article corrected, and both bare pointers are sentences naming what each file holds.
 
 ## What was verified
 

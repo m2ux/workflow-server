@@ -4,7 +4,7 @@ The deliverable of this rewrite is the `docs/` tree itself, not a single file. I
 
 ## What landed
 
-Four commits, in this order.
+Five commits, in this order.
 
 | Commit | Subject | Shape |
 |--------|---------|-------|
@@ -12,8 +12,9 @@ Four commits, in this order.
 | `06e2d1ba` | Rewrite the docs set in plain language and correct it against the code | 25 files |
 | `e0cf4320` | Correct the fidelity and development guides against the code | 5 files |
 | `b89c7498` | Hold every document in the set to the plain-language profile | 14 files |
+| `7c464fed` | Carry one heading convention across the whole set | 4 files |
 
-All fifteen documents carry substantive change. Against `origin/main` the set is 645 insertions and 934 deletions.
+All fifteen documents carry substantive change. Against `origin/main` the set is 669 insertions and 958 deletions.
 
 The rename is a commit of its own so that git records all five moves at full similarity and history follows each file. A rewrite folded into the same commit would have dropped the checkpoint model below the rename-detection threshold, and its history would have ended at the new name.
 

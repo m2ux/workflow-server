@@ -736,8 +736,8 @@
           "draft",
           "evaluate"
         ],
-        "condition": "isDefault: evaluate",
-        "currentActivity": "evaluate",
+        "condition": "isDefault: deliver",
+        "currentActivity": "deliver",
         "currentTechnique": "draft-document",
         "declaredArtifacts": [
           {
@@ -759,6 +759,16 @@
             "id": "document_draft",
             "name": "plain-document.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-22-review-the-workflow-server-docs-folder-content/03-plain-document.md"
+          },
+          {
+            "id": "evaluation_report",
+            "name": "04-evaluation-report.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-22-review-the-workflow-server-docs-folder-content/04-evaluation-report.md"
+          },
+          {
+            "id": "iso_checklist",
+            "name": "04-iso-checklist.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-22-review-the-workflow-server-docs-folder-content/04-iso-checklist.md"
           }
         ],
         "deliveredContent": {
@@ -820,9 +830,15 @@
             "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
             "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
             "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:document-profile": "41a80e71efe991ad",
             "resource:evaluation-report": "69b221868de5d938",
             "resource:iso-checklist": "61e51e3d1c73d0ea",
+            "resource:meta/planning-readme": "ab93ae92acf93445",
+            "resource:meta/writing-register": "e5ad3659529f4068",
             "resource:plain-language-standard": "8eb988eac008c6f5",
+            "resource:plain-language/README#planning-artifact-to-guide-map": "859e71fff8c1fced",
+            "resource:readme-seed": "e032dc201712c864",
+            "resource:source-analysis": "b50b528b8b1462e2",
             "technique:complete-checklist": "66338a0fba2342b6",
             "technique:draft-document": "6ebeca92de6f07d2",
             "technique:evaluate-document": "dab8dadf8ecf197b",
@@ -831,7 +847,9 @@
             "technique:inherited_inputs:e3d70839aba721a4": "e3d70839aba721a4",
             "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
             "technique:rules:3d78c300937d89ff": "3d78c300937d89ff",
-            "technique:work-package::manage-artifacts::write-artifact": "7d98d9b8a3b3ca70"
+            "technique:rules:9baa8b0d8f8073ac": "9baa8b0d8f8073ac",
+            "technique:verify-artifact-conforms": "7de0eb23f9665649",
+            "technique:work-package::manage-artifacts::write-artifact": "c57983943c0aaef4"
           }
         },
         "history": [
@@ -1911,19 +1929,283 @@
             },
             "timestamp": "2026-08-22T05:33:26.495Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "evaluate",
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "name": "revision_round",
+              "source": "variables_changed",
+              "value": 1
+            },
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "name": "open_issue_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "name": "needs_revision",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "name": "evaluation_report_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-22-review-the-workflow-server-docs-folder-content/04-evaluation-report.md"
+            },
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "name": "checklist_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-22-review-the-workflow-server-docs-folder-content/04-iso-checklist.md"
+            },
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "stepId": "evaluate-document"
+            },
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "stepId": "persist-evaluation-report"
+            },
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "stepId": "evaluation-reviewed"
+            },
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "stepId": "revise-document"
+            },
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "stepId": "count-revision-round"
+            },
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "stepId": "complete-checklist"
+            },
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "evaluate",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "stepId": "persist-iso-checklist"
+            },
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "deliver",
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "deliver",
+            "data": {
+              "published": true
+            },
+            "timestamp": "2026-08-22T05:35:23.283Z",
+            "type": "progress_published"
+          },
+          {
+            "activity": "deliver",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "chars": 18274,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-22T05:35:36.842Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "deliver",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "chars": 9357,
+              "delivery": "full",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "verify-artifact-conforms"
+            },
+            "timestamp": "2026-08-22T05:35:36.842Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "deliver",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "stepId": "verify-artifact-conformance"
+            },
+            "timestamp": "2026-08-22T05:35:36.842Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "deliver",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "chars": 4947,
+              "delivery": "full",
+              "stepId": "deliver-document",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-22T05:35:36.842Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "deliver",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "stepId": "deliver-document"
+            },
+            "timestamp": "2026-08-22T05:35:36.842Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "deliver",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "bundled": true,
+              "chars": 1907,
+              "delivery": "full",
+              "resourceId": "meta/writing-register"
+            },
+            "timestamp": "2026-08-22T05:35:36.842Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "deliver",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "chars": 884,
+              "delivery": "full",
+              "resourceId": "plain-language/README#planning-artifact-to-guide-map"
+            },
+            "timestamp": "2026-08-22T05:35:55.194Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "deliver",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "chars": 1669,
+              "delivery": "full",
+              "resourceId": "document-profile"
+            },
+            "timestamp": "2026-08-22T05:36:18.017Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "deliver",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "chars": 1671,
+              "delivery": "full",
+              "resourceId": "source-analysis"
+            },
+            "timestamp": "2026-08-22T05:36:25.232Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "deliver",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "chars": 15826,
+              "delivery": "full",
+              "resourceId": "meta/planning-readme"
+            },
+            "timestamp": "2026-08-22T05:36:25.467Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "deliver",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "chars": 2447,
+              "delivery": "full",
+              "resourceId": "readme-seed"
+            },
+            "timestamp": "2026-08-22T05:36:52.194Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "deliver",
+            "data": {
+              "agentId": "worker-evaluate-01",
+              "basis": "delta",
+              "usage": {
+                "duration_ms": 278465,
+                "subagent_tokens": 332366,
+                "tool_uses": 18
+              }
+            },
+            "timestamp": "2026-08-22T05:40:16.329Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 36,
+        "seq": 44,
         "sessionIndex": "OC4BF5",
         "skippedActivities": [],
         "startedAt": "2026-08-22T03:18:44.031Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1787376806,
+        "ts": 1787377216,
         "variables": {
-          "checklist_path": "",
+          "checklist_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-22-review-the-workflow-server-docs-folder-content/04-iso-checklist.md",
           "controlled_language": false,
           "document_draft": "The rewritten docs/ tree on branch workflow/plain-language-docs-audit, recorded in 03-plain-document.md",
           "document_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-22-review-the-workflow-server-docs-folder-content/03-plain-document.md",
@@ -1931,7 +2213,7 @@
           "document_profile_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-22-review-the-workflow-server-docs-folder-content/01-document-profile.md",
           "document_title": "Workflow Server docs/ documentation set",
           "draft_confirmed": true,
-          "evaluation_report_path": "",
+          "evaluation_report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-22-review-the-workflow-server-docs-folder-content/04-evaluation-report.md",
           "finding_count": 46,
           "headless_mode": true,
           "intent_needs_confirmation": false,
@@ -1940,7 +2222,7 @@
           "operation_type": "rewrite",
           "output_path": "",
           "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-22-review-the-workflow-server-docs-folder-content",
-          "revision_round": 0,
+          "revision_round": 1,
           "source_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-22-review-the-workflow-server-docs-folder-content/02-source-analysis.md",
           "source_document_path": "/home/mike1/projects/dev/workflow-server/.worktrees/plain-language-docs-audit/docs",
           "user_request": "Review the workflow-server docs/ folder content. Ensure all material is accurate, up-to-date, concise, uses plain language and the house style of hyperlinks that flow with paragraph text, and does not reference raw symbols unless absolutely necessary. Apply the plain-language workflow."
