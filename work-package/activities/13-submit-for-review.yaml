@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.18.0
+version: 1.19.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 variables:
@@ -41,14 +41,6 @@ variables:
       type: array
       description: List of PR-body conformance violations.
       defaultValue: []
-    - name: body_override_recorded
-      type: boolean
-      description: True when proceed-with-override was selected on body-non-conformant.
-      defaultValue: false
-    - name: build_artifact_user_owned
-      type: boolean
-      description: True when the user accepted ownership of build-dependent artifact regeneration at the submit-for-review hand-off gate.
-      defaultValue: false
     - name: build_dependent_artifact_commands
       type: string
       description: Human-readable command list / ownership notes for regenerating build-dependent artifacts; shown at the submit-for-review build-artifact.
@@ -84,10 +76,6 @@ variables:
       type: string
       description: PR review event (approve | request-changes | comment) chosen at review-summary-approval; bound to update-pr::post-review-comment
       defaultValue: ""
-    - name: submission_aborted
-      type: boolean
-      description: True when abort was selected on body-non-conformant.
-      defaultValue: false
     - name: summary_budget_overruns
       type: array
       description: Consolidated-review slots over their format budget, each { slot, measured, budget }.
@@ -328,7 +316,6 @@ steps:
         effect:
           setVariable:
             body_conforms: true
-            body_override_recorded: true
       - id: provide-input
         label: Provide missing input
         description: Supply the missing input (e.g., push the engineering branch, add an issue rationale), then re-enter submit-for-review.
@@ -340,8 +327,6 @@ steps:
         label: Abort submission
         description: Terminate the activity with a failure status.
         effect:
-          setVariable:
-            submission_aborted: true
           transitionTo: complete
   - kind: technique
     id: instruct-merge-strategy
@@ -433,7 +418,6 @@ steps:
         effect:
           setVariable:
             build_dependent_artifacts_pending: false
-            build_artifact_user_owned: true
   - kind: technique
     id: mark-ready
     technique: update-pr::mark-ready

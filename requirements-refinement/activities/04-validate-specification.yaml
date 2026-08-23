@@ -1,5 +1,5 @@
 id: validate-specification
-version: 1.5.0
+version: 1.6.0
 name: Validate Specification
 description: Validate the updated specification against structural, identifier-uniqueness, consistency, and protocol-conformance checks, categorize each issue as critical or correctable, and route to finalization, another correction pass, or failure reporting.
 variables:
@@ -15,10 +15,6 @@ variables:
     - name: has_critical_issues
       type: boolean
       description: True when validation found critical or irreconcilable issues that require manual intervention
-      defaultValue: false
-    - name: source_coverage_complete
-      type: boolean
-      description: True once every normative statement in the source document maps to at least one requirement
       defaultValue: false
     - name: validation_passed
       type: boolean

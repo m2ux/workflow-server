@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 2.12.0
+version: 2.13.0
 name: Implementation Analysis
 description: Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement.
 variables:
@@ -17,18 +17,6 @@ variables:
     - target_path
     - target_repo
   writes:
-    - name: assumption_batch_accepted
-      type: boolean
-      description: Whether the user accepted the agent's positions for the residual open-assumption batch.
-      defaultValue: false
-    - name: assumption_deferred
-      type: boolean
-      description: Whether the current assumption was deferred during the assumption interview checkpoint.
-      defaultValue: false
-    - name: assumption_resolved_inline
-      type: boolean
-      description: Whether the current assumption was resolved inline during the assumption interview checkpoint.
-      defaultValue: false
     - name: current_assumption
       type: object
       description: Current assumption during assumption review loop (from task_assumptions).

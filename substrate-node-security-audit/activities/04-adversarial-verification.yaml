@@ -1,16 +1,11 @@
 id: adversarial-verification
-version: 2.6.0
+version: 2.7.0
 name: Adversarial Verification
 description: Adversarially verify PASS items from the primary audit.
 variables:
   reads:
     - file_inventory
     - planning_folder_path
-  writes:
-    - name: adversarial_complete
-      type: boolean
-      description: Phase 2 gate — adversarial verification finished
-      defaultValue: false
 required: true
 steps:
   - kind: action
@@ -30,9 +25,6 @@ steps:
     actions:
       - action: log
         message: Adversarial verification complete — false PASSes identified
-      - action: set
-        target: adversarial_complete
-        value: true
 transitions:
   - to: report-generation
     isDefault: true

@@ -1,5 +1,5 @@
 id: analysis
-version: 1.4.0
+version: 1.5.0
 name: Analysis
 description: Perform completion or context analysis depending on whether continuing previous work or starting new initiative
 variables:
@@ -10,9 +10,6 @@ variables:
     - name: analysis_document
       type: string
       description: Path to the analysis document produced during the analysis activity
-    - name: key_findings
-      type: string
-      description: Summary of analysis findings from completion or context analysis
 steps:
   - kind: technique
     id: analyze-completion

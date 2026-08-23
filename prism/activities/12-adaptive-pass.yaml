@@ -1,5 +1,5 @@
 id: adaptive-pass
-version: 1.3.0
+version: 1.4.0
 name: Adaptive Depth Pass
 description: Cost-minimizing depth escalation.
 variables:
@@ -9,9 +9,6 @@ variables:
     - name: adaptive_signal_quality
       type: string
       description: "For adaptive mode: signal quality assessment at current stage (adequate or insufficient)"
-    - name: adaptive_stage
-      type: string
-      description: "For adaptive mode: current escalation stage (sdl, l12, or full)"
     - name: all_artifact_paths
       type: array
       description: Accumulated list of all artifact paths across all units
@@ -42,9 +39,6 @@ steps:
       - action: set
         target: all_artifact_paths
         description: Accumulated artifact paths across the run.
-      - action: set
-        target: adaptive_stage
-        description: Deepest escalation stage that ran.
 transitions:
   - to: generate-report
     isDefault: true

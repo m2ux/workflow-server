@@ -1,5 +1,5 @@
 id: requirements-elicitation
-version: 2.10.0
+version: 2.11.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
 variables:
@@ -35,10 +35,6 @@ variables:
       type: boolean
       description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
       defaultValue: false
-    - name: has_stakeholder_input
-      type: boolean
-      description: Whether stakeholder discussion transcript was provided.
-      defaultValue: false
     - name: needs_elicitation
       type: boolean
       description: Whether requirements elicitation is needed.
@@ -59,15 +55,9 @@ steps:
       - id: provide-transcript
         label: Provide transcript/summary
         description: Paste or attach the stakeholder discussion content
-        effect:
-          setVariable:
-            has_stakeholder_input: true
       - id: skip-discussion
         label: Skip stakeholder discussion
         description: Proceed directly to agent-led elicitation (not recommended)
-        effect:
-          setVariable:
-            has_stakeholder_input: false
   - kind: technique
     id: elicit-requirements
     technique: elicit

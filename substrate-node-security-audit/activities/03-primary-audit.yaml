@@ -1,5 +1,5 @@
 id: primary-audit
-version: 4.21.0
+version: 4.22.0
 name: Primary Audit
 description: Multi-agent primary audit via concurrent dispatch with verification and merge.
 variables:
@@ -13,10 +13,6 @@ variables:
     - name: merge_complete
       type: boolean
       description: Phase 1b merge gate — set from the merge sub-agent's reconciliation; gates report-generation entry
-      defaultValue: false
-    - name: primary_audit_complete
-      type: boolean
-      description: Phase 1b gate — primary audit finished
       defaultValue: false
     - name: verification_complete
       type: boolean
@@ -92,9 +88,6 @@ steps:
         value: true
       - action: set
         target: merge_complete
-        value: true
-      - action: set
-        target: primary_audit_complete
         value: true
 transitions:
   - to: adversarial-verification

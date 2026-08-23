@@ -1,5 +1,5 @@
 id: resolution-dialogue
-version: 2.1.0
+version: 2.2.0
 name: Resolution Dialogue
 description: Propose mitigations for each evaluation finding one-by-one.
 variables:
@@ -15,9 +15,6 @@ variables:
       type: number
       description: How many findings carry an accepted or modified disposition
       defaultValue: 0
-    - name: accepted_mitigations
-      type: array
-      description: Per-finding dispositions, each { finding_id, finding_severity, mitigation_type, mitigation_summary, user_decision }
     - name: current_finding
       type: object
       description: The finding under consideration

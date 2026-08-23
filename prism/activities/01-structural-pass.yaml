@@ -1,5 +1,5 @@
 id: structural-pass
-version: 2.4.0
+version: 2.5.0
 name: Structural Analysis Pass
 description: Run the assigned structural analysis for each analysis unit.
 variables:
@@ -17,13 +17,6 @@ variables:
     - name: current_unit
       type: object
       description: Current analysis unit during iteration loop
-    - name: gitnexus_available
-      type: boolean
-      description: Whether GitNexus has indexed the target codebase — set during structural-pass check-gitnexus step
-      defaultValue: false
-    - name: unit_output_dir
-      type: string
-      description: Resolved output directory for the current analysis unit — computed in structural-pass resolve-unit-output step
 techniques:
   - scatter-gather
 steps:
@@ -35,19 +28,9 @@ steps:
     over: analysis_units
     maxIterations: 100
     steps:
-      - kind: action
-        id: resolve-unit-output
-        actions:
-          - action: set
-            target: unit_output_dir
-            description: "{output_path}/{current_unit.unit_output_subdir} when a subdir is present, else {output_path}."
       - kind: technique
         id: check-gitnexus
         technique: gitnexus-operations::verify-index
-        actions:
-          - action: set
-            target: gitnexus_available
-            description: Whether the target codebase is indexed.
       - kind: technique
         id: run-structural
         technique:

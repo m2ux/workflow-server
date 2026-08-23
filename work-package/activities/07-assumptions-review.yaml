@@ -1,5 +1,5 @@
 id: assumptions-review
-version: 2.8.0
+version: 2.9.0
 name: Assumptions Review
 description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
 variables:
@@ -21,18 +21,6 @@ variables:
     - target_path
     - target_repo
   writes:
-    - name: assumption_batch_accepted
-      type: boolean
-      description: Whether the user accepted the agent's positions for the residual open-assumption batch.
-      defaultValue: false
-    - name: assumption_deferred
-      type: boolean
-      description: Whether the current assumption was deferred during the assumption interview checkpoint.
-      defaultValue: false
-    - name: assumption_resolved_inline
-      type: boolean
-      description: Whether the current assumption was resolved inline during the assumption interview checkpoint.
-      defaultValue: false
     - name: current_assumption
       type: object
       description: Current assumption during assumption review loop (from task_assumptions).
@@ -114,21 +102,14 @@ steps:
           - id: accept
             label: Accept assumption
             description: This assumption is valid — proceed with it
-            effect:
-              setVariable:
-                assumption_resolved_inline: true
           - id: reject
             label: Reject assumption
             description: This assumption is wrong — provide a correction
-            effect:
-              setVariable:
-                assumption_resolved_inline: true
           - id: defer
             label: Defer
             description: Not enough information to decide now — revisit later
             effect:
               setVariable:
-                assumption_deferred: true
                 has_deferred_assumptions: true
       - kind: technique
         id: record-decision

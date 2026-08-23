@@ -1,5 +1,5 @@
 id: end-workflow
-version: 4.6.0
+version: 4.7.0
 name: End Workflow
 description: Close out the client workflow.
 variables:
@@ -11,10 +11,6 @@ variables:
     - target_workflow_id
     - target_workflow_outcomes
   writes:
-    - name: abort_completion
-      type: boolean
-      description: Whether the user chose to return to dispatch from end-workflow instead of closing
-      defaultValue: false
     - name: client_workflow_completed
       type: boolean
       description: Whether the dispatched client workflow has reached workflow_complete
@@ -47,15 +43,11 @@ steps:
       - id: confirm
         label: Confirm closure
         description: Mark the session complete and exit
-        effect:
-          setVariable:
-            abort_completion: false
       - id: return
         label: Return to workflow
         description: Some outcomes are unmet — re-dispatch the orchestrator to address them
         effect:
           setVariable:
-            abort_completion: true
             client_workflow_completed: false
           transitionTo: dispatch-client-workflow
   - kind: action

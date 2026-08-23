@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.20.0
+version: 3.21.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
@@ -50,9 +50,6 @@ variables:
       type: boolean
       description: Whether a GitHub issue linked to the Jira ticket was found in the target repo.
       defaultValue: false
-    - name: github_issue_number
-      type: string
-      description: GitHub issue number linked to the Jira ticket (found via search or freshly created).
     - name: gitnexus_indexed
       type: boolean
       description: Whether the component under work has a usable GitNexus index.
@@ -63,10 +60,6 @@ variables:
     - name: is_review_mode
       type: boolean
       description: True when the work package reviews an existing PR instead of producing a new implementation.
-    - name: issue_approved
-      type: boolean
-      description: Whether the drafted issue was approved for creation.
-      defaultValue: false
     - name: issue_cancelled
       type: boolean
       description: Whether issue creation was cancelled by user.
@@ -450,9 +443,6 @@ steps:
       - action: set
         target: github_issue_found
         description: true if a GitHub issue referencing jira_issue_key was found, false otherwise
-      - action: set
-        target: github_issue_number
-        description: GitHub issue number if found, otherwise empty
   - kind: action
     id: check-github-issue
     when: issue_platform == 'jira' && github_issue_found == false
@@ -600,15 +590,9 @@ steps:
       - id: create
         label: Create issue
         description: Proceed to create the issue
-        effect:
-          setVariable:
-            issue_approved: true
       - id: edit
         label: Edit issue
         description: Make changes before creating
-        effect:
-          setVariable:
-            issue_approved: false
       - id: cancel
         label: Cancel issue creation
         description: Do not create the issue

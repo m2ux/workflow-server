@@ -1,5 +1,5 @@
 id: intake-and-analyze
-version: 1.2.0
+version: 1.3.0
 name: Intake and Analyze
 description: Capture and validate the source-document and target-specification paths, classify the source as a meeting transcript or an unstructured document, determine whether the specification is being augmented or created, and load both sources; then parse the source against the current specification and produce a structured requirements analysis report, confirming each boundary with the user before proceeding.
 variables:
@@ -23,10 +23,6 @@ variables:
       type: string
       description: "Classification of the source document: meeting (a meeting transcript) or document (an unstructured document)"
       defaultValue: ""
-    - name: sources_confirmed
-      type: boolean
-      description: True once the source-document and target-specification sources are captured and confirmed
-      defaultValue: false
     - name: spec_basename
       type: string
       description: Basename of the target specification
@@ -51,9 +47,6 @@ steps:
       - id: confirmed
         label: Yes, proceed
         description: Sources, classified type, and mode are correct.
-        effect:
-          setVariable:
-            sources_confirmed: true
       - id: revise
         label: Correct the sources
         description: A source path, the classified source type, or the augment/create mode is wrong and must be corrected before proceeding.

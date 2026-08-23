@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.3.0
+version: 1.4.0
 name: Scope and Draft
 description: "Prepare the edit worktree, enumerate the complete file manifest, author every file the manifest names, and bring the target README and the planning artifacts into line with what was drafted."
 variables:
@@ -9,6 +9,7 @@ variables:
     - operation_type
     - planning_folder_path
     - removals_approved
+    - scope_round
     - target_path
     - workflow_id
   writes:

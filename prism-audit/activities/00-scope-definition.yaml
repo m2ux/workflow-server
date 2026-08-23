@@ -1,5 +1,5 @@
 id: scope-definition
-version: 1.4.0
+version: 1.5.0
 name: Define Audit Scope
 description: Collect the audit target, description, and output path.
 variables:
@@ -16,10 +16,6 @@ variables:
       type: string
       description: Directory the audit artifacts are written to
       required: true
-    - name: scope_confirmed
-      type: boolean
-      description: Whether the user confirmed the audit scope at the confirm-scope checkpoint
-      defaultValue: false
     - name: target_path
       type: string
       description: Path to the codebase or directory to audit
@@ -50,9 +46,6 @@ steps:
       - id: accept
         label: Proceed
         description: Begin analysing the codebase and generating the audit prompt
-        effect:
-          setVariable:
-            scope_confirmed: true
       - id: adjust
         label: Adjust scope
         description: Modify the target, description, or output path before proceeding

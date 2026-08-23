@@ -1,5 +1,5 @@
 id: primary-scan
-version: 1.4.0
+version: 1.5.0
 name: Primary Scan
 description: Run per-submodule scanner agents and merge their findings.
 variables:
@@ -8,11 +8,6 @@ variables:
     - planning_folder_path
     - scanners_assigned
     - verification_complete
-  writes:
-    - name: primary_scan_complete
-      type: boolean
-      description: Phase 3 gate — all scanners returned
-      defaultValue: false
 techniques:
   - scatter-gather
   - execute-cicd-audit
@@ -73,9 +68,6 @@ steps:
     actions:
       - action: log
         message: Primary scan complete — all findings merged and reconciled
-      - action: set
-        target: primary_scan_complete
-        value: true
 transitions:
   - to: report-generation
     isDefault: true

@@ -1,5 +1,5 @@
 id: apply-mitigations
-version: 2.1.0
+version: 2.2.0
 name: Apply Accepted Mitigations
 description: Apply accepted mitigations to the target document.
 variables:
@@ -11,9 +11,6 @@ variables:
     - mitigation_plan_path
     - target_path
   writes:
-    - name: accepted_mitigations
-      type: array
-      description: Per-finding dispositions, each { finding_id, finding_severity, mitigation_type, mitigation_summary, user_decision }
     - name: evaluation_findings
       type: array
       description: The report's findings, each carrying an ID, severity, claim, critique, and mitigation tier

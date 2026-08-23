@@ -1,5 +1,5 @@
 id: reconnaissance
-version: 1.3.0
+version: 1.4.0
 name: Reconnaissance
 description: Classify discovered workflows and assign scanner agents.
 variables:
@@ -7,10 +7,6 @@ variables:
     - planning_folder_path
     - target_submodules
   writes:
-    - name: reconnaissance_complete
-      type: boolean
-      description: Phase 2 gate — reconnaissance finished
-      defaultValue: false
     - name: scanners_assigned
       type: number
       description: Count of per-submodule scanner agents assigned during reconnaissance
@@ -44,9 +40,6 @@ steps:
     actions:
       - action: log
         message: Reconnaissance complete — workflows classified and scanner agents assigned
-      - action: set
-        target: reconnaissance_complete
-        value: true
 transitions:
   - to: primary-scan
     isDefault: true

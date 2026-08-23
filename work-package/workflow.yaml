@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.45.0
+version: 3.46.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first. Also supports review mode for auditing an existing PR or implementation end-to-end.
 author: m2ux
@@ -49,16 +49,11 @@ fragments:
         - id: accept-agent-positions
           label: Accept agent positions
           description: Confirm the agent's favored positions for all listed residual open assumptions
-          effect:
-            setVariable:
-              assumption_resolved_inline: true
-              assumption_batch_accepted: true
         - id: defer-all
           label: Defer all to stakeholders
           description: Queue every listed open assumption for stakeholder review
           effect:
             setVariable:
-              assumption_deferred: true
               has_deferred_assumptions: true
         - id: interview-individually
           label: Interview individually
@@ -73,15 +68,11 @@ fragments:
         - id: resolve-inline
           label: Resolve now
           description: Provide resolution for this assumption
-          effect:
-            setVariable:
-              assumption_resolved_inline: true
         - id: defer-to-stakeholder
           label: Defer to stakeholder review
           description: Queue this assumption for stakeholder review
           effect:
             setVariable:
-              assumption_deferred: true
               has_deferred_assumptions: true
 techniques:
   activity:

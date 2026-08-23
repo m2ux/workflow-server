@@ -1,5 +1,5 @@
 id: research
-version: 2.14.0
+version: 2.15.0
 name: Research
 description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
 variables:
@@ -16,18 +16,6 @@ variables:
     - target_path
     - target_repo
   writes:
-    - name: assumption_batch_accepted
-      type: boolean
-      description: Whether the user accepted the agent's positions for the residual open-assumption batch.
-      defaultValue: false
-    - name: assumption_deferred
-      type: boolean
-      description: Whether the current assumption was deferred during the assumption interview checkpoint.
-      defaultValue: false
-    - name: assumption_resolved_inline
-      type: boolean
-      description: Whether the current assumption was resolved inline during the assumption interview checkpoint.
-      defaultValue: false
     - name: context_scope
       type: string
       description: Provenance scope of AI-generated code in this work package.
