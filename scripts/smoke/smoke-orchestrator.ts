@@ -75,9 +75,8 @@ function log(msg: string) { process.stdout.write(`[orchestrator] ${msg}\n`); }
  * the checkout a worktree path derives from. Each run writes a unique planning
  * subfolder (named from RUN_ID), so runs accumulate rather than clobber.
  *
- * One root, deliberately: sessions used to live beside the checkout rather than
- * inside it, which left the planning folder and the git repository in different
- * directories and a worktree path derivable from neither.
+ * One root, deliberately. A planning folder outside the git repository leaves a
+ * worktree path derivable from neither, so the two share a directory.
  */
 function setupSandbox() {
   const root = ROOT;
@@ -266,8 +265,7 @@ async function main() {
       });
       // A refused transition leaves the session on the previous activity while the driver reports
       // the next one, so the transcript claims an activity that never ran and the worker keeps
-      // answering the old one. The server refuses while a checkpoint is unresolved, which is
-      // exactly when this used to happen.
+      // answering the old one. The server refuses while a checkpoint is unresolved.
       if (transitioned.isError) {
         throw new Error(`next_activity refused '${current}': ${toolText(transitioned)}`);
       }
@@ -290,7 +288,7 @@ async function main() {
       const MAX_TURNS = 8;
       while (true) {
         turn++;
-        // Moving on with a checkpoint still active is what made a refused transition look like a
+        // Moving on with a checkpoint still active is what makes a refused transition look like a
         // successful one, so the cap says which state it stopped in and the transition below decides
         // whether the run can continue.
         if (turn > MAX_TURNS) { log(`turn cap (${MAX_TURNS}) hit for ${current}`); break; }

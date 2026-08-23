@@ -1806,7 +1806,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // the selected option's setVariable effect at respond_checkpoint, so the values are already in
       // the bag and the worker's own copy is behind by exactly this much. Read from the response the
       // orchestrator just recorded — the most recent one, since the active checkpoint is cleared by
-      // then and its id is no longer on the session to key by.
+      // then, leaving no id on the session to key by.
       const resolved = Object.entries(state.checkpointResponses)
         .sort(([, a], [, b]) => a.respondedAt.localeCompare(b.respondedAt))
         .pop();

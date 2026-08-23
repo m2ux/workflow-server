@@ -5,7 +5,7 @@ import { loadTriage, expressionReads, collectViolations, consumerReaches, deadOu
  * Binding-fidelity gate. The corpus carries triaged debt, recorded per finding with a verdict and a
  * rationale in scripts/binding-fidelity-triage.json. The `binding-fidelity` guard holds the two
  * states that must never ship — a finding nobody has judged, and a finding judged a live bug — and
- * reports an entry whose finding no longer occurs. What it reads past is a rationale key the triage
+ * reports an entry with no live finding behind it. What it reads past is a rationale key the triage
  * file never defines, which resolves to the key itself and reads as a reason.
  */
 describe('binding-fidelity gate', () => {
