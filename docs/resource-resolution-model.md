@@ -98,11 +98,27 @@ The response is the union of the activity's declared technique references and th
 
 | Set | Entries | Technique references |
 |-----|---------|----------------------|
-| `CORE_ORCHESTRATOR_TECHNIQUES` | 20 | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `compose-prompt`, `present-checkpoint-to-user`, `respond-checkpoint`, `sync-progress-status`; `version-control::commit-submodule`, `commit-regular-files`; `harness-compat::spawn-agent`, `continue-agent`, `resolve-harness-operation`, `claude-code`, `cursor`, `cline`, `generic`; `agent-conduct::orchestrator`, `checkpoint-discipline`, `operational-discipline` |
-| `CORE_WORKER_TECHNIQUES` | 8 | `workflow-engine::activity-worker`, `yield-checkpoint`, `resume-from-checkpoint`, `finalize-activity`; `agent-conduct::checkpoint-discipline`, `operational-discipline`, `file-sensitivity`, `code-commentary` |
+| `CORE_ORCHESTRATOR_TECHNIQUES` | 12 | `workflow-engine::dispatch-activity`, `commit-and-persist`, `handle-sub-workflow`, `present-checkpoint-to-user`, `respond-checkpoint`; `harness-compat::claude-code`, `cursor`, `cline`, `generic`; `agent-conduct::orchestrator`, `checkpoint-discipline`, `operational-discipline` |
+| `CORE_WORKER_TECHNIQUES` | 5 | `workflow-engine::activity-worker`; `agent-conduct::checkpoint-discipline`, `operational-discipline`, `file-sensitivity`, `code-commentary` |
 
-Three of the twenty orchestrator entries are group-prefix rule references, which expand to every rule
-in the named group rather than to a body; the other seventeen name operations.
+Both lists used to be longer. An entry existed whenever a technique was named inside another
+technique's protocol, because a reference found during resolution reached the agent as prose it could
+not follow. Now that both bundle doors deliver the bodies those references name, an entry whose only
+reason was standing in for an inline reference is redundant where the closure reaches it: the
+orchestrator list went from 20 entries to 12 and the worker list from 8 to 5, each still delivering
+every body it delivered before — 21 and 6 respectively.
+
+What stays, stays for a reason the folding does not address:
+
+- **An entry nothing else reaches.** The orchestrator's own first moves — dispatch, persistence,
+  sub-workflow handling, the two checkpoint operations — are where a walk starts rather than
+  somewhere it arrives.
+- **A callee named by a value.** `resolve-harness-operation` picks its callee out of the kind → file
+  map rather than through a link, so no link-keyed traversal reaches it and all four harness files
+  stay listed. This is the one residue with a door still owed: it retires when a delivery path
+  follows a value-named callee.
+- **A rule reference.** A group-prefix ref expands to every rule in the named group and names no
+  body, so folded delivery never stands in for one.
 
 ## Folded bodies, and the counter each is charged to
 

@@ -10,6 +10,20 @@
  * These techniques live in the meta workflow's capability techniques
  * (workflow-engine, agent-conduct). The lists below name the core technique refs
  * that constitute the runtime baseline.
+ *
+ * **What these lists no longer have to carry.** An entry existed here whenever a
+ * technique was named inside another technique's protocol, because a reference
+ * found during resolution reached the agent as prose it could not follow. Both
+ * bundle doors now deliver the bodies those references name, on the same
+ * operations-bundle channel these entries ride, so an entry whose only reason was
+ * standing in for an inline reference is redundant where the closure reaches it.
+ *
+ * Retirement is per door and verified rather than assumed: for each list, the
+ * reduced list's closure was measured and every retired entry still arrives as a
+ * folded body, with no body lost against the full list. The orchestrator list goes
+ * from 20 entries to 12 and still delivers 21 bodies; the worker list goes from 8
+ * to 5 and still delivers 6. What stays is stated at each residue comment, because
+ * an entry that stays is a door still owed something.
  */
 
 /**
@@ -17,49 +31,28 @@
  * get_workflow alongside the workflow's declared technique refs.
  */
 export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
-  // Engine traversal
+  // Engine traversal. These are the entries the orchestrator reaches first, so no
+  // other entry's closure reaches them and each has to be named.
   'workflow-engine::dispatch-activity',
-  'workflow-engine::evaluate-transition',
   'workflow-engine::commit-and-persist',
   'workflow-engine::handle-sub-workflow',
-  // compose-prompt is invoked inline by dispatch-activity's body; inline refs are
-  // not re-resolved, so it must be bundled explicitly to reach the orchestrator.
-  'workflow-engine::compose-prompt',
-  // Checkpoint flow at orchestrator level
+  // Checkpoint flow at orchestrator level — reached from the orchestrator's own
+  // protocol rather than from another entry, so likewise named.
   'workflow-engine::present-checkpoint-to-user',
   'workflow-engine::respond-checkpoint',
-  // State persistence: commit-and-persist invokes these inline (same inline-ref
-  // caveat), so bundle them so the orchestrator gets the submodule/regular-file
-  // commit protocols. (The former 'persist'/'bubble-checkpoint-up' refs were
-  // stale — no such op files.)
-  'version-control::commit-submodule',
-  'version-control::commit-regular-files',
-  // Progress Status writer (#324 B2). Both dispatch-activity and
-  // commit-and-persist say "Apply sync-progress-status", but get_technique
-  // resolves only step-bound or first-declared techniques and orchestrators are
-  // barred from get_activity — so without this entry the named op has no
-  // delivery path and every Progress write is hand-rolled from the resource.
-  'workflow-engine::sync-progress-status',
-  // Sub-agent dispatch primitives — dispatch-activity invokes spawn-agent in
-  // its body, so the orchestrator must receive the harness-specific prose for
-  // these to actually dispatch instead of improvising / inlining.
-  'harness-compat::spawn-agent',
-  'harness-compat::continue-agent',
-  // The two hops spawn-agent/continue-agent Apply mid-Protocol: the kind → file
-  // map, then the resolved harness file's `spawn`/`resume`/`concurrent` Rules
-  // section. A technique named inside another technique's Protocol has no other
-  // delivery path — get_technique resolves only step-bound or first-declared
-  // techniques, and no tool loads a technique by id — so an orchestrator without
-  // these entries reaches the dispatch step with nothing to apply and improvises
-  // the invocation. All four harness files ship because nothing binds
-  // `{harness_kind}` server-side; the orchestrator selects its own through the
-  // map, which stays the single authoritative table.
-  'harness-compat::resolve-harness-operation',
+  // RESIDUE: the four harness files stay, and the door they are owed by is the one
+  // that cannot follow their reference. `resolve-harness-operation` names its callee
+  // through the kind → file map rather than through a link, so the callee is chosen
+  // by a value and no link-keyed traversal reaches it. All four ship because nothing
+  // binds `{harness_kind}` server-side; the orchestrator selects its own through the
+  // map, which stays the single authoritative table. These retire when a delivery
+  // path follows a value-named callee, not before.
   'harness-compat::claude-code',
   'harness-compat::cursor',
   'harness-compat::cline',
   'harness-compat::generic',
-  // Cross-cutting orchestrator rules (group-prefix refs → all `<group>-*` rules)
+  // Cross-cutting orchestrator rules (group-prefix refs → all `<group>-*` rules).
+  // A rule reference names no body, so folded delivery never stands in for one.
   'agent-conduct::orchestrator',
   'agent-conduct::checkpoint-discipline',
   'agent-conduct::operational-discipline',
@@ -73,12 +66,10 @@ export const CORE_WORKER_TECHNIQUES: readonly string[] = [
   // The role itself. Every worker stub says to apply it, and only the meta workflow declares it in
   // `techniques.activity` — so for a client workflow it was named and never delivered, with no tool
   // able to fetch it by id. A worker that cannot read its own role reads none of the rules it owes.
+  // It is also the root the worker's own closure is walked from, so nothing else reaches it.
   'workflow-engine::activity-worker',
-  // Step execution surface
-  'workflow-engine::yield-checkpoint',
-  'workflow-engine::resume-from-checkpoint',
-  'workflow-engine::finalize-activity',
-  // Cross-cutting worker rules
+  // RESIDUE: cross-cutting worker rules. A rule reference names no body, so folded
+  // delivery never stands in for one and these stay however wide the closure grows.
   'agent-conduct::checkpoint-discipline',
   'agent-conduct::operational-discipline',
   'agent-conduct::file-sensitivity',
