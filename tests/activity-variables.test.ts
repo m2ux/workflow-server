@@ -186,6 +186,28 @@ describe('read reachability', () => {
 
 describe('activity-variables guard', () => {
 
+  // The corpus is at zero, so the fixtures below are what shows the check can still fire.
+  it('reports a write nothing in the workflow reads', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'wf-avars-unread-'));
+    try {
+      mkdirSync(join(root, 'wf', 'activities'), { recursive: true });
+      writeFileSync(join(root, 'wf', 'workflow.yaml'),
+        'id: wf\nversion: 1.0.0\ntitle: WF\ninitialActivity: thing\n');
+      writeFileSync(join(root, 'wf', 'activities', '01-thing.yaml'),
+        'id: thing\nversion: 1.0.0\nname: Thing\nvariables:\n'
+        + '  writes:\n    - name: phase_complete\n      type: boolean\n      defaultValue: false\n'
+        + 'steps:\n  - kind: action\n    id: finish\n'
+        + '    actions:\n      - action: set\n        target: phase_complete\n        value: true\n');
+      expect(await collectFindings(root)).toEqual([{
+        check: 'unread-write',
+        site: 'wf :: thing',
+        detail: "writes 'phase_complete', which nothing in this workflow reads",
+      }]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   it('counts an optional operation input as a consumer of the value that reaches it', async () => {
     const root = mkdtempSync(join(tmpdir(), 'wf-avars-optional-'));
     try {
