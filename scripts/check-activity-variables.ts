@@ -167,11 +167,12 @@ export async function collectFindings(root: string): Promise<Finding[]> {
         writersOf.set(name, writers);
       }
     }
-    // Who reads a name: any activity declaring a read of it, and the activity that writes it and
-    // then reads it back within its own steps. "Nothing reads it" has to mean nothing.
+    // Who reads a name: any activity declaring a read of it, the activity that writes it and then
+    // reads it back within its own steps, and any activity a bound operation consumes it in
+    // without requiring it. "Nothing reads it" has to mean nothing.
     const readersOf = new Map<string, string[]>();
     for (const record of records) {
-      for (const name of [...record.declaredReads, ...record.derived.internalReads]) {
+      for (const name of [...record.declaredReads, ...record.derived.consumes]) {
         const readers = readersOf.get(name) ?? [];
         readers.push(record.id);
         readersOf.set(name, readers);

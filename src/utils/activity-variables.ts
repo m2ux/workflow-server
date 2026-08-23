@@ -130,6 +130,13 @@ export interface DerivedContract {
    */
   artifactWrites: Set<string>;
   /**
+   * Every name the activity consumes, whether or not the contract requires it: the reads above,
+   * plus the inputs a bound operation takes when they are there and derives when they are not. An
+   * optional input is not something the workflow must supply, so it is no read — but a value that
+   * reaches one is consumed, which is a different question.
+   */
+  consumes: Set<string>;
+  /**
    * Names its activity-level routing tests — the transition and decision-branch conditions that
    * choose where the run goes next. A stale value here costs an exit rather than a step.
    */
@@ -306,10 +313,16 @@ export async function deriveActivityContract(args: {
   /** Produced so far in document order — what resolves a later read inside this activity. */
   const producedSoFar = new Set<string>();
 
+  const consumes = new Set<string>();
   const read = (name: string): void => {
     if (!namespace.has(name)) return;
+    consumes.add(name);
     if (producedSoFar.has(name)) internalReads.add(name);
     else reads.add(name);
+  };
+  /** Consumed without being required: an optional or defaulted input the value reaches. */
+  const consume = (name: string): void => {
+    if (namespace.has(name)) consumes.add(name);
   };
   const write = (name: string): void => {
     if (namespace.has(name)) writes.add(name);
@@ -347,7 +360,8 @@ export async function deriveActivityContract(args: {
             }
             continue;
           }
-          if (!input.suppliable) read(input.id);
+          if (input.suppliable) consume(input.id);
+          else read(input.id);
         }
         signature.proseReads.forEach(read);
         const remapped = new Set(Object.keys(binding?.outputs ?? {}));
@@ -398,7 +412,7 @@ export async function deriveActivityContract(args: {
   // A trigger's passContext names the values the dispatching agent relays into the child session.
   for (const trigger of activity.triggers ?? []) (trigger.passContext ?? []).forEach(read);
 
-  return { reads, writes, internalReads, artifactWrites, routingReads };
+  return { reads, writes, internalReads, artifactWrites, routingReads, consumes };
 }
 
 /* --------------------------------- graph --------------------------------- */

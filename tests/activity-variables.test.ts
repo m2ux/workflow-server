@@ -196,6 +196,31 @@ describe('activity-variables guard', () => {
     expect(undefinedRationales).toEqual([]);
   });
 
+  it('counts an optional operation input as a consumer of the value that reaches it', async () => {
+    const root = mkdtempSync(join(tmpdir(), 'wf-avars-optional-'));
+    try {
+      mkdirSync(join(root, 'wf', 'activities'), { recursive: true });
+      mkdirSync(join(root, 'wf', 'techniques'), { recursive: true });
+      writeFileSync(join(root, 'wf', 'workflow.yaml'),
+        'id: wf\nversion: 1.0.0\ntitle: WF\ninitialActivity: thing\n');
+      // The operation derives the value when it is unset, so the workflow need not supply it — but
+      // the checkpoint's write does reach it.
+      writeFileSync(join(root, 'wf', 'techniques', 'post.md'),
+        '---\nmetadata:\n  version: 1.0.0\n---\n\n## Capability\n\nPost it.\n\n'
+        + '## Inputs\n\n### review_type\n\n*(optional, default: derived)* Which event to post.\n');
+      writeFileSync(join(root, 'wf', 'activities', '01-thing.yaml'),
+        'id: thing\nversion: 1.0.0\nname: Thing\nvariables:\n'
+        + '  writes:\n    - name: review_type\n      type: string\n      defaultValue: ""\n'
+        + 'steps:\n  - kind: checkpoint\n    id: pick\n    message: Which event?\n'
+        + '    options:\n      - id: approve\n        label: Approve\n'
+        + '        effect:\n          setVariable:\n            review_type: approve\n'
+        + '  - kind: technique\n    id: post\n    technique: post\n');
+      expect(await collectFindings(root)).toEqual([]);
+    } finally {
+      rmSync(root, { recursive: true, force: true });
+    }
+  });
+
   it('reports a read the including workflow supplies nowhere', async () => {
     const root = mkdtempSync(join(tmpdir(), 'wf-avars-borrow-'));
     try {
