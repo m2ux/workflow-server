@@ -1,7 +1,54 @@
 id: strategic-review
-version: 2.15.0
+version: 2.17.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
+variables:
+  reads:
+    - branch_name
+    - component_git_dir
+    - host_repo_path
+    - is_review_mode
+    - issue_number
+    - issue_platform
+    - issue_url
+    - planning_folder_path
+    - pr_number
+    - push_remote
+    - stealth_mode
+    - target_path
+    - target_repo
+  writes:
+    - name: body_conforms
+      type: boolean
+      description: True once the rendered PR body satisfies every conformance criterion in the pr-description guide.
+      defaultValue: false
+    - name: body_findings
+      type: array
+      description: List of PR-body conformance violations.
+      defaultValue: []
+    - name: recommended_strategic_option
+      type: string
+      description: Agent-recommended action after strategic review analysis (fix-findings|raise-findings|acceptable).
+    - name: resign_unsigned_commits_requested
+      type: boolean
+      description: User chose to re-sign unsigned commits at the strategic-review unsigned-commits-prompt checkpoint.
+      defaultValue: false
+    - name: review_passed
+      type: boolean
+      description: Whether strategic review passed.
+      defaultValue: false
+    - name: strategic_findings_summary
+      type: string
+      description: Concise multi-line summary of strategic-review findings (severity tag + one-line description per finding).
+      defaultValue: ""
+    - name: unsigned_commit_list_summary
+      type: string
+      description: Short human-readable summary of unsigned commits from the strategic-review signature scan; empty when all commits are signed.
+      defaultValue: ""
+    - name: unsigned_commits_in_pr
+      type: boolean
+      description: True when the strategic-review signature scan found any commit in the branch range without a valid GPG signature.
+      defaultValue: false
 required: true
 steps:
   - kind: technique
@@ -125,23 +172,15 @@ steps:
       - id: fix-findings
         label: Fix findings before proceeding
         description: Address strategic review findings now
-        effect:
-          setVariable:
-            strategic_findings_actionable: true
       - id: selective-fixes
         label: Fix selected findings
         description: Choose which findings to fix, by priority
-        effect:
-          setVariable:
-            strategic_findings_actionable: true
-            strategic_fixes_selective: true
       - id: defer-findings
         label: Defer findings
         description: Note findings for future but proceed now
         effect:
           setVariable:
             review_passed: true
-            strategic_findings_deferred: true
       - id: more-review
         label: Need more review
         description: Additional areas need examination
@@ -174,21 +213,18 @@ steps:
         description: The posted review carries every finding
         effect:
           setVariable:
-            findings_raised_to_author: all
             review_passed: true
       - id: raise-selected
         label: Raise selected findings
         description: The posted review carries the findings named in the reply; the report keeps the rest
         effect:
           setVariable:
-            findings_raised_to_author: selected
             review_passed: true
       - id: raise-none
         label: Raise none
         description: The report keeps every finding and the posted review carries none of them
         effect:
           setVariable:
-            findings_raised_to_author: none
             review_passed: true
 transitions:
   - to: submit-for-review

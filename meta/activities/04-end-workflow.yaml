@@ -1,7 +1,20 @@
 id: end-workflow
-version: 4.5.0
+version: 4.7.0
 name: End Workflow
 description: Close out the client workflow.
+variables:
+  reads:
+    - client_workflow_completed
+    - component_path
+    - host_repo_path
+    - planning_folder_path
+    - target_workflow_id
+    - target_workflow_outcomes
+  writes:
+    - name: client_workflow_completed
+      type: boolean
+      description: Whether the dispatched client workflow has reached workflow_complete
+      defaultValue: false
 required: true
 steps:
   - kind: technique
@@ -30,15 +43,11 @@ steps:
       - id: confirm
         label: Confirm closure
         description: Mark the session complete and exit
-        effect:
-          setVariable:
-            abort_completion: false
       - id: return
         label: Return to workflow
         description: Some outcomes are unmet — re-dispatch the orchestrator to address them
         effect:
           setVariable:
-            abort_completion: true
             client_workflow_completed: false
           transitionTo: dispatch-client-workflow
   - kind: action

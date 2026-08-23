@@ -1,7 +1,40 @@
 id: implementation-analysis
-version: 2.11.0
+version: 2.13.0
 name: Implementation Analysis
 description: Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement.
+variables:
+  reads:
+    - assumption_decisions
+    - branch_name
+    - component_git_dir
+    - component_name
+    - has_open_questions
+    - has_resolvable_assumptions
+    - is_review_mode
+    - needs_comprehension
+    - planning_folder_path
+    - pr_number
+    - target_path
+    - target_repo
+  writes:
+    - name: current_assumption
+      type: object
+      description: Current assumption during assumption review loop (from task_assumptions).
+    - name: has_deferred_assumptions
+      type: boolean
+      description: Whether any assumptions were deferred during review (triggers issue tracker posting).
+      defaultValue: false
+    - name: has_open_assumptions
+      type: boolean
+      description: Whether unresolved assumptions remain after analyse-challenge that require stakeholder input.
+      defaultValue: false
+    - name: needs_individual_interview
+      type: boolean
+      description: Whether the residual batch checkpoint selected individual drill-down.
+      defaultValue: false
+    - name: open_assumptions
+      type: array
+      description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down.
 required: false
 techniques:
   - scatter-gather

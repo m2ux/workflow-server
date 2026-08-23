@@ -1,7 +1,92 @@
 id: quality-review
-version: 1.13.1
+version: 1.14.0
 name: Quality Review
 description: Quality review of drafted workflow content.
+variables:
+  reads:
+    - operation_type
+    - planning_folder_path
+    - scope_manifest_confirmed
+    - target_workflow_ids
+  writes:
+    - name: anti_pattern_findings_path
+      type: string
+      description: Absolute path to the persisted anti-pattern-findings artifact (review mode).
+      defaultValue: ""
+    - name: conformance_finding_count
+      type: number
+      description: Count of convention-conformance divergences from audit-conformance.
+      defaultValue: 0
+    - name: conformance_findings_path
+      type: string
+      description: Absolute path to the persisted conformance-findings artifact when findings exist.
+      defaultValue: ""
+    - name: enforcement_finding_count
+      type: number
+      description: Count of text-only rules from audit-rule-enforcement.
+      defaultValue: 0
+    - name: enforcement_findings_path
+      type: string
+      description: Absolute path to the persisted enforcement-findings artifact when findings exist.
+      defaultValue: ""
+    - name: expressiveness_finding_count
+      type: number
+      description: Count of expressiveness findings from audit-expressiveness.
+      defaultValue: 0
+    - name: expressiveness_findings_path
+      type: string
+      description: Absolute path to the persisted expressiveness-findings artifact when findings exist.
+      defaultValue: ""
+    - name: fail_count
+      type: number
+      description: Count of YAML files that failed schema validation.
+      defaultValue: 0
+    - name: has_critical_finding
+      type: boolean
+      description: Whether any audit finding is Critical severity (a schema-invalid or structurally broken construct that must not be committed).
+      defaultValue: false
+    - name: needs_audit_fixes
+      type: boolean
+      description: Whether audit passes surfaced findings that still need remedia.
+      defaultValue: false
+    - name: operation_type
+      type: string
+      description: The classified operation for the request — create, update, or review.
+    - name: pass_count
+      type: number
+      description: Count of YAML files that passed schema validation.
+      defaultValue: 0
+    - name: principle_findings_path
+      type: string
+      description: Absolute path to the persisted principle-findings artifact (review mode).
+      defaultValue: ""
+    - name: report_path
+      type: string
+      description: Absolute path to the persisted compliance or post-update review report.
+      defaultValue: ""
+    - name: review_findings_count
+      type: number
+      description: Total number of compliance findings identified during review.
+      defaultValue: 0
+    - name: rule_hygiene_finding_count
+      type: number
+      description: Count of rule-hygiene findings from audit-rule-hygiene.
+      defaultValue: 0
+    - name: rule_hygiene_findings_path
+      type: string
+      description: Absolute path to the persisted rule-hygiene-findings artifact when findings exist.
+      defaultValue: ""
+    - name: target_workflow_id
+      type: string
+      description: ID of the existing workflow to modify (update mode) or the current review-mode audit target (bound per iteration when reviewing multiple.
+    - name: update_seeded_from_review
+      type: boolean
+      description: True when update mode was entered from a review-mode fix disposition (fix-issues or selective-fixes).
+      defaultValue: false
+    - name: verified_findings_path
+      type: string
+      description: Absolute path to the persisted verified-findings artifact.
+      defaultValue: ""
 required: true
 steps:
   - kind: loop

@@ -1,7 +1,32 @@
 id: initialize-session
-version: 6.4.0
+version: 6.5.0
 name: Initialize Session
 description: Bind the client planning slug for the run's mode, then dispatch the client workflow as a child of the meta session.
+variables:
+  reads:
+    - component_path
+    - host_repo_path
+    - initiative_name
+    - is_resuming
+    - mentioned_repo
+    - meta_session_index
+    - planning_folder_path
+    - saved_planning_slug
+    - target_repo
+    - target_workflow_id
+  writes:
+    - name: client_initial_activity
+      type: string
+      description: The client workflow's own first activity, returned by create-session — the id its first next_activity call names
+    - name: client_planning_slug
+      type: string
+      description: Planning slug of the dispatched client workflow's planning folder — stable identifier the server uses to locate session.json
+    - name: client_session_index
+      type: string
+      description: 6-character base32 session_index for the dispatched client workflow (returned by start_session when initialize-session creates or resumes the session)
+    - name: planning_folder_path
+      type: string
+      description: Canonical absolute path to the client workflow's planning folder, as resolved by the server under its own workspace .engineering root.
 required: true
 steps:
   - kind: technique

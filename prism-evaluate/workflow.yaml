@@ -1,5 +1,5 @@
 id: prism-evaluate
-version: 2.0.0
+version: 2.1.0
 title: Evaluation Workflow
 description: Orchestrate multi-dimensional evaluations by mapping user-defined evaluation dimensions to prism analytical lenses.
 author: m2ux
@@ -35,82 +35,10 @@ variables:
   - name: evaluation_target_type
     type: string
     description: "The target's kind: document | document-set | codebase | mixed"
-  - name: target
-    type: string
-    description: The evaluation target an analysis run analyses
-  - name: target_type
-    type: string
-    description: "The target's kind in the analysis run's vocabulary: general | code"
-  - name: output_path
-    type: string
-    description: The output location of the execution group under analysis
-  - name: target_description
-    type: string
-    description: Short description of what an execution group evaluates
-  - name: dimensions
-    type: array
-    description: "The evaluation dimensions, each { name, description, focus_areas }"
-  - name: dimension_plan
-    type: array
-    description: "Per-dimension prism configuration, each { dimension, pipeline_mode, lenses, analysis_focus, output_subdir }"
-  - name: lens_overrides
-    type: object
-    description: "Lens overrides keyed by dimension name, each { pipeline_mode, lenses }"
-  - name: execution_groups
-    type: array
-    description: "Dimensions grouped for triggering, each { pipeline_mode, lenses, dimensions, analysis_focus, output_subdir }"
-  - name: current_group
-    type: object
-    description: The execution group under analysis
-  - name: completed_analyses
-    type: array
-    description: "Completed analysis runs, each { report_path, definitive_findings_path, status }"
-  - name: all_artifact_paths
-    type: array
-    description: Paths to every analysis artifact the runs produced
-  - name: evaluation_report_path
-    type: string
-    description: Path to the `EVALUATION-REPORT.md` artifact
-  - name: evaluation_plan_path
-    type: string
-    description: Path to the `evaluation-plan.md` artifact
-  - name: scope_confirmed
-    type: boolean
-    description: Whether the user confirmed the evaluation scope
-    defaultValue: false
-  - name: dimensions_confirmed
-    type: boolean
-    description: Whether the user confirmed the dimension-to-lens mapping
-    defaultValue: false
-  - name: pipeline_mode
-    type: string
-    description: "The prism pipeline mode an execution group runs under: full-prism | portfolio | single"
-    defaultValue: full-prism
-  - name: resolution_requested
-    type: boolean
-    description: Whether the user opted into the resolution dialogue
-    defaultValue: false
-  - name: mitigation_plan_path
-    type: string
-    description: Path to the `MITIGATION-PLAN.md` artifact
   - name: current_finding
     type: object
     description: The finding under consideration
-  - name: accepted_mitigations
-    type: array
-    description: "Per-finding dispositions, each { finding_id, finding_severity, mitigation_type, mitigation_summary, user_decision }"
-  - name: evaluation_findings
-    type: array
-    description: "The report's findings, each carrying an ID, severity, claim, critique, and mitigation tier"
-  - name: accepted_count
-    type: number
-    description: How many findings carry an accepted or modified disposition
-    defaultValue: 0
   - name: finding_disposition
     type: string
     description: "Disposition taken on the current finding: accept | modify | skip | discuss"
-  - name: mitigations_apply_requested
-    type: boolean
-    description: Whether the user asked for the accepted mitigations to be applied to the target
-    defaultValue: false
 initialActivity: scope-definition

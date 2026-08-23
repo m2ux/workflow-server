@@ -1,7 +1,36 @@
 id: validate
-version: 3.7.0
+version: 3.8.0
 name: Verify & Validate Design
 description: Validate the implementation against tests, build, format, and lint checks when the local environment can run them.
+variables:
+  reads:
+    - branch_name
+    - component_git_dir
+    - component_path
+    - host_repo_path
+    - is_review_mode
+    - planning_folder_path
+    - pr_number
+    - project_type
+    - run_local_validation
+    - target_path
+    - target_repo
+  writes:
+    - name: code_findings_actionable
+      type: boolean
+      description: Whether any code-review finding is at or above the severity that warrants action.
+      defaultValue: false
+    - name: mark_progress_na
+      type: boolean
+      description: When true at activity_complete, commit-and-persist Applies Progress cancelled/N/A for the completed activity instead of complete, then.
+      defaultValue: false
+    - name: test_findings_actionable
+      type: boolean
+      description: Whether any test-suite finding is at or above the severity that warrants action.
+      defaultValue: false
+    - name: validation_results
+      type: object
+      description: Aggregate validation envelope — { check_status, clippy_status, test_status, fmt_status, validation_passed }.
 required: true
 steps:
   - kind: action

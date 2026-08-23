@@ -1,7 +1,84 @@
 id: scope-and-draft
-version: 1.13.0
+version: 1.14.0
 name: Scope and Draft
 description: A complete file manifest and structural design for the target workflow, drafted and reviewed file by file with schema validation on each YAML file, then planning-artifact conformance verify.
+variables:
+  reads:
+    - impact_analysis_path
+    - operation_type
+    - planning_folder_path
+    - workflow_id
+  writes:
+    - name: anti_pattern_finding_count
+      type: number
+      description: Count of anti-pattern violations from audit-anti-patterns.
+      defaultValue: 0
+    - name: anti_pattern_findings_path
+      type: string
+      description: Absolute path to the persisted anti-pattern-findings artifact (review mode).
+      defaultValue: ""
+    - name: component_git_dir
+      type: string
+      description: Absolute path of the workflows library's git working tree under the checkout.
+      defaultValue: ""
+    - name: current_file
+      type: object
+      description: Current file being drafted during the content drafting loop.
+    - name: draft_attestation_path
+      type: string
+      description: Absolute path to the persisted draft-attestation artifact.
+      defaultValue: ""
+    - name: drafting_plan_path
+      type: string
+      description: Absolute path to the persisted per-file drafting-plan artifact.
+      defaultValue: ""
+    - name: file_review_note_path
+      type: string
+      description: Absolute path to the persisted per-file review-note artifact.
+      defaultValue: ""
+    - name: has_critical_finding
+      type: boolean
+      description: Whether any audit finding is Critical severity (a schema-invalid or structurally broken construct that must not be committed).
+      defaultValue: false
+    - name: has_unflagged_removals
+      type: boolean
+      description: True when content drafting detects removals not flagged during impact analysis.
+      defaultValue: false
+    - name: needs_audit_fixes
+      type: boolean
+      description: Whether audit passes surfaced findings that still need remedia.
+      defaultValue: false
+    - name: principle_finding_count
+      type: number
+      description: Count of design-principle findings from audit-principles.
+      defaultValue: 0
+    - name: principle_findings_path
+      type: string
+      description: Absolute path to the persisted principle-findings artifact (review mode).
+      defaultValue: ""
+    - name: scope_manifest
+      type: array
+      description: List of files to create, modify, or remove with full paths and actions.
+    - name: scope_manifest_confirmed
+      type: boolean
+      description: Whether the complete file manifest has been confirmed.
+      defaultValue: false
+    - name: scope_manifest_path
+      type: string
+      description: Absolute path to the persisted scope-manifest artifact.
+      defaultValue: ""
+    - name: target_path
+      type: string
+      description: Feature worktree path for edits, builds, and PR ops (not host_repo_path).
+      defaultValue: ""
+    - name: workflow_branch
+      type: string
+      description: The feature branch in the workflows repo that the authored/updated workflow's changes are committed to (e.g., workflow/{workflow_id}).
+      defaultValue: ""
+    - name: worktree_created
+      type: boolean
+      description: True when a dedicated worktree at target_path was created or reused by this workflow run (only those worktrees are eligible for optional.
+      defaultValue: false
 required: true
 techniques:
   - scatter-gather

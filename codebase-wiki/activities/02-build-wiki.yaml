@@ -1,7 +1,18 @@
 id: build-wiki
-version: 1.0.0
+version: 1.1.0
 name: Build Wiki
 description: Ingest each area in the confirmed plan into typed, cited wiki pages, maintaining the index and log on every mutation.
+variables:
+  reads:
+    - ingest_plan
+    - ingest_scope_confirmed
+    - raw_baseline_commit
+    - wiki_path
+  writes:
+    - name: target_area
+      type: string
+      description: A single source area — module, package, subsystem, or file set — named within the ingest scope, the unit an ingest pass operates over.
+      defaultValue: ""
 required: true
 steps:
   - kind: action

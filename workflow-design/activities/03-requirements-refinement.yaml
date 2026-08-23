@@ -1,7 +1,38 @@
 id: requirements-refinement
-version: 1.11.0
+version: 1.13.0
 name: Requirements Refinement
 description: A workflow specification across its design dimensions, with design assumptions surfaced, reconciled in a while-loop, and open judgements deferred to Gate 2.
+variables:
+  reads:
+    - operation_type
+    - planning_folder_path
+  writes:
+    - name: assumption_decisions
+      type: array
+      description: Per-assumption decisions (accept/reject/defer) for review-assumptions::record.
+      defaultValue: []
+    - name: assumptions_log
+      type: object
+      description: The design-assumptions log surfaced and reviewed during requirements-refinement — each assumption with its category, risk.
+    - name: design_dimensions
+      type: array
+      description: The ordered design dimensions to elicit for this run's mode.
+    - name: dimension_questions
+      type: string
+      description: Markdown elicitation prompt for the current design dimension (from prepare-dimension).
+      defaultValue: ""
+    - name: has_open_assumptions
+      type: boolean
+      description: Whether open design judgements remain after reconcile-design-assumptions — listed in the Gate 2 batch payload when true.
+      defaultValue: false
+    - name: has_resolvable_assumptions
+      type: boolean
+      description: Whether audit-resolvable design assumptions remain — drives the requirements-refinement reconcile while-loop.
+      defaultValue: false
+    - name: specification_path
+      type: string
+      description: Absolute path to the persisted design-specification artifact.
+      defaultValue: ""
 required: true
 techniques:
   - scatter-gather

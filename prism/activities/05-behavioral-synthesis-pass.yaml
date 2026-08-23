@@ -1,7 +1,18 @@
 id: behavioral-synthesis-pass
-version: 1.3.0
+version: 1.4.0
 name: Behavioral Synthesis Pass
 description: Run the behavioral synthesis lens against each behavioral unit's artifacts.
+variables:
+  reads:
+    - analysis_units
+    - behavioral_output_paths
+  writes:
+    - name: all_artifact_paths
+      type: array
+      description: Accumulated list of all artifact paths across all units
+    - name: current_unit
+      type: object
+      description: Current analysis unit during iteration loop
 techniques:
   - scatter-gather
 steps:

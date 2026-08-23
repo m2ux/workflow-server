@@ -1,7 +1,54 @@
 id: validate-and-commit
-version: 1.8.1
+version: 1.9.0
 name: Validate and Commit
 description: Final validation, scope verification, and README generation/update, then Gate 2 approve-to-commit and commit of the workflow changes on the session feature branch with a pull request opened against the workflows branch (create/update); in review mode the compliance report is committed directly.
+variables:
+  reads:
+    - assumptions_log
+    - draft_attestation_path
+    - has_open_assumptions
+    - impact_analysis_path
+    - operation_type
+    - planning_folder_path
+    - scope_manifest
+    - scope_manifest_path
+    - specification_path
+    - target_path
+    - workflow_branch
+    - workflow_id
+  writes:
+    - name: addressed_count
+      type: number
+      description: Scope-manifest items confirmed addressed by scope-verification.
+      defaultValue: 0
+    - name: fail_count
+      type: number
+      description: Count of YAML files that failed schema validation.
+      defaultValue: 0
+    - name: pass_count
+      type: number
+      description: Count of YAML files that passed schema validation.
+      defaultValue: 0
+    - name: pr_number
+      type: string
+      description: Number of the pull request opened for the workflow change (create/update modes).
+      defaultValue: ""
+    - name: pr_url
+      type: string
+      description: URL of the pull request opened against the workflows branch for the workflow change (create/update modes).
+      defaultValue: ""
+    - name: report_path
+      type: string
+      description: Absolute path to the persisted compliance or post-update review report.
+      defaultValue: ""
+    - name: total_count
+      type: number
+      description: Total scope-manifest items checked by scope-verification.
+      defaultValue: 0
+    - name: unaddressed_count
+      type: number
+      description: Scope-manifest items still unaddressed after scope-verification.
+      defaultValue: 0
 required: true
 steps:
   - kind: technique

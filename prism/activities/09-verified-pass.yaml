@@ -1,7 +1,14 @@
 id: verified-pass
-version: 1.2.0
+version: 1.3.0
 name: Verified Analysis Pass
 description: L12 structural analysis with gap detection and re-analysis.
+variables:
+  reads:
+    - target
+  writes:
+    - name: all_artifact_paths
+      type: array
+      description: Accumulated list of all artifact paths across all units
 steps:
   - kind: technique
     id: run-initial-l12

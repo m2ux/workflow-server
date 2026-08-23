@@ -1,7 +1,82 @@
 id: validate-and-commit
-version: 1.1.0
+version: 1.3.0
 name: Validate and Commit
 description: "Re-derive the high-severity findings independently, persist the register, take the operator's disposition, then re-verify scope, commit, publish and close out. Terminal."
+variables:
+  reads:
+    - change_brief_path
+    - component_git_dir
+    - fail_count
+    - operation_type
+    - planning_folder_path
+    - register_sections
+    - remediation_round
+    - removals_approved
+    - scope_manifest
+    - scope_manifest_path
+    - target_path
+    - target_workflow_ids
+    - workflow_branch
+    - worktree_created
+  writes:
+    - name: addressed_count
+      type: number
+      description: Scope-manifest items confirmed addressed.
+      defaultValue: 0
+    - name: commit_approved
+      type: boolean
+      description: Whether the operator approved the change for commit.
+      defaultValue: false
+    - name: has_coverage_gap
+      type: boolean
+      description: Whether any enumeration unit was blocked rather than walked.
+      defaultValue: false
+    - name: has_critical_finding
+      type: boolean
+      description: Whether any finding is Critical severity — a schema-invalid or structurally broken construct that must not be committed.
+      defaultValue: false
+    - name: open_finding_count
+      type: number
+      description: Count of open findings on the decision surface.
+      defaultValue: 0
+    - name: operation_type
+      type: string
+      description: The classified operation for the request — create, update, or review.
+    - name: remediation_round
+      type: number
+      description: Remediation round for this run.
+      defaultValue: 0
+    - name: remediation_selected
+      type: boolean
+      description: Whether the operator chose remediation over acceptance at the pre-attestation gate.
+      defaultValue: false
+    - name: report_path
+      type: string
+      description: Absolute path to the persisted findings register.
+      defaultValue: ""
+    - name: review_closed
+      type: boolean
+      description: Whether a review run closed on its report with no escalation.
+      defaultValue: false
+    - name: total_count
+      type: number
+      description: Total scope-manifest items checked.
+      defaultValue: 0
+    - name: unaddressed_count
+      type: number
+      description: Scope-manifest items still unaddressed.
+      defaultValue: 0
+    - name: update_seeded_from_review
+      type: boolean
+      description: True when update mode was entered from a review-mode fix disposition.
+      defaultValue: false
+    - name: verified_findings
+      type: array
+      description: Findings whose claims survived independent re-derivation.
+    - name: worktree_created
+      type: boolean
+      description: True when a dedicated worktree at `target_path` was created or reused by this run.
+      defaultValue: false
 required: true
 steps:
   - kind: technique

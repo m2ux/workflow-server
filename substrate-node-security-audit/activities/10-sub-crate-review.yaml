@@ -1,7 +1,11 @@
 id: sub-crate-review
-version: 1.11.0
+version: 1.12.0
 name: "Sub-Agent: Crate Deep Review"
 description: Structured crate review for Group A sub-agents.
+variables:
+  reads:
+    - gitnexus_available
+    - planning_folder_path
 required: false
 steps:
   - kind: technique

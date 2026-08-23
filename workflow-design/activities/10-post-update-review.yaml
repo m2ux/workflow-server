@@ -1,7 +1,82 @@
 id: post-update-review
-version: 1.10.0
+version: 1.11.0
 name: Post-Update Review
 description: Post-commit compliance audit of the updated workflow — expressiveness, conformance, principles, anti-patterns, and schema validation. When findings remain, remediates automatically (never asks accept/iterate/revert) and publishes the remediation to the open pull request.
+variables:
+  reads:
+    - planning_folder_path
+    - scope_manifest
+    - target_path
+    - workflow_branch
+  writes:
+    - name: addressed_count
+      type: number
+      description: Scope-manifest items confirmed addressed by scope-verification.
+      defaultValue: 0
+    - name: anti_pattern_findings_path
+      type: string
+      description: Absolute path to the persisted anti-pattern-findings artifact (review mode).
+      defaultValue: ""
+    - name: conformance_finding_count
+      type: number
+      description: Count of convention-conformance divergences from audit-conformance.
+      defaultValue: 0
+    - name: conformance_findings_path
+      type: string
+      description: Absolute path to the persisted conformance-findings artifact when findings exist.
+      defaultValue: ""
+    - name: expressiveness_finding_count
+      type: number
+      description: Count of expressiveness findings from audit-expressiveness.
+      defaultValue: 0
+    - name: expressiveness_findings_path
+      type: string
+      description: Absolute path to the persisted expressiveness-findings artifact when findings exist.
+      defaultValue: ""
+    - name: fail_count
+      type: number
+      description: Count of YAML files that failed schema validation.
+      defaultValue: 0
+    - name: needs_audit_fixes
+      type: boolean
+      description: Whether audit passes surfaced findings that still need remedia.
+      defaultValue: false
+    - name: needs_recommit
+      type: boolean
+      description: True when post-update remedia edits are pending publication to the open pull request.
+      defaultValue: false
+    - name: pass_count
+      type: number
+      description: Count of YAML files that passed schema validation.
+      defaultValue: 0
+    - name: pr_number
+      type: string
+      description: Number of the pull request opened for the workflow change (create/update modes).
+      defaultValue: ""
+    - name: pr_url
+      type: string
+      description: URL of the pull request opened against the workflows branch for the workflow change (create/update modes).
+      defaultValue: ""
+    - name: principle_findings_path
+      type: string
+      description: Absolute path to the persisted principle-findings artifact (review mode).
+      defaultValue: ""
+    - name: report_path
+      type: string
+      description: Absolute path to the persisted compliance or post-update review report.
+      defaultValue: ""
+    - name: review_findings_count
+      type: number
+      description: Total number of compliance findings identified during review.
+      defaultValue: 0
+    - name: total_count
+      type: number
+      description: Total scope-manifest items checked by scope-verification.
+      defaultValue: 0
+    - name: unaddressed_count
+      type: number
+      description: Scope-manifest items still unaddressed after scope-verification.
+      defaultValue: 0
 required: true
 steps:
   - kind: technique

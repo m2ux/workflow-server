@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 4.20.0
+version: 4.21.0
 title: Security Audit Workflow
 description: Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases.
 author: m2ux
@@ -50,18 +50,9 @@ variables:
   - name: target_submodule
     type: string
     description: Path to the submodule being audited (e.g., midnight-node)
-  - name: file_inventory
-    type: string
-    description: Inventory of source files in scope, recorded at scope setup.
-  - name: target_commit
-    type: string
-    description: Git commit hash to audit
   - name: in_scope
     type: string
     description: Space-separated list of crate/module paths to audit (e.g., 'node/ pallets/ primitives/ runtime/ ledger/ util/ res/ metadata/')
-  - name: out_of_scope
-    type: string
-    description: Space-separated list of exclusions (e.g., 'indexer/ target/ test/ mock/ bench/')
   - name: planning_folder_path
     type: string
     description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-NN-{submodule}-security-audit"
@@ -69,9 +60,6 @@ variables:
     type: string
     description: Path to the audit prompt template
     defaultValue: .engineering/artifacts/planning/2026-02-06-audit-strategy-reverse-engineering/01-audit-prompt-template.md
-  - name: reference_report
-    type: string
-    description: Path to professional audit report for gap analysis (optional)
   - name: ensemble_enabled
     type: boolean
     description: Whether to run an ensemble pass with a second model
@@ -79,41 +67,5 @@ variables:
   - name: has_reference_report
     type: boolean
     description: Whether a professional reference report is available for gap analysis
-    defaultValue: false
-  - name: cargo_audit_available
-    type: boolean
-    description: Whether cargo audit ran successfully during setup
-    defaultValue: false
-  - name: gitnexus_available
-    type: boolean
-    description: Whether the target codebase is GitNexus-indexed; gates graph-based structural analysis (enumeration, call graph, reachability, blast radius), with grep and full-file reads as the fallback when false
-    defaultValue: false
-  - name: reconnaissance_complete
-    type: boolean
-    description: Phase 1a gate — reconnaissance finished
-    defaultValue: false
-  - name: primary_audit_complete
-    type: boolean
-    description: Phase 1b gate — primary audit finished
-    defaultValue: false
-  - name: adversarial_complete
-    type: boolean
-    description: Phase 2 gate — adversarial verification finished
-    defaultValue: false
-  - name: report_complete
-    type: boolean
-    description: Phase 3 gate — report generation finished
-    defaultValue: false
-  - name: dispatch_complete
-    type: boolean
-    description: Phase 1b dispatch gate — every assigned agent dispatched and returned; gates report-generation entry
-    defaultValue: false
-  - name: verification_complete
-    type: boolean
-    description: Phase 1b verification gate — set from the verification sub-agent's output; gates report-generation entry
-    defaultValue: false
-  - name: merge_complete
-    type: boolean
-    description: Phase 1b merge gate — set from the merge sub-agent's reconciliation; gates report-generation entry
     defaultValue: false
 initialActivity: scope-setup

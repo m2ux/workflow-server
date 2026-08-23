@@ -1,7 +1,48 @@
 id: assumptions-review
-version: 2.7.0
+version: 2.9.0
 name: Assumptions Review
 description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
+variables:
+  reads:
+    - assumption_decisions
+    - branch_name
+    - component_git_dir
+    - has_open_questions
+    - has_resolvable_assumptions
+    - is_review_mode
+    - issue_number
+    - issue_platform
+    - needs_comprehension
+    - needs_further_discussion
+    - needs_plan_revision
+    - planning_folder_path
+    - pr_number
+    - stealth_mode
+    - target_path
+    - target_repo
+  writes:
+    - name: current_assumption
+      type: object
+      description: Current assumption during assumption review loop (from task_assumptions).
+    - name: has_deferred_assumptions
+      type: boolean
+      description: Whether any assumptions were deferred during review (triggers issue tracker posting).
+      defaultValue: false
+    - name: has_open_assumptions
+      type: boolean
+      description: Whether unresolved assumptions remain after analyse-challenge that require stakeholder input.
+      defaultValue: false
+    - name: needs_individual_interview
+      type: boolean
+      description: Whether the residual batch checkpoint selected individual drill-down.
+      defaultValue: false
+    - name: open_assumptions
+      type: array
+      description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down.
+    - name: post_summary_approved
+      type: boolean
+      description: Whether the deferred-assumptions summary is posted to the issue tracker, as decided at the post-summary-review gate.
+      defaultValue: false
 required: true
 techniques:
   - scatter-gather
@@ -61,21 +102,14 @@ steps:
           - id: accept
             label: Accept assumption
             description: This assumption is valid — proceed with it
-            effect:
-              setVariable:
-                assumption_resolved_inline: true
           - id: reject
             label: Reject assumption
             description: This assumption is wrong — provide a correction
-            effect:
-              setVariable:
-                assumption_resolved_inline: true
           - id: defer
             label: Defer
             description: Not enough information to decide now — revisit later
             effect:
               setVariable:
-                assumption_deferred: true
                 has_deferred_assumptions: true
       - kind: technique
         id: record-decision

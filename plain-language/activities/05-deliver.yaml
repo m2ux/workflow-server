@@ -1,7 +1,20 @@
 id: deliver
-version: 1.1.0
+version: 1.2.0
 name: Deliver
 description: "Write the evaluated plain-language document to its output path with its completed ISO checklist, and close the run."
+variables:
+  reads:
+    - checklist_path
+    - document_draft
+    - document_title
+    - evaluation_report_path
+    - open_issue_count
+    - output_path
+  writes:
+    - name: document_path
+      type: string
+      description: Absolute path to the persisted plain-language document.
+      defaultValue: ""
 required: false
 steps:
   - kind: technique

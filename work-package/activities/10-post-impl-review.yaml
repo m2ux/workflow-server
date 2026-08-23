@@ -1,7 +1,62 @@
 id: post-impl-review
-version: 1.22.0
+version: 1.23.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
+variables:
+  reads:
+    - block_line_range
+    - block_path
+    - branch_name
+    - code_findings_actionable
+    - component_git_dir
+    - component_name
+    - current_block_index
+    - flagged_block_indices
+    - gitnexus_indexed
+    - has_critical_blocker
+    - is_review_mode
+    - issue_title
+    - planning_folder_path
+    - pr_number
+    - problem_complexity
+    - push_remote
+    - skip_architecture_summary
+    - target_path
+    - target_repo
+    - test_findings_actionable
+  writes:
+    - name: change_block_index
+      type: string
+      description: Absolute path to the index file mapping change-block IDs to their per-block artifacts under .engineering/artifacts/change-blocks/.
+      defaultValue: ""
+    - name: code_findings_actionable
+      type: boolean
+      description: Whether any code-review finding is at or above the severity that warrants action.
+      defaultValue: false
+    - name: current_block_index
+      type: number
+      description: Current block index during manual diff review loop (from flagged_block_indices).
+      defaultValue: 0
+    - name: has_critical_blocker
+      type: boolean
+      description: Whether any flagged block is a critical blocker.
+      defaultValue: false
+    - name: has_flagged_blocks
+      type: boolean
+      description: Whether user flagged any change blocks during manual diff review.
+      defaultValue: false
+    - name: reviewed_code_base_url
+      type: string
+      description: Permanent blob-URL prefix for reviewed-code citations, down to the full head sha.
+      defaultValue: ""
+    - name: run_local_validation
+      type: boolean
+      description: True when the user permits running the project validation suite locally.
+      defaultValue: false
+    - name: test_findings_actionable
+      type: boolean
+      description: Whether any test-suite finding is at or above the severity that warrants action.
+      defaultValue: false
 required: true
 triggers:
   - workflow: prism

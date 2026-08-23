@@ -1,7 +1,25 @@
 id: source-analysis
-version: 1.0.0
+version: 1.1.0
 name: Source Analysis
 description: "Audit the existing document against the principles and persist the findings and strengths a rewrite works from, or an audit run reports."
+variables:
+  reads:
+    - document_title
+    - operation_type
+    - planning_folder_path
+    - source_document_path
+  writes:
+    - name: finding_count
+      type: number
+      description: Count of plain-language findings recorded against the existing document.
+      defaultValue: 0
+    - name: source_analysis
+      type: object
+      description: The audit of the existing document against the principles, produced on rewrite and audit runs.
+    - name: source_analysis_path
+      type: string
+      description: Absolute path to the persisted source-analysis artifact.
+      defaultValue: ""
 required: false
 steps:
   - kind: technique

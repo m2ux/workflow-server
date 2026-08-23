@@ -1,7 +1,23 @@
 id: deliver-results
-version: 2.0.0
+version: 2.1.0
 name: Deliver Evaluation Results
 description: Present the final evaluation results to the user.
+variables:
+  reads:
+    - all_artifact_paths
+    - completed_analyses
+    - dimension_plan
+    - evaluation_description
+    - evaluation_output_path
+    - evaluation_plan_path
+    - evaluation_report_path
+    - evaluation_target_type
+    - target_path
+  writes:
+    - name: resolution_requested
+      type: boolean
+      description: Whether the user opted into the resolution dialogue
+      defaultValue: false
 steps:
   - kind: technique
     id: compile-delivery-metrics

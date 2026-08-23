@@ -1,7 +1,21 @@
 id: update-specification
-version: 1.3.0
+version: 1.4.0
 name: Update Specification
 description: Apply the requirements analysis (initial pass) or the validation findings (correction pass) to produce the complete updated specification, preserving the specification protocol verbatim, and write it as a versioned working specification.
+variables:
+  reads:
+    - source_path
+    - target_doc_exists
+    - target_doc_path
+  writes:
+    - name: correction_iteration
+      type: number
+      description: Count of correction passes performed so far; 0 on the initial update
+      defaultValue: 0
+    - name: working_specification_path
+      type: string
+      description: Absolute path to the working specification written for the current pass
+      defaultValue: ""
 required: true
 steps:
   - kind: technique

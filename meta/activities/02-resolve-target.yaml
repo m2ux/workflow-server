@@ -1,7 +1,38 @@
 id: resolve-target
-version: 4.6.0
+version: 4.7.0
 name: Resolve Target
 description: Detect the target repository structure (regular directory vs. submodule monorepo), resolve component_path, and confirm the session's host binding agrees with the derivation — headlessly, prompting only when a monorepo has more than one target-component submodule.
+variables:
+  reads:
+    - component_path
+    - host_repo_path
+    - is_resuming
+    - mentioned_repo
+    - planning_folder_path
+    - target_repo
+  writes:
+    - name: candidate_component
+      type: object
+      description: The submodule currently offered at the component-selection gate.
+    - name: component_path
+      type: string
+      description: Path of the component being worked on, relative to the host repository — '.' for a regular repo, the submodule path for a monorepo.
+      defaultValue: .
+    - name: component_selection_needed
+      type: boolean
+      description: Whether more than one target-component submodule remains, so the user still has a component to pick.
+      defaultValue: false
+    - name: is_monorepo
+      type: boolean
+      description: Whether the target repository is a submodule monorepo (set by resolve-target)
+      defaultValue: false
+    - name: recommended_component_path
+      type: string
+      description: Path of the best-supported candidate submodule, from the context the request carries.
+    - name: submodules
+      type: array
+      description: Target-component submodules of the host repository, each { path, name, url }.
+      defaultValue: []
 required: true
 steps:
   - kind: action

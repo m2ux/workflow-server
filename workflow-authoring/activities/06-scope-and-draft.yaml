@@ -1,7 +1,52 @@
 id: scope-and-draft
-version: 1.2.0
+version: 1.4.0
 name: Scope and Draft
 description: "Prepare the edit worktree, enumerate the complete file manifest, author every file the manifest names, and bring the target README and the planning artifacts into line with what was drafted."
+variables:
+  reads:
+    - component_git_dir
+    - impact_analysis_path
+    - operation_type
+    - planning_folder_path
+    - removals_approved
+    - scope_round
+    - target_path
+    - workflow_id
+  writes:
+    - name: current_file
+      type: object
+      description: The file currently being drafted.
+    - name: has_unflagged_removals
+      type: boolean
+      description: True when drafting detects removals absent from the impact inventory.
+      defaultValue: false
+    - name: removal_disposition
+      type: string
+      description: Disposition of an unflagged removal — `flagged | restored`.
+      defaultValue: ""
+    - name: scope_manifest
+      type: array
+      description: List of files to create, modify or remove with full paths and actions.
+    - name: scope_manifest_confirmed
+      type: boolean
+      description: Whether the complete file manifest has been confirmed.
+      defaultValue: false
+    - name: scope_manifest_path
+      type: string
+      description: Absolute path to the persisted scope-manifest artifact.
+      defaultValue: ""
+    - name: scope_round
+      type: number
+      description: Scope-confirmation round for this run.
+      defaultValue: 0
+    - name: workflow_branch
+      type: string
+      description: The feature branch in the workflows repo carrying this change.
+      defaultValue: ""
+    - name: worktree_created
+      type: boolean
+      description: True when a dedicated worktree at `target_path` was created or reused by this run.
+      defaultValue: false
 required: true
 steps:
   - kind: technique

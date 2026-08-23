@@ -1,7 +1,10 @@
 id: reconnaissance
-version: 3.4.0
+version: 3.6.0
 name: Reconnaissance
 description: Run codebase reconnaissance and security decomposition.
+variables:
+  reads:
+    - planning_folder_path
 required: true
 techniques:
   - scatter-gather
@@ -49,9 +52,6 @@ steps:
     actions:
       - action: log
         message: Reconnaissance complete — architecture mapped and function registry built
-      - action: set
-        target: reconnaissance_complete
-        value: true
 transitions:
   - to: primary-audit
     isDefault: true

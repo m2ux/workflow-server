@@ -1,7 +1,39 @@
 id: scope-definition
-version: 1.2.0
+version: 1.3.0
 name: Define Evaluation Scope
 description: Collect the evaluation target, description, and output path.
+variables:
+  reads:
+    - evaluation_description
+    - evaluation_output_path
+    - evaluation_target_type
+    - target_path
+  writes:
+    - name: dimensions
+      type: array
+      description: The evaluation dimensions, each { name, description, focus_areas }
+    - name: evaluation_description
+      type: string
+      description: What to evaluate, the evaluation's goals, and its focus areas or concerns
+      required: true
+    - name: evaluation_output_path
+      type: string
+      description: Directory the evaluation artifacts are written to
+      required: true
+    - name: evaluation_target_type
+      type: string
+      description: "The target's kind: document | document-set | codebase | mixed"
+    - name: lens_overrides
+      type: object
+      description: Lens overrides keyed by dimension name, each { pipeline_mode, lenses }
+    - name: scope_confirmed
+      type: boolean
+      description: Whether the user confirmed the evaluation scope
+      defaultValue: false
+    - name: target_path
+      type: string
+      description: Path to the document, proposal, codebase, or artifact set to evaluate
+      required: true
 steps:
   - kind: technique
     id: collect-inputs

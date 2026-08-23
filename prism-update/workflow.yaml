@@ -1,5 +1,5 @@
 id: prism-update
-version: 1.1.1
+version: 1.2.0
 title: Prism Update Workflow
 description: Sync the prism workflow's resources, techniques, and documentation with upstream changes from the agi-in-md project.
 author: m2ux
@@ -18,9 +18,6 @@ techniques:
   activity:
     - variable-binding
 variables:
-  - name: planning_folder_path
-    type: string
-    description: Path to the planning folder for this workflow execution (e.g., .engineering/artifacts/planning/prism-update-YYYY-MM-DD)
   - name: upstream_path
     type: string
     description: Path to the upstream prisms directory (e.g., /path/to/agi-in-md/prisms/)
@@ -32,22 +29,7 @@ variables:
   - name: change_set
     type: object
     description: "Categorized diff result: { new: [{name, upstream_file, family, optimal_model}], modified: [{name, resource_file, upstream_file}], renamed: [{old_name, new_name, resource_file, upstream_file}], deleted: [{name, resource_file}] }"
-  - name: exclusions
-    type: array
-    description: Prism filenames to exclude from import (e.g., arc_code.md, codegen.md)
-    defaultValue: []
   - name: next_index
     type: number
     description: Next available resource index, derived from highest existing index + 1
-  - name: branch_name
-    type: string
-    description: Feature branch name for the update
-  - name: exclusions_adjusted
-    type: boolean
-    description: Whether the user chose to adjust exclusions at the review checkpoint
-    defaultValue: false
-  - name: has_issues
-    type: boolean
-    description: Whether verification found consistency issues requiring fixes
-    defaultValue: false
 initialActivity: discover-changes

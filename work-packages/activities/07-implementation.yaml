@@ -1,7 +1,27 @@
 id: implementation
-version: 1.3.0
+version: 1.4.0
 name: Implementation
 description: Execute each planned work package in priority order by triggering the work-package workflow
+variables:
+  reads:
+    - completed_packages
+    - initiative_name
+    - parent_workflow
+    - planning_folder_path
+    - priority_order
+  writes:
+    - name: completed_packages
+      type: array
+      description: List of completed work packages
+    - name: current_package
+      type: object
+      description: Currently active work package being planned or implemented
+    - name: overall_progress
+      type: string
+      description: Progress indicator (e.g., '3/7 complete')
+    - name: remaining_packages
+      type: array
+      description: Ordered list of work packages not yet started (derived from priority order)
 techniques:
   - scatter-gather
 triggers:

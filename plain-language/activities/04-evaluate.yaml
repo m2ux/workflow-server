@@ -1,7 +1,42 @@
 id: evaluate
-version: 1.0.0
+version: 1.1.0
 name: Evaluate
 description: "Evaluate the draft against the four principles as its reader would, revise while issues remain, and complete the ISO checklist once every principle is met."
+variables:
+  reads:
+    - document_draft
+    - document_title
+    - needs_revision
+    - planning_folder_path
+    - revision_round
+  writes:
+    - name: checklist_path
+      type: string
+      description: Absolute path to the persisted iso-checklist artifact.
+      defaultValue: ""
+    - name: document_draft
+      type: string
+      description: The current draft of the plain-language document.
+      defaultValue: ""
+    - name: evaluation_report
+      type: object
+      description: The structured result of evaluating the draft against the four principles (ISO 24495-1 5.4).
+    - name: evaluation_report_path
+      type: string
+      description: Absolute path to the persisted evaluation-report artifact.
+      defaultValue: ""
+    - name: needs_revision
+      type: boolean
+      description: True when the evaluation surfaces issues that send the draft back for another pass.
+      defaultValue: false
+    - name: open_issue_count
+      type: number
+      description: Count of evaluation issues still open against the current draft.
+      defaultValue: 0
+    - name: revision_round
+      type: number
+      description: Count of evaluate-revise rounds completed on the current document.
+      defaultValue: 0
 required: false
 steps:
   - kind: loop

@@ -1,7 +1,15 @@
 id: package-planning
-version: 1.2.0
+version: 1.3.0
 name: Work Package Planning
 description: Define scope, dependencies, effort, and success criteria for each work package
+variables:
+  reads:
+    - planning_folder_path
+    - work_packages
+  writes:
+    - name: current_package
+      type: object
+      description: Currently active work package being planned or implemented
 techniques:
   - scatter-gather
 steps:

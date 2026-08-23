@@ -1,7 +1,32 @@
 id: intake-and-profile
-version: 1.0.0
+version: 1.2.0
 name: Intake and Profile
 description: "Classify the request as author, rewrite or audit, settle the reader profile and content selection, and persist the document profile the rest of the run is built on."
+variables:
+  reads:
+    - user_request
+  writes:
+    - name: controlled_language
+      type: boolean
+      description: When true, layer the ASD-STE100 writing rules and approved-word discipline over the ISO 24495-1 base for technical documentation.
+      defaultValue: false
+    - name: document_profile
+      type: object
+      description: The settled reader, purpose, context, and content selection for the document (ISO 24495-1 5.1).
+    - name: document_title
+      type: string
+      description: Short title of the document this run authors, rewrites, or audits.
+      defaultValue: ""
+    - name: intent_needs_confirmation
+      type: boolean
+      description: Composite gap flag for the intake gate — true when the operation type is ambiguous or the reader profile cannot be settled from the request.
+      defaultValue: false
+    - name: operation_type
+      type: string
+      description: The classified operation for the request — author, rewrite, or audit.
+    - name: planning_folder_path
+      type: string
+      description: Absolute path to this run's planning folder — the write location for every working artifact.
 required: true
 steps:
   - kind: action
@@ -29,7 +54,6 @@ steps:
         effect:
           setVariable:
             intent_needs_confirmation: false
-            document_profile_confirmed: true
       - id: confirm-author
         label: Author a new document
         description: Correct the classification to author mode.
@@ -37,7 +61,6 @@ steps:
           setVariable:
             operation_type: author
             intent_needs_confirmation: false
-            document_profile_confirmed: true
       - id: confirm-rewrite
         label: Rewrite an existing document
         description: Correct the classification to rewrite mode.
@@ -45,7 +68,6 @@ steps:
           setVariable:
             operation_type: rewrite
             intent_needs_confirmation: false
-            document_profile_confirmed: true
       - id: confirm-audit
         label: Audit an existing document
         description: Correct the classification to audit mode.
@@ -53,18 +75,6 @@ steps:
           setVariable:
             operation_type: audit
             intent_needs_confirmation: false
-            document_profile_confirmed: true
-  - kind: action
-    id: settle-profile-when-clear
-    condition:
-      type: simple
-      variable: intent_needs_confirmation
-      operator: ==
-      value: false
-    actions:
-      - action: set
-        target: document_profile_confirmed
-        value: true
   - kind: technique
     id: persist-document-profile
     technique:
@@ -73,8 +83,6 @@ steps:
         bare_filename: document-profile.md
         artifact_content: document_profile
         target_dir: planning_folder_path
-      outputs:
-        written_artifact: document_profile_path
   - kind: technique
     id: seed-planning-readme
     technique:

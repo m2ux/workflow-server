@@ -1,7 +1,16 @@
 id: reconnaissance
-version: 1.2.0
+version: 1.4.0
 name: Reconnaissance
 description: Classify discovered workflows and assign scanner agents.
+variables:
+  reads:
+    - planning_folder_path
+    - target_submodules
+  writes:
+    - name: scanners_assigned
+      type: number
+      description: Count of per-submodule scanner agents assigned during reconnaissance
+      defaultValue: 0
 techniques:
   - execute-cicd-audit
 required: true
@@ -31,9 +40,6 @@ steps:
     actions:
       - action: log
         message: Reconnaissance complete — workflows classified and scanner agents assigned
-      - action: set
-        target: reconnaissance_complete
-        value: true
 transitions:
   - to: primary-scan
     isDefault: true

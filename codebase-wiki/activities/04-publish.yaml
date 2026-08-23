@@ -1,7 +1,18 @@
 id: publish
-version: 1.0.0
+version: 1.2.0
 name: Publish
 description: Finalize the index, log, and overview, then record the wiki as published. Local-only — no branch, commit, or pull-request operations.
+variables:
+  reads:
+    - raw_baseline_commit
+    - wiki_path
+  writes:
+    - name: published_pages
+      type: array
+      description: The pages the publish refresh touches — the overview.md finalized at publish.
+    - name: wiki_overview
+      type: string
+      description: The composed overview.md completion summary — areas covered, page counts by type, the citation baseline commit, and any accepted lint findings.
 required: true
 steps:
   - kind: action
@@ -32,9 +43,6 @@ steps:
   - kind: action
     id: record-published
     actions:
-      - action: set
-        target: wiki_published
-        value: true
       - action: message
         message: "Wiki published locally at {wiki_path} — index.md, log.md, and overview.md are finalized. No branch, commit, or PR was created."
 outcome:

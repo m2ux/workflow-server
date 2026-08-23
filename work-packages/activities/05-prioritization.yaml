@@ -1,7 +1,16 @@
 id: prioritization
-version: 1.2.0
+version: 1.3.0
 name: Prioritization
 description: Prioritize work packages based on dependencies, value, risk, and effort
+variables:
+  reads:
+    - dependency_map
+    - package_plans
+    - planning_folder_path
+  writes:
+    - name: priority_order
+      type: array
+      description: Ordered list of work packages by execution priority
 steps:
   - kind: technique
     id: prioritize

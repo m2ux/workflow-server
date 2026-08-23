@@ -1,7 +1,15 @@
 id: analysis
-version: 1.3.0
+version: 1.5.0
 name: Analysis
 description: Perform completion or context analysis depending on whether continuing previous work or starting new initiative
+variables:
+  reads:
+    - analysis_type
+    - planning_folder_path
+  writes:
+    - name: analysis_document
+      type: string
+      description: Path to the analysis document produced during the analysis activity
 steps:
   - kind: technique
     id: analyze-completion

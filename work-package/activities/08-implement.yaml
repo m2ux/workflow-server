@@ -1,7 +1,52 @@
 id: implement
-version: 2.11.0
+version: 2.13.0
 name: Implement Tasks
 description: Execute the implementation plan task by task.
+variables:
+  reads:
+    - assumption_decisions
+    - branch_name
+    - component_git_dir
+    - has_open_questions
+    - has_resolvable_assumptions
+    - host_repo_path
+    - implementation_plan
+    - is_review_mode
+    - needs_comprehension
+    - planning_folder_path
+    - pr_number
+    - target_path
+    - target_repo
+  writes:
+    - name: current_assumption
+      type: object
+      description: Current assumption during assumption review loop (from task_assumptions).
+    - name: current_task
+      type: object
+      description: Current task during implementation loop (from implementation_plan.tasks).
+    - name: has_deferred_assumptions
+      type: boolean
+      description: Whether any assumptions were deferred during review (triggers issue tracker posting).
+      defaultValue: false
+    - name: has_open_assumptions
+      type: boolean
+      description: Whether unresolved assumptions remain after analyse-challenge that require stakeholder input.
+      defaultValue: false
+    - name: has_uncertain_symbols
+      type: boolean
+      description: True when the current implement task's self-review flagged one or more symbols whose provenance could not be confirmed.
+      defaultValue: false
+    - name: needs_individual_interview
+      type: boolean
+      description: Whether the residual batch checkpoint selected individual drill-down.
+      defaultValue: false
+    - name: open_assumptions
+      type: array
+      description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down.
+    - name: uncertain_symbols
+      type: string
+      description: "Multi-line list of symbols flagged by the implement task-cycle self-review whose provenance could not be confirmed (one per line: symbol."
+      defaultValue: ""
 required: true
 techniques:
   - scatter-gather

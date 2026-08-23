@@ -1,7 +1,43 @@
 id: plan-prepare
-version: 1.10.0
+version: 1.11.0
 name: Plan & Prepare
 description: Design the approach, create the work package plan, and prepare for implementation.
+variables:
+  reads:
+    - assumption_decisions
+    - branch_name
+    - component_git_dir
+    - default_branch
+    - has_open_questions
+    - has_resolvable_assumptions
+    - host_repo_path
+    - is_review_mode
+    - needs_comprehension
+    - planning_folder_path
+    - pr_number
+    - stealth_mode
+    - target_path
+    - target_repo
+  writes:
+    - name: body_conforms
+      type: boolean
+      description: True once the rendered PR body satisfies every conformance criterion in the pr-description guide.
+      defaultValue: false
+    - name: body_findings
+      type: array
+      description: List of PR-body conformance violations.
+      defaultValue: []
+    - name: has_deferred_assumptions
+      type: boolean
+      description: Whether any assumptions were deferred during review (triggers issue tracker posting).
+      defaultValue: false
+    - name: has_open_assumptions
+      type: boolean
+      description: Whether unresolved assumptions remain after analyse-challenge that require stakeholder input.
+      defaultValue: false
+    - name: open_assumptions
+      type: array
+      description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down.
 required: true
 techniques:
   - scatter-gather

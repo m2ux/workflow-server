@@ -1,7 +1,28 @@
 id: quality-review
-version: 1.1.0
+version: 1.2.0
 name: Quality Review
 description: "Criteria walk with field-level coverage evidence per target, consumer-surface reach, and definition guards as a separate mechanical net."
+variables:
+  reads:
+    - current_file
+    - open_finding_count
+    - planning_folder_path
+    - remediation_round
+    - target_path
+    - target_workflow_ids
+    - verified_findings
+  writes:
+    - name: fail_count
+      type: number
+      description: Count of YAML files that failed schema validation.
+      defaultValue: 0
+    - name: register_sections
+      type: array
+      description: Per-target register sections accumulated across the sweep.
+      defaultValue: []
+    - name: target_workflow_id
+      type: string
+      description: The workflow id currently being authored, updated or audited.
 required: true
 steps:
   - kind: technique

@@ -1,7 +1,17 @@
 id: report-generation
-version: 3.7.0
+version: 3.9.0
 name: Report Generation
 description: Consolidate findings into the final audit report.
+variables:
+  reads:
+    - dispatch_complete
+    - ensemble_enabled
+    - has_reference_report
+    - merge_complete
+    - planning_folder_path
+    - target_commit
+    - target_submodule
+    - verification_complete
 required: true
 steps:
   - kind: action
@@ -72,9 +82,6 @@ steps:
     actions:
       - action: log
         message: Report generation complete — audit report finalized
-      - action: set
-        target: report_complete
-        value: true
 decisions:
   - id: next-phase
     name: Next Phase Decision

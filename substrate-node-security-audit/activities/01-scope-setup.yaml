@@ -1,7 +1,28 @@
 id: scope-setup
-version: 2.1.0
+version: 2.2.0
 name: Scope Setup
 description: Set up the audit scope and planning folder.
+variables:
+  reads:
+    - audit_prompt_template
+    - planning_folder_path
+    - target_submodule
+    - user_request
+    - workspace_root
+  writes:
+    - name: file_inventory
+      type: string
+      description: Inventory of source files in scope, recorded at scope setup.
+    - name: gitnexus_available
+      type: boolean
+      description: Whether the target codebase is GitNexus-indexed; gates graph-based structural analysis (enumeration, call graph, reachability, blast radius), with grep and full-file reads as the fallback when false
+      defaultValue: false
+    - name: reference_report
+      type: string
+      description: Path to professional audit report for gap analysis (optional)
+    - name: target_commit
+      type: string
+      description: Git commit hash to audit
 required: true
 steps:
   - kind: action

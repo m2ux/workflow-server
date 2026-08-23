@@ -1,7 +1,19 @@
 id: dispatch-client-workflow
-version: 5.8.0
+version: 5.9.0
 name: Dispatch Client Workflow
 description: Drive the client workflow's activity loop, each worker carrying a bounded run of activities.
+variables:
+  reads:
+    - client_initial_activity
+    - client_session_index
+    - component_path
+    - host_repo_path
+    - planning_folder_path
+  writes:
+    - name: client_workflow_completed
+      type: boolean
+      description: Whether the dispatched client workflow has reached workflow_complete
+      defaultValue: false
 required: true
 steps:
   - kind: action

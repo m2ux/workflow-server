@@ -1,7 +1,10 @@
 id: report-generation
-version: 1.4.0
+version: 1.6.0
 name: Report Generation
 description: Produce the final CI/CD security audit report.
+variables:
+  reads:
+    - planning_folder_path
 techniques:
   - execute-cicd-audit
 required: true
@@ -37,9 +40,6 @@ steps:
     actions:
       - action: log
         message: Report generation complete — CI/CD security audit report finalized
-      - action: set
-        target: report_complete
-        value: true
 transitions: []
 outcome:
   - Readers can triage findings by consistent, defensible severity rather than gut feel, with the report backed by a passed coverage gate so they can trust nothing in scope was missed

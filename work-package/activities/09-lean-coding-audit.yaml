@@ -1,7 +1,26 @@
 id: lean-coding-audit
-version: 1.3.0
+version: 1.5.0
 name: Lean-Coding Audit
 description: Apply the ponytail lean-coding lens to the just-implemented change.
+variables:
+  reads:
+    - branch_name
+    - component_git_dir
+    - is_review_mode
+    - planning_folder_path
+    - pr_number
+    - safety_floor_cleared
+    - target_path
+    - target_repo
+  writes:
+    - name: has_debt_markers
+      type: boolean
+      description: Whether at least one ponytail debt marker was found in the tree.
+      defaultValue: false
+    - name: needs_simplification
+      type: boolean
+      description: Whether accepted simplifications remain to apply at the audit-findings-confirmed gate.
+      defaultValue: false
 required: true
 steps:
   - kind: technique
@@ -27,22 +46,17 @@ steps:
       - id: audit-accepted
         label: Accept audit — no changes to apply
         description: The audit findings and scoreboard are accurate; apply no simplifications and proceed.
-        effect:
-          setVariable:
-            audit_confirmed: true
       - id: apply-simplifications
         label: Apply recommended simplifications
         description: Apply the accepted simplifications in a bounded cycle, then re-score.
         effect:
           setVariable:
-            audit_confirmed: true
             needs_simplification: true
       - id: audit-findings-disputed
         label: Findings need correction
         description: The findings require correction; record the dispute and apply no simplifications this pass.
         effect:
           setVariable:
-            audit_confirmed: true
             needs_simplification: false
   - kind: loop
     id: simplification-apply-cycle

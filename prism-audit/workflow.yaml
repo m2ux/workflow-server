@@ -1,5 +1,5 @@
 id: prism-audit
-version: 2.0.0
+version: 2.1.0
 title: Security Audit Workflow
 description: Orchestrate security audits by generating tailored audit prompts from user descriptions and triggering prism workflow(s) for analysis. Audit-specific customisation is isolated here, keeping the prism workflow generic.
 author: m2ux
@@ -31,35 +31,10 @@ variables:
     type: string
     description: Path to the codebase or directory to audit
     required: true
-  - name: target
-    type: string
-    description: The evaluation target an analysis run analyses
-  - name: target_description
-    type: string
-    description: Short description of what an audit scope covers
   - name: audit_output_path
     type: string
     description: Directory the audit artifacts are written to
     required: true
-  - name: output_path
-    type: string
-    description: The output location of the audit scope under analysis
-  - name: audit_prompt
-    type: string
-    description: Generated audit prompt text produced by the prompt-generation activity
-  - name: audit_prompt_path
-    type: string
-    description: File path to the written audit-prompt.md artifact
-  - name: pipeline_mode
-    type: string
-    description: "Prism pipeline mode to use for analysis (default: full-prism for thorough audit coverage)"
-    defaultValue: full-prism
-  - name: audit_scopes
-    type: array
-    description: "Array of scope objects for triggering prism runs. Each scope: { target, output_subdir, pipeline_mode, analysis_focus }. Populated by prompt-generation based on codebase structure."
-  - name: current_scope
-    type: object
-    description: Current audit scope during the execute-analysis iteration loop
   - name: completed_analyses
     type: array
     description: "Array of completed prism runs, each read from that run's RUN-MANIFEST.json: { report_path, definitive_findings_path, status } plus the run's scope reference"
@@ -69,18 +44,4 @@ variables:
   - name: audit_report_path
     type: string
     description: Path to the final AUDIT-REPORT.md
-  - name: detailed_findings_path
-    type: string
-    description: Path to DETAILED-FINDINGS.md
-  - name: trade_offs_path
-    type: string
-    description: Path to DESIGN-TRADE-OFFS.md
-  - name: scope_confirmed
-    type: boolean
-    description: Whether the user confirmed the audit scope at the confirm-scope checkpoint
-    defaultValue: false
-  - name: security_characteristics_count
-    type: number
-    description: Count of security-relevant patterns found in the target during reconnaissance. Gates the no-security-characteristics checkpoint (fires when 0).
-    defaultValue: 0
 initialActivity: scope-definition
