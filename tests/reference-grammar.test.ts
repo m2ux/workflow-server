@@ -34,8 +34,8 @@ describe('published grammar terms', () => {
     expect(new Set(GRAMMAR_TERMS.map((t) => t.id)).size).toBe(GRAMMAR_TERMS.length);
   });
 
-  it('fixes the verb list at the single verb `apply`', () => {
-    expect([...INVOKING_VERBS]).toEqual(['apply']);
+  it('fixes the verb list at five verbs', () => {
+    expect([...INVOKING_VERBS]).toEqual(['apply', 'via', 'use', 'follow', 'per']);
   });
 
   it('carries no anchor slugger, so the tree holds one slug computation', async () => {
@@ -132,6 +132,23 @@ describe('call-site extraction', () => {
   it('counts a link only when an invoking verb sits earlier on the line', () => {
     expect(extractCallSites('1. apply [x](./x.md) now')).toHaveLength(1);
     expect(extractCallSites('1. see [x](./x.md) for detail')).toHaveLength(0);
+  });
+
+  it('counts each of the five published verbs', () => {
+    expect(extractCallSites('- derive the edge set via [q](./q.md)')).toHaveLength(1);
+    expect(extractCallSites('- use [c](./c.md) to read the symbol')).toHaveLength(1);
+    expect(extractCallSites('- follow [p](./p.md) to the end')).toHaveLength(1);
+    expect(extractCallSites('- resolve the id per [r](./r.md)')).toHaveLength(1);
+  });
+
+  it('reads a cross-reference verb outside the list as a citation rather than a call', () => {
+    for (const line of ['- see [x](./x.md)', '- check [x](./x.md)', '- as in [x](./x.md)']) {
+      expect(extractCallSites(line)).toHaveLength(0);
+    }
+  });
+
+  it('counts a verb abutting punctuation, the boundary the totals are measured against', () => {
+    expect(extractCallSites('- availability via: [v](./v.md)')).toHaveLength(1);
   });
 
   it('matches the verb case-insensitively', () => {

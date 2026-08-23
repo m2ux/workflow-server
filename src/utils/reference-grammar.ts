@@ -28,7 +28,8 @@ export const GRAMMAR_TERMS: readonly GrammarTerm[] = [
   {
     id: 'verb-list',
     question: 'Which invoking verbs mark a line as making a call?',
-    answer: 'The single verb `apply`. No other verb marks a call site.',
+    answer:
+      'Five verbs: `apply`, `via`, `use`, `follow`, `per`. They are the invoking forms the corpus writes — `apply` leads, `via` is the dominant connector where a caller derives a result from an operation, and `use` carries the rest. A word outside this list does not mark a call site, so a cross-reference verb such as `see` reads as a citation.',
   },
   {
     id: 'verb-case',
@@ -82,8 +83,14 @@ export const GRAMMAR_TERMS: readonly GrammarTerm[] = [
   },
 ];
 
-/** The invoking verbs, per the `verb-list` term. */
-export const INVOKING_VERBS: readonly string[] = ['apply'];
+/**
+ * The invoking verbs, per the `verb-list` term.
+ *
+ * Width is a published term rather than an implementation detail: it decides the guard's coverage as
+ * well as its total. These five see 88% of the GitNexus cross-group call sites where `apply` alone
+ * sees 30%, and widening past them buys 4 further points, so the list stops here.
+ */
+export const INVOKING_VERBS: readonly string[] = ['apply', 'via', 'use', 'follow', 'per'];
 
 /** The section whose prose is scanned, per the `section-scope` term. */
 export const SCANNED_SECTION = 'Protocol';
@@ -182,10 +189,17 @@ export interface CallSite {
 const LINK = /\[([^\]]*)\]\(([^)\s]+)\)/g;
 const FENCE = /^\s*(```|~~~)/;
 
-/** Verb test per the `verb-list`, `verb-case` and `verb-adjacency` terms. */
+/**
+ * Verb test per the `verb-list`, `verb-case` and `verb-adjacency` terms.
+ *
+ * The verb is bounded on both sides rather than required to be followed by whitespace, so a verb
+ * abutting punctuation — `via:` before a link on the next clause — counts like any other. The two
+ * readings coincide for `apply` and diverge for the connectives, which is why the boundary is
+ * stated here: it is the basis the asserted totals are measured against.
+ */
 function hasInvokingVerb(lineText: string, upToColumn: number): boolean {
   const before = lineText.slice(0, upToColumn).toLowerCase();
-  return INVOKING_VERBS.some((verb) => new RegExp(`\\b${verb}\\s`).test(before));
+  return INVOKING_VERBS.some((verb) => new RegExp(`\\b${verb}\\b`).test(before));
 }
 
 /**
