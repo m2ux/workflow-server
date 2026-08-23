@@ -342,6 +342,62 @@ describe('mcp-server integration', () => {
     });
   });
 
+  describe('tool: resume_checkpoint', () => {
+    /**
+     * A worker suspends at a checkpoint and comes back to a bag the orchestrator has changed under
+     * it. The tool's answer is what changed: without it a worker has to infer the new state from the
+     * option id, which a live smoke run was observed doing — twice, and saying so in its report.
+     */
+    it('returns the resolved option and the variables its effect applied', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'issue-verification' },
+      });
+      await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_index: nextToken, option_id: 'create-issue' },
+      });
+
+      const resumed = parseToolResponse(await client.callTool({
+        name: 'resume_checkpoint',
+        arguments: { session_index: nextToken },
+      }));
+      expect(resumed.status).toBe('resumed');
+      expect(resumed.checkpoint).toContain('issue-verification');
+      expect(resumed.option_id).toBe('create-issue');
+      // The option this checkpoint offers sets exactly one variable; the worker gets it back.
+      expect(resumed.variables_changed).toEqual({ needs_issue_creation: true });
+      expect(resumed.message).toContain('needs_issue_creation');
+    });
+
+    it('says so plainly when the selected option sets nothing', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
+      await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: {
+          session_index: nextToken,
+          checkpoint_id: 'accept-scope-request',
+          message: 'Take the extra scope into this work package?',
+          options: [{ id: 'accept', label: 'Take it' }, { id: 'defer', label: 'Raise it separately' }],
+        },
+      });
+      await new Promise(r => setTimeout(r, 3100));
+      await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_index: nextToken, option_id: 'defer' },
+      });
+
+      const resumed = parseToolResponse(await client.callTool({
+        name: 'resume_checkpoint',
+        arguments: { session_index: nextToken },
+      }));
+      expect(resumed.option_id).toBe('defer');
+      expect(resumed.variables_changed).toEqual({});
+      expect(resumed.message).toContain('no variables');
+    });
+  });
+
   describe('tool: yield_checkpoint', () => {
     it('should yield checkpoint with explicit params', async () => {
       const { nextToken } = await transitionToActivity(client, sessionToken, 'start-work-package');
