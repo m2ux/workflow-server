@@ -93,9 +93,17 @@ two use the requested workflow id and one uses the workflow the callee was actua
 ## Baseline Metrics
 
 All corpus rows measured 2026-08-22 by one scanner over an extracted tree, under the grammar SC-3
-publishes: invoking verb `apply` followed by whitespace anywhere earlier on the line, unanchored relative
-link to a technique file, inside a Protocol section, fences skipped, `resources/` excluded, qualified
-`group::op` pairs collapsed to one logical call site. Server rows read at `3cf1d7f5`.
+publishes: invoking verb `apply` **matched case-insensitively** and followed by whitespace anywhere
+earlier on the line, unanchored relative link to a technique file, inside a Protocol section, fences
+skipped, `resources/` excluded, qualified `group::op` pairs collapsed to one logical call site. Server
+rows read at `3cf1d7f5`.
+
+**The case term's value is stated here rather than left to be discovered.** Every figure in this table
+reproduces only under the case-insensitive reading; read case-sensitively for a literal lowercase
+`apply`, the same corpus gives 69 raw occurrences and 52 logical call sites against the 172 and 135
+below. The corpus carries 238 capitalised `Apply` to 59 lowercase, which is why the term is not
+cosmetic. This is recorded under [Counting this area](#counting-this-area) as a third and independent
+argument for fixtures over a term list.
 
 | Metric | Current Value | Measurement Method | Date Measured |
 |--------|--------------|-------------------|---------------|
@@ -130,10 +138,20 @@ link to a technique file, inside a Protocol section, fences skipped, `resources/
 
 - **The census reproduces.** 172 raw occurrences, 37 container halves, 135 logical call sites, 121
   deduplicated pairs and 69 intra-group sites all reproduce exactly, as do the per-group figures for
-  GitNexus (38, of which 15 intra-group), `workflow-engine` (22, of which 21), `harness-compat` (12),
-  `version-control` (6), `manage-git` (4), Atlassian (3) and `cargo` (1), the 2 residual container targets
-  and their identity, and the single dangling target. **The worklist total of 94 and the converted
-  population of 41 both reproduce.**
+  `github-cli-protocol` (39), GitNexus (38, of which 15 intra-group), `workflow-engine` (22, of which 21),
+  `harness-compat` (12), `version-control` (6), `manage-git` (4), Atlassian (3) and `cargo` (1), the 2
+  residual container targets and their identity, and the single dangling target. **The worklist total of 94
+  and the converted population of 41 both reproduce.**
+- **The largest group in the corpus was missing from the breakdown above.** `github-cli-protocol` holds
+  **39 logical call sites**, more than GitNexus's 38, and it was absent from this list until the
+  implementation activity re-measured. It converts nothing — it is shell-backed — so all 39 sites sit
+  inside the guard's disposition worklist, where they are the largest single block at **39 of 93, a 42%
+  share**. The omission is recorded rather than quietly repaired because of what it demonstrates: the seven
+  groups originally listed sum to 87 of 135, and **a breakdown missing its largest row still sums
+  plausibly to a reader who does not know what is absent.** Every other enumerated breakdown in this
+  document should be read with that in mind; the three re-checked at the implementation activity — the
+  core-operations entries (20 orchestrator, 8 worker), the guard registry (29 entries, 1 unregistered) and
+  the registered tool count (18) — all reproduce.
 - **Totals reproduce where membership does not.** Between the pinned corpus and the measured corpus the
   totals are identical and 2 call sites differ in identity. Between the measured corpus and the current
   head, 19 site identities change, the total moves 135 to 134, and the worklist moves 94 to 93.
@@ -266,6 +284,30 @@ establishes — a large multiple — not being in question. The decisions that r
 byte figures instead, which are first-hand: 40,671 bytes of operation bodies, 5,580 of inherited rules text,
 46,865 for whole container bodies. A later reader should treat the census and the byte figures as load-bearing
 and every inherited entry count as owing a unit before anything is planned against it.
+
+### The first prediction this package made that came true
+
+Re-measured at the implementation activity against corpus commit `7f37a2bd`, the drift stated above is
+confirmed on all three of its claims: **19 call-site identities change, the logical total moves 135 to 134,
+and the worklist moves 94 to 93**, with the converted population holding at 41. The whole census
+reproduces at the new pin.
+
+This is worth its own heading. Eight figures in this package have moved under a definition or unit change,
+and every entry in the table above is a re-derivation of something already recorded — a backward check.
+This is **the first forward prediction the artifacts made that survived measurement at a commit taken after
+the prediction was written.** It is evidence the grammar work is doing what it was bought for: a census
+stated with its terms is a census that can predict, where a census stated as a bare total can only be
+re-argued.
+
+### The case term, and a third route to fixtures
+
+The case term was in the published list of terms and its **value** was still unstated, so the same
+published grammar admitted 172 raw occurrences or 69 depending on a reading the list did not fix. The
+term's presence in the list did not prevent the ambiguity — which is the point. The two routes already
+recorded reach the fixtures conclusion from the grammar's internal structure and from corpus drift; this is
+a third, reached from a term that was named, published, and still under-determined. A fixture carrying a
+capitalised `Apply` fails when the case reading changes; a list entry reading "case sensitivity of the
+invoking verb" does not, because it names the question without committing to an answer.
 
 ### The tenth term
 

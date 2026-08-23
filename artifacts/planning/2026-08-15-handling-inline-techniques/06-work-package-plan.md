@@ -99,6 +99,25 @@ activity door, so the budget SC-7 speaks of is partly spent before any step tech
 does not close F-2 or F-3. They remain open findings: the door inventory and the counter behaviour they
 describe are unchanged by deciding which counter a folded body draws on.
 
+**The conversion is a deletion rather than an addition** (settled at the `gitnexus-conversion-shape` gate).
+The operations being converted are prose wrappers that name a tool and then add something around it. The
+tool they name is not this server's: it belongs to a separate MCP server the agent already holds a
+connection to, which already declares its arguments and already rejects a call that omits a required one.
+So the conversion retires the wrapper and lets the call reach that tool directly, keeping only the
+interpreting half where the wrapper holds a rule, a threshold, an escape hatch, a human contact or an
+onward technique call — the parts no tool schema can carry.
+
+**The alternative is recorded as available and not taken**, on the same footing as the orchestrator-door
+budget parameter under PL-2. Registering the eleven distinct operations as tools of this server would have
+taken the tool surface from 18 to as many as 29 and given the conversion a guarantee this server owns
+end-to-end. It was declined on architecture rather than on cost: the server makes no outbound calls of any
+kind today — no HTTP client, no MCP client transport, no dependency on either external server anywhere in
+the source — so registering them means building an outbound client purely to forward calls to a server the
+agent already reaches, duplicating eleven typed tools. That is a new capability rather than a conversion,
+and it is what the design principles rule out twice over, against speculative abstraction and against
+adding a dependency before exhausting those in place. A later package that needs this server to own the
+guarantee should revisit it as the client question it is, rather than as a conversion detail.
+
 ### Alternatives Considered
 
 The two decisions carrying the most weight — a folded callee arriving governed, and the counter a folded
@@ -179,12 +198,18 @@ workflow.
 - `tests/technique-loader.test.ts` - one cross-workflow reference composed through both doors, asserting identical inputs, outputs, rules and protocol against the shared projection
 
 ### Task 3: GitNexus and Atlassian operations reach their tools directly (90-150 min)
-**Goal:** The eleven distinct operations behind the twenty-three cross-group converted call sites are
-typed tools; the eighteen intra-group calls become ordinary calls inside the implementation.
+**Goal:** The wrapper prose standing between an agent and an already-typed tool retires, so the call
+reaches that tool directly; the interpreting halves that hold something no tool can hold are kept. The
+eighteen intra-group calls resolve into their callers.
 **Deliverables:**
-- `src/tools/gitnexus-tools.ts` - up to eleven tool registrations, each declaring the arguments its prose named
-- `src/tools/gitnexus-tools.ts` - `impact` splits into a tool plus a thin interpreting technique, the threshold and escape hatch staying in the technique
-- `tests/gitnexus-tools.test.ts` - one case per registered tool, and the `TOOLS` roster updated
+- `workflows/meta/techniques/gitnexus-operations/` - the operations that convert with nothing left over retire; each operation carrying a rule, a threshold, an escape hatch, a human contact or an onward technique call keeps its interpreting half
+- `impact` - keeps its interpreting half, the risk threshold and the hand-derived-caller escape hatch staying in the technique
+- the retained halves - each declares the arguments its prose named, so the conversion's acceptance is checkable
+
+**This task registers no tools and adds no server dependency.** The tools these operations name belong to
+separate MCP servers the agent is already connected to; they already declare their arguments and already
+reject a call omitting a required one, so the loud-at-runtime guarantee the requirements describe is
+already delivered by tools that exist. The server's tool surface stays at **18**.
 
 ### Task 4: Converted prose retires from the corpus (30-45 min)
 **Goal:** The corpus no longer carries wrapper prose for operations a tool now serves, and the submodule
@@ -301,7 +326,7 @@ it reports unmeasured rather than failing.
 | The eleven attributed entries retire ahead of the door serving them | HIGH | LOW | Task 11 retires per door, reporting residue rather than removing optimistically |
 | Task total exceeds the estimate the work package was scoped with | MEDIUM | HIGH | Stated plainly: thirteen tasks at 11-16h agentic against the 1-4h placeholder carried for implementation |
 | The attributed rules block is treated as optional, degrading the design to the option it rejected | HIGH | MEDIUM | SC-14 asserts the property per call site, so the degradation fails a check rather than passing unnoticed |
-| Tool surface grows from 18 registered tools to as many as 29 | LOW | HIGH | Bounded by measurement: eleven distinct operations, not forty-one call sites |
+| Tool surface stays at 18 registered tools, so the conversion's gain rests on tools this server does not own | LOW | HIGH | Accepted by decision: the named tools already declare their arguments and already reject an incomplete call, so the guarantee holds without this server registering anything |
 
 **Note on length.** This runs to roughly 315 lines against the guide's 150-line budget, and the deviation is
 stated rather than absorbed by cutting. Two things account for it. Thirteen task blocks carry roughly a
