@@ -1950,6 +1950,45 @@
             "technique:rules:cc2cfaa8a8411fce": "cc2cfaa8a8411fce",
             "technique:task-completion-review": "41d1706ed28ea363"
           },
+          "worker-implement-task10-12": {
+            "activity_rules:148ebfb566580534": "148ebfb566580534",
+            "bundle:rules:1654f244e34d336f": "1654f244e34d336f",
+            "bundle:scatter-gather": "231021ae4411fad4",
+            "bundle:variable-binding": "69962c9fd66c4d9a",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "31fa43cca3fda282",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "technique:analyse-challenge::run-loop": "a8c016de0ea5701e",
+            "technique:cargo-operations::test": "22f1583b2b9c6a30",
+            "technique:dco-provenance::append-task-row": "ed4f919db0e07d40",
+            "technique:implement-task": "e4ad08774055d70f",
+            "technique:inherited_inputs.items:7f5ac714d93fc371": "7f5ac714d93fc371",
+            "technique:inherited_inputs.items:aa0414d0654c9047": "aa0414d0654c9047",
+            "technique:inherited_inputs.items:ccccc71edcfa853d": "ccccc71edcfa853d",
+            "technique:inherited_inputs.items:e434ee2a018e66a0": "e434ee2a018e66a0",
+            "technique:inherited_inputs.items:f1da05137129e18f": "f1da05137129e18f",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:216fa0d33f476eb8": "216fa0d33f476eb8",
+            "technique:inherited_inputs:2b25ae49d6376348": "2b25ae49d6376348",
+            "technique:inherited_inputs:36686facf3dee7ad": "36686facf3dee7ad",
+            "technique:inherited_inputs:ce32ee1b0407f697": "ce32ee1b0407f697",
+            "technique:inherited_inputs:e2ed5503394b8275": "e2ed5503394b8275",
+            "technique:inherited_outputs.items:21315b9922c3d036": "21315b9922c3d036",
+            "technique:inherited_outputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+            "technique:inherited_outputs:98ff5ab4c0b7299c": "98ff5ab4c0b7299c",
+            "technique:manage-git::artifact-commits": "dadb67ec361ae508",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:review-assumptions::collect": "f8fbe6d5e57ce816",
+            "technique:review-assumptions::interview": "7013b7cc82e11554",
+            "technique:review-assumptions::record": "ecfe2105989ab831",
+            "technique:rules:1312287948d72037": "1312287948d72037",
+            "technique:rules:7ee01840785973f0": "7ee01840785973f0",
+            "technique:rules:87e59199dc0a9945": "87e59199dc0a9945",
+            "technique:rules:9793b1398dab1386": "9793b1398dab1386",
+            "technique:rules:cc2cfaa8a8411fce": "cc2cfaa8a8411fce",
+            "technique:task-completion-review": "41d1706ed28ea363"
+          },
           "worker-implementation-analysis-1": {
             "activity_rules:148ebfb566580534": "148ebfb566580534",
             "bundle:rules:1654f244e34d336f": "1654f244e34d336f",
@@ -9251,17 +9290,226 @@
             },
             "timestamp": "2026-08-23T07:38:48.935Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "chars": 90519,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "chars": 90519,
+              "priorAgentId": "worker-implement-delivery-stage"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "activity_redelivered"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "chars": 5092,
+              "delivery": "full",
+              "stepId": "implement-task",
+              "techniqueId": "implement-task"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "stepId": "implement-task"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "chars": 3706,
+              "delivery": "full",
+              "stepId": "run-tests",
+              "techniqueId": "cargo-operations::test"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "stepId": "run-tests"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "chars": 5835,
+              "delivery": "full",
+              "stepId": "commit",
+              "techniqueId": "manage-git::artifact-commits"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "stepId": "commit"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "chars": 3737,
+              "delivery": "full",
+              "stepId": "log-provenance",
+              "techniqueId": "dco-provenance::append-task-row"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "stepId": "log-provenance"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "chars": 6661,
+              "delivery": "full",
+              "stepId": "self-review",
+              "techniqueId": "task-completion-review"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "stepId": "self-review"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "chars": 5259,
+              "delivery": "full",
+              "stepId": "collect-assumptions",
+              "techniqueId": "review-assumptions::collect"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "stepId": "collect-assumptions"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "chars": 7916,
+              "delivery": "full",
+              "stepId": "analyse-challenge-loop",
+              "techniqueId": "analyse-challenge::run-loop"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "stepId": "analyse-challenge-loop"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "chars": 6537,
+              "delivery": "full",
+              "stepId": "present-resolved-assumptions",
+              "techniqueId": "review-assumptions::interview"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "stepId": "present-resolved-assumptions"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "chars": 4413,
+              "delivery": "full",
+              "stepId": "update-assumptions-log",
+              "techniqueId": "review-assumptions::record"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-task10-12",
+              "stepId": "update-assumptions-log"
+            },
+            "timestamp": "2026-08-23T07:43:02.675Z",
+            "type": "step_started"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 124,
+        "seq": 125,
         "sessionIndex": "KLN3OI",
         "skippedActivities": [],
         "startedAt": "2026-08-15T10:00:34.754Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1787470728,
+        "ts": 1787470982,
         "variables": {
           "analysis_document": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/05-implementation-analysis.md",
           "applicable_patterns": "Lexical over dynamic scope; cycle-tolerant linking via a visited set; one narrow grammar module shared by checker and runtime; normative grammar published with conformance fixtures",
