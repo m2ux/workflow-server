@@ -20,12 +20,23 @@
  *   WORKFLOWS_DIR=/path/to/workflows npm run bench:token -- \
  *     --label=rerecord --context-mode=fresh --no-compare --server-root=$PWD
  *
+ * A run measures one named SCENARIO — a delivery shape rather than a bundle of flags. `solo` is the
+ * baseline shape. `referenced-technique` has every step-bound fetch declare a window, so the step
+ * door attaches the bodies of the operations its technique calls inline; that door folds only on
+ * request, which is why reaching it takes a scenario. A scenario sets the defaults for the flags
+ * below and each one still overrides it, so a scenario is a starting point rather than a lock.
+ *
  * Flags:
- *   --workflow=<id>            Workflow to walk (default: work-package). Recorded in the output; a
+ *   --scenario=<name>          Delivery shape to measure: solo | referenced-technique (default: solo).
+ *                              Recorded in the output; a cross-scenario comparison is reported but
+ *                              never gated, because the shapes ask the doors for different content.
+ *   --workflow=<id>            Workflow to walk (default: from the scenario). Recorded in the output; a
  *                              comparison across two different workflows is reported but never gated.
- *   --label=<string>           Run label in the JSON output (default: run)
- *   --context-mode=fresh|persistent   Forced on start_session (default: fresh)
- *   --agent-id=<string>        Forced agent_id / ledger key (default: bench-solo)
+ *   --label=<string>           Run label in the JSON output (default: the scenario name)
+ *   --context-mode=fresh|persistent   Forced on start_session (default: from the scenario)
+ *   --agent-id=<string>        Forced agent_id / ledger key (default: from the scenario)
+ *   --step-door-context-tokens=<n>  Window declared on each get_technique, which is what asks that
+ *                              door for folded callee bodies (default: from the scenario; 0 = none)
  *   --server-root=<path>       Server checkout root (default: cwd)
  *   --reference=<path>         Baseline fixture path (default: <server-root>/scripts/fixtures/…)
  *   --no-compare               Skip vs-reference scorecard
@@ -80,6 +91,8 @@ interface Metrics {
   resourceLedgerKeys: number;
   unchangedResourceAnswers: number;
   unchangedTechniqueAnswers: number;
+  /** Absent on a fixture recorded before scenarios existed, which is the solo shape. */
+  scenario?: string;
   getActivityChars: number;
   getWorkflowChars: number;
   getResourceChars: number;
@@ -109,6 +122,13 @@ interface ReferenceFixture {
   resourceLedgerKeys: number;
   unchangedResourceAnswers: number;
   unchangedTechniqueAnswers: number;
+  /** Which delivery shape produced these numbers — the third dimension a comparison must match. */
+  scenario: string;
+  /** Folded callee bodies the step door delivered across the run, and those it named but withheld. */
+  foldedBodiesDelivered: number;
+  foldedBodiesDeferred: number;
+  /** `get_technique` responses that carried a folded block at all. */
+  foldedResponses: number;
 }
 
 interface Delta {
@@ -126,6 +146,9 @@ interface VsReference {
   description?: string;
   /** Run and reference share a context mode. Only a matched comparison is a valid gate (#323 T4). */
   modeMatched: boolean;
+  /** Run and reference are the same delivery shape. The scenarios ask the doors for different
+   *  content, so a cross-scenario delta measures the scenario and is never a gate. */
+  scenarioMatched: boolean;
   /** Run and reference walked the same workflow. A cross-workflow delta measures two different
    *  things and is never a gate (#327 S4). */
   workflowMatched: boolean;
@@ -172,6 +195,78 @@ const DEFAULT_REFERENCE = 'scripts/fixtures/token-benchmark-baseline.json';
 /** Default `--gate` threshold: total delivery chars may not regress by more than this percent. */
 const DEFAULT_MAX_REGRESSION_PCT = 1;
 
+/**
+ * A named benchmark scenario — the knobs that make one run measure something a sibling run does not.
+ *
+ * A scenario is a name for a delivery shape, not a shorthand for flags. The distinction matters
+ * because a comparison is only valid between runs of the same shape: the gate already refuses to
+ * fire unless the context mode and workflow match, and a scenario is what lets a third dimension
+ * join that check instead of being lost in an unrecorded flag. Every field a scenario sets is
+ * overridable by its own flag, so a scenario is a starting point rather than a lock.
+ */
+interface Scenario {
+  readonly description: string;
+  readonly contextMode: ContextMode;
+  readonly agentId: string;
+  readonly workflowId: string;
+  /**
+   * Window declared on each step-bound `get_technique`, which is what asks that door for the bodies
+   * of the operations its technique calls inline. Undefined leaves the door delivering the one
+   * requested technique, which is what it does when a caller declares no window.
+   */
+  readonly stepDoorContextTokens?: number;
+}
+
+const SCENARIOS: Record<string, Scenario> = {
+  /** The baseline shape: a solo walk taking full delivery, no folded bodies at the step door. */
+  solo: {
+    description: 'solo walk, fresh delivery, step door asked for one technique at a time',
+    contextMode: 'fresh',
+    agentId: 'bench-solo',
+    workflowId: 'work-package',
+  },
+  /**
+   * The referenced-technique shape. Every step-bound fetch declares a window, so the step door
+   * attaches the closure its technique calls inline and the run measures what folded delivery costs
+   * on the door that charges it to the caller's own budget. The two bundle doors fold
+   * unconditionally, so their cost is already in every scenario; this is the one that is opt-in and
+   * so the one a scenario has to exist to reach.
+   */
+  'referenced-technique': {
+    description: 'solo walk with every step-bound fetch declaring a window, so folded callee bodies ride the step door',
+    contextMode: 'fresh',
+    agentId: 'bench-refs',
+    workflowId: 'work-package',
+    stepDoorContextTokens: 200_000,
+  },
+};
+
+/**
+ * Folded bodies in one `get_technique` response: delivered, and named-but-unsent.
+ *
+ * Read out of the response rather than derived from its size. A response is not required to carry a
+ * folded block at all — a technique calling nothing has none, and a call declaring no window asks
+ * for none — so an unparseable or blockless response counts zero of each rather than failing the
+ * run.
+ */
+function foldedBodyCount(text: string): { delivered: number; deferred: number } {
+  const sep = text.indexOf('\n\n');
+  if (sep < 0) return { delivered: 0, deferred: 0 };
+  let payload: unknown;
+  try {
+    payload = parseYaml(text.substring(sep + 2));
+  } catch {
+    return { delivered: 0, deferred: 0 };
+  }
+  if (payload === null || typeof payload !== 'object') return { delivered: 0, deferred: 0 };
+  const bodies = (payload as Record<string, unknown>)['folded_techniques'];
+  const deferred = (payload as Record<string, unknown>)['folded_deferred'];
+  return {
+    delivered: bodies !== null && typeof bodies === 'object' ? Object.keys(bodies as object).length : 0,
+    deferred: Array.isArray(deferred) ? deferred.length : 0,
+  };
+}
+
 function deliveryChars(m: {
   getActivityChars: number;
   getWorkflowChars: number;
@@ -206,6 +301,10 @@ function buildVsReference(metrics: Metrics, reference: ReferenceFixture, referen
   // An unlabelled fixture predates the field; every fixture shipped so far walked work-package.
   const referenceWorkflow = reference.workflowId ?? 'work-package';
   const workflowMatched = referenceWorkflow === metrics.workflowId;
+  // A fixture recorded before scenarios existed is the solo shape: no step-bound fetch it made
+  // declared a window, so none of its numbers include a folded attachment at that door.
+  const referenceScenario = reference.scenario ?? 'solo';
+  const scenarioMatched = referenceScenario === metrics.scenario;
   const caveats = [
     modeMatched ? null
       : `Cross-mode comparison: reference is ${referenceMode}, run is ${metrics.contextMode}. `
@@ -214,6 +313,10 @@ function buildVsReference(metrics: Metrics, reference: ReferenceFixture, referen
     workflowMatched ? null
       : `Cross-workflow comparison: reference walked '${referenceWorkflow}', run walked `
         + `'${metrics.workflowId}'. The delta measures two different corpora paths, not a code change.`,
+    scenarioMatched ? null
+      : `Cross-scenario comparison: reference is the '${referenceScenario}' shape, run is `
+        + `'${metrics.scenario}'. The scenarios ask the doors for different content, so the delta `
+        + 'measures the scenario rather than a code change. Compare within one scenario.',
   ].filter((c): c is string => c !== null);
   return {
     referenceLabel: reference.label,
@@ -221,6 +324,7 @@ function buildVsReference(metrics: Metrics, reference: ReferenceFixture, referen
     description: reference.description,
     modeMatched,
     workflowMatched,
+    scenarioMatched,
     ...(caveats.length ? { caveat: caveats.join(' ') } : {}),
     deliveryCostIndex: {
       current: currentDelivery,
@@ -297,7 +401,9 @@ function writeScorecard(vs: VsReference, contextMode: ContextMode, corpusNote?: 
     `vs ${vs.referenceLabel} · ${contextMode}-mode · deliveryCostIndex ${vs.deliveryCostIndex.relative} (baseline = 100, lower is better)`,
     '─'.repeat(72),
   ];
-  if (!vs.modeMatched) lines.push(`  ⚠ NOT A VALID GATE — ${vs.caveat}`, '');
+  if (!vs.modeMatched || !vs.workflowMatched || !vs.scenarioMatched) {
+    lines.push(`  ⚠ NOT A VALID GATE — ${vs.caveat}`, '');
+  }
   if (corpusNote) lines.push(`  ⚠ ${corpusNote}`, '');
   const rows: Array<[string, Delta]> = [
     ['delivery chars (act+wf+res+tech)', vs.metrics.deliveryChars!],
@@ -342,7 +448,7 @@ function evaluateGate(vs: VsReference | undefined, maxRegressionPct: number): Ga
   if (!vs) {
     return { ...base, reason: 'No reference comparison to gate on (--no-compare, or the fixture is missing).' };
   }
-  if (!vs.modeMatched || !vs.workflowMatched) {
+  if (!vs.modeMatched || !vs.workflowMatched || !vs.scenarioMatched) {
     return { ...base, reason: vs.caveat ?? 'Mismatched comparison is not a valid gate.' };
   }
   const regressionPct = vs.metrics.deliveryChars!.deltaPct;
@@ -372,16 +478,26 @@ function bundledResourceIdsFromOps(text: string): Set<string> {
 }
 
 async function main(): Promise<void> {
-  const label = arg('label', 'run');
-  const contextMode = arg('context-mode', 'fresh') as ContextMode;
+  const scenarioName = arg('scenario', 'solo');
+  const scenario = SCENARIOS[scenarioName];
+  if (!scenario) {
+    throw new Error(`--scenario must be one of ${Object.keys(SCENARIOS).join('|')}, got ${scenarioName}`);
+  }
+  const label = arg('label', scenarioName);
+  // Flag beats scenario beats default, so a scenario names a shape without locking any knob in it.
+  const contextMode = arg('context-mode', scenario.contextMode) as ContextMode;
   if (contextMode !== 'fresh' && contextMode !== 'persistent') {
     throw new Error(`--context-mode must be fresh|persistent, got ${contextMode}`);
   }
-  const agentId = arg('agent-id', 'bench-solo');
+  const agentId = arg('agent-id', scenario.agentId);
   // The walked workflow used to be hardcoded, so a run reported a confident delta for a change it
   // could not see — the same failure mode as a guard passing on a corpus it never reached (#327 S4).
   // The robot policy is work-package-shaped, so another workflow needs a policy that can drive it.
-  const workflowId = arg('workflow', 'work-package');
+  const workflowId = arg('workflow', scenario.workflowId);
+  const stepDoorContextTokens = Number(arg('step-door-context-tokens', String(scenario.stepDoorContextTokens ?? 0)));
+  if (!Number.isFinite(stepDoorContextTokens) || stepDoorContextTokens < 0) {
+    throw new Error(`--step-door-context-tokens must be a non-negative number, got ${arg('step-door-context-tokens', '')}`);
+  }
   const serverRoot = resolve(arg('server-root', process.cwd()));
   const compare = !hasFlag('no-compare');
   const referencePath = resolve(arg('reference', join(serverRoot, DEFAULT_REFERENCE)));
@@ -403,6 +519,9 @@ async function main(): Promise<void> {
   const chars: Record<string, number> = {};
   let unchangedResourceAnswers = 0;
   let unchangedTechniqueAnswers = 0;
+  let foldedBodiesDelivered = 0;
+  let foldedBodiesDeferred = 0;
+  let foldedResponses = 0;
   const seenResource = new Set<string>();
   let fetchingResources = false;
 
@@ -435,6 +554,12 @@ async function main(): Promise<void> {
       };
     }
 
+    // Declaring a window is what asks the step door for the bodies its technique calls inline, so
+    // the scenario applies it here rather than expecting every walker call site to know about it.
+    if (name === 'get_technique' && stepDoorContextTokens > 0) {
+      args = { ...args, context_tokens: stepDoorContextTokens };
+    }
+
     const result = await orig({ name, arguments: args });
     toolCalls[name] = (toolCalls[name] ?? 0) + 1;
     const text = rawText(result);
@@ -443,6 +568,17 @@ async function main(): Promise<void> {
     const delivery = (result as { _meta?: { delivery?: string } })._meta?.delivery;
     if (delivery === 'unchanged') {
       if (name === 'get_technique') unchangedTechniqueAnswers += 1;
+    }
+
+    // What the step door's folded attachment came to on this run. Counted per response rather than
+    // inferred from the char totals, because a folded body and a larger technique are the same
+    // number of characters and only one of them is a delivery the caller did not have to ask twice
+    // for.
+    if (name === 'get_technique' && !(result as { isError?: boolean }).isError) {
+      const bodies = foldedBodyCount(text);
+      foldedBodiesDelivered += bodies.delivered;
+      foldedBodiesDeferred += bodies.deferred;
+      if (bodies.delivered > 0 || bodies.deferred > 0) foldedResponses += 1;
     }
 
     if (fetchingResources) return result;
@@ -531,6 +667,10 @@ async function main(): Promise<void> {
       resourceLedgerKeys: ledgerKeys.filter((k) => k.startsWith('resource:')).length,
       unchangedResourceAnswers,
       unchangedTechniqueAnswers,
+      scenario: scenarioName,
+      foldedBodiesDelivered,
+      foldedBodiesDeferred,
+      foldedResponses,
       getActivityChars: chars.get_activity ?? 0,
       getWorkflowChars: chars.get_workflow ?? 0,
       getResourceChars: chars.get_resource ?? 0,

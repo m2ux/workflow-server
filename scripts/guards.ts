@@ -198,7 +198,7 @@ export const GUARDS: GuardSpec[] = [
     npmScript: 'check:stealth',
     scope: 'corpus',
     json: false,
-    proves: 'no static leakage path out of a stealth-mode workflow',
+    proves: 'no static leakage path out of any stealth-mode workflow, through the closure each reachable step delivers',
   },
   {
     id: 'when-expression',

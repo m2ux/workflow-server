@@ -136,6 +136,10 @@ Stdout is one JSON object with per-activity fresh/resume characters and the aggr
 
 [`scripts/run-token-benchmark.ts`](../scripts/run-token-benchmark.ts) measures payload-char and history/ledger cost for a fixed headless walk (`work-package` / e2e `skip-optional`), comparing `context_mode: fresh` vs `persistent` and resource reference delivery. It reuses the e2e harness/walker and probes `get_resource` for linked + hot templates (the robot walker does not call `get_resource` on its own).
 
+A run measures one named **scenario**, selected with `--scenario` — a delivery shape rather than a bundle of flags. `solo` is the baseline shape. `referenced-technique` has every step-bound `get_technique` declare a window, so the step door attaches the bodies of the operations its technique calls inline; that door folds only when asked, which is why reaching it takes a scenario rather than a flag nobody sets. A scenario supplies the defaults for `--workflow`, `--context-mode`, `--agent-id` and `--step-door-context-tokens`, and each flag still overrides it.
+
+The scenario is recorded in the output and joins context mode and workflow as a dimension a comparison must match: the two scenarios ask the doors for different content, so a cross-scenario delta measures the scenario rather than a code change and can never pass `--gate`. A fixture recorded before scenarios existed reads as the `solo` shape, which is what it is.
+
 By default each run compares against the committed baseline in
 [`scripts/fixtures/token-benchmark-baseline.json`](../scripts/fixtures/token-benchmark-baseline.json).
 The fixture records its own context mode, corpus revision and recording date, so read the
@@ -190,6 +194,10 @@ npm run --silent bench:token -- --label=opt --context-mode=persistent
 
 # Absolute metrics only
 npm run --silent bench:token -- --label=raw --context-mode=persistent --no-compare
+
+# What folded callee bodies cost at the step-bound door. Compare against a
+# referenced-technique baseline, never against the solo one.
+npm run --silent bench:token -- --scenario=referenced-technique --no-compare
 ```
 
 Pin `WORKFLOWS_DIR` to the corpus the fixture names (`workflowsRev`) for a gate run

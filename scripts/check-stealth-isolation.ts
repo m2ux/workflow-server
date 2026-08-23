@@ -13,10 +13,20 @@
  *     (2) push-target discipline — the workflow's seeded `push_remote` must not be `origin`,
  *         and the private-remote verification step + isolation confirmation checkpoint must be
  *         REACHABLE (gates evaluate TRUE) ahead of any reachable push step.
- *     (3) reachable-text scan — the composed technique of every REACHABLE step must not invoke
- *         public write endpoints (`gh pr create|comment|ready|review|merge`, `gh issue`,
- *         `gh api` mutations, Jira comment/edit/transition tools) — catches a disclosure path
- *         added to a technique body without a catalog entry.
+ *     (3) reachable-text scan — every REACHABLE step's DELIVERED CLOSURE must not invoke public
+ *         write endpoints (`gh pr create|comment|ready|review|merge`, `gh issue`, `gh api`
+ *         mutations, Jira comment/edit/transition tools) — catches a disclosure path added to a
+ *         technique body without a catalog entry. The closure rather than the one bound technique:
+ *         a technique whose protocol calls another technique has that callee's body delivered with
+ *         it, so a `gh pr create` sitting one call deep is as reachable as one written inline, and
+ *         a scan stopping at the bound technique cannot see it.
+ *
+ *   SCOPE: every workflow declaring a `stealth_mode` variable is checked, so a stealth workflow
+ *   added to the corpus is covered without editing this guard. A workflow seeding `stealth_mode`
+ *   non-true is stealth-CAPABLE rather than stealth-by-default, and is scanned under a bag forced
+ *   to `stealth_mode: true` — the question worth asking of it is whether its disclosure paths are
+ *   gated off when stealth is on. Only a workflow whose own default is true is additionally held
+ *   to the seeding and push-target contracts, which are assertions about how it ships.
  *
  *   RUNTIME (opt-in via --target <checkout-path>; requires git, optionally gh):
  *     (4) private-target verification — for the checkout that a real remediation run would push
@@ -26,8 +36,10 @@
  *         (anonymous readability == public == FAIL).
  *
  * Usage:
- *   npx tsx scripts/check-stealth-isolation.ts [--workflow remediate-vuln] [--root <workflows-dir>]
+ *   npx tsx scripts/check-stealth-isolation.ts [--workflow <id>] [--root <workflows-dir>]
  *   npx tsx scripts/check-stealth-isolation.ts --target /path/to/private/checkout [--remote security]
+ *
+ * `--workflow` narrows to one workflow; omitting it checks every stealth-declaring workflow.
  *
  * Exit code 0 = no leakage path found; 1 = findings (printed one per line).
  */
@@ -35,8 +47,9 @@ import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { existsSync } from 'node:fs';
-import { loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
+import { listWorkflows, loadWorkflowWithDiagnostics } from '../src/loaders/workflow-loader.js';
 import { composeActivityTechnique } from '../src/loaders/technique-loader.js';
+import { foldedClosureForRefs } from '../src/loaders/reference-traversal.js';
 import { stringifyForResponse } from '../src/utils/serialization.js';
 import type { Activity, Step, Condition } from '../src/schema/index.js';
 import { evaluateWhenExpression, parseWhen } from '../src/schema/when-expression.js';
@@ -53,7 +66,9 @@ const scriptDir = dirname(fileURLToPath(import.meta.url));
 // One resolver for every guard — this script used to re-implement --root / WORKFLOWS_DIR precedence
 // locally, and a local copy is how two guards end up measuring two different corpora (#327 S2).
 const workflowsRoot = requireRootOrExit('stealth-isolation', join(scriptDir, '..', 'workflows'));
-const workflowId = argOf('--workflow') ?? 'remediate-vuln';
+// Omitted, the scope is every stealth-declaring workflow the corpus holds. A hard-coded id is how a
+// stealth workflow added later goes unchecked with the guard still reporting clean.
+const onlyWorkflow = argOf('--workflow');
 const runtimeTarget = argOf('--target');
 const runtimeRemote = argOf('--remote');
 
@@ -140,7 +155,28 @@ function refOf(step: Step): string | undefined {
   return typeof t === 'string' ? t : t.name;
 }
 
-async function staticScan(): Promise<void> {
+/**
+ * Closures resolved so far, keyed by the canonical identity of the technique they start from. Many
+ * steps across many workflows bind the same operation, and a closure depends only on that operation
+ * — so resolving it once per operation rather than once per step is what keeps the scan's cost a
+ * rounding error against composition.
+ */
+const closureCache = new Map<string, Array<{ identity: string; protocol: string }>>();
+
+async function closureOf(canonicalId: string, workflowId: string): Promise<Array<{ identity: string; protocol: string }>> {
+  const hit = closureCache.get(canonicalId);
+  if (hit) return hit;
+  const closure = await foldedClosureForRefs({ workflowDir: workflowsRoot, workflowId, refs: [canonicalId] });
+  const members = closure.members.map((m) => ({
+    identity: m.identity,
+    protocol: stringifyForResponse(m.technique.protocol ?? []),
+  }));
+  closureCache.set(canonicalId, members);
+  return members;
+}
+
+/** Scan one stealth workflow: seeding and push-target contracts, disclosure gating, closure text. */
+async function staticScan(workflowId: string): Promise<void> {
   const loadResult = await loadWorkflowWithDiagnostics(workflowsRoot, workflowId);
   if (!loadResult.success) {
     findings.push(`workflow '${workflowId}' failed to load: ${loadResult.error.message}`);
@@ -168,7 +204,7 @@ async function staticScan(): Promise<void> {
       const ref = refOf(step);
       if (ref && DISCLOSURE_REFS.some((re) => re.test(ref))) {
         if (reachable) {
-          findings.push(`disclosure step reachable under stealth defaults: ${activity.id}/${step.id ?? ref} (${ref})`);
+          findings.push(`[${workflowId}] disclosure step reachable under stealth defaults: ${activity.id}/${step.id ?? ref} (${ref})`);
         }
       } else if (ref && reachable) {
         reachableTechniqueSteps.push({ activity, step, ref });
@@ -192,28 +228,44 @@ async function staticScan(): Promise<void> {
     const verify = steps.find((s) => (refOf(s) ?? '').includes('verify-remote-private'));
     const confirm = steps.find((s) => s.kind === 'checkpoint' && /private|isolation/i.test((s as { message?: string }).message ?? ''));
     if (!verify || !stepReachable(verify, [], bag)) {
-      findings.push(`push step '${activity.id}/${pushStep.id ?? 'push-commits'}' is reachable but no reachable private-remote verification precedes it`);
+      findings.push(`[${workflowId}] push step '${activity.id}/${pushStep.id ?? 'push-commits'}' is reachable but no reachable private-remote verification precedes it`);
     }
     if (!confirm || !stepReachable(confirm, [], bag)) {
-      findings.push(`push step '${activity.id}/${pushStep.id ?? 'push-commits'}' is reachable but no reachable isolation confirmation checkpoint precedes it`);
+      findings.push(`[${workflowId}] push step '${activity.id}/${pushStep.id ?? 'push-commits'}' is reachable but no reachable isolation confirmation checkpoint precedes it`);
     }
   }
 
-  // Text scan of every reachable step's composed technique for public write invocations. Only
-  // the PROTOCOL carries invocations — rules and capability text legitimately NAME the
-  // prohibited commands (the isolation contracts say "gh pr create is prohibited"), so scanning
-  // them would flag the prohibition itself.
+  // Text scan of every reachable step's DELIVERED CLOSURE for public write invocations. Only the
+  // PROTOCOL carries invocations — rules and capability text legitimately NAME the prohibited
+  // commands (the isolation contracts say "gh pr create is prohibited"), so scanning them would
+  // flag the prohibition itself.
+  //
+  // The closure rather than the bound technique alone. A technique that calls another technique from
+  // its protocol has that callee's body delivered alongside it, so an invocation one call deep is as
+  // available to the agent as one written inline — and a scan that stopped at the bound technique
+  // would report clean over it. Each finding names the member it was found in and the step that
+  // reaches it, so a hit one call deep is as actionable as a direct one.
   for (const { activity, step, ref } of reachableTechniqueSteps) {
     const scope = activitySourceWorkflow.get(activity.id) ?? workflow.id;
     const composed = await composeActivityTechnique(ref, workflowsRoot, scope, activity.id);
     if (!composed.success) {
-      findings.push(`reachable step '${activity.id}/${step.id ?? ref}' binds unresolvable technique '${ref}' (scope ${scope})`);
+      findings.push(`[${workflowId}] reachable step '${activity.id}/${step.id ?? ref}' binds unresolvable technique '${ref}' (scope ${scope})`);
       continue;
     }
-    const protocolText = stringifyForResponse(composed.value.technique.protocol ?? []);
-    for (const re of PUBLIC_WRITE_TEXT) {
-      const m = re.exec(protocolText);
-      if (m) findings.push(`reachable step '${activity.id}/${step.id ?? ref}' composed technique '${composed.value.techniqueId}' protocol contains public write invocation: ${m[0]}`);
+    const site = `[${workflowId}] reachable step '${activity.id}/${step.id ?? ref}'`;
+    const scanned: Array<{ identity: string; protocol: string }> = [
+      { identity: composed.value.techniqueId, protocol: stringifyForResponse(composed.value.technique.protocol ?? []) },
+      ...await closureOf(composed.value.canonicalId, scope),
+    ];
+    for (const member of scanned) {
+      const direct = member.identity === composed.value.techniqueId;
+      for (const re of PUBLIC_WRITE_TEXT) {
+        const m = re.exec(member.protocol);
+        if (!m) continue;
+        findings.push(direct
+          ? `${site} composed technique '${member.identity}' protocol contains public write invocation: ${m[0]}`
+          : `${site} reaches '${member.identity}' by inline call from '${composed.value.techniqueId}', whose protocol contains public write invocation: ${m[0]}`);
+      }
     }
   }
 }
@@ -262,16 +314,59 @@ function runtimeProbe(targetPath: string, remote: string): void {
 
 /* ----------------------------------- main ------------------------------------ */
 
+/**
+ * The workflows this guard is responsible for: every workflow in the corpus whose seeded bag carries
+ * `stealth_mode: true`. Discovering the set from the definitions is what the scope change buys — a
+ * hard-coded id is how a second stealth workflow joins the corpus and goes unchecked with the guard
+ * still reporting clean.
+ *
+ * The set is stealth workflows rather than all workflows because the public-write catalog is a
+ * stealth catalog. Updating a pull request through `gh api … -X PATCH` is this repo's required REST
+ * path, so those invocations are correct wherever disclosure is the point; they are leaks only under
+ * a no-disclosure contract. Scanning every workflow for them reports the sanctioned path as a
+ * defect — measured at 11 such findings across 16 workflows, all of them legitimate.
+ */
+async function scanScope(): Promise<Array<{ id: string }>> {
+  const out: Array<{ id: string }> = [];
+  for (const entry of await listWorkflows(workflowsRoot)) {
+    if (onlyWorkflow !== undefined && entry.id !== onlyWorkflow) continue;
+    const loaded = await loadWorkflowWithDiagnostics(workflowsRoot, entry.id);
+    if (!loaded.success) {
+      findings.push(`workflow '${entry.id}' failed to load, so nothing about it is measured`);
+      continue;
+    }
+    const seeded = (loaded.value.workflow.variables ?? [])
+      .find((v) => v.name === 'stealth_mode') as { defaultValue?: unknown } | undefined;
+    if (seeded?.defaultValue !== true) continue;
+    out.push({ id: entry.id });
+  }
+  return out;
+}
+
 async function main(): Promise<void> {
-  await staticScan();
+  const scope = await scanScope();
+  if (scope.length === 0) {
+    // Nothing in scope is an unprovisioned corpus or a mistaken narrowing, never a pass.
+    console.error(onlyWorkflow !== undefined
+      ? `stealth-isolation: cannot measure — workflow '${onlyWorkflow}' is absent or seeds no stealth_mode: true`
+      : 'stealth-isolation: cannot measure — the corpus holds no workflow seeding stealth_mode: true');
+    process.exit(2);
+  }
+  for (const { id } of scope) await staticScan(id);
   if (runtimeTarget) runtimeProbe(runtimeTarget, runtimeRemote ?? 'security');
 
+  // The scope is reported on the clean path too: a guard that says only "OK" cannot be told apart
+  // from one that checked nothing, and the closure count is what says the scan read past the bound
+  // techniques into what they call.
+  const scopeNote = `${scope.length} stealth workflow(s) (${scope.map((s) => s.id).join(', ')})`
+    + `, ${closureCache.size} distinct closure(s) resolved`;
+
   if (findings.length > 0) {
-    console.error(`stealth-isolation: ${findings.length} finding(s)`);
+    console.error(`stealth-isolation: ${findings.length} finding(s) across ${scopeNote}`);
     for (const f of findings) console.error(`  - ${f}`);
     process.exit(1);
   }
-  console.log(`stealth-isolation: OK — no leakage path found for '${workflowId}'${runtimeTarget ? ' (static + runtime)' : ' (static)'}`);
+  console.log(`stealth-isolation: OK — no leakage path found across ${scopeNote}${runtimeTarget ? ' (static + runtime)' : ' (static)'}`);
 }
 
 main().catch((error) => {
