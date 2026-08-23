@@ -610,7 +610,18 @@ export async function composeTechniqueWithSource(
   // Derive path segments within the workflow's techniques directory.
   // Strip any leading 'workflow/' cross-workflow prefix, then split on '::'.
   const rawId = techniqueId.includes('/') ? (techniqueId.split('/', 2)[1] ?? techniqueId) : techniqueId;
-  const pathSegments = rawId.split('::').filter(s => s.length > 0);
+  const segments = rawId.split('::').filter(s => s.length > 0);
+  // A leading segment naming the source workflow is the cross-workflow prefix the read consumed to
+  // pick the home tree. It addresses a workflow, not a container, so the ancestor walk starts after
+  // it: a path segment that names no directory makes every ancestor lookup miss, and the callee
+  // arrives without the group contract governing it. `workflow::group::op` and the unqualified
+  // `group::op` name one operation and inherit one contract.
+  const pathSegments =
+    segments.length >= 2
+    && segments[0] === base.value.sourceWorkflowId
+    && existsSync(getWorkflowTechniquesDir(workflowDir, segments[0]))
+      ? segments.slice(1)
+      : segments;
   // The callee's own home tree owns its ancestor contracts. A cross-workflow or meta-shared
   // callee therefore inherits the containers that govern it where it lives, rather than the
   // same-named containers of whichever workflow requested it.

@@ -872,6 +872,34 @@ describe('home-tree ancestry for cross-workflow references', () => {
     }
   });
 
+  it('inherits the group contract when the cross-workflow prefix is spelled with ::', async () => {
+    // `workflow::group::op` and the unqualified `group::op` name one operation, so they inherit one
+    // contract. The prefix addresses a workflow rather than a container, so it takes no place in the
+    // ancestor path — left there, every ancestor lookup misses and the group's rules never arrive.
+    const betaTechniques = join(tempDir, 'beta', 'techniques');
+    await mkdir(join(betaTechniques, 'grp'), { recursive: true });
+    await writeFile(
+      join(betaTechniques, 'grp', 'TECHNIQUE.md'),
+      [...FM, '## Capability', '', 'Group contract.', '', '## Inputs', '', '### grp_input', '',
+        'Declared by the group.', '', '## Rules', '', '### grp-rule', '',
+        'The obligation the group imposes on every operation it holds.', ''].join('\n'),
+      'utf-8',
+    );
+    await writeFile(join(betaTechniques, 'grp', 'op.md'), operation, 'utf-8');
+
+    const qualified = await composeTechnique('beta::grp::op', tempDir, 'alpha');
+    const unqualified = await composeTechnique('grp::op', tempDir, 'beta');
+    expect(qualified.success && unqualified.success).toBe(true);
+    if (qualified.success && unqualified.success) {
+      expect(Object.keys(qualified.value.rules ?? {})).toContain('grp-rule');
+      expect(inheritedIds(qualified.value)).toEqual(['beta_only', 'grp_input']);
+      expect(Object.keys(qualified.value.rules ?? {}).sort()).toEqual(
+        Object.keys(unqualified.value.rules ?? {}).sort(),
+      );
+      expect(inheritedIds(qualified.value)).toEqual(inheritedIds(unqualified.value));
+    }
+  });
+
   it('composes one cross-workflow reference identically through both delivery doors', async () => {
     const stepBound = await composeTechnique('beta/shared-op', tempDir, 'alpha');
     const [bundled] = await resolveTechniques(['beta::shared-op'], tempDir, 'alpha');
