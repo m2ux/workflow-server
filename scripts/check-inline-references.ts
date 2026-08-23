@@ -23,13 +23,20 @@
  * never evidence that nothing else calls the thing being counted. A retirement decision needs a
  * reading pass, not this number.
  *
- * Hard classes, which fail:
+ * Hard classes, which fail the guard, both being unambiguous:
  *   unresolved-target            a call site whose destination names no file
  *   rule-addressed-as-operation  a qualified call whose operation half names a container rule
+ *
+ * Classified rather than failed, and printed as the disposition worklist:
  *   unbound-argument             a required own input of the callee that no name at the call site supplies
  *   value-named-callee           a callee named by a runtime value, so beyond static reach
  *
- * Run: npx tsx scripts/check-inline-references.ts [--root <workflows-dir>] [--json] [--grammar]
+ * The split is deliberate. A static reading of the name-match convention cannot see the runtime
+ * variable bag an input resolves against, so an argument bin is a candidate for disposition and not
+ * yet a defect. Failing on one would have the guard assert something it cannot observe, which is the
+ * failure mode this package exists to remove rather than reproduce.
+ *
+ * Run: npx tsx scripts/check-inline-references.ts [--root <workflows-dir>] [--json]
  *      npx tsx scripts/check-inline-references.ts --census
  *      npx tsx scripts/check-inline-references.ts --grammar
  *      npx tsx scripts/check-inline-references.ts --worklist
@@ -371,7 +378,7 @@ function analyse(root: string): Analysis {
       continue;
     }
 
-    pairs.add(`${site.callerRel} ${target}`);
+    pairs.add(`${site.callerRel}\u0000${target}`);
     callees.add(target);
     if (classifyLink(site.destination).kind === 'technique-container' && site.operation === undefined) {
       containerTargeted++;
