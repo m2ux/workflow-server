@@ -217,6 +217,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'every activity/workflow techniques[] reference resolves through the loader',
   },
   {
+    id: 'inline-references',
+    script: 'scripts/check-inline-references.ts',
+    npmScript: 'check:inline-refs',
+    scope: 'corpus',
+    json: true,
+    proves: 'every inline technique call resolves under the published reference grammar, whose coverage is reported beside its total',
+  },
+  {
     id: 'activities',
     script: 'scripts/validate-activities.ts',
     npmScript: 'check:activities',

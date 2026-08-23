@@ -44,6 +44,7 @@
     "check:artifact-guides": "tsx scripts/check-artifact-guides.ts",
     "check:description-hygiene": "tsx scripts/check-description-hygiene.ts",
     "check:refs": "tsx scripts/check-all-refs.ts",
+    "check:inline-refs": "tsx scripts/check-inline-references.ts",
     "check:activities": "tsx scripts/validate-activities.ts",
     "check:workflow-yaml": "tsx scripts/validate-workflow-yaml.ts",
     "check:all": "tsx scripts/check-all.ts",
