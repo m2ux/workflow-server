@@ -35,4 +35,4 @@ URL of the opened pull request.
 
 ### 3. Create Pull Request
 
-- Apply [create-pr](../../../meta/techniques/github-cli-protocol/create-pr.md) with `branch_name` `{branch_name}`, `base_branch` `workflows`, a change-summary `title` and `body`, and `as_draft` false; set `{pull_request_url}` from the returned `{pr_url}`.
+- Apply [create-pr](../../meta/techniques/github-cli-protocol/create-pr.md) with `branch_name` `{branch_name}`, `base_branch` `workflows`, a change-summary `title` and `body`, and `as_draft` false; set `{pull_request_url}` from the returned `{pr_url}`.

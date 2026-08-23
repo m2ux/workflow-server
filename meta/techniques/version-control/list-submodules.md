@@ -16,4 +16,4 @@ Array of `{ path, name, url }` entries, one per target-component submodule. Infr
 ## Protocol
 
 1. Read `{host_repo_path}/.gitmodules`; parse each `[submodule "name"]` section to extract `path` and `url`.
-2. Omit infrastructure submodules — apply [version-control](./TECHNIQUE.md)::infrastructure-submodule-paths. Collect one entry per remaining section into `{submodules}`.
+2. Omit infrastructure submodules, per `version-control.infrastructure-submodule-paths`. Collect one entry per remaining section into `{submodules}`.

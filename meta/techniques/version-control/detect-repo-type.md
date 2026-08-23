@@ -20,5 +20,5 @@ true when `.gitmodules` declares at least one non-infrastructure submodule; fals
 ## Protocol
 
 1. If `.gitmodules` does not exist at `{host_repo_path}`, set `{is_monorepo}` = false and `{component_path}` = `.` — a regular repo. Done.
-2. Parse `{host_repo_path}/.gitmodules` and collect the `path` of every `[submodule "..."]` section. Discard infrastructure submodules — apply [version-control](./TECHNIQUE.md)::infrastructure-submodule-paths.
+2. Parse `{host_repo_path}/.gitmodules` and collect the `path` of every `[submodule "..."]` section. Discard infrastructure submodules, per `version-control.infrastructure-submodule-paths`.
 3. If one or more submodule paths remain, set `{is_monorepo}` = true and leave `{component_path}` for submodule selection. Otherwise set `{is_monorepo}` = false and `{component_path}` = `.` — the `.gitmodules` file declared only infrastructure submodules, so this is effectively a regular repo.
