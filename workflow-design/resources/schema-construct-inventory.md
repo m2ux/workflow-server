@@ -52,12 +52,13 @@ An activity has a **single ordered `steps[]`** in which every step carries a req
 | "The expected result is X" | **Outcome** | `outcome[]` (string array) |
 | "Only run when X is true" | **Step gate** | `steps[].when` / `steps[].condition` (references condition.schema.json) — a shared base field on every step kind |
 | "The agent must follow these constraints" | **Activity rules** | `rules[]` (string array) |
+| "This activity needs X and produces Y" | **Variable contract** | `variables.reads[]` (names it consults: gates, routing, loop collections, prose, and bound-operation inputs it does not supply itself) and `variables.writes[]` (full declarations for what it puts in the bag — operation outputs, remap targets, checkpoint `setVariable` keys, `set` targets, loop items). A write declaration is contributed to every workflow whose graph includes the activity, so the declaration lives with the activity rather than with each including workflow; two declarations of one name that disagree on `type` or `defaultValue` fail the load (`check:activity-variables`). |
 
 ## Workflow-Level Constructs (workflow.schema.json)
 
 | Informal Pattern | Formal Construct | Schema Fields |
 |---|---|---|
-| "Track whether the user confirmed" | **Variable** | `variables[].name`, `.type`, `.description`, `.defaultValue` |
+| "The session starts with X" / "this policy holds all run" | **Workflow variable** | `variables[].name`, `.type`, `.description`, `.defaultValue` — the file's own declarations are session facts and policy spanning activities. A variable an activity produces is declared by that activity under `variables.writes` and contributed here on inclusion, so a value one activity hands the next has one home. |
 | "Can run in fast or thorough mode" | **Activation variable + conditional flow** | one authoritative mode `variable` (enum or boolean) set by a detection step/checkpoint early in the workflow, with `transitions[].condition` and step `when`/`condition` gates that compare it directly — no parallel derived shadow flags |
 | "The agent must always do X" (session conduct) | **Workflow rules** | `rules.workflow` / `rules.activity` / `rules.universal` (partitioned by audience). Runtime-relevant only — design-time authoring standards migrate to the workflow-design canon (`rule-audience-bucket`, `runtime-rules-only`). |
 | "Every activity needs this strategy technique" | **Inherited techniques** | `techniques.workflow` (orchestrator, bundled into `get_workflow`) / `techniques.activity` (inherited by every activity, injected into `get_activity`). Activity-local `techniques[]` is STRATEGY only — per-step ops bind via `step.technique` (`techniques-list-disjoint`). |
