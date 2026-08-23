@@ -24,6 +24,127 @@
           "type": "string",
           "description": "Detailed description of the activity"
         },
+        "variables": {
+          "type": "object",
+          "properties": {
+            "reads": {
+              "type": "array",
+              "items": {
+                "anyOf": [
+                  {
+                    "type": "string",
+                    "pattern": "^[a-z][a-z0-9]*(_[a-z0-9]+)+$"
+                  },
+                  {
+                    "type": "string",
+                    "enum": [
+                      "requirements",
+                      "features",
+                      "exclusions",
+                      "dimensions",
+                      "tasks",
+                      "results",
+                      "submodules",
+                      "paths",
+                      "fields",
+                      "filters",
+                      "stats",
+                      "effects",
+                      "substitutions",
+                      "findings",
+                      "assumptions",
+                      "subsystems",
+                      "transitions",
+                      "options",
+                      "branches",
+                      "agents",
+                      "changes",
+                      "failures",
+                      "items",
+                      "files",
+                      "gaps",
+                      "outcomes",
+                      "body",
+                      "query",
+                      "repo",
+                      "owner",
+                      "number",
+                      "title",
+                      "branch",
+                      "diff",
+                      "limit",
+                      "name",
+                      "sha",
+                      "url",
+                      "head",
+                      "base",
+                      "ref",
+                      "labels",
+                      "path",
+                      "cursor",
+                      "cql",
+                      "jql",
+                      "description",
+                      "assignee",
+                      "depth",
+                      "direction",
+                      "summary",
+                      "state",
+                      "target",
+                      "adr",
+                      "type",
+                      "mode",
+                      "kind"
+                    ]
+                  }
+                ],
+                "description": "Qualified snake_case noun phrase (>=2 words, AP-60), or an enumerated bare-word exemption."
+              },
+              "description": "Session variables this activity consults: gate and routing conditions, loop collections, prose interpolations, and the bound operations' own inputs it does not supply itself. A name written by an earlier step of the same activity is resolved internally and is not declared here."
+            },
+            "writes": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "$ref": "#/definitions/activity/properties/variables/properties/reads/items"
+                  },
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "string",
+                      "number",
+                      "boolean",
+                      "array",
+                      "object"
+                    ],
+                    "description": "Declared type. The server validates checkpoint setVariable values against it, warn-only: a mismatch is stored as written and surfaced in _meta.validation and on the variable_set history event. Agents honor it for their own writes."
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "defaultValue": {
+                    "description": "Initial value the server seeds into the session variable bag at session creation (start_session fresh sessions and dispatch_child children), recorded as one variables_seeded history event. Do not gate a defaulted variable with exists/notExists — seeding makes the gate constant (check:variable-model enforces this)."
+                  },
+                  "required": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Authoring metadata; the server does not check that the variable is ever set."
+                  }
+                },
+                "required": [
+                  "name",
+                  "type"
+                ],
+                "additionalProperties": false
+              },
+              "description": "Session variables this activity puts into the bag: its bound operations' outputs (under their declared id or the step binding's remap target), its checkpoint setVariable effects and its `set` action targets. Contributed to the including workflow's variable set, defaultValue included — a loop variable is iteration state and is not declared here."
+            }
+          },
+          "additionalProperties": false,
+          "description": "The session variables this activity reads and writes. Its writes are declarations contributed to the including workflow's variable set; its reads are the names it needs that workflow to supply."
+        },
         "techniques": {
           "type": "array",
           "items": {

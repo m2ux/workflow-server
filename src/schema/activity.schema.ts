@@ -1,6 +1,7 @@
 import { z } from 'zod';
 import { ConditionSchema } from './condition.schema.js';
 import { SemanticVersionSchema } from './common.js';
+import { ActivityVariablesSchema } from './variable.schema.js';
 
 // Techniques reference (activity-level — optional when steps declare their own techniques).
 // A flat list of activity-wide technique references (`::` paths): the strategy/capability
@@ -279,6 +280,10 @@ export const ActivitySchema = z.object({
   
   // Description (optional)
   description: z.string().optional().describe('Detailed description of the activity'),
+
+  // The activity's variable contract (#493): what it reads, and what it writes. Its writes are
+  // contributed to the variable set of every workflow whose graph includes it.
+  variables: ActivityVariablesSchema.optional().describe('The session variables this activity reads and writes. Its writes are declarations contributed to the including workflow\'s variable set; its reads are the names it needs that workflow to supply.'),
 
   // Activity-wide techniques, referenced by `::` path. The server bundles them into get_activity.
   techniques: TechniquesReferenceSchema.optional(),
