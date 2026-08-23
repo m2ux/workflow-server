@@ -100,7 +100,7 @@ function setupSandbox() {
   return { root, target, cfgPath };
 }
 
-interface WorkerTurn { result: string; sessionId: string | null }
+interface WorkerTurn { result: string; sessionId: string | null; costUsd: number; turns: number }
 
 /** Dispatch one worker turn (headless claude). Returns its text + resumable session id. */
 function runWorker(prompt: string, cfgPath: string, target: string, resumeId: string | null): WorkerTurn {
@@ -118,9 +118,16 @@ function runWorker(prompt: string, cfgPath: string, target: string, resumeId: st
   const out = execFileSync(CLAUDE_BIN, a, { cwd: target, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 600_000 });
   try {
     const parsed = JSON.parse(out);
-    return { result: String(parsed.result ?? ''), sessionId: parsed.session_id ?? null };
+    // The CLI reports what the turn cost; recording it is what lets a run answer what it cost
+    // rather than leaving that to be estimated afterwards.
+    return {
+      result: String(parsed.result ?? ''),
+      sessionId: parsed.session_id ?? null,
+      costUsd: typeof parsed.total_cost_usd === 'number' ? parsed.total_cost_usd : 0,
+      turns: typeof parsed.num_turns === 'number' ? parsed.num_turns : 0,
+    };
   } catch {
-    return { result: out, sessionId: resumeId };
+    return { result: out, sessionId: resumeId, costUsd: 0, turns: 0 };
   }
 }
 
@@ -210,6 +217,8 @@ async function main() {
   // directory with no .git, which a worker met and reported as unresolvable.
   const h = await createHarness({ workspaceDir: sb.target });
   const transcript: Array<Record<string, unknown>> = [];
+  /** What the workers cost, so a run reports its own price rather than leaving it estimated. */
+  let spent = 0;
   try {
     // The orchestrator names the planning folder, as it does in production. A worker left to invent
     // one picked a different directory on each run, and the run where it picked the session's own
@@ -288,7 +297,8 @@ async function main() {
         const w = runWorker(prompt, sb.cfgPath, sb.target, workerSession);
         workerSession = w.sessionId;
         workerReports.push(w.result);
-        log(`worker turn ${turn} (${w.result.length} chars)`);
+        spent += w.costUsd;
+        log(`worker turn ${turn} (${w.result.length} chars, ${w.costUsd.toFixed(2)} usd, ${w.turns} model turn(s))`);
 
         const state = JSON.parse(readFileSync(sessionPath, 'utf8'));
         const active = state.activeCheckpoint;
@@ -378,7 +388,7 @@ async function main() {
     }
 
     const finalState = JSON.parse(readFileSync(sessionPath, 'utf8'));
-    log(`final status: ${finalState.status}; activities run: ${count}`);
+    log(`final status: ${finalState.status}; activities run: ${count}; worker spend ${spent.toFixed(2)} usd`);
 
     // Assert rather than narrate. A run that reads well in the log and wrote outside its contracts,
     // or never moved the session at all, is the failure this exists to catch — and reading the log
