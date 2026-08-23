@@ -299,6 +299,19 @@ the prediction was written.** It is evidence the grammar work is doing what it w
 stated with its terms is a census that can predict, where a census stated as a bare total can only be
 re-argued.
 
+### A breakdown that sums to its own total is not thereby complete
+
+Two per-group breakdowns in this area have been found missing a row: the per-group call-site table omitted
+`github-cli-protocol` entirely, 39 logical sites and the largest group, and the per-workflow coverage table
+omitted `ponytail`, whose 2 sites left the stated total of 75 equal to the sum of its three remaining rows.
+
+**A missing row makes the sum consistent with itself**, so arithmetic cannot detect the omission — the total
+was computed from the rows that survived. Both instances were caught by re-deriving the population from the
+corpus and comparing membership, and neither would have been caught by checking that the column added up. Two
+instances make it a property of these tables rather than a slip, so the method rule is: **a breakdown is
+verified by re-deriving its row set, never by verifying its total.** An em-dash in a count column is a row
+absent from the sum, not a measured zero.
+
 **A second forward prediction survives, and it closes the corpus stage arithmetically.** At the delivered
 corpus pin `12400e85` the published grammar counts **129 logical call sites**. That is the 134 predicted at
 `7f37a2bd`, less the **3** Atlassian intra-group sites Task 4 resolved and the **2** container-targeted sites
@@ -310,6 +323,19 @@ the delivered module's own `extractCallSites` and an independent implementation 
 return 129, so the grammar is cross-checked against a second implementation and not only against itself.
 Counting the census and the closure byte figures, **four measurement sets have now survived re-derivation and
 this is the fifth.**
+
+**What distinguishes this set is how it was verified, not how well.** The four before it were each measured
+once and re-measured by the same method, which establishes that a figure is stable but cannot detect a method
+that is wrong the same way twice. This one was produced by two implementations of one published grammar that
+agree on 129 — so it is corroboration across methods rather than repetition within one, and it is the first
+figure in this package to have that property. The reason it was available at all is that the grammar publishes
+its terms: a second implementation can be written against a term list, where it cannot be written against a
+bare total. That is a third independent route to the fixtures conclusion, after the terms' internal overlap
+and the corpus drift.
+
+At the delivered pin, under the five-verb list the guard now publishes, the same measurement gives **198
+logical call sites and 178 deduplicated pairs**, reproduced by the guard and asserted by its conformance
+fixtures.
 
 ### The case term, and a third route to fixtures
 

@@ -8,8 +8,8 @@
   "currentActivity": "dispatch-client-workflow",
   "currentTechnique": "workflow-engine::continue-batch",
   "condition": "isDefault: dispatch-client-workflow",
-  "seq": 61,
-  "ts": 1787464251,
+  "seq": 62,
+  "ts": 1787465382,
   "startedAt": "2026-08-15T09:54:31.892Z",
   "completedActivities": [
     "discover-session",
@@ -1437,6 +1437,21 @@
         }
       },
       "timestamp": "2026-08-23T05:50:51.948Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "worker-dispatch-client-d3",
+        "basis": "cumulative",
+        "usage": {
+          "duration_ms": 74450,
+          "segment": "relay-verb-list-decision",
+          "subagent_tokens": 343631,
+          "tool_uses": 4
+        }
+      },
+      "timestamp": "2026-08-23T06:09:42.959Z",
       "type": "activity_usage"
     }
   ],
@@ -8891,17 +8906,33 @@
             },
             "timestamp": "2026-08-23T06:07:57.000Z",
             "type": "checkpoint_response"
+          },
+          {
+            "activity": "implement",
+            "data": {
+              "agentId": "worker-implement-guard-stage-1",
+              "basis": "cumulative",
+              "usage": {
+                "basis_note": "parent-harness cumulative reading for this agent context",
+                "duration_ms": 1985439,
+                "segment": "guard-stage-delivered-tasks-6-and-7",
+                "subagent_tokens": 291930,
+                "tool_uses": 115
+              }
+            },
+            "timestamp": "2026-08-23T06:42:56.769Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 116,
+        "seq": 118,
         "sessionIndex": "KLN3OI",
         "skippedActivities": [],
         "startedAt": "2026-08-15T10:00:34.754Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1787465277,
+        "ts": 1787467376,
         "variables": {
           "analysis_document": ".engineering/artifacts/planning/2026-08-15-handling-inline-techniques/05-implementation-analysis.md",
           "applicable_patterns": "Lexical over dynamic scope; cycle-tolerant linking via a visited set; one narrow grammar module shared by checker and runtime; normative grammar published with conformance fixtures",

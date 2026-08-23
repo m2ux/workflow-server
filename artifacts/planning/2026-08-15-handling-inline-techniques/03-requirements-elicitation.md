@@ -353,6 +353,33 @@ with the other terms set loosely, and holding the published grammar's other nine
 Deciding to keep one verb is a defensible answer that is recorded as a decision, because the alternative —
 leaving it unstated — is what let a one-verb grammar read as a complete one.
 
+**Settled at the `guard-verb-list-width` gate: five verbs — `apply`, `via`, `use`, `follow`, `per`.** The
+guard's asserted totals are 198 logical call sites and 178 deduplicated pairs, and the fixture pinning the
+verb-list term carries five entries. `ponytail` enters the count at 2 sites, and no workflow scores a false
+zero.
+
+The reasoning decides where the cost sits rather than what it is. **If a re-baseline happens at all, the
+re-baseline is the cost** — one pass over every asserted total plus one fixture rewrite — and that cost is
+identical whether one verb is added or four. So the question was never whether widening is worth paying for,
+but how much coverage the single payment buys: `via` alone buys 64% of the GitNexus cross-group set, and five
+verbs buy 88% for the same process cost.
+
+**Nine verbs was declined on marginal return, and the measurement now says more than the decision needed.**
+The last four add 13 deduplicated pairs for 4 coverage points, the weakest widening measured. Measured one at
+a time against the published five at `12400e85`, their individual contributions are **`see` 0 sites, `run` 2,
+`check` 6, `call` 8** — and 13 jointly against 16 summed, so three sites carry two of these words on one line.
+Two readings follow. **`see` contributes nothing at all**, so the supposition that it reads as a
+cross-reference rather than an invocation is confirmed by absence: no Protocol line in the corpus pairs it
+with an unanchored technique link, and there is nothing there to misclassify. **`check` contributes 6 sites,
+which weakens the same supposition for that word** — those six carry `check` without `via`, so `check` is a
+live invoking form in this corpus rather than a citation verb. That is evidence rather than grounds to
+reopen: the decline stands on marginal return, which the 13-pair figure supports independently.
+
+The overlap inside the verb list is worth naming, because it is the third instance of the same phenomenon in
+this package. Two published terms overlap (`container-target` and `counting-unit`), two verbs overlap on three
+shared lines, and in both cases the sum of the parts exceeds the whole. A list of terms cannot show that its
+entries interact, which is why each is pinned by a fixture.
+
 ### Cleanliness is not reachability, and in Atlassian they run the other way
 
 Two re-derivations against `atlassian-operations` (24 files: 23 operations plus the container):
