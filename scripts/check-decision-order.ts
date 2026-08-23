@@ -17,6 +17,7 @@ import { parse } from 'yaml';
 import { parseWhen, type WhenAst } from '../src/schema/when-expression.js';
 import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
 import { runGuard, type Finding } from './guard-protocol.js';
+import { declaredVariables } from './workflow-declarations.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
@@ -157,15 +158,10 @@ function decidedVariables(step: Step): Set<string> {
 }
 
 /** Declared variables carrying a `defaultValue`: an earlier read of one has the default to read. */
-function defaultedVariables(workflowDir: string): Set<string> {
-  const path = join(workflowDir, 'workflow.yaml');
-  if (!existsSync(path)) return new Set();
-  const declared = (parse(readFileSync(path, 'utf-8')) as { variables?: unknown })?.variables;
+function defaultedVariables(root: string, workflowId: string): Set<string> {
   const out = new Set<string>();
-  for (const v of Array.isArray(declared) ? declared : []) {
-    if (v !== null && typeof v === 'object' && typeof (v as { name?: unknown }).name === 'string') {
-      if ('defaultValue' in (v as object)) out.add((v as { name: string }).name);
-    }
+  for (const [name, declaration] of declaredVariables(root, workflowId)) {
+    if (declaration.defaultValue !== undefined) out.add(name);
   }
   return out;
 }
@@ -177,7 +173,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
     const workflowDir = join(root, workflow);
     const activitiesDir = join(workflowDir, 'activities');
     if (!existsSync(activitiesDir) || !statSync(activitiesDir).isDirectory()) continue;
-    const defaulted = defaultedVariables(workflowDir);
+    const defaulted = defaultedVariables(root, workflow);
     for (const entry of readdirSync(activitiesDir).sort()) {
       if (!entry.endsWith('.yaml') && !entry.endsWith('.yml')) continue;
       const path = join(activitiesDir, entry);

@@ -33,6 +33,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { jsonTypeOf, isTemplateReference } from '../src/utils/variable-seed.js';
 import { resolveWorkflowsRoot } from './workflows-root.js';
+import { declaredVariables } from './workflow-declarations.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
@@ -55,19 +56,17 @@ interface VariableDeclaration {
   defaultValue?: unknown;
 }
 
-/** Declared variables of one workflow.yaml, keyed by name. */
-function readDeclarations(workflowYaml: unknown): Map<string, VariableDeclaration> {
+/**
+ * The declarations one workflow runs with, keyed by name: its file's own, plus the writes each
+ * activity in its graph contributes.
+ */
+function readDeclarations(root: string, workflowId: string): Map<string, VariableDeclaration> {
   const decls = new Map<string, VariableDeclaration>();
-  const vars = (workflowYaml as { variables?: unknown })?.variables;
-  if (!Array.isArray(vars)) return decls;
-  for (const v of vars) {
-    if (typeof v !== 'object' || v === null) continue;
-    const rec = v as Record<string, unknown>;
-    if (typeof rec.name !== 'string') continue;
-    decls.set(rec.name, {
-      type: typeof rec.type === 'string' ? rec.type : undefined,
-      hasDefault: 'defaultValue' in rec && rec.defaultValue !== undefined,
-      defaultValue: rec.defaultValue,
+  for (const [name, declaration] of declaredVariables(root, workflowId)) {
+    decls.set(name, {
+      type: declaration.type,
+      hasDefault: declaration.defaultValue !== undefined,
+      defaultValue: declaration.defaultValue,
     });
   }
   return decls;
@@ -150,7 +149,7 @@ export function collectVariableModelViolations(root: string = ROOT): VariableMod
     const workflowYamlPath = join(root, workflow, 'workflow.yaml');
     if (!existsSync(workflowYamlPath)) continue;
     const workflowDoc: unknown = parse(readFileSync(workflowYamlPath, 'utf-8'));
-    const decls = readDeclarations(workflowDoc);
+    const decls = readDeclarations(root, workflow);
     violations.push(...lintDeclarations(decls, relative(root, workflowYamlPath)));
     violations.push(...lintDocument(workflowDoc, decls, relative(root, workflowYamlPath)));
     const activitiesDir = join(root, workflow, 'activities');

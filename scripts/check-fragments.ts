@@ -42,6 +42,7 @@ import {
 } from '../src/loaders/fragment-resolver.js';
 import { fragmentsLookupSync } from './fragments-index.js';
 import { resolveWorkflowsRoot } from './workflows-root.js';
+import { declaredVariables } from './workflow-declarations.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
@@ -156,11 +157,9 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
     try { doc = parseDefinition(readFileSync(wfYamlPath, 'utf-8')) as Record<string, unknown> | null; } catch { continue; }
     if (!doc) continue;
 
-    const declaredVars = new Set(
-      (Array.isArray(doc['variables']) ? doc['variables'] : [])
-        .map((v) => (v && typeof v === 'object' ? (v as { name?: unknown }).name : undefined))
-        .filter((n): n is string => typeof n === 'string'),
-    );
+    // The workflow's whole variable set: its file's own declarations plus the writes its
+    // activities contribute, which is what a fragment's effect writes into at runtime.
+    const declaredVars = new Set(declaredVariables(root, wf).keys());
 
     // Rules partitions: validate refs, index inline texts.
     const rules = (doc['rules'] ?? {}) as Record<string, unknown>;
