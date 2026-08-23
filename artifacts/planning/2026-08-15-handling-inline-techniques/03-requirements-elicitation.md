@@ -265,6 +265,52 @@ sweep at any population size.
 The corollary for the guard is that a site leaving the grammar's count has not left the corpus. It has left
 the count.
 
+**Link resolution is not complete either.** The wider sweep above resolves references by link target under
+no verb list, which is broader than the grammar and still not the consumer set. `midnight-system-review`
+reaches these operations in ordinary prose — six files, twelve reaches, every one a backticked operation
+name inside a parenthetical list, with no markdown link and no qualified pair anywhere. A link-resolving
+sweep reads that workflow as a non-consumer exactly as the grammar does. **A semantic call needs no syntax**,
+so no extractor keyed on syntax of any kind — verb, link, qualified pair, dotted address — is a completeness
+argument. Completeness comes from reading, and its cost is why it is spent on deletions rather than on
+totals.
+
+### What the guard stage inherits: the verb list decides its own coverage
+
+An independent sweep resolved the GitNexus cross-group consumer set by link target under no verb list, with
+qualified pairs collapsed per the grammar's ninth term and READMEs, CHANGELOGs and fenced blocks excluded.
+Unit: logical call sites. It found **75 cross-group logical call sites across 31 caller files in 4
+workflows, reaching 15 operations**, against the 23 sites over 11 operations this document's census carried
+— plus 29 further intra-group edges.
+
+The distribution is the finding, not the total:
+
+| Workflow | Logical call sites | Caller files | Sites the published grammar sees |
+|---|---|---|---|
+| `work-package` | 33 | 17 | **17** |
+| `substrate-node-security-audit` | 22 | 8 | **0** |
+| `prism` | 20 | 6 | **0** |
+| `ponytail` | — | — | **0** |
+| **Total** | **75** | **31** | **17** |
+
+**The published grammar sees 17 of 75. Fifty-eight are invisible, and fifty-six of those because the
+invoking verb is not `apply` — the only verb the published verb list contains.** Every site the grammar
+sees is in `work-package`. Three workflows score zero, and **seven of the fifteen operations have their
+entire cross-group consumer set invisible**. An entire workflow was absent from the earlier survey for this
+reason.
+
+This is the guard stage's first question rather than a note against it, because it decides what SC-3's
+asserted total means. A guard asserting a reproducible total over a one-verb grammar reports clean across a
+group where 77% of the call sites are unchecked — and it is not wrong to do so, since the total reproduces
+exactly as SC-3 requires. The criterion is satisfied and the coverage is 23%, which is the distinction this
+section exists to hold.
+
+So whether the verb list widens is a live decision for tasks 6 and 7, with its cost already measured: the
+verb list is the term the 59% edge spread was measured against, so every widening re-baselines every
+asserted total, and the fixtures pinning that term change with it. Widening to the five-verb list moves the
+count from 148 to 204 pairs; the nine-verb list reaches 235. Deciding to keep one verb is a defensible
+answer that must be recorded as a decision, because the alternative — leaving it unstated — is what let a
+one-verb grammar read as a complete one.
+
 ### Cleanliness is not reachability, and in Atlassian they run the other way
 
 Two re-derivations against `atlassian-operations` (24 files: 23 operations plus the container):

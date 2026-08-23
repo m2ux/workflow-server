@@ -203,27 +203,73 @@ workflow.
 - `src/loaders/technique-loader.ts` - the two sites that resolve from the requested workflow take the source workflow
 - `tests/technique-loader.test.ts` - one cross-workflow reference composed through both doors, asserting identical inputs, outputs, rules and protocol against the shared projection
 
-### Task 3: GitNexus and Atlassian operations reach their tools directly (90-150 min)
-**Goal:** The wrapper prose standing between an agent and an already-typed tool retires, so the call
-reaches that tool directly; the interpreting halves that hold something no tool can hold are kept. The
-eighteen intra-group calls resolve into their callers.
-**Deliverables:**
-- `workflows/meta/techniques/gitnexus-operations/` - the operations that convert with nothing left over retire; each operation carrying a rule, a threshold, an escape hatch, a human contact or an onward technique call keeps its interpreting half
-- `impact` - keeps its interpreting half, the risk threshold and the hand-derived-caller escape hatch staying in the technique
-- the retained halves - each declares the arguments its prose named, so the conversion's acceptance is checkable
+### Task 3: The wrapper conversion — DEFERRED at the `gitnexus-conversion-acceptance-unsatisfiable` gate
 
-**This task registers no tools and adds no server dependency.** The tools these operations name belong to
-separate MCP servers the agent is already connected to; they already declare their arguments and already
-reject a call omitting a required one, so the loud-at-runtime guarantee the requirements describe is
-already delivered by tools that exist. The server's tool surface stays at **18**.
+**Status: unstarted, and deferred to a requirements decision rather than rescheduled.** The conflict is
+between two published clauses, so no implementation choice resolves it. SC-13 stays **explicitly open**
+rather than partially delivered, which is what keeps the guard's baseline in tasks 6-7 honest: a fraction of
+a criterion delivered is a baseline nobody can interpret.
 
-### Task 4: Converted prose retires from the corpus (30-45 min)
-**Goal:** The corpus no longer carries wrapper prose for operations a tool now serves, and the submodule
-pin moves to the delivered commit.
+**Why the acceptance cannot be met.** The task's two clauses were that each retained interpreting half
+declares the arguments its prose named, and that the twenty-three cross-group sites stop being inline call
+sites. Retire-wrappers-only keeps every half holding a rule, a threshold, an escape hatch, a human contact
+or an onward call — and a half worth keeping is a half that must be called, which is an inline call site. So
+the sites narrow rather than disappear. Classifying all 17 GitNexus operations against the five
+keep-criteria, and assuming the shared staleness sentence is extracted first, **2 retire whole**:
+`read-cluster` and `read-process`. Retirement therefore removes **2 of 23 cross-group sites**, both links in
+one file.
+
+**The premise failed measurement four times, and every correction shrank it.** 41 converted sites at the
+outset; then the "five convert with nothing left over" figure turned out to count a different population;
+then zero of the eleven retired whole; then 2 of 23 sites. A premise that shrinks under every re-derivation
+is a premise to re-decide rather than to re-estimate, and that is the deferral's ground.
+
+**A second, independent blocker.** The group container's own `must-use-operations` rule forbids the target
+state in as many words: raw `gitnexus_*` calls and Cypher must not appear in technique protocols, and raw
+calls live only inside the operation procedures. A caller reaching the tool directly is exactly that. The
+rule is cited by dotted address from three places in `substrate-node-security-audit`, so retiring it is a
+cross-workflow edit rather than a local one.
+
+**Two facts about the population, recorded because they bound any later attempt.** `read-cluster` and
+`read-process` read MCP *resources* rather than calling tools, so no tool schema could hold them under any
+conversion shape — the two operations that retire most cleanly are the two a tool cannot replace. And the
+staleness sentence sits in **twelve** operation files in two spelling variants, against the eleven carried
+previously; the container already half-states it as `index-freshness-first`, so extracting it is a
+de-duplication into a rule that exists rather than a new rule.
+
+**The alternative, recorded as available and not taken**, on the same footing as PL-2's orchestrator-door
+budget parameter. Each interpreting half is promoted into a container rule; the operation files then retire;
+each caller makes the tool call directly and cites the rule by dotted address — the shape two
+`substrate-node-security-audit` techniques already use. This delivers all 23 sites and preserves the
+interpreting content once rather than duplicating it into callers, and it is the reading the requirements'
+own finding that *the reasoning is in the containers, not the operations* points at. Its cost is **roughly
+49 to 75 consumer sites edited** and `must-use-operations` rewritten with its three cross-workflow
+citations. It may be the right architecture discovered late; that judgement belongs to whoever picks the
+deferral up, which is why the option is recorded with its cost rather than dismissed.
+
+### Task 4: Atlassian intra-group calls resolve into their callers (30-45 min)
+**Goal:** No Atlassian operation reaches a sibling from its own Protocol, so the group's intra-group call
+sites leave the corpus.
 **Deliverables:**
-- `workflows/meta/techniques/gitnexus-operations/` - converted operations removed, interpreting halves kept
-- `workflows/meta/techniques/atlassian-operations/` - intra-group calls resolved into their callers
-- the `workflows` gitlink - re-pinned to the delivered corpus commit
+- `workflows/meta/techniques/atlassian-operations/` - the three Protocol-section intra-group calls resolved, taking the group from 3 to 0
+- the `workflows` gitlink - re-pinned to the delivered corpus commit, after Task 5
+
+The group's ten intra-group references divide by section, and only one part is a call site. **Seven sit in
+`TECHNIQUE.md`'s `## Rules`**, where a rule citing the operation it governs is the rule's own form and the
+grammar — scoped to Protocol sections — does not count them; they stay. **Three sit in Protocol sections**,
+and all three are the group's entire logical call-site count, reproducing the census figure of 3 exactly.
+Each resolves on its own terms: the transition operation's hatch restated an obligation
+`transitions-are-dynamic` already imposes unconditionally, so it goes and the invariant is cited instead;
+the create-issue hatch names the tool its one-line callee wraps; and `resolve-cloud-id` held a **reference to
+itself**, telling the reader of that operation to apply that operation, which is a misplaced sentence rather
+than a recovery path — the ordering obligation it stated lives in `resolve-cloud-id-once`.
+
+The original rationale for this task was conditional on the conversion: an intra-group call becomes an
+ordinary function call once the group becomes code. With the conversion deferred that rationale is
+unavailable, and the independent one is narrower and holds on its own — two of the three callees are
+one-line pure wrappers, so the reference carried indirection rather than content, and the third was
+circular. `list-jira-issue-types` becomes unreached by this change; the file stays, because deleting it is a
+conversion act.
 
 ### Task 5: Unambiguous defects repaired (15-25 min)
 **Goal:** The two rule-addressed-as-operation sites and the one dangling target are correct.
@@ -240,12 +286,29 @@ own loader, and its arguments classified into name-match-satisfied versus genuin
 - `scripts/inline-reference-triage.json` - per-finding verdicts with named rationales
 - every corpus-scoped guard - resolves its root strictly, so an unprovisioned corpus reports unmeasured rather than clean
 
+**This task opens with a decision, not with a script: how wide is the verb list.** The measurement is in
+[requirements](03-requirements-elicitation.md#what-the-guard-stage-inherits-the-verb-list-decides-its-own-coverage)
+— the published one-verb list sees 17 of the 75 GitNexus cross-group logical call sites, three whole
+workflows score zero, and seven of fifteen operations have their entire cross-group consumer set invisible.
+The guard's total still reproduces, so SC-3 is satisfied at 23% coverage; the criterion and the coverage are
+separate facts. Widening is costed: the verb list is the term the 59% edge spread was measured against, so
+every widening re-baselines every asserted total and changes the fixture pinning that term — 148 pairs at
+one verb, 204 at five, 235 at nine. Keeping one verb is a defensible answer. Leaving the width unstated is
+not, because that is what let a one-verb grammar read as a complete one.
+
 ### Task 7: Grammar fixtures and asserted totals (40-60 min)
-**Goal:** Each of the ten published terms is pinned by a fixture, so changing a term changes a fixture
-rather than only a number.
+**Goal:** Each published term is pinned by a fixture, so changing a term changes a fixture rather than only
+a number.
 **Deliverables:**
 - `tests/fixtures/reference-grammar/` - one fixture per term, including the two that overlap
 - `tests/reference-grammar-conformance.test.ts` - totals asserted against the delivered corpus commit
+
+**The term count needs settling before the fixtures are written.** This plan and Task 1's delivered module
+say **ten** published terms; [SC-3](03-requirements-elicitation.md#success-criteria) says **nine**. One
+fixture per term cannot be written against two counts, so the fixture set is what forces the reconciliation
+— which is the argument for fixtures restated as a live instance. Whichever count stands, the tenth term is
+the one to name explicitly, since an unnamed term is how the first nine each came to be discovered by
+measuring rather than by reading.
 
 ### Task 8: Reference traversal with a visited set (60-90 min)
 **Goal:** Referenced bodies are collected transitively and deduplicated, each delivered once, the walk
