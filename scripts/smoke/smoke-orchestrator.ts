@@ -120,6 +120,36 @@ function runWorker(prompt: string, cfgPath: string, target: string, resumeId: st
   }
 }
 
+/**
+ * The variables a worker reported producing, read from the fenced `variables_changed` block the
+ * brief asks for as the last thing in a turn.
+ *
+ * Later turns win: a value the worker settles after a checkpoint resume supersedes what it said
+ * before. A turn with no block contributes nothing rather than clearing what earlier turns
+ * reported, and an unparsable one is skipped with a note — a malformed block must not take the run
+ * down, but it must not pass silently either, since a dropped value looks exactly like a value the
+ * activity never produced.
+ */
+function collectWorkerVariables(reports: string[]): Record<string, unknown> {
+  const collected: Record<string, unknown> = {};
+  const fence = /```(?:json\s+)?variables_changed\s*\n([\s\S]*?)```/g;
+  for (const report of reports) {
+    for (const match of report.matchAll(fence)) {
+      try {
+        const parsed = JSON.parse(match[1]!) as unknown;
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          Object.assign(collected, parsed);
+        } else {
+          log('worker variables_changed block was not an object — skipped');
+        }
+      } catch (error) {
+        log(`worker variables_changed block did not parse — skipped (${error instanceof Error ? error.message : String(error)})`);
+      }
+    }
+  }
+  return collected;
+}
+
 const WORKER_BRIEF = readFileSync(join(HERE, 'worker-brief.md'), 'utf8');
 
 const ORCHESTRATOR_BRIEF = readFileSync(join(HERE, 'orchestrator-brief.md'), 'utf8');
@@ -157,6 +187,8 @@ async function main() {
     // Initial activity comes from the workflow definition, not a hardcoded id.
     const wfSummary = parseWorkflowResponse(await h.client.callTool({ name: 'get_workflow', arguments: { session_index: sessionIndex } }));
     const variables: Record<string, unknown> = {};
+    /** The completing activity's worker output, relayed on the next transition. */
+    let pendingVariables: Record<string, unknown> = {};
     const visited = new Set<string>();
     let current: string | null = (wfSummary.initialActivity as string)
       ?? (wfSummary.activities as Array<{ id: string }> | undefined)?.[0]?.id ?? null;
@@ -166,7 +198,17 @@ async function main() {
       count++;
       visited.add(current);
       log(`=== activity ${count}: ${current} ===`);
-      await h.client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, activity_id: current } });
+      // The transition carries the previous activity's worker output into the bag, which is the
+      // only path a worker-derived value has into the session.
+      await h.client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: sessionIndex,
+          activity_id: current,
+          ...(Object.keys(pendingVariables).length ? { variables_changed: pendingVariables } : {}),
+        },
+      });
+      pendingVariables = {};
 
       const actRes = await h.client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex, context_tokens: 200_000 } });
       const act = parseWorkflowResponse(actRes) as unknown as ActivityDef;
@@ -236,7 +278,23 @@ async function main() {
         break; // no active checkpoint → activity steps complete (or worker stopped)
       }
 
-      transcript.push({ activity: current, checkpoints: cpRecords, workerTurns: turn, workerReports });
+      // Relay what the worker produced, the way a real orchestrator does: the server writes the
+      // session bag from `variables_changed` on the transition out. Without this the run exercises
+      // only the checkpoint write path — every value a worker derives is reported in prose and
+      // dropped, so no later activity can read what an earlier one produced (#493).
+      const produced = collectWorkerVariables(workerReports);
+      if (Object.keys(produced).length) {
+        log(`worker produced: ${Object.keys(produced).join(', ')}`);
+        Object.assign(variables, produced);
+      } else {
+        log('worker produced no variables_changed block');
+      }
+      pendingVariables = produced;
+
+      transcript.push({
+        activity: current, checkpoints: cpRecords, workerTurns: turn, workerReports,
+        variablesChanged: produced,
+      });
       let next = pickNext(act, variables);
       // Forward-advance fallback (workflow-agnostic): if the graph stalls or loops back, advance to
       // an unvisited activity, satisfying its simple gate — stands in for agent-set convergence vars.
