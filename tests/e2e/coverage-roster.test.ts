@@ -7,13 +7,10 @@ import { WALKED, NOT_WALKED } from './walked-workflows.js';
 /**
  * The coverage roster accounts for every workflow the corpus holds.
  *
- * This costs nothing to check and used to sit inside the coverage walk, which runs on a push to main
- * and takes about thirteen minutes — so a workflow added to the corpus and to neither list was
- * measured by nothing, and nothing said so until someone merged. The assertion belongs where it can
- * fail on the change that causes it.
- *
- * The walk itself stays where it is: it is slow because it is a walk, and no amount of moving it
- * makes it fast.
+ * A workflow on neither list is measured by nothing: the walk drives what WALKED names, and
+ * NOT_WALKED carries the reason for each one it leaves to the uncovered list. This check costs
+ * nothing, so it belongs in the suite every change runs rather than in the walk it guards — a
+ * roster gap fails on the change that opens it.
  */
 describe('coverage roster', () => {
   /** Every workflow the corpus holds, so the two lists are checked against it rather than trusted. */

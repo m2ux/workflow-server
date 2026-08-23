@@ -151,10 +151,9 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
     const declaredSet = new Set(c.declared);
     const nowUncovered = c.uncovered.filter((k) => !allowedSet.has(k));
     const nowCovered = allowed.filter((k) => declaredSet.has(k) && !uncoveredSet.has(k));
-    // A listed option no definition declares any more, which only a run measuring the whole corpus
-    // can tell from one merely out of scope. Under the unscoped comparison this used to surface as
-    // "now covered", which is true — nothing uncovers an option that no longer exists — but names
-    // the wrong remedy.
+    // A listed option no definition declares: the checkpoint or the option was renamed or removed
+    // and the entry outlived it. Only a run measuring the whole corpus can tell that from an option
+    // merely outside its scope, so a scoped run leaves the question alone.
     const stale = SCOPE.length ? [] : allowed.filter((k) => !declaredSet.has(k));
 
     // One key in two groups would be excused twice and shrink the list by one when removed once.

@@ -1,10 +1,9 @@
 /**
  * Which workflows the coverage walk drives, and which it deliberately leaves to the uncovered list.
  *
- * These live apart from the test that consumes them because the scope resolver
- * (scripts/coverage-scope.ts) needs the same roster: a change that has to be walked is a change to
- * a workflow ON this list, and a second copy of the list would answer that question differently the
- * first time the two drifted.
+ * One home, read by both consumers: the test that walks the roster and the scope resolver
+ * (scripts/coverage-scope.ts), which asks whether a changed workflow is one the walk covers. Two
+ * copies answer that question independently, so they answer it differently.
  */
 
 /**
