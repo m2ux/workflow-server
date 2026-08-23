@@ -150,6 +150,33 @@ function collectWorkerVariables(reports: string[]): Record<string, unknown> {
   return collected;
 }
 
+/** A tool result's text, for an error the driver has to report rather than swallow. */
+function toolText(result: { content?: unknown }): string {
+  const first = Array.isArray(result.content) ? result.content[0] : undefined;
+  return (first as { text?: string } | undefined)?.text ?? '(no detail)';
+}
+
+/**
+ * The option to answer a checkpoint with.
+ *
+ * A declared checkpoint goes to the policy. A gate the WORKER raised carries its own options and no
+ * definition to look them up in (#477), so the policy has nothing to match on — answering with the
+ * checkpoint id, as this did, names an option no gate offers, and respond_checkpoint refuses it. The
+ * first option the worker offered is the deterministic answer: an ad-hoc gate exists because the
+ * worker could not proceed, and its first option is the one it wrote as the way forward.
+ */
+function chooseOption(
+  active: { checkpointId: string; adhoc?: { options?: Array<{ id: string }> } },
+  cp: CheckpointDef | undefined,
+  activityId: string,
+  variables: Record<string, unknown>,
+): string {
+  if (cp) return policy.choose({ activityId, checkpoint: cp, variables });
+  const offered = active.adhoc?.options?.[0]?.id;
+  if (offered) return offered;
+  throw new Error(`checkpoint '${active.checkpointId}' has no definition and no ad-hoc options to answer with`);
+}
+
 const WORKER_BRIEF = readFileSync(join(HERE, 'worker-brief.md'), 'utf8');
 
 const ORCHESTRATOR_BRIEF = readFileSync(join(HERE, 'orchestrator-brief.md'), 'utf8');
@@ -200,7 +227,7 @@ async function main() {
       log(`=== activity ${count}: ${current} ===`);
       // The transition carries the previous activity's worker output into the bag, which is the
       // only path a worker-derived value has into the session.
-      await h.client.callTool({
+      const transitioned = await h.client.callTool({
         name: 'next_activity',
         arguments: {
           session_index: sessionIndex,
@@ -208,6 +235,13 @@ async function main() {
           ...(Object.keys(pendingVariables).length ? { variables_changed: pendingVariables } : {}),
         },
       });
+      // A refused transition leaves the session on the previous activity while the driver reports
+      // the next one, so the transcript claims an activity that never ran and the worker keeps
+      // answering the old one. The server refuses while a checkpoint is unresolved, which is
+      // exactly when this used to happen.
+      if (transitioned.isError) {
+        throw new Error(`next_activity refused '${current}': ${toolText(transitioned)}`);
+      }
       pendingVariables = {};
 
       const actRes = await h.client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex, context_tokens: 200_000 } });
@@ -224,7 +258,10 @@ async function main() {
       const MAX_TURNS = 8;
       while (true) {
         turn++;
-        if (turn > MAX_TURNS) { log(`turn cap (${MAX_TURNS}) hit for ${current} — moving on`); break; }
+        // Moving on with a checkpoint still active is what made a refused transition look like a
+        // successful one, so the cap says which state it stopped in and the transition below decides
+        // whether the run can continue.
+        if (turn > MAX_TURNS) { log(`turn cap (${MAX_TURNS}) hit for ${current}`); break; }
         const prompt = turn === 1
           ? initialPrompt(sessionIndex)
           : resumePrompt(sessionIndex, pendingResume!.checkpointId, pendingResume!.optionId);
@@ -252,7 +289,7 @@ async function main() {
             } else {
               // Orchestrator agent didn't resolve it — fall back to policy so the run proceeds.
               decidedBy = 'policy-fallback';
-              optionId = cp ? policy.choose({ activityId: current, checkpoint: cp, variables }) : active.checkpointId;
+              optionId = chooseOption(active, cp, current, variables);
               const resp = parseToolResponse(await h.client.callTool({
                 name: 'respond_checkpoint', arguments: { session_index: sessionIndex, option_id: optionId },
               }));
@@ -261,10 +298,16 @@ async function main() {
             }
           } else {
             // 3a: deterministic orchestrator.
-            optionId = cp ? policy.choose({ activityId: current, checkpoint: cp, variables }) : active.checkpointId;
-            const resp = parseToolResponse(await h.client.callTool({
+            optionId = chooseOption(active, cp, current, variables);
+            const responded = await h.client.callTool({
               name: 'respond_checkpoint', arguments: { session_index: sessionIndex, option_id: optionId },
-            }));
+            });
+            // A refused response leaves the checkpoint active, so the next turn yields the same one
+            // and the run burns its turn cap on a gate nobody answered. Fail on the spot instead.
+            if (responded.isError) {
+              throw new Error(`respond_checkpoint refused option '${optionId}' for '${active.checkpointId}': ${toolText(responded)}`);
+            }
+            const resp = parseToolResponse(responded);
             const effect = (resp.effect ?? {}) as Record<string, unknown>;
             sv = (effect.setVariable ?? effect.variablesSet) as Record<string, unknown> | undefined;
           }
