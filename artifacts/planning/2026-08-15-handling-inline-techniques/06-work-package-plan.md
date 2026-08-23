@@ -303,12 +303,13 @@ a number.
 - `tests/fixtures/reference-grammar/` - one fixture per term, including the two that overlap
 - `tests/reference-grammar-conformance.test.ts` - totals asserted against the delivered corpus commit
 
-**The term count needs settling before the fixtures are written.** This plan and Task 1's delivered module
-say **ten** published terms; [SC-3](03-requirements-elicitation.md#success-criteria) says **nine**. One
-fixture per term cannot be written against two counts, so the fixture set is what forces the reconciliation
-— which is the argument for fixtures restated as a live instance. Whichever count stands, the tenth term is
-the one to name explicitly, since an unnamed term is how the first nine each came to be discovered by
-measuring rather than by reading.
+**The term count is ten, and the tenth is named rather than implied.** This plan, Task 1's delivered module,
+the [test plan](06-test-plan.md#acceptance-criteria-matrix) and
+[SC-3](03-requirements-elicitation.md#success-criteria) all publish **ten** terms, the tenth being whether a
+call site whose destination resolves to no file counts and which callee bin owns it. One fixture per term
+cannot be written against two counts, so the fixture set is what forced the count to be stated in one place —
+the argument for fixtures restated as a live instance. The tenth is named explicitly because an unnamed term
+is how the first nine each came to be discovered by measuring rather than by reading.
 
 ### Task 8: Reference traversal with a visited set (60-90 min)
 **Goal:** Referenced bodies are collected transitively and deduplicated, each delivered once, the walk

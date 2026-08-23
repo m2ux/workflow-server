@@ -299,6 +299,18 @@ the prediction was written.** It is evidence the grammar work is doing what it w
 stated with its terms is a census that can predict, where a census stated as a bare total can only be
 re-argued.
 
+**A second forward prediction survives, and it closes the corpus stage arithmetically.** At the delivered
+corpus pin `12400e85` the published grammar counts **129 logical call sites**. That is the 134 predicted at
+`7f37a2bd`, less the **3** Atlassian intra-group sites Task 4 resolved and the **2** container-targeted sites
+Task 5 re-addressed — an exact reconciliation, with both subtrahends measured at zero afterwards rather than
+assumed. Three further checks land with it. The **37** qualified-pair container halves reproduce exactly, the
+figure elicitation established. **Zero destinations resolve to no file**, which confirms Task 5's repair of
+the single dangling target and gives the tenth term a real before-and-after rather than a synthetic one. And
+the delivered module's own `extractCallSites` and an independent implementation of the same ten terms both
+return 129, so the grammar is cross-checked against a second implementation and not only against itself.
+Counting the census and the closure byte figures, **four measurement sets have now survived re-derivation and
+this is the fifth.**
+
 ### The case term, and a third route to fixtures
 
 The case term was in the published list of terms and its **value** was still unstated, so the same
