@@ -7,6 +7,7 @@ import { baseSimulation } from './policies.js';
 import { declaredCheckpoints, declaredOptions, optionCoverage, checkpointGaps } from './coverage.js';
 import { corpusRoot } from '../corpus-root.js';
 import { expectStampFresh } from '../stamp-freshness.js';
+import { WALKED } from './walked-workflows.js';
 
 /**
  * Every checkpoint option the corpus declares gets taken by some walk, or is listed as one this
@@ -27,50 +28,6 @@ import { expectStampFresh } from '../stamp-freshness.js';
  * environment produces. The file records which, and under which of the three reasons.
  */
 
-/**
- * The workflows walked, slowest first.
- *
- * Coverage is corpus-wide, because an activity one workflow borrows from another is reached by
- * whichever of them a walk enters — so this is a means to the corpus figure, not a list of subjects.
- * Ordering by cost is what makes the set weighable: the first four account for most of the time the
- * fourteen take between them, so an addition goes near the top only knowingly.
- */
-const WALKED = [
-  'workflow-design',
-  'work-package',
-  'prism-evaluate',
-  'prism',
-  'workflow-authoring',
-  'midnight-system-review',
-  'work-packages',
-  'ponytail',
-  'plain-language',
-  'requirements-refinement',
-  'prism-update',
-  'codebase-wiki',
-  'prism-audit',
-  'meta',
-] as const;
-
-/**
- * Declared by the corpus, and left to the uncovered list rather than walked.
- *
- * `remediate-vuln` costs six minutes on its own, more than the four most expensive walks above put
- * together, and 21 of its 60 walks die on a branch whose checkpoint or transition does not resolve —
- * so the branches past each failure go unmeasured, and a walk cannot report coverage it never
- * reached. Leaving it out costs less than that suggests: of the 99 options it declares, 92 belong to
- * work-package activities it borrows and the work-package walk covers them. The 7 that are its own
- * — five checkpoints in its `start` activity — go on the uncovered list. Both the cost and the walk
- * errors are worth fixing; neither is worth blocking this measurement on.
- *
- * The two audit workflows declare no checkpoint at all, so walking them covers nothing. They are
- * named here so the set above reads as chosen rather than as an oversight.
- */
-const NOT_WALKED = [
-  'remediate-vuln',
-  'cicd-pipeline-security-audit',
-  'substrate-node-security-audit',
-] as const;
 
 /**
  * The uncovered options, in groups that each state why no walk reaches them. Grouped rather than
@@ -91,6 +48,21 @@ interface Expected {
  * expectation file is recorded against the committed value.
  */
 const DRY_WALKS = Number(process.env.WF_DRY_WALKS ?? '30');
+
+/**
+ * The workflows this run walks, and the options it may therefore judge.
+ *
+ * Empty means all of them, which is what a corpus change to the walker, the policies or the server
+ * needs — those move how every workflow walks. `WF_COVERAGE_SCOPE` narrows it to the walked
+ * workflows a corpus change can move, which scripts/coverage-scope.ts derives from a corpus diff.
+ *
+ * The scope bounds BOTH sides of the comparison. Options belonging to a workflow outside it are
+ * neither reported as newly unreached nor as newly reachable: this run did not walk them, so it
+ * knows nothing about them and says nothing about them.
+ */
+const SCOPE = (process.env.WF_COVERAGE_SCOPE ?? '')
+  .split(',').map((s) => s.trim()).filter(Boolean);
+const scoped: readonly string[] = SCOPE.length ? WALKED.filter((w) => SCOPE.includes(w)) : WALKED;
 
 const EXPECTED_PATH = join(import.meta.dirname, 'option-coverage.json');
 /** What to call the file in a failure message, since the absolute path is the runner's, not a reader's. */
@@ -124,36 +96,17 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
       + `same commit.`);
   });
 
-  /**
-   * The two lists above are hand-maintained, which makes them a second home for which workflows
-   * exist. A workflow added to the corpus and to neither list would be measured by nothing, and
-   * nothing would report that it had been skipped — so the corpus itself is the authority on the
-   * roster, and this is what says the lists have not drifted from it.
-   */
-  it('accounts for every workflow the corpus holds', () => {
-    const accounted = new Set<string>([...WALKED, ...NOT_WALKED]);
-    const corpus = corpusWorkflows();
-    expect(corpus.length).toBeGreaterThan(0);
-    expect(
-      corpus.filter((w) => !accounted.has(w)),
-      'this workflow is in the corpus but neither walked nor listed as not walked, so nothing '
-      + 'measures its options. Add it to WALKED, or to NOT_WALKED with the reason.',
-    ).toEqual([]);
-    expect(
-      [...accounted].filter((w) => !corpus.includes(w)),
-      'this workflow is named above but is not in the corpus — remove it.',
-    ).toEqual([]);
-  });
-
   it('takes every declared option some walk can reach', async () => {
-    const corpus = corpusWorkflows();
-    const declared = await declaredOptions(corpus);
-    const checkpoints = await declaredCheckpoints(corpus);
+    // Declared is scoped with the walk: an option this run cannot reach because it did not walk the
+    // workflow holding it is not a gap, and counting it as one would fail every scoped run.
+    const measured = SCOPE.length ? scoped : corpusWorkflows();
+    const declared = await declaredOptions(measured);
+    const checkpoints = await declaredCheckpoints(measured);
 
     const covered: string[] = [];
     const walkErrors: string[] = [];
     const entered = new Set<string>();
-    for (const id of WALKED) {
+    for (const id of scoped) {
       const ps = await enumeratePaths(h, id, {
         maxVisits: 3, maxWalks: 120,
         // The same convergence signals the hand-tuned policy walks use. Without them the enumerator
@@ -174,7 +127,8 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
     // eslint-disable-next-line no-console
     console.log(
       `[option coverage] ${c.covered.length}/${c.declared.length} declared options (${pct}%) `
-      + `over ${WALKED.length} workflows walked, ${entered.size} activities entered; `
+      + `over ${scoped.length} workflow(s) walked${SCOPE.length ? ` (scoped: ${scoped.join(', ')})` : ''}, `
+      + `${entered.size} activities entered; `
       + `${gaps.length} checkpoints short, ${unentered} of them in an activity no walk entered:\n`
       + gaps.map((g) => `  ${g.activityId}/${g.checkpointId} ${g.missed}/${g.declared}`
         + `${g.activityEntered ? '' : ' [activity never entered]'}`
@@ -192,11 +146,25 @@ describe.skipIf(process.env.WF_OPTION_COVERAGE !== '1')('checkpoint option cover
     const allowed = listed(expected);
     const allowedSet = new Set(allowed);
     const uncoveredSet = new Set(c.uncovered);
+    // A listed option outside what this run measured is not evidence of anything: the run did not
+    // walk the workflow that would reach it, so it cannot have become reachable here.
+    const declaredSet = new Set(c.declared);
     const nowUncovered = c.uncovered.filter((k) => !allowedSet.has(k));
-    const nowCovered = allowed.filter((k) => !uncoveredSet.has(k));
+    const nowCovered = allowed.filter((k) => declaredSet.has(k) && !uncoveredSet.has(k));
+    // A listed option no definition declares any more, which only a run measuring the whole corpus
+    // can tell from one merely out of scope. Under the unscoped comparison this used to surface as
+    // "now covered", which is true — nothing uncovers an option that no longer exists — but names
+    // the wrong remedy.
+    const stale = SCOPE.length ? [] : allowed.filter((k) => !declaredSet.has(k));
 
     // One key in two groups would be excused twice and shrink the list by one when removed once.
     expect(allowed.length, 'an option is listed in more than one group').toBe(allowedSet.size);
+
+    expect(
+      stale,
+      `${EXPECTED_LABEL} lists these options and no definition declares them — the checkpoint or `
+      + 'the option was renamed or removed, so delete the entries.',
+    ).toEqual([]);
 
     expect(
       nowUncovered,
