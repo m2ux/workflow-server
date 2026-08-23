@@ -119,6 +119,8 @@ export interface ClosureMember {
   readonly depth: number;
   /** Identity of the member whose protocol first reached this one. */
   readonly reachedFrom: string;
+  /** Line of the call site that first reached it, within that member's protocol prose. */
+  readonly reachedAt: number;
 }
 
 /** A call site the walk could not turn into a body. */
@@ -158,6 +160,51 @@ export interface TraversalResult {
   readonly totalChars: number;
 }
 
+/** The location a canonical identity names — the inverse of `techniqueIdentity`. */
+export function locationOfIdentity(identity: string): TechniqueLocation | null {
+  const parts = identity.split('::').filter((s) => s.length > 0);
+  if (parts.length < 2) return null;
+  return { workflow: parts[0]!, pathSegments: parts.slice(1) };
+}
+
+/** A door's folded closure, with the delivered set it was computed against. */
+export interface FoldedClosure extends TraversalResult {
+  /** Canonical identities of the bodies the door already delivers. */
+  readonly seeds: string[];
+  /** Refs naming no technique — a rule reference, or one that does not resolve. Not folded. */
+  readonly nonTechniqueRefs: string[];
+}
+
+/**
+ * The folded closure of the technique refs one door delivers.
+ *
+ * Each ref resolves to the operation it names, so the seed set keys on operations rather than on
+ * spellings and a door listing one operation twice seeds it once. A ref naming a rule rather than a
+ * technique is reported rather than folded — a rule has no protocol to walk.
+ */
+export async function foldedClosureForRefs(args: {
+  workflowDir: string;
+  workflowId: string;
+  refs: readonly string[];
+}): Promise<FoldedClosure> {
+  const { workflowDir, workflowId, refs } = args;
+  const seeds = new Map<string, TechniqueLocation>();
+  const nonTechniqueRefs: string[] = [];
+
+  for (const ref of refs) {
+    const composed = await composeTechniqueWithSource(ref, workflowDir, workflowId);
+    if (!composed.success) {
+      nonTechniqueRefs.push(ref);
+      continue;
+    }
+    const location = locationOfIdentity(composed.value.canonicalId);
+    if (location) seeds.set(composed.value.canonicalId, location);
+  }
+
+  const result = await traverseClosure({ workflowDir, roots: [...seeds.values()] });
+  return { ...result, seeds: [...seeds.keys()], nonTechniqueRefs };
+}
+
 /** Render a protocol back to the prose the grammar scans: one line per title and per step bullet. */
 export function protocolText(technique: Technique): string {
   const lines: string[] = [];
@@ -191,8 +238,29 @@ export async function traverseReferences(args: {
   root: TechniqueLocation;
   rootTechnique?: Technique;
 }): Promise<TraversalResult> {
-  const { workflowDir, root } = args;
-  const rootIdentity = techniqueIdentity(root);
+  return traverseClosure({
+    workflowDir: args.workflowDir,
+    roots: [args.root],
+    ...(args.rootTechnique ? { rootTechniques: { [techniqueIdentity(args.root)]: args.rootTechnique } } : {}),
+  });
+}
+
+/**
+ * Walk the reference closure of a whole delivered set, depth-first, delivering each body once.
+ *
+ * The roots are the bodies a door already delivers. Seeding every one of them into the visited set
+ * before the walk starts is what keeps a folded callee from arriving beside a copy of itself: an
+ * operation the door already carries as a bundle member is not folded in again, and an operation two
+ * different roots both reach is folded in once. That is SC-7a's collapse, computed over the door's
+ * whole payload rather than one reference at a time.
+ */
+export async function traverseClosure(args: {
+  workflowDir: string;
+  roots: readonly TechniqueLocation[];
+  /** Uncomposed root forms the caller already holds, by identity. Others are read here. */
+  rootTechniques?: Readonly<Record<string, Technique>>;
+}): Promise<TraversalResult> {
+  const { workflowDir, roots } = args;
 
   /** A technique's own protocol, uncomposed — the form whose links resolve against its own file. */
   const ownForm = async (location: TechniqueLocation): Promise<Technique | null> => {
@@ -204,7 +272,9 @@ export async function traverseReferences(args: {
   const unresolved: UnresolvedReference[] = [];
   const revisits: Revisit[] = [];
   const events: DeliveryEvent[] = [];
-  const visited = new Set<string>([rootIdentity]);
+  // Every root is held before the walk begins, so a body the door already delivers is never folded
+  // in again — whichever root reaches it, and however many do.
+  const visited = new Set<string>(roots.map(techniqueIdentity));
 
   const stack: PendingEdge[] = [];
   let maxPending = 0;
@@ -219,8 +289,13 @@ export async function traverseReferences(args: {
     maxPending = Math.max(maxPending, stack.length);
   };
 
-  const rootOwn = args.rootTechnique ?? await ownForm(root);
-  if (rootOwn) enqueue(rootIdentity, root, rootOwn, 1);
+  // Roots are enqueued in order, so the first-declared root's callees are walked first.
+  for (let i = roots.length - 1; i >= 0; i--) {
+    const rootLocation = roots[i]!;
+    const identity = techniqueIdentity(rootLocation);
+    const own = args.rootTechniques?.[identity] ?? await ownForm(rootLocation);
+    if (own) enqueue(identity, rootLocation, own, 1);
+  }
 
   while (stack.length > 0) {
     const edge = stack.pop()!;
@@ -264,7 +339,9 @@ export async function traverseReferences(args: {
 
     visited.add(identity);
     const technique = composed.value.technique;
-    members.push({ identity, location: target, technique, depth: edge.depth, reachedFrom: edge.from });
+    members.push({
+      identity, location: target, technique, depth: edge.depth, reachedFrom: edge.from, reachedAt: edge.line,
+    });
     events.push({ identity, chars: projectTechniqueToYaml(technique).length, depth: edge.depth });
 
     const own = await ownForm(target);

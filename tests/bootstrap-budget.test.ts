@@ -22,8 +22,16 @@ import { createHarness, rawText, isError, parseToolResponse } from './e2e/harnes
  * Characters of fixed content an orchestrator reads before its first decision: the `discover` text,
  * the session-start response, and the operations bundle. Raise it deliberately — it grows only when
  * the corpus decides an orchestrator needs more before it can act.
+ *
+ * It moved to 145,000 when the operations bundle began carrying the bodies of the operations its
+ * techniques call inline. Measured at the meta orchestrator door: 33,055 characters over 4 bodies —
+ * `workflow-engine::continue-batch`, `workflow-engine::finalize-activity`, `variable-binding` and
+ * `version-control::push-branch`. None of the four is named in the twenty-entry core list, so each
+ * was an operation the orchestrator was told to apply and had no way to read. The figure is the
+ * charging rule made visible: folded bodies ride the operations bundle, and this is what that costs
+ * before the first decision.
  */
-const BUDGET = 110_000;
+const BUDGET = 145_000;
 
 describe('bootstrap-time fixed content', () => {
   it('stays inside the budget this suite sets', async () => {

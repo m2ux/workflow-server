@@ -26,6 +26,7 @@ import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, record
 import { dispatchKind, hasDispatch, priorDeliveryScope, recordDispatch, recordRedelivery } from '../utils/dispatch.js';
 import { batchBound, batchRefusal, batchRefusalMessage, batchState, recordBatchRefusal } from '../utils/batch.js';
 import { extractResourceIds, qualifyResourceId } from '../utils/resource-ref.js';
+import { buildFoldedBundle } from '../utils/folded-bundle.js';
 import { readdir } from 'node:fs/promises';
 import { join as pathJoin } from 'node:path';
 import { DEFAULT_MAX_EAGER_RESOURCE_CHARS, loadResourceDelivery } from '../utils/resource-delivery.js';
@@ -604,7 +605,31 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const wfTechRefs = (wf as { techniques?: { workflow?: string[] } }).techniques?.workflow ?? [];
       const orchestratorTechniques = Array.from(new Set([...wfTechRefs, ...CORE_ORCHESTRATOR_TECHNIQUES]));
       const resolvedOrchestrator = await resolveTechniques(orchestratorTechniques, config.workflowDir, workflow_id);
-      const opsText = stringifyForResponse(formatTechniqueBundle(resolvedOrchestrator));
+      const orchestratorBundle = formatTechniqueBundle(resolvedOrchestrator);
+
+      // Folded bodies for the operations these techniques call inline, charged to this operations
+      // bundle. This is the channel PL-2 selects: it carries no budget parameter and cannot drop
+      // content, so a folded body cannot fail to arrive where the core-operations entry compensating
+      // for it could not. Measured on the twenty-entry orchestrator list at 4 bodies and 39,729
+      // characters, the other 19 edges reaching bodies the list already delivers.
+      //
+      // COLLAPSE SCOPE AT THIS DOOR. `get_workflow` takes no agent identity, so its ledger scope is
+      // the session's own agent, which several contexts can hold at once. Per-technique collapse is
+      // therefore response-local here: a body arrives once per response however many of these
+      // techniques call it, and across calls the bundle collapses only as a whole, under
+      // `workflow_bundle:<hash>`. SC-7a's per-technique collapse against a step-bound delivery holds
+      // at the activity door, which is dispatched under a worker identity; at this door it is
+      // documented rather than claimed.
+      const foldedOrchestrator = await buildFoldedBundle({
+        workflowDir: config.workflowDir,
+        workflowId: workflow_id,
+        refs: orchestratorTechniques,
+        state,
+        scope: state.agentId,
+        mayReferBack: false,
+      });
+      if (foldedOrchestrator.block) Object.assign(orchestratorBundle, foldedOrchestrator.block);
+      const opsText = stringifyForResponse(orchestratorBundle);
 
       // Reference-not-repeat for the orchestrator ops bundle: under persistent mode, once this
       // agent has received it in full, collapse the rebuilt bundle to a content-keyed
@@ -1119,6 +1144,22 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           newDeliveries[rulesKey] = rulesHash;
         }
       }
+
+      // Folded bodies for the operations these techniques call inline, charged to this same
+      // operations bundle. The charge is real: `workerBundleChars` below opens the eager tally, so a
+      // folded body spends budget a step technique would otherwise have had. Measured on the core
+      // worker list at 2 bodies and 17,313 characters, against an eager budget of the caller's
+      // declared context.
+      const foldedWorker = await buildFoldedBundle({
+        workflowDir: config.workflowDir,
+        workflowId: workflow_id,
+        refs: workerTechniques,
+        state,
+        scope,
+        mayReferBack,
+      });
+      if (foldedWorker.block) Object.assign(bundleData, foldedWorker.block);
+      Object.assign(newDeliveries, foldedWorker.deliveries);
 
       // What the worker bundle costs this response, markers included: it opens the eager tally below.
       const workerBundleChars = stringifyForResponse(bundleData).length;

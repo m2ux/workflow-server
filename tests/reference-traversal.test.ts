@@ -4,6 +4,8 @@ import { tmpdir } from 'node:os';
 import { mkdir, mkdtemp, writeFile, rm } from 'node:fs/promises';
 import {
   traverseReferences,
+  traverseClosure,
+  foldedClosureForRefs,
   resolveReference,
   techniqueIdentity,
   protocolText,
@@ -205,6 +207,73 @@ describe('reference traversal', () => {
       expect(result.members[0]!.technique.inherited_rules?.items).toEqual([
         { name: 'other-only', from: 'TECHNIQUE', rule: expect.any(String) },
       ]);
+    });
+  });
+
+  describe('traverseClosure over a whole delivered set', () => {
+    let dir: string;
+    let techniques: string;
+
+    beforeEach(async () => {
+      dir = await mkdtemp(join(tmpdir(), 'closure-'));
+      techniques = join(dir, 'wf', 'techniques');
+      await mkdir(techniques, { recursive: true });
+      await writeFile(join(techniques, 'a.md'), technique('A.', 'Apply [shared](./shared.md).'), 'utf-8');
+      await writeFile(join(techniques, 'b.md'), technique('B.', 'Apply [shared](./shared.md).'), 'utf-8');
+      await writeFile(join(techniques, 'shared.md'), technique('Shared.'), 'utf-8');
+      await writeFile(join(techniques, 'held.md'), technique('Held.'), 'utf-8');
+      await writeFile(join(techniques, 'c.md'), technique('C.', 'Apply [held](./held.md).'), 'utf-8');
+    });
+
+    afterEach(async () => {
+      await rm(dir, { recursive: true, force: true });
+    });
+
+    it('folds a body reached by two delivered roots exactly once', async () => {
+      const result = await traverseClosure({
+        workflowDir: dir,
+        roots: [
+          { workflow: 'wf', pathSegments: ['a'] },
+          { workflow: 'wf', pathSegments: ['b'] },
+        ],
+      });
+      expect(result.members.map((m) => m.identity)).toEqual(['wf::shared']);
+      expect(result.events).toHaveLength(1);
+      // The second root's edge to it is a revisit, so the call is still visible.
+      expect(result.revisits).toContainEqual(expect.objectContaining({ from: 'wf::b', identity: 'wf::shared' }));
+    });
+
+    it('never folds in a body the delivered set already carries', async () => {
+      const result = await traverseClosure({
+        workflowDir: dir,
+        roots: [
+          { workflow: 'wf', pathSegments: ['c'] },
+          { workflow: 'wf', pathSegments: ['held'] },
+        ],
+      });
+      // `held` is a root, so the call from `c` to it adds no body — it is already delivered.
+      expect(result.members).toEqual([]);
+      expect(result.revisits).toContainEqual(expect.objectContaining({ from: 'wf::c', identity: 'wf::held' }));
+    });
+
+    it('resolves a door refs list to operations, reporting refs that name no technique', async () => {
+      const closure = await foldedClosureForRefs({
+        workflowDir: dir,
+        workflowId: 'wf',
+        refs: ['a', 'b', 'no-such-technique'],
+      });
+      expect(closure.seeds.sort()).toEqual(['wf::a', 'wf::b']);
+      expect(closure.nonTechniqueRefs).toEqual(['no-such-technique']);
+      expect(closure.members.map((m) => m.identity)).toEqual(['wf::shared']);
+    });
+
+    it('seeds one operation once when a door lists it under two spellings', async () => {
+      const closure = await foldedClosureForRefs({
+        workflowDir: dir,
+        workflowId: 'wf',
+        refs: ['a', 'wf::a'],
+      });
+      expect(closure.seeds).toEqual(['wf::a']);
     });
   });
 
