@@ -27,7 +27,8 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, resolveWorkflowsRoot } from './workflows-root.js';
+import { measureOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree.
@@ -94,6 +95,7 @@ function walk(node: unknown, file: string, out: SelfComposedSetViolation[]): voi
 
 export function collectSelfComposedSetViolations(root: string = ROOT): SelfComposedSetViolation[] {
   const out: SelfComposedSetViolation[] = [];
+  let scanned = 0;
   const wfs = readdirSync(root).filter((d) => {
     const p = join(root, d);
     return statSync(p).isDirectory() && existsSync(join(p, 'activities'));
@@ -102,16 +104,18 @@ export function collectSelfComposedSetViolations(root: string = ROOT): SelfCompo
     const adir = join(root, wf, 'activities');
     for (const f of readdirSync(adir).filter((x) => x.endsWith('.yaml'))) {
       const rel = relative(root, join(adir, f));
+      scanned++;
       try { walk(parseDefinition(readFileSync(join(adir, f), 'utf-8')), rel, out); }
       catch { /* malformed YAML is validate-workflow-yaml's job, not this guard's */ }
     }
   }
+  assertScanned(scanned, 'activity files', root);
   return out;
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const violations = collectSelfComposedSetViolations();
+  const violations = measureOrExit('self-composed-set', join(DIR, '..', 'workflows'), collectSelfComposedSetViolations);
   if (violations.length) {
     process.stdout.write(`self-composed set: ${violations.length} set action(s) compose a value from the variable they write — split the base from the derivation:\n`);
     for (const v of violations.sort((a, b) => a.site.localeCompare(b.site))) process.stdout.write(`  ${v.site} — ${v.detail}\n`);

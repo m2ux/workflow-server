@@ -19,7 +19,8 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, dirname, resolve, relative, sep } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, resolveWorkflowsRoot } from './workflows-root.js';
+import { measureOrExit } from './guard-protocol.js';
 import { fencedLines, linkDestinations, toLines } from './markdown-refs.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -85,15 +86,17 @@ const PRE_SESSION_RESOURCE = join('meta', 'resources', 'bootstrap-protocol.md');
 /** An anchored markdown destination, once the shared reader has produced it in any spelling. */
 const ANCHORED_RE = /^([^\s#]+\.md)#([A-Za-z0-9][\w-]*)$/;
 
-export function collectBrokenAnchors(): BrokenAnchor[] {
+export function collectBrokenAnchors(root: string = ROOT): BrokenAnchor[] {
   const broken: BrokenAnchor[] = [];
   const anchorCache = new Map<string, Set<string>>();
-  for (const file of walkFiles(ROOT)) {
+  let scanned = 0;
+  for (const file of walkFiles(root)) {
     // The pre-session bootstrap resource belongs to `check-bootstrap-self-contained`, which refuses
     // EVERY corpus link on it — nothing can be followed before a session exists. So anything this guard
     // could report there is already a finding of that one's, and reporting it twice would make one bad
     // line yield two findings that one edit clears.
-    if (relative(ROOT, file) === PRE_SESSION_RESOURCE) continue;
+    if (relative(root, file) === PRE_SESSION_RESOURCE) continue;
+    scanned++;
     // Scan only rendered prose: drop fenced code blocks (template bodies carry placeholder
     // links like NN-work-package-plan.md) and inline code spans (anti-pattern docs quote
     // illustrative link forms in backticks).
@@ -104,7 +107,7 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
     // from the same signal and one vocabulary is easier to act on than two.
     if (unclosed !== null && file.endsWith('.md')) {
       broken.push({
-        source: `${relative(ROOT, file)}:${unclosed}`,
+        source: `${relative(root, file)}:${unclosed}`,
         link: 'a code fence left open',
         reason: 'unbalanced-fence',
       });
@@ -123,8 +126,8 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
       // A template body names its file with a placeholder, which resolves to nothing on purpose.
       if (/[{]/.test(target!)) continue;
       const targetPath = resolve(dirname(file), target);
-      if (relative(ROOT, targetPath).startsWith('..' + sep)) continue; // outside the corpus
-      const source = relative(ROOT, file);
+      if (relative(root, targetPath).startsWith('..' + sep)) continue; // outside the corpus
+      const source = relative(root, file);
       const link = `${target}#${anchor}`;
       if (!existsSync(targetPath)) {
         broken.push({ source, link, reason: 'missing-file' });
@@ -135,12 +138,13 @@ export function collectBrokenAnchors(): BrokenAnchor[] {
       if (!anchors.has(anchor.toLowerCase())) broken.push({ source, link, reason: 'missing-anchor' });
     }
   }
+  assertScanned(scanned, 'markdown and yaml files', root);
   return broken;
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const broken = collectBrokenAnchors();
+  const broken = measureOrExit('resource-anchors', resolve(join(DIR, '..', 'workflows')), collectBrokenAnchors);
   if (broken.length === 0) {
     process.stdout.write('resource-anchors: OK — every relative .md#anchor link resolves to a rendered heading, and every fence closes\n');
     process.exit(0);

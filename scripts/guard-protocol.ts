@@ -50,6 +50,32 @@ export function requireRootOrExit(guard: string, defaultDir: string, argv?: stri
   }
 }
 
+/**
+ * Resolve the corpus root strictly, run `collect` against it, and exit 2 when either step finds the
+ * corpus unreachable — whether the root is missing or the walk inspected nothing.
+ *
+ * This is the entry point for a guard that renders its own findings rather than speaking the finding
+ * protocol. `runGuard` covers the ones that speak it. Both exist so that every corpus guard has a
+ * path to exit 2: a guard with no such path answers "nothing wrong" when asked a question it could
+ * not read, and a clean run over an absent corpus is the one result that must never look like a pass.
+ */
+export function measureOrExit<T>(
+  guard: string,
+  defaultDir: string,
+  collect: (root: string) => T,
+  argv?: string[],
+): T {
+  try {
+    return collect(requireWorkflowsRoot(defaultDir, argv));
+  } catch (err) {
+    if (err instanceof UnreachableCorpusError) {
+      process.stderr.write(`${guard}: cannot measure — ${err.message}\n`);
+      process.exit(EXIT_UNMEASURED);
+    }
+    throw err;
+  }
+}
+
 export function findingKey(f: Finding): string {
   // Line numbers move when a file above the finding grows, so the key drops a trailing `:<line>`
   // — the same normalisation the retired baselines used, kept so a delta compares defects and not

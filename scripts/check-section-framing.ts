@@ -27,7 +27,8 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, resolve, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, resolveWorkflowsRoot } from './workflows-root.js';
+import { measureOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
@@ -87,14 +88,14 @@ function framingLength(text: string): number {
   return lines.join('\n').trim().length;
 }
 
-export function collectFramingFindings(): FramingFinding[] {
-  const files = walkFiles(ROOT);
+export function collectFramingFindings(root: string = ROOT): FramingFinding[] {
+  const files = walkFiles(root);
 
   // Which resource slugs some other file cites with an #anchor. A file citing itself does not count:
   // an internal cross-reference is read by whoever already has the whole file.
   const anchoredBy = new Map<string, Set<string>>();
   for (const file of files) {
-    const rel = relative(ROOT, file);
+    const rel = relative(root, file);
     const text = readFileSync(file, 'utf-8');
     for (const m of text.matchAll(/\]\(([^)\s]*?)([A-Za-z0-9._-]+)\.md#[a-z0-9-]+\)/g)) {
       const slug = m[2]!.toLowerCase();
@@ -110,11 +111,13 @@ export function collectFramingFindings(): FramingFinding[] {
   const matched = new Set<string>();
 
   const out: FramingFinding[] = [];
+  let scanned = 0;
   for (const file of files) {
     if (!file.endsWith('.md')) continue;
-    const rel = relative(ROOT, file);
+    const rel = relative(root, file);
     // Resources are what get section-delivered; a README is an index read whole.
     if (!rel.includes('/resources/') || rel.endsWith('README.md')) continue;
+    scanned++;
 
     const slug = rel.slice(rel.lastIndexOf('/') + 1, -3).toLowerCase();
     const citers = new Set([...(anchoredBy.get(slug) ?? [])].filter((c) => c !== rel));
@@ -143,12 +146,13 @@ export function collectFramingFindings(): FramingFinding[] {
       });
     }
   }
+  assertScanned(scanned, 'resource files', root);
   return out;
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const findings = collectFramingFindings();
+  const findings = measureOrExit('section-framing', resolve(join(DIR, '..', 'workflows')), collectFramingFindings);
   if (findings.length === 0) {
     process.stdout.write('section-framing: OK — no resource strands prose above its first section from an anchored citer\n');
     process.exit(0);

@@ -41,7 +41,8 @@ import {
   META_WORKFLOW_ID,
 } from '../src/loaders/fragment-resolver.js';
 import { fragmentsLookupSync } from './fragments-index.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, resolveWorkflowsRoot } from './workflows-root.js';
+import { measureOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
@@ -149,7 +150,9 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
   const inlineRuleSites = new Map<string, Array<{ file: string; wf: string; text: string }>>();
   const inlineCheckpointSites = new Map<string, Array<{ file: string; stepId: string }>>();
 
+  let scanned = 0;
   for (const wf of workflowIds) {
+    scanned++;
     const wfYamlPath = join(root, wf, 'workflow.yaml');
     const wfRel = relative(root, wfYamlPath);
     let doc: Record<string, unknown> | null = null;
@@ -311,12 +314,13 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
     }
   }
 
+  assertScanned(scanned, 'workflow directories', root);
   return { violations, warnings };
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const { violations, warnings } = collectFragmentViolations();
+  const { violations, warnings } = measureOrExit('fragments', resolve(join(DIR, '..', 'workflows')), collectFragmentViolations);
   for (const w of warnings) process.stdout.write(`  warning: ${w.file}: ${w.detail}\n`);
   if (violations.length === 0) {
     process.stdout.write('fragments: OK — every ref resolves, every fragment is used, no inline duplicates\n');

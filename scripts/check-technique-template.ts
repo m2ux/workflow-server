@@ -31,7 +31,8 @@
 import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, resolveWorkflowsRoot } from './workflows-root.js';
+import { measureOrExit } from './guard-protocol.js';
 import { ARTIFACT_NAME_PATTERN } from '../src/schema/technique.schema.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
@@ -196,19 +197,22 @@ function* walkFiles(dir: string): Generator<string> {
 
 export function collectTemplateViolations(root: string = ROOT): TemplateViolation[] {
   const violations: TemplateViolation[] = [];
+  let scanned = 0;
   for (const workflow of readdirSync(root).sort()) {
     const techniquesDir = join(root, workflow, 'techniques');
     if (!existsSync(techniquesDir) || !statSync(techniquesDir).isDirectory()) continue;
     for (const path of walkFiles(techniquesDir)) {
+      scanned++;
       violations.push(...lintTechniqueFile(readFileSync(path, 'utf-8'), relative(root, path)));
     }
   }
+  assertScanned(scanned, 'technique files', root);
   return violations;
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const violations = collectTemplateViolations();
+  const violations = measureOrExit('technique-template', resolve(join(DIR, '..', 'workflows')), collectTemplateViolations);
   if (violations.length === 0) {
     process.stdout.write('technique-template: OK — every technique file follows the normative template\n');
     process.exit(0);

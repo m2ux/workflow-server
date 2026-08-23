@@ -32,7 +32,8 @@ import { join, relative, resolve } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parse } from 'yaml';
 import { jsonTypeOf, isTemplateReference } from '../src/utils/variable-seed.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, resolveWorkflowsRoot } from './workflows-root.js';
+import { measureOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
@@ -146,9 +147,11 @@ export function lintDeclarations(
 
 export function collectVariableModelViolations(root: string = ROOT): VariableModelViolation[] {
   const violations: VariableModelViolation[] = [];
+  let scanned = 0;
   for (const workflow of readdirSync(root).sort()) {
     const workflowYamlPath = join(root, workflow, 'workflow.yaml');
     if (!existsSync(workflowYamlPath)) continue;
+    scanned++;
     const workflowDoc: unknown = parse(readFileSync(workflowYamlPath, 'utf-8'));
     const decls = readDeclarations(workflowDoc);
     violations.push(...lintDeclarations(decls, relative(root, workflowYamlPath)));
@@ -161,12 +164,13 @@ export function collectVariableModelViolations(root: string = ROOT): VariableMod
       violations.push(...lintDocument(parse(readFileSync(path, 'utf-8')), decls, relative(root, path)));
     }
   }
+  assertScanned(scanned, 'workflow.yaml files', root);
   return violations;
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const violations = collectVariableModelViolations();
+  const violations = measureOrExit('variable-model', resolve(join(DIR, '..', 'workflows')), collectVariableModelViolations);
   if (violations.length === 0) {
     process.stdout.write('variable-model: OK — defaults, gates and setVariable effects are coherent with the seeded variable model\n');
     process.exit(0);

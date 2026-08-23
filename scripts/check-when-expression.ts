@@ -12,7 +12,8 @@ import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
 import { assertWhenAuthoring } from '../src/schema/when-expression.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, resolveWorkflowsRoot } from './workflows-root.js';
+import { measureOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const ROOT = resolveWorkflowsRoot(join(DIR, '..', 'workflows'));
@@ -52,16 +53,18 @@ function walk(node: unknown, file: string, out: WhenExpressionViolation[]): void
   }
 }
 
-export function collectWhenExpressionViolations(): WhenExpressionViolation[] {
+export function collectWhenExpressionViolations(root: string = ROOT): WhenExpressionViolation[] {
   const out: WhenExpressionViolation[] = [];
-  const wfs = readdirSync(ROOT).filter((d) => {
-    const p = join(ROOT, d);
+  let scanned = 0;
+  const wfs = readdirSync(root).filter((d) => {
+    const p = join(root, d);
     return statSync(p).isDirectory() && existsSync(join(p, 'activities'));
   });
   for (const wf of wfs.sort()) {
-    const adir = join(ROOT, wf, 'activities');
+    const adir = join(root, wf, 'activities');
     for (const f of readdirSync(adir).filter((x) => x.endsWith('.yaml'))) {
-      const rel = relative(ROOT, join(adir, f));
+      const rel = relative(root, join(adir, f));
+      scanned++;
       try {
         walk(parseDefinition(readFileSync(join(adir, f), 'utf-8')), rel, out);
       } catch {
@@ -69,12 +72,13 @@ export function collectWhenExpressionViolations(): WhenExpressionViolation[] {
       }
     }
   }
+  assertScanned(scanned, 'activity files', root);
   return out;
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const violations = collectWhenExpressionViolations();
+  const violations = measureOrExit('when-expression', join(DIR, '..', 'workflows'), collectWhenExpressionViolations);
   if (violations.length) {
     process.stdout.write(
       `when-expression: ${violations.length} invalid when: gate(s) — fix parse errors or parenthesize mixed &&/||:\n`,

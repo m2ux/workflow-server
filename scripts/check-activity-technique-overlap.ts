@@ -17,7 +17,8 @@ import { readFileSync, readdirSync, existsSync, statSync } from 'node:fs';
 import { join, relative } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { parseDefinition } from '../src/utils/serialization.js';
-import { resolveWorkflowsRoot } from './workflows-root.js';
+import { assertScanned, resolveWorkflowsRoot } from './workflows-root.js';
+import { measureOrExit } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 // Defaults to ../workflows; --root <path> or WORKFLOWS_DIR redirects to a worktree (issue #160 #1).
@@ -52,16 +53,18 @@ function stepBound(node: unknown, acc: Set<string>): void {
   }
 }
 
-export function collectActivityTechniqueOverlapViolations(): ActivityTechniqueOverlapViolation[] {
+export function collectActivityTechniqueOverlapViolations(root: string = ROOT): ActivityTechniqueOverlapViolation[] {
   const out: ActivityTechniqueOverlapViolation[] = [];
-  const wfs = readdirSync(ROOT).filter((d) => {
-    const p = join(ROOT, d);
+  let scanned = 0;
+  const wfs = readdirSync(root).filter((d) => {
+    const p = join(root, d);
     return statSync(p).isDirectory() && existsSync(join(p, 'activities'));
   });
   for (const wf of wfs.sort()) {
-    const adir = join(ROOT, wf, 'activities');
+    const adir = join(root, wf, 'activities');
     for (const f of readdirSync(adir).filter((x) => x.endsWith('.yaml'))) {
-      const rel = relative(ROOT, join(adir, f));
+      const rel = relative(root, join(adir, f));
+      scanned++;
       let doc: unknown;
       try { doc = parseDefinition(readFileSync(join(adir, f), 'utf-8')); } catch { continue; }
       if (!doc || typeof doc !== 'object') continue;
@@ -75,12 +78,13 @@ export function collectActivityTechniqueOverlapViolations(): ActivityTechniqueOv
       }
     }
   }
+  assertScanned(scanned, 'activity files', root);
   return out;
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const violations = collectActivityTechniqueOverlapViolations();
+  const violations = measureOrExit('activity-technique-overlap', join(DIR, '..', 'workflows'), collectActivityTechniqueOverlapViolations);
   if (violations.length) {
     process.stdout.write(`activity/step technique overlap: ${violations.length} duplicate entr(ies) (AP-69) — remove from the activity-level list:\n`);
     for (const v of violations.sort((a, b) => a.site.localeCompare(b.site))) process.stdout.write(`  ${v.site} — ${v.detail}\n`);
