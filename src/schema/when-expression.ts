@@ -252,6 +252,38 @@ export function parseWhen(expr: string): ParseWhenResult {
   return new Parser(toks).parse();
 }
 
+/**
+ * The bag paths an expression reads: the left side of each comparison and each bare truthiness
+ * clause. Only the left side — a right operand is a value, and an unquoted one is
+ * indistinguishable from an identifier by shape, so `analysis_type == completion` reads
+ * `analysis_type` alone. An unparseable expression reads nothing (fail-closed, as evaluation does).
+ */
+export function expressionPaths(expr: string): string[] {
+  const parsed = parseWhen(expr);
+  if (!parsed.ok) return [];
+  const paths: string[] = [];
+  const walk = (ast: WhenAst): void => {
+    switch (ast.kind) {
+      case 'truthy':
+      case 'cmp':
+        paths.push(ast.path);
+        return;
+      case 'not':
+        walk(ast.expr);
+        return;
+      case 'and':
+      case 'or':
+        walk(ast.left);
+        walk(ast.right);
+        return;
+      case 'literal':
+        return;
+    }
+  };
+  walk(parsed.ast);
+  return paths;
+}
+
 function getVar(path: string, vars: Record<string, unknown>): unknown {
   let cur: unknown = vars;
   for (const part of path.split('.')) {

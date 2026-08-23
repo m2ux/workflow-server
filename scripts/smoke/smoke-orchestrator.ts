@@ -3,7 +3,7 @@
  *
  * The driver is the ORCHESTRATOR: it owns activity transitions and checkpoint
  * responses (from a deterministic Policy), running an in-memory technique-branch
- * server against a sandbox workspace. For each activity it dispatches a real
+ * server against the sandbox checkout. For each activity it dispatches a real
  * WORKER — headless `claude` pointed at the technique-branch dist server via
  * --strict-mcp-config — to execute the activity's steps in the sandbox. The two
  * server instances cooperate through the on-disk, HMAC-sealed session.json
@@ -29,6 +29,7 @@ import { parseToolResponse, parseWorkflowResponse, parseBundle } from '../../tes
 import { pickNext, activityCheckpointSteps, type ActivityDef, type CheckpointDef } from '../../tests/e2e/walker.js';
 import { defaultPolicy, makePolicy } from '../../tests/e2e/policies.js';
 import { evaluateCondition } from '../../src/schema/condition.schema.js';
+import { checkSession, relayGaps } from '../check-session-contract.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const WORKTREE = resolve(HERE, '../..');
@@ -69,16 +70,19 @@ function log(msg: string) { process.stdout.write(`[orchestrator] ${msg}\n`); }
 
 /**
  * Set up the persistent shared sandbox at ROOT (created once, reused by every
- * run). Workspace holds the server sessions; the target repo is the worker's CWD,
- * so its .engineering/artifacts/planning/ is the stable root you watch. Each run
- * writes a unique planning subfolder (named from RUN_ID), so runs accumulate
- * rather than clobber.
+ * run). The target repo is the worker's CWD and holds the sessions too, so
+ * .engineering/artifacts/planning/ under it is both the stable root you watch and
+ * the checkout a worktree path derives from. Each run writes a unique planning
+ * subfolder (named from RUN_ID), so runs accumulate rather than clobber.
+ *
+ * One root, deliberately: sessions used to live beside the checkout rather than
+ * inside it, which left the planning folder and the git repository in different
+ * directories and a worktree path derivable from neither.
  */
 function setupSandbox() {
   const root = ROOT;
-  const workspace = join(root, 'workspace');
   const target = join(root, 'target');
-  execFileSync('mkdir', ['-p', workspace, target]);
+  execFileSync('mkdir', ['-p', target]);
   // Idempotent throwaway target repo — created on first run, reused thereafter.
   if (!existsSync(join(target, 'README.md'))) {
     writeFileSync(join(target, 'README.md'), '# Sandbox target\n\nThrowaway repo for work-package smoke runs.\n');
@@ -90,13 +94,13 @@ function setupSandbox() {
   }
   // Render the worker MCP config from the template.
   const tpl = readFileSync(join(HERE, 'worker-mcp.template.json'), 'utf8');
-  const cfg = tpl.replace('__TECHNIQUE_DIST__', TECHNIQUE_DIST).replace('__SANDBOX_WORKSPACE__', workspace);
+  const cfg = tpl.replace('__TECHNIQUE_DIST__', TECHNIQUE_DIST).replace('__SANDBOX_WORKSPACE__', target);
   const cfgPath = join(root, 'worker-mcp.json');
   writeFileSync(cfgPath, cfg);
-  return { root, workspace, target, cfgPath };
+  return { root, target, cfgPath };
 }
 
-interface WorkerTurn { result: string; sessionId: string | null }
+interface WorkerTurn { result: string; sessionId: string | null; costUsd: number; turns: number }
 
 /** Dispatch one worker turn (headless claude). Returns its text + resumable session id. */
 function runWorker(prompt: string, cfgPath: string, target: string, resumeId: string | null): WorkerTurn {
@@ -114,10 +118,74 @@ function runWorker(prompt: string, cfgPath: string, target: string, resumeId: st
   const out = execFileSync(CLAUDE_BIN, a, { cwd: target, encoding: 'utf8', maxBuffer: 64 * 1024 * 1024, timeout: 600_000 });
   try {
     const parsed = JSON.parse(out);
-    return { result: String(parsed.result ?? ''), sessionId: parsed.session_id ?? null };
+    // The CLI reports what the turn cost; recording it is what lets a run answer what it cost
+    // rather than leaving that to be estimated afterwards.
+    return {
+      result: String(parsed.result ?? ''),
+      sessionId: parsed.session_id ?? null,
+      costUsd: typeof parsed.total_cost_usd === 'number' ? parsed.total_cost_usd : 0,
+      turns: typeof parsed.num_turns === 'number' ? parsed.num_turns : 0,
+    };
   } catch {
-    return { result: out, sessionId: resumeId };
+    return { result: out, sessionId: resumeId, costUsd: 0, turns: 0 };
   }
+}
+
+/**
+ * The variables a worker reported producing, read from the fenced `variables_changed` block the
+ * brief asks for as the last thing in a turn.
+ *
+ * Later turns win: a value the worker settles after a checkpoint resume supersedes what it said
+ * before. A turn with no block contributes nothing rather than clearing what earlier turns
+ * reported, and an unparsable one is skipped with a note — a malformed block must not take the run
+ * down, but it must not pass silently either, since a dropped value looks exactly like a value the
+ * activity never produced.
+ */
+function collectWorkerVariables(reports: string[]): Record<string, unknown> {
+  const collected: Record<string, unknown> = {};
+  const fence = /```(?:json\s+)?variables_changed\s*\n([\s\S]*?)```/g;
+  for (const report of reports) {
+    for (const match of report.matchAll(fence)) {
+      try {
+        const parsed = JSON.parse(match[1]!) as unknown;
+        if (parsed && typeof parsed === 'object' && !Array.isArray(parsed)) {
+          Object.assign(collected, parsed);
+        } else {
+          log('worker variables_changed block was not an object — skipped');
+        }
+      } catch (error) {
+        log(`worker variables_changed block did not parse — skipped (${error instanceof Error ? error.message : String(error)})`);
+      }
+    }
+  }
+  return collected;
+}
+
+/** A tool result's text, for an error the driver has to report rather than swallow. */
+function toolText(result: { content?: unknown }): string {
+  const first = Array.isArray(result.content) ? result.content[0] : undefined;
+  return (first as { text?: string } | undefined)?.text ?? '(no detail)';
+}
+
+/**
+ * The option to answer a checkpoint with.
+ *
+ * A declared checkpoint goes to the policy. A gate the WORKER raised carries its own options and no
+ * definition to look them up in (#477), so the policy has nothing to match on — answering with the
+ * checkpoint id, as this did, names an option no gate offers, and respond_checkpoint refuses it. The
+ * first option the worker offered is the deterministic answer: an ad-hoc gate exists because the
+ * worker could not proceed, and its first option is the one it wrote as the way forward.
+ */
+function chooseOption(
+  active: { checkpointId: string; adhoc?: { options?: Array<{ id: string }> } },
+  cp: CheckpointDef | undefined,
+  activityId: string,
+  variables: Record<string, unknown>,
+): string {
+  if (cp) return policy.choose({ activityId, checkpoint: cp, variables });
+  const offered = active.adhoc?.options?.[0]?.id;
+  if (offered) return offered;
+  throw new Error(`checkpoint '${active.checkpointId}' has no definition and no ad-hoc options to answer with`);
 }
 
 const WORKER_BRIEF = readFileSync(join(HERE, 'worker-brief.md'), 'utf8');
@@ -143,20 +211,40 @@ async function main() {
   const sb = setupSandbox();
   log(`sandbox: ${sb.root} (model=${MODEL}, activities<=${MAX_ACTIVITIES}, orchestrator=${ORCHESTRATOR}, policy=${policy.name})`);
 
-  const h = await createHarness({ workspaceDir: sb.workspace });
+  // The session and the planning artifacts share the checkout, so the two are never separated.
+  // naming-conventions derives the worktree checkout root by walking up from planning_folder_path
+  // above .engineering/artifacts/planning/ — point that anywhere but the checkout and it lands on a
+  // directory with no .git, which a worker met and reported as unresolvable.
+  const h = await createHarness({ workspaceDir: sb.target });
   const transcript: Array<Record<string, unknown>> = [];
+  /** What the workers cost, so a run reports its own price rather than leaving it estimated. */
+  let spent = 0;
   try {
+    // The orchestrator names the planning folder, as it does in production. A worker left to invent
+    // one picked a different directory on each run, and the run where it picked the session's own
+    // folder could not derive a worktree root at all.
+    const planningFolder = join(sb.target, '.engineering/artifacts/planning', `smoke-${RUN_ID}`);
     const start = parseToolResponse(await h.client.callTool({
-      name: 'start_session', arguments: { workflow_id: WORKFLOW, agent_id: 'smoke-orchestrator' },
+      name: 'start_session',
+      arguments: { workflow_id: WORKFLOW, agent_id: 'smoke-orchestrator', planning_folder: planningFolder },
     }));
     const sessionIndex = start.session_index as string;
     const slug = start.planning_slug as string;
-    const sessionPath = join(sb.workspace, '.engineering/artifacts/planning', slug, 'session.json');
-    log(`session ${sessionIndex} (slug ${slug})`);
+    const canonicalPlanningFolder = (start.planning_folder_path as string | undefined) ?? planningFolder;
+    const sessionPath = join(sb.target, '.engineering/artifacts/planning', slug, 'session.json');
+    log(`session ${sessionIndex} (slug ${slug}) planning ${canonicalPlanningFolder}`);
 
     // Initial activity comes from the workflow definition, not a hardcoded id.
     const wfSummary = parseWorkflowResponse(await h.client.callTool({ name: 'get_workflow', arguments: { session_index: sessionIndex } }));
     const variables: Record<string, unknown> = {};
+    /**
+     * The completing activity's worker output, relayed on the next transition. Seeded with the
+     * planning folder the orchestrator established: the first activity reads it before anything
+     * writes it, and start_session returns the canonical path without putting it in the bag.
+     */
+    let pendingVariables: Record<string, unknown> = { planning_folder_path: canonicalPlanningFolder };
+    /** Values a transition carried, for the end-of-run check that the bag received each one. */
+    const relayedVariables: Record<string, unknown> = {};
     const visited = new Set<string>();
     let current: string | null = (wfSummary.initialActivity as string)
       ?? (wfSummary.activities as Array<{ id: string }> | undefined)?.[0]?.id ?? null;
@@ -166,7 +254,27 @@ async function main() {
       count++;
       visited.add(current);
       log(`=== activity ${count}: ${current} ===`);
-      await h.client.callTool({ name: 'next_activity', arguments: { session_index: sessionIndex, activity_id: current } });
+      // The transition carries the previous activity's worker output into the bag, which is the
+      // only path a worker-derived value has into the session.
+      const transitioned = await h.client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: sessionIndex,
+          activity_id: current,
+          ...(Object.keys(pendingVariables).length ? { variables_changed: pendingVariables } : {}),
+        },
+      });
+      // A refused transition leaves the session on the previous activity while the driver reports
+      // the next one, so the transcript claims an activity that never ran and the worker keeps
+      // answering the old one. The server refuses while a checkpoint is unresolved, which is
+      // exactly when this used to happen.
+      if (transitioned.isError) {
+        throw new Error(`next_activity refused '${current}': ${toolText(transitioned)}`);
+      }
+      // Relayed means carried by a transition the server accepted. Anything still pending when a
+      // capped run stops was never sent, and asking the bag for it would fail the run for stopping.
+      Object.assign(relayedVariables, pendingVariables);
+      pendingVariables = {};
 
       const actRes = await h.client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex, context_tokens: 200_000 } });
       const act = parseWorkflowResponse(actRes) as unknown as ActivityDef;
@@ -182,14 +290,18 @@ async function main() {
       const MAX_TURNS = 8;
       while (true) {
         turn++;
-        if (turn > MAX_TURNS) { log(`turn cap (${MAX_TURNS}) hit for ${current} — moving on`); break; }
+        // Moving on with a checkpoint still active is what made a refused transition look like a
+        // successful one, so the cap says which state it stopped in and the transition below decides
+        // whether the run can continue.
+        if (turn > MAX_TURNS) { log(`turn cap (${MAX_TURNS}) hit for ${current}`); break; }
         const prompt = turn === 1
           ? initialPrompt(sessionIndex)
           : resumePrompt(sessionIndex, pendingResume!.checkpointId, pendingResume!.optionId);
         const w = runWorker(prompt, sb.cfgPath, sb.target, workerSession);
         workerSession = w.sessionId;
         workerReports.push(w.result);
-        log(`worker turn ${turn} (${w.result.length} chars)`);
+        spent += w.costUsd;
+        log(`worker turn ${turn} (${w.result.length} chars, ${w.costUsd.toFixed(2)} usd, ${w.turns} model turn(s))`);
 
         const state = JSON.parse(readFileSync(sessionPath, 'utf8'));
         const active = state.activeCheckpoint;
@@ -210,7 +322,7 @@ async function main() {
             } else {
               // Orchestrator agent didn't resolve it — fall back to policy so the run proceeds.
               decidedBy = 'policy-fallback';
-              optionId = cp ? policy.choose({ activityId: current, checkpoint: cp, variables }) : active.checkpointId;
+              optionId = chooseOption(active, cp, current, variables);
               const resp = parseToolResponse(await h.client.callTool({
                 name: 'respond_checkpoint', arguments: { session_index: sessionIndex, option_id: optionId },
               }));
@@ -219,10 +331,16 @@ async function main() {
             }
           } else {
             // 3a: deterministic orchestrator.
-            optionId = cp ? policy.choose({ activityId: current, checkpoint: cp, variables }) : active.checkpointId;
-            const resp = parseToolResponse(await h.client.callTool({
+            optionId = chooseOption(active, cp, current, variables);
+            const responded = await h.client.callTool({
               name: 'respond_checkpoint', arguments: { session_index: sessionIndex, option_id: optionId },
-            }));
+            });
+            // A refused response leaves the checkpoint active, so the next turn yields the same one
+            // and the run burns its turn cap on a gate nobody answered. Fail on the spot instead.
+            if (responded.isError) {
+              throw new Error(`respond_checkpoint refused option '${optionId}' for '${active.checkpointId}': ${toolText(responded)}`);
+            }
+            const resp = parseToolResponse(responded);
             const effect = (resp.effect ?? {}) as Record<string, unknown>;
             sv = (effect.setVariable ?? effect.variablesSet) as Record<string, unknown> | undefined;
           }
@@ -236,7 +354,23 @@ async function main() {
         break; // no active checkpoint → activity steps complete (or worker stopped)
       }
 
-      transcript.push({ activity: current, checkpoints: cpRecords, workerTurns: turn, workerReports });
+      // Relay what the worker produced, the way a real orchestrator does: the server writes the
+      // session bag from `variables_changed` on the transition out. Without this the run exercises
+      // only the checkpoint write path — every value a worker derives is reported in prose and
+      // dropped, so no later activity can read what an earlier one produced (#493).
+      const produced = collectWorkerVariables(workerReports);
+      if (Object.keys(produced).length) {
+        log(`worker produced: ${Object.keys(produced).join(', ')}`);
+        Object.assign(variables, produced);
+      } else {
+        log('worker produced no variables_changed block');
+      }
+      pendingVariables = produced;
+
+      transcript.push({
+        activity: current, checkpoints: cpRecords, workerTurns: turn, workerReports,
+        variablesChanged: produced,
+      });
       let next = pickNext(act, variables);
       // Forward-advance fallback (workflow-agnostic): if the graph stalls or loops back, advance to
       // an unvisited activity, satisfying its simple gate — stands in for agent-set convergence vars.
@@ -256,7 +390,29 @@ async function main() {
     }
 
     const finalState = JSON.parse(readFileSync(sessionPath, 'utf8'));
-    log(`final status: ${finalState.status}; activities run: ${count}`);
+    log(`final status: ${finalState.status}; activities run: ${count}; worker spend ${spent.toFixed(2)} usd`);
+
+    // Assert rather than narrate. A run that reads well in the log and wrote outside its contracts,
+    // or never moved the session at all, is the failure this exists to catch — and reading the log
+    // by hand is what let both go unnoticed until someone looked.
+    const contract = await checkSession(finalState, resolve(WORKTREE, 'workflows'), { runComplete: true });
+    log(`session contract: ${contract.checkedWrites} write(s) measured`
+      + `${contract.unattributedWrites ? `, ${contract.unattributedWrites} unattributed` : ''}`);
+    // What the worker said it produced has to be what the bag received: the relay is the only path,
+    // and a name lost between the two is invisible from either side alone.
+    const dropped = relayGaps(relayedVariables, (finalState.variables ?? {}) as Record<string, unknown>);
+    const relayed = Object.keys(relayedVariables);
+    log(`relay: ${relayed.length - dropped.length}/${relayed.length} carried values in the bag`
+      + `${Object.keys(pendingVariables).length ? `, ${Object.keys(pendingVariables).length} still pending at the cap` : ''}`);
+    const failures = [
+      ...contract.findings.map((f) => `[${f.check}] ${f.site}: ${f.detail}`),
+      ...(dropped.length ? [`[relay-dropped] ${dropped.join(', ')} were carried by a transition and are absent from the bag`] : []),
+    ];
+    if (failures.length) {
+      for (const line of failures) log(line);
+      throw new Error(`${failures.length} assertion(s) failed against session ${sessionIndex}`);
+    }
+    log('assertions passed');
     writeFileSync(join(sb.root, `transcript-${RUN_ID}.json`), JSON.stringify({ runId: RUN_ID, sessionIndex, transcript, finalStatus: finalState.status }, null, 2));
   } finally {
     await h.close();

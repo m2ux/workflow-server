@@ -4,7 +4,9 @@ Ask a model what to do next and it will answer, but not always the same way twic
 
 ## Where variables come from
 
-A workflow declares its state variables in `workflow.yaml`, and the server seeds every declared default into the session's variable bag when the session opens — at `start_session` for a top-level session, at `dispatch_child` for an embedded child, which seeds from the child workflow's own declarations. The seeded map is recorded as a single `variables_seeded` event.
+A variable is declared where it is owned. `workflow.yaml` holds the facts a session starts with and the policy that spans its activities; everything an activity produces is declared by that activity, under `variables.writes` beside the reads it needs. Including an activity in a workflow's graph contributes its write declarations to that workflow, so the two lists are one variable set by the time the workflow loads — and an activity two workflows run states its needs once, in the file that holds it. Two declarations of one name that disagree on type or default describe two different variables under one name, so the workflow does not load and the disagreement is named.
+
+The server seeds every declared default from that combined set into the session's variable bag when the session opens — at `start_session` for a top-level session, at `dispatch_child` for an embedded child, which seeds from the child workflow's own declarations. The seeded map is recorded as a single `variables_seeded` event.
 
 Seeding at creation is what keeps the orchestrator's copy of the state and the server's bag in agreement from the first call, so `get_workflow_status` returns the seeded values rather than an empty map.
 

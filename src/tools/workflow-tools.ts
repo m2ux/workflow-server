@@ -1785,7 +1785,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       };
     }), traceOpts));
 
-  server.tool('resume_checkpoint', 'Worker tool: continue after the orchestrator resolves a checkpoint. Verifies no activeCheckpoint and returns variable updates to apply.',
+  server.tool('resume_checkpoint', 'Worker tool: continue after the orchestrator resolves a checkpoint. Verifies no activeCheckpoint and returns the resolved checkpoint, the option selected, and the `variables_changed` its effect applied — the values the bag gained while the worker was suspended.',
     {
       ...sessionIndexParam,
     },
@@ -1802,13 +1802,27 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const next = advanceSession(state);
       await saveSessionForTool(loaded, next);
 
-      // Note: The orchestrator passes variable effects directly in its prompt when resuming the worker.
-      // This tool exists to verify the lock is cleared and advance the session sequence.
+      // What the orchestrator's decision changed while the worker was suspended. The server applied
+      // the selected option's setVariable effect at respond_checkpoint, so the values are already in
+      // the bag and the worker's own copy is behind by exactly this much. Read from the response the
+      // orchestrator just recorded — the most recent one, since the active checkpoint is cleared by
+      // then and its id is no longer on the session to key by.
+      const resolved = Object.entries(state.checkpointResponses)
+        .sort(([, a], [, b]) => a.respondedAt.localeCompare(b.respondedAt))
+        .pop();
+      const variablesChanged = resolved?.[1].effects?.variablesSet ?? {};
+      const changedNames = Object.keys(variablesChanged);
+
       return {
         content: [{ type: 'text' as const, text: JSON.stringify({
           status: 'resumed',
           session_index,
-          message: `Checkpoint cleared. You may proceed to the next step. Note any variable updates provided by the orchestrator.`
+          checkpoint: resolved?.[0],
+          option_id: resolved?.[1].optionId,
+          variables_changed: variablesChanged,
+          message: changedNames.length
+            ? `Checkpoint cleared. The selected option set ${changedNames.join(', ')} — the values above are in the session bag; carry them in your own state and proceed to the next step.`
+            : 'Checkpoint cleared. The selected option set no variables. Proceed to the next step.',
         }, null, 2) }],
         _meta: { session_index, validation },
       };

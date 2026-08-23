@@ -392,7 +392,7 @@
             ],
             "additionalProperties": false
           },
-          "description": "Workflow-level variable declarations, rendered in get_workflow for agents. The session variable bag is seeded from each declaration's defaultValue at session creation; thereafter the server writes it through checkpoint setVariable effects and through the worker outputs an orchestrator relays as next_activity's variables_changed."
+          "description": "The variables this workflow file owns: facts about the session and policy spanning activities. A variable an activity writes is declared by that activity, under its own `variables.writes`, and contributed here when the activity joins this workflow's graph — get_workflow renders the whole set, and two declarations of one name that disagree on type or default fail the load. The session variable bag is seeded from each declaration's defaultValue at session creation; thereafter the server writes it through checkpoint setVariable effects and through the worker outputs an orchestrator relays as next_activity's variables_changed."
         },
         "techniques": {
           "type": "object",
@@ -440,6 +440,27 @@
               "description": {
                 "type": "string",
                 "description": "Detailed description of the activity"
+              },
+              "variables": {
+                "type": "object",
+                "properties": {
+                  "reads": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/workflow/properties/variables/items/properties/name"
+                    },
+                    "description": "Session variables this activity consults: gate and routing conditions, loop collections, prose interpolations, and the bound operations' own inputs it does not supply itself. A name written by an earlier step of the same activity is resolved internally and is not declared here."
+                  },
+                  "writes": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/workflow/properties/variables/items"
+                    },
+                    "description": "Session variables this activity puts into the bag: its bound operations' outputs (under their declared id or the step binding's remap target), its checkpoint setVariable effects and its `set` action targets. Contributed to the including workflow's variable set, defaultValue included — a loop variable is iteration state and is not declared here."
+                  }
+                },
+                "additionalProperties": false,
+                "description": "The session variables this activity reads and writes. Its writes are declarations contributed to the including workflow's variable set; its reads are the names it needs that workflow to supply."
               },
               "techniques": {
                 "type": "array",

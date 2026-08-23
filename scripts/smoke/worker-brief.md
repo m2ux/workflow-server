@@ -54,3 +54,18 @@ End your turn with a short structured report:
 - `artifacts`: planning files you created/updated
 - `notes`: anything confusing, missing, or that you had to guess — especially any
   instruction you could not follow because referenced content was absent.
+
+Then, as the **last thing in your turn**, a fenced `json` block tagged
+`variables_changed` carrying every session variable this turn produced — the
+outputs of the operations you ran, the targets of any `set` action, and anything
+else the activity's `variables.writes` declares that you settled:
+
+```variables_changed
+{ "host_repo_path": "/abs/path", "project_type": "other", "issue_present": false }
+```
+
+Report the value you actually settled, not the value you would have settled had a
+step run for real: omit a name you narrated rather than produced. The block is how
+your values reach the session — the orchestrator relays it, and a name left out of
+it is a name the next activity cannot read. Emit the block even when it is empty
+(`{}`), so a turn that produced nothing says so.

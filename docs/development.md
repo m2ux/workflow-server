@@ -281,6 +281,10 @@ reported. There is no `--update-baseline`: a verdict is a human judgement, which
 retired baselines let a regenerate flag skip. `npx tsx scripts/check-binding-fidelity.ts
 --emit-untriaged` prints the findings still needing one.
 
+A ledger is the exception, not the shape a new guard starts from. `check:activity-variables` has
+none: each of its findings named a definition defect, and the corpus was fixed rather than
+classified.
+
 `check:review-mode` follows the same shape with a smaller list —
 `ACCEPTED_HEADLESS_AUTO_ADVANCE` in [`scripts/check-review-mode-gating.ts`](../scripts/check-review-mode-gating.ts),
 one reason per accepted checkpoint.

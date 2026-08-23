@@ -35,6 +35,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'step bindings resolve, args conform, reads have producers, outputs have consumers',
   },
   {
+    id: 'activity-variables',
+    script: 'scripts/check-activity-variables.ts',
+    npmScript: 'check:activity-variables',
+    scope: 'corpus',
+    json: true,
+    proves: 'every activity declares the variables it reads and writes, and every read has a writer on every path',
+  },
+  {
     id: 'inherited-inputs',
     script: 'scripts/check-inherited-inputs.ts',
     npmScript: 'check:inherited-inputs',

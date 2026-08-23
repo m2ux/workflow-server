@@ -8,6 +8,7 @@ import { WorkflowNotFoundError, WorkflowValidationError, ActivityNotFoundError }
 import { logInfo, logError, logWarn } from '../logging.js';
 import { parseDefinition } from '../utils/serialization.js';
 import { parseActivityFilename } from './filename-utils.js';
+import { mergeActivityVariables } from '../utils/activity-variables.js';
 import {
   META_WORKFLOW_ID,
   type FragmentsLookup,
@@ -354,6 +355,20 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
       }
     }
     if (workflow.activities) workflow.activities = materialized;
+
+    // Contribute each activity's write declarations to the workflow's variable set (#493). Being
+    // in the graph IS the registration: everything downstream — seeding, declared-type validation,
+    // the get_workflow payload — reads one merged set, and a name two activities declare is one
+    // variable. A pair that disagrees on type or default is a contradiction, and a session seeded
+    // from either reading would be wrong, so the workflow does not load.
+    const merged = mergeActivityVariables(workflow.variables, workflow.activities);
+    if (merged.contradictions.length > 0) {
+      return err(new WorkflowValidationError(
+        workflowId,
+        merged.contradictions.map((c) => `variable ${c.detail}`),
+      ));
+    }
+    if (merged.variables.length > 0) workflow.variables = merged.variables;
 
     logInfo('Workflow loaded', { workflowId, version: workflow.version, activityCount: workflow.activities?.length ?? 0 });
     return ok({ workflow, activityLoadErrors, activitySourceWorkflow });

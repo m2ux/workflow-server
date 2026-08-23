@@ -1,8 +1,8 @@
 {
   "label": "baseline",
-  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-08-20 against workflows@46bddccc. Delivery is 30,199 characters above the workflows@72db28ae recording of 1,302,319, and every character of the rise is resource delivery (+31,343); technique delivery falls 2,329 as a retired input and two trimmed protocol steps come out. Resource text is refetched on each activity, so a sentence added to a hot template is paid once per activity \u2014 which is what makes this rise large against 11,000 characters of net new resource text. What it buys: one canonical five-field finding shape with declared extension points, replacing three report guides that each declared their own field list and drifted; a declared designator prefix and review category for the structural analysis and the lean-coding audit, whose absence is why a run improvised identifiers and rendered sixteen findings as two rows on a live pull request; the rule that a designator belongs to the pass that raised the finding; and a findings table that opens on its subject rather than a count that goes stale. 2,155 of the characters are meta/writing-register, delivered for the first time because the resource-reference extractor now keeps the workflow a cross-workflow citation points at \u2014 the register was cited and silently never delivered before. Findings and evidence: https://github.com/m2ux/workflow-server/issues/474.",
+  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-08-23 against workflows@393e244b. Delivery is 25,325 characters above the workflows@46bddccc recording of 1,332,518. 16,881 of those come from this corpus: get_activity rises 21,340 as every activity begins carrying the variable contract it reads and writes, and get_workflow falls 4,459 as 408 declarations leave the seventeen workflow files for the activities that own them and 130 dead ones leave the corpus entirely. Resource and technique delivery are unchanged by it. The remaining 8,444 characters are corpus movement between 46bddccc and 7aaf6bf3 that was never re-recorded, measured by walking 7aaf6bf3 on this same server tree. What it buys: an activity that states what it needs and what it produces, so a workflow including an activity another wrote can be checked for supplying it. That check found 65 unsupplied reads across the fourteen work-package activities remediate-vuln runs, seven exits a return visit could not take, 40 declarations nothing read or wrote, and 77 places where a decision or a step recorded a value no gate, operation or template consulted. All of them are fixed rather than ledgered, which is why the rise is smaller than the contract alone: the characters that stayed are reads as names and writes as declarations carrying the type and default the session seeds from. Findings and evidence: https://github.com/m2ux/workflow-server/issues/493.",
   "contextMode": "fresh",
-  "workflowsRev": "46bddccc",
+  "workflowsRev": "393e244b",
   "agentId": "bench-solo",
   "path": [
     "start-work-package",
@@ -24,7 +24,7 @@
     "get_workflow": 1,
     "next_activity": 12,
     "get_activity": 12,
-    "get_resource": 163,
+    "get_resource": 165,
     "yield_checkpoint": 10,
     "respond_checkpoint": 10,
     "resume_checkpoint": 10,
@@ -32,31 +32,31 @@
   },
   "chars": {
     "start_session": 789,
-    "get_workflow": 108381,
+    "get_workflow": 104752,
     "next_activity": 1195,
-    "get_activity": 521235,
-    "get_resource": 559026,
+    "get_activity": 545422,
+    "get_resource": 563793,
     "yield_checkpoint": 2930,
-    "respond_checkpoint": 2098,
+    "respond_checkpoint": 1984,
     "resume_checkpoint": 1800,
     "get_technique": 143876
   },
   "history": {
     "technique_bundled": 66,
     "technique_fetched": 23,
-    "resource_fetched": 147
+    "resource_fetched": 143
   },
-  "deliveredContentKeys": 265,
-  "resourceLedgerKeys": 78,
+  "deliveredContentKeys": 262,
+  "resourceLedgerKeys": 74,
   "unchangedResourceAnswers": 0,
   "unchangedTechniqueAnswers": 0,
-  "getActivityChars": 521235,
-  "getWorkflowChars": 108381,
-  "getResourceChars": 559026,
+  "getActivityChars": 545422,
+  "getWorkflowChars": 104752,
+  "getResourceChars": 563793,
   "getTechniqueChars": 143876,
   "workflowId": "work-package",
-  "workflowsDir": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/474-review-run-friction/workflows",
-  "serverRoot": "/home/mike1/projects/dev/workflow-server/.worktrees/workflow/474-review-run-friction",
+  "workflowsDir": "/home/mike1/projects/dev/workflow-server/.worktrees/feat/493-activity-variable-contracts/workflows",
+  "serverRoot": "/home/mike1/projects/dev/workflow-server/.worktrees/feat/493-activity-variable-contracts",
   "repeatedResources": [
     {
       "resourceId": "pr-description#template-initial",

@@ -12,7 +12,7 @@ Both roles talk to the **technique-branch** server and share one session on disk
 ```
             ┌─────────────────────────┐
  reads/     │  session.json (sandbox  │   reads/
- writes ───▶│  workspace, HMAC-sealed)│◀─── writes
+ writes ───▶│  checkout, HMAC-sealed)  │◀─── writes
             └─────────────────────────┘
    ▲                                        ▲
    │ in-memory server                       │ technique dist server (stdio)
@@ -25,10 +25,17 @@ Both roles talk to the **technique-branch** server and share one session on disk
 └──────────────────┘                   └───────────────────────────────┘
 ```
 
+One root, not two: the session and the planning artifacts both live inside the
+sandbox checkout, because a worktree path is derived by walking up from the
+planning folder to the repository enclosing it. A session stored beside the
+checkout rather than within it leaves that walk on a directory with no `.git`,
+and the orchestrator names the planning folder at `start_session` so a worker
+never has to invent one.
+
 Why this works without shared memory:
 - The server is **stateless between calls** — every tool call loads/saves
-  `session.json` from the workspace. So two server instances pointed at the same
-  workspace cooperate through disk.
+  `session.json` from the checkout. So two server instances pointed at the same
+  checkout cooperate through disk.
 - The seal/HMAC key is **machine-global** (`~/.workflow-server/secret`, or `WORKFLOW_SERVER_KEY_DIR` / Docker `$INSTALL/state`), so both
   instances verify the same sealed session.
 - This mirrors the production orchestrator/worker model exactly; "deterministic"
