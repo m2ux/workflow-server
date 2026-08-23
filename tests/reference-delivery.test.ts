@@ -434,7 +434,8 @@ describe('reference-not-repeat delivery (B1)', () => {
       expect(second.isError).toBeFalsy();
       const secondText = responseText(second);
       expect(secondText).not.toContain('capability:');
-      const stub = parse(secondText.substring(secondText.indexOf('\n\n') + 2)) as Record<string, unknown>;
+      const payload = parse(secondText.substring(secondText.indexOf('\n\n') + 2)) as Record<string, unknown>;
+      const stub = payload['technique'] as Record<string, unknown>;
       expect(stub['delivery']).toBe('unchanged');
       expect(stub['content_hash']).toMatch(/^[0-9a-f]{16}$/);
       expect(stub['note']).toBeDefined();
@@ -488,7 +489,8 @@ describe('reference-not-repeat delivery (B1)', () => {
       expect(second.isError).toBeFalsy();
       const secondText = responseText(second);
       expect(secondText).not.toContain('capability:');
-      const stub = parse(secondText.substring(secondText.indexOf('\n\n') + 2)) as Record<string, unknown>;
+      const payload = parse(secondText.substring(secondText.indexOf('\n\n') + 2)) as Record<string, unknown>;
+      const stub = payload['technique'] as Record<string, unknown>;
       expect(stub['delivery']).toBe('unchanged');
 
       const escaped = await client.callTool({
@@ -496,6 +498,85 @@ describe('reference-not-repeat delivery (B1)', () => {
         arguments: { session_index: idx, full: true },
       });
       expect(responseText(escaped)).toBe(responseText(first));
+    });
+  });
+
+  // SC-7 at the step-bound door. This is the one door that takes a budget, because it answers one
+  // fetch at a time and sizes the attachment against the caller's declared window; the two bundle
+  // doors charge folded bodies to an operations bundle that cannot drop content, and must not grow
+  // one. What makes this budget legitimate is that it never loses content quietly: a body past the
+  // bound is named, so the caller can fetch it. A budget that dropped silently would have the
+  // package reintroduce its own subject.
+  describe('step-bound door: folded bodies against a declared window', () => {
+    // A step whose technique calls other operations from its own protocol, so the closure is
+    // non-empty at this door. `implement-task` reaches the gitnexus operations and the completion
+    // review from its Pre Edit Impact Check and Verify Locally sections.
+    const FOLDING_STEP = 'implement-task';
+
+    async function fetchStep(idx: string, extra: Record<string, unknown> = {}): Promise<Record<string, unknown>> {
+      const result = await client.callTool({
+        name: 'get_technique',
+        arguments: { session_index: idx, step_id: FOLDING_STEP, full: true, ...extra },
+      });
+      expect(result.isError).toBeFalsy();
+      const text = responseText(result);
+      return parse(text.substring(text.indexOf('\n\n') + 2)) as Record<string, unknown>;
+    }
+
+    it('PR466-TC-15: a declared window attaches the closure, and no window attaches none', async () => {
+      const session = await startSession({ workflow_id: 'work-package', agent_id: 'stepdoor' });
+      const idx = session['session_index'] as string;
+      await mcp.enter(idx, 'implement');
+
+      // No window declared: the requested technique alone, and an absence stated rather than left
+      // to be inferred from a missing key.
+      const bare = await fetchStep(idx);
+      expect(bare['technique']).toBeDefined();
+      expect(bare['folded_techniques']).toBeUndefined();
+      expect(bare['folded_note']).toContain('context_tokens');
+
+      // A window wide enough for the whole closure.
+      const wide = await fetchStep(idx, { context_tokens: 1_000_000 });
+      expect(wide['technique']).toBeDefined();
+      const bodies = wide['folded_techniques'] as Record<string, unknown>;
+      expect(Object.keys(bodies).length).toBeGreaterThan(0);
+      expect(wide['folded_deferred']).toBeUndefined();
+      // Every body is keyed by the operation identity a step-bound fetch of it would use, which is
+      // what lets a folded body and a step delivery of the same operation collapse rather than
+      // arriving twice.
+      for (const identity of Object.keys(bodies)) expect(identity).toContain('::');
+      // Each edge that reached a body is named, revisits included, so no call the agent has to make
+      // is hidden by its callee having arrived under another edge.
+      const callSites = wide['folded_call_sites'] as Array<{ caller: string; calls: string; line: number }>;
+      expect(callSites.length).toBeGreaterThanOrEqual(Object.keys(bodies).length);
+    });
+
+    it('PR466-TC-15: a window too small to hold the closure names what it leaves unsent', async () => {
+      const session = await startSession({ workflow_id: 'work-package', agent_id: 'stepdoor-tight' });
+      const idx = session['session_index'] as string;
+      await mcp.enter(idx, 'implement');
+
+      const wide = await fetchStep(idx, { context_tokens: 1_000_000 });
+      const allBodies = Object.keys(wide['folded_techniques'] as Record<string, unknown>);
+      expect(allBodies.length).toBeGreaterThan(0);
+
+      // A window that the requested technique very nearly fills on its own. The requested body is
+      // delivered whatever the bound says — this call is a fetch for it — so the bound squeezes the
+      // attachment rather than the answer.
+      const tight = await fetchStep(idx, { context_tokens: 1500 });
+      expect(tight['technique']).toBeDefined();
+      const deferred = tight['folded_deferred'] as Array<{ identity: string; chars: number }>;
+      expect(deferred.length).toBeGreaterThan(0);
+      expect(tight['folded_deferred_note']).toContain('get_technique');
+      for (const entry of deferred) expect(entry.chars).toBeGreaterThan(0);
+
+      // Nothing vanishes between the two windows: every body the wide one delivered is, under the
+      // tight one, either delivered or named.
+      const delivered = Object.keys((tight['folded_techniques'] ?? {}) as Record<string, unknown>);
+      const accounted = new Set([...delivered, ...deferred.map((d) => d.identity)]);
+      for (const identity of allBodies) {
+        expect(accounted.has(identity), `body '${identity}' neither delivered nor named`).toBe(true);
+      }
     });
   });
 
@@ -524,11 +605,13 @@ describe('reference-not-repeat delivery (B1)', () => {
       });
       expect(result.isError).toBeFalsy();
       const text = responseText(result);
-      const technique = parse(text.substring(text.indexOf('\n\n') + 2)) as {
-        provenance_note?: string;
-        inputs?: Array<{ id: string; source?: string }>;
-        inherited_inputs?: { items: Array<{ id: string; source?: string }> };
-      };
+      const technique = (parse(text.substring(text.indexOf('\n\n') + 2)) as {
+        technique: {
+          provenance_note?: string;
+          inputs?: Array<{ id: string; source?: string }>;
+          inherited_inputs?: { items: Array<{ id: string; source?: string }> };
+        };
+      }).technique;
       expect(technique.provenance_note).toBeDefined();
       // Own inputs are always annotated; the documented seam case resolves as authored.
       for (const input of technique.inputs ?? []) {
@@ -545,9 +628,9 @@ describe('reference-not-repeat delivery (B1)', () => {
       });
       expect(optionalCase.isError).toBeFalsy();
       const optionalText = responseText(optionalCase);
-      const defineTechnique = parse(optionalText.substring(optionalText.indexOf('\n\n') + 2)) as {
-        inputs?: Array<{ id: string; source?: string }>;
-      };
+      const defineTechnique = (parse(optionalText.substring(optionalText.indexOf('\n\n') + 2)) as {
+        technique: { inputs?: Array<{ id: string; source?: string }> };
+      }).technique;
       const defineOwn = new Map((defineTechnique.inputs ?? []).map((i) => [i.id, i.source]));
       expect(defineOwn.get('problem_context')).toContain('optional input');
       // Inherited entries carry a source only where it says something the block note does not
@@ -745,10 +828,12 @@ describe('reference-not-repeat delivery (B1)', () => {
   // since the core always changes the whole hash.
   describe('block-level delivery ledger', () => {
     // Parse a get_technique response body into its technique record (drops the
-    // `session_index:` header line before the first blank line).
+    // `session_index:` header line before the first blank line, then unwraps the
+    // envelope the door delivers the requested technique under).
     function parseTechniqueBody(result: { content: Array<{ text: string }> }): Record<string, unknown> {
       const text = responseText(result as never);
-      return parse(text.substring(text.indexOf('\n\n') + 2)) as Record<string, unknown>;
+      const payload = parse(text.substring(text.indexOf('\n\n') + 2)) as Record<string, unknown>;
+      return payload['technique'] as Record<string, unknown>;
     }
 
     // Two distinct technique-bound steps within an activity, discovered on a THROWAWAY

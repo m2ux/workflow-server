@@ -52,15 +52,28 @@ export interface FoldedBundle {
   readonly events: ReadonlyArray<{ identity: string; chars: number; delivery: 'full' | 'unchanged' }>;
   /** Call sites whose destination named no loadable body — reported, never silently dropped. */
   readonly unresolved: ReadonlyArray<{ from: string; destination: string; line: number; reason: string }>;
+  /** Bodies a budget left unsent, by identity — named so the caller can fetch each one. */
+  readonly deferred: ReadonlyArray<{ identity: string; chars: number }>;
 }
 
-const EMPTY: FoldedBundle = { block: undefined, chars: 0, deliveries: {}, events: [], unresolved: [] };
+const EMPTY: FoldedBundle = {
+  block: undefined, chars: 0, deliveries: {}, events: [], unresolved: [], deferred: [],
+};
 
 /**
  * Assemble the folded bodies for one door.
  *
  * `mayReferBack` says whether this context retains what it was sent. False keeps the collapse
  * response-local: a body still arrives once per response, but nothing is claimed about earlier calls.
+ *
+ * `budgetChars` bounds what the attachment may send, and is unbounded when omitted. **The two bundle
+ * doors omit it, and that is load-bearing rather than incidental.** PL-2 charges folded bodies to the
+ * operations bundle because that channel cannot drop content, which is what makes retiring the
+ * compensating core-operations entries like-for-like; wiring a budget into either bundle door would
+ * take the property the retirement rests on. The step-bound door is the one door that passes a bound,
+ * because it takes the caller's window as an input and sizes the attachment against it — and even
+ * there a bounded-out body is named in `deferred` rather than dropped, so the caller learns which
+ * bodies to fetch. A budget that loses content silently is the failure this package exists to remove.
  */
 export async function buildFoldedBundle(args: {
   workflowDir: string;
@@ -69,8 +82,10 @@ export async function buildFoldedBundle(args: {
   state: SessionFile;
   scope: string;
   mayReferBack: boolean;
+  budgetChars?: number;
 }): Promise<FoldedBundle> {
   const { workflowDir, workflowId, refs, state, scope, mayReferBack } = args;
+  const budgetChars = args.budgetChars ?? Infinity;
   if (refs.length === 0) return EMPTY;
 
   const closure = await foldedClosureForRefs({ workflowDir, workflowId, refs });
@@ -79,6 +94,14 @@ export async function buildFoldedBundle(args: {
   const bodies: Record<string, unknown> = {};
   const deliveries: Record<string, string> = {};
   const events: Array<{ identity: string; chars: number; delivery: 'full' | 'unchanged' }> = [];
+  const deferred: Array<{ identity: string; chars: number }> = [];
+  /**
+   * Full-content characters committed so far. A marker costs effectively nothing, so it never draws
+   * the budget down — the same accounting the activity door's eager tally uses, and the composed
+   * size is what a body is charged even where a shared block collapses inside it, so the charge
+   * never understates what the caller has to hold.
+   */
+  let spent = 0;
 
   for (const member of closure.members) {
     const projected = projectTechnique(member.technique);
@@ -93,6 +116,16 @@ export async function buildFoldedBundle(args: {
       events.push({ identity: member.identity, chars: text.length, delivery: 'unchanged' });
       continue;
     }
+    // Past the bound this body waits, and the walk carries on to the next one. Continuing rather
+    // than stopping is right here because closure members carry no execution order between them —
+    // any callee body is independently useful, so a large one does not deny the small ones behind
+    // it. Every skipped body is named in `deferred`, which is what keeps the bound from becoming a
+    // silent drop.
+    if (spent + text.length > budgetChars) {
+      deferred.push({ identity: member.identity, chars: text.length });
+      continue;
+    }
+    spent += text.length;
     deliveries[ledgerKey] = hash;
     bodies[member.identity] = dedupTechniqueBlocks(projected, state, deliveries, scope, mayReferBack);
     events.push({ identity: member.identity, chars: text.length, delivery: 'full' });
@@ -111,6 +144,14 @@ export async function buildFoldedBundle(args: {
     folded_note: FOLDED_NOTE,
   };
   if (closure.unresolved.length > 0) block['folded_unresolved'] = closure.unresolved;
+  // Named rather than counted: a caller that knows which bodies it is missing can fetch them, and a
+  // caller told only how many cannot.
+  if (deferred.length > 0) {
+    block['folded_deferred'] = deferred;
+    block['folded_deferred_note'] =
+      'Bodies the budget on this call left unsent, with the composed size of each. The call sites '
+      + 'above still name them, so fetch each one with get_technique, or raise the budget.';
+  }
 
   return {
     block,
@@ -118,5 +159,6 @@ export async function buildFoldedBundle(args: {
     deliveries,
     events,
     unresolved: closure.unresolved,
+    deferred,
   };
 }

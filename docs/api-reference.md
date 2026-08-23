@@ -57,7 +57,7 @@ Require `session_index`. Workflow identity comes from the session.
 
 | Tool | Parameters | Returns | Description |
 |------|------------|---------|-------------|
-| `get_technique` | `session_index`, `step_id?`, `activity_id?`, `agent_id?`, `bundle?`, `full?` | Composed technique (or unchanged marker) | Load one technique on demand. Passing `activity_id` fails a step id that resolves against a moved activity pointer, rather than returning a technique from the wrong activity. [Resolution](resource-resolution-model.md) · [Reference delivery](resource-resolution-model.md#reference-delivery) |
+| `get_technique` | `session_index`, `step_id?`, `activity_id?`, `agent_id?`, `bundle?`, `full?`, `context_tokens?` | Composed technique (or unchanged marker) under `technique:`, plus the folded closure when a window is declared | Load one technique on demand. Passing `activity_id` fails a step id that resolves against a moved activity pointer, rather than returning a technique from the wrong activity. `context_tokens` asks for the bodies of the operations the technique calls inline and bounds them; a body past the bound is named under `folded_deferred`. [Resolution](resource-resolution-model.md) · [Folded bodies](resource-resolution-model.md#folded-bodies-and-the-counter-each-is-charged-to) · [Reference delivery](resource-resolution-model.md#reference-delivery) |
 | `get_resource` | `session_index`, `resource_id`, `agent_id?`, `bundle?`, `full?` | Resource body (or unchanged marker) | Load reference material by slug (`workflow/id` or `#section`). |
 
 ### Trace and accounting

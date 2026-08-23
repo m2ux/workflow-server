@@ -139,12 +139,29 @@ the duration of that call, joining no container tree.
 |------|------------------------|------------|-----------------------|
 | `get_workflow` (orchestrator bundle) | Yes | The operations bundle, which takes no budget parameter and cannot drop content | Whole bundle only, under `workflow_bundle:<hash>`. The door takes no agent identity, so per-technique collapse is response-local. |
 | `get_activity` (worker bundle) | Yes | The operations bundle, whose serialised size opens the eager tally — so a folded body spends budget a step technique would otherwise have | Per technique, under `technique:<canonicalId>`, in the dispatched worker's scope |
-| `get_technique` (step-bound) | No | — | Per technique, under `technique:<canonicalId>` |
+| `get_technique` (step-bound) | On request, bounded | The caller's declared `context_tokens`, less what the requested technique itself costs | Per technique, under `technique:<canonicalId>` |
 
 The delivery key names the operation rather than the spelling that reached it: a technique's canonical
 identity is its home workflow followed by its path in that tree, so an unqualified `group::op` resolved
 through the shared layer, a `workflow::group::op`, and a folded call site's relative link are one key.
 That is what lets a folded callee collapse against a step-bound delivery of the same operation.
+
+**Only the step-bound door takes a budget, and the asymmetry is deliberate.** The two bundle doors
+charge folded bodies to an operations bundle that cannot drop content, which is what makes retiring the
+core-operations entries that compensated for non-delivery a like-for-like exchange: compensation and
+replacement ride one channel, so the replacement cannot fail to arrive where the compensation could
+not. Giving either bundle door a budget would take that property away. The step-bound door answers one
+fetch at a time and so sizes its attachment against the window the caller declares.
+
+That budget stays honest by naming what it withholds. Declaring `context_tokens` is what asks for the
+folded bodies; omit it and the response carries the requested technique and says that it carries
+nothing else. The requested technique is delivered whichever way — the call is a fetch for it — and it
+seeds the tally, so the budget describes the whole response. Bodies are attached until the remainder
+will not hold the next one, and each body left unsent is listed by identity and composed size under
+`folded_deferred`, so the caller knows which further fetches to make. The walk does not stop at the
+first body that will not fit: closure members carry no execution order between them, so a large body
+does not deny the small ones behind it. A budget that dropped content silently is the failure this
+model exists to remove, which is why this one reports instead.
 
 ## The shared meta layer
 

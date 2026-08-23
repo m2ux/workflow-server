@@ -1,6 +1,12 @@
 import { z } from 'zod';
 import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { normalizeRepoPath, presentPathToAgent, type ServerConfig } from '../config.js';
+import {
+  normalizeRepoPath,
+  presentPathToAgent,
+  DEFAULT_BUNDLE_HEADROOM_FRACTION,
+  DEFAULT_BUNDLE_CHARS_PER_TOKEN,
+  type ServerConfig,
+} from '../config.js';
 import { withAuditLog, logInfo } from '../logging.js';
 
 import { loadWorkflow, loadWorkflowWithDiagnostics, getActivity } from '../loaders/workflow-loader.js';
@@ -51,6 +57,7 @@ import { buildValidation, validateWorkflowVersion } from '../utils/validation.js
 import { stringifyForResponse } from '../utils/serialization.js';
 import { contentHash, deliveredHash, dedupTechniqueBlocks, deliveryScope, recordDeliveries, unchangedMarker } from '../utils/delivery.js';
 import { hasDispatch, recordDispatch } from '../utils/dispatch.js';
+import { buildFoldedBundle } from '../utils/folded-bundle.js';
 import { extractMarkdownSection, parseResourceRef } from '../utils/resource-ref.js';
 import { appendStepStartedIfAbsent } from '../utils/step-events.js';
 import { createTraceEvent } from '../trace.js';
@@ -630,9 +637,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
 
   server.tool(
     'get_technique',
-    'Load one fully composed technique (step-bound when `step_id` is set; otherwise the activity\'s or workflow\'s first). ' +
+    'Load one fully composed technique (step-bound when `step_id` is set; otherwise the activity\'s or workflow\'s first), under `technique:` in the response. ' +
     'Under `context_mode: "persistent"` or `bundle: "reference"`, a byte-identical refetch to the SAME `agent_id` scope may return an unchanged-reference; pass `full: true` when earlier content was summarized away. ' +
-    'A fresh worker context must not ask for reference delivery — it holds no prior delivery to reference.',
+    'A fresh worker context must not ask for reference delivery — it holds no prior delivery to reference. ' +
+    'Pass `context_tokens` to also receive the bodies of the operations this technique calls inline, under `folded_techniques` keyed by operation, bounded by that window; without it the response carries the one technique and says so. ' +
+    'A body the bound leaves unsent is named in `folded_deferred` — fetch it with a further call rather than improvising the call it stands for.',
     {
       ...sessionIndexParam,
       ...agentIdParam,
@@ -640,8 +649,13 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       activity_id: z.string().optional().describe('Optional. The activity you were dispatched for. A step id resolves against the session\'s CURRENT activity, so passing this turns a pointer that has moved on into an error instead of a technique from the wrong activity.'),
       bundle: z.enum(['reference', 'full']).optional().describe('Optional. "reference" collapses a refetch already delivered to THIS agent_id scope. "full" forces full delivery. Defaults from context_mode.'),
       full: z.boolean().optional().describe('Optional. Force full content when reference delivery would return an unchanged-reference (e.g. after summarization). Overrides bundle.'),
+      context_tokens: z.number().int().positive().optional().describe(
+        'Optional. Caller\'s context window in tokens, which bounds the folded callee bodies this fetch attaches. '
+        + 'Supplying it is what asks for them: omit it and the response carries the requested technique alone, '
+        + 'stating that it does. A body past the bound is named rather than dropped.',
+      ),
     },
-    withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, agent_id, step_id, activity_id, bundle, full }) => {
+    withAuditLog('get_technique', withSessionStoreErrors(async ({ session_index, agent_id, step_id, activity_id, bundle, full, context_tokens }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -807,27 +821,93 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
         && (bundle ?? (state.contextMode === 'persistent' ? 'reference' : 'full')) === 'reference';
       const ledgerKey = `technique:${canonicalId}`;
       const hash = contentHash(text);
+
+      // Folded bodies for the operations this technique calls inline, bounded by the window the
+      // caller declared. This is the one door that takes a bound, and the asymmetry is the design
+      // rather than an omission: the two bundle doors charge folded bodies to an operations bundle
+      // that cannot drop content, which is what makes retiring the compensating core-operations
+      // entries like-for-like, so neither of them may grow a budget. This door answers one fetch at
+      // a time, so it sizes the attachment against the caller's own window instead — and a body past
+      // the bound is named in `folded_deferred`, never quietly absent.
+      //
+      // Declaring `context_tokens` is what asks for the bodies. Absent it there is no window to size
+      // against, so the response carries the requested technique and states that it carries nothing
+      // else — an absence the caller can read rather than one it has to infer.
+      const headroomFraction = config.bundleHeadroomFraction ?? DEFAULT_BUNDLE_HEADROOM_FRACTION;
+      const charsPerToken = config.bundleCharsPerToken ?? DEFAULT_BUNDLE_CHARS_PER_TOKEN;
+      // The requested technique is delivered whatever the bound says — this call is a fetch for it —
+      // so it seeds the tally and the budget describes the whole response rather than the attachment
+      // alone. A window too small to hold even the requested body leaves the attachment nothing,
+      // which is the honest reading of that window.
+      const foldedBudgetChars = context_tokens === undefined
+        ? 0
+        : Math.max(0, context_tokens * headroomFraction * charsPerToken - text.length);
+      const folded = context_tokens === undefined
+        ? undefined
+        : await buildFoldedBundle({
+          workflowDir: config.workflowDir,
+          workflowId: techniqueScopeWorkflowId,
+          refs: [canonicalId],
+          state,
+          scope,
+          mayReferBack: referenceMode,
+          budgetChars: foldedBudgetChars,
+        });
+
+      /**
+       * The response envelope. The requested technique sits under `technique:` and the folded closure
+       * beside it — the same `folded_*` keys the two bundle doors emit, so one reading of a folded
+       * block serves all three doors rather than each door teaching the agent its own shape. The
+       * envelope is unconditional: a caller parses one shape whether or not bodies came with it.
+       */
+      const envelope = (primary: unknown): string => {
+        const payload: Record<string, unknown> = { technique: primary };
+        if (folded?.block) {
+          Object.assign(payload, folded.block);
+        } else {
+          payload['folded_note'] = context_tokens === undefined
+            ? 'This response carries the one requested technique. Pass `context_tokens` to also '
+              + 'receive the bodies of the operations its protocol calls inline, bounded by that window.'
+            : 'This technique\'s protocol calls no other technique, so there is nothing to fold in.';
+        }
+        return stringifyForResponse(payload);
+      };
+
+      /** What the folded attachment came to, for the delivery cost line. */
+      const foldedCost = {
+        folded_bodies: folded?.events.filter((e) => e.delivery === 'full').length ?? 0,
+        folded_markers: folded?.events.filter((e) => e.delivery === 'unchanged').length ?? 0,
+        folded_deferred: folded?.deferred.length ?? 0,
+        folded_chars: folded?.chars ?? 0,
+        folded_budget_chars: Math.floor(foldedBudgetChars),
+      };
+
       if (referenceMode && deliveredHash(state, ledgerKey, scope) === hash) {
         const next = advanceSession(state, (draft) => {
           draft.currentTechnique = techniqueId as string;
+          // A context holding the requested body need not hold its callees, so the attachment is
+          // still committed to the ledger on this path — each folded body collapses on its own key.
+          if (folded) recordDeliveries(draft, scope, folded.deliveries);
           recordFirstArrival(draft);
           recordFetch(draft, 'unchanged');
         });
         await saveSessionForTool(loaded, next);
 
-        logInfo('Technique delivery cost', {
-          session_index, technique: techniqueId, agentId: scope, delivery: 'unchanged',
-          resolved_techniques: resolvedTechniques, composed_chars: text.length, response_chars: 0,
-        });
-
         // Canonical unchanged-marker: { delivery: 'unchanged', content_hash } —
         // the same shape the get_activity bundle path emits (delivery.ts#unchangedMarker).
         // The technique id and note ride alongside as sibling context.
-        const stub = stringifyForResponse({
+        const stub = envelope({
           id: techniqueId,
           ...unchangedMarker(hash),
           note: 'Byte-identical to the composed technique already delivered to this agent context — reuse it from your context. Pass full: true to re-fetch the full content.',
         });
+
+        logInfo('Technique delivery cost', {
+          session_index, technique: techniqueId, agentId: scope, delivery: 'unchanged',
+          resolved_techniques: resolvedTechniques, composed_chars: text.length,
+          response_chars: stub.length, ...foldedCost,
+        });
+
         return {
           content: [{ type: 'text' as const, text: `session_index: ${session_index}\n\n${stub}` }],
           _meta: { session_index, validation, delivery: 'unchanged' },
@@ -837,15 +917,16 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // Full-delivery branch. Under reference delivery, collapse any shared contract/rules
       // block already delivered by a sibling technique to a marker while the core stays full;
       // block hashes are recorded alongside the whole-technique key.
-      let body = text;
       const blockDeliveries: Record<string, string> = {};
-      if (referenceMode) {
-        const deduped = dedupTechniqueBlocks(ordered, state, blockDeliveries, scope);
-        body = stringifyForResponse(deduped);
-      }
+      const primary = referenceMode
+        ? dedupTechniqueBlocks(ordered, state, blockDeliveries, scope)
+        : ordered;
+      const body = envelope(primary);
       const next = advanceSession(state, (draft) => {
         draft.currentTechnique = techniqueId as string;
-        recordDeliveries(draft, scope, { [ledgerKey]: hash, ...blockDeliveries });
+        recordDeliveries(draft, scope, {
+          [ledgerKey]: hash, ...blockDeliveries, ...(folded?.deliveries ?? {}),
+        });
         recordFirstArrival(draft);
         recordFetch(draft, 'full');
       });
@@ -854,10 +935,11 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // What this fetch cost to build and to send. `resolved_techniques` is the distinct bound ops the
       // producer scan read to decorate one step, which is the resolve work a lazy fetch pays; the two
       // character figures are the composed technique and what the response carried after any shared
-      // block collapsed.
+      // block collapsed and the folded attachment rode along.
       logInfo('Technique delivery cost', {
         session_index, technique: techniqueId, agentId: scope, delivery: 'full',
-        resolved_techniques: resolvedTechniques, composed_chars: text.length, response_chars: body.length,
+        resolved_techniques: resolvedTechniques, composed_chars: text.length,
+        response_chars: body.length, ...foldedCost,
       });
 
       return {

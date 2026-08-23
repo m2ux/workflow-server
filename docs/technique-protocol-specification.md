@@ -441,8 +441,10 @@ A delivered technique body (`projectTechniqueBody`) carries `capability`, `input
 ### 7.3 Activity bundling
 
 `get_activity` and `get_workflow` deliver an activity's `techniques[]` through this bundle;
-`get_technique` delivers a single technique via
-`composeTechnique`.
+`get_technique` delivers the one requested technique via `composeTechnique`, under `technique:` in its
+response. Where that call declares a `context_tokens` window, the bodies of the operations the
+technique calls inline arrive beside it under the same `folded_*` keys the two bundle doors use,
+bounded by that window ([door table](resource-resolution-model.md#folded-bodies-and-the-counter-each-is-charged-to)).
 
 ### 7.4 Binding
 
