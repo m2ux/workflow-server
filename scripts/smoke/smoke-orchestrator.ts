@@ -3,7 +3,7 @@
  *
  * The driver is the ORCHESTRATOR: it owns activity transitions and checkpoint
  * responses (from a deterministic Policy), running an in-memory technique-branch
- * server against a sandbox workspace. For each activity it dispatches a real
+ * server against the sandbox checkout. For each activity it dispatches a real
  * WORKER — headless `claude` pointed at the technique-branch dist server via
  * --strict-mcp-config — to execute the activity's steps in the sandbox. The two
  * server instances cooperate through the on-disk, HMAC-sealed session.json
@@ -69,16 +69,19 @@ function log(msg: string) { process.stdout.write(`[orchestrator] ${msg}\n`); }
 
 /**
  * Set up the persistent shared sandbox at ROOT (created once, reused by every
- * run). Workspace holds the server sessions; the target repo is the worker's CWD,
- * so its .engineering/artifacts/planning/ is the stable root you watch. Each run
- * writes a unique planning subfolder (named from RUN_ID), so runs accumulate
- * rather than clobber.
+ * run). The target repo is the worker's CWD and holds the sessions too, so
+ * .engineering/artifacts/planning/ under it is both the stable root you watch and
+ * the checkout a worktree path derives from. Each run writes a unique planning
+ * subfolder (named from RUN_ID), so runs accumulate rather than clobber.
+ *
+ * One root, deliberately: sessions used to live beside the checkout rather than
+ * inside it, which left the planning folder and the git repository in different
+ * directories and a worktree path derivable from neither.
  */
 function setupSandbox() {
   const root = ROOT;
-  const workspace = join(root, 'workspace');
   const target = join(root, 'target');
-  execFileSync('mkdir', ['-p', workspace, target]);
+  execFileSync('mkdir', ['-p', target]);
   // Idempotent throwaway target repo — created on first run, reused thereafter.
   if (!existsSync(join(target, 'README.md'))) {
     writeFileSync(join(target, 'README.md'), '# Sandbox target\n\nThrowaway repo for work-package smoke runs.\n');
@@ -90,10 +93,10 @@ function setupSandbox() {
   }
   // Render the worker MCP config from the template.
   const tpl = readFileSync(join(HERE, 'worker-mcp.template.json'), 'utf8');
-  const cfg = tpl.replace('__TECHNIQUE_DIST__', TECHNIQUE_DIST).replace('__SANDBOX_WORKSPACE__', workspace);
+  const cfg = tpl.replace('__TECHNIQUE_DIST__', TECHNIQUE_DIST).replace('__SANDBOX_WORKSPACE__', target);
   const cfgPath = join(root, 'worker-mcp.json');
   writeFileSync(cfgPath, cfg);
-  return { root, workspace, target, cfgPath };
+  return { root, target, cfgPath };
 }
 
 interface WorkerTurn { result: string; sessionId: string | null }
@@ -200,22 +203,36 @@ async function main() {
   const sb = setupSandbox();
   log(`sandbox: ${sb.root} (model=${MODEL}, activities<=${MAX_ACTIVITIES}, orchestrator=${ORCHESTRATOR}, policy=${policy.name})`);
 
-  const h = await createHarness({ workspaceDir: sb.workspace });
+  // The session and the planning artifacts share the checkout, so the two are never separated.
+  // naming-conventions derives the worktree checkout root by walking up from planning_folder_path
+  // above .engineering/artifacts/planning/ — point that anywhere but the checkout and it lands on a
+  // directory with no .git, which a worker met and reported as unresolvable.
+  const h = await createHarness({ workspaceDir: sb.target });
   const transcript: Array<Record<string, unknown>> = [];
   try {
+    // The orchestrator names the planning folder, as it does in production. A worker left to invent
+    // one picked a different directory on each run, and the run where it picked the session's own
+    // folder could not derive a worktree root at all.
+    const planningFolder = join(sb.target, '.engineering/artifacts/planning', `smoke-${RUN_ID}`);
     const start = parseToolResponse(await h.client.callTool({
-      name: 'start_session', arguments: { workflow_id: WORKFLOW, agent_id: 'smoke-orchestrator' },
+      name: 'start_session',
+      arguments: { workflow_id: WORKFLOW, agent_id: 'smoke-orchestrator', planning_folder: planningFolder },
     }));
     const sessionIndex = start.session_index as string;
     const slug = start.planning_slug as string;
-    const sessionPath = join(sb.workspace, '.engineering/artifacts/planning', slug, 'session.json');
-    log(`session ${sessionIndex} (slug ${slug})`);
+    const canonicalPlanningFolder = (start.planning_folder_path as string | undefined) ?? planningFolder;
+    const sessionPath = join(sb.target, '.engineering/artifacts/planning', slug, 'session.json');
+    log(`session ${sessionIndex} (slug ${slug}) planning ${canonicalPlanningFolder}`);
 
     // Initial activity comes from the workflow definition, not a hardcoded id.
     const wfSummary = parseWorkflowResponse(await h.client.callTool({ name: 'get_workflow', arguments: { session_index: sessionIndex } }));
     const variables: Record<string, unknown> = {};
-    /** The completing activity's worker output, relayed on the next transition. */
-    let pendingVariables: Record<string, unknown> = {};
+    /**
+     * The completing activity's worker output, relayed on the next transition. Seeded with the
+     * planning folder the orchestrator established: the first activity reads it before anything
+     * writes it, and start_session returns the canonical path without putting it in the bag.
+     */
+    let pendingVariables: Record<string, unknown> = { planning_folder_path: canonicalPlanningFolder };
     const visited = new Set<string>();
     let current: string | null = (wfSummary.initialActivity as string)
       ?? (wfSummary.activities as Array<{ id: string }> | undefined)?.[0]?.id ?? null;
