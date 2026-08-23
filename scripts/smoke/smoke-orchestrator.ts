@@ -29,6 +29,7 @@ import { parseToolResponse, parseWorkflowResponse, parseBundle } from '../../tes
 import { pickNext, activityCheckpointSteps, type ActivityDef, type CheckpointDef } from '../../tests/e2e/walker.js';
 import { defaultPolicy, makePolicy } from '../../tests/e2e/policies.js';
 import { evaluateCondition } from '../../src/schema/condition.schema.js';
+import { checkSession } from '../check-session-contract.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const WORKTREE = resolve(HERE, '../..');
@@ -233,6 +234,8 @@ async function main() {
      * writes it, and start_session returns the canonical path without putting it in the bag.
      */
     let pendingVariables: Record<string, unknown> = { planning_folder_path: canonicalPlanningFolder };
+    /** Everything relayed across the run, for the end-of-run check that the bag received it. */
+    const relayedVariables: Record<string, unknown> = {};
     const visited = new Set<string>();
     let current: string | null = (wfSummary.initialActivity as string)
       ?? (wfSummary.activities as Array<{ id: string }> | undefined)?.[0]?.id ?? null;
@@ -350,6 +353,7 @@ async function main() {
         log('worker produced no variables_changed block');
       }
       pendingVariables = produced;
+      Object.assign(relayedVariables, produced);
 
       transcript.push({
         activity: current, checkpoints: cpRecords, workerTurns: turn, workerReports,
@@ -375,6 +379,28 @@ async function main() {
 
     const finalState = JSON.parse(readFileSync(sessionPath, 'utf8'));
     log(`final status: ${finalState.status}; activities run: ${count}`);
+
+    // Assert rather than narrate. A run that reads well in the log and wrote outside its contracts,
+    // or never moved the session at all, is the failure this exists to catch — and reading the log
+    // by hand is what let both go unnoticed until someone looked.
+    const contract = await checkSession(finalState, resolve(WORKTREE, 'workflows'), { runComplete: true });
+    log(`session contract: ${contract.checkedWrites} write(s) measured`
+      + `${contract.unattributedWrites ? `, ${contract.unattributedWrites} unattributed` : ''}`);
+    // What the worker said it produced has to be what the bag received: the relay is the only path,
+    // and a name lost between the two is invisible from either side alone.
+    const relayed = Object.keys(relayedVariables);
+    const landed = relayed.filter((name) => finalState.variables?.[name] !== undefined);
+    const dropped = relayed.filter((name) => !landed.includes(name));
+    log(`relay: ${landed.length}/${relayed.length} reported values in the bag`);
+    const failures = [
+      ...contract.findings.map((f) => `[${f.check}] ${f.site}: ${f.detail}`),
+      ...(dropped.length ? [`[relay-dropped] ${dropped.join(', ')} were reported by a worker and are absent from the bag`] : []),
+    ];
+    if (failures.length) {
+      for (const line of failures) log(line);
+      throw new Error(`${failures.length} assertion(s) failed against session ${sessionIndex}`);
+    }
+    log('assertions passed');
     writeFileSync(join(sb.root, `transcript-${RUN_ID}.json`), JSON.stringify({ runId: RUN_ID, sessionIndex, transcript, finalStatus: finalState.status }, null, 2));
   } finally {
     await h.close();
