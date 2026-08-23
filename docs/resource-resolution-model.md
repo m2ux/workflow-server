@@ -96,10 +96,39 @@ The response is the union of the activity's declared technique references and th
 
 ### What the two core sets contain
 
-| Set | Technique references |
-|-----|----------------------|
-| `CORE_ORCHESTRATOR_TECHNIQUES` | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `compose-prompt`, `present-checkpoint-to-user`, `respond-checkpoint`; `version-control::commit-submodule`, `commit-regular-files`; `harness-compat::spawn-agent`, `continue-agent`; `agent-conduct::orchestrator`, `checkpoint-discipline`, `operational-discipline` |
-| `CORE_WORKER_TECHNIQUES` | `workflow-engine::activity-worker`, `yield-checkpoint`, `resume-from-checkpoint`, `finalize-activity`; `agent-conduct::checkpoint-discipline`, `operational-discipline`, `file-sensitivity`, `code-commentary` |
+| Set | Entries | Technique references |
+|-----|---------|----------------------|
+| `CORE_ORCHESTRATOR_TECHNIQUES` | 20 | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `compose-prompt`, `present-checkpoint-to-user`, `respond-checkpoint`, `sync-progress-status`; `version-control::commit-submodule`, `commit-regular-files`; `harness-compat::spawn-agent`, `continue-agent`, `resolve-harness-operation`, `claude-code`, `cursor`, `cline`, `generic`; `agent-conduct::orchestrator`, `checkpoint-discipline`, `operational-discipline` |
+| `CORE_WORKER_TECHNIQUES` | 8 | `workflow-engine::activity-worker`, `yield-checkpoint`, `resume-from-checkpoint`, `finalize-activity`; `agent-conduct::checkpoint-discipline`, `operational-discipline`, `file-sensitivity`, `code-commentary` |
+
+Three of the twenty orchestrator entries are group-prefix rule references, which expand to every rule
+in the named group rather than to a body; the other seventeen name operations.
+
+## Folded bodies, and the counter each is charged to
+
+A technique's protocol may call another technique by markdown link. The bodies those calls name are
+delivered with the bundle, so a named call can be executed rather than improvised. The closure is
+computed over a door's whole delivered set at once: every body the door already carries seeds the walk,
+so an operation the bundle already holds is not delivered twice, and an operation two delivered
+techniques both reach is delivered once. A cycle is tolerated — the walk carries a visited set and
+continues past an edge reaching a body already delivered, which is correct independently of what the
+corpus holds, because no closure member computes a value another member consumes.
+
+Bodies key by operation and annotations key by call site. A body shared by two call sites is one body,
+so it carries no per-call scope of its own; `folded_call_sites` names every edge, delivering and
+revisiting alike, and the block note states the extent the callee's inherited obligations bind over —
+the duration of that call, joining no container tree.
+
+| Door | Delivers folded bodies | Charged to | Collapse across calls |
+|------|------------------------|------------|-----------------------|
+| `get_workflow` (orchestrator bundle) | Yes | The operations bundle, which takes no budget parameter and cannot drop content | Whole bundle only, under `workflow_bundle:<hash>`. The door takes no agent identity, so per-technique collapse is response-local. |
+| `get_activity` (worker bundle) | Yes | The operations bundle, whose serialised size opens the eager tally — so a folded body spends budget a step technique would otherwise have | Per technique, under `technique:<canonicalId>`, in the dispatched worker's scope |
+| `get_technique` (step-bound) | No | — | Per technique, under `technique:<canonicalId>` |
+
+The delivery key names the operation rather than the spelling that reached it: a technique's canonical
+identity is its home workflow followed by its path in that tree, so an unqualified `group::op` resolved
+through the shared layer, a `workflow::group::op`, and a folded call site's relative link are one key.
+That is what lets a folded callee collapse against a step-bound delivery of the same operation.
 
 ## The shared meta layer
 
