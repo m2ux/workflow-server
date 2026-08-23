@@ -5,7 +5,7 @@ import { type Result, ok, err } from '../result.js';
 import { TechniqueNotFoundError } from '../errors.js';
 import { logInfo, logWarn } from '../logging.js';
 import { stringifyForResponse } from '../utils/serialization.js';
-import type { Technique, ProtocolBlock } from '../schema/technique.schema.js';
+import type { Technique, ProtocolBlock, InheritedRuleItem } from '../schema/technique.schema.js';
 import { safeValidateTechnique } from '../schema/technique.schema.js';
 import {
   tryLoadMarkdownTechnique,
@@ -43,6 +43,7 @@ export function projectTechnique(technique: Technique): Record<string, unknown> 
   if (technique.outputs !== undefined) ordered['outputs'] = technique.outputs;
   if (technique.inherited_outputs !== undefined) ordered['inherited_outputs'] = technique.inherited_outputs;
   if (technique.rules !== undefined) ordered['rules'] = technique.rules;
+  if (technique.inherited_rules !== undefined) ordered['inherited_rules'] = technique.inherited_rules;
   // Trail with the catch-all extension surface — anything an authoring path adds that the canonical
   // ordering above does not cover is still emitted, just at the end.
   for (const key of Object.keys(technique) as (keyof Technique)[]) {
@@ -425,6 +426,14 @@ const ROOT_INDEX_ID = 'TECHNIQUE';
 const INHERITED_SCOPE_NOTE =
   'Declared by the workflow or group contract and shared by every technique in its scope — not specific to this technique.';
 
+/** Scope note delivered with `inherited_rules`. Claims only what holds of every entry: the contract
+ *  imposing it governs the technique's whole scope, and each entry names which contract that is.
+ *  What EXTENT the obligation binds over depends on how the technique arrived — a bound step or a
+ *  folded call — so that is stated at delivery by whichever door delivers it, not here. */
+const INHERITED_RULES_NOTE =
+  'Imposed by the workflow or group contract governing this operation and shared by every technique '
+  + 'in its scope — not specific to this technique. Each entry names the contract that imposes it.';
+
 /** Union two id-keyed arrays (inputs/outputs); child entries override parent entries by `id`. */
 function mergeById<T extends { id: string }>(parent: T[] | undefined, child: T[] | undefined): T[] | undefined {
   if (!parent?.length && !child?.length) return undefined;
@@ -520,19 +529,22 @@ async function composeLoaded(
 ): Promise<Technique> {
   if (pathSegments.length === 1 && pathSegments[0] === ROOT_INDEX_ID) return technique;
 
-  const ancestors: Technique[] = [];
-  const loadAnc = async (id: string): Promise<void> => {
+  // Each ancestor is held with the address a delivered rule is attributed to: `TECHNIQUE` for the
+  // workflow-root contract, the `::`-joined group path for a group container. Outermost first.
+  const ancestors: Array<{ address: string; technique: Technique }> = [];
+  const loadAnc = async (id: string, address: string): Promise<void> => {
     try {
       const t = await tryLoadMarkdownTechnique(techniquesDir, id);
-      if (t && t.id !== technique.id) ancestors.push(t);
+      if (t && t.id !== technique.id) ancestors.push({ address, technique: t });
     } catch (e) {
       if (!(e instanceof MarkdownTechniqueParseError)) throw e;
       logWarn('Skipping malformed ancestor while composing', { id, error: (e as Error).message });
     }
   };
-  await loadAnc(ROOT_INDEX_ID);
+  await loadAnc(ROOT_INDEX_ID, ROOT_INDEX_ID);
   for (let i = 0; i < pathSegments.length - 1; i++) {
-    await loadAnc(pathSegments.slice(0, i + 1).join('/'));
+    const prefix = pathSegments.slice(0, i + 1);
+    await loadAnc(prefix.join('/'), prefix.join('::'));
   }
   if (ancestors.length === 0) return technique;
 
@@ -542,7 +554,7 @@ async function composeLoaded(
   let inputs = technique.inputs;
   let outputs = technique.outputs;
   let rules = technique.rules;
-  for (const anc of [...ancestors].reverse()) {
+  for (const { technique: anc } of [...ancestors].reverse()) {
     inputs = mergeById(anc.inputs, inputs);
     outputs = mergeById(anc.outputs, outputs);
     rules = mergeKeyed(anc.rules, rules);
@@ -562,12 +574,33 @@ async function composeLoaded(
   const ownOutputs = (outputs ?? []).filter((o) => ownOutputIds.has(o.id));
   const inheritedOutputs = (outputs ?? []).filter((o) => !ownOutputIds.has(o.id));
 
+  // Rules take the same partition as inputs and outputs, and carry the contract each one comes from.
+  // A folded callee is delivered as its operation body without the container bodies around it, so an
+  // unattributed merged map is the point at which the callee's obligations become indistinguishable
+  // from the caller's own — the caller then carries them past the call, which is the reading PL-1
+  // rejected. Attribution is what keeps the obligation traceable to the contract that imposes it.
+  const ownRuleNames = new Set(Object.keys(technique.rules ?? {}));
+  const innermostFirst = [...ancestors].reverse();
+  const ownRules: Record<string, string | string[]> = {};
+  const inheritedRules: InheritedRuleItem[] = [];
+  for (const [name, rule] of Object.entries(rules ?? {})) {
+    if (ownRuleNames.has(name)) {
+      ownRules[name] = rule;
+      continue;
+    }
+    // The winning definition's contract: the innermost ancestor declaring the name, since an inner
+    // container overriding an outer one is the contract that governs.
+    const source = innermostFirst.find((a) => a.technique.rules && name in a.technique.rules);
+    inheritedRules.push({ name, from: source?.address ?? ROOT_INDEX_ID, rule });
+  }
+
   const composed: Record<string, unknown> = { ...technique };
   if (ownInputs.length) composed['inputs'] = ownInputs; else delete composed['inputs'];
   if (inheritedInputs.length) composed['inherited_inputs'] = { note: INHERITED_SCOPE_NOTE, items: inheritedInputs };
   if (ownOutputs.length) composed['outputs'] = ownOutputs; else delete composed['outputs'];
   if (inheritedOutputs.length) composed['inherited_outputs'] = { note: INHERITED_SCOPE_NOTE, items: inheritedOutputs };
-  if (rules) composed['rules'] = rules; else delete composed['rules'];
+  if (Object.keys(ownRules).length) composed['rules'] = ownRules; else delete composed['rules'];
+  if (inheritedRules.length) composed['inherited_rules'] = { note: INHERITED_RULES_NOTE, items: inheritedRules };
   if (protocol) composed['protocol'] = protocol; else delete composed['protocol'];
 
   const result = safeValidateTechnique(composed);
@@ -598,12 +631,25 @@ export async function composeTechnique(
   return composed.success ? ok(composed.value.technique) : composed;
 }
 
-/** `composeTechnique`, plus the workflow the technique file was found in (`readTechniqueWithSource`). */
+/**
+ * The delivery identity of one operation: the workflow whose tree holds it, then its path within
+ * that tree. Two references naming one file share this string whatever spelling each used — an
+ * unqualified `group::op` resolved through the meta fallback, a `workflow::group::op`, a folded call
+ * site's relative link — so one operation is one delivery-ledger key and arrives once per context.
+ */
+export function canonicalTechniqueId(sourceWorkflowId: string, pathSegments: readonly string[]): string {
+  return [sourceWorkflowId, ...pathSegments].join('::');
+}
+
+/**
+ * `composeTechnique`, plus the workflow the technique file was found in (`readTechniqueWithSource`)
+ * and the `canonicalId` that identity and path yield — the key delivery collapses on.
+ */
 export async function composeTechniqueWithSource(
   techniqueId: string,
   workflowDir: string,
   workflowId: string,
-): Promise<Result<{ technique: Technique; sourceWorkflowId: string }, TechniqueNotFoundError>> {
+): Promise<Result<{ technique: Technique; sourceWorkflowId: string; canonicalId: string }, TechniqueNotFoundError>> {
   const base = await readTechniqueWithSource(techniqueId, workflowDir, workflowId);
   if (!base.success) return base;
 
@@ -630,6 +676,7 @@ export async function composeTechniqueWithSource(
   return ok({
     technique: await composeLoaded(base.value.technique, pathSegments, techniquesDir),
     sourceWorkflowId: base.value.sourceWorkflowId,
+    canonicalId: canonicalTechniqueId(base.value.sourceWorkflowId, pathSegments),
   });
 }
 
@@ -650,7 +697,7 @@ export async function composeActivityTechnique(
   workflowDir: string,
   workflowId: string,
   activityId?: string,
-): Promise<Result<{ techniqueId: string; technique: Technique; sourceWorkflowId: string }, TechniqueNotFoundError>> {
+): Promise<Result<{ techniqueId: string; technique: Technique; sourceWorkflowId: string; canonicalId: string }, TechniqueNotFoundError>> {
   if (!techniqueRef.includes('::') && activityId) {
     const viaGroup = await composeTechniqueWithSource(`${activityId}::${techniqueRef}`, workflowDir, workflowId);
     if (viaGroup.success) {

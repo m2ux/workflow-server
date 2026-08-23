@@ -19,12 +19,22 @@ import { stringifyForResponse } from './serialization.js';
  *   - `bundle:<technique-ref>`   — one composed technique in the `get_activity` bundle
  *   - `bundle:rules:<hash>`      — the `get_activity` rules bundle
  *   - `activity_rules:<hash>`    — the inherited worker rules block
- *   - `technique:<id>`           — a full `get_technique` composed payload
+ *   - `technique:<id>`           — a full composed technique payload, where `<id>`
+ *     is the operation's canonical identity (`canonicalTechniqueId`) rather than
+ *     the spelling a caller used. A folded callee and a step-bound delivery of
+ *     one operation therefore share this key and one body arrives.
  *   - `technique:<block>:<hash>` — one shared block (`inherited_inputs` /
- *     `inherited_outputs` / `rules`) of a composed technique
+ *     `inherited_outputs` / `inherited_rules` / `rules`) of a composed technique
  *   - `technique:provenance_note:<hash>` — the step-bound provenance preamble
  *   - `technique:inherited_inputs.note:<hash>` / `…items:<hash>` (and the same
- *     for `inherited_outputs`) — invariant note vs items of an inherited block
+ *     for `inherited_outputs` and `inherited_rules`) — invariant note vs items
+ *     of an inherited block. Splitting them is what lets one contract's rules
+ *     collapse across a closure whose members each inherit them: the items are
+ *     the same bytes for every member of one container, and only the call-scoped
+ *     note differs.
+ *   - `call_site:<hash>`         — the annotations of one folded call site, keyed
+ *     apart from the callee body so a body shared by two call sites still
+ *     collapses while each site keeps its own annotations
  *   - `workflow_bundle:<hash>`   — the `get_workflow` orchestrator ops bundle
  *   - `resource:<resource_id>`   — a full `get_resource` payload (exact caller
  *     `resource_id`, including any `#section` anchor)
@@ -95,10 +105,10 @@ export function unchangedMarker(hash: string): { delivery: 'unchanged'; content_
  * These mirror `projectTechnique`'s key strings, so renaming those keys must update this list.
  * Inherited `note` / `items` are also hashed separately (see `dedupTechniqueBlocks`).
  */
-export const DEDUP_BLOCKS = ['inherited_inputs', 'inherited_outputs', 'rules', 'provenance_note'] as const;
+export const DEDUP_BLOCKS = ['inherited_inputs', 'inherited_outputs', 'inherited_rules', 'rules', 'provenance_note'] as const;
 
 /** Inherited blocks whose `note` is content-keyed separately from `items`. */
-const INHERITED_SPLIT_BLOCKS = ['inherited_inputs', 'inherited_outputs'] as const;
+const INHERITED_SPLIT_BLOCKS = ['inherited_inputs', 'inherited_outputs', 'inherited_rules'] as const;
 
 /**
  * Content-key a field: collapse to an unchanged-marker when already delivered,

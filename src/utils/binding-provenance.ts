@@ -355,6 +355,40 @@ export const INHERITED_SOURCE_POLICY =
   + 'one resolves from ordinary workflow context — a prior step output, a declared workflow '
   + 'variable, or ambient caller-supplied context — as this note describes.';
 
+/**
+ * Where a technique is being delivered to.
+ *
+ * A bound step has a step id and a binding, so its inputs resolve against the step's own arguments
+ * and its outputs land under the names the binding remaps them to. A folded call site has neither: it
+ * names an operation from inside another technique's protocol. What it carries instead is its own
+ * identity, and that is what the callee's inherited obligations are scoped to — which is why the
+ * decoration pass needs a site rather than a step id.
+ */
+export type DeliverySite =
+  | { readonly kind: 'step'; readonly stepId: string; readonly binding: TechniqueBinding | undefined }
+  | { readonly kind: 'call'; readonly caller: string; readonly line: number };
+
+/** How a site names itself in an annotation or a warning. */
+function siteLabel(site: DeliverySite): string {
+  return site.kind === 'step'
+    ? `step '${site.stepId}'`
+    : `the call at line ${site.line} of '${site.caller}'`;
+}
+
+/**
+ * Appended to the `inherited_rules` scope note when the technique arrives as a folded call.
+ *
+ * This is the sentence that makes a folded callee arrive governed rather than merged. The caller
+ * executes under the callee's contract for the duration of the call and joins no container tree, so
+ * the obligation ends with the call instead of becoming the caller's own — the difference between
+ * delivering a callee governed and discharging its obligations into whoever called it.
+ */
+export const CALL_SCOPED_RULES_POLICY =
+  'These obligations are scoped to the call named in `scoped_to`: they bind the agent for as long as '
+  + 'it executes that call, and not beyond it. Calling an operation does not join its container tree, '
+  + 'so none of these rules becomes an obligation of the calling technique — what the callee would '
+  + 'inherit as a bound step, it inherits here.';
+
 export interface DecoratedTechnique { technique: Technique; warnings: string[] }
 
 /**
@@ -362,15 +396,19 @@ export interface DecoratedTechnique { technique: Technique; warnings: string[] }
  * entries only where noteworthy) and per-remapped-output `destination:` annotations plus the
  * provenance note, and the UNRESOLVED warnings for its own inputs. Inherited entries never warn —
  * shared contract scope is ambient by design; their annotation is informational.
+ *
+ * The inherited rules block is annotated with the extent it binds over, which is the one thing that
+ * differs between a bound step and a folded call: the items are identical either way, so parity is
+ * the delivered property and the scope line is what states it.
  */
 export function decorateTechniqueProvenance(
   technique: Technique,
   ctx: ProvenanceContext,
-  binding: TechniqueBinding | undefined,
+  site: DeliverySite,
   techniqueRef: string,
-  stepId: string,
 ): DecoratedTechnique {
   const warnings: string[] = [];
+  const binding = site.kind === 'step' ? site.binding : undefined;
 
   const annotateInput = (item: InputItemDefinition, inherited: boolean): InputItemDefinition => {
     const { source, unresolved, kind } = resolveInputSource(item.id, ctx, binding, {
@@ -383,7 +421,7 @@ export function decorateTechniqueProvenance(
     }
     if (unresolved) {
       warnings.push(
-        `Input '${item.id}' of technique '${techniqueRef}' is UNRESOLVED at step '${stepId}': `
+        `Input '${item.id}' of technique '${techniqueRef}' is UNRESOLVED at ${siteLabel(site)}: `
         + 'no workflow variable, prior step output, or step-binding supplies it.',
       );
     }
@@ -412,6 +450,16 @@ export function decorateTechniqueProvenance(
     decorated.inherited_outputs = {
       ...technique.inherited_outputs,
       items: technique.inherited_outputs.items.map(annotateOutput),
+    };
+  }
+  // Rules take the same pass as inputs and outputs. A bound step's inherited rules are its ordinary
+  // contract and the block note already says so; a folded call names the site the obligations are
+  // scoped to, which is what keeps them from being read as the caller's own.
+  if (technique.inherited_rules && site.kind === 'call') {
+    decorated.inherited_rules = {
+      ...technique.inherited_rules,
+      note: `${technique.inherited_rules.note} ${CALL_SCOPED_RULES_POLICY}`,
+      scoped_to: `${siteLabel(site)}, calling '${techniqueRef}'`,
     };
   }
   return { technique: decorated, warnings };

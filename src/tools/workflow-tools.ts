@@ -1135,9 +1135,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       // `maxChars: 0` opts the activity out of eager bundling entirely. Each entry is the step's
       // full get_technique composition (activity-group resolution, ancestor contract, provenance
       // decoration) rendered as a discrete ▼ STEP block, so bundled and lazy delivery are
-      // identical by construction. Bundled entries share the `technique:<resolvedId>` delivery-
+      // identical by construction. Bundled entries share the `technique:<canonicalId>` delivery-
       // ledger key with get_technique, so persistent-context refetches of bundled content collapse
-      // to unchanged-references in either direction.
+      // to unchanged-references in either direction. The key names the operation rather than the
+      // reference spelling, so a folded callee collapses against a step-bound delivery of it too.
       // A gated step joins the bundle when its gate answers true for the whole activity; a false or
       // unanswered gate stays lazy (src/utils/gate-liveness.ts).
       const bundledStepTechniques: Record<string, unknown> = {};
@@ -1223,7 +1224,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           // An unresolvable ref is the binding guard's business; delivery skips it (the step's
           // own get_technique fetch will surface the error to the worker).
           if (!composedStep.success) continue;
-          const { techniqueId, sourceWorkflowId: techniqueWorkflowId } = composedStep.value;
+          const { techniqueId, sourceWorkflowId: techniqueWorkflowId, canonicalId } = composedStep.value;
           let technique = composedStep.value.technique;
           let provenanceWarnings: string[] = [];
           const ctx = producerIndex
@@ -1231,7 +1232,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             : null;
           if (ctx) {
             const binding = typeof step.technique === 'object' ? step.technique : undefined;
-            const decorated = decorateTechniqueProvenance(technique, ctx, binding, techniqueId, step.id!);
+            const decorated = decorateTechniqueProvenance(
+              technique, ctx, { kind: 'step', stepId: step.id!, binding }, techniqueId,
+            );
             technique = decorated.technique;
             provenanceWarnings = decorated.warnings;
           }
@@ -1241,7 +1244,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           const text = projectTechniqueToYaml(technique);
           // Per-technique size cap: an oversized single technique is skipped outright.
           if (text.length > perTechniqueCap) continue;
-          const ledgerKey = `technique:${techniqueId}`;
+          // Keyed on the operation, not on the spelling the step used, so this delivery and a
+          // folded callee naming the same operation collapse to one body.
+          const ledgerKey = `technique:${canonicalId}`;
           const hash = contentHash(text);
           // The ledger half needs a context that retains prior payloads; the response-local half is
           // readable by any recipient, the copy being in this same response.

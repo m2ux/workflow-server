@@ -6,6 +6,8 @@ import { tmpdir } from 'node:os';
 import { parse as parseYaml } from 'yaml';
 import { safeValidateTechnique } from '../src/schema/technique.schema.js';
 import { corpusRoot } from './corpus-root.js';
+import { traverseReferences } from '../src/loaders/reference-traversal.js';
+import { decorateTechniqueProvenance, type ProvenanceContext } from '../src/utils/binding-provenance.js';
 
 const WORKFLOW_DIR = corpusRoot();
 const FIXTURE_DIR = resolve(import.meta.dirname, 'fixtures/markdown-techniques');
@@ -430,8 +432,13 @@ describe('technique-loader', () => {
       const result = await composeTechnique('do-thing', tempDir, 'wp');
       expect(result.success).toBe(true);
       if (result.success) {
-        expect(result.value.rules?.['no-skip']).toBeDefined(); // inherited from root
-        expect(result.value.rules?.['own-rule']).toBeDefined(); // technique-local
+        // Rules partition the way inputs and outputs do: the root's rule arrives attributed to the
+        // root contract, the technique's own stays under `rules`.
+        expect(result.value.rules?.['own-rule']).toBeDefined();
+        expect(result.value.rules?.['no-skip']).toBeUndefined();
+        expect(result.value.inherited_rules?.items).toEqual([
+          { name: 'no-skip', from: 'TECHNIQUE', rule: expect.any(String) },
+        ]);
         // root.Initial, then own, then root.Final — the root-only "Setup" block is NOT included.
         expect(result.value.protocol?.flatMap((b) => b.steps)).toEqual(['root-init', 'Do the work', 'root-final']);
       }
@@ -638,10 +645,13 @@ describe('technique-loader', () => {
         // Protocol: full ancestor chain Initial/Final wrap.
         const steps = result.value.protocol?.flatMap(b => b.steps);
         expect(steps).toEqual(['root-init', 'grp-init', 'Do the op', 'grp-final', 'root-final']);
-        // Rules: all three levels merged; technique-local wins on name conflict.
-        expect(result.value.rules?.['root-rule']).toBeDefined();
-        expect(result.value.rules?.['group-rule']).toBeDefined();
-        expect(result.value.rules?.['op-rule']).toBeDefined();
+        // Rules: all three levels present, partitioned by whose contract declares them, each
+        // inherited entry naming the container it comes from.
+        expect(Object.keys(result.value.rules ?? {})).toEqual(['op-rule']);
+        expect(result.value.inherited_rules?.items.map((i) => [i.name, i.from])).toEqual([
+          ['root-rule', 'TECHNIQUE'],
+          ['group-rule', 'grp'],
+        ]);
       }
     });
 
@@ -891,11 +901,11 @@ describe('home-tree ancestry for cross-workflow references', () => {
     const unqualified = await composeTechnique('grp::op', tempDir, 'beta');
     expect(qualified.success && unqualified.success).toBe(true);
     if (qualified.success && unqualified.success) {
-      expect(Object.keys(qualified.value.rules ?? {})).toContain('grp-rule');
+      const ruleNames = (t: { inherited_rules?: { items: Array<{ name: string }> } }): string[] =>
+        (t.inherited_rules?.items ?? []).map((i) => i.name).sort();
+      expect(ruleNames(qualified.value)).toContain('grp-rule');
       expect(inheritedIds(qualified.value)).toEqual(['beta_only', 'grp_input']);
-      expect(Object.keys(qualified.value.rules ?? {}).sort()).toEqual(
-        Object.keys(unqualified.value.rules ?? {}).sort(),
-      );
+      expect(ruleNames(qualified.value)).toEqual(ruleNames(unqualified.value));
       expect(inheritedIds(qualified.value)).toEqual(inheritedIds(unqualified.value));
     }
   });
@@ -914,5 +924,131 @@ describe('home-tree ancestry for cross-workflow references', () => {
       expect(body['inherited_inputs']).toEqual(stepBound.value.inherited_inputs);
       expect(body['inherited_outputs']).toEqual(stepBound.value.inherited_outputs);
     }
+  });
+});
+
+/**
+ * SC-14: a folded callee arrives governed as it would at step level.
+ *
+ * The two halves have different costs behind them. Inherited inputs and outputs pass on machinery
+ * that already exists, the own-versus-inherited partition being computed inside composition; the
+ * rules half depends on the attributed block. Both are asserted here, because a criterion that
+ * asserts a property is what keeps the design from degrading to the reading it rejected — rules
+ * arriving merged and unattributed, and the caller carrying them as its own.
+ */
+describe('a folded callee arrives governed', () => {
+  let tempDir: string;
+  const FM = ['---', 'metadata:', '  version: 1.0.0', '---', ''];
+
+  /** A provenance context with nothing in it — a call site binds no arguments. */
+  const emptyContext: ProvenanceContext = { declaredVariables: new Set(), producers: [], position: 0 };
+
+  const callSite = { kind: 'call', caller: 'wp::caller', line: 1 } as const;
+
+  beforeEach(async () => {
+    tempDir = await import('node:fs/promises').then((fs) => fs.mkdtemp(join(tmpdir(), 'governed-')));
+    const dir = join(tempDir, 'wp', 'techniques');
+    await mkdir(join(dir, 'grp'), { recursive: true });
+    await writeFile(
+      join(dir, 'TECHNIQUE.md'),
+      [...FM, '## Capability', '', 'Root.', '', '## Inputs', '', '### root_input', '', 'Root input.', '',
+        '## Rules', '', '### root-rule', '', 'The root obligation.', ''].join('\n'),
+      'utf-8',
+    );
+    await writeFile(
+      join(dir, 'grp', 'TECHNIQUE.md'),
+      [...FM, '## Capability', '', 'Group.', '', '## Inputs', '', '### grp_input', '', 'Group input.', '',
+        '## Outputs', '', '### grp_output', '', 'Group output.', '',
+        '## Rules', '', '### grp-rule', '', 'The group obligation.', ''].join('\n'),
+      'utf-8',
+    );
+    await writeFile(
+      join(dir, 'grp', 'op.md'),
+      [...FM, '## Capability', '', 'The operation.', '', '## Inputs', '', '### op_input', '', 'Own input.', '',
+        '## Protocol', '', '1. Do it.', '', '## Outputs', '', '### op_output', '', 'Own output.', ''].join('\n'),
+      'utf-8',
+    );
+    await writeFile(
+      join(dir, 'caller.md'),
+      [...FM, '## Capability', '', 'The caller.', '', '## Protocol', '',
+        '1. Apply [op](./grp/op.md) to the input.', ''].join('\n'),
+      'utf-8',
+    );
+  });
+
+  afterEach(async () => {
+    await rm(tempDir, { recursive: true, force: true });
+  });
+
+  /** The one folded member of the caller's closure. */
+  const folded = async () => {
+    const walk = await traverseReferences({
+      workflowDir: tempDir,
+      root: { workflow: 'wp', pathSegments: ['caller'] },
+    });
+    expect(walk.members).toHaveLength(1);
+    return walk.members[0]!;
+  };
+
+  it('PR466-TC-31: the folded callee carries its inherited rules, attributed to the contract and scoped to the call', async () => {
+    const member = await folded();
+    expect(member.identity).toBe('wp::grp::op');
+
+    const { technique } = decorateTechniqueProvenance(member.technique, emptyContext, callSite, member.identity);
+    expect(technique.inherited_rules?.items.map((i) => [i.name, i.from])).toEqual([
+      ['root-rule', 'TECHNIQUE'],
+      ['grp-rule', 'grp'],
+    ]);
+    // Attributed to this call, and stated as ending with it.
+    expect(technique.inherited_rules?.scoped_to).toContain('wp::caller');
+    expect(technique.inherited_rules?.note).toContain('not beyond it');
+  });
+
+  it('PR466-TC-31: the caller gains no rule from a container tree it does not belong to', async () => {
+    const caller = await composeTechnique('caller', tempDir, 'wp');
+    expect(caller.success).toBe(true);
+    if (!caller.success) return;
+
+    const callerRules = [
+      ...Object.keys(caller.value.rules ?? {}),
+      ...(caller.value.inherited_rules?.items ?? []).map((i) => i.name),
+    ];
+    // The caller sits under the workflow root, so it inherits the root obligation and nothing from
+    // the group it calls into: calling an operation joins no container tree.
+    expect(callerRules).toContain('root-rule');
+    expect(callerRules).not.toContain('grp-rule');
+  });
+
+  it('PR466-TC-32: the folded callee inherits the same inputs and outputs it would as a bound step', async () => {
+    const member = await folded();
+    const stepBound = await composeTechnique('grp::op', tempDir, 'wp');
+    expect(stepBound.success).toBe(true);
+    if (!stepBound.success) return;
+
+    // Parity is the test: what the callee would inherit as a step, it inherits when folded.
+    expect(member.technique.inherited_inputs).toEqual(stepBound.value.inherited_inputs);
+    expect(member.technique.inherited_outputs).toEqual(stepBound.value.inherited_outputs);
+    expect(member.technique.inputs).toEqual(stepBound.value.inputs);
+    expect(member.technique.outputs).toEqual(stepBound.value.outputs);
+    // Both halves of the inheritance are present, not just the one that came free.
+    expect(member.technique.inherited_inputs?.items.map((i) => i.id)).toEqual(['root_input', 'grp_input']);
+    expect(member.technique.inherited_outputs?.items.map((o) => o.id)).toEqual(['grp_output']);
+  });
+
+  it('PR466-TC-31: the folded and step-bound rule sets are the same items, differing only in scope', async () => {
+    const member = await folded();
+    const stepBound = await composeTechnique('grp::op', tempDir, 'wp');
+    expect(stepBound.success).toBe(true);
+    if (!stepBound.success) return;
+
+    expect(member.technique.inherited_rules?.items).toEqual(stepBound.value.inherited_rules?.items);
+
+    const asCall = decorateTechniqueProvenance(member.technique, emptyContext, callSite, member.identity);
+    const asStep = decorateTechniqueProvenance(
+      stepBound.value, emptyContext, { kind: 'step', stepId: 'run', binding: undefined }, 'grp::op',
+    );
+    expect(asCall.technique.inherited_rules?.items).toEqual(asStep.technique.inherited_rules?.items);
+    expect(asCall.technique.inherited_rules?.scoped_to).toBeDefined();
+    expect(asStep.technique.inherited_rules?.scoped_to).toBeUndefined();
   });
 });

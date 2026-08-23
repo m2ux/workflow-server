@@ -93,6 +93,20 @@ export const InheritedOutputsSchema = z.object({
 }).describe('Outputs inherited from the workflow-root/group contract, delivered under a marked block distinct from the technique\'s own outputs.');
 export type InheritedOutputs = z.infer<typeof InheritedOutputsSchema>;
 
+export const InheritedRuleItemSchema = z.object({
+  name: z.string().describe('The rule name, as the contract declaring it names it.'),
+  from: z.string().describe('Address of the contract imposing this rule within its workflow tree: `TECHNIQUE` for the workflow-root contract, or the `::`-joined group path for a group container. Attribution is the winning definition\'s, so an inner container overriding an outer one is credited with the rule that governs.'),
+  rule: z.union([z.string(), z.array(z.string())]).describe('The rule text, or the related rules grouped under this name.'),
+}).describe('One inherited rule, carrying the contract that imposes it.');
+export type InheritedRuleItem = z.infer<typeof InheritedRuleItemSchema>;
+
+export const InheritedRulesSchema = z.object({
+  note: z.string().describe('Scope note: whose contract imposes these rules, and over what extent they bind.'),
+  scoped_to: z.string().optional().describe('Delivery-only, populated by the server when the technique arrives as a folded call rather than a bound step: the call site these obligations are scoped to. Absent on a step-bound delivery, whose scope is the step. Never authored in technique files.'),
+  items: z.array(InheritedRuleItemSchema),
+}).describe('Rules inherited from the workflow-root/group contract, delivered under a marked block distinct from the technique\'s own rules, each attributed to the contract imposing it.');
+export type InheritedRules = z.infer<typeof InheritedRulesSchema>;
+
 // A nested technique (`<sub>.md`) validates against the same TechniqueSchema below: the markdown
 // loader parses it into the technique shape and the server delivers it like any technique.
 
@@ -102,6 +116,7 @@ export const TechniqueSchema = z.object({
   capability: z.string(),
   provenance_note: z.string().optional().describe('Delivery-only, populated by the server on a step-bound get_technique: states the output delivery mechanics that the `source:`/`destination:` annotations rely on. Never authored in technique files.'),
   rules: RulesDefinitionSchema.optional(),
+  inherited_rules: InheritedRulesSchema.optional(),
   inputs: InputsDefinitionSchema.optional(),
   inherited_inputs: InheritedInputsSchema.optional(),
   protocol: ProtocolDefinitionSchema.optional(),

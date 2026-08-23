@@ -200,8 +200,11 @@ describe('reference traversal', () => {
 
       const result = await walk();
       expect(result.members.map((m) => m.identity)).toEqual(['other::callee']);
-      // The callee arrives governed by the tree it lives in, not the tree that called it.
-      expect(Object.keys(result.members[0]!.technique.rules ?? {})).toContain('other-only');
+      // The callee arrives governed by the tree it lives in, not the tree that called it, with the
+      // obligation attributed to the contract imposing it.
+      expect(result.members[0]!.technique.inherited_rules?.items).toEqual([
+        { name: 'other-only', from: 'TECHNIQUE', rule: expect.any(String) },
+      ]);
     });
   });
 

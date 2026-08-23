@@ -67,7 +67,12 @@ export function measureOperation(technique: Technique, into: FanOutMetrics = { .
   let ruleEntries = 0;
   let ruleChars = 0;
   let naming = 0;
-  for (const [key, value] of Object.entries(technique.rules ?? {})) {
+  // Composition partitions rules the way it partitions inputs and outputs, so the fan-out measure
+  // reads both halves: the operation's own rules and the attributed block carrying its contract's.
+  // Reading one half would report a fall in fan-out where the delivered set is unchanged.
+  const allRules: Record<string, string | string[]> = { ...(technique.rules ?? {}) };
+  for (const item of technique.inherited_rules?.items ?? []) allRules[item.name] = item.rule;
+  for (const [key, value] of Object.entries(allRules)) {
     const entries = Array.isArray(value) ? value : [value];
     for (const entry of entries) {
       ruleEntries += 1;

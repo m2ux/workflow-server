@@ -188,7 +188,9 @@ describe('decorateTechniqueProvenance', () => {
 
   it('annotates own inputs always, inherited only where noteworthy, and warns only on own UNRESOLVED', () => {
     const ctx = makeCtx();
-    const { technique: decorated, warnings } = decorateTechniqueProvenance(technique, ctx, binding, 'beta::record', 'record');
+    const { technique: decorated, warnings } = decorateTechniqueProvenance(
+      technique, ctx, { kind: 'step', stepId: 'record', binding }, 'beta::record',
+    );
 
     expect(decorated.provenance_note).toBe(PROVENANCE_NOTE);
     expect(decorated.inputs?.[0]?.source).toBe("output of step 'gather' (activity 'alpha')");

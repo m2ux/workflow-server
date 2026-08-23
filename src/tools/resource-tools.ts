@@ -717,6 +717,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       );
       if (!composed.success) throw composed.error;
       techniqueId = composed.value.techniqueId;
+      // The ledger keys on the operation rather than on the spelling that reached it, so a folded
+      // callee delivered at another door collapses against this fetch and one body arrives.
+      const canonicalId = composed.value.canonicalId;
 
       // Binding-seam provenance (#166 B3): a step-bound fetch annotates its own inputs (and the
       // noteworthy inherited ones) with their resolution under the name-match convention, and
@@ -739,7 +742,9 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
           const binding = boundStep.kind === 'technique' && typeof boundStep.technique === 'object'
             ? boundStep.technique
             : undefined;
-          const decorated = decorateTechniqueProvenance(technique, ctx, binding, techniqueId as string, boundStep.id);
+          const decorated = decorateTechniqueProvenance(
+            technique, ctx, { kind: 'step', stepId: boundStep.id, binding }, techniqueId as string,
+          );
           technique = decorated.technique;
           provenanceWarnings.push(...decorated.warnings);
         }
@@ -800,7 +805,7 @@ export function registerResourceTools(server: McpServer, config: ServerConfig): 
       // longer holds the earlier delivery.
       const referenceMode = full !== true
         && (bundle ?? (state.contextMode === 'persistent' ? 'reference' : 'full')) === 'reference';
-      const ledgerKey = `technique:${techniqueId}`;
+      const ledgerKey = `technique:${canonicalId}`;
       const hash = contentHash(text);
       if (referenceMode && deliveredHash(state, ledgerKey, scope) === hash) {
         const next = advanceSession(state, (draft) => {
