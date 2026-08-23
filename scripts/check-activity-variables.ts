@@ -22,7 +22,7 @@
  *                        previous pass's value and a route testing for the other value cannot be
  *                        taken.
  *
- * Hard-zero: every finding is a defect in the corpus, not in the guard.
+ * Hard zero, no ledger: every finding named a definition defect and each was fixed in the corpus.
  *
  *   npx tsx scripts/check-activity-variables.ts [--root <workflows-dir>] [--json]
  *   npx tsx scripts/check-activity-variables.ts --emit-contracts   # derived contracts, as JSON
@@ -42,14 +42,10 @@ import {
 } from '../src/utils/activity-variables.js';
 import type { VariableDefinition } from '../src/schema/variable.schema.js';
 import { assertScanned, requireWorkflowsRoot } from './workflows-root.js';
-import { findingKey, report, wantsJson, type Finding } from './guard-protocol.js';
-import { applyTriage, loadTriageFile, triageStampNote, triageSummary } from './triage.js';
+import { runGuard, type Finding } from './guard-protocol.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = join(DIR, '..', 'workflows');
-/** The ledger of accepted findings, per finding, with a named rationale each. */
-const TRIAGE = join(DIR, 'activity-variable-triage.json');
-const TRIAGE_REL = 'scripts/activity-variable-triage.json';
 
 /** The declared contract of one activity, keyed for reporting. */
 interface ActivityRecord {
@@ -256,29 +252,12 @@ async function emitContracts(root: string): Promise<void> {
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const root = requireWorkflowsRoot(DEFAULT_ROOT);
   if (process.argv.includes('--emit-contracts')) {
-    await emitContracts(root);
-  } else if (process.argv.includes('--emit-untriaged') || process.argv.includes('--emit-all')) {
-    // Both only read: the first feeds a triage pass, the second prunes entries whose finding is
-    // gone. Classification stays a human act.
-    const all = await collectFindings(root);
-    const known = new Set(loadTriageFile(TRIAGE).entries.map(findingKey));
-    const emit = process.argv.includes('--emit-all') ? all : all.filter((f) => !known.has(findingKey(f)));
-    process.stdout.write(JSON.stringify(emit, null, 2) + '\n');
+    await emitContracts(requireWorkflowsRoot(DEFAULT_ROOT));
   } else {
-    const triage = loadTriageFile(TRIAGE);
-    const result = applyTriage(await collectFindings(root), triage, { file: TRIAGE_REL });
-    if (!wantsJson()) {
-      process.stdout.write(triageSummary('activity-variables', result));
-      const stamp = triageStampNote(triage.corpusSha, root);
-      if (stamp) process.stdout.write(`activity-variables: ${stamp}\n`);
-    }
-    report('activity-variables', result.findings, {
-      okMessage: 'every activity declares the variables it reads and writes, and every read has a writer on every path'
-        + ` (${result.counts.harmless + result.counts['fix-later']} triaged as accepted debt)`,
-      root,
-      remedy: `correct the activity's variables.reads / variables.writes or the definition it describes, and classify each untriaged finding in ${TRIAGE_REL}`,
+    await runGuard('activity-variables', () => requireWorkflowsRoot(DEFAULT_ROOT), collectFindings, {
+      okMessage: 'every activity declares the variables it reads and writes, every write has a reader, and every read has a writer on every path',
+      remedy: 'correct the activity\'s variables.reads / variables.writes, or the definition the contract describes',
     });
   }
 }

@@ -267,12 +267,8 @@ starts mattering.
 
 ### Corpus debt
 
-Two guards report debt the corpus carries from before they existed, triaged once per finding with a
-named rationale. [`scripts/triage.ts`](../scripts/triage.ts) holds the verdicts and the reporting
-rules; each guard names its own ledger —
-[`scripts/binding-fidelity-triage.json`](../scripts/binding-fidelity-triage.json) for `check:binding`,
-[`scripts/activity-variable-triage.json`](../scripts/activity-variable-triage.json) for
-`check:activity-variables`:
+`check:binding` reports the corpus's pre-existing binding debt, triaged once per finding in
+[`scripts/binding-fidelity-triage.json`](../scripts/binding-fidelity-triage.json):
 
 | Verdict | Guard behaviour |
 |---------|-----------------|
@@ -282,8 +278,12 @@ rules; each guard names its own ledger —
 
 A finding absent from the file is *untriaged* and reported; an entry matching nothing is *stale* and
 reported. There is no `--update-baseline`: a verdict is a human judgement, which is exactly what the
-retired baselines let a regenerate flag skip. `--emit-untriaged` on either guard prints the findings
-still needing one.
+retired baselines let a regenerate flag skip. `npx tsx scripts/check-binding-fidelity.ts
+--emit-untriaged` prints the findings still needing one.
+
+A ledger is the exception, not the shape a new guard starts from. `check:activity-variables` has
+none: each of its findings named a definition defect, and the corpus was fixed rather than
+classified.
 
 `check:review-mode` follows the same shape with a smaller list —
 `ACCEPTED_HEADLESS_AUTO_ADVANCE` in [`scripts/check-review-mode-gating.ts`](../scripts/check-review-mode-gating.ts),

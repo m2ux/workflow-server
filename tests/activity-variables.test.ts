@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync, readFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { tmpdir } from 'node:os';
 import {
   activityGraph,
@@ -10,7 +10,6 @@ import {
 } from '../src/utils/activity-variables.js';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import { collectFindings } from '../scripts/check-activity-variables.js';
-import type { TriageFile } from '../scripts/triage.js';
 import type { Workflow } from '../src/schema/workflow.schema.js';
 
 /**
@@ -186,15 +185,6 @@ describe('read reachability', () => {
 });
 
 describe('activity-variables guard', () => {
-  const REPO = resolve(import.meta.dirname, '..');
-
-  it('names a rationale the triage file defines for every entry', () => {
-    const triage = JSON.parse(readFileSync(join(REPO, 'scripts', 'activity-variable-triage.json'), 'utf-8')) as TriageFile;
-    const undefinedRationales = triage.entries
-      .filter((entry) => !(entry.rationale in triage.rationales))
-      .map((entry) => `${entry.site}: ${entry.rationale}`);
-    expect(undefinedRationales).toEqual([]);
-  });
 
   it('counts an optional operation input as a consumer of the value that reaches it', async () => {
     const root = mkdtempSync(join(tmpdir(), 'wf-avars-optional-'));

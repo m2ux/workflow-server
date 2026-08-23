@@ -60,14 +60,7 @@ import { injectCheckpointFragmentBodies, resolveCheckpointFragment } from '../sr
 import { fragmentsLookupSync } from './fragments-index.js';
 import { assertScanned } from './workflows-root.js';
 import { findingKey, report, requireRootOrExit, wantsJson, type Finding } from './guard-protocol.js';
-import {
-  applyTriage as applyTriageFile,
-  loadTriageFile,
-  triageStampNote as corpusStampNote,
-  triageSummary,
-  type TriageFile,
-  type TriagedResult,
-} from './triage.js';
+import { spawnSync } from 'node:child_process';
 
 // Resolve paths from this file's own URL (reliable under both tsx CLI and the vitest runner,
 // where import.meta.dirname is not populated).
@@ -723,33 +716,103 @@ export function collectViolations(): Violation[] {
 /* --------------------------------- triage --------------------------------- */
 /**
  * The corpus debt this guard reports was triaged once, per finding, in
- * scripts/binding-fidelity-triage.json (issue #327 R3). The verdicts, the file shape and the
- * reporting rules are shared with every guard that carries a ledger; scripts/triage.ts holds them.
+ * scripts/binding-fidelity-triage.json (issue #327 R3). Every entry carries a verdict and a named
+ * rationale, so "harmless" and "live bug" are no longer the same silence:
+ *
+ *   harmless   — the finding is correct about the structure and correct BY DESIGN; suppressed.
+ *   fix-later  — a real seam to close, accepted as debt for now; suppressed but counted.
+ *   live-bug   — affects a run; REPORTED, so the guard stays red until it is fixed.
+ *
+ * A violation absent from the file is untriaged and reported. An entry that matches nothing is
+ * stale and reported. There is no regenerate flag: the file is edited by a human making a judgement,
+ * which is what the retired baseline never required.
  */
-export type { TriageVerdict, TriageEntry, TriageFile, TriagedResult } from './triage.js';
+export type TriageVerdict = 'harmless' | 'fix-later' | 'live-bug';
+
+export interface TriageEntry extends Violation {
+  verdict: TriageVerdict;
+  /** Key into the file's `rationales` map — the reason this verdict holds. */
+  rationale: string;
+}
+
+export interface TriageFile {
+  corpusSha: string;
+  rationales: Record<string, string>;
+  entries: TriageEntry[];
+}
 
 export function violationKey(x: Violation): string { return findingKey(x as Finding); }
 
-export function loadTriage(): TriageFile { return loadTriageFile(TRIAGE); }
+export function loadTriage(): TriageFile {
+  if (!existsSync(TRIAGE)) return { corpusSha: '', rationales: {}, entries: [] };
+  return JSON.parse(readFileSync(TRIAGE, 'utf-8')) as TriageFile;
+}
 
-/** How far the corpus has moved since these verdicts were made, or null where that is unknowable. */
+/**
+ * How far the corpus has moved since these verdicts were made, or null where that cannot be
+ * established. Report-only: see docs/development.md § Corpus-coupled baselines.
+ */
 export function triageStampNote(corpusSha: string, root: string = ROOT): string | null {
-  return corpusStampNote(corpusSha, root);
+  if (!corpusSha) return null;
+  const head = spawnSync('git', ['-C', root, 'rev-parse', 'HEAD'], { encoding: 'utf-8' });
+  if (head.status !== 0) return null;
+  const current = head.stdout.trim();
+  if (!current || current === corpusSha) return null;
+  const behind = spawnSync(
+    'git', ['-C', root, 'rev-list', '--count', `${corpusSha}..${current}`], { encoding: 'utf-8' },
+  );
+  const commits = behind.status === 0 ? behind.stdout.trim() : '';
+  const distance = commits && commits !== '0' ? ` — ${commits} corpus commit(s) since` : '';
+  return `triage verdicts were made against corpus ${corpusSha.slice(0, 12)}, `
+    + `the checkout is at ${current.slice(0, 12)}${distance}`;
+}
+
+export interface TriagedResult {
+  findings: Finding[];
+  counts: Record<TriageVerdict | 'untriaged' | 'stale', number>;
+  total: number;
 }
 
 export function applyTriage(violations: Violation[] = collectViolations()): TriagedResult {
-  return applyTriageFile(violations as Finding[], loadTriage(), {
-    file: 'scripts/binding-fidelity-triage.json',
-    // A satisfier in another workflow is the #342 masking shape: naming it keeps a closure that is
-    // really a blind spot out of the ledger's "fixed" column.
-    staleNote: (entry) => {
-      const outputId = entry.check === 'dead-output' ? /output '([^']+)'/.exec(entry.detail)?.[1] : undefined;
-      const satisfier = outputId ? deadOutputSatisfier.get(`${entry.site}\u0000${outputId}`) : undefined;
-      return satisfier ? `now satisfied by ${satisfier}` : undefined;
-    },
-  });
+  const triage = loadTriage();
+  const byKey = new Map(triage.entries.map((e) => [violationKey(e), e]));
+  const seen = new Set<string>();
+  const findings: Finding[] = [];
+  const counts = { harmless: 0, 'fix-later': 0, 'live-bug': 0, untriaged: 0, stale: 0 };
+  for (const v of violations) {
+    const key = violationKey(v);
+    const entry = byKey.get(key);
+    if (!entry) {
+      counts.untriaged++;
+      findings.push({ check: v.check, site: v.site, detail: `${v.detail} [untriaged — classify it in scripts/binding-fidelity-triage.json]` });
+      continue;
+    }
+    seen.add(key);
+    counts[entry.verdict]++;
+    if (entry.verdict === 'live-bug') {
+      const why = triage.rationales[entry.rationale] ?? entry.rationale;
+      findings.push({ check: v.check, site: v.site, detail: `${v.detail} [live bug: ${why}]` });
+    }
+  }
+  for (const [key, entry] of byKey) {
+    if (seen.has(key)) continue;
+    counts.stale++;
+    // "No longer occurs" has two causes a reader must be able to tell apart: the seam was CLOSED, or
+    // the guard stopped SEEING it. Naming what now satisfies the finding makes the second visible —
+    // a satisfier in another workflow is the #342 masking shape, and deleting the entry there would
+    // drop real debt out of the ledger.
+    const outputId = entry.check === 'dead-output' ? /output '([^']+)'/.exec(entry.detail)?.[1] : undefined;
+    const satisfier = outputId ? deadOutputSatisfier.get(`${entry.site}\u0000${outputId}`) : undefined;
+    findings.push({
+      check: 'stale-triage',
+      site: entry.site,
+      detail: satisfier
+        ? `triaged '${entry.check}' finding no longer occurs — now satisfied by ${satisfier}; delete the entry only if that is a real closure`
+        : `triaged '${entry.check}' finding no longer occurs — delete the entry from scripts/binding-fidelity-triage.json`,
+    });
+  }
+  return { findings, counts, total: violations.length };
 }
-
 
 /* --------------------------------- CLI runner --------------------------------- */
 import { pathToFileURL } from 'node:url';
@@ -768,10 +831,11 @@ if (isMain) {
     process.stdout.write(JSON.stringify(all.filter((v) => !known.has(violationKey(v))), null, 2) + '\n');
     process.exit(0);
   }
-  const result = applyTriage();
-  const { findings, counts } = result;
+  const { findings, counts, total } = applyTriage();
   if (!wantsJson()) {
-    process.stdout.write(triageSummary('binding-fidelity', result));
+    process.stdout.write(`binding-fidelity: ${total} violation(s) — ${counts.harmless} harmless, `
+      + `${counts['fix-later']} fix-later, ${counts['live-bug']} live bug(s), ${counts.untriaged} untriaged`
+      + `${counts.stale ? `, ${counts.stale} stale triage entr(ies)` : ''}\n`);
     const stamp = triageStampNote(loadTriage().corpusSha);
     if (stamp) process.stdout.write(`binding-fidelity: ${stamp}\n`);
   }
