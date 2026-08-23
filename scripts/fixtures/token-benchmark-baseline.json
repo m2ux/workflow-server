@@ -1,8 +1,8 @@
 {
   "label": "baseline",
-  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-08-23 against workflows@5dd53325. Delivery is 33,344 characters above the workflows@46bddccc recording of 1,332,518. 24,900 of those come from this corpus: get_activity rises 26,418 as every activity begins carrying the variable contract it reads and writes, and get_workflow falls 1,518 as 408 declarations leave the seventeen workflow files for the activities that own them. Resource and technique delivery are unchanged by it. The remaining 8,444 characters are corpus movement between 46bddccc and 7aaf6bf3 that was never re-recorded, measured by walking 7aaf6bf3 on this same server tree. What it buys: an activity that states what it needs and what it produces, so a workflow including an activity another wrote can be checked for supplying it. That check found 65 unsupplied reads across the fourteen work-package activities remediate-vuln runs, seven exits a return visit could not take, and 40 declarations nothing in the corpus read or wrote. The characters are paid once per activity delivery and are the contract itself: reads as names, writes as declarations carrying the type and default the session seeds from. Findings and evidence: https://github.com/m2ux/workflow-server/issues/493.",
+  "description": "Gate baseline: work-package / skip-optional / robot + hot-resource probe, context_mode fresh. Recorded 2026-08-23 against workflows@393e244b. Delivery is 25,325 characters above the workflows@46bddccc recording of 1,332,518. 16,881 of those come from this corpus: get_activity rises 21,340 as every activity begins carrying the variable contract it reads and writes, and get_workflow falls 4,459 as 408 declarations leave the seventeen workflow files for the activities that own them and 130 dead ones leave the corpus entirely. Resource and technique delivery are unchanged by it. The remaining 8,444 characters are corpus movement between 46bddccc and 7aaf6bf3 that was never re-recorded, measured by walking 7aaf6bf3 on this same server tree. What it buys: an activity that states what it needs and what it produces, so a workflow including an activity another wrote can be checked for supplying it. That check found 65 unsupplied reads across the fourteen work-package activities remediate-vuln runs, seven exits a return visit could not take, 40 declarations nothing read or wrote, and 77 places where a decision or a step recorded a value no gate, operation or template consulted. All of them are fixed rather than ledgered, which is why the rise is smaller than the contract alone: the characters that stayed are reads as names and writes as declarations carrying the type and default the session seeds from. Findings and evidence: https://github.com/m2ux/workflow-server/issues/493.",
   "contextMode": "fresh",
-  "workflowsRev": "5dd53325",
+  "workflowsRev": "393e244b",
   "agentId": "bench-solo",
   "path": [
     "start-work-package",
@@ -32,12 +32,12 @@
   },
   "chars": {
     "start_session": 789,
-    "get_workflow": 107693,
+    "get_workflow": 104752,
     "next_activity": 1195,
-    "get_activity": 550500,
+    "get_activity": 545422,
     "get_resource": 563793,
     "yield_checkpoint": 2930,
-    "respond_checkpoint": 2098,
+    "respond_checkpoint": 1984,
     "resume_checkpoint": 1800,
     "get_technique": 143876
   },
@@ -50,8 +50,8 @@
   "resourceLedgerKeys": 74,
   "unchangedResourceAnswers": 0,
   "unchangedTechniqueAnswers": 0,
-  "getActivityChars": 550500,
-  "getWorkflowChars": 107693,
+  "getActivityChars": 545422,
+  "getWorkflowChars": 104752,
   "getResourceChars": 563793,
   "getTechniqueChars": 143876,
   "workflowId": "work-package",

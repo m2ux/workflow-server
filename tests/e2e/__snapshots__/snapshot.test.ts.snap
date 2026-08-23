@@ -296,9 +296,7 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
         {
           "id": "audit-findings-confirmed",
           "option": "audit-accepted",
-          "setVariable": {
-            "audit_confirmed": true,
-          },
+          "setVariable": undefined,
         },
       ],
       "gatesReadUnbound": [],
@@ -450,7 +448,6 @@ exports[`work-package walk snapshots (baseline) > [default] matches committed ba
           "option": "proceed-with-override",
           "setVariable": {
             "body_conforms": true,
-            "body_override_recorded": true,
           },
         },
         {
@@ -724,9 +721,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         {
           "id": "stakeholder-transcript",
           "option": "provide-transcript",
-          "setVariable": {
-            "has_stakeholder_input": true,
-          },
+          "setVariable": undefined,
         },
         {
           "id": "elicitation-complete",
@@ -904,9 +899,7 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
         {
           "id": "audit-findings-confirmed",
           "option": "audit-accepted",
-          "setVariable": {
-            "audit_confirmed": true,
-          },
+          "setVariable": undefined,
         },
       ],
       "gatesReadUnbound": [],
@@ -1058,7 +1051,6 @@ exports[`work-package walk snapshots (baseline) > [elicitation-only] matches com
           "option": "proceed-with-override",
           "setVariable": {
             "body_conforms": true,
-            "body_override_recorded": true,
           },
         },
         {
@@ -1335,9 +1327,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         {
           "id": "stakeholder-transcript",
           "option": "provide-transcript",
-          "setVariable": {
-            "has_stakeholder_input": true,
-          },
+          "setVariable": undefined,
         },
         {
           "id": "elicitation-complete",
@@ -1550,9 +1540,7 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
         {
           "id": "audit-findings-confirmed",
           "option": "audit-accepted",
-          "setVariable": {
-            "audit_confirmed": true,
-          },
+          "setVariable": undefined,
         },
       ],
       "gatesReadUnbound": [],
@@ -1704,7 +1692,6 @@ exports[`work-package walk snapshots (baseline) > [full-workflow] matches commit
           "option": "proceed-with-override",
           "setVariable": {
             "body_conforms": true,
-            "body_override_recorded": true,
           },
         },
         {
@@ -2148,9 +2135,7 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
         {
           "id": "audit-findings-confirmed",
           "option": "audit-accepted",
-          "setVariable": {
-            "audit_confirmed": true,
-          },
+          "setVariable": undefined,
         },
       ],
       "gatesReadUnbound": [],
@@ -2302,7 +2287,6 @@ exports[`work-package walk snapshots (baseline) > [research-only] matches commit
           "option": "proceed-with-override",
           "setVariable": {
             "body_conforms": true,
-            "body_override_recorded": true,
           },
         },
         {
@@ -3142,9 +3126,7 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
         {
           "id": "audit-findings-confirmed",
           "option": "audit-accepted",
-          "setVariable": {
-            "audit_confirmed": true,
-          },
+          "setVariable": undefined,
         },
       ],
       "gatesReadUnbound": [],
@@ -3296,7 +3278,6 @@ exports[`work-package walk snapshots (baseline) > [skip-optional] matches commit
           "option": "proceed-with-override",
           "setVariable": {
             "body_conforms": true,
-            "body_override_recorded": true,
           },
         },
         {
