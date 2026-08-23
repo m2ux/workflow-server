@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: cicd-pipeline-security-audit
-version: 1.2.0
+version: 1.3.0
 title: CI/CD Pipeline Security Audit Workflow
 description: Fully automated multi-phase AI security audit for GitHub Actions CI/CD pipelines. Detects source-to-sink injection vulnerabilities exploited by autonomous attack agents (hackerbot-claw campaign, Feb 2026).
 author: m2ux
@@ -38,52 +38,4 @@ variables:
   - name: planning_folder_path
     type: string
     description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-cicd-security-audit"
-  - name: workflow_file_count
-    type: number
-    description: Total number of workflow files discovered across all target submodules
-    defaultValue: 0
-  - name: submodule_count
-    type: number
-    description: Number of submodules in scope
-    defaultValue: 0
-  - name: scanners_assigned
-    type: number
-    description: Count of per-submodule scanner agents assigned during reconnaissance
-    defaultValue: 0
-  - name: scanners_dispatched
-    type: number
-    description: Count of scanner agents actually dispatched and returned
-    defaultValue: 0
-  - name: reconnaissance_complete
-    type: boolean
-    description: Phase 2 gate — reconnaissance finished
-    defaultValue: false
-  - name: primary_scan_complete
-    type: boolean
-    description: Phase 3 gate — all scanners returned
-    defaultValue: false
-  - name: verification_complete
-    type: boolean
-    description: Phase 3 verification gate.
-    defaultValue: false
-  - name: merge_complete
-    type: boolean
-    description: Phase 3 merge gate.
-    defaultValue: false
-  - name: report_complete
-    type: boolean
-    description: Phase 4 gate — report generation finished
-    defaultValue: false
-  - name: total_findings
-    type: number
-    description: Total number of confirmed findings after merge
-    defaultValue: 0
-  - name: critical_findings
-    type: number
-    description: Number of Critical-severity findings
-    defaultValue: 0
-  - name: high_findings
-    type: number
-    description: Number of High-severity findings
-    defaultValue: 0
 initialActivity: scope-setup

@@ -1,7 +1,70 @@
 id: strategic-review
-version: 2.15.0
+version: 2.16.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
+variables:
+  reads:
+    - branch_name
+    - component_git_dir
+    - host_repo_path
+    - is_review_mode
+    - issue_number
+    - issue_platform
+    - issue_url
+    - planning_folder_path
+    - pr_number
+    - push_remote
+    - stealth_mode
+    - target_path
+    - target_repo
+  writes:
+    - name: body_conforms
+      type: boolean
+      description: True once the rendered PR body satisfies every conformance criterion in the pr-description guide.
+      defaultValue: false
+    - name: body_findings
+      type: array
+      description: List of PR-body conformance violations.
+      defaultValue: []
+    - name: findings_raised_to_author
+      type: string
+      description: Which findings the posted review carries to the pull-request author (all|selected|none).
+      defaultValue: all
+    - name: recommended_strategic_option
+      type: string
+      description: Agent-recommended action after strategic review analysis (fix-findings|raise-findings|acceptable).
+    - name: resign_unsigned_commits_requested
+      type: boolean
+      description: User chose to re-sign unsigned commits at the strategic-review unsigned-commits-prompt checkpoint.
+      defaultValue: false
+    - name: review_passed
+      type: boolean
+      description: Whether strategic review passed.
+      defaultValue: false
+    - name: strategic_findings_actionable
+      type: boolean
+      description: Whether any strategic-review finding is at or above the severity that warrants action.
+      defaultValue: false
+    - name: strategic_findings_deferred
+      type: boolean
+      description: Whether the user chose to defer strategic-review findings (note them for later but proceed to submission now).
+      defaultValue: false
+    - name: strategic_findings_summary
+      type: string
+      description: Concise multi-line summary of strategic-review findings (severity tag + one-line description per finding).
+      defaultValue: ""
+    - name: strategic_fixes_selective
+      type: boolean
+      description: Whether the user chose to fix only selected strategic-review findings (by priority) rather than all of them.
+      defaultValue: false
+    - name: unsigned_commit_list_summary
+      type: string
+      description: Short human-readable summary of unsigned commits from the strategic-review signature scan; empty when all commits are signed.
+      defaultValue: ""
+    - name: unsigned_commits_in_pr
+      type: boolean
+      description: True when the strategic-review signature scan found any commit in the branch range without a valid GPG signature.
+      defaultValue: false
 required: true
 steps:
   - kind: technique

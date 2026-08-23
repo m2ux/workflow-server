@@ -1,7 +1,67 @@
 id: intake-and-context
-version: 1.9.0
+version: 1.10.0
 name: Intake and Context
 description: "Establish the operation type, mode, and target for the request, and internalize the schema system and YAML-format conventions that ground all drafting."
+variables:
+  reads:
+    - report_path
+    - update_seeded_from_review
+  writes:
+    - name: applicable_constructs_path
+      type: string
+      description: Absolute path to the persisted applicable-constructs artifact.
+      defaultValue: ""
+    - name: change_request_clear
+      type: boolean
+      description: In update mode, true when the change request is clear enough to proceed without Gate 1 clarification.
+      defaultValue: true
+    - name: format_conventions_path
+      type: string
+      description: Absolute path to the persisted format-conventions artifact.
+      defaultValue: ""
+    - name: format_literacy_confirmed
+      type: boolean
+      description: Whether YAML format understanding has been demonstrated for this session.
+      defaultValue: false
+    - name: headless_mode
+      type: boolean
+      description: When true, soft mid-flow gates auto-resolve (no AskQuestion).
+      defaultValue: true
+    - name: intent_needs_confirmation
+      type: boolean
+      description: Composite gap flag for Gate 1 (`design-intent-batch`) — true when mode is ambiguous, the update change request is unclear, and/or review.
+      defaultValue: false
+    - name: operation_type
+      type: string
+      description: The classified operation for the request — create, update, or review.
+    - name: operation_type_ambiguous
+      type: boolean
+      description: True when intake cannot confidently classify create vs update vs review from the request alone — contributes to Gate 1.
+      defaultValue: false
+    - name: planning_folder_path
+      type: string
+      description: Absolute path to this workflow planning folder.
+    - name: review_scope_confirmed
+      type: boolean
+      description: "In review mode: whether the user confirmed the audit target set in intake."
+      defaultValue: false
+    - name: schema_constructs_confirmed
+      type: boolean
+      description: Whether applicable schema constructs have been identified and confirmed.
+      defaultValue: false
+    - name: target_workflow_id
+      type: string
+      description: ID of the existing workflow to modify (update mode) or the current review-mode audit target (bound per iteration when reviewing multiple.
+    - name: target_workflow_ids
+      type: array
+      description: Ordered list of workflow ids to audit in review mode (one or more).
+    - name: update_seeded_from_review
+      type: boolean
+      description: True when update mode was entered from a review-mode fix disposition (fix-issues or selective-fixes).
+      defaultValue: false
+    - name: workflow_id
+      type: string
+      description: The ID of the workflow being created or updated.
 required: true
 steps:
   - kind: action

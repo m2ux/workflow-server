@@ -1,7 +1,27 @@
 id: dimension-planning
-version: 1.3.0
+version: 1.4.0
 name: Plan Dimension Analysis
 description: Map each evaluation dimension to prism pipeline modes and lenses.
+variables:
+  reads:
+    - evaluation_description
+    - evaluation_output_path
+    - evaluation_target_type
+    - target_path
+  writes:
+    - name: dimension_plan
+      type: array
+      description: Per-dimension prism configuration, each { dimension, pipeline_mode, lenses, analysis_focus, output_subdir }
+    - name: dimensions_confirmed
+      type: boolean
+      description: Whether the user confirmed the dimension-to-lens mapping
+      defaultValue: false
+    - name: evaluation_plan_path
+      type: string
+      description: Path to the `evaluation-plan.md` artifact
+    - name: execution_groups
+      type: array
+      description: Dimensions grouped for triggering, each { pipeline_mode, lenses, dimensions, analysis_focus, output_subdir }
 steps:
   - kind: technique
     id: survey-target

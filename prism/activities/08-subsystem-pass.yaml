@@ -1,7 +1,20 @@
 id: subsystem-pass
-version: 1.2.0
+version: 1.3.0
 name: Subsystem Analysis Pass
 description: Per-region prism analysis with cross-subsystem synthesis.
+variables:
+  reads:
+    - target
+  writes:
+    - name: all_artifact_paths
+      type: array
+      description: Accumulated list of all artifact paths across all units
+    - name: subsystem_assignments
+      type: object
+      description: "For subsystem mode: map of {subsystem_name: prism_name} from calibration"
+    - name: subsystem_outputs
+      type: array
+      description: "For subsystem mode: per-subsystem analysis output objects"
 steps:
   - kind: technique
     id: split-subsystems

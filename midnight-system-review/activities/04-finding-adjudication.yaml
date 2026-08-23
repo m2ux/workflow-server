@@ -1,7 +1,11 @@
 id: finding-adjudication
-version: 1.1.0
+version: 1.2.0
 name: Finding Adjudication
 description: Grade every finding candidate from the evidence log against the rubric and adjudicate each into the findings register.
+variables:
+  reads:
+    - planning_folder_path
+    - target_repo_path
 required: true
 steps:
   - kind: action

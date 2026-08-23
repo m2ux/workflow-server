@@ -1,7 +1,29 @@
 id: scope-definition
-version: 1.3.0
+version: 1.4.0
 name: Define Audit Scope
 description: Collect the audit target, description, and output path.
+variables:
+  reads:
+    - audit_description
+    - audit_output_path
+    - target_path
+  writes:
+    - name: audit_description
+      type: string
+      description: User's description of what to audit and any specific focus areas or concerns
+      required: true
+    - name: audit_output_path
+      type: string
+      description: Directory the audit artifacts are written to
+      required: true
+    - name: scope_confirmed
+      type: boolean
+      description: Whether the user confirmed the audit scope at the confirm-scope checkpoint
+      defaultValue: false
+    - name: target_path
+      type: string
+      description: Path to the codebase or directory to audit
+      required: true
 steps:
   - kind: technique
     id: collect-inputs

@@ -1,7 +1,15 @@
 id: sub-merge
-version: 1.2.0
+version: 1.3.0
 name: Finding Merge
 description: Merge scanner outputs into a unified finding set.
+variables:
+  reads:
+    - planning_folder_path
+  writes:
+    - name: merge_complete
+      type: boolean
+      description: Phase 3 merge gate.
+      defaultValue: false
 techniques:
   - execute-sub-agent
 required: false

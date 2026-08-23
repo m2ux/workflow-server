@@ -1,7 +1,20 @@
 id: finalize-roadmap
-version: 1.3.0
+version: 1.4.0
 name: Finalize Roadmap
 description: Complete roadmap documentation with timeline, navigation, and success criteria
+variables:
+  reads:
+    - package_plans
+    - planning_folder_path
+    - priority_order
+  writes:
+    - name: roadmap_complete
+      type: boolean
+      description: Whether the roadmap has been finalized and approved
+      defaultValue: false
+    - name: timeline_estimate
+      type: string
+      description: Overall timeline estimate for the initiative
 steps:
   - kind: technique
     id: finalize-roadmap-docs

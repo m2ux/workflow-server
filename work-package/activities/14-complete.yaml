@@ -1,7 +1,37 @@
 id: complete
-version: 1.9.0
+version: 1.10.0
 name: Complete Work Package
 description: Wrap up the work package after PR merge (or after review-mode close-out).
+variables:
+  reads:
+    - branch_name
+    - component_git_dir
+    - host_repo_path
+    - is_review_mode
+    - issue_number
+    - planning_folder_path
+    - pr_number
+    - problem_complexity
+    - target_path
+    - target_repo
+    - worktree_created
+  writes:
+    - name: artifact_publish_ref
+      type: string
+      description: Engineering checkout's branch name, the ref engineering-artifact hyperlinks in the consolidated review resolve against.
+      defaultValue: ""
+    - name: broken_artifact_links
+      type: array
+      description: Planning-folder links that do not resolve, each { file, link, target, class }.
+      defaultValue: []
+    - name: completion_document_path
+      type: string
+      description: Path to the close-out document.
+      defaultValue: ""
+    - name: worktree_created
+      type: boolean
+      description: True when a worktree at target_path was created or reused by this workflow run (only those worktrees are eligible for cleanup).
+      defaultValue: false
 required: true
 steps:
   - kind: technique

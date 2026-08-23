@@ -1,7 +1,34 @@
 id: codebase-comprehension
-version: 1.11.0
+version: 1.12.0
 name: Codebase Comprehension
 description: Build or augment a mental model of the codebase.
+variables:
+  reads:
+    - branch_name
+    - component_git_dir
+    - gitnexus_indexed
+    - has_open_questions
+    - host_repo_path
+    - needs_comprehension
+    - needs_elicitation
+    - needs_research
+    - planning_folder_path
+    - pr_number
+    - skip_optional_activities
+    - target_path
+    - target_repo
+  writes:
+    - name: comprehension_artifact
+      type: string
+      description: Absolute path to the comprehension artifact for the current codebase area.
+      defaultValue: ""
+    - name: comprehension_dir
+      type: string
+      description: Absolute path of the cumulative codebase-comprehension corpus, outside any one session's planning folder.
+    - name: needs_comprehension
+      type: boolean
+      description: Whether codebase comprehension is needed (mandatory after design-philosophy; may be re-requested after stakeholder feedback).
+      defaultValue: true
 required: false
 techniques:
   - scatter-gather

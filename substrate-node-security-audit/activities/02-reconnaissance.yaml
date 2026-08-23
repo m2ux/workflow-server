@@ -1,7 +1,15 @@
 id: reconnaissance
-version: 3.4.0
+version: 3.5.0
 name: Reconnaissance
 description: Run codebase reconnaissance and security decomposition.
+variables:
+  reads:
+    - planning_folder_path
+  writes:
+    - name: reconnaissance_complete
+      type: boolean
+      description: Phase 1a gate — reconnaissance finished
+      defaultValue: false
 required: true
 techniques:
   - scatter-gather

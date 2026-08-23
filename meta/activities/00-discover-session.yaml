@@ -1,7 +1,56 @@
 id: discover-session
-version: 7.5.0
+version: 7.6.0
 name: Discover Session
 description: Derive the host repository the session belongs to, identify the target workflow and, on stated resume intent, search for an existing client session to resume.
+variables:
+  reads:
+    - component_path
+    - host_repo_path
+    - mentioned_repo
+    - planning_folder_path
+    - user_request
+  writes:
+    - name: component_hint
+      type: string
+      description: Basename of the component the session was opened inside.
+    - name: has_saved_state
+      type: boolean
+      description: Whether discover-session matched a saved client session for the request
+      defaultValue: false
+    - name: host_binding_mismatch
+      type: boolean
+      description: Whether the derived host repository's basename disagrees with the repository segment of target_repo.
+      defaultValue: false
+    - name: host_repo_path
+      type: string
+      description: Absolute path to the host repository the session belongs to.
+    - name: initiative_name
+      type: string
+      description: Kebab-case name for the work this session opens, from the words the request uses for it.
+    - name: is_resuming
+      type: boolean
+      description: Whether the user chose to resume the matched saved session
+      defaultValue: false
+    - name: mentioned_repo
+      type: string
+      description: Repository named in the user's request, such as the owner/repo of a PR or issue URL.
+    - name: resume_intent_requested
+      type: boolean
+      description: Whether the user's request states intent to resume or continue prior work
+      defaultValue: false
+    - name: saved_planning_slug
+      type: string
+      description: Planning slug of the matched saved client session.
+    - name: target_repo
+      type: string
+      description: Target GitHub owner/repo for this run.
+    - name: target_workflow_id
+      type: string
+      description: ID of the client workflow to dispatch (set by discover-session)
+    - name: workflow_match_ambiguous
+      type: boolean
+      description: Whether the user request matched multiple workflows — gates the workflow-selection checkpoint in discover-session
+      defaultValue: false
 required: true
 steps:
   - kind: technique

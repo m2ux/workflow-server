@@ -1,7 +1,25 @@
 id: finalize-specification
-version: 1.4.0
+version: 1.5.0
 name: Finalize Specification
 description: Assemble the validation-passed specification and a human-readable change summary as planning-folder artifacts, and confirm the user accepts them for promotion to the canonical location.
+variables:
+  reads:
+    - source_path
+    - spec_basename
+    - target_doc_path
+  writes:
+    - name: change_summary_path
+      type: string
+      description: Absolute path to the written change summary
+      defaultValue: ""
+    - name: final_specification_path
+      type: string
+      description: Absolute path to the staged final specification
+      defaultValue: ""
+    - name: finalization_confirmed
+      type: boolean
+      description: True once the user has accepted the finalized specification for promotion
+      defaultValue: false
 required: true
 steps:
   - kind: technique

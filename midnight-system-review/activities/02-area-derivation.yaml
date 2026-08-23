@@ -1,7 +1,18 @@
 id: area-derivation
-version: 1.0.0
+version: 1.1.0
 name: Area Derivation
 description: Derive bounded investigation areas from the change surface and subsystem map, and secure approval of the investigation plan.
+variables:
+  reads:
+    - plan_approved
+    - planning_folder_path
+    - probe_budget_per_area
+    - target_repo_path
+  writes:
+    - name: plan_approved
+      type: boolean
+      description: Investigation-plan gate — set by the investigation-plan-approved checkpoint's approve option
+      defaultValue: false
 required: true
 steps:
   - kind: action

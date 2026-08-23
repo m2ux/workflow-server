@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: ponytail
-version: 2.0.0
+version: 2.1.0
 title: Ponytail Lean-Coding Workflow
 description: Drive a coding task, change, or codebase toward the leanest solution that still clears a non-negotiable safety floor, tracking every deliberate simplification as ponytail debt.
 author: m2ux
@@ -30,20 +30,4 @@ variables:
     type: string
     description: Directory the pass writes its artifacts into
     defaultValue: .ponytail
-  - name: lazy_intensity
-    type: string
-    description: "Strictness of the lazy lens: lite, full, or ultra"
-    defaultValue: full
-  - name: pass_scope
-    type: string
-    description: "Breadth of the pass: change (diff-scoped) or repo (whole-tree)"
-    defaultValue: change
-  - name: safety_floor_cleared
-    type: boolean
-    description: Whether the minimal solution clears the safety floor
-    defaultValue: false
-  - name: has_debt_markers
-    type: boolean
-    description: Whether the harvest found any ponytail marker
-    defaultValue: false
 initialActivity: intake-and-scope

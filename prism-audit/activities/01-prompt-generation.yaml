@@ -1,7 +1,26 @@
 id: prompt-generation
-version: 1.1.0
+version: 1.2.0
 name: Generate Audit Prompt
 description: Compose a detailed audit prompt tailored to the codebase.
+variables:
+  reads:
+    - audit_description
+    - audit_output_path
+    - target_path
+  writes:
+    - name: audit_prompt
+      type: string
+      description: Generated audit prompt text produced by the prompt-generation activity
+    - name: audit_prompt_path
+      type: string
+      description: File path to the written audit-prompt.md artifact
+    - name: audit_scopes
+      type: array
+      description: "Array of scope objects for triggering prism runs. Each scope: { target, output_subdir, pipeline_mode, analysis_focus }. Populated by prompt-generation based on codebase structure."
+    - name: security_characteristics_count
+      type: number
+      description: Count of security-relevant patterns found in the target during reconnaissance. Gates the no-security-characteristics checkpoint (fires when 0).
+      defaultValue: 0
 steps:
   - kind: technique
     id: survey-structure

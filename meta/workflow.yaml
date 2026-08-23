@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 5.22.0
+version: 5.23.0
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -31,92 +31,24 @@ variables:
   - name: user_request
     type: string
     description: The user's free-form request that opened this session.
-  - name: target_workflow_id
-    type: string
-    description: ID of the client workflow to dispatch (set by discover-session)
   - name: meta_session_index
     type: string
     description: 6-character base32 session_index of the meta session itself — read by initialize-session and passed as parent_session_index when create-session creates the client session
-  - name: target_repo
-    type: string
-    description: Target GitHub owner/repo for this run.
   - name: host_repo_path
     type: string
     description: Absolute path to the host repository the session belongs to.
-  - name: component_hint
-    type: string
-    description: Basename of the component the session was opened inside.
   - name: mentioned_repo
     type: string
     description: Repository named in the user's request, such as the owner/repo of a PR or issue URL.
-  - name: host_binding_mismatch
-    type: boolean
-    description: Whether the derived host repository's basename disagrees with the repository segment of target_repo.
-    defaultValue: false
   - name: target_workflow_outcomes
     type: string
     description: The client workflow's own outcome list, seeded in its bag
-  - name: workflow_match_ambiguous
-    type: boolean
-    description: Whether the user request matched multiple workflows — gates the workflow-selection checkpoint in discover-session
-    defaultValue: false
-  - name: resume_intent_requested
-    type: boolean
-    description: Whether the user's request states intent to resume or continue prior work
-    defaultValue: false
-  - name: has_saved_state
-    type: boolean
-    description: Whether discover-session matched a saved client session for the request
-    defaultValue: false
-  - name: initiative_name
-    type: string
-    description: Kebab-case name for the work this session opens, from the words the request uses for it.
-  - name: saved_planning_slug
-    type: string
-    description: Planning slug of the matched saved client session.
-  - name: is_resuming
-    type: boolean
-    description: Whether the user chose to resume the matched saved session
-    defaultValue: false
   - name: planning_folder_path
     type: string
     description: Canonical absolute path to the client workflow's planning folder, as resolved by the server under its own workspace .engineering root.
   - name: client_session_index
     type: string
     description: 6-character base32 session_index for the dispatched client workflow (returned by start_session when initialize-session creates or resumes the session)
-  - name: client_planning_slug
-    type: string
-    description: Planning slug of the dispatched client workflow's planning folder — stable identifier the server uses to locate session.json
   - name: client_initial_activity
     type: string
     description: The client workflow's own first activity, returned by create-session — the id its first next_activity call names
-  - name: is_monorepo
-    type: boolean
-    description: Whether the target repository is a submodule monorepo (set by resolve-target)
-    defaultValue: false
-  - name: component_path
-    type: string
-    description: Path of the component being worked on, relative to the host repository — '.' for a regular repo, the submodule path for a monorepo.
-    defaultValue: .
-  - name: component_selection_needed
-    type: boolean
-    description: Whether more than one target-component submodule remains, so the user still has a component to pick.
-    defaultValue: false
-  - name: submodules
-    type: array
-    description: "Target-component submodules of the host repository, each { path, name, url }."
-    defaultValue: []
-  - name: candidate_component
-    type: object
-    description: The submodule currently offered at the component-selection gate.
-  - name: recommended_component_path
-    type: string
-    description: Path of the best-supported candidate submodule, from the context the request carries.
-  - name: client_workflow_completed
-    type: boolean
-    description: Whether the dispatched client workflow has reached workflow_complete
-    defaultValue: false
-  - name: abort_completion
-    type: boolean
-    description: Whether the user chose to return to dispatch from end-workflow instead of closing
-    defaultValue: false

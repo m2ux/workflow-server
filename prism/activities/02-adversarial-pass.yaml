@@ -1,7 +1,18 @@
 id: adversarial-pass
-version: 2.3.0
+version: 2.4.0
 name: Adversarial Analysis Pass
 description: Run the adversarial lens against each full-prism unit's structural artifact.
+variables:
+  reads:
+    - all_artifact_paths
+    - analysis_units
+  writes:
+    - name: all_artifact_paths
+      type: array
+      description: Accumulated list of all artifact paths across all units
+    - name: current_unit
+      type: object
+      description: Current analysis unit during iteration loop
 techniques:
   - scatter-gather
 steps:

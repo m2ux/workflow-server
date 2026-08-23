@@ -1,7 +1,12 @@
 id: over-engineering-review
-version: 1.0.0
+version: 1.1.0
 name: Over-Engineering Review
 description: Review the change against the over-engineering taxonomy, one line per finding, ending in a net line-count scoreboard.
+variables:
+  reads:
+    - lazy_intensity
+    - pass_scope
+    - task_description
 steps:
   - kind: technique
     id: review-change

@@ -1,7 +1,24 @@
 id: draft
-version: 1.0.0
+version: 1.1.0
 name: Draft
 description: "Produce the plain-language document — fresh on an author run, reworked from the source analysis on a rewrite run — structured and worded for its readers."
+variables:
+  reads:
+    - document_title
+    - planning_folder_path
+  writes:
+    - name: document_draft
+      type: string
+      description: The current draft of the plain-language document.
+      defaultValue: ""
+    - name: document_path
+      type: string
+      description: Absolute path to the persisted plain-language document.
+      defaultValue: ""
+    - name: draft_confirmed
+      type: boolean
+      description: Whether the current draft is confirmed as ready for evaluation.
+      defaultValue: false
 required: false
 steps:
   - kind: technique

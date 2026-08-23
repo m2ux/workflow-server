@@ -1,7 +1,13 @@
 id: ensemble-pass
-version: 2.6.0
+version: 2.7.0
 name: Ensemble Pass
 description: Optional second-model audit run with merged findings.
+variables:
+  reads:
+    - has_reference_report
+    - planning_folder_path
+    - target_commit
+    - target_submodule
 required: false
 steps:
   - kind: technique

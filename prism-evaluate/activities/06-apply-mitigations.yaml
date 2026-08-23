@@ -1,7 +1,22 @@
 id: apply-mitigations
-version: 2.0.0
+version: 2.1.0
 name: Apply Accepted Mitigations
 description: Apply accepted mitigations to the target document.
+variables:
+  reads:
+    - current_finding
+    - evaluation_description
+    - evaluation_output_path
+    - evaluation_target_type
+    - mitigation_plan_path
+    - target_path
+  writes:
+    - name: accepted_mitigations
+      type: array
+      description: Per-finding dispositions, each { finding_id, finding_severity, mitigation_type, mitigation_summary, user_decision }
+    - name: evaluation_findings
+      type: array
+      description: The report's findings, each carrying an ID, severity, claim, critique, and mitigation tier
 steps:
   - kind: technique
     id: apply-changes

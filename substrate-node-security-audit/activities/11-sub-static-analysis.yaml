@@ -1,7 +1,11 @@
 id: sub-static-analysis
-version: 1.8.0
+version: 1.9.0
 name: "Sub-Agent: Static Analysis and Mechanical Checks"
 description: Structured static analysis with zero-hit audit and finding aggregation.
+variables:
+  reads:
+    - gitnexus_available
+    - planning_folder_path
 required: false
 steps:
   - kind: technique

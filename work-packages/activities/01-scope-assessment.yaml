@@ -1,7 +1,18 @@
 id: scope-assessment
-version: 1.2.0
+version: 1.3.0
 name: Scope Assessment
 description: Confirm multi-work-package initiative and identify work packages to be planned
+variables:
+  reads:
+    - planning_folder_path
+    - user_request
+  writes:
+    - name: initiative_name
+      type: string
+      description: Name of the overall multi-package initiative
+    - name: work_packages
+      type: array
+      description: List of identified work packages with names and brief descriptions
 steps:
   - kind: technique
     id: assess-scope

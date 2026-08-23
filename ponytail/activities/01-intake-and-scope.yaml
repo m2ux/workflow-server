@@ -1,7 +1,21 @@
 id: intake-and-scope
-version: 1.1.0
+version: 1.2.0
 name: Intake and Scope
 description: Capture the task and target, set intensity and scope, and trace the real end-to-end flow the change touches before the ladder is climbed.
+variables:
+  reads:
+    - artifact_dir
+    - target_path
+    - task_description
+  writes:
+    - name: lazy_intensity
+      type: string
+      description: "Strictness of the lazy lens: lite, full, or ultra"
+      defaultValue: full
+    - name: pass_scope
+      type: string
+      description: "Breadth of the pass: change (diff-scoped) or repo (whole-tree)"
+      defaultValue: change
 steps:
   - kind: technique
     id: capture-and-trace

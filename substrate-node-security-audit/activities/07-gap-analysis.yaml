@@ -1,7 +1,11 @@
 id: gap-analysis
-version: 2.5.0
+version: 2.6.0
 name: Gap Analysis
 description: Compare the AI audit report against a professional reference.
+variables:
+  reads:
+    - planning_folder_path
+    - reference_report
 required: false
 steps:
   - kind: action

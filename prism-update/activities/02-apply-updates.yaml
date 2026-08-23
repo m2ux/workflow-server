@@ -1,7 +1,13 @@
 id: apply-updates
-version: 1.0.0
+version: 1.1.0
 name: Apply Updates
 description: Apply approved resource changes, then update skill routing and documentation to match the current resource catalog.
+variables:
+  reads:
+    - change_set
+    - next_index
+    - resource_path
+    - upstream_path
 required: true
 steps:
   - kind: action

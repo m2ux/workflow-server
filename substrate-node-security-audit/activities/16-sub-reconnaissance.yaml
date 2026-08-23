@@ -1,7 +1,13 @@
 id: sub-reconnaissance
-version: 1.1.0
+version: 1.2.0
 name: "Sub-Agent: Codebase Reconnaissance"
 description: Perform codebase reconnaissance and build the function registry.
+variables:
+  reads:
+    - gitnexus_available
+    - in_scope
+    - planning_folder_path
+    - workspace_root
 required: false
 steps:
   - kind: technique

@@ -1,7 +1,11 @@
 id: repo-audit
-version: 1.0.0
+version: 1.1.0
 name: Repo Audit
 description: Hunt repo-wide over-engineering biggest-cut-first, ending in a net lines-and-deps scoreboard.
+variables:
+  reads:
+    - artifact_dir
+    - task_description
 required: false
 steps:
   - kind: technique

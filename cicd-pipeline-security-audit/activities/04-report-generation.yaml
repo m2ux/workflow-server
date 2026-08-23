@@ -1,7 +1,15 @@
 id: report-generation
-version: 1.4.0
+version: 1.5.0
 name: Report Generation
 description: Produce the final CI/CD security audit report.
+variables:
+  reads:
+    - planning_folder_path
+  writes:
+    - name: report_complete
+      type: boolean
+      description: Phase 4 gate — report generation finished
+      defaultValue: false
 techniques:
   - execute-cicd-audit
 required: true

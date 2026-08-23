@@ -1,7 +1,16 @@
 id: harvest-debt-and-report
-version: 1.2.0
+version: 1.3.0
 name: Harvest Debt and Report
 description: Harvest the deliberate-simplification markers into a debt ledger and, when markers exist, append an honesty-bounded gain scoreboard.
+variables:
+  reads:
+    - artifact_dir
+    - task_description
+  writes:
+    - name: has_debt_markers
+      type: boolean
+      description: Whether the harvest found any ponytail marker
+      defaultValue: false
 steps:
   - kind: technique
     id: harvest-markers

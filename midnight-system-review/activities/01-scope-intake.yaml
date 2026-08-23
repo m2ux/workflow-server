@@ -1,7 +1,30 @@
 id: scope-intake
-version: 1.2.0
+version: 1.3.0
 name: Scope Intake
 description: Resolve the authoritative change surface for the review target, establish toolchain availability, and confirm the review scope.
+variables:
+  reads:
+    - base_ref
+    - planning_folder_path
+    - review_target
+    - target_repo_path
+  writes:
+    - name: cargo_available
+      type: boolean
+      description: Whether a working cargo toolchain is available for the target checkout; gates build and metadata probes
+      defaultValue: false
+    - name: gitnexus_available
+      type: boolean
+      description: Whether the target checkout is GitNexus-indexed; gates code-graph probes, with grep and file reads as the fallback when false
+      defaultValue: false
+    - name: has_pr_surface
+      type: boolean
+      description: Whether review_target resolved to a pull request with a postable review surface; set during scope-intake, gates the publish-decision checkpoint and the publish-review activity
+      defaultValue: false
+    - name: node_binary_available
+      type: boolean
+      description: Whether a runnable midnight-node binary is available; gates runtime and SCALE-metadata probes
+      defaultValue: false
 required: true
 techniques:
   - variable-binding

@@ -1,7 +1,51 @@
 id: requirements-elicitation
-version: 2.9.0
+version: 2.10.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
+variables:
+  reads:
+    - assumption_decisions
+    - branch_name
+    - component_git_dir
+    - issue_number
+    - issue_platform
+    - needs_research
+    - planning_folder_path
+    - pr_number
+    - question_domains
+    - target_path
+    - target_repo
+  writes:
+    - name: current_domain
+      type: string
+      description: Current question domain during elicitation loop (from question_domains).
+    - name: elicitation_complete
+      type: boolean
+      description: Whether requirements elicitation is finished.
+      defaultValue: false
+    - name: has_deferred_assumptions
+      type: boolean
+      description: Whether any assumptions were deferred during review (triggers issue tracker posting).
+      defaultValue: false
+    - name: has_open_assumptions
+      type: boolean
+      description: Whether unresolved assumptions remain after analyse-challenge that require stakeholder input.
+      defaultValue: false
+    - name: has_resolvable_assumptions
+      type: boolean
+      description: Whether code-resolvable assumptions exist that can be validated through targeted analysis.
+      defaultValue: false
+    - name: has_stakeholder_input
+      type: boolean
+      description: Whether stakeholder discussion transcript was provided.
+      defaultValue: false
+    - name: needs_elicitation
+      type: boolean
+      description: Whether requirements elicitation is needed.
+      defaultValue: false
+    - name: open_assumptions
+      type: array
+      description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down.
 required: false
 steps:
   - kind: technique
@@ -66,6 +110,7 @@ steps:
         effect:
           setVariable:
             elicitation_complete: true
+            needs_elicitation: false
       - id: revisit-domain
         label: Revisit a domain
         description: Ask more questions in a specific domain before finalizing

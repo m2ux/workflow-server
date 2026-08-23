@@ -1,7 +1,29 @@
 id: structural-pass
-version: 2.3.0
+version: 2.4.0
 name: Structural Analysis Pass
 description: Run the assigned structural analysis for each analysis unit.
+variables:
+  reads:
+    - analysis_units
+    - lens_name
+    - pipeline_mode
+  writes:
+    - name: all_artifact_paths
+      type: array
+      description: Accumulated list of all artifact paths across all units
+    - name: behavioral_output_paths
+      type: object
+      description: Map of role label (ERRORS, COSTS, CHANGES, PROMISES) to file path for behavioral mode artifacts
+    - name: current_unit
+      type: object
+      description: Current analysis unit during iteration loop
+    - name: gitnexus_available
+      type: boolean
+      description: Whether GitNexus has indexed the target codebase — set during structural-pass check-gitnexus step
+      defaultValue: false
+    - name: unit_output_dir
+      type: string
+      description: Resolved output directory for the current analysis unit — computed in structural-pass resolve-unit-output step
 techniques:
   - scatter-gather
 steps:

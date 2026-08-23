@@ -1,7 +1,101 @@
 id: submit-for-review
-version: 1.17.0
+version: 1.18.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
+variables:
+  reads:
+    - awaiting_review
+    - branch_name
+    - component_git_dir
+    - host_repo_path
+    - is_review_mode
+    - issue_number
+    - planning_folder_path
+    - pr_number
+    - pr_url
+    - project_type
+    - provenance_log_path
+    - push_remote
+    - squash_merge_supported
+    - stealth_mode
+    - target_path
+    - target_repo
+  writes:
+    - name: artifact_publish_ref
+      type: string
+      description: Engineering checkout's branch name, the ref engineering-artifact hyperlinks in the consolidated review resolve against.
+      defaultValue: ""
+    - name: attestation_option
+      type: string
+      description: "The human's DCO certification selection: 'certify' or 'flag-legal'."
+      defaultValue: certify
+    - name: awaiting_review
+      type: boolean
+      description: True while submit-for-review is waiting for reviewer feedback.
+      defaultValue: false
+    - name: body_conforms
+      type: boolean
+      description: True once the rendered PR body satisfies every conformance criterion in the pr-description guide.
+      defaultValue: false
+    - name: body_findings
+      type: array
+      description: List of PR-body conformance violations.
+      defaultValue: []
+    - name: body_override_recorded
+      type: boolean
+      description: True when proceed-with-override was selected on body-non-conformant.
+      defaultValue: false
+    - name: build_artifact_user_owned
+      type: boolean
+      description: True when the user accepted ownership of build-dependent artifact regeneration at the submit-for-review hand-off gate.
+      defaultValue: false
+    - name: build_dependent_artifact_commands
+      type: string
+      description: Human-readable command list / ownership notes for regenerating build-dependent artifacts; shown at the submit-for-review build-artifact.
+      defaultValue: ""
+    - name: build_dependent_artifacts_pending
+      type: boolean
+      description: True when regen of build-only artifacts (e.g. .scale / node metadata) is required and the agent cannot produce them.
+      defaultValue: false
+    - name: code_findings_actionable
+      type: boolean
+      description: Whether any code-review finding is at or above the severity that warrants action.
+      defaultValue: false
+    - name: push_remote_url
+      type: string
+      description: URL the push remote resolves to (used in stealth-mode isolation confirmation).
+      defaultValue: ""
+    - name: recommended_outcome
+      type: string
+      description: Agent-recommended PR review outcome (approved|minor-changes|significant-changes).
+    - name: review_comments_summary
+      type: string
+      description: Concise multi-line summary of reviewer comments captured during submit-for-review (severity tag + one-line description per comment.
+      defaultValue: ""
+    - name: review_posted
+      type: boolean
+      description: Whether review summary was posted to PR (review mode).
+      defaultValue: false
+    - name: review_requires_changes
+      type: boolean
+      description: Whether PR review feedback requires returning to planning.
+      defaultValue: false
+    - name: review_type
+      type: string
+      description: PR review event (approve | request-changes | comment) chosen at review-summary-approval; bound to update-pr::post-review-comment
+      defaultValue: ""
+    - name: submission_aborted
+      type: boolean
+      description: True when abort was selected on body-non-conformant.
+      defaultValue: false
+    - name: summary_budget_overruns
+      type: array
+      description: Consolidated-review slots over their format budget, each { slot, measured, budget }.
+      defaultValue: []
+    - name: test_findings_actionable
+      type: boolean
+      description: Whether any test-suite finding is at or above the severity that warrants action.
+      defaultValue: false
 required: true
 steps:
   - kind: action

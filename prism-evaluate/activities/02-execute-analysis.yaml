@@ -1,7 +1,40 @@
 id: execute-analysis
-version: 2.0.0
+version: 2.1.0
 name: Execute Prism Analyses
 description: Trigger the prism workflow for each execution group.
+variables:
+  reads:
+    - evaluation_description
+    - evaluation_output_path
+    - evaluation_target_type
+    - execution_groups
+    - target_path
+  writes:
+    - name: all_artifact_paths
+      type: array
+      description: Paths to every analysis artifact the runs produced
+    - name: completed_analyses
+      type: array
+      description: Completed analysis runs, each { report_path, definitive_findings_path, status }
+    - name: current_group
+      type: object
+      description: The execution group under analysis
+    - name: output_path
+      type: string
+      description: The output location of the execution group under analysis
+    - name: pipeline_mode
+      type: string
+      description: "The prism pipeline mode an execution group runs under: full-prism | portfolio | single"
+      defaultValue: full-prism
+    - name: target
+      type: string
+      description: The evaluation target an analysis run analyses
+    - name: target_description
+      type: string
+      description: Short description of what an execution group evaluates
+    - name: target_type
+      type: string
+      description: "The target's kind in the analysis run's vocabulary: general | code"
 techniques:
   - scatter-gather
 triggers:

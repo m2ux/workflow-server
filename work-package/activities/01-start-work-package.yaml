@@ -1,7 +1,172 @@
 id: start-work-package
-version: 3.19.0
+version: 3.20.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
+variables:
+  reads:
+    - branch_name
+    - component_git_dir
+    - default_branch
+    - issue_request
+    - issue_title
+    - issue_type
+    - jira_issue_key
+    - planning_folder_path
+    - pr_number
+    - target_path
+    - target_repo
+    - user_request
+  writes:
+    - name: body_conforms
+      type: boolean
+      description: True once the rendered PR body satisfies every conformance criterion in the pr-description guide.
+      defaultValue: false
+    - name: body_findings
+      type: array
+      description: List of PR-body conformance violations.
+      defaultValue: []
+    - name: branch_name
+      type: string
+      description: Feature branch name.
+    - name: component_git_dir
+      type: string
+      description: Absolute path of the component's git working tree, whose origin remote names the component's repository.
+    - name: component_hint
+      type: string
+      description: Basename of the component the session was opened inside.
+    - name: component_name
+      type: string
+      description: Basename of the component being worked on (e.g., 'midnight-node').
+      defaultValue: ""
+    - name: component_path
+      type: string
+      description: Path of the component being worked on, relative to the host repository.
+      defaultValue: .
+    - name: existing_pr_number
+      type: string
+      description: PR number returned by the pulls list API when an existing draft PR is detected during issue/branch initialization.
+      defaultValue: ""
+    - name: github_issue_found
+      type: boolean
+      description: Whether a GitHub issue linked to the Jira ticket was found in the target repo.
+      defaultValue: false
+    - name: github_issue_number
+      type: string
+      description: GitHub issue number linked to the Jira ticket (found via search or freshly created).
+    - name: gitnexus_indexed
+      type: boolean
+      description: Whether the component under work has a usable GitNexus index.
+      defaultValue: false
+    - name: host_repo_path
+      type: string
+      description: Absolute path to the host repository the session belongs to — the outermost superproject when the component is a submodule, the checkout itself otherwise.
+    - name: is_review_mode
+      type: boolean
+      description: True when the work package reviews an existing PR instead of producing a new implementation.
+    - name: issue_approved
+      type: boolean
+      description: Whether the drafted issue was approved for creation.
+      defaultValue: false
+    - name: issue_cancelled
+      type: boolean
+      description: Whether issue creation was cancelled by user.
+      defaultValue: false
+    - name: issue_number
+      type: string
+      description: GitHub or Jira issue number.
+    - name: issue_platform
+      type: string
+      description: Issue tracking platform (github|jira).
+    - name: issue_present
+      type: boolean
+      description: Whether the user supplied an issue reference for this work package.
+      defaultValue: false
+    - name: issue_record
+      type: object
+      description: The tracked issue as its platform returned it.
+    - name: issue_skipped
+      type: boolean
+      description: Whether issue creation was skipped by user.
+      defaultValue: false
+    - name: issue_type
+      type: string
+      description: Type of issue (feature|bug|task|enhancement|epic).
+    - name: issue_type_ambiguous
+      type: boolean
+      description: Whether the tracked issue's own signals leave its type unsettled.
+      defaultValue: false
+    - name: issue_url
+      type: string
+      description: URL of the tracker issue for this work package (alongside issue_number).
+      defaultValue: ""
+    - name: jira_project
+      type: string
+      description: How the Jira project was resolved during issue creation ('selected' from the project list, or 'specified' directly by the user).
+    - name: needs_github_issue_creation
+      type: boolean
+      description: Whether a GitHub issue should be created to mirror the Jira ticket.
+      defaultValue: false
+    - name: needs_issue_creation
+      type: boolean
+      description: Whether a new issue needs to be created.
+      defaultValue: false
+    - name: planning_folder_path
+      type: string
+      description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{work-package-name}."
+    - name: pr_exists
+      type: boolean
+      description: Whether a PR already exists for the current branch.
+      defaultValue: false
+    - name: pr_number
+      type: string
+      description: Pull request number.
+    - name: pr_skipped
+      type: boolean
+      description: Whether PR creation was skipped by user.
+      defaultValue: false
+    - name: pr_url
+      type: string
+      description: URL of the pull request for this work package (alongside pr_number).
+      defaultValue: ""
+    - name: project_type
+      type: string
+      description: Detected project type (e.g. rust-substrate); used to gate rust-substrate-specific validation steps.
+    - name: review_mode_ambiguous
+      type: boolean
+      description: True when review vs create intent cannot be derived confidently from the request.
+      defaultValue: false
+    - name: review_pr_captured
+      type: boolean
+      description: Whether the PR reference has been captured in review mode.
+      defaultValue: false
+    - name: review_pr_missing
+      type: boolean
+      description: True when review mode is active but no PR number or URL could be derived.
+      defaultValue: false
+    - name: review_pr_url
+      type: string
+      description: URL of the PR being reviewed (review mode only).
+    - name: squash_merge_supported
+      type: boolean
+      description: True when the target repo allows squash merges (allow_squash_merge=true from GitHub API).
+      defaultValue: false
+    - name: target_path
+      type: string
+      description: Feature worktree path for edits, builds, and PR ops (not host_repo_path).
+    - name: target_repo
+      type: string
+      description: GitHub repository as owner/repo. Supplies github-cli-protocol ops via name-match.
+    - name: target_workflow_outcomes
+      type: string
+      description: Plain outcome list a review run is measured against at close-out
+    - name: use_existing_pr
+      type: boolean
+      description: Whether to use an existing PR instead of creating a new one.
+      defaultValue: false
+    - name: worktree_created
+      type: boolean
+      description: True when a worktree at target_path was created or reused by this workflow run (only those worktrees are eligible for cleanup).
+      defaultValue: false
 required: true
 steps:
   - kind: action

@@ -1,7 +1,13 @@
 id: publish-review
-version: 1.0.0
+version: 1.1.0
 name: Publish Review
 description: Post the signed-off review to the pull request and record the publication.
+variables:
+  reads:
+    - has_pr_surface
+    - planning_folder_path
+    - publish_requested
+    - target_repo_path
 required: false
 steps:
   - kind: action

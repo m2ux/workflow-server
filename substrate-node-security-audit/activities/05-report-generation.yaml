@@ -1,7 +1,22 @@
 id: report-generation
-version: 3.7.0
+version: 3.8.0
 name: Report Generation
 description: Consolidate findings into the final audit report.
+variables:
+  reads:
+    - dispatch_complete
+    - ensemble_enabled
+    - has_reference_report
+    - merge_complete
+    - planning_folder_path
+    - target_commit
+    - target_submodule
+    - verification_complete
+  writes:
+    - name: report_complete
+      type: boolean
+      description: Phase 3 gate — report generation finished
+      defaultValue: false
 required: true
 steps:
   - kind: action

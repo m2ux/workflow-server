@@ -1,7 +1,62 @@
 id: design-philosophy
-version: 1.12.2
+version: 1.13.0
 name: Design Philosophy
 description: Apply the design framework to classify the problem and decide the workflow path.
+variables:
+  reads:
+    - assumption_decisions
+    - branch_name
+    - component_git_dir
+    - has_open_questions
+    - has_resolvable_assumptions
+    - is_review_mode
+    - issue_record
+    - planning_folder_path
+    - pr_number
+    - target_path
+    - target_repo
+  writes:
+    - name: has_deferred_assumptions
+      type: boolean
+      description: Whether any assumptions were deferred during review (triggers issue tracker posting).
+      defaultValue: false
+    - name: has_open_assumptions
+      type: boolean
+      description: Whether unresolved assumptions remain after analyse-challenge that require stakeholder input.
+      defaultValue: false
+    - name: needs_comprehension
+      type: boolean
+      description: Whether codebase comprehension is needed (mandatory after design-philosophy; may be re-requested after stakeholder feedback).
+      defaultValue: true
+    - name: needs_elicitation
+      type: boolean
+      description: Whether requirements elicitation is needed.
+      defaultValue: false
+    - name: needs_research
+      type: boolean
+      description: Whether research phase is needed.
+      defaultValue: false
+    - name: open_assumptions
+      type: array
+      description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down.
+    - name: problem_complexity
+      type: string
+      description: Problem complexity assessed during design-philosophy (simple|moderate|complex).
+    - name: problem_type
+      type: string
+      description: Problem or inventive-goal classification (e.g. defect, inventive-improvement).
+    - name: skip_optional_activities
+      type: boolean
+      description: Whether to skip optional discovery activities (elicitation and research).
+      defaultValue: false
+    - name: ticket_gaps_documented
+      type: boolean
+      description: Whether ticket completeness gaps were documented during review mode design-philosophy assessment.
+      defaultValue: false
+    - name: ticket_refactor_needed
+      type: boolean
+      description: Whether Jira ticket needs refactoring based on completeness assessment.
+      defaultValue: false
 required: true
 techniques:
   - scatter-gather

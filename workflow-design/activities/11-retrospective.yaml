@@ -1,7 +1,20 @@
 id: retrospective
-version: 1.2.0
+version: 1.3.0
 name: Retrospective
 description: A recorded completion summary (create/update) and a session retrospective capturing lessons before the workflow ends.
+variables:
+  reads:
+    - component_git_dir
+    - operation_type
+    - planning_folder_path
+    - scope_manifest
+    - target_path
+    - worktree_created
+  writes:
+    - name: worktree_created
+      type: boolean
+      description: True when a dedicated worktree at target_path was created or reused by this workflow run (only those worktrees are eligible for optional.
+      defaultValue: false
 required: true
 steps:
   - kind: technique

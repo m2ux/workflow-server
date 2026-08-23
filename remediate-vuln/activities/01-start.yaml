@@ -1,7 +1,46 @@
 id: start
-version: 2.1.0
+version: 2.2.0
 name: Start Security Vulnerability Remediation
 description: Initialize a high-sensitivity security fix.
+variables:
+  reads:
+    - branch_name
+    - host_repo_path
+    - planning_folder_path
+    - private_fork_url
+    - sec_vuln_url
+    - target_path
+  writes:
+    - name: branch_name
+      type: string
+      description: Security feature branch name (e.g. vuln/remediate-{short_id}).
+    - name: component_name
+      type: string
+      description: Basename of the component under remediation.
+      defaultValue: ""
+    - name: component_git_dir
+      type: string
+      description: Absolute path of the component's git working tree, whose security remote names the private fork.
+    - name: component_path
+      type: string
+      description: Path of the component under remediation, relative to the host repository.
+      defaultValue: .
+    - name: private_fork_url
+      type: string
+      description: URL of the private fork backing the security remote.
+    - name: project_type
+      type: string
+      description: Detected project type (e.g. rust-substrate|other).
+    - name: sec_vuln_url
+      type: string
+      description: URL of the restricted vulnerability advisory.
+    - name: short_id
+      type: string
+      description: Short advisory slug used in the security branch name.
+    - name: stealth_mode
+      type: boolean
+      description: No-disclosure gate for shared activities; always true here.
+      defaultValue: true
 required: true
 steps:
   - kind: action

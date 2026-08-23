@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: midnight-system-review
-version: 1.2.0
+version: 1.3.0
 title: Midnight System Review Workflow
 description: Evidence-driven system-level review of a midnight-node change-set. Derives investigation areas from the changed surface and a subsystem map, runs bounded per-area evidence probes, adjudicates rubric-graded findings, and renders a 1-5 merge-readiness verdict with per-area accounting, optionally publishing the review to the pull request.
 author: m2ux
@@ -31,6 +31,10 @@ techniques:
   activity:
     - variable-binding
 variables:
+  - name: has_pr_surface
+    type: boolean
+    description: Whether review_target resolved to a pull request with a postable review surface; set during scope-intake, gates the publish-decision checkpoint and the publish-review activity
+    defaultValue: false
   - name: review_target
     type: string
     description: PR reference (number or URL) or local diff spec identifying the midnight-node change-set under review
@@ -44,35 +48,8 @@ variables:
   - name: planning_folder_path
     type: string
     description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-{target}-system-review"
-  - name: insight_repo_path
-    type: string
-    description: Optional path to a local midnight-agent-eng insight checkout that enriches the bundled subsystem-map snapshot; the snapshot alone suffices when absent
   - name: probe_budget_per_area
     type: number
     description: Maximum evidence probes per investigation area; the two-probe lower bound stays guidance
     defaultValue: 4
-  - name: has_pr_surface
-    type: boolean
-    description: Whether review_target resolved to a pull request with a postable review surface; set during scope-intake, gates the publish-decision checkpoint and the publish-review activity
-    defaultValue: false
-  - name: gitnexus_available
-    type: boolean
-    description: Whether the target checkout is GitNexus-indexed; gates code-graph probes, with grep and file reads as the fallback when false
-    defaultValue: false
-  - name: cargo_available
-    type: boolean
-    description: Whether a working cargo toolchain is available for the target checkout; gates build and metadata probes
-    defaultValue: false
-  - name: node_binary_available
-    type: boolean
-    description: Whether a runnable midnight-node binary is available; gates runtime and SCALE-metadata probes
-    defaultValue: false
-  - name: plan_approved
-    type: boolean
-    description: Investigation-plan gate — set by the investigation-plan-approved checkpoint's approve option
-    defaultValue: false
-  - name: publish_requested
-    type: boolean
-    description: Publish gate — set by the publish-decision checkpoint's approve option
-    defaultValue: false
 initialActivity: scope-intake

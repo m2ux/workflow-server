@@ -1,7 +1,23 @@
 id: audit-finalize
-version: 2.4.0
+version: 2.5.0
 name: Audit Report Finalization
 description: Assemble the audit deliverables from prism's REPORT.md and DEFINITIVE-FINDINGS.md.
+variables:
+  reads:
+    - audit_description
+    - audit_output_path
+    - completed_analyses
+    - target_path
+  writes:
+    - name: audit_report_path
+      type: string
+      description: Path to the final AUDIT-REPORT.md
+    - name: detailed_findings_path
+      type: string
+      description: Path to DETAILED-FINDINGS.md
+    - name: trade_offs_path
+      type: string
+      description: Path to DESIGN-TRADE-OFFS.md
 steps:
   - kind: technique
     id: split-report
