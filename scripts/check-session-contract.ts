@@ -130,6 +130,27 @@ export async function checkSession(
   return { findings, unattributedWrites, checkedWrites };
 }
 
+/**
+ * Values a transition carried that the bag does not hold.
+ *
+ * The comparison is by VALUE, not by presence: a name that was already in the bag from a seeded
+ * default reads as present whatever the relay did, so asking only whether it exists lets a dropped
+ * write hide behind its own default. A name whose bag value differs from the one relayed is
+ * reported — the relay is the only path between the two, so they agree or something ate the write.
+ *
+ * Only what a transition actually carried belongs here. An activity's output is pending until the
+ * transition out of it, so a run that stops at an activity cap leaves its last set unsent, and
+ * unsent is not lost.
+ */
+export function relayGaps(
+  relayed: Record<string, unknown>,
+  bag: Record<string, unknown>,
+): string[] {
+  return Object.entries(relayed)
+    .filter(([name, value]) => JSON.stringify(bag[name]) !== JSON.stringify(value))
+    .map(([name]) => name);
+}
+
 /** Read a session file, or fail with the path rather than a parse error alone. */
 export function readSession(path: string): SessionShape {
   if (!existsSync(path)) throw new Error(`no session at ${path}`);

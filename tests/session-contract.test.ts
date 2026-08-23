@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { tmpdir } from 'node:os';
-import { checkSession } from '../scripts/check-session-contract.js';
+import { checkSession, relayGaps } from '../scripts/check-session-contract.js';
 
 /**
  * A run against the contracts its definitions declare (#493).
@@ -103,6 +103,33 @@ describe('session contract', () => {
     } finally {
       rmSync(root, { recursive: true, force: true });
     }
+  });
+
+  /**
+   * The relay is the only path from a worker's output to the bag, so the two agree or a write was
+   * eaten. This lived inside the smoke driver, where the only way to exercise it was a run costing
+   * real money — and the first such run failed on it, because it was comparing the wrong set.
+   */
+  describe('relay gaps', () => {
+    it('accepts a bag holding every value a transition carried', () => {
+      expect(relayGaps({ project_type: 'other', worktree_created: false }, { project_type: 'other', worktree_created: false, seeded: true }))
+        .toEqual([]);
+    });
+
+    it('reports a carried value the bag never received', () => {
+      expect(relayGaps({ project_type: 'other', problem_type: 'defect' }, { project_type: 'other' }))
+        .toEqual(['problem_type']);
+    });
+
+    it('sees a carried value the bag holds under a different value', () => {
+      // Presence alone would pass this: the name is in the bag, holding what a default seeded.
+      expect(relayGaps({ worktree_created: true }, { worktree_created: false })).toEqual(['worktree_created']);
+    });
+
+    it('is silent about what no transition carried', () => {
+      // The last activity's output is pending when a capped run stops. Pending is not dropped.
+      expect(relayGaps({}, { problem_type: undefined as unknown as string })).toEqual([]);
+    });
   });
 
   it('counts a write it cannot attribute rather than passing it', async () => {

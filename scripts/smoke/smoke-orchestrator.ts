@@ -29,7 +29,7 @@ import { parseToolResponse, parseWorkflowResponse, parseBundle } from '../../tes
 import { pickNext, activityCheckpointSteps, type ActivityDef, type CheckpointDef } from '../../tests/e2e/walker.js';
 import { defaultPolicy, makePolicy } from '../../tests/e2e/policies.js';
 import { evaluateCondition } from '../../src/schema/condition.schema.js';
-import { checkSession } from '../check-session-contract.js';
+import { checkSession, relayGaps } from '../check-session-contract.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const WORKTREE = resolve(HERE, '../..');
@@ -243,7 +243,7 @@ async function main() {
      * writes it, and start_session returns the canonical path without putting it in the bag.
      */
     let pendingVariables: Record<string, unknown> = { planning_folder_path: canonicalPlanningFolder };
-    /** Everything relayed across the run, for the end-of-run check that the bag received it. */
+    /** Values a transition carried, for the end-of-run check that the bag received each one. */
     const relayedVariables: Record<string, unknown> = {};
     const visited = new Set<string>();
     let current: string | null = (wfSummary.initialActivity as string)
@@ -271,6 +271,9 @@ async function main() {
       if (transitioned.isError) {
         throw new Error(`next_activity refused '${current}': ${toolText(transitioned)}`);
       }
+      // Relayed means carried by a transition the server accepted. Anything still pending when a
+      // capped run stops was never sent, and asking the bag for it would fail the run for stopping.
+      Object.assign(relayedVariables, pendingVariables);
       pendingVariables = {};
 
       const actRes = await h.client.callTool({ name: 'get_activity', arguments: { session_index: sessionIndex, context_tokens: 200_000 } });
@@ -363,7 +366,6 @@ async function main() {
         log('worker produced no variables_changed block');
       }
       pendingVariables = produced;
-      Object.assign(relayedVariables, produced);
 
       transcript.push({
         activity: current, checkpoints: cpRecords, workerTurns: turn, workerReports,
@@ -398,13 +400,13 @@ async function main() {
       + `${contract.unattributedWrites ? `, ${contract.unattributedWrites} unattributed` : ''}`);
     // What the worker said it produced has to be what the bag received: the relay is the only path,
     // and a name lost between the two is invisible from either side alone.
+    const dropped = relayGaps(relayedVariables, (finalState.variables ?? {}) as Record<string, unknown>);
     const relayed = Object.keys(relayedVariables);
-    const landed = relayed.filter((name) => finalState.variables?.[name] !== undefined);
-    const dropped = relayed.filter((name) => !landed.includes(name));
-    log(`relay: ${landed.length}/${relayed.length} reported values in the bag`);
+    log(`relay: ${relayed.length - dropped.length}/${relayed.length} carried values in the bag`
+      + `${Object.keys(pendingVariables).length ? `, ${Object.keys(pendingVariables).length} still pending at the cap` : ''}`);
     const failures = [
       ...contract.findings.map((f) => `[${f.check}] ${f.site}: ${f.detail}`),
-      ...(dropped.length ? [`[relay-dropped] ${dropped.join(', ')} were reported by a worker and are absent from the bag`] : []),
+      ...(dropped.length ? [`[relay-dropped] ${dropped.join(', ')} were carried by a transition and are absent from the bag`] : []),
     ];
     if (failures.length) {
       for (const line of failures) log(line);
