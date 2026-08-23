@@ -20,4 +20,5 @@ Transition object with an `id` identifying a status transition available for the
 ## Protocol
 
 1. Call `transitionJiraIssue { cloudId, issueIdOrKey, transition: status_transition }`.
-   - If the `{status_transition}` id is not available for the current issue state, apply [list-jira-transitions](./list-jira-transitions.md) to get the available transitions and retry with one of those ids.
+
+   `{status_transition}` carries an id drawn from this issue's own transitions lookup, which `atlassian-operations.transitions-are-dynamic` requires of every caller — transition ids are issue-specific, so an id sourced any other way is valid for at most one issue state.

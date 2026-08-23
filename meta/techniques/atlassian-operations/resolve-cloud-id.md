@@ -15,4 +15,6 @@ UUID of the cloud site, used by every product-specific tool
 
 ## Protocol
 
-1. Call `getAccessibleAtlassianResources` and use the first `{cloudId}` returned (or the one matching the user's site). This step must run before any product-specific Atlassian tool; if such a tool was called without a resolved `{cloudId}`, apply [resolve-cloud-id](./resolve-cloud-id.md) and retry the original operation with the returned `{cloudId}`. If the call is rejected for lack of permission, verify Jira/Confluence permissions and project roles.
+1. Call `getAccessibleAtlassianResources` and use the first `{cloudId}` returned, or the one matching the user's site. If the call is rejected for lack of permission, verify Jira/Confluence permissions and project roles.
+
+   `atlassian-operations.resolve-cloud-id-once` carries the ordering obligation: this operation runs once per session and every product-specific operation consumes the `{cloudId}` it caches.
