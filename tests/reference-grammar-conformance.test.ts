@@ -150,6 +150,26 @@ describe('asserted totals at the delivered corpus commit', () => {
     expect(census.verbCoveragePercent).toBeLessThan(100);
   });
 
+  it('publishes value-named callees on both bases, neither standing in for the other', () => {
+    // The link-keyed basis counts a call site whose link destination carries a `{token}`. The corpus
+    // has none, and that zero is a fact about templated destinations rather than a claim that no
+    // callee is ever chosen at run time — which is exactly what a criterion satisfied over an empty
+    // population would otherwise read as.
+    expect(census.valueNamedCallees).toBe(0);
+
+    // The activity-layer basis counts the shapes that do occur. A step binding supplies the callee as
+    // an input value, so the choice is made in the activity YAML and the calling technique's prose
+    // holds no link; the harness table's readers apply whatever the kind resolves to, so the callee is
+    // a table row. No widening of the verb list or the link grammar reaches either: they are addressed
+    // in a different plane, not under-counted in this one.
+    expect(census.bindSuppliedCallees).toBe(8);
+    expect(census.tableDrawnCallees).toBe(4);
+    expect(census.activityLayerValueNamedCallees).toBe(12);
+
+    // The point of publishing both: the population is not empty, so the zero must not be read alone.
+    expect(census.activityLayerValueNamedCallees).toBeGreaterThan(census.valueNamedCallees);
+  });
+
   it('keeps the two container-targeted sites counted rather than repaired', () => {
     // Both name a group as a set of operations, which the container-target term admits as a call
     // site. Neither is the rule-addressed defect, so neither is repaired here.

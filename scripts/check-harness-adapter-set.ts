@@ -82,16 +82,42 @@ interface Parsed {
   unparseable: string[];
 }
 
+/** One row of the resolution map: a harness kind, and the adapter file serving it. */
+export interface HarnessMapRow { kind: string; file: string; unparseable?: true }
+
+/**
+ * The harness kind → file rows of the resolution map, from the step that owns the table.
+ *
+ * Exported so the inline-reference census counts this table's value-named callees out of the same
+ * parse this guard checks. The table is the corpus's clearest case of a callee chosen by a value:
+ * `spawn-agent` and its siblings apply whatever the kind resolves to, so no link names the callee and
+ * no link-keyed traversal reaches it. Two readings of one table is the drift this guard exists to
+ * prevent, so there is one reading.
+ */
+export function harnessMapRows(root: string): HarnessMapRow[] {
+  const lines = toLines(readFileSync(join(root, MAP_FILE), 'utf-8'));
+  const out: HarnessMapRow[] = [];
+  for (const line of stepLines(lines, 1)) {
+    const row = MAP_ROW_RE.exec(line);
+    if (!row) continue;
+    out.push(NAME_RE.test(row[1]!)
+      ? { kind: row[1]!, file: row[2]! }
+      : { kind: row[1]!, file: row[2]!, unparseable: true });
+  }
+  return out;
+}
+
+/** The file the resolution map lives in, relative to the corpus root. */
+export const HARNESS_MAP_FILE = MAP_FILE;
+
 function parseMap(root: string): Parsed {
   const lines = toLines(readFileSync(join(root, MAP_FILE), 'utf-8'));
   const rows: Array<{ kind: string; file: string }> = [];
   const unparseable: string[] = [];
 
-  for (const line of stepLines(lines, 1)) {
-    const row = MAP_ROW_RE.exec(line);
-    if (!row) continue;
-    if (!NAME_RE.test(row[1]!)) { unparseable.push(`harness kind '${row[1]}'`); continue; }
-    rows.push({ kind: row[1]!, file: row[2]! });
+  for (const row of harnessMapRows(root)) {
+    if (row.unparseable) { unparseable.push(`harness kind '${row.kind}'`); continue; }
+    rows.push({ kind: row.kind, file: row.file });
   }
 
   // The vocabulary sentence, from the step that sets it — not from a passing mention elsewhere.

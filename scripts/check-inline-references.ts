@@ -31,6 +31,17 @@
  *   unbound-argument             a required own input of the callee that no name at the call site supplies
  *   value-named-callee           a callee named by a runtime value, so beyond static reach
  *
+ * **A callee named by a value is counted twice over, on two bases, and both figures are published.**
+ * The link-keyed basis counts a call site whose link destination carries a `{token}`; the corpus has
+ * none, and that zero is a fact about templated destinations rather than a claim that no callee is
+ * ever chosen at run time. The activity-layer basis counts the shapes that actually occur: a step
+ * binding whose input VALUE names a technique, and the harness kind-to-file table whose readers apply
+ * whatever the kind resolves to. Neither leaves a link in a Protocol section, so no widening of the
+ * verb list or the link grammar would ever reach them — the population is not under-counted, it is
+ * addressed in a different plane. Publishing both figures beside each other is the same discipline
+ * the coverage percentage follows: a reproducible zero over an empty population must not read as
+ * coverage of a population that is not empty.
+ *
  * The split is deliberate. A static reading of the name-match convention cannot see the runtime
  * variable bag an input resolves against, so an argument bin is a candidate for disposition and not
  * yet a defect. Failing on one would have the guard assert something it cannot observe, which is the
@@ -56,6 +67,8 @@ import {
   extractCallSites,
   findLinks,
 } from '../src/utils/reference-grammar.js';
+import { parse as parseYaml } from 'yaml';
+import { HARNESS_MAP_FILE, harnessMapRows } from './check-harness-adapter-set.js';
 
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
@@ -260,6 +273,17 @@ export interface Census {
    * zero for templated destinations and not a claim that no callee is ever chosen at runtime.
    */
   valueNamedCallees: number;
+  /**
+   * Activity steps binding a technique reference as an input VALUE, the reference resolving to a file.
+   *
+   * A callee supplied this way is chosen where the step is written, not where the protocol is, so the
+   * caller's prose holds no link and the link-keyed figure above cannot see it at any verb width.
+   */
+  bindSuppliedCallees: number;
+  /** Rows of the harness kind-to-file table — callees selected by a value rather than named by a link. */
+  tableDrawnCallees: number;
+  /** The two activity-layer shapes together: the population the link-keyed zero does not reach. */
+  activityLayerValueNamedCallees: number;
   /** SC-4's bins, over required own inputs of resolved callees — the disposition worklist. */
   argumentsNameMatchSatisfied: number;
   argumentsGenuinelyUnbound: number;
@@ -462,6 +486,9 @@ function analyse(root: string): Analysis {
     }
   }
 
+  const activityLayer = enumerateActivityLayerCallees(root);
+  for (const entry of activityLayer.worklist) worklist.push(entry);
+
   const callerFiles = new Set(sites.map((s) => s.callerRel)).size;
   const census: Census = {
     filesScanned,
@@ -476,6 +503,9 @@ function analyse(root: string): Analysis {
     containerTargeted,
     unresolvedTargets,
     valueNamedCallees,
+    bindSuppliedCallees: activityLayer.bindSupplied,
+    tableDrawnCallees: activityLayer.tableDrawn,
+    activityLayerValueNamedCallees: activityLayer.bindSupplied + activityLayer.tableDrawn,
     argumentsNameMatchSatisfied: satisfied,
     argumentsGenuinelyUnbound: unbound,
     callSitesWithUnboundArgument: sitesWithUnbound.size,
@@ -483,6 +513,92 @@ function analyse(root: string): Analysis {
 
   assertScanned(filesScanned, 'technique files with a Protocol section', root);
   return { census, findings, worklist };
+}
+
+/** A value that reads as a technique reference: `group::op`, or `workflow::group::op`. */
+const TECHNIQUE_REF_RE = /^[a-z][a-z0-9-]*(?:::[a-z][a-z0-9-]*)+$/i;
+
+/** Does a reference resolve to a technique file, as a flat leaf or a group container? */
+function referenceResolves(root: string, ref: string, workflow: string): boolean {
+  const segments = ref.split('::');
+  const inTree = (tree: string, path: string[]): boolean => {
+    const dir = join(root, tree, 'techniques');
+    return existsSync(join(dir, `${path.join('/')}.md`))
+      || existsSync(join(dir, ...path, CONTAINER_FILENAME));
+  };
+  // A leading segment naming a real workflow is a cross-workflow prefix, not a container.
+  if (segments.length >= 2 && existsSync(join(root, segments[0]!, 'techniques'))
+      && inTree(segments[0]!, segments.slice(1))) {
+    return true;
+  }
+  return inTree(workflow, segments) || inTree('meta', segments);
+}
+
+/**
+ * Enumerate the callees chosen by a value rather than named by a link.
+ *
+ * Two shapes, both real and both invisible to the link grammar. A step binding supplies a technique
+ * reference as an input value, so the choice is made in the activity YAML and the calling technique's
+ * prose holds nothing to resolve. And the harness kind-to-file table is read by operations that apply
+ * whatever the kind resolves to, so the callee is a table row rather than a destination.
+ *
+ * These are reported, never failed. A callee chosen at run time is not a defect — it is a reach this
+ * guard's grammar cannot follow, and saying so is the whole point of counting it.
+ */
+function enumerateActivityLayerCallees(root: string): {
+  bindSupplied: number;
+  tableDrawn: number;
+  worklist: Finding[];
+} {
+  const worklist: Finding[] = [];
+  let bindSupplied = 0;
+
+  for (const workflow of readdirSync(root)) {
+    const activityDir = join(root, workflow, 'activities');
+    if (!existsSync(activityDir) || !statSync(activityDir).isDirectory()) continue;
+    for (const file of readdirSync(activityDir)) {
+      if (!/\.ya?ml$/.test(file)) continue;
+      const doc = parseYaml(readFileSync(join(activityDir, file), 'utf-8')) as unknown;
+      const site = `${workflow}/activities/${file}`;
+      const walk = (steps: unknown): void => {
+        if (!Array.isArray(steps)) return;
+        for (const raw of steps) {
+          const step = raw as { kind?: string; id?: string; steps?: unknown; technique?: unknown };
+          walk(step.steps);
+          if (step.kind !== 'technique' || typeof step.technique !== 'object' || step.technique === null) continue;
+          const inputs = (step.technique as { inputs?: Record<string, unknown> }).inputs ?? {};
+          for (const [key, value] of Object.entries(inputs)) {
+            if (typeof value !== 'string' || !TECHNIQUE_REF_RE.test(value)) continue;
+            if (!referenceResolves(root, value, workflow)) continue;
+            bindSupplied++;
+            worklist.push({
+              check: 'value-named-callee',
+              site: `${site} → step '${step.id ?? '?'}'`,
+              detail: `input \`${key}\` supplies the callee \`${value}\` as a value, so the calling `
+                + 'technique holds no link and no link-keyed grammar reaches it — check closure over '
+                + 'the set the value is drawn from',
+            });
+          }
+        }
+      };
+      walk((doc as { steps?: unknown } | null)?.steps);
+    }
+  }
+
+  // The harness table, read from the same parse the adapter-set guard checks.
+  const mapPath = join(root, HARNESS_MAP_FILE);
+  const rows = existsSync(mapPath) ? harnessMapRows(root) : [];
+  for (const row of rows) {
+    worklist.push({
+      check: 'value-named-callee',
+      site: `${HARNESS_MAP_FILE} → \`${row.kind}\``,
+      detail: `the adapter \`${row.file}\` is selected through the kind-to-file table rather than named `
+        + 'by a link, so its callers reach it by value — closure over this set is checked by '
+        + 'check-harness-adapter-set',
+    });
+  }
+
+  return { bindSupplied, tableDrawn: rows.length, worklist };
 }
 
 /** The census, for the conformance test that asserts the totals at the delivered corpus commit. */
@@ -569,6 +685,21 @@ function printCensus(census: Census): void {
   );
   console.log(
     'so none of them is evidence about callers that name an operation in prose. A retirement needs a reading pass.',
+  );
+  console.log(
+    `\nvalue-named callees, on two bases: ${census.valueNamedCallees} link-keyed `
+    + `(a link destination carrying a {token}), and ${census.activityLayerValueNamedCallees} at the activity layer `
+    + `— ${census.bindSuppliedCallees} supplied as a step-binding input value, `
+    + `${census.tableDrawnCallees} drawn from the harness kind-to-file table.`,
+  );
+  console.log(
+    'Both stand with their bases. The link-keyed figure is a fact about templated destinations, not a claim',
+  );
+  console.log(
+    'that no callee is chosen at run time; the activity-layer figure counts the shapes that are, and no widening',
+  );
+  console.log(
+    'of the verb list or the link grammar would reach them, because they are addressed in a different plane.',
   );
 }
 
