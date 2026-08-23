@@ -132,6 +132,8 @@ Three others are gains, and the proposal is right that code sometimes removes a 
 
 The escape hatches concentrate in the operations that carry an interpretive tail. `impact` calls one tool and then derives a risk level against thresholds, falls back to a hand-derived caller set when the graph is blind, and requires HIGH or CRITICAL risk to be surfaced to a person before an edit proceeds. It converts as a tool plus a thin interpreting technique, not as a tool. **Of the 37 wrapper operations reached, 5 convert with nothing left over; 32 either carry a rule, cross a threshold, hold an escape hatch, reach a person, or call another technique.** The clean five carry one call site each.
 
+The population that figure counts is the 37 wrapper operations an inline call reaches **across all five wrapper groups**, so the clean five are spread over those groups and the figure says nothing about any one of them. Measured inside the two groups this package converts, the ratio is worse than the aggregate suggests. In `gitnexus-operations`, **17 operations, and after the shared staleness sentence is extracted 2 retire whole** — `read-cluster` and `read-process`, each a single bullet reading one MCP resource. `detect-changes` is arguable at a third, its two trailing bullets reading as usage guidance rather than a tool call. Every other operation keeps an interpreting half: five derive or classify a result, four hold a resolution fallback beyond staleness, nine call a sibling operation, and two reach a person. In `atlassian-operations`, **20 of 24 files are clean on all five keep-criteria**, and cleanliness there is not a licence to delete — see the reachability finding below. So no operation in the converted population is retirable on the strength of the aggregate figure; each is decided on its own contract.
+
 ### Loud at runtime is real, and it is not a substitute for the guard
 
 The proposal's central mechanism claim holds. A tool schema declares its required arguments and the transport rejects a call that omits one, so a contract violation announces itself to an agent that can read the error and fix it. That is a genuine improvement on the 56 omitted inputs the technique side carries today, which fail silently and went unnoticed for exactly that reason.
@@ -230,6 +232,67 @@ own steps. Resting the design's central decision — that a folded callee arrive
 unchecked prose obligation would reproduce the failure the package exists to remove. The marginal cost is
 small: the attributed rules block the decision requires is being built regardless, so the criterion checks
 a property of machinery already in scope rather than asking for new machinery.
+
+### Reproducible is not the same as complete
+
+This sits beside [SC-3](#success-criteria) rather than inside it, because it is a limit on what that
+criterion authorises rather than a change to what it asserts.
+
+SC-3 makes the guard's total **reproducible**: the guard publishes its grammar, the grammar fixes its nine
+terms, and changing a term changes the total and fails the assertion until it is re-baselined. Anyone can
+re-derive the number and get the same number. That is the whole of what it claims, and it is enough for a
+guard whose job is to assert a total and fail a new site into visibility.
+
+It is not a claim that the grammar sees every place the corpus reaches an operation. The grammar counts an
+invoking verb from a published list, adjacent to an unanchored markdown link, inside a Protocol section,
+outside fences, with qualified pairs collapsed. A reference that arrives any other way is outside the count
+**by design** and is a real consumer regardless. Measured against `gitnexus-operations`: the published verb
+list introduces roughly 40% of the reaching tokens, `via` alone accounts for 19 occurrences and appears on
+no list, and one workflow — `midnight-system-review`, six files and twelve operation reaches — carries no
+markdown link and no qualified id at all, so every link-based or `::`-based extractor reads it as a
+non-consumer. Case is a second axis: six files spell the tool only as `GitNexus`, and two of those reach
+`analyze` semantically with no identifier of any kind.
+
+The two purposes need different properties, and this is the distinction to hold. **A total needs to be
+reproducible. A deletion needs to be complete.** An asserted total is sound evidence that the guard counts
+what it says it counts, and it is not evidence that nothing else calls the thing being deleted — so it is
+never authorisation to delete. Both statements are true at once: the grammar is fit for the guard and unfit
+for a retirement decision, and neither fact is a defect in the other. A retirement establishes its consumer
+set by a sweep that is deliberately wider than the grammar — every reference form, every verb, case-
+insensitive, fences and tables and YAML included — and the grammar's total is not a substitute for that
+sweep at any population size.
+
+The corollary for the guard is that a site leaving the grammar's count has not left the corpus. It has left
+the count.
+
+### Cleanliness is not reachability, and in Atlassian they run the other way
+
+Two re-derivations against `atlassian-operations` (24 files: 23 operations plus the container):
+
+| Figure as carried | Re-derived | Verdict |
+|---|---|---|
+| 21 of 24 files reached by nobody | **18 of 24 unreached, 6 reached** | Superseded; overstates orphaning by 3 files |
+| 19 of 24 files showing no residue | **20 of 24 clean on all five keep-criteria** | Superseded by one file |
+| Reached and clean are nearly disjoint | **They overlap heavily — 4 of the 6 reached files are clean** | Superseded; the relationship is inverted |
+
+The third row is the one that matters, and it inverts the hazard rather than resizing it. The concern
+recorded against a naive "retire the clean ones" pass was that it would delete files nothing calls, which is
+untidy but harmless. Measured, the opposite is the live risk: two thirds of the reached set is clean, so the
+files a cleanliness filter selects first are `get-jira-issue`, `user-info`, `edit-jira-issue` and
+`comment-jira-issue` — **all four bound as live steps** in `01-start-work-package.yaml` and
+`07-assumptions-review.yaml`. Cleanliness measures what a file contains; reachability measures who needs it;
+the two are independent, and filtering on the first deletes live bindings. Retirement is gated on
+reachability, with cleanliness deciding only what survives in a file that stays.
+
+Two defects surfaced while measuring this, both of the class the package already counts. The container's
+`transitions-are-dynamic` rule requires a transitions lookup before a transition, and the only live
+consumer of `transition-jira-issue` performs none — and binds that operation without its required
+`status_transition` input, so it is also one of the omitted-required-input sites. And
+`resolve-cloud-id-once`, the container's first rule, points at an operation nothing reaches: the caller
+asserts a non-null cloud id and instructs the agent in prose to call the raw tool, which is the shape
+GitNexus's `must-use-operations` rule exists to forbid. Both are recorded in the
+[deferred-items register](deferred-items.md) rather than repaired here, being outside this package's
+converted scope.
 
 ## Assumptions
 

@@ -166,10 +166,16 @@ against a corpus the same change is still editing, and a reviewer cannot separat
 legitimate re-baseline. The ordering that removes it:
 
 1. Tasks 1-2 (grammar module, W0 ancestry) — no corpus effect.
-2. Tasks 3-4 (conversion, prose retirement) — all corpus-affecting work, plus the submodule re-pin.
-3. Task 5 (the two rule-addressed repairs and the dangling target) — the last corpus edit.
+2. Tasks 3-4 (conversion, prose retirement) — corpus-affecting work.
+3. Task 5 (the two rule-addressed repairs and the dangling target) — the last corpus edit, and the submodule re-pin closes the corpus stage behind it.
 4. Task 6 (guard) and Task 7 (fixtures) — totals baselined here, against the delivered corpus commit.
 5. Tasks 8-12 — delivery, doors, retirement, scan, authorities.
+
+The re-pin belongs to the last corpus edit rather than to the conversion, because the pin is what makes a
+corpus commit citable and the guard's totals are asserted against the pinned commit. Re-pinning after
+Task 4 and then editing the corpus again in Task 5 would leave the pin naming a commit the corpus has since
+moved past, which is the state the sequencing exists to prevent: a guard baselined against a pin that no
+longer describes the tree. One re-pin, after the last corpus edit, and the corpus stage ends there.
 
 ### Assumptions
 
@@ -247,6 +253,16 @@ continuing at a revisit.
 **Deliverables:**
 - `src/loaders/reference-traversal.ts` - depth-first walk carrying a visited set, emitting a delivery event per body
 - `tests/reference-traversal.test.ts` - the three correctly-authored cycle members, and a synthetic deep chain
+
+The corpus cycle is identified rather than described, so the test binds to named files. `verify-index` and
+`analyze` in `meta/techniques/gitnexus-operations/` reach each other: `verify-index` applies `analyze` on
+the index-absent branch and again when the index is stale, and `analyze` closes by optionally applying
+`verify-index` to confirm freshness. `verify-index` also applies itself, retrying after the analyze it
+triggered. That is a two-member cycle plus a self-loop, in one directory, between two files — the smallest
+live fixture the visited set can be exercised against, and the one a naive intra-group resolution walks
+forever. Both arms are guarded in prose (one optional, one branch-conditional), which is why the corpus
+loads today and why the cycle is invisible until something follows the references: the traversal is the
+first consumer that does.
 
 ### Task 9: Folded bodies are keyed as techniques and arrive governed (90-120 min)
 **Goal:** A delivered callee collapses against a step-bound delivery of the same operation, and carries the
