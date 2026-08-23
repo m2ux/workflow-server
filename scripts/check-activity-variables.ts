@@ -36,6 +36,7 @@ import { AMBIENT_CONTEXT_IDS, IDENTIFIER_PATTERN } from '../src/utils/binding-pr
 import {
   activityGraph,
   deriveActivityContract,
+  orchestratorInputs,
   unreachableReads,
   type DerivedContract,
 } from '../src/utils/activity-variables.js';
@@ -76,6 +77,8 @@ function ownDeclarations(workflowYaml: string): VariableDefinition[] {
 
 export async function collectFindings(root: string): Promise<Finding[]> {
   const findings: Finding[] = [];
+  // What the orchestrator consumes out of the same bag, whichever workflow is running.
+  const engineInputs = await orchestratorInputs(root);
   const workflows = readdirSync(root)
     .filter((entry) => statSync(join(root, entry)).isDirectory() && existsSync(join(root, entry, 'workflow.yaml')))
     .sort();
@@ -189,6 +192,7 @@ export async function collectFindings(root: string): Promise<Finding[]> {
       }
       for (const name of record.declaredWrites.keys()) {
         if (readersOf.has(name) || proseReads.has(name) || record.derived.artifactWrites.has(name)) continue;
+        if (engineInputs.has(name)) continue;
         findings.push({
           check: 'unread-write', site: site(record),
           detail: `writes '${name}', which nothing in this workflow reads`,

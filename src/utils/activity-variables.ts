@@ -21,12 +21,15 @@
  *     rather than a silent lie.
  *   - `activityGraph` / `unreachableReads` — the graph walk the reachability check runs over.
  */
+import { existsSync, readdirSync, readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import type { Activity, Step, TechniqueBinding } from '../schema/activity.schema.js';
 import { flattenActivitySteps, techniqueName } from '../schema/activity.schema.js';
 import type { Workflow } from '../schema/workflow.schema.js';
 import type { ActivityVariables, VariableDefinition } from '../schema/variable.schema.js';
 import type { Condition } from '../schema/condition.schema.js';
 import { composeActivityTechnique } from '../loaders/technique-loader.js';
+import { parseDefinition } from './serialization.js';
 import { IDENTIFIER_PATTERN, OPTIONAL_INPUT_RE } from './binding-provenance.js';
 import { expressionPaths } from '../schema/when-expression.js';
 import { logWarn } from '../logging.js';
@@ -376,6 +379,9 @@ export async function deriveActivityContract(args: {
     }
 
     if (step.kind === 'checkpoint') {
+      // A checkpoint reached more than once carries its instance in its id — `scope-confirmed#{scope_round}`
+      // — so the id is a read of whatever distinguishes this visit from the last.
+      tokenReads(step.id).forEach(read);
       if (step.message) tokenReads(step.message).forEach(read);
       for (const option of step.options ?? []) {
         for (const [name, value] of Object.entries(option.effect?.setVariable ?? {})) {
@@ -414,6 +420,49 @@ export async function deriveActivityContract(args: {
 
   return { reads, writes, internalReads, artifactWrites, routingReads, consumes };
 }
+
+/**
+ * The orchestrator's side of the session bag: every input the operations of meta's
+ * `workflow-engine` group declare.
+ *
+ * A worker writes some values for the orchestrator rather than for a later activity — a Progress
+ * row marked cancelled where a validation suite could not run, the outcomes a finished run
+ * reports. The orchestrator's operations are the consumer, and they sit outside the workflow's own
+ * graph by construction, since every workflow is driven by the same engine. Without this, a value
+ * written for the engine reads as a value nothing consumes.
+ */
+export async function orchestratorInputs(workflowDir: string): Promise<Set<string>> {
+  const cached = orchestratorInputsCache.get(workflowDir);
+  if (cached) return cached;
+  const names = new Set<string>();
+  const dir = join(workflowDir, ORCHESTRATOR_WORKFLOW, 'techniques', ORCHESTRATOR_GROUP);
+  if (!existsSync(dir)) return names;
+  for (const entry of readdirSync(dir)) {
+    if (!entry.endsWith('.md')) continue;
+    const op = entry === 'TECHNIQUE.md' ? ORCHESTRATOR_GROUP : `${ORCHESTRATOR_GROUP}::${entry.slice(0, -3)}`;
+    const composed = await composeActivityTechnique(op, workflowDir, ORCHESTRATOR_WORKFLOW);
+    if (!composed.success) continue;
+    for (const input of composed.value.technique.inputs ?? []) names.add(input.id);
+    for (const input of composed.value.technique.inherited_inputs?.items ?? []) names.add(input.id);
+  }
+  // The orchestrator is also an ordinary reader through its own activities: meta drives every
+  // session, so a name its graph reads is consumed whichever workflow writes it.
+  const metaActivities = join(workflowDir, ORCHESTRATOR_WORKFLOW, 'activities');
+  if (existsSync(metaActivities)) {
+    for (const entry of readdirSync(metaActivities)) {
+      if (!entry.endsWith('.yaml')) continue;
+      const parsed = parseDefinition(readFileSync(join(metaActivities, entry), 'utf-8')) as
+        { variables?: { reads?: string[] } } | null;
+      for (const name of parsed?.variables?.reads ?? []) names.add(name);
+    }
+  }
+  orchestratorInputsCache.set(workflowDir, names);
+  return names;
+}
+
+const ORCHESTRATOR_WORKFLOW = 'meta';
+const ORCHESTRATOR_GROUP = 'workflow-engine';
+const orchestratorInputsCache = new Map<string, Set<string>>();
 
 /* --------------------------------- graph --------------------------------- */
 
