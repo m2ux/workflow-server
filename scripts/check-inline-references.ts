@@ -235,6 +235,11 @@ function inheritedIds(callerAbs: string, root: string): Set<string> {
 export interface Census {
   /** Technique files whose scanned section was read. */
   filesScanned: number;
+  /**
+   * Unanchored technique link occurrences in scanned sections, before the verb test and before the
+   * qualified-pair collapse — the input the `counting-unit` term converts into call sites.
+   */
+  rawLinkOccurrences: number;
   /** Unanchored technique links in scanned sections, before the verb test — the link-resolvable population. */
   linkResolvableReferences: number;
   /** Call sites the published verb list admits. */
@@ -273,9 +278,15 @@ interface Site {
 }
 
 /** Every call site in the corpus under the published grammar, with the prose line that carries it. */
-function enumerateSites(root: string): { sites: Site[]; linkResolvable: number; filesScanned: number } {
+function enumerateSites(root: string): {
+  sites: Site[];
+  linkResolvable: number;
+  rawOccurrences: number;
+  filesScanned: number;
+} {
   const sites: Site[] = [];
   let linkResolvable = 0;
+  let rawOccurrences = 0;
   let filesScanned = 0;
   for (const path of techniqueFiles(root)) {
     const section = scannedSection(readFileSync(path, 'utf-8'));
@@ -302,6 +313,7 @@ function enumerateSites(root: string): { sites: Site[]; linkResolvable: number; 
         i++;
       }
     }
+    rawOccurrences += links.length;
     linkResolvable += links.length - collapsed;
 
     for (const s of extractCallSites(section.body)) {
@@ -317,7 +329,7 @@ function enumerateSites(root: string): { sites: Site[]; linkResolvable: number; 
       });
     }
   }
-  return { sites, linkResolvable, filesScanned };
+  return { sites, linkResolvable, rawOccurrences, filesScanned };
 }
 
 /** Absolute path a call site's destination names, or undefined when a runtime value names it. */
@@ -341,7 +353,7 @@ interface Analysis {
 }
 
 function analyse(root: string): Analysis {
-  const { sites, linkResolvable, filesScanned } = enumerateSites(root);
+  const { sites, linkResolvable, rawOccurrences, filesScanned } = enumerateSites(root);
   const findings: Finding[] = [];
   const worklist: Finding[] = [];
   const signatures = new Map<string, ReturnType<typeof declaredSignature>>();
@@ -453,6 +465,7 @@ function analyse(root: string): Analysis {
   const callerFiles = new Set(sites.map((s) => s.callerRel)).size;
   const census: Census = {
     filesScanned,
+    rawLinkOccurrences: rawOccurrences,
     linkResolvableReferences: linkResolvable,
     logicalCallSites: sites.length,
     verbCoveragePercent: linkResolvable === 0 ? 0 : Math.round((sites.length / linkResolvable) * 100),
