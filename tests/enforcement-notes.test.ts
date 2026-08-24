@@ -33,6 +33,9 @@ describe('payload-borne enforcement hints (#189 C7)', () => {
       'version: 1.0.0',
       'title: Enforcement fixture',
       'initialActivity: acts',
+      'graph:',
+      '  acts:',
+      '    done: plain',
       'variables:',
       '  - name: proceed_confirmed',
       '    type: boolean',
@@ -60,11 +63,12 @@ describe('payload-borne enforcement hints (#189 C7)', () => {
       '      - id: go',
       '        label: Go',
       '        effect:',
-      '          transitionTo: plain',
+      '          exit: done',
       '    defaultOption: go',
       '    autoAdvanceMs: 1000',
-      'transitions:',
-      '  - to: plain',
+      'exits:',
+      '  - id: done',
+      '    isDefault: true',
     ].join('\n'));
 
     // plain: a single technique step, no action verbs, no checkpoint → no enforcement_notes.

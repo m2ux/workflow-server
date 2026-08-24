@@ -4,19 +4,20 @@
  * Drives a workflow from its initial activity to a terminal activity through
  * the real MCP server, deterministically. At each activity it resolves the
  * applicable checkpoints (yield → respond → resume) by asking a Policy which
- * option to pick, accumulates the resulting variable effects, and selects the
- * next activity by evaluating the activity's transitions against that variable
- * bag with the server's own `evaluateCondition`.
+ * option to pick, accumulates the resulting variable effects, and names the exit
+ * the activity took — the one a checkpoint option selected, else the first whose
+ * `when` holds against that variable bag, else the default — then reads the
+ * destination from the workflow's graph.
  *
- * The walker tracks variables locally only to CHOOSE a transition; the server
- * remains the source of truth and validates each transition. A divergence
- * surfaces as a thrown error — itself a useful consistency signal.
+ * The walker tracks variables locally only to CHOOSE an exit; the server remains
+ * the source of truth and validates each transition. A divergence surfaces as a
+ * thrown error — itself a useful consistency signal.
  */
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import type { Client } from '@modelcontextprotocol/sdk/client/index.js';
 import { evaluateCondition, type Condition } from '../../src/schema/condition.schema.js';
-import { evaluateWhenExpression } from '../../src/schema/when-expression.js';
+import { evaluateWhenExpression, parseWhen } from '../../src/schema/when-expression.js';
 import { unboundPositiveReads, type GateUnansweredCounts } from '../../src/utils/gate-liveness.js';
 import { TERMINAL_SENTINEL } from '../../src/loaders/workflow-loader.js';
 import { parseToolResponse, parseWorkflowResponse, parseBundle, rawText, isError, type Harness } from './harness.js';
@@ -27,8 +28,7 @@ export interface CheckpointOption {
   description?: string;
   effect?: {
     setVariable?: Record<string, unknown>;
-    transitionTo?: string;
-    skipActivities?: string[];
+    exit?: string;
   };
 }
 
@@ -41,10 +41,21 @@ export interface CheckpointDef {
   defaultOption?: string;
 }
 
-export interface TransitionDef {
-  to: string;
-  condition?: Condition;
+export interface ExitDef {
+  id: string;
+  label?: string;
+  when?: string;
   isDefault?: boolean;
+  immediate?: boolean;
+}
+
+/** Exit bindings as the workflow declares them: activity id → exit id → destination. */
+export type Graph = Record<string, Record<string, string>>;
+
+/** An exit the activity took, with the destination the workflow binds it to. */
+export interface ExitChoice {
+  exit: string;
+  to: string;
 }
 
 export interface StepAction {
@@ -76,7 +87,7 @@ export interface StepDef {
 export interface ActivityDef {
   id: string;
   steps?: StepDef[];
-  transitions?: TransitionDef[];
+  exits?: ExitDef[];
   operations?: string[];
   techniques?: { primary?: string; supporting?: string[] };
   artifactPrefix?: string;
@@ -110,8 +121,7 @@ export interface CheckpointRecord {
   checkpointId: string;
   optionId: string;
   setVariable?: Record<string, unknown>;
-  transitionTo?: string;
-  skipActivities?: string[];
+  exit?: string;
 }
 
 export interface WalkStep {
@@ -236,50 +246,74 @@ function defaultVariables(wf: Record<string, unknown>): Record<string, unknown> 
 }
 
 /**
- * Select the next activity id from an activity's transitions, or null when the
- * activity is terminal. A checkpoint `transitionTo` effect overrides the graph.
+ * The exit the activity takes, paired with the destination the workflow binds it to. An exit a
+ * checkpoint option selected wins; otherwise the first exit whose `when` holds; otherwise the
+ * default. Null when the activity is terminal or its exit leads nowhere the graph names.
  */
-export function pickNext(act: ActivityDef, variables: Record<string, unknown>, override?: string): string | null {
-  if (override) return override;
-  const transitions = act.transitions ?? [];
-  let fallback: string | null = null;
-  for (const t of transitions) {
-    if (t.condition) {
-      if (evaluateCondition(t.condition, variables)) return t.to;
-    } else if (!t.isDefault) {
-      return t.to; // unconditional, non-default → take immediately
-    }
-    if (t.isDefault) fallback = t.to;
+export function pickExit(act: ActivityDef, graph: Graph, variables: Record<string, unknown>, selected?: string): ExitChoice | null {
+  const exits = act.exits ?? [];
+  const bound = graph[act.id] ?? {};
+  const at = (id: string | undefined): ExitChoice | null => {
+    if (id === undefined) return null;
+    const to = bound[id];
+    return to === undefined ? null : { exit: id, to };
+  };
+  if (selected !== undefined) return at(selected);
+  for (const e of exits) {
+    if (e.when === undefined) continue;
+    if (evaluateWhenExpression(e.when, variables)) return at(e.id);
   }
-  return fallback;
+  return at(exits.find((e) => e.isDefault)?.id);
+}
+
+/** Where the activity goes, or null when it is terminal. */
+export function pickNext(act: ActivityDef, graph: Graph, variables: Record<string, unknown>, selected?: string): string | null {
+  return pickExit(act, graph, variables, selected)?.to ?? null;
 }
 
 /**
- * Workflow-agnostic forward advance: pick a transition to an as-yet-unvisited activity,
- * optimistically satisfying its (simple) gate condition by mutating `variables`. This stands in
- * for the agent-set convergence variables a no-LLM walker cannot infer, so any workflow drives
- * forward to coverage without per-workflow simulation. Returns the chosen activity id, or null
- * when no unvisited target can be reached (compound gates that cannot be satisfied are skipped).
+ * The exits state alone can take: one carrying a predicate, and the default. An exit with neither
+ * is reachable only by a checkpoint option naming it, so nothing that drives the graph from the
+ * variable bag — the forward advance, the enumerator's fork over targets — may offer it. Handing it
+ * to them lets a walk jump to an activity without passing the gate that decides to go there, which
+ * silently drops the coverage of that gate's other options.
  */
-function advanceToUnvisited(act: ActivityDef, variables: Record<string, unknown>, visits: Map<string, number>): string | null {
-  for (const t of act.transitions ?? []) {
-    if ((visits.get(t.to) ?? 0) > 0) continue;
-    if (!t.condition) return t.to;
+function predicateExits(act: ActivityDef): ExitDef[] {
+  return (act.exits ?? []).filter((e) => e.when !== undefined || e.isDefault);
+}
+
+/**
+ * Workflow-agnostic forward advance: pick an exit leading to an as-yet-unvisited activity,
+ * optimistically satisfying its `when` by mutating `variables`. This stands in for the agent-set
+ * convergence variables a no-LLM walker cannot infer, so any workflow drives forward to coverage
+ * without per-workflow simulation. Returns the chosen activity id, or null when no unvisited target
+ * can be reached (compound gates that cannot be satisfied are skipped).
+ */
+function advanceToUnvisited(act: ActivityDef, graph: Graph, variables: Record<string, unknown>, visits: Map<string, number>): string | null {
+  const bound = graph[act.id] ?? {};
+  for (const e of predicateExits(act)) {
+    const to = bound[e.id];
+    if (to === undefined || (visits.get(to) ?? 0) > 0) continue;
+    if (e.when === undefined) return to;
     const snapshot = { ...variables };
-    satisfyCondition(t.condition, variables);
-    if (evaluateCondition(t.condition, variables)) return t.to;
+    satisfyWhen(e.when, variables);
+    if (evaluateWhenExpression(e.when, variables)) return to;
     for (const k of Object.keys(variables)) delete variables[k];
     Object.assign(variables, snapshot);
   }
   return null;
 }
 
-/** Best-effort: set the bag so a SIMPLE condition evaluates true (compound conditions are left alone). */
-function satisfyCondition(cond: unknown, variables: Record<string, unknown>): void {
-  const c = cond as { type?: string; variable?: string; operator?: string; value?: unknown };
-  if (!c || c.type !== 'simple' || typeof c.variable !== 'string') return;
-  if (c.operator === '!=') variables[c.variable] = typeof c.value === 'boolean' ? !c.value : `__ne_${String(c.value)}`;
-  else variables[c.variable] = c.value; // ==, >=, <=, etc.: set to the compared value
+/** Best-effort: set the bag so a single-comparison `when` holds (compound expressions are left alone). */
+function satisfyWhen(when: string, variables: Record<string, unknown>): void {
+  const parsed = parseWhen(when);
+  if (!parsed.ok) return;
+  const ast = parsed.ast;
+  if (ast.kind === 'truthy') { variables[ast.path] = true; return; }
+  if (ast.kind !== 'cmp') return;
+  variables[ast.path] = ast.op === '!='
+    ? (typeof ast.value === 'boolean' ? !ast.value : `__ne_${String(ast.value)}`)
+    : ast.value; // ==, >=, <=, etc.: set to the compared value
 }
 
 /** Render an activity's declared artifact filenames (best-effort token interpolation). */
@@ -372,7 +406,7 @@ interface StepExecution {
   stepsExecuted: string[];
   /** `<step>:<variable>` for each gate read with nothing in the bag to read. */
   gatesReadUnbound: string[];
-  transitionOverride?: string;
+  selectedExit?: string;
 }
 
 /**
@@ -396,16 +430,16 @@ async function executeActivitySteps(
   const stepsExecuted: string[] = [];
   const gatesReadUnbound: string[] = [];
   const decidedLater = activityDecidedVariables(act);
-  let transitionOverride: string | undefined;
+  let selectedExit: string | undefined;
 
   const fireCheckpoint = async (cp: CheckpointDef): Promise<void> => {
     const optionId = policy.choose({ activityId, checkpoint: cp, variables });
     const effect = await resolveCheckpoint(client, sessionIndex, cp.id, optionId);
     if (effect.setVariable) Object.assign(variables, effect.setVariable);
-    if (effect.transitionTo) transitionOverride = effect.transitionTo;
+    if (effect.exit) selectedExit = effect.exit;
     cpRecords.push({
       activityId, checkpointId: cp.id, optionId,
-      setVariable: effect.setVariable, transitionTo: effect.transitionTo, skipActivities: effect.skipActivities,
+      setVariable: effect.setVariable, exit: effect.exit,
     });
     // A resumed worker re-requests its activity under the identity its dispatch bound, carrying
     // `bundle: "reference"` so content it still holds arrives as markers. Recording the delivery
@@ -469,7 +503,7 @@ async function executeActivitySteps(
     }
   };
   await walk(act.steps);
-  return { cpRecords, manifest, stepsExecuted, gatesReadUnbound, transitionOverride };
+  return { cpRecords, manifest, stepsExecuted, gatesReadUnbound, selectedExit };
 }
 
 /** The activity's checkpoint definitions in document order: the inline kind:checkpoint steps,
@@ -531,7 +565,7 @@ async function resolveCheckpoint(
   sessionIndex: string,
   checkpointId: string,
   optionId: string,
-): Promise<{ setVariable?: Record<string, unknown>; transitionTo?: string; skipActivities?: string[] }> {
+): Promise<{ setVariable?: Record<string, unknown>; exit?: string }> {
   const y = await client.callTool({ name: 'yield_checkpoint', arguments: { session_index: sessionIndex, checkpoint_id: checkpointId } });
   if (isError(y)) throw new Error(`yield_checkpoint(${checkpointId}) failed`);
   const yieldBody = parseToolResponse(y);
@@ -544,8 +578,7 @@ async function resolveCheckpoint(
     const effect = (yieldBody.effect ?? {}) as Record<string, unknown>;
     return {
       setVariable: (effect.setVariable ?? effect.variablesSet) as Record<string, unknown> | undefined,
-      transitionTo: (effect.transitionTo ?? effect.transitionedTo) as string | undefined,
-      skipActivities: (effect.skipActivities ?? effect.activitiesSkipped) as string[] | undefined,
+      exit: effect.exit as string | undefined,
     };
   }
 
@@ -559,8 +592,7 @@ async function resolveCheckpoint(
   const effect = (resp.effect ?? {}) as Record<string, unknown>;
   return {
     setVariable: (effect.setVariable ?? effect.variablesSet) as Record<string, unknown> | undefined,
-    transitionTo: (effect.transitionTo ?? effect.transitionedTo) as string | undefined,
-    skipActivities: (effect.skipActivities ?? effect.activitiesSkipped) as string[] | undefined,
+    exit: effect.exit as string | undefined,
   };
 }
 
@@ -589,6 +621,9 @@ export async function walk(
   const orchestratorUnresolved = (parseBundle(wfRes).unresolved as string[] | undefined) ?? [];
   const wfActivities = (wf.activities as Array<{ id: string; artifactPrefix?: string }> | undefined) ?? [];
   const declaredActivities = wfActivities.map(a => a.id);
+  // The workflow's own graph: for each activity, where each of its exits leads. The walk reads the
+  // shape from here and the outcome from the activity, which is the split the definitions make.
+  const graph = (wf.graph as Graph | undefined) ?? {};
   const activityPrefixes = new Map(wfActivities.map(a => [a.id, a.artifactPrefix] as const));
 
   const variables: Record<string, unknown> = { ...defaultVariables(wf), ...(policy.initialVariables ?? {}) };
@@ -639,7 +674,7 @@ export async function walk(
     }
 
     let cpRecords: CheckpointRecord[];
-    let transitionOverride: string | undefined;
+    let selectedExit: string | undefined;
     let stepsExecuted: string[] = [];
     let gatesReadUnbound: string[] = [];
     let artifactsWritten: string[] = [];
@@ -647,7 +682,7 @@ export async function walk(
     if (mode === 'robot') {
       const exec = await executeActivitySteps(client, sessionIndex, current, act, variables, policy, bundledSteps, worker);
       cpRecords = exec.cpRecords;
-      transitionOverride = exec.transitionOverride;
+      selectedExit = exec.selectedExit;
       stepsExecuted = exec.stepsExecuted;
       gatesReadUnbound = exec.gatesReadUnbound;
       pendingManifest = exec.manifest;
@@ -663,10 +698,10 @@ export async function walk(
           ? (cp.options.find((o) => o.id === optionId)?.effect ?? {})
           : await resolveCheckpoint(client, sessionIndex, cp.id, optionId);
         if (effect.setVariable) Object.assign(variables, effect.setVariable);
-        if (effect.transitionTo) transitionOverride = effect.transitionTo;
+        if (effect.exit) selectedExit = effect.exit;
         cpRecords.push({
           activityId: current, checkpointId: cp.id, optionId,
-          setVariable: effect.setVariable, transitionTo: effect.transitionTo, skipActivities: effect.skipActivities,
+          setVariable: effect.setVariable, exit: effect.exit,
         });
       }
     }
@@ -676,20 +711,21 @@ export async function walk(
     const simulated = policy.simulate?.({ activityId: current, variables });
     if (simulated) Object.assign(variables, simulated);
 
-    let next = pickNext(act, variables, transitionOverride);
-    if (!transitionOverride) {
-      const targets = [...new Set((act.transitions ?? []).map((t) => t.to))];
+    let next = pickNext(act, graph, variables, selectedExit);
+    if (selectedExit === undefined) {
+      const bound = graph[act.id] ?? {};
+      const targets = [...new Set(predicateExits(act).map((e) => bound[e.id]).filter((t): t is string => t !== undefined))];
       if (targets.length && opts.decide) {
-        // The natural (happy) target — pickNext's choice, or the forward-advance target, or the
-        // first declared transition — is the base-path suggestion; the enumerator forks the rest.
+        // The natural (happy) target — pickExit's choice, or the forward-advance target, or the
+        // first bound exit — is the base-path suggestion; the enumerator forks the rest.
         let suggested = next;
-        if (suggested === null || (visits.get(suggested) ?? 0) > 0) suggested = advanceToUnvisited(act, { ...variables }, visits) ?? next;
+        if (suggested === null || (visits.get(suggested) ?? 0) > 0) suggested = advanceToUnvisited(act, graph, { ...variables }, visits) ?? next;
         const chosen = opts.decide({ kind: 'transition', activityId: current, id: 'next', options: targets, suggested: suggested ?? targets[0]! }) ?? suggested ?? targets[0]!;
-        const t = (act.transitions ?? []).find((tr) => tr.to === chosen);
-        if (t?.condition) satisfyCondition(t.condition, variables);
+        const exit = predicateExits(act).find((e) => bound[e.id] === chosen);
+        if (exit?.when) satisfyWhen(exit.when, variables);
         next = chosen;
       } else if (opts.autoAdvance && (next === null || (visits.get(next) ?? 0) > 0)) {
-        const fwd = advanceToUnvisited(act, variables, visits);
+        const fwd = advanceToUnvisited(act, graph, variables, visits);
         if (fwd) next = fwd;
       }
     }

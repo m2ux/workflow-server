@@ -8,7 +8,7 @@ import {
   DEFAULT_BATCH_MAX_ACTIVITIES,
   presentPathToAgent,
 } from '../config.js';
-import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, readActivityRaw, buildFragmentsLookup, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { listWorkflows, listWorkflowsWithDiagnostics, loadWorkflow, loadWorkflowWithDiagnostics, getActivity, getCheckpoint, getExitBindings, readActivityRaw, buildFragmentsLookup, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 import { injectCheckpointFragmentBodies, resolveCheckpointFragment, scanCheckpointRefLines } from '../loaders/fragment-resolver.js';
 import { resolveTechniques, formatTechniqueBundle, composeActivityTechnique, projectTechnique, projectTechniqueToYaml } from '../loaders/technique-loader.js';
 import { CORE_ORCHESTRATOR_TECHNIQUES, CORE_WORKER_TECHNIQUES } from '../loaders/core-ops.js';
@@ -46,7 +46,7 @@ import {
   listSessionSearchRoots,
 } from '../utils/session/index.js';
 import type { SessionFile } from '../schema/session.schema.js';
-import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTechniqueFetches, validateTransitionCondition, validateActivityManifest } from '../utils/validation.js';
+import { buildValidation, validateWorkflowVersion, validateActivityTransition, validateStepManifest, validateTechniqueFetches, validateReportedExit, validateActivityManifest } from '../utils/validation.js';
 import type { StepManifestEntry, ActivityManifestEntry } from '../utils/validation.js';
 import { createTraceToken, decodeTraceToken } from '../trace.js';
 import type { TraceEvent, TraceTokenPayload } from '../trace.js';
@@ -59,8 +59,8 @@ const stepManifestSchema = z.array(z.object({
 const activityManifestSchema = z.array(z.object({
   activity_id: z.string(),
   outcome: z.string(),
-  transition_condition: z.string().optional(),
-})).optional().describe('Orchestrator activity-completion manifest: [{activity_id, outcome, transition_condition?}].');
+  exit: z.string().optional(),
+})).optional().describe('Orchestrator activity-completion manifest: [{activity_id, outcome, exit?}].');
 
 const usageSchema = z.record(z.unknown()).describe(
   'Harness-reported token usage for ONE activity, on the basis the sibling `basis` parameter states. \n'
@@ -233,7 +233,7 @@ export function projectActivities(s: SessionFile): Record<string, unknown> {
     .map(e => ({
       activity: e.activity!,
       outcome: e.data?.['outcome'],
-      ...(e.data?.['transitionCondition'] !== undefined ? { transitionCondition: e.data['transitionCondition'] } : {}),
+      ...(e.data?.['exit'] !== undefined ? { exit: e.data['exit'] } : {}),
     }));
   // Activities entered whose in-progress mark the dispatch did not publish, and those it
   // said nothing about. The mark exists for someone watching a long activity in flight,
@@ -249,7 +249,6 @@ export function projectActivities(s: SessionFile): Record<string, unknown> {
   const progress_mark_unreported = [...new Set(entered.map(e => e.activity!))].filter(a => !reported.has(a));
   return {
     completed: s.completedActivities ?? [],
-    skipped: s.skippedActivities ?? [],
     current: s.currentActivity,
     outcomes,
     progress_mark_unpublished,
@@ -651,6 +650,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         })(),
         variables: wf.variables,
         initialActivity: wf.initialActivity,
+        // The workflow's shape, in one place: for each activity, where each of its exits leads.
+        // Report the exit on next_activity and the target is this map's answer, not a guess.
+        graph: wf.graph,
         activities: wf.activities?.map((a: { id: string; name?: string; required?: boolean; artifactPrefix?: string | undefined }) => ({ id: a.id, name: a.name, required: a.required, artifactPrefix: a.artifactPrefix })) ?? [],
         // Activity files that failed to load and are missing from `activities` — surfaced here
         // instead of silently skipped, so a broken definition is visible at workflow load rather
@@ -685,8 +687,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
   server.tool('next_activity', 'Orchestrator tool: transition to `activity_id` (does not return the activity body — the worker calls `get_activity`). First call: `initialActivity` from get_workflow; later: an id from the current activity\'s transitions. Optional manifests enable advisory validation.',
     {
       ...sessionIndexParam,
-      activity_id: z.string().describe('Target activity id. First call: initialActivity from get_workflow; later: from current activity transitions.'),
-      transition_condition: z.string().optional().describe('Optional. Transition condition text from the previous activity (advisory validation).'),
+      activity_id: z.string().describe('Target activity id. First call: initialActivity from get_workflow; later: the activity the workflow graph binds to the exit the previous activity took.'),
+      exit: z.string().optional().describe('Optional. Name of the exit the previous activity took. Checked against the workflow graph: an exit bound to an activity other than `activity_id` warns.'),
       step_manifest: stepManifestSchema,
       activity_manifest: activityManifestSchema,
       variables_changed: variablesChangedSchema,
@@ -701,7 +703,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         'Whether the in-progress Progress mark for this activity is committed and pushed before the worker spawns. Recorded as a `progress_published` event, so an activity opened without one is answerable from the session rather than only from whoever was watching the working tree at the time. Omit only where the session has no planning folder to mark.',
       ),
     },
-    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, transition_condition, step_manifest, activity_manifest, variables_changed, artifacts_produced, agent_id, context_tokens, progress_published }) => {
+    withAuditLog('next_activity', withSessionStoreErrors(async ({ session_index, activity_id, exit, step_manifest, activity_manifest, variables_changed, artifacts_produced, agent_id, context_tokens, progress_published }) => {
       const loadOpts = await sessionLoadOpts();
       const loaded = await loadSessionForTool(planningRootDir, session_index, loadOpts);
       const { state } = loaded;
@@ -723,7 +725,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const view = sessionView(state);
       const manifestWarnings: (string | null)[] = [];
       if (step_manifest && state.currentActivity) {
-        const mw = validateStepManifest(step_manifest as StepManifestEntry[], result.value, state.currentActivity);
+        const mw = validateStepManifest(step_manifest as StepManifestEntry[], result.value, state.currentActivity, state.checkpointResponses);
         manifestWarnings.push(...mw);
         // Fidelity observability (#166 B8): advisory cross-check of the
         // manifest against the technique_fetched events get_technique
@@ -733,8 +735,8 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         manifestWarnings.push(`No step_manifest provided for previous activity '${state.currentActivity}'. Include a manifest to enable step completion validation.`);
       }
 
-      const condWarning = (transition_condition !== undefined && state.currentActivity)
-        ? validateTransitionCondition(view, result.value, activity_id, transition_condition)
+      const exitWarning = (exit !== undefined && state.currentActivity)
+        ? validateReportedExit(view, result.value, activity_id, exit)
         : null;
 
       const activityManifestWarnings: string[] = [];
@@ -781,7 +783,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
               activity: entry.activity_id,
               data: {
                 outcome: entry.outcome,
-                ...(entry.transition_condition !== undefined ? { transitionCondition: entry.transition_condition } : {}),
+                ...(entry.exit !== undefined ? { exit: entry.exit } : {}),
               },
             });
           }
@@ -829,7 +831,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
           draft.declaredArtifacts = [...byId.values()];
         }
         draft.currentActivity = activity_id;
-        draft.condition = transition_condition ?? '';
+        draft.exit = exit ?? '';
         delete draft.activeCheckpoint;
         draft.history.push({ timestamp: now, type: 'activity_entered', activity: activity_id });
         // Whether the dispatch published this activity's in-progress mark. The mark lives
@@ -906,7 +908,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const validation = buildValidation(
         validateActivityTransition(view, result.value, activity_id),
         validateWorkflowVersion(view, result.value),
-        condWarning,
+        exitWarning,
         ...manifestWarnings,
         ...activityManifestWarnings,
         ...variableWarnings,
@@ -1671,8 +1673,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         const effects = priorResponse.effects;
         const effect: Record<string, unknown> = {};
         if (effects?.variablesSet) effect['setVariable'] = effects.variablesSet;
-        if (effects?.transitionedTo) effect['transitionTo'] = effects.transitionedTo;
-        if (effects?.activitiesSkipped) effect['skipActivities'] = effects.activitiesSkipped;
+        if (effects?.exit) effect['exit'] = effects.exit;
 
         const replayedAt = new Date().toISOString();
         const next = advanceSession(state, (draft) => {
@@ -1859,8 +1860,26 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         validateWorkflowVersion(view, result.value),
       );
 
+      // An option names an outcome; the workflow graph says where that outcome leads. Resolving it
+      // here is what lets the orchestrator state each option's consequence before the user chooses,
+      // instead of the user learning it from where the run went afterwards.
+      // An adhoc checkpoint decides something the activity does not declare, so it has no exit to
+      // name and its options carry no consequence beyond themselves.
+      const bindings = active.adhoc ? [] : getExitBindings(result.value, active.activityId);
+      const options = checkpoint.options.map((option) => {
+        const exitId = 'effect' in option ? option.effect?.exit : undefined;
+        if (exitId === undefined) return option;
+        const binding = bindings.find(b => b.exit === exitId);
+        return {
+          ...option,
+          consequence: binding
+            ? { exit: exitId, next_activity: binding.to, ...(binding.immediate ? { ends_activity: true } : {}) }
+            : { exit: exitId },
+        };
+      });
+
       return {
-        content: [{ type: 'text' as const, text: stringifyForResponse({ ...checkpoint, session_index }) }],
+        content: [{ type: 'text' as const, text: stringifyForResponse({ ...checkpoint, options, session_index }) }],
         _meta: { session_index, validation },
       };
     }), traceOpts));
@@ -1970,22 +1989,19 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // `condition_not_met` dismissals we still record the resolution with
         // a sentinel option id so the on-disk schema stays valid.
         const recordedOptionId = resolvedOptionId ?? (condition_not_met ? '__condition_not_met__' : '__unknown__');
-        // Unwrap the response effect into the schema-flat shape:
-        // The encoded effect gives { setVariable: {...}, transitionTo: '...', skipActivities: [...] };
-        // the schema stores variablesSet / transitionedTo / activitiesSkipped.
-        const effectObj = effect as undefined | { setVariable?: Record<string, unknown>; transitionTo?: string; skipActivities?: string[] };
+        // Unwrap the response effect into the schema-flat shape: the encoded effect gives
+        // { setVariable: {...}, exit: '...' } and the schema stores variablesSet / exit.
+        const effectObj = effect as undefined | { setVariable?: Record<string, unknown>; exit?: string };
         const variablesSet = effectObj?.setVariable;
-        const transitionedTo = effectObj?.transitionTo;
-        const activitiesSkipped = effectObj?.skipActivities;
-        const record: { optionId: string; respondedAt: string; effects?: { variablesSet?: Record<string, unknown>; transitionedTo?: string; activitiesSkipped?: string[] } } = {
+        const selectedExit = effectObj?.exit;
+        const record: { optionId: string; respondedAt: string; effects?: { variablesSet?: Record<string, unknown>; exit?: string } } = {
           optionId: recordedOptionId,
           respondedAt,
         };
-        if (variablesSet || transitionedTo || activitiesSkipped) {
+        if (variablesSet || selectedExit) {
           record.effects = {};
           if (variablesSet) record.effects.variablesSet = variablesSet;
-          if (transitionedTo) record.effects.transitionedTo = transitionedTo;
-          if (activitiesSkipped) record.effects.activitiesSkipped = activitiesSkipped;
+          if (selectedExit) record.effects.exit = selectedExit;
         }
         draft.checkpointResponses = { ...(draft.checkpointResponses ?? {}), [recordKey]: record };
         draft.history.push({
@@ -2005,19 +2021,6 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
             activity: active.activityId,
             source: 'setVariable',
           }));
-        }
-        // Apply explicitly-skipped activities to the bookkeeping array.
-        if (activitiesSkipped) {
-          for (const id of activitiesSkipped) {
-            if (!draft.skippedActivities.includes(id)) {
-              draft.skippedActivities.push(id);
-              draft.history.push({
-                timestamp: respondedAt,
-                type: 'activity_skipped',
-                activity: id,
-              });
-            }
-          }
         }
       });
       await saveSessionForTool(loaded, next);
@@ -2040,6 +2043,20 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       if (resolvedOptionId !== undefined) responseData['resolved_option'] = resolvedOptionId;
       if (effect !== undefined) responseData['effect'] = effect;
       if (condition_not_met) responseData['dismissed'] = true;
+      // The option named an outcome; the workflow graph says what follows it. An immediate exit
+      // ends the sequence here, so the worker is told to stop rather than run the remaining steps.
+      const chosenExit = (effect as { exit?: string } | undefined)?.exit;
+      if (chosenExit !== undefined) {
+        const binding = getExitBindings(result.value, active.activityId).find(b => b.exit === chosenExit);
+        responseData['exit'] = {
+          id: chosenExit,
+          ...(binding ? { next_activity: binding.to } : {}),
+          ...(binding?.immediate ? { ends_activity: true } : {}),
+        };
+        if (binding?.immediate) {
+          responseData['message'] = `Exit '${chosenExit}' ends this activity here: do not run the remaining steps. Report the steps you did run in next_activity's step_manifest and hand back to the orchestrator, whose next target is '${binding.to}'.`;
+        }
+      }
 
       return {
         content: [{ type: 'text' as const, text: JSON.stringify(responseData, null, 2) }],

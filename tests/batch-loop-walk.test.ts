@@ -279,11 +279,8 @@ describe('client activity loop walked (#407)', () => {
     expect(advanceWrite?.value).toBe('{worker_result.next_activity_id}');
 
     // And the activity leaves for close-out on the same condition the loop exits by.
-    const transitions = (def as unknown as { transitions?: Array<{ to?: string; condition?: { variable?: string; operator?: string; value?: unknown } }> }).transitions ?? [];
-    const exit = transitions.find((tr) => tr.to === 'end-workflow');
-    expect(exit?.condition?.variable).toBe('current_activity');
-    expect(exit?.condition?.operator).toBe('==');
-    expect(exit?.condition?.value ?? null).toBeNull();
+    const exits = (def as unknown as { exits?: Array<{ id: string; when?: string }> }).exits ?? [];
+    expect(exits.map((e) => e.when)).toContain('current_activity == null');
   });
 
   it('advances the session pointer exactly once per activity, never twice in an iteration', () => {

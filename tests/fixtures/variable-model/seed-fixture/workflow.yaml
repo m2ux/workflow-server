@@ -3,6 +3,9 @@ version: 1.0.0
 title: Seed Fixture
 description: Fixture workflow exercising defaultValue seeding and setVariable type validation (#166 B7).
 initialActivity: checkpoint-activity
+graph:
+  checkpoint-activity:
+    done: followup-activity
 variables:
   - name: review_needed
     type: boolean

@@ -48,9 +48,8 @@ export const CheckpointOptionSchema = z.object({
   description: z.string().optional(),
   effect: z.object({
     setVariable: z.record(z.unknown()).optional().describe('Variable assignments the server applies to the session variable bag when the option is selected — the one engine-applied checkpoint effect. Values are validated against the declared variable type, warn-only: mismatches are stored as written and surfaced in _meta.validation; `{name}` template passthroughs are exempt.'),
-    transitionTo: z.string().optional().describe('Activity ID the orchestrator transitions to next via next_activity. Recorded and returned, not engine-applied: selecting the option does not itself move the session.'),
-    skipActivities: z.array(z.string()).optional().describe('Activity IDs the orchestrator routes around. Recorded in session bookkeeping (`skippedActivities`) and returned, not engine-applied.'),
-  }).optional(),
+    exit: z.string().optional().describe('Exit of the owning activity this option selects — a name from the activity\'s `exits[]`, never an activity id. The destination is the workflow\'s to state: `present_checkpoint` reads it from the workflow graph so the option\'s consequence is stated before the user chooses. An adhoc checkpoint has no declared exits, so its options carry setVariable only.'),
+  }).strict().optional(),
 });
 export type CheckpointOption = z.infer<typeof CheckpointOptionSchema>;
 
@@ -242,32 +241,21 @@ export interface Checkpoint {
   autoAdvanceMs?: number | undefined;
 }
 
-// Decision branch schema
-export const DecisionBranchSchema = z.object({
-  id: z.string(),
-  label: z.string(),
-  condition: ConditionSchema.optional(),
-  transitionTo: z.string().optional().describe('Activity ID to transition to. Omit for terminal branches (workflow ends)'),
-  isDefault: z.boolean().default(false),
-});
-export type DecisionBranch = z.infer<typeof DecisionBranchSchema>;
-
-// Decision schema
-export const DecisionSchema = z.object({
-  id: z.string(),
-  name: z.string(),
-  description: z.string().optional(),
-  branches: z.array(DecisionBranchSchema).min(2),
-});
-export type Decision = z.infer<typeof DecisionSchema>;
-
-// Transition schema
-export const TransitionSchema = z.object({
-  to: z.string().describe('Activity ID to transition to'),
-  condition: ConditionSchema.optional(),
-  isDefault: z.boolean().default(false),
-});
-export type Transition = z.infer<typeof TransitionSchema>;
+/**
+ * A named outcome of the activity, in the activity's own vocabulary (`converged`,
+ * `revision-needed`, `aborted`; `done` for an activity that simply finishes). An exit says what
+ * happened, never what runs next: the destination is bound per exit in the workflow's `graph`, so
+ * two workflows can run one borrowed activity in different orders without editing its file.
+ * An activity with no exits is terminal by omission.
+ */
+export const ExitSchema = z.object({
+  id: z.string().describe('Outcome name, unique within the activity. Kebab-case, in the activity\'s vocabulary — never an activity id.'),
+  label: z.string().optional().describe('Human-readable statement of the outcome.'),
+  when: z.string().optional().describe('Inline boolean expression selecting this exit, evaluated agent-side against the variable bag in the `when` dialect the step gates use. Omitted on an exit only a checkpoint option selects, and on the default exit.'),
+  isDefault: z.literal(true).optional().describe('The outcome when no `when` matched and no checkpoint option selected an exit — including a checkpoint dismissed because its condition was not met. Declared exactly once on an activity with two or more exits; `isDefault: false` is redundant and rejected.'),
+  immediate: z.literal(true).optional().describe('Selecting this exit at a checkpoint ends the step sequence there: the remaining steps do not run and the step-manifest check accounts for them. Declared for the aborts, where the tail would otherwise run against the user\'s decision. Without it an exit is recorded when chosen and taken when the sequence ends. `immediate: false` is redundant and rejected.'),
+}).strict();
+export type Exit = z.infer<typeof ExitSchema>;
 
 // Unified Activity schema. Closed object: a field outside the declared set is a schema error.
 // The activity's artifact contract is not a schema field at all — `get_activity` synthesizes it
@@ -296,9 +284,9 @@ export const ActivitySchema = z.object({
   // separate checkpoints[]/loops[] arrays in the unified model.
   steps: z.array(StepSchema).optional().describe('Ordered, kind-tagged execution steps for this activity'),
 
-  // Activity-level routing (read by the orchestrator at the activity boundary, not part of the worker step sequence).
-  decisions: z.array(DecisionSchema).optional().describe('Conditional branching points; branch conditions are evaluated by the orchestrator, not the server.'),
-  transitions: z.array(TransitionSchema).optional().describe('Navigation to other activities. Legality is validated warn-only at next_activity — an out-of-graph transition warns in _meta.validation but is not blocked.'),
+  // The activity's named outcomes (read at the activity boundary, not part of the worker step
+  // sequence). Where each leads is the workflow's `graph` to bind — the activity names no other activity.
+  exits: z.array(ExitSchema).optional().describe('Named outcomes of this activity, one of which it takes when its steps end. Each is bound to a destination in the workflow\'s `graph`; an unbound exit fails the workflow load. Omitted on an activity that is terminal by omission.'),
   triggers: z.array(WorkflowTriggerSchema).optional().describe('Workflows the orchestrator dispatches from this activity (via dispatch_child with an explicit workflow_id); the server does not act on trigger declarations.'),
 
   // Metadata (optional)
@@ -327,6 +315,18 @@ export function flattenActivitySteps(activity: Activity): Step[] {
   };
   rec(activity.steps);
   return out;
+}
+
+/**
+ * The index in the activity's top-level `steps` of the step with this id, or of the top-level step
+ * whose loop body contains it. A nested step belongs to its top-level ancestor because that is the
+ * unit the sequence advances through: an immediate exit selected inside a loop body ends the whole
+ * sequence, not the iteration. Returns -1 when no step carries the id.
+ */
+export function topLevelStepIndex(activity: Activity, stepId: string): number {
+  const contains = (steps: Step[] | undefined): boolean =>
+    (steps ?? []).some(s => s.id === stepId || (s.kind === 'loop' && contains(s.steps as Step[])));
+  return (activity.steps ?? []).findIndex(s => s.id === stepId || (s.kind === 'loop' && contains(s.steps as Step[])));
 }
 
 /**

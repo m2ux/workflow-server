@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import {
+  immediateExitCut,
   validateActivityTransition,
   validateWorkflowVersion,
   validateStepManifest,
@@ -26,18 +27,22 @@ function makeWorkflow(overrides: Partial<Workflow> = {}): Workflow {
     id: 'test-wf',
     version: '1.0.0',
     title: 'Test Workflow',
+    graph: {
+      planning: { done: 'implementation' },
+      implementation: { done: 'review' },
+    },
     activities: [
       {
         id: 'planning',
         title: 'Planning',
         steps: [{ id: 'plan-step', title: 'Plan', instructions: 'Plan it' }],
-        transitions: [{ to: 'implementation' }],
+        exits: [{ id: 'done', isDefault: true }],
       },
       {
         id: 'implementation',
         title: 'Implementation',
         steps: [{ id: 'impl-step', title: 'Implement', instructions: 'Do it' }],
-        transitions: [{ to: 'review' }],
+        exits: [{ id: 'done', isDefault: true }],
       },
       {
         id: 'review',
@@ -73,10 +78,10 @@ describe('validation', () => {
       expect(result).toBeTypeOf('string');
       expect(result).toContain('review');
       expect(result).toContain('planning');
-      expect(result).toContain('Valid transitions');
+      expect(result).toContain('The workflow graph sends its exits to');
     });
 
-    it('returns null when current activity has no transitions (terminal activity)', () => {
+    it('returns null when the current activity declares no exits (terminal activity)', () => {
       const token = makeToken({ act: 'review' });
       const workflow = makeWorkflow();
       const result = validateActivityTransition(token, workflow, 'planning');
@@ -90,14 +95,15 @@ describe('validation', () => {
       expect(result).toBeNull();
     });
 
-    it('lists valid transitions in the warning message', () => {
+    it('lists the bound destinations in the warning message', () => {
       const workflow = makeWorkflow({
+        graph: { hub: { 'a-chosen': 'branch-a', 'b-chosen': 'branch-b' } },
         activities: [
           {
             id: 'hub',
             title: 'Hub',
             steps: [{ id: 's1', title: 'Step', instructions: 'Do' }],
-            transitions: [{ to: 'branch-a' }, { to: 'branch-b' }],
+            exits: [{ id: 'a-chosen', when: 'wants_a == true' }, { id: 'b-chosen', isDefault: true }],
           },
           { id: 'branch-a', title: 'A', steps: [{ id: 'a1', title: 'A', instructions: 'A' }] },
           { id: 'branch-b', title: 'B', steps: [{ id: 'b1', title: 'B', instructions: 'B' }] },
@@ -217,6 +223,103 @@ describe('validation', () => {
       };
       expect(evaluateCondition(condition, { min: '5', max: '50' })).toBe(true);
       expect(evaluateCondition(condition, { min: '0', max: '50' })).toBe(false);
+    });
+  });
+
+  describe('immediateExitCut: a sequence an immediate exit ended', () => {
+    // An abort offered mid-sequence, and a second checkpoint inside a loop body — the two shapes
+    // the cut has to read, since an immediate exit selected inside a loop ends the whole sequence.
+    function makeAbortWorkflow(): Workflow {
+      return {
+        id: 'test-wf',
+        version: '1.0.0',
+        title: 'Test Workflow',
+        graph: { work: { done: 'next', aborted: '__terminal__', 'give-up': '__terminal__' } },
+        activities: [
+          {
+            id: 'work',
+            version: '1.0.0',
+            name: 'Work',
+            exits: [
+              { id: 'aborted', immediate: true },
+              { id: 'give-up', immediate: true },
+              { id: 'done', isDefault: true },
+            ],
+            steps: [
+              { kind: 'technique', id: 'first-step', technique: 'grp::first-step' },
+              {
+                kind: 'checkpoint',
+                id: 'keep-going',
+                message: 'Continue?',
+                options: [
+                  { id: 'yes', label: 'Yes' },
+                  { id: 'abort', label: 'Abort', effect: { exit: 'aborted' } },
+                ],
+              },
+              {
+                kind: 'loop',
+                id: 'item-loop',
+                loopType: 'forEach',
+                variable: 'current_item',
+                over: 'pending_items',
+                steps: [
+                  { kind: 'technique', id: 'process-item', technique: 'grp::process-item' },
+                  { kind: 'checkpoint', id: 'still-worth-it', message: 'Still worth it?', options: [
+                    { id: 'yes', label: 'Yes' },
+                    { id: 'stop', label: 'Stop', effect: { exit: 'give-up' } },
+                  ] },
+                ],
+              },
+              { kind: 'technique', id: 'announce', technique: 'grp::announce' },
+              { kind: 'technique', id: 'last-step', technique: 'grp::last-step' },
+            ],
+          },
+        ],
+      } as unknown as Workflow;
+    }
+
+    const responded = (checkpoint: string, optionId: string, exit: string) => ({
+      [`work-${checkpoint}`]: { optionId, respondedAt: '2026-08-01T00:00:00.000Z', effects: { exit } },
+    });
+
+    it('is -1 when no immediate exit was selected', () => {
+      expect(immediateExitCut(makeAbortWorkflow(), 'work', {})).toBe(-1);
+      expect(immediateExitCut(makeAbortWorkflow(), 'work', responded('keep-going', 'yes', ''))).toBe(-1);
+    });
+
+    it('cuts at the checkpoint that selected the exit', () => {
+      expect(immediateExitCut(makeAbortWorkflow(), 'work', responded('keep-going', 'abort', 'aborted'))).toBe(1);
+    });
+
+    it('cuts at the top-level step containing a loop-body checkpoint', () => {
+      expect(immediateExitCut(makeAbortWorkflow(), 'work', responded('still-worth-it', 'stop', 'give-up'))).toBe(2);
+    });
+
+    it('reads a per-iteration instance id back to its checkpoint', () => {
+      const responses = { 'work-still-worth-it#2': { optionId: 'stop', respondedAt: '2026-08-01T00:00:00.000Z', effects: { exit: 'give-up' } } };
+      expect(immediateExitCut(makeAbortWorkflow(), 'work', responses)).toBe(2);
+    });
+
+    it('accounts for the steps the exit skipped instead of reporting them missing', () => {
+      const manifest = [
+        { step_id: 'first-step', output: 'done' },
+        { step_id: 'keep-going', output: 'user aborted' },
+      ];
+      const workflow = makeAbortWorkflow();
+
+      expect(validateStepManifest(manifest, workflow, 'work', responded('keep-going', 'abort', 'aborted'))).toEqual([]);
+      // Without the exit the same manifest is a worker that stopped early for no stated reason.
+      expect(validateStepManifest(manifest, workflow, 'work', {}).some(w => w.includes('Missing steps') && w.includes('announce'))).toBe(true);
+    });
+
+    it('still requires the steps before the cut', () => {
+      const warnings = validateStepManifest(
+        [{ step_id: 'keep-going', output: 'user aborted' }],
+        makeAbortWorkflow(),
+        'work',
+        responded('keep-going', 'abort', 'aborted'),
+      );
+      expect(warnings.some(w => w.includes('Missing steps') && w.includes('first-step'))).toBe(true);
     });
   });
 

@@ -26,9 +26,10 @@ import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHarness } from '../../tests/e2e/harness.js';
 import { parseToolResponse, parseWorkflowResponse, parseBundle } from '../../tests/e2e/harness.js';
-import { pickNext, activityCheckpointSteps, type ActivityDef, type CheckpointDef } from '../../tests/e2e/walker.js';
+import { pickNext, activityCheckpointSteps, type ActivityDef, type CheckpointDef, type Graph } from '../../tests/e2e/walker.js';
 import { defaultPolicy, makePolicy } from '../../tests/e2e/policies.js';
 import { evaluateCondition } from '../../src/schema/condition.schema.js';
+import { parseWhen } from '../../src/schema/when-expression.js';
 import { checkSession, relayGaps } from '../check-session-contract.js';
 
 const HERE = dirname(fileURLToPath(import.meta.url));
@@ -236,6 +237,8 @@ async function main() {
     // Initial activity comes from the workflow definition, not a hardcoded id.
     const wfSummary = parseWorkflowResponse(await h.client.callTool({ name: 'get_workflow', arguments: { session_index: sessionIndex } }));
     const variables: Record<string, unknown> = {};
+    // Where each activity's exits lead, read from the workflow rather than assembled per activity.
+    const graph = (wfSummary.graph as Graph | undefined) ?? {};
     /**
      * The completing activity's worker output, relayed on the next transition. Seeded with the
      * planning folder the orchestrator established: the first activity reads it before anything
@@ -369,18 +372,22 @@ async function main() {
         activity: current, checkpoints: cpRecords, workerTurns: turn, workerReports,
         variablesChanged: produced,
       });
-      let next = pickNext(act, variables);
+      let next = pickNext(act, graph, variables);
       // Forward-advance fallback (workflow-agnostic): if the graph stalls or loops back, advance to
-      // an unvisited activity, satisfying its simple gate — stands in for agent-set convergence vars.
+      // an unvisited activity, satisfying its gate — stands in for agent-set convergence vars.
       if (next === null || visited.has(next)) {
-        for (const t of act.transitions ?? []) {
-          if (visited.has(t.to)) continue;
-          const c = t.condition as { type?: string; variable?: string; operator?: string; value?: unknown } | undefined;
-          if (!c) { next = t.to; break; }
-          if (c.type === 'simple' && typeof c.variable === 'string') {
-            variables[c.variable] = c.operator === '!=' ? (typeof c.value === 'boolean' ? !c.value : `__ne_${String(c.value)}`) : c.value;
-            next = t.to; break;
+        const bound = graph[act.id] ?? {};
+        for (const exit of act.exits ?? []) {
+          const to = bound[exit.id];
+          if (to === undefined || visited.has(to)) continue;
+          if (exit.when === undefined) { next = to; break; }
+          const parsed = parseWhen(exit.when);
+          if (parsed.ok && parsed.ast.kind === 'cmp') {
+            const { path, op, value } = parsed.ast;
+            variables[path] = op === '!=' ? (typeof value === 'boolean' ? !value : `__ne_${String(value)}`) : value;
+            next = to; break;
           }
+          if (parsed.ok && parsed.ast.kind === 'truthy') { variables[parsed.ast.path] = true; next = to; break; }
         }
       }
       log(`next: ${next ?? '(terminal)'}`);

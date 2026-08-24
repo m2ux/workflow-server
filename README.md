@@ -22,7 +22,7 @@ Workflow Server guides AI agents through structured, multi-step workflows. A sin
 1. **Discover** — The agent learns which workflows exist and how to begin
 2. **Start** — A session is started for the matched workflow
 3. **Navigate** — The agent moves through activities in order, loading each phase’s steps and guidance as needed
-4. **Execute** — Work proceeds activity by activity, pausing at checkpoints for user decisions and following transitions between phases
+4. **Execute** — Work proceeds activity by activity, pausing at checkpoints for user decisions and following the workflow's graph between phases
 
 ### Architecture
 

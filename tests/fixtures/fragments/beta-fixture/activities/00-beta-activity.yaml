@@ -14,4 +14,3 @@ steps:
     id: beta-missing
     ref: alpha-fixture::missing-gate
   - ref: alpha-fixture::confirm-gate
-transitions: []

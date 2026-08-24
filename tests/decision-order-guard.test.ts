@@ -107,7 +107,7 @@ describe('decision-order guard', () => {
     expect(findingsFor(`${exclusiveReader}${exclusiveDecider}`)).toEqual([]);
   });
 
-  it('exempts an option that re-enters, since the next pass reads what it wrote', () => {
+  it('exempts an option that leaves the activity, since the next pass reads what it wrote', () => {
     const reentrant = `  - kind: checkpoint
     id: pick-platform
     message: Which platform?
@@ -117,7 +117,7 @@ describe('decision-order guard', () => {
         effect:
           setVariable:
             platform: jira
-          transitionTo: thing
+          exit: retry
 `;
     expect(findingsFor(`${READER}${reentrant}`)).toEqual([]);
   });

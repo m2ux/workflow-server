@@ -15,7 +15,7 @@ The workflow server addresses these through seven layers of enforcement, each op
 
 ### The shape of a transition
 
-Most enforcement happens where one activity hands over to the next, so that moment is worth seeing whole. The labels `L1` to `L7` in the diagram are the seven layers, which the sections below then take in turn: the seal over session state, the checkpoint gate, the cross-activity check, the transition condition, the step manifest, the activity manifest, and the trace.
+Most enforcement happens where one activity hands over to the next, so that moment is worth seeing whole. The labels `L1` to `L7` in the diagram are the seven layers, which the sections below then take in turn: the seal over session state, the checkpoint gate, the cross-activity check, the reported exit, the step manifest, the activity manifest, and the trace.
 
 ```mermaid
 flowchart TD
@@ -26,10 +26,10 @@ flowchart TD
     yieldCp --> gate{{"L2: activeCheckpoint set —\nnext_activity and resume_checkpoint refuse"}}
     gate --> respond["respond_checkpoint\nL2: option validated, timer enforced"]
     respond --> cleared["activeCheckpoint cleared"]
-    cleared --> nextB["next_activity(B, step_manifest,\nactivity_manifest, transition_condition)"]
+    cleared --> nextB["next_activity(B, step_manifest,\nactivity_manifest, exit)"]
     nextB --> hardGate{{"L2: activeCheckpoint empty?"}}
-    hardGate --> transCheck["L3: is A to B a declared transition?"]
-    transCheck -.-> condCheck["L4: does the claimed condition match?"]
+    hardGate --> transCheck["L3: does the graph bind an exit of A to B?"]
+    transCheck -.-> condCheck["L4: does the reported exit lead to B?"]
     condCheck -.-> stepCheck["L5: is the step manifest complete?"]
     stepCheck -.-> actCheck["L6: is the activity manifest valid?"]
     actCheck --> tracePackage["L7: trace token packaged for A"]
@@ -91,22 +91,22 @@ When an agent makes a tool call, the server compares the position it recorded on
 | Check | What it detects |
 |-------|----------------|
 | Workflow consistency | Agent switched workflows mid-session without starting a new session |
-| Activity transition | Agent jumped to an activity that isn't a valid transition from the previous one |
+| Activity transition | Agent jumped to an activity the workflow graph binds no exit of the previous one to |
 | Technique association | Agent loaded a technique not declared by the current activity |
 | Version drift | Workflow definition changed on disk since the session started |
 
 **Design principle:** Warnings don't block execution — the tool still returns its result. This allows agents to self-correct rather than being hard-blocked, while making violations visible. All validation warnings are captured in the execution trace (Layer 7).
 
-### Layer 4: transition condition tracking
+### Layer 4: reported exit tracking
 
-When calling `next_activity` to transition to a new activity, agents can include a `transition_condition` parameter — the condition string (from the `transitions` field of the current activity's definition) that caused the transition.
+When calling `next_activity`, agents can include an `exit` parameter — the name of the outcome the activity being left reached, from that activity's `exits`.
 
 **What it enforces:**
-- The claimed condition actually maps to the target activity in the transition table
-- Default transitions are correctly reported (no false condition claims)
-- The condition is recorded in the sealed session state and in the trace, so the agent cannot revise it afterwards
+- The activity declares an exit by that name
+- The workflow graph binds that exit to the requested target activity
+- The exit is recorded in the sealed session state and in the trace, so the agent cannot revise it afterwards
 
-**What it cannot verify in real-time:** Whether the condition is actually true in the agent's state. However, conditions are typically set by user choices at checkpoints, which are logged. Post-hoc review can cross-reference claimed conditions against checkpoint responses and trace data.
+**What it cannot verify in real-time:** Whether the exit's predicate is actually true in the agent's state. Exits are often selected by user choices at checkpoints, which are logged, so post-hoc review can cross-reference reported exits against checkpoint responses and trace data.
 
 ### Layer 5: step completion manifest
 
@@ -139,9 +139,9 @@ When transitioning between activities via `next_activity`, agents can include an
 ```json
 {
   "activity_manifest": [
-    { "activity_id": "start-work-package", "outcome": "completed", "transition_condition": "default" },
-    { "activity_id": "design-philosophy", "outcome": "completed", "transition_condition": "skip_optional_activities == true" },
-    { "activity_id": "plan-prepare", "outcome": "revised", "transition_condition": "needs_research == true" }
+    { "activity_id": "start-work-package", "outcome": "completed", "exit": "done" },
+    { "activity_id": "codebase-comprehension", "outcome": "completed", "exit": "skip-optional-activities" },
+    { "activity_id": "plan-prepare", "outcome": "revised", "exit": "done" }
   ]
 }
 ```
@@ -149,7 +149,7 @@ When transitioning between activities via `next_activity`, agents can include an
 **What it enforces (advisory):**
 - Activity IDs reference activities that exist in the workflow definition
 - Outcomes are non-empty
-- The claimed transition condition matches one defined in the workflow for that activity
+- The claimed exit is one that activity declares
 
 **Design principle:** Activity manifest validation is advisory — it produces warnings, not rejections. This matches the design principle of Layer 3. The manifest provides a workflow-level audit trail that complements the step-level detail of Layer 5, particularly in orchestrator/worker patterns where the orchestrator tracks the workflow journey and the worker tracks step execution.
 
@@ -200,20 +200,25 @@ Beyond enforcement, the server reduces the context burden on agents:
 
 `get_workflow` returns lightweight metadata (~2KB) rather than the full workflow definition (~13KB): the orchestrator gets rules, variables, `initialActivity`, and activity stubs without consuming its context window with step-level detail. Step detail and the worker-facing `rules.activity` / `techniques.activity` reach workers through `get_activity`. The response is preceded by the technique bundle (the workflow's `techniques.workflow` plus the core orchestrator techniques), so the orchestrator receives its execution surface in a single round-trip.
 
-### Transitions in activity definitions
+### Exits in activity definitions, destinations in the workflow
 
-`get_activity` returns the complete activity definition including its `transitions` field with human-readable conditions. The agent matches conditions against its state variables to determine the next activity:
+`get_activity` returns the complete activity definition including its `exits` — the outcomes it can
+reach and the predicate selecting each. The agent matches those predicates against its state
+variables to name the outcome:
 
 ```json
 {
-  "transitions": [
-    { "to": "requirements-elicitation", "condition": "needs_elicitation == true" },
-    { "to": "implementation-analysis", "isDefault": true }
+  "exits": [
+    { "id": "needs-elicitation", "when": "needs_elicitation == true" },
+    { "id": "comprehension-complete", "isDefault": true }
   ]
 }
 ```
 
-Transitions are also derived from `decisions` (branch `transitionTo` fields) and `checkpoints` (option `effect.transitionTo` fields), giving the orchestrator a complete view of all possible next activities.
+Where each one leads is the workflow's, and `get_workflow` returns it as `graph`. A checkpoint
+option may name an exit too, and `present_checkpoint` resolves it through the graph so the
+orchestrator can state each option's consequence before the user chooses — which together give the
+orchestrator a complete view of all possible next activities.
 
 ### Technique and resource loading
 

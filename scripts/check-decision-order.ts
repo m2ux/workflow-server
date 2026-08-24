@@ -28,7 +28,7 @@ interface Step {
   when?: string;
   condition?: unknown;
   actions?: { action?: string }[];
-  options?: { effect?: { setVariable?: Record<string, unknown>; transitionTo?: string } }[];
+  options?: { effect?: { setVariable?: Record<string, unknown>; exit?: string } }[];
 }
 
 /** A value a gate requires of one variable. Only conjuncts a run must satisfy to reach the step. */
@@ -143,14 +143,14 @@ function doesWork(step: Step): boolean {
   return actions.some((a) => a.action !== 'message' && a.action !== 'log');
 }
 
-/** Variables a checkpoint's options bind, minus those bound by an option that re-enters. */
+/** Variables a checkpoint's options bind, minus those bound by an option that leaves the activity. */
 function decidedVariables(step: Step): Set<string> {
   const decided = new Set<string>();
   const reentrant = new Set<string>();
   for (const option of step.options ?? []) {
     const set = option.effect?.setVariable;
     if (set === undefined) continue;
-    const target = typeof option.effect?.transitionTo === 'string' ? reentrant : decided;
+    const target = typeof option.effect?.exit === 'string' ? reentrant : decided;
     for (const name of Object.keys(set)) target.add(name);
   }
   for (const name of reentrant) decided.delete(name);

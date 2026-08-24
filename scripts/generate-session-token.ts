@@ -172,10 +172,8 @@ async function main() {
       updatedAt: now,
       currentActivity: '',
       completedActivities: [] as string[],
-      skippedActivities: [] as string[],
       completedSteps: {},
       checkpointResponses: {},
-      decisionOutcomes: {},
       activeLoops: [] as unknown[],
       variables: {
         planning_folder_path: path,

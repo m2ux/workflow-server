@@ -38,6 +38,9 @@ describe('hybrid technique bundling (#189 C1c)', () => {
       'version: 1.0.0',
       'title: Bundling fixture',
       'initialActivity: work',
+      'graph:',
+      '  work:',
+      '    done: wrap',
       'variables:',
       '  - name: run_optional',
       '    type: boolean',
@@ -87,8 +90,9 @@ describe('hybrid technique bundling (#189 C1c)', () => {
       '      - kind: technique',
       '        id: gated-loop-op',
       '        technique: loop-op',
-      'transitions:',
-      '  - to: wrap',
+      'exits:',
+      '  - id: done',
+      '    isDefault: true',
     ].join('\n'));
 
     writeFileSync(join(wf, 'activities', '02-wrap.yaml'), [

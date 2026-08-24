@@ -5,4 +5,3 @@ steps:
   - kind: checkpoint
     id: alpha-confirm
     ref: confirm-gate
-transitions: []

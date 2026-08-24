@@ -6,7 +6,7 @@ import {
 import {
   ActivitySchema,
   StepSchema,
-  DecisionSchema,
+  ExitSchema,
 } from '../src/schema/activity.schema.js';
 import { ConditionSchema } from '../src/schema/condition.schema.js';
 import {
@@ -161,46 +161,24 @@ describe('schema-validation', () => {
     });
   });
 
-  describe('DecisionSchema', () => {
-    it('should validate decision with branches', () => {
-      const decision = {
-        id: 'decision-1',
-        name: 'Validation Check',
-        branches: [
-          { id: 'pass', label: 'Pass', transitionTo: 'next-activity' },
-          { id: 'fail', label: 'Fail', transitionTo: 'retry-activity', isDefault: true },
-        ],
-      };
-      const result = DecisionSchema.safeParse(decision);
+  describe('ExitSchema', () => {
+    it('should validate an outcome with a predicate', () => {
+      const result = ExitSchema.safeParse({ id: 'revision-needed', label: 'Revision needed', when: 'review_passed == false' });
       expect(result.success).toBe(true);
     });
 
-    it('should validate decision with conditions', () => {
-      const decision = {
-        id: 'decision-1',
-        name: 'Conditional',
-        branches: [
-          {
-            id: 'branch-a',
-            label: 'Branch A',
-            transitionTo: 'activity-a',
-            condition: { type: 'simple', variable: 'flag', operator: '==', value: true },
-          },
-          { id: 'branch-b', label: 'Branch B', transitionTo: 'activity-b', isDefault: true },
-        ],
-      };
-      const result = DecisionSchema.safeParse(decision);
-      expect(result.success).toBe(true);
+    it('should validate a default outcome and an immediate one', () => {
+      expect(ExitSchema.safeParse({ id: 'converged', isDefault: true }).success).toBe(true);
+      expect(ExitSchema.safeParse({ id: 'aborted', immediate: true }).success).toBe(true);
     });
 
-    it('should reject decision with fewer than 2 branches', () => {
-      const decision = {
-        id: 'decision-1',
-        name: 'Single Branch',
-        branches: [{ id: 'only', label: 'Only', transitionTo: 'next' }],
-      };
-      const result = DecisionSchema.safeParse(decision);
-      expect(result.success).toBe(false);
+    it('should reject a redundant negative on isDefault or immediate', () => {
+      expect(ExitSchema.safeParse({ id: 'converged', isDefault: false }).success).toBe(false);
+      expect(ExitSchema.safeParse({ id: 'aborted', immediate: false }).success).toBe(false);
+    });
+
+    it('should reject an exit naming a destination, which is the workflow graph\'s to name', () => {
+      expect(ExitSchema.safeParse({ id: 'converged', to: 'next-activity' }).success).toBe(false);
     });
   });
 
@@ -235,7 +213,7 @@ describe('schema-validation', () => {
             steps: [{ kind: 'technique', id: 'inner', technique: 'helper-technique::each' }],
           },
         ],
-        transitions: [{ to: 'activity-2', isDefault: true }],
+        exits: [{ id: 'done', isDefault: true }],
         outcome: ['Something is done'],
       };
       const result = ActivitySchema.safeParse(activity);

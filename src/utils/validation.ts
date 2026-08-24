@@ -1,8 +1,9 @@
 import { z } from 'zod';
 import type { Workflow } from '../schema/workflow.schema.js';
 import type { HistoryEntry } from '../schema/state.schema.js';
-import { flattenActivitySteps, techniqueName } from '../schema/activity.schema.js';
-import { getValidTransitions, getActivity, getTransitionList, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
+import { flattenActivitySteps, techniqueName, topLevelStepIndex } from '../schema/activity.schema.js';
+import type { CheckpointResponse } from '../schema/state.schema.js';
+import { checkpointBaseId, exitDestinations, getActivity, getExitBindings, TERMINAL_SENTINEL } from '../loaders/workflow-loader.js';
 
 /**
  * Minimal view of session state required by the validation helpers. The
@@ -41,11 +42,11 @@ export function validateActivityTransition(view: SessionView, workflow: Workflow
   // be reached via an abort/checkpoint effect rather than a declared transition).
   if (activityId === TERMINAL_SENTINEL) return null;
 
-  const valid = getValidTransitions(workflow, view.act);
+  const valid = exitDestinations(workflow, view.act);
   if (valid.length === 0) return null;
 
   if (!valid.includes(activityId)) {
-    return `Activity '${activityId}' is not a direct transition from '${view.act}'. Valid transitions: [${valid.join(', ')}]`;
+    return `Activity '${activityId}' is not bound to any exit of '${view.act}'. The workflow graph sends its exits to: [${valid.join(', ')}]`;
   }
   return null;
 }
@@ -62,10 +63,40 @@ export interface StepManifestEntry {
   output: string;
 }
 
+/**
+ * Where an immediate exit ended the step sequence, as the index in the activity's top-level steps
+ * of the checkpoint that selected it — or -1 when the sequence ran to its end. A checkpoint
+ * response records the exit the user's option named, so the fact is already on the session and
+ * needs no second record. A revisit needs no visit-scoping either: `yield_checkpoint` replays a
+ * recorded response, so an activity re-entered takes the same immediate exit again, and a loop-body
+ * checkpoint yielded as `<base>#<instance>` records one response per iteration.
+ */
+export function immediateExitCut(
+  workflow: Workflow,
+  activityId: string,
+  checkpointResponses: Record<string, CheckpointResponse> | undefined,
+): number {
+  const activity = getActivity(workflow, activityId);
+  if (!activity || !checkpointResponses) return -1;
+  const immediate = new Set((activity.exits ?? []).filter(e => e.immediate).map(e => e.id));
+  if (immediate.size === 0) return -1;
+
+  let cut = -1;
+  const prefix = `${activityId}-`;
+  for (const [key, response] of Object.entries(checkpointResponses)) {
+    if (!key.startsWith(prefix)) continue;
+    if (!response.effects?.exit || !immediate.has(response.effects.exit)) continue;
+    const index = topLevelStepIndex(activity, checkpointBaseId(key.slice(prefix.length)));
+    if (index >= 0 && (cut === -1 || index < cut)) cut = index;
+  }
+  return cut;
+}
+
 export function validateStepManifest(
   manifest: StepManifestEntry[],
   workflow: Workflow,
   activityId: string,
+  checkpointResponses?: Record<string, CheckpointResponse>,
 ): string[] {
   const activity = getActivity(workflow, activityId);
   if (!activity) return [`Cannot validate manifest: activity '${activityId}' not found`];
@@ -74,9 +105,13 @@ export function validateStepManifest(
   if (!steps || steps.length === 0) return [];
 
   const topLevelIds = steps.map(s => s.id).filter((id): id is string => id !== undefined);
+  // An immediate exit legitimately ends the sequence where it was selected, so the steps after that
+  // checkpoint are accounted for rather than reported missing.
+  const cut = immediateExitCut(workflow, activityId, checkpointResponses);
+  const inSequence = cut === -1 ? steps : steps.slice(0, cut + 1);
   // `when`/`condition` gates are evaluated agent-side; a gated step may be
   // legitimately skipped, so only ungated top-level steps are required.
-  const requiredIds = steps
+  const requiredIds = inSequence
     .filter(s => s.when === undefined && s.condition === undefined)
     .map(s => s.id)
     .filter((id): id is string => id !== undefined);
@@ -193,39 +228,33 @@ export function validateTechniqueFetches(
   ];
 }
 
-export function validateTransitionCondition(view: SessionView, workflow: Workflow, activityId: string, claimedCondition: string | undefined): string | null {
-  if (!view.act) return null;
+/**
+ * The exit an orchestrator reports for the activity it is leaving names an outcome the workflow
+ * binds; the requested target is that binding, or the report and the move disagree. Naming the
+ * outcome is checkable in a way naming a condition never was — the binding is a fact in the
+ * workflow file rather than a string to be matched against rendered prose.
+ */
+export function validateReportedExit(view: SessionView, workflow: Workflow, activityId: string, reportedExit: string | undefined): string | null {
+  if (!view.act || reportedExit === undefined || reportedExit === '') return null;
   if (view.act === activityId) return null;
 
-  const transitions = getTransitionList(workflow, view.act);
-  if (transitions.length === 0) return null;
+  const bindings = getExitBindings(workflow, view.act);
+  if (bindings.length === 0) return null;
 
-  const matchingTransition = transitions.find(t => t.to === activityId);
-  if (!matchingTransition) return null;
-
-  const claimIsEmpty = claimedCondition === undefined || claimedCondition === '';
-  const claimIsDefault = claimedCondition === 'default';
-
-  if (claimIsEmpty || claimIsDefault) {
-    if (matchingTransition.isDefault || !matchingTransition.condition) return null;
-    return `Transition to '${activityId}' requires condition '${matchingTransition.condition}' but agent claimed ${claimIsDefault ? "'default'" : 'no condition'}.`;
+  const binding = bindings.find(b => b.exit === reportedExit);
+  if (!binding) {
+    return `Activity '${view.act}' has no exit '${reportedExit}'. Its exits are: [${bindings.map(b => b.exit).join(', ')}]`;
   }
-
-  if (matchingTransition.isDefault && !matchingTransition.condition) {
-    return `Transition to '${activityId}' is the default (no condition) but agent claimed condition '${claimedCondition}'.`;
+  if (binding.to !== activityId) {
+    return `Exit '${reportedExit}' of '${view.act}' is bound to '${binding.to}' but '${activityId}' was requested.`;
   }
-
-  if (matchingTransition.condition && matchingTransition.condition !== claimedCondition) {
-    return `Condition mismatch for transition to '${activityId}': workflow defines '${matchingTransition.condition}' but agent claimed '${claimedCondition}'.`;
-  }
-
   return null;
 }
 
 export interface ActivityManifestEntry {
   activity_id: string;
   outcome: string;
-  transition_condition?: string;
+  exit?: string;
 }
 
 export function validateActivityManifest(
@@ -242,16 +271,10 @@ export function validateActivityManifest(
     if (!entry.outcome || (typeof entry.outcome === 'string' && entry.outcome.trim().length === 0)) {
       warnings.push(`Activity '${entry.activity_id}' has empty outcome`);
     }
-    if (entry.transition_condition !== undefined && entry.transition_condition !== '') {
-      const activity = getActivity(workflow, entry.activity_id);
-      if (activity) {
-        const transitions = getTransitionList(workflow, entry.activity_id);
-        const hasMatchingCondition = transitions.some(
-          t => t.condition === entry.transition_condition || (t.isDefault && entry.transition_condition === 'default')
-        );
-        if (!hasMatchingCondition && transitions.length > 0) {
-          warnings.push(`Activity '${entry.activity_id}' claims transition condition '${entry.transition_condition}' not found in workflow transitions`);
-        }
+    if (entry.exit !== undefined && entry.exit !== '') {
+      const bindings = getExitBindings(workflow, entry.activity_id);
+      if (bindings.length > 0 && !bindings.some(b => b.exit === entry.exit)) {
+        warnings.push(`Activity '${entry.activity_id}' claims exit '${entry.exit}', which it does not declare`);
       }
     }
   }

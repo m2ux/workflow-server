@@ -53,6 +53,15 @@ export const WorkflowFragmentsSchema = z.object({
 }).strict();
 export type WorkflowFragments = z.infer<typeof WorkflowFragmentsSchema>;
 
+/**
+ * Exit bindings: activity id → exit id → destination activity id. A destination of
+ * `__terminal__` (TERMINAL_SENTINEL) ends the run without landing on an activity. Every exit every
+ * activity in the workflow declares is bound here; an unbound exit, an unknown exit and an unknown
+ * destination each fail the load, so the graph and the activities cannot drift apart.
+ */
+export const GraphSchema = z.record(z.record(z.string()));
+export type Graph = z.infer<typeof GraphSchema>;
+
 export const WorkflowSchema = z.object({
   $schema: z.string().optional(),
   id: z.string().describe('Unique workflow identifier'),
@@ -66,12 +75,13 @@ export const WorkflowSchema = z.object({
   variables: z.array(VariableDefinitionSchema).optional().describe('The variables this workflow file owns: facts about the session and policy spanning activities. A variable an activity writes is declared by that activity, under its own `variables.writes`, and contributed here when the activity joins this workflow\'s graph — get_workflow renders the whole set, and two declarations of one name that disagree on type or default fail the load. The session variable bag is seeded from each declaration\'s defaultValue at session creation; thereafter the server writes it through checkpoint setVariable effects and through the worker outputs an orchestrator relays as next_activity\'s variables_changed.'),
   techniques: WorkflowTechniquesSchema.optional().describe('Workflow techniques partitioned by audience: `workflow` (orchestrator, bundled into get_workflow) and `activity` (inherited by every activity, injected into get_activity).'),
   initialActivity: z.string().optional().describe('ID of the first activity to execute. Required for sequential workflows, optional when all activities are independent entry points.'),
+  graph: GraphSchema.optional().describe('The workflow\'s shape: for each activity, where each of its exits leads. This is the single home for the routing — an activity names outcomes, the workflow names destinations, so a borrowed activity sits in this graph without its lending workflow having a say. Omitted only by a workflow whose activities declare no exits.'),
   // JSON Schema validates individual definition files where activities are separate files.
   // Zod validates the full assembled runtime workflow object, so activities are included here.
   // The shorthand string references are resolved into fully typed Activity objects during load,
   // but we allow strings in the intermediate raw schema before transformation.
   // However, the final Workflow type expects Activity[] to avoid type errors across the codebase.
-  activities: z.array(ActivitySchema).min(1).optional().describe('Activities that comprise this workflow. Activities with transitions form sequences; activities without transitions are independent entry points. Omitted in definition files where activities are separate files.'),
+  activities: z.array(ActivitySchema).min(1).optional().describe('Activities that comprise this workflow. An activity whose exits the `graph` binds sits in a sequence; one declaring no exits is terminal. Omitted in definition files where activities are separate files.'),
 });
 export type Workflow = z.infer<typeof WorkflowSchema>;
 
@@ -84,9 +94,7 @@ export {
   type Step,
   type Checkpoint,
   type CheckpointOption,
-  type Decision,
-  type DecisionBranch,
-  type Transition,
+  type Exit,
   type Action,
   type TechniquesReference,
 } from './activity.schema.js';

@@ -98,7 +98,8 @@ const SessionFileBaseSchema = z.object({
   /** Current execution position. */
   currentActivity: z.string().default(''),
   currentTechnique: z.string().default(''),
-  condition: z.string().default(''),
+  /** Exit the last completed activity took, as its orchestrator reported it. */
+  exit: z.string().default(''),
 
   /** Outstanding checkpoint, if one is active. */
   activeCheckpoint: ActiveCheckpointSchema.optional(),
@@ -108,7 +109,6 @@ const SessionFileBaseSchema = z.object({
 
   /** Activity bookkeeping. */
   completedActivities: z.array(z.string()).default([]),
-  skippedActivities: z.array(z.string()).default([]),
 
   /**
    * Map of "activityId-checkpointId" → resolution record. Mirrors the
@@ -207,11 +207,10 @@ export interface SessionFile {
   startedAt: string;
   currentActivity: string;
   currentTechnique: string;
-  condition: string;
+  exit: string;
   activeCheckpoint?: ActiveCheckpoint;
   variables: Record<string, unknown>;
   completedActivities: string[];
-  skippedActivities: string[];
   checkpointResponses: Record<string, CheckpointResponse>;
   history: HistoryEntry[];
   status: 'running' | 'completed' | 'aborted';
@@ -318,10 +317,9 @@ export function createInitialSessionFile(args: {
     startedAt: now.toISOString(),
     currentActivity: '',
     currentTechnique: '',
-    condition: '',
+    exit: '',
     variables: seeded,
     completedActivities: [],
-    skippedActivities: [],
     checkpointResponses: {},
     // Defaults seeded from the workflow's variable declarations (#166 B7) are
     // recorded as ONE variables_seeded event carrying the whole map — they are

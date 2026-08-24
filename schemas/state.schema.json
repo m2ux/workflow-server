@@ -44,13 +44,6 @@
           },
           "default": []
         },
-        "skippedActivities": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": []
-        },
         "completedSteps": {
           "type": "object",
           "additionalProperties": {
@@ -81,14 +74,8 @@
                     "type": "object",
                     "additionalProperties": {}
                   },
-                  "transitionedTo": {
+                  "exit": {
                     "type": "string"
-                  },
-                  "activitiesSkipped": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
                   }
                 },
                 "additionalProperties": false
@@ -97,31 +84,6 @@
             "required": [
               "optionId",
               "respondedAt"
-            ],
-            "additionalProperties": false
-          },
-          "default": {}
-        },
-        "decisionOutcomes": {
-          "type": "object",
-          "additionalProperties": {
-            "type": "object",
-            "properties": {
-              "branchId": {
-                "type": "string"
-              },
-              "decidedAt": {
-                "type": "string",
-                "format": "date-time"
-              },
-              "transitionedTo": {
-                "type": "string"
-              }
-            },
-            "required": [
-              "branchId",
-              "decidedAt",
-              "transitionedTo"
             ],
             "additionalProperties": false
           },
@@ -208,7 +170,9 @@
                   "activity_usage",
                   "activity_dispatched",
                   "activity_redelivered",
-                  "batch_refused"
+                  "batch_refused",
+                  "activity_outcome",
+                  "progress_published"
                 ]
               },
               "activity": {

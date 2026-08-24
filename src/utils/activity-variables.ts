@@ -409,9 +409,8 @@ export async function deriveActivityContract(args: {
     routingReads.add(name);
     read(name);
   };
-  for (const transition of activity.transitions ?? []) conditionReads(transition.condition).forEach(routingRead);
-  for (const decision of activity.decisions ?? []) {
-    for (const branch of decision.branches) conditionReads(branch.condition).forEach(routingRead);
+  for (const exit of activity.exits ?? []) {
+    if (exit.when) whenReads(exit.when).forEach(routingRead);
   }
   for (const rule of activity.rules ?? []) tokenReads(rule).forEach(read);
   for (const outcome of activity.outcome ?? []) tokenReads(outcome).forEach(read);
@@ -470,25 +469,15 @@ const orchestratorInputsCache = new Map<string, Set<string>>();
 export type ActivityGraph = Map<string, string[]>;
 
 /**
- * The workflow's activity graph: every transition, decision branch and checkpoint-option route,
- * keyed by the activity it leaves. Targets outside the graph (the terminal sentinel, a typo) are
- * kept — the reachability walk needs to know a path leaves.
+ * The workflow's activity graph as the reachability walk needs it: the destinations bound to each
+ * activity's exits, keyed by the activity they leave. One source — the workflow's own `graph` — so
+ * the walk sees the whole shape without assembling it from the activities. Destinations that are
+ * not activities (the terminal sentinel) are kept: the walk needs to know a path leaves.
  */
 export function activityGraph(workflow: Workflow): ActivityGraph {
   const graph: ActivityGraph = new Map();
   for (const activity of workflow.activities ?? []) {
-    const targets = new Set<string>();
-    for (const transition of activity.transitions ?? []) targets.add(transition.to);
-    for (const decision of activity.decisions ?? []) {
-      for (const branch of decision.branches) if (branch.transitionTo) targets.add(branch.transitionTo);
-    }
-    for (const step of flattenActivitySteps(activity)) {
-      if (step.kind !== 'checkpoint') continue;
-      for (const option of step.options ?? []) {
-        if (option.effect?.transitionTo) targets.add(option.effect.transitionTo);
-      }
-    }
-    graph.set(activity.id, [...targets]);
+    graph.set(activity.id, [...new Set(Object.values(workflow.graph?.[activity.id] ?? {}))]);
   }
   return graph;
 }

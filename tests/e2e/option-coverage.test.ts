@@ -42,12 +42,19 @@ interface Expected {
  * Consecutive walks exercising no new option before the enumerator calls a workflow done.
  *
  * The tail is not wasted work, which is worth recording because it looks like it should be. Measured
- * over the whole set: 8 covers 151 options in 303 seconds, 16 covers 152, and 30 covers 155 in 794.
- * So more than half the wall clock buys the last four options — and coverage is the point of the
- * exercise, so it is bought. Overridable from the environment to re-check that trade, but the
- * expectation file is recorded against the committed value.
+ * over the whole set: 50 covers 154 of 275 declared options across 14 workflows in 1144 seconds. The
+ * last few options are most of that wall clock — and coverage is the point of the exercise, so it is
+ * bought. Overridable from the environment to re-check the trade, but the expectation file is
+ * recorded against the committed value.
+ *
+ * The plateau this detects is a property of the graph, so it has to be re-measured whenever the graph
+ * grows. An activity's routing is its exits, which include the branches a decision used to hold; those
+ * branches are walkable edges, and each one widens the enumerator's fork tree. Measured on
+ * workflow-design, whose `quality-review` carries such an edge: at 30 the streak ends before the forks
+ * behind it are dequeued and three `batch-review-attested` options go unreached, 36 is the lowest value
+ * that clears, and this sits above that rather than on it — a bound one walk from the edge is a flake.
  */
-const DRY_WALKS = Number(process.env.WF_DRY_WALKS ?? '30');
+const DRY_WALKS = Number(process.env.WF_DRY_WALKS ?? '50');
 
 /**
  * The workflows this run walks, and the options it may therefore judge.
