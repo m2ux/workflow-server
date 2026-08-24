@@ -11,6 +11,9 @@ variables:
       type: string
       description: Absolute path to the persisted applicable-constructs artifact.
       defaultValue: ""
+    - name: change_category
+      type: string
+      description: "In update mode, the categorised change request from `{user_description}`: one or more of the categories in Change Categories. Unset otherwise."
     - name: change_request_clear
       type: boolean
       description: In update mode, true when the change request is clear enough to proceed without Gate 1 clarification.

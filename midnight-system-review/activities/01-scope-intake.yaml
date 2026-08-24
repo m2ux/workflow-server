@@ -25,6 +25,9 @@ variables:
       type: boolean
       description: Whether a runnable midnight-node binary is available; gates runtime and SCALE-metadata probes
       defaultValue: false
+    - name: pr_number
+      type: string
+      description: The pull request number.
 required: true
 techniques:
   - variable-binding

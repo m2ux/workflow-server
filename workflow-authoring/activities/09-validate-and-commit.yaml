@@ -4,9 +4,14 @@ name: Validate and Commit
 description: "Re-derive the high-severity findings independently, persist the register, take the operator's disposition, then re-verify scope, commit, publish and close out. Terminal."
 variables:
   reads:
+    - audit_findings
     - change_brief_path
+    - changed_files
     - component_git_dir
+    - consumer_surface
+    - coverage_ledger
     - fail_count
+    - known_finding_keys
     - operation_type
     - planning_folder_path
     - register_sections
@@ -16,6 +21,7 @@ variables:
     - scope_manifest_path
     - target_path
     - target_workflow_ids
+    - touched_files
     - workflow_branch
     - worktree_created
   writes:

@@ -6,6 +6,7 @@ variables:
   reads:
     - awaiting_review
     - branch_name
+    - changed_files
     - component_git_dir
     - host_repo_path
     - is_review_mode
@@ -13,9 +14,13 @@ variables:
     - planning_folder_path
     - pr_number
     - pr_url
+    - prior_feedback_triage
+    - problem_statement
     - project_type
     - provenance_log_path
     - push_remote
+    - rating_cap
+    - requirements
     - squash_merge_supported
     - stealth_mode
     - target_path
@@ -49,10 +54,16 @@ variables:
       type: boolean
       description: True when regen of build-only artifacts (e.g. .scale / node metadata) is required and the agent cannot produce them.
       defaultValue: false
+    - name: classified_findings
+      type: array
+      description: "The input findings, each carrying its assigned severity, its `action_tier` (the Action Items tier the finding is delivered under), and — where one applies — its `impact_axis` (the dimension on which a behaviourally correct change is nonetheless harmful: unbounded-state-growth, economic-spam, liveness-halt, or migration-upgrade). Downstream rendering reads the severity to place each finding on the render scale, the tier to place it in the Action Items, and the impact axis to justify a correct-but-harmful classification."
     - name: code_findings_actionable
       type: boolean
       description: Whether any code-review finding is at or above the severity that warrants action.
       defaultValue: false
+    - name: publishable_files
+      type: array
+      description: Every changed file under `{planning_folder_path}`, including `README.md`, the linked report artifacts, `review-summary.md`, `session.json` and `.session-token`.
     - name: push_remote_url
       type: string
       description: URL the push remote resolves to (used in stealth-mode isolation confirmation).
@@ -60,6 +71,9 @@ variables:
     - name: recommended_outcome
       type: string
       description: Agent-recommended PR review outcome (approved|minor-changes|significant-changes).
+    - name: rendered_pr_body
+      type: string
+      description: The body now live on the PR after the patch.
     - name: review_comments_summary
       type: string
       description: Concise multi-line summary of reviewer comments captured during submit-for-review (severity tag + one-line description per comment.
@@ -72,6 +86,10 @@ variables:
       type: boolean
       description: Whether PR review feedback requires returning to planning.
       defaultValue: false
+    - name: review_summary
+      type: string
+      description: The rendered review text destined for the pull request — posted verbatim by the publish operation, byte-for-byte what sign-off approved.
+      defaultValue: ""
     - name: review_type
       type: string
       description: PR review event (approve | request-changes | comment) chosen at review-summary-approval; bound to update-pr::post-review-comment

@@ -12,7 +12,9 @@ variables:
     - needs_research
     - planning_folder_path
     - pr_number
+    - problem_statement
     - question_domains
+    - requirements
     - target_path
     - target_repo
   writes:
@@ -42,6 +44,10 @@ variables:
     - name: open_assumptions
       type: array
       description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down.
+    - name: requirements
+      type: array
+      description: The captured requirements list elicited across the domains.
+      defaultValue: []
 required: false
 steps:
   - kind: technique

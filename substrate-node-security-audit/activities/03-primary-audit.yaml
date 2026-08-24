@@ -4,12 +4,19 @@ name: Primary Audit
 description: Multi-agent primary audit via concurrent dispatch with verification and merge.
 variables:
   reads:
+    - agent_roster
     - planning_folder_path
   writes:
     - name: dispatch_complete
       type: boolean
       description: Phase 1b dispatch gate — every assigned agent dispatched and returned; gates report-generation entry
       defaultValue: false
+    - name: dispatch_results
+      type: array
+      description: Collected results from all dispatched sub-agents.
+    - name: dispatched_results
+      type: array
+      description: Array of `{ id, result }` in `{worker_briefs}` order. `result` is the harness agent output text (or structured payload when the worker returned one). Completeness counts live on gather-results.
     - name: merge_complete
       type: boolean
       description: Phase 1b merge gate — set from the merge sub-agent's reconciliation; gates report-generation entry
@@ -18,6 +25,12 @@ variables:
       type: boolean
       description: Phase 1b verification gate — set from the verification sub-agent's output; gates report-generation entry
       defaultValue: false
+    - name: verification_report
+      type: string
+      description: Scan completeness verification with gaps and re-scan recommendations
+    - name: worker_briefs
+      type: array
+      description: Ordered `{ id, description, prompt }` array produced by compose operations for the next meta dispatch step.
 required: true
 techniques:
   - scatter-gather

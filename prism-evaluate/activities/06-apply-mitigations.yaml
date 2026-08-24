@@ -9,6 +9,7 @@ variables:
     - evaluation_output_path
     - evaluation_target_type
     - mitigation_plan_path
+    - target_name
     - target_path
   writes:
     - name: evaluation_findings

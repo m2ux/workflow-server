@@ -5,6 +5,7 @@ description: Final validation, scope verification, and README generation/update,
 variables:
   reads:
     - assumptions_log
+    - compliance_report
     - draft_attestation_path
     - has_open_assumptions
     - impact_analysis_path
@@ -21,6 +22,9 @@ variables:
       type: number
       description: Scope-manifest items confirmed addressed by scope-verification.
       defaultValue: 0
+    - name: body
+      type: string
+      description: "Pull-request body: the change stated in a short paragraph, the manifest's entries as the file breakdown, and a link to the planning folder for the artifacts behind the change."
     - name: fail_count
       type: number
       description: Count of YAML files that failed schema validation.
@@ -37,10 +41,16 @@ variables:
       type: string
       description: URL of the pull request opened against the workflows branch for the workflow change (create/update modes).
       defaultValue: ""
+    - name: pushed_branch
+      type: string
+      description: The branch that was pushed (`{remote_name}/{branch}` form or the branch name when verification only needs the local name).
     - name: report_path
       type: string
       description: Absolute path to the persisted compliance or post-update review report.
       defaultValue: ""
+    - name: title
+      type: string
+      description: Pull-request title naming the target workflow and whether the change creates or modifies it.
     - name: total_count
       type: number
       description: Total scope-manifest items checked by scope-verification.

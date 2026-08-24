@@ -7,6 +7,7 @@ variables:
     - impact_analysis_path
     - operation_type
     - planning_folder_path
+    - verified_findings
     - workflow_id
   writes:
     - name: anti_pattern_finding_count
@@ -28,6 +29,9 @@ variables:
       type: string
       description: Absolute path to the persisted draft-attestation artifact.
       defaultValue: ""
+    - name: drafted_files
+      type: array
+      description: The set of files drafted for this workflow so far, extended with the one just written — each syntactically valid and passing schema validation for its type.
     - name: drafting_plan_path
       type: string
       description: Absolute path to the persisted per-file drafting-plan artifact.

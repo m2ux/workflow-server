@@ -4,8 +4,13 @@ name: Adversarial Verification
 description: Adversarially verify PASS items from the primary audit.
 variables:
   reads:
+    - dispatch_results
     - file_inventory
     - planning_folder_path
+  writes:
+    - name: decomposition_results
+      type: array
+      description: Decomposition table with per-instance verification results.
 required: true
 steps:
   - kind: action

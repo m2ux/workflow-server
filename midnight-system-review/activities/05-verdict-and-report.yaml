@@ -4,10 +4,15 @@ name: Verdict and Report
 description: Compute the merge-readiness verdict from accepted findings, render the review report with per-area accounting, and secure verdict sign-off.
 variables:
   reads:
+    - accepted_findings
     - has_pr_surface
+    - investigation_areas
     - planning_folder_path
     - target_repo_path
   writes:
+    - name: merge_readiness_verdict
+      type: number
+      description: The 1-5 verdict per the rubric scale (1 = not merge-ready, 5 = merge-ready).
     - name: plan_approved
       type: boolean
       description: Investigation-plan gate — set by the investigation-plan-approved checkpoint's approve option
@@ -16,6 +21,13 @@ variables:
       type: boolean
       description: Publish gate — set by the publish-decision checkpoint's approve option
       defaultValue: false
+    - name: review_summary
+      type: string
+      description: The rendered review text destined for the pull request — posted verbatim by the publish operation, byte-for-byte what sign-off approved.
+      defaultValue: ""
+    - name: review_type
+      type: string
+      description: The verdict-derived review action — `approve`, `request-changes`, or `comment` — per the rubric's verdict-to-review-type mapping. Always emitted, whether or not the run publishes.
 required: true
 steps:
   - kind: action

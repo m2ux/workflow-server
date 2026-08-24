@@ -6,6 +6,16 @@ variables:
   reads:
     - gitnexus_available
     - planning_folder_path
+  writes:
+    - name: storage_lifecycle
+      type: object
+      description: Storage lifecycle pairing table with optional invariant comparison.
+    - name: verdict_matrix
+      type: object
+      description: Complete verdict matrix and coverage attestation.
+    - name: verification_report
+      type: string
+      description: Scan completeness verification with gaps and re-scan recommendations
 required: false
 steps:
   - kind: technique

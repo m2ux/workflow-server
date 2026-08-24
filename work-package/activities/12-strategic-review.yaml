@@ -5,6 +5,7 @@ description: Review the implementation to ensure changes are minimal and focused
 variables:
   reads:
     - branch_name
+    - changed_files
     - component_git_dir
     - host_repo_path
     - is_review_mode
@@ -13,7 +14,10 @@ variables:
     - issue_url
     - planning_folder_path
     - pr_number
+    - problem_statement
     - push_remote
+    - requirements
+    - review_summary
     - stealth_mode
     - target_path
     - target_repo
@@ -29,10 +33,16 @@ variables:
     - name: recommended_strategic_option
       type: string
       description: Agent-recommended action after strategic review analysis (fix-findings|raise-findings|acceptable).
+    - name: rendered_pr_body
+      type: string
+      description: The body now live on the PR after the patch.
     - name: resign_unsigned_commits_requested
       type: boolean
       description: User chose to re-sign unsigned commits at the strategic-review unsigned-commits-prompt checkpoint.
       defaultValue: false
+    - name: review_findings
+      type: array
+      description: The tagged findings for the change, each under a stable `LC-{n}` designator so a reader and a caller reference the same finding — carrying a taxonomy tag, the location, the simpler alternative, and the lines it would save — closing with the diff-scoped scoreboard.
     - name: review_passed
       type: boolean
       description: Whether strategic review passed.

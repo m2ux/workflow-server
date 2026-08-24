@@ -15,6 +15,9 @@ variables:
     - needs_comprehension
     - planning_folder_path
     - pr_number
+    - problem_statement
+    - requirements
+    - review_summary
     - stealth_mode
     - target_path
     - target_repo
@@ -38,6 +41,12 @@ variables:
     - name: open_assumptions
       type: array
       description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down.
+    - name: rendered_pr_body
+      type: string
+      description: The body now live on the PR after the patch.
+    - name: stakeholder_overview
+      type: string
+      description: The two-paragraph plain-language overview written under `{readme_section_heading}` in the planning folder README.
 required: true
 techniques:
   - scatter-gather

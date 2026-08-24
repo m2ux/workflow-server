@@ -13,6 +13,9 @@ variables:
     - jira_issue_key
     - planning_folder_path
     - pr_number
+    - problem_statement
+    - requirements
+    - review_summary
     - target_path
     - target_repo
     - user_request
@@ -121,9 +124,17 @@ variables:
       type: string
       description: URL of the pull request for this work package (alongside pr_number).
       defaultValue: ""
+    - name: prior_feedback_triage
+      type: object
+      description: Triage of the reviewed PR's existing comments and review threads, one row per thread with its Confirmed, Refuted or Superseded disposition and the author and class of the original. Written as an artifact and carried in the bag, so the review summary reads the same triage the file records.
+      defaultValue: {}
     - name: project_type
       type: string
       description: Detected project type (e.g. rust-substrate); used to gate rust-substrate-specific validation steps.
+    - name: rating_cap
+      type: string
+      description: The ceiling the Overall Rating may not exceed, derived from the triage. When any prior comment is a blocker-class concern left unaddressed by the PR, the cap is the request-changes tier; otherwise the cap is unset and the rating is governed solely by the review's own findings.
+      defaultValue: ""
     - name: review_mode_ambiguous
       type: boolean
       description: True when review vs create intent cannot be derived confidently from the request.
@@ -143,6 +154,9 @@ variables:
       type: boolean
       description: True when the target repo allows squash merges (allow_squash_merge=true from GitHub API).
       defaultValue: false
+    - name: stakeholder_overview
+      type: string
+      description: The two-paragraph plain-language overview written under `{readme_section_heading}` in the planning folder README.
     - name: target_path
       type: string
       description: Feature worktree path for edits, builds, and PR ops (not host_repo_path).
