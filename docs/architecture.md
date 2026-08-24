@@ -6,7 +6,7 @@ Work is handed down [a chain of agents](dispatch-model.md) rather than done by o
 
 Because a worker runs in the background with no channel to the user, it cannot ask a question when it hits one. [Checkpoints](checkpoint-model.md) are how it stops and gets an answer anyway: the pause is recorded in the session, travels up the chain to the agent that can ask, and the answer travels back down.
 
-What happens next is never left to the model's judgement. [Transitions are deterministic](state-management-model.md): the orchestrator evaluates structured conditions against a bag of declared variables, so the same definition and the same state always take the same path. That page also covers how variables get their initial values and the two paths by which they change.
+What happens next is never left to the model's judgement. [Transitions are deterministic](state-management-model.md): an activity names the outcome it reached by evaluating declared predicates against a bag of declared variables, and the workflow file says where each outcome leads, so the same definition and the same state always take the same path. That page also covers how variables get their initial values and the two paths by which they change.
 
 Planning and code are kept strictly apart. [Workspace isolation](artifact-management-model.md) covers the boundary: session state, plans and artifacts live under an engineering root, feature worktrees live under the checkout, and the two are committed independently. It also covers how artifacts are named and how the planning folder is laid out.
 

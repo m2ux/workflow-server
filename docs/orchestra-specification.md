@@ -2,7 +2,7 @@
 
 Orchestra is a design for writing an activity's control flow down explicitly — its steps, its branch points, its loops — so the path through an activity is legible in the file rather than reconstructed by an agent reading it. The server implements a different shape, so nothing on this page describes a file the loader accepts.
 
-**Read this for the design, not to author a definition.** The language the server does load is covered by the [schema guide](../schemas/README.md), and the generated [schema reference](../site/api/schemas.html) gives each file shape field by field. An activity there is a list of steps, each tagged with the kind of work it does, followed by the transitions leading out of the activity. There are no flow declarations and no `skill:` key, and the grammar below assumes both.
+**Read this for the design, not to author a definition.** The language the server does load is covered by the [schema guide](../schemas/README.md), and the generated [schema reference](../site/api/schemas.html) gives each file shape field by field. An activity there is a list of steps, each tagged with the kind of work it does, followed by the named outcomes it can reach; where each outcome leads is the workflow file's to state. There are no flow declarations and no `skill:` key, and the grammar below assumes both.
 
 **Who this is for:** anyone weighing the design — how an explicit control-flow language would work, and what it would take — rather than anyone writing workflow definitions today. If you are authoring, the [technique protocol specification](technique-protocol-specification.md) and the schema guide are the two documents you need.
 

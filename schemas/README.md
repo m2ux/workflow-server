@@ -11,7 +11,7 @@ The workflow server uses six interconnected schemas:
 | Schema | Purpose | Use Case |
 |--------|---------|----------|
 | `workflow.schema.json` | Defines workflow structure | Creating new workflows with activities, steps, checkpoints |
-| `condition.schema.json` | Defines conditional expressions | Controlling transitions and decisions |
+| `condition.schema.json` | Defines conditional expressions | Gating steps and dismissing checkpoints |
 | `state.schema.json` | In-memory runtime execution state schema | Internal workflow-engine progress tracking |
 | `session-file.schema.json` | Persistent server-managed session file (`session.json`) | On-disk session state owned by the workflow server; loaded by `session_index` and sealed by `.session-token` |
 | `technique.schema.json` | Defines agent technique capabilities | Describing tool orchestration patterns and execution guidance |
@@ -28,9 +28,9 @@ The server enforces structure at load time plus a small runtime core; most schem
 | Construct | Engine-enforced | Advisory (incl. warn-only checks) | Agent-interpreted |
 |---|---|---|---|
 | Workflow | `id` (file resolution); `techniques.workflow` / `techniques.activity` (bundle composition); `activities` / `activitiesDir` (assembly); `variables[].defaultValue` (seeded into the session variable bag at session creation, recorded as a `variables_seeded` history event) | `version` (mid-session drift warns); `title`, `description`, `tags`; `rules.*`; `variables[]` declarations (the file's own, plus every `variables.writes` declaration the activities in its graph contribute; rendered in `get_workflow`); `initialActivity` (wrong first activity warns); `variables[].type` (checkpoint `setVariable` values validated warn-only — mismatches stored as written) | `author`; `variables[].required` (never checked — authoring metadata) |
-| Activity | `variables.writes[]` (contributed to the including workflow's variable set at load; two declarations of one name that disagree on `type` or `defaultValue` fail the load); `id` (navigation key); `artifactPrefix` (server-computed from the filename; also orders activities); the composed artifact contract (synthesized from bound techniques' outputs); `techniques[]` (bundle); `bundleTechniques` (hybrid step-technique bundling in `get_activity`) | `variables.reads[]` (the names the activity needs the workflow to supply; `check:activity-variables` holds the graph to them); `name`, `description`, `required`, `rules[]`; `transitions[]` (legality warns only — `next_activity` moves anywhere); `decisions[]` (stringified for warn-only transition matching) | `triggers[]` / `passContext` (`dispatch_child` takes an explicit `workflow_id`; a child session's bag starts from the child workflow's own declared defaults); `outcome[]` (never reconciled against manifests) |
+| Activity | `variables.writes[]` (contributed to the including workflow's variable set at load; two declarations of one name that disagree on `type` or `defaultValue` fail the load); `id` (navigation key); `artifactPrefix` (server-computed from the filename; also orders activities); the composed artifact contract (synthesized from bound techniques' outputs); `techniques[]` (bundle); `bundleTechniques` (hybrid step-technique bundling in `get_activity`) | `variables.reads[]` (the names the activity needs the workflow to supply; `check:activity-variables` holds the graph to them); `name`, `description`, `required`, `rules[]`; `exits[]` (every one bound in the workflow's `graph` or the load fails; the destination reached warns only — `next_activity` moves anywhere) | `triggers[]` / `passContext` (`dispatch_child` takes an explicit `workflow_id`; a child session's bag starts from the child workflow's own declared defaults); `outcome[]` (never reconciled against manifests) |
 | Step (common) | `kind` (selects the per-kind closed contract); `id` (duplicate ids are a load error; the key for manifests and step-bound `get_technique`) | absence of a gated step from a `step_manifest` is accepted; ungated omissions warn | `when` / `condition` gates (the server never evaluates a condition; on a checkpoint step only `condition` enables `condition_not_met` dismissal); `required` (worker hint); `actions[]` (no verb has a server interpreter — `set` does not write the variable bag and is slated for removal at the next schema major, #166 B7/B12) |
-| Checkpoint step | `options[]` (`option_id` hard-validated); `effect.setVariable` (applied to the session variable bag — the one engine-applied effect); `defaultOption` + `autoAdvanceMs` (the server enforces the full timer before `auto_advance`) | `effect.transitionTo` (recorded and returned; the orchestrator enacts it via `next_activity`); `effect.skipActivities` (recorded in `skippedActivities` bookkeeping) | `blocking` (orchestrator directive; the server's auto-advance gate does not consult it) |
+| Checkpoint step | `options[]` (`option_id` hard-validated); `effect.setVariable` (applied to the session variable bag — the one engine-applied effect); `defaultOption` + `autoAdvanceMs` (the server enforces the full timer before `auto_advance`) | `effect.exit` (checked at load against the activity's `exits`; the destination is read from the workflow graph, recorded and returned, and the orchestrator enacts it via `next_activity`) | `blocking` (orchestrator directive; the server's auto-advance gate does not consult it) |
 | Loop step | body `steps[]` structure (id uniqueness per scope, flattened for lookups and artifact composition) | loop-body step ids are accepted in `step_manifest` but never required | `loopType` semantics, `variable` / `over`, `breakCondition`, `maxIterations` — iteration is executed and bounded entirely by the agent |
 | Technique | `id` (resolution); rule addressing (`tech::rule`, group-prefix expansion); `inputs[].id` / `outputs[].id` (composition merge keys); `outputs[].artifact.name` (drives the composed artifact contract); `Initial` / `Final` protocol titles (composition wrapping) | `version`, `capability`; `inputs[].required` / `default` (rendered; the server neither verifies a required input was supplied nor applies a default); protocol content | input-binding resolution and output remaps (the name-match convention is an agent convention; step-bound `get_technique` annotates resolution statically) |
 | Condition | — | condition text is rendered for warn-only `transition_condition` matching (exact string equality) | all evaluation — `simple` / `and` / `or` / `not`, `exists` / null semantics |
@@ -43,7 +43,7 @@ The schemas work together to define workflows (design-time) and track their exec
 
 ### Workflow Structure
 
-A workflow consists of activities connected by transitions. Each activity contains a single ordered `steps[]` where every step carries a `kind`: a technique step (binds an operation), an action step (control-only), a checkpoint step (an inline user decision point at its concrete position), or a loop step (a compound step whose body is a nested `steps[]`). Activity-level `decisions` (automated branching) and `transitions` route between activities, and an activity can optionally trigger other workflows. The `initialActivity` property determines where sequential workflows begin; workflows with all independent activities (no transitions) don't require `initialActivity`.
+A workflow consists of activities and the `graph` binding their exits to one another. Each activity contains a single ordered `steps[]` where every step carries a `kind`: a technique step (binds an operation), an action step (control-only), a checkpoint step (an inline user decision point at its concrete position), or a loop step (a compound step whose body is a nested `steps[]`). An activity declares `exits` — its named outcomes — and the workflow's `graph` says where each leads, so an activity borrowed by two workflows sits in each one's shape without either editing the other's files. An activity can optionally trigger other workflows. The `initialActivity` property determines where sequential workflows begin; workflows whose activities are all independent entry points don't require `initialActivity`.
 
 ```mermaid
 stateDiagram-v2
@@ -51,8 +51,8 @@ stateDiagram-v2
     
     state "Workflow Definition" as WD {
         [*] --> Activity1: initialActivity
-        Activity1 --> Activity2: transition
-        Activity2 --> Activity3: transition (with condition)
+        Activity1 --> Activity2: graph binds an exit
+        Activity2 --> Activity3: graph binds an exit (predicate selects it)
         Activity3 --> [*]: complete
         
         state Activity1 {
@@ -61,7 +61,7 @@ stateDiagram-v2
         }
         state Activity2 {
             Steps
-            Decisions
+            Exits
         }
         state Activity3 {
             LoopStep
@@ -80,7 +80,7 @@ stateDiagram-v2
 The second diagram shows how the schema files depend on each other:
 
 - **workflow.schema.json** defines the overall structure and references `activity.schema.json` for activities
-- **activity.schema.json** defines unified activities with a single ordered `steps[]` (each step a kind: technique, action, checkpoint, or loop), plus activity-level decisions, transitions, and triggers
+- **activity.schema.json** defines unified activities with a single ordered `steps[]` (each step a kind: technique, action, checkpoint, or loop), plus the activity's exits and triggers
 - **technique.schema.json** defines agent capabilities, tool orchestration patterns, and execution protocols
 - **condition.schema.json** provides reusable condition expressions (simple comparisons, AND/OR/NOT combinators)
 - **state.schema.json** describes the in-memory runtime execution state used internally by the workflow engine
@@ -93,14 +93,14 @@ flowchart TB
     subgraph Workflow["workflow.schema.json"]
         W[Workflow] --> A[Activities]
         W --> SK1["techniques{workflow,activity}"]
+        W --> G["graph (exit -> destination)"]
     end
     
     subgraph Activity["activity.schema.json"]
         A --> S["steps[] (kind: technique|action|checkpoint|loop)"]
         S --> C["checkpoint step (inline)"]
         S --> L["loop step (compound, nested steps[])"]
-        A --> D[Decisions]
-        A --> T[Transitions]
+        A --> T["exits[]"]
         A --> TR[Triggers]
         A --> SK2["techniques[]"]
     end
@@ -152,9 +152,10 @@ erDiagram
     Workflow ||--o{ Variable : defines
     
     Activity ||--o{ Step : "contains (ordered, kind-tagged)"
-    Activity ||--o{ Decision : contains
-    Activity ||--o{ Transition : contains
+    Activity ||--o{ Exit : declares
     Activity ||--o{ WorkflowTrigger : triggers
+    Workflow ||--o{ ExitBinding : binds
+    ExitBinding |o--|| Exit : "gives a destination to"
     
     Step ||--o{ Action : "performs (technique/action kind)"
     Step |o--o| Condition : "gated by (when/condition)"
@@ -162,10 +163,6 @@ erDiagram
     Step ||--o{ Step : "iterates (loop kind, nested body)"
     CheckpointOption ||--o| Effect : triggers
     
-    Decision ||--|{ DecisionBranch : has
-    DecisionBranch |o--o| Condition : "evaluated by"
-    
-    Transition |o--o| Condition : "guarded by"
 
     Workflow {
         string id PK
@@ -207,22 +204,18 @@ erDiagram
         string description
     }
     
-    Decision {
-        string id PK
-        string name
-        string description
-    }
-    
-    DecisionBranch {
+    Exit {
         string id PK
         string label
-        string transitionTo FK
+        string when
         boolean isDefault
+        boolean immediate
     }
-    
-    Transition {
-        string to FK
-        boolean isDefault
+
+    ExitBinding {
+        string activity FK
+        string exit FK
+        string destination FK
     }
     
     LoopStep {
@@ -264,8 +257,7 @@ erDiagram
     
     Effect {
         object setVariable
-        string transitionTo
-        array skipActivities
+        string exit FK
     }
 ```
 
@@ -273,7 +265,7 @@ erDiagram
 
 #### Workflow (Root Entity)
 
-A workflow is the top-level container representing a complete process definition. Its activities are connected by `transitions` and entered at `initialActivity`.
+A workflow is the top-level container representing a complete process definition. Its activities are connected by its `graph` and entered at `initialActivity`.
 
 | Field             | Type       | Purpose                                                    |
 | ----------------- | ---------- | ---------------------------------------------------------- |
@@ -288,12 +280,13 @@ A workflow is the top-level container representing a complete process definition
 | `techniques`      | { workflow?, activity?: string[] } | Workflow techniques partitioned by audience: `workflow` (orchestrator-only, bundled into `get_workflow`) and `activity` (inherited by every activity, injected into every `get_activity` technique bundle) |
 | `variables`       | Variable[] | State variables                                            |
 | `initialActivity` | string     | Starting activity ID (required for sequential workflows)   |
+| `graph`           | object     | Exit bindings: activity id → exit id → destination activity id (or `__terminal__`). Every exit of every activity is bound here; an unbound exit, an unknown exit and an unknown destination each fail the load |
 | `activitiesDir`   | string     | Directory containing external activity files (server-resolved) |
 | `activities`      | Activity[] | Inline activity definitions (or loaded from activitiesDir) |
 
 #### Activity
 
-A unified activity defines workflow execution as a single ordered `steps[]` (each step kind-tagged), plus activity-level decisions and transitions. Activities can also trigger other workflows.
+A unified activity defines workflow execution as a single ordered `steps[]` (each step kind-tagged), plus the outcomes it can reach. Activities can also trigger other workflows.
 
 | Field             | Type              | Purpose                                    |
 | ----------------- | ----------------- | ------------------------------------------ |
@@ -304,8 +297,7 @@ A unified activity defines workflow execution as a single ordered `steps[]` (eac
 | `techniques`      | TechniquesReference | Activity-wide technique references (`::` paths) |
 | `bundleTechniques` | BundleTechniques | Opt-in hybrid bundling: `get_activity` inlines each ungated step technique whose composed wire form is at most `maxChars`; larger and gated ones stay lazy via `get_technique` |
 | `steps`           | Step[]            | Ordered, kind-tagged execution list (technique / action / checkpoint / loop) |
-| `decisions`       | Decision[]        | Automated branching points (activity-level)|
-| `transitions`     | Transition[]      | Activity navigation rules                  |
+| `exits`           | Exit[]            | Named outcomes of the activity; the workflow's `graph` binds each to a destination |
 | `triggers`        | WorkflowTrigger[] | Workflows to trigger from this activity    |
 | `outcome`         | string[]          | Expected outcomes on completion (advisory; never reconciled against manifests) |
 | `required`        | boolean           | Whether activity must be completed         |
@@ -353,26 +345,17 @@ A checkpoint step is authored in exactly one of two forms:
 | `defaultOption` | string          | Option ID to auto-select when `autoAdvanceMs` elapses. |
 | `autoAdvanceMs` | integer         | Milliseconds to wait before auto-selecting `defaultOption`; the server enforces the full timer on `respond_checkpoint { auto_advance }`. |
 
-#### Decision
+#### Exit
 
-A decision is an automated branching point based on variable conditions. The orchestrator evaluates the branch conditions; the server stringifies them only for warn-only transition matching.
+An exit is a named outcome of the activity, in the activity's own vocabulary. It says what happened, never what runs next: the destination is bound per exit in the workflow's `graph`. An activity declaring no exits is terminal. Where the destination the orchestrator moves to disagrees with the exit it reports, `next_activity` warns in `_meta.validation` but is not blocked.
 
-| Field         | Type             | Purpose                           |
-| ------------- | ---------------- | --------------------------------- |
-| `id`          | string           | Unique identifier within activity |
-| `name`        | string           | Decision name                     |
-| `description` | string           | What is being decided             |
-| `branches`    | DecisionBranch[] | Conditional paths (min 2)         |
-
-#### Transition
-
-A transition defines navigation from one activity to another. Transition legality is validated warn-only at `next_activity` — an out-of-graph transition warns in `_meta.validation` but is not blocked.
-
-| Field       | Type      | Purpose                         |
-| ----------- | --------- | ------------------------------- |
-| `to`        | string    | Target activity ID              |
-| `condition` | Condition | When this transition applies    |
-| `isDefault` | boolean   | Fallback if no conditions match |
+| Field       | Type    | Purpose                                                                 |
+| ----------- | ------- | ----------------------------------------------------------------------- |
+| `id`        | string  | Outcome name, unique within the activity                                |
+| `label`     | string  | Human-readable statement of the outcome                                 |
+| `when`      | string  | Inline expression selecting this exit, in the dialect step gates use    |
+| `isDefault` | true    | The outcome when no `when` held and no checkpoint option named one; declared exactly once on an activity with two or more exits |
+| `immediate` | true    | Selecting this exit at a checkpoint ends the step sequence there        |
 
 #### WorkflowTrigger
 
@@ -546,7 +529,7 @@ Variables store state that persists across activities. Define them at the workfl
 
 ### Activities
 
-Activities are the execution units of a workflow. Each activity contains an ordered, kind-tagged `steps[]` and activity-level `transitions`, and is reached via `transitions` from the `initialActivity`.
+Activities are the execution units of a workflow. Each activity contains an ordered, kind-tagged `steps[]` and the `exits` it can reach, and is reached through the workflow's `graph` from the `initialActivity`.
 
 ```json
 {
@@ -557,7 +540,7 @@ Activities are the execution units of a workflow. Each activity contains an orde
       "name": "Initial Activity",
       "description": "The first activity of the workflow",
       "steps": [],
-      "transitions": []
+      "exits": []
     }
   ]
 }
@@ -573,8 +556,7 @@ Activities are the execution units of a workflow. Each activity contains an orde
 | `description` | string | Activity description |
 | `required` | boolean | Whether activity is required (default: true) |
 | `steps` | array | Ordered, kind-tagged execution list (technique / action / checkpoint / loop) |
-| `decisions` | array | Automated branching points (activity-level) |
-| `transitions` | array | Activity transition rules |
+| `exits` | array | Named outcomes; the workflow's `graph` binds each to a destination |
 | `triggers` | array | Workflows to trigger from this activity |
 | `outcome` | string[] | Expected outcomes on completion |
 | `rules` | array | Activity-level execution rules and constraints |
@@ -626,7 +608,7 @@ A `kind: checkpoint` step pauses execution and requires user input. It sits inli
           "id": "cancel",
           "label": "No, cancel",
           "effect": {
-            "transitionTo": "cancelled"
+            "exit": "cancelled"
           }
         }
       ]
@@ -635,49 +617,15 @@ A `kind: checkpoint` step pauses execution and requires user input. It sits inli
 }
 ```
 
-The `when` / `condition` gate uses the same formal condition schema shared by every step kind, transitions, and decisions (`condition.schema.json`). If omitted, the checkpoint is always presented. The two gate spellings differ at the dismissal seam: only a structured `condition` makes the checkpoint dismissible via `respond_checkpoint { condition_not_met }` — a `when`-gated checkpoint cannot be dismissed that way.
+The `when` / `condition` gate uses the same formal condition schema shared by every step kind (`condition.schema.json`). If omitted, the checkpoint is always presented. The two gate spellings differ at the dismissal seam: only a structured `condition` makes the checkpoint dismissible via `respond_checkpoint { condition_not_met }` — a `when`-gated checkpoint cannot be dismissed that way.
 
 **Replay and instance-qualified ids.** `yield_checkpoint` stores responses under `<activityId>-<checkpoint_id>`. A later yield of the same key returns `status: "replayed"` (no new `activeCheckpoint`). Inside a loop, pass `<baseId>#<instance>` when each iteration needs its own decision; the loader resolves the definition by base id (portion before `#`). Use a bare id when one answer should cover every iteration.
 
 **Checkpoint Option Effects** (per-effect enforcement):
 - `setVariable` — the server applies the assignments to the session variable bag; the one engine-applied effect
-- `transitionTo` — returned to the orchestrator, which enacts the transition via `next_activity`; selecting the option does not itself move the session
-- `skipActivities` — recorded in the session's `skippedActivities` bookkeeping and returned; the orchestrator routes around the listed activities
+- `exit` — one of the owning activity's declared exits, checked at load. `present_checkpoint` resolves it through the workflow graph and returns the destination with the option, so the orchestrator states the consequence before the user chooses; `respond_checkpoint` records it and returns it for the orchestrator to enact via `next_activity`. Where the exit is `immediate`, the response also says the activity ends there.
 
-### Decisions
-
-Decisions are automated branching points based on conditions:
-
-```json
-{
-  "decisions": [
-    {
-      "id": "decision-1",
-      "name": "Path Selection",
-      "description": "Choose path based on variable",
-      "branches": [
-        {
-          "id": "branch-a",
-          "label": "Path A",
-          "condition": {
-            "type": "simple",
-            "variable": "option",
-            "operator": "==",
-            "value": "a"
-          },
-          "transitionTo": "activity-a"
-        },
-        {
-          "id": "branch-default",
-          "label": "Default Path",
-          "transitionTo": "activity-default",
-          "isDefault": true
-        }
-      ]
-    }
-  ]
-}
-```
+An adhoc checkpoint — one the activity does not declare, supplied at `yield_checkpoint` — has no declared exits to name, so its options carry `setVariable` only.
 
 ### Loop Steps
 
@@ -708,29 +656,37 @@ A `kind: loop` step is a compound step that iterates over collections or while c
 
 **Loop Types (`loopType`):** `forEach`, `while`, `doWhile`
 
-### Transitions
+### Exits and the graph
 
-Transitions define how to move between activities:
+An activity names the outcomes it can reach; the workflow says where each one leads. The activity:
 
 ```json
 {
-  "transitions": [
-    {
-      "to": "next-activity",
-      "condition": {
-        "type": "simple",
-        "variable": "user_confirmed",
-        "operator": "==",
-        "value": true
-      }
-    },
-    {
-      "to": "fallback-activity",
-      "isDefault": true
-    }
+  "exits": [
+    { "id": "confirmed", "when": "user_confirmed == true" },
+    { "id": "declined", "isDefault": true },
+    { "id": "aborted", "immediate": true }
   ]
 }
 ```
+
+And the workflow that runs it:
+
+```json
+{
+  "graph": {
+    "confirm-scope": {
+      "confirmed": "next-activity",
+      "declined": "fallback-activity",
+      "aborted": "__terminal__"
+    }
+  }
+}
+```
+
+The orchestrator takes the first exit whose `when` holds, falls to the default when none does, and
+lets an exit a checkpoint option named win over both. A destination of `__terminal__` ends the run
+without landing on an activity.
 
 ### Triggers
 
@@ -752,7 +708,7 @@ Triggers allow an activity to invoke another workflow:
 
 ## Condition Schema
 
-The condition schema (`condition.schema.json`) defines expressions for controlling transitions, decisions, loops, and checkpoints. Conditions are evaluated by the executing agents against the session's variable state — the server never evaluates a condition at runtime; it renders condition text only for the warn-only `transition_condition` match on `next_activity`.
+The condition schema (`condition.schema.json`) defines expressions for gating steps and loops and for dismissing checkpoints. Conditions are evaluated by the executing agents against the session's variable state — the server never evaluates a condition at runtime. An exit's predicate is the inline `when` expression instead.
 
 ### Simple Conditions
 
@@ -892,10 +848,8 @@ The state schema (`state.schema.json`) tracks runtime execution of a workflow us
 | `currentActivity`     | string                    | Current activity ID                                            |
 | `currentStep`         | integer                   | Current step index within activity (1-based)                   |
 | `completedActivities` | string[]                  | Completed activity IDs                                         |
-| `skippedActivities`   | string[]                  | Skipped activity IDs                                           |
 | `completedSteps`      | Record<string, integer[]> | Steps completed per activity                                   |
 | `checkpointResponses` | Record<string, Response>  | Checkpoint answers (key: `<activityId>-<checkpoint_id>`, including any `#instance` suffix) |
-| `decisionOutcomes`    | Record<string, Outcome>   | Decision results (key: "activity-decision")                    |
 | `activeLoops`         | LoopState[]               | Currently executing loops                                      |
 | `variables`           | Record<string, any>       | Runtime variable values                                        |
 | `history`             | HistoryEntry[]            | Execution event log                                            |
@@ -922,7 +876,6 @@ The state schema (`state.schema.json`) tracks runtime execution of a workflow us
     "first-activity": [1, 2]
   },
   "checkpointResponses": {},
-  "decisionOutcomes": {},
   "activeLoops": [],
   "variables": {
     "user_confirmed": true
@@ -1081,15 +1034,10 @@ Here's a minimal valid workflow that demonstrates all key concepts:
           ]
         }
       ],
-      "transitions": [
+      "exits": [
         {
-          "to": "process",
-          "condition": {
-            "type": "simple",
-            "variable": "approved",
-            "operator": "==",
-            "value": true
-          }
+          "id": "approved",
+          "when": "approved == true"
         },
         {
           "to": "rejected",
@@ -1160,15 +1108,16 @@ if (result.success) {
 |-------|-------|-----|
 | Missing required property | `id`, `version`, `title`, or `activities` not provided | Add the required property |
 | Invalid version format | Version doesn't match `X.Y.Z` pattern | Use semantic versioning |
-| Invalid activity reference | `initialActivity` or transition `to` references non-existent activity | Check activity IDs match |
+| Invalid activity reference | `initialActivity` or a `graph` destination references a non-existent activity | Check activity IDs match |
 | Checkpoint missing options | Checkpoint defined without any options | Add at least one option |
-| Decision needs branches | Decision defined with fewer than 2 branches | Add at least 2 branches |
+| Unbound exit | An activity declares an exit the workflow's `graph` does not bind | Bind it, or remove the exit |
+| Ambiguous default | An activity declares several exits and no single `isDefault` | Mark exactly one as the default |
 
 ---
 
 ## Activity Schema
 
-The activity schema (`activity.schema.json`) defines unified activities that combine workflow execution: a single ordered, kind-tagged `steps[]` (technique / action / checkpoint / loop) plus activity-level decisions, transitions, and triggers. Activities are reached via `transitions` from the workflow's `initialActivity`. This schema is **generated** by [`scripts/generate-schemas.ts`](../scripts/generate-schemas.ts) from the Zod source of truth (it was previously hand-maintained) — do not hand-edit `activity.schema.json`.
+The activity schema (`activity.schema.json`) defines unified activities that combine workflow execution: a single ordered, kind-tagged `steps[]` (technique / action / checkpoint / loop) plus the activity's exits and triggers. Activities are reached through the workflow's `graph` from its `initialActivity`. This schema is **generated** by [`scripts/generate-schemas.ts`](../scripts/generate-schemas.ts) from the Zod source of truth (it was previously hand-maintained) — do not hand-edit `activity.schema.json`.
 
 ### Top-Level Structure
 
@@ -1200,8 +1149,7 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 | `description` | string | Detailed description |
 | `bundleTechniques` | BundleTechniques | Opt-in hybrid bundling (`{ maxChars }`): `get_activity` inlines each ungated step technique whose composed wire form is at most `maxChars` |
 | `steps` | Step[] | Ordered, kind-tagged execution list (technique / action / checkpoint / loop) |
-| `decisions` | Decision[] | Automated branching points (activity-level) |
-| `transitions` | Transition[] | Navigation to other activities |
+| `exits` | Exit[] | Named outcomes of the activity |
 | `triggers` | WorkflowTrigger[] | Workflows to trigger from this activity |
 | `outcome` | string[] | Expected outcomes when activity completes |
 | `required` | boolean | Whether activity is required (default: true) |
@@ -1210,7 +1158,7 @@ The activity schema (`activity.schema.json`) defines unified activities that com
 
 ### Activity Flow
 
-Activities have `transitions` connecting them, form a workflow flow, and require `initialActivity` on the parent workflow. *Workflow* selection — which workflow handles a request — happens at the catalog level via `list_workflows` and `start_session`, scored on title, description, and `tags`.
+Activities are connected by the parent workflow's `graph`, which binds each activity's exits to the activity that follows, and require `initialActivity` on that workflow. *Workflow* selection — which workflow handles a request — happens at the catalog level via `list_workflows` and `start_session`, scored on title, description, and `tags`.
 
 ### Complete Example
 

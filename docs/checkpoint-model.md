@@ -43,7 +43,7 @@ The server reads `activeCheckpoint`, finds the matching definition in the workfl
 respond_checkpoint({ session_index, option_id: "proceed" })
 ```
 
-The server clears `activeCheckpoint`, records the decision, and applies each effect on its own terms. A `setVariable` effect is written into the session variable bag. A `skipActivities` effect is recorded as bookkeeping. A `transitionTo` effect is handed back for the orchestrator to enact, because resolving a checkpoint does not itself move the session.
+The server clears `activeCheckpoint`, records the decision, and applies each effect on its own terms. A `setVariable` effect is written into the session variable bag. An `exit` effect names one of the activity's declared outcomes; the server reads its destination from the workflow graph and hands both back for the orchestrator to enact, because resolving a checkpoint does not itself move the session. Where the named exit is `immediate`, the response says so, and the activity's remaining steps do not run.
 
 ### Three ways to resolve one
 
@@ -131,7 +131,7 @@ or loses nothing by not firing:
 | The variable declares a `defaultValue` | Seeding puts it in the bag at session creation, so the earlier gate reads the default rather than nothing |
 | The earlier gate reads by `exists` / `notExists` | A presence test answers on a missing variable; absence is one of its two answers |
 | The earlier step only messages or logs | An announcement that does not fire costs nothing, and gating one on a not-yet-decided value is the ordinary way to stay quiet until it is known |
-| The deciding option carries `transitionTo` | Re-entry sends the run back through the earlier step, which then reads what the option wrote |
+| The deciding option carries an `exit` | Leaving the activity sends the run back through the earlier step on its next visit, which then reads what the option wrote |
 | The two gates demand incompatible values of one variable | No single run reaches both steps, so the earlier one was never waiting on this decision |
 
 The last two carve out the corpus's standard way of settling a value: a technique derives it, an

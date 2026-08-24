@@ -160,7 +160,7 @@ ancestor, and the producing technique additionally declares it as an output.
 - A **symbol** — an input, output, or protocol variable — becomes a **runtime variable**. The engine
   stores variables in a name-keyed bag and resolves references by **exact string match**
   (`getVariableValue`); the agent sets a variable under the name the prose dictates, and activity
-  conditions/transitions read it by that same name. So a symbol id must be the *same string* as the
+  gates and exit predicates read it by that same name. So a symbol id must be the *same string* as the
   variable it binds to. Activities, conditions, and session state are authored in `snake_case`
   (`target_path`, `is_review_mode`, `planning_folder_path`), so **symbol ids are `snake_case`** — and
   protocol variables follow suit (`{$resolved_content}`). Case carries no meaning beyond this; it does

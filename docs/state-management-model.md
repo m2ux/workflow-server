@@ -57,27 +57,48 @@ An action step is carried out by the worker rather than by the engine, so the wa
 
 ## Choosing the next activity
 
-An activity that is complete hands the decision to its `transitions` list:
+The choice is made in two halves, in two files. An activity that is complete names the outcome it
+reached, from the outcomes it declares:
 
 ```yaml
-transitions:
-  - to: "select-submodule"
-    condition:
-      type: simple
-      variable: is_monorepo
-      operator: ==
-      value: true
-  - to: "analyze-codebase"
+exits:
+  - id: monorepo
+    when: is_monorepo == true
+  - id: single-repo
     isDefault: true
 ```
 
-The orchestrator evaluates that list in order against the current state and takes the first condition that holds. It asks neither the user nor the model, which is what the structured form is for, and it then calls `next_activity` with the id it matched.
+The workflow that runs the activity says where each outcome leads:
 
-A condition takes one of three shapes: a simple comparison of a variable against a value, using `==`, `!=`, `>`, `<`, `>=`, `<=`, `exists` or `notExists`; an `and` or `or` over nested conditions; or a `not` negating a single one. Two other places carry a transition target the same way — a decision branch, and the effect on a checkpoint option.
+```yaml
+graph:
+  detect-repository:
+    monorepo: select-submodule
+    single-repo: analyze-codebase
+```
+
+The orchestrator evaluates the exits in order against the current state and takes the first whose
+`when` holds, falling to the default when none does; a checkpoint option may name an exit instead,
+and that selection wins. It then reads the destination from the graph and calls `next_activity` with
+that id, reporting the exit it took as the `exit` parameter. It asks neither the user nor the model,
+which is what the declared form is for.
+
+An exit's `when` is the same inline expression a step gate uses: comparisons with `==`, `!=`, `>`,
+`<`, `>=` and `<=`, bare identifier truthiness, unary `!`, and `&&` / `||` with parentheses.
+
+Splitting the two halves is what lets one activity sit in two workflows. `remediate-vuln` runs
+fourteen of `work-package`'s activities and binds their exits in its own file, so it can place them
+in a different order without editing files it does not own. It is also what lets an outcome end the
+run: a graph may send an exit to `__terminal__`, which completes the session without landing on an
+activity.
+
+An exit may be declared `immediate`. Selecting one at a checkpoint ends the activity's step sequence
+there, so a user who aborts does not then watch the remaining steps run; the step-manifest check
+reads the recorded exit and accounts for the steps it skipped.
 
 ## Varying the path
 
-A workflow varies its path through ordinary state rather than through a mechanism of its own. A boolean set early, by a detection step or by a checkpoint, marks the variant, and conditional transitions and step gates branch on it to skip or redirect activities. Because the variable lives in the single bag, the variant persists across activities without anything carrying it. Work-package's review mode, and workflow-design's update and review modes, are all built this way.
+A workflow varies its path through ordinary state rather than through a mechanism of its own. A boolean set early, by a detection step or by a checkpoint, marks the variant, and exit predicates and step gates branch on it to skip or redirect activities. Because the variable lives in the single bag, the variant persists across activities without anything carrying it. Work-package's review mode, and workflow-design's update and review modes, are all built this way.
 
 ## Persistence
 
