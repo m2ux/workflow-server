@@ -168,7 +168,7 @@ steps:
           setVariable:
             operation_type: update
             update_seeded_from_review: true
-          transitionTo: intake-and-context
+          exit: fix-issues
       - id: report-only
         label: Report only — no changes
         description: Save the compliance report without making changes
@@ -179,7 +179,7 @@ steps:
           setVariable:
             operation_type: update
             update_seeded_from_review: true
-          transitionTo: intake-and-context
+          exit: fix-issues
   - kind: technique
     id: audit-expressiveness
     technique: audit-expressiveness
@@ -344,24 +344,12 @@ steps:
           - action: set
             target: has_critical_finding
             message: After re-running the audits, set true iff any remaining finding is Critical severity.
-decisions:
-  - id: blocker-gate
-    name: Critical Blocker Gate
-    branches:
-      - id: has-blocker
-        label: Critical finding remains — return to drafting
-        condition:
-          type: simple
-          variable: has_critical_finding
-          operator: ==
-          value: true
-        transitionTo: scope-and-draft
-      - id: no-blocker
-        label: No critical findings — proceed to validate and commit
-        isDefault: true
-transitions:
-  - to: validate-and-commit
+exits:
+  - id: has-blocker
+    when: has_critical_finding == true
+  - id: done
     isDefault: true
+  - id: fix-issues
 outcome:
   - The workflow expresses its logic in schema constructs the engine can act on, not prose an agent must interpret — behavior is structural, not advisory
   - The content reads and behaves like its sibling workflows, so users and agents carry one mental model across the whole library

@@ -39,3 +39,10 @@ variables:
     type: string
     description: "Path to planning folder: .engineering/artifacts/planning/YYYY-MM-DD-cicd-security-audit"
 initialActivity: scope-setup
+graph:
+  scope-setup:
+    done: reconnaissance
+  reconnaissance:
+    done: primary-scan
+  primary-scan:
+    scan-verified: report-generation

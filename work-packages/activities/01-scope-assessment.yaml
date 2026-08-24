@@ -27,14 +27,15 @@ steps:
       - id: proceed
         label: Proceed with planning
         effect:
-          transitionTo: folder-setup
+          exit: done
       - id: refine
         label: Refine scope
         effect:
-          transitionTo: scope-assessment
-transitions:
-  - to: folder-setup
+          exit: refine
+exits:
+  - id: done
     isDefault: true
+  - id: refine
 outcome:
   - The workflow has an agreed inventory of distinct work packages to plan, so planning can proceed package-by-package
   - User and workflow share the same boundary for what this initiative covers, preventing scope drift downstream

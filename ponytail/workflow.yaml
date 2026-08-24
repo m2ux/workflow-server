@@ -31,3 +31,14 @@ variables:
     description: Directory the pass writes its artifacts into
     defaultValue: .ponytail
 initialActivity: intake-and-scope
+graph:
+  intake-and-scope:
+    done: apply-ladder
+  apply-ladder:
+    safety-floor-cleared: over-engineering-review
+    safety-floor-breached: __terminal__
+  over-engineering-review:
+    repo-wide: repo-audit
+    single-pass: harvest-debt-and-report
+  repo-audit:
+    done: harvest-debt-and-report

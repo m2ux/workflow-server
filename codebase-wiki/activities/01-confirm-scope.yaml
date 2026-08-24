@@ -62,8 +62,8 @@ steps:
       - id: revise
         label: Revise the ingest plan
         description: The set or order of areas to ingest needs adjustment.
-transitions:
-  - to: build-wiki
+exits:
+  - id: done
     isDefault: true
 outcome:
   - The wiki tree root is fixed, so every page and the index/log ledger land in one known location

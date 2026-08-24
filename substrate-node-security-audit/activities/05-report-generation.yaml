@@ -82,30 +82,13 @@ steps:
     actions:
       - action: log
         message: Report generation complete — audit report finalized
-decisions:
-  - id: next-phase
-    name: Next Phase Decision
-    description: Route to ensemble pass, gap analysis, or completion based on configuration
-    branches:
-      - id: ensemble
-        label: Run ensemble pass
-        condition:
-          type: simple
-          variable: ensemble_enabled
-          operator: ==
-          value: true
-        transitionTo: ensemble-pass
-      - id: gap-analysis
-        label: Run gap analysis
-        condition:
-          type: simple
-          variable: has_reference_report
-          operator: ==
-          value: true
-        transitionTo: gap-analysis
-      - id: complete
-        label: Audit complete
-        isDefault: true
+exits:
+  - id: ensemble
+    when: ensemble_enabled == true
+  - id: has-reference-report
+    when: has_reference_report == true
+  - id: complete
+    isDefault: true
 outcome:
   - Every finding carries a defensible, cross-checked severity, so consumers can triage and prioritize remediation with confidence
   - The consumer has a single audit report whose coverage and finding-completeness are both attested — every in-scope area was reviewed and no merged finding was lost on the way in

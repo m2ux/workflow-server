@@ -39,8 +39,8 @@ steps:
       - id: diverge
         label: Diverge with justification
         description: The new workflow requires different patterns, with rationale provided.
-transitions:
-  - to: scope-and-draft
+exits:
+  - id: done
     isDefault: true
 outcome:
   - A user-decided set of proven conventions to follow — and divergences to justify — so the new workflow inherits established structure instead of reinventing it

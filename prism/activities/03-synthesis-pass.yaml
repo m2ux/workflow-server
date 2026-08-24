@@ -36,6 +36,6 @@ steps:
             target: all_artifact_paths
             description: Accumulated artifact paths across units.
         when: current_unit.pipeline_mode == 'full-prism'
-transitions:
-  - to: generate-report
+exits:
+  - id: done
     isDefault: true

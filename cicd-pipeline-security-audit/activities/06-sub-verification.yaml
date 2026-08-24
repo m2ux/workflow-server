@@ -36,7 +36,6 @@ steps:
     actions:
       - action: log
         message: Scan verification complete — gap report produced
-transitions: []
 outcome:
   - The audit has independent proof that every inventoried file and all seven patterns were actually covered, not just assumed
   - The parent can either proceed to merge with confidence or knows exactly which scanners to re-run, gaps named

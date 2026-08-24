@@ -42,3 +42,20 @@ variables:
     type: string
     description: "Disposition taken on the current finding: accept | modify | skip | discuss"
 initialActivity: scope-definition
+graph:
+  scope-definition:
+    scope-confirmed: dimension-planning
+    adjust: scope-definition
+  dimension-planning:
+    dimensions-confirmed: execute-analysis
+    adjust: dimension-planning
+  execute-analysis:
+    done: consolidate-report
+  consolidate-report:
+    done: deliver-results
+  deliver-results:
+    resolution-requested: resolution-dialogue
+    delivered: __terminal__
+  resolution-dialogue:
+    mitigations-requested: apply-mitigations
+    resolved: __terminal__

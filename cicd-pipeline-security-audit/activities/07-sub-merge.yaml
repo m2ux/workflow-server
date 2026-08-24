@@ -39,7 +39,6 @@ steps:
     actions:
       - action: log
         message: Finding merge complete — reconciliation table produced with zero Unaccounted
-transitions: []
 outcome:
   - Downstream scoring sees each real issue exactly once, with per-scanner duplicates collapsed into one canonical finding
   - Compound attack chains spanning multiple patterns are surfaced as correlated risks rather than scattered single findings

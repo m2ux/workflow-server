@@ -39,6 +39,6 @@ steps:
       - action: set
         target: all_artifact_paths
         description: Accumulated artifact paths across the run.
-transitions:
-  - to: generate-report
+exits:
+  - id: done
     isDefault: true

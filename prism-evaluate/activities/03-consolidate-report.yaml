@@ -38,6 +38,6 @@ steps:
     technique: compose-evaluation-report::verify-report
 outcome:
   - The consumer has a single severity-calibrated evaluation of the target — cross-dimensional findings and actionable recommendations to decide from
-transitions:
-  - to: deliver-results
+exits:
+  - id: done
     isDefault: true

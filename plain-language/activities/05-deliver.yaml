@@ -38,8 +38,8 @@ steps:
     actions:
       - action: message
         message: "Delivered `{document_title}` to [{output_path}]({document_path}) — {open_issue_count} open issues recorded ([evaluation report]({evaluation_report_path}), [ISO checklist]({checklist_path}))."
-transitions:
-  - to: __terminal__
+exits:
+  - id: done
     isDefault: true
 outcome:
   - The plain-language document is written to its output path, with its evaluation report and completed ISO checklist as the conformance record

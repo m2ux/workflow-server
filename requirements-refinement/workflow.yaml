@@ -34,3 +34,12 @@ variables:
     description: Filesystem path to the canonical requirements specification being augmented or created
     required: true
 initialActivity: intake-and-analyze
+graph:
+  intake-and-analyze:
+    analysis-confirmed: update-specification
+  update-specification:
+    done: validate-specification
+  validate-specification:
+    validation-passed: finalize-specification
+    correctable: update-specification
+    uncorrectable: report-failure

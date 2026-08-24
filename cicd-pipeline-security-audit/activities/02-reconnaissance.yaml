@@ -40,8 +40,8 @@ steps:
     actions:
       - action: log
         message: Reconnaissance complete — workflows classified and scanner agents assigned
-transitions:
-  - to: primary-scan
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Scanners can prioritize the riskiest workflows first, knowing each one's trigger type, permission scope, and checkout pattern

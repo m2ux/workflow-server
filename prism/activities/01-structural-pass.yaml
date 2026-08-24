@@ -73,18 +73,10 @@ steps:
           - action: set
             target: all_artifact_paths
             description: Accumulated artifact paths across units.
-transitions:
-  - to: adversarial-pass
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: ==
-      value: full-prism
-  - to: behavioral-synthesis-pass
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: ==
-      value: behavioral
-  - to: generate-report
+exits:
+  - id: full-prism
+    when: pipeline_mode == "full-prism"
+  - id: behavioral
+    when: pipeline_mode == "behavioral"
+  - id: structural-only
     isDefault: true

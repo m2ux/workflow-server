@@ -110,8 +110,8 @@ steps:
           name: cargo-operations::run-suite
           inputs:
             build_scope: --workspace
-transitions:
-  - to: strategic-review
+exits:
+  - id: done
     isDefault: true
 outcome:
   - All tests passing when the suite ran locally, or Progress Validation marked cancelled/N/A when local validation was unavailable

@@ -40,21 +40,15 @@ steps:
         label: Abort
         description: Stop the workflow without submitting
         effect:
-          transitionTo: __terminal__
+          exit: abort
     blocking: false
-transitions:
-  - to: commit-and-submit
-    condition:
-      type: simple
-      variable: has_issues
-      operator: ==
-      value: false
+exits:
+  - id: has-issues
+    when: has_issues == true
+  - id: verified
+    when: has_issues == false
     isDefault: true
-  - to: apply-updates
-    condition:
-      type: simple
-      variable: has_issues
-      operator: ==
-      value: true
+  - id: abort
+    immediate: true
 outcome:
   - All resources, techniques, and documentation are consistent

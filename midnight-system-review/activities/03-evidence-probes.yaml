@@ -74,8 +74,8 @@ steps:
     actions:
       - action: log
         message: Evidence probes complete — per-area evidence consolidated with probe accounting
-transitions:
-  - to: finding-adjudication
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Every approved investigation area receives bounded, catalog-selected probes — full coverage within a fixed effort budget

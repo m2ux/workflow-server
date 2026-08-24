@@ -188,8 +188,8 @@ steps:
         value: false
       - action: message
         message: "Review mode: classification recorded ({problem_type}, {problem_complexity} complexity). Rationale: {classification_rationale}."
-transitions:
-  - to: codebase-comprehension
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Problem clearly defined and classified

@@ -103,8 +103,8 @@ steps:
     actions:
       - action: validate
         message: "Confirm `{host_repo_path}/{component_path}` resolves to a directory containing a working git tree (`.git` file or directory present) before dispatching the client workflow"
-transitions:
-  - to: dispatch-client-workflow
+exits:
+  - id: done
     isDefault: true
 outcome:
   - The orchestrator knows whether it is operating on a single repo or a submodule monorepo, and which submodule the user intends as the target — resolved without prompting except when a monorepo has multiple target components

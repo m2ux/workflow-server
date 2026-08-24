@@ -46,7 +46,6 @@ steps:
     actions:
       - action: log
         message: Per-submodule scan complete — findings written to output file
-transitions: []
 outcome:
   - This submodule's workflows have full seven-class coverage, so the parent audit can account for it as scanned
   - Each finding carries source-to-sink evidence a reviewer can independently confirm, and is structured so the parent can collect and merge it without re-parsing

@@ -217,8 +217,8 @@ steps:
       - kind: technique
         id: record-response
         technique: review-assumptions::record
-transitions:
-  - to: implementation-analysis
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Best practices identified from multiple sources

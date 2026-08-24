@@ -52,8 +52,8 @@ steps:
     actions:
       - action: log
         message: Reconnaissance complete — architecture mapped and function registry built
-transitions:
-  - to: primary-audit
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Codebase map and function registry available for primary audit dispatch

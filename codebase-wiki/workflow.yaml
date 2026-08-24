@@ -24,3 +24,11 @@ variables:
     type: string
     description: The pinned source commit every citation is relative to. The raw baseline is the source tree at this commit, referenced in place — there is no physical copy.
 initialActivity: confirm-scope
+graph:
+  confirm-scope:
+    done: build-wiki
+  build-wiki:
+    done: lint-wiki
+  lint-wiki:
+    done: publish
+    needs-reingest: build-wiki

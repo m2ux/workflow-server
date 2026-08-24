@@ -70,13 +70,9 @@ steps:
       - id: revise
         label: Revise the analysis
         description: Analysis misreads the source or misses changes and must be revised before proceeding.
-transitions:
-  - to: update-specification
-    condition:
-      type: simple
-      variable: analysis_confirmed
-      operator: ==
-      value: true
+exits:
+  - id: analysis-confirmed
+    when: analysis_confirmed == true
     isDefault: true
 outcome:
   - The workflow can trust where to read from and where to write to — both paths exist and are confirmed correct by the user

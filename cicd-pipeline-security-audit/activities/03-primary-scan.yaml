@@ -68,20 +68,10 @@ steps:
     actions:
       - action: log
         message: Primary scan complete — all findings merged and reconciled
-transitions:
-  - to: report-generation
+exits:
+  - id: scan-verified
+    when: verification_complete == true && merge_complete == true
     isDefault: true
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: verification_complete
-          operator: ==
-          value: true
-        - type: simple
-          variable: merge_complete
-          operator: ==
-          value: true
 outcome:
   - Every in-scope workflow file has been scanned for all seven vulnerability classes, with independent verification that no file or pattern was skipped
   - "The audit speaks with one voice: a single deduplicated, cross-correlated finding set where every scanner finding is reconciled and accounted for"

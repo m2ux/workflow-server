@@ -149,6 +149,51 @@ variables:
     description: Kept false; public merge-strategy guidance is stealth-gated out.
     defaultValue: false
 initialActivity: start
+graph:
+  start:
+    done: design-philosophy
+  design-philosophy:
+    done: codebase-comprehension
+  requirements-elicitation:
+    research-needed: research
+    no-research-needed: implementation-analysis
+    elicitation-incomplete: requirements-elicitation
+  research:
+    done: implementation-analysis
+  implementation-analysis:
+    done: plan-prepare
+  plan-prepare:
+    done: assumptions-review
+  assumptions-review:
+    needs-comprehension: codebase-comprehension
+    needs-plan-revision: plan-prepare
+    needs-further-discussion: assumptions-review
+    review-mode: lean-coding-audit
+    assumptions-approved: implement
+  implement:
+    done: lean-coding-audit
+  lean-coding-audit:
+    done: post-impl-review
+  post-impl-review:
+    done: validate
+    has-blocker: implement
+  validate:
+    done: strategic-review
+  strategic-review:
+    review-mode: submit-for-review
+    review-passed: submit-for-review
+    review-failed: plan-prepare
+  submit-for-review:
+    review-mode: complete
+    review-approved: complete
+    review-requires-changes: plan-prepare
+    provide-input: submit-for-review
+    abort: complete
+  codebase-comprehension:
+    needs-elicitation: requirements-elicitation
+    research-needed: research
+    skip-optional-activities: plan-prepare
+    comprehension-complete: implementation-analysis
 activities:
   - 01-start.yaml
   - work-package/02-design-philosophy.yaml

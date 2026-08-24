@@ -28,14 +28,15 @@ steps:
       - id: begin
         label: Begin implementation
         effect:
-          transitionTo: implementation
+          exit: done
       - id: refine
         label: Refine roadmap
         effect:
-          transitionTo: finalize-roadmap
-transitions:
-  - to: implementation
+          exit: refine
+exits:
+  - id: done
     isDefault: true
+  - id: refine
 outcome:
   - Anyone picking up the initiative can navigate it end-to-end - sequenced packages, timeline, and success criteria in one entry point
   - The plan is complete enough to gate the start of implementation, with no open planning questions blocking execution

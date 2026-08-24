@@ -15,12 +15,9 @@ tags:
 rules:
   activity:
     - >-
-      A correction the user makes at a gate is recorded against the fact it corrects, and every
-      later gate is answered from the corrected value — never from the value it superseded.
+      A correction the user makes at a gate is recorded against the fact it corrects, and every later gate is answered from the corrected value — never from the value it superseded.
     - >-
-      A checkpoint that declares neither `defaultOption` nor `autoAdvanceMs` requires a user
-      response and must never be answered on the user's behalf. When `{headless_mode}` is true,
-      a checkpoint declaring both resolves to its `defaultOption` without presentation.
+      A checkpoint that declares neither `defaultOption` nor `autoAdvanceMs` requires a user response and must never be answered on the user's behalf. When `{headless_mode}` is true, a checkpoint declaring both resolves to its `defaultOption` without presentation.
 techniques:
   activity:
     - variable-binding
@@ -35,3 +32,18 @@ variables:
     type: array
     description: Findings whose claims survived independent re-derivation.
 initialActivity: intake-and-context
+graph:
+  intake-and-context:
+    review-scope-declined: __terminal__
+    review-scope-confirmed: quality-review
+    authoring: scope-and-draft
+  scope-and-draft:
+    done: quality-review
+    revise: scope-and-draft
+  quality-review:
+    done: validate-and-commit
+  validate-and-commit:
+    remediation-selected: quality-review
+    committed: __terminal__
+    fix-issues: intake-and-context
+    return-to-draft: scope-and-draft

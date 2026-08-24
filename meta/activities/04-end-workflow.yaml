@@ -49,7 +49,7 @@ steps:
         effect:
           setVariable:
             client_workflow_completed: false
-          transitionTo: dispatch-client-workflow
+          exit: return
   - kind: action
     id: announce-completion
     actions:
@@ -59,3 +59,7 @@ outcome:
   - The user can decide whether the work is truly done — every target outcome is shown as met or flagged as a gap to address
   - Session-trace and token-usage artifacts include the client terminal activity after that activity has exited
   - The completed session can be resumed or audited later because its final state is durably preserved
+exits:
+  - id: completed
+    isDefault: true
+  - id: return

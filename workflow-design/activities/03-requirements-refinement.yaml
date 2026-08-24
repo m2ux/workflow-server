@@ -78,7 +78,10 @@ steps:
         id: surface-dimension-questions
         actions:
           - action: message
-            message: "Design dimension `{current_dimension}` — elicit answers to:\n\n{dimension_questions}"
+            message: "Design dimension `{current_dimension}` — elicit answers to:
+
+
+              {dimension_questions}"
       - kind: technique
         id: capture-dimension
         technique: capture-dimension
@@ -154,14 +157,10 @@ steps:
       name: work-package::review-assumptions::record
       inputs:
         assumption_decisions: assumption_decisions
-transitions:
-  - to: impact-analysis
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: update
-  - to: pattern-analysis
+exits:
+  - id: update
+    when: operation_type == "update"
+  - id: create
     isDefault: true
 outcome:
   - A complete workflow specification — purpose, activities, checkpoints, artifacts, variables, techniques, and rules — persisted for drafting, with stakeholder attestation at Gate 2

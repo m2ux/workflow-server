@@ -134,10 +134,11 @@ steps:
         label: Return to drafting
         description: Re-enter drafting to resolve the remaining issues before delivery.
         effect:
-          transitionTo: draft
-transitions:
-  - to: deliver
+          exit: revise-again
+exits:
+  - id: done
     isDefault: true
+  - id: revise-again
 outcome:
   - The draft is evaluated against all four principles as its reader would experience it, the only way to know it works rather than assume it
   - Revision repeats while issues remain, so the delivered document meets the principles rather than stopping at the first draft

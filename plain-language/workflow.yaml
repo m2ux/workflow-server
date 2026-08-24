@@ -3,9 +3,7 @@ id: plain-language
 version: 1.1.0
 title: Plain Language Workflow
 description: >-
-  Author, rewrite, or audit a document so its readers can find what they need, understand
-  what they find, and use it. Applies the four principles and guidelines of ISO 24495-1, with
-  an optional ASD-STE100 controlled-language overlay for technical documentation.
+  Author, rewrite, or audit a document so its readers can find what they need, understand what they find, and use it. Applies the four principles and guidelines of ISO 24495-1, with an optional ASD-STE100 controlled-language overlay for technical documentation.
 author: m2ux
 tags:
   - plain-language
@@ -17,16 +15,11 @@ tags:
 rules:
   activity:
     - >-
-      gate-correction-sticks — once the user corrects a value at a gate, every later gate is
-      answered from the corrected value, not the one it replaced.
+      gate-correction-sticks — once the user corrects a value at a gate, every later gate is answered from the corrected value, not the one it replaced.
     - >-
-      explicit-checkpoint-waits — a checkpoint declaring neither `defaultOption` nor
-      `autoAdvanceMs` always waits for a person; under `{headless_mode}`, one declaring both
-      resolves to its `defaultOption` without presentation.
+      explicit-checkpoint-waits — a checkpoint declaring neither `defaultOption` nor `autoAdvanceMs` always waits for a person; under `{headless_mode}`, one declaring both resolves to its `defaultOption` without presentation.
     - >-
-      reader-governs — the document is written for its readers, not its author: every drafting
-      and evaluation decision cites the reader profile and the governing guideline rather than
-      the writer's preference.
+      reader-governs — the document is written for its readers, not its author: every drafting and evaluation decision cites the reader profile and the governing guideline rather than the writer's preference.
 techniques:
   activity:
     - variable-binding
@@ -47,3 +40,17 @@ variables:
     description: Absolute path the delivered plain-language document is written to.
     defaultValue: ""
 initialActivity: intake-and-profile
+graph:
+  intake-and-profile:
+    has-source: source-analysis
+    no-source: draft
+  source-analysis:
+    audit: __terminal__
+    rewrite: draft
+  draft:
+    done: evaluate
+  evaluate:
+    done: deliver
+    revise-again: draft
+  deliver:
+    done: __terminal__

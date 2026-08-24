@@ -56,8 +56,8 @@ steps:
     actions:
       - action: log
         message: Area derivation complete — investigation plan approved
-transitions:
-  - to: evidence-probes
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Investigation effort is directed by an explicit, user-approved coverage contract

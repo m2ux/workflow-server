@@ -274,29 +274,11 @@ steps:
         message: Set false — the remedia edits are committed, pushed, and reflected in the pull request.
       - action: message
         message: "Post-update remediation published to [PR #{pr_number}]({pr_url})."
-transitions:
-  - to: intake-and-context
-    condition:
-      type: simple
-      variable: needs_audit_fixes
-      operator: ==
-      value: true
-  - to: retrospective
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: review_findings_count
-          operator: ==
-          value: 0
-        - type: simple
-          variable: needs_recommit
-          operator: ==
-          value: false
-        - type: simple
-          variable: needs_audit_fixes
-          operator: ==
-          value: false
+exits:
+  - id: needs-audit-fixes
+    when: needs_audit_fixes == true
+  - id: review-clean
+    when: review_findings_count == 0 && needs_recommit == false && needs_audit_fixes == false
     isDefault: true
 outcome:
   - The committed update is either clean or automatically remediated — findings never wait on an accept/iterate/revert choice

@@ -100,42 +100,18 @@ steps:
           setVariable:
             pipeline_mode: adaptive
     blocking: true
-transitions:
-  - to: dispute-pass
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: ==
-      value: dispute
-  - to: subsystem-pass
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: ==
-      value: subsystem
-  - to: verified-pass
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: ==
-      value: verified
-  - to: reflect-pass
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: ==
-      value: reflect
-  - to: smart-pass
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: ==
-      value: smart
-  - to: adaptive-pass
-    condition:
-      type: simple
-      variable: pipeline_mode
-      operator: ==
-      value: adaptive
-  - to: structural-pass
+exits:
+  - id: dispute
+    when: pipeline_mode == "dispute"
+  - id: subsystem
+    when: pipeline_mode == "subsystem"
+  - id: verified
+    when: pipeline_mode == "verified"
+  - id: reflect
+    when: pipeline_mode == "reflect"
+  - id: smart
+    when: pipeline_mode == "smart"
+  - id: adaptive
+    when: pipeline_mode == "adaptive"
+  - id: structural
     isDefault: true

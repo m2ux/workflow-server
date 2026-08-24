@@ -49,8 +49,8 @@ steps:
     actions:
       - action: log
         message: Scope setup complete — target confirmed and planning folder created
-transitions:
-  - to: reconnaissance
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Downstream analysis runs against a single confirmed, reproducible target pinned to an exact commit

@@ -26,6 +26,6 @@ steps:
       inputs:
         artifact_dir: output_path
         guide_map: prism/README#planning-artifact-to-guide-map
-transitions:
-  - to: deliver-result
+exits:
+  - id: done
     isDefault: true

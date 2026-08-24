@@ -52,23 +52,10 @@ steps:
         effect:
           setVariable:
             needs_reingest: false
-decisions:
-  - id: reingest-gate
-    name: Re-Ingest Gate
-    branches:
-      - id: needs-reingest
-        label: Findings to fix — return to build
-        condition:
-          type: simple
-          variable: needs_reingest
-          operator: ==
-          value: true
-        transitionTo: build-wiki
-      - id: clean
-        label: No re-ingest needed — proceed to publish
-        isDefault: true
-transitions:
-  - to: publish
+exits:
+  - id: needs-reingest
+    when: needs_reingest == true
+  - id: done
     isDefault: true
 outcome:
   - Pages conform to the guide their type maps to before the integrity checks measure them, so a finding the user adjudicates describes the page as it now stands

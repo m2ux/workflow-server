@@ -56,8 +56,8 @@ steps:
       outputs:
         session_index: client_session_index
         initial_activity: client_initial_activity
-transitions:
-  - to: resolve-target
+exits:
+  - id: done
     isDefault: true
 outcome:
   - The work package has a stable, work-item-derived identity that the server reuses on every resume rather than a date-stamped fallback name

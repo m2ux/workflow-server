@@ -839,8 +839,8 @@ steps:
     actions:
       - action: log
         message: Issue management complete - issue verified/created, PR ready
-transitions:
-  - to: design-philosophy
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Issue exists or is created in appropriate platform

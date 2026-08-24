@@ -106,8 +106,8 @@ steps:
       - kind: technique
         id: record-response
         technique: review-assumptions::record
-transitions:
-  - to: plan-prepare
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Current state documented with baseline metrics

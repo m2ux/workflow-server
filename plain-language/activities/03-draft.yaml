@@ -43,8 +43,8 @@ steps:
       - id: revise
         label: Keep drafting
         description: The draft needs more work before it is evaluated.
-transitions:
-  - to: evaluate
+exits:
+  - id: done
     isDefault: true
 outcome:
   - The document is drafted or rewritten for its readers — structured for findability, worded for understandability, and held to ASD-STE100 when the controlled-language overlay is on
