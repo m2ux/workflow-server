@@ -4,23 +4,27 @@ name: Coverage walk
 # does not reach.
 #
 # This is a job of its own because it is slow — fourteen full coverage walks, each driving a workflow
-# through the real server. An earlier ratio counted only the checkpoints a walk reached, so it read
-# 100% for nine workflows while three of them were at 20%, 24% and 33% of what they declare
-# (issue #472); this job measures against what the corpus declares.
+# through the real server, about thirteen minutes on a quiet machine. An earlier ratio counted only
+# the checkpoints a walk reached, so it read 100% for nine workflows while three of them were at 20%,
+# 24% and 33% of what they declare (issue #472); this job measures against what the corpus declares.
 #
 # Runs alongside `verify` rather than inside it: `npm run test:ci` stays a fast suite, and this job
 # fails on its own terms so a coverage regression is not read as a unit-test failure.
 #
-# On main, and on request. Twenty-five minutes is too long to sit in front of every pull request, and
-# the measurement is a property of the corpus rather than of a diff, so the natural place to take it
-# is the corpus as merged. The cost is that a change reducing coverage turns main red rather than its
-# own pull request, and is fixed forward. `workflow_dispatch` takes a ref, so a change that expects to
-# move coverage — a corpus bump, an edit to the walker or the expectation file — can be measured
-# before it merges by asking for a run on its branch.
+# A pull request walks only what its change can move, which scripts/coverage-scope.ts derives from
+# the corpus diff: a change to one workflow's activities walks that workflow, and every other walked
+# workflow declaring the same activity id — option keys carry the activity and not the workflow, so
+# two workflows with a same-named activity share one key and either walk can cover it. Most corpus
+# changes come out at one or two workflows, which is a walk of seconds rather than minutes.
+#
+# A push to main walks everything, and so does any change to how walking works — the walker, the
+# policies, the server, the expectation file. Those move every workflow at once, and a scoped run
+# would measure the change against a fraction of what it changed.
 
 on:
   push:
     branches: [main]
+  pull_request:
   workflow_dispatch:
 
 permissions:
@@ -45,9 +49,11 @@ jobs:
           # As in verify.yml: `.engineering` nests a private repo this runner cannot clone, so the
           # corpus is checked out on its own below rather than with `submodules: recursive`.
           submodules: false
+          # The scope comes from a diff, so the base commit has to be in the checkout.
+          fetch-depth: 0
 
-      # The corpus this tree adopts. Its pull-request check is inert here, both triggers above naming a
-      # real commit rather than a merge, and the action is shared with verify.yml where that check runs.
+      # The corpus this tree adopts. Its pull-request check is inert on a push, both triggers naming
+      # a real commit rather than a merge, and the action is shared with verify.yml where it runs.
       - uses: ./.github/actions/workflows-corpus
 
       - uses: actions/setup-node@v4
@@ -57,8 +63,41 @@ jobs:
 
       - run: npm ci
 
+      # What this pull request can move. Two questions, and the wider answer wins:
+      #
+      #   Did anything change that alters how EVERY workflow walks? Then the scope is everything,
+      #   because a scoped run would grade such a change against a fraction of its effect.
+      #   Otherwise: which walked workflows can the corpus diff move? That is the scope.
+      #
+      # A push to main leaves the scope empty, which the test reads as the full set.
+      - name: Resolve what this change can move
+        if: github.event_name == 'pull_request'
+        id: scope
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          walker_changed=$(git diff --name-only "$BASE_SHA"...HEAD -- src tests/e2e/walker.ts tests/e2e/policies.ts tests/e2e/coverage.ts tests/e2e/option-coverage.json tests/e2e/walked-workflows.ts | head -1)
+          if [ -n "$walker_changed" ]; then
+            echo "how walking works changed ($walker_changed) — walking every workflow"
+            echo "scope=" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          base_corpus=$(git rev-parse "$BASE_SHA:workflows")
+          head_corpus=$(git rev-parse HEAD:workflows)
+          if [ "$base_corpus" = "$head_corpus" ]; then
+            echo "the corpus did not move and neither did the walker — nothing to walk"
+            echo "scope=none" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          scope=$(npx tsx scripts/coverage-scope.ts "$base_corpus" "$head_corpus" | paste -sd, -)
+          echo "corpus $base_corpus..$head_corpus scopes to: ${scope:-(nothing that moves coverage)}"
+          echo "scope=${scope:-none}" >> "$GITHUB_OUTPUT"
+
       # The expectation file lists the options no walk reaches. A newly unreached option is not on it
       # and fails here; an option that becomes reachable is on it with nothing to explain it and also
-      # fails, so the list can only shrink.
+      # fails, so the list can only shrink. A scoped run judges only the options it walked.
       - name: Walk every checkpoint option
+        if: steps.scope.outputs.scope != 'none'
+        env:
+          WF_COVERAGE_SCOPE: ${{ steps.scope.outputs.scope }}
         run: npm run test:coverage-walk
