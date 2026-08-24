@@ -4,6 +4,7 @@ name: Requirements Refinement
 description: A workflow specification across its design dimensions, with design assumptions surfaced, reconciled in a while-loop, and open judgements deferred to Gate 2.
 variables:
   reads:
+    - change_category
     - operation_type
     - planning_folder_path
   writes:

@@ -4,14 +4,27 @@ name: Report Generation
 description: Consolidate findings into the final audit report.
 variables:
   reads:
+    - decomposition_results
     - dispatch_complete
+    - dispatch_results
+    - domain_map
     - ensemble_enabled
     - has_reference_report
     - merge_complete
     - planning_folder_path
+    - reconciliation_table
     - target_commit
     - target_submodule
     - verification_complete
+    - verification_report
+  writes:
+    - name: reconciliation_table
+      type: object
+      description: Per-agent finding-count reconciliation, carrying an `unaccounted` count that is zero when the merge is lossless.
+      defaultValue: {}
+    - name: verification_report
+      type: string
+      description: Scan completeness verification with gaps and re-scan recommendations
 required: true
 steps:
   - kind: action

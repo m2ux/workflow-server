@@ -5,8 +5,12 @@ description: Post the signed-off review to the pull request and record the publi
 variables:
   reads:
     - has_pr_surface
+    - merge_readiness_verdict
     - planning_folder_path
+    - pr_number
     - publish_requested
+    - review_summary
+    - review_type
     - target_repo_path
 required: false
 steps:

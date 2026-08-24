@@ -6,6 +6,10 @@ variables:
   reads:
     - gitnexus_available
     - planning_folder_path
+  writes:
+    - name: storage_lifecycle
+      type: object
+      description: Storage lifecycle pairing table with optional invariant comparison.
 required: false
 steps:
   - kind: technique

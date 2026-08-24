@@ -8,6 +8,11 @@ variables:
     - planning_folder_path
     - target_commit
     - target_submodule
+  writes:
+    - name: reconciliation_table
+      type: object
+      description: Per-agent finding-count reconciliation, carrying an `unaccounted` count that is zero when the merge is lossless.
+      defaultValue: {}
 required: false
 steps:
   - kind: technique

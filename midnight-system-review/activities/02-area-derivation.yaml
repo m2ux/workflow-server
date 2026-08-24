@@ -9,6 +9,9 @@ variables:
     - probe_budget_per_area
     - target_repo_path
   writes:
+    - name: investigation_areas
+      type: array
+      description: The amended area list, re-emitted for the next approval pass and for the area-probe loop.
     - name: plan_approved
       type: boolean
       description: Investigation-plan gate — set by the investigation-plan-approved checkpoint's approve option

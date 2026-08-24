@@ -13,9 +13,14 @@ variables:
     - needs_comprehension
     - planning_folder_path
     - pr_number
+    - problem_statement
+    - requirements
     - target_path
     - target_repo
   writes:
+    - name: assumption_review_presentation
+      type: object
+      description: Structured judgement-augmentation context for decision, shaped like the Open Assumptions entry fields of the assumptions log template (decision space, non-resolvability rationale, technical context, agent's position, reversibility) plus a link to the assumptions log.
     - name: context_scope
       type: string
       description: Provenance scope of AI-generated code in this work package.

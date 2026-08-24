@@ -47,6 +47,9 @@ variables:
       type: boolean
       description: True when a dedicated worktree at `target_path` was created or reused by this run.
       defaultValue: false
+    - name: yaml_file
+      type: string
+      description: The authored file at the manifest entry's path, parsing cleanly and conforming to the schema its kind selects.
 required: true
 steps:
   - kind: technique

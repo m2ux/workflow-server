@@ -13,6 +13,8 @@ variables:
     - issue_record
     - planning_folder_path
     - pr_number
+    - problem_statement
+    - requirements
     - target_path
     - target_repo
   writes:
@@ -42,6 +44,10 @@ variables:
     - name: problem_complexity
       type: string
       description: Problem complexity assessed during design-philosophy (simple|moderate|complex).
+    - name: problem_statement
+      type: string
+      description: A clear problem definition with system understanding, impact assessment, success criteria, and constraints — understandable without prior context.
+      defaultValue: ""
     - name: problem_type
       type: string
       description: Problem or inventive-goal classification (e.g. defect, inventive-improvement).

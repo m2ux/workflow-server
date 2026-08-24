@@ -6,11 +6,16 @@ variables:
   reads:
     - cargo_available
     - gitnexus_available
+    - investigation_areas
     - node_binary_available
     - plan_approved
     - planning_folder_path
     - probe_budget_per_area
     - target_repo_path
+  writes:
+    - name: candidate_findings
+      type: array
+      description: All candidate findings aggregated across areas in area order, each tied to its area and anchors — the adjudication input.
 required: true
 techniques:
   - scatter-gather

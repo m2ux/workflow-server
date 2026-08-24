@@ -4,7 +4,22 @@ name: Reconnaissance
 description: Run codebase reconnaissance and security decomposition.
 variables:
   reads:
+    - agent_roster
     - planning_folder_path
+  writes:
+    - name: agent_roster
+      type: array
+      description: Roster of agents to dispatch, with per-agent group assignment and supplementary files.
+      defaultValue: []
+    - name: dispatched_results
+      type: array
+      description: Array of `{ id, result }` in `{worker_briefs}` order. `result` is the harness agent output text (or structured payload when the worker returned one). Completeness counts live on gather-results.
+    - name: domain_map
+      type: object
+      description: Structured domain map partitioned by crate, ready for sub-agent distribution.
+    - name: worker_briefs
+      type: array
+      description: Ordered `{ id, description, prompt }` array produced by compose operations for the next meta dispatch step.
 required: true
 techniques:
   - scatter-gather

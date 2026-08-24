@@ -9,6 +9,8 @@ variables:
     - is_review_mode
     - planning_folder_path
     - pr_number
+    - problem_statement
+    - requirements
     - safety_floor_cleared
     - target_path
     - target_repo
@@ -21,6 +23,9 @@ variables:
       type: boolean
       description: Whether accepted simplifications remain to apply at the audit-findings-confirmed gate.
       defaultValue: false
+    - name: review_findings
+      type: array
+      description: The tagged findings for the change, each under a stable `LC-{n}` designator so a reader and a caller reference the same finding — carrying a taxonomy tag, the location, the simpler alternative, and the lines it would save — closing with the diff-scoped scoreboard.
 required: true
 steps:
   - kind: technique

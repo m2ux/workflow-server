@@ -5,6 +5,11 @@ description: Structured merge, deduplication, and severity scoring of agent find
 variables:
   reads:
     - planning_folder_path
+  writes:
+    - name: reconciliation_table
+      type: object
+      description: Per-agent finding-count reconciliation, carrying an `unaccounted` count that is zero when the merge is lossless.
+      defaultValue: {}
 required: false
 steps:
   - kind: technique

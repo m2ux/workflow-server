@@ -5,6 +5,7 @@ description: Wrap up the work package after PR merge (or after review-mode close
 variables:
   reads:
     - branch_name
+    - changed_files
     - component_git_dir
     - host_repo_path
     - is_review_mode
@@ -12,6 +13,8 @@ variables:
     - planning_folder_path
     - pr_number
     - problem_complexity
+    - problem_statement
+    - requirements
     - target_path
     - target_repo
     - worktree_created
@@ -28,6 +31,9 @@ variables:
       type: string
       description: Path to the close-out document.
       defaultValue: ""
+    - name: publishable_files
+      type: array
+      description: Every changed file under `{planning_folder_path}`, including `README.md`, the linked report artifacts, `review-summary.md`, `session.json` and `.session-token`.
     - name: worktree_created
       type: boolean
       description: True when a worktree at target_path was created or reused by this workflow run (only those worktrees are eligible for cleanup).

@@ -4,8 +4,13 @@ name: Finding Adjudication
 description: Grade every finding candidate from the evidence log against the rubric and adjudicate each into the findings register.
 variables:
   reads:
+    - candidate_findings
     - planning_folder_path
     - target_repo_path
+  writes:
+    - name: accepted_findings
+      type: array
+      description: The accepted subset in area order — the only findings the verdict computation reads.
 required: true
 steps:
   - kind: action

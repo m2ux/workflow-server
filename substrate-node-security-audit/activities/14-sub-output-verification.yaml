@@ -5,6 +5,10 @@ description: Mechanically validate primary-agent output completeness.
 variables:
   reads:
     - planning_folder_path
+  writes:
+    - name: verification_report
+      type: string
+      description: Scan completeness verification with gaps and re-scan recommendations
 required: false
 steps:
   - kind: technique

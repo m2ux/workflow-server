@@ -6,6 +6,10 @@ variables:
   reads:
     - gitnexus_available
     - planning_folder_path
+  writes:
+    - name: verdict_matrix
+      type: object
+      description: Complete verdict matrix and coverage attestation.
 required: false
 steps:
   - kind: technique

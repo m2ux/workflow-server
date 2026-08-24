@@ -7,6 +7,7 @@ variables:
     - block_line_range
     - block_path
     - branch_name
+    - changed_files
     - code_findings_actionable
     - component_git_dir
     - component_name
@@ -19,7 +20,10 @@ variables:
     - planning_folder_path
     - pr_number
     - problem_complexity
+    - problem_statement
     - push_remote
+    - requirements
+    - review_findings
     - skip_architecture_summary
     - target_path
     - target_repo
@@ -29,6 +33,9 @@ variables:
       type: string
       description: Absolute path to the index file mapping change-block IDs to their per-block artifacts under .engineering/artifacts/change-blocks/.
       defaultValue: ""
+    - name: classified_findings
+      type: array
+      description: "The input findings, each carrying its assigned severity, its `action_tier` (the Action Items tier the finding is delivered under), and — where one applies — its `impact_axis` (the dimension on which a behaviourally correct change is nonetheless harmful: unbounded-state-growth, economic-spam, liveness-halt, or migration-upgrade). Downstream rendering reads the severity to place each finding on the render scale, the tier to place it in the Action Items, and the impact axis to justify a correct-but-harmful classification."
     - name: code_findings_actionable
       type: boolean
       description: Whether any code-review finding is at or above the severity that warrants action.

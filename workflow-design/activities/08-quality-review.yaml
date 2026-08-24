@@ -13,6 +13,9 @@ variables:
       type: string
       description: Absolute path to the persisted anti-pattern-findings artifact (review mode).
       defaultValue: ""
+    - name: compliance_report
+      type: string
+      description: "Rolled-up compliance report body following the Compliance Report Template: severity counts, finding tables, and recommended fixes. Principle and anti-pattern detail stays in satellite finding files linked from the report."
     - name: conformance_finding_count
       type: number
       description: Count of convention-conformance divergences from audit-conformance.
@@ -21,6 +24,9 @@ variables:
       type: string
       description: Absolute path to the persisted conformance-findings artifact when findings exist.
       defaultValue: ""
+    - name: drafted_files
+      type: array
+      description: The set of files drafted for this workflow so far, extended with the one just written — each syntactically valid and passing schema validation for its type.
     - name: enforcement_finding_count
       type: number
       description: Count of text-only rules from audit-rule-enforcement.
@@ -83,6 +89,10 @@ variables:
       type: boolean
       description: True when update mode was entered from a review-mode fix disposition (fix-issues or selective-fixes).
       defaultValue: false
+    - name: verified_findings
+      type: array
+      description: "The recalibrated finding set: each High marked confirmed, downgraded or withdrawn with the evidence of its re-derivation, and each surviving Medium spot-confirmed. Only entries in this set are eligible to drive a fix."
+      defaultValue: []
     - name: verified_findings_path
       type: string
       description: Absolute path to the persisted verified-findings artifact.

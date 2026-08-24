@@ -12,10 +12,26 @@ variables:
     - target_workflow_ids
     - verified_findings
   writes:
+    - name: audit_findings
+      type: array
+      description: The repo-wide findings ranked biggest-cut-first — each carrying a taxonomy tag, the path locator, the simpler alternative, and the lines and dependencies it would remove — closing with the repo-wide scoreboard.
+    - name: changed_files
+      type: array
+      description: Ordered list of changed file paths (each `.filename` from the pulls files endpoint).
+      defaultValue: []
+    - name: consumer_surface
+      type: array
+      description: "One entry per reference another workflow holds into the target: the referencing file, the reference form it uses, the target file it resolves to, and whether that target file is on `{changed_files}`. Empty when nothing outside the target references it. Every referencing file whose resolved target is on `{changed_files}` is itself part of the change surface the criteria walk covers (whole file)."
+    - name: coverage_ledger
+      type: array
+      description: One row per enumeration unit walked, each carrying the unit's home, the unit's anchor, one of three statuses, and — when status is `walked` and the unit reaches any file in `{changed_files}` — a non-empty `evidence` list. `walked` means the unit's criteria were applied to every file in scope **and** each change-surface file the unit reaches has at least one evidence row naming the field (or construct locus) inspected and a short quote or path:line — evidence spans the **whole file**, not the diff hunk. `not-applicable` carries the reason the unit does not reach this surface and is an evidenced negative, not a skip. `blocked` carries what prevented the walk and is the only status representing missing coverage. A unit may not be recorded as `walked` with an empty `evidence` list when it intersects `{changed_files}`.
     - name: fail_count
       type: number
       description: Count of YAML files that failed schema validation.
       defaultValue: 0
+    - name: known_finding_keys
+      type: array
+      description: One key per already-accepted finding, each pairing the criteria entry by its kebab-case name with the location it was recorded against, in the single form a criteria walk compares against. Empty when no baseline and no prior register carry an entry for this target.
     - name: register_sections
       type: array
       description: Per-target register sections accumulated across the sweep.
@@ -23,6 +39,12 @@ variables:
     - name: target_workflow_id
       type: string
       description: The workflow id currently being authored, updated or audited.
+    - name: touched_files
+      type: array
+      description: Every path under the target that differs from `{base_ref}`, each entry a **whole file**. Diff hunks only discover membership. Empty when the branch has not yet touched this target.
+    - name: yaml_file
+      type: string
+      description: The authored file at the manifest entry's path, parsing cleanly and conforming to the schema its kind selects.
 required: true
 steps:
   - kind: technique
