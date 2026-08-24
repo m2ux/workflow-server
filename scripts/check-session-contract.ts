@@ -15,8 +15,8 @@
  *                      cannot tell them apart and a person can.
  *   no-progress      — a FINISHED run that recorded variable writes or checkpoint responses and
  *                      never completed an activity. A driver reporting activities while the session
- *                      stays put looks exactly like one that is working, which is how a smoke run
- *                      once claimed two activities and executed one. Only the caller knows a run is
+ *                      stays put is indistinguishable from one that is working, so its own account
+ *                      of what it did cannot be taken for evidence. Only the caller knows a run is
  *                      over, so this is asked for with --final: a session read mid-activity has no
  *                      completions yet and is not in trouble for it.
  *

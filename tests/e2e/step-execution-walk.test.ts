@@ -14,19 +14,19 @@ import { defaultPolicy } from './policies.js';
  * work-package policy walks do execute steps, which covers work-package and the thirteen activities
  * remediate-vuln borrows from it — and nothing else.
  *
- * These cover the two remaining workflows whose step sequence changed when the variable contracts
- * landed (#493): `plain-language` and `prism` each lost an action step whose only content was a
- * write nothing read. A removal is the change most likely to strand a neighbour — a step that read
- * what the removed one set, or a sequence that no longer reaches its end.
+ * These cover the two remaining workflows the matrix leaves out: `plain-language` and `prism`. Each
+ * has an activity whose step sequence is asserted here by name, so a step dropped from the middle of
+ * it — stranding a neighbour that reads what it set, or a sequence that stops short of its end —
+ * fails on the definition change that drops it.
  *
- * What each asserts: the walk reaches the activity that changed, executes steps there, the step
- * that went is absent, and the steps around it still run. It is not a completion check. The generic
+ * What each asserts: the walk reaches the activity, executes steps there, and runs the sequence the
+ * definition declares for it. It is not a completion check. The generic
  * policy drives `plain-language` to a terminal state but leaves `prism` mid-pipeline, because
  * prism's onward route depends on a lens selection no workflow-agnostic policy can invent — so
  * whole-graph reachability stays where it already lives, in the all-workflows walk, and this asks
  * the narrower question that walk cannot answer.
  */
-describe('step execution for the workflows whose sequence changed', () => {
+describe('step execution for the workflows the policy matrix leaves out', () => {
   let h: Harness;
   beforeAll(async () => { h = await createHarness(); }, 120_000);
   afterAll(async () => { await h.close(); });
@@ -44,25 +44,25 @@ describe('step execution for the workflows whose sequence changed', () => {
     return { result, executed };
   }
 
-  it('[plain-language] runs intake-and-profile without the profile-confirmation step it no longer has', async () => {
+  it('[plain-language] runs the intake-and-profile sequence', async () => {
     const { result, executed } = await robotWalk('plain-language');
 
     expect(result.loadErrors).toEqual([]);
     expect(result.steps.flatMap((s) => s.unresolved)).toEqual([]);
     expect(result.path).toContain('intake-and-profile');
-    // The removed step, and the two that followed it in the same activity.
+    // The activity's sequence: these two steps, and no settle-profile-when-clear between them.
     expect(executed).not.toContain('settle-profile-when-clear');
     expect(executed).toContain('persist-document-profile');
     expect(executed).toContain('seed-planning-readme');
   }, 300_000);
 
-  it('[prism] runs structural-pass without the unit-output step it no longer has', async () => {
+  it('[prism] runs the structural-pass sequence', async () => {
     const { result, executed } = await robotWalk('prism');
 
     expect(result.loadErrors).toEqual([]);
     expect(result.steps.flatMap((s) => s.unresolved)).toEqual([]);
     expect(result.path).toContain('structural-pass');
-    // The removed step sat first in the analysis-unit loop body; the probe after it still runs.
+    // The analysis-unit loop body opens with the probe, with no resolve-unit-output ahead of it.
     expect(executed).not.toContain('resolve-unit-output');
     expect(executed).toContain('check-gitnexus');
   }, 300_000);
