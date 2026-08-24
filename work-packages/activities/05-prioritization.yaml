@@ -25,17 +25,19 @@ steps:
       - id: accept
         label: Accept priority order
         effect:
-          transitionTo: finalize-roadmap
+          exit: done
       - id: adjust
         label: Adjust priorities
         effect:
-          transitionTo: prioritization
+          exit: adjust
       - id: revisit
         label: Revisit package plans
         effect:
-          transitionTo: package-planning
-transitions:
-  - to: finalize-roadmap
+          exit: revisit
+exits:
+  - id: done
     isDefault: true
+  - id: adjust
+  - id: revisit
 outcome:
   - There is a user-approved execution order that respects dependencies, value, and risk, so implementation knows which package to start next

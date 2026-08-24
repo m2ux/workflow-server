@@ -111,7 +111,7 @@ steps:
           setVariable:
             operation_type: update
             update_seeded_from_review: true
-          transitionTo: intake-and-context
+          exit: fix-issues
       - id: report-only
         label: Close on the register
         description: The register is the run's terminal record; make no changes.
@@ -140,7 +140,7 @@ steps:
         effect:
           setVariable:
             remediation_selected: true
-          transitionTo: quality-review
+          exit: remediation-selected
       - id: accept-and-record
         label: Accept the findings as recorded
         description: The open findings stand as recorded in the register; proceed to attestation.
@@ -200,7 +200,7 @@ steps:
         label: Return to drafting
         description: The change is not ready; re-enter drafting to revise the files.
         effect:
-          transitionTo: scope-and-draft
+          exit: return-to-draft
   - kind: technique
     id: compose-publication
     technique: workflow-definition::compose-publication
@@ -255,21 +255,13 @@ steps:
     id: remove-worktree
     technique: work-package::manage-git::remove-worktree
     when: worktree_created == true && commit_approved == true && remediation_selected != true && review_closed != true && update_seeded_from_review != true
-transitions:
-  - to: quality-review
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: remediation_selected
-          operator: ==
-          value: true
-        - type: simple
-          variable: remediation_round
-          operator: "<"
-          value: 3
-  - to: __terminal__
+exits:
+  - id: remediation-selected
+    when: remediation_selected == true && remediation_round < 3
+  - id: committed
     isDefault: true
+  - id: fix-issues
+  - id: return-to-draft
 outcome:
   - Every high-severity finding is re-derived independently before it drives an edit, so a finding that cannot be reproduced never reaches remediation
   - The register is the run's durable audit record, and a review run terminates on it with nothing committed

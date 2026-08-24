@@ -88,8 +88,8 @@ steps:
           - action: set
             target: needs_simplification
             message: After applying the accepted simplifications and re-running the over-engineering re-score, set true iff the re-score still surfaces accepted-but-unapplied simplifications that hold the safety floor; false when none remain.
-transitions:
-  - to: post-impl-review
+exits:
+  - id: done
     isDefault: true
 outcome:
   - The change is tagged and scored against the over-engineering taxonomy

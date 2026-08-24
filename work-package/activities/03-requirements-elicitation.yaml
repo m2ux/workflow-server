@@ -126,52 +126,14 @@ steps:
       - kind: technique
         id: reconcile-iteration
         technique: review-assumptions::reconcile
-decisions:
-  - id: user-intent
-    name: User Intent Check
-    branches:
-      - id: continue
-        label: Continue elicitation (answered or skipped)
-        isDefault: true
-      - id: done
-        label: User signaled completion
-        condition:
-          type: simple
-          variable: elicitation_complete
-          operator: ==
-          value: true
-transitions:
-  - to: research
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: elicitation_complete
-          operator: ==
-          value: true
-        - type: simple
-          variable: needs_research
-          operator: ==
-          value: true
+exits:
+  - id: no-research-needed
+    when: elicitation_complete == true && needs_research == false
+  - id: elicitation-incomplete
+    when: elicitation_complete == false
+  - id: research-needed
+    when: elicitation_complete == true && needs_research == true
     isDefault: true
-  - to: implementation-analysis
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: elicitation_complete
-          operator: ==
-          value: true
-        - type: simple
-          variable: needs_research
-          operator: ==
-          value: false
-  - to: requirements-elicitation
-    condition:
-      type: simple
-      variable: elicitation_complete
-      operator: ==
-      value: false
 outcome:
   - Requirements explicitly captured through structured conversation
   - Success criteria defined with verification methods

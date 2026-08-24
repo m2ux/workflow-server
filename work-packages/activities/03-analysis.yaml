@@ -26,34 +26,15 @@ steps:
       - id: proceed
         label: Context is correct, proceed
         effect:
-          transitionTo: package-planning
+          exit: done
       - id: revise
         label: Revise analysis
         effect:
-          transitionTo: analysis
-decisions:
-  - id: analysis-method
-    name: Analysis Method Selection
-    description: Route to completion or context analysis based on analysis_type variable
-    branches:
-      - id: completion
-        label: Perform completion analysis when continuing previous work
-        condition:
-          type: simple
-          variable: analysis_type
-          operator: ==
-          value: completion
-      - id: context
-        label: Perform context analysis for a new initiative
-        condition:
-          type: simple
-          variable: analysis_type
-          operator: ==
-          value: context
-        isDefault: true
-transitions:
-  - to: package-planning
+          exit: revise
+exits:
+  - id: done
     isDefault: true
+  - id: revise
 outcome:
   - Later planning rests on a validated understanding of the initiative's starting point - either existing progress or fresh-start context
   - User has confirmed the captured context is accurate, so package planning can proceed without re-litigating assumptions

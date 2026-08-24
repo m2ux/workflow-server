@@ -99,7 +99,7 @@ steps:
         effect:
           setVariable:
             scope_manifest_confirmed: false
-          transitionTo: scope-and-draft
+          exit: revise
   - kind: action
     id: bump-scope-round
     when: operation_type != 'review' && scope_manifest_confirmed != true
@@ -160,9 +160,10 @@ steps:
         canonical_home_map: workflow-authoring/techniques#canonical-home-map
         guide_map: workflow-authoring/README#planning-artifact-to-guide-map
     when: operation_type != 'review' && scope_manifest_confirmed == true
-transitions:
-  - to: quality-review
+exits:
+  - id: done
     isDefault: true
+  - id: revise
 outcome:
   - Create and update runs hold a dedicated worktree on their own branch, so no edit lands in the shared library checkout
   - The complete set of files the change touches is enumerated and confirmed before any of them is written

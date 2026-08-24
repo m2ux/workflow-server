@@ -83,6 +83,6 @@ steps:
         technique: read-run-manifest
 outcome:
   - Every audit scope has a completed prism analysis whose contract artifacts finalization can consolidate into deliverables
-transitions:
-  - to: audit-finalize
+exits:
+  - id: done
     isDefault: true

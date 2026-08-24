@@ -226,31 +226,11 @@ steps:
       - action: set
         target: update_seeded_from_review
         value: false
-transitions:
-  - to: quality-review
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: ==
-          value: review
-        - type: simple
-          variable: review_scope_confirmed
-          operator: ==
-          value: true
-  - to: requirements-refinement
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: format_literacy_confirmed
-          operator: ==
-          value: true
-        - type: simple
-          variable: schema_constructs_confirmed
-          operator: ==
-          value: true
+exits:
+  - id: review-scope-confirmed
+    when: operation_type == "review" && review_scope_confirmed == true
+  - id: context-established
+    when: format_literacy_confirmed == true && schema_constructs_confirmed == true
     isDefault: true
 outcome:
   - The workflow knows whether it is creating, updating, or reviewing, and against which target — every downstream branch can route on a derived operation

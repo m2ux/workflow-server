@@ -11,8 +11,8 @@ steps:
   - kind: technique
     id: audit-repo
     technique: audit-repo
-transitions:
-  - to: harvest-debt-and-report
+exits:
+  - id: done
     isDefault: true
 outcome:
   - The whole tree's biggest over-engineering cuts are ranked and quantified

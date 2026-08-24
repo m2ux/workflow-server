@@ -33,3 +33,15 @@ variables:
     type: number
     description: Next available resource index, derived from highest existing index + 1
 initialActivity: discover-changes
+graph:
+  discover-changes:
+    done: review-changes
+  review-changes:
+    done: apply-updates
+    abort: __terminal__
+  apply-updates:
+    done: verify
+  verify:
+    verified: commit-and-submit
+    has-issues: apply-updates
+    abort: __terminal__

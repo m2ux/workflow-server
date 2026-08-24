@@ -89,8 +89,8 @@ steps:
       - action: set
         target: merge_complete
         value: true
-transitions:
-  - to: adversarial-verification
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Every priority-1/2 crate has been evaluated against the full §3 checklist in a dedicated context window, giving depth no single agent could reach

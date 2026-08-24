@@ -60,8 +60,8 @@ steps:
           setVariable:
             lazy_intensity: ultra
             pass_scope: repo
-transitions:
-  - to: apply-ladder
+exits:
+  - id: done
     isDefault: true
 outcome:
   - The task and the real flow it touches are understood and recorded, with the lazy lens calibrated to the user's chosen intensity and scope before any simplification begins

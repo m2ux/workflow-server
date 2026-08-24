@@ -53,3 +53,16 @@ variables:
     description: Maximum evidence probes per investigation area; the two-probe lower bound stays guidance
     defaultValue: 4
 initialActivity: scope-intake
+graph:
+  scope-intake:
+    done: area-derivation
+  area-derivation:
+    done: evidence-probes
+  evidence-probes:
+    done: finding-adjudication
+  finding-adjudication:
+    done: verdict-and-report
+  verdict-and-report:
+    publish-requested: publish-review
+    revise-investigation: area-derivation
+    report-only: __terminal__

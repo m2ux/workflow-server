@@ -1,6 +1,6 @@
 # Review Mode
 
-Review mode adapts the work-package workflow for **reviewing existing implementations** rather than creating new ones. It is not a special schema construct — it is expressed entirely through ordinary state: a boolean `is_review_mode` variable set by a detection step early in the workflow, plus conditional steps, checkpoints, and transitions that branch on it.
+Review mode adapts the work-package workflow for **reviewing existing implementations** rather than creating new ones. It is not a special schema construct — it is expressed entirely through ordinary state: a boolean `is_review_mode` variable set by a detection step early in the workflow, plus conditional steps, checkpoints, and exit predicates that branch on it.
 
 ---
 
@@ -22,16 +22,16 @@ When activated, review mode:
 
 Review mode has no dedicated schema construct. It is driven by ordinary state: `is_review_mode`, plus gap flags `review_mode_ambiguous` and `review_pr_missing` when derivation cannot settle mode or PR identity.
 
-A derive-first detection step early in `start-work-package` (`detect-review-mode`) recognizes review intent and PR identity from `{user_request}` / `{pr_reference}`. When mode and PR are clear, the run continues without activation confirms. When mode is ambiguous, `review-mode-detection` asks; when review mode is active but the PR is missing, `review-pr-reference` asks. Everything mode-specific downstream is a conditional step, checkpoint, or transition that reads `is_review_mode`. There is no `skipActivities` list and no mode `defaults` block: activities are "skipped" only because their steps and inbound transitions are gated on `is_review_mode`, and mode-specific variable values (e.g. `needs_elicitation = false`) are set by an ordinary control step gated the same way.
+A derive-first detection step early in `start-work-package` (`detect-review-mode`) recognizes review intent and PR identity from `{user_request}` / `{pr_reference}`. When mode and PR are clear, the run continues without activation confirms. When mode is ambiguous, `review-mode-detection` asks; when review mode is active but the PR is missing, `review-pr-reference` asks. Everything mode-specific downstream is a conditional step, checkpoint, or exit that reads `is_review_mode`. There is no mode `defaults` block: activities are "skipped" only because their steps are gated on `is_review_mode` and the exits leading to them are predicated on it, and mode-specific variable values (e.g. `needs_elicitation = false`) are set by an ordinary control step gated the same way.
 
 ### Activity-Level Behavior
 
-Activities express review-mode behavior through standard conditions on steps, checkpoints, and transitions:
+Activities express review-mode behavior through standard conditions on steps and checkpoints, and predicates on exits:
 
 - **Review-only steps** have `condition: is_review_mode == true`
 - **Create-only steps** have `condition: is_review_mode != true`
 - **Review-only checkpoints** have `condition: is_review_mode == true`
-- **Review-mode transitions** are conditioned on `is_review_mode == true`
+- **Review-mode exits** carry the predicate `is_review_mode == true`
 
 Per-activity review guidance is in `resources/review-mode.md`.
 

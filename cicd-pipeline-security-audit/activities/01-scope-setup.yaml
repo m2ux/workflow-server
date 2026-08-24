@@ -35,8 +35,8 @@ steps:
     actions:
       - action: log
         message: Scope setup complete — targets confirmed and workflow inventory built
-transitions:
-  - to: reconnaissance
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Scanning can begin against an agreed, validated set of in-scope submodules

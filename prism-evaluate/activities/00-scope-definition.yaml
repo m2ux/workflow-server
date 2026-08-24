@@ -67,15 +67,12 @@ steps:
         label: Adjust scope
         description: Modify the target, description, dimensions, or output path before proceeding
         effect:
-          transitionTo: scope-definition
+          exit: adjust
     blocking: true
 outcome:
   - Evaluation scope confirmed with validated target path, target type, and dimensions
-transitions:
-  - to: dimension-planning
-    condition:
-      type: simple
-      variable: scope_confirmed
-      operator: ==
-      value: true
+exits:
+  - id: scope-confirmed
+    when: scope_confirmed == true
     isDefault: true
+  - id: adjust

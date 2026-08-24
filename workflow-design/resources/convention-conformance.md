@@ -16,7 +16,7 @@ Operative checklist for comparing drafted content to reference workflows of simi
 | File naming | Activities `NN-name.yaml`; techniques/resources kebab-case `.md` |
 | Field ordering | Follow existing files of the same type — typically `id`, `version`, `name` (or capability) and `description` first |
 | Version format | Semantic `X.Y.Z` |
-| Transition patterns | Activity-level `transitions[]` with `to` / `condition` / `isDefault` as used by siblings |
+| Routing patterns | Activity-level `exits[]` with `id` / `when` / `isDefault` / `immediate`, bound in the workflow's `graph`, as used by siblings |
 | Checkpoint structure | Inline `kind: checkpoint` steps with `message`, `options`, effects — same shapes as references |
 | Technique structure | Capability / Protocol / Inputs / Outputs / Rules sections; binding via `step.technique` |
 

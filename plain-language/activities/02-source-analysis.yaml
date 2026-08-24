@@ -53,14 +53,10 @@ steps:
       - id: revise
         label: Needs revision
         description: The findings miss failures or misstate the guidelines they cite.
-transitions:
-  - to: __terminal__
-    condition:
-      type: simple
-      variable: operation_type
-      operator: ==
-      value: audit
-  - to: draft
+exits:
+  - id: audit
+    when: operation_type == "audit"
+  - id: rewrite
     isDefault: true
 outcome:
   - The existing document's failures are recorded against the guidelines they breach, so a rewrite fixes named problems rather than restyling on taste

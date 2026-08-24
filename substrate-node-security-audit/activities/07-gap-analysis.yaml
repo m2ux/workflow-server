@@ -27,7 +27,6 @@ steps:
     actions:
       - action: log
         message: Gap analysis complete — audit workflow finished
-transitions: []
 outcome:
   - The AI audit's coverage is measurable against a professional benchmark, finding by finding
   - Structural blind spots are named with the root cause that let each one slip through

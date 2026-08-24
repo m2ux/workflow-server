@@ -59,7 +59,7 @@ Branch creation, PR creation, and code commits MUST be performed inside the comp
 
 ### orchestrator-automatic-transitions
 
-No user pause between activities after `activity_complete` — advance via [finalize-activity](./workflow-engine/finalize-activity.md) / [dispatch-activity](./workflow-engine/dispatch-activity.md) (orchestrator does not re-walk `transitions[]`).
+No user pause between activities after `activity_complete` — advance via [finalize-activity](./workflow-engine/finalize-activity.md) / [dispatch-activity](./workflow-engine/dispatch-activity.md) (orchestrator does not re-resolve the exit).
 
 ### orchestrator-no-ad-hoc-interaction
 

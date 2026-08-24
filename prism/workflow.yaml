@@ -51,3 +51,36 @@ variables:
     type: string
     description: Short description of what is being analysed — used in the report's Executive Summary scope statement. Supplied by a triggering workflow; falls back to the target path when absent.
 initialActivity: select-mode
+graph:
+  select-mode:
+    dispute: dispute-pass
+    subsystem: subsystem-pass
+    verified: verified-pass
+    reflect: reflect-pass
+    smart: smart-pass
+    adaptive: adaptive-pass
+    structural: structural-pass
+  structural-pass:
+    full-prism: adversarial-pass
+    behavioral: behavioral-synthesis-pass
+    structural-only: generate-report
+  adversarial-pass:
+    done: synthesis-pass
+  synthesis-pass:
+    done: generate-report
+  behavioral-synthesis-pass:
+    done: generate-report
+  generate-report:
+    done: deliver-result
+  dispute-pass:
+    done: generate-report
+  subsystem-pass:
+    done: generate-report
+  verified-pass:
+    done: generate-report
+  reflect-pass:
+    done: generate-report
+  smart-pass:
+    done: generate-report
+  adaptive-pass:
+    done: generate-report

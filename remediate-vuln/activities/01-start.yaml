@@ -173,8 +173,8 @@ steps:
     actions:
       - action: log
         message: Security initialization complete. Public disclosure paths disabled.
-transitions:
-  - to: design-philosophy
+exits:
+  - id: done
     isDefault: true
 outcome:
   - "The workflow is locked into isolation: every public disclosure path is disabled for the rest of the fix"

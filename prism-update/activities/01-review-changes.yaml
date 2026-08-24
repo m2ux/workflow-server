@@ -30,13 +30,15 @@ steps:
         label: Abort
         description: Do not import any changes
         effect:
-          transitionTo: __terminal__
+          exit: abort
     blocking: true
   - kind: technique
     id: apply-exclusions
     technique: review-change-set::apply-exclusions
-transitions:
-  - to: apply-updates
+exits:
+  - id: done
     isDefault: true
+  - id: abort
+    immediate: true
 outcome:
   - User-approved change set ready for import

@@ -325,7 +325,7 @@ steps:
         label: Return to drafting
         description: Re-enter the drafting loop to correct the Critical finding before attestation.
         effect:
-          transitionTo: scope-and-draft
+          exit: redraft
       - id: attest-with-deferral
         label: Attest, recording the finding as a deferral
         description: Proceed to attestation, accepting the Critical finding as a recorded deferral rather than a blocker.
@@ -374,9 +374,10 @@ steps:
       - id: redraft-all
         label: Redraft all changes
         description: Entire drafting pass requires restart from scratch.
-transitions:
-  - to: quality-review
+exits:
+  - id: done
     isDefault: true
+  - id: redraft
 outcome:
   - Every file the change requires is enumerated up front, closing the most common gap — work begun against an incomplete picture of what must be touched
   - The folder structure and activity flow are agreed against established patterns, so the workflow's shape is sound before any file is written

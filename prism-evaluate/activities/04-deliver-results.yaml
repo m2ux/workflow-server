@@ -47,12 +47,8 @@ steps:
     blocking: true
 outcome:
   - The user can see what the evaluation found and where every deliverable lives, and can decide whether to move into resolving the findings or stop here
-transitions:
-  - to: resolution-dialogue
-    condition:
-      type: simple
-      variable: resolution_requested
-      operator: ==
-      value: true
-  - to: __terminal__
+exits:
+  - id: resolution-requested
+    when: resolution_requested == true
+  - id: delivered
     isDefault: true

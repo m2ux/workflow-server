@@ -28,7 +28,7 @@ URI `workflow-server://schemas` aggregates the five schemas. Full ontology, fiel
 
 ## Activity-Level Constructs (activity.schema.json)
 
-An activity has a **single ordered `steps[]`** in which every step carries a required `kind` discriminator (`technique` / `action` / `checkpoint` / `loop`). Checkpoints and loops are step KINDS at their concrete position in the sequence, not separate parallel arrays. `decisions[]` and `transitions[]` remain activity-level — they are cross-activity routing the orchestrator evaluates at the activity boundary, not steps.
+An activity has a **single ordered `steps[]`** in which every step carries a required `kind` discriminator (`technique` / `action` / `checkpoint` / `loop`). Checkpoints and loops are step KINDS at their concrete position in the sequence, not separate parallel arrays. `exits[]` is activity-level — the outcomes the orchestrator resolves at the activity boundary, not steps. An exit names the outcome and nothing else: which activity follows it is bound in the workflow's `graph`, so no activity file names another activity.
 
 | Informal Pattern | Formal Construct | Schema Fields |
 |---|---|---|
@@ -45,8 +45,7 @@ An activity has a **single ordered `steps[]`** in which every step carries a req
 | "When entering/finishing, log/validate/set" | **Action step** | `steps[]` entry with `kind: action`, `.id`, `.actions[]` (`log`/`validate`/`set`/`emit`/`message`); a leading/trailing control step carries lifecycle actions at the start/end of the sequence (`actions[]` may be empty for a marker step). Pure action/control/checkpoint/loop steps need no `technique` binding. |
 | "Ask the user whether to proceed" | **Checkpoint step** | `steps[]` entry with `kind: checkpoint`, a stable `.id`, `.message` (statement of the subject — no `?` / confirm-imperative / next-step narration / caption of the prior technique; embed `[label]({path})` for any durable artifact — same link rule applies to action `message` fields; `link-named-artifacts`, `no-caption-only-message`), `.options[]` with `.effect` (the decision space), optional `.defaultOption` / `.autoAdvanceMs` / `.blocking`; its POSITION in `steps[]` is when it is presented (present-then-checkpoint: place it immediately after the step whose output it confirms). See `link-named-artifacts`, `no-next-step-narration`, `statement-not-question`, `no-caption-only-message`. |
 | "Repeat for each item" / "do until done" | **Loop step** | `steps[]` entry with `kind: loop`, `.id`, `.loopType` (forEach/while/doWhile), `.variable`, `.over`, `.condition`, `.breakCondition`, `.maxIterations`, optional `.name`; its body is a nested `.steps[]` |
-| "If X then do A, otherwise do B" (automated) | **Decision** (activity-level) | `decisions[].branches[]` with `.condition` and `.transitionTo` |
-| "Then move on to the next phase" | **Transition** (activity-level) | `transitions[].to`, `.condition`, `.isDefault` |
+| "If X then do A, otherwise do B" (automated) / "Then move on to the next phase" | **Exit** (activity-level) + **graph binding** (workflow-level) | `exits[].id` (the outcome, in the activity's vocabulary), `.when` (the inline predicate selecting it), `.isDefault` (exactly one once there are two or more), `.immediate` (ends the sequence where a checkpoint option selects it); the destination is `graph.<activity>.<exit>` in the workflow file |
 | "This triggers the X workflow" | **Trigger** | `triggers.workflow`, `.description`, `.passContext` |
 | "This produces a report file" | **Technique output artifact** (activity `artifacts[]` is SERVER-COMPUTED, never authored) | declare a `#### artifact` on the producing technique's `## Outputs`, one filename per output — one path segment with an extension, `{token}` placeholders allowed, rejected at load otherwise (`artifact-name-is-filename`); `get_activity` synthesizes the activity's artifact contract from its steps' bound techniques (`no-hand-authored-artifacts`) |
 | "The expected result is X" | **Outcome** | `outcome[]` (string array) |
@@ -59,10 +58,11 @@ An activity has a **single ordered `steps[]`** in which every step carries a req
 | Informal Pattern | Formal Construct | Schema Fields |
 |---|---|---|
 | "The session starts with X" / "this policy holds all run" | **Workflow variable** | `variables[].name`, `.type`, `.description`, `.defaultValue` — the file's own declarations are session facts and policy spanning activities. A variable an activity produces is declared by that activity under `variables.writes` and contributed here on inclusion, so a value one activity hands the next has one home. |
-| "Can run in fast or thorough mode" | **Activation variable + conditional flow** | one authoritative mode `variable` (enum or boolean) set by a detection step/checkpoint early in the workflow, with `transitions[].condition` and step `when`/`condition` gates that compare it directly — no parallel derived shadow flags |
+| "Can run in fast or thorough mode" | **Activation variable + conditional flow** | one authoritative mode `variable` (enum or boolean) set by a detection step/checkpoint early in the workflow, with `exits[].when` and step `when`/`condition` gates that compare it directly — no parallel derived shadow flags |
 | "The agent must always do X" (session conduct) | **Workflow rules** | `rules.workflow` / `rules.activity` / `rules.universal` (partitioned by audience). Runtime-relevant only — design-time authoring standards migrate to the workflow-design canon (`rule-audience-bucket`, `runtime-rules-only`). |
 | "Every activity needs this strategy technique" | **Inherited techniques** | `techniques.workflow` (orchestrator, bundled into `get_workflow`) / `techniques.activity` (inherited by every activity, injected into `get_activity`). Activity-local `techniques[]` is STRATEGY only — per-step ops bind via `step.technique` (`techniques-list-disjoint`). |
 | "Start with the first activity" | **Initial activity** | `initialActivity` (activity ID) |
+| "After X, go to Y" / "this activity can end the run" | **Graph** | `graph.<activity>.<exit>` naming the destination activity, or `__terminal__` to end the run. Every exit of every activity the workflow includes is bound here, or the load fails; a workflow that borrows an activity binds that activity's exits itself, so two workflows can run one activity in different orders. |
 
 ## Technique-Level Constructs (technique.schema.json)
 
@@ -95,8 +95,7 @@ Always wire checkpoint option consequences to formal effects:
 | Effect | Purpose | Example |
 |---|---|---|
 | `setVariable` | Set variables based on user choice | `{ "setVariable": { "approved": true } }` |
-| `transitionTo` | Jump to a specific activity | `{ "transitionTo": "rejected" }` |
-| `skipActivities` | Skip downstream activities | `{ "skipActivities": ["research"] }` |
+| `exit` | Select one of the activity's declared outcomes; where it leads is the workflow's `graph` to say, and `present_checkpoint` states that consequence before the user chooses | `{ "exit": "rejected" }` |
 
 ## Action Types
 

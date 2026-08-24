@@ -165,32 +165,16 @@ steps:
       inputs:
         repo_path: component_git_dir
     when: stealth_mode != true && is_review_mode != true && issue_platform == 'github' && has_deferred_assumptions == true && post_summary_approved == true
-transitions:
-  - to: codebase-comprehension
-    condition:
-      type: simple
-      variable: needs_comprehension
-      operator: ==
-      value: true
-  - to: plan-prepare
-    condition:
-      type: simple
-      variable: needs_plan_revision
-      operator: ==
-      value: true
-  - to: assumptions-review
-    condition:
-      type: simple
-      variable: needs_further_discussion
-      operator: ==
-      value: true
-  - to: lean-coding-audit
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
-  - to: implement
+exits:
+  - id: needs-comprehension
+    when: needs_comprehension == true
+  - id: needs-plan-revision
+    when: needs_plan_revision == true
+  - id: needs-further-discussion
+    when: needs_further_discussion == true
+  - id: review-mode
+    when: is_review_mode == true
+  - id: assumptions-approved
     isDefault: true
 outcome:
   - Open assumptions converged through analyse-challenge before any residual ask

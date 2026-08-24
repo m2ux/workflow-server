@@ -45,3 +45,14 @@ variables:
     type: string
     description: Path to the final AUDIT-REPORT.md
 initialActivity: scope-definition
+graph:
+  scope-definition:
+    done: prompt-generation
+    adjust: scope-definition
+  prompt-generation:
+    done: execute-analysis
+    abort: deliver-audit
+  execute-analysis:
+    done: audit-finalize
+  audit-finalize:
+    done: deliver-audit

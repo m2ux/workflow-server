@@ -75,8 +75,8 @@ steps:
           - action: set
             target: register_sections
             message: "This target's register section appended to the sections already gathered: `{target_workflow_id}` with `{audit_findings}`, `{coverage_ledger}` (divergences and evidence), and `{fail_count}`. Appends; never replaces a prior target's section."
-transitions:
-  - to: validate-and-commit
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Every criteria home is walked once per target against the working tree, so a finding is attributed to this change rather than to the catalogue it came from

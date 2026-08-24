@@ -226,20 +226,12 @@ steps:
         effect:
           setVariable:
             review_passed: true
-transitions:
-  - to: submit-for-review
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
-  - to: submit-for-review
-    condition:
-      type: simple
-      variable: review_passed
-      operator: ==
-      value: true
-  - to: plan-prepare
+exits:
+  - id: review-mode
+    when: is_review_mode == true
+  - id: review-passed
+    when: review_passed == true
+  - id: review-failed
     isDefault: true
 outcome:
   - Changes validated as minimal and focused

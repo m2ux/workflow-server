@@ -116,14 +116,10 @@ steps:
           setVariable:
             mitigations_apply_requested: false
     blocking: true
-transitions:
-  - to: apply-mitigations
-    condition:
-      type: simple
-      variable: mitigations_apply_requested
-      operator: ==
-      value: true
-  - to: __terminal__
+exits:
+  - id: mitigations-requested
+    when: mitigations_apply_requested == true
+  - id: resolved
     isDefault: true
 outcome:
   - Every finding has a mitigation the user has explicitly decided on, preserving the nuance that batch review would lose

@@ -44,14 +44,10 @@ steps:
             effect:
               setVariable:
                 safety_floor_cleared: false
-transitions:
-  - to: over-engineering-review
-    condition:
-      type: simple
-      variable: safety_floor_cleared
-      operator: ==
-      value: true
-  - to: __terminal__
+exits:
+  - id: safety-floor-cleared
+    when: safety_floor_cleared == true
+  - id: safety-floor-breached
     isDefault: true
 outcome:
   - The minimal solution is built and verified to clear the safety floor, with its deliberate ceilings marked for later harvest

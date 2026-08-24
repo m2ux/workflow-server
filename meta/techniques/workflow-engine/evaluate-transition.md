@@ -1,38 +1,44 @@
 ---
 metadata:
-  version: 1.1.1
+  version: 2.0.0
 ---
 
 ## Capability
 
-Pick the next activity from the current activity's `transitions[]`.
+Name the outcome the just-completed activity reached, and read where the workflow sends it.
 
 ## Inputs
 
 ### current_activity
 
-Just-completed activity definition (with `transitions[]`)
+Just-completed activity definition (with `exits[]`)
+
+### workflow_graph
+
+The `graph` from `get_workflow`: for each activity, which of its exits leads where.
 
 ### state
 
 Current variable state
 
-### transition_override
+### selected_exit
 
-Optional `activity-id` from a checkpoint effect `transitionTo`.
+Optional exit id a checkpoint option named, from its effect.
 
 ## Outputs
 
 ### next_activity_id
 
-Activity ID to dispatch next, or null if the workflow is complete.
+Activity ID to dispatch next, `__terminal__` where the exit ends the run, or null if the activity declares no exit to take.
 
-### evaluated_condition
+### activity_exit
 
-One-line summary of which transition matched — `transition_override:<id>`, `condition:<expression or path>`, `isDefault:<id>`, or `workflow_complete`.
+The exit id taken, passed to `next_activity` as `exit` — or `workflow_complete` where the activity declared no exit to take.
 
 ## Protocol
 
-1. If `{transition_override}` is set, return it as `{next_activity_id}` and set `{evaluated_condition}` to `transition_override:{transition_override}`.
-2. Iterate `current_activity.transitions[]` in array order, evaluating each `condition` against the current `{state}`; return the first whose `condition` is true as `{next_activity_id}` and set `{evaluated_condition}` to a short label for that match (`condition:…` or `isDefault:<id>`). If more than one condition evaluates to true at the activity boundary, take the first matching transition in array order and log a warning.
-3. If no condition matches and no `isDefault` transition exists, set `{next_activity_id}` to null and `{evaluated_condition}` to `workflow_complete`.
+1. If `{selected_exit}` is set, that is the exit taken: the user's choice at a checkpoint decides the outcome, and no predicate overrides it.
+2. Otherwise iterate `current_activity.exits[]` in array order, evaluating each `when` against the current `{state}`, and take the first whose `when` is true. Where more than one holds at the activity boundary, take the first in array order and log a warning. An exit with no `when` is not selected here — it is either the default or one only a checkpoint option names.
+3. Where nothing above selected an exit, take the exit marked `isDefault`. This is also what a checkpoint dismissed on an unmet condition resolves to, and what an activity with a single unconditional exit takes.
+4. Set `{activity_exit}` to the exit taken and read `{next_activity_id}` from `workflow_graph[current_activity.id][{activity_exit}]`. A destination of `__terminal__` ends the run.
+5. Where no exit was taken — the activity declares none — set `{next_activity_id}` to null and `{activity_exit}` to `workflow_complete`.

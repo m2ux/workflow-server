@@ -135,32 +135,14 @@ steps:
             effect:
               setVariable:
                 needs_comprehension: true
-transitions:
-  - to: requirements-elicitation
-    condition:
-      type: simple
-      variable: needs_elicitation
-      operator: ==
-      value: true
-  - to: research
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: needs_elicitation
-          operator: ==
-          value: false
-        - type: simple
-          variable: needs_research
-          operator: ==
-          value: true
-  - to: plan-prepare
-    condition:
-      type: simple
-      variable: skip_optional_activities
-      operator: ==
-      value: true
-  - to: implementation-analysis
+exits:
+  - id: needs-elicitation
+    when: needs_elicitation == true
+  - id: research-needed
+    when: needs_elicitation == false && needs_research == true
+  - id: skip-optional-activities
+    when: skip_optional_activities == true
+  - id: comprehension-complete
     isDefault: true
 outcome:
   - Mental model of codebase architecture established

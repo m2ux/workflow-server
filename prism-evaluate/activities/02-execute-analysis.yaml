@@ -91,6 +91,6 @@ steps:
         technique: read-run-manifest
 outcome:
   - Every planned dimension has been analysed through the prism pipeline; any run that failed is flagged so coverage gaps are visible rather than silent
-transitions:
-  - to: consolidate-report
+exits:
+  - id: done
     isDefault: true

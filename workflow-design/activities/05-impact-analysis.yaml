@@ -57,8 +57,8 @@ steps:
       - id: preserve
         label: Preserve some flagged content
         description: Some flagged content must be preserved rather than removed.
-transitions:
-  - to: scope-and-draft
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Drafting knows exactly which files the change touches and how, so the edit blast radius is bounded before any content is written

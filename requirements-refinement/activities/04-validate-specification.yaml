@@ -32,30 +32,12 @@ steps:
     actions:
       - action: message
         message: "Validation of pass {correction_iteration} categorizes each finding as critical or correctable and records the source-coverage result ([validation report]({validation_report_path}))."
-transitions:
-  - to: finalize-specification
-    condition:
-      type: simple
-      variable: validation_passed
-      operator: ==
-      value: true
-  - to: update-specification
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: has_correctable_issues
-          operator: ==
-          value: true
-        - type: simple
-          variable: has_critical_issues
-          operator: ==
-          value: false
-        - type: simple
-          variable: correction_iteration
-          operator: <
-          value: 3
-  - to: report-failure
+exits:
+  - id: validation-passed
+    when: validation_passed == true
+  - id: correctable
+    when: has_correctable_issues == true && has_critical_issues == false && correction_iteration < 3
+  - id: uncorrectable
     isDefault: true
 outcome:
   - The workflow knows whether the specification is sound and, for every remaining defect, whether it is fatal or fixable

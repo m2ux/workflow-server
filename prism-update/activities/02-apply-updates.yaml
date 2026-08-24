@@ -28,8 +28,8 @@ steps:
   - kind: technique
     id: update-prism-docs
     technique: update-prism-docs
-transitions:
-  - to: verify
+exits:
+  - id: done
     isDefault: true
 outcome:
   - The workflow's resource catalog now matches upstream — consumers can rely on it being current

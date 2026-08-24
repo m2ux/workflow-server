@@ -161,8 +161,8 @@ steps:
   - kind: technique
     id: update-assumptions-log
     technique: review-assumptions::record
-transitions:
-  - to: lean-coding-audit
+exits:
+  - id: done
     isDefault: true
 outcome:
   - All tasks implemented

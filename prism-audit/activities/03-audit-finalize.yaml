@@ -43,6 +43,6 @@ steps:
     technique: verify-audit-consistency
 outcome:
   - "The consumer has a cross-validated, severity-calibrated audit they can act on: a navigable summary, expanded per-finding write-ups, and the design trade-offs behind the findings"
-transitions:
-  - to: deliver-audit
+exits:
+  - id: done
     isDefault: true

@@ -114,13 +114,9 @@ steps:
       - action: set
         target: client_workflow_completed
         value: true
-transitions:
-  - to: end-workflow
-    condition:
-      type: simple
-      variable: current_activity
-      operator: ==
-      value: null
+exits:
+  - id: "null"
+    when: current_activity == null
 outcome:
   - The client workflow has executed end to end with its artifacts committed and state persisted at every activity boundary
   - Each worker carried a bounded run of activities in one context, so the harness baseline was paid once a run rather than once an activity

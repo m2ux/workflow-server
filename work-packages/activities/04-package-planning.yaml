@@ -33,14 +33,15 @@ steps:
       - id: proceed
         label: Proceed to prioritization
         effect:
-          transitionTo: prioritization
+          exit: done
       - id: revise
         label: Revise plans
         effect:
-          transitionTo: package-planning
-transitions:
-  - to: prioritization
+          exit: revise
+exits:
+  - id: done
     isDefault: true
+  - id: revise
 outcome:
   - Every work package now has enough scope, effort, and success-criteria detail to be prioritized and executed independently
   - Inter-package dependencies are known, so prioritization can order packages without creating blocked work

@@ -42,8 +42,8 @@ steps:
           inputs:
             mutated_pages: wiki_pages.page_slugs
             operation_summary: ingest_summary
-transitions:
-  - to: lint-wiki
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Every area in the ingest plan is captured as typed wiki pages whose claims cite a raw source path and carry a confidence score

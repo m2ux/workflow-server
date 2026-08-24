@@ -19,8 +19,8 @@ steps:
   - kind: technique
     id: diff-upstream
     technique: diff-upstream
-transitions:
-  - to: review-changes
+exits:
+  - id: done
     isDefault: true
 outcome:
   - The workflow knows exactly what changed upstream and how each new prism classifies by family — the import can proceed against an approved, well-understood scope

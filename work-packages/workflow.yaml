@@ -44,3 +44,23 @@ variables:
     type: string
     description: Reference back to work-packages context when triggering work-package workflow
 initialActivity: scope-assessment
+graph:
+  scope-assessment:
+    done: folder-setup
+    refine: scope-assessment
+  folder-setup:
+    done: analysis
+    adjust: folder-setup
+  analysis:
+    done: package-planning
+    revise: analysis
+  package-planning:
+    done: prioritization
+    revise: package-planning
+  prioritization:
+    done: finalize-roadmap
+    adjust: prioritization
+    revisit: package-planning
+  finalize-roadmap:
+    done: implementation
+    refine: finalize-roadmap

@@ -51,17 +51,17 @@ state variables the activity mutated, reported by the worker — one of the two 
 
 array of artifact entries (`id`, `name`, `path`).
 
-#### transition_override
+#### selected_exit
 
-optional — the transition target to take instead of the default, set when a checkpoint effect specified `transitionTo` (see Protocol step 2).
+optional — the exit id a checkpoint option named, set when a checkpoint effect carried one (see Protocol step 2).
 
 #### next_activity_id
 
-Activity ID the worker resolved for the next dispatch (or null when the workflow is complete). Required on every successful `activity_complete`: this context holds the definition the transition was resolved from, and the envelope is the only report of the result.
+Activity ID the worker resolved for the next dispatch (or null when the workflow is complete). Required on every successful `activity_complete`: this context holds the definition and the graph the destination was resolved from, and the envelope is the only report of the result.
 
-#### evaluated_condition
+#### activity_exit
 
-One-line summary from evaluate-transition of which transition matched (`transition_override:…`, `condition:…`, `isDefault:…`, or `workflow_complete`).
+The exit id this activity took, from evaluate-transition, or `workflow_complete` where it declared none. The orchestrator passes it to `next_activity` as `exit`.
 
 #### batch_may_continue
 
@@ -69,8 +69,8 @@ Whether this context may take another activity, folded from the input of the sam
 
 ## Protocol
 
-1. Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, `{artifacts_produced}` and `{batch_may_continue}` into the `activity_complete` object. Populate the envelope's `variables_changed` map with every bag key this activity mutated — declared step outputs landed per [variable-binding](../variable-binding.md) (including remapped output names), plus any checkpoint `setVariable` effects already applied. Include `{transition_override}` if a checkpoint effect specified `transitionTo`.
-2. Resolve the next activity: with the current activity definition already in hand from `get_activity` and the post-activity variable bag (after `variables_changed` / checkpoint effects), apply [evaluate-transition](./evaluate-transition.md). Fold `{next_activity_id}` and `{evaluated_condition}` into the envelope. Do not omit these fields: the definition they were resolved from is held here and nowhere else, so an omission cannot be recovered later.
+1. Compile the `{activity_result}` envelope by folding `{steps_completed}`, `{checkpoints_responded}`, `{artifacts_produced}` and `{batch_may_continue}` into the `activity_complete` object. Populate the envelope's `variables_changed` map with every bag key this activity mutated — declared step outputs landed per [variable-binding](../variable-binding.md) (including remapped output names), plus any checkpoint `setVariable` effects already applied. Include `{selected_exit}` if a checkpoint effect named an exit.
+2. Resolve the next activity: with the current activity definition already in hand from `get_activity`, the workflow graph from `get_workflow`, and the post-activity variable bag (after `variables_changed` / checkpoint effects), apply [evaluate-transition](./evaluate-transition.md). Fold `{next_activity_id}` and `{activity_exit}` into the envelope. Do not omit these fields: the definition they were resolved from is held here and nowhere else, so an omission cannot be recovered later.
 3. Return `{activity_result}`.
 
 ## Rules

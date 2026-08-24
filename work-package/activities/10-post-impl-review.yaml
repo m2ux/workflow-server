@@ -217,23 +217,10 @@ steps:
         effect:
           setVariable:
             run_local_validation: false
-decisions:
-  - id: blocker-gate
-    name: Critical Blocker Gate
-    branches:
-      - id: has-blocker
-        label: Critical blocker found — return to implement
-        condition:
-          type: simple
-          variable: has_critical_blocker
-          operator: ==
-          value: true
-        transitionTo: implement
-      - id: no-blocker
-        label: No critical blockers — proceed to validate
-        isDefault: true
-transitions:
-  - to: validate
+exits:
+  - id: has-blocker
+    when: has_critical_blocker == true
+  - id: done
     isDefault: true
 outcome:
   - Every change block has a confirmed rationale and provenance attestation, so reviewers can trust each change is understood and intentional

@@ -82,8 +82,8 @@ steps:
     actions:
       - action: log
         message: Scope intake complete — change surface confirmed and toolchain availability recorded
-transitions:
-  - to: area-derivation
+exits:
+  - id: done
     isDefault: true
 outcome:
   - The review runs against the authoritative changed surface — the GitHub-listed file set or three-dot merge-base diff of authored changes

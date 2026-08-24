@@ -69,3 +69,19 @@ variables:
     description: Whether a professional reference report is available for gap analysis
     defaultValue: false
 initialActivity: scope-setup
+graph:
+  scope-setup:
+    done: reconnaissance
+  reconnaissance:
+    done: primary-audit
+  primary-audit:
+    done: adversarial-verification
+  adversarial-verification:
+    done: report-generation
+  report-generation:
+    ensemble: ensemble-pass
+    has-reference-report: gap-analysis
+    complete: __terminal__
+  ensemble-pass:
+    has-reference-report: gap-analysis
+    complete: __terminal__

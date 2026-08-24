@@ -23,6 +23,19 @@ techniques:
     - variable-binding
     - workflow-engine::activity-worker
 initialActivity: discover-session
+graph:
+  discover-session:
+    done: initialize-session
+    abort-binding: end-workflow
+  initialize-session:
+    done: resolve-target
+  resolve-target:
+    done: dispatch-client-workflow
+  dispatch-client-workflow:
+    "null": end-workflow
+  end-workflow:
+    return: dispatch-client-workflow
+    completed: __terminal__
 rules:
   workflow:
     - "This workflow is the entrypoint for all workflow operations — bootstrap protocol enters here directly via start_session({ workflow_id: 'meta' })"

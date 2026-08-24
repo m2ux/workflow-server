@@ -44,14 +44,15 @@ steps:
       - id: proceed
         label: Proceed with analysis
         effect:
-          transitionTo: analysis
+          exit: done
       - id: adjust
         label: Adjust structure
         effect:
-          transitionTo: folder-setup
-transitions:
-  - to: analysis
+          exit: adjust
+exits:
+  - id: done
     isDefault: true
+  - id: adjust
 outcome:
   - There is a single known home for all planning artifacts, with entry-point and overview scaffolds ready for later activities to fill in
   - The analysis activity holds the {analysis_type} it branches on before it is dispatched

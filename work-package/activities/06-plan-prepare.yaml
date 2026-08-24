@@ -137,8 +137,8 @@ steps:
       - id: revise
         label: Revise approach
         description: Adjust the approach before planning continues
-transitions:
-  - to: assumptions-review
+exits:
+  - id: done
     isDefault: true
 outcome:
   - An agreed, sequenced approach that the implement activity can execute against task by task

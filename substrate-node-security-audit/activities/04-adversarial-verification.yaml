@@ -25,8 +25,8 @@ steps:
     actions:
       - action: log
         message: Adversarial verification complete — false PASSes identified
-transitions:
-  - to: report-generation
+exits:
+  - id: done
     isDefault: true
 outcome:
   - Every high-stakes PASS verdict has survived independent property-level re-checking, so first-positive-signal bias can no longer hide a real finding behind a premature PASS

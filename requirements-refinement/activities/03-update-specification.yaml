@@ -24,8 +24,8 @@ steps:
     actions:
       - action: message
         message: "The working specification from pass {correction_iteration} carries every confirmed change with the protocol preserved ([updated specification]({working_specification_path}))."
-transitions:
-  - to: validate-specification
+exits:
+  - id: done
     isDefault: true
 outcome:
   - The full specification now reflects every confirmed change with its protocol intact, ready for validation to judge against

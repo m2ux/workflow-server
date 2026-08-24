@@ -51,7 +51,7 @@ The assembled impact report: per-file classification, the integrity verdicts, an
 
 ### 3. Check Transition Integrity
 
-- Where activities are added, removed or reordered: verify every `transitions[].to` names an existing activity id, verify `initialActivity` still names a valid activity, and verify no activity is left with no incoming transition
+- Where activities are added, removed or reordered: verify the workflow's `graph` binds every exit of every activity and sends each to an existing activity id or `__terminal__`, verify `initialActivity` still names a valid activity, and verify no activity is left with nothing bound to it
 
 ### 4. Check Reference Integrity
 

@@ -91,20 +91,10 @@ steps:
         entity_context: "entity_title={document_title}; entity_type={operation_type}; status=Profiling"
         seed_profile: plain-language/readme-seed
         operation_type: operation_type
-transitions:
-  - to: source-analysis
-    condition:
-      type: or
-      conditions:
-        - type: simple
-          variable: operation_type
-          operator: ==
-          value: rewrite
-        - type: simple
-          variable: operation_type
-          operator: ==
-          value: audit
-  - to: draft
+exits:
+  - id: has-source
+    when: operation_type == "rewrite" || operation_type == "audit"
+  - id: no-source
     isDefault: true
 outcome:
   - The run carries a classified operation type and a confirmed reader profile, so every later drafting and evaluation decision branches on settled state rather than re-reading the request

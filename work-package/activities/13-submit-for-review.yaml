@@ -322,12 +322,12 @@ steps:
         effect:
           setVariable:
             body_conforms: false
-          transitionTo: submit-for-review
+          exit: provide-input
       - id: abort
         label: Abort submission
         description: Terminate the activity with a failure status.
         effect:
-          transitionTo: complete
+          exit: abort
   - kind: technique
     id: instruct-merge-strategy
     technique: manage-git::instruct-merge-strategy
@@ -521,26 +521,17 @@ steps:
     actions:
       - action: log
         message: Submission complete — PR review cycle finished, or (stealth mode) fix pushed to the verified private remote
-transitions:
-  - to: complete
-    condition:
-      type: simple
-      variable: is_review_mode
-      operator: ==
-      value: true
-  - to: complete
-    condition:
-      type: simple
-      variable: review_requires_changes
-      operator: ==
-      value: false
+exits:
+  - id: review-mode
+    when: is_review_mode == true
+  - id: review-requires-changes
+    when: review_requires_changes == true
+  - id: review-approved
+    when: review_requires_changes == false
     isDefault: true
-  - to: plan-prepare
-    condition:
-      type: simple
-      variable: review_requires_changes
-      operator: ==
-      value: true
+  - id: provide-input
+  - id: abort
+    immediate: true
 outcome:
   - PR pushed and marked ready for review
   - Build-dependent artifacts flagged and handed to the user when regen is owed (create / non-stealth, before mark-ready)

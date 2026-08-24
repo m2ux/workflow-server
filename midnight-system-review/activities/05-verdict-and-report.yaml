@@ -53,7 +53,7 @@ steps:
         effect:
           setVariable:
             plan_approved: false
-          transitionTo: area-derivation
+          exit: revise-investigation
   - kind: checkpoint
     id: publish-decision
     condition:
@@ -77,19 +77,12 @@ steps:
     actions:
       - action: log
         message: Verdict and report complete — review signed off
-transitions:
-  - to: publish-review
-    condition:
-      type: and
-      conditions:
-        - type: simple
-          variable: has_pr_surface
-          operator: ==
-          value: true
-        - type: simple
-          variable: publish_requested
-          operator: ==
-          value: true
+exits:
+  - id: publish-requested
+    when: has_pr_surface == true && publish_requested == true
+  - id: report-only
+    isDefault: true
+  - id: revise-investigation
 outcome:
   - The merge-readiness verdict is computed from accepted findings only, per rubric, so it is reproducible and defensible
   - The report's per-area accounting reconciles before anyone reads a verdict, closing the silent-coverage-gap failure mode
