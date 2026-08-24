@@ -4,13 +4,14 @@
  * Drives a workflow from its initial activity to a terminal activity through
  * the real MCP server, deterministically. At each activity it resolves the
  * applicable checkpoints (yield → respond → resume) by asking a Policy which
- * option to pick, accumulates the resulting variable effects, and selects the
- * next activity by evaluating the activity's transitions against that variable
- * bag with the server's own `evaluateCondition`.
+ * option to pick, accumulates the resulting variable effects, and names the exit
+ * the activity took — the one a checkpoint option selected, else the first whose
+ * `when` holds against that variable bag, else the default — then reads the
+ * destination from the workflow's graph.
  *
- * The walker tracks variables locally only to CHOOSE a transition; the server
- * remains the source of truth and validates each transition. A divergence
- * surfaces as a thrown error — itself a useful consistency signal.
+ * The walker tracks variables locally only to CHOOSE an exit; the server remains
+ * the source of truth and validates each transition. A divergence surfaces as a
+ * thrown error — itself a useful consistency signal.
  */
 import { readFileSync, writeFileSync, readdirSync } from 'node:fs';
 import { join } from 'node:path';
@@ -271,6 +272,17 @@ export function pickNext(act: ActivityDef, graph: Graph, variables: Record<strin
 }
 
 /**
+ * The exits state alone can take: one carrying a predicate, and the default. An exit with neither
+ * is reachable only by a checkpoint option naming it, so nothing that drives the graph from the
+ * variable bag — the forward advance, the enumerator's fork over targets — may offer it. Handing it
+ * to them lets a walk jump to an activity without passing the gate that decides to go there, which
+ * silently drops the coverage of that gate's other options.
+ */
+function predicateExits(act: ActivityDef): ExitDef[] {
+  return (act.exits ?? []).filter((e) => e.when !== undefined || e.isDefault);
+}
+
+/**
  * Workflow-agnostic forward advance: pick an exit leading to an as-yet-unvisited activity,
  * optimistically satisfying its `when` by mutating `variables`. This stands in for the agent-set
  * convergence variables a no-LLM walker cannot infer, so any workflow drives forward to coverage
@@ -279,7 +291,7 @@ export function pickNext(act: ActivityDef, graph: Graph, variables: Record<strin
  */
 function advanceToUnvisited(act: ActivityDef, graph: Graph, variables: Record<string, unknown>, visits: Map<string, number>): string | null {
   const bound = graph[act.id] ?? {};
-  for (const e of act.exits ?? []) {
+  for (const e of predicateExits(act)) {
     const to = bound[e.id];
     if (to === undefined || (visits.get(to) ?? 0) > 0) continue;
     if (e.when === undefined) return to;
@@ -702,14 +714,14 @@ export async function walk(
     let next = pickNext(act, graph, variables, selectedExit);
     if (selectedExit === undefined) {
       const bound = graph[act.id] ?? {};
-      const targets = [...new Set((act.exits ?? []).map((e) => bound[e.id]).filter((t): t is string => t !== undefined))];
+      const targets = [...new Set(predicateExits(act).map((e) => bound[e.id]).filter((t): t is string => t !== undefined))];
       if (targets.length && opts.decide) {
         // The natural (happy) target — pickExit's choice, or the forward-advance target, or the
         // first bound exit — is the base-path suggestion; the enumerator forks the rest.
         let suggested = next;
         if (suggested === null || (visits.get(suggested) ?? 0) > 0) suggested = advanceToUnvisited(act, graph, { ...variables }, visits) ?? next;
         const chosen = opts.decide({ kind: 'transition', activityId: current, id: 'next', options: targets, suggested: suggested ?? targets[0]! }) ?? suggested ?? targets[0]!;
-        const exit = (act.exits ?? []).find((e) => bound[e.id] === chosen);
+        const exit = predicateExits(act).find((e) => bound[e.id] === chosen);
         if (exit?.when) satisfyWhen(exit.when, variables);
         next = chosen;
       } else if (opts.autoAdvance && (next === null || (visits.get(next) ?? 0) > 0)) {
