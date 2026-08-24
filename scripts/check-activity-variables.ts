@@ -104,6 +104,13 @@ export async function collectFindings(root: string): Promise<Finding[]> {
       for (const name of activity.variables?.reads ?? []) namespace.add(name);
     }
 
+    // Declared anywhere in this workflow, on either side of any contract. `namespace` above is not
+    // this set: it omits declared writes, deliberately, so an included activity's read is measured.
+    const declaredAnywhere = new Set(namespace);
+    for (const activity of workflow.activities ?? []) {
+      for (const declaration of activity.variables?.writes ?? []) declaredAnywhere.add(declaration.name);
+    }
+
     const records: ActivityRecord[] = [];
     for (const activity of workflow.activities ?? []) {
       const sourceWorkflowId = activitySourceWorkflow.get(activity.id) ?? workflowId;
@@ -139,6 +146,26 @@ export async function collectFindings(root: string): Promise<Finding[]> {
             detail: `writes '${name}' without declaring it under variables.writes`,
           });
         }
+      }
+      // A value that crosses an activity boundary with no contract at either end. Every other
+      // family here is measured against the declared namespace, and the namespace is assembled
+      // from the declarations — so a name nobody declares is invisible on BOTH sides: the
+      // production drops out of `writes` and the consultation drops out of `reads`, and the two
+      // silences look exactly like a name that is simply not used. This reads the wider `produces`
+      // and `mentions` to see them. A production nothing consults elsewhere is not reported: a
+      // utility operation's confirmation value legitimately dies with its step.
+      for (const name of record.derived.produces) {
+        if (AMBIENT_CONTEXT_IDS.has(name)) continue;
+        if (declaredAnywhere.has(name)) continue;
+        if (record.derived.persistedProductions.has(name)) continue; // destination is a file
+        const consumers = records
+          .filter((other) => other.id !== record.id && other.derived.mentions.has(name))
+          .map((other) => other.id);
+        if (consumers.length === 0) continue;
+        findings.push({
+          check: 'undeclared-crossing', site: site(record),
+          detail: `produces '${name}', which ${consumers.join(', ')} consults, and no contract in this workflow declares it — the value crosses an activity boundary with nothing accounting for it on either side`,
+        });
       }
       for (const name of record.declaredReads) {
         if (!record.derived.reads.has(name)) {
