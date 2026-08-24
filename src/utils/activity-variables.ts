@@ -133,6 +133,24 @@ export interface DerivedContract {
    */
   artifactWrites: Set<string>;
   /**
+   * Every name a step produces, whether or not any declaration mentions it: a bound operation's
+   * declared output, a remap target, a checkpoint's setVariable key, a `set` action's target, a
+   * loop's item variable. Most are local to the activity — an output a later step of the same
+   * activity consumes and nothing else ever sees — so this is not a set of session writes. It is
+   * wider than `writes` on purpose: `writes` is narrowed to the declared namespace, and the
+   * namespace is assembled from the declarations, so a production no declaration mentions cannot
+   * appear there at all.
+   */
+  produces: Set<string>;
+  /**
+   * Every name any step of the activity consults, before the namespace narrows it — the read-side
+   * counterpart to `produces`, and wider than `reads` for the same reason. A name no declaration
+   * mentions is absent from `reads` however plainly a technique's prose interpolates it.
+   */
+  mentions: Set<string>;
+  /** Productions whose value is a file, not a bag entry: the technique declares an `#### artifact`. */
+  persistedProductions: Set<string>;
+  /**
    * Every name the activity consumes, whether or not the contract requires it: the reads above,
    * plus the inputs a bound operation takes when they are there and derives when they are not. An
    * optional input is not something the workflow must supply, so it is no read — but a value that
@@ -313,11 +331,17 @@ export async function deriveActivityContract(args: {
   const writes = new Set<string>();
   const internalReads = new Set<string>();
   const artifactWrites = new Set<string>();
+  const produces = new Set<string>();
+  /** Every name any step consults, before the namespace narrows it — see `produces`. */
+  const mentions = new Set<string>();
+  /** Productions whose value is a file the technique declares an `#### artifact` for. */
+  const persistedProductions = new Set<string>();
   /** Produced so far in document order — what resolves a later read inside this activity. */
   const producedSoFar = new Set<string>();
 
   const consumes = new Set<string>();
   const read = (name: string): void => {
+    mentions.add(name);
     if (!namespace.has(name)) return;
     consumes.add(name);
     if (producedSoFar.has(name)) internalReads.add(name);
@@ -329,6 +353,7 @@ export async function deriveActivityContract(args: {
   };
   const write = (name: string): void => {
     if (namespace.has(name)) writes.add(name);
+    produces.add(name);
     producedSoFar.add(name);
   };
 
@@ -371,7 +396,10 @@ export async function deriveActivityContract(args: {
         const persisted = new Set(signature.artifactOutputs);
         const landed = (outputId: string, bagName: string): void => {
           write(bagName);
-          if (persisted.has(outputId) && namespace.has(bagName)) artifactWrites.add(bagName);
+          if (persisted.has(outputId)) {
+            persistedProductions.add(bagName);
+            if (namespace.has(bagName)) artifactWrites.add(bagName);
+          }
         };
         for (const [outputId, target] of Object.entries(binding?.outputs ?? {})) landed(outputId, target);
         for (const output of signature.outputs) if (!remapped.has(output)) landed(output, output);
@@ -417,7 +445,7 @@ export async function deriveActivityContract(args: {
   // A trigger's passContext names the values the dispatching agent relays into the child session.
   for (const trigger of activity.triggers ?? []) (trigger.passContext ?? []).forEach(read);
 
-  return { reads, writes, internalReads, artifactWrites, routingReads, consumes };
+  return { reads, writes, internalReads, artifactWrites, produces, mentions, persistedProductions, routingReads, consumes };
 }
 
 /**
