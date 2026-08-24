@@ -97,19 +97,11 @@ export const CheckpointResponseSchema = z.object({
   respondedAt: z.string().datetime(),
   effects: z.object({
     variablesSet: z.record(z.unknown()).optional(),
-    transitionedTo: z.string().optional(),
-    activitiesSkipped: z.array(z.string()).optional(),
+    /** The activity exit the selected option named. The destination is the workflow graph's to say. */
+    exit: z.string().optional(),
   }).optional(),
 });
 export type CheckpointResponse = z.infer<typeof CheckpointResponseSchema>;
-
-// Key format: "activityId-decisionId"
-export const DecisionOutcomeSchema = z.object({
-  branchId: z.string(),
-  decidedAt: z.string().datetime(),
-  transitionedTo: z.string(),
-});
-export type DecisionOutcome = z.infer<typeof DecisionOutcomeSchema>;
 
 export const LoopStateSchema = z.object({
   activityId: z.string(),
@@ -171,10 +163,8 @@ export const WorkflowStateBaseSchema = z.object({
   currentActivity: z.string().optional(),
   currentStep: StepIndex.optional(),
   completedActivities: z.array(z.string()).default([]),
-  skippedActivities: z.array(z.string()).default([]),
   completedSteps: z.record(z.array(StepIndex)).default({}),
   checkpointResponses: z.record(CheckpointResponseSchema).default({}),
-  decisionOutcomes: z.record(DecisionOutcomeSchema).default({}),
   activeLoops: z.array(LoopStateSchema).default([]),
   variables: z.record(z.unknown()).default({}),
   history: z.array(HistoryEntrySchema).default([]),
@@ -224,7 +214,7 @@ export function createInitialState(workflowId: string, workflowVersion: string, 
   const now = new Date().toISOString();
   return {
     workflowId, workflowVersion, stateVersion: 1, startedAt: now, updatedAt: now, currentActivity: initialActivity,
-    completedActivities: [], skippedActivities: [], completedSteps: {}, checkpointResponses: {}, decisionOutcomes: {},
+    completedActivities: [], completedSteps: {}, checkpointResponses: {},
     activeLoops: [], variables: initialVariables ?? {}, triggeredWorkflows: [],
     history: [{ timestamp: now, type: 'workflow_started', activity: initialActivity, data: { initialVariables } }],
     status: 'running',

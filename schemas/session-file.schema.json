@@ -47,7 +47,7 @@
           "type": "string",
           "default": ""
         },
-        "condition": {
+        "exit": {
           "type": "string",
           "default": ""
         },
@@ -65,6 +65,45 @@
             "yieldedAt": {
               "type": "string",
               "format": "date-time"
+            },
+            "adhoc": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "options": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "label": {
+                        "type": "string",
+                        "minLength": 1
+                      },
+                      "description": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "label"
+                    ],
+                    "additionalProperties": false
+                  },
+                  "minItems": 2
+                }
+              },
+              "required": [
+                "message",
+                "options"
+              ],
+              "additionalProperties": false
             }
           },
           "required": [
@@ -80,13 +119,6 @@
           "default": {}
         },
         "completedActivities": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "default": []
-        },
-        "skippedActivities": {
           "type": "array",
           "items": {
             "type": "string"
@@ -112,14 +144,8 @@
                     "type": "object",
                     "additionalProperties": {}
                   },
-                  "transitionedTo": {
+                  "exit": {
                     "type": "string"
-                  },
-                  "activitiesSkipped": {
-                    "type": "array",
-                    "items": {
-                      "type": "string"
-                    }
                   }
                 },
                 "additionalProperties": false
@@ -174,7 +200,9 @@
                   "activity_usage",
                   "activity_dispatched",
                   "activity_redelivered",
-                  "batch_refused"
+                  "batch_refused",
+                  "activity_outcome",
+                  "progress_published"
                 ]
               },
               "activity": {

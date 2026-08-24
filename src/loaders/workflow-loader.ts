@@ -357,7 +357,7 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
     if (workflow.activities) workflow.activities = materialized;
 
     // Contribute each activity's write declarations to the workflow's variable set (#493). Being
-    // in the graph IS the registration: everything downstream — seeding, declared-type validation,
+    // in the workflow IS the registration: everything downstream — seeding, declared-type validation,
     // the get_workflow payload — reads one merged set, and a name two activities declare is one
     // variable. A pair that disagrees on type or default is a contradiction, and a session seeded
     // from either reading would be wrong, so the workflow does not load.
@@ -369,6 +369,16 @@ export async function loadWorkflowWithDiagnostics(workflowDir: string, workflowI
       ));
     }
     if (merged.variables.length > 0) workflow.variables = merged.variables;
+
+    // The exits and the graph that binds them are authored in different files, so the load is where
+    // they have to agree. Checked after materialization: a ref-form checkpoint's options are the
+    // fragment's, and the exit each selects has to be one the activity running it declares.
+    const knownActivityIds = new Set([
+      ...(workflow.activities ?? []).map(a => a.id),
+      ...activityLoadErrors.map(e => e.activity_id).filter((id): id is string => id !== undefined),
+    ]);
+    const bindingErrors = validateExitBindings(workflow, knownActivityIds);
+    if (bindingErrors.length > 0) return err(new WorkflowValidationError(workflowId, bindingErrors));
 
     logInfo('Workflow loaded', { workflowId, version: workflow.version, activityCount: workflow.activities?.length ?? 0 });
     return ok({ workflow, activityLoadErrors, activitySourceWorkflow });
@@ -478,76 +488,101 @@ export function getCheckpoint(workflow: Workflow, activityId: string, checkpoint
   return defs.find(c => checkpointBaseId(c.id) === base);
 }
 
-/** Get all valid transitions from an activity */
-export function getValidTransitions(workflow: Workflow, fromActivityId: string): string[] {
-  const activity = getActivity(workflow, fromActivityId);
-  if (!activity) return [];
-  const transitions: string[] = [];
-  activity.transitions?.forEach(t => transitions.push(t.to));
-  activity.decisions?.forEach(d => d.branches.forEach(b => { if (b.transitionTo) transitions.push(b.transitionTo); }));
-  activityCheckpoints(activity).forEach(c => c.options.forEach(o => o.effect?.transitionTo && transitions.push(o.effect.transitionTo)));
-  return [...new Set(transitions)];
-}
-
-export interface TransitionEntry {
+export interface ExitBinding {
+  /** The exit's name in the activity's own vocabulary. */
+  exit: string;
+  /** Where the workflow binds it — an activity id, or TERMINAL_SENTINEL. */
   to: string;
-  condition?: string | undefined;
+  /** The inline expression selecting this exit, when it has one. */
+  when?: string | undefined;
+  /** The outcome when nothing else selected an exit. */
   isDefault?: boolean | undefined;
+  /** Selecting this exit at a checkpoint ends the step sequence there. */
+  immediate?: boolean | undefined;
 }
 
-/** Get the transition list for an activity with human-readable conditions */
-export function getTransitionList(workflow: Workflow, fromActivityId: string): TransitionEntry[] {
+/**
+ * The activity's exits as the workflow binds them: each declared outcome paired with the
+ * destination the graph gives it. The one place the two halves of the routing meet — every reader
+ * that needs to know where an activity can go reads this, or `exitDestinations` for the bare list.
+ * An exit the graph does not bind is absent here; the load-time check is what stops that happening.
+ */
+export function getExitBindings(workflow: Workflow, fromActivityId: string): ExitBinding[] {
   const activity = getActivity(workflow, fromActivityId);
   if (!activity) return [];
-
-  const entries: TransitionEntry[] = [];
-  const seen = new Set<string>();
-
-  for (const t of activity.transitions ?? []) {
-    entries.push({
-      to: t.to,
-      condition: t.condition ? conditionToString(t.condition) : undefined,
-      isDefault: t.isDefault || undefined,
-    });
-    seen.add(t.to);
-  }
-
-  for (const d of activity.decisions ?? []) {
-    for (const b of d.branches) {
-      if (b.transitionTo && !seen.has(b.transitionTo)) {
-        entries.push({ to: b.transitionTo, condition: b.condition ? conditionToString(b.condition) : undefined, isDefault: b.isDefault || undefined });
-        seen.add(b.transitionTo);
-      }
-    }
-  }
-
-  for (const c of activityCheckpoints(activity)) {
-    for (const o of c.options) {
-      if (o.effect?.transitionTo && !seen.has(o.effect.transitionTo)) {
-        entries.push({ to: o.effect.transitionTo, condition: `checkpoint:${c.id}:${o.id}` });
-        seen.add(o.effect.transitionTo);
-      }
-    }
-  }
-
-  return entries;
+  const bound = workflow.graph?.[fromActivityId] ?? {};
+  return (activity.exits ?? [])
+    .filter(e => bound[e.id] !== undefined)
+    .map(e => ({ exit: e.id, to: bound[e.id]!, when: e.when, isDefault: e.isDefault, immediate: e.immediate }));
 }
 
-function conditionToString(condition: { type: string; variable?: string; operator?: string; value?: unknown; conditions?: unknown[]; condition?: unknown }): string {
-  switch (condition.type) {
-    case 'simple':
-      return `${condition.variable} ${condition.operator} ${JSON.stringify(condition.value)}`;
-    case 'and':
-      if (!Array.isArray(condition.conditions)) return String(condition);
-      return (condition.conditions as Array<typeof condition>).map(c => conditionToString(c)).join(' AND ');
-    case 'or':
-      if (!Array.isArray(condition.conditions)) return String(condition);
-      return (condition.conditions as Array<typeof condition>).map(c => conditionToString(c)).join(' OR ');
-    case 'not':
-      return `NOT (${conditionToString(condition.condition as typeof condition)})`;
-    default:
-      return String(condition);
+/** The activities an activity can reach, deduped. */
+export function exitDestinations(workflow: Workflow, fromActivityId: string): string[] {
+  return [...new Set(getExitBindings(workflow, fromActivityId).map(b => b.to))];
+}
+
+/**
+ * Check the activities and the graph against each other. The two halves of the routing are
+ * authored in different files, so the load is where they have to agree: an exit no one bound is a
+ * dead end the reader cannot see, and a binding naming an exit or a destination that does not exist
+ * is a graph describing a workflow other than this one. Both fail the load rather than warning,
+ * because a session cannot be walked through a graph with a hole in it.
+ *
+ * `knownActivityIds` is the loaded activities plus the ones whose files failed to load — a binding
+ * to an activity excluded by its own load error is that error's business, not a second report.
+ */
+export function validateExitBindings(workflow: Workflow, knownActivityIds: ReadonlySet<string>): string[] {
+  const errors: string[] = [];
+  const graph = workflow.graph ?? {};
+
+  for (const activity of workflow.activities ?? []) {
+    const exits = activity.exits ?? [];
+    const bound = graph[activity.id] ?? {};
+
+    const seen = new Set<string>();
+    for (const exit of exits) {
+      if (seen.has(exit.id)) errors.push(`Activity '${activity.id}' declares exit '${exit.id}' twice.`);
+      seen.add(exit.id);
+      if (bound[exit.id] === undefined) {
+        errors.push(`Activity '${activity.id}' exit '${exit.id}' is unbound: add '${activity.id}.${exit.id}' to the workflow's graph.`);
+      }
+    }
+
+    const defaults = exits.filter(e => e.isDefault);
+    if (exits.length > 1 && defaults.length !== 1) {
+      errors.push(
+        `Activity '${activity.id}' declares ${exits.length} exits and ${defaults.length} defaults; exactly one must be isDefault, so a dismissed checkpoint and an unmatched predicate both resolve to a named exit.`,
+      );
+    }
+
+    for (const checkpoint of activityCheckpoints(activity)) {
+      for (const option of checkpoint.options) {
+        const exit = option.effect?.exit;
+        if (exit !== undefined && !seen.has(exit)) {
+          errors.push(`Activity '${activity.id}' checkpoint '${checkpoint.id}' option '${option.id}' selects exit '${exit}', which the activity does not declare.`);
+        }
+      }
+    }
   }
+
+  for (const [activityId, bindings] of Object.entries(graph)) {
+    if (!knownActivityIds.has(activityId)) {
+      errors.push(`Workflow graph binds activity '${activityId}', which this workflow does not contain.`);
+      continue;
+    }
+    const activity = getActivity(workflow, activityId);
+    const declared = new Set((activity?.exits ?? []).map(e => e.id));
+    for (const [exitId, destination] of Object.entries(bindings)) {
+      if (activity && !declared.has(exitId)) {
+        errors.push(`Workflow graph binds '${activityId}.${exitId}', which that activity does not declare as an exit.`);
+      }
+      if (destination !== TERMINAL_SENTINEL && !knownActivityIds.has(destination)) {
+        errors.push(`Workflow graph sends '${activityId}.${exitId}' to '${destination}', which this workflow does not contain.`);
+      }
+    }
+  }
+
+  return errors;
 }
 
 /**

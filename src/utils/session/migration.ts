@@ -184,7 +184,7 @@ function buildSessionFromLegacy(args: {
   const currentTechnique =
     asString(payload['technique']) ?? asString(payload['skill']) ??
     asString(state['currentTechnique']) ?? asString(state['currentSkill']) ?? '';
-  const condition = asString(payload['cond']) ?? '';
+  const exit = asString(payload['exit']) ?? '';
 
   // Build minimal valid SessionFile with the resolved sessionIndex.
   const base = createInitialSessionFile({
@@ -200,20 +200,14 @@ function buildSessionFromLegacy(args: {
     asString(state['startedAt']) ??
     base.startedAt;
 
-  // Carry over variables / completedActivities / skippedActivities /
-  // checkpointResponses verbatim when they exist in the envelope. History is
-  // intentionally dropped (format mismatch).
+  // Carry over variables / completedActivities / checkpointResponses verbatim when they exist in
+  // the envelope. History is intentionally dropped (format mismatch).
   const variables =
     state['variables'] && typeof state['variables'] === 'object'
       ? (state['variables'] as Record<string, unknown>)
       : {};
   const completedActivities = Array.isArray(state['completedActivities'])
     ? (state['completedActivities'] as unknown[]).filter(
-        (v): v is string => typeof v === 'string',
-      )
-    : [];
-  const skippedActivities = Array.isArray(state['skippedActivities'])
-    ? (state['skippedActivities'] as unknown[]).filter(
         (v): v is string => typeof v === 'string',
       )
     : [];
@@ -248,10 +242,9 @@ function buildSessionFromLegacy(args: {
     startedAt,
     currentActivity,
     currentTechnique,
-    condition,
+    exit,
     variables,
     completedActivities,
-    skippedActivities,
     checkpointResponses: normalisedResponses as SessionFile['checkpointResponses'],
   };
   return result;

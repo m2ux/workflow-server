@@ -6,15 +6,15 @@
  * steps, and checkpoints branch on it. The failure this guards against is the class the review-mode
  * optimisation fixed: a checkpoint that is REACHABLE while `is_review_mode == true`, is NOT itself
  * mode-aware (its own gate never mentions `is_review_mode`), and auto-advances to a CONSEQUENTIAL
- * default — a `defaultOption` whose option carries an `effect` (setVariable / transitionTo /
- * skipActivities). In review mode that default is applied silently on the autoAdvance timer even
+ * default — a `defaultOption` whose option carries an `effect` (setVariable or exit). In review
+ * mode that default is applied silently on the autoAdvance timer even
  * though the mode may make it the wrong (create/mutating) action — exactly the spurious "skip this
  * create step" prompt the optimisation removed (pr-creation defaulting to "Create branch and PR",
  * review-outcome defaulting to "approved", etc.).
  *
- * Reachability respects transition ORDER: a transition provably-true under `is_review_mode == true`
- * (e.g. `is_review_mode == true`) fires first, so later default edges behind it (assumptions-review's
- * default edge into `implement`) are correctly treated as unreachable in review mode.
+ * Reachability respects exit ORDER: an exit whose `when` is provably true under
+ * `is_review_mode == true` fires first, so later edges behind it (assumptions-review's default edge
+ * into `implement`) are correctly treated as unreachable in review mode.
  *
  * A workflow may declare headless auto-advance as its review-mode design (work-package's
  * `review-mode-headless-auto-advance` rule does). Under that design a default that merely RECORDS an
@@ -68,7 +68,7 @@ export interface ReviewGatingViolation {
 
 interface CheckpointOption {
   id: string;
-  effect?: { setVariable?: Record<string, unknown>; transitionTo?: string; skipActivities?: string[] };
+  effect?: { setVariable?: Record<string, unknown>; exit?: string };
 }
 interface StepDef {
   kind?: string;
@@ -81,7 +81,10 @@ interface StepDef {
   // loop body
   steps?: StepDef[];
 }
-interface ActivityDef { id: string; steps?: StepDef[]; transitions?: Array<{ to: string; condition?: Condition; isDefault?: boolean }>; }
+interface ExitDef { id: string; when?: string; isDefault?: boolean }
+interface ActivityDef { id: string; steps?: StepDef[]; exits?: ExitDef[]; }
+/** activity id -> exit id -> destination, as the workflow binds them. */
+type Graph = Record<string, Record<string, string>>;
 
 /** A condition provably FALSE under is_review_mode == true, whatever the other variables are. */
 function reviewExcluded(cond?: Condition): boolean {
@@ -114,23 +117,36 @@ function whenExcludesReview(when?: string): boolean {
   return m[1] === '==' ? !truth : truth; // is_review_mode==false / !=true → excluded in review
 }
 
+/** The same expression read the other way: true iff the gate is provably TRUE in review mode. */
+function whenIncludesReview(when?: string): boolean {
+  if (!when) return false;
+  const m = when.match(/\bis_review_mode\s*(==|!=)\s*(true|false)\b/);
+  if (!m) return false;
+  const truth = m[2] === 'true';
+  return m[1] === '==' ? truth : !truth;
+}
+
 function mentionsReview(step: StepDef): boolean {
   if (step.when && /\bis_review_mode\b/.test(step.when)) return true;
   return step.condition ? JSON.stringify(step.condition).includes('is_review_mode') : false;
 }
 
-/** Successor activities reachable in review mode, honouring first-provably-true-transition-wins order. */
-function reviewSuccessors(act: ActivityDef): string[] {
+/** Successor activities reachable in review mode, honouring first-provably-true-exit-wins order. */
+function reviewSuccessors(act: ActivityDef, graph: Graph): string[] {
+  const bound = graph[act.id] ?? {};
   const out: string[] = [];
-  for (const t of act.transitions ?? []) {
-    if (reviewExcluded(t.condition)) continue; // cannot be taken in review
-    out.push(t.to);
-    if (reviewProvablyTrue(t.condition)) break; // definitely taken → later edges unreachable in review
+  for (const exit of act.exits ?? []) {
+    const to = bound[exit.id];
+    if (to === undefined) continue; // unbound exits fail the load; here they simply lead nowhere
+    if (whenExcludesReview(exit.when)) continue; // cannot be taken in review
+    out.push(to);
+    // The default exit fires whenever nothing before it did, so edges behind it are unreachable.
+    if (whenIncludesReview(exit.when) || (exit.when === undefined && exit.isDefault)) break;
   }
   return out;
 }
 
-function reachableInReview(initial: string, activities: Map<string, ActivityDef>): Set<string> {
+function reachableInReview(initial: string, activities: Map<string, ActivityDef>, graph: Graph): Set<string> {
   const seen = new Set<string>();
   const queue = [initial];
   while (queue.length) {
@@ -138,7 +154,7 @@ function reachableInReview(initial: string, activities: Map<string, ActivityDef>
     if (seen.has(id)) continue;
     seen.add(id);
     const act = activities.get(id);
-    if (act) for (const s of reviewSuccessors(act)) if (!seen.has(s)) queue.push(s);
+    if (act) for (const s of reviewSuccessors(act, graph)) if (!seen.has(s)) queue.push(s);
   }
   return seen;
 }
@@ -162,7 +178,7 @@ function hasConsequentialDefault(cp: StepDef): boolean {
   if (!cp.defaultOption) return false;
   const opt = (cp.options ?? []).find(o => o.id === cp.defaultOption);
   const e = opt?.effect;
-  return Boolean(e && (e.setVariable || e.transitionTo || e.skipActivities));
+  return Boolean(e && (e.setVariable || e.exit));
 }
 
 export function collectReviewGatingViolations(root: string = DEFAULT_ROOT): ReviewGatingViolation[] {
@@ -171,7 +187,7 @@ export function collectReviewGatingViolations(root: string = DEFAULT_ROOT): Revi
   for (const workflow of readdirSync(root).sort()) {
     const workflowYamlPath = join(root, workflow, 'workflow.yaml');
     if (!existsSync(workflowYamlPath)) continue;
-    const wf = parse(readFileSync(workflowYamlPath, 'utf-8')) as { variables?: Array<{ name?: string }>; initialActivity?: string };
+    const wf = parse(readFileSync(workflowYamlPath, 'utf-8')) as { variables?: Array<{ name?: string }>; initialActivity?: string; graph?: Graph };
     const declaresReview = (wf.variables ?? []).some(v => v?.name === 'is_review_mode');
     if (!declaresReview) continue; // guard applies only to workflows with a review mode
 
@@ -186,7 +202,7 @@ export function collectReviewGatingViolations(root: string = DEFAULT_ROOT): Revi
     }
     const initial = wf.initialActivity ?? [...activities.keys()][0];
     if (!initial) continue;
-    const reachable = reachableInReview(initial, activities);
+    const reachable = reachableInReview(initial, activities, wf.graph ?? {});
 
     for (const actId of reachable) {
       const act = activities.get(actId);
