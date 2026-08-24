@@ -33,7 +33,7 @@ Literacy surface for [create/update] of `{workflow-id}`. Grounded in schema docs
 | Steps | Ordered `steps[]` with `kind:` technique / action / checkpoint / loop |
 | Technique binding | Bare op inside activity-named groups; `group::op` otherwise |
 | Checkpoints | Inline `kind: checkpoint` with statement `message`, `options[]`, effects |
-| Transitions | Activity-level `transitions[]` (`to` / `condition` / `isDefault`) |
+| Routing | Activity-level `exits[]` (`id` / `when` / `isDefault` / `immediate`), bound in the workflow's `graph` |
 | Artifacts | Declared on technique outputs; activity `artifacts[]` is server-computed |
 | Artifact links | `[label]({path_variable})` in checkpoint/action messages |
 

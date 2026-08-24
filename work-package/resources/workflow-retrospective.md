@@ -29,7 +29,7 @@ Methodology and template for the `## Workflow Retrospective` section — an `##`
 
 | Class | Examples | Indicates |
 |-------|----------|-----------|
-| `[trace-warning]` | Repeated `vw` on `step_manifest` gaps/order/empty outputs; technique-fetch fidelity failures; illegal or paraphrased transitions / `transition_condition` mismatches | Instruction or fidelity defect in technique/activity text |
+| `[trace-warning]` | Repeated `vw` on `step_manifest` gaps/order/empty outputs; technique-fetch fidelity failures; illegal transitions / reported-exit mismatches | Instruction or fidelity defect in technique/activity text |
 | `[trace-retry]` | Tool `s: error` clusters; continue/re-dispatch storms on the same activity | Missing recovery guidance or brittle handoff protocol |
 | `[trace-redundancy]` | Repeated identical `get_technique` / `get_resource` / `get_activity` storms without new content | Bundle/delivery guidance gap or over-fetch habit encoded in instructions |
 

@@ -215,7 +215,7 @@ Cross-activity routing is written as prose instead of an activity-level `decisio
 
 **Detect:** Prose describes branching to different activities/paths without an activity-level `decision` with `branches`/`conditions`.
 
-**Do not flag:** In-step `when`/`condition` on steps; checkpoints that set variables consumed by declared decisions.
+**Do not flag:** In-step `when`/`condition` on steps; checkpoints that set variables consumed by declared exit predicates.
 
 **Fix:** Declare an activity-level `decision` with branches/conditions; remove the prose branch recipe.
 
@@ -249,7 +249,7 @@ Approval or mode-like state is tracked in prose instead of a typed variable.
 
 Mode behaviour is written as rule/description text instead of ordinary state.
 
-**Detect:** Mode-specific skip/branch behaviour appears only as rules or prose rather than a mode state variable (enum or boolean) plus `when`/`transitions[].condition` (and `skipActivities` where needed). Parallel boolean projections of an enum mode are `no-derived-state-shadow`.
+**Detect:** Mode-specific skip/branch behaviour appears only as rules or prose rather than a mode state variable (enum or boolean) plus `when` / `exits[].when`. Parallel boolean projections of an enum mode are `no-derived-state-shadow`.
 
 **Do not flag:** One-off `when` conditions unrelated to a named mode.
 
@@ -349,7 +349,7 @@ Shared-prefix rules sprawl as flat keys instead of a grouped array.
 
 The same rule has more than one home — across levels, or twice within one rules block.
 
-**Detect:** One invariant, two homes. **Across levels:** the same *orchestrator-only* rule (variable management, transitions, commit policy, mode handling) — or a rule that does not need worker reach — appears at multiple levels (workflow → activity → technique); cross-level copies drift. **Within one rules block:** two entries whose trigger and consequence coincide, so applying either yields the same behaviour and neither can be edited alone. The written tell is a bridge between them — `(same stance as X)`, `as X already says`, `mirrors X` — a cross-reference that exists to reconcile two homes rather than to cite one; an author who needs it has already noticed the duplication.
+**Detect:** One invariant, two homes. **Across levels:** the same *orchestrator-only* rule (variable management, routing, commit policy, mode handling) — or a rule that does not need worker reach — appears at multiple levels (workflow → activity → technique); cross-level copies drift. **Within one rules block:** two entries whose trigger and consequence coincide, so applying either yields the same behaviour and neither can be edited alone. The written tell is a bridge between them — `(same stance as X)`, `as X already says`, `mirrors X` — a cross-reference that exists to reconcile two homes rather than to cite one; an author who needs it has already noticed the duplication.
 
 **Do not flag:** Worker-directed behavioural rules that must stay reachable on activity/technique surfaces — see `worker-rule-reach`.
 
@@ -401,7 +401,7 @@ Definition-prose smells: rationale, sequence narration, avoidance/comparative fr
 
 Description fields carry rationale, process narration, or structural restatement.
 
-**Detect:** `description`, `message`, option/action descriptions, procedure bullets, or a technique `## Rules` entry / `rules.*` string explain why a construct exists, what consumes it, whose remit it falls under, compare to prior impls, or restate facts already encoded by adjacent structure (`steps[]` order, `when`, effects, transitions, defaults). Test on a rule: delete the clause; if the prohibition or invariant still says what is constrained, the clause was rationale, and attributing the constraint to another actor's remit couples the rule to a contract it does not own.
+**Detect:** `description`, `message`, option/action descriptions, procedure bullets, or a technique `## Rules` entry / `rules.*` string explain why a construct exists, what consumes it, whose remit it falls under, compare to prior impls, or restate facts already encoded by adjacent structure (`steps[]` order, `when`, effects, exits, the workflow graph, defaults). Test on a rule: delete the clause; if the prohibition or invariant still says what is constrained, the clause was rationale, and attributing the constraint to another actor's remit couples the rule to a contract it does not own.
 
 **Do not flag:** One-line WHAT summaries that state what the construct does; structural fields themselves; a prohibition citing the home that owns the behaviour it forbids bypassing, which is the pointer that makes it checkable (`no-rule-protocol-restatement`); rules whose own subject is the boundary between actors.
 
@@ -425,7 +425,7 @@ A validate message justifies consequences instead of stating cause + fix only.
 
 Activity/step sequence is restated in description prose.
 
-**Detect:** `description:` on workflow/activity/technique enumerates the sequence of activities, phases, modes, or steps already canonical in `activities[]`/`transitions[]`/`steps[]` (or the on-disk layout).
+**Detect:** `description:` on workflow/activity/technique enumerates the sequence of activities, phases, modes, or steps already canonical in `activities[]`/`graph`/`steps[]` (or the on-disk layout).
 
 **Do not flag:** Purpose/value orientation that does not enumerate sequence; README orientation under `readme-orients-not-transcribes`.
 
@@ -565,15 +565,15 @@ A universal technique is not hoisted to workflow.techniques.activity.
 
 ### AP-40. readme-orients-not-transcribes
 
-"README `### NN. Activity` + `Steps:**` / checkpoints table / transitions / `## Variables` / `## Rules` / estimated times" / "The workflow includes 27 resources… Each resource lives as `resources/<id>.md`"
+"README `### NN. Activity` + `Steps:**` / checkpoints table / routing / `## Variables` / `## Rules` / estimated times" / "The workflow includes 27 resources… Each resource lives as `resources/<id>.md`"
 
 README transcribes YAML structure, inventory counts, or loader packaging instead of orienting.
 
-**Detect:** README enumerates in prose or tables: activity `steps[]` (including inline checkpoint options/`effect`/`autoAdvanceMs` and loops), `decisions[]`/`transitions[]`, per-step technique bindings, workflow `variables`, `rules`, or per-activity estimated times; or states inventory counts ("N resources/techniques/activities") or loader/path HOW (`resources/<id>.md`, "loaded by resource id", "sole load key"). Authoritative definition is `workflow.yaml` / `activities/NN-<id>.yaml` / the folder index. Test: if the block must be edited when those YAML fields or folder contents change, it is transcribing.
+**Detect:** README enumerates in prose or tables: activity `steps[]` (including inline checkpoint options/`effect`/`autoAdvanceMs` and loops), `exits[]`/`graph`, per-step technique bindings, workflow `variables`, `rules`, or per-activity estimated times; or states inventory counts ("N resources/techniques/activities") or loader/path HOW (`resources/<id>.md`, "loaded by resource id", "sole load key"). Authoritative definition is `workflow.yaml` / `activities/NN-<id>.yaml` / the folder index. Test: if the block must be edited when those YAML fields or folder contents change, it is transcribing.
 
 **Do not flag:** Mermaid/ASCII flow diagrams (activity- or step-flow); orientation the YAML lacks — PURPOSE, at-a-glance activity sequence (name + one-line role + connections), outcomes/value, file structure overview without counts, techniques overview, links to authoritative YAMLs, a purpose sentence plus index table of ids. A third checklist of which audit/technique passes run (drifting from activity binds) is `bind-site-is-orchestration-truth`.
 
-**Fix:** Delete prose/table enumerations of steps/checkpoints/loops/decisions/transitions/bindings, Variables/Rules/estimated-time sections, inventory counts, and loader HOW; KEEP diagrams and purpose orientation. Readers open the YAML definition or index table for the rest. See [Complete Documentation Structure](./design-principles.md#11-complete-documentation-structure).
+**Fix:** Delete prose/table enumerations of steps/checkpoints/loops/exits/graph/bindings, Variables/Rules/estimated-time sections, inventory counts, and loader HOW; KEEP diagrams and purpose orientation. Readers open the YAML definition or index table for the rest. See [Complete Documentation Structure](./design-principles.md#11-complete-documentation-structure).
 
 ### AP-41. avoidance-voice-in-definitions
 
@@ -913,7 +913,7 @@ A technique encodes workflow stage, graph position, or a decision gate it cannot
 
 **Do not flag:** Purpose-phrased work with no orchestration locus ("final validation", "no separate commit step follows"); values the technique emits for the activity to route (counts, paths, severity, recommended option id); inventoring decisions *into* an artifact the activity will gate on; bare present/surface-to-user with no stage or gate named (`session-interaction-in-technique`).
 
-**Fix:** Migrate user-facing decisions to activity `kind: checkpoint` steps gated on technique outputs; migrate other orchestration to activity transitions/`when`/loops. Rewrite the technique to produce the durable evidence (artifact section, count, path) without naming the gate. See [Keep Orchestration in Structure](./design-principles.md#20-keep-orchestration-in-structure); also `no-activity-prose-rules`, `session-interaction-in-technique`.
+**Fix:** Migrate user-facing decisions to activity `kind: checkpoint` steps gated on technique outputs; migrate other orchestration to activity exits, `when` gates and loops. Rewrite the technique to produce the durable evidence (artifact section, count, path) without naming the gate. See [Keep Orchestration in Structure](./design-principles.md#20-keep-orchestration-in-structure); also `no-activity-prose-rules`, `session-interaction-in-technique`.
 
 ### AP-69. no-activity-prose-rules
 
@@ -921,7 +921,7 @@ A technique encodes workflow stage, graph position, or a decision gate it cannot
 
 An activity carries prose rules: instead of pure mechanics.
 
-**Detect:** Any activity-level `rules:` entry. Activity is pure mechanics — constraints live in `steps[]` order, `when`/`condition`, transitions, decisions, checkpoints, loops — not prose.
+**Detect:** Any activity-level `rules:` entry. Activity is pure mechanics — constraints live in `steps[]` order, `when`/`condition`, exits, checkpoints, loops — not prose.
 
 **Do not flag:** N/A — activity `rules:` should be empty; behavioral guidance belongs on bound techniques.
 
@@ -997,7 +997,7 @@ The same behavioural guidance is multi-homed across techniques and tool docs.
 
 A tool description undersells the value of the real return.
 
-**Detect:** On surfaces that legitimately describe tools (meta engine/bootstrap/tool docs), a description states mechanics or a partial return and omits the value the agent actually receives (e.g. "transitions to the next activity" without the full activity definition payload).
+**Detect:** On surfaces that legitimately describe tools (meta engine/bootstrap/tool docs), a description states mechanics or a partial return and omits the value the agent actually receives (e.g. "moves to the next activity" without the full activity definition payload).
 
 **Do not flag:** Non-engine techniques that do not describe tools at all (`no-tool-usage-prescription`).
 
@@ -1005,11 +1005,11 @@ A tool description undersells the value of the real return.
 
 ### AP-76. no-redundant-tools
 
-"Also call get_activities for transitions"
+"Also call get_activities for the routing"
 
 A tool is redundant because its output is a strict subset of another tool's return.
 
-**Detect:** Authored guidance or the harness surface exposes/recommends a tool whose output is a strict subset of another tool already required (e.g. transitions-only helper after `next_activity`).
+**Detect:** Authored guidance or the harness surface exposes/recommends a tool whose output is a strict subset of another tool already required (e.g. a routing-only helper after `next_activity`).
 
 **Do not flag:** Tools that return non-subset value; distinct audiences/permissions.
 
@@ -1085,7 +1085,7 @@ Drafting proceeds without format literacy, or commit skips validation.
 
 Work bypasses defined activities via informal combination of results.
 
-**Detect:** Results are combined, advanced, or closed outside the workflow's defined activities/transitions.
+**Detect:** Results are combined, advanced, or closed outside the workflow's defined activities and graph.
 
 **Do not flag:** In-activity orchestration that still goes through declared steps/checkpoints.
 
@@ -1281,11 +1281,11 @@ A durable artifact is named in a message but not linked.
 
 A message narrates the next step or auto-advance.
 
-**Detect:** Checkpoint/action `message` or option `description` narrates next-step routing or auto-advance timing that the schema already owns (`transitions`, `autoAdvanceMs`, `defaultOption`, option labels).
+**Detect:** Checkpoint/action `message` or option `description` narrates next-step routing or auto-advance timing that the schema already owns (`exits`, the workflow `graph`, `autoAdvanceMs`, `defaultOption`, option labels).
 
 **Do not flag:** Pure factual status clauses with no routing/timing narration.
 
-**Fix:** Delete the narration; keep timing/routing in `autoAdvanceMs`, `defaultOption`, `transitions`, and option labels only.
+**Fix:** Delete the narration; keep timing in `autoAdvanceMs` and `defaultOption`, routing in `exits` and the workflow `graph`, and the rest in option labels only.
 
 ### AP-99. statement-not-question
 
@@ -1393,7 +1393,7 @@ An upper canon layer restates Detect/Fix already owned below.
 
 A pass inventory disagrees with authoritative YAML bind sites.
 
-**Detect:** Prose outside activity YAML enumerates an ordered or complete list of activities, steps, or technique passes, and that list is not generated from the authoritative bind sites (`steps[]` / loop bodies / `technique:`, plus `initialActivity` / transitions). Test: the prose must change when a bind changes, but the YAML was not the source of the list.
+**Detect:** Prose outside activity YAML enumerates an ordered or complete list of activities, steps, or technique passes, and that list is not generated from the authoritative bind sites (`steps[]` / loop bodies / `technique:`, plus `initialActivity` / the workflow `graph`). Test: the prose must change when a bind changes, but the YAML was not the source of the list.
 
 **Do not flag:** Purpose/value orientation without a pass inventory; pointers to the YAML; at-a-glance activity names with one-line roles (`readme-orients-not-transcribes`); a technique that only applies a sibling without listing a parallel set.
 

@@ -37,7 +37,7 @@ Absolute path to the written impact-analysis artifact.
 
 ### 3. Check Transition Integrity
 
-- When activities are added, removed, or reordered: verify every `transitions[].to` references an existing activity id, verify `initialActivity` still references a valid activity, and check that no activity becomes unreachable (no incoming transitions)
+- When activities are added, removed, or reordered: verify the workflow's `graph` binds every exit of every activity and sends each to an existing activity id or `__terminal__`, verify `initialActivity` still references a valid activity, and check that no activity becomes unreachable (nothing bound to it)
 
 ### 4. Check Reference Integrity
 
