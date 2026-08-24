@@ -75,7 +75,7 @@ def checkpoints(s):
 
 
 def activities(s):
-    """Completed / skipped / current, the outcome each completed activity reported, and
+    """Completed / current, the outcome and exit each completed activity reported, and
     the activities entered without a published in-progress Progress mark.
 
     `outcomes` is what close-out measures a run against where the client workflow seeded
@@ -90,8 +90,8 @@ def activities(s):
             continue
         data = e.get("data") or {}
         row = {"activity": e.get("activity"), "outcome": data.get("outcome")}
-        if data.get("transitionCondition") is not None:
-            row["transitionCondition"] = data["transitionCondition"]
+        if data.get("exit") is not None:
+            row["exit"] = data["exit"]
         outcomes.append(row)
 
     entered = []
@@ -106,7 +106,6 @@ def activities(s):
 
     return {
         "completed": s.get("completedActivities") or [],
-        "skipped": s.get("skippedActivities") or [],
         "current": s.get("currentActivity"),
         "outcomes": outcomes,
         "progress_mark_unpublished": [a for a in entered if reported.get(a) is False],

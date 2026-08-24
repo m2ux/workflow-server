@@ -164,23 +164,24 @@ describe('read reachability', () => {
     })).toEqual([]);
   });
 
-  it('reads every route out of an activity into the graph', () => {
+  it('reads every destination the workflow binds an activity to', () => {
     const workflow = {
       id: 'wf', version: '1.0.0', title: 'WF',
+      graph: { thing: { done: 'next', escalate: 'escalation-target', go: 'checkpoint-target' } },
       activities: [{
         id: 'thing', version: '1.0.0', name: 'Thing', required: true,
-        transitions: [{ to: 'next', isDefault: true }],
-        decisions: [{ id: 'd', name: 'D', branches: [
-          { id: 'a', label: 'A', transitionTo: 'branch-target', isDefault: false },
-          { id: 'b', label: 'B', isDefault: true },
-        ] }],
+        exits: [
+          { id: 'escalate', when: 'escalation_needed == true' },
+          { id: 'done', isDefault: true },
+          { id: 'go' },
+        ],
         steps: [{
           kind: 'checkpoint' as const, id: 'ask', message: 'Which?',
-          options: [{ id: 'go', label: 'Go', effect: { transitionTo: 'checkpoint-target' } }],
+          options: [{ id: 'go', label: 'Go', effect: { exit: 'go' } }],
         }],
       }],
     } as unknown as Workflow;
-    expect(activityGraph(workflow).get('thing')).toEqual(['next', 'branch-target', 'checkpoint-target']);
+    expect(activityGraph(workflow).get('thing')).toEqual(['next', 'escalation-target', 'checkpoint-target']);
   });
 });
 

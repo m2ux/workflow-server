@@ -6,8 +6,10 @@ import {
   listWorkflowsWithDiagnostics,
   getActivity,
   getCheckpoint,
-  getValidTransitions,
-  getTransitionList,
+  getExitBindings,
+  exitDestinations,
+  validateExitBindings,
+  TERMINAL_SENTINEL,
   checkpointBaseId,
 } from '../src/loaders/workflow-loader.js';
 import type { Workflow } from '../src/schema/workflow.schema.js';
@@ -267,92 +269,130 @@ describe('workflow-loader', () => {
     });
   });
 
-  describe('getTransitionList (BF-12)', () => {
-    it('should return transitions from the transitions array', async () => {
+  describe('getExitBindings', () => {
+    it('pairs each declared exit with the destination the workflow binds it to', async () => {
       const workflow = await loadMetaWorkflow();
-      const transitions = getTransitionList(workflow, 'discover-session');
+      const bindings = getExitBindings(workflow, 'discover-session');
 
-      const targets = transitions.map(t => t.to);
-      // discover-session has transition to initialize-session
-      expect(targets).toContain('initialize-session');
+      expect(bindings.map(b => b.exit)).toContain('done');
+      expect(bindings.find(b => b.exit === 'done')?.to).toBe('initialize-session');
     });
 
-    it('should include targets from decisions branches', async () => {
-      // work-package/post-impl-review has a decision (blocker-gate) that branches to 'implement'
-      const wpResult = await loadWorkflow(WORKFLOW_DIR, 'work-package');
-      if (wpResult.success) {
-        const wpWorkflow = wpResult.value;
-        const transitions = getTransitionList(wpWorkflow, 'post-impl-review');
-        
-        const targets = transitions.map(t => t.to);
-        // post-impl-review has a decision that branches to implement
-        expect(targets).toContain('implement');
-      }
-    });
-
-    it('should deduplicate targets via the seen Set', async () => {
+    it('carries the predicate and the default flag from the activity', async () => {
       const workflow = await loadMetaWorkflow();
-      const transitions = getTransitionList(workflow, 'discover-session');
 
-      const targets = transitions.map(t => t.to);
-      const uniqueTargets = [...new Set(targets)];
-      expect(targets.length).toBe(uniqueTargets.length);
+      const conditional = getExitBindings(workflow, 'dispatch-client-workflow')
+        .find(b => b.to === 'end-workflow');
+      expect(conditional?.when).toBeDefined();
+
+      expect(getExitBindings(workflow, 'discover-session').find(b => b.isDefault)).toBeDefined();
     });
 
-    it('should include condition strings for conditional transitions', async () => {
+    it('carries an exit a checkpoint option selects, and its immediate flag', async () => {
       const workflow = await loadMetaWorkflow();
-      const transitions = getTransitionList(workflow, 'dispatch-client-workflow');
+      const abort = getExitBindings(workflow, 'discover-session').find(b => b.exit === 'abort-binding');
 
-      const conditionalTransition = transitions.find(t => t.to === 'end-workflow');
-      expect(conditionalTransition).toBeDefined();
-      expect(conditionalTransition?.condition).toBeDefined();
+      expect(abort?.to).toBe('end-workflow');
+      expect(abort?.immediate).toBe(true);
+      expect(abort?.when).toBeUndefined();
     });
 
-    it('should mark default transitions with isDefault', async () => {
+    it('returns nothing for an activity the workflow does not contain', async () => {
       const workflow = await loadMetaWorkflow();
-      const transitions = getTransitionList(workflow, 'discover-session');
-
-      const defaultTransition = transitions.find(t => t.isDefault);
-      expect(defaultTransition).toBeDefined();
-    });
-
-    it('should return empty array for non-existent activity', async () => {
-      const workflow = await loadMetaWorkflow();
-      const transitions = getTransitionList(workflow, 'no-such-activity');
-      expect(transitions).toEqual([]);
-    });
-
-    it('should include checkpoint-sourced transitions with checkpoint: prefix', async () => {
-      // Need a workflow with checkpoint transitions.
-      const wpResult = await loadWorkflow(WORKFLOW_DIR, 'prism-audit');
-      if (wpResult.success) {
-        const wpWorkflow = wpResult.value;
-        const transitions = getTransitionList(wpWorkflow, 'scope-definition');
-        const checkpointEntry = transitions.find(t => t.condition?.startsWith('checkpoint:'));
-        expect(checkpointEntry).toBeDefined();
-      }
+      expect(getExitBindings(workflow, 'no-such-activity')).toEqual([]);
     });
   });
 
-  describe('getValidTransitions (BF-12)', () => {
-    it('should include targets from transitions, decisions, and checkpoints', async () => {
+  describe('exitDestinations', () => {
+    it('lists the activities an activity can reach, deduped', async () => {
       const workflow = await loadMetaWorkflow();
-      const valid = getValidTransitions(workflow, 'discover-session');
+      const targets = exitDestinations(workflow, 'discover-session');
 
-      expect(valid).toContain('initialize-session');
+      expect(targets).toContain('initialize-session');
+      expect(targets.length).toBe([...new Set(targets)].length);
     });
 
-    it('should deduplicate targets', async () => {
-      const workflow = await loadMetaWorkflow();
-      const valid = getValidTransitions(workflow, 'discover-session');
+    it('reaches an activity only a checkpoint option routes to', async () => {
+      const wpResult = await loadWorkflow(WORKFLOW_DIR, 'work-package');
+      expect(wpResult.success).toBe(true);
+      if (!wpResult.success) return;
 
-      const unique = [...new Set(valid)];
-      expect(valid.length).toBe(unique.length);
+      expect(exitDestinations(wpResult.value, 'submit-for-review')).toContain('complete');
     });
 
-    it('should return empty array for non-existent activity', async () => {
+    it('returns empty for an activity the workflow does not contain', async () => {
       const workflow = await loadMetaWorkflow();
-      expect(getValidTransitions(workflow, 'no-such-activity')).toEqual([]);
+      expect(exitDestinations(workflow, 'no-such-activity')).toEqual([]);
+    });
+  });
+
+  describe('validateExitBindings', () => {
+    const activity = (exits: unknown) => ({
+      id: 'thing', version: '1.0.0', name: 'Thing', required: true, exits,
+    });
+    const wf = (graph: unknown, exits: unknown) => ({
+      id: 'wf', version: '1.0.0', title: 'WF', graph, activities: [activity(exits)],
+    } as unknown as Workflow);
+    const known = new Set(['thing', 'next', 'other']);
+
+    it('accepts a graph that binds every exit to an activity it contains', () => {
+      expect(validateExitBindings(wf({ thing: { done: 'next' } }, [{ id: 'done' }]), known)).toEqual([]);
+    });
+
+    it('accepts the terminal sentinel as a destination', () => {
+      expect(validateExitBindings(wf({ thing: { done: TERMINAL_SENTINEL } }, [{ id: 'done' }]), known)).toEqual([]);
+    });
+
+    it('reports an exit the graph leaves unbound', () => {
+      const errors = validateExitBindings(wf({ thing: { done: 'next' } }, [{ id: 'done' }, { id: 'escalate', isDefault: true }]), known);
+      expect(errors.join(' ')).toContain("exit 'escalate' is unbound");
+    });
+
+    it('reports a binding naming an exit the activity does not declare', () => {
+      const errors = validateExitBindings(wf({ thing: { done: 'next', ghost: 'other' } }, [{ id: 'done' }]), known);
+      expect(errors.join(' ')).toContain("'thing.ghost', which that activity does not declare");
+    });
+
+    it('reports a destination the workflow does not contain', () => {
+      const errors = validateExitBindings(wf({ thing: { done: 'elsewhere' } }, [{ id: 'done' }]), known);
+      expect(errors.join(' ')).toContain("to 'elsewhere', which this workflow does not contain");
+    });
+
+    it('reports an activity the workflow does not contain', () => {
+      const errors = validateExitBindings(wf({ thing: { done: 'next' }, ghost: { done: 'next' } }, [{ id: 'done' }]), new Set(['thing', 'next']));
+      expect(errors.join(' ')).toContain("binds activity 'ghost'");
+    });
+
+    it('requires exactly one default once an activity has more than one exit', () => {
+      const graph = { thing: { done: 'next', escalate: 'other' } };
+      expect(validateExitBindings(wf(graph, [{ id: 'done' }, { id: 'escalate' }]), known).join(' '))
+        .toContain('exactly one must be isDefault');
+      expect(validateExitBindings(wf(graph, [{ id: 'done', isDefault: true }, { id: 'escalate', isDefault: true }]), known).join(' '))
+        .toContain('exactly one must be isDefault');
+      expect(validateExitBindings(wf(graph, [{ id: 'done', isDefault: true }, { id: 'escalate' }]), known)).toEqual([]);
+    });
+
+    it('reports a checkpoint option selecting an exit the activity does not declare', () => {
+      const workflow = {
+        id: 'wf', version: '1.0.0', title: 'WF',
+        graph: { thing: { done: 'next' } },
+        activities: [{
+          ...activity([{ id: 'done' }]),
+          steps: [{ kind: 'checkpoint', id: 'ask', message: 'Which?', options: [{ id: 'go', label: 'Go', effect: { exit: 'ghost' } }] }],
+        }],
+      } as unknown as Workflow;
+      expect(validateExitBindings(workflow, known).join(' ')).toContain("selects exit 'ghost'");
+    });
+
+    it('lets two workflows run one activity in different orders', () => {
+      const borrowed = activity([{ id: 'reviewed', isDefault: true }, { id: 'rejected' }]);
+      const first = { id: 'a', version: '1.0.0', title: 'A', graph: { thing: { reviewed: 'next', rejected: 'other' } }, activities: [borrowed] } as unknown as Workflow;
+      const second = { id: 'b', version: '1.0.0', title: 'B', graph: { thing: { reviewed: 'other', rejected: 'next' } }, activities: [borrowed] } as unknown as Workflow;
+
+      expect(validateExitBindings(first, known)).toEqual([]);
+      expect(validateExitBindings(second, known)).toEqual([]);
+      expect(exitDestinations(first, 'thing')).toEqual(['next', 'other']);
+      expect(exitDestinations(second, 'thing')).toEqual(['other', 'next']);
     });
   });
 });

@@ -26,7 +26,6 @@ function minimalSession(overrides: Partial<SessionFile> = {}): SessionFile {
     condition: '',
     variables: {},
     completedActivities: [],
-    skippedActivities: [],
     checkpointResponses: {},
     history: [],
     triggeredWorkflows: [],

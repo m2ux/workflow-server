@@ -76,6 +76,9 @@ describe('context-window sweep — graduated cumulative bundling (#189 C1c)', ()
       'version: 1.0.0',
       'title: Context-window sweep fixture',
       'initialActivity: sweep',
+      'graph:',
+      '  sweep:',
+      '    done: done',
       'variables:',
       '  - name: run_optional',
       '    type: boolean',
@@ -106,8 +109,9 @@ describe('context-window sweep — graduated cumulative bundling (#189 C1c)', ()
       '    id: gated',
       '    technique: gated',
       '    when: run_optional == true',
-      'transitions:',
-      '  - to: done',
+      'exits:',
+      '  - id: done',
+      '    isDefault: true',
     ].join('\n'));
 
     writeFileSync(join(wf, 'activities', '02-done.yaml'), [

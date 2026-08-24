@@ -24,4 +24,3 @@ steps:
       - id: reject
         label: Reject
         description: Regenerate the artifacts
-transitions: []

@@ -236,19 +236,19 @@
         <details class="tool-details">
           <summary>Full description</summary>
           <p>Moves the session to a new activity. This is the orchestrator's advance call — it updates state and records the trace but does not return the activity body.</p>
-          <p>After <code>next_activity</code>, the worker should call <code>get_activity</code> to load steps, checkpoints, transitions, and technique references.</p>
-          <p>For the first transition, use <code>initialActivity</code> from <code>get_workflow</code>. After that, use ids from the current activity's <code>transitions</code>.</p>
-          <p>Optional <code>step_manifest</code> and <code>transition_condition</code> help the server validate what you completed. Manifest checks are advisory — mismatches produce warnings, not hard errors.</p>
+          <p>After <code>next_activity</code>, the worker should call <code>get_activity</code> to load steps, checkpoints, exits, and technique references.</p>
+          <p>For the first transition, use <code>initialActivity</code> from <code>get_workflow</code>. After that, take the exit the activity reports and read its destination from the <code>graph</code> in <code>get_workflow</code>.</p>
+          <p>Optional <code>step_manifest</code> and <code>exit</code> help the server validate what you completed. Manifest checks are advisory — mismatches produce warnings, not hard errors.</p>
         </details>
         <div class="table-wrap">
         <table class="param-table">
           <thead><tr><th scope="col">Parameter</th><th scope="col">Type</th><th scope="col">Required</th><th scope="col">Description</th></tr></thead>
           <tbody>
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
-          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>yes</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: use an id from <code>transitions</code>.</td></tr>
-          <tr><td><code>transition_condition</code></td><td><code>string</code></td><td>no</td><td>The condition name that led to this transition, from the previous activity.</td></tr>
+          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>yes</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: the activity the <code>graph</code> binds to the exit just taken.</td></tr>
+          <tr><td><code>exit</code></td><td><code>string</code></td><td>no</td><td>Name of the exit the previous activity took.</td></tr>
           <tr><td><code>step_manifest</code></td><td><code>object[]</code></td><td>no</td><td>Steps completed in the previous activity, for example <code>[{ &quot;step_id&quot;: &quot;detect-review-mode&quot;, &quot;output&quot;: &quot;is_review_mode=false&quot; }]</code>. Omit if no steps ran.</td></tr>
-          <tr><td><code>activity_manifest</code></td><td><code>object[]</code></td><td>no</td><td>History of completed activities with outcomes and transition conditions.</td></tr>
+          <tr><td><code>activity_manifest</code></td><td><code>object[]</code></td><td>no</td><td>History of completed activities with their outcomes and the exit each took.</td></tr>
           <tr><td><code>variables_changed</code></td><td><code>object</code></td><td>no</td><td>Variable assignments the completing activity produced — relay the worker's <code>activity_complete</code> <code>variables_changed</code> map verbatim. The server writes them into the session variable bag and records one <code>variable_set</code> history event per name, so the bag a later get_workflow_status / inspect_session returns reflects worker outputs and survives a lost agent context. Declared types are validated warn-only: a mismatch is stored as written and surfaced in _meta.validation. Omit when the activity changed nothing.</td></tr>
           <tr><td><code>artifacts_produced</code></td><td><code>object[]</code></td><td>no</td><td>Artifacts the completing activity produced: [{id, name, path?}]. Merged by id into the session declared-artifact accumulation; planning-folder reconciliation joins on id (warn-only).</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
@@ -268,7 +268,7 @@
           <tr class="param-row--nested"><td><code>output</code></td><td><code>string</code></td><td>yes</td><td>Short summary of what the step produced. Use a JSON object when the step has multiple outputs.</td></tr>
           <tr class="param-row--nested param-row--group-start"><td class="param-scope" rowspan="3"><code>activity_manifest[]</code></td><td><code>activity_id</code></td><td><code>string</code></td><td>yes</td><td>Completed activity id.</td></tr>
           <tr class="param-row--nested"><td><code>outcome</code></td><td><code>string</code></td><td>yes</td><td>Short outcome summary for that activity.</td></tr>
-          <tr class="param-row--nested"><td><code>transition_condition</code></td><td><code>string</code></td><td>no</td><td>Condition that led out of that activity, if any.</td></tr>
+          <tr class="param-row--nested"><td><code>exit</code></td><td><code>string</code></td><td>no</td><td>Exit that activity took, if any.</td></tr>
           <tr class="param-row--nested param-row--group-start"><td class="param-scope" rowspan="3"><code>artifacts_produced[]</code></td><td><code>id</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
           <tr class="param-row--nested"><td><code>name</code></td><td><code>string</code></td><td>yes</td><td>-</td></tr>
           <tr class="param-row--nested"><td><code>path</code></td><td><code>string</code></td><td>no</td><td>-</td></tr>
@@ -412,7 +412,7 @@
           <tr><td><code>session_index</code></td><td><code>string</code></td><td>yes</td><td>Six-character token from <code>start_session</code>. Use the same value for every call in this session.</td></tr>
           <tr><td><code>agent_id</code></td><td><code>string</code></td><td>no</td><td>Label for this agent in the session trace.</td></tr>
           <tr><td><code>step_id</code></td><td><code>string</code></td><td>no</td><td>Step within the current activity. Omit to get the first technique for the activity or workflow.</td></tr>
-          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>no</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: use an id from <code>transitions</code>.</td></tr>
+          <tr><td><code>activity_id</code></td><td><code>string</code></td><td>no</td><td>Activity to move to. First call: use <code>initialActivity</code> from <code>get_workflow</code>. Later: the activity the <code>graph</code> binds to the exit just taken.</td></tr>
           <tr><td><code>bundle</code></td><td><code>&quot;reference&quot; | &quot;full&quot;</code></td><td>no</td><td><code>reference</code>: return unchanged markers for content already delivered. <code>full</code>: always return complete text.</td></tr>
           <tr><td><code>full</code></td><td><code>boolean</code></td><td>no</td><td>Force full content even when persistent mode would return an unchanged marker (<code>get_technique</code> or <code>get_resource</code>).</td></tr>
           </tbody>

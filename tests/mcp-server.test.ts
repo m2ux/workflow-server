@@ -260,7 +260,7 @@ describe('mcp-server integration', () => {
       expect(Array.isArray(activity.steps)).toBe(true);
       // Unified model: checkpoints are inline kind:checkpoint steps (no separate checkpoints[] array).
       expect(activity.steps.some((s: { kind?: string }) => s.kind === 'checkpoint')).toBe(true);
-      expect(activity.transitions).toBeDefined();
+      expect(activity.exits).toBeDefined();
       expect(activity.session_index).toBeDefined();
     });
 
@@ -412,6 +412,87 @@ describe('mcp-server integration', () => {
       const content = parseToolResponse(result);
       expect(content.status).toBe('yielded');
       expect(content.session_index).toBe(nextToken);
+    });
+
+    // submit-for-review's body-non-conformant gate offers a re-entry and an abort, with eleven
+    // steps after it. The ungated ones before it are what a worker that aborts there has run.
+    const RAN_BEFORE_ABORT = [
+      { step_id: 'announce-start', output: 'announced' },
+      { step_id: 'review-summary-approval', output: 'approved' },
+      { step_id: 'dco-sign-off-confirmation', output: 'confirmed' },
+      { step_id: 'private-remote-confirmation', output: 'confirmed' },
+      { step_id: 'push-confirmation', output: 'confirmed' },
+      { step_id: 'body-non-conformant', output: 'user aborted' },
+    ];
+
+    it('states each option\'s consequence from the workflow graph before the user chooses', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'submit-for-review');
+      await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'body-non-conformant' },
+      });
+
+      const presented = await client.callTool({
+        name: 'present_checkpoint',
+        arguments: { session_index: nextToken },
+      });
+      const checkpoint = parseToolResponse(presented);
+      const options = checkpoint.options as Array<{ id: string; consequence?: Record<string, unknown> }>;
+
+      expect(options.find(o => o.id === 'provide-input')?.consequence)
+        .toEqual({ exit: 'provide-input', next_activity: 'submit-for-review' });
+      expect(options.find(o => o.id === 'abort')?.consequence)
+        .toEqual({ exit: 'abort', next_activity: 'complete', ends_activity: true });
+    });
+
+    it('ends the activity where an immediate exit is selected, and accounts for the steps it skipped', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'submit-for-review');
+      await client.callTool({
+        name: 'yield_checkpoint',
+        arguments: { session_index: nextToken, checkpoint_id: 'body-non-conformant' },
+      });
+
+      await new Promise(r => setTimeout(r, 3100));
+      const responded = await client.callTool({
+        name: 'respond_checkpoint',
+        arguments: { session_index: nextToken, option_id: 'abort' },
+      });
+      expect(responded.isError).toBeFalsy();
+      const payload = parseToolResponse(responded);
+      expect(payload.exit).toEqual({ id: 'abort', next_activity: 'complete', ends_activity: true });
+      expect(payload.message).toContain('do not run the remaining steps');
+
+      // The worker reports only what it ran. The steps after the gate are the exit's doing, so the
+      // manifest check accounts for them rather than reporting them missing.
+      const moved = await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: nextToken,
+          activity_id: 'complete',
+          exit: 'abort',
+          step_manifest: RAN_BEFORE_ABORT,
+        },
+      });
+      expect(moved.isError).toBeFalsy();
+      const validation = (moved._meta as Record<string, unknown>)['validation'] as { warnings: string[] };
+      expect(validation.warnings.some(w => w.includes('Missing steps'))).toBe(false);
+    });
+
+    it('reports the tail missing when the same manifest arrives with no immediate exit taken', async () => {
+      const { nextToken } = await transitionToActivity(client, sessionToken, 'submit-for-review');
+
+      const moved = await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: nextToken,
+          activity_id: 'complete',
+          exit: 'review-approved',
+          step_manifest: RAN_BEFORE_ABORT,
+        },
+      });
+      expect(moved.isError).toBeFalsy();
+      const validation = (moved._meta as Record<string, unknown>)['validation'] as { warnings: string[] };
+      expect(validation.warnings.some(w => w.includes('Missing steps') && w.includes('announce-completion'))).toBe(true);
     });
 
     it('admits a gate the activity does not declare when it carries the decision (#477)', async () => {
@@ -690,7 +771,7 @@ describe('mcp-server integration', () => {
       const meta = result._meta as Record<string, unknown>;
       const validation = meta['validation'] as { status: string; warnings: string[] };
       expect(validation.status).toBe('warning');
-      expect(validation.warnings.some((w: string) => w.includes('not a direct transition'))).toBe(true);
+      expect(validation.warnings.some((w: string) => w.includes('is not bound to any exit of'))).toBe(true);
     });
 
     it('should not warn on valid activity transition with manifest', async () => {
@@ -725,8 +806,8 @@ describe('mcp-server integration', () => {
 
   // ============== Transition Condition Tracking ==============
 
-  describe('transition condition validation', () => {
-    it('should accept correct condition-activity pairing', async () => {
+  describe('reported exit validation', () => {
+    it('should accept an exit the graph binds to the requested activity', async () => {
       const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'codebase-comprehension');
       const tokenAtComprehension = await resolveCheckpoints(client, nextToken, actResponse);
 
@@ -735,17 +816,16 @@ describe('mcp-server integration', () => {
         arguments: {
           session_index: tokenAtComprehension,
           activity_id: 'requirements-elicitation',
-          transition_condition: 'needs_elicitation == true',
+          exit: 'needs-elicitation',
         },
       });
       expect(result.isError).toBeFalsy();
       const meta = result._meta as Record<string, unknown>;
       const validation = meta['validation'] as { status: string; warnings: string[] };
-      const condWarnings = validation.warnings.filter((w: string) => w.includes('Condition mismatch') || w.includes('condition'));
-      expect(condWarnings).toHaveLength(0);
+      expect(validation.warnings.filter((w: string) => w.includes('exit'))).toHaveLength(0);
     });
 
-    it('should warn on mismatched condition for activity', async () => {
+    it('should warn when the reported exit is bound elsewhere', async () => {
       const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'codebase-comprehension');
       const tokenAtComprehension = await resolveCheckpoints(client, nextToken, actResponse);
 
@@ -754,17 +834,35 @@ describe('mcp-server integration', () => {
         arguments: {
           session_index: tokenAtComprehension,
           activity_id: 'requirements-elicitation',
-          transition_condition: 'skip_optional_activities == true',
+          exit: 'skip-optional-activities',
         },
       });
       expect(result.isError).toBeFalsy();
       const meta = result._meta as Record<string, unknown>;
       const validation = meta['validation'] as { status: string; warnings: string[] };
       expect(validation.status).toBe('warning');
-      expect(validation.warnings.some((w: string) => w.includes('Condition mismatch'))).toBe(true);
+      expect(validation.warnings.some((w: string) => w.includes("is bound to 'plan-prepare'"))).toBe(true);
     });
 
-    it('should accept default transition with empty condition', async () => {
+    it('should warn when the activity declares no such exit', async () => {
+      const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'codebase-comprehension');
+      const tokenAtComprehension = await resolveCheckpoints(client, nextToken, actResponse);
+
+      const result = await client.callTool({
+        name: 'next_activity',
+        arguments: {
+          session_index: tokenAtComprehension,
+          activity_id: 'requirements-elicitation',
+          exit: 'no-such-exit',
+        },
+      });
+      expect(result.isError).toBeFalsy();
+      const meta = result._meta as Record<string, unknown>;
+      const validation = meta['validation'] as { status: string; warnings: string[] };
+      expect(validation.warnings.some((w: string) => w.includes("has no exit 'no-such-exit'"))).toBe(true);
+    });
+
+    it('should accept the transition with the exit omitted', async () => {
       const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'start-work-package');
       const tokenAtStart = await resolveCheckpoints(client, nextToken, actResponse);
 
@@ -773,17 +871,15 @@ describe('mcp-server integration', () => {
         arguments: {
           session_index: tokenAtStart,
           activity_id: 'design-philosophy',
-          transition_condition: 'default',
         },
       });
       expect(result.isError).toBeFalsy();
       const meta = result._meta as Record<string, unknown>;
       const validation = meta['validation'] as { status: string; warnings: string[] };
-      const condWarnings = validation.warnings.filter((w: string) => w.includes('condition') || w.includes('Condition'));
-      expect(condWarnings).toHaveLength(0);
+      expect(validation.warnings.filter((w: string) => w.includes('exit'))).toHaveLength(0);
     });
 
-    it('condition should not block execution', async () => {
+    it('a mismatched exit should not block execution', async () => {
       const { nextToken, actResponse } = await transitionToActivity(client, sessionToken, 'codebase-comprehension');
       const tokenAtComprehension = await resolveCheckpoints(client, nextToken, actResponse);
 
@@ -792,7 +888,7 @@ describe('mcp-server integration', () => {
         arguments: {
           session_index: tokenAtComprehension,
           activity_id: 'requirements-elicitation',
-          transition_condition: 'wrong_condition == true',
+          exit: 'skip-optional-activities',
         },
       });
       expect(result.isError).toBeFalsy();
@@ -2523,7 +2619,6 @@ describe('mcp-server integration', () => {
         is_review_mode: false,
       },
       completedActivities: ['start-work-package', 'research', 'wp-plan'],
-      skippedActivities: ['codebase-comprehension'],
       checkpointResponses: {
         'wp-plan-plan-approved': {
           optionId: 'approved',
@@ -2567,7 +2662,6 @@ describe('mcp-server integration', () => {
             condition: '',
             variables: { severity: 'high' },
             completedActivities: ['intake'],
-            skippedActivities: [],
             checkpointResponses: {},
             history: [{ timestamp: '2026-07-11T10:40:00.000Z', type: 'workflow_started' }],
             status: 'running' as const,
@@ -2596,7 +2690,6 @@ describe('mcp-server integration', () => {
                   condition: '',
                   variables: {},
                   completedActivities: [],
-                  skippedActivities: [],
                   checkpointResponses: {},
                   history: [{ timestamp: '2026-07-11T10:45:00.000Z', type: 'workflow_started' }],
                   status: 'running' as const,
@@ -2652,7 +2745,6 @@ describe('mcp-server integration', () => {
       const activities = parseToolResponse(await callInspect({ view: 'activities' }));
       expect(activities).toEqual({
         completed: ['start-work-package', 'research', 'wp-plan'],
-        skipped: ['codebase-comprehension'],
         current: 'implement',
         // This fixture reports neither outcomes nor progress marks, so every activity it
         // entered is unreported and none is known to have skipped the write.
