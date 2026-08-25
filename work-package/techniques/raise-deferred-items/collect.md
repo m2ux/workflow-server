@@ -11,7 +11,7 @@ The deferred-items register read for rows that name no issue yet.
 
 ### open_deferred_items
 
-The register rows whose Follow-up cell holds no issue link, each carrying `id`, `item` and `rationale` from the row as the deferring activity wrote them. Empty when the register does not exist, or when every row is raised already.
+The register rows whose Follow-up cell holds no issue link, each carrying the row's `id`, `item` and `rationale`. Empty when the register does not exist, or when every row is raised already.
 
 ### has_unraised_deferred_items
 

@@ -58,7 +58,7 @@ variables:
       defaultValue: []
     - name: raise_current_deferred_item
       type: boolean
-      description: Whether the raise gate approved the row under consideration.
+      description: Whether the row under consideration is approved for raising.
       defaultValue: false
     - name: publishable_files
       type: array
