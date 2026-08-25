@@ -2034,11 +2034,20 @@
             },
             "timestamp": "2026-08-25T04:28:01.727Z",
             "type": "workflow_triggered"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "sessionIndex": "7OPXHM",
+              "workflowId": "prism"
+            },
+            "timestamp": "2026-08-25T06:38:33.246Z",
+            "type": "workflow_triggered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 27,
+        "seq": 28,
         "sessionIndex": "2J6KER",
         "startedAt": "2026-08-24T16:42:08.996Z",
         "status": "running",
@@ -3225,9 +3234,223 @@
               "activityId": "execute-analysis"
             },
             "workflowId": "prism"
+          },
+          {
+            "sessionIndex": "7OPXHM",
+            "state": {
+              "agentId": "workflow-orchestrator",
+              "checkpointResponses": {},
+              "completedActivities": [],
+              "currentActivity": "select-mode",
+              "currentTechnique": "",
+              "deliveredContent": {
+                "prism-g2-select": {
+                  "activity_rules:df60226b63c3f6ae": "df60226b63c3f6ae",
+                  "bundle:rules:803c2e9e4c960c72": "803c2e9e4c960c72",
+                  "bundle:variable-binding": "fc19a1a690c26bd4",
+                  "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+                  "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+                  "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+                  "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+                  "resource:analysis-plan": "665ced08f662fe2c",
+                  "technique:inherited_inputs.items:8f4c7a7b274cacb4": "8f4c7a7b274cacb4",
+                  "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+                  "technique:inherited_inputs:6131206b19a50605": "6131206b19a50605",
+                  "technique:plan-analysis": "2af35b78c37666f7",
+                  "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+                  "technique:rules:56ca8c7f23e4daa8": "56ca8c7f23e4daa8"
+                }
+              },
+              "exit": "",
+              "history": [
+                {
+                  "timestamp": "2026-08-25T06:38:33.246Z",
+                  "type": "workflow_started"
+                },
+                {
+                  "data": {
+                    "variables": {
+                      "output_path": ".",
+                      "user_request": "Discover opportunities to optimise activity and workflow YAML file grammar and syntax so that expressions can be written in shorthand. At present the only construct optimised in this respect is `when`, which allows compound conditional expressions in a language-like syntax. Investigate this with the prism-evaluate workflow."
+                    }
+                  },
+                  "timestamp": "2026-08-25T06:38:33.246Z",
+                  "type": "variables_seeded"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "target",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server"
+                  },
+                  "timestamp": "2026-08-25T06:38:46.397Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "target_type",
+                    "source": "variables_changed",
+                    "value": "general"
+                  },
+                  "timestamp": "2026-08-25T06:38:46.397Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "target_description",
+                    "source": "variables_changed",
+                    "value": "Expressiveness, Architecture and Feasibility of a shorthand expression grammar for workflow-server activity and workflow YAML."
+                  },
+                  "timestamp": "2026-08-25T06:38:46.397Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "output_path",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions"
+                  },
+                  "timestamp": "2026-08-25T06:38:46.397Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "pipeline_mode",
+                    "source": "variables_changed",
+                    "value": "portfolio"
+                  },
+                  "timestamp": "2026-08-25T06:38:46.397Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "selected_lenses",
+                    "source": "variables_changed",
+                    "value": [
+                      "06",
+                      "07",
+                      "08",
+                      "12",
+                      "15"
+                    ]
+                  },
+                  "timestamp": "2026-08-25T06:38:46.397Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "analysis_focus",
+                    "source": "variables_changed",
+                    "value": "Expressiveness: what authors are forced to restate - the five-line-versus-one-line cost of `condition` where 75 of 109 are a single leaf and all 86 children restate type: simple; 145 of 410 technique inputs being pure renames with 10 identity passthroughs; `required` populated on 6 of 525 writes entries; the absence of set-membership against the corpus's a == 'x' || a == 'y' chains; and which of the 15 existing sugar precedents transfer to the un-sugared constructs. Architecture: whether `when` should desugar into Condition or stay parallel, given two ASTs, two evaluators, two duplicated path resolvers and a single and-combination meeting point in gate-liveness.ts; placement of the parse boundary given enforcement lives in scripts/ and in tests/e2e/walker.ts; the four-way single source of truth across Zod, generated JSON Schemas, EBNF and Alloy; and whether the settled grammar is expressible in EBNF and constrainable in Alloy at all. Feasibility: `when` being z.string() so no Zod change catches new syntax, which must instead be taught to tokenize/Parser and to scripts/check-when-expression.ts; JSON Schemas generated from Zod with no regeneration or drift check; migration touching 109 condition blocks, 211 structured technique bindings and 192 graph edges. Draft against origin/main, not the current branch, which is 42 commits behind and lacks ExitSchema, variable.schema.ts and the workflow `graph` construct. The run settles a target grammar and specifies it; it does not write grammar/*.ebnf or constraints/*.als."
+                  },
+                  "timestamp": "2026-08-25T06:38:46.397Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "timestamp": "2026-08-25T06:38:46.397Z",
+                  "type": "activity_entered"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g2-select",
+                    "chars": 64413,
+                    "dispatch": "fresh"
+                  },
+                  "timestamp": "2026-08-25T06:39:15.891Z",
+                  "type": "activity_dispatched"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g2-select",
+                    "chars": 20166,
+                    "delivery": "full",
+                    "stepId": "plan",
+                    "techniqueId": "plan-analysis"
+                  },
+                  "timestamp": "2026-08-25T06:39:15.891Z",
+                  "type": "technique_bundled"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g2-select",
+                    "stepId": "plan"
+                  },
+                  "timestamp": "2026-08-25T06:39:15.891Z",
+                  "type": "step_started"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g2-select",
+                    "chars": 1680,
+                    "delivery": "full",
+                    "resourceId": "analysis-plan"
+                  },
+                  "timestamp": "2026-08-25T06:39:45.396Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g2-select",
+                    "basis": "delta",
+                    "usage": {
+                      "duration_ms": 568525,
+                      "subagent_tokens": 97287,
+                      "tool_uses": 21
+                    }
+                  },
+                  "timestamp": "2026-08-25T06:48:54.449Z",
+                  "type": "activity_usage"
+                }
+              ],
+              "repo": "m2ux/workflow-server",
+              "schemaVersion": 1,
+              "seq": 4,
+              "sessionIndex": "7OPXHM",
+              "startedAt": "2026-08-25T06:38:33.246Z",
+              "status": "running",
+              "triggeredWorkflows": [],
+              "ts": 1787640534,
+              "variables": {
+                "analysis_focus": "Expressiveness: what authors are forced to restate - the five-line-versus-one-line cost of `condition` where 75 of 109 are a single leaf and all 86 children restate type: simple; 145 of 410 technique inputs being pure renames with 10 identity passthroughs; `required` populated on 6 of 525 writes entries; the absence of set-membership against the corpus's a == 'x' || a == 'y' chains; and which of the 15 existing sugar precedents transfer to the un-sugared constructs. Architecture: whether `when` should desugar into Condition or stay parallel, given two ASTs, two evaluators, two duplicated path resolvers and a single and-combination meeting point in gate-liveness.ts; placement of the parse boundary given enforcement lives in scripts/ and in tests/e2e/walker.ts; the four-way single source of truth across Zod, generated JSON Schemas, EBNF and Alloy; and whether the settled grammar is expressible in EBNF and constrainable in Alloy at all. Feasibility: `when` being z.string() so no Zod change catches new syntax, which must instead be taught to tokenize/Parser and to scripts/check-when-expression.ts; JSON Schemas generated from Zod with no regeneration or drift check; migration touching 109 condition blocks, 211 structured technique bindings and 192 graph edges. Draft against origin/main, not the current branch, which is 42 commits behind and lacks ExitSchema, variable.schema.ts and the workflow `graph` construct. The run settles a target grammar and specifies it; it does not write grammar/*.ebnf or constraints/*.als.",
+                "output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions",
+                "pipeline_mode": "portfolio",
+                "selected_lenses": [
+                  "06",
+                  "07",
+                  "08",
+                  "12",
+                  "15"
+                ],
+                "target": "/home/mike1/projects/dev/workflow-server",
+                "target_description": "Expressiveness, Architecture and Feasibility of a shorthand expression grammar for workflow-server activity and workflow YAML.",
+                "target_type": "general",
+                "user_request": "Discover opportunities to optimise activity and workflow YAML file grammar and syntax so that expressions can be written in shorthand. At present the only construct optimised in this respect is `when`, which allows compound conditional expressions in a language-like syntax. Investigate this with the prism-evaluate workflow."
+              },
+              "workflowId": "prism",
+              "workflowVersion": "2.5.0"
+            },
+            "status": "running",
+            "triggeredAt": "2026-08-25T06:38:33.246Z",
+            "triggeredFrom": {
+              "activityId": "execute-analysis"
+            },
+            "workflowId": "prism"
           }
         ],
-        "ts": 1787632081,
+        "ts": 1787639913,
         "variables": {
           "accepted_count": 0,
           "dimension_plan": [
