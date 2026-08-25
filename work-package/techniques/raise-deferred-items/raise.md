@@ -30,10 +30,10 @@ Basename of the component the work package targets, which scopes the issue the s
 
 ### 2. Raise It Against the Tracker
 
-- Create the issue on `{issue_platform}`, capturing its key and URL.
+- Create the issue on `{issue_platform}`.
   > - For GitHub, follow the [issue template](../../resources/github-issue-creation.md#issue-template) and [section rules](../../resources/github-issue-creation.md#section-rules), labelling the issue `chore`.
   > - For Jira, obtain the Atlassian cloud ID via `getAccessibleAtlassianResources` before any other Jira call, and create the issue as a Task in the project the package's own issue lives in.
-  > - Where creation fails, leave the row's dash intact and report the failure with the row ID. A row is raised or it is not; a half-raised row would claim an issue that does not exist.
+  > - Where creation fails, the row keeps its dash and the failure carries the row ID. A row is raised or it is not; a half-raised row would claim an issue that does not exist.
 
 ### 3. Link the Row to Its Issue
 

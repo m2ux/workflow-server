@@ -46,7 +46,7 @@ variables:
       defaultValue: []
     - name: raise_current_deferred_item
       type: boolean
-      description: Whether the raise gate approved the row under consideration. Both gate options set it, so each pass through the loop decides on its own row.
+      description: Whether the raise gate approved the row under consideration.
       defaultValue: false
     - name: publishable_files
       type: array

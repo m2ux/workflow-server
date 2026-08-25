@@ -22,13 +22,9 @@ Boolean gate — true when `{open_deferred_items}` holds at least one row.
 ### 1. Locate the Register
 
 - Read `deferred-items.md` in `{planning_folder_path}`.
-  > The register is created lazily, so a run that deferred nothing has none. Set `{open_deferred_items}` empty and `{has_unraised_deferred_items}` false, and report that the run deferred nothing rather than reporting a missing file as a fault.
+  > The register is created lazily, so a run that deferred nothing has none. `{open_deferred_items}` is empty and `{has_unraised_deferred_items}` false — a run with nothing outstanding, not a missing-file fault.
 
 ### 2. Select the Unraised Rows
 
 - Take every row of the register table whose Follow-up cell holds a dash rather than a link, and record it in `{open_deferred_items}` with its ID, its item text and its rationale.
 - Set `{has_unraised_deferred_items}` from whether that set holds anything.
-
-### 3. Report What Is Outstanding
-
-- State the count and each row's ID and item in one line apiece, so the run sees what it is being asked about before it is asked.
