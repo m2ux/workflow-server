@@ -215,23 +215,23 @@ None.
 
 | Report ID | Source Artifact | Original ID | Original Severity |
 |-----------|-----------------|-------------|-------------------|
-| CON-01 | consistency/01-structural-analysis.md | #1 | Critical |
-| CON-02 | consistency/01-structural-analysis.md | #2 | High |
-| CON-03 | consistency/01-structural-analysis.md | #3 | High |
-| CON-04 | consistency/01-structural-analysis.md | #4 | Medium |
-| CON-05 | consistency/01-structural-analysis.md | #5 | Medium |
-| CON-06 | consistency/01-structural-analysis.md | #6 | Medium |
-| CON-07 | consistency/01-structural-analysis.md | #7 | Medium |
-| CON-08 | consistency/01-structural-analysis.md | #8 | Medium |
-| CON-09 | consistency/01-structural-analysis.md | #9 | Medium |
-| CON-10 | consistency/01-structural-analysis.md | #10 | Low-medium |
-| CON-11 | consistency/01-structural-analysis.md | #11 | High |
-| CON-12 | consistency/01-structural-analysis.md | #12 | Low |
-| CON-13 | consistency/01-structural-analysis.md | #13 | Low |
-| CON-14 | consistency/02-adversarial-analysis.md | #14 | Medium |
-| CON-15 | consistency/02-adversarial-analysis.md | #15 | Medium |
-| CON-16 | consistency/02-adversarial-analysis.md | #16 | Medium |
-| CON-17 | consistency/02-adversarial-analysis.md | #17 | Low |
-| CON-18 | consistency/03-synthesis.md | #18 | Unassigned |
-| CON-19 | consistency/03-synthesis.md | #19 | Unassigned |
-| CON-20 | consistency/03-synthesis.md | #20 | Unassigned |
+| [CON-01](DEFINITIVE-FINDINGS.md#con-01--variables-and-exits-are-declared-on-the-activity-schema) | [consistency/01-structural-analysis.md](01-structural-analysis.md) | #1 | Critical |
+| [CON-02](DEFINITIVE-FINDINGS.md#con-02--transition-legality-validation) | [consistency/01-structural-analysis.md](01-structural-analysis.md) | #2 | High |
+| [CON-03](DEFINITIVE-FINDINGS.md#con-03--the-routing-vocabulary-is-read-and-enforced) | [consistency/01-structural-analysis.md](01-structural-analysis.md) | #3 | High |
+| [CON-04](DEFINITIVE-FINDINGS.md#con-04--the-tree-to-string-lowering) | [consistency/01-structural-analysis.md](01-structural-analysis.md) | #4 | Medium |
+| [CON-05](DEFINITIVE-FINDINGS.md#con-05--the-two-dialects-use-different-numeric-coercion) | [consistency/01-structural-analysis.md](01-structural-analysis.md) | #5 | Medium |
+| [CON-06](DEFINITIVE-FINDINGS.md#con-06--the-string-dialect-has-no-presence-form) | [consistency/01-structural-analysis.md](01-structural-analysis.md) | #6 | Medium |
+| [CON-07](DEFINITIVE-FINDINGS.md#con-07--a-checkpoints-dismissibility-is-carried-by-field-presence-not-by-syntax) | [consistency/01-structural-analysis.md](01-structural-analysis.md) | #7 | Medium |
+| [CON-08](DEFINITIVE-FINDINGS.md#con-08--an-unparseable-gate-fails-closed-without-a-diagnostic) | [consistency/01-structural-analysis.md](01-structural-analysis.md) | #8 | Medium |
+| [CON-09](DEFINITIVE-FINDINGS.md#con-09--actionstarget-has-a-type-that-depends-on-a-sibling-key) | [consistency/01-structural-analysis.md](01-structural-analysis.md) | #9 | Medium |
+| [CON-10](DEFINITIVE-FINDINGS.md#con-10--manifest-warnings-for-unknown-activities) | [consistency/01-structural-analysis.md](01-structural-analysis.md) | #10 | Low-medium |
+| [CON-11](DEFINITIVE-FINDINGS.md#con-11--ci-validates-the-pinned-corpus-not-the-submodule-tip) | [consistency/01-structural-analysis.md](01-structural-analysis.md) | #11 | High |
+| [CON-12](DEFINITIVE-FINDINGS.md#con-12--the-mixed-operator-authoring-rule-has-no-evaluator-counterpart) | [consistency/01-structural-analysis.md](01-structural-analysis.md) | #12 | Low |
+| [CON-13](DEFINITIVE-FINDINGS.md#con-13--comparison-node-fall-through-in-the-evaluator) | [consistency/01-structural-analysis.md](01-structural-analysis.md) | #13 | Low |
+| [CON-14](DEFINITIVE-FINDINGS.md#con-14--one-file-gives-two-answers-for-whether-absence-answers-a-negative-gate) | [consistency/02-adversarial-analysis.md](02-adversarial-analysis.md) | #14 | Medium |
+| [CON-15](DEFINITIVE-FINDINGS.md#con-15--54-negative-gates-are-never-eagerly-bundled) | [consistency/02-adversarial-analysis.md](02-adversarial-analysis.md) | #15 | Medium |
+| [CON-16](DEFINITIVE-FINDINGS.md#con-16--a-loop-variable-lands-as-a-projection-that-drops-the-key-its-own-gate-reads) | [consistency/02-adversarial-analysis.md](02-adversarial-analysis.md) | #16 | Medium |
+| [CON-17](DEFINITIVE-FINDINGS.md#con-17--the-checkpoint-option-object-is-open) | [consistency/02-adversarial-analysis.md](02-adversarial-analysis.md) | #17 | Low |
+| [CON-18](DEFINITIVE-FINDINGS.md#con-18--the-action-object-is-open-and-its-target-field-is-undocumented) | [consistency/03-synthesis.md](03-synthesis.md) | #18 | Unassigned |
+| [CON-19](DEFINITIVE-FINDINGS.md#con-19--undefined-parses-as-a-string-literal) | [consistency/03-synthesis.md](03-synthesis.md) | #19 | Unassigned |
+| [CON-20](DEFINITIVE-FINDINGS.md#con-20--one-predicate-intent-has-five-different-availabilities-by-position) | [consistency/03-synthesis.md](03-synthesis.md) | #20 | Unassigned |

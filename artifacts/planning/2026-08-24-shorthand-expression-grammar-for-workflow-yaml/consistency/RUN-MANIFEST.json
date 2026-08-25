@@ -1,0 +1,27 @@
+{
+  "status": "complete",
+  "pipeline_mode": "full-prism",
+  "report_path": "REPORT.md",
+  "definitive_findings_path": "DEFINITIVE-FINDINGS.md",
+  "units": [
+    {
+      "unit": "workflows/**/*.yaml, schemas/{activity,workflow,condition}.schema.json, src/schema/",
+      "output_subdir": ".",
+      "pipeline_mode": "full-prism",
+      "status": "complete",
+      "artifacts": [
+        "01-structural-analysis.md",
+        "02-adversarial-analysis.md",
+        "03-synthesis.md"
+      ]
+    }
+  ],
+  "artifacts": [
+    "00-analysis-plan.md",
+    "01-structural-analysis.md",
+    "02-adversarial-analysis.md",
+    "03-synthesis.md",
+    "REPORT.md",
+    "DEFINITIVE-FINDINGS.md"
+  ]
+}
