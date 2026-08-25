@@ -722,6 +722,51 @@
             "optionId": "accept",
             "respondedAt": "2026-08-25T04:22:51.000Z"
           },
+          "resolution-dialogue-confirm-apply": {
+            "effects": {
+              "variablesSet": {
+                "mitigations_apply_requested": false
+              }
+            },
+            "optionId": "plan-only",
+            "respondedAt": "2026-08-25T14:51:37.000Z"
+          },
+          "resolution-dialogue-finding-decision": {
+            "effects": {
+              "variablesSet": {
+                "finding_disposition": "accept"
+              }
+            },
+            "optionId": "accept",
+            "respondedAt": "2026-08-25T12:40:34.000Z"
+          },
+          "resolution-dialogue-finding-decision#G01": {
+            "effects": {
+              "variablesSet": {
+                "finding_disposition": "accept"
+              }
+            },
+            "optionId": "accept",
+            "respondedAt": "2026-08-25T12:36:45.000Z"
+          },
+          "resolution-dialogue-finding-decision#held": {
+            "effects": {
+              "variablesSet": {
+                "finding_disposition": "discuss"
+              }
+            },
+            "optionId": "discuss",
+            "respondedAt": "2026-08-25T13:31:10.000Z"
+          },
+          "resolution-dialogue-finding-decision#revised": {
+            "effects": {
+              "variablesSet": {
+                "finding_disposition": "accept"
+              }
+            },
+            "optionId": "accept",
+            "respondedAt": "2026-08-25T14:45:50.000Z"
+          },
           "scope-definition-confirm-scope": {
             "effects": {
               "exit": "adjust"
@@ -743,10 +788,11 @@
           "scope-definition",
           "dimension-planning",
           "execute-analysis",
-          "consolidate-report"
+          "consolidate-report",
+          "deliver-results"
         ],
-        "currentActivity": "deliver-results",
-        "currentTechnique": "",
+        "currentActivity": "resolution-dialogue",
+        "currentTechnique": "resolve-findings::propose-mitigation-by-tier",
         "declaredArtifacts": [
           {
             "id": "evaluation_plan",
@@ -872,9 +918,37 @@
             "technique:inherited_outputs:5a0fc2063e7d2cdb": "5a0fc2063e7d2cdb",
             "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
             "technique:rules:5d333fa046812a11": "5d333fa046812a11"
+          },
+          "client-worker-05": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:35e68535b1d218d0": "35e68535b1d218d0",
+            "bundle:scatter-gather": "7ef0936b4d187528",
+            "bundle:variable-binding": "ea9c4abf171f027a",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:evaluation-report-template#evaluation-report-template": "da6a541edeb4696a",
+            "resource:mitigation-plan-template": "8f4a9aaadfe83ad4",
+            "resource:mitigation-plan-template#mitigation-plan-template": "9c834e6e5c91fee6",
+            "resource:mitigation-plan-template#mitigation-tiers": "4818c62a1fb7a4e6",
+            "technique:inherited_inputs.items:09a2a4ade4889ba3": "09a2a4ade4889ba3",
+            "technique:inherited_inputs.items:19eb54a7cdd9e695": "19eb54a7cdd9e695",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:6344be327604e385": "6344be327604e385",
+            "technique:inherited_inputs:ae1837d889e5d11b": "ae1837d889e5d11b",
+            "technique:inherited_outputs.items:62a36ceef145b3ee": "62a36ceef145b3ee",
+            "technique:inherited_outputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+            "technique:inherited_outputs:8a9987f38b37153d": "8a9987f38b37153d",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:resolve-findings::compile-plan": "a822b39683d9b452",
+            "technique:resolve-findings::load-and-classify": "cd0484de4f6d9f17",
+            "technique:resolve-findings::propose-mitigation-by-tier": "b8ea9407de2323c3",
+            "technique:resolve-findings::record-finding-decision": "ad2bb81f052c0439",
+            "technique:rules:a4cc7839a8d142de": "a4cc7839a8d142de"
           }
         },
-        "exit": "done",
+        "exit": "resolution-requested",
         "history": [
           {
             "timestamp": "2026-08-24T16:42:08.996Z",
@@ -2719,11 +2793,496 @@
             },
             "timestamp": "2026-08-25T08:21:36.799Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "deliver-results",
+            "timestamp": "2026-08-25T08:22:03.599Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "exit": "resolution-requested",
+              "outcome": "complete"
+            },
+            "timestamp": "2026-08-25T08:22:03.599Z",
+            "type": "activity_outcome"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "name": "resolution_requested",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-25T08:22:03.599Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "name": "evaluation_metrics",
+              "source": "variables_changed",
+              "value": {
+                "analysis_runs_triggered": 2,
+                "artifacts_produced": 20,
+                "artifacts_total_kb": 423.4,
+                "cross_group_merges": 7,
+                "dimensions_evaluated": 4,
+                "findings_by_dimension": {
+                  "Architecture": 17,
+                  "Consistency": 14,
+                  "Expressiveness": 11,
+                  "Feasibility": 5
+                },
+                "findings_by_severity": {
+                  "critical": 0,
+                  "high": 9,
+                  "low": 19,
+                  "medium": 19
+                },
+                "findings_total": 47,
+                "source_findings": 54
+              }
+            },
+            "timestamp": "2026-08-25T08:22:03.599Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-04",
+              "stepId": "compile-delivery-metrics"
+            },
+            "timestamp": "2026-08-25T08:22:03.599Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-04",
+              "stepId": "resolution-offer"
+            },
+            "timestamp": "2026-08-25T08:22:03.599Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "timestamp": "2026-08-25T08:22:03.599Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 55068,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-25T08:22:36.800Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 4376,
+              "delivery": "full",
+              "stepId": "load-and-classify",
+              "techniqueId": "resolve-findings::load-and-classify"
+            },
+            "timestamp": "2026-08-25T08:22:36.800Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "stepId": "load-and-classify"
+            },
+            "timestamp": "2026-08-25T08:22:36.800Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 4641,
+              "delivery": "full",
+              "stepId": "record-decision",
+              "techniqueId": "resolve-findings::record-finding-decision"
+            },
+            "timestamp": "2026-08-25T08:22:36.800Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "stepId": "record-decision"
+            },
+            "timestamp": "2026-08-25T08:22:36.800Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 4282,
+              "delivery": "full",
+              "stepId": "compile-plan",
+              "techniqueId": "resolve-findings::compile-plan"
+            },
+            "timestamp": "2026-08-25T08:22:36.800Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "stepId": "compile-plan"
+            },
+            "timestamp": "2026-08-25T08:22:36.800Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 3036,
+              "delivery": "full",
+              "resourceId": "mitigation-plan-template"
+            },
+            "timestamp": "2026-08-25T08:23:12.305Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 5072,
+              "delivery": "full",
+              "stepId": "propose-mitigation",
+              "techniqueId": "resolve-findings::propose-mitigation-by-tier"
+            },
+            "timestamp": "2026-08-25T08:23:12.619Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "stepId": "propose-mitigation"
+            },
+            "timestamp": "2026-08-25T08:23:12.619Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "checkpoint": "finding-decision#G01",
+            "timestamp": "2026-08-25T08:26:45.821Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "checkpoint": "finding-decision#G01",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-08-25T12:36:45.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "name": "finding_disposition",
+              "source": "setVariable",
+              "value": "accept"
+            },
+            "timestamp": "2026-08-25T12:36:45.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 15744,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-25T12:38:58.900Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 4376,
+              "delivery": "unchanged",
+              "stepId": "load-and-classify",
+              "techniqueId": "resolve-findings::load-and-classify"
+            },
+            "timestamp": "2026-08-25T12:38:58.900Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 4641,
+              "delivery": "unchanged",
+              "stepId": "record-decision",
+              "techniqueId": "resolve-findings::record-finding-decision"
+            },
+            "timestamp": "2026-08-25T12:38:58.900Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 4282,
+              "delivery": "unchanged",
+              "stepId": "compile-plan",
+              "techniqueId": "resolve-findings::compile-plan"
+            },
+            "timestamp": "2026-08-25T12:38:58.900Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "bundled": true,
+              "chars": 2721,
+              "delivery": "full",
+              "resourceId": "evaluation-report-template#evaluation-report-template"
+            },
+            "timestamp": "2026-08-25T12:38:58.900Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "bundled": true,
+              "chars": 572,
+              "delivery": "full",
+              "resourceId": "mitigation-plan-template#mitigation-tiers"
+            },
+            "timestamp": "2026-08-25T12:38:58.900Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "bundled": true,
+              "chars": 2946,
+              "delivery": "full",
+              "resourceId": "mitigation-plan-template#mitigation-plan-template"
+            },
+            "timestamp": "2026-08-25T12:38:58.900Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "checkpoint": "finding-decision",
+            "timestamp": "2026-08-25T12:39:28.322Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "checkpoint": "finding-decision",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-08-25T12:40:34.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "name": "finding_disposition",
+              "source": "setVariable",
+              "value": "accept"
+            },
+            "timestamp": "2026-08-25T12:40:34.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 8852,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-25T12:42:32.248Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 4376,
+              "delivery": "unchanged",
+              "stepId": "load-and-classify",
+              "techniqueId": "resolve-findings::load-and-classify"
+            },
+            "timestamp": "2026-08-25T12:42:32.248Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 4641,
+              "delivery": "unchanged",
+              "stepId": "record-decision",
+              "techniqueId": "resolve-findings::record-finding-decision"
+            },
+            "timestamp": "2026-08-25T12:42:32.248Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "chars": 4282,
+              "delivery": "unchanged",
+              "stepId": "compile-plan",
+              "techniqueId": "resolve-findings::compile-plan"
+            },
+            "timestamp": "2026-08-25T12:42:32.248Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "bundled": true,
+              "chars": 2721,
+              "delivery": "unchanged",
+              "resourceId": "evaluation-report-template#evaluation-report-template"
+            },
+            "timestamp": "2026-08-25T12:42:32.248Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "bundled": true,
+              "chars": 572,
+              "delivery": "unchanged",
+              "resourceId": "mitigation-plan-template#mitigation-tiers"
+            },
+            "timestamp": "2026-08-25T12:42:32.248Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "bundled": true,
+              "chars": 2946,
+              "delivery": "unchanged",
+              "resourceId": "mitigation-plan-template#mitigation-plan-template"
+            },
+            "timestamp": "2026-08-25T12:42:32.248Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "checkpoint": "finding-decision#held",
+            "timestamp": "2026-08-25T12:42:43.841Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "checkpoint": "finding-decision#held",
+            "data": {
+              "optionId": "discuss"
+            },
+            "timestamp": "2026-08-25T13:31:10.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "name": "finding_disposition",
+              "source": "setVariable",
+              "value": "discuss"
+            },
+            "timestamp": "2026-08-25T13:31:10.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "checkpoint": "finding-decision#revised",
+            "timestamp": "2026-08-25T13:36:08.378Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "checkpoint": "finding-decision#revised",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-08-25T14:45:50.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "name": "finding_disposition",
+              "source": "setVariable",
+              "value": "accept"
+            },
+            "timestamp": "2026-08-25T14:45:50.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "checkpoint": "confirm-apply",
+            "timestamp": "2026-08-25T14:50:15.420Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "checkpoint": "confirm-apply",
+            "data": {
+              "optionId": "plan-only"
+            },
+            "timestamp": "2026-08-25T14:51:37.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "name": "mitigations_apply_requested",
+              "source": "setVariable",
+              "value": false
+            },
+            "timestamp": "2026-08-25T14:51:37.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "resolution-dialogue",
+            "data": {
+              "agentId": "client-worker-05",
+              "basis": "cumulative",
+              "usage": {
+                "duration_ms": 161265,
+                "subagent_tokens": 214191,
+                "tool_uses": 18
+              }
+            },
+            "timestamp": "2026-08-25T14:54:57.978Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 44,
+        "seq": 66,
         "sessionIndex": "2J6KER",
         "startedAt": "2026-08-24T16:42:08.996Z",
         "status": "running",
@@ -4948,7 +5507,7 @@
             "workflowId": "prism"
           }
         ],
-        "ts": 1787646096,
+        "ts": 1787669697,
         "variables": {
           "accepted_count": 0,
           "all_artifact_paths": [
@@ -5113,6 +5672,27 @@
           ],
           "dimensions_confirmed": true,
           "evaluation_description": "Discover opportunities to optimise activity and workflow YAML grammar and syntax so that expressions can be written in shorthand. Today `when` is the only construct with a compound, language-like expression syntax; the structured `condition` tree is marked LEGACY in its favour yet remains the only available form on actions, reusable fragments and transitions, and technique bindings carry their own separate literal/rename/template deviation forms.\n\nAuthoritative current-state sources: the Zod schemas under `src/schema/` (notably `when-expression.ts` and `condition.schema.ts`), the JSON Schemas under `schemas/`, and the 140-file YAML definition corpus under `workflows/`. The `docs/` specifications are in scope as consumers of the grammar that may require updating, not as an authority on it. `grammar/activity.ebnf` and `constraints/activity.als` are placeholders for future work and carry no evidential weight for the current grammar.\n\nThe run settles a target grammar covering both activity and workflow definitions and specifies it precisely enough that four formal artifacts could be generated from that specification: `grammar/activity.ebnf` and `constraints/activity.als` brought into alignment, plus new counterparts `grammar/workflow.ebnf` and `constraints/workflow.als`. Those four files are the specification's target consumers, produced by follow-on implementation work; this run does not write them. All output of this run stays within the planning folder.",
+          "evaluation_metrics": {
+            "analysis_runs_triggered": 2,
+            "artifacts_produced": 20,
+            "artifacts_total_kb": 423.4,
+            "cross_group_merges": 7,
+            "dimensions_evaluated": 4,
+            "findings_by_dimension": {
+              "Architecture": 17,
+              "Consistency": 14,
+              "Expressiveness": 11,
+              "Feasibility": 5
+            },
+            "findings_by_severity": {
+              "critical": 0,
+              "high": 9,
+              "low": 19,
+              "medium": 19
+            },
+            "findings_total": 47,
+            "source_findings": 54
+          },
           "evaluation_output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml",
           "evaluation_plan_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/01-evaluation-plan.md",
           "evaluation_report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/EVALUATION-REPORT.md",
@@ -5151,6 +5731,7 @@
               "pipeline_mode": "portfolio"
             }
           ],
+          "finding_disposition": "accept",
           "mitigations_apply_requested": false,
           "pipeline_mode": "full-prism",
           "resolution_requested": true,
