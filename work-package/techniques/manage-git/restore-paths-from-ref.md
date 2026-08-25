@@ -38,9 +38,9 @@ Paths successfully restored from `{base_ref}` and staged in `{target_path}`. Emp
 
 ### 2. Restore
 
-- For each path in `{paths}`:
-  - When `{interactive_restore}` is true: `git -C {target_path} checkout -p {base_ref} -- {path}` (agent/user selects hunks).
-  - Otherwise: `git -C {target_path} checkout {base_ref} -- {path}`.
+- For each path in `{paths}`, check it out from `{base_ref}` in the form `{interactive_restore}` selects.  
+  > When `{interactive_restore}` is true: `git -C {target_path} checkout -p {base_ref} -- {path}`, where the agent or user selects hunks.  
+  > Otherwise: `git -C {target_path} checkout {base_ref} -- {path}`.
 - Skip paths that do not exist at `{base_ref}` (record and continue); do not invent content.
 
 ### 3. Stage
