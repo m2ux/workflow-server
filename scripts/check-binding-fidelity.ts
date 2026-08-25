@@ -17,8 +17,9 @@
  *       satisfy a read here.
  *
  *   (3) dead-output — an output id declared in an op's own file that nothing OUTSIDE that file
- *       consumes: no `{token}` read, no condition variable, no step-binding value or remap, and
- *       no same-named declared input (the name-match chaining convention). A mention only in the
+ *       consumes: no `{token}` read, no condition variable, no step-binding value or remap, no
+ *       loop `over` collection, and no same-named declared input (the name-match chaining
+ *       convention). A mention only in the
  *       declaring file's own protocol ("return `{x}`") is internal wiring, not a consumer.
  *       Outputs carrying an `#### artifact` block are exempt — the server consumes them when it
  *       synthesizes the activity artifact contract.
@@ -338,6 +339,13 @@ function walkSteps(wf: string, rel: string, node: unknown, activityId: string, s
   const eff = o.effect as { setVariable?: object } | undefined;
   if (eff?.setVariable) Object.keys(eff.setVariable).forEach((k) => produced(wf).add(k));
   if (typeof o.variable === 'string') produced(wf).add(o.variable);
+  // A `forEach` loop's `over` names the collection it iterates, which is the one place that
+  // collection is read. Its producer has a consumer here, and a collection reaching the loop
+  // through no other name is live. `over` reaches a field of a produced object as often as the
+  // object itself (`implementation_plan.tasks`), so it resolves against its head like any read.
+  if (typeof o.over === 'string') {
+    expressionConsumes.push({ rel, stepId: here, name: o.over.split('.')[0]! });
+  }
   for (const v of Object.values(o)) walkSteps(wf, rel, v, activityId, here);
 }
 
@@ -532,8 +540,9 @@ function scopeOf(wf: string): Set<string> {
 }
 
 /** Where each name is consumed: `{token}` reads and condition variables, binding remap keys,
- *  binding input values (bare names and embedded tokens), and same-named declared inputs (the
- *  name-match chaining convention) — keyed by consuming file. Liveness for the dead-output check
+ *  binding input values (bare names and embedded tokens), loop `over` collections, and same-named
+ *  declared inputs (the name-match chaining convention) — keyed by consuming file. Liveness for
+ *  the dead-output check
  *  is consumption OUTSIDE the declaring file: an output mentioned only by its own protocol prose
  *  ("return `{x}`") has no downstream consumer. */
 function collectConsumedSites(): Map<string, Set<string>> {
