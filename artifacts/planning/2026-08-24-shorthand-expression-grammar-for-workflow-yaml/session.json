@@ -2011,16 +2011,250 @@
             },
             "timestamp": "2026-08-25T04:24:51.056Z",
             "type": "step_started"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-01",
+              "basis": "delta",
+              "usage": {
+                "duration_ms": 133725,
+                "subagent_tokens": 166472,
+                "tool_uses": 4
+              }
+            },
+            "timestamp": "2026-08-25T04:27:28.228Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "sessionIndex": "YM6QZV",
+              "workflowId": "prism"
+            },
+            "timestamp": "2026-08-25T04:28:01.727Z",
+            "type": "workflow_triggered"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 25,
+        "seq": 27,
         "sessionIndex": "2J6KER",
         "startedAt": "2026-08-24T16:42:08.996Z",
         "status": "running",
-        "triggeredWorkflows": [],
-        "ts": 1787631891,
+        "triggeredWorkflows": [
+          {
+            "sessionIndex": "YM6QZV",
+            "state": {
+              "agentId": "workflow-orchestrator",
+              "checkpointResponses": {},
+              "completedActivities": [],
+              "currentActivity": "select-mode",
+              "currentTechnique": "",
+              "deliveredContent": {
+                "prism-g1-select": {
+                  "activity_rules:df60226b63c3f6ae": "df60226b63c3f6ae",
+                  "bundle:rules:803c2e9e4c960c72": "803c2e9e4c960c72",
+                  "bundle:variable-binding": "fc19a1a690c26bd4",
+                  "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+                  "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+                  "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+                  "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+                  "resource:analysis-plan": "b646eec97465b626",
+                  "technique:inherited_inputs.items:8f4c7a7b274cacb4": "8f4c7a7b274cacb4",
+                  "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+                  "technique:inherited_inputs:6131206b19a50605": "6131206b19a50605",
+                  "technique:plan-analysis": "2af35b78c37666f7",
+                  "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+                  "technique:rules:56ca8c7f23e4daa8": "56ca8c7f23e4daa8"
+                }
+              },
+              "exit": "",
+              "history": [
+                {
+                  "timestamp": "2026-08-25T04:28:01.728Z",
+                  "type": "workflow_started"
+                },
+                {
+                  "data": {
+                    "variables": {
+                      "output_path": ".",
+                      "user_request": "Discover opportunities to optimise activity and workflow YAML file grammar and syntax so that expressions can be written in shorthand. At present the only construct optimised in this respect is `when`, which allows compound conditional expressions in a language-like syntax. Investigate this with the prism-evaluate workflow."
+                    }
+                  },
+                  "timestamp": "2026-08-25T04:28:01.728Z",
+                  "type": "variables_seeded"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "target",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server"
+                  },
+                  "timestamp": "2026-08-25T04:28:08.989Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "target_type",
+                    "source": "variables_changed",
+                    "value": "general"
+                  },
+                  "timestamp": "2026-08-25T04:28:08.989Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "target_description",
+                    "source": "variables_changed",
+                    "value": "Consistency of the workflow-server activity and workflow YAML definition grammar - whether like constructs receive like treatment across the language."
+                  },
+                  "timestamp": "2026-08-25T04:28:08.989Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "output_path",
+                    "source": "variables_changed",
+                    "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/consistency"
+                  },
+                  "timestamp": "2026-08-25T04:28:08.989Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "pipeline_mode",
+                    "source": "variables_changed",
+                    "value": "full-prism"
+                  },
+                  "timestamp": "2026-08-25T04:28:08.989Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "selected_lenses",
+                    "source": "variables_changed",
+                    "value": [
+                      "00",
+                      "01",
+                      "02"
+                    ]
+                  },
+                  "timestamp": "2026-08-25T04:28:08.989Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "",
+                  "data": {
+                    "name": "analysis_focus",
+                    "source": "variables_changed",
+                    "value": "Evaluate consistency of the two parallel predicate grammars - 281 string `when:` gates against 109 structured `condition:` trees with no lowering between them, including the verbatim same four-term predicate written both ways in workflow-authoring/activities/09-validate-and-commit.yaml; the undeclared third grammar in actions[].target (38 uses, 22 with operators) competing with 11 actions[].condition trees on the same verb; the reads/writes asymmetry (618 bare strings against 525 four-key objects); and whether constructs appearing at both activity and workflow level are written alike. The run settles a target grammar and specifies it; it does not write grammar/*.ebnf or constraints/*.als."
+                  },
+                  "timestamp": "2026-08-25T04:28:08.989Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "timestamp": "2026-08-25T04:28:08.989Z",
+                  "type": "activity_entered"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-select",
+                    "chars": 64413,
+                    "dispatch": "fresh"
+                  },
+                  "timestamp": "2026-08-25T04:28:27.397Z",
+                  "type": "activity_dispatched"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-select",
+                    "chars": 20166,
+                    "delivery": "full",
+                    "stepId": "plan",
+                    "techniqueId": "plan-analysis"
+                  },
+                  "timestamp": "2026-08-25T04:28:27.397Z",
+                  "type": "technique_bundled"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-select",
+                    "stepId": "plan"
+                  },
+                  "timestamp": "2026-08-25T04:28:27.397Z",
+                  "type": "step_started"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-select",
+                    "chars": 1680,
+                    "delivery": "full",
+                    "resourceId": "analysis-plan"
+                  },
+                  "timestamp": "2026-08-25T04:28:40.304Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-select",
+                    "basis": "delta",
+                    "usage": {
+                      "duration_ms": 159057,
+                      "subagent_tokens": 71254,
+                      "tool_uses": 14
+                    }
+                  },
+                  "timestamp": "2026-08-25T04:31:08.869Z",
+                  "type": "activity_usage"
+                }
+              ],
+              "repo": "m2ux/workflow-server",
+              "schemaVersion": 1,
+              "seq": 4,
+              "sessionIndex": "YM6QZV",
+              "startedAt": "2026-08-25T04:28:01.728Z",
+              "status": "running",
+              "triggeredWorkflows": [],
+              "ts": 1787632268,
+              "variables": {
+                "analysis_focus": "Evaluate consistency of the two parallel predicate grammars - 281 string `when:` gates against 109 structured `condition:` trees with no lowering between them, including the verbatim same four-term predicate written both ways in workflow-authoring/activities/09-validate-and-commit.yaml; the undeclared third grammar in actions[].target (38 uses, 22 with operators) competing with 11 actions[].condition trees on the same verb; the reads/writes asymmetry (618 bare strings against 525 four-key objects); and whether constructs appearing at both activity and workflow level are written alike. The run settles a target grammar and specifies it; it does not write grammar/*.ebnf or constraints/*.als.",
+                "output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/consistency",
+                "pipeline_mode": "full-prism",
+                "selected_lenses": [
+                  "00",
+                  "01",
+                  "02"
+                ],
+                "target": "/home/mike1/projects/dev/workflow-server",
+                "target_description": "Consistency of the workflow-server activity and workflow YAML definition grammar - whether like constructs receive like treatment across the language.",
+                "target_type": "general",
+                "user_request": "Discover opportunities to optimise activity and workflow YAML file grammar and syntax so that expressions can be written in shorthand. At present the only construct optimised in this respect is `when`, which allows compound conditional expressions in a language-like syntax. Investigate this with the prism-evaluate workflow."
+              },
+              "workflowId": "prism",
+              "workflowVersion": "2.5.0"
+            },
+            "status": "running",
+            "triggeredAt": "2026-08-25T04:28:01.727Z",
+            "triggeredFrom": {
+              "activityId": "execute-analysis"
+            },
+            "workflowId": "prism"
+          }
+        ],
+        "ts": 1787632081,
         "variables": {
           "accepted_count": 0,
           "dimension_plan": [
