@@ -34,9 +34,9 @@ The minimal change that solves the problem at the highest reachable [rung](../re
 - When `{lean_brief}` is present, start from its traced flow, reachable rungs, and safety-floor obligations rather than re-deriving them.
 - Walk the [rungs](../resources/the-ladder.md#rungs) from the laziest down and take the highest one that solves the understood problem.
 - Let `{lazy_intensity}` govern how the code is built.  
-  > At `lite`, build what was asked and record the lazier alternative in one line beside it.  
-  > At `full`, hold the ladder as written: highest reachable rung, shortest working diff, shortest explanation.  
-  > At `ultra`, build the minimal version and trim the over-built part of the requirement itself, recording what it trimmed as an open question rather than waiting on an answer that can be defaulted.
+  > - At `lite`, build what was asked and record the lazier alternative in one line beside it.
+  > - At `full`, hold the ladder as written: highest reachable rung, shortest working diff, shortest explanation.
+  > - At `ultra`, build the minimal version and trim the over-built part of the requirement itself, recording what it trimmed as an open question rather than waiting on an answer that can be defaulted.
 
 ### 2. Hold the safety floor
 

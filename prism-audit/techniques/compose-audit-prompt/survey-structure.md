@@ -31,5 +31,5 @@ Total lines of code across the surveyed modules, excluding tests, docs, and gene
 ### 2. Inventory the Modules
 
 - Record `{module_inventory}` from the layout the build configuration declares, with each module's line count excluding tests, docs and generated files, and `{total_loc}` as their sum. Note the test directories and the file patterns they follow.  
-  > Where the codebase is indexed, apply `gitnexus-operations::query` for functional areas, execution flows and community clusters, which bound modules better than directory layout alone, and `gitnexus-operations::context` on the high-risk ones for a caller count.  
-  > Where `{target_path}` holds no analysable source files, report the path as unsurveyable and whether submodules appear uninitialised, rather than an empty inventory.
+  > - Where the codebase is indexed, apply `gitnexus-operations::query` for functional areas, execution flows and community clusters, which bound modules better than directory layout alone, and `gitnexus-operations::context` on the high-risk ones for a caller count.
+  > - Where `{target_path}` holds no analysable source files, report the path as unsurveyable and whether submodules appear uninitialised, rather than an empty inventory.

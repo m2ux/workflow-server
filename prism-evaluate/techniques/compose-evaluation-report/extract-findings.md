@@ -20,5 +20,5 @@ Draws each dimension's findings out of its analysis run and into the report's pe
 ### 3. Record the Per-Dimension Sections
 
 - Record `{evaluation_report.dimension_findings}`: per dimension, its name, finding count, count by severity, and the findings with their IDs.  
-  > A run whose status is `partial` or `error` keeps its dimension in the report, noted as incomplete coverage.  
-  > A dimension whose run found nothing keeps its section, noted as no significant findings.
+  > - A run whose status is `partial` or `error` keeps its dimension in the report, noted as incomplete coverage.
+  > - A dimension whose run found nothing keeps its section, noted as no significant findings.
