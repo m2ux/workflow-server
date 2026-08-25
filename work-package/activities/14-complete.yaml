@@ -35,7 +35,7 @@ variables:
       defaultValue: ""
     - name: current_deferred_item
       type: object
-      description: The deferred-items register row under consideration during the raise loop.
+      description: The deferred-items register row under consideration.
     - name: has_unraised_deferred_items
       type: boolean
       description: Whether the register holds at least one row naming no issue yet.
