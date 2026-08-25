@@ -3240,9 +3240,18 @@
             "state": {
               "agentId": "workflow-orchestrator",
               "checkpointResponses": {},
-              "completedActivities": [],
-              "currentActivity": "select-mode",
-              "currentTechnique": "",
+              "completedActivities": [
+                "select-mode"
+              ],
+              "currentActivity": "structural-pass",
+              "currentTechnique": "portfolio-analysis",
+              "declaredArtifacts": [
+                {
+                  "id": "analysis_plan",
+                  "name": "analysis-plan.md",
+                  "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/00-analysis-plan.md"
+                }
+              ],
               "deliveredContent": {
                 "prism-g2-select": {
                   "activity_rules:df60226b63c3f6ae": "df60226b63c3f6ae",
@@ -3259,9 +3268,32 @@
                   "technique:plan-analysis": "2af35b78c37666f7",
                   "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
                   "technique:rules:56ca8c7f23e4daa8": "56ca8c7f23e4daa8"
+                },
+                "prism-g2-structural": {
+                  "activity_rules:df60226b63c3f6ae": "df60226b63c3f6ae",
+                  "bundle:rules:c57dc3f9ba592065": "c57dc3f9ba592065",
+                  "bundle:scatter-gather": "c3ee7a21a91eb589",
+                  "bundle:variable-binding": "fc19a1a690c26bd4",
+                  "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+                  "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+                  "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+                  "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+                  "resource:claim": "d13261676d5682bc",
+                  "resource:deep-scan": "d9305247176b7993",
+                  "resource:pedagogy": "be9285fa0e058bff",
+                  "resource:portfolio-synthesis": "3855f7541d0f86d5",
+                  "resource:scarcity": "aa5657b229270771",
+                  "resource:sdl-abstraction": "6e230f984f6c7fcf",
+                  "technique:gitnexus-operations::verify-index": "2e0533c28e9e8d1a",
+                  "technique:inherited_inputs.items:8f4c7a7b274cacb4": "8f4c7a7b274cacb4",
+                  "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+                  "technique:inherited_inputs:6131206b19a50605": "6131206b19a50605",
+                  "technique:portfolio-analysis": "660a5c5802fbf8da",
+                  "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+                  "technique:rules:28ed2620722185d8": "28ed2620722185d8"
                 }
               },
-              "exit": "",
+              "exit": "structural",
               "history": [
                 {
                   "timestamp": "2026-08-25T06:38:33.246Z",
@@ -3413,18 +3445,262 @@
                   },
                   "timestamp": "2026-08-25T06:48:54.449Z",
                   "type": "activity_usage"
+                },
+                {
+                  "activity": "select-mode",
+                  "timestamp": "2026-08-25T06:50:06.177Z",
+                  "type": "activity_exited"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "exit": "structural",
+                    "outcome": "complete"
+                  },
+                  "timestamp": "2026-08-25T06:50:06.177Z",
+                  "type": "activity_outcome"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "pipeline_mode",
+                    "source": "variables_changed",
+                    "value": "portfolio"
+                  },
+                  "timestamp": "2026-08-25T06:50:06.177Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "analysis_units",
+                    "source": "variables_changed",
+                    "value": [
+                      {
+                        "lens_name": "",
+                        "lenses": [
+                          "pedagogy",
+                          "claim",
+                          "scarcity",
+                          "deep-scan",
+                          "sdl-abstraction"
+                        ],
+                        "pipeline_mode": "portfolio",
+                        "rationale": "The grammar is the surface every workflow author writes against, and the run must specify it well enough to generate the four formal artifacts. Portfolio buys five non-overlapping reads. Single unit because portfolio-analysis declares a bare portfolio-synthesis.md filename that two units would collide on, and forbids a single-lens portfolio.",
+                        "risk": "high",
+                        "role": "api-surface",
+                        "target": "workflows/**/*.yaml, src/schema/, src/utils/gate-liveness.ts, schemas/, scripts/check-*.ts, grammar/, constraints/",
+                        "target_type": "code",
+                        "unit_output_subdir": "dimensions/"
+                      }
+                    ]
+                  },
+                  "timestamp": "2026-08-25T06:50:06.177Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g2-select",
+                    "stepId": "plan"
+                  },
+                  "timestamp": "2026-08-25T06:50:06.177Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g2-select",
+                    "stepId": "summarize"
+                  },
+                  "timestamp": "2026-08-25T06:50:06.177Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g2-select",
+                    "stepId": "apply-plan"
+                  },
+                  "timestamp": "2026-08-25T06:50:06.177Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g2-select",
+                    "stepId": "confirm-mode"
+                  },
+                  "timestamp": "2026-08-25T06:50:06.177Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "timestamp": "2026-08-25T06:50:06.177Z",
+                  "type": "activity_entered"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "chars": 50252,
+                    "dispatch": "fresh"
+                  },
+                  "timestamp": "2026-08-25T06:51:10.088Z",
+                  "type": "activity_dispatched"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "chars": 3887,
+                    "delivery": "full",
+                    "stepId": "check-gitnexus",
+                    "techniqueId": "gitnexus-operations::verify-index"
+                  },
+                  "timestamp": "2026-08-25T06:51:10.088Z",
+                  "type": "technique_bundled"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "stepId": "check-gitnexus"
+                  },
+                  "timestamp": "2026-08-25T06:51:10.088Z",
+                  "type": "step_started"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "chars": 11630,
+                    "delivery": "full",
+                    "stepId": "run-portfolio",
+                    "techniqueId": "portfolio-analysis"
+                  },
+                  "timestamp": "2026-08-25T06:51:26.768Z",
+                  "type": "technique_fetched"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "stepId": "run-portfolio"
+                  },
+                  "timestamp": "2026-08-25T06:51:26.768Z",
+                  "type": "step_started"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "chars": 607,
+                    "delivery": "full",
+                    "resourceId": "pedagogy"
+                  },
+                  "timestamp": "2026-08-25T06:56:53.690Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "chars": 565,
+                    "delivery": "full",
+                    "resourceId": "claim"
+                  },
+                  "timestamp": "2026-08-25T06:56:53.832Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "chars": 488,
+                    "delivery": "full",
+                    "resourceId": "scarcity"
+                  },
+                  "timestamp": "2026-08-25T06:56:57.444Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "chars": 1822,
+                    "delivery": "full",
+                    "resourceId": "deep-scan"
+                  },
+                  "timestamp": "2026-08-25T06:56:58.138Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "chars": 2123,
+                    "delivery": "full",
+                    "resourceId": "sdl-abstraction"
+                  },
+                  "timestamp": "2026-08-25T06:56:58.571Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "chars": 1658,
+                    "delivery": "full",
+                    "resourceId": "portfolio-synthesis"
+                  },
+                  "timestamp": "2026-08-25T07:12:14.144Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "basis": "delta",
+                    "usage": {
+                      "duration_ms": 1403111,
+                      "subagent_tokens": 214902,
+                      "tool_uses": 83
+                    }
+                  },
+                  "timestamp": "2026-08-25T07:14:49.168Z",
+                  "type": "activity_usage"
                 }
               ],
               "repo": "m2ux/workflow-server",
               "schemaVersion": 1,
-              "seq": 4,
+              "seq": 14,
               "sessionIndex": "7OPXHM",
               "startedAt": "2026-08-25T06:38:33.246Z",
               "status": "running",
               "triggeredWorkflows": [],
-              "ts": 1787640534,
+              "ts": 1787642089,
               "variables": {
                 "analysis_focus": "Expressiveness: what authors are forced to restate - the five-line-versus-one-line cost of `condition` where 75 of 109 are a single leaf and all 86 children restate type: simple; 145 of 410 technique inputs being pure renames with 10 identity passthroughs; `required` populated on 6 of 525 writes entries; the absence of set-membership against the corpus's a == 'x' || a == 'y' chains; and which of the 15 existing sugar precedents transfer to the un-sugared constructs. Architecture: whether `when` should desugar into Condition or stay parallel, given two ASTs, two evaluators, two duplicated path resolvers and a single and-combination meeting point in gate-liveness.ts; placement of the parse boundary given enforcement lives in scripts/ and in tests/e2e/walker.ts; the four-way single source of truth across Zod, generated JSON Schemas, EBNF and Alloy; and whether the settled grammar is expressible in EBNF and constrainable in Alloy at all. Feasibility: `when` being z.string() so no Zod change catches new syntax, which must instead be taught to tokenize/Parser and to scripts/check-when-expression.ts; JSON Schemas generated from Zod with no regeneration or drift check; migration touching 109 condition blocks, 211 structured technique bindings and 192 graph edges. Draft against origin/main, not the current branch, which is 42 commits behind and lacks ExitSchema, variable.schema.ts and the workflow `graph` construct. The run settles a target grammar and specifies it; it does not write grammar/*.ebnf or constraints/*.als.",
+                "analysis_units": [
+                  {
+                    "lens_name": "",
+                    "lenses": [
+                      "pedagogy",
+                      "claim",
+                      "scarcity",
+                      "deep-scan",
+                      "sdl-abstraction"
+                    ],
+                    "pipeline_mode": "portfolio",
+                    "rationale": "The grammar is the surface every workflow author writes against, and the run must specify it well enough to generate the four formal artifacts. Portfolio buys five non-overlapping reads. Single unit because portfolio-analysis declares a bare portfolio-synthesis.md filename that two units would collide on, and forbids a single-lens portfolio.",
+                    "risk": "high",
+                    "role": "api-surface",
+                    "target": "workflows/**/*.yaml, src/schema/, src/utils/gate-liveness.ts, schemas/, scripts/check-*.ts, grammar/, constraints/",
+                    "target_type": "code",
+                    "unit_output_subdir": "dimensions/"
+                  }
+                ],
                 "output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions",
                 "pipeline_mode": "portfolio",
                 "selected_lenses": [
