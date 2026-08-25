@@ -704,6 +704,15 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "dimension-planning-confirm-plan": {
+            "effects": {
+              "variablesSet": {
+                "dimensions_confirmed": true
+              }
+            },
+            "optionId": "accept",
+            "respondedAt": "2026-08-25T04:22:51.000Z"
+          },
           "scope-definition-confirm-scope": {
             "effects": {
               "exit": "adjust"
@@ -721,8 +730,10 @@
             "respondedAt": "2026-08-25T04:08:58.000Z"
           }
         },
-        "completedActivities": [],
-        "currentActivity": "scope-definition",
+        "completedActivities": [
+          "scope-definition"
+        ],
+        "currentActivity": "dimension-planning",
         "currentTechnique": "",
         "deliveredContent": {
           "client-worker-01": {
@@ -738,6 +749,11 @@
             "resource:default-dimensions#custom-targets": "2c38c1b03277e5e4",
             "resource:default-dimensions#dimension-object-structure": "3dd6c8edc8c4da1f",
             "resource:default-dimensions#mixed-targets": "da28808bfade68a1",
+            "resource:dimension-lens-mapping#custom-dimension-mappings": "4a8efb6282b31748",
+            "resource:dimension-lens-mapping#output-subdirectory-convention": "3e9d47a57247a468",
+            "resource:dimension-lens-mapping#standard-mappings": "7337553c5865d1e2",
+            "resource:evaluation-plan-template#evaluation-plan-template": "4a0f10ad3e70498a",
+            "resource:prism/README": "70ee69fbad189dc2",
             "technique:inherited_inputs.items:2b101008a04f796b": "2b101008a04f796b",
             "technique:inherited_inputs.items:8d16b5e0fb9e44d9": "8d16b5e0fb9e44d9",
             "technique:inherited_inputs.items:fe06cf28db665c08": "fe06cf28db665c08",
@@ -749,11 +765,16 @@
             "technique:plan-evaluation::collect-scope": "ca38bf9ea3a2aa84",
             "technique:plan-evaluation::create-output-folder": "eb28ff6d1284415f",
             "technique:plan-evaluation::derive-dimensions": "d67b0650278a1ec7",
+            "technique:plan-evaluation::group-for-execution": "95fa63c3c8df527d",
+            "technique:plan-evaluation::map-dimensions-to-lenses": "01521d5992b90900",
             "technique:plan-evaluation::summarize-scope": "73c637e3875f0dc9",
-            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be"
+            "technique:plan-evaluation::survey-target": "f18b9d7042e46574",
+            "technique:plan-evaluation::write-evaluation-plan": "a0bac66e64aa2757",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:9389f4c194b62ef3": "9389f4c194b62ef3"
           }
         },
-        "exit": "",
+        "exit": "scope-confirmed",
         "history": [
           {
             "timestamp": "2026-08-24T16:42:08.996Z",
@@ -1208,23 +1229,572 @@
             },
             "timestamp": "2026-08-25T04:09:39.135Z",
             "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "basis": "delta",
+              "usage": {
+                "duration_ms": 79088,
+                "subagent_tokens": 83856,
+                "tool_uses": 4
+              }
+            },
+            "timestamp": "2026-08-25T04:12:53.598Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "scope-definition",
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "exit": "scope-confirmed",
+              "outcome": "complete"
+            },
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "activity_outcome"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "target_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server"
+            },
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "target_name",
+              "source": "variables_changed",
+              "value": "workflow-server"
+            },
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "evaluation_target_type",
+              "source": "variables_changed",
+              "value": "mixed"
+            },
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "evaluation_output_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml"
+            },
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "scope_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "evaluation_description",
+              "source": "variables_changed",
+              "value": "Discover opportunities to optimise activity and workflow YAML grammar and syntax so that expressions can be written in shorthand. Today `when` is the only construct with a compound, language-like expression syntax; the structured `condition` tree is marked LEGACY in its favour yet remains the only available form on actions, reusable fragments and transitions, and technique bindings carry their own separate literal/rename/template deviation forms.\n\nAuthoritative current-state sources: the Zod schemas under `src/schema/` (notably `when-expression.ts` and `condition.schema.ts`), the JSON Schemas under `schemas/`, and the 140-file YAML definition corpus under `workflows/`. The `docs/` specifications are in scope as consumers of the grammar that may require updating, not as an authority on it. `grammar/activity.ebnf` and `constraints/activity.als` are placeholders for future work and carry no evidential weight for the current grammar.\n\nThe run settles a target grammar covering both activity and workflow definitions and specifies it precisely enough that four formal artifacts could be generated from that specification: `grammar/activity.ebnf` and `constraints/activity.als` brought into alignment, plus new counterparts `grammar/workflow.ebnf` and `constraints/workflow.als`. Those four files are the specification's target consumers, produced by follow-on implementation work; this run does not write them. All output of this run stays within the planning folder."
+            },
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "dimensions",
+              "source": "variables_changed",
+              "value": [
+                {
+                  "description": "Where verbosity sits in the notation, and what shorthand would buy.",
+                  "focus_areas": [
+                    "Ratio of structural scaffolding to semantic content per construct",
+                    "Boilerplate that carries no information",
+                    "Constructs with a single always-used shape",
+                    "Defaults an author must restate"
+                  ],
+                  "name": "Expressiveness"
+                },
+                {
+                  "description": "Whether like constructs receive like treatment across the grammar.",
+                  "focus_areas": [
+                    "The when/condition asymmetry across steps, actions, fragments, transitions and exits",
+                    "Activity/workflow parity for constructs appearing at both levels",
+                    "One concept expressed two ways",
+                    "Agreement between the Zod schemas, the JSON Schemas and the prose specifications"
+                  ],
+                  "name": "Consistency"
+                },
+                {
+                  "description": "Whether a shorthand grammar is structurally sound and formally expressible.",
+                  "focus_areas": [
+                    "Placement of the parse boundary",
+                    "Desugaring to the existing structured form versus duplicating it",
+                    "Separation of surface syntax from evaluation semantics",
+                    "Four-way single source of truth across Zod schema, JSON Schema, EBNF and Alloy",
+                    "Formalisability - whether the settled grammar can be expressed in EBNF and constrained in Alloy"
+                  ],
+                  "name": "Architecture"
+                },
+                {
+                  "description": "What each opportunity costs to land.",
+                  "focus_areas": [
+                    "Parser work implied",
+                    "Schema-only versus evaluator-touching changes",
+                    "The 140-file corpus migration surface",
+                    "Validator and error-message quality",
+                    "Editor and JSON-Schema tooling support",
+                    "Cost of producing and maintaining four formal artifacts"
+                  ],
+                  "name": "Feasibility"
+                }
+              ]
+            },
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "collect-inputs"
+            },
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "classify-target"
+            },
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "derive-dimensions"
+            },
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "create-output-directory"
+            },
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "summarize-scope"
+            },
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "confirm-scope"
+            },
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "dimension-planning",
+            "timestamp": "2026-08-25T04:13:09.250Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 17579,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-25T04:13:23.696Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 3410,
+              "delivery": "full",
+              "stepId": "survey-target",
+              "techniqueId": "plan-evaluation::survey-target"
+            },
+            "timestamp": "2026-08-25T04:13:23.696Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "survey-target"
+            },
+            "timestamp": "2026-08-25T04:13:23.696Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 3872,
+              "delivery": "full",
+              "stepId": "map-dimensions",
+              "techniqueId": "plan-evaluation::map-dimensions-to-lenses"
+            },
+            "timestamp": "2026-08-25T04:13:23.696Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "map-dimensions"
+            },
+            "timestamp": "2026-08-25T04:13:23.696Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2582,
+              "delivery": "full",
+              "stepId": "group-dimensions",
+              "techniqueId": "plan-evaluation::group-for-execution"
+            },
+            "timestamp": "2026-08-25T04:13:23.696Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "group-dimensions"
+            },
+            "timestamp": "2026-08-25T04:13:23.696Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 3254,
+              "delivery": "full",
+              "stepId": "write-plan",
+              "techniqueId": "plan-evaluation::write-evaluation-plan"
+            },
+            "timestamp": "2026-08-25T04:13:23.696Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "write-plan"
+            },
+            "timestamp": "2026-08-25T04:13:23.696Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 1066,
+              "delivery": "full",
+              "resourceId": "dimension-lens-mapping#standard-mappings"
+            },
+            "timestamp": "2026-08-25T04:13:23.696Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 617,
+              "delivery": "full",
+              "resourceId": "dimension-lens-mapping#custom-dimension-mappings"
+            },
+            "timestamp": "2026-08-25T04:13:23.696Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 186,
+              "delivery": "full",
+              "resourceId": "dimension-lens-mapping#output-subdirectory-convention"
+            },
+            "timestamp": "2026-08-25T04:13:23.696Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 1777,
+              "delivery": "full",
+              "resourceId": "evaluation-plan-template#evaluation-plan-template"
+            },
+            "timestamp": "2026-08-25T04:13:23.696Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 19759,
+              "delivery": "full",
+              "resourceId": "prism/README"
+            },
+            "timestamp": "2026-08-25T04:20:44.248Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "checkpoint": "confirm-plan",
+            "timestamp": "2026-08-25T04:22:11.531Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "basis": "delta",
+              "usage": {
+                "duration_ms": 547165,
+                "subagent_tokens": 138569,
+                "tool_uses": 11
+              }
+            },
+            "timestamp": "2026-08-25T04:22:31.658Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "dimension-planning",
+            "checkpoint": "confirm-plan",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-08-25T04:22:51.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "name": "dimensions_confirmed",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-25T04:22:51.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 6507,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-25T04:23:11.707Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 3410,
+              "delivery": "unchanged",
+              "stepId": "survey-target",
+              "techniqueId": "plan-evaluation::survey-target"
+            },
+            "timestamp": "2026-08-25T04:23:11.707Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 3872,
+              "delivery": "unchanged",
+              "stepId": "map-dimensions",
+              "techniqueId": "plan-evaluation::map-dimensions-to-lenses"
+            },
+            "timestamp": "2026-08-25T04:23:11.707Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2582,
+              "delivery": "unchanged",
+              "stepId": "group-dimensions",
+              "techniqueId": "plan-evaluation::group-for-execution"
+            },
+            "timestamp": "2026-08-25T04:23:11.707Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 3254,
+              "delivery": "unchanged",
+              "stepId": "write-plan",
+              "techniqueId": "plan-evaluation::write-evaluation-plan"
+            },
+            "timestamp": "2026-08-25T04:23:11.707Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 1066,
+              "delivery": "unchanged",
+              "resourceId": "dimension-lens-mapping#standard-mappings"
+            },
+            "timestamp": "2026-08-25T04:23:11.707Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 617,
+              "delivery": "unchanged",
+              "resourceId": "dimension-lens-mapping#custom-dimension-mappings"
+            },
+            "timestamp": "2026-08-25T04:23:11.707Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 186,
+              "delivery": "unchanged",
+              "resourceId": "dimension-lens-mapping#output-subdirectory-convention"
+            },
+            "timestamp": "2026-08-25T04:23:11.707Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "dimension-planning",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 1777,
+              "delivery": "unchanged",
+              "resourceId": "evaluation-plan-template#evaluation-plan-template"
+            },
+            "timestamp": "2026-08-25T04:23:11.707Z",
+            "type": "resource_fetched"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 13,
+        "seq": 22,
         "sessionIndex": "2J6KER",
         "startedAt": "2026-08-24T16:42:08.996Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1787630979,
+        "ts": 1787631791,
         "variables": {
           "accepted_count": 0,
-          "dimensions_confirmed": false,
+          "dimensions": [
+            {
+              "description": "Where verbosity sits in the notation, and what shorthand would buy.",
+              "focus_areas": [
+                "Ratio of structural scaffolding to semantic content per construct",
+                "Boilerplate that carries no information",
+                "Constructs with a single always-used shape",
+                "Defaults an author must restate"
+              ],
+              "name": "Expressiveness"
+            },
+            {
+              "description": "Whether like constructs receive like treatment across the grammar.",
+              "focus_areas": [
+                "The when/condition asymmetry across steps, actions, fragments, transitions and exits",
+                "Activity/workflow parity for constructs appearing at both levels",
+                "One concept expressed two ways",
+                "Agreement between the Zod schemas, the JSON Schemas and the prose specifications"
+              ],
+              "name": "Consistency"
+            },
+            {
+              "description": "Whether a shorthand grammar is structurally sound and formally expressible.",
+              "focus_areas": [
+                "Placement of the parse boundary",
+                "Desugaring to the existing structured form versus duplicating it",
+                "Separation of surface syntax from evaluation semantics",
+                "Four-way single source of truth across Zod schema, JSON Schema, EBNF and Alloy",
+                "Formalisability - whether the settled grammar can be expressed in EBNF and constrained in Alloy"
+              ],
+              "name": "Architecture"
+            },
+            {
+              "description": "What each opportunity costs to land.",
+              "focus_areas": [
+                "Parser work implied",
+                "Schema-only versus evaluator-touching changes",
+                "The 140-file corpus migration surface",
+                "Validator and error-message quality",
+                "Editor and JSON-Schema tooling support",
+                "Cost of producing and maintaining four formal artifacts"
+              ],
+              "name": "Feasibility"
+            }
+          ],
+          "dimensions_confirmed": true,
+          "evaluation_description": "Discover opportunities to optimise activity and workflow YAML grammar and syntax so that expressions can be written in shorthand. Today `when` is the only construct with a compound, language-like expression syntax; the structured `condition` tree is marked LEGACY in its favour yet remains the only available form on actions, reusable fragments and transitions, and technique bindings carry their own separate literal/rename/template deviation forms.\n\nAuthoritative current-state sources: the Zod schemas under `src/schema/` (notably `when-expression.ts` and `condition.schema.ts`), the JSON Schemas under `schemas/`, and the 140-file YAML definition corpus under `workflows/`. The `docs/` specifications are in scope as consumers of the grammar that may require updating, not as an authority on it. `grammar/activity.ebnf` and `constraints/activity.als` are placeholders for future work and carry no evidential weight for the current grammar.\n\nThe run settles a target grammar covering both activity and workflow definitions and specifies it precisely enough that four formal artifacts could be generated from that specification: `grammar/activity.ebnf` and `constraints/activity.als` brought into alignment, plus new counterparts `grammar/workflow.ebnf` and `constraints/workflow.als`. Those four files are the specification's target consumers, produced by follow-on implementation work; this run does not write them. All output of this run stays within the planning folder.",
+          "evaluation_output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml",
+          "evaluation_target_type": "mixed",
           "mitigations_apply_requested": false,
           "pipeline_mode": "full-prism",
           "resolution_requested": false,
           "scope_confirmed": true,
+          "target_name": "workflow-server",
+          "target_path": "/home/mike1/projects/dev/workflow-server",
           "user_request": "Discover opportunities to optimise activity and workflow YAML file grammar and syntax so that expressions can be written in shorthand. At present the only construct optimised in this respect is `when`, which allows compound conditional expressions in a language-like syntax. Investigate this with the prism-evaluate workflow."
         },
         "workflowId": "prism-evaluate",
