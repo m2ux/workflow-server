@@ -2048,9 +2048,18 @@
             "state": {
               "agentId": "workflow-orchestrator",
               "checkpointResponses": {},
-              "completedActivities": [],
-              "currentActivity": "select-mode",
-              "currentTechnique": "",
+              "completedActivities": [
+                "select-mode"
+              ],
+              "currentActivity": "structural-pass",
+              "currentTechnique": "structural-analysis",
+              "declaredArtifacts": [
+                {
+                  "id": "analysis_plan",
+                  "name": "analysis-plan.md",
+                  "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/consistency/00-analysis-plan.md"
+                }
+              ],
               "deliveredContent": {
                 "prism-g1-select": {
                   "activity_rules:df60226b63c3f6ae": "df60226b63c3f6ae",
@@ -2067,9 +2076,27 @@
                   "technique:plan-analysis": "2af35b78c37666f7",
                   "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
                   "technique:rules:56ca8c7f23e4daa8": "56ca8c7f23e4daa8"
+                },
+                "prism-g1-structural": {
+                  "activity_rules:df60226b63c3f6ae": "df60226b63c3f6ae",
+                  "bundle:rules:c57dc3f9ba592065": "c57dc3f9ba592065",
+                  "bundle:scatter-gather": "c3ee7a21a91eb589",
+                  "bundle:variable-binding": "fc19a1a690c26bd4",
+                  "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+                  "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+                  "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+                  "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+                  "resource:l12": "2fc7ed6b783a0cc5",
+                  "technique:gitnexus-operations::verify-index": "2e0533c28e9e8d1a",
+                  "technique:inherited_inputs.items:8f4c7a7b274cacb4": "8f4c7a7b274cacb4",
+                  "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+                  "technique:inherited_inputs:6131206b19a50605": "6131206b19a50605",
+                  "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+                  "technique:rules:28ed2620722185d8": "28ed2620722185d8",
+                  "technique:structural-analysis": "f828e5254122b640"
                 }
               },
-              "exit": "",
+              "exit": "structural",
               "history": [
                 {
                   "timestamp": "2026-08-25T04:28:01.728Z",
@@ -2219,18 +2246,195 @@
                   },
                   "timestamp": "2026-08-25T04:31:08.869Z",
                   "type": "activity_usage"
+                },
+                {
+                  "activity": "select-mode",
+                  "timestamp": "2026-08-25T04:31:21.404Z",
+                  "type": "activity_exited"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "exit": "structural",
+                    "outcome": "complete"
+                  },
+                  "timestamp": "2026-08-25T04:31:21.404Z",
+                  "type": "activity_outcome"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "pipeline_mode",
+                    "source": "variables_changed",
+                    "value": "full-prism"
+                  },
+                  "timestamp": "2026-08-25T04:31:21.404Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "name": "analysis_units",
+                    "source": "variables_changed",
+                    "value": [
+                      {
+                        "lens_name": "l12",
+                        "lenses": [],
+                        "pipeline_mode": "full-prism",
+                        "rationale": "The definition grammar is the interface every workflow author writes against, and the analytical goal names inconsistency in it as the concern. Analysed region: workflows/**/*.yaml (122 activity files, 17 workflow.yaml), schemas/{activity,workflow,condition}.schema.json, and src/schema/.",
+                        "risk": "high",
+                        "role": "api-surface",
+                        "target": "/home/mike1/projects/dev/workflow-server",
+                        "target_type": "general",
+                        "unit_output_subdir": null
+                      }
+                    ]
+                  },
+                  "timestamp": "2026-08-25T04:31:21.404Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-select",
+                    "stepId": "plan"
+                  },
+                  "timestamp": "2026-08-25T04:31:21.404Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-select",
+                    "stepId": "summarize"
+                  },
+                  "timestamp": "2026-08-25T04:31:21.404Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-select",
+                    "stepId": "apply-plan"
+                  },
+                  "timestamp": "2026-08-25T04:31:21.404Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "select-mode",
+                  "data": {
+                    "agentId": "prism-g1-select",
+                    "stepId": "confirm-mode"
+                  },
+                  "timestamp": "2026-08-25T04:31:21.404Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "timestamp": "2026-08-25T04:31:21.404Z",
+                  "type": "activity_entered"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-structural",
+                    "chars": 50252,
+                    "dispatch": "fresh"
+                  },
+                  "timestamp": "2026-08-25T04:31:40.405Z",
+                  "type": "activity_dispatched"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-structural",
+                    "chars": 3887,
+                    "delivery": "full",
+                    "stepId": "check-gitnexus",
+                    "techniqueId": "gitnexus-operations::verify-index"
+                  },
+                  "timestamp": "2026-08-25T04:31:40.405Z",
+                  "type": "technique_bundled"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-structural",
+                    "stepId": "check-gitnexus"
+                  },
+                  "timestamp": "2026-08-25T04:31:40.405Z",
+                  "type": "step_started"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-structural",
+                    "chars": 9887,
+                    "delivery": "full",
+                    "stepId": "run-structural",
+                    "techniqueId": "structural-analysis"
+                  },
+                  "timestamp": "2026-08-25T04:31:53.767Z",
+                  "type": "technique_fetched"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-structural",
+                    "stepId": "run-structural"
+                  },
+                  "timestamp": "2026-08-25T04:31:53.767Z",
+                  "type": "step_started"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-structural",
+                    "chars": 2209,
+                    "delivery": "full",
+                    "resourceId": "l12"
+                  },
+                  "timestamp": "2026-08-25T04:32:04.238Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g1-structural",
+                    "basis": "delta",
+                    "usage": {
+                      "duration_ms": 782010,
+                      "subagent_tokens": 175958,
+                      "tool_uses": 76
+                    }
+                  },
+                  "timestamp": "2026-08-25T04:45:00.624Z",
+                  "type": "activity_usage"
                 }
               ],
               "repo": "m2ux/workflow-server",
               "schemaVersion": 1,
-              "seq": 4,
+              "seq": 9,
               "sessionIndex": "YM6QZV",
               "startedAt": "2026-08-25T04:28:01.728Z",
               "status": "running",
               "triggeredWorkflows": [],
-              "ts": 1787632268,
+              "ts": 1787633100,
               "variables": {
                 "analysis_focus": "Evaluate consistency of the two parallel predicate grammars - 281 string `when:` gates against 109 structured `condition:` trees with no lowering between them, including the verbatim same four-term predicate written both ways in workflow-authoring/activities/09-validate-and-commit.yaml; the undeclared third grammar in actions[].target (38 uses, 22 with operators) competing with 11 actions[].condition trees on the same verb; the reads/writes asymmetry (618 bare strings against 525 four-key objects); and whether constructs appearing at both activity and workflow level are written alike. The run settles a target grammar and specifies it; it does not write grammar/*.ebnf or constraints/*.als.",
+                "analysis_units": [
+                  {
+                    "lens_name": "l12",
+                    "lenses": [],
+                    "pipeline_mode": "full-prism",
+                    "rationale": "The definition grammar is the interface every workflow author writes against, and the analytical goal names inconsistency in it as the concern. Analysed region: workflows/**/*.yaml (122 activity files, 17 workflow.yaml), schemas/{activity,workflow,condition}.schema.json, and src/schema/.",
+                    "risk": "high",
+                    "role": "api-surface",
+                    "target": "/home/mike1/projects/dev/workflow-server",
+                    "target_type": "general",
+                    "unit_output_subdir": null
+                  }
+                ],
                 "output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/consistency",
                 "pipeline_mode": "full-prism",
                 "selected_lenses": [
