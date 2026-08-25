@@ -704,6 +704,15 @@
       "state": {
         "agentId": "orchestrator",
         "checkpointResponses": {
+          "deliver-results-resolution-offer": {
+            "effects": {
+              "variablesSet": {
+                "resolution_requested": true
+              }
+            },
+            "optionId": "proceed",
+            "respondedAt": "2026-08-25T08:20:34.000Z"
+          },
           "dimension-planning-confirm-plan": {
             "effects": {
               "variablesSet": {
@@ -733,15 +742,21 @@
         "completedActivities": [
           "scope-definition",
           "dimension-planning",
-          "execute-analysis"
+          "execute-analysis",
+          "consolidate-report"
         ],
-        "currentActivity": "consolidate-report",
+        "currentActivity": "deliver-results",
         "currentTechnique": "",
         "declaredArtifacts": [
           {
             "id": "evaluation_plan",
             "name": "evaluation-plan.md",
             "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/01-evaluation-plan.md"
+          },
+          {
+            "id": "evaluation_report",
+            "name": "EVALUATION-REPORT.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/EVALUATION-REPORT.md"
           }
         ],
         "deliveredContent": {
@@ -839,6 +854,24 @@
             "technique:rules:1f7ba7f0b48368d4": "1f7ba7f0b48368d4",
             "technique:rules:5d333fa046812a11": "5d333fa046812a11",
             "technique:verify-artifact-conforms": "f75407c5753a7e2f"
+          },
+          "client-worker-04": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:b35e600fc4d3a195": "b35e600fc4d3a195",
+            "bundle:variable-binding": "ea9c4abf171f027a",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "technique:compose-evaluation-report::compile-delivery-metrics": "dce2b42d15d82ea2",
+            "technique:inherited_inputs.items:c51aebe049c1a5f8": "c51aebe049c1a5f8",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:e1171e1fbd243f90": "e1171e1fbd243f90",
+            "technique:inherited_outputs.items:f94333bce712fe51": "f94333bce712fe51",
+            "technique:inherited_outputs.note:7d3aa0aac25a19b0": "7d3aa0aac25a19b0",
+            "technique:inherited_outputs:5a0fc2063e7d2cdb": "5a0fc2063e7d2cdb",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:5d333fa046812a11": "5d333fa046812a11"
           }
         },
         "exit": "done",
@@ -2485,11 +2518,212 @@
             },
             "timestamp": "2026-08-25T08:09:40.880Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "consolidate-report",
+            "timestamp": "2026-08-25T08:09:55.732Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "exit": "done",
+              "outcome": "complete"
+            },
+            "timestamp": "2026-08-25T08:09:55.732Z",
+            "type": "activity_outcome"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "name": "evaluation_report_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/EVALUATION-REPORT.md"
+            },
+            "timestamp": "2026-08-25T08:09:55.732Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "name": "artifact_conformance",
+              "source": "variables_changed",
+              "value": {
+                "conforms": false,
+                "unmeasured": [],
+                "violations": [
+                  {
+                    "detail": "672 lines against a ~200-line budget written for ~12 findings; 47 consolidated findings from 54 source",
+                    "file": "EVALUATION-REPORT.md",
+                    "fixed": false,
+                    "rule": "line-budget"
+                  }
+                ]
+              }
+            },
+            "timestamp": "2026-08-25T08:09:55.732Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-03",
+              "stepId": "extract-findings"
+            },
+            "timestamp": "2026-08-25T08:09:55.732Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-03",
+              "stepId": "identify-patterns"
+            },
+            "timestamp": "2026-08-25T08:09:55.732Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-03",
+              "stepId": "compose-report"
+            },
+            "timestamp": "2026-08-25T08:09:55.732Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-03",
+              "stepId": "verify-artifact-conformance"
+            },
+            "timestamp": "2026-08-25T08:09:55.732Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "consolidate-report",
+            "data": {
+              "agentId": "client-worker-03",
+              "stepId": "verify-report"
+            },
+            "timestamp": "2026-08-25T08:09:55.732Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "deliver-results",
+            "timestamp": "2026-08-25T08:09:55.732Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-04",
+              "chars": 42976,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-25T08:10:28.055Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-04",
+              "chars": 4537,
+              "delivery": "full",
+              "stepId": "compile-delivery-metrics",
+              "techniqueId": "compose-evaluation-report::compile-delivery-metrics"
+            },
+            "timestamp": "2026-08-25T08:10:28.055Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-04",
+              "stepId": "compile-delivery-metrics"
+            },
+            "timestamp": "2026-08-25T08:10:28.055Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "deliver-results",
+            "checkpoint": "resolution-offer",
+            "timestamp": "2026-08-25T08:12:34.762Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-04",
+              "basis": "delta",
+              "usage": {
+                "duration_ms": 152629,
+                "subagent_tokens": 82659,
+                "tool_uses": 12
+              }
+            },
+            "timestamp": "2026-08-25T08:12:58.960Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "deliver-results",
+            "checkpoint": "resolution-offer",
+            "data": {
+              "optionId": "proceed"
+            },
+            "timestamp": "2026-08-25T08:20:34.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "name": "resolution_requested",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-25T08:20:34.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-04",
+              "chars": 4280,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-25T08:20:59.297Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-04",
+              "chars": 4537,
+              "delivery": "unchanged",
+              "stepId": "compile-delivery-metrics",
+              "techniqueId": "compose-evaluation-report::compile-delivery-metrics"
+            },
+            "timestamp": "2026-08-25T08:20:59.297Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "deliver-results",
+            "data": {
+              "agentId": "client-worker-04",
+              "basis": "delta",
+              "usage": {
+                "duration_ms": 45817,
+                "subagent_tokens": 85810,
+                "tool_uses": 4
+              }
+            },
+            "timestamp": "2026-08-25T08:21:36.799Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 36,
+        "seq": 44,
         "sessionIndex": "2J6KER",
         "startedAt": "2026-08-24T16:42:08.996Z",
         "status": "running",
@@ -4714,7 +4948,7 @@
             "workflowId": "prism"
           }
         ],
-        "ts": 1787645380,
+        "ts": 1787646096,
         "variables": {
           "accepted_count": 0,
           "all_artifact_paths": [
@@ -4734,6 +4968,18 @@
             "dimensions/REPORT.md",
             "dimensions/DEFINITIVE-FINDINGS.md"
           ],
+          "artifact_conformance": {
+            "conforms": false,
+            "unmeasured": [],
+            "violations": [
+              {
+                "detail": "672 lines against a ~200-line budget written for ~12 findings; 47 consolidated findings from 54 source",
+                "file": "EVALUATION-REPORT.md",
+                "fixed": false,
+                "rule": "line-budget"
+              }
+            ]
+          },
           "completed_analyses": [
             {
               "artifact_conformance": false,
@@ -4869,6 +5115,7 @@
           "evaluation_description": "Discover opportunities to optimise activity and workflow YAML grammar and syntax so that expressions can be written in shorthand. Today `when` is the only construct with a compound, language-like expression syntax; the structured `condition` tree is marked LEGACY in its favour yet remains the only available form on actions, reusable fragments and transitions, and technique bindings carry their own separate literal/rename/template deviation forms.\n\nAuthoritative current-state sources: the Zod schemas under `src/schema/` (notably `when-expression.ts` and `condition.schema.ts`), the JSON Schemas under `schemas/`, and the 140-file YAML definition corpus under `workflows/`. The `docs/` specifications are in scope as consumers of the grammar that may require updating, not as an authority on it. `grammar/activity.ebnf` and `constraints/activity.als` are placeholders for future work and carry no evidential weight for the current grammar.\n\nThe run settles a target grammar covering both activity and workflow definitions and specifies it precisely enough that four formal artifacts could be generated from that specification: `grammar/activity.ebnf` and `constraints/activity.als` brought into alignment, plus new counterparts `grammar/workflow.ebnf` and `constraints/workflow.als`. Those four files are the specification's target consumers, produced by follow-on implementation work; this run does not write them. All output of this run stays within the planning folder.",
           "evaluation_output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml",
           "evaluation_plan_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/01-evaluation-plan.md",
+          "evaluation_report_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/EVALUATION-REPORT.md",
           "evaluation_target_type": "mixed",
           "execution_groups": [
             {
@@ -4906,7 +5153,7 @@
           ],
           "mitigations_apply_requested": false,
           "pipeline_mode": "full-prism",
-          "resolution_requested": false,
+          "resolution_requested": true,
           "scope_confirmed": true,
           "target_name": "workflow-server",
           "target_path": "/home/mike1/projects/dev/workflow-server",
