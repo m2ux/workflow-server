@@ -2,14 +2,8 @@
   "activity": "execute-analysis",
   "parent_session_index": "2J6KER",
   "child_workflow_id": "prism",
-  "status": "fanout_pending",
-  "reason": "The worker context executing this activity runs under harness-compat.depth-1-only and holds no dispatch primitive. The composed trigger context for every execution group is complete and recorded here; the dispatch_child calls that consume it are outstanding.",
-  "dispatch_instruction": {
-    "technique": "workflow-engine::handle-sub-workflow",
-    "call": "dispatch_child { session_index: \"2J6KER\", workflow_id: \"prism\", agent_id: \"workflow-orchestrator\" }",
-    "per_group": "One child prism session per entry in trigger_contexts, dispatched with that entry's pass_context. Capture each child_session_index, walk the child prism run to completion, then resume this activity's read-run-manifest step against the RUN-MANIFEST.json each run writes into its output_path.",
-    "order": "Group 1 (full-prism) before Group 2 (portfolio)."
-  },
+  "status": "complete",
+  "note": "One child prism session per execution group, each dispatched with that group's pass_context, walked to completion, and recorded into the evaluation accumulators from the RUN-MANIFEST.json it wrote into its output_path.",
   "pass_context_keys": [
     "target",
     "target_type",
@@ -23,6 +17,8 @@
     {
       "group": 1,
       "dimensions": ["Consistency"],
+      "child_session_index": "YM6QZV",
+      "run_status": "complete",
       "pass_context": {
         "target": "/home/mike1/projects/dev/workflow-server",
         "target_type": "general",
@@ -36,6 +32,8 @@
     {
       "group": 2,
       "dimensions": ["Expressiveness", "Architecture", "Feasibility"],
+      "child_session_index": "7OPXHM",
+      "run_status": "complete",
       "pass_context": {
         "target": "/home/mike1/projects/dev/workflow-server",
         "target_type": "general",
@@ -49,6 +47,7 @@
   ],
   "definition_gaps": [
     "workflow-engine::handle-sub-workflow declares the input parent_session_index with no binding source. The composed signature reports it as UNRESOLVED: no workflow variable, prior step output, or step-binding supplies it, and the trigger-prism step binds only workflow_id. The value is the session's own index, so either the signature needs a declared default or the step needs an explicit binding.",
-    "The target-type-vocabulary rule collapses a `mixed` classification to `general`, but Group 2 carries lenses 12 (deep-scan, catalogued code-only) and 15 (sdl-abstraction, code+general). A predominantly-code target reaching code lenses under a `general` target_type is a mapping the vocabulary rule does not distinguish."
+    "The target-type-vocabulary rule collapses a `mixed` classification to `general`, but Group 2 carries lenses 12 (deep-scan, catalogued code-only) and 15 (sdl-abstraction, code+general). A predominantly-code target reaching code lenses under a `general` target_type is a mapping the vocabulary rule does not distinguish.",
+    "RUN-MANIFEST.json records status, pipeline_mode, report and definitive-findings paths, and the artifact list, and carries no artifact_conformance verdict. A run whose report overruns its template budget reports that verdict only in session state, so a consumer reading the manifest alone sees a clean `complete`."
   ]
 }

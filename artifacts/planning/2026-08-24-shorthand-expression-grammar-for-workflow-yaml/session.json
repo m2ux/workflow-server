@@ -790,6 +790,26 @@
             "technique:rules:3328ee4acc859628": "3328ee4acc859628",
             "technique:rules:9389f4c194b62ef3": "9389f4c194b62ef3",
             "technique:workflow-engine::handle-sub-workflow": "26882e51cad65b09"
+          },
+          "client-worker-02": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:35e68535b1d218d0": "35e68535b1d218d0",
+            "bundle:scatter-gather": "7ef0936b4d187528",
+            "bundle:variable-binding": "ea9c4abf171f027a",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "technique:execute-analysis::compose-trigger-context": "3016ee05584e45ec",
+            "technique:execute-analysis::read-run-manifest": "d5b8632225ebd68a",
+            "technique:inherited_inputs.items:131e46b11bc27d96": "131e46b11bc27d96",
+            "technique:inherited_inputs.items:ae038dc23680938e": "ae038dc23680938e",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:197739c28e84793f": "197739c28e84793f",
+            "technique:inherited_inputs:be0610681ca82f61": "be0610681ca82f61",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+            "technique:rules:3328ee4acc859628": "3328ee4acc859628",
+            "technique:workflow-engine::handle-sub-workflow": "26882e51cad65b09"
           }
         },
         "exit": "dimensions-confirmed",
@@ -2043,11 +2063,108 @@
             },
             "timestamp": "2026-08-25T06:38:33.246Z",
             "type": "workflow_triggered"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-02",
+              "chars": 51123,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-25T07:58:56.710Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-02",
+              "chars": 51123,
+              "priorAgentId": "client-worker-01"
+            },
+            "timestamp": "2026-08-25T07:58:56.710Z",
+            "type": "activity_redelivered"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-02",
+              "chars": 3510,
+              "delivery": "full",
+              "stepId": "set-trigger-context",
+              "techniqueId": "execute-analysis::compose-trigger-context"
+            },
+            "timestamp": "2026-08-25T07:58:56.710Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-02",
+              "stepId": "set-trigger-context"
+            },
+            "timestamp": "2026-08-25T07:58:56.710Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-02",
+              "chars": 2270,
+              "delivery": "full",
+              "stepId": "trigger-prism",
+              "techniqueId": "workflow-engine::handle-sub-workflow"
+            },
+            "timestamp": "2026-08-25T07:58:56.710Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-02",
+              "stepId": "trigger-prism"
+            },
+            "timestamp": "2026-08-25T07:58:56.710Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-02",
+              "chars": 2612,
+              "delivery": "full",
+              "stepId": "read-run-manifest",
+              "techniqueId": "execute-analysis::read-run-manifest"
+            },
+            "timestamp": "2026-08-25T07:58:56.710Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-02",
+              "stepId": "read-run-manifest"
+            },
+            "timestamp": "2026-08-25T07:58:56.710Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "execute-analysis",
+            "data": {
+              "agentId": "client-worker-02",
+              "basis": "delta",
+              "usage": {
+                "duration_ms": 153083,
+                "subagent_tokens": 57834,
+                "tool_uses": 22
+              }
+            },
+            "timestamp": "2026-08-25T08:01:27.362Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 28,
+        "seq": 30,
         "sessionIndex": "2J6KER",
         "startedAt": "2026-08-24T16:42:08.996Z",
         "status": "running",
@@ -4272,7 +4389,7 @@
             "workflowId": "prism"
           }
         ],
-        "ts": 1787639913,
+        "ts": 1787644887,
         "variables": {
           "accepted_count": 0,
           "dimension_plan": [
