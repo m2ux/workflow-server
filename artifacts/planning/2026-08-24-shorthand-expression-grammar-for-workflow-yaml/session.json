@@ -3241,18 +3241,50 @@
               "agentId": "workflow-orchestrator",
               "checkpointResponses": {},
               "completedActivities": [
-                "select-mode"
+                "select-mode",
+                "structural-pass"
               ],
-              "currentActivity": "structural-pass",
+              "currentActivity": "generate-report",
               "currentTechnique": "portfolio-analysis",
               "declaredArtifacts": [
                 {
                   "id": "analysis_plan",
                   "name": "analysis-plan.md",
                   "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/00-analysis-plan.md"
+                },
+                {
+                  "id": "portfolio_synthesis",
+                  "name": "portfolio-synthesis.md",
+                  "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/portfolio-synthesis.md"
                 }
               ],
               "deliveredContent": {
+                "prism-g2-report": {
+                  "activity_rules:df60226b63c3f6ae": "df60226b63c3f6ae",
+                  "bundle:rules:803c2e9e4c960c72": "803c2e9e4c960c72",
+                  "bundle:variable-binding": "fc19a1a690c26bd4",
+                  "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+                  "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+                  "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+                  "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+                  "resource:analysis-plan": "665ced08f662fe2c",
+                  "resource:definitive-findings-template": "af65f6539f39aaf6",
+                  "resource:definitive-findings-template#definitive-findingsmd-template": "e494c59121ce4692",
+                  "resource:final-output-template": "4cf9baa416b5408f",
+                  "resource:final-output-template#reportmd-template": "bb501ed70a1657b7",
+                  "resource:meta/writing-register": "d769d7f0a6e83839",
+                  "resource:portfolio-synthesis": "3855f7541d0f86d5",
+                  "resource:prism/README#planning-artifact-to-guide-map": "2dbe766a4ffedfa6",
+                  "resource:run-manifest": "4b17fffd0294f96f",
+                  "technique:generate-report": "36408834c8f28e0d",
+                  "technique:inherited_inputs.items:8f4c7a7b274cacb4": "8f4c7a7b274cacb4",
+                  "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+                  "technique:inherited_inputs:6131206b19a50605": "6131206b19a50605",
+                  "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+                  "technique:rules:acd98e21bb16b8f8": "acd98e21bb16b8f8",
+                  "technique:rules:b632f73f9a913841": "b632f73f9a913841",
+                  "technique:verify-artifact-conforms": "361f13e4abcd26d6"
+                },
                 "prism-g2-select": {
                   "activity_rules:df60226b63c3f6ae": "df60226b63c3f6ae",
                   "bundle:rules:803c2e9e4c960c72": "803c2e9e4c960c72",
@@ -3293,7 +3325,7 @@
                   "technique:rules:28ed2620722185d8": "28ed2620722185d8"
                 }
               },
-              "exit": "structural",
+              "exit": "structural-only",
               "history": [
                 {
                   "timestamp": "2026-08-25T06:38:33.246Z",
@@ -3670,17 +3702,299 @@
                   },
                   "timestamp": "2026-08-25T07:14:49.168Z",
                   "type": "activity_usage"
+                },
+                {
+                  "activity": "structural-pass",
+                  "timestamp": "2026-08-25T07:16:00.502Z",
+                  "type": "activity_exited"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "exit": "structural-only",
+                    "outcome": "complete"
+                  },
+                  "timestamp": "2026-08-25T07:16:00.502Z",
+                  "type": "activity_outcome"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "name": "all_artifact_paths",
+                    "source": "variables_changed",
+                    "value": [
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/portfolio-pedagogy.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/portfolio-claim.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/portfolio-scarcity.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/portfolio-deep-scan.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/portfolio-sdl-abstraction.md",
+                      "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/portfolio-synthesis.md"
+                    ]
+                  },
+                  "timestamp": "2026-08-25T07:16:00.502Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "name": "behavioral_output_paths",
+                    "source": "variables_changed",
+                    "value": {}
+                  },
+                  "timestamp": "2026-08-25T07:16:00.502Z",
+                  "type": "variable_set"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "stepId": "check-gitnexus"
+                  },
+                  "timestamp": "2026-08-25T07:16:00.502Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "stepId": "run-structural"
+                  },
+                  "timestamp": "2026-08-25T07:16:00.502Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "stepId": "run-single-lens"
+                  },
+                  "timestamp": "2026-08-25T07:16:00.502Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "stepId": "run-portfolio"
+                  },
+                  "timestamp": "2026-08-25T07:16:00.502Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "stepId": "dispatch-behavioral-lenses"
+                  },
+                  "timestamp": "2026-08-25T07:16:00.502Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "stepId": "collect-behavioral-paths"
+                  },
+                  "timestamp": "2026-08-25T07:16:00.502Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "structural-pass",
+                  "data": {
+                    "agentId": "prism-g2-structural",
+                    "stepId": "report-unit-paths"
+                  },
+                  "timestamp": "2026-08-25T07:16:00.502Z",
+                  "type": "step_completed"
+                },
+                {
+                  "activity": "generate-report",
+                  "timestamp": "2026-08-25T07:16:00.502Z",
+                  "type": "activity_entered"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "chars": 67977,
+                    "dispatch": "fresh"
+                  },
+                  "timestamp": "2026-08-25T07:36:42.499Z",
+                  "type": "activity_dispatched"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "chars": 17560,
+                    "delivery": "full",
+                    "stepId": "generate-report",
+                    "techniqueId": "generate-report"
+                  },
+                  "timestamp": "2026-08-25T07:36:42.499Z",
+                  "type": "technique_bundled"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "stepId": "generate-report"
+                  },
+                  "timestamp": "2026-08-25T07:36:42.499Z",
+                  "type": "step_started"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "chars": 10075,
+                    "delivery": "full",
+                    "stepId": "verify-artifact-conformance",
+                    "techniqueId": "verify-artifact-conforms"
+                  },
+                  "timestamp": "2026-08-25T07:36:42.499Z",
+                  "type": "technique_bundled"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "stepId": "verify-artifact-conformance"
+                  },
+                  "timestamp": "2026-08-25T07:36:42.499Z",
+                  "type": "step_started"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "chars": 2415,
+                    "delivery": "full",
+                    "resourceId": "final-output-template#reportmd-template"
+                  },
+                  "timestamp": "2026-08-25T07:36:54.103Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "chars": 2736,
+                    "delivery": "full",
+                    "resourceId": "definitive-findings-template#definitive-findingsmd-template"
+                  },
+                  "timestamp": "2026-08-25T07:36:54.789Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "chars": 2242,
+                    "delivery": "full",
+                    "resourceId": "prism/README#planning-artifact-to-guide-map"
+                  },
+                  "timestamp": "2026-08-25T07:50:45.540Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "chars": 3207,
+                    "delivery": "full",
+                    "resourceId": "run-manifest"
+                  },
+                  "timestamp": "2026-08-25T07:50:54.781Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "chars": 1986,
+                    "delivery": "full",
+                    "resourceId": "meta/writing-register"
+                  },
+                  "timestamp": "2026-08-25T07:50:55.087Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "chars": 2828,
+                    "delivery": "full",
+                    "resourceId": "final-output-template"
+                  },
+                  "timestamp": "2026-08-25T07:52:55.497Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "chars": 3299,
+                    "delivery": "full",
+                    "resourceId": "definitive-findings-template"
+                  },
+                  "timestamp": "2026-08-25T07:52:55.733Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "chars": 1658,
+                    "delivery": "full",
+                    "resourceId": "portfolio-synthesis"
+                  },
+                  "timestamp": "2026-08-25T07:54:05.189Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "chars": 1680,
+                    "delivery": "full",
+                    "resourceId": "analysis-plan"
+                  },
+                  "timestamp": "2026-08-25T07:54:05.377Z",
+                  "type": "resource_fetched"
+                },
+                {
+                  "activity": "generate-report",
+                  "data": {
+                    "agentId": "prism-g2-report",
+                    "basis": "delta",
+                    "usage": {
+                      "duration_ms": 1114405,
+                      "subagent_tokens": 232220,
+                      "tool_uses": 56
+                    }
+                  },
+                  "timestamp": "2026-08-25T07:55:32.879Z",
+                  "type": "activity_usage"
                 }
               ],
               "repo": "m2ux/workflow-server",
               "schemaVersion": 1,
-              "seq": 14,
+              "seq": 26,
               "sessionIndex": "7OPXHM",
               "startedAt": "2026-08-25T06:38:33.246Z",
               "status": "running",
               "triggeredWorkflows": [],
-              "ts": 1787642089,
+              "ts": 1787644532,
               "variables": {
+                "all_artifact_paths": [
+                  "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/portfolio-pedagogy.md",
+                  "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/portfolio-claim.md",
+                  "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/portfolio-scarcity.md",
+                  "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/portfolio-deep-scan.md",
+                  "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/portfolio-sdl-abstraction.md",
+                  "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions/portfolio-synthesis.md"
+                ],
                 "analysis_focus": "Expressiveness: what authors are forced to restate - the five-line-versus-one-line cost of `condition` where 75 of 109 are a single leaf and all 86 children restate type: simple; 145 of 410 technique inputs being pure renames with 10 identity passthroughs; `required` populated on 6 of 525 writes entries; the absence of set-membership against the corpus's a == 'x' || a == 'y' chains; and which of the 15 existing sugar precedents transfer to the un-sugared constructs. Architecture: whether `when` should desugar into Condition or stay parallel, given two ASTs, two evaluators, two duplicated path resolvers and a single and-combination meeting point in gate-liveness.ts; placement of the parse boundary given enforcement lives in scripts/ and in tests/e2e/walker.ts; the four-way single source of truth across Zod, generated JSON Schemas, EBNF and Alloy; and whether the settled grammar is expressible in EBNF and constrainable in Alloy at all. Feasibility: `when` being z.string() so no Zod change catches new syntax, which must instead be taught to tokenize/Parser and to scripts/check-when-expression.ts; JSON Schemas generated from Zod with no regeneration or drift check; migration touching 109 condition blocks, 211 structured technique bindings and 192 graph edges. Draft against origin/main, not the current branch, which is 42 commits behind and lacks ExitSchema, variable.schema.ts and the workflow `graph` construct. The run settles a target grammar and specifies it; it does not write grammar/*.ebnf or constraints/*.als.",
                 "analysis_units": [
                   {
@@ -3701,6 +4015,7 @@
                     "unit_output_subdir": "dimensions/"
                   }
                 ],
+                "behavioral_output_paths": {},
                 "output_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/dimensions",
                 "pipeline_mode": "portfolio",
                 "selected_lenses": [

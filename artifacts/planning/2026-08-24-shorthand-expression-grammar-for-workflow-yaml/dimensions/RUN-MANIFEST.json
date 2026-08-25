@@ -1,0 +1,33 @@
+{
+  "status": "complete",
+  "pipeline_mode": "portfolio",
+  "report_path": "REPORT.md",
+  "definitive_findings_path": "DEFINITIVE-FINDINGS.md",
+  "units": [
+    {
+      "unit": "workflows/**/*.yaml, src/schema/, src/utils/gate-liveness.ts, src/loaders/, schemas/, scripts/check-*.ts, grammar/, constraints/",
+      "output_subdir": ".",
+      "pipeline_mode": "portfolio",
+      "status": "complete",
+      "artifacts": [
+        "portfolio-pedagogy.md",
+        "portfolio-claim.md",
+        "portfolio-scarcity.md",
+        "portfolio-deep-scan.md",
+        "portfolio-sdl-abstraction.md",
+        "portfolio-synthesis.md"
+      ]
+    }
+  ],
+  "artifacts": [
+    "00-analysis-plan.md",
+    "portfolio-pedagogy.md",
+    "portfolio-claim.md",
+    "portfolio-scarcity.md",
+    "portfolio-deep-scan.md",
+    "portfolio-sdl-abstraction.md",
+    "portfolio-synthesis.md",
+    "REPORT.md",
+    "DEFINITIVE-FINDINGS.md"
+  ]
+}
