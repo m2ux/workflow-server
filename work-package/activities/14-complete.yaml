@@ -36,6 +36,18 @@ variables:
     - name: current_deferred_item
       type: object
       description: The deferred-items register row under consideration.
+    - name: deferred_item_issue_number
+      type: string
+      description: Key of the issue raised for the row under consideration.
+      defaultValue: ""
+    - name: deferred_item_issue_url
+      type: string
+      description: Address of the issue raised for the row under consideration.
+      defaultValue: ""
+    - name: deferred_item_issue_created
+      type: boolean
+      description: Whether the raise created a new issue for the row rather than resolving an existing one.
+      defaultValue: false
     - name: has_unraised_deferred_items
       type: boolean
       description: Whether the register holds at least one row naming no issue yet.
@@ -99,9 +111,21 @@ steps:
               setVariable:
                 raise_current_deferred_item: false
       - kind: technique
-        id: raise-deferred-item
-        technique: raise-deferred-items::raise
+        id: raise-deferred-item-issue
+        technique:
+          name: create-issue
+          inputs:
+            issue_type: task
+            issue_subject: current_deferred_item
+          outputs:
+            issue_number: deferred_item_issue_number
+            issue_url: deferred_item_issue_url
+            needs_issue_creation: deferred_item_issue_created
         when: raise_current_deferred_item == true
+      - kind: technique
+        id: record-deferred-item-issue
+        technique: raise-deferred-items::record
+        when: deferred_item_issue_created == true
   - kind: technique
     id: create-complete-doc
     technique: finalize-documentation::create-complete-doc

@@ -21,6 +21,10 @@ Type of issue (feature, bug, task, enhancement, epic)
 
 Basename of the component the work package targets (e.g., midnight-node, midnight-ledger)
 
+### issue_subject
+
+*(optional)* The already-identified thing the issue is raised for, carrying what it is and why it matters. Absent when the issue is the work package's own, whose subject is the run's own context.
+
 ### jira_project
 
 *(optional)* Jira project chosen at the `jira-project-selection` gate — the project the new Jira issue is created in. Absent for GitHub issues.
@@ -56,7 +60,7 @@ URL of the verified or newly created issue.
 ### 3. Create Github Issue
 
 - Runs when `{issue_platform}` is github and `{needs_issue_creation}` is true. Use the [issue template](../resources/github-issue-creation.md#issue-template) and [section rules](../resources/github-issue-creation.md#section-rules) (and [anti-patterns](../resources/github-issue-creation.md#anti-patterns) when checking the draft).
-- Gather title, description, and acceptance criteria from user context, scoping the issue to the `{component_name}` the work package targets
+- Gather title, description, and acceptance criteria from `{issue_subject}` where it is supplied and from user context otherwise, scoping the issue to the `{component_name}` the work package targets
 - Map `{issue_type}` to GitHub labels using the label mapping below
 - Create the issue, then verify creation succeeded, capturing `{issue_number}` and `{issue_url}` from the verified issue.
 - GitHub label mapping: `feature->enhancement`, `bug->bug`, `task->chore`, `enhancement->enhancement`
@@ -67,7 +71,7 @@ URL of the verified or newly created issue.
 - Runs when `{issue_platform}` is jira and `{needs_issue_creation}` is true. Use the [issue structure](../resources/jira-issue-creation.md#issue-structure) and [issue types](../resources/jira-issue-creation.md#issue-types) (and [anti-patterns](../resources/jira-issue-creation.md#anti-patterns) when checking the draft).
 - Obtain Atlassian cloud ID via `getAccessibleAtlassianResources` and preserve as `{$jira_cloud_id}`. This MUST be the first Jira tool call.
 - Create the issue in the `{jira_project}` chosen at the `jira-project-selection` gate; if it is unset, list available projects via `getVisibleJiraProjects` and obtain the user's project selection. Resolve available issue types for the selected project.
-- Gather summary, description, and acceptance criteria, scoping the issue to the `{component_name}` the work package targets. Resolve assignee account ID if specified.
+- Gather summary, description, and acceptance criteria from `{issue_subject}` where it is supplied and from user context otherwise, scoping the issue to the `{component_name}` the work package targets. Resolve assignee account ID if specified.
 - Create the issue with mapped type using the issue-type mapping below, capturing `{issue_number}` and `{issue_url}` from the resulting issue.
 - Jira issue type mapping: `feature->Story`, `bug->Bug`, `task->Task`, `enhancement->Story`, `epic->Epic`
 - If any Atlassian API call fails (auth, permissions, or invalid request — including the `getJiraIssue` verification in step 1), verify the cloudId and project access, and check the Jira issue type and required fields before retrying.
