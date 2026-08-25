@@ -53,7 +53,7 @@ Method [record](../resources/rust-substrate-code-review.md#method-record-templat
 
 - Review against the attached [Review Criteria](../resources/rust-substrate-code-review.md#review-criteria) ([resource-loading-via-tool](../../meta/techniques/workflow-engine/TECHNIQUE.md#resource-loading-via-tool) — never read workflow resources from disk).
 - Consume the canonical `{changed_files}` authored surface when it is established (review mode, produced by `review-baseline-state`). In create mode (no PR baseline), derive it from the local working-tree diff against the base branch.
-  > If `{changed_files}` is empty, verify the correct branch and commit range.
+  > - If `{changed_files}` is empty, verify the correct branch and commit range.
 
 ### 2. Bound Review Scope
 

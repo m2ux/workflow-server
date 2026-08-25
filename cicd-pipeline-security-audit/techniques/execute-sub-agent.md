@@ -56,7 +56,7 @@ per-file, per-pattern scan confirmation
 ### 1. Bootstrap
 
 - Inherit the dispatched session and load the assigned activity definition with its steps.
-  > If the workflow-server is unavailable or the activity cannot be loaded, fall back to the prompt instructions provided by the orchestrator and note that in the output.
+  > - If the workflow-server is unavailable or the activity cannot be loaded, fall back to the prompt instructions provided by the orchestrator and note that in the output.
 
 ### 2. Execute Steps
 
