@@ -13,21 +13,12 @@ Deferred-items register rows carried into the issue tracker — the open rows fo
 
 The work package's planning folder, which holds the deferred-items register when the run deferred anything.
 
-## Outputs
-
-### deferred_items
-
-The deferred-items [register](../../resources/deferred-items.md#template) with each approved row's Follow-up cell carrying the issue it was raised as.
-
-#### artifact
-
-`deferred-items.md`
-
-#### audience
-
-`human`
-
 ## Rules
+
+### register-takes-no-prefix
+
+The register is written in place and never declared as an artifact of the activity raising from it. Any activity may be the one that defers first, so the register has no owning activity and takes no `artifactPrefix` — an operation here that declared it would make `complete` its owner and publish a prefixed second copy alongside it.
+
 
 ### register-is-the-source
 

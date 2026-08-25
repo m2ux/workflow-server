@@ -21,20 +21,6 @@ The tracker the work package's own issue lives in — github or jira — so a de
 
 Basename of the component the work package targets, which scopes the issue the same way the package's own issue is scoped.
 
-## Outputs
-
-### deferred_items
-
-The [register](../../resources/deferred-items.md#template) with this row's Follow-up cell carrying the issue it was raised as.
-
-#### artifact
-
-`deferred-items.md`
-
-#### audience
-
-`human`
-
 ## Protocol
 
 ### 1. Draft the Issue

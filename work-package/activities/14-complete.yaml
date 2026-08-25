@@ -36,10 +36,6 @@ variables:
     - name: current_deferred_item
       type: object
       description: The deferred-items register row under consideration during the raise loop.
-    - name: deferred_items
-      type: string
-      description: The deferred-items register with each approved row's Follow-up cell carrying the issue it was raised as.
-      defaultValue: ""
     - name: has_unraised_deferred_items
       type: boolean
       description: Whether the register holds at least one row naming no issue yet.
