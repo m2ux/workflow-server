@@ -153,6 +153,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'no set action builds its value out of the variable it writes',
   },
   {
+    id: 'branch-as-step',
+    script: 'scripts/check-branch-as-step.ts',
+    npmScript: 'check:branch-as-step',
+    scope: 'corpus',
+    json: true,
+    proves: 'no protocol phase encodes a conditional branch as a step',
+  },
+  {
     id: 'activity-technique-overlap',
     script: 'scripts/check-activity-technique-overlap.ts',
     npmScript: 'check:activity-tech',
