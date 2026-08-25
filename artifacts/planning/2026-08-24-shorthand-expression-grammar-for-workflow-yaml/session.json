@@ -1,0 +1,1283 @@
+{
+  "schemaVersion": 1,
+  "status": "running",
+  "workflowId": "meta",
+  "workflowVersion": "5.23.0",
+  "agentId": "orchestrator",
+  "sessionIndex": "H376E6",
+  "currentActivity": "dispatch-client-workflow",
+  "currentTechnique": "",
+  "exit": "done",
+  "seq": 15,
+  "ts": 1787589955,
+  "startedAt": "2026-08-24T16:37:54.094Z",
+  "completedActivities": [
+    "discover-session",
+    "initialize-session",
+    "resolve-target"
+  ],
+  "variables": {
+    "client_initial_activity": "scope-definition",
+    "client_planning_slug": "2026-08-24-shorthand-expression-grammar-for-workflow-yaml",
+    "client_session_index": "2J6KER",
+    "client_workflow_completed": false,
+    "component_path": ".",
+    "component_selection_needed": false,
+    "has_saved_state": false,
+    "host_binding_mismatch": false,
+    "host_repo_path": "/home/mike1/projects/dev/workflow-server",
+    "initiative_name": "shorthand-expression-grammar-for-workflow-yaml",
+    "is_monorepo": false,
+    "is_resuming": false,
+    "meta_session_index": "H376E6",
+    "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml",
+    "resume_intent_requested": false,
+    "submodules": [],
+    "target_repo": "m2ux/workflow-server",
+    "target_workflow_id": "prism-evaluate",
+    "user_request": "Discover opportunities to optimise activity and workflow YAML file grammar and syntax so that expressions can be written in shorthand. At present the only construct optimised in this respect is `when`, which allows compound conditional expressions in a language-like syntax. Investigate this with the prism-evaluate workflow.",
+    "workflow_match_ambiguous": false
+  },
+  "checkpointResponses": {},
+  "history": [
+    {
+      "timestamp": "2026-08-24T16:37:54.094Z",
+      "type": "workflow_started"
+    },
+    {
+      "data": {
+        "variables": {
+          "client_workflow_completed": false,
+          "component_path": ".",
+          "component_selection_needed": false,
+          "has_saved_state": false,
+          "host_binding_mismatch": false,
+          "is_monorepo": false,
+          "is_resuming": false,
+          "resume_intent_requested": false,
+          "submodules": [],
+          "user_request": "Discover opportunities to optimise activity and workflow YAML file grammar and syntax so that expressions can be written in shorthand. At present the only construct optimised in this respect is `when`, which allows compound conditional expressions in a language-like syntax. Investigate this with the prism-evaluate workflow.",
+          "workflow_match_ambiguous": false
+        }
+      },
+      "timestamp": "2026-08-24T16:37:54.094Z",
+      "type": "variables_seeded"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-08-24T16:38:57.392Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "chars": 84826,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-24T16:39:10.684Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "chars": 7947,
+        "delivery": "full",
+        "stepId": "resolve-host-repo",
+        "techniqueId": "version-control::resolve-host-repo"
+      },
+      "timestamp": "2026-08-24T16:39:10.684Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "resolve-host-repo"
+      },
+      "timestamp": "2026-08-24T16:39:10.684Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "chars": 10264,
+        "delivery": "full",
+        "stepId": "list-available-workflows",
+        "techniqueId": "workflow-engine::list-workflows"
+      },
+      "timestamp": "2026-08-24T16:39:10.684Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "list-available-workflows"
+      },
+      "timestamp": "2026-08-24T16:39:10.684Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "chars": 11661,
+        "delivery": "full",
+        "stepId": "match-target",
+        "techniqueId": "workflow-engine::match-target-workflow"
+      },
+      "timestamp": "2026-08-24T16:39:10.684Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "match-target"
+      },
+      "timestamp": "2026-08-24T16:39:10.684Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "chars": 10585,
+        "delivery": "full",
+        "stepId": "detect-resume-intent",
+        "techniqueId": "workflow-engine::detect-resume-intent"
+      },
+      "timestamp": "2026-08-24T16:39:10.684Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "detect-resume-intent"
+      },
+      "timestamp": "2026-08-24T16:39:10.684Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "chars": 11122,
+        "delivery": "full",
+        "stepId": "extract-context",
+        "techniqueId": "workflow-engine::extract-identifying-context"
+      },
+      "timestamp": "2026-08-24T16:39:10.684Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "extract-context"
+      },
+      "timestamp": "2026-08-24T16:39:10.684Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "chars": 11594,
+        "delivery": "full",
+        "stepId": "name-initiative",
+        "techniqueId": "workflow-engine::derive-initiative-name"
+      },
+      "timestamp": "2026-08-24T16:39:10.684Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "name-initiative"
+      },
+      "timestamp": "2026-08-24T16:39:10.684Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "chars": 1431,
+        "delivery": "full",
+        "resourceId": "meta/resume-intent-lexicon"
+      },
+      "timestamp": "2026-08-24T16:40:16.934Z",
+      "type": "resource_fetched"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 130826,
+          "subagent_tokens": 72944,
+          "tool_uses": 13
+        }
+      },
+      "timestamp": "2026-08-24T16:41:25.438Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "discover-session",
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "exit": "done",
+        "outcome": "complete"
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "activity_outcome"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "target_repo",
+        "source": "variables_changed",
+        "value": "m2ux/workflow-server"
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "host_repo_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server"
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "host_binding_mismatch",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "target_workflow_id",
+        "source": "variables_changed",
+        "value": "prism-evaluate"
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "workflow_match_ambiguous",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "resume_intent_requested",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "initiative_name",
+        "source": "variables_changed",
+        "value": "shorthand-expression-grammar-for-workflow-yaml"
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "name": "has_saved_state",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "resolve-host-repo"
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "list-available-workflows"
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "match-target"
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "detect-resume-intent"
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "extract-context"
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "name-initiative"
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "discover-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "record-no-match"
+      },
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-08-24T16:41:36.115Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "chars": 12960,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-08-24T16:41:50.517Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "chars": 5997,
+        "delivery": "full",
+        "stepId": "derive-planning-slug",
+        "techniqueId": "version-control::initialize-folder"
+      },
+      "timestamp": "2026-08-24T16:41:50.517Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "derive-planning-slug"
+      },
+      "timestamp": "2026-08-24T16:41:50.517Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "chars": 12531,
+        "delivery": "full",
+        "stepId": "start-or-resume-session",
+        "techniqueId": "workflow-engine::create-session"
+      },
+      "timestamp": "2026-08-24T16:41:50.517Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "start-or-resume-session"
+      },
+      "timestamp": "2026-08-24T16:41:50.517Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "sessionIndex": "2J6KER",
+        "workflowId": "prism-evaluate"
+      },
+      "timestamp": "2026-08-24T16:42:08.993Z",
+      "type": "workflow_triggered"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 42451,
+          "subagent_tokens": 80433,
+          "tool_uses": 5
+        }
+      },
+      "timestamp": "2026-08-24T16:42:44.442Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "initialize-session",
+      "timestamp": "2026-08-24T16:42:50.570Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "exit": "done",
+        "outcome": "complete"
+      },
+      "timestamp": "2026-08-24T16:42:50.570Z",
+      "type": "activity_outcome"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_planning_slug",
+        "source": "variables_changed",
+        "value": "2026-08-24-shorthand-expression-grammar-for-workflow-yaml"
+      },
+      "timestamp": "2026-08-24T16:42:50.570Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_session_index",
+        "source": "variables_changed",
+        "value": "2J6KER"
+      },
+      "timestamp": "2026-08-24T16:42:50.570Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "client_initial_activity",
+        "source": "variables_changed",
+        "value": "scope-definition"
+      },
+      "timestamp": "2026-08-24T16:42:50.570Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "planning_folder_path",
+        "source": "variables_changed",
+        "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml"
+      },
+      "timestamp": "2026-08-24T16:42:50.570Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "name": "meta_session_index",
+        "source": "variables_changed",
+        "value": "H376E6"
+      },
+      "timestamp": "2026-08-24T16:42:50.570Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "derive-planning-slug"
+      },
+      "timestamp": "2026-08-24T16:42:50.570Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "initialize-session",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "start-or-resume-session"
+      },
+      "timestamp": "2026-08-24T16:42:50.570Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-08-24T16:42:50.570Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "meta-worker-01",
+        "chars": 9616,
+        "dispatch": "resume"
+      },
+      "timestamp": "2026-08-24T16:43:02.342Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "meta-worker-01",
+        "chars": 5864,
+        "delivery": "full",
+        "stepId": "detect-monorepo",
+        "techniqueId": "version-control::detect-repo-type"
+      },
+      "timestamp": "2026-08-24T16:43:02.342Z",
+      "type": "technique_bundled"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "detect-monorepo"
+      },
+      "timestamp": "2026-08-24T16:43:02.342Z",
+      "type": "step_started"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "meta-worker-01",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 107560,
+          "subagent_tokens": 86665,
+          "tool_uses": 7
+        }
+      },
+      "timestamp": "2026-08-24T16:43:44.905Z",
+      "type": "activity_usage"
+    },
+    {
+      "activity": "resolve-target",
+      "timestamp": "2026-08-24T16:43:54.313Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "exit": "done",
+        "outcome": "complete"
+      },
+      "timestamp": "2026-08-24T16:43:54.313Z",
+      "type": "activity_outcome"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "is_monorepo",
+        "source": "variables_changed",
+        "value": false
+      },
+      "timestamp": "2026-08-24T16:43:54.313Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "name": "component_path",
+        "source": "variables_changed",
+        "value": "."
+      },
+      "timestamp": "2026-08-24T16:43:54.313Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "announce-start"
+      },
+      "timestamp": "2026-08-24T16:43:54.313Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "detect-monorepo"
+      },
+      "timestamp": "2026-08-24T16:43:54.313Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "validate-binding-agreement"
+      },
+      "timestamp": "2026-08-24T16:43:54.313Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "resolve-target",
+      "data": {
+        "agentId": "meta-worker-01",
+        "stepId": "validate-git-tree"
+      },
+      "timestamp": "2026-08-24T16:43:54.313Z",
+      "type": "step_completed"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "timestamp": "2026-08-24T16:43:54.313Z",
+      "type": "activity_entered"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "meta-worker-02",
+        "chars": 39579,
+        "dispatch": "fresh"
+      },
+      "timestamp": "2026-08-24T16:44:08.908Z",
+      "type": "activity_dispatched"
+    },
+    {
+      "activity": "dispatch-client-workflow",
+      "data": {
+        "agentId": "meta-worker-02",
+        "basis": "delta",
+        "usage": {
+          "duration_ms": 92711,
+          "subagent_tokens": 50171,
+          "tool_uses": 6
+        }
+      },
+      "timestamp": "2026-08-24T16:45:55.070Z",
+      "type": "activity_usage"
+    }
+  ],
+  "triggeredWorkflows": [
+    {
+      "sessionIndex": "2J6KER",
+      "state": {
+        "agentId": "orchestrator",
+        "checkpointResponses": {
+          "scope-definition-confirm-scope": {
+            "effects": {
+              "exit": "adjust"
+            },
+            "optionId": "adjust",
+            "respondedAt": "2026-08-25T03:58:55.000Z"
+          },
+          "scope-definition-confirm-scope#2": {
+            "effects": {
+              "variablesSet": {
+                "scope_confirmed": true
+              }
+            },
+            "optionId": "accept",
+            "respondedAt": "2026-08-25T04:08:58.000Z"
+          }
+        },
+        "completedActivities": [],
+        "currentActivity": "scope-definition",
+        "currentTechnique": "",
+        "deliveredContent": {
+          "client-worker-01": {
+            "activity_rules:8f011fc1654ff467": "8f011fc1654ff467",
+            "bundle:rules:b35e600fc4d3a195": "b35e600fc4d3a195",
+            "bundle:variable-binding": "ea9c4abf171f027a",
+            "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+            "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+            "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+            "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+            "resource:default-dimensions": "f84a9adf3b7f8078",
+            "resource:default-dimensions#codebase": "5bb96794082dc057",
+            "resource:default-dimensions#custom-targets": "2c38c1b03277e5e4",
+            "resource:default-dimensions#dimension-object-structure": "3dd6c8edc8c4da1f",
+            "resource:default-dimensions#mixed-targets": "da28808bfade68a1",
+            "technique:inherited_inputs.items:2b101008a04f796b": "2b101008a04f796b",
+            "technique:inherited_inputs.items:8d16b5e0fb9e44d9": "8d16b5e0fb9e44d9",
+            "technique:inherited_inputs.items:fe06cf28db665c08": "fe06cf28db665c08",
+            "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+            "technique:inherited_inputs:15330558c54c8fc2": "15330558c54c8fc2",
+            "technique:inherited_inputs:c334fa9039a08d4d": "c334fa9039a08d4d",
+            "technique:inherited_inputs:f392d27e0dbc9b74": "f392d27e0dbc9b74",
+            "technique:plan-evaluation::classify-target": "908cb9e576abe70f",
+            "technique:plan-evaluation::collect-scope": "ca38bf9ea3a2aa84",
+            "technique:plan-evaluation::create-output-folder": "eb28ff6d1284415f",
+            "technique:plan-evaluation::derive-dimensions": "d67b0650278a1ec7",
+            "technique:plan-evaluation::summarize-scope": "73c637e3875f0dc9",
+            "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be"
+          }
+        },
+        "exit": "",
+        "history": [
+          {
+            "timestamp": "2026-08-24T16:42:08.996Z",
+            "type": "workflow_started"
+          },
+          {
+            "data": {
+              "variables": {
+                "accepted_count": 0,
+                "dimensions_confirmed": false,
+                "mitigations_apply_requested": false,
+                "pipeline_mode": "full-prism",
+                "resolution_requested": false,
+                "scope_confirmed": false,
+                "user_request": "Discover opportunities to optimise activity and workflow YAML file grammar and syntax so that expressions can be written in shorthand. At present the only construct optimised in this respect is `when`, which allows compound conditional expressions in a language-like syntax. Investigate this with the prism-evaluate workflow."
+              }
+            },
+            "timestamp": "2026-08-24T16:42:08.996Z",
+            "type": "variables_seeded"
+          },
+          {
+            "activity": "scope-definition",
+            "timestamp": "2026-08-24T16:46:00.170Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 50662,
+              "dispatch": "fresh"
+            },
+            "timestamp": "2026-08-24T16:46:14.521Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 4119,
+              "delivery": "full",
+              "stepId": "collect-inputs",
+              "techniqueId": "plan-evaluation::collect-scope"
+            },
+            "timestamp": "2026-08-24T16:46:14.521Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "collect-inputs"
+            },
+            "timestamp": "2026-08-24T16:46:14.521Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2754,
+              "delivery": "full",
+              "stepId": "classify-target",
+              "techniqueId": "plan-evaluation::classify-target"
+            },
+            "timestamp": "2026-08-24T16:46:14.521Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "classify-target"
+            },
+            "timestamp": "2026-08-24T16:46:14.521Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2996,
+              "delivery": "full",
+              "stepId": "derive-dimensions",
+              "techniqueId": "plan-evaluation::derive-dimensions"
+            },
+            "timestamp": "2026-08-24T16:46:14.521Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "derive-dimensions"
+            },
+            "timestamp": "2026-08-24T16:46:14.521Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2153,
+              "delivery": "full",
+              "stepId": "create-output-directory",
+              "techniqueId": "plan-evaluation::create-output-folder"
+            },
+            "timestamp": "2026-08-24T16:46:14.521Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "create-output-directory"
+            },
+            "timestamp": "2026-08-24T16:46:14.521Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2361,
+              "delivery": "full",
+              "stepId": "summarize-scope",
+              "techniqueId": "plan-evaluation::summarize-scope"
+            },
+            "timestamp": "2026-08-24T16:46:14.521Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "stepId": "summarize-scope"
+            },
+            "timestamp": "2026-08-24T16:46:14.521Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2414,
+              "delivery": "full",
+              "resourceId": "default-dimensions"
+            },
+            "timestamp": "2026-08-24T16:47:38.624Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-definition",
+            "checkpoint": "confirm-scope",
+            "timestamp": "2026-08-24T16:48:44.020Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "basis": "delta",
+              "usage": {
+                "duration_ms": 170453,
+                "subagent_tokens": 66862,
+                "tool_uses": 12
+              }
+            },
+            "timestamp": "2026-08-24T16:49:05.794Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "scope-definition",
+            "checkpoint": "confirm-scope",
+            "data": {
+              "optionId": "adjust"
+            },
+            "timestamp": "2026-08-25T03:58:55.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 8475,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-25T04:06:05.651Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 4119,
+              "delivery": "unchanged",
+              "stepId": "collect-inputs",
+              "techniqueId": "plan-evaluation::collect-scope"
+            },
+            "timestamp": "2026-08-25T04:06:05.651Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2754,
+              "delivery": "unchanged",
+              "stepId": "classify-target",
+              "techniqueId": "plan-evaluation::classify-target"
+            },
+            "timestamp": "2026-08-25T04:06:05.651Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2996,
+              "delivery": "unchanged",
+              "stepId": "derive-dimensions",
+              "techniqueId": "plan-evaluation::derive-dimensions"
+            },
+            "timestamp": "2026-08-25T04:06:05.651Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2153,
+              "delivery": "unchanged",
+              "stepId": "create-output-directory",
+              "techniqueId": "plan-evaluation::create-output-folder"
+            },
+            "timestamp": "2026-08-25T04:06:05.651Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2361,
+              "delivery": "unchanged",
+              "stepId": "summarize-scope",
+              "techniqueId": "plan-evaluation::summarize-scope"
+            },
+            "timestamp": "2026-08-25T04:06:05.651Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 168,
+              "delivery": "full",
+              "resourceId": "default-dimensions#dimension-object-structure"
+            },
+            "timestamp": "2026-08-25T04:06:05.651Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 627,
+              "delivery": "full",
+              "resourceId": "default-dimensions#codebase"
+            },
+            "timestamp": "2026-08-25T04:06:05.651Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 294,
+              "delivery": "full",
+              "resourceId": "default-dimensions#mixed-targets"
+            },
+            "timestamp": "2026-08-25T04:06:05.651Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 424,
+              "delivery": "full",
+              "resourceId": "default-dimensions#custom-targets"
+            },
+            "timestamp": "2026-08-25T04:06:05.651Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-definition",
+            "checkpoint": "confirm-scope#2",
+            "timestamp": "2026-08-25T04:07:03.607Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "basis": "delta",
+              "usage": {
+                "duration_ms": 92189,
+                "subagent_tokens": 75742,
+                "tool_uses": 7
+              }
+            },
+            "timestamp": "2026-08-25T04:07:31.305Z",
+            "type": "activity_usage"
+          },
+          {
+            "activity": "scope-definition",
+            "checkpoint": "confirm-scope#2",
+            "data": {
+              "optionId": "accept"
+            },
+            "timestamp": "2026-08-25T04:08:58.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "name": "scope_confirmed",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-25T04:08:58.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 6932,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-25T04:09:39.135Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 4119,
+              "delivery": "unchanged",
+              "stepId": "collect-inputs",
+              "techniqueId": "plan-evaluation::collect-scope"
+            },
+            "timestamp": "2026-08-25T04:09:39.135Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2754,
+              "delivery": "unchanged",
+              "stepId": "classify-target",
+              "techniqueId": "plan-evaluation::classify-target"
+            },
+            "timestamp": "2026-08-25T04:09:39.135Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2996,
+              "delivery": "unchanged",
+              "stepId": "derive-dimensions",
+              "techniqueId": "plan-evaluation::derive-dimensions"
+            },
+            "timestamp": "2026-08-25T04:09:39.135Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2153,
+              "delivery": "unchanged",
+              "stepId": "create-output-directory",
+              "techniqueId": "plan-evaluation::create-output-folder"
+            },
+            "timestamp": "2026-08-25T04:09:39.135Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "chars": 2361,
+              "delivery": "unchanged",
+              "stepId": "summarize-scope",
+              "techniqueId": "plan-evaluation::summarize-scope"
+            },
+            "timestamp": "2026-08-25T04:09:39.135Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 168,
+              "delivery": "unchanged",
+              "resourceId": "default-dimensions#dimension-object-structure"
+            },
+            "timestamp": "2026-08-25T04:09:39.135Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 627,
+              "delivery": "unchanged",
+              "resourceId": "default-dimensions#codebase"
+            },
+            "timestamp": "2026-08-25T04:09:39.135Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 294,
+              "delivery": "unchanged",
+              "resourceId": "default-dimensions#mixed-targets"
+            },
+            "timestamp": "2026-08-25T04:09:39.135Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-definition",
+            "data": {
+              "agentId": "client-worker-01",
+              "bundled": true,
+              "chars": 424,
+              "delivery": "unchanged",
+              "resourceId": "default-dimensions#custom-targets"
+            },
+            "timestamp": "2026-08-25T04:09:39.135Z",
+            "type": "resource_fetched"
+          }
+        ],
+        "repo": "m2ux/workflow-server",
+        "schemaVersion": 1,
+        "seq": 13,
+        "sessionIndex": "2J6KER",
+        "startedAt": "2026-08-24T16:42:08.996Z",
+        "status": "running",
+        "triggeredWorkflows": [],
+        "ts": 1787630979,
+        "variables": {
+          "accepted_count": 0,
+          "dimensions_confirmed": false,
+          "mitigations_apply_requested": false,
+          "pipeline_mode": "full-prism",
+          "resolution_requested": false,
+          "scope_confirmed": true,
+          "user_request": "Discover opportunities to optimise activity and workflow YAML file grammar and syntax so that expressions can be written in shorthand. At present the only construct optimised in this respect is `when`, which allows compound conditional expressions in a language-like syntax. Investigate this with the prism-evaluate workflow."
+        },
+        "workflowId": "prism-evaluate",
+        "workflowVersion": "2.1.0"
+      },
+      "status": "running",
+      "triggeredAt": "2026-08-24T16:42:08.993Z",
+      "triggeredFrom": {
+        "activityId": "initialize-session"
+      },
+      "workflowId": "prism-evaluate"
+    }
+  ],
+  "deliveredContent": {
+    "meta-worker-01": {
+      "bundle:rules:b35e600fc4d3a195": "b35e600fc4d3a195",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+      "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+      "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773",
+      "resource:meta/resume-intent-lexicon": "3bdffa8588675498",
+      "technique:inherited_inputs.items:13b9f9019e9b2d7b": "13b9f9019e9b2d7b",
+      "technique:inherited_inputs.items:7f611a069f20416a": "7f611a069f20416a",
+      "technique:inherited_inputs.items:bc00dc1c96282770": "bc00dc1c96282770",
+      "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
+      "technique:inherited_inputs:8523594312b4a179": "8523594312b4a179",
+      "technique:inherited_inputs:b142eecc28c90202": "b142eecc28c90202",
+      "technique:inherited_inputs:ef999f0b85d386ef": "ef999f0b85d386ef",
+      "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
+      "technique:rules:0dc19d41349208db": "0dc19d41349208db",
+      "technique:rules:747dfeb00117d373": "747dfeb00117d373",
+      "technique:rules:b7415c0f0d1a9c70": "b7415c0f0d1a9c70",
+      "technique:rules:be94a1e5beea0046": "be94a1e5beea0046",
+      "technique:rules:bebf7182af1f0a1d": "bebf7182af1f0a1d",
+      "technique:version-control::detect-repo-type": "12a6bff445fbf872",
+      "technique:version-control::initialize-folder": "6d42879983c06fbc",
+      "technique:version-control::resolve-host-repo": "da0a8d216d72dbcd",
+      "technique:workflow-engine::create-session": "d0fe7af461e03e40",
+      "technique:workflow-engine::derive-initiative-name": "bfbcf5bbb11aaaca",
+      "technique:workflow-engine::detect-resume-intent": "b98260c8b411f2d9",
+      "technique:workflow-engine::extract-identifying-context": "7900198316102095",
+      "technique:workflow-engine::list-workflows": "fb76525498c90f02",
+      "technique:workflow-engine::match-target-workflow": "41806d93ecb8056f"
+    },
+    "meta-worker-02": {
+      "bundle:rules:b35e600fc4d3a195": "b35e600fc4d3a195",
+      "bundle:variable-binding": "37cb777f805641fb",
+      "bundle:workflow-engine::activity-worker": "c81c6e7803027e7a",
+      "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
+      "bundle:workflow-engine::resume-from-checkpoint": "c5d39964aebc52ea",
+      "bundle:workflow-engine::yield-checkpoint": "9c288d31d7ef9773"
+    }
+  },
+  "repo": "m2ux/workflow-server"
+}
