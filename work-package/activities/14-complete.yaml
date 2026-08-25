@@ -7,9 +7,11 @@ variables:
     - branch_name
     - changed_files
     - component_git_dir
+    - component_name
     - host_repo_path
     - is_review_mode
     - issue_number
+    - issue_platform
     - planning_folder_path
     - pr_number
     - problem_complexity
@@ -31,6 +33,25 @@ variables:
       type: string
       description: Path to the close-out document.
       defaultValue: ""
+    - name: current_deferred_item
+      type: object
+      description: The deferred-items register row under consideration during the raise loop.
+    - name: deferred_items
+      type: string
+      description: The deferred-items register with each approved row's Follow-up cell carrying the issue it was raised as.
+      defaultValue: ""
+    - name: has_unraised_deferred_items
+      type: boolean
+      description: Whether the register holds at least one row naming no issue yet.
+      defaultValue: false
+    - name: open_deferred_items
+      type: array
+      description: Register rows whose Follow-up cell holds no issue link, each carrying its ID, item and rationale.
+      defaultValue: []
+    - name: raise_current_deferred_item
+      type: boolean
+      description: Whether the raise gate approved the row under consideration. Both gate options set it, so each pass through the loop decides on its own row.
+      defaultValue: false
     - name: publishable_files
       type: array
       description: Every changed file under `{planning_folder_path}`, including `README.md`, the linked report artifacts, `review-summary.md`, `session.json` and `.session-token`.
@@ -52,6 +73,39 @@ steps:
     id: finalize-test-plan
     technique: finalize-documentation::finalize-test-plan
     when: is_review_mode != true
+  - kind: technique
+    id: collect-deferred-items
+    technique: raise-deferred-items::collect
+    when: is_review_mode != true
+  - kind: loop
+    id: deferred-item-raise-loop
+    name: Deferred Item Raise Loop
+    loopType: forEach
+    variable: current_deferred_item
+    over: open_deferred_items
+    when: is_review_mode != true && has_unraised_deferred_items == true
+    steps:
+      - kind: checkpoint
+        id: deferred-item-raise#{current_deferred_item.id}
+        message: "Deferred item {current_deferred_item.id}: {current_deferred_item.item} — deferred because {current_deferred_item.rationale}"
+        blocking: true
+        options:
+          - id: raise
+            label: Raise an issue
+            description: Create a tracker issue for this item and link it from the register row
+            effect:
+              setVariable:
+                raise_current_deferred_item: true
+          - id: skip
+            label: Leave unraised
+            description: Keep the row open with its dash, for a later package to raise
+            effect:
+              setVariable:
+                raise_current_deferred_item: false
+      - kind: technique
+        id: raise-deferred-item
+        technique: raise-deferred-items::raise
+        when: raise_current_deferred_item == true
   - kind: technique
     id: create-complete-doc
     technique: finalize-documentation::create-complete-doc
