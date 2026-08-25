@@ -18,8 +18,8 @@ An array of `{ pipeline_mode, lenses, dimensions, analysis_focus, output_subdir 
 ### 1. Group by Pipeline Mode
 
 - Group the dimensions of `{dimension_plan}` that share a `pipeline_mode`.  
-  > A `full-prism` dimension takes a group of its own — its three passes run over one target and admit no second dimension.  
-  > `portfolio` dimensions combine into one group carrying the union of their lens indices, each lens writing its own artifact under the group's `output_subdir`.
+  > - A `full-prism` dimension takes a group of its own — its three passes run over one target and admit no second dimension.
+  > - `portfolio` dimensions combine into one group carrying the union of their lens indices, each lens writing its own artifact under the group's `output_subdir`.
 
 ### 2. Record the Groups
 

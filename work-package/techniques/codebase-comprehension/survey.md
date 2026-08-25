@@ -63,7 +63,7 @@ Mapping of domain-specific terms to the technical modules/constructs that implem
 - Identify module boundaries and their responsibilities from directory layout, module declarations, and public APIs
 - Map dependency relationships between modules (imports, trait implementations, cross-module calls)
 - Identify overarching patterns: layered architecture, event-driven, actor model, plugin system, etc.
-  - If the codebase uses patterns or frameworks you are unfamiliar with, use web research to understand the framework conventions, then document the findings
+  > If the codebase uses patterns or frameworks you are unfamiliar with, use web research to understand the framework conventions, then document the findings
 - Form architecture hypotheses and verify by sampling implementation files
 - If the codebase is too large for exhaustive analysis, focus on areas relevant to the problem statement and note the unexplored areas for future passes
 

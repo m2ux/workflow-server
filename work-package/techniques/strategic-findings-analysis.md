@@ -46,8 +46,8 @@ A concise multi-line summary of the strategic-review findings — one line per f
 
 - Set `{recommended_strategic_option}` to `acceptable` when findings are minor or absent.
 - With one or more significant findings present, set it to the action the run can take on them.
-  > When `{is_review_mode}` is true, that action is `raise-findings` — the change belongs to its author, and what this run decides is which findings the posted review carries.
-  > Otherwise it is `fix-findings` — the run owns the change and can alter it.
+  > - When `{is_review_mode}` is true, that action is `raise-findings` — the change belongs to its author, and what this run decides is which findings the posted review carries.
+  > - Otherwise it is `fix-findings` — the run owns the change and can alter it.
 
 ### 3. Summarize Findings
 

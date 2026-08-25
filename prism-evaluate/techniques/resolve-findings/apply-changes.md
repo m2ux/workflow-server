@@ -22,8 +22,8 @@ The target this application modified, together with the mitigation plan the chan
 ### 1. Apply Each Change
 
 - Work through `{mitigation_plan.implementation_priority}`, and for each change verify the target text at `{target_path}` matches what the plan expects before making it.  
-  > Where an earlier change moved the text, search for the expected text elsewhere in the target and apply the change at that location.  
-  > Where the expected text is nowhere in the target, record the conflict and leave that change unapplied.
+  > - Where an earlier change moved the text, search for the expected text elsewhere in the target and apply the change at that location.
+  > - Where the expected text is nowhere in the target, record the conflict and leave that change unapplied.
 
 ### 2. Verify Each Change Landed
 

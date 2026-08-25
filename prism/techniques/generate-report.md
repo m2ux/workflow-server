@@ -115,8 +115,8 @@ Full filesystem path to `DEFINITIVE-FINDINGS.md`
 
 - **A finding that arrived with a designator keeps it**, whatever series it belongs to. That designator is where its identity lives for the upstream artifacts, gates and citations that already cite it.
 - Mint identifiers only for findings this run raised, in a range disjoint from the carried ones.
-  > When `{analysis_focus}` provides dimension names or categories, mint dimension-based prefixes (e.g., CON-xx for consistency, VER-xx for veracity).
-  > Otherwise mint severity-ordered sequential numbering (e.g., F-01, F-02).
+  > - When `{analysis_focus}` provides dimension names or categories, mint dimension-based prefixes (e.g., CON-xx for consistency, VER-xx for veracity).
+  > - Otherwise mint severity-ordered sequential numbering (e.g., F-01, F-02).
 - For multi-unit analyses, prefix a minted identifier with a short unit identifier where needed to avoid collisions.
 - If two findings hold the same identifier, disambiguate the **minted** one — never the carried one — and report the collision.
 - Record, for every finding in the report, `report_id → { source_artifact_path, original_id, original_severity }`, so a carried identifier reads as carried and a minted one names what it was minted for.

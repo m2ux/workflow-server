@@ -805,7 +805,7 @@ A caveat is a protocol sub-bullet instead of a blockquote note.
 
 **Do not flag:** Genuine enumerations or sequential sub-steps (per-harness branch tables, ordered sub-actions). Global/cross-step constraints belong in `## Rules` (`structure-backed-constraints`, `no-rule-protocol-restatement`). Single-block Rules misfiled as global — see `local-rule-as-note`. Distinct from `no-one-step-rules`.
 
-**Fix:** Convert to a `>` note under the primary instruction (two trailing spaces on the primary bullet, then `> ` on the next line). A `>` line is not a step — it folds into the parent. See [Isolate Conditional Branches as Notes](./design-principles.md#31-isolate-conditional-branches-as-notes).
+**Fix:** Move the caveat into a `>` note under the primary instruction. A lone caveat is the note's prose (`  > If the PR has not merged, wait`); two or more items each take a bullet within the note (`  > - When …`). A line opening with `>` is not a step — it folds into the parent. See [Isolate Conditional Branches as Notes](./design-principles.md#31-isolate-conditional-branches-as-notes).
 
 ### AP-60. local-rule-as-note
 
