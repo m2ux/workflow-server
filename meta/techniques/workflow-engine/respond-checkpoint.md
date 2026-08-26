@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.2.0
+  version: 1.3.0
 ---
 
 ## Capability
@@ -38,3 +38,11 @@ If `respond_checkpoint` returns `Invalid option`, STOP. Apply [present-checkpoin
 ### verify-auto-advance-on-resolve
 
 `auto_advance: true` is valid only when the checkpoint definition (as presented) includes both `defaultOption` and `autoAdvanceMs`. Confirm via [present-checkpoint-to-user](./present-checkpoint-to-user.md)::[verify-auto-advance-capability](./present-checkpoint-to-user.md#verify-auto-advance-capability) before calling `respond_checkpoint`. Do not invent auto-advance on a checkpoint that lacks those fields.
+
+### auto-advance-spends-the-declared-interval
+
+The server refuses `auto_advance: true` until `autoAdvanceMs` has elapsed since the gate was yielded, so this call is the route that spends the declared interval. A resolution that must not wait belongs on the headless path of [present-checkpoint-to-user](./present-checkpoint-to-user.md)::[present-before-any-resolution](./present-checkpoint-to-user.md#present-before-any-resolution), which makes no call at all.
+
+### dismiss-only-a-gate-whose-condition-is-false
+
+`condition_not_met: true` is the resolution for a checkpoint whose declared `condition` evaluates false against the run's variable bag — the gate is cleared without a decision because the run never reached the situation it asks about. The server refuses it on a checkpoint carrying no `condition`. Never use it to clear a gate whose condition holds.

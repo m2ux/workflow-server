@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: remediate-vuln
-version: 2.3.0
+version: 2.4.0
 title: Security Vulnerability Remediation Workflow
 description: Remediate security vulnerabilities without public disclosure.
 author: m2ux
@@ -12,7 +12,6 @@ tags:
   - private
 rules:
   workflow:
-    - "Agents MUST NOT skip or auto-resolve blocking checkpoints (blocking: true) — these require explicit user selection."
     - ref: work-package::interaction-discipline
     - Explicit approval - Get clear 'yes' or 'proceed' before major actions
     - ref: inline-orchestration-model
