@@ -68,7 +68,6 @@ steps:
           operator: ==
           value: true
         message: "This monorepo holds more than one component submodule. Candidate: `{candidate_component.path}` — recommended `{recommended_component_path}`."
-        blocking: true
         options:
           - id: submodule-chosen
             label: Work in this submodule

@@ -26,7 +26,7 @@ steps:
     options:
       - id: accept
         label: Accept — proceed to submit
-        description: No issues or issues are minor (default — auto-proceeds after 30s)
+        description: No issues, or the issues are minor enough to submit over
         effect:
           setVariable:
             has_issues: false
@@ -41,7 +41,6 @@ steps:
         description: Stop the workflow without submitting
         effect:
           exit: abort
-    blocking: false
 exits:
   - id: has-issues
     when: has_issues == true

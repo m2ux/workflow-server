@@ -49,7 +49,6 @@ steps:
       operator: "!="
       value: update
     message: "Optional design context — reference workflows, integration points, or operators and triggers."
-    blocking: false
     defaultOption: skip-context
     autoAdvanceMs: 30000
     options:
@@ -100,7 +99,6 @@ steps:
   - kind: checkpoint
     id: spec-confirmed
     message: "Full specification across the design dimensions ({design_dimensions}): [design specification]({specification_path}). Stakeholder attestation at Gate 2."
-    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:

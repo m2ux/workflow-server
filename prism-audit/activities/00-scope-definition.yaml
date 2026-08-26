@@ -51,7 +51,6 @@ steps:
         description: Modify the target, description, or output path before proceeding
         effect:
           exit: adjust
-    blocking: true
   - kind: technique
     id: create-output-directory
     technique: create-output-folder

@@ -115,7 +115,6 @@ steps:
           operator: ==
           value: true
         message: Open questions remain after analyse-challenge (see above). Select whether understanding is sufficient or further exploration is needed.
-        blocking: false
         defaultOption: sufficient
         autoAdvanceMs: 30000
         options:

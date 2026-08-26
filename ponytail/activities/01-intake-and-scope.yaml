@@ -22,7 +22,6 @@ steps:
     technique: scope-intake
   - kind: checkpoint
     id: intensity-and-scope-confirmed
-    blocking: true
     message: "The lazy lens for {task_description} at {target_path} — how strict the pass is, and how wide."
     options:
       - id: lite-change

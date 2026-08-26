@@ -43,7 +43,6 @@ steps:
       operator: ==
       value: audit
     message: "{finding_count} plain-language findings recorded against `{document_title}` ([source analysis]({source_analysis_path}))."
-    blocking: false
     defaultOption: accepted
     autoAdvanceMs: 30000
     options:

@@ -10,7 +10,7 @@ This file is an orientation map. The authoritative definition of each activity �
 
 ### 01. Intake and Scope
 
-Capture the task and target, fix the intensity and scope of the lazy lens, and trace the real end-to-end flow the change touches, so the rung is chosen against the actual problem rather than a guess. A blocking `intensity-and-scope-confirmed` checkpoint settles the lens — intensity (`lite` / `full` / `ultra`) and scope (`change` / `repo`) — before any climbing begins. **Value:** the change is understood and the lens calibrated before a single simplification is made.
+Capture the task and target, fix the intensity and scope of the lazy lens, and trace the real end-to-end flow the change touches, so the rung is chosen against the actual problem rather than a guess. A hard `intensity-and-scope-confirmed` checkpoint settles the lens — intensity (`lite` / `full` / `ultra`) and scope (`change` / `repo`) — before any climbing begins. **Value:** the change is understood and the lens calibrated before a single simplification is made.
 
 Definition: [`01-intake-and-scope.yaml`](01-intake-and-scope.yaml). Leads to [Apply Ladder](#02-apply-ladder).
 
@@ -18,7 +18,7 @@ Definition: [`01-intake-and-scope.yaml`](01-intake-and-scope.yaml). Leads to [Ap
 
 ### 02. Apply Ladder
 
-Produce the minimal solution by climbing the rungs to the highest one that still solves the understood problem, marking every deliberate simplification with its ponytail marker and leaving one runnable assert-based check. A blocking `safety-floor-cleared` checkpoint then confirms the solution clears the floor — validation, error handling, security, accessibility, calibration, the runnable check — and re-climbs to close any gap before the review. **Value:** a built, floor-clearing solution whose deliberate ceilings are marked for later harvest.
+Produce the minimal solution by climbing the rungs to the highest one that still solves the understood problem, marking every deliberate simplification with its ponytail marker and leaving one runnable assert-based check. A hard `safety-floor-cleared` checkpoint then confirms the solution clears the floor — validation, error handling, security, accessibility, calibration, the runnable check — and re-climbs to close any gap before the review. **Value:** a built, floor-clearing solution whose deliberate ceilings are marked for later harvest.
 
 Definition: [`02-apply-ladder.yaml`](02-apply-ladder.yaml). Leads to [Over-Engineering Review](#03-over-engineering-review) once the safety floor is cleared.
 

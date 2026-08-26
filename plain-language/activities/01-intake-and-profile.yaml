@@ -46,7 +46,6 @@ steps:
       operator: ==
       value: true
     message: "Plain-language intent needs confirmation — classified `{operation_type}` for `{document_title}` (controlled language: {controlled_language})."
-    blocking: true
     options:
       - id: confirm
         label: Confirm intent and profile

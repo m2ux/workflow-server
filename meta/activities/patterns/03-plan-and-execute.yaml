@@ -10,7 +10,6 @@ steps:
   - kind: checkpoint
     id: plan-confirmed
     message: "Execution plan for the goal is ready ([planning folder]({planning_folder_path}))."
-    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:

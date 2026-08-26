@@ -43,7 +43,6 @@ fragments:
             operator: ==
             value: true
       message: "Open assumptions remain after analyse-challenge ({assumption_review_presentation}). Accept the agent's positions for the batch, defer all to stakeholders, or interview individually."
-      blocking: true
       options:
         - id: accept-agent-positions
           label: Accept agent positions
@@ -62,7 +61,6 @@ fragments:
               needs_individual_interview: true
     assumption-decision:
       message: "Assumption {current_assumption.id}: {current_assumption.statement}. Resolve now or defer."
-      blocking: true
       options:
         - id: resolve-inline
           label: Resolve now

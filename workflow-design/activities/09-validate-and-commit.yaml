@@ -100,7 +100,6 @@ steps:
           operator: ">"
           value: 0
     message: "Schema validation results: {pass_count} passed, {fail_count} failed."
-    blocking: false
     defaultOption: proceed
     autoAdvanceMs: 30000
     options:
@@ -134,7 +133,6 @@ steps:
           operator: ">"
           value: 0
     message: "Scope manifest verification: {addressed_count}/{total_count} items addressed ({unaddressed_count} remaining) ([scope manifest]({scope_manifest_path}))."
-    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:
@@ -163,7 +161,6 @@ steps:
       operator: "!="
       value: review
     message: "Approve commit for workflow '{workflow_id}' ([design specification]({specification_path}), [assumptions log]({assumptions_log}) open judgements when has_open_assumptions={has_open_assumptions}, [impact analysis]({impact_analysis_path}), [draft attestation]({draft_attestation_path}), [planning README]({planning_folder_path}/README.md))."
-    blocking: true
     options:
       - id: approved
         label: Approved — commit

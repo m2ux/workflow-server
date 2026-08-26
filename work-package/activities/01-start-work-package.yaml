@@ -490,7 +490,6 @@ steps:
           operator: ==
           value: false
     message: No GitHub issue found for Jira ticket {jira_issue_key}. A linked GitHub issue enables PR traceability in the target repo. Select whether to create one.
-    blocking: false
     defaultOption: create
     autoAdvanceMs: 30000
     options:
@@ -608,7 +607,6 @@ steps:
           operator: ==
           value: true
     message: Here is the drafted issue. Select whether to create it, edit it, or cancel.
-    blocking: false
     defaultOption: create
     autoAdvanceMs: 30000
     options:
@@ -781,7 +779,6 @@ steps:
           operator: "!="
           value: true
     message: "Feature branch {branch_name} and its worktree exist. No draft PR is open for the branch yet."
-    blocking: false
     defaultOption: proceed
     autoAdvanceMs: 30000
     options:

@@ -10,7 +10,7 @@ This file is an orientation map. The authoritative definition of each activity �
 
 ### 00. Define Audit Scope
 
-Collect the audit target, description, and output path; validate that the target is an analysable codebase; index it with GitNexus (recording whether indexing succeeded, so downstream trust-boundary mapping and finding enrichment can branch on it); summarise the assembled scope; and create the output directory. A blocking `confirm-scope` checkpoint settles the target and configuration before any analysis — choosing *adjust* loops the activity back to re-scope. **Value:** analysis begins against a user-confirmed, validated target with a place to land its outputs, and downstream activities know whether call-graph enrichment is available.
+Collect the audit target, description, and output path; validate that the target is an analysable codebase; index it with GitNexus (recording whether indexing succeeded, so downstream trust-boundary mapping and finding enrichment can branch on it); summarise the assembled scope; and create the output directory. A hard `confirm-scope` checkpoint settles the target and configuration before any analysis — choosing *adjust* loops the activity back to re-scope. **Value:** analysis begins against a user-confirmed, validated target with a place to land its outputs, and downstream activities know whether call-graph enrichment is available.
 
 Definition: [`00-scope-definition.yaml`](00-scope-definition.yaml). Leads to [Generate Audit Prompt](#01-generate-audit-prompt).
 
@@ -18,7 +18,7 @@ Definition: [`00-scope-definition.yaml`](00-scope-definition.yaml). Leads to [Ge
 
 ### 01. Generate Audit Prompt
 
-Survey the codebase structure, scan for security-relevant characteristics, map trust boundaries (only when GitNexus indexed the target), derive the audit domains and cross-cutting concerns, then compose the self-contained audit prompt and partition the work into the discrete scopes prism will run. Every domain is grounded in observed code and risk-calibrated to its exposure; the user's stated concerns are folded in as elevated focus areas. A conditional blocking `no-security-characteristics` checkpoint fires when the scan finds nothing security-relevant, letting the user proceed with a generic structural analysis or abort the audit. **Value:** prism runs against domains grounded in this codebase's real architecture and risk exposure rather than a generic security checklist.
+Survey the codebase structure, scan for security-relevant characteristics, map trust boundaries (only when GitNexus indexed the target), derive the audit domains and cross-cutting concerns, then compose the self-contained audit prompt and partition the work into the discrete scopes prism will run. Every domain is grounded in observed code and risk-calibrated to its exposure; the user's stated concerns are folded in as elevated focus areas. A conditional hard `no-security-characteristics` checkpoint fires when the scan finds nothing security-relevant, letting the user proceed with a generic structural analysis or abort the audit. **Value:** prism runs against domains grounded in this codebase's real architecture and risk exposure rather than a generic security checklist.
 
 Definition: [`01-prompt-generation.yaml`](01-prompt-generation.yaml). Leads to [Execute Prism Analysis](#02-execute-prism-analysis), or to [Deliver Audit Results](#04-deliver-audit-results) when the user aborts at the no-security-characteristics checkpoint.
 

@@ -86,7 +86,6 @@ steps:
       operator: "!="
       value: review
     message: "{file_count} files are enumerated for `{workflow_id}` ([scope manifest]({scope_manifest_path}))."
-    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:
@@ -133,7 +132,6 @@ steps:
           operator: ==
           value: true
         message: "The draft of `{current_file.path}` removes content the [impact analysis]({impact_analysis_path}) does not account for."
-        blocking: true
         options:
           - id: flag-and-proceed
             label: Removal is intentional

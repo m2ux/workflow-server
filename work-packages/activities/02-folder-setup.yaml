@@ -36,7 +36,6 @@ steps:
         effect:
           setVariable:
             analysis_type: context
-    blocking: true
   - kind: checkpoint
     id: folder-created
     message: Planning folder created. Proceed with analysis?

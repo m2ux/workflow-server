@@ -102,7 +102,6 @@ steps:
           operator: "!="
           value: true
         message: "Assumption {current_assumption.id}: {current_assumption.statement}"
-        blocking: true
         options:
           - id: accept
             label: Accept assumption
@@ -143,7 +142,6 @@ steps:
           operator: ==
           value: true
     message: Some assumptions were deferred and need external stakeholder attention. Select whether to post the summary to {issue_platform}.
-    blocking: false
     defaultOption: post-summary
     autoAdvanceMs: 30000
     options:

@@ -66,7 +66,6 @@ steps:
       - kind: checkpoint
         id: evaluation-reviewed
         message: "Round {revision_round}: {open_issue_count} open issues against `{document_title}` ([evaluation report]({evaluation_report_path}))."
-        blocking: false
         defaultOption: revise
         autoAdvanceMs: 30000
         options:
@@ -122,7 +121,6 @@ steps:
       operator: ">"
       value: 0
     message: "{open_issue_count} open issues remain after the final evaluation round ([evaluation report]({evaluation_report_path}), [ISO checklist]({checklist_path}))."
-    blocking: true
     options:
       - id: deliver-with-issues
         label: Deliver with recorded issues

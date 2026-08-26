@@ -136,7 +136,6 @@ steps:
       operator: "!="
       value: true
     message: Approach presented above. Select whether to confirm or revise.
-    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:

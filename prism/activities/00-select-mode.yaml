@@ -99,7 +99,6 @@ steps:
         effect:
           setVariable:
             pipeline_mode: adaptive
-    blocking: true
 exits:
   - id: dispute
     when: pipeline_mode == "dispute"

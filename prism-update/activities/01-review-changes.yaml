@@ -31,7 +31,6 @@ steps:
         description: Do not import any changes
         effect:
           exit: abort
-    blocking: true
   - kind: technique
     id: apply-exclusions
     technique: review-change-set::apply-exclusions

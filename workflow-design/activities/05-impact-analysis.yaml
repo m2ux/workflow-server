@@ -44,7 +44,6 @@ steps:
       operator: ">"
       value: 0
     message: "Impact analysis: {removal_count} removal(s) flagged ([impact analysis]({impact_analysis_path}))."
-    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:

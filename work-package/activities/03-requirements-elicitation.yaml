@@ -56,7 +56,6 @@ steps:
   - kind: checkpoint
     id: stakeholder-transcript
     message: Before we begin elicitation, please discuss requirements with key stakeholders (product owner, domain experts, end users). Once complete, provide the discussion transcript or summary here.
-    blocking: true
     options:
       - id: provide-transcript
         label: Provide transcript/summary
@@ -96,7 +95,6 @@ steps:
   - kind: checkpoint
     id: elicitation-complete
     message: All question domains have been covered. Select whether elicitation is complete or needs more work.
-    blocking: false
     defaultOption: complete
     autoAdvanceMs: 30000
     options:

@@ -102,7 +102,6 @@ steps:
           operator: "!="
           value: true
     message: "Design intent needs confirmation — classified `{operation_type}` for `{workflow_id}` (mode ambiguous={operation_type_ambiguous}, change_request_clear={change_request_clear})."
-    blocking: true
     options:
       - id: confirm-intent
         label: Confirm classified intent
@@ -201,7 +200,6 @@ steps:
       operator: ">"
       value: 0
     message: "{removal_count} content removals are inventoried in the [impact analysis]({impact_analysis_path})."
-    blocking: true
     options:
       - id: approve-removals
         label: Approve the inventoried removals

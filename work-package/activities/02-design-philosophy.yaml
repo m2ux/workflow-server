@@ -80,7 +80,6 @@ steps:
       operator: "!="
       value: true
     message: "Classification: {problem_type}. Rationale: {classification_rationale}. Confirm the recommended path (default below), pick a different path, or revise if the classification itself is wrong."
-    blocking: false
     defaultOption: skip-optional
     autoAdvanceMs: 30000
     options:
@@ -172,7 +171,6 @@ steps:
           operator: ==
           value: true
     message: Ticket completeness gaps were identified. Select whether to refactor the ticket or proceed with gaps noted.
-    blocking: false
     defaultOption: proceed-with-gaps
     autoAdvanceMs: 30000
     options:

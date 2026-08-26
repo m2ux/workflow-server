@@ -108,7 +108,6 @@ steps:
       operator: ==
       value: review
     message: "{open_finding_count} findings are open across {target_workflow_ids} ([findings register]({report_path}))."
-    blocking: true
     options:
       - id: fix-issues
         label: Fix the findings
@@ -138,7 +137,6 @@ steps:
           operator: ">"
           value: 0
     message: "{open_finding_count} findings are open, critical={has_critical_finding}, blocked units={has_coverage_gap}, files failing validation={fail_count} ([findings register]({report_path}))."
-    blocking: true
     options:
       - id: remediate
         label: Remediate before attesting
@@ -194,7 +192,6 @@ steps:
           operator: "!="
           value: true
     message: "{addressed_count} of {total_count} manifest entries are delivered with {unaddressed_count} outstanding, {open_finding_count} findings open, blocked units={has_coverage_gap} ([change brief]({change_brief_path}), [scope manifest]({scope_manifest_path}), [findings register]({report_path}))."
-    blocking: true
     options:
       - id: approved
         label: Approved — commit and publish

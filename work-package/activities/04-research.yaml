@@ -94,7 +94,6 @@ steps:
           operator: ==
           value: false
         message: "Research has converged. Full candidate inventory ([Open Research Candidates]({research_document})): {research_candidates}. Select whether to accept research and proceed to planning, or direct further research on a specific item."
-        blocking: false
         defaultOption: accept-research
         autoAdvanceMs: 30000
         options:
@@ -169,7 +168,6 @@ steps:
       operator: ==
       value: true
     message: Research context scope could not be derived from run evidence. Declare whether research used repository only, external web sources, or both.
-    blocking: false
     defaultOption: repo-only
     autoAdvanceMs: 15000
     options:
