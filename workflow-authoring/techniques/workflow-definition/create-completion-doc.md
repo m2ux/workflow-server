@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -20,6 +20,10 @@ The confirmed file manifest for this run, against which delivery is stated.
 ### open_finding_count
 
 Number of findings left on the decision surface at close-out.
+
+### judgements_disposition
+
+What the operator decided about the brief's open judgements — `settled` where each took the position the brief argued for, `carried-open` where they reach close-out unresolved. Empty when the brief left none open.
 
 ### coverage_ledger
 
@@ -56,7 +60,7 @@ The close-out record: what the run delivered, links to where its decisions live,
 ### 3. State the Scope Outcome and What Stays Open
 
 - State delivery against `{scope_manifest}` as exceptions only: a manifest delivered exactly is one line, and rows appear only for drift
-- Record the limitations and deferrals the run leaves behind, including any enumeration unit `{coverage_ledger}` shows as blocked, any finding left open by `{open_finding_count}`, and any content preserved because `{removals_approved}` was withheld
+- Record the limitations and deferrals the run leaves behind, including any enumeration unit `{coverage_ledger}` shows as blocked, any finding left open by `{open_finding_count}`, any content preserved because `{removals_approved}` was withheld, and every design judgement the change brief carries an Outcome of `carried-open` for when `{judgements_disposition}` is `carried-open` — each named, so a reader learns which questions the run closed over
 
 ### 4. Record the Retrospective on the Run
 
