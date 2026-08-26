@@ -607,8 +607,6 @@ steps:
           operator: ==
           value: true
     message: Here is the drafted issue. Select whether to create it, edit it, or cancel.
-    defaultOption: create
-    autoAdvanceMs: 30000
     options:
       - id: create
         label: Create issue

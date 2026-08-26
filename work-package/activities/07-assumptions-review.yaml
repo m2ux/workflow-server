@@ -1,5 +1,5 @@
 id: assumptions-review
-version: 2.9.0
+version: 2.10.0
 name: Assumptions Review
 description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
 variables:
@@ -142,8 +142,6 @@ steps:
           operator: ==
           value: true
     message: Some assumptions were deferred and need external stakeholder attention. Select whether to post the summary to {issue_platform}.
-    defaultOption: post-summary
-    autoAdvanceMs: 30000
     options:
       - id: post-summary
         label: Post summary to issue tracker

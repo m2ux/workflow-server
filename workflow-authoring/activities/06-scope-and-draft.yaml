@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.4.0
+version: 1.5.0
 name: Scope and Draft
 description: "Prepare the edit worktree, enumerate the complete file manifest, author every file the manifest names, and bring the target README and the planning artifacts into line with what was drafted."
 variables:
@@ -86,8 +86,6 @@ steps:
       operator: "!="
       value: review
     message: "{file_count} files are enumerated for `{workflow_id}` ([scope manifest]({scope_manifest_path}))."
-    defaultOption: confirmed
-    autoAdvanceMs: 30000
     options:
       - id: confirmed
         label: Manifest is complete and correct
