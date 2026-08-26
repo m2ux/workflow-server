@@ -36,6 +36,7 @@
     "check:fragments": "tsx scripts/check-fragments.ts",
     "check:review-mode": "tsx scripts/check-review-mode-gating.ts",
     "check:checkpoint-entry": "tsx scripts/check-checkpoint-entry.ts",
+    "check:checkpoint-presentation": "tsx scripts/check-checkpoint-presentation.ts",
     "check:decision-order": "tsx scripts/check-decision-order.ts",
     "check:bootstrap": "tsx scripts/check-bootstrap-self-contained.ts",
     "check:set-values": "tsx scripts/check-set-action-values.ts",
