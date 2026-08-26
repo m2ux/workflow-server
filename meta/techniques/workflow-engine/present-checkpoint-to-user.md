@@ -13,6 +13,10 @@ Load the active checkpoint's details and present them to the user.
 
 `session_index` of the worker whose active checkpoint is being presented
 
+### headless_mode
+
+*(optional)* Whether the run resolves a soft mid-flow gate to its default without reaching a person. Read from the presented session's own variable bag; a run whose bag does not hold the name is interactive.
+
 ## Outputs
 
 ### user_selection
@@ -34,20 +38,16 @@ Load the active checkpoint's details and present them to the user.
 
 ### softness-is-the-field-pair
 
-A checkpoint declaring both `defaultOption` and `autoAdvanceMs` is soft: it carries an answer the run may take when no person is reached. A checkpoint declaring neither is hard: it resolves only on an explicit selection. There is no third spelling and no partial declaration — a checkpoint declares both fields or neither.
+A checkpoint declaring both `defaultOption` and `autoAdvanceMs` is soft: it carries an answer the run may take when no person is reached. One declaring neither is hard: it resolves only on an explicit selection. A checkpoint declares both fields or neither. The interval is spent by `respond_checkpoint { auto_advance: true }`, per [respond-checkpoint](./respond-checkpoint.md)::[auto-advance-spends-the-declared-interval](./respond-checkpoint.md#auto-advance-spends-the-declared-interval); on the headless path below no call is made and no interval passes, so there the pair's presence only marks the gate soft.
 
 ### present-before-any-resolution
 
-`present_checkpoint` returning data is not presentation. A hard gate's every resolution path — `option_id` or `condition_not_met` — is preceded by an `AskQuestion` that displays the checkpoint's message and options, whatever mode the run is in. A soft gate is presented the same way on an interactive run. `{headless_mode}` is the one exception this contract admits, and it reaches only a soft mid-flow gate: that gate resolves to its `defaultOption` with no `AskQuestion`. This rule is the single home for when a checkpoint is presented; a workflow states its own gating in `condition`, and defers to this rule for the presentation question.
+`present_checkpoint` returning data is not presentation. A hard gate's every resolution path — `option_id` or `condition_not_met` — is preceded by an `AskQuestion` displaying the checkpoint's message and options, whatever mode the run is in. A soft gate is presented the same way on an interactive run. `{headless_mode}` is the one exception, and it reaches only a soft mid-flow gate: that gate resolves to its `defaultOption` with no `AskQuestion`. This rule is the single home for when a checkpoint is presented — a workflow states which gates it has and what opens them, and says nothing about presentation.
 
 ### never-soft-when-the-answer-authorises
 
-A gate whose subject is content the resolving dispatch itself authored declares no `defaultOption` when its default would authorise rather than record. A default that records a judgement the run can stand behind — a comprehension check, a convergence assessment — is legitimate softness. A default that creates, publishes, pushes, approves, attests, or admits work into a later stage is a decision no agent takes on the user's behalf, so that gate is hard. The discriminator is what the default does, not who is watching: the same test the repo's review-mode gating guard applies to a review-reachable default, applied here to the author of the content under review.
+A gate whose subject is content the resolving dispatch itself authored declares no `defaultOption` when its default would authorise rather than record. A default that records a judgement the run can stand behind — a comprehension check, a convergence assessment — is legitimate softness. A default that creates, publishes, pushes, approves, attests, or admits work into a later stage is a decision no agent takes on the user's behalf, so that gate is hard. The discriminator is what the default does, not who is watching.
 
 ### verify-auto-advance-capability
 
 Before treating a checkpoint as auto-advanceable, confirm whether `defaultOption` and `autoAdvanceMs` are actually present on the `present_checkpoint` payload (or the checkpoint definition it mirrors). Do not assert auto-advance from memory, prior runs, or prose alone when those fields are absent. Capability is verified, not assumed.
-
-### the-interval-times-the-server-route
-
-`autoAdvanceMs` states the interval the server spends before it applies a `defaultOption` on `respond_checkpoint { auto_advance: true }`: that call is refused until the full interval has elapsed since the gate was yielded. The headless path of `present-before-any-resolution` spends no interval, because no call is made and no one is waiting — there the pair's presence is what marks the gate soft. A gate that must spend wall-clock before its default applies is resolved through `respond_checkpoint`.
