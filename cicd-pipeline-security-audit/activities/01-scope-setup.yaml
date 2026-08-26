@@ -1,5 +1,5 @@
 id: scope-setup
-version: 1.3.0
+version: 1.4.0
 name: Scope Setup
 description: Set up the audit scope and planning folder.
 variables:
@@ -34,12 +34,12 @@ steps:
     id: announce-completion
     actions:
       - action: log
-        message: Scope setup complete — targets confirmed and workflow inventory built
+        message: Scope setup complete — targets validated and workflow inventory built
 exits:
   - id: done
     isDefault: true
 outcome:
-  - Scanning can begin against an agreed, validated set of in-scope submodules
+  - Scanning can begin against a validated set of in-scope submodules
   - Scanners know the full universe of workflow and AI-config files they must cover, with a per-submodule count to verify completeness against
   - Reviewers can tell which submodules lack CODEOWNERS protection on their workflow files
   - Audit work has a single organized home where every downstream artifact lands and where a reader starts

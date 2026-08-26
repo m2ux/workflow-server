@@ -1,5 +1,5 @@
 id: requirements-elicitation
-version: 2.11.0
+version: 2.12.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
 variables:
@@ -141,4 +141,4 @@ exits:
 outcome:
   - Requirements explicitly captured through structured conversation
   - Success criteria defined with verification methods
-  - A single agreed reference of requirements and scope boundaries that planning and review can build against
+  - A single authoritative reference of requirements and scope boundaries that planning and review can build against
