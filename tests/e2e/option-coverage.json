@@ -29,7 +29,6 @@
         "checkpoint:implement:implementation-assumption-interview=interview-individually",
         "checkpoint:implement:symbol-provenance-confirmed=confirmed",
         "checkpoint:implement:symbol-provenance-confirmed=uncertain",
-        "checkpoint:implementation-analysis:analysis-assumption-decision#{current_assumption.id}=defer-to-stakeholder",
         "checkpoint:implementation-analysis:analysis-assumption-interview=accept-agent-positions",
         "checkpoint:implementation-analysis:analysis-assumption-interview=defer-all",
         "checkpoint:implementation-analysis:analysis-assumption-interview=interview-individually",

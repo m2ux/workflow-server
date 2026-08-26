@@ -60,7 +60,14 @@ export function makePolicy(spec: PolicySpec): Policy {
   };
 }
 
-/** Always take the declared default option — the auto-advance path. */
+/**
+ * Take each gate's declared default, and its first option where the gate is hard.
+ *
+ * A hard gate has no default to take, so this walk answers it with `options[0]`. That makes the
+ * route distinct from every named policy below: where `classification-and-path-confirmed` is
+ * answered with its revise option, no path variable is set and the run passes through the discovery
+ * activities the named paths each steer around.
+ */
 export const defaultPolicy: Policy = makePolicy({ name: 'default' });
 
 /** Direct path: skip optional discovery activities (elicitation, research, analysis). */
