@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.1.0
+  version: 5.2.0
 ---
 
 ## Capability
@@ -32,6 +32,10 @@ Comments explain why code exists and the rationale for design choices, rather th
 ### checkpoint-discipline
 
 Resolving a checkpoint is the meta-orchestrator's, via [present-checkpoint-to-user](./workflow-engine/present-checkpoint-to-user.md) then [respond-checkpoint](./workflow-engine/respond-checkpoint.md). A worker reaching a gate pauses there via [yield-checkpoint](./workflow-engine/yield-checkpoint.md); a workflow orchestrator passes the yield it receives upward unchanged.
+
+### gate-correction-is-recorded
+
+A correction the user makes at a gate is written into the variable bag against the value it corrects, so every later gate and step reads the corrected value. A correction held only in the resolving agent's reasoning is unreadable to the worker that acts on it next, and to anyone reading the session afterwards.
 
 ### operational-discipline-bundled-tools-only
 

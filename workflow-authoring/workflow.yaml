@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-authoring
-version: 1.4.0
+version: 1.5.0
 title: Workflow Authoring Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -15,7 +15,7 @@ tags:
 rules:
   activity:
     - >-
-      A correction the user makes at a gate is recorded against the fact it corrects, and every later gate is answered from the corrected value — never from the value it superseded.
+      A definition is authored against the schema its kind selects, and a construct the schema offers is used in preference to prose that describes it.
 techniques:
   activity:
     - variable-binding
