@@ -22,6 +22,9 @@ variables:
       type: boolean
       description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
       defaultValue: true
+    - name: impact_analysis
+      type: object
+      description: The impact classification for this change, whose removals inventory is the approval basis for everything the run deletes.
     - name: impact_analysis_path
       type: string
       description: Absolute path to the persisted impact-analysis artifact.

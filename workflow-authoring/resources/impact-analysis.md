@@ -63,11 +63,16 @@ The update-mode decision surface. Answers: what is touched, is topology intact, 
 
 ## 3. Removals inventory
 
-| # | Location | Removed | Preserved |
-|---|----------|---------|-----------|
-| 1 | `path` or gate | what drops | what stays |
+| # | Location | Removed | Preserved | Raised at |
+|---|----------|---------|-----------|-----------|
+| 1 | `path` or gate | what drops | what stays | impact pass \| drafting `path` \| remediation round N |
 
 [Omit the section when nothing is removed.]
+
+The inventory is the approval basis, so it is a complete list of what the run removed rather than what
+it set out to remove. A reduction observed later — while a file is drafted, or while an audit fix is
+applied — is added as a row naming the stage that raised it, so a reader can tell a removal the
+operator approved at the impact gate from one approved at the gate that observed it.
 
 ---
 
