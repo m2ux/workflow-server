@@ -77,10 +77,10 @@ variables:
     type: string
     description: URL of the pull request for this remediation (alongside pr_number). Empty while disclosure stays private.
     defaultValue: ""
-  - name: assumption_decisions
-    type: array
-    description: "Recorded assumption resolutions, each { id, disposition, resolution }."
-    defaultValue: []
+  - name: assumption_outcome
+    type: string
+    description: What the individual interview decided about the assumption under discussion — `confirmed` as stated, `corrected` with the user's correction, or `deferred` to stakeholder review. Empty before an individual gate is answered.
+    defaultValue: ""
   - name: safety_floor_cleared
     type: boolean
     description: Whether the applied simplifications hold the ponytail safety floor.

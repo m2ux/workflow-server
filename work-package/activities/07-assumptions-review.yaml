@@ -1,10 +1,9 @@
 id: assumptions-review
-version: 2.10.0
+version: 2.11.0
 name: Assumptions Review
 description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
 variables:
   reads:
-    - assumption_decisions
     - branch_name
     - component_git_dir
     - has_open_questions
@@ -23,6 +22,10 @@ variables:
     - target_path
     - target_repo
   writes:
+    - name: assumption_outcome
+      type: string
+      description: What the individual interview decided about the assumption under discussion — `confirmed` as stated, `corrected` with the user's correction, or `deferred` to stakeholder review. Empty before an individual gate is answered.
+      defaultValue: ""
     - name: assumption_review_presentation
       type: object
       description: Structured judgement-augmentation context for decision, shaped like the Open Assumptions entry fields of the assumptions log template (decision space, non-resolvability rationale, technical context, agent's position, reversibility) plus a link to the assumptions log.
@@ -106,15 +109,22 @@ steps:
           - id: accept
             label: Accept assumption
             description: This assumption is valid — proceed with it
+            effect:
+              setVariable:
+                assumption_outcome: confirmed
           - id: reject
             label: Reject assumption
             description: This assumption is wrong — provide a correction
+            effect:
+              setVariable:
+                assumption_outcome: corrected
           - id: defer
             label: Defer
             description: Not enough information to decide now — revisit later
             effect:
               setVariable:
                 has_deferred_assumptions: true
+                assumption_outcome: deferred
       - kind: technique
         id: record-decision
         technique: review-assumptions::record
