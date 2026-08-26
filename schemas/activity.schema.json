@@ -475,12 +475,12 @@
                   },
                   "defaultOption": {
                     "type": "string",
-                    "description": "The answer a soft gate takes when no person is reached. Declared together with autoAdvanceMs — the pair is what makes a checkpoint soft, and a checkpoint that must wait for an explicit selection declares neither."
+                    "description": "The answer a soft gate takes when no person is reached."
                   },
                   "autoAdvanceMs": {
                     "type": "integer",
                     "exclusiveMinimum": 0,
-                    "description": "The interval the server spends before applying defaultOption on respond_checkpoint { auto_advance: true }. Declared together with defaultOption."
+                    "description": "The interval the server spends before applying a soft gate's default on respond_checkpoint { auto_advance: true }."
                   },
                   "when": {
                     "$ref": "#/definitions/activity/properties/steps/items/anyOf/0/properties/when"

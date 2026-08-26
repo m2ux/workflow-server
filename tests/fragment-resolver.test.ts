@@ -121,6 +121,41 @@ describe('materializeCheckpointStep', () => {
     const step = { kind: 'checkpoint', id: 'empty' } as CheckpointStep;
     expect(() => materializeCheckpointStep(step, LOOKUP, 'current-wf', 'test')).toThrow(/neither a fragment ref nor a full body/);
   });
+
+  // Softness is the defaultOption + autoAdvanceMs pair, so half a pair names either an answer the
+  // server will never apply or a wait with nothing to take. A checkpoint step is a
+  // discriminated-union member, which a Zod refinement cannot be, so the loader holds the invariant.
+  describe('softness is declared as a pair', () => {
+    const inlineStep = (extra: Partial<CheckpointStep>): CheckpointStep =>
+      ({
+        kind: 'checkpoint', id: 'the-gate', message: 'Proceed.',
+        options: [{ id: 'go', label: 'Go' }, { id: 'stop', label: 'Stop' }],
+        ...extra,
+      }) as CheckpointStep;
+
+    it('rejects an inline default with no interval', () => {
+      expect(() => materializeCheckpointStep(inlineStep({ defaultOption: 'go' }), LOOKUP, 'current-wf', 'test'))
+        .toThrow(/declares defaultOption without autoAdvanceMs/);
+    });
+
+    it('rejects an inline interval with no default', () => {
+      expect(() => materializeCheckpointStep(inlineStep({ autoAdvanceMs: 30000 }), LOOKUP, 'current-wf', 'test'))
+        .toThrow(/declares autoAdvanceMs without defaultOption/);
+    });
+
+    it('accepts both, and neither', () => {
+      expect(() => materializeCheckpointStep(inlineStep({ defaultOption: 'go', autoAdvanceMs: 30000 }), LOOKUP, 'current-wf', 'test')).not.toThrow();
+      expect(() => materializeCheckpointStep(inlineStep({}), LOOKUP, 'current-wf', 'test')).not.toThrow();
+    });
+
+    it('holds the same invariant on a fragment body a ref step materializes', () => {
+      const halfPair = lookupFrom({
+        'current-wf': { checkpoints: { 'local-gate': { message: 'Confirm.', options: GATE_BODY.options, defaultOption: 'yes' } } },
+      });
+      expect(() => materializeCheckpointStep(refStep(), halfPair, 'current-wf', 'test'))
+        .toThrow(/declares defaultOption without autoAdvanceMs/);
+    });
+  });
 });
 
 describe('injectCheckpointFragmentBodies (raw-YAML delivery)', () => {

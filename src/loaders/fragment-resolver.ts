@@ -98,6 +98,25 @@ export function materializeRuleEntries(
 const CHECKPOINT_BODY_FIELDS = ['message', 'options', 'defaultOption', 'autoAdvanceMs'] as const;
 
 /**
+ * A checkpoint's softness is the `defaultOption` + `autoAdvanceMs` pair, so half a pair is not a
+ * weaker gate but an unreadable one: a default with no interval names an answer the server will
+ * never apply, and an interval with no default names a wait with nothing to take. The step schema
+ * cannot say this — it is a discriminated-union member, and a Zod refinement is not one — so the
+ * loader does, for the inline and the fragment form alike.
+ */
+function assertSoftnessPaired(step: CheckpointStep, context: string): void {
+  const hasDefault = step.defaultOption !== undefined;
+  const hasInterval = step.autoAdvanceMs !== undefined;
+  if (hasDefault === hasInterval) return;
+  const declared = hasDefault ? 'defaultOption' : 'autoAdvanceMs';
+  const missing = hasDefault ? 'autoAdvanceMs' : 'defaultOption';
+  throw new FragmentResolutionError(
+    `${context}: checkpoint '${step.id}' declares ${declared} without ${missing}. `
+    + 'A soft gate declares both; a gate that waits for an explicit selection declares neither.',
+  );
+}
+
+/**
  * Materialize one checkpoint step in place. A ref step contributes its id (and site gates:
  * `when`, `required`, and — only when the fragment declares none — `condition`); the fragment
  * contributes the body. Enforces the one-home rule: a local body field alongside `ref`, or a
@@ -115,6 +134,7 @@ export function materializeCheckpointStep(
         `${context}: checkpoint '${step.id}' declares neither a fragment ref nor a full body (message + options).`,
       );
     }
+    assertSoftnessPaired(step, context);
     return;
   }
   const declaredLocally = CHECKPOINT_BODY_FIELDS.filter((f) => step[f] !== undefined);
@@ -135,6 +155,7 @@ export function materializeCheckpointStep(
   step.autoAdvanceMs = body.autoAdvanceMs;
   if (body.condition) step.condition = structuredClone(body.condition);
   delete step.ref;
+  assertSoftnessPaired(step, context);
 }
 
 /**

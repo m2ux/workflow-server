@@ -340,10 +340,10 @@ A checkpoint step is authored in exactly one of two forms:
 | `ref`       | string             | Checkpoint-fragment reference (`[workflow::]name` into `fragments.checkpoints`; bare names resolve against the declaring workflow, then meta). Mutually exclusive with the body fields |
 | `message`   | string             | Question to present to user (inline form)           |
 | `options`   | CheckpointOption[] | Available choices (inline form)                     |
-| `defaultOption` | string          | The answer a soft gate takes when no person is reached. Declared together with `autoAdvanceMs`. |
-| `autoAdvanceMs` | integer         | Milliseconds the server spends before applying `defaultOption` on `respond_checkpoint { auto_advance }`; it enforces the full interval. Declared together with `defaultOption`. |
+| `defaultOption` | string          | The answer a soft gate takes when no person is reached. |
+| `autoAdvanceMs` | integer         | Milliseconds the server spends before applying a soft gate's default on `respond_checkpoint { auto_advance }`; it enforces the full interval. |
 
-The pair is the whole of softness: a checkpoint declaring both is soft, and one declaring neither waits for an explicit selection. A partial declaration is a defect — declare both fields or neither.
+The pair is the whole of softness: a checkpoint declaring both is soft, and one declaring neither waits for an explicit selection. The loader rejects a checkpoint declaring one without the other — half a pair names either an answer the server will never apply or a wait with nothing to take. The rule lives in the loader rather than the step schema because a checkpoint step is a discriminated-union member, which a Zod refinement cannot be, so it is absent from the generated JSON Schema and enforced when the definition loads.
 
 #### Exit
 
