@@ -40,8 +40,20 @@ import { runGuard, type Finding } from './guard-protocol.js';
 const DIR = fileURLToPath(new URL('.', import.meta.url));
 const DEFAULT_ROOT = resolve(join(DIR, '..', 'workflows'));
 
-/** The one home. Rule text here states the contract; everywhere else restates it. */
-const CONTRACT_HOME = join('meta', 'techniques', 'workflow-engine');
+/**
+ * The homes that own the contract, by domain: the engine operations own when a gate is presented and
+ * how it resolves, and agent-conduct owns the role split and the obligations that follow from it.
+ * Rule text here states the contract; anywhere else restates it. These are the engine and conduct
+ * surfaces `no-engine-mechanics-as-rules` carves out as the homes a leaf must defer to.
+ */
+const CONTRACT_HOMES = [
+  join('meta', 'techniques', 'workflow-engine'),
+  join('meta', 'techniques', 'agent-conduct.md'),
+];
+
+function isContractHome(rel: string): boolean {
+  return CONTRACT_HOMES.some((home) => rel === home || rel.startsWith(home + '/'));
+}
 
 /**
  * Phrases that assert whether a checkpoint reaches a person. Each is a claim about presentation,
@@ -57,14 +69,27 @@ const PRESENTATION_CLAIMS: { pattern: RegExp; says: string }[] = [
   { pattern: /\bwithout (?:being )?present(?:ing|ed)\b/i, says: 'asserts a gate is not presented' },
   { pattern: /\bskip(?:s|ping)? (?:the )?(?:gate|checkpoint|presentation)\b/i, says: 'asserts a gate is skipped' },
   { pattern: /\bpresents? (?:the )?checkpoints?\b/i, says: 'asserts who presents a checkpoint' },
+  { pattern: /\bcheckpoint_pending\b/i, says: 'names the yield envelope' },
+  { pattern: /\byields? (?:a |the )?checkpoint\b/i, says: 'asserts how a worker reaches a gate' },
+  // How a gate's answer travels is the bag's contract and agent-conduct's obligation, not a
+  // workflow's. Three workflows once carried a phrasing of it and no home stated it.
+  { pattern: /\bcorrected value\b/i, says: 'asserts how a gate answer propagates' },
+  { pattern: /\b(?:later|subsequent) (?:gate|checkpoint)s?\b/i, says: 'asserts how a gate answer propagates' },
+  { pattern: /\bcorrections? must persist\b/i, says: 'asserts how a gate answer propagates' },
 ];
 
 function claimsIn(text: string): string[] {
   return PRESENTATION_CLAIMS.filter((c) => c.pattern.test(text)).map((c) => c.says);
 }
 
-/** Rule entries are strings, or `{ ref }` imports which carry no text of their own. */
+/**
+ * Rule text carried by a bucket or a fragment. A bucket is a list whose entries are strings or
+ * `{ ref }` imports, which carry no text of their own. A fragment is either such a list or one bare
+ * string — `remediate-vuln`'s orchestration-model fragment is a string, and reading only the list
+ * form is how a whole rule stays unscanned.
+ */
 function ruleStrings(bucket: unknown): string[] {
+  if (typeof bucket === 'string') return [bucket];
   if (!Array.isArray(bucket)) return [];
   return bucket.filter((e): e is string => typeof e === 'string');
 }
@@ -161,7 +186,7 @@ export function collectFindings(root: string = DEFAULT_ROOT): Finding[] {
         if (!f.endsWith('.md')) continue;
         const rel = relative(root, f);
         scanned++;
-        if (rel.startsWith(CONTRACT_HOME)) continue;
+        if (isContractHome(rel)) continue;
         const says = claimsIn(rulesSection(readFileSync(f, 'utf-8')));
         if (says.length === 0) continue;
         findings.push({

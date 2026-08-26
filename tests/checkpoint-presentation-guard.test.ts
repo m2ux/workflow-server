@@ -30,7 +30,8 @@ describe('checkpoint-presentation guard', () => {
     }
   }
 
-  const CLEAN_WF = 'id: wf\nrules:\n  activity:\n    - A correction the user makes at a gate is answered from the corrected value.\n';
+  // A domain invariant with no engine mechanics in it — the shape a workflow rule is allowed to be.
+  const CLEAN_WF = 'id: wf\nrules:\n  activity:\n    - Every finding carries the evidence it was derived from.\n';
 
   it('flags a workflow rule licensing a gate to resolve without presentation', () => {
     const findings = findingsFor({
