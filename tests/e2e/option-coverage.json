@@ -39,6 +39,8 @@
         "checkpoint:intake-and-context:design-intent-batch=wrong-review-target",
         "checkpoint:intake-and-context:impact-approved=approve-removals",
         "checkpoint:intake-and-context:impact-approved=preserve-more",
+        "checkpoint:intake-and-context:judgements-disposition=accept-positions",
+        "checkpoint:intake-and-context:judgements-disposition=carry-open",
         "checkpoint:intake-and-profile:intent-and-profile-batch=confirm",
         "checkpoint:intake-and-profile:intent-and-profile-batch=confirm-audit",
         "checkpoint:intake-and-profile:intent-and-profile-batch=confirm-author",
