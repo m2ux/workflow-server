@@ -5,7 +5,6 @@ steps:
   - kind: checkpoint
     id: first-approval
     message: Approve the generated artifact set before publication.
-    blocking: true
     options:
       - id: approve
         label: Approve
@@ -16,7 +15,6 @@ steps:
   - kind: checkpoint
     id: second-approval
     message: Approve the generated artifact set before publication.
-    blocking: true
     options:
       - id: approve
         label: Approve

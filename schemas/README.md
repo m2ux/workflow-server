@@ -30,7 +30,7 @@ The server enforces structure at load time plus a small runtime core; most schem
 | Workflow | `id` (file resolution); `techniques.workflow` / `techniques.activity` (bundle composition); `activities` / `activitiesDir` (assembly); `variables[].defaultValue` (seeded into the session variable bag at session creation, recorded as a `variables_seeded` history event) | `version` (mid-session drift warns); `title`, `description`, `tags`; `rules.*`; `variables[]` declarations (the file's own, plus every `variables.writes` declaration the activities in its graph contribute; rendered in `get_workflow`); `initialActivity` (wrong first activity warns); `variables[].type` (checkpoint `setVariable` values validated warn-only — mismatches stored as written) | `author`; `variables[].required` (never checked — authoring metadata) |
 | Activity | `variables.writes[]` (contributed to the including workflow's variable set at load; two declarations of one name that disagree on `type` or `defaultValue` fail the load); `id` (navigation key); `artifactPrefix` (server-computed from the filename; also orders activities); the composed artifact contract (synthesized from bound techniques' outputs); `techniques[]` (bundle); `bundleTechniques` (hybrid step-technique bundling in `get_activity`) | `variables.reads[]` (the names the activity needs the workflow to supply; `check:activity-variables` holds the graph to them); `name`, `description`, `required`, `rules[]`; `exits[]` (every one bound in the workflow's `graph` or the load fails; the destination reached warns only — `next_activity` moves anywhere) | `triggers[]` / `passContext` (`dispatch_child` takes an explicit `workflow_id`; a child session's bag starts from the child workflow's own declared defaults); `outcome[]` (never reconciled against manifests) |
 | Step (common) | `kind` (selects the per-kind closed contract); `id` (duplicate ids are a load error; the key for manifests and step-bound `get_technique`) | absence of a gated step from a `step_manifest` is accepted; ungated omissions warn | `when` / `condition` gates (the server never evaluates a condition; on a checkpoint step only `condition` enables `condition_not_met` dismissal); `required` (worker hint); `actions[]` (no verb has a server interpreter — `set` does not write the variable bag and is slated for removal at the next schema major, #166 B7/B12) |
-| Checkpoint step | `options[]` (`option_id` hard-validated); `effect.setVariable` (applied to the session variable bag — the one engine-applied effect); `defaultOption` + `autoAdvanceMs` (the server enforces the full timer before `auto_advance`) | `effect.exit` (checked at load against the activity's `exits`; the destination is read from the workflow graph, recorded and returned, and the orchestrator enacts it via `next_activity`) | `blocking` (orchestrator directive; the server's auto-advance gate does not consult it) |
+| Checkpoint step | `options[]` (`option_id` hard-validated); `effect.setVariable` (applied to the session variable bag — the one engine-applied effect); `defaultOption` + `autoAdvanceMs` (the server enforces the full timer before `auto_advance`) | `effect.exit` (checked at load against the activity's `exits`; the destination is read from the workflow graph, recorded and returned, and the orchestrator enacts it via `next_activity`) | — |
 | Loop step | body `steps[]` structure (id uniqueness per scope, flattened for lookups and artifact composition) | loop-body step ids are accepted in `step_manifest` but never required | `loopType` semantics, `variable` / `over`, `breakCondition`, `maxIterations` — iteration is executed and bounded entirely by the agent |
 | Technique | `id` (resolution); rule addressing (`tech::rule`, group-prefix expansion); `inputs[].id` / `outputs[].id` (composition merge keys); `outputs[].artifact.name` (drives the composed artifact contract); `Initial` / `Final` protocol titles (composition wrapping) | `version`, `capability`; `inputs[].required` / `default` (rendered; the server neither verifies a required input was supplied nor applies a default); protocol content | input-binding resolution and output remaps (the name-match convention is an agent convention; step-bound `get_technique` annotates resolution statically) |
 | Condition | — | condition text is rendered for warn-only `transition_condition` matching (exact string equality) | all evaluation — `simple` / `and` / `or` / `not`, `exists` / null semantics |
@@ -193,7 +193,6 @@ erDiagram
         string id PK
         enum kind
         string message
-        boolean blocking
         string defaultOption
         integer autoAdvanceMs
     }
@@ -341,9 +340,10 @@ A checkpoint step is authored in exactly one of two forms:
 | `ref`       | string             | Checkpoint-fragment reference (`[workflow::]name` into `fragments.checkpoints`; bare names resolve against the declaring workflow, then meta). Mutually exclusive with the body fields |
 | `message`   | string             | Question to present to user (inline form)           |
 | `options`   | CheckpointOption[] | Available choices (inline form)                     |
-| `blocking`  | boolean            | Orchestrator directive: present the checkpoint and wait for explicit user selection (default: true). The server does not consult it — its auto-advance gate checks only `defaultOption` and `autoAdvanceMs`, so a checkpoint intended to block must not declare those fields. |
-| `defaultOption` | string          | Option ID to auto-select when `autoAdvanceMs` elapses. |
-| `autoAdvanceMs` | integer         | Milliseconds to wait before auto-selecting `defaultOption`; the server enforces the full timer on `respond_checkpoint { auto_advance }`. |
+| `defaultOption` | string          | The answer a soft gate takes when no person is reached. Declared together with `autoAdvanceMs`. |
+| `autoAdvanceMs` | integer         | Milliseconds the server spends before applying `defaultOption` on `respond_checkpoint { auto_advance }`; it enforces the full interval. Declared together with `defaultOption`. |
+
+The pair is the whole of softness: a checkpoint declaring both is soft, and one declaring neither waits for an explicit selection. A partial declaration is a defect — declare both fields or neither.
 
 #### Exit
 
@@ -594,7 +594,6 @@ A `kind: checkpoint` step pauses execution and requires user input. It sits inli
       "kind": "checkpoint",
       "id": "confirm-proceed",
       "when": "needs_confirmation == true",
-      "blocking": true,
       "message": "Do you want to proceed?",
       "options": [
         {
@@ -1015,7 +1014,6 @@ Here's a minimal valid workflow that demonstrates all key concepts:
           "kind": "checkpoint",
           "id": "approve",
           "message": "Do you approve this item?",
-          "blocking": true,
           "options": [
             {
               "id": "approve",

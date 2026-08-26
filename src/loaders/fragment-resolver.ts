@@ -95,7 +95,7 @@ export function materializeRuleEntries(
 }
 
 /** The body fields a ref-form checkpoint step must NOT declare locally (the fragment owns them). */
-const CHECKPOINT_BODY_FIELDS = ['message', 'options', 'defaultOption', 'autoAdvanceMs', 'blocking'] as const;
+const CHECKPOINT_BODY_FIELDS = ['message', 'options', 'defaultOption', 'autoAdvanceMs'] as const;
 
 /**
  * Materialize one checkpoint step in place. A ref step contributes its id (and site gates:
@@ -133,7 +133,6 @@ export function materializeCheckpointStep(
   step.options = structuredClone(body.options);
   step.defaultOption = body.defaultOption;
   step.autoAdvanceMs = body.autoAdvanceMs;
-  step.blocking = body.blocking;
   if (body.condition) step.condition = structuredClone(body.condition);
   delete step.ref;
 }
@@ -208,7 +207,6 @@ export function injectCheckpointFragmentBodies(
     const serialized: Record<string, unknown> = {
       ...(body.condition !== undefined ? { condition: body.condition } : {}),
       message: body.message,
-      ...(body.blocking !== undefined ? { blocking: body.blocking } : {}),
       ...(body.defaultOption !== undefined ? { defaultOption: body.defaultOption } : {}),
       ...(body.autoAdvanceMs !== undefined ? { autoAdvanceMs: body.autoAdvanceMs } : {}),
       options: body.options,

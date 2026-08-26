@@ -78,7 +78,6 @@ export interface StepDef {
   options?: CheckpointOption[];
   defaultOption?: string;
   autoAdvanceMs?: number;
-  blocking?: boolean;
   // kind:loop — compound body.
   loopType?: string;
   steps?: StepDef[];

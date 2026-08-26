@@ -30,7 +30,6 @@ describe('checkpoint-entry guard', () => {
   const CHECKPOINT = `  - kind: checkpoint
     id: ask-first
     message: Proceed?
-    blocking: true
     options:
       - id: yes-go
         label: Go

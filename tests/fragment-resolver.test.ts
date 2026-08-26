@@ -48,7 +48,8 @@ const GATE_BODY = {
     { id: 'yes', label: 'Confirmed', effect: { setVariable: { scope_confirmed: true } } },
     { id: 'no', label: 'Revise' },
   ],
-  blocking: true,
+  defaultOption: 'yes',
+  autoAdvanceMs: 30000,
 };
 
 const lookupFrom = (map: Record<string, WorkflowFragments>): FragmentsLookup => (id) => map[id];
@@ -93,7 +94,8 @@ describe('materializeCheckpointStep', () => {
     materializeCheckpointStep(step, LOOKUP, 'current-wf', 'test');
     expect(step.ref).toBeUndefined();
     expect(step.message).toBe('Confirm the scope.');
-    expect(step.blocking).toBe(true);
+    expect(step.defaultOption).toBe('yes');
+    expect(step.autoAdvanceMs).toBe(30000);
     expect(step.options).toHaveLength(2);
     expect(step.options).not.toBe(GATE_BODY.options); // cloned, not shared across sites
   });
