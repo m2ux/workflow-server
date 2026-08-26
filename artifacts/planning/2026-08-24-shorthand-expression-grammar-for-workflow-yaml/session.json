@@ -1,21 +1,22 @@
 {
   "schemaVersion": 1,
-  "status": "running",
+  "status": "completed",
   "workflowId": "meta",
   "workflowVersion": "5.23.0",
   "agentId": "orchestrator",
   "sessionIndex": "H376E6",
-  "currentActivity": "end-workflow",
+  "currentActivity": "__terminal__",
   "currentTechnique": "workflow-engine::revise-session-metrics",
-  "exit": "null",
-  "seq": 24,
-  "ts": 1787670433,
+  "exit": "completed",
+  "seq": 25,
+  "ts": 1787670473,
   "startedAt": "2026-08-24T16:37:54.094Z",
   "completedActivities": [
     "discover-session",
     "initialize-session",
     "resolve-target",
-    "dispatch-client-workflow"
+    "dispatch-client-workflow",
+    "end-workflow"
   ],
   "variables": {
     "client_initial_activity": "scope-definition",
@@ -923,6 +924,39 @@
       },
       "timestamp": "2026-08-25T15:07:13.007Z",
       "type": "activity_usage"
+    },
+    {
+      "activity": "end-workflow",
+      "timestamp": "2026-08-25T15:07:53.805Z",
+      "type": "activity_exited"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "exit": "completed",
+        "outcome": "complete"
+      },
+      "timestamp": "2026-08-25T15:07:53.805Z",
+      "type": "activity_outcome"
+    },
+    {
+      "activity": "end-workflow",
+      "data": {
+        "name": "client_workflow_completed",
+        "source": "variables_changed",
+        "value": true
+      },
+      "timestamp": "2026-08-25T15:07:53.805Z",
+      "type": "variable_set"
+    },
+    {
+      "activity": "__terminal__",
+      "timestamp": "2026-08-25T15:07:53.805Z",
+      "type": "activity_entered"
+    },
+    {
+      "timestamp": "2026-08-25T15:07:53.805Z",
+      "type": "workflow_completed"
     }
   ],
   "triggeredWorkflows": [
@@ -6084,6 +6118,23 @@
         "activityId": "initialize-session"
       },
       "workflowId": "prism-evaluate"
+    }
+  ],
+  "declaredArtifacts": [
+    {
+      "id": "token-usage",
+      "name": "Token usage",
+      "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/04-token-usage.md"
+    },
+    {
+      "id": "session-trace",
+      "name": "Session trace",
+      "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/04-session-trace.md"
+    },
+    {
+      "id": "workflow-definition-defects",
+      "name": "Workflow definition defects",
+      "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-24-shorthand-expression-grammar-for-workflow-yaml/04-workflow-definition-defects.md"
     }
   ],
   "deliveredContent": {
