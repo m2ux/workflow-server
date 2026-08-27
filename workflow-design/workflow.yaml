@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-design
-version: 1.34.0
+version: 1.36.0
 title: DEPRECATED — use workflow-authoring — Workflow Design Workflow
 description: >-
   DEPRECATED — start `workflow-authoring` instead. This workflow remains only so sessions already in flight can finish; it is removed once none remain. Guide agents through creating, updating, or reviewing workflow definitions.
@@ -16,8 +16,7 @@ tags:
   - conventions
 rules:
   activity:
-    - Corrections must persist — record corrections and verify compliance at every subsequent checkpoint
-    - When `{headless_mode}` is true (the default), soft mid-flow checkpoints (those with `defaultOption` and `autoAdvanceMs`) auto-resolve without AskQuestion. Gap-only Gate 1 (`design-intent-batch`), Gate 2 (`approve-to-commit`), and safety gaps (`preservation-check`, `review-disposition`) stay interactive. Soft-gate headless is the default; set `{headless_mode}` false at intake via an explicit interactive opt-out (“interactive”, “not headless”, “with checkpoints”).
+    - The target specification's design dimensions are elicited once and carried forward as the run's own record, so a later activity reads the specification rather than re-deriving it
 techniques:
   activity:
     - variable-binding

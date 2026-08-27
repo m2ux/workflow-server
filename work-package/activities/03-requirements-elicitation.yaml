@@ -1,5 +1,5 @@
 id: requirements-elicitation
-version: 2.11.0
+version: 2.12.0
 name: Requirements Elicitation
 description: Discover and clarify what the work package should accomplish through structured sequential conversation.
 variables:
@@ -56,7 +56,6 @@ steps:
   - kind: checkpoint
     id: stakeholder-transcript
     message: Before we begin elicitation, please discuss requirements with key stakeholders (product owner, domain experts, end users). Once complete, provide the discussion transcript or summary here.
-    blocking: true
     options:
       - id: provide-transcript
         label: Provide transcript/summary
@@ -96,7 +95,6 @@ steps:
   - kind: checkpoint
     id: elicitation-complete
     message: All question domains have been covered. Select whether elicitation is complete or needs more work.
-    blocking: false
     defaultOption: complete
     autoAdvanceMs: 30000
     options:
@@ -143,4 +141,4 @@ exits:
 outcome:
   - Requirements explicitly captured through structured conversation
   - Success criteria defined with verification methods
-  - A single agreed reference of requirements and scope boundaries that planning and review can build against
+  - A single authoritative reference of requirements and scope boundaries that planning and review can build against

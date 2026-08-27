@@ -64,7 +64,6 @@ steps:
       variable: sec_vuln_url
       operator: notExists
     message: "Please provide the private security advisory URL:"
-    blocking: true
     options:
       - id: provided
         label: URL Provided
@@ -97,7 +96,6 @@ steps:
       variable: private_fork_url
       operator: notExists
     message: "Please provide the private fork URL for the security vulnerability fix:"
-    blocking: true
     options:
       - id: provided
         label: URL Provided
@@ -112,7 +110,6 @@ steps:
   - kind: checkpoint
     id: confirm-security-remote
     message: "CRITICAL: Isolation check. Confirm that the 'security' remote is configured and points to a PRIVATE repository. Is 'git remote -v' output correct for 'security'?"
-    blocking: true
     options:
       - id: confirmed
         label: Yes, security remote is private
@@ -127,7 +124,6 @@ steps:
       variable: short_id
       operator: notExists
     message: "Please provide a short advisory slug for the security branch name (e.g. cve-2026-1234):"
-    blocking: true
     options:
       - id: provided
         label: Short ID Provided
@@ -138,7 +134,6 @@ steps:
   - kind: checkpoint
     id: verify-isolation
     message: The 'security' remote and local branch are configured, and no public PR or Issue will be created. Is the private remote URL {sec_vuln_url} correct and authorized?
-    blocking: true
     options:
       - id: authorized
         label: Yes, proceed

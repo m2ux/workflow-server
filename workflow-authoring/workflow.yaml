@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-authoring
-version: 1.3.0
+version: 1.6.0
 title: Workflow Authoring Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -14,14 +14,15 @@ tags:
   - conventions
 rules:
   activity:
-    - >-
-      A correction the user makes at a gate is recorded against the fact it corrects, and every later gate is answered from the corrected value — never from the value it superseded.
-    - >-
-      A checkpoint that declares neither `defaultOption` nor `autoAdvanceMs` requires a user response and must never be answered on the user's behalf. When `{headless_mode}` is true, a checkpoint declaring both resolves to its `defaultOption` without presentation.
+    - "A definition is authored against the schema its kind selects, and a construct the schema offers is used in preference to prose that describes it."
 techniques:
   activity:
     - variable-binding
 variables:
+  - name: headless_mode
+    type: boolean
+    description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
+    defaultValue: true
   - name: scope_manifest
     type: array
     description: List of files to create, modify or remove with full paths and actions.

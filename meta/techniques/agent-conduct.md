@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.1.0
+  version: 5.3.0
 ---
 
 ## Capability
@@ -48,6 +48,10 @@ Write planning artifacts only under the server-returned `{planning_folder_path}`
 ### orchestrator-no-domain-work
 
 Orchestrators (meta or workflow) never execute activity steps or produce domain artifacts. Delegate via [dispatch-activity](./workflow-engine/dispatch-activity.md).
+
+### orchestrator-one-level-of-indirection
+
+An orchestrator dispatches workers; a worker dispatches none of its own. One level, so every agent touching a run is one the orchestrator placed there and the run's own constraints reach all of them. A workflow whose isolation depends on that says so in its isolation rules; the depth itself is settled here.
 
 ### orchestrator-no-inline-on-resume
 

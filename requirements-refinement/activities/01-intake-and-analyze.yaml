@@ -42,7 +42,6 @@ steps:
   - kind: checkpoint
     id: sources-confirmed
     message: "The {source_type} source at {source_path} and the target specification {target_doc_path} (target exists: {target_doc_exists}) are captured and loaded ([intake record]({intake_record_path}))."
-    blocking: true
     options:
       - id: confirmed
         label: Yes, proceed
@@ -59,7 +58,6 @@ steps:
   - kind: checkpoint
     id: analysis-confirmed
     message: "The requirements analysis derived from the source document is ready to apply to the specification ([analysis report]({requirements_analysis_path}))."
-    blocking: true
     options:
       - id: confirmed
         label: Yes, apply this analysis

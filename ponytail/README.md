@@ -105,7 +105,7 @@ workflows/ponytail/
 ├── activities/
 │   ├── README.md                              # Activities orientation map
 │   ├── 01-intake-and-scope.yaml               # Capture, set lens, trace; intensity-and-scope-confirmed checkpoint
-│   ├── 02-apply-ladder.yaml                   # Climb the rungs; safety-floor-cleared blocking checkpoint
+│   ├── 02-apply-ladder.yaml                   # Climb the rungs; safety-floor-cleared hard checkpoint
 │   ├── 03-over-engineering-review.yaml        # Diff-scoped tagged review; gated transition to repo-audit
 │   ├── 04-repo-audit.yaml                     # Repo-wide audit (required: false, gated-in)
 │   └── 05-harvest-debt-and-report.yaml        # Harvest markers + gain report tail (terminal)

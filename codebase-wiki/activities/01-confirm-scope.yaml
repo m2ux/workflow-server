@@ -32,7 +32,6 @@ steps:
   - kind: checkpoint
     id: wiki-target-confirmed
     message: "Wiki tree root and citation baseline: wiki_path '{wiki_path}', raw_baseline_commit '{raw_baseline_commit}'. Confirm these before ingest begins."
-    blocking: true
     options:
       - id: confirmed
         label: Yes, target and baseline are correct
@@ -50,7 +49,6 @@ steps:
       The ingest plan derived from the scope '{ingest_scope}' — the ordered list of areas this build pass covers:
 
       {ingest_plan}
-    blocking: true
     options:
       - id: confirmed
         label: Yes, the ingest plan is correct

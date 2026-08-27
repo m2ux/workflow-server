@@ -1,5 +1,5 @@
 id: post-impl-review
-version: 1.23.0
+version: 1.24.0
 name: Post-Implementation Review
 description: Review implementation quality before validation.
 variables:
@@ -88,9 +88,6 @@ steps:
   - kind: checkpoint
     id: file-index-table
     message: "Change-block index: {change_block_index}, Block titles link to file:line. Review the diff in your side-by-side app, then reply with the block numbers of any blocks with issues (e.g. '24, 31') or 'none', plus any rationale corrections (recorded in the [manual diff review report]({code_review_report})). Your confirmation is the provenance attestation for each change."
-    blocking: false
-    defaultOption: rationale-confirmed
-    autoAdvanceMs: 30000
     options:
       - id: rationale-confirmed
         label: Rationale confirmed — no issues
@@ -119,7 +116,6 @@ steps:
       - kind: checkpoint
         id: block-interview#{current_block_index}
         message: "Reviewing block {current_block_index}: {block_path}:{block_line_range}. Record the issue with this change, or mark it as a critical blocker — then the next flagged block."
-        blocking: false
         defaultOption: issue-recorded
         autoAdvanceMs: 30000
         options:
@@ -205,7 +201,6 @@ steps:
   - kind: checkpoint
     id: local-validation-permission
     message: The project's validation suite either runs here against the checked-out head, or its result is recorded as not run.
-    blocking: true
     condition:
       type: simple
       variable: has_critical_blocker

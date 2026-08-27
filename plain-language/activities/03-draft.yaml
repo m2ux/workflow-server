@@ -33,7 +33,6 @@ steps:
   - kind: checkpoint
     id: draft-reviewed
     message: "Draft of `{document_title}` ready for evaluation ([draft]({document_path}))."
-    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:

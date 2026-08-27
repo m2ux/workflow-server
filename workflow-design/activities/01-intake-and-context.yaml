@@ -90,7 +90,6 @@ steps:
           operator: "!="
           value: true
     message: "Design intent needs confirmation — classified `{operation_type}` for `{workflow_id}` (mode ambiguous={operation_type_ambiguous}, change_request_clear={change_request_clear})."
-    blocking: true
     options:
       - id: confirm-intent
         label: Confirm classified intent

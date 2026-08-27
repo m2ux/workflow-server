@@ -22,7 +22,6 @@ steps:
   - kind: checkpoint
     id: failure-acknowledged
     message: "Refinement stops with unresolved critical issues and stages no specification for promotion ([failure report]({failure_report_path}))."
-    blocking: true
     options:
       - id: acknowledged
         label: Acknowledged

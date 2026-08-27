@@ -71,7 +71,6 @@ steps:
         description: Modify the target, description, dimensions, or output path before proceeding
         effect:
           exit: adjust
-    blocking: true
 outcome:
   - Evaluation scope confirmed with validated target path, target type, and dimensions
 exits:

@@ -120,7 +120,7 @@ This workflow supports **review mode** for reviewing existing PRs rather than im
 start-work-package → design-philosophy → implementation-analysis → plan-prepare → assumptions-review → lean-coding-audit → post-impl-review → validate → strategic-review → submit-for-review → END
 ```
 
-**Headless after activation:** Once review mode is active, the run is headless — every review-reachable checkpoint auto-resolves to its recommended option, is gated out, or is bypassed by an unconditional transition. Interactive gates in review mode are activation gap-fills only (`review-mode-detection` when mode is ambiguous, `review-pr-reference` when the PR is missing) plus the single `review-summary-approval` confirmation before the review is posted to the PR. Clear derive paths skip both activation confirms.
+**Headless after activation:** Once review mode is active, the run is headless — a soft checkpoint takes its recommended option without reaching a person, and the rest are gated out or bypassed by an unconditional transition. The gates a review run still pauses at are the activation gap-fills (`review-mode-detection` when mode is ambiguous, `review-pr-reference` when the PR is missing, both skipped on a clear derive path), the `review-summary-approval` confirmation before the review is posted to the PR, the `local-validation-permission` environment decision, the `file-index-table` provenance attestation over the diff, and the `findings-delivery` decision on what the posted review carries.
 
 **See [REVIEW-MODE.md](./REVIEW-MODE.md) for complete documentation.**
 

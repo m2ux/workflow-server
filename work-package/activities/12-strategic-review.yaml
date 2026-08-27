@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.17.0
+version: 2.18.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 variables:
@@ -85,7 +85,6 @@ steps:
           operator: ==
           value: true
     message: "Signature scan reports one or more commits without a valid GPG signature in this branch range: {unsigned_commit_list_summary}. Select whether to re-sign all unsigned commits now. Re-signing rewrites branch history and may require force-with-lease push."
-    blocking: true
     options:
       - id: resign-all
         label: Yes — re-sign all unsigned commits
@@ -171,7 +170,6 @@ steps:
       {strategic_findings_summary}
 
       Recommended action: {recommended_strategic_option}.
-    blocking: true
     options:
       - id: acceptable
         label: All acceptable
@@ -214,9 +212,6 @@ steps:
       {strategic_findings_summary}
 
       Recommended action: {recommended_strategic_option}.
-    blocking: true
-    defaultOption: raise-all
-    autoAdvanceMs: 30000
     options:
       - id: raise-all
         label: Raise all findings to the author

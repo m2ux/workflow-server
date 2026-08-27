@@ -64,7 +64,6 @@ steps:
       operator: ==
       value: true
     message: The host repository on disk disagrees with the repository its origin remote names. The server maps a repository onto a filesystem root by basename alone, so it cannot represent this divergence — binding anyway resolves to a directory that is not the checkout you are in, which is how a session ends up with an empty non-git working directory.
-    blocking: true
     options:
       - id: confirm-binding
         label: Proceed with the derived binding

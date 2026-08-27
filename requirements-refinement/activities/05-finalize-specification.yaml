@@ -33,7 +33,6 @@ steps:
   - kind: checkpoint
     id: finalization-confirmed
     message: "The final specification {spec_basename} and the change summary are staged for promotion to the canonical location ([final specification]({final_specification_path}), [change summary]({change_summary_path}))."
-    blocking: true
     options:
       - id: accepted
         label: Accept — staged for promotion

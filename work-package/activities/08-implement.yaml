@@ -112,7 +112,6 @@ steps:
           {uncertain_symbols}
 
           Investigate before proceeding, or confirm they were introduced intentionally by this task.
-        blocking: true
         options:
           - id: confirmed
             label: Symbols are intentional — proceed

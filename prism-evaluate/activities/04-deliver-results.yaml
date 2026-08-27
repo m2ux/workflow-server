@@ -44,7 +44,6 @@ steps:
         effect:
           setVariable:
             resolution_requested: false
-    blocking: true
 outcome:
   - The user can see what the evaluation found and where every deliverable lives, and can decide whether to move into resolving the findings or stop here
 exits:

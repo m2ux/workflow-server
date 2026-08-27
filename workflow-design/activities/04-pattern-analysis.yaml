@@ -26,7 +26,6 @@ steps:
   - kind: checkpoint
     id: patterns-confirmed
     message: "Pattern comparison and proposed structure ([pattern analysis]({pattern_analysis_path}))."
-    blocking: false
     defaultOption: adopt-all
     autoAdvanceMs: 30000
     options:

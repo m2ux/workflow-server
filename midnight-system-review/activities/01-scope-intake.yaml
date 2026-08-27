@@ -70,7 +70,6 @@ steps:
   - kind: checkpoint
     id: scope-confirmed
     message: "Change surface resolved for '{review_target}': the changed-file inventory and review scope are recorded in change-surface.md. Proceeding to area derivation in 30s unless you want to revise the scope."
-    blocking: false
     defaultOption: proceed
     autoAdvanceMs: 30000
     options:

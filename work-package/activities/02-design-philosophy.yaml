@@ -1,5 +1,5 @@
 id: design-philosophy
-version: 1.14.0
+version: 1.15.0
 name: Design Philosophy
 description: Apply the design framework to classify the problem and decide the workflow path.
 variables:
@@ -79,10 +79,7 @@ steps:
       variable: is_review_mode
       operator: "!="
       value: true
-    message: "Classification: {problem_type}. Rationale: {classification_rationale}. Confirm the recommended path (default below), pick a different path, or revise if the classification itself is wrong."
-    blocking: false
-    defaultOption: skip-optional
-    autoAdvanceMs: 30000
+    message: "Classification: {problem_type}. Rationale: {classification_rationale}. Confirm the recommended path, pick a different path, or revise if the classification itself is wrong."
     options:
       - id: revise-classification
         label: Revise classification
@@ -172,7 +169,6 @@ steps:
           operator: ==
           value: true
     message: Ticket completeness gaps were identified. Select whether to refactor the ticket or proceed with gaps noted.
-    blocking: false
     defaultOption: proceed-with-gaps
     autoAdvanceMs: 30000
     options:

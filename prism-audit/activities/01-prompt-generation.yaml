@@ -45,7 +45,6 @@ steps:
         description: The codebase carries no security surface for this audit to examine
         effect:
           exit: abort
-    blocking: true
   - kind: technique
     id: map-trust-boundaries
     technique: compose-audit-prompt::map-trust-boundaries

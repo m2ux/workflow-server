@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.46.0
+version: 3.48.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first. Also supports review mode for auditing an existing PR or implementation end-to-end.
 author: m2ux
@@ -18,7 +18,6 @@ rules:
     - Explicit approval - Get clear 'yes' or 'proceed' before major actions (within activity checkpoints only — NOT between activities)
     - Decision points require user choice - When issues are found, user decides whether to proceed or loop back
     - Git configuration is user-owned. Validate-action messages describe a misconfiguration but never prescribe config-changing commands; the user fixes their own environment at whatever scope (system, global, local) they prefer.
-    - "review-mode-headless-auto-advance - Once is_review_mode == true the run is headless. Every review-reachable checkpoint that carries defaultOption + autoAdvanceMs is resolved by calling respond_checkpoint with auto_advance:true (which applies the default option's full side effects unchanged) and surfacing the outcome as a plain message — never as an AskUserQuestion dialog. A checkpoint gated is_review_mode != true is cleared with respond_checkpoint condition_not_met. Interactive in review mode only when their gap conditions fire — review-mode-detection (when review_mode_ambiguous) and review-pr-reference (when review_pr_missing). review-summary-approval and local-validation-permission remain always interactive in review mode."
   activity:
     - safety-floor-never-simplified - The safety floor is never simplified away during the lean-coding audit - understanding the problem, input validation at trust boundaries, error handling that prevents data loss, security, accessibility, anything explicitly requested by the issue, and one runnable check for non-trivial logic. A simplification that would breach the floor is rejected; the simplification-apply-cycle validates the floor before resetting its driver flag.
     - report-before-apply - The over-engineering review, debt harvest, and gain report are read-only - they list findings into their artifacts and change no code. Code is only ever changed in the simplification-apply-cycle, and only on simplifications the user accepted at the audit-findings-confirmed gate.
@@ -44,7 +43,6 @@ fragments:
             operator: ==
             value: true
       message: "Open assumptions remain after analyse-challenge ({assumption_review_presentation}). Accept the agent's positions for the batch, defer all to stakeholders, or interview individually."
-      blocking: true
       options:
         - id: accept-agent-positions
           label: Accept agent positions
@@ -63,7 +61,6 @@ fragments:
               needs_individual_interview: true
     assumption-decision:
       message: "Assumption {current_assumption.id}: {current_assumption.statement}. Resolve now or defer."
-      blocking: true
       options:
         - id: resolve-inline
           label: Resolve now
@@ -113,6 +110,10 @@ variables:
   - name: default_branch
     type: string
     description: The repository's default branch, which feature branches sync from and merge into.
+  - name: headless_mode
+    type: boolean
+    description: Whether the run resolves a soft mid-flow gate to its default without reaching a person. A review run sets it true.
+    defaultValue: false
   - name: safety_floor_cleared
     type: boolean
     description: Whether the applied simplifications hold the ponytail safety floor.

@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.21.0
+version: 3.22.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
@@ -56,6 +56,10 @@ variables:
     - name: gitnexus_indexed
       type: boolean
       description: Whether the component under work has a usable GitNexus index.
+      defaultValue: false
+    - name: headless_mode
+      type: boolean
+      description: Whether the run resolves a soft mid-flow gate to its default without reaching a person. A review run sets it true.
       defaultValue: false
     - name: host_repo_path
       type: string
@@ -298,6 +302,13 @@ steps:
         - type: simple
           variable: branch_name
           operator: notExists
+  - kind: action
+    id: mark-run-headless
+    when: is_review_mode == true
+    actions:
+      - action: set
+        target: headless_mode
+        value: true
   - kind: technique
     id: ingest-prior-feedback
     technique: review-existing-feedback
@@ -479,7 +490,6 @@ steps:
           operator: ==
           value: false
     message: No GitHub issue found for Jira ticket {jira_issue_key}. A linked GitHub issue enables PR traceability in the target repo. Select whether to create one.
-    blocking: false
     defaultOption: create
     autoAdvanceMs: 30000
     options:
@@ -597,9 +607,6 @@ steps:
           operator: ==
           value: true
     message: Here is the drafted issue. Select whether to create it, edit it, or cancel.
-    blocking: false
-    defaultOption: create
-    autoAdvanceMs: 30000
     options:
       - id: create
         label: Create issue
@@ -770,7 +777,6 @@ steps:
           operator: "!="
           value: true
     message: "Feature branch {branch_name} and its worktree exist. No draft PR is open for the branch yet."
-    blocking: false
     defaultOption: proceed
     autoAdvanceMs: 30000
     options:

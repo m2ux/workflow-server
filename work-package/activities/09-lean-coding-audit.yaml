@@ -46,7 +46,6 @@ steps:
       operator: "!="
       value: true
     message: "Lean-coding audit complete. Select whether to accept the audit as-is, apply the recommended simplifications, or flag the findings for correction."
-    blocking: true
     options:
       - id: audit-accepted
         label: Accept audit — no changes to apply

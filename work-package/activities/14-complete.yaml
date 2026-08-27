@@ -96,7 +96,6 @@ steps:
       - kind: checkpoint
         id: deferred-item-raise#{current_deferred_item.id}
         message: "Deferred item {current_deferred_item.id}: {current_deferred_item.item} — deferred because {current_deferred_item.rationale}"
-        blocking: true
         options:
           - id: raise
             label: Raise an issue

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -23,7 +23,7 @@ ID of the checkpoint being yielded — the activity YAML `id`, or `<baseId>#<ins
 
 1. Choose `{checkpoint_id}`: the activity YAML `id` as written for one-shot gates and for loop-body gates whose first answer should apply to every later iteration; for loop-body gates that need a distinct user decision per iteration, use `<baseId>#<instance>` (base id before `#`, plus a stable per-iteration discriminator — expand a declared `#{...}` template, or use the loop item's id/slug). Call `yield_checkpoint { session_index, checkpoint_id }`.
 2. Branch on the response `status`:
-   - **`yielded`** — the server recorded `session.json#activeCheckpoint`. Emit the `{yielded_checkpoint}` `<checkpoint_yield>` block (no payload required — the active checkpoint is server-resident and is read by the orchestrator via `present_checkpoint`). STOP — make no further tool calls until the orchestrator resumes you.
+   - **`yielded`** — the gate is recorded as the session's active checkpoint. Emit the `{yielded_checkpoint}` `<checkpoint_yield>` block (no payload required — the active checkpoint is server-resident and is read by the orchestrator via `present_checkpoint`). STOP — make no further tool calls until the orchestrator resumes you.
    - **`replayed`** — a response for this exact `checkpoint_id` is already recorded. Apply any returned `effect` / `resolved_option` to local state and CONTINUE with the next step. Do not emit `<checkpoint_yield>`, do not call `present_checkpoint`, and do not re-yield the same id.
 
 ## Rules

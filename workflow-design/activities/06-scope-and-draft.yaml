@@ -109,7 +109,6 @@ steps:
   - kind: checkpoint
     id: scope-and-structure-confirmed
     message: "Complete file manifest, structural design, and drafting order ([scope manifest]({scope_manifest_path}))."
-    blocking: false
     defaultOption: confirmed
     autoAdvanceMs: 30000
     options:
@@ -160,7 +159,6 @@ steps:
           operator: "!="
           value: update
         message: "Drafting approach for '{current_file}' ([drafting plan]({drafting_plan_path}))."
-        blocking: false
         defaultOption: confirmed
         autoAdvanceMs: 30000
         options:
@@ -195,7 +193,6 @@ steps:
           operator: "!="
           value: update
         message: "Drafted content for '{current_file}' ([file review note]({file_review_note_path}))."
-        blocking: false
         defaultOption: accepted
         autoAdvanceMs: 30000
         options:
@@ -323,7 +320,6 @@ steps:
       operator: "=="
       value: true
     message: "A Critical pre-attestation finding remains after the fix cycle — a schema-invalid or structurally broken construct. Drafted content must not be attested while it stands."
-    blocking: true
     options:
       - id: redraft
         label: Return to drafting
@@ -344,7 +340,6 @@ steps:
       operator: "!="
       value: update
     message: "Drafted-content review ([draft attestation]({draft_attestation_path}))."
-    blocking: false
     defaultOption: attested
     autoAdvanceMs: 30000
     options:
@@ -362,7 +357,6 @@ steps:
       operator: "=="
       value: update
     message: "All {file_count} files modified ([draft attestation]({draft_attestation_path}))."
-    blocking: false
     defaultOption: attested
     autoAdvanceMs: 30000
     options:

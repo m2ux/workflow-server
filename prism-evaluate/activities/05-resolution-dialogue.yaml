@@ -87,7 +87,6 @@ steps:
                 effect:
                   setVariable:
                     finding_disposition: discuss
-            blocking: true
       - kind: technique
         id: record-decision
         technique: resolve-findings::record-finding-decision
@@ -115,7 +114,6 @@ steps:
         effect:
           setVariable:
             mitigations_apply_requested: false
-    blocking: true
 exits:
   - id: mitigations-requested
     when: mitigations_apply_requested == true

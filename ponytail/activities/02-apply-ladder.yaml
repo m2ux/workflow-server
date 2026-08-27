@@ -29,7 +29,6 @@ steps:
         technique: apply-ladder
       - kind: checkpoint
         id: safety-floor-cleared
-        blocking: true
         message: "The minimal solution stands at its chosen rung, with every safety-floor obligation the change implicates either satisfied or still open."
         options:
           - id: confirmed
