@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Cross-cutting behavioral boundaries every agent in a run is held to — file sensitivity, communication, attribution, interaction, operational discipline and the checkpoint role split. Touching a conduct technique delivers all of its rules, so a conduct home holds one audience: this one is the universal home, and every rule in it names an action any agent can take. The boundaries only one role can honour live beside that role, in [orchestrator-conduct](./orchestrator-conduct.md) and [worker-conduct](./worker-conduct.md).
+Cross-cutting behavioral boundaries every agent in a run is held to — file sensitivity, communication, attribution, interaction, operational discipline and the checkpoint role split. The boundaries a single role carries live in [orchestrator-conduct](./orchestrator-conduct.md) and [worker-conduct](./worker-conduct.md).
 
 ## Rules
 

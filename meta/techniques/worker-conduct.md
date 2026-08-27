@@ -5,7 +5,7 @@ metadata:
 
 ## Capability
 
-Behavioral boundaries on a dispatched worker — how it writes the artifacts its activity declares, and what it reports having written. Every rule here constrains an action only a worker takes, so the home is the audience: an orchestrator produces no domain artifacts and none of this reaches it.
+Behavioral boundaries on a dispatched worker — how it writes the artifacts its activity declares, and what it reports having written. The boundaries every agent shares are in [agent-conduct](./agent-conduct.md).
 
 ## Rules
 
