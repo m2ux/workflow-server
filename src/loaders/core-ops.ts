@@ -8,8 +8,14 @@
  * union of the activity's declared technique refs and the core worker techniques.
  *
  * These techniques live in the meta workflow's capability techniques
- * (workflow-engine, agent-conduct). The lists below name the core technique refs
- * that constitute the runtime baseline.
+ * (workflow-engine, agent-conduct, orchestrator-conduct, worker-conduct). The lists
+ * below name the core technique refs that constitute the runtime baseline.
+ *
+ * A rule reaches the agent that can act on it, and the composition is what makes
+ * that true: naming one rule of a technique by its exact id TOUCHES that technique,
+ * and every rule it declares is then delivered. So a conduct technique holds one
+ * audience — `agent-conduct` is the universal home, and each role's own boundaries
+ * sit in that role's file, named only by the list whose role owns it.
  */
 
 /**
@@ -59,10 +65,11 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   'harness-compat::cursor',
   'harness-compat::cline',
   'harness-compat::generic',
-  // Cross-cutting orchestrator rules (group-prefix refs → all `<group>-*` rules)
-  'agent-conduct::orchestrator',
+  // Cross-cutting rules: the universal home, plus the orchestrator's own. `worker-conduct` is
+  // absent by design — an orchestrator produces no domain artifacts, so its writing rules are
+  // not an orchestrator's to honour.
   'agent-conduct::checkpoint-discipline',
-  'agent-conduct::operational-discipline',
+  'orchestrator-conduct::orchestrator',
 ];
 
 /**
@@ -78,9 +85,9 @@ export const CORE_WORKER_TECHNIQUES: readonly string[] = [
   'workflow-engine::yield-checkpoint',
   'workflow-engine::resume-from-checkpoint',
   'workflow-engine::finalize-activity',
-  // Cross-cutting worker rules
+  // Cross-cutting rules: the universal home, plus the worker's own. `orchestrator-conduct` is
+  // absent by design — a worker cannot dispatch, advance an activity or resolve a gate, so those
+  // boundaries reach an agent with no way to honour or breach them.
   'agent-conduct::checkpoint-discipline',
-  'agent-conduct::operational-discipline',
-  'agent-conduct::file-sensitivity',
-  'agent-conduct::code-commentary',
+  'worker-conduct::worker',
 ];

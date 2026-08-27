@@ -196,17 +196,16 @@ steps:
 });
 
 describe('loader materialization over the corpus', () => {
-  it('work-package rules splice the interaction-discipline fragment in place', async () => {
-    const result = await loadWorkflow(WORKFLOW_DIR, 'work-package');
-    expect(result.success).toBe(true);
-    if (!result.success) return;
-    const rules = result.value.rules?.workflow ?? [];
-    expect(rules.slice(0, 3)).toEqual([
-      "Ask, don't assume - Clarify requirements before acting",
-      'Summarize, then proceed - Provide brief status before asking to continue',
-      'One task at a time - Complete current work before starting new work',
-    ]);
-    expect(rules.every((r) => typeof r === 'string')).toBe(true);
+  it('delivers plain rule strings — no rules bucket in the corpus carries a reference', async () => {
+    for (const workflowId of ['work-package', 'prism', 'remediate-vuln']) {
+      const result = await loadWorkflow(WORKFLOW_DIR, workflowId);
+      expect(result.success, workflowId).toBe(true);
+      if (!result.success) continue;
+      const buckets = [result.value.rules?.workflow, result.value.rules?.activity, result.value.rules?.universal];
+      for (const bucket of buckets) {
+        expect((bucket ?? []).every((r) => typeof r === 'string'), workflowId).toBe(true);
+      }
+    }
   });
 
   it('materializes the assumption-interview fragment at all three sites', async () => {
@@ -233,8 +232,6 @@ describe('loader materialization over the corpus', () => {
     const result = await loadWorkflow(WORKFLOW_DIR, 'remediate-vuln');
     expect(result.success).toBe(true);
     if (!result.success) return;
-    const rules = result.value.rules?.workflow ?? [];
-    expect(rules).toContain("Ask, don't assume - Clarify requirements before acting");
     // Borrowed work-package activity: its bare ref resolves against work-package, not the borrower.
     const research = result.value.activities?.find((a) => a.id === 'research');
     const fragmentMessage = fragmentCheckpointMessage('work-package', 'assumption-interview');

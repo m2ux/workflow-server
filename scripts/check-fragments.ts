@@ -16,8 +16,13 @@
  * - `unused-fragment` — a declared fragment nothing references, corpus-wide.
  * - `inline-duplicate-of-fragment` — an inline rule or checkpoint body identical (normalized) to
  *   a declared fragment: the inline copy must become a reference.
- * - `duplicate-rule` / `duplicate-checkpoint` — identical (normalized) content authored inline at
- *   two or more sites: extract a fragment.
+ * - `duplicate-rule` — identical (normalized) rule text authored inline in two or more workflows.
+ *   The remedy names the shared home: a rule two workflows both need belongs in the conduct
+ *   technique whose audience it binds, and both copies go. Extraction is the remedy only where the
+ *   text is one workflow's own and repeats inside it — otherwise fixing a duplicate produces a
+ *   fragment squatting in whichever workflow the author happened to be editing (#519).
+ * - `duplicate-checkpoint` — identical (normalized) checkpoint body authored inline at two or more
+ *   sites: extract a fragment.
  * - `undeclared-effect-variable` — a referencing workflow whose variables[] does not declare a
  *   variable the fragment's setVariable effects write. The effect fires in the REFERENCING
  *   workflow's session bag (check:variable-model sees only the declaring workflow).
@@ -300,7 +305,16 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
     const distinctWf = new Set(sites.map((s) => s.wf));
     if (distinctWf.size >= 2) {
       const list = sites.map((s) => s.file).join(', ');
-      violations.push({ file: sites[0]!.file, rule: 'duplicate-rule', detail: `rule "${sites[0]!.text.slice(0, 60)}…" is authored inline in ${distinctWf.size} workflows (${list}) — extract a fragment` });
+      violations.push({
+        file: sites[0]!.file,
+        rule: 'duplicate-rule',
+        detail:
+          `rule "${sites[0]!.text.slice(0, 60)}…" is authored inline in ${distinctWf.size} workflows (${list}) — ` +
+          'a rule two workflows both need is neither one\'s to own. Move it to the conduct home whose audience it ' +
+          'binds (meta agent-conduct for any agent, meta orchestrator-conduct for an orchestrator) and delete both ' +
+          'copies; where a home already states it, deleting both copies is the whole fix. Declare a fragment only ' +
+          'where the text is genuinely one workflow\'s and repeats inside it',
+      });
     }
   }
   for (const sites of inlineCheckpointSites.values()) {

@@ -29,8 +29,16 @@ import { createHarness, rawText, isError, parseToolResponse } from './e2e/harnes
  * this bundle, because the orchestrator reading it is the agent that resolves gates. The same text
  * previously sat in four workflow rule buckets, three of them delivered to workers who cannot
  * resolve a gate at all; those copies are gone, but they were never counted here.
+ *
+ * 115,000 since generic conduct took the conduct home (#518 W5.2, #519). Clarify before acting,
+ * summarise before continuing, one task at a time, read the repository's own instructions, and
+ * cite an artifact only where its reader can open it are rules any agent is held to. They were
+ * homed in two domain workflows, so the meta orchestrator — the agent that talks to the user —
+ * never received them; delivered from the shared home they cost this bundle about 1,200
+ * characters. The orchestrator's own boundaries moved to their own technique in the same change,
+ * which costs it nothing: it received them before and receives them now.
  */
-const BUDGET = 113_000;
+const BUDGET = 115_000;
 
 describe('bootstrap-time fixed content', () => {
   it('stays inside the budget this suite sets', async () => {
