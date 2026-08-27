@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: plain-language
-version: 1.3.0
+version: 1.4.0
 title: Plain Language Workflow
 description: >-
   Author, rewrite, or audit a document so its readers can find what they need, understand what they find, and use it. Applies the four principles and guidelines of ISO 24495-1, with an optional ASD-STE100 controlled-language overlay for technical documentation.
@@ -14,8 +14,7 @@ tags:
   - document-audit
 rules:
   activity:
-    - >-
-      reader-governs — the document is written for its readers, not its author: every drafting and evaluation decision cites the reader profile and the governing guideline rather than the writer's preference.
+    - "reader-governs — the document is written for its readers, not its author: every drafting and evaluation decision cites the reader profile and the governing guideline rather than the writer's preference."
 techniques:
   activity:
     - variable-binding
@@ -25,7 +24,7 @@ variables:
     description: The user's free-form request that opened this run.
   - name: headless_mode
     type: boolean
-    description: Whether the run resolves a soft mid-flow gate to its default without reaching a person. Read by the agent that resolves a gate, per meta workflow-engine::present-checkpoint-to-user.
+    description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
     defaultValue: true
   - name: source_document_path
     type: string

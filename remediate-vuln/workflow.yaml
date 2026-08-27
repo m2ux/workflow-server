@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: remediate-vuln
-version: 2.5.0
+version: 2.6.0
 title: Security Vulnerability Remediation Workflow
 description: Remediate security vulnerabilities without public disclosure.
 author: m2ux
@@ -14,14 +14,10 @@ rules:
   workflow:
     - ref: work-package::interaction-discipline
     - Explicit approval - Get clear 'yes' or 'proceed' before major actions
-    - ref: inline-orchestration-model
   activity:
     - "STRICT ISOLATION: The agent MUST NOT use any public GitHub tools (e.g. gh pr create, gh issue create) during this workflow."
     - "PRIVATE REMOTE ONLY: All git operations must target the 'security' remote, never 'origin'."
     - "PRIVATE RESEARCH ONLY: Outbound research and web queries MUST NOT contain advisory-identifying strings (CVE identifiers, advisory URLs, vulnerable symbol or project names). Research generically, or against local sources only."
-fragments:
-  rules:
-    inline-orchestration-model: "The agent receiving the user request is this workflow's orchestrator and is never itself spawned as a sub-agent, and the worker it dispatches spawns none of its own — one level of indirection, so no agent runs outside the isolation this workflow's rules place on the run. What each role then does is meta agent-conduct's, whose checkpoint-discipline and orchestrator-no-domain-work rules are its home."
 techniques:
   activity:
     - variable-binding

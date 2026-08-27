@@ -1,5 +1,5 @@
 id: intake-and-context
-version: 1.3.0
+version: 1.4.0
 name: Intake and Context
 description: "Classify the request as create, update or review, name the target, derive the edit-surface path, and produce the change brief and the change constraints the rest of the run draws on."
 variables:
@@ -20,7 +20,7 @@ variables:
       defaultValue: ""
     - name: headless_mode
       type: boolean
-      description: Whether the run resolves a soft mid-flow gate to its default without reaching a person. Read by the agent that resolves a gate, per meta workflow-engine::present-checkpoint-to-user.
+      description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
       defaultValue: true
     - name: impact_analysis_path
       type: string

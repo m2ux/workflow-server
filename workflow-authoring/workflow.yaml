@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: workflow-authoring
-version: 1.5.0
+version: 1.6.0
 title: Workflow Authoring Workflow
 description: Guide agents through creating, updating, or reviewing workflow definitions.
 author: m2ux
@@ -14,15 +14,14 @@ tags:
   - conventions
 rules:
   activity:
-    - >-
-      A definition is authored against the schema its kind selects, and a construct the schema offers is used in preference to prose that describes it.
+    - "A definition is authored against the schema its kind selects, and a construct the schema offers is used in preference to prose that describes it."
 techniques:
   activity:
     - variable-binding
 variables:
   - name: headless_mode
     type: boolean
-    description: Whether the run resolves a soft mid-flow gate to its default without reaching a person. Read by the agent that resolves a gate, per meta workflow-engine::present-checkpoint-to-user.
+    description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
     defaultValue: true
   - name: scope_manifest
     type: array

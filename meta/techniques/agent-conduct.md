@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 5.2.0
+  version: 5.3.0
 ---
 
 ## Capability
@@ -33,10 +33,6 @@ Comments explain why code exists and the rationale for design choices, rather th
 
 Resolving a checkpoint is the meta-orchestrator's, via [present-checkpoint-to-user](./workflow-engine/present-checkpoint-to-user.md) then [respond-checkpoint](./workflow-engine/respond-checkpoint.md). A worker reaching a gate pauses there via [yield-checkpoint](./workflow-engine/yield-checkpoint.md); a workflow orchestrator passes the yield it receives upward unchanged.
 
-### gate-correction-is-recorded
-
-A correction the user makes at a gate is written into the variable bag against the value it corrects, so every later gate and step reads the corrected value. A correction held only in the resolving agent's reasoning is unreadable to the worker that acts on it next, and to anyone reading the session afterwards.
-
 ### operational-discipline-bundled-tools-only
 
 Domain-specific tools may ONLY be invoked from operations bundled into the current activity or workflow response. References in the user's request (URLs, issue keys) are context to preserve, not triggers for immediate API calls.
@@ -52,6 +48,10 @@ Write planning artifacts only under the server-returned `{planning_folder_path}`
 ### orchestrator-no-domain-work
 
 Orchestrators (meta or workflow) never execute activity steps or produce domain artifacts. Delegate via [dispatch-activity](./workflow-engine/dispatch-activity.md).
+
+### orchestrator-one-level-of-indirection
+
+An orchestrator dispatches workers; a worker dispatches none of its own. One level, so every agent touching a run is one the orchestrator placed there and the run's own constraints reach all of them. A workflow whose isolation depends on that says so in its isolation rules; the depth itself is settled here.
 
 ### orchestrator-no-inline-on-resume
 
