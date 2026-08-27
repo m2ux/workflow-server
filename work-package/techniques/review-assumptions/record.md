@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.6.0
+  version: 1.8.0
 ---
 
 ## Capability
@@ -11,7 +11,7 @@ Assumption outcomes and stakeholder responses recorded in the assumptions log.
 
 ### assumption_outcome
 
-What the gate that decided an assumption gave it — `confirmed` as stated, `corrected` with the user's correction, or `deferred` to stakeholder review. A batch answer sets it once for every assumption on the list; an individual interview sets it for the one under discussion. Empty at the stages that record assumptions before any decision is asked for.
+What the gate that decided an assumption gave it. A batch answer sets it once for every assumption on the list; an individual interview sets it for the one under discussion. Empty at the stages that record assumptions before any decision is asked for.
 
 ## Outputs
 

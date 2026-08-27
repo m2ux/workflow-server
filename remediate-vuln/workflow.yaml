@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: remediate-vuln
-version: 2.6.0
+version: 2.7.0
 title: Security Vulnerability Remediation Workflow
 description: Remediate security vulnerabilities without public disclosure.
 author: m2ux
@@ -79,7 +79,7 @@ variables:
     defaultValue: ""
   - name: assumption_outcome
     type: string
-    description: What the individual interview decided about the assumption under discussion — `confirmed` as stated, `corrected` with the user's correction, or `deferred` to stakeholder review. Empty before an individual gate is answered.
+    description: The outcome the deciding gate gave the assumption under discussion. Empty before any gate has decided one.
     defaultValue: ""
   - name: safety_floor_cleared
     type: boolean

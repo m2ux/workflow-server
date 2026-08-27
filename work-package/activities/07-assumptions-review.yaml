@@ -1,5 +1,5 @@
 id: assumptions-review
-version: 2.11.0
+version: 2.13.0
 name: Assumptions Review
 description: Converge open assumptions via analyse-challenge, then batch residual stakeholder judgements.
 variables:
@@ -24,7 +24,7 @@ variables:
   writes:
     - name: assumption_outcome
       type: string
-      description: What the individual interview decided about the assumption under discussion — `confirmed` as stated, `corrected` with the user's correction, or `deferred` to stakeholder review. Empty before an individual gate is answered.
+      description: The outcome the deciding gate gave the assumption under discussion. Empty before any gate has decided one.
       defaultValue: ""
     - name: assumption_review_presentation
       type: object

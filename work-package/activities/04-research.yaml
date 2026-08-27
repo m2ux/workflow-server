@@ -1,5 +1,5 @@
 id: research
-version: 2.16.0
+version: 2.18.0
 name: Research
 description: Research the knowledge base and external sources to discover best practices, patterns, and resources to inform the plan-prepare activity.
 variables:
@@ -20,7 +20,7 @@ variables:
   writes:
     - name: assumption_outcome
       type: string
-      description: What the individual interview decided about the assumption under discussion — `confirmed` as stated, `corrected` with the user's correction, or `deferred` to stakeholder review. Empty before an individual gate is answered.
+      description: The outcome the deciding gate gave the assumption under discussion. Empty before any gate has decided one.
       defaultValue: ""
     - name: assumption_review_presentation
       type: object

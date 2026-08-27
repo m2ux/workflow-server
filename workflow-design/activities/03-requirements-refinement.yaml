@@ -1,5 +1,5 @@
 id: requirements-refinement
-version: 1.14.0
+version: 1.15.0
 name: Requirements Refinement
 description: A workflow specification across its design dimensions, with design assumptions surfaced, reconciled in a while-loop, and open judgements deferred to Gate 2.
 variables:
@@ -139,11 +139,6 @@ steps:
     actions:
       - action: message
         message: "Open design judgements remain after reconcile — batched into Gate 2 (`approve-to-commit`), not interviewed mid-flow."
-  - kind: action
-    id: announce-gate-2-batch
-    actions:
-      - action: message
-        message: "Gate-2 batch — no mid-flow per-assumption decisions; open judgements stay in the assumptions log until the commit gate."
   - kind: technique
     id: update-assumptions-log
     technique: work-package::review-assumptions::record

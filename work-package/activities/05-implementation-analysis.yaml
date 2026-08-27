@@ -1,5 +1,5 @@
 id: implementation-analysis
-version: 2.14.0
+version: 2.16.0
 name: Implementation Analysis
 description: Analyze the current implementation to understand effectiveness, establish baselines, and identify opportunities for improvement.
 variables:
@@ -21,7 +21,7 @@ variables:
   writes:
     - name: assumption_outcome
       type: string
-      description: What the individual interview decided about the assumption under discussion — `confirmed` as stated, `corrected` with the user's correction, or `deferred` to stakeholder review. Empty before an individual gate is answered.
+      description: The outcome the deciding gate gave the assumption under discussion. Empty before any gate has decided one.
       defaultValue: ""
     - name: assumption_review_presentation
       type: object
