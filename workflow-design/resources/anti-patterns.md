@@ -695,7 +695,7 @@ Prose prescribes a harness/MCP tool-call recipe.
 
 **Detect:** Capability, Protocol, Rules, or non-engine resource prose prescribes how to invoke a harness/MCP tool — call name + "via"/"call"/"after", argument/param shape, or sequencing of tool calls (`get_resource`, `get_technique`, `get_activity`, `get_workflow`, `start_session`, `next_activity`, `list_workflows`, …). Agents already have independent tool/bootstrap guidance; restating it in techniques duplicates and drifts (`no-duplicated-guidance`).
 
-**Do not flag:** `meta` workflow-engine / harness-compat / agent-conduct / bootstrap and agent-entry techniques ([activity-worker](../../meta/techniques/workflow-engine/activity-worker.md), [workflow-orchestrator](../../meta/techniques/workflow-engine/workflow-orchestrator.md), [compose-prompt](../../meta/techniques/workflow-engine/compose-prompt.md)) whose domain IS tool usage; an operation that wraps a raw tool may name that tool (`canonical-technique-reference` carve-out). Naming WHAT to consult via a markdown/`::` hyperlink without a tool recipe is correct.
+**Do not flag:** `meta` workflow-engine / harness-compat / conduct / bootstrap and agent-entry techniques ([activity-worker](../../meta/techniques/workflow-engine/activity-worker.md), [workflow-orchestrator](../../meta/techniques/workflow-engine/workflow-orchestrator.md), [compose-prompt](../../meta/techniques/workflow-engine/compose-prompt.md)) whose domain IS tool usage — for the calls their reader makes, not for internals it cannot reach (`engine-internals-narrated`); an operation that wraps a raw tool may name that tool (`canonical-technique-reference` carve-out). Naming WHAT to consult via a markdown/`::` hyperlink without a tool recipe is correct.
 
 **Fix:** Delete the tool recipe; keep the imperative and the canonical hyperlink or `{id}` ("Load [anti-patterns](path)"; "Apply the bound step's technique"). Role boundaries stay as role prose ("workers source definitions from orchestrator-provided context") — not as "do not call `get_workflow`".
 
@@ -1669,7 +1669,7 @@ A second how-to (README section, resource, or technique Protocol) that duplicate
 
 **Detect:** `description` is more than one sentence, essay-length multi-clause prose, or includes producer/consumer/gate/layout tails ("Set by…", "Drives…", "Read by…", "Gates…", "Interpolated into…", install-path catalogs, loop/checkpoint wiring, restatement of `defaultValue`).
 
-**Do not flag:** A single short phrase or one sentence with a compact enum/shape (`simple|moderate|complex`, `{ id, statement }`). Longer contracts belong on the producing technique's `## Outputs`.
+**Do not flag:** A single short phrase or one sentence with a compact shape hint (`{ id, statement }`). A value set belongs in the declaration's `values` (`value-set-in-prose`). Longer contracts belong on the producing technique's `## Outputs`.
 
 **Fix:** Rewrite to one line naming the value; delete producer, consumer, gate, and layout tails.
 
@@ -1936,3 +1936,39 @@ A leaf redeclares an input a container contract merges into it, so one bind slot
 **Do not flag:** A leaf entry that changes the bind contract rather than restating it — a differing `#### default`, or an optionality the operation genuinely needs — which is what an override exists for. An id an ancestor carries only under `## Outputs`. Container `TECHNIQUE.md` files, whose declarations exist to be inherited. An input several leaves share that no common ancestor declares at all, which is `hoist-shared-inputs`: the hoist still owed rather than its residue.
 
 **Fix:** Delete the leaf declaration and let the merge deliver it; Protocol goes on referencing `{id}` unchanged. Where the leaf's wording held something the ancestor's lacks, widen the ancestor once, then delete. The Rules-side counterpart is `inherited-rules-re-enumerated`. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+
+### AP-149. schema-semantics-restated
+
+"A `when` gate takes the operators `==`, `!=`, `>`, `<`, `>=`, `<=`, with `()` binding tighter than `!`"
+
+Definition prose restates what a schema field means, which fields express a construct, or which combinations are valid, so the schema and the prose each state the contract and only one of them is loaded when the schema changes.
+
+**Detect:** Technique Rules, Capability, or resource prose states a field's semantics rather than using the field: an operator or value roster the schema enumerates, a field's default or optionality, a co-declaration requirement ("a soft gate declares both"), a validation outcome ("a mismatch is stored as written"), or a mapping from a construct to the fields that express it. Test: if the sentence would need editing by whoever edits the schema, and a reader could read the same fact off the schema resource the server serves, flag it.
+
+**Do not flag:** A definition that *uses* a field and names it in passing ("gated on `is_review_mode`"). Prose whose subject IS the schema — the schema resource, the construct inventory, an authoring guide teaching the constructs. The engine techniques that state a contract the schema does not carry at all, such as which agent may resolve a gate. A rule that constrains an authoring choice among valid shapes (`overlapping-rule-scopes`) rather than restating what the shapes mean.
+
+**Fix:** Delete the restatement and let the field carry it; where prose needs the fact, cite the schema resource once. Where the schema cannot express the fact, that absence is the finding — declare it in the schema first, then delete the prose (`value-set-in-prose` is that shape). See [One Authoritative Home](./design-principles.md#6-one-authoritative-home).
+
+### AP-150. engine-internals-narrated
+
+"The server writes `session.json` and its `.session-token` seal atomically on every authenticated call"
+
+An engine technique describes where the server keeps its state or how it does its work, delivered to an agent whose only reach is the tool surface, so the passage cannot be acted on and drifts from the implementation unread.
+
+**Detect:** An engine or agent-entry technique names a server-internal — a file the server owns, a storage layout, a seal or hash scheme, an internal function or module, a persistence or caching step — where the reader's action is unchanged by knowing it. Test: delete the passage; if every call the reader makes and every value it passes stays the same, flag it. The engine carve-outs (`no-tool-usage-prescription`, `no-engine-mechanics-as-rules`) license naming the *calls* a reader makes, not the internals behind them.
+
+**Do not flag:** A fact the reader acts on, even when it names an internal — a path the agent must write to, a field it must pass back, a failure it must recognise. An invariant that binds the reader's own behaviour ("a marker is unreadable to a context that never received the bytes"). Server-side source comments and `docs/`, whose audience is whoever changes the server. A tool's declared parameters and returns.
+
+**Fix:** Delete the narration; keep the call, the value and the obligation. Where the mechanism explains a constraint the reader must honour, state the constraint as the invariant and drop the machinery. See [Document in Positive Present](./design-principles.md#17-document-in-positive-present).
+
+### AP-151. value-set-in-prose
+
+"`analysis_type`: 'completion' (continuing previous work) or 'context' (new initiative)"
+
+A variable's admitted values are enumerated in a description while the declaration leaves them open, so the set's only home is a copy of whichever producer's option ids the author had in front of them.
+
+**Detect:** A `variables[].description`, a technique I/O description, or resource prose enumerates the values a declared variable takes — a pipe-separated roster, a quoted list, an "either … or", or option ids glossed one by one — and the declaration carries no `values`. Test: if adding an option to the producing gate would leave the prose wrong and nothing would fail, flag it.
+
+**Do not flag:** A declaration that carries `values`, whose description names what the variable holds without repeating the members. A shape hint that is not a value set (`{ id, statement }`). A set stated where the schema cannot hold it — a non-string variable, or values a run computes rather than an author enumerates; there the prose is the only home and the finding is absent. Prose whose subject IS the set, such as the gate options themselves.
+
+**Fix:** Declare the set as `values` on the variable and cut it from the prose, leaving a description that says what the value holds and what its absence means. Where two declarations of the name disagree on the set, the load refuses them, which is the drift this closes. See [One Authoritative Home](./design-principles.md#6-one-authoritative-home); also `variable-description-one-line`.

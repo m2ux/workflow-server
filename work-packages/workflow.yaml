@@ -1,5 +1,5 @@
 id: work-packages
-version: 4.0.0
+version: 4.1.0
 title: Work Packages Workflow
 description: Plan and coordinate multiple related work packages. Use when you have multiple related features, a roadmap spanning several weeks/months, or features with shared context. Execution triggers the work-package workflow for each package.
 author: m2ux
@@ -18,7 +18,10 @@ techniques:
 variables:
   - name: analysis_type
     type: string
-    description: "Type of analysis performed: 'completion' (continuing previous work) or 'context' (new initiative)"
+    description: Whether this roadmap continues previous work or opens a new initiative.
+    values:
+      - completion
+      - context
   - name: user_request
     type: string
     description: The user's free-form description of the initiative that opened this session.

@@ -112,7 +112,13 @@ variables:
     defaultValue: false
   - name: issue_type
     type: string
-    description: "Type of issue (feature|bug|task|enhancement|epic)."
+    description: What kind of change the ticket records.
+    values:
+      - feature
+      - bug
+      - task
+      - enhancement
+      - epic
   - name: needs_further_discussion
     type: boolean
     description: Whether further stakeholder discussion is needed.

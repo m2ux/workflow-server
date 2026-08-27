@@ -51,7 +51,10 @@ variables:
     description: The repository's default branch, which the security branch syncs from and merges into.
   - name: issue_platform
     type: string
-    description: Issue tracking platform (github|jira). The advisory is the record while it stays restricted.
+    description: The issue tracker the advisory lives in while it stays restricted.
+    values:
+      - github
+      - jira
   - name: issue_number
     type: string
     description: GitHub or Jira issue number. Empty while the advisory is restricted.

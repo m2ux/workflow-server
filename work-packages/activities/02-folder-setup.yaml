@@ -1,5 +1,5 @@
 id: folder-setup
-version: 1.5.0
+version: 1.6.0
 name: Planning Folder Setup
 description: Create planning folder structure with initial documentation skeletons, and settle which analysis the next activity performs
 variables:
@@ -9,7 +9,10 @@ variables:
   writes:
     - name: analysis_type
       type: string
-      description: "Type of analysis performed: 'completion' (continuing previous work) or 'context' (new initiative)"
+      description: Whether this roadmap continues previous work or opens a new initiative.
+      values:
+        - completion
+        - context
     - name: planning_folder_path
       type: string
       description: Path to the planning folder for this initiative

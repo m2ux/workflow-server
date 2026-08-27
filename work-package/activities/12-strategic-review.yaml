@@ -1,5 +1,5 @@
 id: strategic-review
-version: 2.18.0
+version: 2.19.0
 name: Strategic Review
 description: Review the implementation to ensure changes are minimal and focused.
 variables:
@@ -32,7 +32,11 @@ variables:
       defaultValue: []
     - name: recommended_strategic_option
       type: string
-      description: Agent-recommended action after strategic review analysis (fix-findings|raise-findings|acceptable).
+      description: The action the agent recommends after its strategic-review analysis.
+      values:
+        - fix-findings
+        - raise-findings
+        - acceptable
     - name: rendered_pr_body
       type: string
       description: The body now live on the PR after the patch.

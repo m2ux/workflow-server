@@ -1,5 +1,5 @@
 id: start-work-package
-version: 3.22.0
+version: 3.23.0
 name: Start Work Package
 description: Initialize the work package with issue, branch, draft PR, dedicated worktree, and planning folder.
 variables:
@@ -76,7 +76,10 @@ variables:
       description: GitHub or Jira issue number.
     - name: issue_platform
       type: string
-      description: Issue tracking platform (github|jira).
+      description: The issue tracker this work package's ticket lives in.
+      values:
+        - github
+        - jira
     - name: issue_present
       type: boolean
       description: Whether the user supplied an issue reference for this work package.
@@ -90,7 +93,13 @@ variables:
       defaultValue: false
     - name: issue_type
       type: string
-      description: Type of issue (feature|bug|task|enhancement|epic).
+      description: What kind of change the ticket records.
+      values:
+        - feature
+        - bug
+        - task
+        - enhancement
+        - epic
     - name: issue_type_ambiguous
       type: boolean
       description: Whether the tracked issue's own signals leave its type unsettled.
