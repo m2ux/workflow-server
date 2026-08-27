@@ -26,3 +26,9 @@ variables:
   - name: unset_marker
     type: string
     description: No default — must stay absent from the seeded bag.
+  - name: operation_type
+    type: string
+    description: The operation this run carries out. Its declared set is the one home for what it admits.
+    values:
+      - create
+      - review

@@ -749,9 +749,9 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      // Declared variable types, for warn-only validation of the worker's
+      // Variable declarations, for warn-only validation of the worker's
       // variables_changed map — same contract as checkpoint setVariable.
-      const declaredTypes = new Map((result.value.variables ?? []).map(v => [v.name, v.type]));
+      const declarations = new Map((result.value.variables ?? []).map(v => [v.name, v]));
       const variableWarnings: string[] = [];
 
       const next = advanceSession(state, (draft) => {
@@ -794,7 +794,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // plus checkpoint writes, so a fresh orchestrator resuming from
         // get_workflow_status would read state that never advanced.
         if (variables_changed) {
-          variableWarnings.push(...applyVariableWrites(draft, variables_changed, declaredTypes, {
+          variableWarnings.push(...applyVariableWrites(draft, variables_changed, declarations, {
             timestamp: now,
             ...(exitingActivity !== undefined ? { activity: exitingActivity } : {}),
             source: 'variables_changed',
@@ -1976,10 +1976,11 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
       }
 
-      // Declared variable types, for warn-only validation of setVariable
-      // effects (#166 B7). Values are stored as written either way; a
-      // mismatch is surfaced in _meta.validation and on the history event.
-      const declaredTypes = new Map((result.value.variables ?? []).map(v => [v.name, v.type]));
+      // Variable declarations, for warn-only validation of setVariable effects
+      // (#166 B7). Values are stored as written either way; a disagreement with
+      // the declared type or value set is surfaced in _meta.validation and on
+      // the history event.
+      const declarations = new Map((result.value.variables ?? []).map(v => [v.name, v]));
       const typeWarnings: string[] = [];
 
       const next = advanceSession(state, (draft) => {
@@ -2017,7 +2018,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         // `{name}` template passthroughs are references resolved agent-side,
         // so their string type is exempt from validation.
         if (variablesSet) {
-          typeWarnings.push(...applyVariableWrites(draft, variablesSet, declaredTypes, {
+          typeWarnings.push(...applyVariableWrites(draft, variablesSet, declarations, {
             timestamp: respondedAt,
             activity: active.activityId,
             source: 'setVariable',

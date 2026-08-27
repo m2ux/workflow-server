@@ -25,6 +25,18 @@ steps:
         effect:
           setVariable:
             mode_label: "{unset_marker}"
+      - id: off-set-assignment
+        label: Off-set assignment
+        description: A value the target's declared set does not admit — warn-only, stored as written.
+        effect:
+          setVariable:
+            operation_type: audit
+      - id: in-set-assignment
+        label: In-set assignment
+        description: A member of the target's declared set — no warning.
+        effect:
+          setVariable:
+            operation_type: review
 exits:
   - id: done
     isDefault: true

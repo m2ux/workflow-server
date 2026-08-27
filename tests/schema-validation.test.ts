@@ -265,6 +265,42 @@ describe('schema-validation', () => {
     });
   });
 
+  describe('VariableDefinitionSchema value sets (#518 W5.4)', () => {
+    const declaration = (extra: Record<string, unknown>) => ({
+      id: 'test-workflow',
+      version: '1.0.0',
+      title: 'Test Workflow',
+      variables: [{ name: 'operation_type', type: 'string', ...extra }],
+      activities: [{ id: 'activity-1', version: '1.0.0', name: 'Activity One', techniques: ['some-technique'] }],
+    });
+
+    it('accepts an enumerated set on a string variable', () => {
+      expect(safeValidateWorkflow(declaration({ values: ['create', 'update', 'review'] })).success).toBe(true);
+    });
+
+    it('accepts a default drawn from the set', () => {
+      expect(safeValidateWorkflow(declaration({ values: ['create', 'review'], defaultValue: 'review' })).success).toBe(true);
+    });
+
+    it('rejects a default outside the set', () => {
+      expect(safeValidateWorkflow(declaration({ values: ['create', 'review'], defaultValue: 'audit' })).success).toBe(false);
+    });
+
+    it('rejects a repeated member', () => {
+      expect(safeValidateWorkflow(declaration({ values: ['create', 'create'] })).success).toBe(false);
+    });
+
+    it('rejects an empty set', () => {
+      expect(safeValidateWorkflow(declaration({ values: [] })).success).toBe(false);
+    });
+
+    it('rejects a set on a non-string variable', () => {
+      const workflowDoc = declaration({});
+      workflowDoc.variables = [{ name: 'retry_count', type: 'number', values: ['1', '2'] }];
+      expect(safeValidateWorkflow(workflowDoc).success).toBe(false);
+    });
+  });
+
   describe('OutputItemDefinitionSchema audience (#224 V4)', () => {
     // PR227-TC-04 — the enum accepts both in-set values.
     it('accepts audience: human and audience: agent', () => {

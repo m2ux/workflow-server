@@ -57,6 +57,9 @@ function disagreement(a: VariableDefinition, b: VariableDefinition): string | nu
   const left = JSON.stringify(a.defaultValue ?? null);
   const right = JSON.stringify(b.defaultValue ?? null);
   if (left !== right) return `defaults ${left} and ${right}`;
+  const leftValues = JSON.stringify(a.values ?? null);
+  const rightValues = JSON.stringify(b.values ?? null);
+  if (leftValues !== rightValues) return `value sets ${leftValues} and ${rightValues}`;
   return null;
 }
 
