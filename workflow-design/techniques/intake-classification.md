@@ -78,7 +78,7 @@ When `{operation_type}` is `update`, the categorized change request derived from
 
 ### 3. Load Target Definitions
 
-- When `{operation_type}` is `update` or `review`, load targets via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) from orchestrator-supplied definitions ([orchestrator-no-domain-work](../../meta/techniques/agent-conduct.md#orchestrator-no-domain-work))
+- When `{operation_type}` is `update` or `review`, load targets via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) from orchestrator-supplied definitions ([orchestrator-no-domain-work](../../meta/techniques/orchestrator-conduct.md#orchestrator-no-domain-work))
 
 ### 4. Build Structural Inventory
 

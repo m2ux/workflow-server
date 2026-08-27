@@ -13,6 +13,10 @@ Version-control operations for planning folders and artifacts — parent repos, 
 
 Every git invocation that contacts a remote (`fetch`, `pull`, `push`, `ls-remote`, network `clone`, and `ssh` to the git host) runs on the host shell — host credentials, host network, and host SSH agent. Isolated execution environments that block those are outside this technique. Local-only git may use the default shell. An isolation denial is not a credential or key failure.
 
+### git-configuration-is-user-owned
+
+Git configuration belongs to the user. A validate action names the misconfiguration it found and stops there; it never prescribes a config-changing command. The user fixes their own environment, at whatever scope (system, global, local) they prefer.
+
 ### no-destructive-ops
 
 NEVER run destructive or irreversible operations (force push to protected branches, hard resets) without explicit user request.

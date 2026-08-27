@@ -57,7 +57,7 @@ Worker agent identity for this dispatch.
 
 ### follow-bundled-rules
 
-Follow the rules in [agent-conduct](../agent-conduct.md), [workflow-engine](./TECHNIQUE.md), and any other touched techniques include their global rules automatically.
+Follow the rules in [agent-conduct](../agent-conduct.md), [workflow-engine](./TECHNIQUE.md), and any other touched techniques include their global rules automatically. Every rule in `agent-conduct` is one a worker can honour; the orchestrator's boundaries live in [orchestrator-conduct](../orchestrator-conduct.md) and are not a worker's to read.
 
 ### worker-control-plane-ban
 

@@ -27,7 +27,7 @@ The meta workflow is the structural home for the orchestration logic that used t
 
 - **Activities:** see [activities/README.md](./activities/README.md) for the role each activity plays and links to its authoritative definition.
 - **Pattern library:** see [activities/patterns/README.md](./activities/patterns/README.md) for borrowable mid-phase multi-agent pipelines (`orchestration-patterns` technique group).
-- **Techniques:** see [techniques/](./techniques/) for the universal techniques and the rule-authority map (the [`agent-conduct`](./techniques/agent-conduct.md) technique is the single source of truth for cross-cutting rules). The [`orchestration-patterns`](./techniques/orchestration-patterns/TECHNIQUE.md) group supplies atomic dispatch/gather/synthesise ops for those pattern activities.
+- **Techniques:** see [techniques/](./techniques/) for the universal techniques and the rule-authority map ([`agent-conduct`](./techniques/agent-conduct.md) is the single source of truth for the cross-cutting rules every agent is held to, and [`orchestrator-conduct`](./techniques/orchestrator-conduct.md) for the ones only an orchestrator can honour). The [`orchestration-patterns`](./techniques/orchestration-patterns/TECHNIQUE.md) group supplies atomic dispatch/gather/synthesise ops for those pattern activities.
 - **Resources:** see [resources/README.md](./resources/README.md) for the bootstrap protocol and prompt templates.
 
 ---
@@ -78,7 +78,8 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | Technique | Capability |
 |-----------|------------|
 | [`workflow-engine`](techniques/workflow-engine/TECHNIQUE.md) | Operations and rules for executing a workflow's structured flow — session lifecycle, activity dispatch, agent entry, transitions, planning Progress, and the checkpoint protocol. |
-| [`agent-conduct`](techniques/agent-conduct.md) | Cross-cutting behavioural boundaries — single source of truth for file sensitivity, communication tone, attribution, code commentary, operational discipline, checkpoint discipline, and orchestrator discipline |
+| [`agent-conduct`](techniques/agent-conduct.md) | Cross-cutting behavioural boundaries every agent is held to — single source of truth for file sensitivity, communication tone, attribution, code commentary, interaction, operational discipline and checkpoint discipline |
+| [`orchestrator-conduct`](techniques/orchestrator-conduct.md) | The boundaries only an orchestrator can honour — single source of truth for domain-work delegation, agent-tree depth, dispatch on resume, commit scope, automatic transitions and ad-hoc interaction |
 | [`verify-artifact-conforms`](techniques/verify-artifact-conforms.md) | Artifact-conformance pass any workflow binds: each artifact measured against the guide its filename maps to, the caller's canonical-home map, and the [Artifact Writing Register](resources/writing-register.md), corrected in place |
 | [`version-control`](techniques/version-control/TECHNIQUE.md) | Host-repository derivation from git, planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
 | [`github-cli-protocol`](techniques/github-cli-protocol/TECHNIQUE.md) | GitHub PR and issue tasks; sole home of REST `gh api` recipes |
@@ -88,7 +89,7 @@ Universal techniques referenced by canonical ID (the file/folder slug).
 | [`cargo-operations`](techniques/cargo-operations/TECHNIQUE.md) | Resource-constrained cargo subcommands (build, check, clippy, test, fmt, doc, preflight) with an inline resource budget |
 | [`harness-compat`](techniques/harness-compat/TECHNIQUE.md) | Harness-independent operations (`spawn-agent`, `continue-agent`, `spawn-concurrent`, `resolve-harness-operation`) abstracting cross-tool dispatch |
 
-> Cross-cutting rules live in `agent-conduct`, and capability techniques (`workflow-engine`, `version-control`, etc.) reference it as their single source of truth.
+> Cross-cutting rules live in `agent-conduct` (any agent) and `orchestrator-conduct` (an orchestrator's alone), and capability techniques (`workflow-engine`, `version-control`, etc.) reference them as their single source of truth. A bundle addresses the rule families its role owns, so a rule reaches the agent that can act on it.
 
 ---
 
@@ -132,7 +133,8 @@ workflows/meta/
 │   └── 04-end-workflow.yaml                 # Outcome verification, summary
 ├── techniques/
 │   ├── TECHNIQUE.md                         # Root base contract (inherited by every meta technique)
-│   ├── agent-conduct.md                     # Cross-cutting rules (single source of truth)
+│   ├── agent-conduct.md                     # Cross-cutting rules any agent can act on (single source of truth)
+│   ├── orchestrator-conduct.md              # The boundaries only an orchestrator can honour
 │   ├── variable-binding.md                  # Strategy technique — bind step inputs/outputs to variables
 │   ├── scatter-gather.md                    # Strategy technique — forEach fan-out / gather
 │   ├── verify-artifact-conforms.md          # Artifact-conformance pass bound by any workflow that persists artifacts

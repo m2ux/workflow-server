@@ -71,7 +71,8 @@ Techniques are referenced by canonical ID (the file/folder slug). Standalone tec
 | Technique | Description |
 |-----------|-------------|
 | [`workflow-engine`](meta/techniques/workflow-engine/TECHNIQUE.md) | Protocol and rules for workflow execution: session lifecycle (resume or create), activity dispatch, transition evaluation, checkpoint protocol. State persistence is server-managed (atomic `session.json` + `.session-token` seal write on every authenticated call). |
-| [`agent-conduct`](meta/techniques/agent-conduct.md) | Cross-cutting behavioural boundaries: file sensitivity, communication tone, attribution prohibition, operational discipline, checkpoint discipline, orchestrator discipline |
+| [`agent-conduct`](meta/techniques/agent-conduct.md) | Cross-cutting behavioural boundaries every agent is held to: file sensitivity, communication tone, attribution prohibition, interaction, operational discipline, checkpoint discipline |
+| [`orchestrator-conduct`](meta/techniques/orchestrator-conduct.md) | Boundaries only an orchestrator can honour: no domain work, one level of indirection, dispatch on resume, commit scope, automatic transitions, no ad-hoc interaction |
 | [`version-control`](meta/techniques/version-control/TECHNIQUE.md) | Planning-folder lifecycle, conventional commits, regular-vs-submodule commit workflows |
 | [`github-cli-protocol`](meta/techniques/github-cli-protocol/TECHNIQUE.md) | GitHub PR and issue tasks; sole home of REST `gh api` recipes |
 | [`knowledge-base-search`](meta/techniques/knowledge-base-search/TECHNIQUE.md) | Optimised concept-rag searches via pre-indexed domain maps |

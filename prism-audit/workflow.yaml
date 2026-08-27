@@ -1,5 +1,5 @@
 id: prism-audit
-version: 2.1.0
+version: 3.0.0
 title: Security Audit Workflow
 description: Orchestrate security audits by generating tailored audit prompts from user descriptions and triggering prism workflow(s) for analysis. Audit-specific customisation is isolated here, keeping the prism workflow generic.
 author: m2ux
@@ -10,15 +10,6 @@ tags:
   - codebase-analysis
   - vulnerability-assessment
   - report-generation
-rules:
-  workflow:
-    - ref: orchestration-model
-  activity:
-    - ref: prism::worker-permissions
-    - ref: prism::artifact-verification
-fragments:
-  rules:
-    orchestration-model: "ORCHESTRATION MODEL: This workflow uses an orchestrator with disposable workers. The orchestrator manages transitions and triggers. Workers execute activities in fresh contexts. Prism workflows are triggered via the trigger-workflow mechanism, not called inline."
 techniques:
   activity:
     - variable-binding

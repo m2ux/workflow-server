@@ -1,5 +1,5 @@
 id: prism-evaluate
-version: 2.1.0
+version: 3.0.0
 title: Evaluation Workflow
 description: Orchestrate multi-dimensional evaluations by mapping user-defined evaluation dimensions to prism analytical lenses.
 author: m2ux
@@ -10,12 +10,6 @@ tags:
   - multi-dimensional
   - proposals
   - documents
-rules:
-  workflow:
-    - ref: prism-audit::orchestration-model
-  activity:
-    - ref: prism::worker-permissions
-    - ref: prism::artifact-verification
 techniques:
   activity:
     - variable-binding
