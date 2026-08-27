@@ -11,11 +11,8 @@
  * (workflow-engine, agent-conduct, orchestrator-conduct, worker-conduct). The lists
  * below name the core technique refs that constitute the runtime baseline.
  *
- * A rule reaches the agent that can act on it, and the composition is what makes
- * that true: naming one rule of a technique by its exact id TOUCHES that technique,
- * and every rule it declares is then delivered. So a conduct technique holds one
- * audience — `agent-conduct` is the universal home, and each role's own boundaries
- * sit in that role's file, named only by the list whose role owns it.
+ * A conduct technique reaches only the role whose list names it: `agent-conduct` is
+ * in both, and each role's own boundaries are in that role's list alone.
  */
 
 /**

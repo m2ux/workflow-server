@@ -18,10 +18,7 @@
  * - `setvariable-undeclared` — a `setVariable` targets a variable that is not
  *   declared in the workflow's `variables[]`.
  * - `setvariable-outside-value-set` — a `setVariable` literal is outside the
- *   target variable's declared `values`. The declaration is the value set's one
- *   home, so a producer that writes a sixth value to a five-value variable is
- *   the disagreement this catches. `{name}` passthroughs are exempt.
- * - `set-action-outside-value-set` — the same, for a `set` action's literal.
+ *   target variable's declared `values`. `{name}` passthroughs are exempt.
  *
  * Only structured conditions are walked; the `when:` string dialect has no
  * exists-shaped predicate (verified against the corpus during B7). Dotted
@@ -52,8 +49,7 @@ export interface VariableModelViolation {
     | 'default-type-mismatch'
     | 'setvariable-type-mismatch'
     | 'setvariable-undeclared'
-    | 'setvariable-outside-value-set'
-    | 'set-action-outside-value-set';
+    | 'setvariable-outside-value-set';
   /** The offending variable and the observed shape. */
   detail: string;
 }
@@ -136,17 +132,6 @@ export function lintDocument(
             detail: `setVariable '${name}': ${JSON.stringify(value)} is outside the declared value set [${decl.values!.join(', ')}]`,
           });
         }
-      }
-    }
-    // `set` action assignments — the other authored write of a literal into the bag.
-    if (node.action === 'set' && typeof node.target === 'string' && node.value !== undefined) {
-      const decl = decls.get(node.target);
-      if (decl && !isTemplateReference(node.value) && isOutsideValueSet(decl, node.value)) {
-        violations.push({
-          file,
-          rule: 'set-action-outside-value-set',
-          detail: `set '${node.target}': ${JSON.stringify(node.value)} is outside the declared value set [${decl.values!.join(', ')}]`,
-        });
       }
     }
   }

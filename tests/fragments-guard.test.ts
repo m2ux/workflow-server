@@ -40,13 +40,12 @@ describe('fragments guard (fixture corpus)', () => {
   });
 
   it('flags identical inline content authored at multiple sites', () => {
-    // Rule text repeated across workflows is a home problem, and the remedy says so rather than
-    // offering extraction — following that advice is what produced the squatting fragments (#519).
+    // Rule text repeated across workflows is a home problem, so the remedy names a home.
     const duplicateRules = byRule('duplicate-rule');
     expect(duplicateRules).toHaveLength(2);
     for (const v of duplicateRules) {
       expect(v.detail).toContain('2 workflows');
-      expect(v.detail).toContain('conduct home whose audience it binds');
+      expect(v.detail).toContain('conduct technique whose audience it binds');
     }
     expect(byRule('duplicate-checkpoint').map((v) => v.detail)).toEqual([
       expect.stringContaining('2 sites'),

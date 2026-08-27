@@ -12,7 +12,7 @@ export const VariableDefinitionSchema = z.object({
   name: VariableNameSchema,
   type: z.enum(['string', 'number', 'boolean', 'array', 'object']).describe('Declared type. The server validates checkpoint setVariable values against it, warn-only: a mismatch is stored as written and surfaced in _meta.validation and on the variable_set history event. Agents honor it for their own writes.'),
   description: z.string().optional(),
-  values: z.array(z.string()).min(1).optional().describe('The complete set of values this variable admits — the declaration is the set\'s one home, so a description never enumerates it and no producer\'s option ids have to be copied into prose. Declared on a `string` variable; every `defaultValue`, checkpoint setVariable literal and `set` action literal must name a member (checked at load for the default, by check:variable-model for the writes). A variable whose values are open is declared without it.'),
+  values: z.array(z.string()).min(1).optional().describe('The complete set of values a string variable admits. The server validates writes against it warn-only, as it does the declared type.'),
   defaultValue: z.unknown().optional().describe('Initial value the server seeds into the session variable bag at session creation (start_session fresh sessions and dispatch_child children), recorded as one variables_seeded history event. Do not gate a defaulted variable with exists/notExists — seeding makes the gate constant (check:variable-model enforces this).'),
   required: z.boolean().default(false).describe('Authoring metadata; the server does not check that the variable is ever set.'),
 }).superRefine((variable, ctx) => {

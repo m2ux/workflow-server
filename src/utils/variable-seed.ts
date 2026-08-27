@@ -50,6 +50,9 @@ interface VariableWriteTarget {
   history: HistoryEntry[];
 }
 
+/** What a declaration constrains a write to: the parts of it this module reads. */
+type DeclaredConstraints = Pick<VariableDefinition, 'type' | 'values'>;
+
 /**
  * Apply a map of variable assignments to the session bag, appending one
  * `variable_set` history event per name and returning warn-only messages for
@@ -65,7 +68,7 @@ interface VariableWriteTarget {
 export function applyVariableWrites(
   draft: VariableWriteTarget,
   values: Record<string, unknown>,
-  declarations: Map<string, VariableDefinition>,
+  declarations: Map<string, DeclaredConstraints>,
   ctx: { timestamp: string; activity?: string; source: VariableWriteSource },
 ): string[] {
   const warnings: string[] = [];

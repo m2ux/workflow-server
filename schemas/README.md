@@ -420,8 +420,8 @@ A workflow variable definition. Declarations are rendered to agents via `get_wor
 | -------------- | ------- | ------------------------------------------------ |
 | `name`         | string  | Qualified snake_case noun phrase (>=2 words, AP-60), or an enumerated bare-word exemption (see `src/schema/identifiers.ts`) |
 | `type`         | enum    | "string", "number", "boolean", "array", "object" (warn-only validated on checkpoint `setVariable`; mismatched values are stored as written) |
-| `description`  | string  | What the variable holds, and what its absence means. The value set is `values`' to state, so a description that enumerates one is a copy of whichever producer happens to set it |
-| `values`       | array   | The complete set of values a `string` variable admits — the set's one home. The `defaultValue` must name a member (load error); a `setVariable` or `set` literal outside it is a `check:variable-model` violation and a warn-only runtime mismatch. Omitted where the values are open |
+| `description`  | string  | What the variable holds, and what its absence means |
+| `values`       | array   | The complete set of values a `string` variable admits. A `defaultValue` outside it fails the load; a `setVariable` or `set` literal outside it warns |
 | `defaultValue` | any     | Initial value, seeded into the session bag at session creation. Never combine with an `exists`/`notExists` gate on the same variable (`check:variable-model`) |
 | `required`     | boolean | Whether variable must be set (agent-honored)     |
 

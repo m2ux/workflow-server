@@ -19,9 +19,8 @@
  * - `inline-duplicate-of-fragment` — an inline checkpoint body identical (normalized) to a declared
  *   fragment: the inline copy must become a reference.
  * - `duplicate-rule` — identical (normalized) rule text authored inline in two or more workflows.
- *   The remedy names the shared home: a rule two workflows both need belongs in the conduct
- *   technique whose audience it binds, and both copies go. Offering extraction instead is what put
- *   seven generic rules on whichever workflow their author happened to be editing (#519).
+ *   A rule two workflows both need belongs in the conduct technique whose audience it binds, and
+ *   both copies go.
  * - `duplicate-checkpoint` — identical (normalized) checkpoint body authored inline at two or more
  *   sites: extract a fragment.
  * - `undeclared-effect-variable` — a referencing workflow whose variables[] does not declare a
@@ -260,10 +259,7 @@ export function collectFragmentViolations(root: string = ROOT): FragmentViolatio
         rule: 'duplicate-rule',
         detail:
           `rule "${sites[0]!.text.slice(0, 60)}…" is authored inline in ${distinctWf.size} workflows (${list}) — ` +
-          'a rule two workflows both need is neither one\'s to own. Move it to the conduct home whose audience it ' +
-          'binds (meta agent-conduct for any agent, meta orchestrator-conduct for an orchestrator, meta ' +
-          'worker-conduct for a dispatched worker) and delete both copies; where a home already states it, ' +
-          'deleting both copies is the whole fix',
+          'move it to the meta conduct technique whose audience it binds and delete every copy',
       });
     }
   }

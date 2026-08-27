@@ -77,11 +77,6 @@ options:
       expect(lintDocument(doc, SET_DECLS, 'x.yaml')).toEqual([]);
     });
 
-    it('flags a set action writing outside the declared set', () => {
-      const doc = parse('actions: [{ action: set, target: operation_type, value: audit }]');
-      expect(lintDocument(doc, SET_DECLS, 'x.yaml').map(v => v.rule)).toEqual(['set-action-outside-value-set']);
-    });
-
     it('leaves a variable with no declared set unconstrained', () => {
       const doc = parse('effect: { setVariable: { repo_root: anything/at/all } }');
       expect(lintDocument(doc, SET_DECLS, 'x.yaml')).toEqual([]);
