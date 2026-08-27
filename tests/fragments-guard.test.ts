@@ -12,7 +12,7 @@ import { collectFragmentViolations } from '../scripts/check-fragments.js';
 const FIXTURE_ROOT = resolve(import.meta.dirname, 'fixtures/fragments');
 
 describe('fragments guard (fixture corpus)', () => {
-  const { violations, warnings } = collectFragmentViolations(FIXTURE_ROOT);
+  const violations = collectFragmentViolations(FIXTURE_ROOT);
   const byRule = (rule: string) => violations.filter((v) => v.rule === rule);
 
   it('flags unresolved and dash-line refs', () => {
@@ -55,6 +55,5 @@ describe('fragments guard (fixture corpus)', () => {
 
   it('reports nothing beyond the engineered defects', () => {
     expect(violations).toHaveLength(8);
-    expect(warnings).toEqual([]);
   });
 });

@@ -20,19 +20,15 @@
  *   fragment: the inline copy must become a reference.
  * - `duplicate-rule` — identical (normalized) rule text authored inline in two or more workflows.
  *   The remedy names the shared home: a rule two workflows both need belongs in the conduct
- *   technique whose audience it binds, and both copies go. Extraction is the remedy only where the
- *   text is one workflow's own and repeats inside it — otherwise fixing a duplicate produces a
- *   fragment squatting in whichever workflow the author happened to be editing (#519).
+ *   technique whose audience it binds, and both copies go. Offering extraction instead is what put
+ *   seven generic rules on whichever workflow their author happened to be editing (#519).
  * - `duplicate-checkpoint` — identical (normalized) checkpoint body authored inline at two or more
  *   sites: extract a fragment.
  * - `undeclared-effect-variable` — a referencing workflow whose variables[] does not declare a
  *   variable the fragment's setVariable effects write. The effect fires in the REFERENCING
  *   workflow's session bag (check:variable-model sees only the declaring workflow).
  *
- * Near-duplicates (token-Jaccard >= 0.85 against a fragment) are reported as warnings, not
- * failures — they catch an inline copy that has already begun to drift.
- *
- * Hard-zero: every error is a defect in the corpus, not the guard.
+ * Hard-zero: every finding is a defect in the corpus, not the guard.
  *
  * Run: npx tsx scripts/check-fragments.ts [--root <workflows-dir>]
  */
@@ -55,7 +51,6 @@ const ROOT = resolveWorkflowsRoot(resolve(join(DIR, '..', 'workflows')));
 
 /** Rules shorter than this are generic connective phrases, not drift-worthy shared content. */
 const MIN_DUP_RULE_LENGTH = 30;
-const NEAR_DUP_THRESHOLD = 0.85;
 
 export interface FragmentViolation {
   file: string;
@@ -72,18 +67,8 @@ export interface FragmentViolation {
   detail: string;
 }
 
-export interface FragmentWarning { file: string; detail: string; }
 
 const normalizeText = (s: string): string => s.trim().replace(/\s+/g, ' ').toLowerCase();
-
-const tokenSet = (s: string): Set<string> => new Set(normalizeText(s).split(' '));
-
-function jaccard(a: string, b: string): number {
-  const sa = tokenSet(a); const sb = tokenSet(b);
-  let inter = 0;
-  for (const t of sa) if (sb.has(t)) inter++;
-  return inter / (sa.size + sb.size - inter);
-}
 
 /** Canonical form of a checkpoint body for duplicate detection: content fields only (no step id,
  *  no site gates), key order fixed, strings whitespace/case-normalized. */
@@ -127,9 +112,8 @@ function collectCheckpointSteps(doc: unknown): CheckpointSite['node'][] {
 
 const CHECKPOINT_BODY_FIELDS = ['message', 'options', 'defaultOption', 'autoAdvanceMs', 'blocking'] as const;
 
-export function collectFragmentViolations(root: string = ROOT): { violations: FragmentViolation[]; warnings: FragmentWarning[] } {
+export function collectFragmentViolations(root: string = ROOT): FragmentViolation[] {
   const violations: FragmentViolation[] = [];
-  const warnings: FragmentWarning[] = [];
   const lookup: FragmentsLookup = fragmentsLookupSync(root);
 
   const workflowIds = readdirSync(root)
@@ -290,13 +274,12 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
     }
   }
 
-  return { violations, warnings };
+  return violations;
 }
 
 const isMain = !!process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href;
 if (isMain) {
-  const { violations, warnings } = collectFragmentViolations();
-  for (const w of warnings) process.stdout.write(`  warning: ${w.file}: ${w.detail}\n`);
+  const violations = collectFragmentViolations();
   if (violations.length === 0) {
     process.stdout.write('fragments: OK — every ref resolves, every fragment is used, no inline duplicates\n');
     process.exit(0);
