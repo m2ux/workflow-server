@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -19,6 +19,6 @@ Variable updates carried by the resolved checkpoint.
 
 ## Protocol
 
-1. Call `resume_checkpoint { session_index }`; the server verifies that `session.json#activeCheckpoint` has been cleared by the orchestrator's `respond_checkpoint`.
+1. Call `resume_checkpoint { session_index }`; it confirms the orchestrator's `respond_checkpoint` has cleared the active checkpoint before the paused worker proceeds.
    > When `resume_checkpoint` returns `no active checkpoint` or `checkpoint is still active`, the checkpoint is not yet resolved: wait for the resume prompt to arrive before calling again.
 2. Apply `{effects}` to local state and continue from the paused step.

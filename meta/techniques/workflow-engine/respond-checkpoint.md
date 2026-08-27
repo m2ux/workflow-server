@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.3.0
+  version: 1.4.0
 ---
 
 ## Capability
@@ -26,7 +26,7 @@ Variable updates the server returned on clearing the active checkpoint.
 ## Protocol
 
 1. When `{checkpoint_resolution}` is `{ auto_advance: true }`, apply [verify-auto-advance-on-resolve](#verify-auto-advance-on-resolve) before calling `respond_checkpoint`.
-2. Call `respond_checkpoint { session_index, ...checkpoint_resolution }`; the server clears `session.json#activeCheckpoint` and returns `{effects}`. Capture `{effects}` and propagate them to the worker on resume.
+2. Call `respond_checkpoint { session_index, ...checkpoint_resolution }`; it clears the active checkpoint and returns `{effects}`. Capture `{effects}` and propagate them to the worker on resume.
    > When the call returns `no active checkpoint on session`, there is no active checkpoint to resolve: verify `{session_index}` references the correct worker session and that an active checkpoint was reported before this call.
 
 ## Rules
@@ -37,11 +37,11 @@ If `respond_checkpoint` returns `Invalid option`, STOP. Apply [present-checkpoin
 
 ### verify-auto-advance-on-resolve
 
-`auto_advance: true` is valid only when the checkpoint definition (as presented) includes both `defaultOption` and `autoAdvanceMs`. Confirm via [present-checkpoint-to-user](./present-checkpoint-to-user.md)::[verify-auto-advance-capability](./present-checkpoint-to-user.md#verify-auto-advance-capability) before calling `respond_checkpoint`. Do not invent auto-advance on a checkpoint that lacks those fields.
+`auto_advance: true` is valid only on a gate the definition declares soft. Confirm via [present-checkpoint-to-user](./present-checkpoint-to-user.md)::[verify-auto-advance-capability](./present-checkpoint-to-user.md#verify-auto-advance-capability) before calling `respond_checkpoint`; the server refuses the call on a gate that carries no such declaration. Do not invent auto-advance on a hard gate.
 
 ### auto-advance-spends-the-declared-interval
 
-The server refuses `auto_advance: true` until `autoAdvanceMs` has elapsed since the gate was yielded, so this call is the route that spends the declared interval. A resolution that must not wait belongs on the headless path of [present-checkpoint-to-user](./present-checkpoint-to-user.md)::[present-before-any-resolution](./present-checkpoint-to-user.md#present-before-any-resolution), which makes no call at all.
+The server refuses `auto_advance: true` until the gate's declared interval has elapsed since it was yielded, so this call is the route that spends it. A resolution that must not wait belongs on the headless path of [present-checkpoint-to-user](./present-checkpoint-to-user.md)::[present-before-any-resolution](./present-checkpoint-to-user.md#present-before-any-resolution), which makes no call at all.
 
 ### dismiss-only-a-gate-whose-condition-is-false
 
