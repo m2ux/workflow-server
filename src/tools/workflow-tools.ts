@@ -1458,7 +1458,7 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
         }
         if (flatSteps.some((s) => s.kind === 'checkpoint' && s.autoAdvanceMs !== undefined)) {
           enforcementNotes['auto_advance'] =
-            "A checkpoint's auto-advance is SERVER-timed: the server enforces the full autoAdvanceMs timer when you call respond_checkpoint { auto_advance: true }, then applies its defaultOption. `blocking` is an advisory orchestrator directive (agent-honored), not a server gate.";
+            "A checkpoint declaring defaultOption and autoAdvanceMs is soft. Its auto-advance is SERVER-timed: the server enforces the full autoAdvanceMs timer when you call respond_checkpoint { auto_advance: true }, then applies its defaultOption. Yield the gate and stop — resolving it is not the worker's to do.";
         }
       }
       const enforcementBlock = Object.keys(enforcementNotes).length
@@ -1849,9 +1849,10 @@ export function registerWorkflowTools(server: McpServer, config: ServerConfig): 
       const result = await loadWorkflow(config.workflowDir, workflow_id);
       if (!result.success) throw result.error;
       // A gate for work the activity did not anticipate carries its own decision
-      // on activeCheckpoint, so there is no definition to look up (#477).
+      // on activeCheckpoint, so there is no definition to look up (#477). It declares
+      // no defaultOption, so it is hard and is answered rather than timed out.
       const checkpoint = active.adhoc
-        ? { id: active.checkpointId, ...active.adhoc, blocking: true, declared: false }
+        ? { id: active.checkpointId, ...active.adhoc, declared: false }
         : getCheckpoint(result.value, active.activityId, active.checkpointId);
       if (!checkpoint) throw new Error(`Checkpoint not found: ${active.checkpointId} in activity ${active.activityId}`);
 

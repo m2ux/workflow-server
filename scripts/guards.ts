@@ -105,6 +105,14 @@ export const GUARDS: GuardSpec[] = [
     proves: 'no activity opens with a checkpoint, so no dispatch exists only to ask a question',
   },
   {
+    id: 'checkpoint-presentation',
+    script: 'scripts/check-checkpoint-presentation.ts',
+    npmScript: 'check:checkpoint-presentation',
+    scope: 'corpus',
+    json: true,
+    proves: 'when a gate is presented is stated only in the engine technique that owns the contract',
+  },
+  {
     id: 'decision-order',
     script: 'scripts/check-decision-order.ts',
     npmScript: 'check:decision-order',

@@ -22,8 +22,15 @@ import { createHarness, rawText, isError, parseToolResponse } from './e2e/harnes
  * Characters of fixed content an orchestrator reads before its first decision: the `discover` text,
  * the session-start response, and the operations bundle. Raise it deliberately — it grows only when
  * the corpus decides an orchestrator needs more before it can act.
+ *
+ * 113,000 since the checkpoint presentation contract took one home (#400 W1). When a gate is
+ * presented, what makes a gate soft, and which gate may never be soft are stated once, in the two
+ * workflow-engine operations that present and resolve a checkpoint — and those operations are in
+ * this bundle, because the orchestrator reading it is the agent that resolves gates. The same text
+ * previously sat in four workflow rule buckets, three of them delivered to workers who cannot
+ * resolve a gate at all; those copies are gone, but they were never counted here.
  */
-const BUDGET = 110_000;
+const BUDGET = 113_000;
 
 describe('bootstrap-time fixed content', () => {
   it('stays inside the budget this suite sets', async () => {

@@ -153,16 +153,12 @@
                   },
                   "defaultOption": {
                     "type": "string",
-                    "description": "Option auto-selected when autoAdvanceMs elapses."
+                    "description": "The answer a soft gate takes when no person is reached."
                   },
                   "autoAdvanceMs": {
                     "type": "integer",
                     "exclusiveMinimum": 0,
-                    "description": "Ms before auto-selecting defaultOption."
-                  },
-                  "blocking": {
-                    "type": "boolean",
-                    "description": "Orchestrator directive: true means present the checkpoint and wait for explicit user selection. Agent-honored — the server's auto-advance gate checks only defaultOption + autoAdvanceMs, not this field."
+                    "description": "The interval the server spends before applying a soft gate's default on respond_checkpoint { auto_advance: true }."
                   },
                   "condition": {
                     "anyOf": [
@@ -665,16 +661,12 @@
                         },
                         "defaultOption": {
                           "type": "string",
-                          "description": "Option auto-selected when autoAdvanceMs elapses."
+                          "description": "The answer a soft gate takes when no person is reached."
                         },
                         "autoAdvanceMs": {
                           "type": "integer",
                           "exclusiveMinimum": 0,
-                          "description": "Ms before auto-selecting defaultOption."
-                        },
-                        "blocking": {
-                          "type": "boolean",
-                          "description": "Orchestrator directive: true means present the checkpoint and wait for explicit user selection. Agent-honored — the server's auto-advance gate checks only defaultOption + autoAdvanceMs, not this field."
+                          "description": "The interval the server spends before applying a soft gate's default on respond_checkpoint { auto_advance: true }."
                         },
                         "when": {
                           "$ref": "#/definitions/workflow/properties/activities/items/properties/steps/items/anyOf/0/properties/when"

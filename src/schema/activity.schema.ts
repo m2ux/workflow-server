@@ -108,9 +108,8 @@ export type ActionStep = z.infer<typeof ActionStepSchema>;
 export const CheckpointFragmentBodySchema = z.object({
   message: z.string().describe('Message presented to the user.'),
   options: z.array(CheckpointOptionSchema).min(1).describe('Decision options with effects.'),
-  defaultOption: z.string().optional().describe('Option auto-selected when autoAdvanceMs elapses.'),
-  autoAdvanceMs: z.number().int().positive().optional().describe('Ms before auto-selecting defaultOption.'),
-  blocking: z.boolean().optional().describe('Orchestrator directive: true means present the checkpoint and wait for explicit user selection. Agent-honored — the server\'s auto-advance gate checks only defaultOption + autoAdvanceMs, not this field.'),
+  defaultOption: z.string().optional().describe('The answer a soft gate takes when no person is reached.'),
+  autoAdvanceMs: z.number().int().positive().optional().describe('The interval the server spends before applying a soft gate\'s default on respond_checkpoint { auto_advance: true }.'),
   condition: ConditionSchema.optional().describe('Condition shared by every use site. A referencing step may declare its own `condition` only when the fragment declares none.'),
 }).strict();
 export type CheckpointFragmentBody = z.infer<typeof CheckpointFragmentBodySchema>;
@@ -126,9 +125,8 @@ export const CheckpointStepSchema = z.object({
   ref: z.string().optional().describe('Checkpoint-fragment reference: `[workflow::]name`, resolved against the declaring workflow\'s `fragments.checkpoints` (bare name: declaring workflow, then meta). Mutually exclusive with the body fields — a ref step carries only its id and, when the fragment declares none, a condition.'),
   message: z.string().optional().describe('Message presented to the user. Required on an inline checkpoint; forbidden alongside `ref`.'),
   options: z.array(CheckpointOptionSchema).min(1).optional().describe('Decision options with effects. Required on an inline checkpoint; forbidden alongside `ref`.'),
-  defaultOption: z.string().optional().describe('Option auto-selected when autoAdvanceMs elapses.'),
-  autoAdvanceMs: z.number().int().positive().optional().describe('Ms before auto-selecting defaultOption.'),
-  blocking: z.boolean().optional().describe('Orchestrator directive: true means present the checkpoint and wait for explicit user selection. Agent-honored — the server\'s auto-advance gate checks only defaultOption + autoAdvanceMs, not this field.'),
+  defaultOption: z.string().optional().describe('The answer a soft gate takes when no person is reached.'),
+  autoAdvanceMs: z.number().int().positive().optional().describe('The interval the server spends before applying a soft gate\'s default on respond_checkpoint { auto_advance: true }.'),
   ...stepCommonFields,
 }).strict();
 export type CheckpointStep = z.infer<typeof CheckpointStepSchema>;

@@ -55,7 +55,7 @@ The server clears `activeCheckpoint`, records the decision, and applies each eff
 
 The server validates the chosen option against the definition, and exactly one of the three modes may be supplied. Both timers are measured from the moment the pause was recorded, so an orchestrator that answers instantly is rejected rather than trusted — a gate resolved in under three seconds cannot have been shown to anyone.
 
-Auto-advance needs both `defaultOption` and `autoAdvanceMs` on the checkpoint. A gate that must genuinely wait for a person therefore declares neither. The `blocking` field does not affect this: the server does not consult it, and it reads as a directive to the orchestrator.
+Auto-advance needs both `defaultOption` and `autoAdvanceMs` on the checkpoint. That pair is the whole of softness: a gate declaring both is soft, and a gate that must wait for a person declares neither. Declaring one without the other is a defect.
 
 Dismissal by `condition_not_met` is only open to a checkpoint carrying a structured `condition`; one gated by an inline `when` expression cannot be dismissed this way. The server checks that the condition field is present but cannot check whether it is true, so the agent's evaluation is taken on trust and recorded for audit.
 
@@ -80,7 +80,6 @@ steps:
   - kind: checkpoint
     id: verify-issue
     message: "Please confirm the issue details are correct."
-    blocking: true
     condition:
       type: simple
       variable: has_issue
@@ -107,9 +106,8 @@ steps:
 | `options` | At least one option, each with `id`, `label`, `description` and an optional `effect` |
 | `condition` | Structured condition that must hold for the gate to be presented; when false it is skipped |
 | `when` | Inline expression alternative to `condition`, and not dismissible by `condition_not_met` |
-| `blocking` | Advisory signal to the orchestrator; the server does not read it |
-| `defaultOption` | Option to take when `autoAdvanceMs` elapses |
-| `autoAdvanceMs` | Milliseconds to wait before taking `defaultOption` |
+| `defaultOption` | The answer a soft gate takes when no person is reached; declared with `autoAdvanceMs` |
+| `autoAdvanceMs` | Milliseconds the server waits before taking `defaultOption`; declared with it |
 | `ref` | Names a shared checkpoint body instead of writing one inline |
 | `required` | Authoring metadata |
 
