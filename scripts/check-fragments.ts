@@ -1,21 +1,23 @@
 /**
  * Shared-fragment guard (#166 B10).
  *
- * Fragments exist to end copy-paste drift: a rule text or checkpoint body is declared once under
- * `fragments` in a workflow.yaml and imported by reference. This guard keeps the mechanism honest
- * in both directions — every reference resolves, and content that should be a reference is not
- * quietly re-inlined (the drift vector the mechanism was built against):
+ * Fragments exist to end copy-paste drift: a checkpoint body is declared once under `fragments` in
+ * a workflow.yaml and imported by `ref`. This guard keeps the mechanism honest in both directions —
+ * every reference resolves, and content that should be a reference is not quietly re-inlined (the
+ * drift vector the mechanism was built against). Rules are not shared this way; the inline rule
+ * texts this guard indexes are for `duplicate-rule`, whose remedy is a shared home rather than a
+ * fragment.
  *
- * - `malformed-ref` / `unresolved-ref` — a rules `{ ref }` or checkpoint `ref` that does not
- *   parse, or names no fragment under the resolver's semantics (bare: declaring workflow, then
- *   meta; `workflow::name`: that workflow only).
+ * - `malformed-ref` / `unresolved-ref` — a checkpoint `ref` that does not parse, or names no
+ *   fragment under the resolver's semantics (bare: declaring workflow, then meta;
+ *   `workflow::name`: that workflow only).
  * - `ref-body-conflict` — a checkpoint ref step that also declares body fields, or a condition
  *   declared on both the step and its fragment (two homes for one fact).
  * - `ref-opens-step` — a checkpoint step whose `- ` line is the `ref:` itself. The raw-YAML
  *   delivery path replaces standalone `ref:` lines only; give the step its `id:` first.
  * - `unused-fragment` — a declared fragment nothing references, corpus-wide.
- * - `inline-duplicate-of-fragment` — an inline rule or checkpoint body identical (normalized) to
- *   a declared fragment: the inline copy must become a reference.
+ * - `inline-duplicate-of-fragment` — an inline checkpoint body identical (normalized) to a declared
+ *   fragment: the inline copy must become a reference.
  * - `duplicate-rule` — identical (normalized) rule text authored inline in two or more workflows.
  *   The remedy names the shared home: a rule two workflows both need belongs in the conduct
  *   technique whose audience it binds, and both copies go. Extraction is the remedy only where the
@@ -42,7 +44,6 @@ import {
   type FragmentsLookup,
   parseFragmentRef,
   resolveCheckpointFragment,
-  resolveRuleFragment,
   META_WORKFLOW_ID,
 } from '../src/loaders/fragment-resolver.js';
 import { fragmentsLookupSync } from './fragments-index.js';
@@ -136,15 +137,14 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
     .sort();
 
   // Fragment registry + usage tracking for the unused-fragment check.
-  const usedRuleFragments = new Set<string>();       // `${wf}::${name}` canonical
   const usedCheckpointFragments = new Set<string>();
 
-  const canonicalTarget = (kind: 'rules' | 'checkpoints', declaringWf: string, ref: string): string | null => {
+  const canonicalTarget = (declaringWf: string, ref: string): string | null => {
     try {
       const { workflowId, name } = parseFragmentRef(ref);
       const candidates = workflowId ? [workflowId] : declaringWf === META_WORKFLOW_ID ? [META_WORKFLOW_ID] : [declaringWf, META_WORKFLOW_ID];
       for (const wf of candidates) {
-        const block = lookup(wf)?.[kind];
+        const block = lookup(wf)?.checkpoints;
         if (block && block[name] !== undefined) return `${wf}::${name}`;
       }
       return null;
@@ -172,24 +172,12 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
       const entries = rules[partition];
       if (!Array.isArray(entries)) continue;
       for (const entry of entries) {
-        if (typeof entry === 'string') {
-          if (entry.length >= MIN_DUP_RULE_LENGTH) {
-            const key = normalizeText(entry);
-            const sites = inlineRuleSites.get(key) ?? [];
-            sites.push({ file: wfRel, wf, text: entry });
-            inlineRuleSites.set(key, sites);
-          }
-          continue;
-        }
-        const ref = entry && typeof entry === 'object' ? (entry as { ref?: unknown }).ref : undefined;
-        if (typeof ref !== 'string') continue;
-        try {
-          resolveRuleFragment(lookup, wf, ref);
-          const target = canonicalTarget('rules', wf, ref);
-          if (target) usedRuleFragments.add(target);
-        } catch (error) {
-          const rule = error instanceof Error && error.message.startsWith('Malformed') ? 'malformed-ref' : 'unresolved-ref';
-          violations.push({ file: wfRel, rule, detail: `rules.${partition}: ${error instanceof Error ? error.message : String(error)}` });
+        if (typeof entry !== 'string') continue;
+        if (entry.length >= MIN_DUP_RULE_LENGTH) {
+          const key = normalizeText(entry);
+          const sites = inlineRuleSites.get(key) ?? [];
+          sites.push({ file: wfRel, wf, text: entry });
+          inlineRuleSites.set(key, sites);
         }
       }
     }
@@ -230,7 +218,7 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
           let body;
           try {
             body = resolveCheckpointFragment(lookup, wf, ref);
-            const target = canonicalTarget('checkpoints', wf, ref);
+            const target = canonicalTarget(wf, ref);
             if (target) usedCheckpointFragments.add(target);
           } catch (error) {
             const rule = error instanceof Error && error.message.startsWith('Malformed') ? 'malformed-ref' : 'unresolved-ref';
@@ -265,28 +253,6 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
     const fragments = lookup(wf);
     if (!fragments) continue;
     const wfRel = join(wf, 'workflow.yaml');
-    for (const [name, value] of Object.entries(fragments.rules ?? {})) {
-      const canonical = `${wf}::${name}`;
-      if (!usedRuleFragments.has(canonical)) {
-        violations.push({ file: wfRel, rule: 'unused-fragment', detail: `fragments.rules.${name} is referenced nowhere in the corpus` });
-      }
-      for (const text of typeof value === 'string' ? [value] : value) {
-        const exact = inlineRuleSites.get(normalizeText(text)) ?? [];
-        for (const site of exact) {
-          violations.push({ file: site.file, rule: 'inline-duplicate-of-fragment', detail: `inline rule "${site.text.slice(0, 60)}…" duplicates fragment '${canonical}' — reference it instead` });
-        }
-        if (exact.length === 0) {
-          for (const [key, sites] of inlineRuleSites) {
-            const sim = jaccard(text, key);
-            if (sim >= NEAR_DUP_THRESHOLD) {
-              for (const site of sites) {
-                warnings.push({ file: site.file, detail: `inline rule "${site.text.slice(0, 60)}…" is a near-duplicate (${sim.toFixed(2)}) of fragment '${canonical}' — likely drifted copy` });
-              }
-            }
-          }
-        }
-      }
-    }
     for (const [name, body] of Object.entries(fragments.checkpoints ?? {})) {
       const canonical = `${wf}::${name}`;
       if (!usedCheckpointFragments.has(canonical)) {
@@ -311,9 +277,9 @@ export function collectFragmentViolations(root: string = ROOT): { violations: Fr
         detail:
           `rule "${sites[0]!.text.slice(0, 60)}…" is authored inline in ${distinctWf.size} workflows (${list}) — ` +
           'a rule two workflows both need is neither one\'s to own. Move it to the conduct home whose audience it ' +
-          'binds (meta agent-conduct for any agent, meta orchestrator-conduct for an orchestrator) and delete both ' +
-          'copies; where a home already states it, deleting both copies is the whole fix. Declare a fragment only ' +
-          'where the text is genuinely one workflow\'s and repeats inside it',
+          'binds (meta agent-conduct for any agent, meta orchestrator-conduct for an orchestrator, meta ' +
+          'worker-conduct for a dispatched worker) and delete both copies; where a home already states it, ' +
+          'deleting both copies is the whole fix',
       });
     }
   }

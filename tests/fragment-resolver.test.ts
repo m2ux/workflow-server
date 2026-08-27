@@ -7,23 +7,21 @@ import {
   type FragmentsLookup,
   injectCheckpointFragmentBodies,
   materializeCheckpointStep,
-  materializeRuleEntries,
   parseFragmentRef,
   resolveCheckpointFragment,
-  resolveRuleFragment,
   scanCheckpointRefLines,
 } from '../src/loaders/fragment-resolver.js';
 import { loadWorkflow } from '../src/loaders/workflow-loader.js';
 import type { CheckpointStep } from '../src/schema/activity.schema.js';
-import type { WorkflowFragments } from '../src/schema/workflow.schema.js';
+import { safeValidateWorkflow, type WorkflowFragments } from '../src/schema/workflow.schema.js';
 import { corpusRoot } from './corpus-root.js';
 
 /**
- * Shared fragments (B10, issue #166): rule texts and checkpoint bodies declared once under a
- * workflow's `fragments` and imported by reference — `{ ref }` entries in the rules partitions,
- * `ref` on kind:checkpoint steps. Resolution mirrors the technique convention (bare name:
- * declaring workflow then meta; `workflow::name`: that workflow only) and materializes at load,
- * so agents and downstream readers only ever see plain rules and full checkpoint steps.
+ * Shared fragments (B10, issue #166): a checkpoint body declared once under a workflow's
+ * `fragments.checkpoints` and imported by `ref` on a kind:checkpoint step. Resolution mirrors the
+ * technique convention (bare name: declaring workflow then meta; `workflow::name`: that workflow
+ * only) and materializes at load, so agents and downstream readers only ever see full checkpoint
+ * steps. Rule text is not shared this way — its home is a conduct technique (#519).
  */
 
 const WORKFLOW_DIR = corpusRoot();
@@ -55,9 +53,9 @@ const GATE_BODY = {
 const lookupFrom = (map: Record<string, WorkflowFragments>): FragmentsLookup => (id) => map[id];
 
 const LOOKUP = lookupFrom({
-  'current-wf': { rules: { 'local-rule': 'Local rule text' }, checkpoints: { 'local-gate': GATE_BODY } },
-  meta: { rules: { 'meta-rule': 'Meta rule text', 'local-rule': 'Shadowed by current-wf' } },
-  'other-wf': { rules: { 'other-rule': ['First shared rule', 'Second shared rule'] } },
+  'current-wf': { checkpoints: { 'local-gate': GATE_BODY } },
+  meta: { checkpoints: { 'meta-gate': GATE_BODY, 'local-gate': { ...GATE_BODY, message: 'Shadowed by current-wf' } } },
+  'other-wf': { checkpoints: { 'other-gate': GATE_BODY } },
 });
 
 describe('parseFragmentRef', () => {
@@ -68,20 +66,26 @@ describe('parseFragmentRef', () => {
   });
 });
 
-describe('resolveRuleFragment', () => {
+describe('resolveCheckpointFragment addressing', () => {
   it('resolves a bare ref against the declaring workflow before meta', () => {
-    expect(resolveRuleFragment(LOOKUP, 'current-wf', 'local-rule')).toEqual(['Local rule text']);
-    expect(resolveRuleFragment(LOOKUP, 'current-wf', 'meta-rule')).toEqual(['Meta rule text']);
+    expect(resolveCheckpointFragment(LOOKUP, 'current-wf', 'local-gate').message).toBe(GATE_BODY.message);
+    expect(resolveCheckpointFragment(LOOKUP, 'current-wf', 'meta-gate').message).toBe(GATE_BODY.message);
   });
 
   it('resolves a qualified ref only in the named workflow — no meta fallback', () => {
-    expect(resolveRuleFragment(LOOKUP, 'current-wf', 'other-wf::other-rule')).toEqual(['First shared rule', 'Second shared rule']);
-    expect(() => resolveRuleFragment(LOOKUP, 'current-wf', 'other-wf::meta-rule')).toThrow(/Unresolved rule fragment/);
+    expect(resolveCheckpointFragment(LOOKUP, 'current-wf', 'other-wf::other-gate').message).toBe(GATE_BODY.message);
+    expect(() => resolveCheckpointFragment(LOOKUP, 'current-wf', 'other-wf::meta-gate')).toThrow(/Unresolved checkpoint fragment/);
   });
 
-  it('splices refs in place among inline rules', () => {
-    expect(materializeRuleEntries(['Inline first', { ref: 'other-wf::other-rule' }, 'Inline last'], LOOKUP, 'current-wf'))
-      .toEqual(['Inline first', 'First shared rule', 'Second shared rule', 'Inline last']);
+  it('rejects a rules bucket carrying a reference — a rule has no fragment form', () => {
+    const workflow = {
+      id: 'ref-in-rules',
+      version: '1.0.0',
+      title: 'Rules ref',
+      rules: { workflow: [{ ref: 'some-name' }] },
+      activities: [{ id: 'a', version: '1.0.0', name: 'A', techniques: ['t'] }],
+    };
+    expect(safeValidateWorkflow(workflow).success).toBe(false);
   });
 });
 

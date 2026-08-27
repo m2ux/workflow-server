@@ -275,8 +275,8 @@ A workflow is the top-level container representing a complete process definition
 | `description`     | string     | Detailed description                                       |
 | `author`          | string     | Author metadata (not read by the server)                   |
 | `tags`            | string[]   | Categorization labels                                      |
-| `rules`           | { workflow?, activity?, universal?: (string \| { ref })[] } | Workflow rules partitioned by audience: `workflow` (orchestrator-only, in `get_workflow`), `activity` (worker-facing, injected into every `get_activity`), and `universal` (both — surfaced in `get_workflow` AND injected into every `get_activity`). An entry is the rule text inline or a `{ ref }` import of a rule fragment |
-| `fragments`       | { rules?, checkpoints? } | Shared rule texts (string or string-list) and checkpoint bodies, declared once and imported by reference (`[workflow::]name`) from rules slots and `kind: checkpoint` steps — this workflow's or another's. Resolved at load; agents always receive materialized content |
+| `rules`           | { workflow?, activity?, universal?: string[] } | Workflow rules partitioned by audience: `workflow` (orchestrator-only, in `get_workflow`), `activity` (worker-facing, injected into every `get_activity`), and `universal` (both — surfaced in `get_workflow` AND injected into every `get_activity`). A rule is plain text; text two workflows both need belongs in the conduct technique whose audience it binds |
+| `fragments`       | { checkpoints? } | Shared checkpoint bodies, declared once and imported by `ref` (`[workflow::]name`) from a `kind: checkpoint` step — this workflow's or another's. Resolved at load; agents always receive materialized content |
 | `techniques`      | { workflow?, activity?: string[] } | Workflow techniques partitioned by audience: `workflow` (orchestrator-only, bundled into `get_workflow`) and `activity` (inherited by every activity, injected into every `get_activity` technique bundle) |
 | `variables`       | Variable[] | State variables                                            |
 | `initialActivity` | string     | Starting activity ID (required for sequential workflows)   |
@@ -497,7 +497,7 @@ The workflow schema (`workflow.schema.json`) defines the complete structure of a
 | `author` | string | Author name |
 | `tags` | string[] | Categorization tags |
 | `rules` | { workflow?, activity?, universal?: (string \| { ref })[] } | Orchestrator rules (`workflow`, in `get_workflow`) + worker rules inherited by every activity (`activity`, injected into every `get_activity`) + dual-audience rules (`universal`, both). Entries are rule strings or `{ ref }` fragment imports |
-| `fragments` | { rules?, checkpoints? } | Shared rule texts and checkpoint bodies importable by reference (`[workflow::]name`); resolved at load so delivered content is always materialized |
+| `fragments` | { checkpoints? } | Shared checkpoint bodies importable by `ref` (`[workflow::]name`); resolved at load so delivered content is always materialized |
 | `techniques` | { workflow?, activity?: string[] } | Orchestrator techniques (`workflow`, bundled into `get_workflow`) + techniques inherited by every activity (`activity`, injected into every `get_activity`) |
 | `variables` | array | Variable definitions with types and defaults |
 | `initialActivity` | string | ID of first activity (required for sequential workflows) |

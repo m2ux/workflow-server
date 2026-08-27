@@ -3,10 +3,10 @@ import { resolve } from 'node:path';
 import { collectFragmentViolations } from '../scripts/check-fragments.js';
 
 /**
- * Shared-fragment guard (B10, issue #166): every rules `{ ref }` and checkpoint `ref` resolves,
- * every declared fragment is referenced, and shared content is not quietly re-inlined — an
- * inline copy of a fragment, or the same rule/checkpoint body authored inline at multiple sites,
- * is the declaration drift the fragment mechanism exists to end. Hard-zero over the corpus.
+ * Shared-fragment guard (B10, issue #166): every checkpoint `ref` resolves, every declared fragment
+ * is referenced, and a shared checkpoint body is not quietly re-inlined. Rule text is held to a
+ * different remedy — a rule authored in two workflows belongs in a conduct home, not in a fragment
+ * (#519), so `duplicate-rule` is what fires for it. Hard-zero over the corpus.
  */
 
 const FIXTURE_ROOT = resolve(import.meta.dirname, 'fixtures/fragments');
@@ -33,17 +33,21 @@ describe('fragments guard (fixture corpus)', () => {
     ]);
   });
 
-  it('flags unused fragments and inline copies of fragments', () => {
+  it('flags a declared fragment nothing references', () => {
     expect(byRule('unused-fragment').map((v) => v.detail)).toEqual([
-      expect.stringContaining('unused-fragment-rule'),
+      expect.stringContaining('unused-fragment-gate'),
     ]);
-    expect(byRule('inline-duplicate-of-fragment').map((v) => v.file)).toEqual(['beta-fixture/workflow.yaml']);
   });
 
   it('flags identical inline content authored at multiple sites', () => {
-    expect(byRule('duplicate-rule').map((v) => v.detail)).toEqual([
-      expect.stringContaining('2 workflows'),
-    ]);
+    // Rule text repeated across workflows is a home problem, and the remedy says so rather than
+    // offering extraction — following that advice is what produced the squatting fragments (#519).
+    const duplicateRules = byRule('duplicate-rule');
+    expect(duplicateRules).toHaveLength(2);
+    for (const v of duplicateRules) {
+      expect(v.detail).toContain('2 workflows');
+      expect(v.detail).toContain('conduct home whose audience it binds');
+    }
     expect(byRule('duplicate-checkpoint').map((v) => v.detail)).toEqual([
       expect.stringContaining('2 sites'),
     ]);

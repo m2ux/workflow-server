@@ -3,12 +3,15 @@ version: 1.0.0
 title: Fragments guard fixture — declaring workflow
 rules:
   workflow:
-    - ref: shared-discipline
+    - Confirm scope with the user before mutating any tracked file in the corpus
 fragments:
-  rules:
-    shared-discipline: Confirm scope with the user before mutating any tracked file in the corpus
-    unused-fragment-rule: This fragment is declared here and referenced nowhere in the fixture corpus
   checkpoints:
+    unused-fragment-gate:
+      message: This fragment is declared here and referenced nowhere in the fixture corpus.
+      options:
+        - id: acknowledge
+          label: Acknowledge
+          description: Nothing references this gate
     confirm-gate:
       condition:
         type: simple
