@@ -1,5 +1,5 @@
 id: intake-and-context
-version: 1.4.0
+version: 1.6.0
 name: Intake and Context
 description: "Classify the request as create, update or review, name the target, derive the edit-surface path, and produce the change brief and the change constraints the rest of the run draws on."
 variables:
@@ -22,6 +22,9 @@ variables:
       type: boolean
       description: Whether the run resolves a soft mid-flow gate to its default without reaching a person.
       defaultValue: true
+    - name: impact_analysis
+      type: object
+      description: The impact classification for this change, whose removals inventory is the approval basis for everything the run deletes.
     - name: impact_analysis_path
       type: string
       description: Absolute path to the persisted impact-analysis artifact.
@@ -30,6 +33,10 @@ variables:
       type: boolean
       description: Composite gap flag for Gate 1 — true when mode is ambiguous, the update change request is unclear, and/or review.
       defaultValue: false
+    - name: judgements_disposition
+      type: string
+      description: What the operator decided about the brief's open judgements. Empty when the brief left none open.
+      defaultValue: ""
     - name: open_judgements_count
       type: number
       description: Count of unresolved design judgements recorded in the change brief.
@@ -186,12 +193,37 @@ steps:
       outputs:
         written_artifact: impact_analysis_path
     when: operation_type == 'update'
-  - kind: action
-    id: surface-open-judgements
+  - kind: checkpoint
+    id: judgements-disposition
+    condition:
+      type: simple
+      variable: open_judgements_count
+      operator: ">"
+      value: 0
+    message: "{open_judgements_count} design judgements are open in the [change brief]({change_brief_path}), each with the effect of deciding it either way."
+    options:
+      - id: accept-positions
+        label: Settle them as the brief proposes
+        description: Each open judgement takes the position the brief argues for, and the run proceeds on those positions.
+        effect:
+          setVariable:
+            judgements_disposition: settled
+      - id: carry-open
+        label: Carry them open into the close-out
+        description: The judgements stay unresolved, and the close-out records each as a limitation this run did not settle.
+        effect:
+          setVariable:
+            judgements_disposition: carried-open
+  - kind: technique
+    id: record-judgement-outcomes
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: change-brief.md
+        artifact_content: change_brief
+      outputs:
+        written_artifact: change_brief_path
     when: open_judgements_count > 0
-    actions:
-      - action: message
-        message: "{open_judgements_count} design judgements are unresolved in the [change brief]({change_brief_path})."
   - kind: checkpoint
     id: impact-approved
     condition:

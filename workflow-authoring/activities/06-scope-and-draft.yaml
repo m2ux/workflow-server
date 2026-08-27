@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.5.0
+version: 1.6.0
 name: Scope and Draft
 description: "Prepare the edit worktree, enumerate the complete file manifest, author every file the manifest names, and bring the target README and the planning artifacts into line with what was drafted."
 variables:
@@ -20,6 +20,13 @@ variables:
       type: boolean
       description: True when drafting detects removals absent from the impact inventory.
       defaultValue: false
+    - name: impact_analysis
+      type: object
+      description: The removals inventory carrying a row for every observed reduction, each naming the stage that raised it.
+    - name: impact_analysis_path
+      type: string
+      description: Absolute path to the persisted impact-analysis artifact.
+      defaultValue: ""
     - name: removal_disposition
       type: string
       description: Disposition of an unflagged removal — `flagged | restored`.
@@ -144,6 +151,16 @@ steps:
               setVariable:
                 removal_disposition: restored
       - kind: technique
+        id: inventory-flagged-removal
+        technique:
+          name: work-package::manage-artifacts::write-artifact
+          inputs:
+            bare_filename: impact-analysis.md
+            artifact_content: impact_analysis
+          outputs:
+            written_artifact: impact_analysis_path
+        when: has_unflagged_removals == true && removal_disposition == 'flagged'
+      - kind: technique
         id: apply-removal-disposition
         technique: workflow-definition::yaml-authoring
         when: has_unflagged_removals == true && removal_disposition == 'restored'
@@ -167,4 +184,5 @@ outcome:
   - Create and update runs hold a dedicated worktree on their own branch, so no edit lands in the shared library checkout
   - The complete set of files the change touches is enumerated and confirmed before any of them is written
   - Every enumerated file is authored against the schema its kind selects, and a reduction no inventory accounts for is surfaced for a decision rather than committed quietly
+  - A removal the operator keeps reaches the removals inventory as a row naming the drafting pass that raised it, so the inventory stays a complete list of what the run removed
   - The target README and the planning artifacts state what the tree actually contains

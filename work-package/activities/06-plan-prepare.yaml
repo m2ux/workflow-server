@@ -4,7 +4,7 @@ name: Plan & Prepare
 description: Design the approach, create the work package plan, and prepare for implementation.
 variables:
   reads:
-    - assumption_decisions
+    - assumption_outcome
     - branch_name
     - component_git_dir
     - default_branch

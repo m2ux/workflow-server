@@ -21,6 +21,13 @@ techniques:
   activity:
     - variable-binding
 variables:
+  # This workflow batches its open judgements into the commit gate rather than interviewing them
+  # mid-flow, so the borrowed record operation's per-assumption outcome has no producer here. It is a
+  # constant, owned by the file that runs the borrowed operation.
+  - name: assumption_outcome
+    type: string
+    description: What the gate that decided an assumption gave it. Always empty here — open judgements stay in the assumptions log until the commit gate rather than being decided one at a time.
+    defaultValue: ""
   - name: scope_manifest
     type: array
     description: List of files to create, modify, or remove with full paths and actions.

@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.48.0
+version: 3.50.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first. Also supports review mode for auditing an existing PR or implementation end-to-end.
 author: m2ux
@@ -47,12 +47,16 @@ fragments:
         - id: accept-agent-positions
           label: Accept agent positions
           description: Confirm the agent's favored positions for all listed residual open assumptions
+          effect:
+            setVariable:
+              assumption_outcome: confirmed
         - id: defer-all
           label: Defer all to stakeholders
           description: Queue every listed open assumption for stakeholder review
           effect:
             setVariable:
               has_deferred_assumptions: true
+              assumption_outcome: deferred
         - id: interview-individually
           label: Interview individually
           description: Walk each residual open assumption one at a time
@@ -65,12 +69,16 @@ fragments:
         - id: resolve-inline
           label: Resolve now
           description: Provide resolution for this assumption
+          effect:
+            setVariable:
+              assumption_outcome: confirmed
         - id: defer-to-stakeholder
           label: Defer to stakeholder review
           description: Queue this assumption for stakeholder review
           effect:
             setVariable:
               has_deferred_assumptions: true
+              assumption_outcome: deferred
 techniques:
   activity:
     - variable-binding
@@ -169,10 +177,10 @@ variables:
     type: string
     description: "Git remote that manage-git::push-commits (and the stealth-mode isolation checks) target."
     defaultValue: origin
-  - name: assumption_decisions
-    type: array
-    description: "Recorded assumption resolutions, each { id, disposition, resolution }."
-    defaultValue: []
+  - name: assumption_outcome
+    type: string
+    description: The outcome the deciding gate gave the assumption under discussion. Empty before any gate has decided one.
+    defaultValue: ""
   - name: issue_request
     type: string
     description: The issue key, URL, or surrounding text the user supplied when opening the work package.

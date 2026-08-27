@@ -4,7 +4,7 @@ name: Design Philosophy
 description: Apply the design framework to classify the problem and decide the workflow path.
 variables:
   reads:
-    - assumption_decisions
+    - assumption_outcome
     - branch_name
     - component_git_dir
     - has_open_questions

@@ -1,5 +1,5 @@
 id: validate-and-commit
-version: 1.3.0
+version: 1.4.0
 name: Validate and Commit
 description: "Re-derive the high-severity findings independently, persist the register, take the operator's disposition, then re-verify scope, commit, publish and close out. Terminal."
 variables:
@@ -11,6 +11,7 @@ variables:
     - consumer_surface
     - coverage_ledger
     - fail_count
+    - judgements_disposition
     - known_finding_keys
     - operation_type
     - planning_folder_path

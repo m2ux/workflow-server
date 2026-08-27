@@ -1,17 +1,14 @@
 id: requirements-refinement
-version: 1.13.0
+version: 1.15.0
 name: Requirements Refinement
 description: A workflow specification across its design dimensions, with design assumptions surfaced, reconciled in a while-loop, and open judgements deferred to Gate 2.
 variables:
   reads:
+    - assumption_outcome
     - change_category
     - operation_type
     - planning_folder_path
   writes:
-    - name: assumption_decisions
-      type: array
-      description: Per-assumption decisions (accept/reject/defer) for review-assumptions::record.
-      defaultValue: []
     - name: assumptions_log
       type: object
       description: The design-assumptions log surfaced and reviewed during requirements-refinement — each assumption with its category, risk.
@@ -142,20 +139,9 @@ steps:
     actions:
       - action: message
         message: "Open design judgements remain after reconcile — batched into Gate 2 (`approve-to-commit`), not interviewed mid-flow."
-  - kind: action
-    id: seed-assumption-decisions
-    actions:
-      - action: set
-        target: assumption_decisions
-        value: []
-      - action: message
-        message: "Gate-2 batch — no mid-flow per-assumption decisions; empty decision list for record (open judgements stay in the assumptions log)."
   - kind: technique
     id: update-assumptions-log
-    technique:
-      name: work-package::review-assumptions::record
-      inputs:
-        assumption_decisions: assumption_decisions
+    technique: work-package::review-assumptions::record
 exits:
   - id: update
     when: operation_type == "update"

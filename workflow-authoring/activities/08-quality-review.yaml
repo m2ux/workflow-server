@@ -1,10 +1,11 @@
 id: quality-review
-version: 1.2.0
+version: 1.3.0
 name: Quality Review
 description: "Criteria walk with field-level coverage evidence per target, consumer-surface reach, and definition guards as a separate mechanical net."
 variables:
   reads:
     - current_file
+    - impact_analysis_path
     - open_finding_count
     - planning_folder_path
     - remediation_round
@@ -29,6 +30,13 @@ variables:
       type: number
       description: Count of YAML files that failed schema validation.
       defaultValue: 0
+    - name: impact_analysis
+      type: object
+      description: The removals inventory carrying a row for every reduction a remediation round applied, each naming the round that raised it.
+    - name: impact_analysis_path
+      type: string
+      description: Absolute path to the persisted impact-analysis artifact.
+      defaultValue: ""
     - name: known_finding_keys
       type: array
       description: One key per already-accepted finding, each pairing the criteria entry by its kebab-case name with the location it was recorded against, in the single form a criteria walk compares against. Empty when no baseline and no prior register carry an entry for this target.
@@ -60,6 +68,16 @@ steps:
       name: workflow-definition::apply-audit-fixes
       inputs:
         selected_findings: verified_findings
+    when: remediation_round > 0
+  - kind: technique
+    id: inventory-remediation-removals
+    technique:
+      name: work-package::manage-artifacts::write-artifact
+      inputs:
+        bare_filename: impact-analysis.md
+        artifact_content: impact_analysis
+      outputs:
+        written_artifact: impact_analysis_path
     when: remediation_round > 0
   - kind: technique
     id: load-known-findings
@@ -107,3 +125,4 @@ outcome:
   - Every enumeration unit the walk could not apply is recorded with the reason, so absent coverage is visible rather than indistinguishable from a clean result
   - Walked units that reach the change surface carry field-level evidence on each whole file, so a narrative "walked" claim without Detect is a coverage gap
   - The definition guards run against the tree this run edits as a mechanical net separate from canon coverage
+  - A remediation round inventories every reduction it applies, naming the round against the row, or refuses the reduction and restores the content — so a fix cannot widen what the run removes without the record saying so
