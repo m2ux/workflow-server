@@ -18,13 +18,6 @@
   "entries": [
     {
       "check": "read-resolution",
-      "site": "prism-update/workflow.yaml:15",
-      "detail": "{NN} has no producer (declared id / $-local / workflow var / set-target)",
-      "verdict": "harmless",
-      "rationale": "documentation-notation"
-    },
-    {
-      "check": "read-resolution",
       "site": "substrate-node-security-audit/workflow.yaml:67",
       "detail": "{submodule} has no producer (declared id / $-local / workflow var / set-target)",
       "verdict": "harmless",
