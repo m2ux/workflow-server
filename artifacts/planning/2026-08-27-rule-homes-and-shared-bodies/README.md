@@ -7,7 +7,8 @@ recorded with its reason; this folder is that record. The work landed on `feat/r
 
 The activity-step construct [#519](https://github.com/m2ux/workflow-server/issues/519) hands to
 [#520](https://github.com/m2ux/workflow-server/issues/520) has its own record:
-[2026-08-27-activity-step-kind](../2026-08-27-activity-step-kind/).
+[2026-08-27-activity-step-kind](../2026-08-27-activity-step-kind/). The corpus-wide read #518's last
+criterion asks for is in [sweep.md](./sweep.md), with every instance left in place and its reason.
 
 ## What made the misdelivery mechanical
 
