@@ -1,5 +1,5 @@
 id: select-mode
-version: 2.2.0
+version: 2.3.0
 name: Plan Analysis
 description: Select an analysis mode for the user's request.
 variables:
@@ -11,7 +11,18 @@ variables:
       description: Ordered list of analysis units (for multi-unit scopes)
     - name: pipeline_mode
       type: string
-      description: "Analysis mode: 'single' (L12), 'full-prism' (3-pass), 'portfolio' (multiple lenses), 'behavioral' (4+1 behavioral pipeline), 'dispute' (2 orthogonal prisms + disagreement synthesis), 'subsystem' (per-region prism assignment + cross-subsystem synthesis), 'verified' (L12 + gap detection + re-analysis with corrections), 'reflect' (L12 + meta-analysis + constraint synthesis), 'smart' (adaptive chain: prereq + analysis + dispute + profile), or 'adaptive' (depth escalation: SDL -> L12 -> full-prism). No default — absence means the caller did not preset a mode, which is what select-mode's confirm-mode checkpoint gate (notExists) tests; select-mode then resolves the mode from its recommendation or the option the user picks"
+      description: The analysis mode this run executes. Absent until a mode is settled — the caller presets one, or select-mode resolves it from its recommendation or the option the user picks.
+      values:
+        - single
+        - full-prism
+        - portfolio
+        - behavioral
+        - dispute
+        - subsystem
+        - verified
+        - reflect
+        - smart
+        - adaptive
 steps:
   - kind: technique
     id: plan

@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.21.0
+version: 1.22.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 variables:
@@ -99,8 +99,11 @@ variables:
       defaultValue: ""
     - name: review_type
       type: string
-      description: PR review event (approve | request-changes | comment) chosen at review-summary-approval; bound to update-pr::post-review-comment
-      defaultValue: ""
+      description: The review event to post. Absent until the review-summary-approval gate settles one.
+      values:
+        - approve
+        - request-changes
+        - comment
     - name: summary_budget_overruns
       type: array
       description: Consolidated-review slots over their format budget, each { slot, measured, budget }.

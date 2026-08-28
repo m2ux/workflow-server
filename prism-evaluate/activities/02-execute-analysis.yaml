@@ -1,5 +1,5 @@
 id: execute-analysis
-version: 2.1.0
+version: 2.2.0
 name: Execute Prism Analyses
 description: Trigger the prism workflow for each execution group.
 variables:
@@ -24,7 +24,11 @@ variables:
       description: The output location of the execution group under analysis
     - name: pipeline_mode
       type: string
-      description: "The prism pipeline mode an execution group runs under: full-prism | portfolio | single"
+      description: The prism pipeline mode an execution group runs under.
+      values:
+        - full-prism
+        - portfolio
+        - single
       defaultValue: full-prism
     - name: target
       type: string
@@ -34,7 +38,10 @@ variables:
       description: Short description of what an execution group evaluates
     - name: target_type
       type: string
-      description: "The target's kind in the analysis run's vocabulary: general | code"
+      description: The target's kind, in the analysis run's own vocabulary.
+      values:
+        - general
+        - code
 techniques:
   - scatter-gather
 triggers:

@@ -1,5 +1,5 @@
 id: scope-and-draft
-version: 1.6.0
+version: 1.7.0
 name: Scope and Draft
 description: "Prepare the edit worktree, enumerate the complete file manifest, author every file the manifest names, and bring the target README and the planning artifacts into line with what was drafted."
 variables:
@@ -29,8 +29,10 @@ variables:
       defaultValue: ""
     - name: removal_disposition
       type: string
-      description: Disposition of an unflagged removal — `flagged | restored`.
-      defaultValue: ""
+      description: What the review decided about an unflagged removal. Absent until one is reviewed.
+      values:
+        - flagged
+        - restored
     - name: scope_manifest
       type: array
       description: List of files to create, modify or remove with full paths and actions.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.0.0
+  version: 1.1.0
 ---
 
 ## Capability
@@ -11,6 +11,6 @@ Apply P6 AI config poisoning detection: check whether AI config files exist, are
 
 ### 1. P6 Ai Config
 
-- Using `{ai_config_inventory}`, check whether AI config files (`CLAUDE.md`, `AGENTS.md`, `.cursorrules`) exist in the submodule
+- Using `{ai_config_inventory}`, check whether AI config files (`CLAUDE.md`, `AGENTS.md`, `.cursorrules`, `.cursor/rules/`, and any comparable agent-instruction file the inventory carries) exist in the submodule
 - Verify they are listed in `CODEOWNERS` with mandatory review protection, and check whether any workflow loads them as trusted context.  
   > When no `CODEOWNERS` file exists, flag every AI config file.

@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.1.0
+  version: 1.2.0
 ---
 
 ## Capability
@@ -35,3 +35,13 @@ Apply an approved change set to the resources directory, committing each change 
 ### 5. Verify Count
 
 - Count the resource files and confirm: previous − deleted + new = current.
+
+## Rules
+
+### index-is-permanent
+
+A resource's index is permanent. A deleted resource's index is never reused; the next new resource takes the next free index above every index ever assigned.
+
+### upstream-content-unmodified
+
+Upstream content is copied as it stands, YAML frontmatter included. Importing never edits a lens prompt's content.
