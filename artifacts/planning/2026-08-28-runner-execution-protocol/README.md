@@ -48,9 +48,13 @@ but two numbers in particular decide how much work the runner hands over at a ti
 measured again before anyone builds against them: what one exchange with an agent costs, and what
 establishing a fresh agent context costs.
 
-A fourth investigation, which would have designed the interaction protocol directly, produced nothing
-before the same limit stopped it. Sections 4 to 6 are therefore worked out from the completed
-investigations rather than independently checked, and say so where it matters.
+A fourth investigation designed the interaction protocol directly, three ways, each checked by an
+independent reviewer. **It has since completed, and it overturns several things stated below.** Its
+findings and the full list of withdrawn claims are in
+[protocol-verification.md](protocol-verification.md), and where that file disagrees with this one, it is
+right. The corrections are marked in place, but the most important are that the count of 500 condition
+sites does not reproduce, that values already reach the session mid-activity by one route, and that the
+corpus's real fan-out is a technique bound at 22 sites rather than anything to do with loops.
 
 ## 1. What is actually true today
 
@@ -88,8 +92,16 @@ would have to write from scratch.
 ### Every condition in the corpus can be answered mechanically
 
 There was reason to expect a residue of conditions no program could decide — ones asking about the
-outside world rather than about the run. There is none. Walking all 17 workflows through the loader
-turns up 500 places a condition is attached:
+outside world rather than about the run. There is none.
+
+**The counts in this section are withdrawn.** An independent parse of 122 activity files gives 231 inline
+step conditions, 97 structured step conditions and 54 outcome conditions — **382**, not 500 — plus 11 on
+action steps and one early-exit condition. The direction and the magnitude hold: a few hundred sites, all
+parseable, none reading the environment. The specific figures below do not reproduce and are kept only to
+show what was withdrawn. See [protocol-verification.md](protocol-verification.md).
+
+Walking all 17 workflows through the loader was reported as turning up 500 places a condition is
+attached:
 
 | Where the condition sits | Count |
 |---|---|
@@ -126,10 +138,15 @@ surface rather than the condition surface, and it is copied rather than shared �
 
 ### The real obstacle is when values arrive, not whether conditions can be answered
 
-A step's results reach the session only when its whole activity finishes. The parameter that carries
-them is declared on the activity-transition call alone (`src/tools/workflow-tools.ts:694`) and applied at
-`:796-802`. So for the duration of an activity, the session values are frozen at what they were when it
-started.
+A step's results reach the session, in the main, only when its whole activity finishes. The parameter
+that carries them is declared on the activity-transition call alone (`src/tools/workflow-tools.ts:694`)
+and applied at `:796-802`.
+
+**Corrected:** there is a second route. Answering a decision also lands values, mid-activity, without
+moving the activity pointer (`src/tools/workflow-tools.ts:2019`). So a partial per-step write path already
+exists, restricted to decision effects, and the work is to generalise it rather than to invent it — which
+is cheaper than the rest of this section implies. What follows is otherwise accurate: outside that one
+route, the session values are frozen at what they were when the activity started.
 
 That would not matter if conditions only asked about earlier activities. They do not:
 
@@ -148,6 +165,15 @@ This is already recorded rather than predicted. The committed baseline at
 **313 conditions the server could not yet answer and 168 whose values nothing had produced**, with none
 failing to parse. Not one of the 79 deliveries could answer every condition it carried. The code already
 has a name for this case, at `src/utils/gate-liveness.ts:136-143`.
+
+**Two corrections to how those two numbers should be read.** The end-to-end harness never sends its values
+back — its transition call passes only the session index, the activity and the steps it ran
+(`tests/e2e/walker.ts:363-370`) — and it satisfies conditions by changing a set of values the server never
+sees (`:306-317`). So the tallies conflate the server's freeze with the harness's silence, and the second
+number in particular should not be read as a defect in the corpus. Separately, the check that produces the
+first number tests whether a name is written anywhere in the activity *before* it looks at the value
+(`src/utils/gate-liveness.ts:184-186`), so a value genuinely present via the decision route above is still
+counted as unanswerable. Both numbers need re-measuring once the harness writes back.
 
 **Everything else in this record depends on fixing that.** Without step results reaching the session when
 the step finishes, a runner can decide only the 194 conditions fed by earlier activities, and the 274 fed
@@ -224,17 +250,21 @@ type PromptUnit = {
 }
 ```
 
-### Whether two prompts can go out at once can be worked out, not declared
+### Whether two prompts can go out at once — withdrawn, and the real answer
 
-Two pieces of work can run at the same time when neither one reads a value the other writes. The code
-needed to establish that already exists for other purposes. `deriveActivityContract`
-(`src/utils/activity-variables.ts:339-431`) works out what each step reads and writes, using the same
-name-matching rule that decides where a technique's inputs come from. `buildProducerIndex`
-(`src/utils/binding-provenance.ts:125,155`) works out which step produces each value, and `resolveBagName`
-at `:259-262` separates producers that come before a given position from those that come after.
+This section originally claimed the runner could work out for itself which pieces of work may run at the
+same time, by checking that neither reads a value the other writes. **That is wrong, and the verification
+pass measured why.** There are 231 adjacent step pairs that look independent under that test, across 155
+groups, and inspection shows them dominated by serial command-line pipelines whose real dependency is
+shared state on disk that no definition declares. The test would call those safe to parallelise and they
+would corrupt one another.
 
-So the runner can calculate the independence relation rather than asking an author to assert it. Today,
-work that runs in parallel is written that way by hand and nothing checks the claim.
+The real answer is that fan-out is **already a first-class construct in the corpus, and it is not a
+loop.** A technique taking a list of worker briefs and a concurrency limit is bound as an ordinary step at
+**22 sites across 8 activity files**, and every one of them is preceded by a step that composes those
+prompts at run time out of domain material no runner could derive. So the runner is not the sole author of
+dispatchable prompts, and the reply from an agent needs an arm that hands the runner prompts it did not
+write. The detail is in [protocol-verification.md](protocol-verification.md).
 
 ### How wide to fan out is bounded by what a fresh agent costs
 
@@ -510,12 +540,14 @@ Ordered by what blocks what. The first three constrain the schema or the session
 
 1. **Do a step's declared results enter the session when the step finishes?** 274 of 500 conditions
    depend on the answer, and nothing else can be settled first.
-2. **Do step identifiers become unique across a whole activity, or does the position record carry a
-   path?** Identifiers are unique only within their own scope: `populateStepIds`
-   (`activity.schema.ts:180-206`) starts a fresh set for each loop body and says so at `:201`. One tool
-   already resolves a collision to the wrong step without complaint, taking the first match in document
-   order (`resource-tools.ts:694-695`). Making them unique is the better answer and is exactly the
-   prefixing discipline #520 adopts, simply never applied to loop bodies.
+2. **Make step identifiers unique across a whole activity — decided, and cheaper than stated.**
+   Identifiers are unique only within their own scope: `populateStepIds` (`activity.schema.ts:180-206`)
+   starts a fresh set for each loop body and says so at `:201`, and one tool already resolves a collision
+   to the wrong step without complaint (`resource-tools.ts:694-695`). But the verification pass scanned
+   every activity reachable from every workflow graph — 131 activities, 108 distinct identifiers — and
+   found **zero** duplicates. It is a permission nobody uses, so one shared set for the whole activity
+   fixes it in two lines with no definition file touched, and no second way of naming things is needed.
+   Addressing by path is off the table.
 3. **Where does a repeat-until loop keep its continuation condition?** All 19 such loops carry a
    structured condition that the schema describes as deciding whether the step is entered, and both
    mechanical readers treat it that way. The unused early-exit field is of exactly the right shape, so
@@ -576,5 +608,8 @@ continuous integration while authors see spurious errors on valid definitions.
 
 ## Companion records
 
+- [protocol-verification.md](protocol-verification.md) — how the three parties would talk, three designs
+  each independently checked, and the list of claims this file has withdrawn. **Read this before acting on
+  anything above.**
 - [cost-model.md](cost-model.md) — what the measurements say about how much work to hand over at a time.
 - [attestation.md](attestation.md) — why the runner carries no signature.
