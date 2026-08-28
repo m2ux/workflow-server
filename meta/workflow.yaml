@@ -18,7 +18,6 @@ techniques:
     - workflow-engine::resume-worker
     - workflow-engine::continue-batch
     - workflow-engine::workflow-orchestrator
-    - orchestrator-conduct::orchestrator
   activity:
     - variable-binding
     - workflow-engine::activity-worker
