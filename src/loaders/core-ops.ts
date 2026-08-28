@@ -11,8 +11,9 @@
  * (workflow-engine, agent-conduct, orchestrator-conduct, worker-conduct). The lists
  * below name the core technique refs that constitute the runtime baseline.
  *
- * A conduct technique reaches only the role whose list names it: `agent-conduct` is
- * in both, and each role's own boundaries are in that role's list alone.
+ * Conduct is the engine's baseline rather than a workflow's choice, so both lists
+ * name it and no workflow declares it. `agent-conduct` binds every agent and is in
+ * both; each role's own file specialises it and is in that role's list alone.
  */
 
 /**
@@ -62,11 +63,11 @@ export const CORE_ORCHESTRATOR_TECHNIQUES: readonly string[] = [
   'harness-compat::cursor',
   'harness-compat::cline',
   'harness-compat::generic',
-  // Cross-cutting rules: the universal home, plus the orchestrator's own. `worker-conduct` is
-  // absent by design — an orchestrator produces no domain artifacts, so its writing rules are
-  // not an orchestrator's to honour.
-  'agent-conduct::checkpoint-discipline',
-  'orchestrator-conduct::orchestrator',
+  // Conduct: the boundaries every agent is held to, then the orchestrator's specialisation of
+  // them. `worker-conduct` is absent — an orchestrator produces no domain artifacts, so its
+  // writing rules are not an orchestrator's to honour.
+  'agent-conduct',
+  'orchestrator-conduct',
 ];
 
 /**
@@ -82,9 +83,9 @@ export const CORE_WORKER_TECHNIQUES: readonly string[] = [
   'workflow-engine::yield-checkpoint',
   'workflow-engine::resume-from-checkpoint',
   'workflow-engine::finalize-activity',
-  // Cross-cutting rules: the universal home, plus the worker's own. `orchestrator-conduct` is
-  // absent by design — a worker cannot dispatch, advance an activity or resolve a gate, so those
-  // boundaries reach an agent with no way to honour or breach them.
-  'agent-conduct::checkpoint-discipline',
-  'worker-conduct::worker',
+  // Conduct: the boundaries every agent is held to, then the worker's specialisation of them.
+  // `orchestrator-conduct` is absent — a worker cannot dispatch, advance an activity or resolve a
+  // gate, so those boundaries reach an agent with no way to honour or breach them.
+  'agent-conduct',
+  'worker-conduct',
 ];

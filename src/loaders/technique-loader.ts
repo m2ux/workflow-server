@@ -559,11 +559,19 @@ async function composeLoaded(
   const ownOutputs = (outputs ?? []).filter((o) => ownOutputIds.has(o.id));
   const inheritedOutputs = (outputs ?? []).filter((o) => !ownOutputIds.has(o.id));
 
+  // A bind contract reaches a technique that can bind it. One declaring no interface and no
+  // procedure — a rule set — has no `{id}` to resolve and no step binding it, so the inherited
+  // block is content it cannot act on. Its own declarations and rules are delivered as ever, and
+  // the merge above is untouched: a descendant composes its own contract from the parsed files.
+  const bindsNothing = technique.protocol === undefined
+    && technique.inputs === undefined
+    && technique.outputs === undefined;
+
   const composed: Record<string, unknown> = { ...technique };
   if (ownInputs.length) composed['inputs'] = ownInputs; else delete composed['inputs'];
-  if (inheritedInputs.length) composed['inherited_inputs'] = { note: INHERITED_SCOPE_NOTE, items: inheritedInputs };
+  if (inheritedInputs.length && !bindsNothing) composed['inherited_inputs'] = { note: INHERITED_SCOPE_NOTE, items: inheritedInputs };
   if (ownOutputs.length) composed['outputs'] = ownOutputs; else delete composed['outputs'];
-  if (inheritedOutputs.length) composed['inherited_outputs'] = { note: INHERITED_SCOPE_NOTE, items: inheritedOutputs };
+  if (inheritedOutputs.length && !bindsNothing) composed['inherited_outputs'] = { note: INHERITED_SCOPE_NOTE, items: inheritedOutputs };
   if (rules) composed['rules'] = rules; else delete composed['rules'];
   if (protocol) composed['protocol'] = protocol; else delete composed['protocol'];
 

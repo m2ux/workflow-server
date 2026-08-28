@@ -92,16 +92,16 @@ The response is the union of the workflow's declared technique references and th
 
 ### The worker bundle
 
-The response is the union of the activity's declared technique references and the core worker technique references the server auto-includes (`CORE_WORKER_TECHNIQUES` in `src/loaders/core-ops.ts`): the worker role itself, the yield/resume checkpoint, finalize-activity, and worker-side `agent-conduct` rule references every worker needs. The role is in that set because every worker stub names it and only the meta workflow declares it, so a client worker would otherwise be told to apply a technique its bundle never carried.
+The response is the union of the activity's declared technique references and the core worker technique references the server auto-includes (`CORE_WORKER_TECHNIQUES` in `src/loaders/core-ops.ts`): the worker role itself, the yield/resume checkpoint, finalize-activity, and the conduct every worker is held to. The role is in that set because every worker stub names it and only the meta workflow declares it, so a client worker would otherwise be told to apply a technique its bundle never carried.
 
 ### What the two core sets contain
 
 | Set | Technique references |
 |-----|----------------------|
-| `CORE_ORCHESTRATOR_TECHNIQUES` | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `compose-prompt`, `present-checkpoint-to-user`, `respond-checkpoint`; `version-control::commit-submodule`, `commit-regular-files`; `harness-compat::spawn-agent`, `continue-agent`; `orchestrator-conduct`; `agent-conduct::checkpoint-discipline`, `operational-discipline`, `interaction`, `communication` |
-| `CORE_WORKER_TECHNIQUES` | `workflow-engine::activity-worker`, `yield-checkpoint`, `resume-from-checkpoint`, `finalize-activity`; `agent-conduct::checkpoint-discipline`, `operational-discipline`, `file-sensitivity`, `code-commentary`, `interaction`, `communication`, `attribution-prohibition` |
+| `CORE_ORCHESTRATOR_TECHNIQUES` | `workflow-engine::dispatch-activity`, `evaluate-transition`, `commit-and-persist`, `handle-sub-workflow`, `compose-prompt`, `present-checkpoint-to-user`, `respond-checkpoint`; `version-control::commit-submodule`, `commit-regular-files`; `harness-compat::spawn-agent`, `continue-agent`; `agent-conduct`, `orchestrator-conduct` |
+| `CORE_WORKER_TECHNIQUES` | `workflow-engine::activity-worker`, `yield-checkpoint`, `resume-from-checkpoint`, `finalize-activity`; `agent-conduct`, `worker-conduct` |
 
-A rule reaches the agent that can act on it. `orchestrator-conduct` is wholly an orchestrator's, so the orchestrator list addresses the whole technique and the worker list never names it; `agent-conduct` spans both roles, so each list addresses the families its role owns by group prefix.
+Conduct is the engine's baseline rather than a workflow's choice, so both lists name it and no workflow declares it. `agent-conduct` binds every agent and is in both; `orchestrator-conduct` and `worker-conduct` specialise it for one role each and appear in that role's list alone.
 
 ## The shared meta layer
 
