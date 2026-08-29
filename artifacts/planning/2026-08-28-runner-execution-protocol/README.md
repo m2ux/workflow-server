@@ -39,14 +39,15 @@ fix how much work is handed over at a time.
 
 ## The participants
 
-Four take part in a run, plus two supporting pieces.
+Five take part in a run, plus two supporting pieces.
 
 | Participant | Responsibility | New? |
 |---|---|---|
 | **User** | Answers decisions that need a person. Sees progress. | No |
 | **Runner** | Reads the structure. Decides conditions, drives repetition, resolves each step's inputs, composes prompts, and reports every step. | **Yes** |
 | **Server** | Holds the session, resolves definitions, reproduces every reported transition, and refuses what it cannot reproduce. | No, but its job changes |
-| **Agent** | Carries out one technique: reads prose, exercises judgement, writes content, returns values. | No, but its job narrows |
+| **Technique agent** | Carries out one technique: reads prose, exercises judgement, writes content, returns values. | No, but its job narrows |
+| **User-facing agent** | The only participant that talks to the person. Carries a rendered question out and an option back. | No, but its job narrows sharply |
 | Harness | Starts the runner; establishes agent contexts on request. | No |
 | Session store | The run's values, decisions and history, sealed. | No |
 
@@ -64,15 +65,19 @@ flowchart LR
         Session[(Session<br/>values, decisions, history)]
     end
 
-    Agent[[Agent context<br/>carries out one technique]]
+    Agent[[Technique agent<br/>carries out one technique]]
+    Facing[[User-facing agent<br/>carries questions and answers]]
     Defs[[Workflow definitions]]
 
     Harness -->|starts a run| Runner
     Runner -->|reports each step| Server
     Runner -->|prompt: prose plus values| Agent
     Agent -->|values, a decision, or briefs| Runner
-    Runner -->|puts a question, direct or relayed| User
-    User -->|answers| Runner
+    Runner -->|marks a decision outstanding| Server
+    Server -->|rendered question| Facing
+    Facing -->|shows it| User
+    User -->|chooses| Facing
+    Facing -->|chosen option| Server
     Runner -->|asks for a context| Harness
     Server -->|resolved structure| Runner
     Server -->|reads| Defs
@@ -178,9 +183,9 @@ flowchart TB
         Corpus[(Workflow definitions<br/>YAML and Markdown)]
     end
 
-    Agent1[[Agent context A]]
-    Agent2[[Agent context B]]
-    Courier[[Conversational agent]]
+    Agent1[[Technique agent A]]
+    Agent2[[Technique agent B]]
+    Facing[[User-facing agent]]
 
     Runner -->|open activity, close unit| Server
     Server -->|resolved tree, accepted writes| Runner
@@ -190,19 +195,18 @@ flowchart TB
     Runner -->|prompt| Agent2
     Agent1 -->|reply| Runner
     Agent2 -->|reply| Runner
-    Runner <-->|decision, attached| User
-    Runner <-.->|decision, relayed| Courier
-    Courier <-.-> User
+    Server <-->|question and option| Facing
+    Facing <-->|asks| User
 
     style Host fill:#e3f2fd,stroke:#1976d2
     style Runner fill:#c8e6c9,stroke:#2e7d32
     style Server fill:#e1f5fe,stroke:#01579b
-    style Courier fill:#f5f5f5,stroke:#bdbdbd
+    style Facing fill:#fff3e0,stroke:#ef6c00
 ```
 
-A decision travels one of two ways, solid or dashed, and which one is in force changes a fidelity
-guarantee — see [How a decision reaches a person](#how-a-decision-reaches-a-person) below. Every other
-line here is the same under both.
+The runner has no line to the person. It marks a decision outstanding on the server and waits, and the
+question travels to the person through the user-facing agent — see
+[How a decision reaches a person](#how-a-decision-reaches-a-person) below.
 
 Two links, two grains. Runner-to-server is one local process addressing another, so it may be as chatty
 as it likes. Runner-to-agent is expensive — an exchange costs roughly what 18,800 characters of fresh
@@ -211,59 +215,53 @@ carries prose. That asymmetry is the whole design; the reasoning is in [cost-mod
 
 ### How a decision reaches a person
 
-The diagram shows the runner and the user exchanging a decision directly, and that needs unpacking,
-because today the constraint is the opposite: only a conversational agent can reach the person, which is
-why a decision currently costs an agent context. Whether the runner improves on that depends on how it is
-started, and there are two arrangements with materially different guarantees.
+**Every conversation with the person is agent-mediated, and stays that way under this proposal.** The
+dispatch model states it as a rule: the user-facing agent is the only one that talks to the person, and it
+presents every question a run raises. So the runner does not acquire a channel to the person by existing,
+and the arrow between them in the diagrams above is a statement about where a question *originates*, not
+about how it travels.
 
 ```mermaid
 ---
-title: Two ways a decision reaches a person
+title: How a question actually travels
 ---
 flowchart LR
-    subgraph Attached [Attached - the person starts the runner]
-        U1([👤 User]) <-->|question and answer| R1[Runner]
-    end
+    R[Runner] -->|marks a decision outstanding| S[Workflow server]
+    S -->|renders question and options| UFA[[User-facing agent]]
+    UFA -->|shows it| U([👤 User])
+    U -->|chooses| UFA
+    UFA -->|option id| S
+    S -->|applies effects, releases the wait| R
 
-    subgraph Relayed [Relayed - an agent starts the runner]
-        R2[Runner] -->|rendered question| C[[Conversational agent]]
-        C -->|shows it| U2([👤 User])
-        U2 -->|chooses| C
-        C -->|option id| R2
-    end
-
-    style Attached fill:#c8e6c9,stroke:#2e7d32
-    style Relayed fill:#fff3e0,stroke:#ef6c00
+    style R fill:#c8e6c9,stroke:#2e7d32
+    style S fill:#e1f5fe,stroke:#01579b
+    style UFA fill:#fff3e0,stroke:#ef6c00
 ```
 
-**Attached.** The person starts the runner themselves — a command in their own terminal, or a local view
-the harness opens — and the runner holds the channel. It writes the question, reads the answer, and no
-agent is on the path at all. This inverts today's control flow: the human drives the run and agents are
-called into it, rather than an agent driving and occasionally consulting the human. It is the arrangement
-the fidelity argument assumes, and the one worth designing for.
+The runner never presents anything. It marks a decision outstanding and waits; the server already holds
+exactly one outstanding decision at a time and already renders it with its consequences resolved; and the
+user-facing agent carries it to the person and carries an option back. Presentation is a front end's
+concern, not the runner's, and the runner stays headless.
 
-**Relayed.** An agent starts the runner as an ordinary command, so the runner's output surfaces in that
-agent's context and the agent shows it to the person. The agent is a courier rather than a participant:
-it did not compose the question, cannot alter the options, and cannot decide the outcome applies.
+**What changes is what the mediating agent is able to do.** Today that agent reads the definition, decides
+whether the decision's condition applies, composes the question, may dismiss it on its own say-so, and
+reports an outcome. Under the runner it becomes a courier: the question is server-rendered, the option set
+is closed, dismissal is verified against the session values rather than taken on trust, and the existing
+minimum response interval and auto-advance timers still apply. What it could fabricate shrinks from
+everything about the decision to which of *n* fixed options a person chose.
 
-The distinction matters because it changes exactly one guarantee. In the attached arrangement, whether a
-person saw a decision is **unrepresentable** — there is no agent to fabricate one. In the relayed
-arrangement it drops to **detected**: the agent is on the path of the answer and could in principle
-return an option nobody chose.
+That is a real narrowing and it is worth having, but it is not elimination. **Whether a person actually
+saw a decision remains at *detected*, not *unrepresentable*** — an agent remains on the path of the
+answer, and the trace records the interaction for review afterwards, exactly as it does now.
 
-Even relayed, though, this is a large improvement on today, and it is worth being precise about why. At
-present an agent reads the definition, decides whether the decision's condition applies, composes the
-question, may dismiss it entirely on its own say-so, and reports an outcome. Under the runner the
-question is rendered by the server with its consequences resolved, the option set is closed, dismissal is
-verified against the session values rather than taken on trust, and the server's existing minimum
-response interval and auto-advance timers still apply. What an agent could fabricate shrinks from
-everything about the decision to which of *n* fixed options a person picked.
+**A stronger arrangement is conceivable and is not proposed here.** If the person launched the runner
+themselves and it held a terminal or a local view, no agent would be on the path and the guarantee would
+rise. But that asks for two things at once: the runner would have to become the entry point, and it would
+have to absorb the spawn layer, since a runner nobody spawned for cannot call agents into the work.
+Spawning is a harness capability — the corpus abstracts three operations across four harness
+implementations plus a generic fallback — so absorbing it means taking over a role the architecture
+currently assigns to an agent. Worth revisiting once the runner exists; out of scope for introducing it.
 
-**Recommendation.** Design the runner so the decision channel is an interface with two implementations,
-and make attached the default wherever a terminal or a local view is available. The relayed
-implementation is then a documented fallback whose weaker guarantee is stated rather than assumed, and
-which arrangement was in force belongs in the run's own history so that a later reader can tell which
-guarantee applied.
 
 ### Where each responsibility sits
 
@@ -509,7 +507,7 @@ Each row is a limitation the fidelity documentation states in its own words.
 | The steps that ran are the steps that were meant to run | Detected — the manifest validates that the agent *reported* each step, not that it performed it | **Unrepresentable** | The runner hands out each unit and receives each reply, so there is no self-report to check. The manifest concept disappears rather than improving. |
 | A condition's truth decided the branch | Convention — the server checks a claimed outcome maps to the target, but "cannot verify whether the condition is actually true" | **Refused** | The runner evaluates against values the server holds, and the server re-derives every reported transition and rejects what it cannot reproduce. Needs per-step write authority. |
 | A conditional decision was genuinely inapplicable when dismissed | Convention — "relies on agent honesty"; the server checks only that a condition field exists | **Refused** | One evaluation of the condition against the session values. Available today, independent of the runner. |
-| A person actually saw a decision | Convention — "an agent could wait the minimum time and then submit a fabricated response" | **Unrepresentable** when the runner holds the channel; **detected** when an agent relays it | See [How a decision reaches a person](#how-a-decision-reaches-a-person). Attached, no agent is on the path. Relayed, the agent is a courier that cannot compose the question, alter the options or dismiss the decision — but is on the path of the answer. |
+| A person actually saw a decision | Convention — "an agent could wait the minimum time and then submit a fabricated response" | **Detected** — unchanged in kind, much narrowed in surface | Every conversation with the person stays agent-mediated, so an agent remains on the path of the answer. What it can fabricate shrinks from composing the question and dismissing the decision to returning one identifier from a closed set. See [How a decision reaches a person](#how-a-decision-reaches-a-person). |
 | A repeated call is distinguished from a fresh one | Detected — visible in the trace afterwards | **Refused** | Position is recorded per step and is authoritative, so a repeat is a no-op or a refusal rather than a second execution. |
 | Steps ran in declared order | Detected — a relative-order comparison over a self-report | **Unrepresentable** | Order is the runner's walk. There is nothing to compare. |
 | An iteration bound was respected | Convention — "iteration is executed and bounded entirely by the agent" | **Refused** | The runner drives repetition and holds the count. |
@@ -614,24 +612,27 @@ sequenceDiagram
 ```mermaid
 sequenceDiagram
     actor U as User
-    participant R as Runner
+    participant F as User-facing agent
     participant S as Server
+    participant R as Runner
 
     R->>R: reach a decision unit
-    R->>S: close unit - decision reached
-    S-->>R: question, options, consequences
-    R->>U: put the question
-    U-->>R: chosen option
-    R->>S: close unit with the choice
+    R->>S: mark the decision outstanding
+    S->>S: render question, options, consequences
+    S-->>F: the rendered question
+    F->>U: shows it
+    U-->>F: chooses an option
+    F->>S: the chosen option id
     S->>S: apply the option effects
-    S-->>R: values delta
+    S-->>R: values delta, wait released
 ```
 
-This shows the attached arrangement, where the runner holds the channel. No agent context is established
-at all, which is why the rule forbidding an activity from opening with a decision can go: that rule exists
-only because asking a question currently costs a whole context. Relayed, an agent is on the path but does
-not gain a part in the decision — the cost argument holds either way, since no context is established
-*for the decision*.
+The runner composes nothing here and the user-facing agent decides nothing: the question is rendered by
+the server from the definition, and what comes back is one identifier from a closed set.
+
+No *technique* agent is established, which is why the rule forbidding an activity from opening with a
+decision can go — that rule exists because asking a question currently costs a whole worker context, and
+here it costs a turn in a context that already exists.
 
 ### Fan-out, where the agent composes the briefs
 
