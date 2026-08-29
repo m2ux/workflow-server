@@ -403,16 +403,13 @@ These do not exist at any strength today.
 | Two runs of the same definition asked the same questions | **Refused** | Prompts are fingerprintable, per Determinism above. |
 | Work that ran in parallel was safe to parallelise | **Refused** | Concurrency is declared and checked rather than assumed — and the check found that a naive reads-and-writes test would wrongly clear 231 adjacent step pairs whose real dependency is shared state on disk. |
 
-#### Qualifying what a technique returns
+#### How far shape checking reaches, and what it does not settle
 
-Shape checking establishes that a reply has the right parts. It says nothing about whether the parts say
-what they were supposed to say. That gap is where the remaining trust sits, and it can be narrowed
-without pretending to close it.
+The runner checks that a reply has the parts it declared. How much that establishes depends on how much
+the declaration says, and the corpus is uneven about it. Measured over 575 technique files declaring 730
+outputs:
 
-**The mechanical floor comes first**, because some of this needs no agent at all. Measured over 575
-technique files declaring 730 outputs:
-
-| Declaration | Count | Checkable without an agent |
+| Declaration | Count | Settled mechanically |
 |---|---|---|
 | Output has a prose description | **730 of 730** | No — prose against prose |
 | Output declares named sub-members | **78** (241 members) | **Yes** — member presence and shape |
@@ -420,86 +417,43 @@ technique files declaring 730 outputs:
 | Output is machine-read, so serialised as JSON | 19 | **Yes** — parses, and carries the declared members |
 | Technique declares a capability statement | 562 of 575 | No — prose |
 
-Only 11% of outputs declare their structure. **That is the lever**: every output that gains declared
-sub-members moves out of the agent-judgement column and into the mechanical one, at no runtime cost.
-Widening that declaration is corpus work the runner does not have to wait for, and it should be measured
-as a percentage that goes up.
+Only 11% of outputs declare their structure, so for most of them the runner can establish that a value
+came back under the right name and nothing more. **That percentage is the lever**: every output that gains
+declared sub-members moves out of agent judgement into mechanical checking at no runtime cost, and it is
+corpus work that needs nothing from this proposal.
 
-**Above the floor, the runner dispatches a qualification agent.** A second agent, in its own context,
-receives the technique's declaration — its capability statement, the output descriptions, the declared
-members, the artifact template — together with the content that came back, and nothing else. It never
-sees the conversation that produced the work.
+What shape checking cannot settle is whether the content says what it was supposed to say. A runner makes
+it possible to close part of that gap — because it holds the declaration and the returned content
+together in one place, it could dispatch a second agent, in its own context, to judge one against the
+other and return a typed verdict. That would be an independent check rather than a self-report, and it is
+a real strengthening, though the honest description is pseudo-verifiability: trust moves to a dedicated
+agent rather than disappearing, and correlated blind spots, the absence of ground truth and the survival
+of plausible-but-wrong content all remain.
 
-```mermaid
-sequenceDiagram
-    participant R as Runner
-    participant P as Producing agent
-    participant Q as Qualifying agent
-    participant S as Server
+**That capability is unlocked by this work but is not part of it.** It is named because it changes what
+the ceiling looks like, and because the declaration-widening above is worth starting whether or not it is
+ever built.
 
-    R->>P: prompt - protocol prose plus values
-    P-->>R: content per declared output
-    R->>R: mechanical checks - ids, types, artifacts, members
-    alt shape fails
-        R-->>P: rejected, with the reason
-    else shape holds and qualification is declared
-        R->>Q: the declaration and the content, nothing else
-        Q-->>R: verdict - conforms, or the specific departure
-        alt verdict rejects
-            R-->>P: returned for correction
-        else verdict accepts
-            R->>S: close unit with produced values
-        end
-    end
-```
-
-Four properties make this worth more than asking the producer to check its own work.
-
-- **Independence.** The qualifier did not do the work, has no stake in it, and cannot see the reasoning
-  that led to it. It judges the artefact, not the account of the artefact.
-- **A bounded question.** It is asked whether this content matches this declaration — not whether the
-  work was good. Narrow questions are answered far more reliably than open ones.
-- **An adversarial default.** It is asked to find the departure, not to confirm conformance, and to
-  reject when uncertain. A qualifier that must justify acceptance is stricter than one that must justify
-  rejection.
-- **A structured verdict.** It returns a typed result the runner acts on — conforms, or a named departure
-  against a named output — never prose for a human to interpret.
-
-**Qualification is declared, not universal.** Each dispatch costs an agent turn, so it belongs on outputs
-where a wrong-but-plausible value would propagate: an output another step's condition reads, an artifact
-a later activity consumes, or a value that decides an ending.
-
-**What this is and is not.** It is pseudo-verifiability, and the honest description is that trust moves
-rather than disappears — from the agent that did the work to a dedicated agent that only checks it. Three
-limits follow and should be stated wherever the guarantee is claimed:
-
-- **Correlated blind spots.** A qualifier drawn from the same model family may share the producer's
-  misreadings. Independence of context is not independence of judgement.
-- **No ground truth.** The qualifier compares content against a declaration, and a declaration can itself
-  be wrong or vague. Against 730 prose descriptions, the ceiling is the quality of those descriptions.
-- **Plausible-but-wrong survives.** Content that conforms to its declaration and is nonetheless incorrect
-  passes, and will keep passing.
-
-So this belongs on the ladder at a level of its own, below *refused* and above *detected*: a claim that
-an independent party checked and did not reject. That is a real strengthening over a self-report, and it
-is not verification.
 
 #### What stays unenforceable, honestly
 
-Even with the ratchet and with qualification, three things remain outside reach:
+Three things remain outside reach, and none of the work proposed here changes them:
 
 - **Whether a technique's protocol was followed.** The runner establishes that a technique ran and
   returned what it declared, never which branch it took inside, and it cannot resume one part-way.
-  Qualification narrows this — content that conforms is weak evidence the protocol was followed — but it
-  does not close it.
+- **Whether returned content says what it should.** Shape is checkable; meaning is not. This is the gap a
+  qualifying agent could narrow, and the reason that capability is worth naming even though it is not
+  built here.
 - **Whether a judgement was sound.** That is the work an agent is for, and no amount of checking replaces
   it.
-- **The trace's survival across a restart.** It lives in server memory and is unaffected by any of this.
+
+The trace's survival across a server restart is also untouched, though that is a storage matter rather
+than a fidelity one.
 
 The shape of the improvement is worth stating plainly: nothing here makes an agent more trustworthy. It
 narrows what an agent is trusted *with* — from "read this structure and tell us what you did" down to
-"carry out this one thing and return these named values" — and then it puts a second, disinterested agent
-on the part of that claim the server cannot check itself.
+"carry out this one thing and return these named values" — and only the second is a claim the server can
+check.
 
 ## Key flows
 
