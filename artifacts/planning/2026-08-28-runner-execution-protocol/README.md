@@ -1,615 +1,461 @@
-# Runner execution protocol — design record
+# Runner — proposal
 
-Work package for [#523](https://github.com/m2ux/workflow-server/issues/523). The issue body carries the
-proposal in plain language; this folder carries the evidence and the citations. Measured on 2026-08-28
-against the server at `c99d9da2` and the `workflows` branch at `0cebc48f`.
+> Work package for [#523](https://github.com/m2ux/workflow-server/issues/523) · 2026-08-28 · server at
+> `c99d9da2`, `workflows` branch at `0cebc48f`
 
-Read alongside [#520](https://github.com/m2ux/workflow-server/issues/520), which names a run of steps
-and gives it a home. The proposal here walks the step tree that one produces, so the two fit together
-without either depending on the other.
+## Executive summary
 
-## What this is about
+A workflow definition is a structure: an ordered list of steps, conditions deciding which of them run,
+loops that repeat a body, and named endings that decide where control goes next. That structure has
+exactly one correct reading. Today an agent does the reading, guided by instructions the server ships
+alongside the definitions, and afterwards reports what it did so the server can check the report.
 
-A workflow definition describes a structure. An activity holds an ordered list of steps; a step may
-carry a condition deciding whether it runs at all; some steps repeat a body over a collection; and an
-activity ends by naming one of several outcomes, which the workflow's routing table turns into a
-destination. None of that is prose — it is structure, and it has exactly one correct reading.
+This proposes a **runner**: a program that reads the structure, and asks an agent only to carry out the
+things that are genuinely prose — a technique's protocol, a judgement, a piece of writing. The server
+stops grading reports and starts reproducing decisions: it accepts a change to a run only when it
+independently arrives at the same one.
 
-Today an agent does that reading. The server hands over the activity's definition text along with
-instructions on how to interpret it, the agent decides which steps run and in what order, and afterwards
-reports back what it did. The server then checks the report for consistency.
+The result is that correctness stops being something checked after the fact and becomes a property of
+the arrangement. An agent that never receives the structure cannot depart from it.
 
-This record proposes moving the structural reading to a program, and sets out how that program would
-talk to the server on one side and to agents on the other. Some vocabulary recurs throughout, so it is
-worth fixing up front:
+Three companion documents carry the working: [investigation.md](investigation.md) for what the code and
+corpus do today, [protocol-verification.md](protocol-verification.md) for three reviewed designs of the
+interaction and the claims they overturned, and [cost-model.md](cost-model.md) for the measurements that
+fix how much work is handed over at a time.
 
-- **The session bag** is the store of named values a run carries from step to step. Every condition in a
-  workflow is a question asked of it.
-- **A gate** is a condition attached to a step, deciding whether that step runs.
-- **A dispatch** is handing an activity to an agent context. It is expensive, because a fresh context
-  must be established before any workflow content reaches it.
-- **Eager bundling** is the server including a step's full instructions in the delivery rather than
-  making the agent fetch them separately later.
-- **The runner** is the proposed program: it walks the steps, decides the gates, drives the repetition,
-  and asks an agent to carry out one technique at a time.
+## The participants
 
-## How the evidence was gathered, and where it is thin
+Four take part in a run, plus two supporting pieces.
 
-Twenty-five separate investigations were run across the code and the corpus, and each one was then
-handed to an independent reviewer instructed to refute it against the source rather than agree with it.
-Every figure below was taken by walking the definitions through the real loader — `loadWorkflow` together
-with `buildProducerIndex` — rather than by searching text, so a condition spread over several lines is
-attributed to the list item that owns it rather than counted twice or missed.
-
-Three of those investigations were cut short when an account spending limit was reached, and their work
-is missing. Two were the reviews of the **gate evaluation** findings and the **cost** findings, so
-everything in those two areas rests on a single unreviewed pass. It reproduces against the lines cited,
-but two numbers in particular decide how much work the runner hands over at a time, and they should be
-measured again before anyone builds against them: what one exchange with an agent costs, and what
-establishing a fresh agent context costs.
-
-A fourth investigation designed the interaction protocol directly, three ways, each checked by an
-independent reviewer. **It has since completed, and it overturns several things stated below.** Its
-findings and the full list of withdrawn claims are in
-[protocol-verification.md](protocol-verification.md), and where that file disagrees with this one, it is
-right. The corrections are marked in place, but the most important are that the count of 500 condition
-sites does not reproduce, that values already reach the session mid-activity by one route, and that the
-corpus's real fan-out is a technique bound at 22 sites rather than anything to do with loops.
-
-## 1. What is actually true today
-
-Two things widely believed about this system turn out to be false against the current code.
-
-### The server already decides gates
-
-It is commonly stated, including in the schema's own documentation, that the server never evaluates a
-condition and leaves every such decision to the agent. That is not what the code does. When the server
-delivers an activity it evaluates every step's gate against the current session values, and uses the
-answer to decide which steps to include in full — `src/tools/workflow-tools.ts:1204` calls
-`bothGates(outer, gateAnswer({ when, condition, variables: bagAtOpen, writtenInActivity }))` with the live
-values taken at `:1197`, and `gateAnswer` at `src/utils/gate-liveness.ts:194-196` runs the same two
-evaluators the guards and the test harness use.
-
-So the capability is not missing and does not need building. What differs is only what the answer is
-used for: today it shapes delivery, and the proposal is that it should also decide execution. Four
-documentation sites assert the opposite and are simply out of date —
-`src/schema/activity.schema.ts:75`, `:77`, `:146`, `:254`, and `schemas/README.md:32`, `:324`, `:711`.
-They need correcting whether or not any of the rest of this happens.
-
-### Nothing repeats a loop
-
-A workflow can declare that a body of steps repeats over a collection, or until a condition holds. No
-code anywhere carries that out. The end-to-end test harness walks a loop body exactly once —
-`tests/e2e/walker.ts:496` is `if (step.kind === 'loop') { await walk(step.steps); continue; }`, and the
-comment at `:482-484` says a body is walked once deliberately. The fields that describe the repetition
-are never read there: the iteration type appears only where it is declared at `:83`, and the collection,
-the item variable, the early-exit condition and the iteration limit do not appear at all. On the server
-side, two of those fields are read when working out which values an activity consumes
-(`src/utils/activity-variables.ts:368-369`) and the item variable is registered as a producer
-(`src/utils/binding-provenance.ts:187`), but nothing iterates. Repetition is the one thing the runner
-would have to write from scratch.
-
-### Every condition in the corpus can be answered mechanically
-
-There was reason to expect a residue of conditions no program could decide — ones asking about the
-outside world rather than about the run. There is none.
-
-**The counts in this section are withdrawn.** An independent parse of 122 activity files gives 231 inline
-step conditions, 97 structured step conditions and 54 outcome conditions — **382**, not 500 — plus 11 on
-action steps and one early-exit condition. The direction and the magnitude hold: a few hundred sites, all
-parseable, none reading the environment. The specific figures below do not reproduce and are kept only to
-show what was withdrawn. See [protocol-verification.md](protocol-verification.md).
-
-Walking all 17 workflows through the loader was reported as turning up 500 places a condition is
-attached:
-
-| Where the condition sits | Count |
-|---|---|
-| On a step, as an inline expression | 296 |
-| On an activity's named outcome | 70 |
-| On a step, as a structured condition block | 134 |
-| **Total** | **500** |
-
-Every one of them parses, and every one can be answered:
-
-| Can it be answered from the session values? | Count |
-|---|---|
-| Yes, directly | 482 |
-| Yes, by reading a field of an object an earlier step produced | 18 |
-| No — it asks the environment, not the run | **0** |
-| No, for some other reason | **0** |
-
-There are no parsing failures and no authoring-rule failures anywhere in the corpus. Across all 500
-sites there are 108 distinct names read, six of them reaching into a field of an object.
-
-The questions that genuinely ask the outside world do exist, but they are not conditions on steps. All
-five sit in validation instructions, which are already understood as work for an agent: whether the
-GitHub command-line tool is authenticated (`workflows/work-package/activities/06-plan-prepare.yaml:70`),
-whether the signing agent is reachable (`:78`), whether a working tree is present (`:58`), and whether
-commit signing is configured (`work-package/activities/01-start-work-package.yaml:329` and
-`remediate-vuln/activities/01-start.yaml:91`). Four further validation instructions are not expressions
-at all and do not parse: `13-submit-for-review.yaml` steps/4 carries `summary_budget_overruns == []` and
-`summary_completeness_findings == []`, `14-complete.yaml` steps/11 carries `broken_artifact_links == []`,
-and `remediate-vuln/activities/01-start.yaml` steps/4 carries `target_path exists`.
-
-The set of environment prefixes at `src/utils/activity-variables.ts:180` exists to serve that validation
-surface rather than the condition surface, and it is copied rather than shared —
-`scripts/check-binding-fidelity.ts:285` holds an independent duplicate that could drift.
-
-### The real obstacle is when values arrive, not whether conditions can be answered
-
-A step's results reach the session, in the main, only when its whole activity finishes. The parameter
-that carries them is declared on the activity-transition call alone (`src/tools/workflow-tools.ts:694`)
-and applied at `:796-802`.
-
-**Corrected:** there is a second route. Answering a decision also lands values, mid-activity, without
-moving the activity pointer (`src/tools/workflow-tools.ts:2019`). So a partial per-step write path already
-exists, restricted to decision effects, and the work is to generalise it rather than to invent it — which
-is cheaper than the rest of this section implies. What follows is otherwise accurate: outside that one
-route, the session values are frozen at what they were when the activity started.
-
-That would not matter if conditions only asked about earlier activities. They do not:
-
-| The condition reads a value produced by | Sites |
-|---|---|
-| An earlier activity | 194 |
-| An earlier step of the same activity | **274** |
-| A later step | 22 |
-| The same step | 10 |
-
-More than half of every condition in the corpus asks about something produced inside the activity it sits
-in, and the answer is therefore unavailable while that activity runs.
-
-This is already recorded rather than predicted. The committed baseline at
-`tests/e2e/__snapshots__/snapshot.test.ts.snap` holds 79 activity deliveries and tallies, across them,
-**313 conditions the server could not yet answer and 168 whose values nothing had produced**, with none
-failing to parse. Not one of the 79 deliveries could answer every condition it carried. The code already
-has a name for this case, at `src/utils/gate-liveness.ts:136-143`.
-
-**Two corrections to how those two numbers should be read.** The end-to-end harness never sends its values
-back — its transition call passes only the session index, the activity and the steps it ran
-(`tests/e2e/walker.ts:363-370`) — and it satisfies conditions by changing a set of values the server never
-sees (`:306-317`). So the tallies conflate the server's freeze with the harness's silence, and the second
-number in particular should not be read as a defect in the corpus. Separately, the check that produces the
-first number tests whether a name is written anywhere in the activity *before* it looks at the value
-(`src/utils/gate-liveness.ts:184-186`), so a value genuinely present via the decision route above is still
-counted as unanswerable. Both numbers need re-measuring once the harness writes back.
-
-**Everything else in this record depends on fixing that.** Without step results reaching the session when
-the step finishes, a runner can decide only the 194 conditions fed by earlier activities, and the 274 fed
-by earlier steps of the same activity remain as unanswerable to it as they are today.
-
-### Where the run has got to cannot be recovered
-
-The session file records what has happened but not where the run is. It carries no step field at all
-(`src/schema/session.schema.ts:199-224`). The only field of that kind anywhere is at
-`src/schema/state.schema.ts:164`, on a schema whose sole importer is the JSON-schema generator.
-
-Nor can position be worked out from the history, because when the server delivers an activity it marks
-every included step as started at the same instant: `src/tools/workflow-tools.ts:1514` takes one
-timestamp and the loop at `:1515-1525` applies it to all of them, while the uniqueness key at
-`src/utils/step-events.ts:12-17` records nothing about order. So a durable record of position is
-something the runner must add, not something it can derive.
-
-## 2. How the three parties would talk to each other
-
-There are three links, and they want opposite treatments.
-
-The expensive one is talking to an agent. One exchange with an agent costs roughly what 18,800
-characters of fresh content cost — the reasoning is in [cost-model.md](cost-model.md). A call from the
-runner to the server, by contrast, is one local process addressing another, and costs almost nothing. So
-the fine-grained back-and-forth belongs on the cheap link and the coarse-grained work on the expensive
-one. That is the difference between this proposal and a design where the agent itself asks the server for
-one step at a time, which the measurements rule out.
-
-| Link | How often | Cost |
+| Participant | Responsibility | New? |
 |---|---|---|
-| harness starts the runner | once per session | negligible |
-| runner ↔ server | as often as it likes | local |
-| runner ↔ agent | once per technique | ~18,800 characters equivalent |
+| **User** | Answers decisions that need a person. Sees progress. | No |
+| **Runner** | Reads the structure. Decides conditions, drives repetition, resolves each step's inputs, composes prompts, and reports every step. | **Yes** |
+| **Server** | Holds the session, resolves definitions, reproduces every reported transition, and refuses what it cannot reproduce. | No, but its job changes |
+| **Agent** | Carries out one technique: reads prose, exercises judgement, writes content, returns values. | No, but its job narrows |
+| Harness | Starts the runner; establishes agent contexts on request. | No |
+| Session store | The run's values, decisions and history, sealed. | No |
 
-### Only the runner writes to the session
+```mermaid
+---
+title: System Context - who takes part in a run
+---
+flowchart LR
+    User([👤 User])
+    Harness([🖥️ Harness])
 
-If the runner is the single client touching the session, agents become pure functions: they receive a
-prompt and return values, with no access to the server at all. Three problems that would otherwise need
-solving simply stop existing.
+    subgraph Execution [Workflow execution]
+        Runner[Runner<br/>reads the structure]
+        Server[Workflow server<br/>reproduces and records]
+        Session[(Session<br/>values, decisions, history)]
+    end
 
-The first is a lock. The session holds one slot for an outstanding user decision
-(`src/schema/session.schema.ts:211`), and while it is filled, five tools refuse to serve anyone —
-`get_workflow` at `workflow-tools.ts:588`, `get_activity` at `:1015`, `get_trace` at `:2079`,
-`get_technique` at `resource-tools.ts:651` and `get_resource` at `:881`, all through the check at
-`src/utils/session/params.ts:62-70`. That lock exists to stop other agent contexts making progress
-while a question is outstanding. With one client, there are no other contexts to stop.
+    Agent[[Agent context<br/>carries out one technique]]
+    Defs[[Workflow definitions]]
 
-The second is a race. Saving the session writes the whole file, last writer winning, and although a
-token for detecting a concurrent change is captured every time the file is loaded, nothing reads it
-(`src/utils/session/store.ts`). One writer, no race.
+    Harness -->|starts a run| Runner
+    Runner -->|reports each step| Server
+    Runner -->|prompt: prose plus values| Agent
+    Agent -->|values, a decision, or briefs| Runner
+    Runner -->|puts a question| User
+    User -->|answers| Runner
+    Runner -->|asks for a context| Harness
+    Server -->|resolved structure| Runner
+    Server -->|reads| Defs
+    Server -->|writes| Session
 
-The third is trust. An agent that never receives the structure cannot depart from it, cannot address the
-wrong step, and has no channel on which to report something it did not do. Fidelity stops being
-something the server checks after the fact and becomes a property of the arrangement.
-
-## 3. Getting a prompt that can be given to one or more agents
-
-The runner hands out a set of prompts rather than a step.
-
-```ts
-type DispatchSet = {
-  units: PromptUnit[]                    // one, or several when provably independent
-  affinity: 'reuse' | 'fresh' | 'parallel'
-}
-
-type PromptUnit = {
-  id: string                             // for the runner to match a reply to a request
-  prose: string                          // protocol, rules and resources, fully written out
-  inputs: Record<string, unknown>        // resolved values, not references
-  expect: {
-    outputs: { id: string; type?: string; audience: 'human' | 'agent' }[]
-    artifacts: { output: string; path: string }[]   // filename already worked out
-  }
-}
+    style Execution fill:#e3f2fd,stroke:#1976d2
+    style Runner fill:#c8e6c9,stroke:#2e7d32
+    style Server fill:#e1f5fe,stroke:#01579b
+    style Session fill:#fff3e0,stroke:#ef6c00
 ```
 
-### Whether two prompts can go out at once — withdrawn, and the real answer
+Green marks the new component. Everything else exists.
 
-This section originally claimed the runner could work out for itself which pieces of work may run at the
-same time, by checking that neither reads a value the other writes. **That is wrong, and the verification
-pass measured why.** There are 231 adjacent step pairs that look independent under that test, across 155
-groups, and inspection shows them dominated by serial command-line pipelines whose real dependency is
-shared state on disk that no definition declares. The test would call those safe to parallelise and they
-would corrupt one another.
+## Use cases
 
-The real answer is that fan-out is **already a first-class construct in the corpus, and it is not a
-loop.** A technique taking a list of worker briefs and a concurrency limit is bound as an ordinary step at
-**22 sites across 8 activity files**, and every one of them is preceded by a step that composes those
-prompts at run time out of domain material no runner could derive. So the runner is not the sole author of
-dispatchable prompts, and the reply from an agent needs an arm that hands the runner prompts it did not
-write. The detail is in [protocol-verification.md](protocol-verification.md).
+```mermaid
+---
+title: Use cases by actor
+---
+flowchart LR
+    User([👤 User])
+    Author([✍️ Definition author])
+    Operator([🔧 Operator])
 
-### How wide to fan out is bounded by what a fresh agent costs
+    subgraph Cases [What the system is for]
+        UC1(Answer a decision)
+        UC2(See where a run has got to)
+        UC3(Resume an interrupted run)
+        UC4(Trust that a definition was followed)
+        UC5(Know a definition is wrong before it runs)
+        UC6(Reuse a run of steps safely)
+        UC7(Run independent work at the same time)
+    end
 
-Establishing a new agent context costs between 23,000 and 42,000 tokens before any workflow content
-arrives — worth five to nine exchanges with an existing one. So splitting work across several agents pays
-only when each branch is substantial enough to earn that back. The server already records the sizes
-needed to judge it, at `workflow-tools.ts:1507-1535`, consumed by `src/utils/batch.ts:98-123`.
+    User --> UC1
+    User --> UC2
+    User --> UC3
+    Author --> UC4
+    Author --> UC5
+    Author --> UC6
+    Operator --> UC3
+    Operator --> UC7
 
-### A question for the user is not a prompt for an agent
+    style Cases fill:#f5f5f5,stroke:#bdbdbd
+```
 
-Only the orchestrator can reach a person, so when the runner arrives at a decision point it returns the
-question to the harness rather than dispatching it. The tool that renders a decision for presentation
-survives, since it already works out what each option leads to
-(`workflow-tools.ts:1867-1876`). The two tools that park a decision and pick it up again can go: their
-purpose is freezing a session while other contexts wait, and there are no other contexts.
-`resume_checkpoint` in particular changes nothing but the sequence number (`:1803`).
+## User stories
 
-One narrow case survives. An agent may raise a decision the definition never anticipated, by supplying
-its own question and options — `:1637` and `:1643-1647`. That is the only channel in the whole surface an
-agent can open itself, and it cannot be produced from any definition, so it stays as a small dedicated
-call.
+**As a user**
 
-*Not independently verified: the independence calculation is reasoned from reading those functions rather
-than from running them over the corpus. How many steps are genuinely independent in practice is unknown,
-and worth measuring before designing for parallelism.*
+- I want to be asked a question only when the run genuinely needs my judgement, so that I am not
+  interrupted by something the structure already determines.
+- I want a question to arrive without a fresh agent context being established purely to ask it, so that
+  asking me something is cheap.
+- I want to see which step a run is on, so that I can tell progress from a stall.
+- I want an interrupted run to continue from where it stopped rather than from the start of the activity,
+  so that I am not asked the same question twice and work is not repeated.
 
-## 4. Giving the agent prose and never structure
+**As a definition author**
 
-Today the server sends the activity's definition text itself. It reads the file
-(`workflow-tools.ts:1046-1048`), inserts the step identifiers an author did not write (`:1049`), and
-fills in any shared decision bodies. The agent then reads that text and interprets it.
+- I want a wrong reference or an unparseable condition to fail when the definitions load, so that I find
+  out at authoring time rather than mid-run.
+- I want the checks that hold a step's declared inputs to a producer to work step by step rather than
+  activity by activity, so that a mistake is localised.
+- I want to know that what ran is what I wrote, so that a run is evidence about the definition rather
+  than about the agent that read it.
+- I want to reuse a run of steps without copying it, so that a change lands in one place. *(This is
+  [#520](https://github.com/m2ux/workflow-server/issues/520); a runner walks the tree that proposal
+  resolves.)*
 
-Under the runner, each part goes one of three ways:
+**As an operator**
 
-| Sent today | Becomes |
-|---|---|
-| The activity definition text | Runner-internal; never sent |
-| Inserted step identifiers (`activity.schema.ts:220-229`) | Removed — the insertion exists to make the text readable to an agent |
-| Filled-in decision bodies (`fragment-resolver.ts:170-221`) | Removed — decisions never reach an agent |
-| Inherited rules | Sent, as prose |
-| Technique content | Sent, as prose, one at a time |
-| Artifact obligations | Becomes `expect.artifacts`, with the filename already worked out |
-| Notes telling the agent what it must do (`workflow-tools.ts:1453-1461`) | Removed — the runner now does those things |
-| Notes telling the agent where a value came from (`technique.schema.ts:9,72`) | Removed — they exist to describe wiring the runner performs |
+- I want independent work to run at the same time only when something has established that it is
+  independent, so that concurrency is a property rather than a hope.
+- I want to know what a run cost, per activity, so that existing accounting keeps working.
+- I want a replacement agent to pick up mid-activity, so that losing a context costs one step rather than
+  one activity.
 
-### Filling in placeholders becomes the runner's job
+**As an agent**
 
-A definition can contain a placeholder in braces, to be replaced with a value at run time. Nothing in the
-server does that replacement today: the pattern at `src/utils/activity-variables.ts:182` only collects
-the names, and the helper at `src/utils/variable-seed.ts:35` exists purely so an unreplaced placeholder
-is not rejected for having the wrong type. There are 377 placeholders in the corpus definitions and 3,471
-more in technique prose:
+- I want to receive a technique's prose, its rules, and the values I need, so that I can do the work
+  without interpreting a structure.
+- I want to be told exactly which values I owe back, so that "done" is checkable rather than a matter of
+  opinion.
+- I want a way to raise a decision the definition did not anticipate, so that unexpected work has
+  somewhere to go.
 
-| Where it appears | Count | Runner fills it in? |
+## Architecture
+
+### Container view
+
+```mermaid
+---
+title: Container View - runtime pieces and what passes between them
+---
+flowchart TB
+    User([👤 User])
+
+    subgraph Host [Developer machine]
+        Runner[Runner<br/>Node package]
+        Server[Workflow server<br/>MCP]
+        Session[(Session file<br/>sealed JSON)]
+        Corpus[(Workflow definitions<br/>YAML and Markdown)]
+    end
+
+    Agent1[[Agent context A]]
+    Agent2[[Agent context B]]
+
+    Runner -->|open activity, close unit| Server
+    Server -->|resolved tree, accepted writes| Runner
+    Server --> Session
+    Server --> Corpus
+    Runner -->|prompt| Agent1
+    Runner -->|prompt| Agent2
+    Agent1 -->|reply| Runner
+    Agent2 -->|reply| Runner
+    Runner <-->|decision| User
+
+    style Host fill:#e3f2fd,stroke:#1976d2
+    style Runner fill:#c8e6c9,stroke:#2e7d32
+    style Server fill:#e1f5fe,stroke:#01579b
+```
+
+Two links, two grains. Runner-to-server is one local process addressing another, so it may be as chatty
+as it likes. Runner-to-agent is expensive — an exchange costs roughly what 18,800 characters of fresh
+content costs, and establishing a fresh context costs 23,000 to 42,000 tokens — so it stays coarse and
+carries prose. That asymmetry is the whole design; the reasoning is in [cost-model.md](cost-model.md).
+
+### Where each responsibility sits
+
+```mermaid
+---
+title: Responsibilities after the change
+---
+flowchart TB
+    subgraph R [Runner]
+        R1[Walk the step tree]
+        R2[Decide conditions]
+        R3[Drive repetition]
+        R4[Resolve inputs to values]
+        R5[Compose prompts]
+        R6[Hold position]
+    end
+
+    subgraph S [Server]
+        S1[Resolve definitions]
+        S2[Reproduce each transition]
+        S3[Apply accepted writes]
+        S4[Seal and record history]
+    end
+
+    subgraph A [Agent]
+        A1[Read protocol prose]
+        A2[Exercise judgement]
+        A3[Write content]
+        A4[Return declared values]
+    end
+
+    R --> S
+    R --> A
+
+    style R fill:#c8e6c9,stroke:#2e7d32
+    style S fill:#e1f5fe,stroke:#01579b
+    style A fill:#fff3e0,stroke:#ef6c00
+```
+
+The line between runner and agent is the technique's declared signature. Everything above it is
+structure; everything below it is prose. Nothing crosses.
+
+## The contracts
+
+```mermaid
+---
+title: Protocol messages
+---
+classDiagram
+    class OpenActivity {
+        +string session_index
+        +string activity_id
+        +string exit
+    }
+    class ActivityPlan {
+        +Unit[] tree
+        +Exit[] exits
+        +map variables
+        +int seq
+    }
+    class Unit {
+        +string unit_id
+        +string kind
+        +string when
+        +Condition condition
+    }
+    class Prompt {
+        +string prose
+        +map inputs
+        +Expected expects
+    }
+    class CloseUnit {
+        +string unit_id
+        +string kind
+        +int seq
+    }
+    class Accepted {
+        +string[] accepted
+        +Rejection[] rejected
+        +map variables_delta
+        +int seq
+    }
+
+    OpenActivity --> ActivityPlan : returns
+    ActivityPlan "1" *-- "many" Unit
+    Unit --> Prompt : composed into
+    Prompt --> CloseUnit : answered by
+    CloseUnit --> Accepted : returns
+```
+
+A reply from an agent takes one of three shapes, and the third is not optional — a technique taking a
+list of worker briefs is bound as an ordinary step at 22 sites across 8 activity files, each preceded by
+a step that composes those prompts at run time from domain material no runner could derive.
+
+| Reply | Carries | Why it exists |
 |---|---|---|
-| A message shown to a user | 264 | Yes |
-| A value supplied to a technique | 63 | Yes |
-| Descriptive prose | 28 | No — delivered as written |
-| A step identifier | 11 | Internal only |
-| A value set by an action | 6 | Depends on the action decision below |
-| A value set by a decision option | 5 | Yes |
-| **A condition** | **0** | Nothing to fill in |
+| `done` | Values per declared output, artifact paths | The ordinary case |
+| `decide` | A question and options | Work admitted part-way through a run that the definition could not anticipate |
+| `dispatch` | Worker briefs and a concurrency limit | The corpus composes its own fan-out prompts |
 
-That last row matters: no condition anywhere in the corpus contains a placeholder, so deciding conditions
-needs no substitution at all.
+## Key flows
 
-Of the 149 outputs that declare a file to write, 15 contain a placeholder, and several of those are
-notation rather than a value to look up — `{$page_slug}`, `{YYYY-MM-DD}-pr{pr_number}-review-analysis.md`,
-`strategic-review-{n}.md`, `NNNN-{decision_title}.md`. Those must be left alone.
+### Executing a run of steps
 
-Step identifiers never reach an agent under this design, which removes the one objection that made
-substitution awkward. They are also used to check what an agent ran and to recognise a decision already
-answered, and both of those become internal to the runner.
+```mermaid
+sequenceDiagram
+    actor U as User
+    participant R as Runner
+    participant S as Server
+    participant A as Agent
 
-### The one genuinely hard constraint: not repeating content already sent
+    R->>S: open activity
+    S-->>R: resolved tree, values, exits
+    loop for each unit whose condition holds
+        R->>R: decide condition against held values
+        R->>S: fetch technique body
+        S-->>R: prose, rules, resources
+        R->>A: prompt - prose plus resolved values
+        A-->>R: values per declared output
+        R->>S: close unit with produced values
+        S->>S: reproduce condition, derive write set
+        S-->>R: accepted, rejected, delta
+    end
+    R->>R: evaluate endings, pick destination
+    R->>S: open next activity
+```
 
-The server avoids re-sending content by recognising that it has sent the identical bytes before. That
-works only because a technique's delivered payload depends on the definitions alone and never on the
-state of the run. `src/utils/binding-provenance.ts:11-15` states the rule directly: classification is
-purely static, so identical refetches stay byte-identical. Accordingly `resolveInputSource` returns a
-*description* of where a value comes from, never the value — at `:296` it returns a string naming the
-source.
+### A decision that reaches the user
 
-A prose-only prompt carries actual values, which do depend on the run. Put them inside the technique
-text and every payload becomes unique to one session, the record of what has already been sent never
-matches, and the saving disappears — a direct loss on the largest cost in the system. So the prompt needs
-two separate parts:
+```mermaid
+sequenceDiagram
+    actor U as User
+    participant R as Runner
+    participant S as Server
 
-- **The body** — protocol, rules and resources. Depends only on the definitions, so it is still
-  recognisable as content already sent.
-- **The values** — `inputs` and `expect`. Never recorded as sent. Small: a map of values, not prose.
+    R->>R: reach a decision unit
+    R->>S: close unit - decision reached
+    S-->>R: question, options, consequences
+    R->>U: put the question
+    U-->>R: chosen option
+    R->>S: close unit with the choice
+    S->>S: apply the option effects
+    S-->>R: values delta
+```
 
-The practical rule is that `inputs` must sit beside `prose` as its own field, and never be substituted
-into it.
+No agent context is established. This is why the rule forbidding an activity from opening with a
+decision can go: that rule exists only because asking a question currently costs a whole context.
 
-### What checking-after-the-fact stops being needed for
+### Fan-out, where the agent composes the briefs
 
-Around 179 lines of code exist to check an agent's report against what it was given:
-`validateStepManifest` (`src/utils/validation.ts:95-159`, 65 lines), `validateReportedExit` (`:237`, 16),
-`immediateExitCut` (`:74-93`, 20), `validateActivityManifest` (`:260`, 24) and
-`validateTechniqueFetches` (54). The parameters that carry the report go with them.
+```mermaid
+sequenceDiagram
+    participant R as Runner
+    participant A as Composer agent
+    participant W1 as Worker A
+    participant W2 as Worker B
+    participant S as Server
 
-So does a large part of what is sent. Roughly 33,000 characters of every delivery are rules and
-techniques whose only subject is how to drive a workflow. One of them,
-`workflows/meta/techniques/variable-binding.md`, is a six-step description of an execution engine written
-as instructions for an agent to follow — resolve the signature, bind each input by a stated order of
-precedence, tell a rename from a literal from a placeholder, carry out the operation, put each result
-under its declared name, and read values back by path. Five of those six steps become runner code, and
-the server already has everything they need: `composeActivityTechnique`, `resolveInputSource`, the
-path-walking helper at `src/schema/when-expression.ts:287-294`, and `applyVariableWrites`. Only "carry
-out the operation" is the agent's.
+    R->>A: prompt - compose the briefs
+    A-->>R: dispatch - briefs plus concurrency
+    par
+        R->>W1: brief A
+        W1-->>R: values
+    and
+        R->>W2: brief B
+        W2-->>R: values
+    end
+    R->>S: close unit - gathered results as one array
+```
 
-## 5. A clean boundary between an activity and the techniques it uses
+Results gather into one declared name in one call. Writing a value per iteration under an indexed name
+is not expressible, because no value-path reader in the system handles brackets.
 
-The boundary is the technique's declared signature, which already exists and is already typed.
+### Resuming after interruption
 
-**Going in**, values are resolved in the order the binding description already specifies: a literal given
-at the step, then a rename given at the step, then a value of the same name in the session, then the
-technique's own declared default — and if none of those supply it, the runner refuses to dispatch. That
-refusal is the cleanliness. Today an unresolved input is delivered to an agent marked as unresolved, and
-the agent improvises.
+```mermaid
+sequenceDiagram
+    participant R as Runner
+    participant S as Server
+    participant A as Replacement agent
 
-**Coming back**, the runner can check the shape of a reply and must take the content on trust:
+    Note over R,S: position and values are already recorded per step
+    R->>S: open activity
+    S-->>R: tree, values as at the last completed step
+    R->>R: seek to the recorded position
+    R->>A: prompt for the next unit only
+    A-->>R: values
+```
 
-| The runner can check | The runner must trust |
-|---|---|
-| That the returned names are exactly the declared outputs — none missing, none extra | That a value is correct |
-| That renamed outputs land where the step said they would | That an artifact's prose is any good |
-| That values match their declared types | That the judgement exercised was sound |
-| That a declared file exists where expected | That the protocol was followed at all |
-| That its name matches the required pattern | |
-| That a machine-read output parses as JSON | |
+Today a replacement re-enters the whole activity and crosses already-answered decisions by replaying
+recorded answers. With position recorded per step, the decision is never re-reached, and replay shrinks
+back to genuine re-entry.
 
-None of that shape is checked today. A step's report is a single free-text string checked only for being
-non-empty, and values arrive in an unconstrained map at activity granularity, so nothing connects "this
-step declares an output called X" to "the session gained X".
+### The lifecycle of one unit
 
-Two details in the current code force decisions here. A value whose type disagrees with its declaration
-is recorded as a warning and then stored anyway (`src/utils/variable-seed.ts:72-78`). And equality is
-exact while ordering comparisons convert to numbers first (`src/schema/when-expression.ts:304-308`) —
-tested directly, `review_findings_count == 0` against the value `'0'` as text is false, while
-`remediation_round > 0` against `'2'` as text is true. The corpus contains 81 equality and 56 inequality
-comparisons in structured conditions alone. A runner that acts on those answers must reject a type
-mismatch rather than warn, or a number arriving as text will silently flip every equality comparison that
-mentions it.
+```mermaid
+stateDiagram-v2
+    [*] --> Pending
+    Pending --> Skipped: condition false
+    Pending --> Resolving: condition true
+    Resolving --> Refused: a required input has no producer
+    Resolving --> Dispatched: all inputs resolved
+    Dispatched --> Returned: agent replies
+    Returned --> Rejected: shape disagrees with the declaration
+    Returned --> Committed: server reproduces and accepts
+    Committed --> [*]
+    Skipped --> [*]
+    Refused --> [*]
+    Rejected --> Dispatched: retry
+```
 
-The existing write path survives, but as the only one rather than one of two.
+`Refused` is the state that does not exist today. An input that resolves to nothing currently reaches an
+agent marked unresolved, and the agent improvises.
 
-### Three points at which this becomes checkable
+## What the runner is not allowed to do
 
-| When | What is established | New? |
+- **Parse a technique's protocol.** It is prose, and 436 of the corpus's 2,459 protocol bullets carry
+  control flow of their own, so a call is all-or-nothing: the runner establishes that a technique ran and
+  returned what it declared, never which branch it took inside.
+- **Author every prompt.** Twenty-two sites compose their own.
+- **Run two decisions at once.** One decision is outstanding per session; two members of a fan-out cannot
+  both escalate without a keyed map.
+- **Make dispatch finer.** The gain is that the server decides where a coarse boundary falls, not that
+  boundaries multiply.
+- **Take on the environment.** Validation instructions ask the host whether a tool is authenticated or a
+  key is available. Whether the runner shells out or delegates is unresolved — see
+  [protocol-verification.md](protocol-verification.md).
+
+## Delivery stages
+
+Each is useful alone and assumes nothing after it.
+
+| Stage | Lands | Depends on |
 |---|---|---|
-| When definitions load | That every value a step reads is produced by something before it, checked step by step rather than activity by activity | Yes — possible only once step order is authoritative rather than reported |
-| When a prompt is built | That the prompt is determined entirely by the definitions plus the resolved values, so it can be fingerprinted and a divergence noticed | Yes |
-| When a reply arrives | That the shape matches the declaration, and that the server can independently reach the same transition | Yes |
+| 1. Correct and widen | Stale documentation fixed; the condition guard covers endings, nested directories and validation targets; an unparseable condition fails the load; the unused early-exit field deleted | — |
+| 2. Server answers | A dismissed decision is verified against the values rather than taken on the agent's word; an activity's ending is computed and reconciled | 1 |
+| 3. Write authority | A step's declared outputs land when the step finishes | — |
+| 4. Position and repetition | A durable cursor with a frame per loop; something that drives iteration | 3 |
+| 5. The runner | The three calls, prompt composition, the three-shaped reply | 3, 4 |
 
-The first is worth spelling out. There is already a check that no step reads a value nothing has produced
-— `unreachableReads` at `src/utils/activity-variables.ts:539-636`. It works by asking, for each activity,
-which values are guaranteed to exist however the run arrived there, which means taking only what every
-incoming route supplies. It works at the level of whole activities, skips any activity the run cannot
-reach (`:565-574`), and ignores names outside the declared set entirely (`:345`, `:355`). Once the runner
-makes step order authoritative, the same reasoning can run step by step, which is a real increase in what
-can be established before anything runs.
+Stage 2 is where the conceptual step happens: a server verdict overruling an agent's claim.
 
-### The limit on how clean this can get
-
-A request to an agent is all-or-nothing. Of the 2,459 protocol instructions across 480 technique files,
-436 begin with a conditional or a repetition — 167 with "if", 154 with "for", 115 with "when". Control
-flow lives inside technique bodies as well as above them. The runner can establish that a technique ran
-and returned what it declared; it cannot establish which branch was taken inside, and cannot pick one up
-half-finished.
-
-A sharper problem for the boundary: 137 places across 75 technique files invoke another technique from
-inside their prose, and the loader does not resolve any of them. `src/loaders/core-ops.ts:24-26` already
-works around this by hand. Under one request per technique, those become invocations the runner cannot
-see, whose results arrive inside the caller's reply with no indication of where they came from, and which
-keep the producer analysis crediting the wrong step. The most-invoked target appears 21 times and is the
-same mechanical file-writing routine each time, which is the argument for turning those into real steps —
-exactly what [#520](https://github.com/m2ux/workflow-server/issues/520) provides.
-
-### Writing files
-
-The technique that writes an artifact declares the numeric prefix ordering its output as
-"server-provided", and the server does compute it, from the activity's filename
-(`src/loaders/filename-utils.ts:6-10`, assigned at `src/loaders/workflow-loader.ts:84`). What the
-technique's prose then describes is a mechanical routine: look for an existing file of that name, create
-it if absent, prefer the lowest-numbered one on a conflict, and re-check just before creating in case
-another writer got there first.
-
-So the agent could return content alone, and the runner could work out the name, apply the prefix,
-resolve the find-or-create, write the file and return the path as the output value. That removes 21
-duplicated invocations, one technique file, and the entire class of defect where an agent writes an
-artifact under the wrong name. The cost is that full artifact text then travels back through a reply, and
-that should be priced on the existing token benchmark before it is committed to.
-
-## 6. What is added and what is removed
-
-**Removed**
-
-| Retired | Where |
-|---|---|
-| ~179 lines that check an agent's report | `src/utils/validation.ts` |
-| The report parameters on the activity-transition call | `next_activity` |
-| The two tools that park and resume a user decision | `workflow-tools.ts` |
-| The insertion of step identifiers and decision bodies into delivered text | `activity.schema.ts:220`, `fragment-resolver.ts:170-221` |
-| The notes describing where each value came from | `technique.schema.ts:9,72` |
-| An early-exit field on loops — declared, and **used at none of the corpus's 46 loops** | `activity.schema.ts:146`, read at `activity-variables.ts:369` |
-| The rule against opening an activity with a user decision, and the guard enforcing it | `scripts/check-checkpoint-entry.ts` |
-| ~33,000 characters per delivery of instructions on how to drive a workflow | `workflows/meta/techniques/workflow-engine/`, `variable-binding.md` |
-| Five separate implementations of "which names does this condition read", behind one | `when-expression.ts:261`, `gate-liveness.ts:10,30,92,113`, `activity-variables.ts:205,210`, `check-decision-order.ts:60,77` |
-
-That guard's own opening paragraph explains why it can go. It exists because an activity beginning with a
-question forces a whole agent context to be established purely to ask it, which it calls the most
-expensive way to ask a question. A runner settles the question before any agent context exists, so the
-reason disappears and the 113 decisions positioned to avoid it may move back to the activities that own
-them.
-
-**Added**
-
-- The runner itself, sharing the evaluators and loaders with the server so the two cannot diverge.
-- Step results reaching the session when the step finishes: a third write source on
-  `applyVariableWrites` (`src/utils/variable-seed.ts:62`), and a history entry per step.
-- A durable record of position, with an entry per enclosing repetition. Much of this is already drafted:
-  the shape for tracking a repetition exists at `src/schema/state.schema.ts:106-114`, is already exported
-  to JSON schema, and is imported by nothing but the generator; the history entry already carries unused
-  slots for a step and a loop; and the event list already reserves six names for starting, iterating,
-  completing and breaking a loop and for reaching and taking a decision, none of which any code writes.
-- Something to carry out the repetition — the one responsibility with no existing implementation.
-- A small dedicated call for an agent to raise an unanticipated decision.
-
-On balance this removes more than it adds, provided the step results and the position record land
-together.
-
-## 7. Suggested order of work
-
-Each layer is worth doing on its own and assumes nothing that comes after it.
-
-**First, correct the record and widen the nets.** Fix the four documentation sites that claim the server
-never decides a condition. Widen the guard that checks condition expressions: it walks only the steps
-list (`scripts/check-when-expression.ts:44-51`), reads activity directories without descending
-(`:63`, so the five files under `workflows/meta/activities/patterns/` are never opened), and never checks
-that validation instructions parse — three of the four places conditions live. It passes today because
-the corpus happens to be clean, not because it is covering the ground. Then move the parse check into the
-loader so an unparseable condition fails at load: the corpus stands at zero failures across 500 sites,
-and `snapshot.test.ts:187-203` already asserts that, so it is free to adopt now and dearer every month it
-waits. Delete the unused early-exit field.
-
-**Second, let the server answer rather than mark.** When an agent reports that a conditional decision did
-not apply, the server checks only that the decision *has* a condition, never that the condition is
-actually false — `workflow-tools.ts:1969-1976`, even though the evaluator is imported nearby and the
-values are in hand at `:1981`. So any agent can dismiss any conditional decision, across 98 of them. One
-call fixes it. Then have the server work out an activity's outcome from the declared conditions and
-compare it with the reported one.
-
-*One correction, found by a reviewer:* the existing outcome check runs at `workflow-tools.ts:738-740`
-against a view of the session built at `:725`, while the finishing activity's results are not applied
-until `:797`. The very values that decide which outcome holds are not there yet. The comparison has to
-move after the write.
-
-Together these establish that a server verdict can overrule an agent's claim, which is the actual
-conceptual step.
-
-**Third, step results reaching the session when the step finishes.** The decision everything else waits
-on.
-
-**Fourth, the durable position record and the loop driver.**
-
-**Fifth, the runner and the prompt-set protocol.**
-
-## 8. What has to be decided
+## Open decisions
 
 Ordered by what blocks what. The first three constrain the schema or the session file.
 
-1. **Do a step's declared results enter the session when the step finishes?** 274 of 500 conditions
-   depend on the answer, and nothing else can be settled first.
-2. **Make step identifiers unique across a whole activity — decided, and cheaper than stated.**
-   Identifiers are unique only within their own scope: `populateStepIds` (`activity.schema.ts:180-206`)
-   starts a fresh set for each loop body and says so at `:201`, and one tool already resolves a collision
-   to the wrong step without complaint (`resource-tools.ts:694-695`). But the verification pass scanned
-   every activity reachable from every workflow graph — 131 activities, 108 distinct identifiers — and
-   found **zero** duplicates. It is a permission nobody uses, so one shared set for the whole activity
-   fixes it in two lines with no definition file touched, and no second way of naming things is needed.
-   Addressing by path is off the table.
-3. **Where does a repeat-until loop keep its continuation condition?** All 19 such loops carry a
-   structured condition that the schema describes as deciding whether the step is entered, and both
-   mechanical readers treat it that way. The unused early-exit field is of exactly the right shape, so
-   this is a rename rather than an addition. The corpus holds 27 loops over a collection (all naming one,
-   one of them a field of an object: `implementation_plan.tasks`), 10 repeat-while and 9 repeat-until.
-4. **Does equality convert to numbers the way ordering already does, or does the write path enforce the
-   declared type and stop warning?** Choosing neither leaves a number arriving as text able to flip 81
-   equality comparisons.
-5. **Are action steps rewritten as technique outputs?** Of 84 value-setting actions, 28 carry a literal,
-   6 carry a placeholder needing substitution, and 50 deliberately carry nothing because an agent
-   supplies the value. `activity.schema.ts:27` already records that the construct is due for removal.
-   Rewriting them is the only route by which the whole step kind can be deleted.
-6. **Does the server write artifacts?** Removes one technique and 21 call sites; sends full artifact text
-   back through replies. Price it first.
-7. **What happens to the 137 techniques invoked from inside other techniques' prose?** Accept them as
-   invocations the runner cannot see, or turn them into steps.
-
-## 9. What this does not fix
-
-**The cost of establishing agent contexts.** Around 31% of a measured 4.1 million token run went on
-establishing fresh contexts, and the server has no influence over it: it never starts a context, the
-orchestrator uses the harness's own facility for that, and the protocol only lets a client call the
-server rather than the other way round. On the measured run, seven of eight user decisions arrived in the
-middle of an activity, with 26, 14, 14, 11, 10, 3 and 1 steps still to go, and the existing guard covers
-only the first step of an activity. Reducing that figure is a matter of where decisions sit in the
-corpus, and a guard covering mid-activity decisions with many steps behind them would attack it directly
-without any of this work.
-
-**Repetition written as prose.** One technique whose name says it runs a loop is invoked as an ordinary
-step at four sites — `04-research.yaml:122-132`, `05-implementation-analysis.yaml:70-80`,
-`07-assumptions-review.yaml:58-68` and `08-implement.yaml:126-136` — with inputs naming a convergence
-flag, a residue flag and a residue collection. A runner that drives declared loops still cannot see the
-iteration that matters most here.
-
-**A step already being silently skipped.** One repeat-until loop
-(`09-lean-coding-audit.yaml:67-76`, gated on a simplification flag) never runs in any of the six recorded
-walks, and the committed snapshot records its steps as absent. That class of failure persists until the
-continuation condition has an unambiguous home.
-
-**Unknown session fields disappearing without complaint.** The session schema is an ordinary object
-schema (`session.schema.ts:72`), so anything it does not declare is quietly dropped. A server build that
-does not know about the position record would therefore erase one and leave a valid signature behind,
-which `src/utils/session/resolver.ts:148-156` would later report as a signature mismatch — that is, as
-suspected tampering rather than a version difference. Seven existing optional fields are already exposed
-to this. A missing position record on a running session has to be a hard refusal with a documented way
-back.
-
-**The cost of finding a session.** Every authenticated call walks the planning directory and parses every
-session file it finds — 73 files totalling 4,884,336 bytes here, the largest 392,155 — with no index, no
-cache, and no early exit once a match is found, because detecting a collision means aggregating all of
-them (`src/utils/session/store.ts:436-525`). A runner calling once per step rather than once per activity
-multiplies that directly, which is the strongest argument for the runner holding the walk locally and
-saving to the server only at boundaries.
-
-**Nothing checks the generated JSON schemas against their source.** The build script has no verifying
-variant, and the test file covering them is 60 lines with two assertions. A forgotten regeneration passes
-continuous integration while authors see spurious errors on valid definitions.
+1. **Do a step's declared outputs enter the session when the step finishes?** The majority of conditions
+   depend on it, and nothing else can be settled first.
+2. **Does the runner author every prompt, or only some?** Twenty-two sites compose briefs as domain work.
+   Whether a worker-composed brief is a first-class prompt with a different author or an opaque string
+   the runner relays shapes the whole protocol.
+3. **Which condition verdict is authoritative** — the three-valued delivery check or the plain
+   evaluators — and does the runner receive expressions or verdicts?
+4. **What becomes of the orchestration workflow?** Its five activities *are* the orchestration procedure,
+   and the runner subsumes them. Nobody has priced removing it, the bootstrap call, or the guard that
+   protects it. This is the largest unpriced item.
+5. **Who commits, and who writes the progress table?** The runner retires the driver and reassigns none
+   of this.
+6. **Sequence the bare-string migration** — 193 sites — ahead of the runner, or inbound resolution is a
+   coin flip on 85% of bindings.
+7. **Unify the two token grammars** on the dotted form. Prerequisite for both input resolution and
+   artifact naming, and it fixes an existing silent mis-report at 17 sites.
+8. **Decide the artifact path**: retire the 45 artifact-writing steps in favour of a declared
+   destination, or accept that artifact bodies round-trip through the runner.
 
 ## Companion records
 
-- [protocol-verification.md](protocol-verification.md) — how the three parties would talk, three designs
-  each independently checked, and the list of claims this file has withdrawn. **Read this before acting on
-  anything above.**
-- [cost-model.md](cost-model.md) — what the measurements say about how much work to hand over at a time.
+- [investigation.md](investigation.md) — what the code and the corpus do today, how it was measured, and
+  what a runner does not fix.
+- [protocol-verification.md](protocol-verification.md) — three reviewed designs of the interaction, and
+  the claims they withdrew. **Read before acting on anything here.**
+- [cost-model.md](cost-model.md) — the measurements fixing how much work is handed over at a time.
 - [attestation.md](attestation.md) — why the runner carries no signature.
