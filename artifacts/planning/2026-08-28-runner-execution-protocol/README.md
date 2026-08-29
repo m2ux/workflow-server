@@ -179,28 +179,30 @@ title: Container View - runtime pieces and what passes between them
 ---
 flowchart TB
     User([👤 User])
+    Facing[[User-facing agent]]
 
     subgraph Host [Developer machine]
-        Runner[Runner<br/>Node package]
         Server[Workflow server<br/>MCP]
+        Runner[Runner<br/>Node package]
         Session[(Session file<br/>sealed JSON)]
         Corpus[(Workflow definitions<br/>YAML and Markdown)]
     end
 
     Agent1[[Technique agent A]]
     Agent2[[Technique agent B]]
-    Facing[[User-facing agent]]
 
-    Runner -->|open activity, close unit| Server
+    User -->|answers| Facing
+    Facing -->|shows the question| User
+    Facing -->|chosen option| Server
+    Server -->|rendered question| Facing
     Server -->|resolved tree, accepted writes| Runner
-    Server --> Session
-    Server --> Corpus
+    Runner -->|open activity, close unit| Server
+    Server -->|writes| Session
+    Server -->|reads| Corpus
     Runner -->|prompt| Agent1
     Runner -->|prompt| Agent2
     Agent1 -->|reply| Runner
     Agent2 -->|reply| Runner
-    Server <-->|question and option| Facing
-    Facing <-->|asks| User
 
     style Host fill:#e3f2fd,stroke:#1976d2
     style Runner fill:#c8e6c9,stroke:#2e7d32
