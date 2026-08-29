@@ -80,6 +80,7 @@ flowchart LR
     Facing -->|chosen option| Server
     Runner -->|asks for a context| Harness
     Server -->|resolved structure| Runner
+    Server -->|values delta, wait released| Runner
     Server -->|reads| Defs
     Server -->|writes| Session
 
@@ -100,6 +101,7 @@ title: Use cases by actor
 flowchart LR
     User([👤 User])
     Author([✍️ Definition author])
+    Agent([🤖 Technique agent])
 
     subgraph Cases [What the system is for]
         UC1(Answer a decision)
@@ -110,6 +112,7 @@ flowchart LR
         UC6(Know a definition is wrong before it runs)
         UC7(Reuse a run of steps safely)
         UC8(Run independent work safely at once)
+        UC9(Be given one job and a checkable contract)
     end
 
     User --> UC1
@@ -120,6 +123,7 @@ flowchart LR
     Author --> UC6
     Author --> UC7
     Author --> UC8
+    Agent --> UC9
 
     style Cases fill:#f5f5f5,stroke:#bdbdbd
 ```
@@ -208,10 +212,12 @@ The runner has no line to the person. It marks a decision outstanding on the ser
 question travels to the person through the user-facing agent — see
 [How a decision reaches a person](#how-a-decision-reaches-a-person) below.
 
-Two links, two grains. Runner-to-server is one local process addressing another, so it may be as chatty
-as it likes. Runner-to-agent is expensive — an exchange costs roughly what 18,800 characters of fresh
-content costs, and establishing a fresh context costs 23,000 to 42,000 tokens — so it stays coarse and
-carries prose. That asymmetry is the whole design; the reasoning is in [cost-model.md](cost-model.md).
+The runner's two working links have opposite grains. Runner-to-server is one local process addressing
+another, so it may be as chatty as it likes. Runner-to-agent is expensive — an exchange costs roughly
+what 18,800 characters of fresh content costs, and establishing a fresh context costs 23,000 to 42,000
+tokens — so it stays coarse and carries prose. That asymmetry is the whole design; the reasoning is in
+[cost-model.md](cost-model.md). The third link, carrying a question to the person, is neither: it is rare,
+small, and paced by a human.
 
 ### How a decision reaches a person
 
@@ -284,19 +290,25 @@ flowchart TB
         S4[Seal and record history]
     end
 
-    subgraph A [Agent]
+    subgraph A [Technique agent]
         A1[Read protocol prose]
         A2[Exercise judgement]
         A3[Write content]
         A4[Return declared values]
     end
 
-    R --> S
-    R --> A
+    subgraph F [User-facing agent]
+        F1[Carry a question out, an option back]
+    end
+
+    R -->|reports each unit| S
+    R -->|prompts, one technique at a time| A
+    S -->|hands over a rendered question| F
 
     style R fill:#c8e6c9,stroke:#2e7d32
     style S fill:#e1f5fe,stroke:#01579b
     style A fill:#fff3e0,stroke:#ef6c00
+    style F fill:#fff3e0,stroke:#ef6c00
 ```
 
 The line between runner and agent is the technique's declared signature. Everything above it is
@@ -333,8 +345,19 @@ classDiagram
     }
     class CloseUnit {
         +string unit_id
-        +string kind
         +int seq
+    }
+    class Done {
+        +map outputs
+        +string[] artifacts
+    }
+    class Decide {
+        +string message
+        +Option[] options
+    }
+    class Dispatch {
+        +Brief[] briefs
+        +int concurrency
     }
     class Accepted {
         +string[] accepted
@@ -347,6 +370,9 @@ classDiagram
     ActivityPlan "1" *-- "many" Unit
     Unit --> Prompt : composed into
     Prompt --> CloseUnit : answered by
+    CloseUnit <|-- Done
+    CloseUnit <|-- Decide
+    CloseUnit <|-- Dispatch
     CloseUnit --> Accepted : returns
 ```
 
@@ -584,10 +610,9 @@ check.
 
 ```mermaid
 sequenceDiagram
-    actor U as User
     participant R as Runner
     participant S as Server
-    participant A as Agent
+    participant A as Technique agent
 
     R->>S: open activity
     S-->>R: resolved tree, values, exits
