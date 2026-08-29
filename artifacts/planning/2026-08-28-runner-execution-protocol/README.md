@@ -15,6 +15,20 @@ things that are genuinely prose — a technique's protocol, a judgement, a piece
 stops grading reports and starts reproducing decisions: it accepts a change to a run only when it
 independently arrives at the same one.
 
+It aims at three things, in ascending order of importance.
+
+**Efficiency.** Fewer, larger, better-timed deliveries, and the removal of roughly 33,000 characters per
+hand-off that exist only to tell an agent how to interpret a structure.
+
+**Determinism.** The same definitions, the same values and the same answers produce the same sequence of
+prompts. That is currently not true and cannot be asserted.
+
+**Fidelity.** Today the system's own documentation describes seven enforcement layers, of which **two
+refuse a call and five only record a warning** — and it lists eight things it cannot verify at all, most
+of which reduce to the same sentence: the agent is the one reporting, so the report is what gets checked.
+The runner's central contribution is not another check. It is removing the agent's ability to misreport,
+by never giving it the structure to misreport about.
+
 The result is that correctness stops being something checked after the fact and becomes a property of
 the arrangement. An agent that never receives the structure cannot depart from it.
 
@@ -125,6 +139,10 @@ flowchart LR
   activity by activity, so that a mistake is localised.
 - I want to know that what ran is what I wrote, so that a run is evidence about the definition rather
   than about the agent that read it.
+- I want a step that was skipped to have been skipped because its condition was false, not because an
+  agent overlooked it, so that a run tells me something about my conditions.
+- I want two runs of the same definition, given the same answers, to ask the same questions, so that a
+  change in behaviour means a change in the definition.
 - I want to reuse a run of steps without copying it, so that a change lands in one place. *(This is
   [#520](https://github.com/m2ux/workflow-server/issues/520); a runner walks the tree that proposal
   resolves.)*
@@ -286,6 +304,103 @@ a step that composes those prompts at run time from domain material no runner co
 | `decide` | A question and options | Work admitted part-way through a run that the definition could not anticipate |
 | `dispatch` | Worker briefs and a concurrency limit | The corpus composes its own fan-out prompts |
 
+## What this buys
+
+### Efficiency
+
+The saving is not in sending less per delivery — the server already withholds every step whose condition
+reads false, so there is no waste to reclaim. It is in answering the conditions that cannot be answered
+at delivery time, and handing over the next unbroken run of steps in one go. That collapses 23 to 84
+separate fetches on the reference path, worth 108,000 to 395,000 tokens, and retires the
+instructions-on-how-to-drive that ride on every hand-off. The full reasoning, and the three exchange
+rates it rests on, are in [cost-model.md](cost-model.md).
+
+### Determinism
+
+A prompt becomes a pure function of the definitions and the resolved input values. Nothing about a
+prompt depends on which agent asks, when it asks, or what it has in context. Two consequences follow that
+are not available today: a prompt can be fingerprinted, so a divergence between two runs is detectable
+rather than invisible; and the same definitions with the same answers produce the same sequence of
+prompts, so a run becomes evidence about the definition rather than about the agent that read it.
+
+This is also what makes the existing content-reuse machinery work properly. Today the record of
+already-sent content keys on the technique while hashing text that carries position-dependent annotation,
+so the same technique at two positions hashes differently and is sent twice. Strip the annotation and the
+body is corpus-pure.
+
+### Fidelity — the point of the exercise
+
+Enforcement has strengths, and it is worth naming them so a proposal can say which one each guarantee
+sits at.
+
+```mermaid
+---
+title: Enforcement strength
+---
+flowchart LR
+    L0[Convention<br/>nothing checks]
+    L1[Detected<br/>warned after the fact]
+    L2[Refused<br/>the call is rejected]
+    L3[Refused at load<br/>the run cannot start]
+    L4[Unrepresentable<br/>no channel to violate]
+
+    L0 --> L1 --> L2 --> L3 --> L4
+
+    style L0 fill:#ffebee,stroke:#c62828
+    style L1 fill:#fff3e0,stroke:#ef6c00
+    style L2 fill:#fffde7,stroke:#f9a825
+    style L3 fill:#e8f5e9,stroke:#2e7d32
+    style L4 fill:#c8e6c9,stroke:#1b5e20
+```
+
+Most of what the documentation calls enforcement sits at **Detected**. A drifting agent is visible rather
+than stopped, and a confused one may ignore the warning. The runner's method is not to add checks at that
+level but to move guarantees up the ladder — and the largest moves land at **Unrepresentable**, because a
+guarantee an agent has no channel to violate needs no enforcement at all.
+
+#### Guarantees that get stronger
+
+Each row is a limitation the fidelity documentation states in its own words.
+
+| Guarantee | Today | With a runner | How |
+|---|---|---|---|
+| The steps that ran are the steps that were meant to run | Detected — the manifest validates that the agent *reported* each step, not that it performed it | **Unrepresentable** | The runner hands out each unit and receives each reply, so there is no self-report to check. The manifest concept disappears rather than improving. |
+| A condition's truth decided the branch | Convention — the server checks a claimed outcome maps to the target, but "cannot verify whether the condition is actually true" | **Refused** | The runner evaluates against values the server holds, and the server re-derives every reported transition and rejects what it cannot reproduce. Needs per-step write authority. |
+| A conditional decision was genuinely inapplicable when dismissed | Convention — "relies on agent honesty"; the server checks only that a condition field exists | **Refused** | One evaluation of the condition against the session values. Available today, independent of the runner. |
+| A person actually saw a decision | Convention — "an agent could wait the minimum time and then submit a fabricated response" | **Unrepresentable** | The runner puts the question through the harness. No agent context is involved in a decision at all, so there is no agent to fabricate one. |
+| A repeated call is distinguished from a fresh one | Detected — visible in the trace afterwards | **Refused** | Position is recorded per step and is authoritative, so a repeat is a no-op or a refusal rather than a second execution. |
+| Steps ran in declared order | Detected — a relative-order comparison over a self-report | **Unrepresentable** | Order is the runner's walk. There is nothing to compare. |
+| An iteration bound was respected | Convention — "iteration is executed and bounded entirely by the agent" | **Refused** | The runner drives repetition and holds the count. |
+| Warnings are acted on | Convention — "a confused agent may ignore validation warnings" | **Refused** | The consumer is a program, and the server refuses rather than warns where it can reproduce the answer. |
+| What happened is recorded faithfully | Detected — the semantic trace "relies on agent discipline" | **Refused**, partly | Which steps ran, which conditions held, which options were chosen and which values changed all become mechanical. The prose describing an output stays the agent's. |
+
+#### Guarantees that are newly possible
+
+These do not exist at any strength today.
+
+| New guarantee | Level | How |
+|---|---|---|
+| A step's declared inputs were all resolved before it ran | **Refused** | An input that resolves to nothing refuses before dispatch. Today it reaches an agent annotated as unresolved and the agent improvises. |
+| A step returned exactly what it declared | **Refused** | The reply is checked against the declared output identifiers, remap destinations and types. Today a step's report is one free-text string checked for non-emptiness, and nothing joins "this step declares an output" to "the session gained it". |
+| A declared artifact exists, under the declared name | **Refused** | The runner owns naming and placement; the agent returns content. |
+| Every value a step reads has a producer before it | **Refused at load** | The existing analysis moves from activity granularity to step granularity, which becomes possible once step order is authoritative. |
+| A condition is well-formed | **Refused at load** | Move the parse check into the loader. The corpus is at zero failures, so this is free now and dearer later. |
+| Two runs of the same definition asked the same questions | **Refused** | Prompts are fingerprintable, per Determinism above. |
+| Work that ran in parallel was safe to parallelise | **Refused** | Concurrency is declared and checked rather than assumed — and the check found that a naive reads-and-writes test would wrongly clear 231 adjacent step pairs whose real dependency is shared state on disk. |
+
+#### What stays unenforceable, honestly
+
+- **Whether a technique's protocol was followed.** It is prose, and 436 of the corpus's 2,459 protocol
+  bullets carry control flow of their own. The runner establishes that a technique ran and returned what
+  it declared, never which branch it took inside, and it cannot resume one part-way.
+- **Whether a returned value is correct.** Shape is checkable; content is not.
+- **Whether a judgement was sound.** That is the work an agent is for.
+- **The trace's survival across a restart.** It lives in server memory and is unaffected by any of this.
+
+The shape of the improvement is worth stating plainly: nothing here makes an agent more trustworthy. It
+narrows what an agent is trusted *with*, from "read this structure and tell us what you did" down to
+"carry out this one thing and return these named values" — and the second is a claim the server can check.
+
 ## Key flows
 
 ### Executing a run of steps
@@ -418,15 +533,18 @@ agent marked unresolved, and the agent improvises.
 
 Each is useful alone and assumes nothing after it.
 
-| Stage | Lands | Depends on |
-|---|---|---|
-| 1. Correct and widen | Stale documentation fixed; the condition guard covers endings, nested directories and validation targets; an unparseable condition fails the load; the unused early-exit field deleted | — |
-| 2. Server answers | A dismissed decision is verified against the values rather than taken on the agent's word; an activity's ending is computed and reconciled | 1 |
-| 3. Write authority | A step's declared outputs land when the step finishes | — |
-| 4. Position and repetition | A durable cursor with a frame per loop; something that drives iteration | 3 |
-| 5. The runner | The three calls, prompt composition, the three-shaped reply | 3, 4 |
+| Stage | Lands | Fidelity gained | Depends on |
+|---|---|---|---|
+| 1. Correct and widen | Stale documentation fixed; the condition guard covers endings, nested directories and validation targets; an unparseable condition fails the load; the unused early-exit field deleted | A condition is well-formed — **refused at load** | — |
+| 2. Server answers | A dismissed decision is verified against the values rather than taken on the agent's word; an activity's ending is computed and reconciled | Dismissal honesty and branch truth move from convention to **refused** | 1 |
+| 3. Write authority | A step's declared outputs land when the step finishes | Makes branch truth checkable at all; unblocks the rest | — |
+| 4. Position and repetition | A durable cursor with a frame per loop; something that drives iteration | Repeat calls and iteration bounds — **refused**; order becomes **unrepresentable** | 3 |
+| 5. The runner | The three calls, prompt composition, the three-shaped reply | Step execution and decision presence become **unrepresentable**; input resolution and return shape **refused** | 3, 4 |
 
-Stage 2 is where the conceptual step happens: a server verdict overruling an agent's claim.
+Stage 2 is where the conceptual step happens, and it is worth doing for its own sake: it is the first
+time a server verdict overrules an agent's claim. Stage 3 is the load-bearing one — until a step's
+outputs land when the step finishes, most conditions cannot be decided by anyone but the agent that
+produced them, and the fidelity argument has no purchase.
 
 ## Open decisions
 
