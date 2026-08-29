@@ -304,6 +304,73 @@ a step that composes those prompts at run time from domain material no runner co
 | `decide` | A question and options | Work admitted part-way through a run that the definition could not anticipate |
 | `dispatch` | Worker briefs and a concurrency limit | The corpus composes its own fan-out prompts |
 
+## Designed for a later formal language
+
+A future direction for the project is to replace the YAML mechanics with a dedicated TypeScript-like
+language giving a strict formal reading of activity mechanics. That migration is not proposed here and
+this design carries **no compatibility obligation toward it** — no dual-format support, no migration
+path, nothing held open in case. But it costs nothing to build the runner so that such a migration is a
+change of one layer rather than a rewrite, and it is worth saying what that requires.
+
+```mermaid
+---
+title: Layering - what a change of source language would touch
+---
+flowchart TB
+    subgraph Source [Source]
+        Yaml[Definitions<br/>YAML today]
+        Dsl[Definitions<br/>typed language later]
+    end
+
+    Loader[Loader<br/>resolves and normalises]
+    Tree[Resolved activity tree<br/>the stable contract]
+    Runner[Runner<br/>executes the tree]
+
+    Yaml --> Loader
+    Dsl -.-> Loader
+    Loader --> Tree
+    Tree --> Runner
+
+    style Tree fill:#c8e6c9,stroke:#2e7d32
+    style Dsl fill:#f5f5f5,stroke:#bdbdbd
+    style Source fill:#f5f5f5,stroke:#bdbdbd
+```
+
+**The runner never sees source.** It receives a resolved tree as data and has no parser, no file access
+and no knowledge of the notation the tree came from. The stable contract is the tree, not the file
+format. This falls out of the protocol as already designed — the alternative, where the runner loads
+definitions itself, was rejected for a different reason — but it should be held deliberately rather than
+enjoyed by accident, because it is the whole of what makes a later change of language cheap.
+
+**The runner is the operational semantics.** A formal language needs a definition of what each construct
+means: when a loop stops, what an absent value does to a comparison, in what order inputs resolve, what
+happens when a required one does not. Today those answers are distributed across prose, a test harness
+and the reading habits of agents. The runner collects them into one executable definition — so a typed
+language would be a better *surface syntax* for semantics the runner has already fixed, rather than a new
+thing needing semantics of its own.
+
+Three consequences follow for how the runner is built:
+
+1. **Conditions travel as trees, not strings.** A verified design already recommends the server ship
+   condition expressions rather than verdicts. Keep them structured on the wire, and a language that
+   emits typed expressions natively needs no adapter.
+2. **The loader resolves surface ambiguity; the runner never meets it.** Anything undecidable only
+   because of how YAML writes it belongs on the loader's side of the boundary — whether a bare string is
+   a literal or a reference, which of two token grammars applies, an artifact prefix derived from a
+   filename's position. A typed language would not create these problems, so the runner should not be
+   built to cope with them.
+3. **Nothing positional survives into the tree.** Document order is a property of a text file. Where
+   order matters it should be explicit in the tree, so that meaning does not depend on how the source
+   happened to be laid out.
+
+**Building the runner settles what a formal language would have to settle anyway.** Four ambiguities in
+the current mechanics have no single correct reading today, and the runner cannot be written without
+choosing: where a repeat-until loop keeps its continuation condition, whether an absent value makes a
+comparison false or unanswerable, whether a bare binding is a literal or a reference, and whether a step
+identifier is unique within its activity. Each is a semantic question a formal reading would have to
+answer, so answering them now is not a detour — it is the same work, done earlier and against a running
+system rather than a specification.
+
 ## What this buys
 
 ### Efficiency
@@ -582,6 +649,8 @@ agent marked unresolved, and the agent improvises.
 - **Take on the environment.** Validation instructions ask the host whether a tool is authenticated or a
   key is available. Whether the runner shells out or delegates is unresolved — see
   [protocol-verification.md](protocol-verification.md).
+- **Parse a definition file.** It receives a resolved tree and has no parser and no notion of the source
+  notation, which is what keeps a later change of language confined to the loader.
 
 ## Delivery stages
 
