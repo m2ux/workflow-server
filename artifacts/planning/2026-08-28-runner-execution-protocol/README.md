@@ -47,7 +47,7 @@ Five take part in a run, plus two supporting pieces.
 | **Runner** | Reads the structure. Decides conditions, drives repetition, resolves each step's inputs, composes prompts, and reports every step. | **Yes** |
 | **Server** | Holds the session, resolves definitions, reproduces every reported transition, and refuses what it cannot reproduce. | No, but its job changes |
 | **Technique agent** | Carries out one technique: reads prose, exercises judgement, writes content, returns values. | No, but its job narrows |
-| **User-facing agent** | The only participant that talks to the person. Carries a rendered question out and an option back. | No, but its job narrows sharply |
+| **User-facing agent** | The only participant that talks to the person. Carries a rendered question out and an option back. A [later layer](#a-later-layer-the-runner-as-the-decision-channel) removes it from that path. | No, but its job narrows sharply |
 | Harness | Starts the runner; establishes agent contexts on request. | No |
 | Session store | The run's values, decisions and history, sealed. | No |
 
@@ -212,7 +212,9 @@ flowchart TB
 
 The runner has no line to the person. It marks a decision outstanding on the server and waits, and the
 question travels to the person through the user-facing agent — see
-[How a decision reaches a person](#how-a-decision-reaches-a-person) below.
+[How a decision reaches a person](#how-a-decision-reaches-a-person) below. That is the arrangement this
+proposal introduces; a [later layer](#a-later-layer-the-runner-as-the-decision-channel) gives the runner
+the channel and takes the agent off the path.
 
 The runner's two working links have opposite grains. Runner-to-server is one local process addressing
 another, so it may be as chatty as it likes. Runner-to-agent is expensive — an exchange costs roughly
@@ -223,11 +225,12 @@ small, and paced by a human.
 
 ### How a decision reaches a person
 
-**Every conversation with the person is agent-mediated, and stays that way under this proposal.** The
-dispatch model states it as a rule: the user-facing agent is the only one that talks to the person, and it
-presents every question a run raises. So the runner does not acquire a channel to the person by existing,
-and the arrow between them in the diagrams above is a statement about where a question *originates*, not
-about how it travels.
+**Every conversation with the person is agent-mediated, and stays that way under this proposal** — a
+[later layer](#a-later-layer-the-runner-as-the-decision-channel) changes it, and this section describes
+what holds until then. The dispatch model states the constraint as a rule: the user-facing agent is the
+only one that talks to the person, and it presents every question a run raises. So the runner does not
+acquire a channel to the person by existing, and the arrow between them in the diagrams above is a
+statement about where a question *originates*, not about how it travels.
 
 ```mermaid
 ---
@@ -653,7 +656,9 @@ sequenceDiagram
 ```
 
 The runner composes nothing here and the user-facing agent decides nothing: the question is rendered by
-the server from the definition, and what comes back is one identifier from a closed set.
+the server from the definition, and what comes back is one identifier from a closed set. The agent is on
+this path only until the [later layer](#a-later-layer-the-runner-as-the-decision-channel), which replaces
+it with a channel the runner holds.
 
 No *technique* agent is established, which is why the rule forbidding an activity from opening with a
 decision can go — that rule exists because asking a question currently costs a whole worker context, and
