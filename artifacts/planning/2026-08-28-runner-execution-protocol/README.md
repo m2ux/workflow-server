@@ -71,7 +71,7 @@ flowchart LR
     Runner -->|reports each step| Server
     Runner -->|prompt: prose plus values| Agent
     Agent -->|values, a decision, or briefs| Runner
-    Runner -->|puts a question| User
+    Runner -->|puts a question, direct or relayed| User
     User -->|answers| Runner
     Runner -->|asks for a context| Harness
     Server -->|resolved structure| Runner
@@ -180,6 +180,7 @@ flowchart TB
 
     Agent1[[Agent context A]]
     Agent2[[Agent context B]]
+    Courier[[Conversational agent]]
 
     Runner -->|open activity, close unit| Server
     Server -->|resolved tree, accepted writes| Runner
@@ -189,12 +190,19 @@ flowchart TB
     Runner -->|prompt| Agent2
     Agent1 -->|reply| Runner
     Agent2 -->|reply| Runner
-    Runner <-->|decision| User
+    Runner <-->|decision, attached| User
+    Runner <-.->|decision, relayed| Courier
+    Courier <-.-> User
 
     style Host fill:#e3f2fd,stroke:#1976d2
     style Runner fill:#c8e6c9,stroke:#2e7d32
     style Server fill:#e1f5fe,stroke:#01579b
+    style Courier fill:#f5f5f5,stroke:#bdbdbd
 ```
+
+A decision travels one of two ways, solid or dashed, and which one is in force changes a fidelity
+guarantee — see [How a decision reaches a person](#how-a-decision-reaches-a-person) below. Every other
+line here is the same under both.
 
 Two links, two grains. Runner-to-server is one local process addressing another, so it may be as chatty
 as it likes. Runner-to-agent is expensive — an exchange costs roughly what 18,800 characters of fresh
