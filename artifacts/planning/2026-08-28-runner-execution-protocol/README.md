@@ -254,13 +254,11 @@ That is a real narrowing and it is worth having, but it is not elimination. **Wh
 saw a decision remains at *detected*, not *unrepresentable*** — an agent remains on the path of the
 answer, and the trace records the interaction for review afterwards, exactly as it does now.
 
-**A stronger arrangement is conceivable and is not proposed here.** If the person launched the runner
-themselves and it held a terminal or a local view, no agent would be on the path and the guarantee would
-rise. But that asks for two things at once: the runner would have to become the entry point, and it would
-have to absorb the spawn layer, since a runner nobody spawned for cannot call agents into the work.
-Spawning is a harness capability — the corpus abstracts three operations across four harness
-implementations plus a generic fallback — so absorbing it means taking over a role the architecture
-currently assigns to an agent. Worth revisiting once the runner exists; out of scope for introducing it.
+**One design consequence for this work.** Build the decision channel as an interface with a single
+implementation — the agent-relayed one above — rather than as inline calls. It costs nothing now, and it
+is what lets the channel be replaced later without touching anything else. A later layer does exactly
+that, and raises the guarantee in the process:
+[the runner as the decision channel](#a-later-layer-the-runner-as-the-decision-channel).
 
 
 ### Where each responsibility sits
@@ -507,7 +505,7 @@ Each row is a limitation the fidelity documentation states in its own words.
 | The steps that ran are the steps that were meant to run | Detected — the manifest validates that the agent *reported* each step, not that it performed it | **Unrepresentable** | The runner hands out each unit and receives each reply, so there is no self-report to check. The manifest concept disappears rather than improving. |
 | A condition's truth decided the branch | Convention — the server checks a claimed outcome maps to the target, but "cannot verify whether the condition is actually true" | **Refused** | The runner evaluates against values the server holds, and the server re-derives every reported transition and rejects what it cannot reproduce. Needs per-step write authority. |
 | A conditional decision was genuinely inapplicable when dismissed | Convention — "relies on agent honesty"; the server checks only that a condition field exists | **Refused** | One evaluation of the condition against the session values. Available today, independent of the runner. |
-| A person actually saw a decision | Convention — "an agent could wait the minimum time and then submit a fabricated response" | **Detected** — unchanged in kind, much narrowed in surface | Every conversation with the person stays agent-mediated, so an agent remains on the path of the answer. What it can fabricate shrinks from composing the question and dismissing the decision to returning one identifier from a closed set. See [How a decision reaches a person](#how-a-decision-reaches-a-person). |
+| A person actually saw a decision | Convention — "an agent could wait the minimum time and then submit a fabricated response" | **Detected** while an agent relays; **refused** once the runner holds the channel | Relayed, an agent stays on the path of the answer, but what it can fabricate shrinks from composing the question and dismissing the decision to returning one identifier from a closed set. Over a chat platform no agent is on the path at all — see [the later layer](#a-later-layer-the-runner-as-the-decision-channel). |
 | A repeated call is distinguished from a fresh one | Detected — visible in the trace afterwards | **Refused** | Position is recorded per step and is authoritative, so a repeat is a no-op or a refusal rather than a second execution. |
 | Steps ran in declared order | Detected — a relative-order comparison over a self-report | **Unrepresentable** | Order is the runner's walk. There is nothing to compare. |
 | An iteration bound was respected | Convention — "iteration is executed and bounded entirely by the agent" | **Refused** | The runner drives repetition and holds the count. |
@@ -726,12 +724,77 @@ Each is useful alone and assumes nothing after it.
 | 2. Server answers | A dismissed decision is verified against the values rather than taken on the agent's word; an activity's ending is computed and reconciled | Dismissal honesty and branch truth move from convention to **refused** | 1 |
 | 3. Write authority | A step's declared outputs land when the step finishes | Makes branch truth checkable at all; unblocks the rest | — |
 | 4. Position and repetition | A durable cursor with a frame per loop; something that drives iteration | Repeat calls and iteration bounds — **refused**; order becomes **unrepresentable** | 3 |
-| 5. The runner | The three calls, prompt composition, the three-shaped reply | Step execution and decision presence become **unrepresentable**; input resolution and return shape **refused** | 3, 4 |
+| 5. The runner | The three calls, prompt composition, the three-shaped reply | Step execution becomes **unrepresentable**; input resolution and return shape **refused** | 3, 4 |
+| 6. The runner as the decision channel *(later)* | The runner reaches the person over a chat platform rather than through an agent | Decision presence rises from **detected** to **refused**, third-party attested | 5 |
 
 Stage 2 is where the conceptual step happens, and it is worth doing for its own sake: it is the first
 time a server verdict overrules an agent's claim. Stage 3 is the load-bearing one — until a step's
 outputs land when the step finishes, most conditions cannot be decided by anyone but the agent that
 produced them, and the fidelity argument has no purchase.
+
+## A later layer: the runner as the decision channel
+
+Once the runner owns decisions, the last agent on the path can be removed by giving the runner a channel
+to the person that does not run through a context — a chat platform such as Slack, where the runner posts
+the rendered question and reads the reply.
+
+```mermaid
+---
+title: The decision path, before and after the later layer
+---
+flowchart LR
+    subgraph Now [Stage 5 - relayed]
+        S1[Server] --> F1[[User-facing agent]] --> U1([👤 User])
+    end
+
+    subgraph Later [Stage 6 - the runner holds the channel]
+        S2[Server] --> R2[Runner] --> Chat[[Chat platform]] --> U2([👤 User])
+    end
+
+    style Now fill:#fff3e0,stroke:#ef6c00
+    style Later fill:#c8e6c9,stroke:#2e7d32
+```
+
+**Why it is worth a layer of its own.** It lands better than a terminal would, not merely equal to it. A
+chat platform supplies an authenticated identity and a timestamp from a system neither the runner nor any
+agent controls, so the record stops being "an agent reports that a person chose this" and becomes "this
+account replied at this time", attested by a third party. That is the strongest human-presence guarantee
+available in any arrangement considered here.
+
+**What it retires beyond what stage 5 reaches.** The runner alone already removes the lower hops — a
+decision becomes a unit the runner handles, and technique agents never encounter one. This layer removes
+the last hop, and with it two things stage 5 leaves standing: the pause-and-resume machinery that exists
+because a run stops at every gate for an answer an agent owns, and the session-wide freeze of five tools
+while a decision is outstanding, whose only purpose is to stop other agent contexts progressing and which
+protects nothing once no agent is in the decision path.
+
+**What it costs.** Four things, and none is a configuration detail.
+
+- **The first outbound dependency.** The system is local and inbound-only today: no network client
+  anywhere in the server, and both transports serve rather than call. This adds credentials to hold and
+  an availability dependency in the decision path.
+- **An authorisation model where none is needed today.** "The person at the keyboard" is implicit
+  authorisation. A chat message from *someone* is not a message from *the stakeholder*, so a run needs a
+  binding to whoever may answer for it.
+- **A change in what a run is.** It stops being a process and becomes something that may span days. The
+  durable position record from stage 4 makes that possible, but the runner has to be able to exit and
+  resume rather than block.
+- **Timers that become real.** Thirty-one of the corpus's thirty-two soft decisions carry a
+  thirty-second auto-advance interval, tuned for somebody watching. Against a person who is not at their
+  desk those become genuine timeouts, and the intervals want reviewing before this ships rather than
+  after.
+
+**The fork to settle first.** Is the runner the intermediary for decisions only, or for the whole
+conversation? Decisions-only leaves two channels to the person and no clear answer to where they should
+look. Whole-conversation is cleaner — the runner becomes the front door, the user-facing agent role
+largely disappears, and the orchestration workflow's client-dispatch activity collapses into the runner —
+but it is a much larger change and it makes the runner a product surface rather than an execution
+component.
+
+Either way this changes **where a run lives**. Today a run is bound to one machine and one editor session.
+Over chat it could be started from a channel, outlive the machine that began it, and be answered by
+somebody other than whoever started it. That is arguably a better product; it is also a product decision
+and not only an architectural one.
 
 ## Open decisions
 
