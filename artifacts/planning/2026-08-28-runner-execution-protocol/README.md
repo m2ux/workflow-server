@@ -95,26 +95,26 @@ title: Use cases by actor
 flowchart LR
     User([👤 User])
     Author([✍️ Definition author])
-    Operator([🔧 Operator])
 
     subgraph Cases [What the system is for]
         UC1(Answer a decision)
         UC2(See where a run has got to)
         UC3(Resume an interrupted run)
-        UC4(Trust that a definition was followed)
-        UC5(Know a definition is wrong before it runs)
-        UC6(Reuse a run of steps safely)
-        UC7(Run independent work at the same time)
+        UC4(Know what a run cost)
+        UC5(Trust that a definition was followed)
+        UC6(Know a definition is wrong before it runs)
+        UC7(Reuse a run of steps safely)
+        UC8(Run independent work safely at once)
     end
 
     User --> UC1
     User --> UC2
     User --> UC3
-    Author --> UC4
+    User --> UC4
     Author --> UC5
     Author --> UC6
-    Operator --> UC3
-    Operator --> UC7
+    Author --> UC7
+    Author --> UC8
 
     style Cases fill:#f5f5f5,stroke:#bdbdbd
 ```
@@ -129,7 +129,9 @@ flowchart LR
   asking me something is cheap.
 - I want to see which step a run is on, so that I can tell progress from a stall.
 - I want an interrupted run to continue from where it stopped rather than from the start of the activity,
-  so that I am not asked the same question twice and work is not repeated.
+  so that I am not asked the same question twice and work is not repeated — and so that losing an agent
+  context costs one step rather than one activity.
+- I want to know what a run cost, per activity, so that existing accounting keeps working.
 
 **As a definition author**
 
@@ -146,14 +148,8 @@ flowchart LR
 - I want to reuse a run of steps without copying it, so that a change lands in one place. *(This is
   [#520](https://github.com/m2ux/workflow-server/issues/520); a runner walks the tree that proposal
   resolves.)*
-
-**As an operator**
-
-- I want independent work to run at the same time only when something has established that it is
-  independent, so that concurrency is a property rather than a hope.
-- I want to know what a run cost, per activity, so that existing accounting keeps working.
-- I want a replacement agent to pick up mid-activity, so that losing a context costs one step rather than
-  one activity.
+- I want work to run at the same time only where something has established that it is independent, so
+  that concurrency is a property of the definition rather than a hope.
 
 **As an agent**
 
