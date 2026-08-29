@@ -201,6 +201,62 @@ as it likes. Runner-to-agent is expensive — an exchange costs roughly what 18,
 content costs, and establishing a fresh context costs 23,000 to 42,000 tokens — so it stays coarse and
 carries prose. That asymmetry is the whole design; the reasoning is in [cost-model.md](cost-model.md).
 
+### How a decision reaches a person
+
+The diagram shows the runner and the user exchanging a decision directly, and that needs unpacking,
+because today the constraint is the opposite: only a conversational agent can reach the person, which is
+why a decision currently costs an agent context. Whether the runner improves on that depends on how it is
+started, and there are two arrangements with materially different guarantees.
+
+```mermaid
+---
+title: Two ways a decision reaches a person
+---
+flowchart LR
+    subgraph Attached [Attached - the person starts the runner]
+        U1([👤 User]) <-->|question and answer| R1[Runner]
+    end
+
+    subgraph Relayed [Relayed - an agent starts the runner]
+        R2[Runner] -->|rendered question| C[[Conversational agent]]
+        C -->|shows it| U2([👤 User])
+        U2 -->|chooses| C
+        C -->|option id| R2
+    end
+
+    style Attached fill:#c8e6c9,stroke:#2e7d32
+    style Relayed fill:#fff3e0,stroke:#ef6c00
+```
+
+**Attached.** The person starts the runner themselves — a command in their own terminal, or a local view
+the harness opens — and the runner holds the channel. It writes the question, reads the answer, and no
+agent is on the path at all. This inverts today's control flow: the human drives the run and agents are
+called into it, rather than an agent driving and occasionally consulting the human. It is the arrangement
+the fidelity argument assumes, and the one worth designing for.
+
+**Relayed.** An agent starts the runner as an ordinary command, so the runner's output surfaces in that
+agent's context and the agent shows it to the person. The agent is a courier rather than a participant:
+it did not compose the question, cannot alter the options, and cannot decide the outcome applies.
+
+The distinction matters because it changes exactly one guarantee. In the attached arrangement, whether a
+person saw a decision is **unrepresentable** — there is no agent to fabricate one. In the relayed
+arrangement it drops to **detected**: the agent is on the path of the answer and could in principle
+return an option nobody chose.
+
+Even relayed, though, this is a large improvement on today, and it is worth being precise about why. At
+present an agent reads the definition, decides whether the decision's condition applies, composes the
+question, may dismiss it entirely on its own say-so, and reports an outcome. Under the runner the
+question is rendered by the server with its consequences resolved, the option set is closed, dismissal is
+verified against the session values rather than taken on trust, and the server's existing minimum
+response interval and auto-advance timers still apply. What an agent could fabricate shrinks from
+everything about the decision to which of *n* fixed options a person picked.
+
+**Recommendation.** Design the runner so the decision channel is an interface with two implementations,
+and make attached the default wherever a terminal or a local view is available. The relayed
+implementation is then a documented fallback whose weaker guarantee is stated rather than assumed, and
+which arrangement was in force belongs in the run's own history so that a later reader can tell which
+guarantee applied.
+
 ### Where each responsibility sits
 
 ```mermaid
@@ -445,7 +501,7 @@ Each row is a limitation the fidelity documentation states in its own words.
 | The steps that ran are the steps that were meant to run | Detected — the manifest validates that the agent *reported* each step, not that it performed it | **Unrepresentable** | The runner hands out each unit and receives each reply, so there is no self-report to check. The manifest concept disappears rather than improving. |
 | A condition's truth decided the branch | Convention — the server checks a claimed outcome maps to the target, but "cannot verify whether the condition is actually true" | **Refused** | The runner evaluates against values the server holds, and the server re-derives every reported transition and rejects what it cannot reproduce. Needs per-step write authority. |
 | A conditional decision was genuinely inapplicable when dismissed | Convention — "relies on agent honesty"; the server checks only that a condition field exists | **Refused** | One evaluation of the condition against the session values. Available today, independent of the runner. |
-| A person actually saw a decision | Convention — "an agent could wait the minimum time and then submit a fabricated response" | **Unrepresentable** | The runner puts the question through the harness. No agent context is involved in a decision at all, so there is no agent to fabricate one. |
+| A person actually saw a decision | Convention — "an agent could wait the minimum time and then submit a fabricated response" | **Unrepresentable** when the runner holds the channel; **detected** when an agent relays it | See [How a decision reaches a person](#how-a-decision-reaches-a-person). Attached, no agent is on the path. Relayed, the agent is a courier that cannot compose the question, alter the options or dismiss the decision — but is on the path of the answer. |
 | A repeated call is distinguished from a fresh one | Detected — visible in the trace afterwards | **Refused** | Position is recorded per step and is authoritative, so a repeat is a no-op or a refusal rather than a second execution. |
 | Steps ran in declared order | Detected — a relative-order comparison over a self-report | **Unrepresentable** | Order is the runner's walk. There is nothing to compare. |
 | An iteration bound was respected | Convention — "iteration is executed and bounded entirely by the agent" | **Refused** | The runner drives repetition and holds the count. |
@@ -563,8 +619,11 @@ sequenceDiagram
     S-->>R: values delta
 ```
 
-No agent context is established. This is why the rule forbidding an activity from opening with a
-decision can go: that rule exists only because asking a question currently costs a whole context.
+This shows the attached arrangement, where the runner holds the channel. No agent context is established
+at all, which is why the rule forbidding an activity from opening with a decision can go: that rule exists
+only because asking a question currently costs a whole context. Relayed, an agent is on the path but does
+not gain a part in the decision — the cost argument holds either way, since no context is established
+*for the decision*.
 
 ### Fan-out, where the agent composes the briefs
 
