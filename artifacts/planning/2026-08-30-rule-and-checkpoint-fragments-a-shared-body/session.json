@@ -863,11 +863,39 @@
             },
             "optionId": "carry-open",
             "respondedAt": "2026-08-30T17:30:26.000Z"
+          },
+          "scope-and-draft-scope-confirmed#0": {
+            "effects": {
+              "variablesSet": {
+                "scope_manifest_confirmed": true
+              }
+            },
+            "optionId": "confirmed",
+            "respondedAt": "2026-08-30T18:48:34.000Z"
           }
         },
-        "completedActivities": [],
-        "currentActivity": "intake-and-context",
-        "currentTechnique": "work-package::manage-artifacts::write-artifact",
+        "completedActivities": [
+          "intake-and-context"
+        ],
+        "currentActivity": "scope-and-draft",
+        "currentTechnique": "verify-artifact-conforms",
+        "declaredArtifacts": [
+          {
+            "id": "created_readme",
+            "name": "README.md",
+            "path": ".engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/README.md"
+          },
+          {
+            "id": "change_brief",
+            "name": "change-brief.md",
+            "path": ".engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/01-change-brief.md"
+          },
+          {
+            "id": "impact_analysis",
+            "name": "impact-analysis.md",
+            "path": ".engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/01-impact-analysis.md"
+          }
+        ],
         "deliveredContent": {
           "worker-3IXIS7-01": {
             "activity_rules:d590df427abf37e5": "d590df427abf37e5",
@@ -879,14 +907,21 @@
             "bundle:workflow-engine::finalize-activity": "573df51be932a2e9",
             "bundle:workflow-engine::resume-from-checkpoint": "b64a82e406ffbef6",
             "bundle:workflow-engine::yield-checkpoint": "19bd3b7f355aab3e",
+            "resource:change-brief#rules": "79ae12369268ab4b",
             "resource:change-brief#template": "31f22fee7b94062e",
             "resource:elicitation-guide#mode-dimension-sets": "fcdcc30ab93cf758",
+            "resource:impact-analysis#rules": "9eeee37ba22494ef",
             "resource:impact-analysis#template": "23e4fb1258b8e871",
             "resource:meta/planning-readme": "55dc78372efcac73",
+            "resource:meta/writing-register": "8f96a660e5f6617f",
+            "resource:scope-manifest#rules": "cec0f9142675d354",
+            "resource:scope-manifest#template": "86480522ff0064cc",
             "resource:update-mode-guide#change-categories": "f6348ffc15b63e02",
+            "resource:workflow-authoring/README#planning-artifact-to-guide-map": "6e13aca458fbf0ba",
             "resource:workflow-authoring/readme-seed": "0786e88762f20da4",
             "resource:workflow-design/anti-patterns#description-hygiene-anti-patterns": "e2f73cefe2ff7c27",
             "resource:workflow-design/anti-patterns#schema-expressiveness-anti-patterns": "d488c8683a7846d0",
+            "resource:workflow-design/convention-conformance#reference-conventions": "ea9d06e6b88fd1d6",
             "technique:inherited_inputs.items:e583a6b5fb21ffbb": "e583a6b5fb21ffbb",
             "technique:inherited_inputs.items:e92de7508907a537": "e92de7508907a537",
             "technique:inherited_inputs.note:53cf3c4bb4d10067": "53cf3c4bb4d10067",
@@ -897,17 +932,25 @@
             "technique:rules:1deb909c38acf6f7": "1deb909c38acf6f7",
             "technique:rules:34ddcb57fc8496df": "34ddcb57fc8496df",
             "technique:rules:7e2036e223c7afba": "7e2036e223c7afba",
+            "technique:rules:a9587aafb8b1aaab": "a9587aafb8b1aaab",
+            "technique:rules:c2928461303b79e4": "c2928461303b79e4",
             "technique:rules:c4c9c835d6324b3e": "c4c9c835d6324b3e",
             "technique:rules:d24376e0e8a64123": "d24376e0e8a64123",
+            "technique:rules:ef3c02ff13e89d10": "ef3c02ff13e89d10",
+            "technique:verify-artifact-conforms": "58cf009979f2c68c",
             "technique:version-control::derive-workflows-target-path": "9fe9268eb6be5881",
-            "technique:work-package::manage-artifacts::write-artifact": "61c0bcfd357beb0f",
+            "technique:work-package::manage-artifacts::write-artifact": "dac5b6434101d36c",
+            "technique:work-package::manage-git::create-worktree": "f9ab8a75c099991a",
+            "technique:workflow-definition::derive-workflow-branch": "9a6a026f4674db3e",
             "technique:workflow-definition::impact-analysis": "460ebffa6c0bccc9",
             "technique:workflow-definition::intake-classification": "8e9abce44881ed21",
+            "technique:workflow-definition::readme-authoring": "18e294d2fb2e349b",
+            "technique:workflow-definition::scope-definition": "6356b17e83aecc96",
             "technique:workflow-definition::synthesize-change-brief": "5fae63b225ee146c",
             "technique:workflow-engine::create-readme": "fa88a0970aad115a"
           }
         },
-        "exit": "",
+        "exit": "authoring",
         "history": [
           {
             "timestamp": "2026-08-30T17:11:29.661Z",
@@ -1262,34 +1305,687 @@
             },
             "timestamp": "2026-08-30T17:35:59.697Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "intake-and-context",
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "planning_folder_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "host_repo_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "component_git_dir",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/workflows"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "target_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "operation_type",
+              "source": "variables_changed",
+              "value": "update"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "operation_type_ambiguous",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "change_request_clear",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "intent_needs_confirmation",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "review_scope_confirmed",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "headless_mode",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "workflow_id",
+              "source": "variables_changed",
+              "value": "work-package"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "target_workflow_id",
+              "source": "variables_changed",
+              "value": "work-package"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "target_workflow_ids",
+              "source": "variables_changed",
+              "value": [
+                "work-package",
+                "remediate-vuln"
+              ]
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "change_category",
+              "source": "variables_changed",
+              "value": [
+                "Structural refactor"
+              ]
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "structural_inventory",
+              "source": "variables_changed",
+              "value": "work-package v4.0.0 — 15 activity files, 115 technique files, 37 resource files, 223-line workflow.yaml, README. Activities 01-15. Change touches remediate-vuln/workflow.yaml variables[] only; work-package definition files unedited."
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "open_judgements_count",
+              "source": "variables_changed",
+              "value": 3
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "judgements_disposition",
+              "source": "variables_changed",
+              "value": "carried-open"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "removal_count",
+              "source": "variables_changed",
+              "value": 0
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "change_constraints",
+              "source": "variables_changed",
+              "value": "Co-change: remediate-vuln/workflow.yaml + scripts/check-fragments.ts, split across the workflows branch and main — two PRs, corpus red until the server one merges. Collisions: fragment names assumption-interview/assumption-decision; loop ids assumption-interview (04-research) and assumption-interview-loop (07-assumptions-review); nine existing guard finding ids. Environment: branch any worktree from fetched origin/workflows bc52c69, not local 09b6067."
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "change_brief_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/01-change-brief.md"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "name": "impact_analysis_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/01-impact-analysis.md"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "bind-planning-folder-path"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "derive-target-path"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "classify-intake"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "design-intent-batch"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "announce-wrong-target"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "seed-planning-readme"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "elicit-change-brief"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "synthesize-change-brief"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "analyze-impact"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "persist-change-brief"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "persist-impact-analysis"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "judgements-disposition"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "record-judgement-outcomes"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "impact-approved"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-context",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "clear-review-seed"
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "scope-and-draft",
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "published": true
+            },
+            "timestamp": "2026-08-30T17:37:14.728Z",
+            "type": "progress_published"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 27080,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-30T17:37:32.339Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 4122,
+              "delivery": "full",
+              "stepId": "derive-workflow-branch",
+              "techniqueId": "workflow-definition::derive-workflow-branch"
+            },
+            "timestamp": "2026-08-30T17:37:32.339Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "derive-workflow-branch"
+            },
+            "timestamp": "2026-08-30T17:37:32.339Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 5028,
+              "delivery": "full",
+              "stepId": "ensure-worktree",
+              "techniqueId": "work-package::manage-git::create-worktree"
+            },
+            "timestamp": "2026-08-30T17:37:32.339Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "ensure-worktree"
+            },
+            "timestamp": "2026-08-30T17:37:32.339Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 6486,
+              "delivery": "full",
+              "stepId": "define-scope",
+              "techniqueId": "workflow-definition::scope-definition"
+            },
+            "timestamp": "2026-08-30T17:37:32.339Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "define-scope"
+            },
+            "timestamp": "2026-08-30T17:37:32.339Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 5636,
+              "delivery": "full",
+              "stepId": "persist-scope-manifest",
+              "techniqueId": "work-package::manage-artifacts::write-artifact"
+            },
+            "timestamp": "2026-08-30T17:37:32.339Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "persist-scope-manifest"
+            },
+            "timestamp": "2026-08-30T17:37:32.339Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 6849,
+              "delivery": "unchanged",
+              "resourceId": "workflow-design/anti-patterns#schema-expressiveness-anti-patterns"
+            },
+            "timestamp": "2026-08-30T17:37:32.339Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 14754,
+              "delivery": "unchanged",
+              "resourceId": "workflow-design/anti-patterns#description-hygiene-anti-patterns"
+            },
+            "timestamp": "2026-08-30T17:37:32.339Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 1188,
+              "delivery": "full",
+              "resourceId": "workflow-design/convention-conformance#reference-conventions"
+            },
+            "timestamp": "2026-08-30T17:37:32.339Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "bundled": true,
+              "chars": 1024,
+              "delivery": "full",
+              "resourceId": "scope-manifest#template"
+            },
+            "timestamp": "2026-08-30T17:37:32.339Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-confirmed#0",
+            "timestamp": "2026-08-30T17:41:54.893Z",
+            "type": "checkpoint_reached"
+          },
+          {
+            "activity": "scope-and-draft",
+            "checkpoint": "scope-confirmed#0",
+            "data": {
+              "optionId": "confirmed"
+            },
+            "timestamp": "2026-08-30T18:48:34.000Z",
+            "type": "checkpoint_response"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "name": "scope_manifest_confirmed",
+              "source": "setVariable",
+              "value": true
+            },
+            "timestamp": "2026-08-30T18:48:34.000Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 4702,
+              "delivery": "full",
+              "stepId": "author-workflow-readme",
+              "techniqueId": "workflow-definition::readme-authoring"
+            },
+            "timestamp": "2026-08-30T18:49:02.234Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "author-workflow-readme"
+            },
+            "timestamp": "2026-08-30T18:49:02.234Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 10039,
+              "delivery": "full",
+              "stepId": "verify-artifact-conformance",
+              "techniqueId": "verify-artifact-conforms"
+            },
+            "timestamp": "2026-08-30T18:49:03.356Z",
+            "type": "technique_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "stepId": "verify-artifact-conformance"
+            },
+            "timestamp": "2026-08-30T18:49:03.356Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 819,
+              "delivery": "full",
+              "resourceId": "workflow-authoring/README#planning-artifact-to-guide-map"
+            },
+            "timestamp": "2026-08-30T18:49:20.864Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 1986,
+              "delivery": "full",
+              "resourceId": "meta/writing-register"
+            },
+            "timestamp": "2026-08-30T18:49:28.678Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 1110,
+              "delivery": "full",
+              "resourceId": "change-brief#rules"
+            },
+            "timestamp": "2026-08-30T18:49:29.296Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 630,
+              "delivery": "full",
+              "resourceId": "impact-analysis#rules"
+            },
+            "timestamp": "2026-08-30T18:49:37.281Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "chars": 678,
+              "delivery": "full",
+              "resourceId": "scope-manifest#rules"
+            },
+            "timestamp": "2026-08-30T18:49:37.695Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "scope-and-draft",
+            "data": {
+              "agentId": "worker-3IXIS7-01",
+              "basis": "cumulative",
+              "usage": {
+                "duration_ms": 484726,
+                "subagent_tokens": 248940,
+                "tool_uses": 43
+              }
+            },
+            "timestamp": "2026-08-30T18:52:13.193Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 20,
+        "seq": 33,
         "sessionIndex": "3IXIS7",
         "startedAt": "2026-08-30T17:11:29.661Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1788111359,
+        "ts": 1788115933,
         "variables": {
           "addressed_count": 0,
-          "change_brief_path": "",
+          "change_brief_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/01-change-brief.md",
+          "change_category": [
+            "Structural refactor"
+          ],
+          "change_constraints": "Co-change: remediate-vuln/workflow.yaml + scripts/check-fragments.ts, split across the workflows branch and main — two PRs, corpus red until the server one merges. Collisions: fragment names assumption-interview/assumption-decision; loop ids assumption-interview (04-research) and assumption-interview-loop (07-assumptions-review); nine existing guard finding ids. Environment: branch any worktree from fetched origin/workflows bc52c69, not local 09b6067.",
           "change_request_clear": true,
           "changed_files": [],
           "commit_approved": false,
-          "component_git_dir": "",
+          "component_git_dir": "/home/mike1/projects/dev/workflow-server/workflows",
           "fail_count": 0,
           "has_coverage_gap": false,
           "has_critical_finding": false,
           "has_unflagged_removals": false,
           "headless_mode": true,
-          "impact_analysis_path": "",
+          "host_repo_path": "/home/mike1/projects/dev/workflow-server",
+          "impact_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/01-impact-analysis.md",
           "intent_needs_confirmation": false,
           "judgements_disposition": "carried-open",
           "open_finding_count": 0,
-          "open_judgements_count": 0,
+          "open_judgements_count": 3,
+          "operation_type": "update",
           "operation_type_ambiguous": false,
+          "planning_folder_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-rule-and-checkpoint-fragments-a-shared-body",
           "register_sections": [],
           "remediation_round": 0,
           "remediation_selected": false,
@@ -1298,15 +1994,22 @@
           "report_path": "",
           "review_closed": false,
           "review_scope_confirmed": false,
-          "scope_manifest_confirmed": false,
+          "scope_manifest_confirmed": true,
           "scope_manifest_path": "",
           "scope_round": 0,
-          "target_path": "",
+          "structural_inventory": "work-package v4.0.0 — 15 activity files, 115 technique files, 37 resource files, 223-line workflow.yaml, README. Activities 01-15. Change touches remediate-vuln/workflow.yaml variables[] only; work-package definition files unedited.",
+          "target_path": "/home/mike1/projects/dev/workflow-server/.worktrees/2026-08-30-rule-and-checkpoint-fragments-a-shared-body/",
+          "target_workflow_id": "work-package",
+          "target_workflow_ids": [
+            "work-package",
+            "remediate-vuln"
+          ],
           "total_count": 0,
           "unaddressed_count": 0,
           "update_seeded_from_review": false,
           "user_request": "Start a workflow authoring workflow to address https://github.com/m2ux/workflow-server/issues/519 — \"Rule and checkpoint fragments: a shared body needs a shared home, not a host workflow\". Decide whether the `fragments` construct survives, and carry out whichever migration that decision selects: give generic rules a shared home, move shared checkpoint gates into shared activities beside the variables they name, eliminate single-reference fragments, stop referencing workflows from declaring variables they never produce, and give the duplicate-rule guard a shared-home remedy.",
           "workflow_branch": "",
+          "workflow_id": "work-package",
           "worktree_created": false
         },
         "workflowId": "workflow-authoring",

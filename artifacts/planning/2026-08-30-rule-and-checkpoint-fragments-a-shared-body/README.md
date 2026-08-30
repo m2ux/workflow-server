@@ -23,9 +23,9 @@ Issue #519 asks whether the `fragments` construct earns its place, or whether it
 | 1 | Intake and context | Mode, target, edit-surface path | 15-30m | ✅ |
 | 2 | [Change brief](01-change-brief.md) | Purpose, dimension shape, open judgements | 20-40m | ✅ |
 | 3 | [Impact analysis](01-impact-analysis.md) | Blast radius, integrity, removals | 20-40m | ✅ |
-| 4 | Scope and draft | Worktree, manifest, per-file drafting | 30-60m | 🟡 |
-| 5 | [Scope manifest](scope-manifest.md) | File-level change inventory | 15-30m | ⬚ |
-| 6 | Quality review | Criteria walk, consumer surface, guards | 30-60m | ⬚ |
+| 4 | Scope and draft | Worktree, manifest, per-file drafting | 30-60m | ✅ |
+| 5 | [Scope manifest](06-scope-manifest.md) | File-level change inventory | 15-30m | ✅ |
+| 6 | Quality review | Criteria walk, consumer surface, guards | 30-60m | 🟡 |
 | 7 | [Findings register](findings-register.md) | Audit record, coverage, exclusions | 15-30m | ⬚ |
 | 8 | Validate and commit | Scope re-check, commit, pull request | 20-40m | ⬚ |
 | 9 | [Close-out](COMPLETE.md) | Delivery, limitations, retrospective | 10-20m | ⬚ |
