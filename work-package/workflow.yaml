@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: work-package
-version: 3.50.0
+version: 4.0.0
 title: Work Package Implementation Workflow
 description: Defines how to plan and implement ONE work package from inception to merged PR. A work package is a discrete unit of work such as a feature, bug-fix, enhancement, refactoring, or any other deliverable change. For multiple related work packages, use the work-packages workflow to create a roadmap first. Also supports review mode for auditing an existing PR or implementation end-to-end.
 author: m2ux
@@ -12,23 +12,7 @@ tags:
   - bug-fix
   - pr
   - review
-rules:
-  workflow:
-    - ref: interaction-discipline
-    - Explicit approval - Get clear 'yes' or 'proceed' before major actions (within activity checkpoints only — NOT between activities)
-    - Decision points require user choice - When issues are found, user decides whether to proceed or loop back
-    - Git configuration is user-owned. Validate-action messages describe a misconfiguration but never prescribe config-changing commands; the user fixes their own environment at whatever scope (system, global, local) they prefer.
-  activity:
-    - safety-floor-never-simplified - The safety floor is never simplified away during the lean-coding audit - understanding the problem, input validation at trust boundaries, error handling that prevents data loss, security, accessibility, anything explicitly requested by the issue, and one runnable check for non-trivial logic. A simplification that would breach the floor is rejected; the simplification-apply-cycle validates the floor before resetting its driver flag.
-    - report-before-apply - The over-engineering review, debt harvest, and gain report are read-only - they list findings into their artifacts and change no code. Code is only ever changed in the simplification-apply-cycle, and only on simplifications the user accepted at the audit-findings-confirmed gate.
-    - leanness-reported-honestly - The net-lines scoreboard and gain figures are reported honestly - the harvested debt ledger is the source of the real per-change count; aggregate or benchmark figures never overstate the gain.
-    - complementary-not-duplicative-with-strategic-review - The lean-coding audit applies the over-engineering and leanness lens; it does not re-adjudicate scope-vs-issue fit, which remains strategic-review's concern. The two stages stay complementary.
 fragments:
-  rules:
-    interaction-discipline:
-      - Ask, don't assume - Clarify requirements before acting
-      - Summarize, then proceed - Provide brief status before asking to continue
-      - One task at a time - Complete current work before starting new work
   checkpoints:
     assumption-interview:
       condition:
@@ -128,7 +112,13 @@ variables:
     defaultValue: false
   - name: issue_type
     type: string
-    description: "Type of issue (feature|bug|task|enhancement|epic)."
+    description: What kind of change the ticket records.
+    values:
+      - feature
+      - bug
+      - task
+      - enhancement
+      - epic
   - name: needs_further_discussion
     type: boolean
     description: Whether further stakeholder discussion is needed.

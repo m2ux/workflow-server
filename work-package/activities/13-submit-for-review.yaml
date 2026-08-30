@@ -1,5 +1,5 @@
 id: submit-for-review
-version: 1.20.0
+version: 1.22.0
 name: Submit for Review
 description: Submit the work for review — PR review lifecycle normally; a verified private-remote push in stealth mode.
 variables:
@@ -32,7 +32,10 @@ variables:
       defaultValue: ""
     - name: attestation_option
       type: string
-      description: "The human's DCO certification selection: 'certify' or 'flag-legal'."
+      description: What the human certified about the change at the DCO attestation gate.
+      values:
+        - certify
+        - flag-legal
       defaultValue: certify
     - name: awaiting_review
       type: boolean
@@ -70,7 +73,11 @@ variables:
       defaultValue: ""
     - name: recommended_outcome
       type: string
-      description: Agent-recommended PR review outcome (approved|minor-changes|significant-changes).
+      description: The PR-review outcome the agent recommends.
+      values:
+        - approved
+        - minor-changes
+        - significant-changes
     - name: rendered_pr_body
       type: string
       description: The body now live on the PR after the patch.
@@ -92,8 +99,11 @@ variables:
       defaultValue: ""
     - name: review_type
       type: string
-      description: PR review event (approve | request-changes | comment) chosen at review-summary-approval; bound to update-pr::post-review-comment
-      defaultValue: ""
+      description: The review event to post. Absent until the review-summary-approval gate settles one.
+      values:
+        - approve
+        - request-changes
+        - comment
     - name: summary_budget_overruns
       type: array
       description: Consolidated-review slots over their format budget, each { slot, measured, budget }.

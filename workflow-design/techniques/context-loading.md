@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -47,7 +47,7 @@ Absolute path to the written applicable-constructs artifact (create mode only).
 
 ### 3. Survey Reference Workflows
 
-- Refresh the catalog via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) and survey 2+ similar-type workflows from orchestrator-supplied definitions ([orchestrator-no-domain-work](../../meta/techniques/agent-conduct.md#orchestrator-no-domain-work) — workers do not load full workflow definitions)
+- Refresh the catalog via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) and survey 2+ similar-type workflows from orchestrator-supplied definitions ([no-domain-work](../../meta/techniques/orchestrator-conduct.md#no-domain-work) — workers do not load full workflow definitions)
 
 ### 4. Ground YAML Syntax
 

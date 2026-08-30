@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: substrate-node-security-audit
-version: 4.21.0
+version: 5.1.0
 title: Security Audit Workflow
 description: Fully automated multi-phase AI security audit for Substrate-based blockchain node codebases.
 author: m2ux
@@ -13,18 +13,15 @@ tags:
   - multi-phase
 rules:
   workflow:
-    - "Prerequisites before the workflow begins: agents read and follow AGENTS.md; a target submodule is specified; the target-profile resource is loaded during scope-setup for its target-specific crate assignments, file paths, calibration data, and ensemble blind-spot items."
-    - The workflow runs to completion without user checkpoints; each phase gate is a boolean variable a completion step sets structurally, and report generation is entered only when the phase-1b dispatch, verification, and merge gates are all true.
     - The audit prompt template defines the checklist; the workflow defines the execution phases.
     - "Structural codebase analysis — symbol/function enumeration, call relationships, reachability, cross-function comparison, architecture/community mapping, and blast radius — routes through the gitnexus-operations meta group when gitnexus_available is true (indexed during scope-setup); grep and full-file reads are the fallback when the index is absent or stale. grep stays the instrument for pattern-presence lead generation and full-file reading for pattern-absence findings; the graph replaces manual enumeration and relational tracing, never code comprehension."
     - A reference report is never loaded or discussed before the gap-analysis phase; its path is recorded at scope-setup and loading is deferred.
     - Per-function toolkit findings have low single-pass detection rates; enable ensemble_enabled=true for reliable detection.
-    - "Report generation is gated on three hard stops enforced structurally, not on prose compliance: (1) coverage — every .rs file >200 lines in priority-1/2 crates has been read by at least one §3-applying sub-agent; (2) dispatch completeness — every assigned primary agent (A1-A7, B, D1, D2), dispatched simultaneously in a single batch, was dispatched and returned, with reconnaissance data not substituting for a §3-applying sub-agent; (3) finding-count reconciliation — the merge agent's reconciliation table shows zero Unaccounted findings for every agent."
+    - "Every assigned primary agent (A1-A7, B, D1, D2) is dispatched in a single simultaneous batch, and reconnaissance data never substitutes for a §3-applying sub-agent."
     - The orchestrator scans mandatory tables for FAIL/DIFF/Missing/No cells and auto-promotes each to a finding; the sub-agent is not responsible for elevation.
     - The orchestrator verifies every §3 checklist item (§3.1-§3.14) is represented in at least one dispatched agent's context.
-    - The node binary is split into A3 (startup/config) and A4 (consensus/network) per the target profile.
-    - "The orchestrator dispatches a verification sub-agent (V) following the sub-output-verification activity after collecting all primary agent results: V's gap report drives targeted re-dispatch before structured merge and informs adversarial PASS-item selection. The orchestrator does not self-certify verification — verification_complete is set from V's output."
-    - "The orchestrator dispatches a merge sub-agent (M) following the sub-structured-merge activity after verification and re-dispatch: M performs the structured merge, deduplication, severity scoring with bidirectional calibration, reconciliation, and observation elevation in a fresh context window. The orchestrator does not perform the merge inline."
+    - "The verification sub-agent's gap report drives targeted re-dispatch before structured merge, and informs adversarial PASS-item selection."
+    - "The merge sub-agent performs the structured merge, deduplication, severity scoring with bidirectional calibration, reconciliation, and observation elevation in a fresh context window."
   activity:
     - "Severity scoring uses the Impact x Feasibility rubric, not intuitive assignment. When the target profile includes a severity benchmark table, use it as calibration anchors: a finding diverging by two or more levels from a matching benchmark takes the benchmark severity as its floor. Without a benchmark table, apply the rubric's common calibration guidance (operational hazards: F>=3 when the trigger occurs without an attacker; shared resources with external consumers: F>=3)."
     - Every PASS in the scratchpad cites specific code; bare PASSes are invalid.
@@ -32,11 +29,6 @@ rules:
     - "The ensemble agent verifies the universal blind-spot items 1-4 plus the target-specific items from the target profile before general review."
     - "The node startup agent (A3) traces every genesis data parsing path — StorageInit construction, genesis extrinsics decoding, genesis header construction, and chain spec property parsing — verifying each independently for silent truncation, since iteration patterns that stop at the first invalid element (take_while, early-return on error, filter_map) truncate remaining data."
     - "The merge agent reviews all agent reconnaissance_leads and additional_observations, plus S-agent emergent_domains from s-architectural-analysis.json and R-agent leads from r-reconnaissance-data.json. Each emergent domain is dispositioned as captured, elevated, or not-applicable. Security-relevant observations (divergent code paths, missing validation, error-path persistence, silent errors, trust boundary amplification) are elevated to findings or explicitly mapped to existing findings."
-  universal:
-    - ref: planning-artifacts-gitignored
-fragments:
-  rules:
-    planning-artifacts-gitignored: Artifacts in 'planning' location are gitignored — never reference them in PRs or issues
 techniques:
   activity:
     - variable-binding
@@ -50,6 +42,7 @@ variables:
   - name: target_submodule
     type: string
     description: Path to the submodule being audited (e.g., midnight-node)
+    required: true
   - name: in_scope
     type: string
     description: Space-separated list of crate/module paths to audit (e.g., 'node/ pallets/ primitives/ runtime/ ledger/ util/ res/ metadata/')

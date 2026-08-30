@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: meta
-version: 5.23.0
+version: 6.1.0
 title: Meta Workflow
 description: Top-level lifecycle workflow that orchestrates client workflow sessions. Excluded from list_workflows — bootstrap navigates here directly.
 author: m2ux
@@ -18,7 +18,6 @@ techniques:
     - workflow-engine::resume-worker
     - workflow-engine::continue-batch
     - workflow-engine::workflow-orchestrator
-    - agent-conduct::orchestrator
   activity:
     - variable-binding
     - workflow-engine::activity-worker
@@ -39,7 +38,6 @@ graph:
 rules:
   workflow:
     - "This workflow is the entrypoint for all workflow operations — bootstrap protocol enters here directly via start_session({ workflow_id: 'meta' })"
-    - Techniques in this workflow are universal and resolve for any client workflow via the loader's universal-technique fallback
 variables:
   - name: user_request
     type: string

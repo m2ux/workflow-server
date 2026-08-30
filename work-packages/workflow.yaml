@@ -1,5 +1,5 @@
 id: work-packages
-version: 3.2.0
+version: 4.1.0
 title: Work Packages Workflow
 description: Plan and coordinate multiple related work packages. Use when you have multiple related features, a roadmap spanning several weeks/months, or features with shared context. Execution triggers the work-package workflow for each package.
 author: m2ux
@@ -11,20 +11,17 @@ tags:
   - prioritization
 rules:
   workflow:
-    - ref: agents-md-prerequisite
-    - Agents must NOT proceed past checkpoints without user confirmation
-    - Ask, don't assume - Clarify scope and priorities before planning
-    - Explicit approval - Get clear 'yes' or 'proceed' before creating documents
-fragments:
-  rules:
-    agents-md-prerequisite: "PREREQUISITE: Agents MUST read and follow AGENTS.md before starting any work"
+    - Clarify scope and priorities before planning a roadmap — the packages a roadmap names are the hardest thing in it to revise.
 techniques:
   activity:
     - variable-binding
 variables:
   - name: analysis_type
     type: string
-    description: "Type of analysis performed: 'completion' (continuing previous work) or 'context' (new initiative)"
+    description: Whether this roadmap continues previous work or opens a new initiative.
+    values:
+      - completion
+      - context
   - name: user_request
     type: string
     description: The user's free-form description of the initiative that opened this session.

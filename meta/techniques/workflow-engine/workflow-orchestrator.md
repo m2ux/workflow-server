@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -32,7 +32,7 @@ Orchestrator agent identity for this session.
 
 - Call `get_workflow_status { session_index }`
 - Dispatch `current_activity` when set, otherwise the `initialActivity` that `get_workflow` returns, via [dispatch-activity](./dispatch-activity.md). A session that has not entered an activity reports none, so the workflow's own first activity is the only id to reach for; a session part-way through reports the cursor to resume on
-- Always dispatch a worker — never execute activity steps inline ([orchestrator-no-inline-on-resume](../agent-conduct.md#orchestrator-no-inline-on-resume), [orchestrator-no-domain-work](../agent-conduct.md#orchestrator-no-domain-work))
+- Always dispatch a worker — never execute activity steps inline ([no-inline-on-resume](../orchestrator-conduct.md#no-inline-on-resume), [no-domain-work](../orchestrator-conduct.md#no-domain-work))
 
 ### 3. Drive the activity loop
 
@@ -46,7 +46,7 @@ Orchestrator agent identity for this session.
 
 ### follow-bundled-rules
 
-Follow the rules in the operations bundle throughout — [agent-conduct](../agent-conduct.md), [workflow-engine](./TECHNIQUE.md), and any other touched techniques include their global rules automatically.
+Follow the rules in the operations bundle throughout — [agent-conduct](../agent-conduct.md), [orchestrator-conduct](../orchestrator-conduct.md), [workflow-engine](./TECHNIQUE.md), and any other touched techniques include their global rules automatically.
 
 ### no-state-reconstruction-on-attach
 

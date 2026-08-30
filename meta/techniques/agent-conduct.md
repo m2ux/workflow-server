@@ -1,11 +1,11 @@
 ---
 metadata:
-  version: 5.3.0
+  version: 6.0.0
 ---
 
 ## Capability
 
-Cross-cutting behavioral boundaries for agents — file sensitivity, communication, attribution, operational discipline, checkpoint role split, and orchestrator constraints.
+Cross-cutting behavioral boundaries every agent in a run is held to — file sensitivity, communication, attribution, interaction, operational discipline and the checkpoint role split. The boundaries a single role carries live in [orchestrator-conduct](./orchestrator-conduct.md) and [worker-conduct](./worker-conduct.md).
 
 ## Rules
 
@@ -45,26 +45,22 @@ Workflow resources reach an agent from the server. Load them per [resource-loadi
 
 Write planning artifacts only under the server-returned `{planning_folder_path}` — never compose or reconstruct that path. Filename prefix and find-or-update discipline belong to whichever artifact-writing technique the workflow bundles, not here.
 
-### orchestrator-no-domain-work
+### operational-discipline-repository-instructions
 
-Orchestrators (meta or workflow) never execute activity steps or produce domain artifacts. Delegate via [dispatch-activity](./workflow-engine/dispatch-activity.md).
+An agent reads the repository's own agent instructions (`AGENTS.md`, and whatever it includes) before it starts work in that repository, and follows them.
 
-### orchestrator-one-level-of-indirection
+### operational-discipline-artifact-citation
 
-An orchestrator dispatches workers; a worker dispatches none of its own. One level, so every agent touching a run is one the orchestrator placed there and the run's own constraints reach all of them. A workflow whose isolation depends on that says so in its isolation rules; the depth itself is settled here.
+An artifact is cited only where its reader can open it. An artifact written to a location the repository ignores is never referenced from a pull request, an issue, or anything else published outside the working tree that holds it.
 
-### orchestrator-no-inline-on-resume
+### interaction-clarify-before-acting
 
-Resuming a saved session still dispatches a worker via [dispatch-activity](./workflow-engine/dispatch-activity.md) — the restored state changes which activity is dispatched, not whether one is. Do not execute steps inline from restored bag/folder context. A worker paused at a gate is continued under its bound identity via [resume-worker](./workflow-engine/resume-worker.md).
+Clarify a requirement before acting on it. An assumption stands in for the answer only where the run has recorded it as an assumption.
 
-### orchestrator-component-path-scope
+### interaction-summarize-then-proceed
 
-Branch creation, PR creation, and code commits MUST be performed inside the component directory (the submodule), NEVER in the host monorepo root. Planning artifact commits (`.engineering/artifacts/`) land on the current branch of the checkout that holds that directory — which checkout that is, and the primitive it takes, are resolved by [commit-and-persist](./workflow-engine/commit-and-persist.md). Do NOT create a new branch for them.
+State briefly what was done before asking to continue.
 
-### orchestrator-automatic-transitions
+### interaction-one-task-at-a-time
 
-No user pause between activities after `activity_complete` — advance via [finalize-activity](./workflow-engine/finalize-activity.md) / [dispatch-activity](./workflow-engine/dispatch-activity.md) (orchestrator does not re-resolve the exit).
-
-### orchestrator-no-ad-hoc-interaction
-
-Orchestrators never solicit user input outside presenting `checkpoint_pending` yields. Informational status may be emitted; it must not wait for a reply.
+Complete the current piece of work before starting the next.

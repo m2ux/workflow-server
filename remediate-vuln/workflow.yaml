@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: remediate-vuln
-version: 2.7.0
+version: 3.0.0
 title: Security Vulnerability Remediation Workflow
 description: Remediate security vulnerabilities without public disclosure.
 author: m2ux
@@ -11,9 +11,6 @@ tags:
   - remediation
   - private
 rules:
-  workflow:
-    - ref: work-package::interaction-discipline
-    - Explicit approval - Get clear 'yes' or 'proceed' before major actions
   activity:
     - "STRICT ISOLATION: The agent MUST NOT use any public GitHub tools (e.g. gh pr create, gh issue create) during this workflow."
     - "PRIVATE REMOTE ONLY: All git operations must target the 'security' remote, never 'origin'."
@@ -54,7 +51,10 @@ variables:
     description: The repository's default branch, which the security branch syncs from and merges into.
   - name: issue_platform
     type: string
-    description: Issue tracking platform (github|jira). The advisory is the record while it stays restricted.
+    description: The issue tracker the advisory lives in while it stays restricted.
+    values:
+      - github
+      - jira
   - name: issue_number
     type: string
     description: GitHub or Jira issue number. Empty while the advisory is restricted.

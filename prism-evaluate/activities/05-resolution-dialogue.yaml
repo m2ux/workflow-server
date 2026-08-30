@@ -1,5 +1,5 @@
 id: resolution-dialogue
-version: 2.2.0
+version: 2.3.0
 name: Resolution Dialogue
 description: Propose mitigations for each evaluation finding one-by-one.
 variables:
@@ -23,7 +23,12 @@ variables:
       description: The report's findings, each carrying an ID, severity, claim, critique, and mitigation tier
     - name: finding_disposition
       type: string
-      description: "Disposition taken on the current finding: accept | modify | skip | discuss"
+      description: What the dialogue decided about the finding under discussion.
+      values:
+        - accept
+        - modify
+        - skip
+        - discuss
     - name: mitigation_plan_path
       type: string
       description: Path to the `MITIGATION-PLAN.md` artifact

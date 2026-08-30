@@ -1,5 +1,5 @@
 id: scope-definition
-version: 1.3.0
+version: 1.4.0
 name: Define Evaluation Scope
 description: Collect the evaluation target, description, and output path.
 variables:
@@ -22,7 +22,12 @@ variables:
       required: true
     - name: evaluation_target_type
       type: string
-      description: "The target's kind: document | document-set | codebase | mixed"
+      description: The kind of thing being evaluated.
+      values:
+        - document
+        - document-set
+        - codebase
+        - mixed
     - name: lens_overrides
       type: object
       description: Lens overrides keyed by dimension name, each { pipeline_mode, lenses }

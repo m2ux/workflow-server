@@ -1,5 +1,5 @@
 id: prism-update
-version: 1.3.0
+version: 1.4.0
 title: Prism Update Workflow
 description: Sync the prism workflow's resources, techniques, and documentation with upstream changes from the agi-in-md project.
 author: m2ux
@@ -12,8 +12,6 @@ rules:
     - "SINGLE-AGENT EXECUTION: This workflow runs as a single agent — no orchestrator/worker split. The executing agent performs all steps directly."
   activity:
     - "WORKTREE SCOPE: All file operations happen in the workflows worktree (workflows/ directory). Never modify MCP server source (src/, schemas/)."
-    - "RESOURCE NAMING: Resources use the convention {NN}-{hyphenated-name}.md where NN is a zero-padded index. Indices are permanent — never reuse a deleted index."
-    - "VERBATIM COPY: Upstream prism content is copied verbatim including YAML frontmatter. Do not modify lens prompt content during import."
 techniques:
   activity:
     - variable-binding

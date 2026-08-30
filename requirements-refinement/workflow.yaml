@@ -1,6 +1,6 @@
 $schema: ../../schemas/workflow.schema.json
 id: requirements-refinement
-version: 1.3.0
+version: 1.4.0
 title: Requirements Refinement Workflow
 description: Refine a canonical requirements specification from a source document — a meeting transcript or an unstructured document — preserving the specification protocol verbatim and staging the finalized specification and a change summary in the planning folder for human promotion. Operates on local files and performs no version-control operations.
 author: m2ux
@@ -15,7 +15,7 @@ rules:
   activity:
     - The target specification's protocol — section structure, requirement-entry format, identifier schemes (SRC-MTG###, SRC-DOC###, REQ-F###, REQ-NF###), and status conventions defined in resources/specification-protocol.md — is preserved verbatim across every activity.
     - The source document is classified as a meeting transcript or an unstructured document; a meeting source takes an SRC-MTG### reference, and a document source takes an SRC-DOC### reference credited to the document's author.
-    - All artifacts — analysis report, working specifications, validation reports, final specification, and failure report — are written to the planning folder; the workflow performs no git operations and never edits the canonical document in place.
+    - This workflow performs no git operations, and never edits the canonical document in place.
     - When the target document exists, preserve its existing section structure; when it does not, instantiate the full specification protocol structure.
     - "Validation includes a source-coverage check: every normative statement in the source document maps to at least one requirement; an uncovered statement is a correctable finding routed through the correction loop."
   universal:

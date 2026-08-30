@@ -1,6 +1,6 @@
 ---
 metadata:
-  version: 1.5.0
+  version: 1.6.0
 ---
 
 ## Capability
@@ -38,7 +38,7 @@ Absolute path to the persisted findings artifact when `{conformance_finding_coun
 
 ### 2. Survey Reference Workflows
 
-- Survey similar-type reference workflows via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) (orchestrator-supplied definitions — [orchestrator-no-domain-work](../../meta/techniques/agent-conduct.md#orchestrator-no-domain-work))
+- Survey similar-type reference workflows via [list-workflows](../../meta/techniques/workflow-engine/list-workflows.md) (orchestrator-supplied definitions — [no-domain-work](../../meta/techniques/orchestrator-conduct.md#no-domain-work))
 
 ### 3. Audit Conformance
 

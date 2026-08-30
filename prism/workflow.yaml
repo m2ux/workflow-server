@@ -1,5 +1,5 @@
 id: prism
-version: 2.5.0
+version: 3.1.0
 title: Structural Analysis Prism Workflow
 description: Apply cognitive lenses to code or text through isolated sub-agent passes. Each pass runs in a fresh context window to guarantee analytical independence. For security audit use cases, use the prism-audit workflow which triggers prism and adds audit-specific post-processing.
 author: m2ux
@@ -13,22 +13,10 @@ tags:
 rules:
   workflow:
     - "ISOLATION MODEL: Each analytical pass MUST be dispatched to a FRESH sub-agent using harness-compat::spawn-agent. Do NOT use continue-agent between passes. The adversarial pass must never share context with the structural pass -- it receives only the textual output, not the generation history. This is the core invariant of the prism workflow."
-    - ref: prism-audit::orchestration-model
-    - ref: pass-output-forwarding
-    - "MINIMAL INTERACTION: This workflow has at most one user checkpoint (pipeline mode confirmation in select-mode), which is skipped when pipeline_mode is explicitly provided by the caller. All subsequent execution after select-mode is fully automated with no user interaction."
-    - "OPERATIONAL DIRECTIVES: Orchestrators MUST include explicit 'OPERATIONAL DIRECTIVES' section in spawn-agent prompts to sub-agents (harness-compat). Directives specify: (a) target file paths, (b) 'Write immediately' timing requirement, (c) verification reporting format. Workers must follow these directives without deferral."
+    - "PASS OUTPUT FORWARDING: The orchestrator captures the full text output from each pass and includes it verbatim in the next pass's prompt. Summarizing between passes loses evidence the adversary needs. Workers are NOT resumed — each pass gets a new worker."
     - "LENS HANDOFF: The orchestrator tells the worker which lens resource index to load; it does NOT load or forward the lens prompt itself."
   activity:
     - "LENS LOADING: Load the lens prompt for your pass from the prism workflow resources, using the resource index the orchestrator provides."
-    - ref: worker-permissions
-    - "NO PERMISSION QUESTIONS: Workers must NEVER ask 'Would you like me to save this?' or 'Can I write to this directory?' or similar permission-deferral questions. These questions create workflow stalls. Write artifacts immediately and report completion."
-    - "BLOCKER SURFACING (Not Permission Deferrals): If a worker encounters a GENUINE BLOCKER (operational barrier, not permission question), it must surface immediately using format: '[BLOCKER]: [specific issue]. Requires: [resolution]. Blocking: [progress].' Genuine blockers: directory doesn't exist, file permissions system error, network unavailable. NOT genuine blockers: uncertainty about whether to write, asking permission, deferring to user."
-    - ref: artifact-verification
-fragments:
-  rules:
-    pass-output-forwarding: "PASS OUTPUT FORWARDING: The orchestrator captures the full text output from each pass and includes it verbatim in the next pass's prompt. Summarizing between passes loses evidence the adversary needs. Workers are NOT resumed — each pass gets a new worker."
-    worker-permissions: "WORKER PERMISSIONS: Sub-agents dispatched in this workflow have FULL READ/WRITE permissions. Workers MUST write all artifacts directly to target paths WITHOUT asking for permission or deferring to the user."
-    artifact-verification: "ARTIFACT VERIFICATION: After writing each artifact, workers MUST report: (a) file path written, (b) file size (KB), (c) format validation status (OK or FAIL). This confirms successful completion and prevents silent write failures."
 techniques:
   activity:
     - variable-binding

@@ -1,5 +1,5 @@
 id: lean-coding-audit
-version: 1.5.0
+version: 1.6.0
 name: Lean-Coding Audit
 description: Apply the ponytail lean-coding lens to the just-implemented change.
 variables:
@@ -92,6 +92,11 @@ steps:
           - action: set
             target: needs_simplification
             message: After applying the accepted simplifications and re-running the over-engineering re-score, set true iff the re-score still surfaces accepted-but-unapplied simplifications that hold the safety floor; false when none remain.
+rules:
+  - safety-floor-never-simplified - The safety floor is never simplified away during the lean-coding audit - understanding the problem, input validation at trust boundaries, error handling that prevents data loss, security, accessibility, anything explicitly requested by the issue, and one runnable check for non-trivial logic. A simplification that would breach the floor is rejected; the simplification-apply-cycle validates the floor before resetting its driver flag.
+  - report-before-apply - The over-engineering review, debt harvest, and gain report are read-only - they list findings into their artifacts and change no code. Code is only ever changed in the simplification-apply-cycle, and only on simplifications the user accepted at the audit-findings-confirmed gate.
+  - leanness-reported-honestly - The net-lines scoreboard and gain figures are reported honestly - the harvested debt ledger is the source of the real per-change count; aggregate or benchmark figures never overstate the gain.
+  - complementary-not-duplicative-with-strategic-review - The lean-coding audit applies the over-engineering and leanness lens; it does not re-adjudicate scope-vs-issue fit, which remains strategic-review's concern. The two stages stay complementary.
 exits:
   - id: done
     isDefault: true

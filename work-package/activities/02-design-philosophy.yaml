@@ -1,5 +1,5 @@
 id: design-philosophy
-version: 1.15.0
+version: 1.16.0
 name: Design Philosophy
 description: Apply the design framework to classify the problem and decide the workflow path.
 variables:
@@ -43,7 +43,11 @@ variables:
       description: Residual open assumptions after analyse-challenge for batch presentation and optional individual forEach drill-down.
     - name: problem_complexity
       type: string
-      description: Problem complexity assessed during design-philosophy (simple|moderate|complex).
+      description: How complex the problem is, as assessed during design-philosophy.
+      values:
+        - simple
+        - moderate
+        - complex
     - name: problem_statement
       type: string
       description: A clear problem definition with system understanding, impact assessment, success criteria, and constraints — understandable without prior context.

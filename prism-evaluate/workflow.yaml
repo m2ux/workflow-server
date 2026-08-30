@@ -1,5 +1,5 @@
 id: prism-evaluate
-version: 2.1.0
+version: 3.1.0
 title: Evaluation Workflow
 description: Orchestrate multi-dimensional evaluations by mapping user-defined evaluation dimensions to prism analytical lenses.
 author: m2ux
@@ -10,12 +10,6 @@ tags:
   - multi-dimensional
   - proposals
   - documents
-rules:
-  workflow:
-    - ref: prism-audit::orchestration-model
-  activity:
-    - ref: prism::worker-permissions
-    - ref: prism::artifact-verification
 techniques:
   activity:
     - variable-binding
@@ -34,13 +28,23 @@ variables:
     required: true
   - name: evaluation_target_type
     type: string
-    description: "The target's kind: document | document-set | codebase | mixed"
+    description: The kind of thing being evaluated.
+    values:
+      - document
+      - document-set
+      - codebase
+      - mixed
   - name: current_finding
     type: object
     description: The finding under consideration
   - name: finding_disposition
     type: string
-    description: "Disposition taken on the current finding: accept | modify | skip | discuss"
+    description: What the dialogue decided about the finding under discussion.
+    values:
+      - accept
+      - modify
+      - skip
+      - discuss
 initialActivity: scope-definition
 graph:
   scope-definition:
