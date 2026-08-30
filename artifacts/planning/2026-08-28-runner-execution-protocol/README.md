@@ -47,7 +47,7 @@ Five take part in a run, plus two supporting pieces.
 | **Runner** | Reads the structure. Decides conditions, drives repetition, resolves each step's inputs, composes prompts, and reports every step. | **Yes** |
 | **Server** | Holds the session, resolves definitions, reproduces every reported transition, and refuses what it cannot reproduce. | No, but its job changes |
 | **Worker** | Does the run's work. A context that spans an activity or more, receiving one technique per turn: reads prose, exercises judgement, writes content, returns values. | No, but its job narrows |
-| **Host agent** | Invokes the runner, spawns workers with the prompts it composes, and carries a rendered question to the person and an option back. Decides nothing. A [later layer](#a-later-layer-the-runner-as-host) removes it entirely. | No, but its job narrows sharply |
+| **Host agent** | Invokes the runner, spawns workers with the prompts it composes, and carries a rendered question to the person and an option back. Decides nothing. A [later layer](#the-runner-as-host) removes it entirely. | No, but its job narrows sharply |
 | Harness | Hosts the agents and exposes spawning to them as a tool. | No |
 | Session store | The run's values, decisions and history, sealed. | No |
 
@@ -216,7 +216,7 @@ flowchart TB
 The runner has no line to the person. It marks a decision outstanding on the server and waits, and the
 question travels to the person through the host agent — see
 [How a decision reaches a person](#how-a-decision-reaches-a-person) below. That is the arrangement this
-proposal introduces; a [later layer](#a-later-layer-the-runner-as-host) gives the runner
+proposal introduces; a [later layer](#the-runner-as-host) gives the runner
 the channel and takes the agent off the path.
 
 The two working links have opposite grains. Runner-to-server is one local process addressing another, so
@@ -252,7 +252,7 @@ layer become the runner's, and the guarantees that need an agent off the path be
 
 **The two questions are one question.** Whether the runner spawns, and whether it talks to the person,
 both turn on whether it sits under an agent or above them all. **This proposal introduces the runner as a
-tool**, and [the later layer](#a-later-layer-the-runner-as-host) makes it a host — which
+tool**, and [the later layer](#the-runner-as-host) makes it a host — which
 is why that layer is not merely a change of channel but a change of what the runner is.
 
 Handing out one piece of work therefore looks like this. The [key flows](#key-flows) later on draw the
@@ -295,7 +295,7 @@ the corpus already distinguishes spawning an agent from continuing one, and a fr
 ### How a decision reaches a person
 
 **Every conversation with the person is agent-mediated, and stays that way under this proposal** — a
-[later layer](#a-later-layer-the-runner-as-host) changes it, and this section describes
+[later layer](#the-runner-as-host) changes it, and this section describes
 what holds until then. The dispatch model states the constraint as a rule: the user-facing agent is the
 only one that talks to the person, and it presents every question a run raises. So the runner does not
 acquire a channel to the person by existing, and the arrow between them in the diagrams above is a
@@ -338,7 +338,7 @@ answer, and the trace records the interaction for review afterwards, exactly as 
 implementation — the agent-relayed one above — rather than as inline calls. It costs nothing now, and it
 is what lets the channel be replaced later without touching anything else. A later layer does exactly
 that, and raises the guarantee in the process:
-[the runner as the decision channel](#a-later-layer-the-runner-as-host).
+[the runner as the decision channel](#the-runner-as-host).
 
 
 ### Where each responsibility sits
@@ -431,7 +431,7 @@ What cannot become code is the spawn itself, so the tier does not vanish outrigh
 collapses upward into the agent that talks to the person, which is left holding two primitives and no
 decisions: spawning, and relaying a question. **This document calls that combined role the host agent**,
 since facing the user is no longer the whole of its job. The [later
-layer](#a-later-layer-the-runner-as-host) removes even that.
+layer](#the-runner-as-host) removes even that.
 
 **The orchestration workflow splits three ways.** It is not demoted to a lower tier — most of it is
 setup and teardown around a loop the runner now *is*.
@@ -676,7 +676,7 @@ Each row is a limitation the fidelity documentation states in its own words.
 | The steps that ran are the steps that were meant to run | Detected — the manifest validates that the agent *reported* each step, not that it performed it | **Unrepresentable** | The runner hands out each unit and receives each reply, so there is no self-report to check. The manifest concept disappears rather than improving. |
 | A condition's truth decided the branch | Convention — the server checks a claimed outcome maps to the target, but "cannot verify whether the condition is actually true" | **Refused** | The runner evaluates against values the server holds, and the server re-derives every reported transition and rejects what it cannot reproduce. Needs per-step write authority. |
 | A conditional decision was genuinely inapplicable when dismissed | Convention — "relies on agent honesty"; the server checks only that a condition field exists | **Refused** | One evaluation of the condition against the session values. Available today, independent of the runner. |
-| A person actually saw a decision | Convention — "an agent could wait the minimum time and then submit a fabricated response" | **Detected** while an agent relays; **refused** once the runner holds the channel | Relayed, an agent stays on the path of the answer, but what it can fabricate shrinks from composing the question and dismissing the decision to returning one identifier from a closed set. Over a chat platform no agent is on the path at all — see [the later layer](#a-later-layer-the-runner-as-host). |
+| A person actually saw a decision | Convention — "an agent could wait the minimum time and then submit a fabricated response" | **Detected** while an agent relays; **refused** once the runner holds the channel | Relayed, an agent stays on the path of the answer, but what it can fabricate shrinks from composing the question and dismissing the decision to returning one identifier from a closed set. Over a chat platform no agent is on the path at all — see [the later layer](#the-runner-as-host). |
 | A repeated call is distinguished from a fresh one | Detected — visible in the trace afterwards | **Refused** | Position is recorded per step and is authoritative, so a repeat is a no-op or a refusal rather than a second execution. |
 | Steps ran in declared order | Detected — a relative-order comparison over a self-report | **Unrepresentable** | Order is the runner's walk. There is nothing to compare. |
 | An iteration bound was respected | Convention — "iteration is executed and bounded entirely by the agent" | **Refused** | The runner drives repetition and holds the count. |
@@ -756,7 +756,7 @@ exchange drawn in full under [what the runner is, and who spawns a
 worker](#what-the-runner-is-and-who-spawns-a-worker): the runner composes the prompt, the host agent
 spawns or continues a worker with it, and hands the reply back unaltered. It is elided here because it is
 identical in every flow and would add the same lane to each without changing what happens — and it
-becomes literal only under [the later layer](#a-later-layer-the-runner-as-host), where the runner spawns
+becomes literal only under [the later layer](#the-runner-as-host), where the runner spawns
 for itself.
 
 ### Executing a run of steps
@@ -805,7 +805,7 @@ sequenceDiagram
 
 The runner composes nothing here and the host agent decides nothing: the question is rendered by
 the server from the definition, and what comes back is one identifier from a closed set. The agent is on
-this path only until the [later layer](#a-later-layer-the-runner-as-host), which replaces
+this path only until the [later layer](#the-runner-as-host), which replaces
 it with a channel the runner holds.
 
 No worker context is established, which is why the rule forbidding an activity from opening with a
@@ -885,7 +885,7 @@ agent marked unresolved, and the agent improvises.
   returned what it declared, never which branch it took inside.
 - **Spawn a worker.** Spawning is a tool in an agent's tool list, not an interface a program can call, so
   the runner composes a prompt and the host agent spawns with it. This holds until
-  [the later layer](#a-later-layer-the-runner-as-host).
+  [the later layer](#the-runner-as-host).
 - **Author every prompt.** Twenty-two sites compose their own.
 - **Run two decisions at once.** One decision is outstanding per session; two members of a fan-out cannot
   both escalate without a keyed map.
@@ -915,7 +915,22 @@ time a server verdict overrules an agent's claim. Stage 3 is the load-bearing on
 outputs land when the step finishes, most conditions cannot be decided by anyone but the agent that
 produced them, and the fidelity argument has no purchase.
 
-## A later layer: the runner as host
+## Future features
+
+This work unlocks or cheapens several things it does not deliver. They are gathered here so the scope
+boundary is visible in one place; each is also discussed where it bears on the design.
+
+| Feature | What it turns on | Discussed under |
+|---|---|---|
+| **The runner as host** — dispatching workers itself and holding the channel to the person | Dispatch primitives the runner can call, and a chat transport | Below |
+| **Migrating mechanical content out of technique prose** | [#520](https://github.com/m2ux/workflow-server/issues/520) giving a run of steps a home, plus a corpus pass | [Determinism](#determinism) |
+| **Qualifying returned content against its declaration** | A second agent per checked output, and wider structural declarations | [Fidelity](#fidelity--the-point-of-the-exercise) |
+| **A typed language for activity mechanics** | A loader that emits the same resolved tree | [Designed for a later formal language](#designed-for-a-later-formal-language) |
+
+The first is the largest and is set out below. The other three need nothing from the runner beyond what
+this proposal already builds.
+
+### The runner as host
 
 Once the runner owns decisions, the agent above it can be removed altogether. The runner becomes the top
 of the stack: it spawns workers directly — through a harness's programmatic interface, a model API, or a
@@ -965,9 +980,10 @@ longer round-trip through that agent's context on their way to a worker.
 - **The first outbound dependency.** The system is local and inbound-only today: no network client
   anywhere in the server, and both transports serve rather than call. This adds credentials to hold and
   an availability dependency in the decision path.
-- **The spawn layer becomes the runner's.** Three operations across four harness implementations plus a
-  generic fallback are prose an agent interprets today. Absorbing them turns the runner into a harness of
-  its own, which is a gain in determinism and a loss in portability.
+- **The spawn layer becomes the runner's.** Three operations — start an agent, start several
+  concurrently, continue an existing one — across four harness implementations plus a generic fallback
+  are prose an agent interprets today. Absorbing them turns the runner into a harness of its own, which
+  is a gain in determinism and a loss in portability.
 - **An authorisation model where none is needed today.** "The person at the keyboard" is implicit
   authorisation. A chat message from *someone* is not a message from *the stakeholder*, so a run needs a
   binding to whoever may answer for it.
@@ -978,6 +994,18 @@ longer round-trip through that agent's context on their way to a worker.
   thirty-second auto-advance interval, tuned for somebody watching. Against a person who is not at their
   desk those become genuine timeouts, and the intervals want reviewing before this ships rather than
   after.
+
+**What it requires that does not exist yet: dispatch primitives the runner can call.** Today the runner
+composes a prompt and an agent spawns with it, because spawning is a tool in an agent's tool list. For
+the runner to be host it needs a programmatic way to start a worker, continue one, and start several at
+once — the same three operations the corpus abstracts as prose, implemented as code. At minimum that
+means Claude Code and Cursor, since those are the harnesses the corpus already carries rules for, and
+each needs its own implementation against whatever interface it exposes rather than a shared one.
+
+Two consequences worth recording now. The runner stops being harness-agnostic: portability becomes a
+matter of how many implementations it carries, where today it inherits whatever the hosting agent runs
+under. And it acquires credentials, which is the same boundary the chat transport crosses — so both
+halves of this layer turn the runner from a local process with no secrets into one that holds them.
 
 **The fork to settle first.** Is the runner the intermediary for decisions only, or for the whole
 conversation? Decisions-only leaves two channels to the person and no clear answer to where they should
