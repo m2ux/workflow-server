@@ -255,6 +255,43 @@ both turn on whether it sits under an agent or above them all. **This proposal i
 tool**, and [the later layer](#a-later-layer-the-runner-as-host) makes it a host — which
 is why that layer is not merely a change of channel but a change of what the runner is.
 
+Handing out one piece of work therefore looks like this. The [key flows](#key-flows) later on draw the
+runner prompting a worker as a single step; this is what that step actually contains.
+
+```mermaid
+---
+title: One dispatch in full - the detail the flow diagrams elide
+---
+sequenceDiagram
+    participant S as Server
+    participant R as Runner
+    participant H as Host agent
+    participant W as Worker
+
+    R->>S: fetch technique body
+    S-->>R: prose, rules, resources
+    R->>R: resolve declared inputs to values
+    R-->>H: composed prompt and expected outputs
+
+    alt no worker context open yet
+        H->>W: harness spawn call
+    else a context is already open
+        H->>W: harness continue call
+    end
+
+    W->>W: read the prose, do the work
+    W-->>H: values per declared output
+    H-->>R: the reply, unaltered
+    R->>S: close unit with produced values
+    S-->>R: accepted, rejected, values delta
+```
+
+Two things this makes visible. The host agent appears twice and does nothing either time except carry
+something it did not compose and cannot alter — which is why it is a proxy rather than a tier. And the
+branch is the reason a worker is a *context spanning an activity or more* rather than one per technique:
+the corpus already distinguishes spawning an agent from continuing one, and a fresh context for each of
+611 technique steps would multiply the largest cost in the system fivefold.
+
 ### How a decision reaches a person
 
 **Every conversation with the person is agent-mediated, and stays that way under this proposal** — a
@@ -714,11 +751,13 @@ check.
 
 ## Key flows
 
-Each sequence below shows the runner prompting a worker as a single step. That is shorthand: under
-[runner as a tool](#what-the-runner-is-and-who-spawns-a-worker) the runner composes the prompt and the
-host agent spawns with it. The proxy is elided here because it is the same in every flow and adds a lane
-to each without changing what happens; it becomes literal only under
-[the later layer](#a-later-layer-the-runner-as-host).
+Each sequence below shows the runner prompting a worker as a single step. That is shorthand for the
+exchange drawn in full under [what the runner is, and who spawns a
+worker](#what-the-runner-is-and-who-spawns-a-worker): the runner composes the prompt, the host agent
+spawns or continues a worker with it, and hands the reply back unaltered. It is elided here because it is
+identical in every flow and would add the same lane to each without changing what happens — and it
+becomes literal only under [the later layer](#a-later-layer-the-runner-as-host), where the runner spawns
+for itself.
 
 ### Executing a run of steps
 
