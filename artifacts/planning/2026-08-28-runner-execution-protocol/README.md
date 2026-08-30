@@ -46,7 +46,7 @@ Five take part in a run, plus two supporting pieces.
 | **User** | Answers decisions that need a person. Sees progress. | No |
 | **Runner** | Reads the structure. Decides conditions, drives repetition, resolves each step's inputs, composes prompts, and reports every step. | **Yes** |
 | **Server** | Holds the session, resolves definitions, reproduces every reported transition, and refuses what it cannot reproduce. | No, but its job changes |
-| **Technique agent** | Carries out one technique: reads prose, exercises judgement, writes content, returns values. | No, but its job narrows |
+| **Worker** | Does the run's work. A context that spans an activity or more, receiving one technique per turn: reads prose, exercises judgement, writes content, returns values. | No, but its job narrows |
 | **User-facing agent** | The only participant that talks to the person. Carries a rendered question out and an option back. A [later layer](#a-later-layer-the-runner-as-the-decision-channel) removes it from that path. | No, but its job narrows sharply |
 | Harness | Starts the runner; establishes agent contexts on request. | No |
 | Session store | The run's values, decisions and history, sealed. | No |
@@ -65,7 +65,7 @@ flowchart LR
         Session[(Session<br/>values, decisions, history)]
     end
 
-    Agent[[Technique agent<br/>carries out one technique]]
+    Agent[[Worker<br/>one technique per turn]]
     Facing[[User-facing agent<br/>carries questions and answers]]
     Defs[[Workflow definitions]]
 
@@ -101,7 +101,7 @@ title: Use cases by actor
 flowchart LR
     User([👤 User])
     Author([✍️ Definition author])
-    Agent([🤖 Technique agent])
+    Worker([🤖 Worker])
 
     subgraph Cases [What the system is for]
         UC1(Answer a decision)
@@ -123,7 +123,7 @@ flowchart LR
     Author --> UC6
     Author --> UC7
     Author --> UC8
-    Agent --> UC9
+    Worker --> UC9
 
     style Cases fill:#f5f5f5,stroke:#bdbdbd
 ```
@@ -160,7 +160,7 @@ flowchart LR
 - I want work to run at the same time only where something has established that it is independent, so
   that concurrency is a property of the definition rather than a hope.
 
-**As an agent**
+**As a worker**
 
 - I want to receive a technique's prose, its rules, and the values I need, so that I can do the work
   without interpreting a structure.
@@ -188,8 +188,8 @@ flowchart TB
         Corpus[(Workflow definitions<br/>YAML and Markdown)]
     end
 
-    Agent1[[Technique agent A]]
-    Agent2[[Technique agent B]]
+    Agent1[[Worker A]]
+    Agent2[[Worker B]]
 
     User -->|answers| Facing
     Facing -->|shows the question| User
@@ -295,7 +295,7 @@ flowchart TB
         S4[Seal and record history]
     end
 
-    subgraph A [Technique agent]
+    subgraph A [Worker]
         A1[Read protocol prose]
         A2[Exercise judgement]
         A3[Write content]
@@ -318,6 +318,67 @@ flowchart TB
 
 The line between runner and agent is the technique's declared signature. Everything above it is
 structure; everything below it is prose. Nothing crosses.
+
+### What becomes of the agent hierarchy
+
+Work is currently handed down a chain of three agent tiers: a user-facing agent that talks to the person
+and spawns an orchestrator, an orchestrator that reads the workflow and spawns workers, and workers that
+execute an activity's steps. The runner replaces the middle tier, so it is worth being exact about what
+happens to each and to the orchestration workflow that describes them.
+
+```mermaid
+---
+title: Before and after - who holds what
+---
+flowchart TB
+    subgraph Before [Today - three agent tiers]
+        B1([👤 User]) --> B2[[User-facing agent]]
+        B2 --> B3[[Orchestrator]]
+        B3 --> B4[[Worker]]
+    end
+
+    subgraph After [With a runner - one agent tier]
+        A1([👤 User]) --> A2[[User-facing agent]]
+        A2 --> A3[Runner]
+        A3 --> A4[[Worker]]
+    end
+
+    style Before fill:#fff3e0,stroke:#ef6c00
+    style After fill:#c8e6c9,stroke:#2e7d32
+    style A3 fill:#c8e6c9,stroke:#1b5e20
+```
+
+**The orchestrator tier disappears rather than moving.** Its technique bundle reads as a job description
+for the runner: dispatching an activity, resuming a worker, deciding whether to continue a batch, and the
+driving loop itself all become code. Handling a sub-workflow survives as the existing child-session
+mechanism, which is session-level nesting and untouched by this. The conduct rules written for an
+orchestrator go, being guidance for an agent that no longer exists.
+
+**The orchestration workflow splits three ways.** It is not demoted to a lower tier — most of it is
+setup and teardown around a loop the runner now *is*.
+
+| Its activities | Under a runner |
+|---|---|
+| Discover a session, initialise it, resolve the target | Stay ordinary activities. Real work with side effects, executed by the runner like any other workflow's, with techniques dispatched to agents |
+| Dispatch the client workflow | **Ceases to exist.** This activity is the orchestrator loop |
+| End the workflow | Splits. The close-out work stays; the edge that routes back into the loop is control the runner owns |
+
+**Why the tier disappears rather than merging.** The dispatch model gives the reason the hierarchy exists:
+one agent cannot run a whole workflow well, because talking to the person, tracking where a long run has
+got to, and doing the work are three different jobs, and an agent doing all three fills its context with
+material irrelevant to whichever it is currently doing. Three concerns, three tiers. The runner does not
+isolate the middle one better — it stops it being agent work at all, because tracking position becomes a
+cursor in a program rather than a job needing context.
+
+**And the remaining agents change in kind, not just in number.** Today each tier holds partial state and
+passes summaries down and reports up; that chain of stateful actors *is* the hierarchy. A worker
+receives a prompt, returns values, and holds nothing — no position, no server access, no memory of the
+run. So the arrangement stops being a delegation chain and becomes a program with stateless calls, which
+is a larger change than flattening.
+
+One consequence to tidy up when this lands: the worker conduct rule forbidding calls to the control-plane
+tools becomes unenforceable advice, since a worker has no server access to misuse. It should be
+deleted rather than left standing.
 
 ## The contracts
 
@@ -617,7 +678,7 @@ check.
 sequenceDiagram
     participant R as Runner
     participant S as Server
-    participant A as Technique agent
+    participant A as Worker
 
     R->>S: open activity
     S-->>R: resolved tree, values, exits
@@ -660,7 +721,7 @@ the server from the definition, and what comes back is one identifier from a clo
 this path only until the [later layer](#a-later-layer-the-runner-as-the-decision-channel), which replaces
 it with a channel the runner holds.
 
-No *technique* agent is established, which is why the rule forbidding an activity from opening with a
+No worker context is established, which is why the rule forbidding an activity from opening with a
 decision can go — that rule exists because asking a question currently costs a whole worker context, and
 here it costs a turn in a context that already exists.
 
@@ -794,7 +855,7 @@ account replied at this time", attested by a third party. That is the strongest 
 available in any arrangement considered here.
 
 **What it retires beyond what stage 5 reaches.** The runner alone already removes the lower hops — a
-decision becomes a unit the runner handles, and technique agents never encounter one. This layer removes
+decision becomes a unit the runner handles, and workers never encounter one. This layer removes
 the last hop, and with it two things stage 5 leaves standing: the pause-and-resume machinery that exists
 because a run stops at every gate for an answer an agent owns, and the session-wide freeze of five tools
 while a decision is outstanding, whose only purpose is to stop other agent contexts progressing and which
