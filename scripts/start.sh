@@ -433,7 +433,12 @@ if [[ "$PULL" -eq 1 ]]; then
   echo "Pulling ${FULL_IMAGE} ..."
   if ! run docker pull "$FULL_IMAGE"; then
     die "pull failed for ${FULL_IMAGE}
-  Check network access to ghcr.io, or build from a checkout if the tag is unpublished."
+  This image is public, so the pull carries no credential. An expired ghcr.io entry
+  in ~/.docker/config.json still answers for it, and the registry rejects the auth
+  rather than falling back to an anonymous pull — reported as 'denied'. Clear it:
+    docker logout ghcr.io
+  Otherwise check network access to ghcr.io, or build from a checkout if the tag is
+  unpublished."
   fi
 fi
 
