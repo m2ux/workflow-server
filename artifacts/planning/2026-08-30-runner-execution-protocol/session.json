@@ -698,9 +698,23 @@
             "respondedAt": "2026-08-30T07:17:01.000Z"
           }
         },
-        "completedActivities": [],
-        "currentActivity": "intake-and-analyze",
+        "completedActivities": [
+          "intake-and-analyze"
+        ],
+        "currentActivity": "update-specification",
         "currentTechnique": "",
+        "declaredArtifacts": [
+          {
+            "id": "intake_record",
+            "name": "intake.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-runner-execution-protocol/01-intake.md"
+          },
+          {
+            "id": "requirements_analysis",
+            "name": "requirements-analysis.md",
+            "path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-runner-execution-protocol/01-requirements-analysis.md"
+          }
+        ],
         "deliveredContent": {
           "c-intake-01": {
             "activity_rules:57246eafc8bcd38d": "57246eafc8bcd38d",
@@ -728,10 +742,12 @@
             "technique:intake-sources": "8b097921354948e9",
             "technique:provenance_note:10b5dee320dee4be": "10b5dee320dee4be",
             "technique:rules:080d39f22ecf925f": "080d39f22ecf925f",
-            "technique:rules:fe7ac9bb9d4ac42a": "fe7ac9bb9d4ac42a"
+            "technique:rules:1e5c055438681db1": "1e5c055438681db1",
+            "technique:rules:fe7ac9bb9d4ac42a": "fe7ac9bb9d4ac42a",
+            "technique:update-specification": "f3d8311e74f5826a"
           }
         },
-        "exit": "",
+        "exit": "analysis-confirmed",
         "history": [
           {
             "timestamp": "2026-08-30T06:59:38.954Z",
@@ -1202,16 +1218,243 @@
             },
             "timestamp": "2026-08-30T07:27:38.663Z",
             "type": "activity_usage"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "activity_exited"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "analysis_confirmed",
+              "source": "variables_changed",
+              "value": true
+            },
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "source_type",
+              "source": "variables_changed",
+              "value": "document"
+            },
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "target_doc_exists",
+              "source": "variables_changed",
+              "value": false
+            },
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "spec_basename",
+              "source": "variables_changed",
+              "value": "runner-execution-protocol-requirements.md"
+            },
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "intake_record_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-runner-execution-protocol/01-intake.md"
+            },
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "requirements_analysis_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-runner-execution-protocol/01-requirements-analysis.md"
+            },
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "source_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-28-runner-execution-protocol/README.md"
+            },
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "name": "target_doc_path",
+              "source": "variables_changed",
+              "value": "/home/mike1/projects/dev/workflow-server/docs/runner-execution-protocol-requirements.md"
+            },
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "variable_set"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "stepId": "intake-sources"
+            },
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "stepId": "sources-confirmed"
+            },
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "stepId": "analyze-source"
+            },
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "intake-and-analyze",
+            "data": {
+              "agentId": "c-intake-01",
+              "stepId": "analysis-confirmed"
+            },
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "step_completed"
+          },
+          {
+            "activity": "update-specification",
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "activity_entered"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "published": false
+            },
+            "timestamp": "2026-08-30T07:28:42.374Z",
+            "type": "progress_published"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "c-intake-01",
+              "chars": 8614,
+              "dispatch": "resume"
+            },
+            "timestamp": "2026-08-30T07:28:51.126Z",
+            "type": "activity_dispatched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "c-intake-01",
+              "chars": 4986,
+              "delivery": "full",
+              "stepId": "update-specification",
+              "techniqueId": "update-specification"
+            },
+            "timestamp": "2026-08-30T07:28:51.126Z",
+            "type": "technique_bundled"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "c-intake-01",
+              "stepId": "update-specification"
+            },
+            "timestamp": "2026-08-30T07:28:51.126Z",
+            "type": "step_started"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 355,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#status-conventions"
+            },
+            "timestamp": "2026-08-30T07:28:51.126Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 1042,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#section-structure"
+            },
+            "timestamp": "2026-08-30T07:28:51.126Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 518,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#requirement-entry-format"
+            },
+            "timestamp": "2026-08-30T07:28:51.126Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "c-intake-01",
+              "bundled": true,
+              "chars": 679,
+              "delivery": "unchanged",
+              "resourceId": "specification-protocol#identifier-schemes"
+            },
+            "timestamp": "2026-08-30T07:28:51.126Z",
+            "type": "resource_fetched"
+          },
+          {
+            "activity": "update-specification",
+            "data": {
+              "agentId": "c-intake-01",
+              "basis": "cumulative",
+              "usage": {
+                "duration_ms": 254375,
+                "subagent_tokens": 180830,
+                "tool_uses": 5
+              }
+            },
+            "timestamp": "2026-08-30T07:33:12.750Z",
+            "type": "activity_usage"
           }
         ],
         "repo": "m2ux/workflow-server",
         "schemaVersion": 1,
-        "seq": 13,
+        "seq": 16,
         "sessionIndex": "LG2YFD",
         "startedAt": "2026-08-30T06:59:38.954Z",
         "status": "running",
         "triggeredWorkflows": [],
-        "ts": 1788074858,
+        "ts": 1788075192,
         "variables": {
           "analysis_confirmed": true,
           "change_summary_path": "",
@@ -1220,11 +1463,13 @@
           "final_specification_path": "",
           "has_correctable_issues": false,
           "has_critical_issues": false,
-          "intake_record_path": "",
-          "requirements_analysis_path": "",
-          "source_type": "",
-          "spec_basename": "",
+          "intake_record_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-runner-execution-protocol/01-intake.md",
+          "requirements_analysis_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-30-runner-execution-protocol/01-requirements-analysis.md",
+          "source_path": "/home/mike1/projects/dev/workflow-server/.engineering/artifacts/planning/2026-08-28-runner-execution-protocol/README.md",
+          "source_type": "document",
+          "spec_basename": "runner-execution-protocol-requirements.md",
           "target_doc_exists": false,
+          "target_doc_path": "/home/mike1/projects/dev/workflow-server/docs/runner-execution-protocol-requirements.md",
           "user_request": "Run the requirements-refinement workflow to generate a specification from the runner proposal at .engineering/artifacts/planning/2026-08-28-runner-execution-protocol/README.md, which is the design record for issue #523 (a runner that executes the mechanical parts of a workflow). The proposal has settled decisions recorded in decisions.md alongside it, plus supporting evidence in investigation.md, protocol-verification.md, cost-model.md and attestation.md.",
           "validation_passed": false,
           "validation_report_path": "",
